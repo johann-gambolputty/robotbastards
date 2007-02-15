@@ -1,6 +1,7 @@
 <project SchemaVersion="1.3">
     <assemblies>
-        <assembly location="..\bin\Debug\RbEngine.dll" documentation=".\RbEngine.xml" />
+        <assembly location="..\RbEngine\bin\Debug\RbEngine.dll" documentation="..\RbEngine\RbEngine.xml" />
+        <assembly location="..\RbOpenGlRendering\bin\Debug\RbOpenGlRendering.dll" documentation="..\RbOpenGlRendering\RbOpenGlRendering.xml" />
     </assemblies>
     <documenters>
         <documenter name="JavaDoc">
@@ -19,7 +20,7 @@
         </documenter>
         <documenter name="MSDN">
             <property name="OutputDirectory" value=".\NDoc\" />
-            <property name="HtmlHelpName" value="RbEngine" />
+            <property name="HtmlHelpName" value="RobotBastards" />
             <property name="Title" value="An NDoc Documented Class Library" />
             <property name="DocumentAttributes" value="True" />
         </documenter>

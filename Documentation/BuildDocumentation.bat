@@ -1,9 +1,9 @@
 
 call BuildDocumentationSettings.bat
 
-devenv ../RbEngine.csproj /build Documentation > Errors.txt
+devenv ../Rb.sln /build Documentation > Errors.txt
 
-ndocconsole -project="./RbEngine.ndoc" >> Errors.txt
+ndocconsole -project="./Rb.ndoc" >> Errors.txt
 
 
 copy .\NDoc\*.chm

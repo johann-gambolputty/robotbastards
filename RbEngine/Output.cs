@@ -121,6 +121,21 @@ namespace RbEngine
 		}
 
 		/// <summary>
+		/// Writes a message using System.Diagnostics.Trace.Write() (if this context is enabled), prefixed by the caller source location and the context name
+		/// </summary>
+		/// <param name="context"> Output context </param>
+		/// <param name="str"> Message to write </param>
+		/// <param name="formatArgs"> String format arguments, passed to String.Format() with str to create the output message </param>
+		public static void		WriteCall( TraceSwitch context, string str, params object[] formatArgs )
+		{
+			if ( context.Enabled )
+			{
+				StackFrame caller = new StackFrame( 1 );
+				System.Diagnostics.Trace.Write( String.Format( "{0}({1},{2}) : {3}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), String.Format( str, formatArgs ) ), context.DisplayName );
+			}
+		}
+
+		/// <summary>
 		/// Writes a message using System.Diagnostics.Trace.WriteLine() (if this context is enabled), prefixed by the caller source location and the context name
 		/// </summary>
 		/// <param name="str"> Message to write </param>
@@ -132,6 +147,22 @@ namespace RbEngine
 				System.Diagnostics.Trace.WriteLine( String.Format( "{0}({1},{2}) : {3}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), str ), context.DisplayName );
 			}
 		}
+		
+
+		/// <summary>
+		/// Writes a message using System.Diagnostics.Trace.WriteLine() (if this context is enabled), prefixed by the caller source location and the context name
+		/// </summary>
+		/// <param name="context"> Output context </param>
+		/// <param name="str"> Message to write </param>
+		/// <param name="formatArgs"> String format arguments, passed to String.Format() with str to create the output message </param>
+		public static void		WriteLineCall( TraceSwitch context, string str, params object[] formatArgs )
+		{
+			if ( context.Enabled )
+			{
+				StackFrame caller = new StackFrame( 1 );
+				System.Diagnostics.Trace.WriteLine( String.Format( "{0}({1},{2}) : {3}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), String.Format( str, formatArgs ) ), context.DisplayName );
+			}
+		}
 
 		/// <summary>
 		/// Writes a message using System.Diagnostics.Trace.Write() (if this context is enabled), prefixed by the context name
@@ -141,6 +172,17 @@ namespace RbEngine
 		{
 			System.Diagnostics.Trace.WriteIf( context.Enabled, str, context.DisplayName );
 		}
+		
+		/// <summary>
+		/// Writes a message using System.Diagnostics.Trace.Write() (if this context is enabled), prefixed by the context name
+		/// </summary>
+		/// <param name="context"> Output context </param>
+		/// <param name="str"> Message to write </param>
+		/// <param name="formatArgs"> String format arguments, passed to String.Format() with str to create the output message </param>
+		public static void		Write( TraceSwitch context, string str, params object[] formatArgs )
+		{
+			System.Diagnostics.Trace.WriteIf( context.Enabled, String.Format( str, formatArgs ), context.DisplayName );
+		}
 
 		/// <summary>
 		/// Writes a message using System.Diagnostics.Trace.WriteLine() (if this context is enabled), prefixed by the context name
@@ -149,6 +191,17 @@ namespace RbEngine
 		public static void		WriteLine( TraceSwitch context, string str )
 		{
 			System.Diagnostics.Trace.WriteIf( context.Enabled, str, context.DisplayName );
+		}
+
+		/// <summary>
+		/// Writes a message using System.Diagnostics.Trace.WriteLine() (if this context is enabled), prefixed by the context name
+		/// </summary>
+		/// <param name="context"> Output context </param>
+		/// <param name="str"> Message to write </param>
+		/// <param name="formatArgs"> String format arguments, passed to String.Format() with str to create the output message </param>
+		public static void		WriteLine( TraceSwitch context, string str, params object[] formatArgs )
+		{
+			System.Diagnostics.Trace.WriteIf( context.Enabled, String.Format( str, formatArgs ), context.DisplayName );
 		}
 
 		#endregion
@@ -169,6 +222,21 @@ namespace RbEngine
 		}
 
 		/// <summary>
+		/// Writes a message using System.Diagnostics.Debug.Write() (if this context is enabled), prefixed by the caller source location and the context name
+		/// </summary>
+		/// <param name="context"> Output context </param>
+		/// <param name="str"> Message to write </param>
+		/// <param name="formatArgs"> String format arguments, passed to String.Format() with str to create the output message </param>
+		public static void		WriteCall( DebugSwitch context, string str, params object[] formatArgs )
+		{
+			if ( context.Enabled )
+			{
+				StackFrame caller = new StackFrame( 1 );
+				System.Diagnostics.Debug.Write( String.Format( "{0}({1},{2}) : {3}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), String.Format( str, formatArgs ) ), context.DisplayName );
+			}
+		}
+
+		/// <summary>
 		/// Writes a message using System.Diagnostics.Debug.WriteLine() (if this context is enabled), prefixed by the caller source location and the context name
 		/// </summary>
 		/// <param name="str"> Message to write </param>
@@ -180,6 +248,22 @@ namespace RbEngine
 				System.Diagnostics.Debug.WriteLine( String.Format( "{0}({1},{2}) : {3}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), str ), context.DisplayName );
 			}
 		}
+		
+
+		/// <summary>
+		/// Writes a message using System.Diagnostics.Debug.WriteLine() (if this context is enabled), prefixed by the caller source location and the context name
+		/// </summary>
+		/// <param name="context"> Output context </param>
+		/// <param name="str"> Message to write </param>
+		/// <param name="formatArgs"> String format arguments, passed to String.Format() with str to create the output message </param>
+		public static void		WriteLineCall( DebugSwitch context, string str, params object[] formatArgs )
+		{
+			if ( context.Enabled )
+			{
+				StackFrame caller = new StackFrame( 1 );
+				System.Diagnostics.Debug.WriteLine( String.Format( "{0}({1},{2}) : {3}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), String.Format( str, formatArgs ) ), context.DisplayName );
+			}
+		}
 
 		/// <summary>
 		/// Writes a message using System.Diagnostics.Debug.Write() (if this context is enabled), prefixed by the context name
@@ -189,6 +273,17 @@ namespace RbEngine
 		{
 			System.Diagnostics.Debug.WriteIf( context.Enabled, str, context.DisplayName );
 		}
+		
+		/// <summary>
+		/// Writes a message using System.Diagnostics.Debug.Write() (if this context is enabled), prefixed by the context name
+		/// </summary>
+		/// <param name="context"> Output context </param>
+		/// <param name="str"> Message to write </param>
+		/// <param name="formatArgs"> String format arguments, passed to String.Format() with str to create the output message </param>
+		public static void		Write( DebugSwitch context, string str, params object[] formatArgs )
+		{
+			System.Diagnostics.Debug.WriteIf( context.Enabled, String.Format( str, formatArgs ), context.DisplayName );
+		}
 
 		/// <summary>
 		/// Writes a message using System.Diagnostics.Debug.WriteLine() (if this context is enabled), prefixed by the context name
@@ -197,6 +292,17 @@ namespace RbEngine
 		public static void		WriteLine( DebugSwitch context, string str )
 		{
 			System.Diagnostics.Debug.WriteIf( context.Enabled, str, context.DisplayName );
+		}
+
+		/// <summary>
+		/// Writes a message using System.Diagnostics.Debug.WriteLine() (if this context is enabled), prefixed by the context name
+		/// </summary>
+		/// <param name="context"> Output context </param>
+		/// <param name="str"> Message to write </param>
+		/// <param name="formatArgs"> String format arguments, passed to String.Format() with str to create the output message </param>
+		public static void		WriteLine( DebugSwitch context, string str, params object[] formatArgs )
+		{
+			System.Diagnostics.Debug.WriteIf( context.Enabled, String.Format( str, formatArgs ), context.DisplayName );
 		}
 
 		#endregion

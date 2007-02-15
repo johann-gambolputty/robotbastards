@@ -38,9 +38,9 @@ namespace RbEngine.Rendering
 		public abstract Texture2d			NewTexture2d( );
 
 		/// <summary>
-		/// Creates a new ApplyTexture2d object
+		/// Creates a new TextureSampler2d object
 		/// </summary>
-		public abstract ApplyTexture2d		NewApplyTexture2d( );
+		public abstract TextureSampler2d	NewTextureSampler2d( );
 
 		/// <summary>
 		/// Creates a new Renderer object
