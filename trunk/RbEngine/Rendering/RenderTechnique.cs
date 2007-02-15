@@ -6,7 +6,7 @@ namespace RbEngine.Rendering
 	/// <summary>
 	/// Stores a collection of RenderPass objects. For each pass, the technique applies it, then renders geometry using a callback
 	/// </summary>
-	public class RenderTechnique : Utilities.INamedObject, Utilities.IParentObject
+	public class RenderTechnique : Components.INamedObject, Components.IParentObject
 	{
 		#region	Setup
 
@@ -135,7 +135,7 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Event, invoked when the name of this technique has been changed
 		/// </summary>
-		public event Utilities.NameChangedDelegate NameChanged;
+		public event Components.NameChangedDelegate NameChanged;
 
 		#endregion
 

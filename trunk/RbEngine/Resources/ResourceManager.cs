@@ -56,11 +56,11 @@ namespace RbEngine.Resources
 					Type providerType = GetType( ).Assembly.GetType( providerTypeName );
 					if ( providerType == null )
 					{
-						Trace.WriteLineIf( Switches.Errors.Enabled, String.Format( "Unable to find type for provider \"{0}\"", providerTypeName ) );
+						Output.WriteLineCall( Output.ResourceError, String.Format( "Unable to find type for provider \"{0}\"", providerTypeName ) );
 					}
 					else
 					{
-						Debug.WriteLineIf( Switches.Info.Enabled, String.Format( "Creating resource provider \"{0}\"", providerTypeName ) );
+						Output.WriteLineCall( Output.ResourceInfo, String.Format( "Creating resource provider \"{0}\"", providerTypeName ) );
 						ResourceProvider newProvider = ( ResourceProvider )System.Activator.CreateInstance( providerType );
 
 						newProvider.Setup( ( System.Xml.XmlElement ) curProviderNode );
@@ -79,11 +79,11 @@ namespace RbEngine.Resources
 					ResourceLoader loader = ( ResourceLoader )GetType( ).Assembly.CreateInstance( loaderTypeName );
 					if ( loader == null )
 					{
-						Trace.WriteLineIf( Switches.Errors.Enabled, String.Format( "Unable to create instance for resource loader type \"{0}\"", loaderTypeName ) );
+						Output.WriteLineCall( Output.ResourceError, String.Format( "Unable to create instance for resource loader type \"{0}\"", loaderTypeName ) );
 					}
 					else
 					{
-						Debug.WriteLineIf( Switches.Info.Enabled, String.Format( "Creating resource loader \"{0}\"", loaderTypeName ) );
+						Output.WriteLineCall( Output.ResourceInfo, String.Format( "Creating resource loader \"{0}\"", loaderTypeName ) );
 						AddLoader( loader );
 					}
 				}

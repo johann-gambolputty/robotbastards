@@ -86,7 +86,7 @@ namespace RbEngine.Rendering
 	/// <summary>
 	/// Summary description for ApplyTexture2d.
 	/// </summary>
-	public class ApplyTexture2d : IApplicable
+	public abstract class ApplyTexture2d : IApplicable
 	{
 		/// <summary>
 		/// Default constructor
@@ -104,6 +104,11 @@ namespace RbEngine.Rendering
 		{
 			m_Texture = texture;
 		}
+
+		/// <summary>
+		/// Applies this texture
+		/// </summary>
+		public abstract void	Apply( );
 
 		/// <summary>
 		/// Access to the bound texture

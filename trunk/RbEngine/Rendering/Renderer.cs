@@ -28,7 +28,7 @@ namespace RbEngine.Rendering
 	/// <summary>
 	/// Summary description for Renderer.
 	/// </summary>
-	public class Renderer
+	public abstract class Renderer
 	{
 
 		#region	Construction and singleton access
@@ -42,7 +42,7 @@ namespace RbEngine.Rendering
 			ms_Singleton = this;
 
 			//	Add a default renderstate
-			PushRenderState( new RenderState( ) );
+			PushRenderState( RenderFactory.Inst.NewRenderState( ) );
 		}
 
 		/// <summary>
@@ -168,7 +168,7 @@ namespace RbEngine.Rendering
 
 		#region	Private stuff
 
-		private static Renderer	ms_Singleton = new Renderer( );
+		private static Renderer	ms_Singleton;
 
 		#endregion
 

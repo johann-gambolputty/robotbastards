@@ -4,10 +4,34 @@ using System.Collections;
 namespace RbEngine.Components
 {
 	/// <summary>
-	/// Summary description for ModelSet.
+	/// A ModelSet is basically an in-memory directory tree of objects that are intended to be instanciable (implement the IModel interface)
 	/// </summary>
+	/// <remarks>
+	/// Objects stored in a modelset are accessible via filesystem-style path strings (either '/' or '\' can be used to delimit model sets)
+	/// </remarks>
+	/// <example>
+	/// Given the following setup
+	/// <code escaped="true">
+	///		<modelSet name="graphics">
+	///			<modelSet name="images">
+	///				<resource path="Resources/Badger.jpg" name="badger"/>
+	///			</modelSet>
+	///		</modelSet>
+	/// </code>
+	/// "Badger.jpg" would only be found by the following code:
+	/// <code>
+	/// ModelSet.Find( "graphics/images/badger" );
+	/// </code>
+	/// To get the "images" ModelSet:
+	/// <code>
+	/// ModelSet.Find( "graphics/images" );
+	/// </code>
+	/// </example>
 	public class ModelSet : IParentObject, INamedObject
 	{
+
+		#region	Construction
+
 		/// <summary>
 		/// Constructor
 		/// </summary>
@@ -16,16 +40,9 @@ namespace RbEngine.Components
 			m_Name = name;
 		}
 
-		/// <summary>
-		/// The name of this model set
-		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return m_Name;
-			}
-		}
+		#endregion
+
+		#region	Public properties
 
 		/// <summary>
 		/// The full path of this model set
@@ -39,28 +56,25 @@ namespace RbEngine.Components
 		}
 
 		/// <summary>
+		/// The root modelset. All created ModelSet objects are added to this
+		/// </summary>
+		public static ModelSet	Main
+		{
+			get
+			{
+				return ms_Main;
+			}
+		}
+
+		#endregion
+
+		#region	Searches
+
+		/// <summary>
 		/// Finds an object in a model set with a given name
 		/// </summary>
 		/// <param name="path"> Object path. This is in the form of a file path, with model sets as directories, and the final name specifying the object </param>
 		/// <returns>The named object</returns>
-		/// <remarks>
-		/// Uses file path conventions to specify nested model sets (either '/' or '\' can be used to delimit model sets)
-		/// </remarks>
-		/// <example>
-		/// Given the following setup
-		/// <code escaped="true">
-		///		<modelSet name="graphics">
-		///			<modelSet name="images">
-		///				<resource path="Resources/Badger.jpg" name="badger"/>
-		///			</modelSet>
-		///		</modelSet>
-		/// </code>
-		///
-		/// "Badger.jpg" would only be found by the following code:
-		/// <code>
-		/// ModelSet.Find( "graphics/images/badger" );
-		/// </code>
-		/// </example>
 		/// <exception cref="System.ApplicationException">Thrown if the name cannot be resolved to an object</exception>
 		public static Object	Find( string name )
 		{
@@ -72,24 +86,6 @@ namespace RbEngine.Components
 		/// </summary>
 		/// <param name="path"> Model set path. This is in the form of a file path, with model sets as directories </param>
 		/// <returns>The named model set</returns>
-		/// <remarks>
-		/// Uses file path conventions to specify nested model sets (either '/' or '\' can be used to delimit model sets)
-		/// </remarks>
-		/// <example>
-		/// Given the following setup
-		/// <code escaped="true">
-		///		<modelSet name="graphics">
-		///			<modelSet name="images">
-		///				<resource path="Resources/Badger.jpg" name="badger"/>
-		///			</modelSet>
-		///		</modelSet>
-		/// </code>
-		///
-		/// The "graphics/images" modelset would only be found by the following code:
-		/// <code>
-		/// ModelSet.Find( "graphics/images" );
-		/// </code>
-		/// </example>
 		/// <exception cref="System.ApplicationException">Thrown if the name cannot be resolved to an object</exception>
 		public static ModelSet	FindModelSet( string name )
 		{
@@ -102,24 +98,6 @@ namespace RbEngine.Components
 		/// <param name="path"> Model set path. This is in the form of a file path, with model sets as directories </param>
 		/// <param name="throwOnFail"> If true, and the model set path can't be resolved, an exception is thrown </param>
 		/// <returns>The named model set</returns>
-		/// <remarks>
-		/// Uses file path conventions to specify nested model sets (either '/' or '\' can be used to delimit model sets)
-		/// </remarks>
-		/// <example>
-		/// Given the following setup
-		/// <code escaped="true">
-		///		<modelSet name="graphics">
-		///			<modelSet name="images">
-		///				<resource path="Resources/Badger.jpg" name="badger"/>
-		///			</modelSet>
-		///		</modelSet>
-		/// </code>
-		///
-		/// The "graphics/images" modelset would only be found by the following code:
-		/// <code>
-		/// ModelSet.Find( "graphics/images" );
-		/// </code>
-		/// </example>
 		/// <exception cref="System.ApplicationException">Thrown if the name cannot be resolved to an object, and throwOnFail is true</exception>
 		public static ModelSet FindModelSet( string name, bool throwOnFail )
 		{
@@ -188,6 +166,8 @@ namespace RbEngine.Components
 			return null;
 		}
 
+		#endregion
+
 		#region IParentObject Members
 
 		/// <summary>
@@ -211,46 +191,6 @@ namespace RbEngine.Components
 			{
 				m_Children.Add( childObject );
 			}
-		}
-
-		#endregion
-
-		/// <summary>
-		/// The root modelset. All created ModelSet objects are added to this
-		/// </summary>
-		public static ModelSet	Main
-		{
-			get
-			{
-				return ms_Main;
-			}
-		}
-
-		#region	Private stuff
-
-		private string			m_Name;
-		private string			m_Path;
-		private ArrayList		m_Children			= new ArrayList( );
-		private ArrayList		m_ChildModelSets	= new ArrayList( );
-		private ModelSet		m_Parent;
-
-		private static ModelSet	ms_Main				= new ModelSet( );
-
-		private ModelSet( )
-		{
-			//	ms_Main constructor only
-		}
-
-		private string MakePath( )
-		{
-			string path = Name;
-
-			for ( ModelSet curSet = m_Parent; curSet.m_Parent != null; curSet = curSet.m_Parent )
-			{
-				path = curSet.Name + "/" + path;
-			}
-
-			return path;
 		}
 
 		#endregion
@@ -282,5 +222,36 @@ namespace RbEngine.Components
 		public event RbEngine.Components.NameChangedDelegate NameChanged;
 
 		#endregion
+
+
+		#region	Private stuff
+
+		private string			m_Name;
+		private string			m_Path;
+		private ArrayList		m_Children			= new ArrayList( );
+		private ArrayList		m_ChildModelSets	= new ArrayList( );
+		private ModelSet		m_Parent;
+
+		private static ModelSet	ms_Main				= new ModelSet( );
+
+		private ModelSet( )
+		{
+			//	ms_Main constructor only
+		}
+
+		private string MakePath( )
+		{
+			string path = Name;
+
+			for ( ModelSet curSet = m_Parent; curSet.m_Parent != null; curSet = curSet.m_Parent )
+			{
+				path = curSet.Name + "/" + path;
+			}
+
+			return path;
+		}
+
+		#endregion
+
 	}
 }

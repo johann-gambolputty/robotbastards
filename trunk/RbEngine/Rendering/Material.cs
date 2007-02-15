@@ -5,7 +5,7 @@ namespace RbEngine.Rendering
 	/// <summary>
 	/// Summary description for Material.
 	/// </summary>
-	public class Material : IApplicable
+	public abstract class Material : IApplicable
 	{
 		/// <summary>
 		/// The ambient response of the material
@@ -75,6 +75,11 @@ namespace RbEngine.Rendering
 			Ambient = ambient;
 			Diffuse = diffuse;
 		}
+
+		/// <summary>
+		/// Applies this material
+		/// </summary>
+		public abstract void			Apply( );
 
 		#region	Protected stuff
 
