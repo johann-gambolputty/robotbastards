@@ -243,16 +243,16 @@ namespace RbEngine.Rendering
 		/// </summary>
 		public abstract void Apply( );
 
-		#region	Private stuff
+		#region	Protected stuff
 
-		private Color				m_Colour		= Color.Black;
-		private PolygonRenderMode	m_FrontPolyMode	= PolygonRenderMode.kFill;
-		private PolygonRenderMode	m_BackPolyMode	= PolygonRenderMode.kFill;
-		private DepthTestPass		m_DepthTest		= DepthTestPass.kLessOrEqual;
-		private RenderStateFlag		m_CapFlags		= RenderStateFlag.kDepthWrite | RenderStateFlag.kDepthTest;
-		private bool[]				m_Lights		= new bool[ 8 ];
-		private float				m_PointSize		= 1;
-		private float				m_LineWidth		= 1;
+		protected Color				m_Colour		= Color.Black;
+		protected PolygonRenderMode	m_FrontPolyMode	= PolygonRenderMode.kFill;
+		protected PolygonRenderMode	m_BackPolyMode	= PolygonRenderMode.kFill;
+		protected DepthTestPass		m_DepthTest		= DepthTestPass.kLessOrEqual;
+		protected RenderStateFlag		m_CapFlags		= RenderStateFlag.kDepthWrite | RenderStateFlag.kDepthTest;
+		protected bool[]				m_Lights		= new bool[ 8 ];
+		protected float				m_PointSize		= 1;
+		protected float				m_LineWidth		= 1;
 
 		#endregion
 

@@ -152,23 +152,41 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Pushes a new render state, and applies it
 		/// </summary>
-		public abstract void PushRenderState( RenderState state );
+		public void PushRenderState( RenderState state )
+		{
+			m_RenderStates.Add( state );
+			state.Apply( );
+		}
 
 		/// <summary>
 		/// Pushes the current state, or pushes a new render state, if the render state stack is empty
 		/// </summary>
-		public abstract void PushRenderState( );
+		public void PushRenderState( )
+		{
+			if ( m_RenderStates.Count == 0 )
+			{
+				m_RenderStates.Add( RenderFactory.Inst.NewRenderState( ) );
+			}
+			else
+			{
+				m_RenderStates.Add( ( RenderState )m_RenderStates[ m_RenderStates.Count - 1 ] );
+			}
+		}
 
 		/// <summary>
 		/// Pops the current render state, applies the previous one
 		/// </summary>
-		public abstract void PopRenderState( );
+		public void PopRenderState( )
+		{
+			m_RenderStates.RemoveAt( m_RenderStates.Count - 1 );
+		}
 
 		#endregion
 
 		#region	Private stuff
 
 		private static Renderer	ms_Singleton;
+		private ArrayList		m_RenderStates	= new ArrayList( );
 
 		#endregion
 
