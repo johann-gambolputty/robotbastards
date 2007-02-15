@@ -112,11 +112,11 @@ namespace RbEngine.Components
 			string newObjectName = reader.GetAttribute( "name" );
 			if ( newObjectName != null )
 			{
-				if ( !( obj is Utilities.INamedObject ) )
+				if ( !( obj is Components.INamedObject ) )
 				{
 					throw new System.ApplicationException( String.Format( "Could not name object of type \"{0}\" - type does not implement the INamedObject interface", newObjectTypeName ) );
 				}
-				( ( Utilities.INamedObject )obj ).Name = newObjectName;
+				( ( Components.INamedObject )obj ).Name = newObjectName;
 			}
 
 			//	Nothing more to do here...
@@ -139,12 +139,12 @@ namespace RbEngine.Components
 					{
 						Object childObj = LoadElement( reader );
 
-						if ( !( obj is Utilities.IParentObject ) )
+						if ( !( obj is Components.IParentObject ) )
 						{
 							throw new System.ApplicationException( String.Format( "Can't add objects to object of type \"{0}\" - did not implement the IParentObject interface", newObjectTypeName ) );
 						}
 
-						( ( Utilities.IParentObject )obj ).AddChild( childObj );
+						( ( Components.IParentObject )obj ).AddChild( childObj );
 						break;
 					}
 				}
@@ -221,12 +221,12 @@ namespace RbEngine.Components
 			string newResourceName = reader.GetAttribute( "name" );
 			if ( newResourceName != null )
 			{
-				if ( !( newResource is Utilities.INamedObject ) )
+				if ( !( newResource is Components.INamedObject ) )
 				{
 					string resourceStr = String.Format( "\"{0}\"(\"{1}\"", resourcePath, newResource.GetType( ).Name );
 					throw new System.ApplicationException( String.Format( "Could not name resource {0} - type does not implement the INamedObject interface", resourceStr ) );
 				}
-				( ( Utilities.INamedObject )newResource ).Name = newResourceName;
+				( ( Components.INamedObject )newResource ).Name = newResourceName;
 			}
 
 			//	Nothing more to do here...
@@ -249,13 +249,13 @@ namespace RbEngine.Components
 					{
 						Object childObj = LoadElement( reader );
 
-						if ( !( newResource is Utilities.IParentObject ) )
+						if ( !( newResource is Components.IParentObject ) )
 						{
 							string resourceStr = String.Format( "\"{0}\"(\"{1}\"", resourcePath, newResource.GetType( ).Name );
 							throw new System.ApplicationException( String.Format( "Can't add objects to resource {0} - did not implement the IParentObject interface", resourceStr ) );
 						}
 
-						( ( Utilities.IParentObject )newResource ).AddChild( childObj );
+						( ( Components.IParentObject )newResource ).AddChild( childObj );
 						break;
 					}
 				}

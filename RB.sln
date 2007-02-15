@@ -6,11 +6,14 @@ EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
+		Documentation = Documentation
 		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{718184F8-7860-4811-A041-1A73384E902D}.Debug.ActiveCfg = Debug|.NET
 		{718184F8-7860-4811-A041-1A73384E902D}.Debug.Build.0 = Debug|.NET
+		{718184F8-7860-4811-A041-1A73384E902D}.Documentation.ActiveCfg = Documentation|.NET
+		{718184F8-7860-4811-A041-1A73384E902D}.Documentation.Build.0 = Documentation|.NET
 		{718184F8-7860-4811-A041-1A73384E902D}.Release.ActiveCfg = Release|.NET
 		{718184F8-7860-4811-A041-1A73384E902D}.Release.Build.0 = Release|.NET
 	EndGlobalSection

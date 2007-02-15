@@ -55,7 +55,7 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Shader name changed event
 		/// </summary>
-		public event RbEngine.Utilities.NameChangedDelegate NameChanged;
+		public event Components.NameChangedDelegate NameChanged;
 
 		#endregion
 
