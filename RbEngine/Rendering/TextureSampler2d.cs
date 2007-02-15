@@ -84,14 +84,14 @@ namespace RbEngine.Rendering
 
 
 	/// <summary>
-	/// Summary description for ApplyTexture2d.
+	/// Abstract base class for sampling 2d textures
 	/// </summary>
-	public abstract class ApplyTexture2d : IApplicable
+	public abstract class TextureSampler2d : IApplicable
 	{
 		/// <summary>
 		/// Default constructor
 		/// </summary>
-		public ApplyTexture2d( )
+		public TextureSampler2d( )
 		{
 		}
 
@@ -100,7 +100,7 @@ namespace RbEngine.Rendering
 		/// </summary>
 		/// <param name="unit"> Texture unit </param>
 		/// <param name="texture"> Texture to apply</param>
-		public ApplyTexture2d( int unit, Texture2d texture )
+		public TextureSampler2d( int unit, Texture2d texture )
 		{
 			m_Texture = texture;
 		}
