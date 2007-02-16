@@ -154,6 +154,7 @@
                 />
                 <File
                     RelPath = "OpenGlControlRenderContext.cs"
+                    SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File

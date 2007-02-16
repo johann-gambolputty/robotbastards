@@ -89,6 +89,10 @@ namespace RbControls
 		/// </summary>
 		private System.ComponentModel.Container components = null;
 
+		/// <summary>
+		/// Creates a control rendering context, using RbEngine.Rendering.Renderer.CreateControlContext(). Sets up the control styles from that,
+		/// then does the usual InitializeComponent() thing
+		/// </summary>
 		public Display()
 		{
 			if ( RbEngine.Rendering.Renderer.Exists )
