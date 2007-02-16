@@ -35,7 +35,7 @@ namespace RbEngine.Components
                     Type messageType = parameters[ 0 ].GetType( );
 					System.Diagnostics.Debug.WriteLine( String.Format( "Adding handler for class \"{0}\", for message type \"{1}\", using method \"{2}\"", createForType.Name, messageType.Name, curMethod.Name ) );
 
-					//	TODO: Create a method by emitting bytecode that calls the appropriate method
+					//	TODO: Create a method by emitting bytecode that calls the appropriate method?
 				}
 			}
 		}
@@ -44,12 +44,78 @@ namespace RbEngine.Components
 	/// <summary>
 	/// Test
 	/// </summary>
-	public class TestMessage
+	public class Message
 	{
+		/// <summary>
+		/// Reliable delivery means ordered and acknowledged
+		/// </summary>
+		public bool				ReliableDelivery
+		{
+			get { return m_Reliable;	}
+			set { m_Reliable = value;	}
+		}
+
+		/// <summary>
+		/// Unreliable delivery means no duplicate messages only
+		/// </summary>
+		public bool				UnreliableDelivery
+		{
+			get { return !m_Reliable;	}
+			set { m_Reliable = !value;	}
+		}
+
+		/// <summary>
+		/// Gets the type identifier of this message
+		/// </summary>
+		public abstract long	TypeId
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Creates a message from a type ID
+		/// </summary>
+		/// <param name="typeId"> Message type identifier </param>
+		/// <returns> Returns a new message of the specified type </returns>
+		public static Message	CreateFromTypeId( long typeId );
+
+		/// <summary>
+		/// Writes a message to the specified output stream
+		/// </summary>
+		/// <param name="output">Output stream</param>
+		/// <remarks>
+		/// This implementation writes the message type ID to the stream
+		/// </remarks>
+		public virtual void		Write( System.IO.BinaryWriter output )
+		{
+			output.Write( TypeId );
+		}
+
+		/// <summary>
+		/// Reads a message from the specified stream
+		/// </summary>
+		/// <param name="input"> Input stream </param>
+		protected virtual void	Read( System.IO.BinaryReader input )
+		{
+		}
+
+		/// <summary>
+		/// Reads a message from the specified stream
+		/// </summary>
+		/// <param name="input">Input stream</param>
+		/// <returns>Returns the new message</returns>
+		public static Message	Read( System.IO.BinaryReader input )
+		{
+			Message msg = CreateFromTypeId( input.ReadInt64( ) );
+			msg.Read( input );
+			return msg;
+		}
+
+		private bool	m_Reliable = true;
 	}
 
 	/// <summary>
-	/// Summary description for Component.
+	/// Handy base class that implements IInstanceable, IParentObject and INamedObject (TODO)
 	/// </summary>
 	public class Component : IInstanceable, IParentObject
 	{
@@ -151,7 +217,6 @@ namespace RbEngine.Components
 
 		#endregion
 
-
 		/// <summary>
 		/// Helper method for CreateInstance() - instances all child objects belonging to this component
 		/// </summary>
@@ -175,6 +240,7 @@ namespace RbEngine.Components
 				}
 				else
 				{
+					Output.WriteLineCall( Output.ComponentWarning, "Could not instance child node of type \"{0}\"", curChild.GetType( ).Name );
 					instance.AddChild( curChild );
 				}
 			}
