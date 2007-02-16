@@ -115,8 +115,8 @@ namespace RbEngine
 		{
 			if ( context.Enabled )
 			{
-				StackFrame caller = new StackFrame( 1 );
-				System.Diagnostics.Trace.Write( String.Format( "{0}({1},{2}) : {3}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), str ), context.DisplayName );
+				StackFrame caller = new StackFrame( 1, true );
+				System.Diagnostics.Trace.Write( String.Format( "{0}({1},{2}) : [{3}]{4}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), context.DisplayName, str ) );
 			}
 		}
 
@@ -130,8 +130,8 @@ namespace RbEngine
 		{
 			if ( context.Enabled )
 			{
-				StackFrame caller = new StackFrame( 1 );
-				System.Diagnostics.Trace.Write( String.Format( "{0}({1},{2}) : {3}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), String.Format( str, formatArgs ) ), context.DisplayName );
+				StackFrame caller = new StackFrame( 1, true );
+				System.Diagnostics.Trace.Write( String.Format( "{0}({1},{2}) : [{3}]{4}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), context.DisplayName, String.Format( str, formatArgs ) ) );
 			}
 		}
 
@@ -143,8 +143,8 @@ namespace RbEngine
 		{
 			if ( context.Enabled )
 			{
-				StackFrame caller = new StackFrame( 1 );
-				System.Diagnostics.Trace.WriteLine( String.Format( "{0}({1},{2}) : {3}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), str ), context.DisplayName );
+				StackFrame caller = new StackFrame( 1, true );
+				System.Diagnostics.Trace.WriteLine( String.Format( "{0}({1},{2}) : [{3}]{4}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), context.DisplayName, str ) );
 			}
 		}
 		
@@ -159,8 +159,8 @@ namespace RbEngine
 		{
 			if ( context.Enabled )
 			{
-				StackFrame caller = new StackFrame( 1 );
-				System.Diagnostics.Trace.WriteLine( String.Format( "{0}({1},{2}) : {3}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), String.Format( str, formatArgs ) ), context.DisplayName );
+				StackFrame caller = new StackFrame( 1, true );
+				System.Diagnostics.Trace.WriteLine( String.Format( "{0}({1},{2}) : [{3}]{4}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), context.DisplayName, String.Format( str, formatArgs ) ) );
 			}
 		}
 
@@ -216,8 +216,8 @@ namespace RbEngine
 		{
 			if ( context.Enabled )
 			{
-				StackFrame caller = new StackFrame( 1 );
-				System.Diagnostics.Debug.Write( String.Format( "{0}({1},{2}) : {3}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), str ), context.DisplayName );
+				StackFrame caller = new StackFrame( 1, true );
+				System.Diagnostics.Debug.Write( String.Format( "{0}({1},{2}) : [{3}]{4}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), context.DisplayName, str ) );
 			}
 		}
 
@@ -231,8 +231,8 @@ namespace RbEngine
 		{
 			if ( context.Enabled )
 			{
-				StackFrame caller = new StackFrame( 1 );
-				System.Diagnostics.Debug.Write( String.Format( "{0}({1},{2}) : {3}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), String.Format( str, formatArgs ) ), context.DisplayName );
+				StackFrame caller = new StackFrame( 1, true );
+				System.Diagnostics.Debug.Write( String.Format( "{0}({1},{2}) : [{3}]{4}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), context.DisplayName, String.Format( str, formatArgs ) ) );
 			}
 		}
 
@@ -244,8 +244,8 @@ namespace RbEngine
 		{
 			if ( context.Enabled )
 			{
-				StackFrame caller = new StackFrame( 1 );
-				System.Diagnostics.Debug.WriteLine( String.Format( "{0}({1},{2}) : {3}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), str ), context.DisplayName );
+				StackFrame caller = new StackFrame( 1, true );
+				System.Diagnostics.Debug.WriteLine( String.Format( "{0}({1},{2}) : [{3}]{4}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), context.DisplayName, str ) );
 			}
 		}
 		
@@ -260,8 +260,8 @@ namespace RbEngine
 		{
 			if ( context.Enabled )
 			{
-				StackFrame caller = new StackFrame( 1 );
-				System.Diagnostics.Debug.WriteLine( String.Format( "{0}({1},{2}) : {3}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), String.Format( str, formatArgs ) ), context.DisplayName );
+				StackFrame caller = new StackFrame( 1, true );
+				System.Diagnostics.Debug.WriteLine( String.Format( "{0}({1},{2}) : [{3}]{4}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), context.DisplayName, String.Format( str, formatArgs ) ) );
 			}
 		}
 

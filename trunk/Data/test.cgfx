@@ -1,0 +1,9 @@
+
+
+technique WireFilled
+{
+	pass
+	{
+	}
+}
+

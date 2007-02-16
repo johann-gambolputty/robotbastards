@@ -88,7 +88,9 @@ namespace RbOpenGlRendering.RbCg
 			for ( IntPtr curTechnique = Tao.Cg.Cg.cgGetFirstTechnique( m_EffectHandle ); curTechnique != IntPtr.Zero; curTechnique = Tao.Cg.Cg.cgGetNextTechnique( curTechnique ) )
 			{
 				//	Create a RenderTechnique wrapper around the current technique
-				RenderTechnique newTechnique = new RenderTechnique( Tao.Cg.Cg.cgGetTechniqueName( curTechnique ) );
+				//	TODO: This is failing in the current Tao implementation (was working fine on previous version...)
+				string techniqueName = Tao.Cg.Cg.cgGetTechniqueName( curTechnique );
+				RenderTechnique newTechnique = new RenderTechnique( techniqueName );
 
 				//	Run through all the CG passes in the current technique
 				for ( IntPtr curPass = Tao.Cg.Cg.cgGetFirstPass( curTechnique ); curPass != IntPtr.Zero; curPass = Tao.Cg.Cg.cgGetNextPass( curPass ) )

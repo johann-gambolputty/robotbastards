@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resourceManager>
+	<providers>
+		<provider type="RbEngine.Resources.FileResourceProvider">
+			<baseDir value="../../../Data"/>
+		</provider>
+	</providers>
+	<loaders>
+		<loader type="RbOpenGlRendering.RbCg.CgRenderEffectLoader"/>
+		<loader type="RbEngine.Components.EngineXmlLoader"/>
+	</loaders>
+</resourceManager>

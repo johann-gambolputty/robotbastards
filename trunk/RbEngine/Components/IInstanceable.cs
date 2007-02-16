@@ -3,9 +3,9 @@ using System;
 namespace RbEngine.Components
 {
 	/// <summary>
-	/// Summary description for IModel.
+	/// Interface for objects that can create instances of themselves (not necessarily ICloneable)
 	/// </summary>
-	public interface IModel
+	public interface IInstanceable
 	{
 		/// <summary>
 		/// Creates an instance of the data stored in this model

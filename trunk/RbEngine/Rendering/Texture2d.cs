@@ -58,7 +58,8 @@ namespace RbEngine.Rendering
 		/// </summary>
 		public void LoadManifestResource( string name )
 		{
-			Load( new Bitmap( Image.FromStream( GetType( ).Assembly.GetManifestResourceStream( name ) ) ) );
+			System.IO.Stream stream = AppDomainUtils.FindManifestResource( name );
+			Load( new Bitmap( Image.FromStream( stream ) ) );
 		}
 
 		/// <summary>

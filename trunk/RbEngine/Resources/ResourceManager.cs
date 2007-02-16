@@ -53,15 +53,14 @@ namespace RbEngine.Resources
 				if ( curProviderNode is System.Xml.XmlElement )
 				{
 					string providerTypeName = curProviderNode.Attributes[ "type" ].Value;
-					Type providerType = GetType( ).Assembly.GetType( providerTypeName );
-					if ( providerType == null )
+					ResourceProvider newProvider = ( ResourceProvider )AppDomainUtils.CreateInstance( providerTypeName );
+					if ( newProvider == null )
 					{
 						Output.WriteLineCall( Output.ResourceError, String.Format( "Unable to find type for provider \"{0}\"", providerTypeName ) );
 					}
 					else
 					{
 						Output.WriteLineCall( Output.ResourceInfo, String.Format( "Creating resource provider \"{0}\"", providerTypeName ) );
-						ResourceProvider newProvider = ( ResourceProvider )System.Activator.CreateInstance( providerType );
 
 						newProvider.Setup( ( System.Xml.XmlElement ) curProviderNode );
 
@@ -75,8 +74,8 @@ namespace RbEngine.Resources
 			{
 				if ( curLoaderNode is System.Xml.XmlElement )
 				{
-					string loaderTypeName = curLoaderNode.Attributes[ "type" ].Value;
-					ResourceLoader loader = ( ResourceLoader )GetType( ).Assembly.CreateInstance( loaderTypeName );
+					string			loaderTypeName	= curLoaderNode.Attributes[ "type" ].Value;
+					ResourceLoader	loader			= ( ResourceLoader )AppDomainUtils.CreateInstance( loaderTypeName );
 					if ( loader == null )
 					{
 						Output.WriteLineCall( Output.ResourceError, String.Format( "Unable to create instance for resource loader type \"{0}\"", loaderTypeName ) );

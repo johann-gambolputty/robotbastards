@@ -3,7 +3,7 @@ using System;
 namespace RbEngine.Components
 {
 	/// <summary>
-	/// Summary description for IParentObject.
+	/// Interface for objects that can store child objects
 	/// </summary>
 	public interface IParentObject
 	{
