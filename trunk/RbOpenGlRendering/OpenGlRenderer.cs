@@ -1,4 +1,6 @@
 using System;
+using System.Windows.Forms;
+using RbEngine;
 using RbEngine.Rendering;
 using RbEngine.Maths;
 using Tao.OpenGl;
@@ -16,7 +18,20 @@ namespace RbOpenGlRendering
 			Gl.glDepthFunc( Gl.GL_LEQUAL );
 			Gl.glShadeModel( Gl.GL_SMOOTH );
 		}
-		
+
+		#region	Forms
+
+		/// <summary>
+		/// Sets up a control to be rendered to by this renderer
+		/// </summary>
+		/// <param name="control"> Control to set up </param>
+		public override ControlRenderContext	CreateControlContext( System.Windows.Forms.Control control )
+		{
+			return new OpenGlControlRenderContext( );
+		}
+
+		#endregion
+
 		#region	Standard operations
 
 		/// <summary>
@@ -259,6 +274,14 @@ namespace RbOpenGlRendering
 		{
 			SetTransformMode( type );
 			Gl.glPopMatrix( );
+		}
+
+		/// <summary>
+		/// Sets the viewport (in pixels)
+		/// </summary>
+		public override void	SetViewport( int x, int y, int width, int height )
+		{
+			Gl.glViewport( x, y, width, height );
 		}
 
 		#endregion

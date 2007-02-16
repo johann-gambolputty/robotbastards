@@ -13,6 +13,7 @@ namespace RbTestApp
 	/// </summary>
 	public class Form1 : System.Windows.Forms.Form
 	{
+		private RbControls.Display display1;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -20,11 +21,6 @@ namespace RbTestApp
 
 		public Form1()
 		{
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
-
 			string renderAssemblyName = System.Configuration.ConfigurationSettings.AppSettings[ "renderAssembly" ];
 			if ( renderAssemblyName == null )
 			{
@@ -44,6 +40,11 @@ namespace RbTestApp
 				RbEngine.Resources.ResourceManager.Inst.Setup( ( System.Xml.XmlElement )doc.SelectSingleNode( "/resourceManager" ) );
 				RbEngine.Resources.ResourceManager.Inst.Load( "scene0.xml" );
 			}
+			//
+			// Required for Windows Form Designer support
+			//
+			InitializeComponent();
+
 		}
 
 		/// <summary>
@@ -68,9 +69,28 @@ namespace RbTestApp
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			this.Size = new System.Drawing.Size(300,300);
+			this.display1 = new RbControls.Display();
+			this.SuspendLayout();
+			// 
+			// display1
+			// 
+			this.display1.ColourBits = ((System.Byte)(32));
+			this.display1.DepthBits = ((System.Byte)(24));
+			this.display1.Location = new System.Drawing.Point(8, 8);
+			this.display1.Name = "display1";
+			this.display1.Size = new System.Drawing.Size(280, 256);
+			this.display1.StencilBits = ((System.Byte)(0));
+			this.display1.TabIndex = 0;
+			// 
+			// Form1
+			// 
+			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+			this.ClientSize = new System.Drawing.Size(296, 269);
+			this.Controls.Add(this.display1);
+			this.Name = "Form1";
 			this.Text = "Form1";
+			this.ResumeLayout(false);
+
 		}
 		#endregion
 

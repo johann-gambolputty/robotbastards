@@ -52,10 +52,31 @@ namespace RbEngine.Rendering
 		{
 			get
 			{
-				System.Diagnostics.Trace.Assert( ms_Singleton != null, "Renderer singleton was not yet initialised" );
+			//	System.Diagnostics.Trace.Assert( ms_Singleton != null, "Renderer singleton was not yet initialised" );
 				return ms_Singleton;
 			}
 		}
+
+		/// <summary>
+		/// true if the renderer singleton, accessible via Inst, exists
+		/// </summary>
+		public static bool	Exists
+		{
+			get
+			{
+				return ms_Singleton != null;
+			}
+		}
+
+		#endregion
+
+		#region	Forms
+
+		/// <summary>
+		/// Returns a rendering context for a control
+		/// </summary>
+		/// <param name="control"> Control to set up </param>
+		public abstract ControlRenderContext	CreateControlContext( System.Windows.Forms.Control control );
 
 		#endregion
 
@@ -93,48 +114,53 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Gets the current matrix from the specified transform stack
 		/// </summary>
-		public abstract Maths.Matrix44 GetMatrix( Transform type );
+		public abstract Maths.Matrix44	GetMatrix( Transform type );
 
 		/// <summary>
 		/// Sets an identity matrix in the projection and model view transforms
 		/// </summary>
-		public abstract void Set2d( );
+		public abstract void			Set2d( );
 
 		/// <summary>
 		/// Pushes an identity matrix in the projection and model view transforms. The top left hand corner is (X,Y), the bottom right is (W,H) (where
 		/// (W,H) are the viewport dimensions, and (X,Y) is the viewport minimum corner position)
 		/// </summary>
-		public abstract void Push2d( );
+		public abstract void			Push2d( );
 
 		/// <summary>
 		/// Pops the identity matrices pushed by Push2d( )
 		/// </summary>
-		public abstract void Pop2d( );
+		public abstract void			Pop2d( );
 
 		/// <summary>
 		/// Applies the specified transform, multiplied by the current topmost transform, and adds it to the specified transform stack
 		/// </summary>
-		public abstract void	PushTransform( Transform type, Maths.Matrix44 matrix );
+		public abstract void			PushTransform( Transform type, Maths.Matrix44 matrix );
 
 		/// <summary>
 		/// Sets the current Transform.kLocalToView transform to a look-at matrix
 		/// </summary>
-		public abstract void SetLookAtTransform( Vector3 lookAt, Vector3 camPos, Vector3 camYAxis );
+		public abstract void			SetLookAtTransform( Vector3 lookAt, Vector3 camPos, Vector3 camYAxis );
 
 		/// <summary>
 		/// Sets the current Transform.kViewToScreen matrix to a projection matrix with the specified attributes
 		/// </summary>
-		public abstract void SetPerspectiveProjectionTransform( float fov, float aspectRatio, float zNear, float zFar );
+		public abstract void			SetPerspectiveProjectionTransform( float fov, float aspectRatio, float zNear, float zFar );
 
 		/// <summary>
 		/// Applies the specified transform, adds it to the specified transform stack
 		/// </summary>
-		public abstract void SetTransform( Transform type, Maths.Matrix44 matrix );
+		public abstract void			SetTransform( Transform type, Maths.Matrix44 matrix );
 
 		/// <summary>
 		/// Pops a matrix from the specified transform stack, applies the new topmost matrix
 		/// </summary>
-		public abstract void PopTransform( Transform type );
+		public abstract void			PopTransform( Transform type );
+
+		/// <summary>
+		/// Sets the viewport (in pixels)
+		/// </summary>
+		public abstract void			SetViewport( int x, int y, int width, int height );
 
 		#endregion
 

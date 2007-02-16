@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RbTestApp", "RbTestApp\RbTe
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RbControls", "RbControls\RbControls.csproj", "{00F2BBFF-CD5E-449B-9576-B8BAF0FD3239}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -36,6 +40,12 @@ Global
 		{C2EECB80-AD60-47B1-BD03-23144923F2E6}.Documentation.Build.0 = Debug|.NET
 		{C2EECB80-AD60-47B1-BD03-23144923F2E6}.Release.ActiveCfg = Release|.NET
 		{C2EECB80-AD60-47B1-BD03-23144923F2E6}.Release.Build.0 = Release|.NET
+		{00F2BBFF-CD5E-449B-9576-B8BAF0FD3239}.Debug.ActiveCfg = Debug|.NET
+		{00F2BBFF-CD5E-449B-9576-B8BAF0FD3239}.Debug.Build.0 = Debug|.NET
+		{00F2BBFF-CD5E-449B-9576-B8BAF0FD3239}.Documentation.ActiveCfg = Debug|.NET
+		{00F2BBFF-CD5E-449B-9576-B8BAF0FD3239}.Documentation.Build.0 = Debug|.NET
+		{00F2BBFF-CD5E-449B-9576-B8BAF0FD3239}.Release.ActiveCfg = Release|.NET
+		{00F2BBFF-CD5E-449B-9576-B8BAF0FD3239}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

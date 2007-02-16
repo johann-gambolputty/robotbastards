@@ -127,6 +127,22 @@
                     HintPath = "..\..\..\Program Files\Tao\bin\Tao.Cg.dll"
                     AssemblyFolderKey = "hklm\tao"
                 />
+                <Reference
+                    Name = "System.Windows.Forms"
+                    AssemblyName = "System.Windows.Forms"
+                    HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Windows.Forms.dll"
+                />
+                <Reference
+                    Name = "RbControls"
+                    Project = "{00F2BBFF-CD5E-449B-9576-B8BAF0FD3239}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
+                    Name = "Tao.Platform.Windows"
+                    AssemblyName = "Tao.Platform.Windows"
+                    HintPath = "..\..\..\Program Files\Tao\bin\Tao.Platform.Windows.dll"
+                    AssemblyFolderKey = "hklm\tao"
+                />
             </References>
         </Build>
         <Files>
@@ -134,6 +150,10 @@
                 <File
                     RelPath = "AssemblyInfo.cs"
                     SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "OpenGlControlRenderContext.cs"
                     BuildAction = "Compile"
                 />
                 <File
