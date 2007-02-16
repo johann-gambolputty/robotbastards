@@ -2,6 +2,7 @@
     <assemblies>
         <assembly location="..\RbEngine\bin\Debug\RbEngine.dll" documentation="..\RbEngine\RbEngine.xml" />
         <assembly location="..\RbOpenGlRendering\bin\Debug\RbOpenGlRendering.dll" documentation="..\RbOpenGlRendering\RbOpenGlRendering.xml" />
+        <assembly location="..\RbControls\bin\Debug\RbControls.dll" documentation="..\RbControls\RbControls.xml" />
     </assemblies>
     <documenters>
         <documenter name="JavaDoc">
