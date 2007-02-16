@@ -3,22 +3,22 @@
         ProjectType = "Local"
         ProductVersion = "7.10.3077"
         SchemaVersion = "2.0"
-        ProjectGuid = "{C2EECB80-AD60-47B1-BD03-23144923F2E6}"
+        ProjectGuid = "{00F2BBFF-CD5E-449B-9576-B8BAF0FD3239}"
     >
         <Build>
             <Settings
-                ApplicationIcon = "App.ico"
+                ApplicationIcon = ""
                 AssemblyKeyContainerName = ""
-                AssemblyName = "RbTestApp"
+                AssemblyName = "RbControls"
                 AssemblyOriginatorKeyFile = ""
                 DefaultClientScript = "JScript"
                 DefaultHTMLPageLayout = "Grid"
                 DefaultTargetSchema = "IE50"
                 DelaySign = "false"
-                OutputType = "WinExe"
+                OutputType = "Library"
                 PreBuildEvent = ""
                 PostBuildEvent = ""
-                RootNamespace = "RbTestApp"
+                RootNamespace = "RbControls"
                 RunPostBuildEvent = "OnBuildSuccess"
                 StartupObject = ""
             >
@@ -94,41 +94,23 @@
                     Project = "{718184F8-7860-4811-A041-1A73384E902D}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
-                <Reference
-                    Name = "RbOpenGlRendering"
-                    Project = "{26F15FA5-03D9-4A67-8568-8AC1A4ACB062}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-                />
-                <Reference
-                    Name = "RbControls"
-                    Project = "{00F2BBFF-CD5E-449B-9576-B8BAF0FD3239}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-                />
             </References>
         </Build>
         <Files>
             <Include>
-                <File
-                    RelPath = "App.config"
-                    BuildAction = "None"
-                />
-                <File
-                    RelPath = "App.ico"
-                    BuildAction = "Content"
-                />
                 <File
                     RelPath = "AssemblyInfo.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Form1.cs"
-                    SubType = "Form"
+                    RelPath = "Display.cs"
+                    SubType = "UserControl"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Form1.resx"
-                    DependentUpon = "Form1.cs"
+                    RelPath = "Display.resx"
+                    DependentUpon = "Display.cs"
                     BuildAction = "EmbeddedResource"
                 />
             </Include>

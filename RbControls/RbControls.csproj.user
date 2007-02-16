@@ -34,29 +34,13 @@
                     StartWorkingDirectory = ""
                     StartWithIE = "true"
                 />
-                <Config
-                    Name = "Documentation"
-                    EnableASPDebugging = "false"
-                    EnableASPXDebugging = "false"
-                    EnableUnmanagedDebugging = "false"
-                    EnableSQLServerDebugging = "false"
-                    RemoteDebugEnabled = "false"
-                    RemoteDebugMachine = ""
-                    StartAction = "Project"
-                    StartArguments = ""
-                    StartPage = ""
-                    StartProgram = ""
-                    StartURL = ""
-                    StartWorkingDirectory = ""
-                    StartWithIE = "true"
-                />
             </Settings>
         </Build>
         <OtherProjectSettings
             CopyProjectDestinationFolder = ""
             CopyProjectUncPath = ""
             CopyProjectOption = "0"
-            ProjectView = "ShowAllFiles"
+            ProjectView = "ProjectFiles"
             ProjectTrust = "0"
         />
     </CSHARP>

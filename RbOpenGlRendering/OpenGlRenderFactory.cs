@@ -46,7 +46,7 @@ namespace RbOpenGlRendering
 		/// </summary>
 		protected override Renderer			NewRenderer( )
 		{
-			return null;
+			return new OpenGlRenderer( );
 		}
 
 		/// <summary>

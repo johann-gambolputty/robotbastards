@@ -104,6 +104,11 @@
                     AssemblyName = "System.Drawing"
                     HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Drawing.dll"
                 />
+                <Reference
+                    Name = "System.Windows.Forms"
+                    AssemblyName = "System.Windows.Forms"
+                    HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Windows.Forms.dll"
+                />
             </References>
         </Build>
         <Files>
@@ -262,6 +267,11 @@
                 />
                 <File
                     RelPath = "Maths\Vector3.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Rendering\ControlRenderContext.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
