@@ -51,7 +51,7 @@ namespace RbEngine.Components
 	/// <summary>
 	/// Summary description for Component.
 	/// </summary>
-	public class Component : IModel, IParentObject
+	public class Component : IInstanceable, IParentObject
 	{
 
 		#region	Messaging
@@ -136,7 +136,7 @@ namespace RbEngine.Components
 
 		#endregion
 
-		#region IModel Members
+		#region IInstanceable Members
 
 		/// <summary>
 		/// Creates a new instance of the derived type of this component, then tries to create instances of all the child objects
@@ -157,7 +157,7 @@ namespace RbEngine.Components
 		/// </summary>
 		/// <param name="instance"> The instance to add child instances to</param>
 		/// <remarks>
-		/// If a child object of this component implements IModel, then IModel.CreateInstance() is called to instance it. If a child object
+		/// If a child object of this component implements IInstanceable, then IInstanceable.CreateInstance() is called to instance it. If a child object
 		/// of this component implements ICloneable, then ICloneable.Clone() is called to instance it. If a child object implements neither
 		/// of these interfaces, a reference to the existing child object is added to the instance component
 		/// </remarks>
@@ -165,9 +165,9 @@ namespace RbEngine.Components
 		{
 			foreach ( Object curChild in m_Children )
 			{
-				if ( curChild is IModel )
+				if ( curChild is IInstanceable )
 				{
-					instance.AddChild( ( ( IModel )curChild ).CreateInstance( ) );
+					instance.AddChild( ( ( IInstanceable )curChild ).CreateInstance( ) );
 				}
 				else if ( curChild is ICloneable )
 				{

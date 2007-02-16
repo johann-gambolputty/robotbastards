@@ -109,6 +109,11 @@
         <Files>
             <Include>
                 <File
+                    RelPath = "AppDomainUtils.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "AssemblyInfo.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -135,7 +140,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Components\IModel.cs"
+                    RelPath = "Components\IInstanceable.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

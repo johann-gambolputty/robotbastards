@@ -10,6 +10,22 @@ namespace RbEngine.Rendering
 	/// </remarks>
 	public abstract class RenderFactory
 	{
+		public static void Load( string renderAssemblyName )
+		{
+			System.Reflection.Assembly renderAssembly = AppDomain.CurrentDomain.Load( renderAssemblyName );
+
+			foreach ( Type curType in renderAssembly.GetTypes( ) )
+			{
+				if ( curType.IsSubclassOf( typeof( RenderFactory ) ) )
+				{
+					System.Activator.CreateInstance( curType );
+					return;
+				}
+			}
+
+			throw new ApplicationException( String.Format( "No type in assembly \"{0}\" implemented RenderFactory" ) );
+		}
+
 		/// <summary>
 		/// Render factory singleton
 		/// </summary>

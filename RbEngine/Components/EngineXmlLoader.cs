@@ -64,7 +64,7 @@ namespace RbEngine.Components
 					}
 					else
 					{
-						LoadElement( reader );
+						LoadElement( reader, Engine.Main );
 					}
 				}
 			}
@@ -74,21 +74,35 @@ namespace RbEngine.Components
 		/// Loads an XML element
 		/// </summary>
 		/// <param name="reader"> XML reader, pointing at an element </param>
-		/// <returns> Returns the freshly loaded element </returns>
+		/// <param name="parentObject"> The parent object </param>
 		/// <exception> Throws an exception if the element did not define a valid object </exception>
-		private Object LoadElement( XmlReader reader )
+		private void LoadElement( XmlReader reader, Object parentObject )
 		{
-			Object newObject = null;
+			Object childObject = null;
+			IXmlLoader parentXmlLoader = parentObject as IXmlLoader;
 			switch ( reader.Name )
 			{
-				case "object"	: newObject = LoadObject( reader );		break;
-				case "instance"	: newObject = LoadInstance( reader );	break;
-				case "resource"	: newObject = LoadResource( reader );	break;
+				case "object"	: childObject = LoadObject( reader );	break;
+				case "instance"	: childObject = LoadInstance( reader );	break;
+				case "resource"	: childObject = LoadResource( reader );	break;
 				default			:
-					throw new System.ApplicationException( String.Format( "Element \"{0}\" could not be declared here", reader.Name ) );
+					if ( parentXmlLoader == null )
+					{
+						throw new ApplicationException( String.Format( "Unable to handle element \"{0}\" - parent object type (\"{1}\") did not implement IXmlLoader", reader.Name, parentObject.GetType( ).Name ) );
+					}
+					parentXmlLoader.ParseElement( reader );
+					break;
 			}
+			
+			if ( childObject != null )
+			{
+				if ( !( parentObject is Components.IParentObject ) )
+				{
+					throw new ApplicationException( String.Format( "Can't add objects to object of type \"{0}\" - did not implement the IParentObject interface", parentObject.GetType( ).Name ) );
+				}
 
-			return newObject;
+				( ( Components.IParentObject )parentObject ).AddChild( childObject );
+			}
 		}
 
 		/// <summary>
@@ -101,7 +115,7 @@ namespace RbEngine.Components
 			//	Create the new object
 			//	TODO: Add assembly attribute?
 			string newObjectTypeName = reader.GetAttribute( "type" );
-			Object obj = GetType( ).Assembly.CreateInstance( newObjectTypeName );
+			Object obj = AppDomainUtils.CreateInstance( newObjectTypeName );
 
 			if ( obj == null )
 			{
@@ -137,14 +151,7 @@ namespace RbEngine.Components
 					}
 					case XmlNodeType.Element :
 					{
-						Object childObj = LoadElement( reader );
-
-						if ( !( obj is Components.IParentObject ) )
-						{
-							throw new System.ApplicationException( String.Format( "Can't add objects to object of type \"{0}\" - did not implement the IParentObject interface", newObjectTypeName ) );
-						}
-
-						( ( Components.IParentObject )obj ).AddChild( childObj );
+						LoadElement( reader, obj );
 						break;
 					}
 				}
@@ -155,6 +162,20 @@ namespace RbEngine.Components
 
 		private Object LoadInstance( XmlReader reader )
 		{
+			string path = reader.GetAttribute( "path" );
+			Object instancerObject = ModelSet.Find( path );
+
+			if ( instancerObject == null )
+			{
+				throw new ApplicationException( String.Format( "Unable to find object \"{0}\" in model set", path ) );
+			}
+			IInstanceable instancer = instancerObject as IInstanceable;
+			if ( instancer == null )
+			{
+				throw new ApplicationException( String.Format( "Modelset object of type \"{0}\" (path \"{1}\") cannot be used as an instancer because it does not implement IInstanceable", instancerObject.GetType( ).Name, path ) );
+			}
+			Object instance = instancer.CreateInstance( );
+
 			while ( reader.Read( ) )
 			{
 				switch ( reader.NodeType )
@@ -165,12 +186,13 @@ namespace RbEngine.Components
 					}
 					case XmlNodeType.Element :
 					{
-						LoadElement( reader );
+						LoadElement( reader, instance );
 						break;
 					}
 				}
 			}
-			return null;
+
+			return instance;
 		}
 
 		private ModelSet LoadModelSet( XmlReader reader, ModelSet curModelSet )
@@ -201,7 +223,7 @@ namespace RbEngine.Components
 						}
 						else
 						{
-							curModelSet.AddChild( LoadElement( reader ) );
+							LoadElement( reader, curModelSet );
 						}
 						break;
 					}
@@ -247,15 +269,7 @@ namespace RbEngine.Components
 					}
 					case XmlNodeType.Element :
 					{
-						Object childObj = LoadElement( reader );
-
-						if ( !( newResource is Components.IParentObject ) )
-						{
-							string resourceStr = String.Format( "\"{0}\"(\"{1}\"", resourcePath, newResource.GetType( ).Name );
-							throw new System.ApplicationException( String.Format( "Can't add objects to resource {0} - did not implement the IParentObject interface", resourceStr ) );
-						}
-
-						( ( Components.IParentObject )newResource ).AddChild( childObj );
+						LoadElement( reader, newResource );
 						break;
 					}
 				}

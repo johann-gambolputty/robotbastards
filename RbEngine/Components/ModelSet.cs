@@ -4,7 +4,7 @@ using System.Collections;
 namespace RbEngine.Components
 {
 	/// <summary>
-	/// A ModelSet is basically an in-memory directory tree of objects that are intended to be instanciable (implement the IModel interface)
+	/// A ModelSet is basically an in-memory directory tree of objects that are intended to be instanciable (implement the IInstanceable interface)
 	/// </summary>
 	/// <remarks>
 	/// Objects stored in a modelset are accessible via filesystem-style path strings (either '/' or '\' can be used to delimit model sets)
