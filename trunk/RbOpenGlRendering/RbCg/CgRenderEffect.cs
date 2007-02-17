@@ -87,9 +87,15 @@ namespace RbOpenGlRendering.RbCg
 			//	Run through all the techniques in the effect
 			for ( IntPtr curTechnique = Tao.Cg.Cg.cgGetFirstTechnique( m_EffectHandle ); curTechnique != IntPtr.Zero; curTechnique = Tao.Cg.Cg.cgGetNextTechnique( curTechnique ) )
 			{
+				string techniqueName = Tao.Cg.Cg.cgGetTechniqueName( curTechnique );
+				if ( Tao.Cg.Cg.cgValidateTechnique( curTechnique ) == 0 )
+				{
+					Output.WriteLineCall( Output.RenderingWarning, "Unable to validate technique \"{0}\" - {1}", techniqueName, Tao.Cg.Cg.cgGetLastListing( m_Context ) );
+					continue;
+				}
+
 				//	Create a RenderTechnique wrapper around the current technique
 				//	TODO: This is failing in the current Tao implementation (was working fine on previous version...)
-				string techniqueName = Tao.Cg.Cg.cgGetTechniqueName( curTechnique );
 				RenderTechnique newTechnique = new RenderTechnique( techniqueName );
 
 				//	Run through all the CG passes in the current technique
