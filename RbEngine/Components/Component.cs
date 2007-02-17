@@ -44,7 +44,7 @@ namespace RbEngine.Components
 	/// <summary>
 	/// Test
 	/// </summary>
-	public class Message
+	public abstract class Message
 	{
 		/// <summary>
 		/// Reliable delivery means ordered and acknowledged
@@ -67,7 +67,7 @@ namespace RbEngine.Components
 		/// <summary>
 		/// Gets the type identifier of this message
 		/// </summary>
-		public abstract long	TypeId
+		public abstract ushort	TypeId
 		{
 			get;
 		}
@@ -77,7 +77,10 @@ namespace RbEngine.Components
 		/// </summary>
 		/// <param name="typeId"> Message type identifier </param>
 		/// <returns> Returns a new message of the specified type </returns>
-		public static Message	CreateFromTypeId( long typeId );
+		public static Message	CreateFromTypeId( ushort typeId )
+		{
+			return null;
+		}
 
 		/// <summary>
 		/// Writes a message to the specified output stream
@@ -104,9 +107,9 @@ namespace RbEngine.Components
 		/// </summary>
 		/// <param name="input">Input stream</param>
 		/// <returns>Returns the new message</returns>
-		public static Message	Read( System.IO.BinaryReader input )
+		public static Message	ReadMessage( System.IO.BinaryReader input )
 		{
-			Message msg = CreateFromTypeId( input.ReadInt64( ) );
+			Message msg = CreateFromTypeId( input.ReadUInt16( ) );
 			msg.Read( input );
 			return msg;
 		}
@@ -158,7 +161,7 @@ namespace RbEngine.Components
 		/// Test
 		/// </summary>
 		[ ComponentMessageHandler( ) ]
-		public void OnDamage( TestMessage msg )
+		public void OnDamage( Message msg )
 		{
 		}
 

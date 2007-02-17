@@ -15,6 +15,8 @@ namespace RbOpenGlRendering.RbCg
 		public CgRenderEffectLoader( )
 		{
 			m_Context = Tao.Cg.Cg.cgCreateContext( );
+			
+			Tao.Cg.CgGl.cgGLRegisterStates( m_Context );
 		}
 
 		/// <summary>

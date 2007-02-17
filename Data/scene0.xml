@@ -12,7 +12,7 @@
 					</object>
 				</object>
 			</object>
-			<resource path="test.cgfx">
+			<resource path="test0.cgfx">
 				<!-- Loads the resource when the resource is created, stream it urgently
 				<loadParams loadOnInstance="false" stream="true" streamPriority="Urgent"/>
 				-->

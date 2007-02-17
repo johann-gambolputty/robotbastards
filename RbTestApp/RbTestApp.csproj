@@ -151,6 +151,11 @@
                     DependentUpon = "Form1.cs"
                     BuildAction = "EmbeddedResource"
                 />
+                <File
+                    RelPath = "TestAppOutput.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
             </Include>
         </Files>
     </CSHARP>

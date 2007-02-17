@@ -100,7 +100,18 @@ namespace RbTestApp
 		[STAThread]
 		static void Main() 
 		{
-			Application.Run(new Form1());
+			//	TODO: Should use unhandled exception handler instead
+			try
+			{
+				Application.Run( new Form1( ) );
+			}
+			catch ( Exception exception )
+			{
+				string exceptionString = ExceptionUtils.ToString( exception );
+
+				Output.WriteLine( TestAppOutput.Error, exceptionString );
+				MessageBox.Show( exceptionString );
+			}
 		}
 	}
 }

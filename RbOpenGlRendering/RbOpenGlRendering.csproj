@@ -105,27 +105,9 @@
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
-                    Name = "Tao.OpenGl"
-                    AssemblyName = "Tao.OpenGl"
-                    HintPath = "..\..\..\Program Files\Tao\bin\Tao.OpenGl.dll"
-                    AssemblyFolderKey = "hklm\tao"
-                />
-                <Reference
                     Name = "System.Drawing"
                     AssemblyName = "System.Drawing"
                     HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Drawing.dll"
-                />
-                <Reference
-                    Name = "Tao.OpenGl.Glu"
-                    AssemblyName = "Tao.OpenGl.Glu"
-                    HintPath = "..\..\..\Program Files\Tao\bin\Tao.OpenGl.Glu.dll"
-                    AssemblyFolderKey = "hklm\tao"
-                />
-                <Reference
-                    Name = "Tao.Cg"
-                    AssemblyName = "Tao.Cg"
-                    HintPath = "..\..\..\Program Files\Tao\bin\Tao.Cg.dll"
-                    AssemblyFolderKey = "hklm\tao"
                 />
                 <Reference
                     Name = "System.Windows.Forms"
@@ -138,9 +120,33 @@
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
+                    Name = "Tao.OpenGl.ExtensionLoader"
+                    AssemblyName = "Tao.OpenGl.ExtensionLoader"
+                    HintPath = "..\..\..\Program Files\Tao\bin\Tao.OpenGl.ExtensionLoader.dll"
+                    AssemblyFolderKey = "hklm\tao"
+                />
+                <Reference
+                    Name = "Tao.OpenGl.Glu"
+                    AssemblyName = "Tao.OpenGl.Glu"
+                    HintPath = "..\..\..\Program Files\Tao\bin\Tao.OpenGl.Glu.dll"
+                    AssemblyFolderKey = "hklm\tao"
+                />
+                <Reference
                     Name = "Tao.Platform.Windows"
                     AssemblyName = "Tao.Platform.Windows"
                     HintPath = "..\..\..\Program Files\Tao\bin\Tao.Platform.Windows.dll"
+                    AssemblyFolderKey = "hklm\tao"
+                />
+                <Reference
+                    Name = "Tao.OpenGl"
+                    AssemblyName = "Tao.OpenGl"
+                    HintPath = "..\..\..\Program Files\Tao\bin\Tao.OpenGl.dll"
+                    AssemblyFolderKey = "hklm\tao"
+                />
+                <Reference
+                    Name = "Tao.Cg"
+                    AssemblyName = "Tao.Cg"
+                    HintPath = "..\..\..\Program Files\Tao\bin\Tao.Cg.dll"
                     AssemblyFolderKey = "hklm\tao"
                 />
             </References>

@@ -124,6 +124,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "ExceptionUtils.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Output.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -166,6 +171,11 @@
                 />
                 <File
                     RelPath = "Components\ModelSet.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Components\Scene.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

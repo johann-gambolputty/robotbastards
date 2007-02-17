@@ -1,0 +1,58 @@
+
+struct SpecularTestOutput
+{
+	float4	m_Position : POSITION;
+	float4	m_Colour : COLOR0;
+};
+
+struct SpecularTestInput
+{
+	float4	m_Position : POSITION;
+	float4	m_Normal : NORMAL;
+};
+
+float4x4	ModelViewProj;
+float4x4	ModelView;
+float4x4	InverseTransposeModelView;
+float4		LightPos = float4( 2, 5, 0, 0 );
+float4		LightOrigin = float4( 1, 0, 0, 0 );
+float3		EyePos;
+
+
+SpecularTestOutput SpecularTest( SpecularTestInput input )
+{
+	SpecularTestOutput output;
+
+	output.m_Position	= mul( ModelViewProj, input.m_Position );
+
+	//	NOTE: Should really multiply this vector by the inverse transpose MV, but that's only necessary if the MV contains
+	//	non-uniform scaling
+	float3 normal		= normalize( mul( ModelView, input.m_Normal ).xyz );
+
+	float3 eyeVec		= normalize( mul( ModelView, float4( EyePos, 0 ) ).xyz );
+
+	float3 lightVec		= normalize( mul( ModelView, LightPos ).xyz );
+	float3 halfVec		= normalize( eyeVec + lightVec );
+
+	float diffuse		= dot( normal, lightVec );
+	float specular		= dot( normal, halfVec );
+
+	float4 lighting		= lit( diffuse, specular, 64 );
+
+	output.m_Colour.rgb = lighting.y * float3( 0, 0, 1 ) + lighting.z * float3( 1, 1, 1 );
+	output.m_Colour.a	= 1;
+
+	return output;
+}
+
+technique SpecularTestTechnique
+{
+	pass
+	{
+		ShadeModel			= Smooth;
+		FrontFace			= CCW;
+		DepthFunc			= LEqual;
+		DepthTestEnable		= true;
+		VertexProgram		= compile arbvp1 SpecularTest( );
+	}	
+}
