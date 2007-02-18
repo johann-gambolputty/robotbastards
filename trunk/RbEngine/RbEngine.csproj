@@ -360,7 +360,16 @@
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
-                <Folder RelPath = "Rendering\Composite\" />
+                <File
+                    RelPath = "Rendering\Composites\Composite.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Rendering\Composites\GroundPlaneArea.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
                 <File
                     RelPath = "Resources\FileResourceProvider.cs"
                     SubType = "Code"
