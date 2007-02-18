@@ -6,7 +6,7 @@ namespace RbEngine
 	/// <summary>
 	/// Debug switch. Output through this switch is disabled completely in Release builds
 	/// </summary>
-	/// <seealso>Output</seealso>
+	/// <seealso cref="Output">Output</seealso>
 	public class DebugSwitch : BooleanSwitch
 	{
 		/// <summary>
@@ -21,7 +21,7 @@ namespace RbEngine
 	/// <summary>
 	/// Trace switch. Output through this switch is always enabled (maybe not in Final builds?)
 	/// </summary>
-	/// <seealso>Output</seealso>
+	/// <seealso cref="Output">Output</seealso>
 	public class TraceSwitch : BooleanSwitch
 	{
 		/// <summary>
@@ -40,7 +40,7 @@ namespace RbEngine
 	/// This code:
 	/// <code>
 	/// Output.WriteCall( Output.RenderingInfo, "Rendered stuff" );
-	/// </code>
+	/// </code>	
 	/// Writes this output (using System.Diagnostics.Debug):
 	/// <code>
 	/// MyClass.cs(20) : [renderInfo] Rendered stuff

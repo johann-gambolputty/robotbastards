@@ -8,6 +8,27 @@ namespace RbOpenGlRendering
 	/// </summary>
 	public class OpenGlRenderFactory : RenderFactory
 	{
+
+		/// <summary>
+		/// Creates a new composite object, from a given base type
+		/// </summary>
+		/// <param name="baseType">Base type of the composite</param>
+		/// <returns>Returns the new composite object. Returns null if the specified composite type is not supported</returns>
+		/// <remarks>
+		/// Composites are objects that combine render states, vertex buffers, textures and other rendering objects. Examples
+		/// are meshes, particle systems, heightfields, and so on.
+		/// </remarks>
+		/// <example>
+		/// <code lang="CSharp">
+		/// Mesh newMesh = ( Mesh )RenderFactory.Inst.NewComposite( typeof( Mesh ) );
+		/// </code>
+		/// </example>
+		public override Object				NewComposite( Type baseType )
+		{
+			return null;
+		}
+
+
 		/// <summary>
 		/// Creates a new RenderState object
 		/// </summary>
