@@ -13,7 +13,7 @@ namespace RbEngine.Maths
 		/// </summary>
 		/// <param name="ray">Ray to check</param>
 		/// <returns>true if the ray intersects this object</returns>
-		bool			TestIntersection( Ray3 ray );
+		bool				TestIntersection( Ray3 ray );
 
 		/// <summary>
 		/// Checks if a ray intersects this object, returning information about the intersection if it does

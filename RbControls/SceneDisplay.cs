@@ -19,6 +19,14 @@ namespace RbControls
 			set
 			{
 				m_Scene = value;
+
+				//	Kill the current camera controller
+				if ( m_CameraController is IDisposable )
+				{
+					( ( IDisposable )m_CameraController ).Dispose( );
+				}
+
+				//	Make a new one
 				m_CameraController = m_Camera.CreateDefaultController( this, m_Scene );
 			}
 		}
@@ -40,6 +48,7 @@ namespace RbControls
 
 			RbEngine.Rendering.Renderer renderer = RbEngine.Rendering.Renderer.Inst;
 
+			renderer.ClearDepth( 1.0f );
 			renderer.ClearVerticalGradient( System.Drawing.Color.LightSkyBlue, System.Drawing.Color.Black );
 
 			if ( m_Camera != null )
@@ -59,7 +68,7 @@ namespace RbControls
 				}
 			}
 		}
-		
+
 		private RbEngine.Scene.SceneDb					m_Scene				= null;
 		private RbEngine.Cameras.CameraBase				m_Camera			= null;
 		private Object									m_CameraController	= null;

@@ -55,6 +55,11 @@ namespace RbOpenGlRendering
 			Gl.glFrontFace( ( m_CapFlags & RenderStateFlag.kBackFacesAreClockwiseWound ) != 0 ? Gl.GL_CW : Gl.GL_CCW );
 
 			//	Apply polygon rendering modes
+			switch ( m_ShadeMode )
+			{
+				case PolygonShadeMode.Flat		: Gl.glShadeModel( Gl.GL_FLAT );	break;
+				case PolygonShadeMode.Smooth	: Gl.glShadeModel( Gl.GL_SMOOTH );	break;
+			}
 			switch ( m_FrontPolyMode )
 			{
 				case PolygonRenderMode.kLines	: Gl.glPolygonMode( Gl.GL_FRONT, Gl.GL_LINE );	break;
@@ -83,6 +88,17 @@ namespace RbOpenGlRendering
 
 			Gl.glPointSize( m_PointSize );
 			Gl.glLineWidth( m_LineWidth );
+
+			if ( m_DepthOffset != 0 )
+			{
+				//	TODO: Assumes depth offsets will only be used for line rendering (can be used for decals, etc.)
+				Gl.glEnable( Gl.GL_POLYGON_OFFSET_LINE );
+				Gl.glPolygonOffset( m_DepthOffset, m_DepthOffset );
+			}
+			else
+			{
+				Gl.glDisable( Gl.GL_POLYGON_OFFSET_LINE );
+			}
 
 			Gl.glColor3ub( m_Colour.R, m_Colour.G, m_Colour.B );
 		}

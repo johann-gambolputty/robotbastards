@@ -51,7 +51,7 @@ namespace RbEngine.Scene
 		/// </summary>
 		/// <param name="queryType">Type of query</param>
 		/// <returns>true if Query objects derived from queryType are optimised by this object set</returns>
-		public virtual bool		IsOptimisedForQueryType( Type queryType )
+		public virtual bool				IsOptimisedForQueryType( Type queryType )
 		{
 			return false;
 		}
@@ -59,7 +59,7 @@ namespace RbEngine.Scene
 		/// <summary>
 		/// Returns the subset of objects that pass the specified query
 		/// </summary>
-		public virtual ArrayObjectSet	Select( Query select )
+		public virtual ArrayObjectSet	GetSelection( Query select )
 		{
 			ArrayObjectSet result = new ArrayObjectSet( );
 			Select( select, new SelectedDelegate( result.Add ) );
@@ -71,7 +71,7 @@ namespace RbEngine.Scene
 		/// </summary>
 		/// <param name="select">Set object selection criteria</param>
 		/// <param name="selected">Delegate to call if an object gets selected</param>
-		public virtual void		Select( DelegateQuery.SelectionDelegate select, SelectedDelegate selected )
+		public virtual void				Select( DelegateQuery.SelectionDelegate select, SelectedDelegate selected )
 		{
 			Select( new DelegateQuery( select ), selected );
 		}
@@ -81,25 +81,34 @@ namespace RbEngine.Scene
 		/// </summary>
 		/// <param name="select">Set object selection criteria</param>
 		/// <returns>First object that passes select</returns>
-		public virtual Object	SelectFirst( DelegateQuery.SelectionDelegate select )
+		public virtual Object			SelectFirst( DelegateQuery.SelectionDelegate select )
 		{
 			return SelectFirst( new DelegateQuery( select ) );
 		}
 
 
 		/// <summary>
+		/// Runs a query over the objects in the set
+		/// </summary>
+		/// <param name="select">Set object selection criteria</param>
+		/// <remarks>
+		/// This is equivalent to Visit(), except that the object sets can optimise for a given query type
+		/// </remarks>
+		public abstract void			Select( Query select );
+
+		/// <summary>
 		/// Selects objects in the set that pass the specified selection query. Stores selected objects in db
 		/// </summary>
 		/// <param name="select">Set object selection criteria</param>
 		/// <param name="selected">Delegate that is invoked when an object is selected</param>
-		public abstract void	Select( Query select, SelectedDelegate selected );
+		public abstract void			Select( Query select, SelectedDelegate selected );
 
 		/// <summary>
 		/// Selects the first object in the set that passes the specified selection query
 		/// </summary>
 		/// <param name="select">Set object selection criteria</param>
 		/// <returns>First object that passes select</returns>
-		public abstract Object	SelectFirst( Query select );
+		public abstract Object			SelectFirst( Query select );
 
 		#endregion
 	}

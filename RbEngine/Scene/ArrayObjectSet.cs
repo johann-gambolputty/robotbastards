@@ -99,6 +99,21 @@ namespace RbEngine.Scene
 
 
 		/// <summary>
+		/// Runs a query over the objects in the set
+		/// </summary>
+		/// <param name="select">Set object selection criteria</param>
+		/// <remarks>
+		/// This is equivalent to Visit(), except that the object sets can optimise for a given query type
+		/// </remarks>
+		public override void	Select( Query select )
+		{
+			for ( int objectIndex = 0; objectIndex < m_Objects.Count; ++objectIndex )
+			{
+				select.Select( m_Objects[ objectIndex ] );
+			}
+		}
+
+		/// <summary>
 		/// Selects objects in the set that pass the specified selection query. Stores selected objects in db
 		/// </summary>
 		/// <param name="select">Set object selection criteria</param>

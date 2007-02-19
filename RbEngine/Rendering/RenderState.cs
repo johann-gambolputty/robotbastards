@@ -113,6 +113,15 @@ namespace RbEngine.Rendering
 	}
 
 	/// <summary>
+	/// Polygon shading modes
+	/// </summary>
+	public enum PolygonShadeMode
+	{
+		Flat,
+		Smooth
+	}
+
+	/// <summary>
 	/// Summary description for RenderState.
 	/// </summary>
 	public abstract class RenderState : IApplicable
@@ -205,6 +214,16 @@ namespace RbEngine.Rendering
 			return this;
 		}
 
+
+		/// <summary>
+		/// Sets the polygon shade mode
+		/// </summary>
+		public RenderState SetShadeMode( PolygonShadeMode mode )
+		{
+			m_ShadeMode = mode;
+			return this;
+		}
+
 		/// <summary>
 		/// Sets the polygon rendering mode for both front and back facing polygons
 		/// </summary>
@@ -225,7 +244,7 @@ namespace RbEngine.Rendering
 			m_FrontPolyMode = mode;
 			return this;
 		}
-		
+
 		/// <summary>
 		/// Sets the polygon rendering mode for back facing polygons
 		/// </summary>
@@ -233,6 +252,15 @@ namespace RbEngine.Rendering
 		public RenderState SetBackPolygonRenderingMode( PolygonRenderMode mode )
 		{
 			m_BackPolyMode = mode;
+			return this;
+		}
+
+		/// <summary>
+		/// Sets the depth offset
+		/// </summary>
+		public RenderState	SetDepthOffset( float offset )
+		{
+			m_DepthOffset = offset;
 			return this;
 		}
 
@@ -246,13 +274,15 @@ namespace RbEngine.Rendering
 		#region	Protected stuff
 
 		protected Color				m_Colour		= Color.Black;
+		protected PolygonShadeMode	m_ShadeMode		= PolygonShadeMode.Smooth;
 		protected PolygonRenderMode	m_FrontPolyMode	= PolygonRenderMode.kFill;
 		protected PolygonRenderMode	m_BackPolyMode	= PolygonRenderMode.kFill;
 		protected DepthTestPass		m_DepthTest		= DepthTestPass.kLessOrEqual;
-		protected RenderStateFlag		m_CapFlags		= RenderStateFlag.kDepthWrite | RenderStateFlag.kDepthTest;
-		protected bool[]				m_Lights		= new bool[ 8 ];
+		protected RenderStateFlag	m_CapFlags		= RenderStateFlag.kDepthWrite | RenderStateFlag.kDepthTest;
+		protected bool[]			m_Lights		= new bool[ 8 ];
 		protected float				m_PointSize		= 1;
 		protected float				m_LineWidth		= 1;
+		protected float				m_DepthOffset	= 0;
 
 		#endregion
 

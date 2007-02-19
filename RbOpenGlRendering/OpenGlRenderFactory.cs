@@ -54,7 +54,7 @@ namespace RbOpenGlRendering
 		/// </summary>
 		protected override ShapeRenderer	NewShapeRenderer( )
 		{
-			return null;
+			return new OpenGlShapeRenderer( );
 		}
 	}
 }

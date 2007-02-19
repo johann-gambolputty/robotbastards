@@ -1,12 +1,21 @@
 using System;
 
-namespace RbEngine.Components
+namespace RbEngine.Components.Simple
 {
 	/// <summary>
 	/// The ground plane (XZ plane)
 	/// </summary>
 	public class GroundPlane : Component, Maths.IRay3Intersector
 	{
+
+		/// <summary>
+		/// Constructor. Adds an implementation of Rendering.Composites.GroundPlaneArea
+		/// </summary>
+		public GroundPlane( )
+		{
+			AddChild( Rendering.RenderFactory.Inst.NewComposite( typeof( Rendering.Composites.GroundPlaneArea ) ) );
+		}
+
 		#region IRay3Intersector Members
 
 		/// <summary>
