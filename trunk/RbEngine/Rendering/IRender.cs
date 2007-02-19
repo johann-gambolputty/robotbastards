@@ -5,12 +5,12 @@ namespace RbEngine.Rendering
 	/// <summary>
 	/// Symbolic constants for describing common positions in the object render order
 	/// </summary>
-	/// <seealso>IRender.GetRenderOrder()</seealso>
+	/// <seealso cref="IRender.GetRenderOrder">IRender.GetRenderOrder()</seealso>
 	public enum RenderOrder
 	{
-		kFirst		= 0,
-		kDefault	= 50,
-		kLast		= 100
+		First	= 0,
+		Default	= 50,
+		Last	= 100
 	};
 
 

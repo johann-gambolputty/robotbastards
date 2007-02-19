@@ -6,7 +6,7 @@ namespace RbEngine.Cameras
 	/// <summary>
 	/// Controls a SphereCamera view. Created by SphereCamera.CreateController()
 	/// </summary>
-	public class SphereCameraControl : Rendering.IRender
+	public class SphereCameraControl : Rendering.IRender, IDisposable
 	{
 		/// <summary>
 		/// Sets up the controller
@@ -90,7 +90,7 @@ namespace RbEngine.Cameras
 
 			//	Resolve
 			Maths.Ray3				pickRay			= new Maths.Ray3( m_Camera.Position, ( newLookAt - m_Camera.Position ).MakeNormal( ) );
-			Maths.Ray3Intersection	intersection	= Scene.RaycastQuery.GetFirstIntersection( pickRay, m_Scene.Objects );
+			Maths.Ray3Intersection	intersection	= Scene.ClosestRay3IntersectionQuery.Get( pickRay, m_Scene.Objects );
 			if ( intersection != null )
 			{
 				newLookAt = intersection.IntersectionPosition;
@@ -164,11 +164,11 @@ namespace RbEngine.Cameras
 		/// Returns the position of this object in the render order
 		/// </summary>
 		/// <returns>
-		/// Returns Rendering.RenderOrder.kDefault
+		/// Returns Rendering.RenderOrder.Default
 		/// </returns>
 		public int GetRenderOrder( )
 		{
-			return ( int )Rendering.RenderOrder.kDefault;
+			return ( int )Rendering.RenderOrder.Default;
 		}
 
 		/// <summary>
@@ -179,10 +179,22 @@ namespace RbEngine.Cameras
 			if ( m_RenderLookAt )
 			{
 				Rendering.Renderer.Inst.PushRenderState( ms_LookAtRenderState );
-				//	TODO: Reinstate when ShapeRenderer is implemented
-			//	Rendering.ShapeRenderer.Inst.RenderSphere( m_Camera.LookAt, 0.5f, 6, 6 );
+				Rendering.ShapeRenderer.Inst.RenderSphere( m_Camera.LookAt, 0.5f, 6, 6 );
 				Rendering.Renderer.Inst.PopRenderState( );
 			}
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			m_Control.MouseDown -= new MouseEventHandler( OnMouseDown );
+			m_Control.MouseUp -= new MouseEventHandler( OnMouseUp );
+			m_Control.MouseMove -= new MouseEventHandler( OnMouseMove );
+			m_Control.MouseWheel -= new MouseEventHandler( OnMouseWheel );
+			m_Control.MouseLeave -= new EventHandler( OnMouseLeave );
 		}
 
 		#endregion

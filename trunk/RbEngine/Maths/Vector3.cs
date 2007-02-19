@@ -9,6 +9,9 @@ namespace RbEngine.Maths
 	{
 		#region	Vector constants
 
+		/// <summary>
+		/// XAxis vector (1,0,0)
+		/// </summary>
 		public static Vector3 XAxis
 		{
 			get
@@ -17,6 +20,9 @@ namespace RbEngine.Maths
 			}
 		}
 
+		/// <summary>
+		/// YAxis vector (0,1,0)
+		/// </summary>
 		public static Vector3 YAxis
 		{
 			get
@@ -25,6 +31,9 @@ namespace RbEngine.Maths
 			}
 		}
 
+		/// <summary>
+		/// ZAxis vector (0,0,1)
+		/// </summary>
 		public static Vector3 ZAxis
 		{
 			get
@@ -37,10 +46,16 @@ namespace RbEngine.Maths
 
 		#region	Construction and setup
 
+		/// <summary>
+		/// Sets the vector to (0,0,0)
+		/// </summary>
 		public Vector3( )
 		{
 		}
 
+		/// <summary>
+		/// Copies the source vector
+		/// </summary>
 		public Vector3( Vector3 src )
 		{
 			X = src.X;
@@ -48,6 +63,9 @@ namespace RbEngine.Maths
 			Z = src.Z;
 		}
 
+		/// <summary>
+		/// Sets individual vector components
+		/// </summary>
 		public Vector3( float x, float y, float z )
 		{
 			X = x;
@@ -55,6 +73,9 @@ namespace RbEngine.Maths
 			Z = z;
 		}
 
+		/// <summary>
+		/// Sets individual vector components
+		/// </summary>
 		public void Set( float x, float y, float z )
 		{
 			X = x;

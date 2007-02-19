@@ -137,14 +137,14 @@ namespace RbEngine.Scene
 		/// <summary>
 		/// Returns the subset of objects that pass the specified query
 		/// </summary>
-		public override ArrayObjectSet	Select( Query select )
+		public override ArrayObjectSet	GetSelection( Query select )
 		{
 			TypeQuery selectByType = select as TypeQuery;
 			if ( selectByType != null )
 			{
 				return GetListForType( selectByType.SelectType );
 			}
-			return base.Select( select );
+			return base.GetSelection( select );
 		}
 
 		/// <summary>
@@ -184,12 +184,49 @@ namespace RbEngine.Scene
 		}
 
 		/// <summary>
+		/// Runs a query over the objects in the set
+		/// </summary>
+		/// <param name="select">Set object selection criteria</param>
+		/// <remarks>
+		/// This is equivalent to Visit(), except that the object sets can optimise for a given query type
+		/// </remarks>
+		public override void	Select( Query select )
+		{
+			TypeQuery selectByType = select as TypeQuery;
+			if ( selectByType != null )
+			{
+				ArrayList objects = GetListForType( selectByType.SelectType ).Objects;
+				for ( int objectIndex = 0; objectIndex < objects.Count; ++objectIndex )
+				{
+					select.Select( objects[ objectIndex ] );
+				}
+			}
+			else if ( select.RequiredInterface != null )
+			{
+				ArrayList objects = GetListForType( select.RequiredInterface ).Objects;
+				for ( int objectIndex = 0; objectIndex < objects.Count; ++objectIndex )
+				{
+					select.Select( objects[ objectIndex ] );
+				}
+			}
+			else
+			{
+				ArrayList objects = GetAllObjects( ).Objects;
+				for ( int objectIndex = 0; objectIndex < objects.Count; ++objectIndex )
+				{
+					select.Select( objects[ objectIndex ] );
+				}
+			}
+		}
+
+
+		/// <summary>
 		/// Selects objects in the set that pass the specified selection query. Stores selected objects in db
 		/// </summary>
 		/// <param name="select">Scene object selection criteria</param>
 		/// <param name="selected">Delegate to call if an object gets selected</param>
 		/// <remarks>
-		/// Optimised for the TypeQuery query
+		/// Optimised for the TypeQuery query, and partially optimised for queries that return a value from Query.RequiredInterface
 		/// </remarks>
 		public override void	Select( Query select, SelectedDelegate selected )
 		{
@@ -207,7 +244,10 @@ namespace RbEngine.Scene
 				ArrayList objects = GetListForType( select.RequiredInterface ).Objects;
 				for ( int objectIndex = 0; objectIndex < objects.Count; ++objectIndex )
 				{
-					selected( objects[ objectIndex ] );
+					if ( select.Select( objects[ objectIndex ] ) )
+					{
+						selected( objects[ objectIndex ] );
+					}
 				}
 			}
 			else
@@ -229,7 +269,7 @@ namespace RbEngine.Scene
 		/// <param name="select">Set object selection criteria</param>
 		/// <returns>First object that passes select</returns>
 		/// <remarks>
-		/// Optimised for the TypeQuery query
+		/// Optimised for the TypeQuery query, and partially optimised for queries that return a value from Query.RequiredInterface
 		/// </remarks>
 		public override Object	SelectFirst( Query select )
 		{
@@ -241,8 +281,16 @@ namespace RbEngine.Scene
 			}
 			else if ( select.RequiredInterface != null )
 			{
-				ArrayObjectSet typeSet = m_Map[ select.RequiredInterface ] as ArrayObjectSet;
-				return ( typeSet != null ) && ( typeSet.Objects.Count > 0 ) ? ( typeSet.Objects[ 0 ] ) : null;
+				ArrayList typeSet = ( ( ArrayObjectSet )m_Map[ select.RequiredInterface ] ).Objects;
+
+				for ( int objectIndex = 0; objectIndex < typeSet.Count; ++objectIndex )
+				{
+					if ( select.Select( typeSet[ objectIndex ] ) )
+					{
+						return typeSet[ objectIndex ];
+					}
+				}
+				return null;
 			}
 			else
 			{

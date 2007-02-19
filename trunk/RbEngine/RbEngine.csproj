@@ -174,11 +174,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Components\GroundPlane.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Components\IInstanceable.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -203,7 +198,36 @@
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
-                <Folder RelPath = "Interaction\" />
+                <File
+                    RelPath = "Components\Simple\Ball.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Components\Simple\GroundPlane.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Entities\Entity.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Entities\IEntity.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Interaction\Command.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Interaction\CommandInputBinding.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
                 <File
                     RelPath = "Maths\CatmullRomSpline.cs"
                     SubType = "Code"
@@ -435,6 +459,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Scene\ClosestRay3IntersectionQuery.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Scene\DelegateQuery.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -451,11 +480,6 @@
                 />
                 <File
                     RelPath = "Scene\Query.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Scene\RaycastQuery.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

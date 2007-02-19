@@ -3,13 +3,9 @@ using System;
 namespace RbEngine.Scene
 {
 	/// <summary>
-	/// Checks if an object is intersected by a ray (uses Maths.IRay3Intersector.Intersects())
+	/// Summary description for ClosestRay3IntersectionQuery.
 	/// </summary>
-	/// <remarks>
-	/// This query should be used with care - if run on a large object set without any form of optimisation for this query, it could
-	/// take a long time.
-	/// </remarks>
-	public class RaycastQuery : SpatialQuery
+	public class ClosestRay3IntersectionQuery : SpatialQuery
 	{
 		/// <summary>
 		/// Returns the type for Maths.IRay3Intersector
@@ -34,12 +30,9 @@ namespace RbEngine.Scene
 		}
 
 		/// <summary>
-		/// Information about the ray intersection
+		/// Information about the closest ray intersection
 		/// </summary>
-		/// <remarks>
-		/// Only set if storeIntersectionInfo is set to true in the RaycastQuery constructor
-		/// </remarks>
-		public Maths.Ray3Intersection	Intersection
+		public Maths.Ray3Intersection	ClosestIntersection
 		{
 			get
 			{
@@ -48,13 +41,12 @@ namespace RbEngine.Scene
 		}
 
 		/// <summary>
-		/// Sets the ray used by the query
+		/// Sets the query ray
 		/// </summary>
 		/// <param name="ray">Query ray</param>
-		public RaycastQuery( Maths.Ray3 ray, bool storeIntersectionInfo )
+		public ClosestRay3IntersectionQuery( Maths.Ray3 ray )
 		{
 			m_Ray = ray;
-			m_StoreIntersectionInfo = storeIntersectionInfo;
 		}
 
 		/// <summary>
@@ -64,12 +56,14 @@ namespace RbEngine.Scene
 		/// <returns>true if the object is intersected by the ray passed to the query constructor</returns>
 		public override bool Select( object obj )
 		{
-			if ( m_StoreIntersectionInfo )
+			Maths.Ray3Intersection intersection = ( ( Maths.IRay3Intersector )obj ).GetIntersection( m_Ray );
+			if ( ( intersection != null ) && ( intersection.Distance < m_ClosestIntersection ) )
 			{
-				m_Intersection = ( ( Maths.IRay3Intersector )obj ).GetIntersection( m_Ray );
-				return ( m_Intersection != null );
+				m_ClosestIntersection	= intersection.Distance;
+				m_Intersection			= intersection;
+				return true;
 			}
-			return ( ( Maths.IRay3Intersector )obj ).TestIntersection( m_Ray );
+			return false;
 		}
 
 		/// <summary>
@@ -77,15 +71,15 @@ namespace RbEngine.Scene
 		/// </summary>
 		/// <param name="objects">Object set</param>
 		/// <returns>Details about the first intersection, or null if there were no intersections</returns>
-		public static Maths.Ray3Intersection	GetFirstIntersection( Maths.Ray3 ray, ObjectSet objects )
+		public static Maths.Ray3Intersection	Get( Maths.Ray3 ray, ObjectSet objects )
 		{
-			RaycastQuery query = new RaycastQuery( ray, true );
-			objects.SelectFirst( query );
-			return query.Intersection;
+			ClosestRay3IntersectionQuery query = new ClosestRay3IntersectionQuery( ray );
+			objects.Select( query );
+			return query.ClosestIntersection;
 		}
 
 		private Maths.Ray3				m_Ray;
 		private Maths.Ray3Intersection	m_Intersection;
-		private bool					m_StoreIntersectionInfo = false;
+		private float					m_ClosestIntersection = float.MaxValue;
 	}
 }

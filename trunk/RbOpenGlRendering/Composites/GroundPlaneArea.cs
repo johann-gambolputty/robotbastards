@@ -7,15 +7,16 @@ using Tao.OpenGl;
 namespace RbOpenGlRendering.Composites
 {
 	/// <summary>
-	/// Implementation of RbEngine.Composites.GroundPlaneArea
+	/// OpenGL implementation of RbEngine.Rendering.Composites.GroundPlaneArea
 	/// </summary>
-	public class GroundPlaneArea : RbEngine.Rendering.Composites.GroundPlaneArea
+	public class GroundPlaneArea : RbEngine.Rendering.Composites.GroundPlaneArea, IDisposable
 	{
 		/// <summary>
 		/// Sets up the render technique
 		/// </summary>
 		public GroundPlaneArea( )
 		{
+			//	TODO: This is overkill - just set up the appropriate states in Render()
 			RenderPass gridRenderPass = new RenderPass( );
 			gridRenderPass.Add
 			(
@@ -23,7 +24,7 @@ namespace RbOpenGlRendering.Composites
 					.SetPolygonRenderingMode( PolygonRenderMode.kLines )
 					.DisableCap( RenderStateFlag.kCullFrontFaces )
 					.DisableCap( RenderStateFlag.kCullBackFaces )
-					.SetDepthTest( DepthTestPass.kAlways )
+					.SetDepthOffset( -1.0f )
 			);
 
 			RenderPass filledRenderPass = new RenderPass( );
@@ -31,10 +32,10 @@ namespace RbOpenGlRendering.Composites
 			(
 				RenderFactory.Inst.NewRenderState( )
 					.SetColour( System.Drawing.Color.Gainsboro )
-					.EnableLighting( )
-					.SetLight( 0, true )
+				//	.EnableLighting( )
+				//	.SetLight( 0, true )
 			);
-			filledRenderPass.Add
+            filledRenderPass.Add
 			(
 				RenderFactory.Inst.NewMaterial( ).Setup( System.Drawing.Color.DarkGray, System.Drawing.Color.LightCyan )
 			);
@@ -47,14 +48,6 @@ namespace RbOpenGlRendering.Composites
 
 			m_Technique = new SelectedTechnique( m_Effect );
 			m_Technique.RenderCallback = new RenderTechnique.RenderDelegate( RenderPlane );
-		}
-
-		/// <summary>
-		/// Releases the ground plane call list
-		/// </summary>
-		~GroundPlaneArea( )
-		{
-			DestroyCallList( );
 		}
 
 		/// <summary>
@@ -171,6 +164,15 @@ namespace RbOpenGlRendering.Composites
 				z = nextZ;
 				nextZ += zIncrement;
 			}
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			DestroyCallList( );
 		}
 
 		#endregion
