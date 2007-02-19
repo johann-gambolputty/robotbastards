@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 
 namespace RbEngine.Rendering
 {
@@ -32,7 +33,8 @@ namespace RbEngine.Rendering
 			{
 				if ( curType.IsSubclassOf( typeof( RenderFactory ) ) )
 				{
-					System.Activator.CreateInstance( curType );
+					RenderFactory factory = ( RenderFactory )System.Activator.CreateInstance( curType );
+					factory.AddAssemblyComposites( renderAssembly );
 					return;
 				}
 			}
@@ -46,7 +48,29 @@ namespace RbEngine.Rendering
 		/// <param name="assemblyName"> Name of the assembly </param>
 		public static void LoadCompositeAssembly( string assemblyName )
 		{
+			System.Reflection.Assembly compositeAssembly = AppDomain.CurrentDomain.Load( assemblyName );
+			Inst.AddAssemblyComposites( compositeAssembly );
+		}
 
+		/// <summary>
+		/// Adds the Composite-derived classes in the specified assembly
+		/// </summary>
+		/// <param name="compositeAssembly"> Assembly to check </param>
+		private void AddAssemblyComposites( System.Reflection.Assembly compositeAssembly )
+		{
+			foreach ( Type curType in compositeAssembly.GetTypes( ) )
+			{
+				if ( curType.IsSubclassOf( typeof( Composites.Composite ) ) )
+				{
+					Output.WriteLineCall( Output.RenderingInfo, "Adding composite type \"{0}\" to render factory", curType.Name );
+					m_CompositeNameMap.Add( curType.Name, curType );
+
+					for ( Type baseType = curType; baseType != typeof( Composites.Composite ); baseType = baseType.BaseType )
+					{
+						m_CompositeBaseTypeMap.Add( baseType, curType );
+					}
+				}
+			}
 		}
 
 		#endregion
@@ -66,12 +90,25 @@ namespace RbEngine.Rendering
 
 		#endregion
 
+		#region	Composites
+
 		/// <summary>
 		/// Returns the Type object representing a composite with the specified name
 		/// </summary>
 		/// <param name="typeName">Type name</param>
 		/// <returns>Returns the named composite Type</returns>
-		public abstract Type				GetCompositeType( string typeName );
+		public Type						GetCompositeTypeFromName( string typeName )
+		{
+			return ( Type )m_CompositeNameMap[ typeName ];
+		}
+
+		/// <summary>
+		/// Returns a Composite-derived class's Type object that implements a specified Composite base type
+		/// </summary>
+		public Type						GetCompositeTypeFromBaseType( Type baseType )
+		{
+			return ( Type )m_CompositeBaseTypeMap[ baseType ];
+		}
 
 		/// <summary>
 		/// Creates a new composite object, from the name of a type
@@ -87,10 +124,10 @@ namespace RbEngine.Rendering
 		/// Mesh newMesh = ( Mesh )RenderFactory.Inst.NewComposite( "Mesh" );
 		/// </code>
 		/// </example>
-		/// <seealso cref="GetCompositeType">GetCompositeType</seealso>
-		public Object						NewComposite( string typeName )
+		/// <seealso cref="GetCompositeTypeFromName">GetCompositeTypeFromName</seealso>
+		public Composites.Composite			NewComposite( string typeName )
 		{
-			return NewComposite( GetCompositeType( typeName ) );
+			return ( Composites.Composite )System.Activator.CreateInstance( GetCompositeTypeFromName( typeName ) );
 		}
 
 
@@ -108,7 +145,13 @@ namespace RbEngine.Rendering
 		/// Mesh newMesh = ( Mesh )RenderFactory.Inst.NewComposite( typeof( Mesh ) );
 		/// </code>
 		/// </example>
-		public abstract Object				NewComposite( Type baseType );
+		/// <seealso cref="GetCompositeTypeFromBaseType">GetCompositeTypeFromBaseType</seealso>
+		public Composites.Composite			NewComposite( Type baseType )
+		{
+			return ( Composites.Composite )System.Activator.CreateInstance( GetCompositeTypeFromBaseType( baseType ) );
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Creates a new RenderState object
@@ -151,6 +194,8 @@ namespace RbEngine.Rendering
 			NewShapeRenderer( );	//	ShapeRenderer constructor sets the ShapeRenderer singleton
 		}
 
-		private static RenderFactory		ms_Singleton;
+		private System.Collections.Hashtable	m_CompositeNameMap		= new System.Collections.Hashtable( );
+		private System.Collections.Hashtable	m_CompositeBaseTypeMap	= new System.Collections.Hashtable( );
+		private static RenderFactory			ms_Singleton;
 	}
 }

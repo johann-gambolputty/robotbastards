@@ -150,6 +150,21 @@ namespace RbEngine.Rendering
 			Add( ( RenderPass )childObject );
 		}
 
+		/// <summary>
+		/// Visits all passes, calling visitor() for each
+		/// </summary>
+		/// <param name="visitor">Visitor function</param>
+		public void VisitChildren( Components.ChildVisitorDelegate visitor )
+		{
+			for ( int childIndex = 0; childIndex < m_Passes.Count; ++childIndex )
+			{
+				if ( !visitor( m_Passes[ childIndex ] ) )
+				{
+					return;
+				}
+			}
+		}
+
 		#endregion
 	}
 }

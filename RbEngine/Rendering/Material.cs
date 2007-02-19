@@ -77,6 +77,20 @@ namespace RbEngine.Rendering
 		}
 
 		/// <summary>
+		/// Sets the ambient and diffuse material colours
+		/// </summary>
+		/// <param name="ambient"> Material ambient colour </param>
+		/// <param name="diffuse"> Material diffuse colour </param>
+		/// <returns> Returns this material </returns>
+		public Material					Setup( System.Drawing.Color ambient, System.Drawing.Color diffuse )
+		{
+			Ambient = ambient;
+			Diffuse = diffuse;
+			return this;
+		}
+
+
+		/// <summary>
 		/// Applies this material
 		/// </summary>
 		public abstract void			Apply( );

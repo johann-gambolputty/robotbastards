@@ -186,6 +186,21 @@ namespace RbEngine.Components
 		}
 
 		/// <summary>
+		/// Visits all children, calling visitor() for each
+		/// </summary>
+		/// <param name="visitor">Visitor function</param>
+		public void VisitChildren( ChildVisitorDelegate visitor )
+		{
+			for ( int childIndex = 0; childIndex < m_Children.Count; ++childIndex )
+			{
+				if ( !visitor( m_Children[ childIndex ] ) )
+				{
+					return;
+				}
+			}
+		}
+
+		/// <summary>
 		/// Gets a child that is derived from, or implements, a given type
 		/// </summary>
 		/// <param name="childType"> Type to look for </param>

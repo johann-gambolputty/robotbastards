@@ -193,6 +193,21 @@ namespace RbEngine.Components
 			}
 		}
 
+		/// <summary>
+		/// Visits all children, calling visitor() for each
+		/// </summary>
+		/// <param name="visitor">Visitor function</param>
+		public void VisitChildren( ChildVisitorDelegate visitor )
+		{
+			for ( int childIndex = 0; childIndex < m_Children.Count; ++childIndex )
+			{
+				if ( !visitor( m_Children[ childIndex ] ) )
+				{
+					return;
+				}
+			}
+		}
+
 		#endregion
 
 		#region INamedObject Members
@@ -222,7 +237,6 @@ namespace RbEngine.Components
 		public event RbEngine.Components.NameChangedDelegate NameChanged;
 
 		#endregion
-
 
 		#region	Private stuff
 

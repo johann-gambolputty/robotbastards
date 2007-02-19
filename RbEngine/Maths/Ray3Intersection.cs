@@ -3,9 +3,9 @@ using System;
 namespace RbEngine.Maths
 {
 	/// <summary>
-	/// Summary description for RayIntersection.
+	/// Details about the intersection of a ray with an object
 	/// </summary>
-	public class RayIntersection
+	public class Ray3Intersection
 	{
 		/// <summary>
 		/// The object that the ray intersected. Can be null even if intersection was successful
@@ -73,7 +73,7 @@ namespace RbEngine.Maths
 		/// <summary>
 		/// Default constructor
 		/// </summary>
-		public			RayIntersection( )
+		public			Ray3Intersection( )
 		{
 		}
 
@@ -83,7 +83,7 @@ namespace RbEngine.Maths
 		/// <param name="pos"> Ray intersection position </param>
 		/// <param name="normal"> Ray intersection normal </param>
 		/// <param name="distance"> Ray intersection distance </param>
-		public			RayIntersection( Vector3 pos, Vector3 normal, float distance )
+		public			Ray3Intersection( Vector3 pos, Vector3 normal, float distance )
 		{
 			m_Position	= pos;
 			m_Normal	= normal;
