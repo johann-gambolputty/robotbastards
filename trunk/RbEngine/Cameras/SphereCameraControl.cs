@@ -179,7 +179,8 @@ namespace RbEngine.Cameras
 			if ( m_RenderLookAt )
 			{
 				Rendering.Renderer.Inst.PushRenderState( ms_LookAtRenderState );
-				Rendering.ShapeRenderer.Inst.RenderSphere( m_Camera.LookAt, 0.5f, 6, 6 );
+				//	TODO: Reinstate when ShapeRenderer is implemented
+			//	Rendering.ShapeRenderer.Inst.RenderSphere( m_Camera.LookAt, 0.5f, 6, 6 );
 				Rendering.Renderer.Inst.PopRenderState( );
 			}
 		}

@@ -5,7 +5,7 @@ namespace RbEngine.Scene
 	/// <summary>
 	/// Stores objects and managers that make up a scene
 	/// </summary>
-	public class SceneDb
+	public class SceneDb : Components.IParentObject
 	{
 		#region	Scene managers and services
 
@@ -112,7 +112,27 @@ namespace RbEngine.Scene
 
 		#endregion
 
+		#region IParentObject Members
 
+		/// <summary>
+		/// Adds an object to the scene
+		/// </summary>
+		/// <param name="childObject">Object to add</param>
+		public void AddChild( Object childObject )
+		{
+			Add( childObject );
+		}
+
+		/// <summary>
+		/// Visits all objects in the scene
+		/// </summary>
+		/// <param name="visitor">Visitor function</param>
+		public void VisitChildren( Components.ChildVisitorDelegate visitor )
+		{
+			Objects.Visit( visitor );
+		}
+
+		#endregion
 
 		private ObjectSet		m_Objects = new TypeGraphObjectSet( );
 		private RenderManager	m_Rendering;

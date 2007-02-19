@@ -9,7 +9,7 @@ namespace RbEngine.Rendering
 	/// <seealso>Shader</seealso>
 	/// <seealso>RenderTechnique</seealso>
 	/// <seealso>SelectedTechnique</seealso>
-	public class RenderEffect : Shader, Components.IParentObject
+	public class RenderEffect : Shader, Components.IParentObject, IApplicable
 	{
 		#region	Construction
 
@@ -123,6 +123,20 @@ namespace RbEngine.Rendering
 					return;
 				}
 			}
+		}
+
+		#endregion
+
+		#region	IApplicable Members
+
+		/// <summary>
+		/// Applies this shader
+		/// </summary>
+		/// <remarks>
+		/// Called from RenderTechnique.Begin()
+		/// </remarks>
+		public virtual void Apply( )
+		{
 		}
 
 		#endregion

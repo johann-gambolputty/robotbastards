@@ -13,6 +13,7 @@ namespace RbTestApp
 	/// </summary>
 	public class Form1 : System.Windows.Forms.Form
 	{
+		private RbControls.SceneDisplay sceneDisplay1;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -20,8 +21,6 @@ namespace RbTestApp
 
 		public Form1()
 		{
-			System.Diagnostics.Debug.Assert( GetType( ).IsSubclassOf( typeof( Form1 ) ), "testing assumption" );
-
 			string renderAssemblyName = System.Configuration.ConfigurationSettings.AppSettings[ "renderAssembly" ];
 			if ( renderAssemblyName == null )
 			{
@@ -39,13 +38,14 @@ namespace RbTestApp
 				doc.Load( resourceSetupPath );
 
 				RbEngine.Resources.ResourceManager.Inst.Setup( ( System.Xml.XmlElement )doc.SelectSingleNode( "/resourceManager" ) );
-				RbEngine.Resources.ResourceManager.Inst.Load( "scene0.xml" );
+				RbEngine.Resources.ResourceManager.Inst.Load( "scene1.xml" );
 			}
 			//
 			// Required for Windows Form Designer support
 			//
 			InitializeComponent();
 
+			sceneDisplay1.Scene = RbEngine.Components.Engine.Main.Scene;
 		}
 
 		/// <summary>
@@ -70,13 +70,29 @@ namespace RbTestApp
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.sceneDisplay1 = new RbControls.SceneDisplay();
+			this.SuspendLayout();
+			// 
+			// sceneDisplay1
+			// 
+			this.sceneDisplay1.ColourBits = ((System.Byte)(32));
+			this.sceneDisplay1.DepthBits = ((System.Byte)(24));
+			this.sceneDisplay1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.sceneDisplay1.Location = new System.Drawing.Point(0, 0);
+			this.sceneDisplay1.Name = "sceneDisplay1";
+			this.sceneDisplay1.Scene = null;
+			this.sceneDisplay1.Size = new System.Drawing.Size(296, 269);
+			this.sceneDisplay1.StencilBits = ((System.Byte)(0));
+			this.sceneDisplay1.TabIndex = 0;
 			// 
 			// Form1
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
 			this.ClientSize = new System.Drawing.Size(296, 269);
+			this.Controls.Add(this.sceneDisplay1);
 			this.Name = "Form1";
 			this.Text = "Form1";
+			this.ResumeLayout(false);
 
 		}
 		#endregion

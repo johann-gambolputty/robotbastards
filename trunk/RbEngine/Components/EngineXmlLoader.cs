@@ -78,6 +78,7 @@ namespace RbEngine.Components
 		/// <exception> Throws an exception if the element did not define a valid object </exception>
 		private void LoadElement( XmlReader reader, Object parentObject )
 		{
+			string boundPropertyName = reader.GetAttribute( "property" );
 			Object childObject = null;
 			IXmlLoader parentXmlLoader = parentObject as IXmlLoader;
 			switch ( reader.Name )
@@ -96,12 +97,23 @@ namespace RbEngine.Components
 			
 			if ( childObject != null )
 			{
-				if ( !( parentObject is Components.IParentObject ) )
+				if ( boundPropertyName != null )
 				{
-					throw new ApplicationException( String.Format( "Can't add objects to object of type \"{0}\" - did not implement the IParentObject interface", parentObject.GetType( ).Name ) );
+					System.Reflection.PropertyInfo boundProperty = parentObject.GetType( ).GetProperty( boundPropertyName );
+					if ( boundProperty == null )
+					{
+						throw new ApplicationException( String.Format( "Object of type \"{0}\" did not have a property \"{1}\" to bind to", parentObject.GetType( ).Name, boundPropertyName ) );
+					}
+					boundProperty.SetValue( parentObject, childObject, null );
 				}
-
-				( ( Components.IParentObject )parentObject ).AddChild( childObject );
+				else
+				{
+					if ( !( parentObject is Components.IParentObject ) )
+					{
+						throw new ApplicationException( String.Format( "Can't add objects to object of type \"{0}\" - did not implement the IParentObject interface", parentObject.GetType( ).Name ) );
+					}
+					( ( Components.IParentObject )parentObject ).AddChild( childObject );
+				}
 			}
 		}
 

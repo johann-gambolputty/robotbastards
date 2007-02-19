@@ -14,6 +14,21 @@ namespace RbEngine.Components
 		{
 		}
 
+		/// <summary>
+		/// access to the engine scene
+		/// </summary>
+		public Scene.SceneDb	Scene
+		{
+			get
+			{
+				return m_Scene;
+			}
+			set
+			{
+				m_Scene = value;
+			}
+		}
+
 		public static Engine	Main
 		{
 			get
@@ -21,6 +36,8 @@ namespace RbEngine.Components
 				return ms_Main;
 			}
 		}
+
+		Scene.SceneDb	m_Scene;
 
 		private static Engine	ms_Main = new Engine( );
 	}

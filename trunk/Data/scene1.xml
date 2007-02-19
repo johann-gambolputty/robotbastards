@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<engine>
+
+	<object type="RbEngine.Scene.SceneDb" property="Scene">
+		<object type="RbEngine.Components.GroundPlane">
+			<object type="RbOpenGlRendering.Composites.GroundPlaneArea">
+			</object>
+		</object>
+	</object>
+
+</engine>

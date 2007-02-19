@@ -102,6 +102,26 @@ namespace RbEngine.Scene
 
 		#endregion
 
+		#region	Visiting
+
+		/// <summary>
+		/// Visits all objects in this set
+		/// </summary>
+		/// <param name="visitor">Visitor function</param>
+		public override void Visit( Components.ChildVisitorDelegate visitor )
+		{
+			ArrayList objects = m_Objects.Objects;
+			for ( int objectIndex = 0; objectIndex < objects.Count; ++objectIndex )
+			{
+				if ( !visitor( objects[ objectIndex ] ) )
+				{
+					return;
+				}
+			}
+		}
+
+		#endregion
+
 		#region	Set selection		
 
 		/// <summary>
@@ -111,7 +131,7 @@ namespace RbEngine.Scene
 		/// <returns>true if Query objects derived from queryType are optimised by this object set</returns>
 		public override bool		IsOptimisedForQueryType( Type queryType )
 		{
-			return queryType.IsSubclassOf( typeof( TypeQuery ) );
+			return ( queryType == typeof( TypeQuery ) ) || queryType.IsSubclassOf( typeof( TypeQuery ) );
 		}
 
 		/// <summary>

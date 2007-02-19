@@ -42,14 +42,21 @@ namespace RbControls
 
 			renderer.ClearVerticalGradient( System.Drawing.Color.LightSkyBlue, System.Drawing.Color.Black );
 
-			m_Camera.Apply( Width, Height );
-			m_Scene.Rendering.Render( );
-
-			//	Render the camera controller
-			RbEngine.Rendering.IRender camRenderer = m_CameraController as RbEngine.Rendering.IRender;
-			if ( camRenderer != null )
+			if ( m_Camera != null )
 			{
-				camRenderer.Render( );
+				m_Camera.Apply( Width, Height );
+
+				if ( m_Scene != null )
+				{
+					m_Scene.Rendering.Render( );
+				}
+
+				//	Render the camera controller
+				RbEngine.Rendering.IRender camRenderer = m_CameraController as RbEngine.Rendering.IRender;
+				if ( camRenderer != null )
+				{
+					camRenderer.Render( );
+				}
 			}
 		}
 		
