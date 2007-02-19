@@ -11,7 +11,6 @@ namespace RbEngine.Rendering
 	/// <seealso>SelectedTechnique</seealso>
 	public class RenderEffect : Shader, Components.IParentObject
 	{
-
 		#region	Construction
 
 		/// <summary>
@@ -109,6 +108,21 @@ namespace RbEngine.Rendering
 		public void AddChild(Object childObject )
 		{
 			Add( ( RenderTechnique )childObject );
+		}
+
+		/// <summary>
+		/// Visits all child techniques, calling visitor() for each
+		/// </summary>
+		/// <param name="visitor">Visitor function</param>
+		public void VisitChildren( Components.ChildVisitorDelegate visitor )
+		{
+			for ( int childIndex = 0; childIndex < m_Techniques.Count; ++childIndex )
+			{
+				if ( !visitor( m_Techniques[ childIndex ] ) )
+				{
+					return;
+				}
+			}
 		}
 
 		#endregion

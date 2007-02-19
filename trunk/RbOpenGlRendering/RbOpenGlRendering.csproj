@@ -194,6 +194,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Composites\GroundPlaneArea.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "RbCg\CgRenderEffect.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

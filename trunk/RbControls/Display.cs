@@ -144,13 +144,14 @@ namespace RbControls
 		}
 		#endregion
 
+
 		#region	Private stuff
 
-		private byte									m_StencilBits	= 0;
-		private byte									m_DepthBits		= 24;
-		private byte									m_ColourBits	= 32;
-		private RbEngine.Rendering.ControlRenderContext	m_Context		= null;
-		private System.Drawing.Image					m_DesignImage	= null;
+		private byte									m_StencilBits		= 0;
+		private byte									m_DepthBits			= 24;
+		private byte									m_ColourBits		= 32;
+		private RbEngine.Rendering.ControlRenderContext	m_Context			= null;
+		private System.Drawing.Image					m_DesignImage		= null;
 
 		#endregion
 
@@ -239,6 +240,5 @@ namespace RbControls
 		{
 			m_Context.EndPaint( );
 		}
-		
 	}
 }

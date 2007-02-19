@@ -133,7 +133,31 @@
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
-                <Folder RelPath = "Camera\" />
+                <File
+                    RelPath = "TypeGraph.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Cameras\CameraBase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Cameras\ProjectionCamera.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Cameras\SphereCamera.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Cameras\SphereCameraControl.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
                 <File
                     RelPath = "Components\Component.cs"
                     SubType = "Code"
@@ -146,6 +170,11 @@
                 />
                 <File
                     RelPath = "Components\EngineXmlLoader.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Components\GroundPlane.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -211,6 +240,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Maths\IRay3Intersector.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Maths\Line3.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -236,7 +270,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Maths\RayIntersection.cs"
+                    RelPath = "Maths\Ray3Intersection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -392,6 +426,66 @@
                 />
                 <File
                     RelPath = "Resources\ResourceProvider.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\ArrayObjectSet.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\Clock.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\DelegateQuery.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\ISceneEvents.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\ObjectSet.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\Query.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\RaycastQuery.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\RenderManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\SceneDb.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\SpatialQuery.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\TypeGraphObjectSet.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\TypeQuery.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
