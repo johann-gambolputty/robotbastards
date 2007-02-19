@@ -203,11 +203,6 @@
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
-                <File
-                    RelPath = "Components\Scene.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
                 <Folder RelPath = "Interaction\" />
                 <File
                     RelPath = "Maths\CatmullRomSpline.cs"

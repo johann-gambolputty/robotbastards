@@ -61,6 +61,21 @@ namespace RbEngine.Rendering
 			m_Passes.Add( pass );
 		}
 
+		/// <summary>
+		/// The effect that owns this technique
+		/// </summary>
+		public RenderEffect Effect
+		{
+			get
+			{
+				return m_Effect;
+			}
+			set
+			{
+				m_Effect = value;
+			}
+		}
+
 		#endregion
 
 		#region	Application
@@ -93,6 +108,10 @@ namespace RbEngine.Rendering
 		/// </summary>
 		protected virtual void Begin( )
 		{
+			if ( m_Effect != null )
+			{
+				m_Effect.Apply( );
+			}
 		}
 
 		/// <summary>
@@ -101,13 +120,6 @@ namespace RbEngine.Rendering
 		protected virtual void End( )
 		{
 		}
-
-		#endregion
-
-		#region	Private stuff
-
-		private string		m_Name;
-		private ArrayList	m_Passes = new ArrayList( );
 
 		#endregion
 
@@ -166,5 +178,14 @@ namespace RbEngine.Rendering
 		}
 
 		#endregion
+
+		#region	Private stuff
+
+		private RenderEffect	m_Effect;
+		private string			m_Name;
+		private ArrayList		m_Passes = new ArrayList( );
+
+		#endregion
+
 	}
 }

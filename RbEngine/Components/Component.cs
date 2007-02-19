@@ -209,7 +209,7 @@ namespace RbEngine.Components
 		{
 			foreach ( Object curObj in m_Children )
 			{
-				if ( childType.IsSubclassOf( curObj.GetType( ) ) )
+				if ( childType.IsInstanceOfType( curObj ) )
 				{
 					return curObj;
 				}

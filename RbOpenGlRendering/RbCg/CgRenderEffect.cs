@@ -41,6 +41,64 @@ namespace RbOpenGlRendering.RbCg
 			Load( input, inputSource );
 		}
 
+		#region	Effect application
+
+		public override void Apply()
+		{
+			IntPtr param = m_Bindings[ ( int )ShaderParameterBinding.ModelViewMatrix ];
+			if ( param != IntPtr.Zero )
+			{
+				Tao.Cg.CgGl.cgGLSetStateMatrixParameter( param, Tao.Cg.CgGl.CG_GL_MODELVIEW_MATRIX, Tao.Cg.CgGl.CG_GL_MATRIX_IDENTITY );
+			}
+
+			param = m_Bindings[ ( int )ShaderParameterBinding.InverseModelViewMatrix ];
+			if ( param != IntPtr.Zero )
+			{
+				Tao.Cg.CgGl.cgGLSetStateMatrixParameter( param, Tao.Cg.CgGl.CG_GL_MODELVIEW_MATRIX, Tao.Cg.CgGl.CG_GL_MATRIX_INVERSE );
+			}
+
+			param = m_Bindings[ ( int )ShaderParameterBinding.InverseTransposeModelViewMatrix ];
+			if ( param != IntPtr.Zero )
+			{
+				Tao.Cg.CgGl.cgGLSetStateMatrixParameter( param, Tao.Cg.CgGl.CG_GL_MODELVIEW_MATRIX, Tao.Cg.CgGl.CG_GL_MATRIX_INVERSE_TRANSPOSE );
+			}
+
+			param = m_Bindings[ ( int )ShaderParameterBinding.ModelViewProjectionMatrix ];
+			if ( param != IntPtr.Zero )
+			{
+				Tao.Cg.CgGl.cgGLSetStateMatrixParameter( param, Tao.Cg.CgGl.CG_GL_MODELVIEW_PROJECTION_MATRIX, Tao.Cg.CgGl.CG_GL_MATRIX_IDENTITY );
+			}
+			
+			param = m_Bindings[ ( int )ShaderParameterBinding.EyePosition ];
+			if ( param != IntPtr.Zero )
+			{
+				//	TODO: Setup camera frame and frustum in the renderer
+			//	Tao.Cg.Cg.cgSetParameter3f( );
+			}
+			/*
+		
+		/// <summary>
+		/// Parameter bound to current eye x axis (world space)
+		/// </summary>
+		EyeXAxis,
+		
+		/// <summary>
+		/// Parameter bound to current eye y axis(world space)
+		/// </summary>
+		EyeYAxis,
+		
+		/// <summary>
+		/// Parameter bound to current eye z axis (world space)
+		/// </summary>
+		EyeZAxis,
+		*/
+		}
+
+
+		#endregion
+
+		#region	Effect loading and creation
+
 		/// <summary>
 		/// Loads this effect from a .cgfx file
 		/// </summary>
@@ -115,6 +173,8 @@ namespace RbOpenGlRendering.RbCg
 			return true;
 		}
 
+		#endregion
+
 		#region	Effect parameters
 
 		/// <summary>
@@ -147,7 +207,7 @@ namespace RbOpenGlRendering.RbCg
 		/// </remarks>
 		public override void				BindParameter( ShaderParameter parameter, ShaderParameterBinding binding )
 		{
-			m_Bindings[ ( int )binding ] = parameter;
+			m_Bindings[ ( int )binding ] = ( ( CgShaderParameter )parameter ).Parameter;
 		}
 
 		#endregion
@@ -155,6 +215,6 @@ namespace RbOpenGlRendering.RbCg
 		private IntPtr				m_Context;
 		private IntPtr				m_EffectHandle;
 		private ArrayList			m_Parameters	= new ArrayList( );
-		private ShaderParameter[]	m_Bindings		= new ShaderParameter[ ( int )ShaderParameterBinding.NumBindings ];
+		private IntPtr[]			m_Bindings		= new IntPtr[ ( int )ShaderParameterBinding.NumBindings ];
 	}
 }

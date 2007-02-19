@@ -138,6 +138,11 @@
                     SubType = "UserControl"
                     BuildAction = "Compile"
                 />
+                <File
+                    RelPath = "SceneDisplay.resx"
+                    DependentUpon = "SceneDisplay.cs"
+                    BuildAction = "EmbeddedResource"
+                />
             </Include>
         </Files>
     </CSHARP>
