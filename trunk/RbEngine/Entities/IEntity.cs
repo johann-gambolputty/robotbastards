@@ -10,7 +10,7 @@ namespace RbEngine.Entities
 		/// <summary>
 		/// The entity position
 		/// </summary>
-		Vector3	Position
+		Maths.Vector3	Position
 		{
 			get;
 			set;
@@ -19,7 +19,7 @@ namespace RbEngine.Entities
 		/// <summary>
 		/// The entity facing
 		/// </summary>
-		Vector3	Facing
+		Maths.Vector3	Facing
 		{
 			get;
 			set;

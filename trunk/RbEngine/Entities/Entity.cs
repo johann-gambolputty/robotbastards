@@ -59,6 +59,9 @@ namespace RbEngine.Entities
 			result.IpAdd( m_Start );
 			return result;
 		}
+
+		private Maths.Vector3 m_Start;
+		private Maths.Vector3 m_End;
 	}
 
 	/// <summary>
