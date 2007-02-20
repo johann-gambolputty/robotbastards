@@ -51,7 +51,7 @@ namespace RbEngine.Rendering
 		/// <param name="start"> Start position of the cylinder </param>
 		/// <param name="end"> End position of the cylinder </param>
 		/// <param name="radius"> Radius of the cylinder </param>
-		public void	RenderCylinder( Vector3 start, Vector3 end, float radius )
+		public void	RenderCylinder( Point3 start, Point3 end, float radius )
 		{
 			RenderCylinder( start, end, radius, 16 );
 		}
@@ -64,12 +64,12 @@ namespace RbEngine.Rendering
 		/// <param name="radius"> Radius of the cylinder </param>
 		/// <param name="numCircumferenceSamples"> Number of subdivisions around the cylinder circumference</param>
 		/// 
-		public abstract void	RenderCylinder( Vector3 start, Vector3 end, float radius, int numCircumferenceSamples );
+		public abstract void	RenderCylinder( Point3 start, Point3 end, float radius, int numCircumferenceSamples );
 
 		/// <summary>
 		/// Renders a sphere
 		/// </summary>
-		public void RenderSphere( Vector3 pt, float radius )
+		public void RenderSphere( Point3 pt, float radius )
 		{
 			RenderSphere( pt, radius, 10, 10 );
 		}
@@ -77,7 +77,7 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Renders a sphere, using a given sample rate at which to sample sphere longitude and latitude
 		/// </summary>
-		public abstract void RenderSphere( Vector3 pt, float radius, int latitudeSamples, int longitudeSamples );
+		public abstract void RenderSphere( Point3 pt, float radius, int latitudeSamples, int longitudeSamples );
 
 		#endregion
 

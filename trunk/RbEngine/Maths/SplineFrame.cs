@@ -13,7 +13,7 @@ namespace RbEngine.Maths
 		/// <remarks>
 		/// Position isn't really part of the frame, but it falls out of the frame calculations nicely (faster than calculating it from scratch), so it's cached here
 		/// </remarks>
-		public Vector3	Position
+		public Point3	Position
 		{
 			get
 			{
@@ -80,7 +80,7 @@ namespace RbEngine.Maths
 		/// </summary>
 		public SplineFrame( )
 		{
-			m_Position	= new Vector3( );
+			m_Position	= new Point3( );
 			m_Tangent	= Vector3.XAxis;
 			m_Normal	= Vector3.YAxis;
 			m_Binormal	= Vector3.ZAxis;
@@ -93,7 +93,7 @@ namespace RbEngine.Maths
 		/// <param name="position"> Frame origin </param>
 		/// <param name="velocity"> Velocity. Becomes frame tangent (normalised by constructor) </param>
 		/// <param name="acceleration"> Acceleration. Used to calculate frame normal and binormal </param>
-		public SplineFrame( Vector3 position, Vector3 velocity, Vector3 acceleration )
+		public SplineFrame( Point3 position, Vector3 velocity, Vector3 acceleration )
 		{
 			float	sqrSpeed	= velocity.SqrLength;
 			float	dotVA		= velocity.Dot( acceleration );
@@ -117,7 +117,7 @@ namespace RbEngine.Maths
 		/// <param name="binormal"> Frame binormal </param>
 		/// <param name="normal"> Frame normal </param>
 		/// <param name="speed"> Frame speed (velocity length) </param>
-		public SplineFrame( Vector3 position, Vector3 tangent, Vector3 binormal, Vector3 normal, float speed )
+		public SplineFrame( Point3 position, Vector3 tangent, Vector3 binormal, Vector3 normal, float speed )
 		{
 			m_Position	= position;
 			m_Tangent	= tangent;
@@ -131,7 +131,7 @@ namespace RbEngine.Maths
 
 		#region	Private stuff
 
-		private Vector3	m_Position;
+		private Point3	m_Position;
 		private Vector3	m_Tangent;
 		private Vector3 m_Binormal;
 		private Vector3 m_Normal;

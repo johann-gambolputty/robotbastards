@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 namespace RbEngine
 {
 	/// <summary>
-	/// Exception utilities
+	/// Exception utilities.
 	/// </summary>
 	public class ExceptionUtils
 	{

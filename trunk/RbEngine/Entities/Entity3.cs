@@ -3,87 +3,47 @@ using RbEngine.Maths;
 
 namespace RbEngine.Entities
 {
-	/// <summary>
-	/// Vector3Step is used to store vectors that update over time. 
-	/// </summary>
-	/// <remarks>
-	/// Vector3Step is principally used for rendering, when the rendering rate is faster than the update rate
-	/// (the renderer would use GetIntermediate() to get intermediate positions while waiting for the next update).
-	/// </remarks>
-	public class Vector3Step
-	{
-		/// <summary>
-		/// Start of the step
-		/// </summary>
-		public Vector3	Start
-		{
-			get
-			{
-				return m_Start;
-			}
-		}
-
-		/// <summary>
-		/// End of the step
-		/// </summary>
-		public Vector3	End
-		{
-			get
-			{
-				return m_End;
-			}
-		}
-
-		/// <summary>
-		/// Sets the new end point, copying the old end point to the start point
-		/// </summary>
-		/// <param name="newEnd">The new end point</param>
-		public void		Update( Vector3 newEnd )
-		{
-			m_Start = m_End;
-			m_End = newEnd;
-		}
-
-		/// <summary>
-		/// Gets an intermediate vector on the step
-		/// </summary>
-		/// <param name="t">Fraction between 0 and 1. 0 returns Start, 1 returns End</param>
-		/// <returns>Returns the intermediate vector at time t</returns>
-		public Vector3	GetIntermediate( float t )
-		{
-			//	Equivalent to ( Start + ( End - Start ) * t ). Looks a bit nastier, but is more effecient (only one
-			//	vector is created, instead of 3)
-			Vector3 result = new Vector3( m_End );
-			result.IpSubtract( m_Start );
-			result.IpMultiplyByValue( t );
-			result.IpAdd( m_Start );
-			return result;
-		}
-
-		private Maths.Vector3 m_Start;
-		private Maths.Vector3 m_End;
-	}
+	/*
+	 * Degrees of freedom:
+	 * An entity can be characterised by any number of degrees of freedom. This characterisation is separate from their frame (transformation)
+	 * e.g. might have a train constrained to a spline = 1 degree of freedom, despite having a varying 3d position and orientation. Any movement
+	 * requests and orientation requests should be specified in terms of degrees of freedom - or some mapping (to avoid gimbal lock in orientation
+	 * requests).
+	 * I guess the only thing is to have separate interfaces and classes for different DOF setups:
+	 * MovementXRequest (1dof)
+	 * MovementXyRequest (2dof - xy planar movement (e.g. sprites))
+	 * MovementXzRequest (2dof - xz planar movement)
+	 * MovementXyzRequest (3dof - full movement)
+	 * OrientationTurnRequest (turn around the entity axis)
+	 * OrientationXyzwRequest (3dof - specified as quaternion)
+	 *
+	 * Maybe the entity implementation should provide it's own Commit(), invoked the movement/orientation request, that interprets the movement.
+	 * It would be nice to have a generic enough representation such that a MovementXzRequest or MovementXyzRequest can be added to a request chain,
+	 * and work for the same entity type.
+	 * Setup should probably specify: Chain, Handlers, Commiter
+	 *
+	*/
 
 	/// <summary>
-	/// An entity is any object that can be controlled and rendered
+	/// An entity is any object that can be controlled and rendered. Entity3 represents an entity in 3 dimensional space
 	/// </summary>
-	public class Entity : Components.Component, IEntity, Scene.ISceneEvents
+	public class Entity3 : Components.Component
 	{
 
-		#region IEntity Members
+		#region Entity frame
 
 		/// <summary>
 		/// The agent position
 		/// </summary>
-		public Vector3 Position
+		public Point3 Position
 		{
 			get
 			{
-				return m_Position;
+				return m_Position.Current;
 			}
 			set
 			{
-				m_Position = value;
+				m_Position.Current = value;
 			}
 		}
 
@@ -102,15 +62,68 @@ namespace RbEngine.Entities
 			}
 		}
 
+		/// <summary>
+		/// The agent left-hand vector
+		/// </summary>
+		public Vector3 Left
+		{
+			get
+			{
+				return m_Facing;
+			}
+		}
+
+		/// <summary>
+		/// The agent right-hand vector
+		/// </summary>
+		public Vector3 Right
+		{
+			get
+			{
+				return m_Facing;
+			}
+			set
+			{
+				m_Facing = value;
+			}
+		}
+
+		/// <summary>
+		/// The agent up vector
+		/// </summary>
+		public Vector3 Up
+		{
+			get
+			{
+				return m_Facing;
+			}
+			set
+			{
+				m_Facing = value;
+			}
+		}
+
+		/// <summary>
+		/// The agent down vector
+		/// </summary>
+		public Vector3 Down
+		{
+			get
+			{
+				return m_Facing;
+			}
+			set
+			{
+				m_Facing = value;
+			}
+		}
+
 		#endregion
 
 		#region	Private stuff
 
-		private Vector3	m_LastPosition	= new Vector3( );
-		private Vector3	m_LastFacing	= new Vector3( 0, 0, 1 );
-
-		private Vector3	m_Position		= new Vector3( );
-		private Vector3	m_Facing		= new Vector3( 0, 0, 1 );
+		private Maths.Point3Interpolator	m_Position	= new Maths.Point3Interpolator( );
+		private Vector3						m_Facing	= Vector3.ZAxis;
 
 		#endregion
 
@@ -147,19 +160,5 @@ namespace RbEngine.Entities
 			//
 		}
 
-		#region ISceneEvents Members
-
-		//	TODO: Should the update clock be in the scene? Sounds like it should be in the engine, or something
-		//	Anyway, the entity should subscribe to it, and update the render position
-
-		public void AddedToScene(RbEngine.Scene.SceneDb db)
-		{
-		}
-
-		public void RemovedFromScene(RbEngine.Scene.SceneDb db)
-		{
-		}
-
-		#endregion
 	}
 }

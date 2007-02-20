@@ -58,7 +58,7 @@ namespace RbOpenGlRendering
 		/// <param name="radius"> Radius of the cylinder </param>
 		/// <param name="numCircumferenceSamples"> Number of subdivisions around the cylinder circumference</param>
 		/// 
-		public override void	RenderCylinder( Vector3 start, Vector3 end, float radius, int numCircumferenceSamples )
+		public override void	RenderCylinder( Point3 start, Point3 end, float radius, int numCircumferenceSamples )
 		{
 			float angleIncrement	= Constants.kTwoPi / ( float )numCircumferenceSamples;
 			float angle				= Constants.kTwoPi - angleIncrement;
@@ -120,7 +120,7 @@ namespace RbOpenGlRendering
 		/// <summary>
 		/// Renders a sphere, using a given sample rate at which to sample sphere longitude and latitude
 		/// </summary>
-		public override void RenderSphere( Vector3 pt, float radius, int latitudeSamples, int longitudeSamples )
+		public override void RenderSphere( Point3 pt, float radius, int latitudeSamples, int longitudeSamples )
 		{
 			//	Render the sphere as a series of strips
 			float	latitudeAngleIncrement	= Constants.kPi / ( float )latitudeSamples;
@@ -158,7 +158,7 @@ namespace RbOpenGlRendering
 		/// <summary>
 		/// Sphere rendering helper - renders a segment of the sphere
 		/// </summary>
-		private static void RenderST( float s, float t, float radius, Vector3 centre )
+		private static void RenderST( float s, float t, float radius, Point3 centre )
 		{
 			float cosS = ( float )System.Math.Cos( s );
 			float sinS = ( float )System.Math.Sin( s );

@@ -84,7 +84,7 @@ namespace RbEngine.Cameras
 			}
 		}
 
-		private void UpdateLookAt( Maths.Vector3 newLookAt )
+		private void UpdateLookAt( Maths.Point3 newLookAt )
 		{
 			m_Camera.LookAt = newLookAt;
 
@@ -121,7 +121,7 @@ namespace RbEngine.Cameras
 				}
 				case MovementModes.kMove	:
 				{
-					Maths.Vector3 newLookAt = m_Camera.LookAt;
+					Maths.Point3 newLookAt = m_Camera.LookAt;
 
 					float moveScale = ZoomScale;
 

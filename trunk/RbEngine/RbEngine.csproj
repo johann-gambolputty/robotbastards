@@ -199,6 +199,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Components\Request.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Components\RequestChain.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Components\Simple\Ball.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -209,32 +219,17 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Entities\ActionRequest.cs"
+                    RelPath = "Entities\Entity3.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Entities\ActionRequestChain.cs"
+                    RelPath = "Entities\MovementXzRequest.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Entities\Entity.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Entities\IActionRequestHandler.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Entities\IEntity.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Entities\MovementRequest.cs"
+                    RelPath = "Entities\TurnRequest.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -245,6 +240,11 @@
                 />
                 <File
                     RelPath = "Interaction\CommandInputBinding.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Maths\BigPoint3.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -309,6 +309,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Maths\Point3Interpolator.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Maths\Ray3.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -355,11 +360,6 @@
                 />
                 <File
                     RelPath = "Maths\Vector3.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Maths\WorldPoint3.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -17,7 +17,7 @@ namespace RbEngine.Maths
 			float	a0	= originToCentre.SqrLength - ( sphere.SqrRadius );
 			float	a1	= ray.Direction.Dot( originToCentre );
 			float	discriminant;
-			Vector3 intersectionPt;
+			Point3	intersectionPt;
 			
 			if ( a0 <= 0 )
 			{

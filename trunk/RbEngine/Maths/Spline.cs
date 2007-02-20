@@ -40,7 +40,7 @@ namespace RbEngine.Maths
 		/// <summary>
 		/// Calculates the position on the spline at fraction t
 		/// </summary>
-		public abstract Vector3		EvaluatePosition( float t );
+		public abstract Point3		EvaluatePosition( float t );
 
 		/// <summary>
 		/// Calculates the first derivative on the spline at fraction t
@@ -140,7 +140,7 @@ namespace RbEngine.Maths
 		/// <summary>
 		/// Delegate that returns the distance to a point
 		/// </summary>
-		public delegate float	DistanceToPointDelegate( Vector3 pt );
+		public delegate float	DistanceToPointDelegate( Point3 pt );
 
 		/// <summary>
 		/// Returns the point on the spline that minimises the specified distance function
@@ -153,7 +153,7 @@ namespace RbEngine.Maths
 		/// <summary>
 		/// Helper - returns the closest point on this spline to a point
 		/// </summary>
-		public float			FindClosestPoint( Vector3 pt, int iterations )
+		public float			FindClosestPoint( Point3 pt, int iterations )
 		{
 			return FindClosestPoint( new DistanceToPointDelegate( pt.SqrDistanceTo ), iterations );
 		}

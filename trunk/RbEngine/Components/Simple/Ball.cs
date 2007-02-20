@@ -101,7 +101,7 @@ namespace RbEngine.Components.Simple
 
 		#endregion
 
-		private Maths.Sphere3	m_Sphere	= new Sphere3( new Vector3( ), 10.0f );
+		private Maths.Sphere3	m_Sphere	= new Sphere3( new Point3( ), 10.0f );
 		private RenderState		m_LineState;
 		private RenderState		m_FilledState;
 	}

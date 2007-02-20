@@ -122,7 +122,6 @@ namespace RbEngine.Components
 	/// </summary>
 	public class Component : IInstanceable, IParentObject
 	{
-
 		#region	Messaging
 
 		//	TODO: Add nice reflection based thing
