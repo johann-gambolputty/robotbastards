@@ -10,7 +10,7 @@ namespace RbEngine.Maths
 		/// <summary>
 		/// Gets or sets the sphere centre
 		/// </summary>
-		public Vector3	Centre
+		public Point3	Centre
 		{
 			get
 			{
@@ -57,7 +57,7 @@ namespace RbEngine.Maths
 		/// </summary>
 		public Sphere3( )
 		{
-			m_Centre	= new Vector3( );
+			m_Centre	= new Point3( );
 			m_Radius	= 1.0f;
 		}
 
@@ -66,13 +66,13 @@ namespace RbEngine.Maths
 		/// </summary>
 		/// <param name="srcCentre"> Sphere centre </param>
 		/// <param name="srcRadius"> Sphere radius </param>
-		public Sphere3( Vector3 srcCentre, float srcRadius )
+		public Sphere3( Point3 srcCentre, float srcRadius )
 		{
 			m_Centre = srcCentre;
 			m_Radius = srcRadius;
 		}
 
-		private Vector3	m_Centre;
+		private Point3	m_Centre;
 		private float	m_Radius;
 	}
 }

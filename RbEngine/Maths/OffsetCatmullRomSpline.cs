@@ -27,14 +27,14 @@ namespace RbEngine.Maths
 
 		private void MakeEvaluator( ref CatmullRomSpline.Evaluator eval, OffsetCatmullRomSpline spline, float t, CatmullRomSpline baseSpline, float offset )
 		{
-			eval.Points	= new Vector3[ 4 ];
+			eval.Points	= new Point3[ 4 ];
 			eval.CpIndex = ( int )t;
 			eval.LocalT	= t - ( float )eval.CpIndex;
 
 			SplineControlPoints controlPoints = baseSpline.ControlPoints;
 			if ( eval.CpIndex == 0 )
 			{
-				eval.Points[ 0 ] = controlPoints[ 0 ].Position - ( controlPoints[ 0 ].Position - controlPoints[ 1 ].Position ) + controlPoints[ 0 ].Frame.Binormal * offset;
+				eval.Points[ 0 ] = controlPoints[ 0 ].Position + controlPoints[ 0 ].Frame.Binormal * offset;
 			}
 			else
 			{
@@ -49,7 +49,7 @@ namespace RbEngine.Maths
 			if ( eval.CpIndex >= lastCp )
 			{
 				point2Offset		= point1Offset;
-				eval.Points[ 2 ]	= eval.Points[ 1 ] + ( eval.Points[ 1 ] - eval.Points[ 0 ] ) + point2Offset;
+				eval.Points[ 2 ]	= controlPoints[ lastCp ].Position + point2Offset;
 			}
 			else
 			{
@@ -59,7 +59,7 @@ namespace RbEngine.Maths
 			
 			if ( ( eval.CpIndex + 1 ) >= lastCp )
 			{
-				eval.Points[ 3 ] = eval.Points[ 2 ] + ( eval.Points[ 2 ] - eval.Points[ 1 ] ) + point2Offset;
+				eval.Points[ 3 ] = controlPoints[ lastCp ].Position + point2Offset;
 			}
 			else
 			{
@@ -70,7 +70,7 @@ namespace RbEngine.Maths
 		/// <summary>
 		/// Calculates the position on the spline at fraction t
 		/// </summary>
-		public override Vector3		EvaluatePosition( float t )
+		public override Point3	EvaluatePosition( float t )
 		{
 			CatmullRomSpline.Evaluator eval = new CatmullRomSpline.Evaluator( );
 			MakeEvaluator( ref eval, this, t, m_BaseSpline, m_Offset );

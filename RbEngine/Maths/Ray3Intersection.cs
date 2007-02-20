@@ -25,7 +25,7 @@ namespace RbEngine.Maths
 		/// <summary>
 		/// The point that the ray intersected the object. Always valid
 		/// </summary>
-		public Vector3	IntersectionPosition
+		public Point3	IntersectionPosition
 		{
 			get
 			{
@@ -83,7 +83,7 @@ namespace RbEngine.Maths
 		/// <param name="pos"> Ray intersection position </param>
 		/// <param name="normal"> Ray intersection normal </param>
 		/// <param name="distance"> Ray intersection distance </param>
-		public			Ray3Intersection( Vector3 pos, Vector3 normal, float distance )
+		public			Ray3Intersection( Point3 pos, Vector3 normal, float distance )
 		{
 			m_Position	= pos;
 			m_Normal	= normal;
@@ -92,7 +92,7 @@ namespace RbEngine.Maths
 
 
 		private Object	m_Object;
-		private Vector3	m_Position;
+		private Point3	m_Position;
 		private Vector3	m_Normal;
 		private float	m_Distance;
 	}

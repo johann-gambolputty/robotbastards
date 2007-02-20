@@ -84,7 +84,7 @@ namespace RbEngine.Cameras
 		/// Access to the camera look at point. If this is set to null, the camera becomes a 'free look' camera. Otherwise, the 
 		/// camera will rotate around the look at point, keeping it in the centre of the viewport
 		/// </summary>
-		public Vector3	LookAt
+		public Point3	LookAt
 		{
 			get
 			{
@@ -149,7 +149,7 @@ namespace RbEngine.Cameras
 		/// <summary>
 		///	Gets the camera's position
 		/// </summary>
-		public Vector3	Position
+		public Point3	Position
 		{
 			get
 			{
@@ -163,12 +163,12 @@ namespace RbEngine.Cameras
 
 		private float	m_S			= Maths.Constants.kPi;
 		private float	m_T			= 0.1f;
-		private Vector3	m_LookAt	= new Vector3( );
+		private Point3	m_LookAt	= new Point3( );
 		private float	m_Zoom		= 100.0f;
 		private Vector3	m_XAxis		= new Vector3( 1, 0, 0 );
 		private Vector3	m_YAxis		= new Vector3( 0, 1, 0 );
 		private Vector3	m_ZAxis		= new Vector3( 0, 0, 1 );
-		private Vector3	m_Pos		= new Vector3( );
+		private Point3	m_Pos		= new Point3( );
 
 		/// <summary>
 		/// Updates camera frame
@@ -184,7 +184,7 @@ namespace RbEngine.Cameras
 			m_YAxis.Z	= ( float )-(  Math.Sin( m_S ) * Math.Cos( m_T ) );
 
 			m_XAxis		= Vector3.Cross( m_ZAxis, m_YAxis );
-			m_Pos		= ( m_ZAxis * m_Zoom )  + m_LookAt;
+			m_Pos		= m_LookAt + ( m_ZAxis * m_Zoom );
 		}
 
 		#endregion

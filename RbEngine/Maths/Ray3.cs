@@ -12,7 +12,7 @@ namespace RbEngine.Maths
 		/// </summary>
 		public Ray3( )
 		{
-			m_Origin	= new Vector3( );
+			m_Origin	= new Point3( );
 			m_Direction	= new Vector3( 0, 0, 1 );
 		}
 
@@ -21,7 +21,7 @@ namespace RbEngine.Maths
 		/// </summary>
 		/// <param name="origin"> Ray origin </param>
 		/// <param name="direction"> Ray direction </param>
-		public Ray3( Vector3 origin, Vector3 direction )
+		public Ray3( Point3 origin, Vector3 direction )
 		{
 			m_Origin = origin;
 			m_Direction = direction;
@@ -32,7 +32,7 @@ namespace RbEngine.Maths
 		/// </summary>
 		/// <param name="t"> Distance from ray origin </param>
 		/// <returns> Position at specified distance along ray direction, from ray origin</returns>
-		public Vector3		GetPointOnRay( float t )
+		public Point3		GetPointOnRay( float t )
 		{
 			return m_Origin + m_Direction * t;
 		}
@@ -40,7 +40,7 @@ namespace RbEngine.Maths
 		/// <summary>
 		/// Ray origin
 		/// </summary>
-		public Vector3		Origin
+		public Point3		Origin
 		{
 			get
 			{
@@ -67,7 +67,7 @@ namespace RbEngine.Maths
 			}
 		}
 
-		private Vector3		m_Origin;
+		private Point3		m_Origin;
 		private Vector3		m_Direction;
 	}
 }

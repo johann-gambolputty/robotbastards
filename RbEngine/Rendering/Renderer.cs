@@ -140,7 +140,7 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Sets the current Transform.kLocalToView transform to a look-at matrix
 		/// </summary>
-		public abstract void			SetLookAtTransform( Vector3 lookAt, Vector3 camPos, Vector3 camYAxis );
+		public abstract void			SetLookAtTransform( Point3 lookAt, Point3 camPos, Vector3 camYAxis );
 
 		/// <summary>
 		/// Sets the current Transform.kViewToScreen matrix to a projection matrix with the specified attributes

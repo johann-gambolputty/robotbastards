@@ -13,7 +13,7 @@ namespace RbEngine.Maths
 		/// <summary>
 		/// The position of the control point. If set, then the owner spline is changed (Spline.OnChanged())
 		/// </summary>
-		public Vector3		Position
+		public Point3		Position
 		{
 			get
 			{

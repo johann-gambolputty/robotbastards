@@ -292,13 +292,18 @@ namespace RbEngine.Maths
 		/// <summary>
 		/// Returns the dot product of this vector with another
 		/// </summary>
-		/// <param name="vec"></param>
-		/// <returns></returns>
 		public float Dot( Vector3 vec )
 		{
 			return ( X * vec.X + Y * vec.Y + Z * vec.Z );
 		}
 
+		/// <summary>
+		/// Returns the dot product of this vector with a point (used by plane intersection code...)
+		/// </summary>
+		public float Dot( Point3 pt )
+		{
+			return ( X * pt.X + Y * pt.Y + Z * pt.Z );
+		}
 		/// <summary>
 		/// Returns the distance from this point to another
 		/// </summary>

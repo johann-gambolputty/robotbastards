@@ -14,14 +14,14 @@ namespace RbEngine.Maths
 		/// </summary>
 		public Line3( )
 		{
-			m_Start	= new Vector3( );
-			m_End	= new Vector3( );
+			m_Start	= new Point3( );
+			m_End	= new Point3( );
 		}
 
 		/// <summary>
 		/// Sets the start and end points of the line
 		/// </summary>
-		public Line3( Vector3 start, Vector3 end )
+		public Line3( Point3 start, Point3 end )
 		{
 			Set( start, end );
 		}
@@ -29,7 +29,7 @@ namespace RbEngine.Maths
 		/// <summary>
 		/// Sets the start and end points of the line
 		/// </summary>
-		public void	Set( Vector3 start, Vector3 end )
+		public void	Set( Point3 start, Point3 end )
 		{
 			m_Start = start;
 			m_End	= end;
@@ -44,7 +44,7 @@ namespace RbEngine.Maths
 		/// </summary>
 		/// <param name="pt"> Point to test </param>
 		/// <returns> Squared distance to pt </returns>
-		public float	GetSqrDistanceToPoint( Vector3 pt )
+		public float	GetSqrDistanceToPoint( Point3 pt )
 		{
 			Vector3	lineVec		= End - Start;
 			float	sqrLength	= lineVec.SqrLength;
@@ -55,7 +55,7 @@ namespace RbEngine.Maths
 				t = Utils.Clamp( ( pt - Start ).Dot( lineVec ) / sqrLength, 0.0f, 1.0f );
 			}
 
-			Vector3 closestPt = Start + ( lineVec * t );
+			Point3 closestPt = Start + ( lineVec * t );
 			return closestPt.SqrDistanceTo( pt );
 		}
 
@@ -64,7 +64,7 @@ namespace RbEngine.Maths
 		/// </summary>
 		/// <param name="pt"> Point to test </param>
 		/// <returns> Distance to pt </returns>
-		public float	GetDistanceToPoint( Vector3 pt )
+		public float	GetDistanceToPoint( Point3 pt )
 		{
 			return ( float )System.Math.Sqrt( GetSqrDistanceToPoint( pt ) );
 		}
@@ -76,7 +76,7 @@ namespace RbEngine.Maths
 		/// <summary>
 		/// Start position on the line
 		/// </summary>
-		public Vector3	Start
+		public Point3	Start
 		{
 			get
 			{
@@ -91,7 +91,7 @@ namespace RbEngine.Maths
 		/// <summary>
 		/// End position on the line
 		/// </summary>
-		public Vector3	End
+		public Point3	End
 		{
 			get
 			{
@@ -118,8 +118,8 @@ namespace RbEngine.Maths
 
 		#region	Private stuff
 
-		Vector3	m_Start;
-		Vector3	m_End;
+		Point3	m_Start;
+		Point3	m_End;
 
 		#endregion
 	}

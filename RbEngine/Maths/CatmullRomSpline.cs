@@ -17,7 +17,7 @@ namespace RbEngine.Maths
 			/// <summary>
 			/// Control points
 			/// </summary>
-			public Vector3[]	Points;
+			public Point3[]		Points;
 
 			/// <summary>
 			/// Control point index
@@ -38,14 +38,12 @@ namespace RbEngine.Maths
 			/// Evaluates the position on the spline
 			/// </summary>
 			/// <returns> Returns the position on the spline at the current T value </returns>
-			public Vector3		EvaluatePosition( )
+			public Point3		EvaluatePosition( )
 			{
-				Vector3 position		= new Vector3( );
-				Vector3	acceleration	= new Vector3( );
-
-				float t	= LocalT;
-				float t2 = t * t;
-				float t3 = t2 * t;
+				Point3	position	= new Point3( );
+				float 	t			= LocalT;
+				float 	t2			= t * t;
+				float 	t3			= t2 * t;
 
 				for ( int i = 0; i < 3; ++i )
 				{
@@ -65,7 +63,7 @@ namespace RbEngine.Maths
 			/// </summary>
 			/// <param name="newGlobalT"> New T value </param>
 			/// <returns> Returns the position on the spline at the new T value </returns>
-			public Vector3		EvaluatePositionWithClampedGlobalT( float newGlobalT )
+			public Point3		EvaluatePositionWithClampedGlobalT( float newGlobalT )
 			{
 				GlobalT = newGlobalT;
 				LocalT	= GlobalT - ( float )CpIndex; 
@@ -124,7 +122,7 @@ namespace RbEngine.Maths
 			/// <returns> Returns the full Frenet frame on the spline at the current T value </returns>
 			public SplineFrame	EvaluateFrame( )
 			{
-				Vector3 position		= new Vector3( );
+				Point3	position		= new Point3( );
 				Vector3 velocity		= new Vector3( );
 				Vector3	acceleration	= new Vector3( );
 
@@ -185,7 +183,7 @@ namespace RbEngine.Maths
 		/// <param name="t"> Global T value on spline to perform evaluations </param>
 		private void MakeEvaluator( ref Evaluator eval, CatmullRomSpline spline, float t )
 		{
-			eval.Points		= new Vector3[ 4 ];
+			eval.Points		= new Point3[ 4 ];
 			eval.CpIndex	= ( int )t;
 			eval.GlobalT	= t;
 			eval.LocalT		= t - ( float )eval.CpIndex;
@@ -193,7 +191,7 @@ namespace RbEngine.Maths
 			SplineControlPoints controlPoints = spline.ControlPoints;
 			if ( eval.CpIndex == 0 )
 			{
-				eval.Points[ 0 ] = controlPoints[ 0 ].Position - ( controlPoints[ 0 ].Position - controlPoints[ 1 ].Position );
+				eval.Points[ 0 ] = controlPoints[ 0 ].Position;
 			}
 			else
 			{
@@ -204,7 +202,7 @@ namespace RbEngine.Maths
 			int lastCp = controlPoints.Count - 1;
 			if ( eval.CpIndex >= lastCp )
 			{
-				eval.Points[ 2 ] = eval.Points[ 1 ] + ( eval.Points[ 1 ] - eval.Points[ 0 ] );
+				eval.Points[ 2 ] = controlPoints[ lastCp ].Position;
 			}
 			else
 			{
@@ -213,7 +211,7 @@ namespace RbEngine.Maths
 			
 			if ( ( eval.CpIndex + 1 ) >= lastCp )
 			{
-				eval.Points[ 3 ] = eval.Points[ 2 ] + ( eval.Points[ 2 ] - eval.Points[ 1 ] );
+				eval.Points[ 3 ] = controlPoints[ lastCp ].Position;
 			}
 			else
 			{
@@ -228,7 +226,7 @@ namespace RbEngine.Maths
 		/// <summary>
 		/// Calculates the position on the spline at fraction t
 		/// </summary>
-		public override Vector3		EvaluatePosition( float t )
+		public override Point3		EvaluatePosition( float t )
 		{
 			Evaluator eval = new Evaluator( );
 			MakeEvaluator( ref eval, this, t );
@@ -299,7 +297,7 @@ namespace RbEngine.Maths
 			private float[]					m_S2;
 			private float[]					m_Distances;
 			private float[]					m_PValues;
-			private Vector3[]				m_Points;
+			private Point3[]				m_Points;
 			private DistanceToPointDelegate	m_Distance;
 
 			private float					m_ClosestDistance;
@@ -314,7 +312,7 @@ namespace RbEngine.Maths
 				m_S					= new float[ 4 ];
 				m_S2				= new float[ 4 ];
 				m_Distances			= new float[ 4 ];
-				m_Points			= new Vector3[ 4 ];
+				m_Points			= new Point3[ 4 ];
 				m_PValues			= new float[ 4 ];
 				m_Distance			= distance;
 

@@ -241,7 +241,7 @@ namespace RbOpenGlRendering
 		/// <summary>
 		/// Sets the current Transform.kLocalToView transform to a look-at matrix
 		/// </summary>
-		public override void SetLookAtTransform( Vector3 lookAt, Vector3 camPos, Vector3 camYAxis )
+		public override void SetLookAtTransform( Point3 lookAt, Point3 camPos, Vector3 camYAxis )
 		{
 			Gl.glMatrixMode( Gl.GL_MODELVIEW );
 			Gl.glLoadIdentity( );
