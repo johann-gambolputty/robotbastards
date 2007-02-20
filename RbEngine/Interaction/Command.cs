@@ -25,7 +25,7 @@ namespace RbEngine.Interaction
 		/// <param name="binding"></param>
 		public void					AddBinding( CommandInputBinding binding )
 		{
-			m_Bindings += binding;
+			m_Bindings.Add( binding );
 		}
 
 		/// <summary>

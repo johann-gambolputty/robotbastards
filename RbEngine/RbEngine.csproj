@@ -209,12 +209,32 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Entities\ActionRequest.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Entities\ActionRequestChain.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Entities\Entity.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Entities\IActionRequestHandler.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Entities\IEntity.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Entities\MovementRequest.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -284,6 +304,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Maths\Point3.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Maths\Ray3.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -330,6 +355,11 @@
                 />
                 <File
                     RelPath = "Maths\Vector3.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Maths\WorldPoint3.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
