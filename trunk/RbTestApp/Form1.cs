@@ -21,6 +21,9 @@ namespace RbTestApp
 
 		public Form1()
 		{
+			//	Test to force initialisation of the typemanager
+			RbEngine.Components.MessageTypeManager.Inst.ToString( );
+
 			string renderAssemblyName = System.Configuration.ConfigurationSettings.AppSettings[ "renderAssembly" ];
 			if ( renderAssemblyName == null )
 			{
@@ -40,6 +43,7 @@ namespace RbTestApp
 				RbEngine.Resources.ResourceManager.Inst.Setup( ( System.Xml.XmlElement )doc.SelectSingleNode( "/resourceManager" ) );
 				RbEngine.Resources.ResourceManager.Inst.Load( "scene1.xml" );
 			}
+
 			//
 			// Required for Windows Form Designer support
 			//

@@ -179,6 +179,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Components\IMessageHandler.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Components\INamedObject.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -199,17 +204,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Components\MessageRecipientChain.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Components\MessageTypeManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Components\ModelSet.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Components\Request.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Components\RequestChain.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -224,12 +229,27 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Entities\Entity.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Entities\Entity3.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Entities\MovementRequest.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Entities\MovementXzRequest.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Entities\RotationRequest.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -365,6 +385,26 @@
                 />
                 <File
                     RelPath = "Maths\Vector3.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\Client.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\IServer.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\Server.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\ServerProxy.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -505,6 +545,11 @@
                 />
                 <File
                     RelPath = "Scene\ISceneEvents.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\ISceneRenderable.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

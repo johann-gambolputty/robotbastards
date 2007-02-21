@@ -23,16 +23,17 @@ namespace RbEngine.Scene
 		/// </summary>
 		public void Render( )
 		{
-			foreach ( Rendering.IRender renderable in m_Renderables )
+			float delta = 0.0f;	//	TODO: Fill in delta appropriately
+			foreach ( Scene.ISceneRenderable renderable in m_Renderables )
 			{
-				renderable.Render( );
+				renderable.Render( delta );
 			}
 		}
 
 		#region	Private stuff
 
 		/// <summary>
-		/// If the specified object, or any of its child objects implement the IRender interface, they get added to this manager
+		/// If the specified object, or any of its child objects implement the Scene.ISceneRenderable interface, they get added to this manager
 		/// </summary>
 		private void OnObjectAddedToScene( SceneDb scene, Object obj )
 		{
@@ -40,11 +41,11 @@ namespace RbEngine.Scene
 		}
 
 		/// <summary>
-		/// Adds an object and any child objects to this manager, if they implement the Rendering.IRender interface
+		/// Adds an object and any child objects to this manager, if they implement the Scene.ISceneRenderable interface
 		/// </summary>
 		private bool AddObjectGraphToRenderer( Object obj )
 		{
-			if ( obj is Rendering.IRender )
+			if ( obj is Scene.ISceneRenderable )
 			{
 				m_Renderables.Add( obj );
 			}

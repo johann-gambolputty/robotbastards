@@ -68,7 +68,7 @@ namespace RbOpenGlRendering.RbCg
 			{
 				Tao.Cg.CgGl.cgGLSetStateMatrixParameter( param, Tao.Cg.CgGl.CG_GL_MODELVIEW_PROJECTION_MATRIX, Tao.Cg.CgGl.CG_GL_MATRIX_IDENTITY );
 			}
-			
+
 			param = m_Bindings[ ( int )ShaderParameterBinding.EyePosition ];
 			if ( param != IntPtr.Zero )
 			{
@@ -153,7 +153,6 @@ namespace RbOpenGlRendering.RbCg
 				}
 
 				//	Create a RenderTechnique wrapper around the current technique
-				//	TODO: This is failing in the current Tao implementation (was working fine on previous version...)
 				RenderTechnique newTechnique = new RenderTechnique( techniqueName );
 
 				//	Run through all the CG passes in the current technique

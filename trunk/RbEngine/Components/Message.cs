@@ -1,19 +1,36 @@
 using System;
 
+using MessageTypeId = System.UInt16;
+
 namespace RbEngine.Components
 {
-
 	/// <summary>
 	/// Base class for messages
 	/// </summary>
 	public abstract class Message
 	{
 		/// <summary>
+		/// Message recipient delegate
+		/// </summary>
+		public delegate void	RecipientDelegate( Message msg );
+
+		/// <summary>
+		/// Gets the message type id associated with a message type
+		/// </summary>
+		public static MessageTypeId	IdFromType( Type messageType )
+		{
+			return ( MessageTypeId )( messageType.GetHashCode( ) );
+		}
+
+		/// <summary>
 		/// Gets the type identifier of this message
 		/// </summary>
-		public abstract ushort	TypeId
+		public MessageTypeId	TypeId
 		{
-			get;
+			get
+			{
+				return IdFromType( GetType( ) );
+			}
 		}
 
 		/// <summary>
@@ -21,9 +38,9 @@ namespace RbEngine.Components
 		/// </summary>
 		/// <param name="typeId"> Message type identifier </param>
 		/// <returns> Returns a new message of the specified type </returns>
-		public static Message	CreateFromTypeId( ushort typeId )
+		public static Message	CreateFromTypeId( MessageTypeId typeId )
 		{
-			return null;
+			return ( Message )Activator.CreateInstance( MessageTypeManager.Inst.GetMessageTypeFromId( typeId ) );
 		}
 
 		/// <summary>
@@ -57,5 +74,41 @@ namespace RbEngine.Components
 			msg.Read( input );
 			return msg;
 		}
+
+		#region	Message recipient chain support
+
+		/// <summary>
+		/// Adds this message to a recipient list
+		/// </summary>
+		/// <param name="recipients">Recipient chain</param>
+		public void					AddToRecipientChain( MessageRecipientChain recipients )
+		{
+			m_Recipients		= recipients;
+			m_RecipientIndex	= 0;
+		}
+
+		/// <summary>
+		/// Delivers this message to the next recipient in the recipient chain that it is attached to
+		/// </summary>
+		public void					DeliverToNextRecipient( )
+		{
+			if ( m_Recipients != null )
+			{
+				m_Recipients.DeliverToNext( ref m_RecipientIndex, this );
+			}
+		}
+
+		/// <summary>
+		/// Removes this message from a recipient list
+		/// </summary>
+		public void					RemoveFromRecipientChain( )
+		{
+			m_Recipients = null;
+		}
+
+		#endregion
+
+		private MessageRecipientChain	m_Recipients;
+		private int						m_RecipientIndex;
 	}
 }

@@ -229,6 +229,15 @@ namespace RbOpenGlRendering
 		}
 
 		/// <summary>
+		/// Translates the current transform in the specified transform stack
+		/// </summary>
+		public override void	Translate( Transform type, float x, float y, float z )
+		{
+			SetTransformMode( type );
+			Gl.glTranslatef( x, y, z );
+		}
+
+		/// <summary>
 		/// Applies the specified transform, multiplied by the current topmost transform, and adds it to the specified transform stack
 		/// </summary>
 		public override void	PushTransform( Transform type, Matrix44 matrix )
@@ -236,6 +245,15 @@ namespace RbOpenGlRendering
 			SetTransformMode( type );
 			Gl.glPushMatrix( );
 			Gl.glMultMatrixf( GetGlMatrix( matrix ) );
+		}
+
+		/// <summary>
+		/// Pushes a copy of the transform currently at the top of the specified transform stack
+		/// </summary>
+		public override void	PushTransform( Transform type )
+		{
+			SetTransformMode( type );
+			Gl.glPushMatrix( );
 		}
 
 		/// <summary>

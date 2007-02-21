@@ -7,7 +7,7 @@ namespace RbEngine.Components
 	/// <summary>
 	/// Attribute, used for marking up a method as a message handler
 	/// </summary>
-	public class ComponentMessageHandlerAttribute : Attribute
+	public class MessageHandlerAttribute : Attribute
 	{
 	}
 
@@ -17,7 +17,7 @@ namespace RbEngine.Components
 	public class ComponentMessageMap
 	{
 		/// <summary>
-		/// Constructor. Creates the mapping for all ComponentMessageHandlerAttribute tagged methods in the specified type
+		/// Constructor. Creates the mapping for all MessageHandlerAttribute tagged methods in the specified type
 		/// </summary>
 		/// <param name="createForType"> Type to create the map for </param>
 		public ComponentMessageMap( Type createForType )
@@ -25,7 +25,7 @@ namespace RbEngine.Components
 			//	TODO: Add proper binding flags
 			foreach ( System.Reflection.MethodInfo curMethod in createForType.GetMethods( ) )
 			{
-				if ( curMethod.GetCustomAttributes( typeof( ComponentMessageHandlerAttribute ), false ).Length != 0 )
+				if ( curMethod.GetCustomAttributes( typeof( MessageHandlerAttribute ), false ).Length != 0 )
 				{
 					//	It's a thing! Use the thing!
 					ParameterInfo[] parameters = curMethod.GetParameters( );
@@ -41,11 +41,24 @@ namespace RbEngine.Components
 		}
 	}
 
+	//	NOTE: Component accessibility:
+	//		By type: GetComponent( typeof( ISomeInterfaceOrOther ) );	//	Returns the first component that implements the specified interface
+	//		By name: GetComponent( "badger" );							//	Returns the first INamedObject component with the specified name
+	//		By guid: GetComponent( 0x12345 );							//	Returns the first component with the specified GUID
+	//
+	//	Component linkages could be specified in data:
+	//	<object type="MyComponent" name="obj">
+	//		<object type="ComponentType0" name="child0"/>
+	//		<object type="ComponentType1" name="child1">
+	//			// name can be qualified by path. Path can be prefixed by symbolic name (e.g. "$parent", "$engine", "$scene"). Following are nested names, or guid, of child components
+	//			<reference name="$parent.child0" property="OtherThing"/>
+	//		</object>
+	//	</object>
 
 	/// <summary>
-	/// Handy base class that implements IInstanceable, IParentObject and INamedObject (TODO)
+	/// Handy base class that implements IInstanceable, IParentObject, IMessageHandler and INamedObject (TODO)
 	/// </summary>
-	public class Component : IInstanceable, IParentObject
+	public class Component : IInstanceable, IParentObject, IMessageHandler
 	{
 		#region	Messaging
 
@@ -55,7 +68,7 @@ namespace RbEngine.Components
 		//	{
 		//		return ...;
 		//	}
-		//	[ComponentMessageHandler()]
+		//	[MessageHandler()]
 		//	public void OnDamage( DamageMessage msg )
 		//	{
 		//		
@@ -84,16 +97,48 @@ namespace RbEngine.Components
 		/// <summary>
 		/// Test
 		/// </summary>
-		[ ComponentMessageHandler( ) ]
+		[ MessageHandler( ) ]
 		public void OnDamage( Message msg )
 		{
 		}
 
 		/// <summary>
-		/// Test
+		/// Adds the message to a recipient chain, if there is one
 		/// </summary>
-		public void	HandleMessage( Object msg )
+		public virtual void	HandleMessage( Message msg )
 		{
+			Type baseType = typeof( Object );
+			for ( Type messageType = msg.GetType( ); messageType != baseType; messageType = messageType.BaseType )
+			{
+				MessageRecipientChain chain = ( MessageRecipientChain )m_RecipientChains[ messageType ];
+				if ( chain != null )
+				{
+					chain.Deliver( msg );
+					return;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Adds a recipient for messages of a given type
+		/// </summary>
+		/// <param name="messageType">Base class of messages that the recipient is interested in</param>
+		/// <param name="recipient">Recipient call</param>
+		/// <param name="order">Recipient order value</param>
+		public virtual void AddRecipient( Type messageType, Message.RecipientDelegate recipient, int order )
+		{
+			if ( m_RecipientChains == null )
+			{
+				m_RecipientChains = new System.Collections.Hashtable( );
+			}
+
+			MessageRecipientChain chain = ( MessageRecipientChain )m_RecipientChains[ messageType ];
+			if ( chain == null )
+			{
+				chain = new MessageRecipientChain( );
+				m_RecipientChains[ messageType ] = chain;
+			}
+			chain.AddRecipient( recipient, order );
 		}
 
 		#endregion
@@ -188,6 +233,7 @@ namespace RbEngine.Components
 			}
 		}
 
-		private ArrayList	m_Children = new ArrayList( );
+		private System.Collections.Hashtable	m_RecipientChains	= null;
+		private ArrayList						m_Children			= new ArrayList( );
 	}
 }

@@ -110,19 +110,6 @@ namespace RbEngine
 		/// <summary>
 		/// Writes a message using System.Diagnostics.Trace.Write() (if this context is enabled), prefixed by the caller source location and the context name
 		/// </summary>
-		/// <param name="str"> Message to write </param>
-		public static void		WriteCall( TraceSwitch context, string str )
-		{
-			if ( context.Enabled )
-			{
-				StackFrame caller = new StackFrame( 1, true );
-				System.Diagnostics.Trace.Write( String.Format( "{0}({1},{2}) : [{3}]{4}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), context.DisplayName, str ) );
-			}
-		}
-
-		/// <summary>
-		/// Writes a message using System.Diagnostics.Trace.Write() (if this context is enabled), prefixed by the caller source location and the context name
-		/// </summary>
 		/// <param name="context"> Output context </param>
 		/// <param name="str"> Message to write </param>
 		/// <param name="formatArgs"> String format arguments, passed to String.Format() with str to create the output message </param>
@@ -134,20 +121,6 @@ namespace RbEngine
 				System.Diagnostics.Trace.Write( String.Format( "{0}({1},{2}) : [{3}]{4}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), context.DisplayName, String.Format( str, formatArgs ) ) );
 			}
 		}
-
-		/// <summary>
-		/// Writes a message using System.Diagnostics.Trace.WriteLine() (if this context is enabled), prefixed by the caller source location and the context name
-		/// </summary>
-		/// <param name="str"> Message to write </param>
-		public static void		WriteLineCall( TraceSwitch context, string str )
-		{
-			if ( context.Enabled )
-			{
-				StackFrame caller = new StackFrame( 1, true );
-				System.Diagnostics.Trace.WriteLine( String.Format( "{0}({1},{2}) : [{3}]{4}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), context.DisplayName, str ) );
-			}
-		}
-		
 
 		/// <summary>
 		/// Writes a message using System.Diagnostics.Trace.WriteLine() (if this context is enabled), prefixed by the caller source location and the context name
@@ -167,30 +140,12 @@ namespace RbEngine
 		/// <summary>
 		/// Writes a message using System.Diagnostics.Trace.Write() (if this context is enabled), prefixed by the context name
 		/// </summary>
-		/// <param name="str"> Message to write </param>
-		public static void		Write( TraceSwitch context, string str )
-		{
-			System.Diagnostics.Trace.WriteIf( context.Enabled, str, context.DisplayName );
-		}
-		
-		/// <summary>
-		/// Writes a message using System.Diagnostics.Trace.Write() (if this context is enabled), prefixed by the context name
-		/// </summary>
 		/// <param name="context"> Output context </param>
 		/// <param name="str"> Message to write </param>
 		/// <param name="formatArgs"> String format arguments, passed to String.Format() with str to create the output message </param>
 		public static void		Write( TraceSwitch context, string str, params object[] formatArgs )
 		{
 			System.Diagnostics.Trace.WriteIf( context.Enabled, String.Format( str, formatArgs ), context.DisplayName );
-		}
-
-		/// <summary>
-		/// Writes a message using System.Diagnostics.Trace.WriteLine() (if this context is enabled), prefixed by the context name
-		/// </summary>
-		/// <param name="str"> Message to write </param>
-		public static void		WriteLine( TraceSwitch context, string str )
-		{
-			System.Diagnostics.Trace.WriteIf( context.Enabled, str, context.DisplayName );
 		}
 
 		/// <summary>
@@ -204,6 +159,23 @@ namespace RbEngine
 			System.Diagnostics.Trace.WriteIf( context.Enabled, String.Format( str, formatArgs ), context.DisplayName );
 		}
 
+
+		/// <summary>
+		/// Assert wrapper
+		/// </summary>
+		public static void		Assert( bool condition, TraceSwitch context, string str, params object[] formatArgs )
+		{
+			System.Diagnostics.Trace.Assert( condition, String.Format( "[{0}]", context.DisplayName ) + String.Format( str, formatArgs ) );
+		}
+
+		/// <summary>
+		/// Fail wrapper
+		/// </summary>
+		public static void		Fail( TraceSwitch context, string str, params object[] formatArgs )
+		{
+			System.Diagnostics.Debug.Fail( String.Format( "[{0}]", context.DisplayName ) + String.Format( str, formatArgs ) );
+		}
+
 		#endregion
 
 		#region	Debug switch outputs
@@ -211,22 +183,10 @@ namespace RbEngine
 		/// <summary>
 		/// Writes a message using System.Diagnostics.Debug.Write() (if this context is enabled), prefixed by the caller source location and the context name
 		/// </summary>
-		/// <param name="str"> Message to write </param>
-		public static void		WriteCall( DebugSwitch context, string str )
-		{
-			if ( context.Enabled )
-			{
-				StackFrame caller = new StackFrame( 1, true );
-				System.Diagnostics.Debug.Write( String.Format( "{0}({1},{2}) : [{3}]{4}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), context.DisplayName, str ) );
-			}
-		}
-
-		/// <summary>
-		/// Writes a message using System.Diagnostics.Debug.Write() (if this context is enabled), prefixed by the caller source location and the context name
-		/// </summary>
 		/// <param name="context"> Output context </param>
 		/// <param name="str"> Message to write </param>
 		/// <param name="formatArgs"> String format arguments, passed to String.Format() with str to create the output message </param>
+		[ Conditional( "DEBUG" ) ]
 		public static void		WriteCall( DebugSwitch context, string str, params object[] formatArgs )
 		{
 			if ( context.Enabled )
@@ -239,23 +199,10 @@ namespace RbEngine
 		/// <summary>
 		/// Writes a message using System.Diagnostics.Debug.WriteLine() (if this context is enabled), prefixed by the caller source location and the context name
 		/// </summary>
-		/// <param name="str"> Message to write </param>
-		public static void		WriteLineCall( DebugSwitch context, string str )
-		{
-			if ( context.Enabled )
-			{
-				StackFrame caller = new StackFrame( 1, true );
-				System.Diagnostics.Debug.WriteLine( String.Format( "{0}({1},{2}) : [{3}]{4}", caller.GetFileName( ), caller.GetFileLineNumber( ), caller.GetFileColumnNumber( ), context.DisplayName, str ) );
-			}
-		}
-		
-
-		/// <summary>
-		/// Writes a message using System.Diagnostics.Debug.WriteLine() (if this context is enabled), prefixed by the caller source location and the context name
-		/// </summary>
 		/// <param name="context"> Output context </param>
 		/// <param name="str"> Message to write </param>
 		/// <param name="formatArgs"> String format arguments, passed to String.Format() with str to create the output message </param>
+		[ Conditional( "DEBUG" ) ]
 		public static void		WriteLineCall( DebugSwitch context, string str, params object[] formatArgs )
 		{
 			if ( context.Enabled )
@@ -268,18 +215,10 @@ namespace RbEngine
 		/// <summary>
 		/// Writes a message using System.Diagnostics.Debug.Write() (if this context is enabled), prefixed by the context name
 		/// </summary>
-		/// <param name="str"> Message to write </param>
-		public static void		Write( DebugSwitch context, string str )
-		{
-			System.Diagnostics.Debug.WriteIf( context.Enabled, str, context.DisplayName );
-		}
-		
-		/// <summary>
-		/// Writes a message using System.Diagnostics.Debug.Write() (if this context is enabled), prefixed by the context name
-		/// </summary>
 		/// <param name="context"> Output context </param>
 		/// <param name="str"> Message to write </param>
 		/// <param name="formatArgs"> String format arguments, passed to String.Format() with str to create the output message </param>
+		[ Conditional( "DEBUG" ) ]
 		public static void		Write( DebugSwitch context, string str, params object[] formatArgs )
 		{
 			System.Diagnostics.Debug.WriteIf( context.Enabled, String.Format( str, formatArgs ), context.DisplayName );
@@ -288,21 +227,31 @@ namespace RbEngine
 		/// <summary>
 		/// Writes a message using System.Diagnostics.Debug.WriteLine() (if this context is enabled), prefixed by the context name
 		/// </summary>
-		/// <param name="str"> Message to write </param>
-		public static void		WriteLine( DebugSwitch context, string str )
-		{
-			System.Diagnostics.Debug.WriteIf( context.Enabled, str, context.DisplayName );
-		}
-
-		/// <summary>
-		/// Writes a message using System.Diagnostics.Debug.WriteLine() (if this context is enabled), prefixed by the context name
-		/// </summary>
 		/// <param name="context"> Output context </param>
 		/// <param name="str"> Message to write </param>
 		/// <param name="formatArgs"> String format arguments, passed to String.Format() with str to create the output message </param>
+		[ Conditional( "DEBUG" ) ]
 		public static void		WriteLine( DebugSwitch context, string str, params object[] formatArgs )
 		{
 			System.Diagnostics.Debug.WriteIf( context.Enabled, String.Format( str, formatArgs ), context.DisplayName );
+		}
+
+		/// <summary>
+		/// Assert wrapper
+		/// </summary>
+		[ Conditional( "DEBUG" ) ]
+		public static void		Assert( bool condition, DebugSwitch context, string str, params object[] formatArgs )
+		{
+			System.Diagnostics.Debug.Assert( condition, String.Format( "[{0}] : ", context.DisplayName ) + String.Format( str, formatArgs ) );
+		}
+
+		/// <summary>
+		/// Fail wrapper
+		/// </summary>
+		[ Conditional( "DEBUG" ) ]
+		public static void		Fail( DebugSwitch context, string str, params object[] formatArgs )
+		{
+			System.Diagnostics.Debug.Fail( String.Format( "[{0}] : ", context.DisplayName ) + String.Format( str, formatArgs ) );
 		}
 
 		#endregion

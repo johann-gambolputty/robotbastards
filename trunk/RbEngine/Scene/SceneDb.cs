@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 
 namespace RbEngine.Scene
 {
@@ -7,6 +8,46 @@ namespace RbEngine.Scene
 	/// </summary>
 	public class SceneDb : Components.IParentObject
 	{
+		#region	Scene clocks
+
+		/// <summary>
+		/// Pauses or unpauses the scene clocks
+		/// </summary>
+		public bool				Pause
+		{
+			get
+			{
+				return m_Paused;
+			}
+			set
+			{
+				m_Paused = value;
+				foreach ( Clock curClock in m_Clocks )
+				{
+					curClock.Pause = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Finds a scene clock by name
+		/// </summary>
+		/// <param name="clockName">Name of the clock</param>
+		/// <returns></returns>
+		public Clock			GetNamedClock( string clockName )
+		{
+			foreach ( Clock curClock in m_Clocks )
+			{
+				if ( curClock.Name == clockName )
+				{
+					return curClock;
+				}
+			}
+			return null;
+		}
+
+		#endregion
+
 		#region	Scene managers and services
 
 		/// <summary>
@@ -24,6 +65,12 @@ namespace RbEngine.Scene
 
 		#region	Scene building
 
+		/// <summary>
+		/// Default constructor. Adds a rendering manager and default clocks
+		/// </summary>
+		/// <remarks>
+		/// The scene clocks are initially paused
+		/// </remarks>
 		public SceneDb( )
 		{
 			m_Rendering = new RenderManager( this );
@@ -50,7 +97,7 @@ namespace RbEngine.Scene
 		public void Add( Object obj )
 		{
 			Objects.Add( obj );
-			
+
 			if ( ObjectAdded != null )
 			{
 				ObjectAdded( this, obj );
@@ -136,5 +183,8 @@ namespace RbEngine.Scene
 
 		private ObjectSet		m_Objects = new TypeGraphObjectSet( );
 		private RenderManager	m_Rendering;
+		private Clock			m_UpdateClock;
+		private ArrayList		m_Clocks	= new ArrayList( );
+		private bool			m_Paused	= true;
 	}
 }

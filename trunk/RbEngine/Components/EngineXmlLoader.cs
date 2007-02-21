@@ -83,9 +83,10 @@ namespace RbEngine.Components
 			IXmlLoader parentXmlLoader = parentObject as IXmlLoader;
 			switch ( reader.Name )
 			{
-				case "object"	: childObject = LoadObject( reader );	break;
-				case "instance"	: childObject = LoadInstance( reader );	break;
-				case "resource"	: childObject = LoadResource( reader );	break;
+				case "object"	: childObject = LoadObject( reader );		break;
+				case "instance"	: childObject = LoadInstance( reader );		break;
+				case "resource"	: childObject = LoadResource( reader );		break;
+				case "reference": childObject = LoadReference( reader );	break;
 				default			:
 					if ( parentXmlLoader == null )
 					{
@@ -288,6 +289,13 @@ namespace RbEngine.Components
 			}
 
 			return newResource;
+		}
+
+		private Object	LoadReference( XmlReader reader )
+		{
+			string name = reader.GetAttribute( "name" );
+
+			throw new System.ApplicationException( String.Format( "<reference> tag to \"{0}\": References aren't supported yet, sorry", name ) );
 		}
 
 		/// <summary>
