@@ -5,7 +5,7 @@ namespace RbEngine.Entities
 	/// <summary>
 	/// A TurnRequest is a message that requests that an entity turn around its local Y axis. 
 	/// </summary>
-	public class TurnRequest : Components.Message
+	public class TurnRequest : RotationRequest
 	{
 		/// <summary>
 		/// Gets or sets the turn request angle in degrees
@@ -25,13 +25,12 @@ namespace RbEngine.Entities
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		/// <param name="entity">Entity to apply the turn to</param>
 		/// <param name="angle">Turn angle, in degrees (0 means no orientation change)</param>
-		public TurnRequest( Entity3 entity, float angle )
+		public TurnRequest( float angle )
 		{
+			m_Angle = angle;
 		}
 
-		private Entity3	m_Entity;
 		private float	m_Angle;
 	}
 }

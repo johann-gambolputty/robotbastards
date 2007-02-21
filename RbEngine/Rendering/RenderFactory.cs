@@ -24,6 +24,12 @@ namespace RbEngine.Rendering
 		/// Loads the specified assembly, and searches it for a class that implements RenderFactory. If one is found, an instance is
 		/// created of that class. This sets the singletons RenderFactory.Inst, Renderer.Inst and ShapeRenderer.Inst. If no class
 		/// is found that implements RenderFactory, an ApplicationException is thrown.
+		/// <note>
+		/// This call also automatically finds any Rendering.Composites.Composite derived classes in the loaded assembly, and adds them
+		/// the render factory, so that they can be created using the <see cref="NewComposite"/> methods. It also tracks any subsequent
+		/// assembly loads, and looks for composites in those also. Therefore, simply calling AppDomain.Load() for an assembly that contains
+		/// composites, will update the RenderFactory singleton.
+		/// </note>
 		/// </remarks>
 		public static void Load( string renderAssemblyName )
 		{
@@ -35,21 +41,14 @@ namespace RbEngine.Rendering
 				{
 					RenderFactory factory = ( RenderFactory )System.Activator.CreateInstance( curType );
 					factory.AddAssemblyComposites( renderAssembly );
+
+					AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler( OnAssemblyLoad );
+
 					return;
 				}
 			}
 
 			throw new ApplicationException( String.Format( "No type in assembly \"{0}\" implemented RenderFactory" ) );
-		}
-
-		/// <summary>
-		/// Loads an assembly containing composite objects
-		/// </summary>
-		/// <param name="assemblyName"> Name of the assembly </param>
-		public static void LoadCompositeAssembly( string assemblyName )
-		{
-			System.Reflection.Assembly compositeAssembly = AppDomain.CurrentDomain.Load( assemblyName );
-			Inst.AddAssemblyComposites( compositeAssembly );
 		}
 
 		/// <summary>
@@ -62,15 +61,27 @@ namespace RbEngine.Rendering
 			{
 				if ( curType.IsSubclassOf( typeof( Composites.Composite ) ) )
 				{
-					Output.WriteLineCall( Output.RenderingInfo, "Adding composite type \"{0}\" to render factory", curType.Name );
-					m_CompositeNameMap.Add( curType.Name, curType );
-
-					for ( Type baseType = curType; baseType != typeof( Composites.Composite ); baseType = baseType.BaseType )
+					if ( m_CompositeNameMap.ContainsKey( curType.Name ) )
 					{
-						m_CompositeBaseTypeMap.Add( baseType, curType );
+						Output.WriteLineCall( Output.RenderingError, "Composite type \"{0}\" already exists in the rendering factory composite map", curType.Name );
+					}
+					else
+					{
+						Output.WriteLineCall( Output.RenderingInfo, "Adding composite type \"{0}\" to render factory", curType.Name );
+						m_CompositeNameMap.Add( curType.Name, curType );
+
+						for ( Type baseType = curType; baseType != typeof( Composites.Composite ); baseType = baseType.BaseType )
+						{
+							m_CompositeBaseTypeMap.Add( baseType, curType );
+						}
 					}
 				}
 			}
+		}
+
+		private static void OnAssemblyLoad( object sender, AssemblyLoadEventArgs args )
+		{
+			RenderFactory.Inst.AddAssemblyComposites( args.LoadedAssembly );
 		}
 
 		#endregion
@@ -197,5 +208,6 @@ namespace RbEngine.Rendering
 		private System.Collections.Hashtable	m_CompositeNameMap		= new System.Collections.Hashtable( );
 		private System.Collections.Hashtable	m_CompositeBaseTypeMap	= new System.Collections.Hashtable( );
 		private static RenderFactory			ms_Singleton;
+
 	}
 }

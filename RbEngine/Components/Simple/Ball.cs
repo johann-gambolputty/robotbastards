@@ -8,7 +8,7 @@ namespace RbEngine.Components.Simple
 	/// A ball. Just for testing really (which is why it implements IRender (using the ShapeRenderer singleton and bodgy render states),
 	/// instead of deferring to a composite)
 	/// </summary>
-	public class Ball : Component, Maths.IRay3Intersector, IXmlLoader, IRender
+	public class Ball : Component, Maths.IRay3Intersector, IXmlLoader, Scene.ISceneRenderable
 	{
 		/// <summary>
 		/// Constructor
@@ -76,21 +76,12 @@ namespace RbEngine.Components.Simple
 
 		#endregion
 
-		#region IRender Members
-
-		/// <summary>
-		/// Gets the render order for this object
-		/// </summary>
-		/// <returns>Returns RenderOrder.Default</returns>
-		public int GetRenderOrder( )
-		{
-			return ( int )RenderOrder.Default;
-		}
+		#region ISceneRenderable Members
 
 		/// <summary>
 		/// Renders this object
 		/// </summary>
-		public void Render( )
+		public void Render( float delta )
 		{
 			Renderer.Inst.PushRenderState( m_LineState );
 			ShapeRenderer.Inst.RenderSphere( m_Sphere.Centre, m_Sphere.Radius );

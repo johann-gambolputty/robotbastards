@@ -13,7 +13,7 @@ namespace RbEngine.Entities
 	 * MovementXRequest (1dof)
 	 * MovementXyRequest (2dof - xy planar movement (e.g. sprites))
 	 * MovementXzRequest (2dof - xz planar movement)
-	 * MovementXyzRequest (3dof - full movement)
+	 * MovementXyzRequest (3dof - full 3d movement)
 	 * OrientationTurnRequest (turn around the entity axis)
 	 * OrientationXyzwRequest (3dof - specified as quaternion)
 	 *
@@ -27,9 +27,8 @@ namespace RbEngine.Entities
 	/// <summary>
 	/// An entity is any object that can be controlled and rendered. Entity3 represents an entity in 3 dimensional space
 	/// </summary>
-	public class Entity3 : Components.Component
+	public class Entity3 : Entity, Scene.ISceneRenderable
 	{
-
 		#region Entity frame
 
 		/// <summary>
@@ -124,6 +123,28 @@ namespace RbEngine.Entities
 
 		private Maths.Point3Interpolator	m_Position	= new Maths.Point3Interpolator( );
 		private Vector3						m_Facing	= Vector3.ZAxis;
+		private Rendering.IRender			m_Graphics;
+
+		#endregion
+
+		#region ISceneRenderable Members
+
+		/// <summary>
+		/// Renders this entity
+		/// </summary>
+		public void Render( float delta )
+		{
+			Point3 curPos = m_Position.Get( delta );
+
+			//	Push the entity transform
+			Rendering.Renderer.Inst.PushTransform( Rendering.Transform.kLocalToView );
+			Rendering.Renderer.Inst.Translate( Rendering.Transform.kLocalToView, curPos.X, curPos.Y, curPos.Z );
+
+			//	TODO: Render m_Graphics
+
+			//	Pop the entity transform
+			Rendering.Renderer.Inst.PopTransform( Rendering.Transform.kLocalToView );
+		}
 
 		#endregion
 
@@ -159,6 +180,5 @@ namespace RbEngine.Entities
 			//	};
 			//
 		}
-
 	}
 }

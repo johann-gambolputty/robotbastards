@@ -6,8 +6,9 @@ namespace RbEngine.Entities
 	/// <summary>
 	/// Requests entity movement on the XZ plane
 	/// </summary>
-	public class MovementXzRequest : Components.Message
+	public class MovementXzRequest : MovementRequest
 	{
+
 		/// <summary>
 		/// X movement component
 		/// </summary>
@@ -27,20 +28,29 @@ namespace RbEngine.Entities
 		}
 
 		/// <summary>
-		/// Sets up the movement request
+		/// Local or global movement flag
 		/// </summary>
-		/// <param name="entity">Entity to be moved</param>
-		/// <param name="moveX">Movement on x axis</param>
-		/// <param name="moveZ">Movement on z axis</param>
-		public MovementXzRequest( Entity3 entity, float moveX, float moveZ )
+		public bool		Local
 		{
-			m_Entity	= entity;
-			m_MoveX		= moveX;
-			m_MoveZ		= moveZ;
+			get { return m_Local; }
+			set { m_Local = value; }
 		}
 
-		private Entity3	m_Entity;
+		/// <summary>
+		/// Sets up the movement request
+		/// </summary>
+		/// <param name="moveX">Movement on x axis</param>
+		/// <param name="moveZ">Movement on z axis</param>
+		/// <param name="local">If true, then movement is relative to the local coordinate system of the object being moved (false uses the global orthonormal basis)</param>
+		public MovementXzRequest( float moveX, float moveZ, bool local )
+		{
+			m_MoveX		= moveX;
+			m_MoveZ		= moveZ;
+			m_Local		= local;
+		}
+
 		private float	m_MoveX;
 		private float	m_MoveZ;
+		private bool	m_Local;
 	}
 }

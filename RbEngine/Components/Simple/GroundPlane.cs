@@ -5,7 +5,7 @@ namespace RbEngine.Components.Simple
 	/// <summary>
 	/// The ground plane (XZ plane)
 	/// </summary>
-	public class GroundPlane : Component, Maths.IRay3Intersector
+	public class GroundPlane : Component, Maths.IRay3Intersector, Scene.ISceneRenderable
 	{
 
 		/// <summary>
@@ -13,7 +13,7 @@ namespace RbEngine.Components.Simple
 		/// </summary>
 		public GroundPlane( )
 		{
-			AddChild( Rendering.RenderFactory.Inst.NewComposite( typeof( Rendering.Composites.GroundPlaneArea ) ) );
+			m_Graphics = ( Rendering.IRender )Rendering.RenderFactory.Inst.NewComposite( typeof( Rendering.Composites.GroundPlaneArea ) );
 		}
 
 		#region IRay3Intersector Members
@@ -40,6 +40,20 @@ namespace RbEngine.Components.Simple
 
 		#endregion
 
-		private Maths.Plane3	m_Plane = new Maths.Plane3( new Maths.Vector3( 0, 1, 0 ), 0 );
+		#region ISceneRenderable Members
+
+		/// <summary>
+		/// Renders the ground plane
+		/// </summary>
+		/// <param name="delta">Frame delta (unused)</param>
+		public void Render( float delta )
+		{
+			m_Graphics.Render( );
+		}
+
+		#endregion
+
+		private Rendering.IRender	m_Graphics;
+		private Maths.Plane3		m_Plane = new Maths.Plane3( new Maths.Vector3( 0, 1, 0 ), 0 );
 	}
 }

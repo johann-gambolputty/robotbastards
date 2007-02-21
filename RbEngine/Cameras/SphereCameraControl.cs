@@ -161,17 +161,6 @@ namespace RbEngine.Cameras
 		#region IRender Members
 
 		/// <summary>
-		/// Returns the position of this object in the render order
-		/// </summary>
-		/// <returns>
-		/// Returns Rendering.RenderOrder.Default
-		/// </returns>
-		public int GetRenderOrder( )
-		{
-			return ( int )Rendering.RenderOrder.Default;
-		}
-
-		/// <summary>
 		/// Renders this camera controller (displays the look at point)
 		/// </summary>
 		public void Render( )
