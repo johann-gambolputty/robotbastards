@@ -5,10 +5,32 @@ namespace RbEngine.Components
 	//	TODO: Requests should also be messages?
 
 	/// <summary>
-	/// A chain of request handlers
+	/// A request is a wrapper around a message, allowing it to be carried along a <see cref="RequestChain"/>
 	/// </summary>
+	/// <seealso cref="RequestChain"/>
 	public abstract class Request
 	{
+		/// <summary>
+		/// Access to the stored message
+		/// </summary>
+		public Message	Message
+		{
+			get
+			{
+				return m_Message;
+			}
+		}
+
+		/// <summary>
+		/// Adds the request to the specified chain, wraps up the specified message
+		/// </summary>
+		/// <param name="chain">Request chain to add this request to</param>
+		/// <param name="msg">Message to wrap</param>
+		public Request( RequestChain chain, Message msg )
+		{
+			m_Chain = chain;
+			m_Message = msg;
+		}
 
 		/// <summary>
 		/// Used by action request handlers to handle pending action requests
@@ -44,6 +66,7 @@ namespace RbEngine.Components
 			}
 		}
 
+		private Message			m_Message;
 		private RequestChain	m_Chain;
 		private int				m_Index;
 	}

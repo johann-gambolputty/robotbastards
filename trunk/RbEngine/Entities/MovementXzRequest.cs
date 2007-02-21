@@ -6,7 +6,7 @@ namespace RbEngine.Entities
 	/// <summary>
 	/// Requests entity movement on the XZ plane
 	/// </summary>
-	public class MovementXzRequest : ActionRequest
+	public class MovementXzRequest : Components.Message
 	{
 		/// <summary>
 		/// X movement component
