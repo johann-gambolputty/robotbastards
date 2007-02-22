@@ -29,10 +29,10 @@ namespace RbEngine.Cameras
 		/// <summary>
 		/// Applies a look at transform to the renderer, as well as the standard perspective transform in the Camera base class
 		/// </summary>
-		public override void Apply( int width, int height )
+		public override void Apply( )
 		{
 			Rendering.Renderer.Inst.SetLookAtTransform( m_LookAt, m_Pos, m_YAxis );
-			base.Apply( width, height );
+			base.Apply( );
 		}
 
 		#region IUpdater Members

@@ -299,7 +299,34 @@ namespace RbOpenGlRendering
 		/// </summary>
 		public override void	SetViewport( int x, int y, int width, int height )
 		{
+			m_Width		= width;
+			m_Height	= height;
 			Gl.glViewport( x, y, width, height );
+		}
+
+		private int	m_Width;
+		private int m_Height;
+
+		/// <summary>
+		///	The viewport width
+		/// </summary>
+		public override int				ViewportWidth
+		{
+			get
+			{
+				return m_Width;
+			}
+		}
+
+		/// <summary>
+		/// The viewport height
+		/// </summary>
+		public override int				ViewportHeight
+		{
+			get
+			{
+				return m_Height;
+			}
 		}
 
 		#endregion

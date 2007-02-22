@@ -124,6 +124,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "ClientDisplay.cs"
+                    SubType = "UserControl"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ClientDisplay.resx"
+                    DependentUpon = "ClientDisplay.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "Display.cs"
                     SubType = "UserControl"
                     BuildAction = "Compile"
@@ -131,16 +141,6 @@
                 <File
                     RelPath = "Display.resx"
                     DependentUpon = "Display.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "SceneDisplay.cs"
-                    SubType = "UserControl"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SceneDisplay.resx"
-                    DependentUpon = "SceneDisplay.cs"
                     BuildAction = "EmbeddedResource"
                 />
             </Include>

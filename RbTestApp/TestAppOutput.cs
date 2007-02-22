@@ -6,7 +6,7 @@ namespace RbTestApp
 	/// Stores contexts to pass to Output.WriteLine(), Output.Write(), etc. family of functions
 	/// </summary>
 	/// <example>
-	/// <code lang="CSharp">
+	/// <code lang="C#">
 	/// RbEngine.Output.WriteLine( TestAppOutput.Info, "Started  application" );	// Writes "[testAppInfo] Started application"
 	/// RbEngine.Output.WriteLineCall( TestAppOutput.Error, "Error occurred" );		// Writes "file.cs(1) : [testAppInfo] Error occurred"
 	/// </code>

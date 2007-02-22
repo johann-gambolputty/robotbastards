@@ -85,7 +85,7 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Clears the viewport
 		/// </summary>
-		public abstract void	ClearColour( System.Drawing.Color colour );
+		public abstract void ClearColour( System.Drawing.Color colour );
 
 		/// <summary>
 		/// Clears the viewport using a vertical gradient fill
@@ -171,6 +171,22 @@ namespace RbEngine.Rendering
 		/// Sets the viewport (in pixels)
 		/// </summary>
 		public abstract void			SetViewport( int x, int y, int width, int height );
+
+		/// <summary>
+		///	The viewport width
+		/// </summary>
+		public abstract int				ViewportWidth
+		{
+			get;
+		}
+
+		/// <summary>
+		/// The viewport height
+		/// </summary>
+		public abstract int				ViewportHeight
+		{
+			get;
+		}
 
 		#endregion
 
