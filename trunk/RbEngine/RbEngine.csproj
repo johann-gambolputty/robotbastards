@@ -409,6 +409,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Rendering\ClearTargetColour.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Rendering\ClearTargetDepth.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Rendering\ControlRenderContext.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -460,6 +470,11 @@
                 />
                 <File
                     RelPath = "Rendering\SelectedTechnique.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Rendering\SetupControlTarget.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

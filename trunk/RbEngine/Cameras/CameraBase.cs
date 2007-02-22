@@ -6,7 +6,7 @@ namespace RbEngine.Cameras
 	/// <summary>
 	/// Base class for cameras. Provides projection setup, and frustum support
 	/// </summary>
-	public abstract class CameraBase
+	public abstract class CameraBase : Rendering.IApplicable
 	{
 
 		/// <summary>
@@ -17,7 +17,7 @@ namespace RbEngine.Cameras
 		/// <summary>
 		/// Applies camera transforms to the current renderer
 		/// </summary>
-		public abstract void	Apply( int width, int height );
+		public abstract void	Apply( );
 
 	}
 }

@@ -5,8 +5,9 @@ namespace RbControls
 	/// <summary>
 	/// Extends Display to render a scene (RbEngine.Scene.SceneDb)
 	/// </summary>
-	public class SceneDisplay : Display
+	public class ClientDisplay : Display
 	{
+		/*
 		/// <summary>
 		/// The scene that this control will render
 		/// </summary>
@@ -30,13 +31,20 @@ namespace RbControls
 				m_CameraController = m_Camera.CreateDefaultController( this, m_Scene );
 			}
 		}
+		*/
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public SceneDisplay( )
+		public ClientDisplay( )
 		{
-			m_Camera = new RbEngine.Cameras.SphereCamera( );
+			m_Client = new RbEngine.Network.Client( this );
+		}
+
+		public RbEngine.Network.Client Client
+		{
+			get { return m_Client; }
+			set { m_Client = value; }
 		}
 
 		/// <summary>
@@ -44,16 +52,24 @@ namespace RbControls
 		/// </summary>
 		protected override void Draw( )
 		{
-			SetupViewport( );
+			if ( m_Client != null )
+			{
+				m_Client.Render( );
+			}
+			else
+			{
+				SetupViewport( );
 
-			RbEngine.Rendering.Renderer renderer = RbEngine.Rendering.Renderer.Inst;
+				RbEngine.Rendering.Renderer renderer = RbEngine.Rendering.Renderer.Inst;
 
-			renderer.ClearDepth( 1.0f );
-			renderer.ClearVerticalGradient( System.Drawing.Color.LightSkyBlue, System.Drawing.Color.Black );
+				renderer.ClearDepth( 1.0f );
+				renderer.ClearVerticalGradient( System.Drawing.Color.LightSkyBlue, System.Drawing.Color.Black );
+			}
 
+			/*
 			if ( m_Camera != null )
 			{
-				m_Camera.Apply( Width, Height );
+				m_Camera.Apply( );
 
 				if ( m_Scene != null )
 				{
@@ -67,11 +83,13 @@ namespace RbControls
 					camRenderer.Render( );
 				}
 			}
+			*/
 		}
 
-		private RbEngine.Scene.SceneDb					m_Scene				= null;
-		private RbEngine.Cameras.CameraBase				m_Camera			= null;
-		private Object									m_CameraController	= null;
+		private RbEngine.Network.Client		m_Client;
+	//	private RbEngine.Scene.SceneDb		m_Scene;
+	//	private RbEngine.Cameras.CameraBase	m_Camera;
+	//	private Object						m_CameraController;
 
 	}
 }

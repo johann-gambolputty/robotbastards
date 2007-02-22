@@ -8,6 +8,24 @@ namespace RbEngine.Rendering
 	/// </summary>
 	public class RenderPass
 	{
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		public RenderPass( )
+		{
+		}
+
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		/// <param name="appliances">Appliances to add to the render pass</param>
+		public RenderPass( params IApplicable[] appliances )
+		{
+			for ( int index = 0; index < appliances.Length; ++index )
+			{
+				m_Appliances.Add( appliances[ index ] );
+			}
+		}
 
 		/// <summary>
 		/// Adds an object to this render pass (must implement the Rendering.IApplicable interface)

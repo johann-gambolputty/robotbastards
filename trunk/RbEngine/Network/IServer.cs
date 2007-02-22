@@ -5,7 +5,7 @@ namespace RbEngine.Network
 	/// <summary>
 	/// Server interface
 	/// </summary>
-	public class IServer
+	public interface IServer
 	{
 		/// <summary>
 		/// Adds a client to the server
@@ -24,6 +24,7 @@ namespace RbEngine.Network
 		/// </summary>
 		Scene.SceneDb	Scene
 		{
+			set; //TODO: REMOVEME?
 			get;
 		}
 	}
