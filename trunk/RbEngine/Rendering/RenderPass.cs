@@ -21,18 +21,26 @@ namespace RbEngine.Rendering
 		/// <param name="appliances">Appliances to add to the render pass</param>
 		public RenderPass( params IApplicable[] appliances )
 		{
-			for ( int index = 0; index < appliances.Length; ++index )
-			{
-				m_Appliances.Add( appliances[ index ] );
-			}
+			Add( appliances );
 		}
 
 		/// <summary>
 		/// Adds an object to this render pass (must implement the Rendering.IApplicable interface)
 		/// </summary>
-		public void						Add( Object obj )
+		public void						Add( IApplicable obj )
 		{
-			m_Appliances.Add( ( IApplicable )obj );
+			m_Appliances.Add( obj );
+		}
+
+		/// <summary>
+		/// Adds an object to this render pass (must implement the Rendering.IApplicable interface)
+		/// </summary>
+		public void						Add( params IApplicable[] appliances )
+		{
+			for ( int index = 0; index < appliances.Length; ++index )
+			{
+				m_Appliances.Add( appliances[ index ] );
+			}
 		}
 
 		/// <summary>

@@ -14,6 +14,11 @@ namespace RbEngine.Components
 	}
 
 	/// <summary>
+	/// Delegate that handles messages
+	/// </summary>
+	public delegate void MessageRecipientDelegate( Message msg );
+
+	/// <summary>
 	/// Stores an ordered list of recipients
 	/// </summary>
 	public class MessageRecipientChain
@@ -23,7 +28,7 @@ namespace RbEngine.Components
 		/// </summary>
 		/// <param name="recipient">New message recipient</param>
 		/// <param name="order">Recipient order</param>
-		public void				AddRecipient( Message.RecipientDelegate recipient, int order )
+		public void				AddRecipient( MessageRecipientDelegate recipient, int order )
 		{
 			//	TODO: proper ordering
 			if ( order == ( int )MessageRecipientOrder.First )
@@ -40,7 +45,7 @@ namespace RbEngine.Components
 		/// Adds a recipient to the end of the recipient list. The recipient will be among the last to receive delivered messages
 		/// </summary>
 		/// <param name="recipient">New message recipient</param>
-		public void				AddRecipientToEnd( Message.RecipientDelegate recipient )
+		public void				AddRecipientToEnd( MessageRecipientDelegate recipient )
 		{
 			m_Recipients.Add( recipient );
 		}
@@ -54,7 +59,7 @@ namespace RbEngine.Components
 			if ( m_Recipients.Count > 0 )
 			{
 				msg.AddToRecipientChain( this );
-				( ( Message.RecipientDelegate )m_Recipients[ 0 ] )( msg );
+				( ( MessageRecipientDelegate )m_Recipients[ 0 ] )( msg );
 			}
 		}
 
@@ -77,7 +82,7 @@ namespace RbEngine.Components
 			}
 			else
 			{
-				( ( Message.RecipientDelegate )m_Recipients[ recipientIndex ] )( msg );
+				( ( MessageRecipientDelegate )m_Recipients[ recipientIndex ] )( msg );
 			}
 		}
 

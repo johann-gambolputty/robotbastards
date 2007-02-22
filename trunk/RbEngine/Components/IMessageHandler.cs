@@ -20,6 +20,6 @@ namespace RbEngine.Components
 		/// <param name="recipient">Recipient call</param>
 		/// <param name="order">Recipient order value</param>
 		/// <seealso cref="MessageRecipientChain.AddRecipient"/>
-		void AddRecipient( Type messageType, Message.RecipientDelegate recipient, int order );
+		void AddRecipient( Type messageType, MessageRecipientDelegate recipient, int order );
 	}
 }

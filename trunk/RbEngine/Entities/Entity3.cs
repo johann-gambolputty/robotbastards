@@ -27,7 +27,7 @@ namespace RbEngine.Entities
 	/// <summary>
 	/// An entity is any object that can be controlled and rendered. Entity3 represents an entity in 3 dimensional space
 	/// </summary>
-	public class Entity3 : Entity, Scene.ISceneRenderable
+	public class Entity3 : Entity, Scene.ISceneRenderable, Scene.ISceneEvents
 	{
 		#region Entity frame
 
@@ -53,11 +53,7 @@ namespace RbEngine.Entities
 		{
 			get
 			{
-				return m_Facing;
-			}
-			set
-			{
-				m_Facing = value;
+				return m_ZAxis;
 			}
 		}
 
@@ -68,7 +64,7 @@ namespace RbEngine.Entities
 		{
 			get
 			{
-				return m_Facing;
+				return m_XAxis;
 			}
 		}
 
@@ -79,11 +75,7 @@ namespace RbEngine.Entities
 		{
 			get
 			{
-				return m_Facing;
-			}
-			set
-			{
-				m_Facing = value;
+				return m_XAxis * -1.0f;
 			}
 		}
 
@@ -94,11 +86,7 @@ namespace RbEngine.Entities
 		{
 			get
 			{
-				return m_Facing;
-			}
-			set
-			{
-				m_Facing = value;
+				return m_YAxis;
 			}
 		}
 
@@ -109,11 +97,7 @@ namespace RbEngine.Entities
 		{
 			get
 			{
-				return m_Facing;
-			}
-			set
-			{
-				m_Facing = value;
+				return m_YAxis * -1.0f;
 			}
 		}
 
@@ -122,7 +106,9 @@ namespace RbEngine.Entities
 		#region	Private stuff
 
 		private Maths.Point3Interpolator	m_Position	= new Maths.Point3Interpolator( );
-		private Vector3						m_Facing	= Vector3.ZAxis;
+		private Vector3						m_XAxis		= Vector3.XAxis;
+		private Vector3						m_YAxis		= Vector3.YAxis;
+		private Vector3						m_ZAxis		= Vector3.ZAxis;
 		private Rendering.IRender			m_Graphics;
 
 		#endregion
@@ -134,13 +120,14 @@ namespace RbEngine.Entities
 		/// </summary>
 		public void Render( float delta )
 		{
-			Point3 curPos = m_Position.Get( delta );
+			Point3 curPos = m_Position.Get( 1.0f );
 
 			//	Push the entity transform
 			Rendering.Renderer.Inst.PushTransform( Rendering.Transform.kLocalToView );
 			Rendering.Renderer.Inst.Translate( Rendering.Transform.kLocalToView, curPos.X, curPos.Y, curPos.Z );
 
 			//	TODO: Render m_Graphics
+			Rendering.ShapeRenderer.Inst.RenderSphere( curPos + new Vector3( 0, 5, 0 ), 5 );
 
 			//	Pop the entity transform
 			Rendering.Renderer.Inst.PopTransform( Rendering.Transform.kLocalToView );
@@ -180,5 +167,31 @@ namespace RbEngine.Entities
 			//	};
 			//
 		}
+
+		#region ISceneEvents Members
+
+		private void StepMovement( Scene.Clock updateClock )
+		{
+			m_Position.Step( );
+		}
+
+		/// <summary>
+		/// Called when this entity is added to a scene
+		/// </summary>
+		/// <param name="db">Scene database</param>
+		public void AddedToScene( RbEngine.Scene.SceneDb db )
+		{
+            db.GetNamedClock( "updateClock" ).Subscribe( new RbEngine.Scene.Clock.TickDelegate( StepMovement ) );
+		}
+
+		/// <summary>
+		/// Called when this entity is removed from a scene
+		/// </summary>
+		/// <param name="db">Scene database</param>
+		public void RemovedFromScene( RbEngine.Scene.SceneDb db )
+		{
+		}
+
+		#endregion
 	}
 }

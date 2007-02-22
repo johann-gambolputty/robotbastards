@@ -24,7 +24,7 @@ namespace RbOpenGlRendering.Composites
 					.SetPolygonRenderingMode( PolygonRenderMode.kLines )
 					.DisableCap( RenderStateFlag.kCullFrontFaces )
 					.DisableCap( RenderStateFlag.kCullBackFaces )
-					.SetDepthOffset( -1.0f )
+					.SetDepthOffset( -0.5f )
 			);
 
 			RenderPass filledRenderPass = new RenderPass( );
@@ -34,10 +34,7 @@ namespace RbOpenGlRendering.Composites
 					.SetColour( System.Drawing.Color.Gainsboro )
 				//	.EnableLighting( )
 				//	.SetLight( 0, true )
-			);
-            filledRenderPass.Add
-			(
-				RenderFactory.Inst.NewMaterial( ).Setup( System.Drawing.Color.DarkGray, System.Drawing.Color.LightCyan )
+				, RenderFactory.Inst.NewMaterial( ).Setup( System.Drawing.Color.DarkGray, System.Drawing.Color.LightCyan )
 			);
 
 			RenderTechnique technique = new RenderTechnique( "default" );

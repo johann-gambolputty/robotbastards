@@ -4,9 +4,9 @@ using System.Windows.Forms;
 namespace RbEngine.Rendering
 {
 	/// <summary>
-	/// Abstract base class 
+	/// Abstract base class, used to determine a control's setup requirements for rendering
 	/// </summary>
-	/// <seealso>RbEngine.Rendering.Renderer.CreateControlContext()</seealso>
+	/// <seealso cref="RbEngine.Rendering.Renderer.CreateControlContext"/>
 	public abstract class ControlRenderContext
 	{
 			/// <summary>
@@ -58,14 +58,12 @@ namespace RbEngine.Rendering
 			/// <summary>
 			/// Creates the rendering context. Called when the control Load event fires
 			/// </summary>
-			public virtual void						Create( Control control, byte colourBits, byte depthBits, byte stencilBits )
-			{
-			}
+			public abstract void					Create( Control control, byte colourBits, byte depthBits, byte stencilBits );
 
 			/// <summary>
-			/// Makes this rendering context current. Called by the paint event handler prior to any rendering
+			/// Called by the paint event handler prior to any rendering
 			/// </summary>
-			public abstract bool					MakeCurrent( );
+			public abstract bool					BeginPaint( );
 
 			/// <summary>
 			/// Called when painting has finished

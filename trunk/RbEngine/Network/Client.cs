@@ -4,15 +4,39 @@ using RbEngine.Rendering;
 namespace RbEngine.Network
 {
 	/*
-	 * Local client-server model
+	 * Client setup file
 	 * 
-	 * Client <n:1> Server
-	 * 
-	 * Remote client-server model
-	 * 
-	 * Client <n:1> ServerProxy <1:1> Server
+	 *	<rb>
+	 *		<modelSet name="clientEffects">
+	 *			<object type="RenderEffect" name="shadowEffect">
+	 *				<
+	 *			</object>
+	 *		</modelSet>
+	 *		<object type="RbEngine.Network.Client" name="client" server="server0">
+	 *			<
+	 *		</client>
+	 *	</rb>
 	 *
-	 * Clients are associated with individual controls
+	 * Server setup file (local)
+	 *	<rb>
+	 *		<object type="RbEngine.Network.Server" name="server0">
+	 * 			<object type="RbEngine.Scene.SceneDb" property="Scene">
+	 * 				<object type="RbEngine.Components.Simple.GroundPlane"/>
+	 * 				<object type="RbEngine.Components.Simple.Ball">
+	 * 					<position x="0" y="10" z="0"/>
+	 * 					<radius value="10"/>
+	 * 				</object>
+	 * 			</object>
+	 *		</object>
+	 *	</rb>
+	 *
+	 * Server setup file (remote)
+	 *	<rb>
+	 * 		<object type="RbEngine.Network.ServerProxy" name="server0">
+	 *			<connection></connection>
+	 * 		</object>
+	 *	</rb>
+	 *
 	 */
 
 	/// <summary>
@@ -20,7 +44,6 @@ namespace RbEngine.Network
 	/// </summary>
 	public class Client
 	{
-
 		/// <summary>
 		/// Client constructor
 		/// </summary>
@@ -28,32 +51,39 @@ namespace RbEngine.Network
 		{
 			m_Control = control;
 
+			m_Camera = new RbEngine.Cameras.SphereCamera( );
+
+			//	TODO: Overkill? Wrap up all the passes into a nice Client3Pass object, that sets up the object for 3d rendering, with a bunch of options
 			RenderTechnique defaultTechnique= new RenderTechnique( );
 			defaultTechnique.Add
 			(
 				new RenderPass
 				(
 					new SetupControlTarget( control ),
-					new ClearTargetColour( ),
-					new ClearTargetDepth( )
+					new ClearTargetDepth( ),
+					new ClearTargetColour( System.Drawing.Color.LightSlateGray ),
+					m_Camera
 				)
 			);
-			m_SceneRenderEffect = new RenderEffect( defaultTechnique );
+			m_SceneRenderEffect		= new RenderEffect( defaultTechnique );
+			m_SceneRenderTechnique	= new SelectedTechnique( defaultTechnique );
 		}
-
 
 		/// <summary>
 		/// The control this client is associated with
 		/// </summary>
 		public System.Windows.Forms.Control Control
 		{
-			get { return m_Control; }
+			get
+			{
+				return m_Control;
+			}
 		}
 
 		/// <summary>
 		/// Server connection
 		/// </summary>
-		public IServer	Server
+		public ServerBase	Server
 		{
 			get
 			{
@@ -69,10 +99,21 @@ namespace RbEngine.Network
 				if ( m_Server != null )
 				{
 					m_Server.AddClient( this );
+					
+					//	Kill the current camera controller
+					if ( m_CameraController is IDisposable )
+					{
+						( ( IDisposable )m_CameraController ).Dispose( );
+					}
+					//	Create a new one
+					m_CameraController = m_Camera.CreateDefaultController( Control, m_Server.Scene );
 				}
 			}
 		}
 
+		/// <summary>
+		/// Access to the connected server's scene
+		/// </summary>
 		public Scene.SceneDb Scene
 		{
 			get
@@ -86,6 +127,7 @@ namespace RbEngine.Network
 		/// </summary>
 		public void Render( )
 		{
+			//	If there's no selected scene render technique, then set up the viewport, and do a default clear of colour and depth buffers 
 			if ( m_SceneRenderTechnique == null )
 			{
 				RbEngine.Rendering.Renderer renderer = RbEngine.Rendering.Renderer.Inst;
@@ -95,11 +137,12 @@ namespace RbEngine.Network
 				renderer.ClearVerticalGradient( System.Drawing.Color.LightSkyBlue, System.Drawing.Color.Black );
 			}
 
+			//	If there's a scene on the server, then render it
 			if ( Scene != null )
 			{
 				if ( m_SceneRenderTechnique == null )
 				{
-				//	Scene.Rendering.Render( );
+					Scene.Rendering.Render( );
 				}
 				else
 				{
@@ -122,8 +165,10 @@ namespace RbEngine.Network
 		//
 
 		private System.Windows.Forms.Control	m_Control;
-		private IServer							m_Server;
+		private ServerBase						m_Server;
 		private RenderEffect					m_SceneRenderEffect;
 		private SelectedTechnique				m_SceneRenderTechnique;
+		private RbEngine.Cameras.CameraBase		m_Camera;
+		private Object							m_CameraController;
 	}
 }

@@ -18,6 +18,15 @@ namespace RbEngine.Rendering
 		}
 
 		/// <summary>
+		/// Technique setup constructor
+		/// </summary>
+		public SelectedTechnique( RenderTechnique technique )
+		{
+			Effect		= technique.Effect;
+			Technique	= technique;
+		}
+
+		/// <summary>
 		/// Sets up the effect used
 		/// </summary>
 		/// <param name="effect"> Render effect to look up techniques in </param>
@@ -78,7 +87,6 @@ namespace RbEngine.Rendering
 				System.Diagnostics.Trace.Assert( m_Effect.GetTechniqueIndex( value ) != -1, String.Format( "Technique \"{0}\" did not exist in effect", value.Name ) );
 
 				m_Technique = value;
-
 			}
 		}
 

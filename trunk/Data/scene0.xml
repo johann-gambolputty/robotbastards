@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<engine>
+<rb>
 
 	<modelSet name="graphics">
 	</modelSet>
@@ -42,7 +42,7 @@
 
 	<modelSet name="environment">
 	</modelSet>
-</engine>
+</rb>
 
 
 <!--

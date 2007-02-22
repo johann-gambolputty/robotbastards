@@ -26,7 +26,7 @@ namespace RbEngine.Rendering
 		/// <param name="technique"> Technique to add </param>
 		public RenderEffect( RenderTechnique technique )
 		{
-			m_Techniques.Add( technique );
+			Add( technique );
 		}
 
 		#endregion
@@ -57,6 +57,7 @@ namespace RbEngine.Rendering
 		public void				Add( RenderTechnique technique )
 		{
 			m_Techniques.Add( technique );
+			technique.Effect = this;
 		}
 
 		/// <summary>
