@@ -3,8 +3,9 @@ using System;
 namespace RbEngine.Rendering
 {
 	/// <summary>
-	/// Render appliance, used for clearing colours
+	/// Render appliance, used for clearing the render target colour
 	/// </summary>
+	/// <seealso cref="Renderer.ClearColour"/>
 	public class ClearTargetColour : IApplicable
 	{
 		/// <summary>
@@ -17,20 +18,19 @@ namespace RbEngine.Rendering
 		}
 
 		/// <summary>
-		/// Sets the clear depth to black
+		/// Sets the clear colour to black
 		/// </summary>
 		public ClearTargetColour( )
 		{
 		}
 
-		public void EnableColourClear( System.Drawing.Color colour )
+
+		/// <summary>
+		/// Sets the clear colour
+		/// </summary>
+		public ClearTargetColour( System.Drawing.Color colour )
 		{
 			m_Colour = colour;
-		}
-
-		public void EnableDepthClear( float depth )
-		{
-			m_Depth = depth;
 		}
 
 		#region IApplicable Members
@@ -40,13 +40,12 @@ namespace RbEngine.Rendering
 		/// </summary>
 		public void Apply()
 		{
-
+			Renderer.Inst.ClearColour( m_Colour );
 		}
 
 		#endregion
 
-		private System.Drawing.Color	m_Colour;
-		private float					m_Depth;
+		private System.Drawing.Color m_Colour;
 
 	}
 }

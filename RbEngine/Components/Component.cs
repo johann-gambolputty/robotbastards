@@ -58,7 +58,7 @@ namespace RbEngine.Components
 	/// <summary>
 	/// Handy base class that implements IInstanceable, IParentObject, IMessageHandler and INamedObject (TODO)
 	/// </summary>
-	public class Component : IInstanceable, IParentObject, IMessageHandler
+	public class Component : IInstanceable, IParentObject, IChildObject, IMessageHandler
 	{
 		#region	Messaging
 
@@ -125,7 +125,7 @@ namespace RbEngine.Components
 		/// <param name="messageType">Base class of messages that the recipient is interested in</param>
 		/// <param name="recipient">Recipient call</param>
 		/// <param name="order">Recipient order value</param>
-		public virtual void AddRecipient( Type messageType, Message.RecipientDelegate recipient, int order )
+		public virtual void AddRecipient( Type messageType, MessageRecipientDelegate recipient, int order )
 		{
 			if ( m_RecipientChains == null )
 			{
@@ -143,6 +143,30 @@ namespace RbEngine.Components
 
 		#endregion
 
+		#region	IChildObject Members
+
+		/// <summary>
+		/// Called when this component is added to a parent object
+		/// </summary>
+		/// <param name="parentObject">Parent object</param>
+		public void			AddedToParent( Object obj )
+		{
+			m_Parent = obj;
+		}
+
+		/// <summary>
+		/// Access to the parent object
+		/// </summary>
+		public Object		Parent
+		{
+			get
+			{
+				return m_Parent;
+			}
+		}
+
+		#endregion
+
 		#region	IParentObject Members
 
 		/// <summary>
@@ -152,6 +176,11 @@ namespace RbEngine.Components
 		public void			AddChild( Object childObject )
 		{
 			m_Children.Add( childObject );
+
+			if ( childObject is IChildObject )
+			{
+				( ( IChildObject )childObject ).AddedToParent( this );
+			}
 		}
 
 		/// <summary>
@@ -233,6 +262,7 @@ namespace RbEngine.Components
 			}
 		}
 
+		private Object							m_Parent			= null;
 		private System.Collections.Hashtable	m_RecipientChains	= null;
 		private ArrayList						m_Children			= new ArrayList( );
 	}

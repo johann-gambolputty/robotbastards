@@ -156,7 +156,7 @@ namespace RbEngine
 		/// <param name="formatArgs"> String format arguments, passed to String.Format() with str to create the output message </param>
 		public static void		WriteLine( TraceSwitch context, string str, params object[] formatArgs )
 		{
-			System.Diagnostics.Trace.WriteIf( context.Enabled, String.Format( str, formatArgs ), context.DisplayName );
+			System.Diagnostics.Trace.WriteLineIf( context.Enabled, String.Format( str, formatArgs ), context.DisplayName );
 		}
 
 
@@ -233,7 +233,7 @@ namespace RbEngine
 		[ Conditional( "DEBUG" ) ]
 		public static void		WriteLine( DebugSwitch context, string str, params object[] formatArgs )
 		{
-			System.Diagnostics.Debug.WriteIf( context.Enabled, String.Format( str, formatArgs ), context.DisplayName );
+			System.Diagnostics.Debug.WriteLineIf( context.Enabled, String.Format( str, formatArgs ), context.DisplayName );
 		}
 
 		/// <summary>

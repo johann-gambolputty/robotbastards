@@ -66,6 +66,11 @@ namespace RbEngine.Cameras
 		{
 			m_Mode = MovementModes.kIdle;
 		}
+
+		private void InvalidateControl( )
+		{
+		//	m_Control.Invalidate( );
+		}
 		
 		private void OnMouseWheel( Object sender, MouseEventArgs args )
 		{
@@ -73,7 +78,7 @@ namespace RbEngine.Cameras
 			float ZoomDelta = ( args.Delta > 0 ) ? BaseZoom : -BaseZoom;
 
 			m_Camera.Zoom += ZoomDelta;
-			m_Control.Invalidate( );
+			InvalidateControl( );
 		}
 
 		private float ZoomScale
@@ -116,7 +121,7 @@ namespace RbEngine.Cameras
 					m_Camera.S += ( float )deltaX * 0.01f;
 					m_Camera.T -= ( float )deltaY * 0.01f;
 
-					m_Control.Invalidate( );
+					InvalidateControl( );
 					break;
 				}
 				case MovementModes.kMove	:
@@ -130,7 +135,7 @@ namespace RbEngine.Cameras
 
 					UpdateLookAt( newLookAt );
 
-					m_Control.Invalidate( );
+					InvalidateControl( );
 					break;
 				}
 			}

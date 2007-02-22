@@ -13,10 +13,12 @@ namespace RbEngine.Interaction
 		/// </summary>
 		/// <param name="name">Command name</param>
 		/// <param name="description">Command description</param>
-		public Command( string name, string description )
+		/// <param name="id">Identifier for the command</param>
+		public Command( string name, string description, ushort id )
 		{
-			m_Name = name;
-			m_Description = description;
+			m_Name			= name;
+			m_Description	= description;
+			m_Id			= id;
 		}
 
 		/// <summary>
@@ -26,6 +28,17 @@ namespace RbEngine.Interaction
 		public void					AddBinding( CommandInputBinding binding )
 		{
 			m_Bindings.Add( binding );
+		}
+
+		/// <summary>
+		/// Command identifier
+		/// </summary>
+		public ushort				Id
+		{
+			get
+			{
+				return m_Id;
+			}
 		}
 
 		/// <summary>
@@ -53,6 +66,21 @@ namespace RbEngine.Interaction
 		}
 
 		/// <summary>
+		/// Updates the control
+		/// </summary>
+		public void					Update( Components.IMessageHandler commandTarget )
+		{
+			foreach ( CommandInputBinding binding in m_Bindings )
+			{
+				if ( binding.Active )
+				{
+					commandTarget.HandleMessage( new CommandMessage( this ) );
+					return;
+				}
+			}
+		}
+
+		/// <summary>
 		/// Active event delegate type
 		/// </summary>
 		public delegate void		ActiveDelegate( );
@@ -67,6 +95,7 @@ namespace RbEngine.Interaction
 		private string				m_Name;
 		private string				m_Description;
 		private ArrayList			m_Bindings = new ArrayList( );
+		private ushort				m_Id;
 
 		#endregion
 	}

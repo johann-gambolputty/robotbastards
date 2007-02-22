@@ -14,8 +14,11 @@ namespace RbEngine.Scene
 		/// <param name="tickTime">Time in milliseconds between clock updates</param>
 		public Clock( string name, int tickTime )
 		{
-			m_Name		= name;
-			TickTime	= tickTime;
+			m_Name				= name;
+			m_Timer				= new System.Windows.Forms.Timer( );
+			m_Timer.Interval	= TickTime;
+			m_Timer.Tick		+= new EventHandler( Update );
+			m_Timer.Enabled		= true;
 		}
 
 		/// <summary>
@@ -85,7 +88,7 @@ namespace RbEngine.Scene
 		/// <summary>
 		/// Calls the Tick() event
 		/// </summary>
-		public void							Update( )
+		private void						Update( object sender, EventArgs args )
 		{
 			if ( m_Tick != null )
 			{

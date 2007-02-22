@@ -83,7 +83,16 @@ namespace RbOpenGlRendering
 				throw new System.ApplicationException( "Failed to create GL rendering context" );
 			}
 
-			MakeCurrent( );
+			//	All contexts share the same display list space
+			if ( ms_LastRenderContext == IntPtr.Zero )
+			{
+				ms_LastRenderContext = m_RenderContext;
+			}
+			else
+			{
+				Wgl.wglShareLists( ms_LastRenderContext, m_RenderContext );
+			}
+
 
 			Output.WriteLineCall( Output.RenderingInfo, "Successfully created GL render context" );
 		}
@@ -91,7 +100,7 @@ namespace RbOpenGlRendering
 		/// <summary>
 		/// Makes this rendering context current. Called by the paint event handler prior to any rendering
 		/// </summary>
-		public override bool					MakeCurrent( )
+		public override bool					BeginPaint( )
 		{
 			//	Make m_RenderContext the current rendering context
 			return Wgl.wglMakeCurrent( m_DeviceContext, m_RenderContext );
@@ -106,7 +115,9 @@ namespace RbOpenGlRendering
 			Gdi.SwapBuffers( m_DeviceContext );
 		}
 
-		IntPtr	m_DeviceContext;
-		IntPtr	m_RenderContext;
+		private IntPtr			m_DeviceContext;
+		private IntPtr			m_RenderContext;
+		private static IntPtr	ms_LastRenderContext;
+
 	}
 }

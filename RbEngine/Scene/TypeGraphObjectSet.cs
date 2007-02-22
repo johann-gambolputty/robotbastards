@@ -122,7 +122,7 @@ namespace RbEngine.Scene
 
 		#endregion
 
-		#region	Set selection		
+		#region	Set selection
 
 		/// <summary>
 		/// Returns true if this object set is optimised for a given query type

@@ -32,6 +32,14 @@ namespace RbEngine.Components.Simple
 		#region IXmlLoader Members
 
 		/// <summary>
+		/// Parses the XML element that was responsible for creating this object
+		/// </summary>
+		/// <param name="reader"> XmlReader positioned at the element to parse </param>
+		public void ParseGeneratingElement( System.Xml.XmlReader reader )
+		{
+		}
+
+		/// <summary>
 		/// Handles <position x="[float]" y="[float]" z="[float]"/> and <radius value="[float]"/> elements
 		/// </summary>
 		/// <param name="reader">Xml reader</param>

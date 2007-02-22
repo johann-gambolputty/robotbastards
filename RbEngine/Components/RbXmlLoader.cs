@@ -4,10 +4,38 @@ using System.Xml;
 namespace RbEngine.Components
 {
 	/// <summary>
-	/// Summary description for EngineXmlLoader.
+	/// Loads an XML object definition file
 	/// </summary>
-	public class EngineXmlLoader : Resources.ResourceLoader
+	public class RbXmlLoader : Resources.ResourceLoader
 	{
+		private class LoadContext
+		{
+			public Object	Root
+			{
+				get
+				{
+					return m_Parents[ 0 ];
+				}
+			}
+
+			public Object	Parent( int offset )
+			{
+				return m_Parents[ m_Parents.Count - ( offset + 1 ) ];
+			}
+
+			public void		Enter( Object obj )
+			{
+				m_Parents.Add( obj );
+			}
+
+			public void		Leave( )
+			{
+				m_Parents.RemoveAt( m_Parents.Count - 1 );
+			}
+
+			System.Collections.ArrayList	m_Parents = new System.Collections.ArrayList( );
+		}
+
 		/// <summary>
 		/// Loads a resource from a stream
 		/// </summary>
@@ -26,14 +54,13 @@ namespace RbEngine.Components
 					{
 						case XmlNodeType.Element		:
 						{
-							//	Root element must be called "engine"
-							if ( String.Compare( reader.Name, "engine", true ) != 0 )
+							//	Root element must be called "rb"
+							if ( String.Compare( reader.Name, "rb", true ) != 0 )
 							{
-								throw new System.ApplicationException( String.Format( "Expected root element to be named \"engine\", not \"{0}\"", reader.Name ) );
+								throw new System.ApplicationException( String.Format( "Expected root element to be named \"rb\", not \"{0}\"", reader.Name ) );
 							}
 
-							LoadEngine( reader );
-							break;
+							return LoadRb( reader );
 						}
 					}
 				}
@@ -49,25 +76,41 @@ namespace RbEngine.Components
 				throw new System.ApplicationException( msg, e );
 			}
 
-			return Engine.Main;
+			return null;
 		}
 
-		private void LoadEngine( XmlReader reader )
+		/// <summary>
+		/// Loads the root "rb" element, which can consist of any number of "modelSet" elements, and one "object" element
+		/// </summary>
+		/// <param name="reader">XML reader, pointing at the "rb" element</param>
+		/// <returns>Returns the root object, if one was defined</returns>
+		private Object LoadRb( XmlReader reader )
 		{
+			Object result = null;
 			while ( reader.Read( ) )
 			{
 				if ( reader.NodeType == XmlNodeType.Element )
 				{
-					if ( String.Compare( reader.Name, "modelSet" ) == 0 )
+					if ( reader.Name == "modelSet" )
 					{
 						LoadModelSet( reader, ModelSet.Main );
 					}
+					else if ( reader.Name == "object" )
+					{
+						if ( result != null )
+						{
+							throw new System.ApplicationException( "Only allowed one root object within the <rb></rb> elements" );
+						}
+						result = LoadObject( reader );
+					}
 					else
 					{
-						LoadElement( reader, Engine.Main );
+						throw new System.ApplicationException( "Only \"object\" and \"modelSet\" elements are allowed as direct children of <rb></rb> elements" );
 					}
 				}
 			}
+
+			return result;
 		}
 
 		/// <summary>
@@ -76,7 +119,7 @@ namespace RbEngine.Components
 		/// <param name="reader"> XML reader, pointing at an element </param>
 		/// <param name="parentObject"> The parent object </param>
 		/// <exception> Throws an exception if the element did not define a valid object </exception>
-		private void LoadElement( XmlReader reader, Object parentObject )
+		private Object LoadElement( XmlReader reader, Object parentObject )
 		{
 			string boundPropertyName = reader.GetAttribute( "property" );
 			Object childObject = null;
@@ -116,6 +159,8 @@ namespace RbEngine.Components
 					( ( Components.IParentObject )parentObject ).AddChild( childObject );
 				}
 			}
+
+			return childObject;
 		}
 
 		/// <summary>
@@ -133,6 +178,11 @@ namespace RbEngine.Components
 			if ( obj == null )
 			{
 				throw new System.ApplicationException( String.Format( "Could not create instance of object \"{0}\"", newObjectTypeName ) );
+			}
+
+			if ( obj is IXmlLoader )
+			{
+				( ( IXmlLoader )obj ).ParseGeneratingElement( reader );
 			}
 
 			//	Set the name of the object
@@ -293,7 +343,8 @@ namespace RbEngine.Components
 
 		private Object	LoadReference( XmlReader reader )
 		{
-			string name = reader.GetAttribute( "name" );
+			string		name = reader.GetAttribute( "name" );
+			string[]	path = name.Split( '.' );
 
 			throw new System.ApplicationException( String.Format( "<reference> tag to \"{0}\": References aren't supported yet, sorry", name ) );
 		}

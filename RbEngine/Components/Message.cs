@@ -10,11 +10,6 @@ namespace RbEngine.Components
 	public abstract class Message
 	{
 		/// <summary>
-		/// Message recipient delegate
-		/// </summary>
-		public delegate void	RecipientDelegate( Message msg );
-
-		/// <summary>
 		/// Gets the message type id associated with a message type
 		/// </summary>
 		public static MessageTypeId	IdFromType( Type messageType )

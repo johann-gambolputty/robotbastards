@@ -129,6 +129,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "NiceTextWriterTraceListener.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Output.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -169,7 +174,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Components\EngineXmlLoader.cs"
+                    RelPath = "Components\IChildObject.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -219,6 +224,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Components\RbXmlLoader.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Components\Simple\Ball.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -254,6 +264,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Entities\TestUserEntityController.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Entities\TurnRequest.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -265,6 +280,21 @@
                 />
                 <File
                     RelPath = "Interaction\CommandInputBinding.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Interaction\CommandKeyInputBinding.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Interaction\CommandList.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Interaction\CommandMessage.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -394,12 +424,17 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Network\IServer.cs"
+                    RelPath = "Network\Server.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Network\Server.cs"
+                    RelPath = "Network\ServerBase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\ServerManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

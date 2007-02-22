@@ -7,6 +7,6 @@
 	</providers>
 	<loaders>
 		<loader type="RbOpenGlRendering.RbCg.CgRenderEffectLoader"/>
-		<loader type="RbEngine.Components.EngineXmlLoader"/>
+		<loader type="RbEngine.Components.RbXmlLoader"/>
 	</loaders>
 </resourceManager>

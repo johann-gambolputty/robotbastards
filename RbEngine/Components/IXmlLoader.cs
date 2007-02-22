@@ -23,6 +23,12 @@ namespace RbEngine.Components
 	public interface IXmlLoader
 	{
 		/// <summary>
+		/// Parses the XML element that was responsible for creating this object
+		/// </summary>
+		/// <param name="reader"> XmlReader positioned at the element to parse </param>
+		void ParseGeneratingElement( System.Xml.XmlReader reader );
+
+		/// <summary>
 		/// Parses a given XML element
 		/// </summary>
 		/// <param name="reader"> XmlReader positioned at the element to parse </param>

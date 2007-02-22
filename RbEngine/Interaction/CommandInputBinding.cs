@@ -13,9 +13,25 @@ namespace RbEngine.Interaction
 	public abstract class CommandInputBinding
 	{
 		/// <summary>
+		/// true if the input that activates the command is present
+		/// </summary>
+		public bool				Active
+		{
+			get
+			{
+				return m_Active;
+			}
+		}
+
+		/// <summary>
 		/// Binds to the specified control
 		/// </summary>
 		/// <param name="control"></param>
 		public abstract void	BindToControl( System.Windows.Forms.Control control );
+
+		/// <summary>
+		/// Set to true if the input that activates the command is present
+		/// </summary>
+		protected bool m_Active;
 	}
 }

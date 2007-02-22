@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rb>
+
+	<object type="RbEngine.Network.Server" name="server0">
+		<object type="RbEngine.Scene.SceneDb" property="Scene">
+
+			<clock name="updateClock" ticksPerSecond="15"/>
+
+			<!-- Test scenery :) -->
+			<object type="RbEngine.Components.Simple.GroundPlane"/>
+
+			<!-- Entities -->
+			<object type="RbEngine.Entities.Entity3">
+				<object type="RbEngine.Entities.TestUserEntityController">
+				</object>
+			</object>
+
+		</object>
+	</object>
+
+</rb>

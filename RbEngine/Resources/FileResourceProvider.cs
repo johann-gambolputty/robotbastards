@@ -61,7 +61,7 @@ namespace RbEngine.Resources
 		public void							AddBaseDirectory( string dir )
 		{
 			string fullPath = System.IO.Path.GetFullPath( dir ) + '\\';
-			System.Diagnostics.Debug.WriteLine( String.Format( "Adding base directory \"{0}\"", fullPath ) );
+			Output.WriteLineCall( Output.ResourceInfo, "Adding base directory \"{0}\"", fullPath );
 			m_BaseDirs.Add( fullPath );
 		}
 

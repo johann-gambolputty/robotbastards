@@ -81,6 +81,19 @@ namespace RbControls
 			}
 		}
 
+		[ Category( "Rendering properties" ), Description( "Sets control to always invalidate itself" ) ]
+		public bool ContinuousRendering
+		{
+			get
+			{
+				return m_ContinuousRendering;
+			}
+			set
+			{
+				m_ContinuousRendering = value;
+			}
+		}
+
 		#endregion
 
 
@@ -111,6 +124,14 @@ namespace RbControls
 
 			// TODO: Add any initialization after the InitComponent call
 
+			if ( ( m_ContinuousRendering ) && ( !DesignMode ) )
+			{
+				m_RenderingTimer			= new Timer( );
+				m_RenderingTimer.Tick		+= new EventHandler( RenderTick );
+				m_RenderingTimer.Interval	= ( int )( 100.0f / 30.0f );
+				m_RenderingTimer.Enabled	= true;
+				m_RenderingTimer.Start( );
+			}
 		}
 
 		/// <summary>
@@ -147,11 +168,14 @@ namespace RbControls
 
 		#region	Private stuff
 
-		private byte									m_StencilBits		= 0;
-		private byte									m_DepthBits			= 24;
-		private byte									m_ColourBits		= 32;
-		private RbEngine.Rendering.ControlRenderContext	m_Context			= null;
-		private System.Drawing.Image					m_DesignImage		= null;
+		private byte									m_StencilBits			= 0;
+		private byte									m_DepthBits				= 24;
+		private byte									m_ColourBits			= 32;
+		private RbEngine.Rendering.ControlRenderContext	m_Context				= null;
+		private System.Drawing.Image					m_DesignImage			= null;
+		private bool									m_ContinuousRendering	= true;
+		private bool									m_AlreadyInvalidated	= false;
+		private Timer									m_RenderingTimer;
 
 		#endregion
 
@@ -195,6 +219,8 @@ namespace RbControls
 					EndPaint( );
 				}
 			}
+
+			m_AlreadyInvalidated = false;
 		}
 
 		/// <summary>
@@ -218,7 +244,7 @@ namespace RbControls
 		/// </summary>
 		protected virtual bool BeginPaint( )
 		{
-			return m_Context.MakeCurrent( );
+			return m_Context.BeginPaint( );
 		}
 
 		/// <summary>
@@ -240,5 +266,18 @@ namespace RbControls
 		{
 			m_Context.EndPaint( );
 		}
+
+		/// <summary>
+		/// Rendering timer tick callback. Invalidates the control
+		/// </summary>
+		private void RenderTick( object sender, EventArgs args )
+		{
+			if ( !m_AlreadyInvalidated )
+			{
+				Invalidate( );
+				m_AlreadyInvalidated = true;
+			}
+		}
+
 	}
 }

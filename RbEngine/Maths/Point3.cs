@@ -96,6 +96,14 @@ namespace RbEngine.Maths
 		}
 
 		/// <summary>
+		/// Subtracts a vector from a point
+		/// </summary>
+		public static Point3	operator - ( Point3 pt, Vector3 vec )
+		{
+			return new Point3( ( float )( pt.X - vec.X ), ( float )( pt.Y - vec.Y ), ( float )( pt.Z - vec.Z ) );
+		}
+
+		/// <summary>
 		/// Adds a vector to a point
 		/// </summary>
 		public static Point3	operator + ( Point3 pt, Vector3 vec )

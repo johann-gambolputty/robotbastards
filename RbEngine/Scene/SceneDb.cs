@@ -6,7 +6,7 @@ namespace RbEngine.Scene
 	/// <summary>
 	/// Stores objects and managers that make up a scene
 	/// </summary>
-	public class SceneDb : Components.IParentObject
+	public class SceneDb : Components.IParentObject, Components.IXmlLoader
 	{
 		#region	Scene clocks
 
@@ -183,8 +183,35 @@ namespace RbEngine.Scene
 
 		private ObjectSet		m_Objects = new TypeGraphObjectSet( );
 		private RenderManager	m_Rendering;
-		private Clock			m_UpdateClock;
 		private ArrayList		m_Clocks	= new ArrayList( );
 		private bool			m_Paused	= true;
+
+		#region IXmlLoader Members
+
+		/// <summary>
+		/// Parses the element that generated this scene
+		/// </summary>
+		/// <param name="reader">XML reader pointing to the element</param>
+		public void ParseGeneratingElement( System.Xml.XmlReader reader )
+		{
+		}
+
+		/// <summary>
+		/// Parses an element
+		/// </summary>
+		/// <param name="reader">XML reader pointing to the element</param>
+		public void ParseElement( System.Xml.XmlReader reader )
+		{
+			if ( reader.Name == "clock" )
+			{
+				m_Clocks.Add( new Clock( reader.GetAttribute( "name" ), ( int )( 100.0f / float.Parse( reader.GetAttribute( "ticksPerSecond" ) ) ) ) );
+			}
+			else
+			{
+				throw new ApplicationException( "Unknown element in scene" );
+			}
+		}
+
+		#endregion
 	}
 }
