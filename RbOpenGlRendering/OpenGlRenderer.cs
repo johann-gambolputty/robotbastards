@@ -35,6 +35,19 @@ namespace RbOpenGlRendering
 		#region	Standard operations
 
 		/// <summary>
+		/// Current control setup
+		/// </summary>
+		public override Control CurrentControl
+		{
+			set
+			{
+				base.CurrentControl = value;
+				SetViewport( 0, 0, value.Width, value.Height );
+			}
+		}
+
+
+		/// <summary>
 		/// Checks for errors in the current state of the renderer, throwing an exception if there is one
 		/// </summary>
 		public void CheckErrors( )
@@ -120,7 +133,7 @@ namespace RbOpenGlRendering
 		/// <summary>
 		/// Sets the specified colour as the current colour in the renderer (OpenGL specific)
 		/// </summary>
-		public override void ApplyColour( System.Drawing.Color colour )
+		public void ApplyColour( System.Drawing.Color colour )
 		{
 			Gl.glColor3ub( colour.R, colour.G, colour.B );
 		}
@@ -331,42 +344,70 @@ namespace RbOpenGlRendering
 
 		#endregion
 
-		#region	Picking
+		#region	Unprojection
+
+		
+		/// <summary>
+		/// Unprojects a point from screen space into world space
+		/// </summary>
+		public override Point3	Unproject( int x, int y, float depth )
+		{
+			double[]	modelMatrix			= new double[ 16 ];
+			double[]	projectionMatrix	= new double[ 16 ];
+			int[]		viewport			= new int[ 4 ];
+
+			double outX;
+			double outY;
+			double outZ;
+
+			Gl.glGetDoublev( Gl.GL_MODELVIEW_MATRIX, modelMatrix );
+			Gl.glGetDoublev( Gl.GL_PROJECTION_MATRIX, projectionMatrix );
+			Gl.glGetIntegerv( Gl.GL_VIEWPORT, viewport );
+
+			//	Correct windows screen space into openGL screen space
+			double inX	= ( double )x;
+			double inY	= ( double )viewport[ 3 ] - y;
+			double inZ	= depth;
+
+			Glu.gluUnProject( inX, inY, inZ, modelMatrix, projectionMatrix, viewport, out outX, out outY, out outZ );
+
+			return new Point3( ( float )outX, ( float )outY, ( float )outZ );
+		}
+
 
 		/// <summary>
 		/// Makes a 3d ray in world space from a screen space position
 		/// </summary>
-		public override Ray3 PickRay( int X, int Y )
+		public override Ray3 PickRay( int x, int y )
 		{
-			double[] ModelMatrix		= new double[ 16 ];
-			double[] ProjectionMatrix	= new double[ 16 ];
-			int[] Viewport				= new int[ 4 ];
+			double[]	modelMatrix			= new double[ 16 ];
+			double[]	projectionMatrix	= new double[ 16 ];
+			int[]		viewport			= new int[ 4 ];
 
-			double OutX;
-			double OutY;
-			double OutZ;
+			double outX;
+			double outY;
+			double outZ;
 
-			Gl.glGetDoublev( Gl.GL_MODELVIEW_MATRIX, ModelMatrix );
-			Gl.glGetDoublev( Gl.GL_PROJECTION_MATRIX, ProjectionMatrix );
-			Gl.glGetIntegerv( Gl.GL_VIEWPORT, Viewport );
+			Gl.glGetDoublev( Gl.GL_MODELVIEW_MATRIX, modelMatrix );
+			Gl.glGetDoublev( Gl.GL_PROJECTION_MATRIX, projectionMatrix );
+			Gl.glGetIntegerv( Gl.GL_VIEWPORT, viewport );
 
 			//	Correct windows screen space into openGL screen space
-			double InX = ( double )X;
-			double InY = ( double )Viewport[ 3 ] - Y;
-			double InZ	= 0;
+			double inX = ( double )x;
+			double inY = ( double )viewport[ 3 ] - y;
 
-			Glu.gluUnProject( InX, InY, InZ, ModelMatrix, ProjectionMatrix, Viewport, out OutX, out OutY, out OutZ );
+			//	TODO:This isn't right - the pick ray origin should be the camera origin
+			Glu.gluUnProject( inX, inY, 0, modelMatrix, projectionMatrix, viewport, out outX, out outY, out outZ );
 
-			Ray3 Result = new Ray3( );
-			Result.Origin.Set( ( float )OutX, ( float )OutY, ( float )OutZ );
+			Ray3 result = new Ray3( );
+			result.Origin.Set( ( float )outX, ( float )outY, ( float )outZ );
 
-			InZ	= 1;
-			Glu.gluUnProject( InX, InY, InZ, ModelMatrix, ProjectionMatrix, Viewport, out OutX, out OutY, out OutZ );
-			Result.Direction = new Vector3( ( float )OutX, ( float )OutY, ( float )OutZ );
+			Glu.gluUnProject( inX, inY, 1, modelMatrix, projectionMatrix, viewport, out outX, out outY, out outZ );
+			result.Direction = new Vector3( ( float )outX, ( float )outY, ( float )outZ );
 
-			Result.Direction.Normalise( );
+			result.Direction.Normalise( );
 
-			return Result;
+			return result;
 		}
 
 		#endregion

@@ -17,7 +17,6 @@ namespace RbEngine
 				string basePath = outputFilePath.Substring( 0, extIndex );
 				string extension = outputFilePath.Substring( extIndex );
 
-				int			fileCount	= 0;
 				string		altPath		= outputFilePath;
 				ArrayList	fileNames	= new ArrayList( );
 				fileNames.Add( altPath );

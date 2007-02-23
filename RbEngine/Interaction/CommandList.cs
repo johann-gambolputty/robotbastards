@@ -10,14 +10,14 @@ namespace RbEngine.Interaction
 	{
 
 		/// <summary>
-		/// Binds all commands to the specified control
+		/// Binds all commands to the specified client
 		/// </summary>
-		/// <param name="control">Control to bind to</param>
-		public void	BindToControl( System.Windows.Forms.Control control )
+		/// <param name="client">Client to bind to</param>
+		public void	BindToClient( Network.Client client )
 		{
 			foreach ( Command curCommand in m_Commands )
 			{
-				curCommand.BindToControl( control );
+				curCommand.BindToClient( client );
 			}
 		}
 

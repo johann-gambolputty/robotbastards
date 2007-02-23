@@ -244,7 +244,7 @@ namespace RbControls
 		/// </summary>
 		protected virtual bool BeginPaint( )
 		{
-			return m_Context.BeginPaint( );
+			return m_Context.BeginPaint( this );
 		}
 
 		/// <summary>

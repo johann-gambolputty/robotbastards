@@ -7,14 +7,6 @@ namespace RbEngine.Rendering
 	/// </summary>
 	public class SetupControlTarget : IApplicable
 	{
-		/// <summary>
-		/// Sets the control as the target
-		/// </summary>
-		public SetupControlTarget( System.Windows.Forms.Control control )
-		{
-			m_Control = control;
-		}
-
 		#region IApplicable Members
 
 		/// <summary>
@@ -22,12 +14,11 @@ namespace RbEngine.Rendering
 		/// </summary>
 		public void Apply( )
 		{
-			Renderer.Inst.SetViewport( 0, 0, m_Control.Width, m_Control.Height );
+			System.Windows.Forms.Control control = Renderer.Inst.CurrentControl;
+			Renderer.Inst.SetViewport( 0, 0, control.Width, control.Height );
 		}
 
 		#endregion
 
-
-		private System.Windows.Forms.Control m_Control;
 	}
 }

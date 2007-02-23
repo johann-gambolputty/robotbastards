@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Windows.Forms;
 using RbEngine.Maths;
 
 namespace RbEngine.Rendering
@@ -83,29 +84,40 @@ namespace RbEngine.Rendering
 		#region	Standard operations
 
 		/// <summary>
+		/// The control currently being rendered to
+		/// </summary>
+		/// <seealso cref="ControlRenderContext.BeginPaint()"/>
+		public virtual Control	CurrentControl
+		{
+			set
+			{
+				m_Control = value;
+			}
+			get
+			{
+				return m_Control;
+			}
+		}
+
+		/// <summary>
 		/// Clears the viewport
 		/// </summary>
-		public abstract void ClearColour( System.Drawing.Color colour );
+		public abstract void	ClearColour( System.Drawing.Color colour );
 
 		/// <summary>
 		/// Clears the viewport using a vertical gradient fill
 		/// </summary>
-		public abstract void ClearVerticalGradient( System.Drawing.Color topColour, System.Drawing.Color bottomColour );
+		public abstract void	ClearVerticalGradient( System.Drawing.Color topColour, System.Drawing.Color bottomColour );
 
 		/// <summary>
 		/// Clears the viewport using a radial gradient fill (shit)
 		/// </summary>
-		public abstract void ClearRadialGradient( System.Drawing.Color centreColour, System.Drawing.Color outerColour );
+		public abstract void	ClearRadialGradient( System.Drawing.Color centreColour, System.Drawing.Color outerColour );
 
 		/// <summary>
 		/// Clears the depth buffer
 		/// </summary>
-		public abstract void ClearDepth( float depth );
-
-		/// <summary>
-		/// Sets the specified colour as the current colour in the renderer (OpenGL specific)
-		/// </summary>
-		public abstract void ApplyColour( System.Drawing.Color colour );
+		public abstract void	ClearDepth( float depth );
 
 		#endregion
 
@@ -190,12 +202,17 @@ namespace RbEngine.Rendering
 
 		#endregion
 
-		#region	Picking
+		#region	Unprojection
+
+		/// <summary>
+		/// Unprojects a point from screen space into world space
+		/// </summary>
+		public abstract Maths.Point3	Unproject( int x, int y, float depth );
 
 		/// <summary>
 		/// Makes a 3d ray in world space from a screen space position
 		/// </summary>
-		public abstract Maths.Ray3 PickRay( int X, int Y );
+		public abstract Maths.Ray3		PickRay( int x, int y );
 
 		#endregion
 
@@ -239,6 +256,7 @@ namespace RbEngine.Rendering
 
 		private static Renderer	ms_Singleton;
 		private ArrayList		m_RenderStates	= new ArrayList( );
+		private Control			m_Control;
 
 		#endregion
 

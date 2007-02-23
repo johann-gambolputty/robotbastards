@@ -51,6 +51,10 @@ namespace RbEngine.Entities
 		/// </summary>
 		public Vector3 Facing
 		{
+			set
+			{
+				m_ZAxis = value;
+			}
 			get
 			{
 				return m_ZAxis;
@@ -62,6 +66,10 @@ namespace RbEngine.Entities
 		/// </summary>
 		public Vector3 Left
 		{
+			set
+			{
+				m_XAxis = value;
+			}
 			get
 			{
 				return m_XAxis;
@@ -73,6 +81,10 @@ namespace RbEngine.Entities
 		/// </summary>
 		public Vector3 Right
 		{
+			set
+			{
+				m_XAxis = value * -1.0f;
+			}
 			get
 			{
 				return m_XAxis * -1.0f;
@@ -84,6 +96,10 @@ namespace RbEngine.Entities
 		/// </summary>
 		public Vector3 Up
 		{
+			set
+			{
+				m_YAxis = value;
+			}
 			get
 			{
 				return m_YAxis;
@@ -95,6 +111,10 @@ namespace RbEngine.Entities
 		/// </summary>
 		public Vector3 Down
 		{
+			set
+			{
+				m_YAxis = value * -1.0f;
+			}
 			get
 			{
 				return m_YAxis * -1.0f;
@@ -109,7 +129,7 @@ namespace RbEngine.Entities
 		private Vector3						m_XAxis		= Vector3.XAxis;
 		private Vector3						m_YAxis		= Vector3.YAxis;
 		private Vector3						m_ZAxis		= Vector3.ZAxis;
-		private Rendering.IRender			m_Graphics;
+	//	private Rendering.IRender			m_Graphics;
 
 		#endregion
 
@@ -127,7 +147,7 @@ namespace RbEngine.Entities
 			Rendering.Renderer.Inst.Translate( Rendering.Transform.kLocalToView, curPos.X, curPos.Y, curPos.Z );
 
 			//	TODO: Render m_Graphics
-			Rendering.ShapeRenderer.Inst.RenderSphere( curPos + new Vector3( 0, 5, 0 ), 5 );
+			Rendering.ShapeRenderer.Inst.RenderSphere( new Point3( 0, 5, 0 ), 5 );
 
 			//	Pop the entity transform
 			Rendering.Renderer.Inst.PopTransform( Rendering.Transform.kLocalToView );

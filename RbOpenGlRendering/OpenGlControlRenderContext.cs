@@ -100,10 +100,14 @@ namespace RbOpenGlRendering
 		/// <summary>
 		/// Makes this rendering context current. Called by the paint event handler prior to any rendering
 		/// </summary>
-		public override bool					BeginPaint( )
+		public override bool					BeginPaint( Control control )
 		{
 			//	Make m_RenderContext the current rendering context
-			return Wgl.wglMakeCurrent( m_DeviceContext, m_RenderContext );
+			if ( !Wgl.wglMakeCurrent( m_DeviceContext, m_RenderContext ) )
+			{
+				return false;
+			}
+			return base.BeginPaint( control );
 		}
 
 		/// <summary>

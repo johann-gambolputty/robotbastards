@@ -22,12 +22,12 @@ namespace RbEngine.Interaction
 		}
 
 		/// <summary>
-		/// Adds an input binding to this control
+		/// Adds an input binding to this command
 		/// </summary>
 		/// <param name="binding"></param>
-		public void					AddBinding( CommandInputBinding binding )
+		public virtual void			AddBinding( CommandInputBinding binding )
 		{
-			m_Bindings.Add( binding );
+			m_BindingTemplates.Add( binding );
 		}
 
 		/// <summary>
@@ -48,53 +48,66 @@ namespace RbEngine.Interaction
 		{
 			get
 			{
-				return m_Bindings;
+				return m_BindingTemplates;
 			}
 		}
 
 		/// <summary>
-		/// Binds this command to a given control
+		/// Binds this command to a given client
 		/// </summary>
-		/// <param name="control">Control to bind to</param>
+		/// <param name="client">Client to bind to</param>
 		/// <seealso cref="CommandInputBinding">CommandInputBinding</seealso>
-		public void					BindToControl( System.Windows.Forms.Control control )
+		public void					BindToClient( Network.Client client )
 		{
-			foreach ( CommandInputBinding binding in m_Bindings )
+			foreach ( CommandInputBinding binding in m_BindingTemplates )
 			{
-				binding.BindToControl( control );
+				m_ClientBindings.Add( binding.BindToClient( client ) );
 			}
 		}
 
 		/// <summary>
-		/// Updates the control
+		/// Updates the command
 		/// </summary>
 		public void					Update( Components.IMessageHandler commandTarget )
 		{
-			foreach ( CommandInputBinding binding in m_Bindings )
+			foreach ( CommandInputBinding.ClientBinding binding in m_ClientBindings )
 			{
 				if ( binding.Active )
 				{
-					commandTarget.HandleMessage( new CommandMessage( this ) );
-					return;
+					CommandMessage msg = GenerateMessageFromActiveBinding( binding );
+					if ( msg != null )
+					{
+						commandTarget.HandleMessage( msg );
+						return;
+					}
 				}
 			}
 		}
 
 		/// <summary>
+		/// Generates a CommandMessage form an active input binding
+		/// </summary>
+		protected virtual CommandMessage	GenerateMessageFromActiveBinding( CommandInputBinding.ClientBinding binding )
+		{
+			return new CommandMessage( this, binding.Client );
+		}
+
+		/// <summary>
 		/// Active event delegate type
 		/// </summary>
-		public delegate void		ActiveDelegate( );
+	//	public delegate void		ActiveDelegate( );
 
 		/// <summary>
 		/// Event, invoked by this command when it is active
 		/// </summary>
-		public event ActiveDelegate	Active;
+	//	public event ActiveDelegate	Active;
 
 		#region	Private stuff
 
 		private string				m_Name;
 		private string				m_Description;
-		private ArrayList			m_Bindings = new ArrayList( );
+		private ArrayList			m_BindingTemplates	= new ArrayList( );
+		private ArrayList			m_ClientBindings	= new ArrayList( );
 		private ushort				m_Id;
 
 		#endregion

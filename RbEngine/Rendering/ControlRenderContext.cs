@@ -63,7 +63,11 @@ namespace RbEngine.Rendering
 			/// <summary>
 			/// Called by the paint event handler prior to any rendering
 			/// </summary>
-			public abstract bool					BeginPaint( );
+			public virtual bool						BeginPaint( Control control )
+			{
+				Renderer.Inst.CurrentControl = control;
+				return true;
+			}
 
 			/// <summary>
 			/// Called when painting has finished

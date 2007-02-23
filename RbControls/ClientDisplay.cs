@@ -87,9 +87,6 @@ namespace RbControls
 		}
 
 		private RbEngine.Network.Client		m_Client;
-	//	private RbEngine.Scene.SceneDb		m_Scene;
-	//	private RbEngine.Cameras.CameraBase	m_Camera;
-	//	private Object						m_CameraController;
 
 	}
 }

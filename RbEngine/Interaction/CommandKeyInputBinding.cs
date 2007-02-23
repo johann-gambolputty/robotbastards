@@ -9,6 +9,41 @@ namespace RbEngine.Interaction
 	public class CommandKeyInputBinding : CommandInputBinding
 	{
 		/// <summary>
+		/// Client-specific binding
+		/// </summary>
+		private new class ClientBinding : CommandInputBinding.ClientBinding
+		{
+			/// <summary>
+			/// Setup constructor
+			/// </summary>
+			public ClientBinding( Network.Client client, Keys key ) :
+					base( client )
+			{
+				m_Key = key;
+				client.Control.KeyDown += new KeyEventHandler( OnKeyDown );
+				client.Control.KeyUp += new KeyEventHandler( OnKeyUp );
+			}
+			
+			private void	OnKeyDown( object sender, KeyEventArgs args )
+			{
+				if ( args.KeyCode == m_Key )
+				{
+					m_Active = true;
+				}
+			}
+
+			private void	OnKeyUp( object sender, KeyEventArgs args )
+			{
+				if ( args.KeyCode == m_Key )
+				{
+					m_Active = false;
+				}
+			}
+			
+			private Keys	m_Key;
+		}
+
+		/// <summary>
 		/// Setup constructor
 		/// </summary>
 		/// <param name="key">Key to check for</param>
@@ -18,31 +53,15 @@ namespace RbEngine.Interaction
 		}
 
 		/// <summary>
-		/// Binds to the specified control
+		/// Binds to the specified client
 		/// </summary>
-		/// <param name="control"></param>
-		public override void		BindToControl( Control control )
+		/// <param name="client">Client to bind to</param>
+		public override CommandInputBinding.ClientBinding		BindToClient( Network.Client client )
 		{
-			control.KeyDown += new KeyEventHandler( OnKeyDown );
-			control.KeyUp += new KeyEventHandler( OnKeyUp );
+			return new ClientBinding( client, m_Key );
 		}
 
 		private Keys				m_Key;
 
-		private void				OnKeyDown( object sender, KeyEventArgs args )
-		{
-			if ( args.KeyCode == m_Key )
-			{
-				m_Active = true;
-			}
-		}
-
-		private void				OnKeyUp( object sender, KeyEventArgs args )
-		{
-			if ( args.KeyCode == m_Key )
-			{
-				m_Active = false;
-			}
-		}
 	}
 }

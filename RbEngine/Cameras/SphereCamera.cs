@@ -19,6 +19,19 @@ namespace RbEngine.Cameras
 		}
 
 		/// <summary>
+		/// Creates a pick ray from a screen position
+		/// </summary>
+		/// <param name="x">Screen X position</param>
+		/// <param name="y">Screen Y position</param>
+		/// <returns>Returns world ray</returns>
+		public Maths.Ray3			PickRay( int x, int y )
+		{
+			//	TODO: This is a bodge - don't abuse the rendering pipeline like this!
+			Apply( );
+			return new Maths.Ray3( Position, ( Rendering.Renderer.Inst.Unproject( x, y, 1 ) - Position ).MakeNormal( ) );
+		}
+
+		/// <summary>
 		/// Creates a SphereCameraControl to manipulate this camera
 		/// </summary>
 		public override Object CreateDefaultController( Control control, Scene.SceneDb scene )
