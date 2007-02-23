@@ -25,13 +25,13 @@ namespace RbEngine.Components
 		/// <summary>
 		/// Parses the XML element that was responsible for creating this object
 		/// </summary>
-		/// <param name="reader"> XmlReader positioned at the element to parse </param>
-		void ParseGeneratingElement( System.Xml.XmlReader reader );
+		/// <param name="element"> XmlElement that generated this object </param>
+		void ParseGeneratingElement( System.Xml.XmlElement element );
 
 		/// <summary>
 		/// Parses a given XML element
 		/// </summary>
-		/// <param name="reader"> XmlReader positioned at the element to parse </param>
-		void ParseElement( System.Xml.XmlReader reader );
+		/// <param name="element">Child XmlElement to the generating element</param>
+		void ParseElement( System.Xml.XmlElement element );
 	}
 }

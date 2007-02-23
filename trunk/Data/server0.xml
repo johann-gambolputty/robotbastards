@@ -2,7 +2,7 @@
 <rb>
 
 	<object type="RbEngine.Network.Server" name="server0">
-		<object type="RbEngine.Scene.SceneDb" property="Scene">
+	    <object type="RbEngine.Scene.SceneDb" property="Scene">
 
 			<clock name="updateClock" ticksPerSecond="15"/>
 
