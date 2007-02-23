@@ -54,7 +54,7 @@ namespace RbEngine.Entities
 		/// <summary>
 		/// Adds an input binding to this command
 		/// </summary>
-		/// <param name="binding"></param>
+		/// <param name="binding">Binding to add (must be derived from <see cref="Interaction.CommandCursorInputBinding"/>)</param>
 		public override void								AddBinding( Interaction.CommandInputBinding binding )
 		{
 			base.AddBinding( ( Interaction.CommandCursorInputBinding )binding );
@@ -120,7 +120,14 @@ namespace RbEngine.Entities
 			Entity3 entity = ( Entity3 )Parent;
 			switch ( ( ( Interaction.CommandMessage )msg ).Id )
 			{
-				case ( int )TestCommands.Forward	:	entity.Position += entity.Facing;	break;
+				case ( int )TestCommands.Forward	:
+				{
+					if ( m_LookAt.DistanceTo( entity.Position ) > 1.0f )
+					{
+						entity.Position += entity.Facing;
+					}
+					break;
+				}
 				case ( int )TestCommands.Back		:	entity.Position -= entity.Facing;	break;
 				case ( int )TestCommands.Left		:	entity.Position += entity.Left;		break;
 				case ( int )TestCommands.Right		:	entity.Position += entity.Right;	break;

@@ -1,41 +1,98 @@
 using System;
 using System.Xml;
+using System.Collections;
 
 namespace RbEngine.Components
 {
+
+	public class RbXmlBase
+	{
+		public virtual void	Resolve( Object parentObject )
+		{
+		}
+	}
+
+	public class RbXmlObject
+	{
+		public RbXmlObject( XmlElement element )
+		{
+			m_Element = element;
+		}
+
+		public void Add( RbXmlObject obj )
+		{
+			if ( m_ObjectAsParent == null )
+			{
+				throw new RbXmlException( m_Element, "Can't add child objects: Object type (\"{0}\") does not implement IParentObject", m_Object.GetType( ).Name );
+			}
+			m_ObjectAsParent.AddChild( obj );
+		}
+
+		public void Add( RbXmlBase obj )
+		{
+			if ( m_Resolve == null )
+			{
+				m_Resolve = new ArrayList( );
+			}
+			m_Resolve.Add( obj );
+		}
+
+		public void Add( XmlElement element )
+		{
+			if ( m_Elements == null )
+			{
+				m_Elements = new ArrayList( );
+			}
+			m_Elements.Add( element );
+		}
+
+		public void Resolve( Object parentObject )
+		{
+			//	Resolve all references and so forth
+			IXmlLoader objectXmlLoader = m_Object as IXmlLoader;
+			if ( objectXmlLoader != null )
+			{
+				objectXmlLoader.ParseGeneratingElement( m_Element );
+
+				if ( m_Elements != null )
+				{
+					foreach ( XmlElement element in m_Elements )
+					{
+						objectXmlLoader.ParseElement( ( XmlElement )element );
+					}
+				}
+			}
+			else if ( m_Elements != null )
+			{
+				throw new RbXmlException( m_Element, "Can't handle unknown elements: Object's type (\"{0}\") does not implement IXmlLoader", m_Object.GetType( ).Name );
+			}
+
+			
+		}
+
+		private XmlElement		m_Element;
+		private Object			m_Object;
+		private IParentObject	m_ObjectAsParent;
+		private ArrayList		m_Resolve;
+		private ArrayList		m_Elements;
+	}
+
+	public class RbXmlProperty : RbXmlBase
+	{
+	}
+
+	public class RbXmlReference : RbXmlBase
+	{
+		public override void Resolve( Object parentObject )
+		{
+		}
+	}
+
 	/// <summary>
 	/// Loads an XML object definition file
 	/// </summary>
 	public class RbXmlLoader : Resources.ResourceLoader
 	{
-		private class LoadContext
-		{
-			public Object	Root
-			{
-				get
-				{
-					return m_Parents[ 0 ];
-				}
-			}
-
-			public Object	Parent( int offset )
-			{
-				return m_Parents[ m_Parents.Count - ( offset + 1 ) ];
-			}
-
-			public void		Enter( Object obj )
-			{
-				m_Parents.Add( obj );
-			}
-
-			public void		Leave( )
-			{
-				m_Parents.RemoveAt( m_Parents.Count - 1 );
-			}
-
-			System.Collections.ArrayList	m_Parents = new System.Collections.ArrayList( );
-		}
-
 		/// <summary>
 		/// Loads a resource from a stream
 		/// </summary>
@@ -44,6 +101,33 @@ namespace RbEngine.Components
 		/// <returns> Returns Engine.Main </returns>
 		public override Object Load( System.IO.Stream input, string inputSource )
 		{
+			XmlDocument doc = new RbXmlDocument( );
+			try
+			{
+				doc.Load( input );
+
+				foreach ( XmlNode curNode in doc.ChildNodes )
+				{
+					if ( curNode is XmlElement )
+					{
+						if ( curNode.Name != "rb" )
+						{
+							throw new RbXmlException( curNode, "Expected root element to be named \"rb\", not \"{0}\"", curNode.Name );
+						}
+						else
+						{
+						}
+					}
+				}
+			}
+			catch ( System.Xml.XmlException e )
+			{
+				string msg = String.Format( "Invalid component XML file \"{0}\"\n{0}({1},{2}): {3}", inputSource, e.LineNumber, e.LinePosition, e.Message );
+				throw new System.ApplicationException( msg, e );
+			}
+
+
+			/*
 			XmlTextReader reader = new System.Xml.XmlTextReader( input );
 
 			try
@@ -75,6 +159,7 @@ namespace RbEngine.Components
 				string msg = String.Format( "Failed to read component XML file \"{0}\"\n{0}({1},{2}): {3}", inputSource, reader.LineNumber, reader.LinePosition, e.Message );
 				throw new System.ApplicationException( msg, e );
 			}
+			*/
 
 			return null;
 		}
