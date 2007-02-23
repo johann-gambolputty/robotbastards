@@ -279,6 +279,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Interaction\CommandCursorInputBinding.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Interaction\CommandInputBinding.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -295,6 +300,11 @@
                 />
                 <File
                     RelPath = "Interaction\CommandMessage.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Interaction\CommandMouseMoveInputBinding.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

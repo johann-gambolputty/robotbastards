@@ -7,6 +7,21 @@ namespace RbEngine.Cameras
 	/// </summary>
 	public abstract class ProjectionCamera : CameraBase
 	{
+
+		/// <summary>
+		/// Unprojects a screen space coordinate into world space
+		/// </summary>
+		/// <param name="x">Screen X position</param>
+		/// <param name="y">Screen Y position</param>
+		/// <param name="depth">View depth</param>
+		/// <returns>Returns the unprojected world position</returns>
+		public Maths.Point3			Unproject( int x, int y, float depth )
+		{
+			//	TODO: This is a bodge - don't abuse the rendering pipeline like this!
+			Apply( );
+			return Rendering.Renderer.Inst.Unproject( x, y, depth );
+		}
+
 		/// <summary>
 		/// Applies camera transforms to the current renderer
 		/// </summary>

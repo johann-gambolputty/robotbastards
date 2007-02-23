@@ -51,6 +51,19 @@ namespace RbOpenGlRendering
 		#region	3d Rendering
 
 		/// <summary>
+		/// Renders a 3d line 
+		/// </summary>
+		/// <param name="start">Line start</param>
+		/// <param name="end">Line end</param>
+		public override void	RenderLine( Point3 start, Point3 end )
+		{
+			Gl.glBegin( Gl.GL_LINES );
+				Gl.glVertex3f( start.X, start.Y, start.Z );
+				Gl.glVertex3f( end.X, end.Y, end.Z );
+			Gl.glEnd( );
+		}
+
+		/// <summary>
 		/// Renders a cylinder
 		/// </summary>
 		/// <param name="start"> Start position of the cylinder </param>

@@ -46,6 +46,13 @@ namespace RbEngine.Rendering
 		#region	3d Rendering
 
 		/// <summary>
+		/// Renders a 3d line 
+		/// </summary>
+		/// <param name="start">Line start</param>
+		/// <param name="end">Line end</param>
+		public abstract void	RenderLine( Point3 start, Point3 end );
+
+		/// <summary>
 		/// Renders a cylinder
 		/// </summary>
 		/// <param name="start"> Start position of the cylinder </param>

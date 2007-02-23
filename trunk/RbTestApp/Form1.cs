@@ -14,7 +14,6 @@ namespace RbTestApp
 	public class Form1 : System.Windows.Forms.Form
 	{
 		private RbControls.ClientDisplay clientDisplay1;
-		private RbControls.ClientDisplay clientDisplay2;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -74,21 +73,31 @@ namespace RbTestApp
 			cmd.AddBinding( new RbEngine.Interaction.CommandKeyInputBinding( Keys.D ) );
 			commands.AddCommand( cmd );
 
-			commands.BindToControl( clientDisplay1 );
-			commands.BindToControl( clientDisplay2 );
+			cmd = new RbEngine.Entities.TestLookAtCommand( );
+			cmd.AddBinding( new RbEngine.Interaction.CommandMouseMoveInputBinding( ) );
+			commands.AddCommand( cmd );
 
 			m_Commands = commands;
 
+			//	Set up server and client displays
+			m_Server = RbEngine.Network.ServerManager.Inst.FindServer( "server0" );
+			foreach( Control curControl in Controls )
+			{
+				RbControls.ClientDisplay clientDisplay = curControl as RbControls.ClientDisplay;
+				if ( clientDisplay != null )
+				{
+					commands.BindToClient( clientDisplay.Client );
+					clientDisplay.Client.Server = m_Server;
+				}
+			}
+
+
+			//	Setup input update timer
 			Timer inputUpdateTimer = new Timer( );
 			inputUpdateTimer.Tick += new EventHandler( InputUpdateTimerTick );
 			inputUpdateTimer.Interval = ( int )( 100.0f / 15.0f );
 			inputUpdateTimer.Enabled = true;
 			inputUpdateTimer.Start( );
-
-			//	Attach the server to the client display
-			m_Server						= RbEngine.Network.ServerManager.Inst.FindServer( "server0" );
-			clientDisplay1.Client.Server	= m_Server;
-			clientDisplay2.Client.Server	= m_Server;
 		}
 
 		private RbEngine.Network.ServerBase			m_Server;
@@ -123,35 +132,24 @@ namespace RbTestApp
 		private void InitializeComponent()
 		{
 			this.clientDisplay1 = new RbControls.ClientDisplay();
-			this.clientDisplay2 = new RbControls.ClientDisplay();
 			this.SuspendLayout();
 			// 
 			// clientDisplay1
 			// 
 			this.clientDisplay1.ColourBits = ((System.Byte)(32));
+			this.clientDisplay1.ContinuousRendering = true;
 			this.clientDisplay1.DepthBits = ((System.Byte)(24));
-			this.clientDisplay1.DockPadding.All = 1;
-			this.clientDisplay1.Location = new System.Drawing.Point(8, 16);
+			this.clientDisplay1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.clientDisplay1.Location = new System.Drawing.Point(0, 0);
 			this.clientDisplay1.Name = "clientDisplay1";
-			this.clientDisplay1.Size = new System.Drawing.Size(224, 192);
+			this.clientDisplay1.Size = new System.Drawing.Size(472, 381);
 			this.clientDisplay1.StencilBits = ((System.Byte)(0));
-			this.clientDisplay1.TabIndex = 0;
-			// 
-			// clientDisplay2
-			// 
-			this.clientDisplay2.ColourBits = ((System.Byte)(32));
-			this.clientDisplay2.DepthBits = ((System.Byte)(24));
-			this.clientDisplay2.Location = new System.Drawing.Point(240, 192);
-			this.clientDisplay2.Name = "clientDisplay2";
-			this.clientDisplay2.Size = new System.Drawing.Size(216, 184);
-			this.clientDisplay2.StencilBits = ((System.Byte)(0));
-			this.clientDisplay2.TabIndex = 1;
+			this.clientDisplay1.TabIndex = 1;
 			// 
 			// Form1
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
 			this.ClientSize = new System.Drawing.Size(472, 381);
-			this.Controls.Add(this.clientDisplay2);
 			this.Controls.Add(this.clientDisplay1);
 			this.Name = "Form1";
 			this.Text = "Form1";

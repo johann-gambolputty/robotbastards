@@ -11,10 +11,12 @@ namespace RbEngine.Interaction
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		/// <param name="cmd"></param>
-		public CommandMessage( Command cmd )
+		/// <param name="cmd">Command that this message represents</param>
+		/// <param name="cmd">Client that generated the input, that generated this message</param>
+		public CommandMessage( Command cmd, Network.Client client )
 		{
-			m_Command = cmd;
+			m_Command	= cmd;
+			m_Client	= client;
 		}
 
 		/// <summary>
@@ -29,6 +31,17 @@ namespace RbEngine.Interaction
 		}
 
 		/// <summary>
+		/// Client that generated the input, that generated the command message
+		/// </summary>
+		public Network.Client	Client
+		{
+			get
+			{
+				return m_Client;
+			}
+		}
+
+		/// <summary>
 		/// Associated command
 		/// </summary>
 		public Command	Command
@@ -39,6 +52,7 @@ namespace RbEngine.Interaction
 			}
 		}
 
-		private Command	m_Command;
+		private Command			m_Command;
+		private Network.Client	m_Client;
 	}
 }
