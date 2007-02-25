@@ -484,6 +484,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Rendering\EffectRenderedObject.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Rendering\IApplicable.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using RbEngine;
 using RbEngine.Rendering;
+using Tao.Cg;
 
 namespace RbOpenGlRendering.RbCg
 {
@@ -48,32 +49,33 @@ namespace RbOpenGlRendering.RbCg
 			IntPtr param = m_Bindings[ ( int )ShaderParameterBinding.ModelViewMatrix ];
 			if ( param != IntPtr.Zero )
 			{
-				Tao.Cg.CgGl.cgGLSetStateMatrixParameter( param, Tao.Cg.CgGl.CG_GL_MODELVIEW_MATRIX, Tao.Cg.CgGl.CG_GL_MATRIX_IDENTITY );
+				CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_MATRIX, CgGl.CG_GL_MATRIX_IDENTITY );
 			}
 
 			param = m_Bindings[ ( int )ShaderParameterBinding.InverseModelViewMatrix ];
 			if ( param != IntPtr.Zero )
 			{
-				Tao.Cg.CgGl.cgGLSetStateMatrixParameter( param, Tao.Cg.CgGl.CG_GL_MODELVIEW_MATRIX, Tao.Cg.CgGl.CG_GL_MATRIX_INVERSE );
+				CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_MATRIX, CgGl.CG_GL_MATRIX_INVERSE );
 			}
 
 			param = m_Bindings[ ( int )ShaderParameterBinding.InverseTransposeModelViewMatrix ];
 			if ( param != IntPtr.Zero )
 			{
-				Tao.Cg.CgGl.cgGLSetStateMatrixParameter( param, Tao.Cg.CgGl.CG_GL_MODELVIEW_MATRIX, Tao.Cg.CgGl.CG_GL_MATRIX_INVERSE_TRANSPOSE );
+				CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_MATRIX, CgGl.CG_GL_MATRIX_INVERSE_TRANSPOSE );
 			}
 
 			param = m_Bindings[ ( int )ShaderParameterBinding.ModelViewProjectionMatrix ];
 			if ( param != IntPtr.Zero )
 			{
-				Tao.Cg.CgGl.cgGLSetStateMatrixParameter( param, Tao.Cg.CgGl.CG_GL_MODELVIEW_PROJECTION_MATRIX, Tao.Cg.CgGl.CG_GL_MATRIX_IDENTITY );
+				CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_PROJECTION_MATRIX, CgGl.CG_GL_MATRIX_IDENTITY );
 			}
 
 			param = m_Bindings[ ( int )ShaderParameterBinding.EyePosition ];
 			if ( param != IntPtr.Zero )
 			{
 				//	TODO: Setup camera frame and frustum in the renderer
-			//	Tao.Cg.Cg.cgSetParameter3f( );
+				RbEngine.Maths.Point3 eyePos = ( ( RbEngine.Cameras.Camera3 )Renderer.Inst.Camera ).Position;
+				Cg.cgSetParameter3f( param, eyePos.X, eyePos.Y, eyePos.Z );
 			}
 			/*
 		
@@ -105,12 +107,10 @@ namespace RbOpenGlRendering.RbCg
 		/// <param name="path"> Path to the effect file </param>
 		public void	Load( string path )
 		{
-			if ( !CreateFromHandle( Tao.Cg.Cg.cgCreateEffectFromFile( m_Context, path, null ) ) )
+			if ( !CreateFromHandle( Cg.cgCreateEffectFromFile( m_Context, path, null ) ) )
 			{
-				throw new System.ApplicationException( String.Format( "Unable to create CG effect from path \"{0}\"\n{1}", path, Tao.Cg.Cg.cgGetLastListing( m_Context ) ) );
+				throw new System.ApplicationException( String.Format( "Unable to create CG effect from path \"{0}\"\n{1}", path, Cg.cgGetLastListing( m_Context ) ) );
 			}
-
-			Output.WriteLineCall( Output.RenderingInfo, "Successfully loaded effect \"{0}\" from file", path );
 		}
 
 		/// <summary>
@@ -121,12 +121,10 @@ namespace RbOpenGlRendering.RbCg
 		{
 			System.IO.StreamReader reader = new System.IO.StreamReader( input );
 			string str = reader.ReadToEnd( );
-			if ( !CreateFromHandle( Tao.Cg.Cg.cgCreateEffect( m_Context, str, null ) ) )
+			if ( !CreateFromHandle( Cg.cgCreateEffect( m_Context, str, null ) ) )
 			{
-				throw new System.ApplicationException( String.Format( "Unable to create CG effect from stream \"{0}\"\n{1}", inputSource, Tao.Cg.Cg.cgGetLastListing( m_Context ) ) );
+				throw new System.ApplicationException( String.Format( "Unable to create CG effect from stream \"{0}\"\n{1}", inputSource, Cg.cgGetLastListing( m_Context ) ) );
 			}
-
-			Output.WriteLineCall( Output.RenderingInfo, "Successfully loaded effect \"{0}\" from stream", inputSource );
 		}
 
 		/// <summary>
@@ -143,12 +141,12 @@ namespace RbOpenGlRendering.RbCg
 			m_EffectHandle = effectHandle;
 
 			//	Run through all the techniques in the effect
-			for ( IntPtr curTechnique = Tao.Cg.Cg.cgGetFirstTechnique( m_EffectHandle ); curTechnique != IntPtr.Zero; curTechnique = Tao.Cg.Cg.cgGetNextTechnique( curTechnique ) )
+			for ( IntPtr curTechnique = Cg.cgGetFirstTechnique( m_EffectHandle ); curTechnique != IntPtr.Zero; curTechnique = Cg.cgGetNextTechnique( curTechnique ) )
 			{
-				string techniqueName = Tao.Cg.Cg.cgGetTechniqueName( curTechnique );
-				if ( Tao.Cg.Cg.cgValidateTechnique( curTechnique ) == 0 )
+				string techniqueName = Cg.cgGetTechniqueName( curTechnique );
+				if ( Cg.cgValidateTechnique( curTechnique ) == 0 )
 				{
-					Output.WriteLineCall( Output.RenderingWarning, "Unable to validate technique \"{0}\" - {1}", techniqueName, Tao.Cg.Cg.cgGetLastListing( m_Context ) );
+					Output.WriteLineCall( Output.RenderingWarning, "Unable to validate technique \"{0}\" - {1}", techniqueName, Cg.cgGetLastListing( m_Context ) );
 					continue;
 				}
 
@@ -156,16 +154,47 @@ namespace RbOpenGlRendering.RbCg
 				RenderTechnique newTechnique = new RenderTechnique( techniqueName );
 
 				//	Run through all the CG passes in the current technique
-				for ( IntPtr curPass = Tao.Cg.Cg.cgGetFirstPass( curTechnique ); curPass != IntPtr.Zero; curPass = Tao.Cg.Cg.cgGetNextPass( curPass ) )
+				for ( IntPtr curPass = Cg.cgGetFirstPass( curTechnique ); curPass != IntPtr.Zero; curPass = Cg.cgGetNextPass( curPass ) )
 				{
 					//	Create a CgRenderPass wrapper around the current pass, and add it to the current technique
 					newTechnique.Add( new CgRenderPass( curPass ) );
 				}
+
+				Add( newTechnique );
 			}
 
 			//	Run through all the parameters in the effect, creating CgShaderParameter objects for each
-			for ( IntPtr curParam = Tao.Cg.Cg.cgGetFirstEffectParameter( m_EffectHandle ); curParam != IntPtr.Zero; curParam = Tao.Cg.Cg.cgGetNextParameter( curParam ) )
+			for ( IntPtr curParam = Cg.cgGetFirstEffectParameter( m_EffectHandle ); curParam != IntPtr.Zero; curParam = Cg.cgGetNextParameter( curParam ) )
 			{
+				//	Default bindings
+				//	HACK: This is a bodge; should really use parameter annotations to determine such bindings
+				switch ( Cg.cgGetParameterName( curParam ) )
+				{
+					case "ModelViewProj" :
+					{
+						m_Bindings[ ( int )ShaderParameterBinding.ModelViewProjectionMatrix ] = curParam;
+						break;
+					}
+
+					case "ModelView" :
+					{
+						m_Bindings[ ( int )ShaderParameterBinding.ModelViewMatrix ] = curParam;
+						break;
+					}
+
+					case "InverseTransposeModelView" :
+					{
+						m_Bindings[ ( int )ShaderParameterBinding.InverseTransposeModelViewMatrix ] = curParam;
+						break;
+					}
+
+					case "EyePos" :
+					{
+						m_Bindings[ ( int )ShaderParameterBinding.EyePosition ] = curParam;
+						break;
+					}
+				}
+
 				m_Parameters.Add( new CgShaderParameter( curParam ) );
 			}
 
@@ -185,7 +214,7 @@ namespace RbOpenGlRendering.RbCg
 		{
 			foreach ( CgShaderParameter curParam in m_Parameters )
 			{
-				if ( Tao.Cg.Cg.cgGetParameterName( curParam.Parameter ) == name )
+				if ( Cg.cgGetParameterName( curParam.Parameter ) == name )
 				{
 					return curParam;
 				}

@@ -17,6 +17,9 @@ namespace RbEngine.Cameras
 		/// <summary>
 		/// Applies camera transforms to the current renderer
 		/// </summary>
-		public abstract void	Apply( );
+		public virtual void		Apply( )
+		{
+			Rendering.Renderer.Inst.Camera = this;
+		}
 	}
 }

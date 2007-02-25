@@ -19,6 +19,8 @@ namespace RbEngine.Cameras
 
 			float aspectRatio = ( height == 0 ) ? 1.0f : ( float )width / ( float )height;
 			Rendering.Renderer.Inst.SetPerspectiveProjectionTransform( m_PerspectiveFov, aspectRatio, m_PerspectiveZNear, m_PerspectiveZFar );
+
+			base.Apply( );
 		}
 
 		#region	Public properties

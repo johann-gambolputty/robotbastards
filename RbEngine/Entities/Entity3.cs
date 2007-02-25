@@ -129,7 +129,26 @@ namespace RbEngine.Entities
 		private Vector3						m_XAxis		= Vector3.XAxis;
 		private Vector3						m_YAxis		= Vector3.YAxis;
 		private Vector3						m_ZAxis		= Vector3.ZAxis;
-	//	private Rendering.IRender			m_Graphics;
+		private Rendering.IRender			m_Graphics;
+
+		#endregion
+
+		#region	Graphics
+
+		/// <summary>
+		/// Entity graphics
+		/// </summary>
+		public Rendering.IRender	Graphics
+		{
+			get
+			{
+				return m_Graphics;
+			}
+			set
+			{
+				m_Graphics = value;
+			}
+		}
 
 		#endregion
 
@@ -140,16 +159,25 @@ namespace RbEngine.Entities
 		/// </summary>
 		public void Render( long renderTime )
 		{
+			//	Get the interpolated position of the entity
 			float t = ( float )( renderTime - m_Position.LastStepTime ) / ( float )m_Position.LastStepInterval;
-		//	Output.WriteLine( Output.RenderingInfo, "render t={0} (rt={1},ct={2},tt={3}", t, renderTime, m_Clock.CurrentTickTime, m_Clock.TickTime );
 			Point3 curPos = m_Position.Get( t );
+
+			//	TODO: Get the interpolated rotation of the entity
 
 			//	Push the entity transform
 			Rendering.Renderer.Inst.PushTransform( Rendering.Transform.kLocalToView );
 			Rendering.Renderer.Inst.Translate( Rendering.Transform.kLocalToView, curPos.X, curPos.Y, curPos.Z );
 
 			//	TODO: Render associated IRender object
-			Rendering.ShapeRenderer.Inst.RenderSphere( new Point3( 0, 5, 0 ), 5 );
+			if ( m_Graphics != null )
+			{
+				m_Graphics.Render( );
+			}
+			else
+			{
+				Rendering.ShapeRenderer.Inst.RenderSphere( new Point3( 0, 5, 0 ), 5 );
+			}
 
 			//	Pop the entity transform
 			Rendering.Renderer.Inst.PopTransform( Rendering.Transform.kLocalToView );

@@ -134,6 +134,10 @@ namespace RbEngine.Rendering
 			{
 				Technique.Apply( render );
 			}
+			else
+			{
+				render( );
+			}
 		}
 
 		/// <summary>

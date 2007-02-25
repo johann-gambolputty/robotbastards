@@ -106,7 +106,7 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Called by Apply() before any passes are applied
 		/// </summary>
-		protected virtual void Begin( )
+		public virtual void Begin( )
 		{
 			if ( m_Effect != null )
 			{
@@ -117,7 +117,7 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Called by Apply() after all passes are applied
 		/// </summary>
-		protected virtual void End( )
+		public virtual void End( )
 		{
 		}
 
