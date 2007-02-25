@@ -6,6 +6,7 @@ namespace RbEngine.Components
 {
 	//	TODO: Refactor a bit (most of the RbXml... classes don't need to be publicly visible like this - they can be private inside the RbXmlLoader class
 	//	also, rename the RbXmlLoader class - it's a sucky name (ObjectXmlLoader?)
+	//	Finally, change the Object property of RbXmlBase, because it's confusing
 
 	/// <summary>
 	/// Base XML loader class
@@ -100,7 +101,24 @@ namespace RbEngine.Components
 				{
 					throw new RbXmlException( Element, "Object of type \"{0}\" did not have a property \"{1}\" to bind object of type \"{2}\" to", parentObject.GetType( ).Name, BoundPropertyName, Object.GetType( ).Name );
 				}
-				boundProperty.SetValue( parentObject, Object, null );
+
+				//	If the object is a list, it can only have one element
+				if ( Object is IList )
+				{
+					IList objectList = Object as IList;
+					if ( objectList.Count > 1 )
+					{
+						throw new RbXmlException( Element, "Could not bind list to property \"{1}\"", BoundPropertyName );
+					}
+					else
+					{
+						boundProperty.SetValue( parentObject, objectList[ 0 ], null );
+					}
+				}
+				else
+				{
+					boundProperty.SetValue( parentObject, Object, null );
+				}
 			}
 			else
 			{

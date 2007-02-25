@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA version="1.4.0" xmlns="http://www.collada.org/2005/11/COLLADASchema">
+	<asset>
+		<contributor>
+			<author>Illusoft Collada 1.4.0 plugin for Blender - http://colladablender.illusoft.com</author>
+			<authoring_tool>Blender v:242 - Illusoft Collada Exporter v:0.2.65</authoring_tool>
+			<comments></comments>
+			<copyright></copyright>
+			<source_data>file://C:/Projects/Models/FirstModels/Environments/blob0.blend</source_data>
+		</contributor>
+		<created>2007-02-25T22:14:31.968000</created>
+		<modified>2007-02-25T22:14:31.968000</modified>
+		<unit meter="0.01" name="centimeter"/>
+		<up_axis>Z_UP</up_axis>
+	</asset>
+	<library_cameras>
+		<camera id="Camera-Camera" name="Camera-Camera">
+			<optics>
+				<technique_common>
+					<perspective>
+						<yfov>49.13434</yfov>
+						<znear>0.1</znear>
+						<zfar>100.0</zfar>
+					</perspective>
+				</technique_common>
+			</optics>
+		</camera>
+	</library_cameras>
+	<library_geometries>
+		<geometry id="Cylinder-Geometry" name="Cylinder-Geometry">
+			<mesh>
+				<source id="Cylinder-Geometry-Position">
+					<float_array count="198" id="Cylinder-Geometry-Position-array">1.99982 2.05325 0.02951 2.35154 1.62468 0.02951 2.61289 1.13573 0.02951 2.77383 0.60518 0.02951 2.82818 -0.83295 0.02951 2.32106 -1.57049 0.49115 2.18639 -2.01443 0.49115 1.9677 -2.42358 0.49115 1.67339 -2.78219 0.49115 1.31477 -3.0765 0.49115 0.90563 -3.29519 0.49115 0.46169 -3.42986 0.49115 0.0 -3.47533 0.49115 -0.46169 -3.42986 0.49115 -0.90563 -3.29519 0.49115 -1.31478 -3.0765 0.49115 -1.67339 -2.78219 0.49115 -1.9677 -2.42357 0.49115 -2.18639 -2.01443 0.49115 -2.32106 -1.57049 0.49115 -2.82818 -0.83295 0.02951 -2.77383 0.60518 0.02951 -2.61289 1.13573 0.02951 -2.35154 1.62469 0.02951 -1.99982 2.05326 0.02951 -1.57125 2.40498 0.02951 -1.08229 2.66633 0.02951 -0.55175 2.82727 0.02951 0.0 2.88161 0.02951 0.55175 2.82726 0.02951 1.0823 2.66632 0.02951 1.57125 2.40497 0.02951 1.99983 2.05325 5.68586 2.35155 1.62468 5.68586 2.6129 1.13572 5.68586 2.77383 0.60518 5.68586 2.82818 -0.83295 5.68586 2.32106 -1.57049 5.22421 2.18639 -2.01444 5.22421 1.9677 -2.42358 5.22421 1.67339 -2.78219 5.22421 1.31477 -3.0765 5.22421 0.90563 -3.29519 5.22421 0.46169 -3.42986 5.22421 0.0 -3.47533 5.22421 -0.46168 -3.42986 5.22421 -0.90563 -3.29519 5.22421 -1.31477 -3.0765 5.22421 -1.67339 -2.7822 5.22421 -1.9677 -2.42358 5.22421 -2.18639 -2.01444 5.22421 -2.32106 -1.5705 5.22421 -2.82818 -0.83296 5.68586 -2.77384 0.60517 5.68586 -2.6129 1.13572 5.68586 -2.35155 1.62467 5.68586 -1.99983 2.05324 5.68586 -1.57126 2.40496 5.68586 -1.08231 2.66632 5.68586 -0.55177 2.82726 5.68586 -2e-005 2.88161 5.68586 0.55173 2.82727 5.68586 1.08227 2.66633 5.68586 1.57123 2.40499 5.68586 0.0 -0.83295 0.02951 0.0 -0.83295 5.68586</float_array>
+					<technique_common>
+						<accessor count="66" source="#Cylinder-Geometry-Position-array" stride="3">
+							<param name="X" type="float"/>
+							<param name="Y" type="float"/>
+							<param name="Z" type="float"/>
+						</accessor>
+					</technique_common>
+				</source>
+				<source id="Cylinder-Geometry-Normals">
+					<float_array count="198" id="Cylinder-Geometry-Normals-array">0.49876 0.49876 -0.70879 0.5865 0.39189 -0.70879 0.65169 0.26994 -0.70879 0.69448 0.11646 -0.71001 0.65032 -0.37785 -0.65899 0.6436 -0.47353 -0.60121 0.70962 -0.2938 -0.64037 0.63771 -0.42598 -0.64171 0.5417 -0.54158 -0.64281 0.42518 -0.63625 -0.6437 0.29267 -0.70647 -0.64437 0.14914 -0.74969 -0.64473 0.0 -0.76424 -0.64489 -0.14914 -0.74969 -0.64473 -0.29267 -0.70647 -0.64437 -0.42518 -0.63625 -0.6437 -0.5417 -0.54158 -0.64281 -0.63771 -0.42598 -0.64171 -0.70962 -0.2938 -0.64037 -0.6436 -0.47353 -0.60121 -0.65032 -0.37785 -0.65899 -0.69448 0.11646 -0.71001 -0.65169 0.26994 -0.70879 -0.5865 0.39189 -0.70879 -0.49876 0.49876 -0.70879 -0.39189 0.5865 -0.70879 -0.26994 0.65169 -0.70879 -0.13761 0.69182 -0.70879 0.0 0.70537 -0.70879 0.13761 0.69182 -0.70879 0.26994 0.65169 -0.70879 0.39189 0.5865 -0.70879 0.49876 0.49876 0.70879 0.5865 0.39189 0.70879 0.65169 0.26994 0.70879 0.69448 0.11646 0.71001 0.65032 -0.37785 0.65899 0.6436 -0.47356 0.60121 0.70962 -0.2938 0.64037 0.63771 -0.42598 0.64171 0.5417 -0.54158 0.64281 0.42518 -0.63625 0.6437 0.29267 -0.70647 0.64437 0.14914 -0.74969 0.64473 0.0 -0.76424 0.64489 -0.14914 -0.74969 0.64473 -0.29267 -0.70647 0.64437 -0.42518 -0.63625 0.6437 -0.5417 -0.54158 0.64281 -0.63771 -0.42598 0.64171 -0.70962 -0.2938 0.64037 -0.6436 -0.47356 0.60121 -0.65032 -0.37785 0.65899 -0.69448 0.11646 0.71001 -0.65169 0.26994 0.70879 -0.5865 0.39189 0.70879 -0.49876 0.49876 0.70879 -0.39189 0.5865 0.70879 -0.26994 0.65169 0.70879 -0.13761 0.69182 0.70879 0.0 0.70537 0.70879 0.13761 0.69182 0.70879 0.26994 0.65169 0.70879 0.39189 0.5865 0.70879 0.0 -0.08948 -0.99597 0.0 -0.08948 0.99597</float_array>
+					<technique_common>
+						<accessor count="66" source="#Cylinder-Geometry-Normals-array" stride="3">
+							<param name="X" type="float"/>
+							<param name="Y" type="float"/>
+							<param name="Z" type="float"/>
+						</accessor>
+					</technique_common>
+				</source>
+				<vertices id="Cylinder-Geometry-Vertex">
+					<input semantic="POSITION" source="#Cylinder-Geometry-Position"/>
+					<input semantic="NORMAL" source="#Cylinder-Geometry-Normals"/>
+				</vertices>
+				<triangles count="128">
+					<input offset="0" semantic="VERTEX" source="#Cylinder-Geometry-Vertex"/>
+					<p>64 0 1 65 33 32 64 1 2 65 34 33 64 2 3 65 35 34 64 3 4 65 36 35 64 4 5 65 37 36 64 5 6 65 38 37 64 6 7 65 39 38 64 7 8 65 40 39 64 8 9 65 41 40 64 9 10 65 42 41 64 10 11 65 43 42 64 11 12 65 44 43 64 12 13 65 45 44 64 13 14 65 46 45 64 14 15 65 47 46 64 15 16 65 48 47 64 16 17 65 49 48 64 17 18 65 50 49 64 18 19 65 51 50 64 19 20 65 52 51 64 20 21 65 53 52 64 21 22 65 54 53 64 22 23 65 55 54 64 23 24 65 56 55 64 24 25 65 57 56 64 25 26 65 58 57 64 26 27 65 59 58 64 27 28 65 60 59 64 28 29 65 61 60 64 29 30 65 62 61 64 30 31 65 63 62 31 0 64 65 32 63 0 32 33 33 1 0 1 33 34 34 2 1 2 34 35 35 3 2 3 35 36 36 4 3 4 36 37 37 5 4 5 37 38 38 6 5 6 38 39 39 7 6 7 39 40 40 8 7 8 40 41 41 9 8 9 41 42 42 10 9 10 42 43 43 11 10 11 43 44 44 12 11 12 44 45 45 13 12 13 45 46 46 14 13 14 46 47 47 15 14 15 47 48 48 16 15 16 48 49 49 17 16 17 49 50 50 18 17 18 50 51 51 19 18 19 51 52 52 20 19 20 52 53 53 21 20 21 53 54 54 22 21 22 54 55 55 23 22 23 55 56 56 24 23 24 56 57 57 25 24 25 57 58 58 26 25 26 58 59 59 27 26 27 59 60 60 28 27 28 60 61 61 29 28 29 61 62 62 30 29 30 62 63 63 31 30 32 0 31 31 63 32</p>
+				</triangles>
+			</mesh>
+		</geometry>
+	</library_geometries>
+	<library_lights>
+		<light id="Spot" name="Spot">
+			<technique_common>
+				<point>
+					<color>1.0 1.0 1.0</color>
+					<constant_attenuation>0.0</constant_attenuation>
+					<linear_attenuation>0.0</linear_attenuation>
+					<quadratic_attenuation>0.0</quadratic_attenuation>
+				</point>
+			</technique_common>
+		</light>
+	</library_lights>
+	<library_visual_scenes>
+		<visual_scene id="Scene" name="Scene">
+			<node id="Cylinder" name="Cylinder">
+				<translate>0.00099 0.00856 0.00016</translate>
+				<instance_geometry url="#Cylinder-Geometry"/>
+			</node>
+			<node id="Lamp" name="Lamp">
+				<translate>0.0 -10.0 7.0</translate>
+				<rotate>0.0 0.0 1.0 0.0</rotate>
+				<rotate>0.0 1.0 0.0 0.0</rotate>
+				<rotate>1.0 0.0 0.0 47.53358</rotate>
+				<instance_light url="#Spot"/>
+			</node>
+			<node id="Camera" name="Camera">
+				<translate>6.28272 -5.0 5.8668</translate>
+				<rotate>0.0 0.0 1.0 52.75217</rotate>
+				<rotate>0.0 1.0 0.0 -1.23882</rotate>
+				<rotate>1.0 0.0 0.0 52.92767</rotate>
+				<instance_camera url="#Camera-Camera"/>
+			</node>
+		</visual_scene>
+	</library_visual_scenes>
+	<library_physics_materials>
+		<physics_material id="Cylinder-PhysicsMaterial" name="Cylinder-PhysicsMaterial">
+			<technique_common>
+				<dynamic_friction>0</dynamic_friction>
+				<restitution>0</restitution>
+				<static_friction>0</static_friction>
+			</technique_common>
+		</physics_material>
+	</library_physics_materials>
+	<library_physics_models>
+		<physics_model id="Cylinder-PhysicsModel" name="Cylinder-PhysicsModel">
+			<rigid_body name="Cylinder-RigidBody" sid="Cylinder-RigidBody">
+				<technique_common>
+					<instance_physics_material url="#Cylinder-PhysicsMaterial"/>
+					<shape>
+						<box>
+							<half_extents>2.82818 3.17847 2.82818</half_extents>
+						</box>
+					</shape>
+					<dynamic>false</dynamic>
+					<mass>1.0</mass>
+				</technique_common>
+			</rigid_body>
+		</physics_model>
+	</library_physics_models>
+	<library_physics_scenes>
+		<physics_scene id="Scene-Physics" name="Scene-Physics">
+			<instance_physics_model url="#Cylinder-PhysicsModel">
+				<instance_rigid_body body="Cylinder-RigidBody" target="#Cylinder"/>
+			</instance_physics_model>
+		</physics_scene>
+	</library_physics_scenes>
+	<scene>
+		<instance_visual_scene url="#Scene"/>
+		<instance_physics_scene url="#Scene-Physics"/>
+	</scene>
+</COLLADA>

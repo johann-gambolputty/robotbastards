@@ -17,8 +17,9 @@ namespace RbOpenGlRendering.Resources
 	//
 	//	<modelSet name="root">
 	//		<modelSet name="temporary">
-	//			<flush/> //< needs some thought as to when the set is flushed...
-	//			<resource path="crate.dae/> // Creates an in-memory collada object
+	//			<resource path="crate.dae" discard="postLoad"> // Creates an in-memory collada object, discarded after main form is loaded
+	//				<swapYZ/> //< swaps the y and z axis, because blender and other 3d apps have z as up (crazy)
+	//			</resource>
 	//		</modelSet>
 	//		<modelSet name="graphics">
 	//			<instance name="root/temporary/crate.dae" type="RenderableMesh"/> //< ...
@@ -32,6 +33,7 @@ namespace RbOpenGlRendering.Resources
 	//
 
 	//	TODO: COLLADA provides a more generic way of storing and referencing data (it's not mesh specific). Maybe leverage that.
+	//	(e.g. can MeshSource be a more generic DataSource object?)
 
 	/// <summary>
 	/// Object that loads COLLADA meshes
@@ -513,11 +515,14 @@ namespace RbOpenGlRendering.Resources
 					VertexBufferObject curVbo;
 
 					//	Convert the source semantic to an opengl client state
+					//	Swap y and z elements
+					//	TODO: Should be a resource flag
+					bool swapYz = false;
 					switch ( curSource.Semantic )
 					{
-						case "POSITION" :	curVbo.ClientState = Gl.GL_VERTEX_ARRAY;	break;
-						case "NORMAL"	:	curVbo.ClientState = Gl.GL_NORMAL_ARRAY;	break;
-						case "COLOR"	:	curVbo.ClientState = Gl.GL_COLOR_ARRAY;		break;
+						case "POSITION" :	curVbo.ClientState = Gl.GL_VERTEX_ARRAY; swapYz = true;	break;
+						case "NORMAL"	:	curVbo.ClientState = Gl.GL_NORMAL_ARRAY;				break;
+						case "COLOR"	:	curVbo.ClientState = Gl.GL_COLOR_ARRAY;					break;
 						default			:
 							throw new ApplicationException( string.Format( "Unknown mesh semantic \"{0}\"", curSource.Semantic ) );
 					}
@@ -539,8 +544,20 @@ namespace RbOpenGlRendering.Resources
 					{
 						case TypeCode.Single :
 						{
+							//	HACK: Swap y and z coordinates - in blender (the 3d editor I'm currently using), z is up, in the engine, y is up.
+							float[] bufferData = ( float[] )curSource.Source.Data.ToArray( dataType );
+							if ( swapYz )
+							{
+								for ( int index = 0; index < bufferData.Length; index += 3 )
+								{
+									float tmp = bufferData[ index + 1 ];
+									bufferData[ index + 1 ] = bufferData[ index + 2 ];
+									bufferData[ index + 2 ] = tmp;
+								}
+							}
+
 							curVbo.ElementType = Gl.GL_FLOAT;
-							Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, ( 4 * curVbo.NumElements ) * numObjects, ( float[] )curSource.Source.Data.ToArray( dataType ), Gl.GL_STATIC_DRAW_ARB );
+							Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, ( 4 * curVbo.NumElements ) * numObjects, bufferData, Gl.GL_STATIC_DRAW_ARB );
 							break;
 						}
 

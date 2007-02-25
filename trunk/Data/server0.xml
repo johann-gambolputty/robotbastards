@@ -10,6 +10,8 @@
 	<object type="RbEngine.Network.Server" name="server0">
 	    <object type="RbEngine.Scene.SceneDb" property="Scene">
 
+			<!-- Scene clocks -->
+			<!-- TODO: This should be a default clock, because it's referenced directly in the controller and command update code -->
 			<clock name="updateClock" ticksPerSecond="20"/>
 
 			<!-- Test scenery :) -->
@@ -17,11 +19,22 @@
 
 			<!-- Entities -->
 			<object type="RbEngine.Entities.Entity3">
+			
+				<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics">
+					<resource path="test1.cgfx" property="Effect"/>
+					<resource path="blob0.dae" property="RenderedObject"/>
+				</object>
+
 				<object type="RbEngine.Entities.TestUserEntityController">
 				</object>
 			</object>
 
-			<resource path="simpleEnvironment.dae"/>
+			<object type="RbEngine.Rendering.EffectRenderedObject">
+
+				<resource path="test1.cgfx" property="Effect"/>
+				<resource path="simpleEnvironment.dae" property="RenderedObject"/>
+
+			</object>
 
 		</object>
 	</object>

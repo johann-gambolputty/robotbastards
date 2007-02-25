@@ -49,6 +49,12 @@ namespace RbEngine.Maths
 			{
 				return new Vector3( Elements[ 0 ], Elements[ 1 ], Elements[ 2 ] );
 			}
+			set
+			{
+				Elements[ 0 ] = value[ 0 ];
+				Elements[ 1 ] = value[ 1 ];
+				Elements[ 2 ] = value[ 2 ];
+			}
 		}
 
 		/// <summary>
@@ -59,6 +65,12 @@ namespace RbEngine.Maths
 			get
 			{
 				return new Vector3( Elements[ 4 ], Elements[ 5 ], Elements[ 6 ] );
+			}
+			set
+			{
+				Elements[ 4 ] = value[ 0 ];
+				Elements[ 5 ] = value[ 1 ];
+				Elements[ 6 ] = value[ 2 ];
 			}
 		}
 
@@ -71,8 +83,30 @@ namespace RbEngine.Maths
 			{
 				return new Vector3( Elements[ 8 ], Elements[ 9 ], Elements[ 10 ] );
 			}
+			set
+			{
+				Elements[ 8 ]  = value[ 0 ];
+				Elements[ 9 ]  = value[ 1 ];
+				Elements[ 10 ] = value[ 2 ];
+			}
 		}
 
+		/// <summary>
+		/// Extracts the z axis from this matrix
+		/// </summary>
+		public Point3 Translation
+		{
+			get
+			{
+				return new Vector3( Elements[ 8 ], Elements[ 9 ], Elements[ 10 ] );
+			}
+			set
+			{
+				Elements[ 8 ]  = value[ 0 ];
+				Elements[ 9 ]  = value[ 1 ];
+				Elements[ 10 ] = value[ 2 ];
+			}
+		}
 		#endregion
 
 		#region	Construction

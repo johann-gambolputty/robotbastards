@@ -50,9 +50,10 @@ technique SpecularTestTechnique
 	pass
 	{
 		ShadeModel			= Smooth;
-		FrontFace			= CCW;
+		FrontFace			= CW;
 		DepthFunc			= LEqual;
 		DepthTestEnable		= true;
+		PolygonMode			= int2( Front, Fill );
 		VertexProgram		= compile arbvp1 SpecularTest( );
 	}	
 }
