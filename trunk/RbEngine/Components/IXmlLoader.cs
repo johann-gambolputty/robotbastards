@@ -26,12 +26,14 @@ namespace RbEngine.Components
 		/// Parses the XML element that was responsible for creating this object
 		/// </summary>
 		/// <param name="element"> XmlElement that generated this object </param>
-		void ParseGeneratingElement( System.Xml.XmlElement element );
+		/// <returns>Returns true if the parse succeeded, otherwise false (exception thrown by loader)</returns>
+		bool ParseGeneratingElement( System.Xml.XmlElement element );
 
 		/// <summary>
 		/// Parses a given XML element
 		/// </summary>
 		/// <param name="element">Child XmlElement to the generating element</param>
-		void ParseElement( System.Xml.XmlElement element );
+		/// <returns>Returns true if the parse succeeded, otherwise false (exception thrown by loader)</returns>
+		bool ParseElement( System.Xml.XmlElement element );
 	}
 }

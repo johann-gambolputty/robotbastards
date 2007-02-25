@@ -87,12 +87,19 @@ namespace RbOpenGlRendering
 			if ( ms_LastRenderContext == IntPtr.Zero )
 			{
 				ms_LastRenderContext = m_RenderContext;
+
+				//	TODO: This is a horrible bodge, to ensure that opengl extensions get loaded correctly
+
+				//	Make it current
+				Wgl.wglMakeCurrent( m_DeviceContext, m_RenderContext );
+
+				//	Load extensions
+				OpenGlRenderer.LoadExtensions( );
 			}
 			else
 			{
 				Wgl.wglShareLists( ms_LastRenderContext, m_RenderContext );
 			}
-
 
 			Output.WriteLineCall( Output.RenderingInfo, "Successfully created GL render context" );
 		}

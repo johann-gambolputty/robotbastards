@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA version="1.4.0" xmlns="http://www.collada.org/2005/11/COLLADASchema">
+	<asset>
+		<contributor>
+			<author>Illusoft Collada 1.4.0 plugin for Blender - http://colladablender.illusoft.com</author>
+			<authoring_tool>Blender v:242 - Illusoft Collada Exporter v:0.2.65</authoring_tool>
+			<comments></comments>
+			<copyright></copyright>
+			<source_data>file://C:/Projects/Models/FirstModels/Robots/crate2.blend</source_data>
+		</contributor>
+		<created>2007-02-25T14:32:06.625000</created>
+		<modified>2007-02-25T14:32:06.625000</modified>
+		<unit meter="0.01" name="centimeter"/>
+		<up_axis>Z_UP</up_axis>
+	</asset>
+	<library_cameras>
+		<camera id="Camera-Camera" name="Camera-Camera">
+			<optics>
+				<technique_common>
+					<perspective>
+						<yfov>49.13434</yfov>
+						<znear>0.1</znear>
+						<zfar>100.0</zfar>
+					</perspective>
+				</technique_common>
+			</optics>
+		</camera>
+	</library_cameras>
+	<library_geometries>
+		<geometry id="Crate-Geometry" name="Crate-Geometry">
+			<mesh>
+				<source id="Crate-Geometry-Position">
+					<float_array count="24" id="Crate-Geometry-Position-array">1.0 1.0 -1.0 1.0 -1.0 -1.0 -1.0 -1.0 -1.0 -1.0 1.0 -1.0 1.0 1.0 1.0 1.0 -1.0 1.0 -1.0 -1.0 1.0 -1.0 1.0 1.0</float_array>
+					<technique_common>
+						<accessor count="8" source="#Crate-Geometry-Position-array" stride="3">
+							<param name="X" type="float"/>
+							<param name="Y" type="float"/>
+							<param name="Z" type="float"/>
+						</accessor>
+					</technique_common>
+				</source>
+				<source id="Crate-Geometry-Normals">
+					<float_array count="24" id="Crate-Geometry-Normals-array">0.57735 0.57735 -0.57735 0.57735 -0.57735 -0.57735 -0.57735 -0.57735 -0.57735 -0.57735 0.57735 -0.57735 0.57735 0.57735 0.57735 0.57735 -0.57735 0.57735 -0.57735 -0.57735 0.57735 -0.57735 0.57735 0.57735</float_array>
+					<technique_common>
+						<accessor count="8" source="#Crate-Geometry-Normals-array" stride="3">
+							<param name="X" type="float"/>
+							<param name="Y" type="float"/>
+							<param name="Z" type="float"/>
+						</accessor>
+					</technique_common>
+				</source>
+				<vertices id="Crate-Geometry-Vertex">
+					<input semantic="POSITION" source="#Crate-Geometry-Position"/>
+					<input semantic="NORMAL" source="#Crate-Geometry-Normals"/>
+				</vertices>
+				<triangles count="12">
+					<input offset="0" semantic="VERTEX" source="#Crate-Geometry-Vertex"/>
+					<p>0 1 2 2 3 0 4 7 6 6 5 4 0 4 5 5 1 0 1 5 6 6 2 1 2 6 7 7 3 2 4 0 3 3 7 4</p>
+				</triangles>
+			</mesh>
+		</geometry>
+	</library_geometries>
+	<library_lights>
+		<light id="Spot" name="Spot">
+			<technique_common>
+				<point>
+					<color>1.0 1.0 1.0</color>
+					<constant_attenuation>0.0</constant_attenuation>
+					<linear_attenuation>0.0</linear_attenuation>
+					<quadratic_attenuation>0.0</quadratic_attenuation>
+				</point>
+			</technique_common>
+		</light>
+	</library_lights>
+	<library_visual_scenes>
+		<visual_scene id="Scene" name="Scene">
+			<node id="Crate" name="Crate">
+				<translate>0.00099 0.00856 0.00016</translate>
+				<instance_geometry url="#Crate-Geometry"/>
+			</node>
+			<node id="Lamp" name="Lamp">
+				<translate>0.0 -10.0 7.0</translate>
+				<rotate>0.0 0.0 1.0 0.0</rotate>
+				<rotate>0.0 1.0 0.0 0.0</rotate>
+				<rotate>1.0 0.0 0.0 47.53358</rotate>
+				<instance_light url="#Spot"/>
+			</node>
+			<node id="Camera" name="Camera">
+				<translate>6.28272 -5.0 5.8668</translate>
+				<rotate>0.0 0.0 1.0 52.75217</rotate>
+				<rotate>0.0 1.0 0.0 -1.23882</rotate>
+				<rotate>1.0 0.0 0.0 52.92767</rotate>
+				<instance_camera url="#Camera-Camera"/>
+			</node>
+		</visual_scene>
+	</library_visual_scenes>
+	<library_physics_materials>
+		<physics_material id="Crate-PhysicsMaterial" name="Crate-PhysicsMaterial">
+			<technique_common>
+				<dynamic_friction>0</dynamic_friction>
+				<restitution>0</restitution>
+				<static_friction>0</static_friction>
+			</technique_common>
+		</physics_material>
+	</library_physics_materials>
+	<library_physics_models>
+		<physics_model id="Crate-PhysicsModel" name="Crate-PhysicsModel">
+			<rigid_body name="Crate-RigidBody" sid="Crate-RigidBody">
+				<technique_common>
+					<instance_physics_material url="#Crate-PhysicsMaterial"/>
+					<shape>
+						<box>
+							<half_extents>1.0 1.0 1.0</half_extents>
+						</box>
+					</shape>
+					<dynamic>false</dynamic>
+					<mass>1.0</mass>
+				</technique_common>
+			</rigid_body>
+		</physics_model>
+	</library_physics_models>
+	<library_physics_scenes>
+		<physics_scene id="Scene-Physics" name="Scene-Physics">
+			<instance_physics_model url="#Crate-PhysicsModel">
+				<instance_rigid_body body="Crate-RigidBody" target="#Crate"/>
+			</instance_physics_model>
+		</physics_scene>
+	</library_physics_scenes>
+	<scene>
+		<instance_visual_scene url="#Scene"/>
+		<instance_physics_scene url="#Scene-Physics"/>
+	</scene>
+</COLLADA>

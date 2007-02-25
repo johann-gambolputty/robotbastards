@@ -24,7 +24,7 @@
             >
                 <Config
                     Name = "Debug"
-                    AllowUnsafeBlocks = "false"
+                    AllowUnsafeBlocks = "true"
                     BaseAddress = "285212672"
                     CheckForOverflowUnderflow = "false"
                     ConfigurationOverrideFile = ""
@@ -149,6 +149,11 @@
                     HintPath = "..\..\..\Program Files\Tao\bin\Tao.Cg.dll"
                     AssemblyFolderKey = "hklm\tao"
                 />
+                <Reference
+                    Name = "RbCollada"
+                    Project = "{9DF0911A-E008-44FA-B7E2-58D2064543EB}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
             </References>
         </Build>
         <Files>
@@ -220,6 +225,11 @@
                 />
                 <File
                     RelPath = "RbCg\CgShaderParameter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Resources\OpenGlColladaMeshLoader.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

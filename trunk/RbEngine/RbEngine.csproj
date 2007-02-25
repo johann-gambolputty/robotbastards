@@ -144,7 +144,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "TinyTime.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "TypeGraph.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Cameras\Camera3.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

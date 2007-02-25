@@ -19,19 +19,6 @@ namespace RbEngine.Cameras
 		}
 
 		/// <summary>
-		/// Creates a pick ray from a screen position
-		/// </summary>
-		/// <param name="x">Screen X position</param>
-		/// <param name="y">Screen Y position</param>
-		/// <returns>Returns world ray</returns>
-		public Maths.Ray3			PickRay( int x, int y )
-		{
-			//	TODO: This is a bodge - don't abuse the rendering pipeline like this!
-			Apply( );
-			return new Maths.Ray3( Position, ( Rendering.Renderer.Inst.Unproject( x, y, 1 ) - Position ).MakeNormal( ) );
-		}
-
-		/// <summary>
 		/// Creates a SphereCameraControl to manipulate this camera
 		/// </summary>
 		public override Object CreateDefaultController( Control control, Scene.SceneDb scene )
@@ -126,50 +113,6 @@ namespace RbEngine.Cameras
 			}
 		}
 
-		/// <summary>
-		///	Gets the camera frame's x axis
-		/// </summary>
-		public Vector3	XAxis
-		{
-			get
-			{
-				return m_XAxis;
-			}
-		}
-
-		/// <summary>
-		///	Gets the camera frame's y axis
-		/// </summary>
-		public Vector3	YAxis
-		{
-			get
-			{
-				return m_YAxis;
-			}
-		}
-
-		/// <summary>
-		///	Gets the camera frame's z axis
-		/// </summary>
-		public Vector3	ZAxis
-		{
-			get
-			{
-				return m_ZAxis;
-			}
-		}
-
-		/// <summary>
-		///	Gets the camera's position
-		/// </summary>
-		public Point3	Position
-		{
-			get
-			{
-				return m_Pos;
-			}
-		}
-
 		#endregion
 
 		#region	Private stuff
@@ -178,10 +121,6 @@ namespace RbEngine.Cameras
 		private float	m_T			= 0.1f;
 		private Point3	m_LookAt	= new Point3( );
 		private float	m_Zoom		= 100.0f;
-		private Vector3	m_XAxis		= new Vector3( 1, 0, 0 );
-		private Vector3	m_YAxis		= new Vector3( 0, 1, 0 );
-		private Vector3	m_ZAxis		= new Vector3( 0, 0, 1 );
-		private Point3	m_Pos		= new Point3( );
 
 		/// <summary>
 		/// Updates camera frame

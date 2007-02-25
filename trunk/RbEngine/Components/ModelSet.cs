@@ -71,6 +71,23 @@ namespace RbEngine.Components
 		#region	Searches
 
 		/// <summary>
+		/// Searches for a child model set
+		/// </summary>
+		/// <param name="name">Child model set name</param>
+		/// <returns>Returns the named model set, or null if it could not be found</returns>
+		public ModelSet			FindChildModelSet( string name )
+		{
+			foreach ( ModelSet curSet in m_ChildModelSets )
+			{
+				if ( String.Compare( curSet.Name, name, true ) == 0 )
+				{
+					return curSet;
+				}
+			}
+			return null;
+		}
+
+		/// <summary>
 		/// Finds an object in a model set with a given name
 		/// </summary>
 		/// <param name="path"> Object path. This is in the form of a file path, with model sets as directories, and the final name specifying the object </param>
@@ -171,6 +188,20 @@ namespace RbEngine.Components
 		#region IParentObject Members
 
 		/// <summary>
+		/// Adds a child model set to this model set
+		/// </summary>
+		/// <param name="childModelSet">Child model set</param>
+		public void AddChildModelSet( ModelSet childModelSet )
+		{
+			childModelSet.m_Parent = this;
+			m_ChildModelSets.Add( childModelSet );
+
+			childModelSet.m_Path = childModelSet.MakePath( );
+
+			Output.WriteLineCall( Output.ComponentInfo, "Added model set \"{0}\"", childModelSet.Path );
+		}
+
+		/// <summary>
 		/// Adds a child object to the model set
 		/// </summary>
 		/// <param name="childObject"> Object to add </param>
@@ -178,14 +209,7 @@ namespace RbEngine.Components
 		{
 			if ( childObject is ModelSet )
 			{
-				ModelSet childModelSet = ( ModelSet )childObject;
-
-				childModelSet.m_Parent = this;
-				m_ChildModelSets.Add( childModelSet );
-
-				childModelSet.m_Path = childModelSet.MakePath( );
-
-				System.Diagnostics.Debug.WriteLine( String.Format( "Added model set \"{0}\"", childModelSet.Path ) );
+				AddChildModelSet( ( ModelSet )childObject );
 			}
 			else
 			{
@@ -257,7 +281,7 @@ namespace RbEngine.Components
 		{
 			string path = Name;
 
-			for ( ModelSet curSet = m_Parent; curSet.m_Parent != null; curSet = curSet.m_Parent )
+			for ( ModelSet curSet = m_Parent; curSet != null; curSet = curSet.m_Parent )
 			{
 				path = curSet.Name + "/" + path;
 			}

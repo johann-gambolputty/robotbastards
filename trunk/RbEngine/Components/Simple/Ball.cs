@@ -34,27 +34,29 @@ namespace RbEngine.Components.Simple
 		/// <summary>
 		/// Parses the XML element that was responsible for creating this object
 		/// </summary>
-		/// <param name="reader"> XmlReader positioned at the element to parse </param>
-		public void ParseGeneratingElement( System.Xml.XmlReader reader )
+		public bool ParseGeneratingElement( System.Xml.XmlElement element )
 		{
+			return true;
 		}
 
 		/// <summary>
 		/// Handles <position x="[float]" y="[float]" z="[float]"/> and <radius value="[float]"/> elements
 		/// </summary>
-		/// <param name="reader">Xml reader</param>
-		public void ParseElement( System.Xml.XmlReader reader )
+		public bool ParseElement( System.Xml.XmlElement element )
 		{
-			if ( reader.Name == "position" )
+			if ( element.Name == "position" )
 			{
-				m_Sphere.Centre.X = float.Parse( reader.GetAttribute( "x" ) );
-				m_Sphere.Centre.Y = float.Parse( reader.GetAttribute( "y" ) );
-				m_Sphere.Centre.Z = float.Parse( reader.GetAttribute( "z" ) );
+				m_Sphere.Centre.X = float.Parse( element.GetAttribute( "x" ) );
+				m_Sphere.Centre.Y = float.Parse( element.GetAttribute( "y" ) );
+				m_Sphere.Centre.Z = float.Parse( element.GetAttribute( "z" ) );
+				return true;
 			}
-			else if ( reader.Name == "radius" )
+			else if ( element.Name == "radius" )
 			{
-				m_Sphere.Radius = float.Parse( reader.GetAttribute( "value" ) );
+				m_Sphere.Radius = float.Parse( element.GetAttribute( "value" ) );
+				return true;
 			}
+			return false;
 		}
 
 		#endregion
@@ -89,7 +91,7 @@ namespace RbEngine.Components.Simple
 		/// <summary>
 		/// Renders this object
 		/// </summary>
-		public void Render( float delta )
+		public void Render( long renderTime )
 		{
 			Renderer.Inst.PushRenderState( m_LineState );
 			ShapeRenderer.Inst.RenderSphere( m_Sphere.Centre, m_Sphere.Radius );

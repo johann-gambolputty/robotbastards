@@ -10,7 +10,7 @@ namespace RbEngine.Scene
 		/// <summary>
 		/// Renders the object
 		/// </summary>
-		/// <param name="delta">Frame delta (time between updates). Varies from 0 to 1.</param>
-		void Render( float delta );
+		/// <param name="renderTime">Frame time (in TinyTime ticks)</param>
+		void Render( long renderTime );
 	}
 }

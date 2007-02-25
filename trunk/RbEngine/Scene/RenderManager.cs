@@ -8,6 +8,7 @@ namespace RbEngine.Scene
 	/// </summary>
 	public class RenderManager
 	{
+
 		/// <summary>
 		/// Attaches this manager to a scene
 		/// </summary>
@@ -16,6 +17,7 @@ namespace RbEngine.Scene
 		{
 			m_AddObjectGraphToRenderer = new Components.ChildVisitorDelegate( AddObjectGraphToRenderer );
 			db.ObjectAdded += new SceneDb.ObjectAddedDelegate( OnObjectAddedToScene );
+
 		}
 
 		/// <summary>
@@ -23,10 +25,15 @@ namespace RbEngine.Scene
 		/// </summary>
 		public void Render( )
 		{
-			float delta = 0.0f;	//	TODO: Fill in delta appropriately
-			foreach ( Scene.ISceneRenderable renderable in m_Renderables )
+			long curTime = TinyTime.CurrentTime;
+			foreach ( Scene.ISceneRenderable renderable in m_SceneRenderables )
 			{
-				renderable.Render( delta );
+				renderable.Render( curTime );
+			}
+
+			foreach ( Rendering.IRender renderObj in m_Renderables )
+			{
+				renderObj.Render( );
 			}
 		}
 
@@ -47,6 +54,10 @@ namespace RbEngine.Scene
 		{
 			if ( obj is Scene.ISceneRenderable )
 			{
+				m_SceneRenderables.Add( obj );
+			}
+			else if ( obj is Rendering.IRender )
+			{
 				m_Renderables.Add( obj );
 			}
 
@@ -59,6 +70,7 @@ namespace RbEngine.Scene
 			return true;
 		}
 
+		private ArrayList						m_SceneRenderables = new ArrayList( );
 		private ArrayList						m_Renderables = new ArrayList( );
 		private Components.ChildVisitorDelegate	m_AddObjectGraphToRenderer;
 

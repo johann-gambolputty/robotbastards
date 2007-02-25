@@ -19,6 +19,17 @@ namespace RbOpenGlRendering
 			Gl.glShadeModel( Gl.GL_SMOOTH );
 		}
 
+		public unsafe static void LoadExtensions( )
+		{
+			IntPtr mem = Gl.glGetString( Gl.GL_EXTENSIONS );
+			string extensions = new string( ( sbyte* )mem );
+			Output.WriteLine( Output.RenderingInfo, extensions.Replace( ' ', '\n' ) );
+
+			bool result = GlExtensionLoader.LoadExtension( "glGenBuffersARB" );
+
+			GlExtensionLoader.LoadAllExtensions( );
+		}
+
 		#region	Forms
 
 		/// <summary>

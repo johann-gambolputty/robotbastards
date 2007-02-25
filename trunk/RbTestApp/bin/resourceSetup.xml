@@ -6,6 +6,7 @@
 		</provider>
 	</providers>
 	<loaders>
+		<loader type="RbCollada.Loader"/>
 		<loader type="RbOpenGlRendering.RbCg.CgRenderEffectLoader"/>
 		<loader type="RbEngine.Components.RbXmlLoader"/>
 	</loaders>

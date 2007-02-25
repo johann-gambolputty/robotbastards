@@ -13,16 +13,6 @@ namespace RbEngine.Entities
 		LookAt
 	}
 
-	/*
-	 * Binary bindings:
-	 *	Command only needs check that the binding is active before sending the message
-	 * 
-	 * Analogue bindings:
-	 *	Command requires specific anlogue interpretation.
-	 *		example: mouse look in fps game; mouse input binding tracks movement deltas. Command turns them into S,T deltas
-	 *		example: mouse track in 3rd person game; mouse input binding tracks screen position. Command shoots ray, intersects with world
-	 */
-
 	public class TestLookAtCommandMessage : Interaction.CommandMessage
 	{
 		public TestLookAtCommandMessage( Interaction.Command cmd, Network.Client client, Maths.Point3 pt ) :
@@ -55,7 +45,7 @@ namespace RbEngine.Entities
 		/// Adds an input binding to this command
 		/// </summary>
 		/// <param name="binding">Binding to add (must be derived from <see cref="Interaction.CommandCursorInputBinding"/>)</param>
-		public override void								AddBinding( Interaction.CommandInputBinding binding )
+		public override void							AddBinding( Interaction.CommandInputBinding binding )
 		{
 			base.AddBinding( ( Interaction.CommandCursorInputBinding )binding );
 		}
@@ -116,49 +106,58 @@ namespace RbEngine.Entities
 		/// <param name="msg">Command message</param>
 		private void				HandleCommandMessage( Message msg )
 		{
+			float speed = 5.0f;
+
 			//	TODO: HACK (should set entity better, instead of casting Parent. should send a MovementXzRequest, instead of directly modifying the position)
 			Entity3 entity = ( Entity3 )Parent;
 			switch ( ( ( Interaction.CommandMessage )msg ).Id )
 			{
 				case ( int )TestCommands.Forward	:
 				{
-					if ( m_LookAt.DistanceTo( entity.Position ) > 1.0f )
+					if ( m_LookAt.Current.DistanceTo( entity.Position.Current ) > speed )
 					{
-						entity.Position += entity.Facing;
+						entity.Position.Current += entity.Facing * speed;
 					}
 					break;
 				}
-				case ( int )TestCommands.Back		:	entity.Position -= entity.Facing;	break;
-				case ( int )TestCommands.Left		:	entity.Position += entity.Left;		break;
-				case ( int )TestCommands.Right		:	entity.Position += entity.Right;	break;
+
+				case ( int )TestCommands.Back		:	entity.Position.Current -= entity.Facing * speed;	break;
+				case ( int )TestCommands.Left		:	entity.Position.Current += entity.Left * speed;		break;
+				case ( int )TestCommands.Right		:	entity.Position.Current += entity.Right * speed;	break;
 
 				case ( int )TestCommands.LookAt		:
 				{
-					m_LookAt = ( ( TestLookAtCommandMessage )msg ).LookAtPoint;
+					//	TODO: This is a bit of a cheat, because I know that this controller only ever receives one look at message
+					//	on every command update)
+					m_LookAt.Step( TinyTime.CurrentTime );
+					m_LookAt.Current = ( ( TestLookAtCommandMessage )msg ).LookAtPoint;
+
 					break;
 				}
 			}
 
-			entity.Facing	= ( m_LookAt - entity.Position ).MakeNormal( );
+			entity.Facing	= ( m_LookAt.Current - entity.Position.Current ).MakeNormal( );
 			entity.Left		= Maths.Vector3.Cross( entity.Up, entity.Facing ).MakeNormal( );
 
 			msg.DeliverToNextRecipient( );
 		}
 
-		private Maths.Point3 m_LookAt;
+		private Maths.Point3Interpolator m_LookAt = new Maths.Point3Interpolator( );
 
 		#region ISceneRenderable Members
 
-		public void Render( float delta )
+		public void Render( long renderTime )
 		{
-			if ( m_LookAt != null )
-			{
-				Entity3 entity = ( Entity3 )Parent;
-				Rendering.ShapeRenderer.Inst.RenderLine( entity.Position, entity.Position + entity.Facing * 3.0f );
-				Rendering.ShapeRenderer.Inst.RenderLine( entity.Position, entity.Position + entity.Left * 3.0f );
-				Rendering.ShapeRenderer.Inst.RenderLine( entity.Position, entity.Position + entity.Up * 3.0f );
-				Rendering.ShapeRenderer.Inst.RenderSphere( m_LookAt, 1.0f );
-			}
+		//	( ( Cameras.ProjectionCamera )Rendering.Renderer.Inst.Camera ).PickRay( 0, 0 );
+
+			Entity3			entity		= ( Entity3 )Parent;
+			Maths.Point3	pos			= entity.Position.Get( renderTime );
+			Maths.Point3	lookAtPos	= m_LookAt.Get( renderTime );
+
+			Rendering.ShapeRenderer.Inst.RenderLine( pos, pos + entity.Facing * 3.0f );
+			Rendering.ShapeRenderer.Inst.RenderLine( pos, pos + entity.Left * 3.0f );
+			Rendering.ShapeRenderer.Inst.RenderLine( pos, pos + entity.Up * 3.0f );
+			Rendering.ShapeRenderer.Inst.RenderSphere( lookAtPos, 1.0f );
 		}
 
 		#endregion
