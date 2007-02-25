@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rb>
 
+<!--
+	<modelSet name="graphics">
+		<resource path="crate0.dae"/>
+	</modelSet>
+-->
+
 	<object type="RbEngine.Network.Server" name="server0">
 	    <object type="RbEngine.Scene.SceneDb" property="Scene">
 
-			<clock name="updateClock" ticksPerSecond="15"/>
+			<clock name="updateClock" ticksPerSecond="20"/>
 
 			<!-- Test scenery :) -->
 			<object type="RbEngine.Components.Simple.GroundPlane"/>
@@ -14,6 +20,8 @@
 				<object type="RbEngine.Entities.TestUserEntityController">
 				</object>
 			</object>
+
+			<resource path="simpleEnvironment.dae"/>
 
 		</object>
 	</object>

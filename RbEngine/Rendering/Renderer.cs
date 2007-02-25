@@ -126,7 +126,28 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Gets the current matrix from the specified transform stack
 		/// </summary>
-		public abstract Maths.Matrix44	GetMatrix( Transform type );
+		public abstract Matrix44		GetMatrix( Transform type );
+
+
+		/// <summary>
+		/// The current camera
+		/// </summary>
+		/// <remarks>
+		/// This sets up data that is only required for following reasons:
+		///		- PickRay() is being called
+		///		- A ShaderParameter is bound to ShaderParameterBinding.EyePosition, ShaderParameterBinding.EyeXAxis, ShaderParameterBinding.EyeYAxis or ShaderParameterBinding.EyeZAxis
+		/// </remarks>
+		public Cameras.CameraBase		Camera
+		{
+			set
+			{
+				m_Camera = value;
+			}
+			get
+			{
+				return m_Camera;
+			}
+		}
 
 		/// <summary>
 		/// Sets an identity matrix in the projection and model view transforms
@@ -152,7 +173,7 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Applies the specified transform, multiplied by the current topmost transform, and adds it to the specified transform stack
 		/// </summary>
-		public abstract void			PushTransform( Transform type, Maths.Matrix44 matrix );
+		public abstract void			PushTransform( Transform type, Matrix44 matrix );
 
 		/// <summary>
 		/// Pushes a copy of the transform currently at the top of the specified transform stack
@@ -172,7 +193,7 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Applies the specified transform, adds it to the specified transform stack
 		/// </summary>
-		public abstract void			SetTransform( Transform type, Maths.Matrix44 matrix );
+		public abstract void			SetTransform( Transform type, Matrix44 matrix );
 
 		/// <summary>
 		/// Pops a matrix from the specified transform stack, applies the new topmost matrix
@@ -254,9 +275,10 @@ namespace RbEngine.Rendering
 
 		#region	Private stuff
 
-		private static Renderer	ms_Singleton;
-		private ArrayList		m_RenderStates	= new ArrayList( );
-		private Control			m_Control;
+		private static Renderer		ms_Singleton;
+		private ArrayList			m_RenderStates	= new ArrayList( );
+		private Control				m_Control;
+		private Cameras.CameraBase	m_Camera;
 
 		#endregion
 

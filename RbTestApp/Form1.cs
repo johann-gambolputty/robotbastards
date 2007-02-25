@@ -50,60 +50,12 @@ namespace RbTestApp
 			//
 			InitializeComponent();
 
-
-			//	Load the test server file
-			RbEngine.Resources.ResourceManager.Inst.Load( "server0.xml" );
-
-
-			RbEngine.Interaction.CommandList commands = new RbEngine.Interaction.CommandList( );
-
-			RbEngine.Interaction.Command cmd = new RbEngine.Interaction.Command( "forward", "moves forward", ( int )RbEngine.Entities.TestCommands.Forward );
-			cmd.AddBinding( new RbEngine.Interaction.CommandKeyInputBinding( Keys.W ) );
-			commands.AddCommand( cmd );
-
-			cmd = new RbEngine.Interaction.Command( "back", "moves backwards", ( int )RbEngine.Entities.TestCommands.Back );
-			cmd.AddBinding( new RbEngine.Interaction.CommandKeyInputBinding( Keys.S ) );
-			commands.AddCommand( cmd );
-
-			cmd = new RbEngine.Interaction.Command( "left", "moves left", ( int )RbEngine.Entities.TestCommands.Left );
-			cmd.AddBinding( new RbEngine.Interaction.CommandKeyInputBinding( Keys.A ) );
-			commands.AddCommand( cmd );
-
-			cmd = new RbEngine.Interaction.Command( "right", "moves right", ( int )RbEngine.Entities.TestCommands.Right );
-			cmd.AddBinding( new RbEngine.Interaction.CommandKeyInputBinding( Keys.D ) );
-			commands.AddCommand( cmd );
-
-			cmd = new RbEngine.Entities.TestLookAtCommand( );
-			cmd.AddBinding( new RbEngine.Interaction.CommandMouseMoveInputBinding( ) );
-			commands.AddCommand( cmd );
-
-			m_Commands = commands;
-
-			//	Set up server and client displays
-			m_Server = RbEngine.Network.ServerManager.Inst.FindServer( "server0" );
-			foreach( Control curControl in Controls )
-			{
-				RbControls.ClientDisplay clientDisplay = curControl as RbControls.ClientDisplay;
-				if ( clientDisplay != null )
-				{
-					commands.BindToClient( clientDisplay.Client );
-					clientDisplay.Client.Server = m_Server;
-				}
-			}
-
-
-			//	Setup input update timer
-			Timer inputUpdateTimer = new Timer( );
-			inputUpdateTimer.Tick += new EventHandler( InputUpdateTimerTick );
-			inputUpdateTimer.Interval = ( int )( 100.0f / 15.0f );
-			inputUpdateTimer.Enabled = true;
-			inputUpdateTimer.Start( );
 		}
 
 		private RbEngine.Network.ServerBase			m_Server;
 		private RbEngine.Interaction.CommandList	m_Commands;
 
-		private void InputUpdateTimerTick( object sender, EventArgs e )
+		private void InputUpdateTimerTick( RbEngine.Scene.Clock clock )
 		{
 			//	TODO: Should the server be the command target?
 			m_Commands.Update( m_Server );
@@ -153,6 +105,7 @@ namespace RbTestApp
 			this.Controls.Add(this.clientDisplay1);
 			this.Name = "Form1";
 			this.Text = "Form1";
+			this.Load += new System.EventHandler(this.Form1_Load);
 			this.ResumeLayout(false);
 
 		}
@@ -165,17 +118,74 @@ namespace RbTestApp
 		static void Main() 
 		{
 			//	TODO: Should use unhandled exception handler instead
-			try
+			bool catchUnhandledExceptions = false;
+			if ( !catchUnhandledExceptions )
 			{
 				Application.Run( new Form1( ) );
 			}
-			catch ( Exception exception )
+			else
 			{
-				string exceptionString = ExceptionUtils.ToString( exception );
+				try
+				{
+					Application.Run( new Form1( ) );
+				}
+				catch ( Exception exception )
+				{
+					string exceptionString = ExceptionUtils.ToString( exception );
 
-				Output.WriteLine( TestAppOutput.Error, exceptionString );
-				MessageBox.Show( exceptionString );
+					Output.WriteLine( TestAppOutput.Error, exceptionString );
+					MessageBox.Show( exceptionString );
+				}
 			}
+		}
+
+		private void Form1_Load(object sender, System.EventArgs e)
+		{
+
+			//	Load the test server file
+			RbEngine.Resources.ResourceManager.Inst.Load( "server0.xml" );
+
+			RbEngine.Interaction.CommandList commands = new RbEngine.Interaction.CommandList( );
+
+			RbEngine.Interaction.Command cmd = new RbEngine.Interaction.Command( "forward", "moves forward", ( int )RbEngine.Entities.TestCommands.Forward );
+			cmd.AddBinding( new RbEngine.Interaction.CommandKeyInputBinding( Keys.W ) );
+			commands.AddCommand( cmd );
+
+			cmd = new RbEngine.Interaction.Command( "back", "moves backwards", ( int )RbEngine.Entities.TestCommands.Back );
+			cmd.AddBinding( new RbEngine.Interaction.CommandKeyInputBinding( Keys.S ) );
+			commands.AddCommand( cmd );
+
+			cmd = new RbEngine.Interaction.Command( "left", "moves left", ( int )RbEngine.Entities.TestCommands.Left );
+			cmd.AddBinding( new RbEngine.Interaction.CommandKeyInputBinding( Keys.A ) );
+			commands.AddCommand( cmd );
+
+			cmd = new RbEngine.Interaction.Command( "right", "moves right", ( int )RbEngine.Entities.TestCommands.Right );
+			cmd.AddBinding( new RbEngine.Interaction.CommandKeyInputBinding( Keys.D ) );
+			commands.AddCommand( cmd );
+
+			cmd = new RbEngine.Entities.TestLookAtCommand( );
+			cmd.AddBinding( new RbEngine.Interaction.CommandMouseMoveInputBinding( ) );
+			commands.AddCommand( cmd );
+
+			m_Commands = commands;
+
+			//	Set up server and client displays
+			m_Server = RbEngine.Network.ServerManager.Inst.FindServer( "server0" );
+			foreach( Control curControl in Controls )
+			{
+				RbControls.ClientDisplay clientDisplay = curControl as RbControls.ClientDisplay;
+				if ( clientDisplay != null )
+				{
+					commands.BindToClient( clientDisplay.Client );
+					clientDisplay.Client.Server = m_Server;
+				}
+			}
+
+			if ( m_Server.Scene != null )
+			{
+				m_Server.Scene.GetNamedClock( "updateClock" ).Subscribe( new RbEngine.Scene.Clock.TickDelegate( InputUpdateTimerTick ) );
+			}
+		
 		}
 
 	}

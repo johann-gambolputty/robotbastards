@@ -181,37 +181,36 @@ namespace RbEngine.Scene
 
 		#endregion
 
-		private ObjectSet		m_Objects = new TypeGraphObjectSet( );
-		private RenderManager	m_Rendering;
-		private ArrayList		m_Clocks	= new ArrayList( );
-		private bool			m_Paused	= true;
-
 		#region IXmlLoader Members
 
 		/// <summary>
 		/// Parses the element that generated this scene
 		/// </summary>
-		/// <param name="reader">XML reader pointing to the element</param>
-		public void ParseGeneratingElement( System.Xml.XmlReader reader )
+		public bool ParseGeneratingElement( System.Xml.XmlElement element )
 		{
+			return true;
 		}
 
 		/// <summary>
 		/// Parses an element
 		/// </summary>
-		/// <param name="reader">XML reader pointing to the element</param>
-		public void ParseElement( System.Xml.XmlReader reader )
+		public bool ParseElement( System.Xml.XmlElement element )
 		{
-			if ( reader.Name == "clock" )
+			if ( element.Name == "clock" )
 			{
-				m_Clocks.Add( new Clock( reader.GetAttribute( "name" ), ( int )( 100.0f / float.Parse( reader.GetAttribute( "ticksPerSecond" ) ) ) ) );
+				m_Clocks.Add( new Clock( element.GetAttribute( "name" ), ( int )( 1000.0f / float.Parse( element.GetAttribute( "ticksPerSecond" ) ) ) ) );
+				return true;
 			}
-			else
-			{
-				throw new ApplicationException( "Unknown element in scene" );
-			}
+
+			return false;
 		}
 
 		#endregion
+
+		private ObjectSet		m_Objects = new TypeGraphObjectSet( );
+		private RenderManager	m_Rendering;
+		private ArrayList		m_Clocks	= new ArrayList( );
+		private bool			m_Paused	= true;
+
 	}
 }

@@ -34,15 +34,15 @@ namespace RbEngine.Entities
 		/// <summary>
 		/// The agent position
 		/// </summary>
-		public Point3 Position
+		public Point3Interpolator Position
 		{
 			get
 			{
-				return m_Position.Current;
+				return m_Position;
 			}
 			set
 			{
-				m_Position.Current = value;
+				m_Position = value;
 			}
 		}
 
@@ -138,15 +138,17 @@ namespace RbEngine.Entities
 		/// <summary>
 		/// Renders this entity
 		/// </summary>
-		public void Render( float delta )
+		public void Render( long renderTime )
 		{
-			Point3 curPos = m_Position.Get( 1.0f );
+			float t = ( float )( renderTime - m_Position.LastStepTime ) / ( float )m_Position.LastStepInterval;
+		//	Output.WriteLine( Output.RenderingInfo, "render t={0} (rt={1},ct={2},tt={3}", t, renderTime, m_Clock.CurrentTickTime, m_Clock.TickTime );
+			Point3 curPos = m_Position.Get( t );
 
 			//	Push the entity transform
 			Rendering.Renderer.Inst.PushTransform( Rendering.Transform.kLocalToView );
 			Rendering.Renderer.Inst.Translate( Rendering.Transform.kLocalToView, curPos.X, curPos.Y, curPos.Z );
 
-			//	TODO: Render m_Graphics
+			//	TODO: Render associated IRender object
 			Rendering.ShapeRenderer.Inst.RenderSphere( new Point3( 0, 5, 0 ), 5 );
 
 			//	Pop the entity transform
@@ -188,12 +190,12 @@ namespace RbEngine.Entities
 			//
 		}
 
-		#region ISceneEvents Members
-
 		private void StepMovement( Scene.Clock updateClock )
 		{
-			m_Position.Step( );
+			m_Position.Step( updateClock.CurrentTickTime );
 		}
+
+		#region ISceneEvents Members
 
 		/// <summary>
 		/// Called when this entity is added to a scene
@@ -201,7 +203,8 @@ namespace RbEngine.Entities
 		/// <param name="db">Scene database</param>
 		public void AddedToScene( RbEngine.Scene.SceneDb db )
 		{
-            db.GetNamedClock( "updateClock" ).Subscribe( new RbEngine.Scene.Clock.TickDelegate( StepMovement ) );
+			Scene.Clock updateClock = db.GetNamedClock( "updateClock" );
+            updateClock.Subscribe( new RbEngine.Scene.Clock.TickDelegate( StepMovement ) );
 		}
 
 		/// <summary>

@@ -16,9 +16,20 @@ namespace RbEngine.Scene
 		{
 			m_Name				= name;
 			m_Timer				= new System.Windows.Forms.Timer( );
-			m_Timer.Interval	= TickTime;
+			m_Timer.Interval	= tickTime;
 			m_Timer.Tick		+= new EventHandler( Update );
 			m_Timer.Enabled		= true;
+		}
+
+		/// <summary>
+		/// Returns the time since the clock started, in TinyTime ticks
+		/// </summary>
+		public long	CurrentTickTime
+		{
+			get
+			{
+				return m_Time;
+			}
 		}
 
 		/// <summary>
@@ -43,7 +54,7 @@ namespace RbEngine.Scene
 		{
 			get
 			{
-				return m_Timer.Interval;
+				return ( int )m_Interval;
 			}
 			set
 			{
@@ -90,6 +101,9 @@ namespace RbEngine.Scene
 		/// </summary>
 		private void						Update( object sender, EventArgs args )
 		{
+			long curTime = TinyTime.CurrentTime;
+			m_Interval = ( int )( curTime - m_Time );
+			m_Time = curTime;
 			if ( m_Tick != null )
 			{
 				m_Tick( this );
@@ -110,6 +124,13 @@ namespace RbEngine.Scene
 		/// Timer name
 		/// </summary>
 		private string						m_Name;
+
+		/// <summary>
+		/// Time of the last tick
+		/// </summary>
+		private long						m_Time;
+
+		private int							m_Interval;
 
 	}
 }

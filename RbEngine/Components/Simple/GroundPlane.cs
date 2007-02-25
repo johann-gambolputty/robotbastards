@@ -45,8 +45,8 @@ namespace RbEngine.Components.Simple
 		/// <summary>
 		/// Renders the ground plane
 		/// </summary>
-		/// <param name="delta">Frame delta (unused)</param>
-		public void Render( float delta )
+		/// <param name="renderTime">Frame time</param>
+		public void Render( long renderTime )
 		{
 			m_Graphics.Render( );
 		}

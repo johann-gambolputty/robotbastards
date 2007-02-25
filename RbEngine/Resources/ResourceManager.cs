@@ -110,6 +110,7 @@ namespace RbEngine.Resources
 					{
 						if ( loader.CanLoadStream( path, input ) )
 						{
+							Output.WriteLineCall( Output.ResourceInfo, "Loading \"{0}\"", path );
 							return loader.Load( input, path );
 						}
 					}
