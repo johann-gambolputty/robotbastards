@@ -5,62 +5,42 @@ namespace RbEngine.Maths
 	/// <summary>
 	/// 3 element floating point vector
 	/// </summary>
-	public class Vector3
+	public struct Vector3
 	{
 		#region	Vector constants
 
 		/// <summary>
-		/// XAxis vector (1,0,0)
+		/// X axis vector (1,0,0)
 		/// </summary>
-		public static Vector3 XAxis
-		{
-			get
-			{
-				return new Vector3( 1, 0, 0 );
-			}
-		}
+		public static readonly Vector3 XAxis = new Vector3( 1, 0, 0 );
+		
+		/// <summary>
+		/// Y axis vector (0,1,0)
+		/// </summary>
+		public static readonly Vector3 YAxis = new Vector3( 0, 1, 0 );
 
 		/// <summary>
-		/// YAxis vector (0,1,0)
+		/// Z axis vector (0,0,1)
 		/// </summary>
-		public static Vector3 YAxis
-		{
-			get
-			{
-				return new Vector3( 0, 1, 0 );
-			}
-		}
+		public static readonly Vector3 ZAxis = new Vector3( 0, 0, 1 );
 
 		/// <summary>
-		/// ZAxis vector (0,0,1)
+		/// Origin vector
 		/// </summary>
-		public static Vector3 ZAxis
-		{
-			get
-			{
-				return new Vector3( 0, 0, 1 );
-			}
-		}
+		public static readonly Vector3 Origin = new Vector3( 0, 0, 0 );
 
 		#endregion
 
 		#region	Construction and setup
 
 		/// <summary>
-		/// Sets the vector to (0,0,0)
-		/// </summary>
-		public Vector3( )
-		{
-		}
-
-		/// <summary>
 		/// Copies the source vector
 		/// </summary>
 		public Vector3( Vector3 src )
 		{
-			X = src.X;
-			Y = src.Y;
-			Z = src.Z;
+			m_X = src.X;
+			m_Y = src.Y;
+			m_Z = src.Z;
 		}
 
 		/// <summary>
@@ -68,9 +48,9 @@ namespace RbEngine.Maths
 		/// </summary>
 		public Vector3( float x, float y, float z )
 		{
-			X = x;
-			Y = y;
-			Z = z;
+			m_X = x;
+			m_Y = y;
+			m_Z = z;
 		}
 
 		/// <summary>
@@ -94,11 +74,11 @@ namespace RbEngine.Maths
 		{
 			get
 			{
-				return m_Vec[ 0 ];
+				return m_X;
 			}
 			set
 			{
-				m_Vec[ 0 ] = value;
+				m_X = value;
 			}
 		}
 
@@ -109,11 +89,11 @@ namespace RbEngine.Maths
 		{
 			get
 			{
-				return m_Vec[ 1 ];
+				return m_Y;
 			}
 			set
 			{
-				m_Vec[ 1 ] = value;
+				m_Y = value;
 			}
 		}
 
@@ -124,26 +104,32 @@ namespace RbEngine.Maths
 		{
 			get
 			{
-				return m_Vec[ 2 ];
+				return m_Z;
 			}
 			set
 			{
-				m_Vec[ 2 ] = value;
+				m_Z = value;
 			}
 		}
 
 		/// <summary>
 		/// Access to an indexed component of the vector (0==X,1==Y,2==Z)
 		/// </summary>
-		public float this[ int index ]
+		public unsafe float this[ int index ]
 		{
 			get
 			{
-				return m_Vec[ index ];
+				fixed ( float* vec = &m_X )
+				{
+					return vec[ index ];
+				}
 			}
 			set
 			{
-				m_Vec[ index ] = value;
+				fixed ( float* vec = &m_X )
+				{
+					vec[ index ] = value;
+				}
 			}
 		}
 
@@ -324,7 +310,9 @@ namespace RbEngine.Maths
 
 		#region	Fields
 
-		private float[] m_Vec = new float[ 3 ];
+		private float m_X;
+		private float m_Y;
+		private float m_Z;
 
 		#endregion
 	}

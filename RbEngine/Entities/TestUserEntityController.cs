@@ -154,10 +154,10 @@ namespace RbEngine.Entities
 			Maths.Point3	pos			= entity.Position.Get( renderTime );
 			Maths.Point3	lookAtPos	= m_LookAt.Get( renderTime );
 
-			Rendering.ShapeRenderer.Inst.RenderLine( pos, pos + entity.Facing * 3.0f );
-			Rendering.ShapeRenderer.Inst.RenderLine( pos, pos + entity.Left * 3.0f );
-			Rendering.ShapeRenderer.Inst.RenderLine( pos, pos + entity.Up * 3.0f );
-			Rendering.ShapeRenderer.Inst.RenderSphere( lookAtPos, 1.0f );
+			Rendering.ShapeRenderer.Inst.DrawLine( pos, pos + entity.Facing * 3.0f );
+			Rendering.ShapeRenderer.Inst.DrawLine( pos, pos + entity.Left * 3.0f );
+			Rendering.ShapeRenderer.Inst.DrawLine( pos, pos + entity.Up * 3.0f );
+			Rendering.ShapeRenderer.Inst.DrawSphere( lookAtPos, 1.0f );
 		}
 
 		#endregion

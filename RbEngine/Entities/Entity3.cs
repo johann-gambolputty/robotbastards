@@ -174,7 +174,7 @@ namespace RbEngine.Entities
 			mat.ZAxis = Facing;
 			mat.Translation = curPos;
 
-			Rendering.Renderer.Inst.PushTransform( Rendering.Transform.kLocalToView, mat );
+			Rendering.Renderer.Inst.PushTransform( Rendering.Transform.LocalToView, mat );
 
 			//	TODO: Render associated IRender object
 			if ( m_Graphics != null )
@@ -183,11 +183,11 @@ namespace RbEngine.Entities
 			}
 			else
 			{
-				Rendering.ShapeRenderer.Inst.RenderSphere( new Point3( 0, 5, 0 ), 5 );
+				Rendering.ShapeRenderer.Inst.DrawSphere( new Point3( 0, 5, 0 ), 5 );
 			}
 
 			//	Pop the entity transform
-			Rendering.Renderer.Inst.PopTransform( Rendering.Transform.kLocalToView );
+			Rendering.Renderer.Inst.PopTransform( Rendering.Transform.LocalToView );
 		}
 
 		#endregion

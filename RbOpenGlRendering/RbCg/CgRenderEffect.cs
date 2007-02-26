@@ -46,36 +46,50 @@ namespace RbOpenGlRendering.RbCg
 
 		public override void Apply()
 		{
-			IntPtr param = m_Bindings[ ( int )ShaderParameterBinding.ModelViewMatrix ];
-			if ( param != IntPtr.Zero )
+			for ( int bindingIndex = 0; bindingIndex < ( int )ShaderParameterBinding.NumBindings; ++bindingIndex )
 			{
-				CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_MATRIX, CgGl.CG_GL_MATRIX_IDENTITY );
-			}
+				IntPtr param = m_Bindings[ bindingIndex ];
+				if ( param == IntPtr.Zero )
+				{
+					continue;
+				}
+				switch ( ( ShaderParameterBinding )bindingIndex )
+				{
+					case ShaderParameterBinding.ModelViewMatrix :
+					{
+						CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_MATRIX, CgGl.CG_GL_MATRIX_IDENTITY );
+						break;
+					}
+					case ShaderParameterBinding.InverseModelViewMatrix :
+					{
+						CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_MATRIX, CgGl.CG_GL_MATRIX_INVERSE );
+						break;
+					}
 
-			param = m_Bindings[ ( int )ShaderParameterBinding.InverseModelViewMatrix ];
-			if ( param != IntPtr.Zero )
-			{
-				CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_MATRIX, CgGl.CG_GL_MATRIX_INVERSE );
-			}
+					case ShaderParameterBinding.InverseTransposeModelViewMatrix	:
+					{
+						CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_MATRIX, CgGl.CG_GL_MATRIX_INVERSE_TRANSPOSE );
+						break;
+					}
 
-			param = m_Bindings[ ( int )ShaderParameterBinding.InverseTransposeModelViewMatrix ];
-			if ( param != IntPtr.Zero )
-			{
-				CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_MATRIX, CgGl.CG_GL_MATRIX_INVERSE_TRANSPOSE );
-			}
+					case ShaderParameterBinding.ModelViewProjectionMatrix :
+					{
+						CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_PROJECTION_MATRIX, CgGl.CG_GL_MATRIX_IDENTITY );
+						break;
+					}
 
-			param = m_Bindings[ ( int )ShaderParameterBinding.ModelViewProjectionMatrix ];
-			if ( param != IntPtr.Zero )
-			{
-				CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_PROJECTION_MATRIX, CgGl.CG_GL_MATRIX_IDENTITY );
-			}
+					case ShaderParameterBinding.EyePosition :
+					{
+						RbEngine.Maths.Point3 eyePos = ( ( RbEngine.Cameras.Camera3 )Renderer.Inst.Camera ).Position;
+						Cg.cgSetParameter3f( param, eyePos.X, eyePos.Y, eyePos.Z );
+						break;
+					}
 
-			param = m_Bindings[ ( int )ShaderParameterBinding.EyePosition ];
-			if ( param != IntPtr.Zero )
-			{
-				//	TODO: Setup camera frame and frustum in the renderer
-				RbEngine.Maths.Point3 eyePos = ( ( RbEngine.Cameras.Camera3 )Renderer.Inst.Camera ).Position;
-				Cg.cgSetParameter3f( param, eyePos.X, eyePos.Y, eyePos.Z );
+					default :
+					{
+						throw new ApplicationException( string.Format( "Unhandled shader parameter binding \"{0}\"", ( ( ShaderParameterBinding )bindingIndex ).ToString( ) ) );
+					}
+				}
 			}
 			/*
 		

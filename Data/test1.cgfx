@@ -25,8 +25,8 @@ SpecularTestOutput PlainVanilla( SpecularTestInput input )
 
 	output.m_Position		= mul( ModelViewProj, input.m_Position );
 
-	float3 normal			= input.m_Normal; //normalize( mul( ModelView, input.m_Normal ).xyz );
-	float dp				= dot( normal, float3( 0, 0, 1 ) );//normalize( mul( ModelView, LightPos ).xyz ) );
+	float3 normal			= normalize( mul( InverseTransposeModelView, input.m_Normal ).xyz );
+	float dp				= dot( normal, float3( 0, 0, 1 ) ); //normalize( mul( ModelView, LightPos ).xyz ) );
 	output.m_Colour.rgba	= float4( dp, 0, 0, 1 );
 
 	return output;
@@ -38,12 +38,8 @@ SpecularTestOutput SpecularTest( SpecularTestInput input )
 
 	output.m_Position	= mul( ModelViewProj, input.m_Position );
 
-	//	NOTE: Should really multiply this vector by the inverse transpose MV, but that's only necessary if the MV contains
-	//	non-uniform scaling
-	float3 normal		= normalize( mul( ModelView, input.m_Normal ).xyz );
-
+	float3 normal		= normalize( mul( InverseTransposeModelView, input.m_Normal ).xyz );
 	float3 eyeVec		= normalize( mul( ModelView, float4( EyePos, 0 ) ).xyz );
-
 	float3 lightVec		= normalize( mul( ModelView, LightPos ).xyz );
 	float3 halfVec		= normalize( eyeVec + lightVec );
 

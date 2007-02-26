@@ -13,17 +13,17 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Transforms vertices from local space to view space
 		/// </summary>
-		kLocalToView,
+		LocalToView,
 
 		/// <summary>
 		/// Transforms vertices from view space to screen space (projective transform)
 		/// </summary>
-		kViewToScreen,
+		ViewToScreen,
 
 		/// <summary>
 		/// Total number of transforms
 		/// </summary>
-		kCount
+		Count
 	}
 
 	/// <summary>
