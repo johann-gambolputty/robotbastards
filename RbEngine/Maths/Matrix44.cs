@@ -98,13 +98,13 @@ namespace RbEngine.Maths
 		{
 			get
 			{
-				return new Vector3( Elements[ 8 ], Elements[ 9 ], Elements[ 10 ] );
+				return new Point3( Elements[ 12 ], Elements[ 13 ], Elements[ 14 ] );
 			}
 			set
 			{
-				Elements[ 8 ]  = value[ 0 ];
-				Elements[ 9 ]  = value[ 1 ];
-				Elements[ 10 ] = value[ 2 ];
+				Elements[ 12 ]  = value[ 0 ];
+				Elements[ 13 ]  = value[ 1 ];
+				Elements[ 14 ]	= value[ 2 ];
 			}
 		}
 		#endregion

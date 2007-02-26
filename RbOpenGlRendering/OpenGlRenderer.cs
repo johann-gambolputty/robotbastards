@@ -191,6 +191,8 @@ namespace RbOpenGlRendering
 		/// </summary>
 		private float[] GetGlMatrix( Matrix44 matrix )
 		{
+		//	Matrix44 transposeMatrix = matrix.Transpose( );
+		//	return transposeMatrix.Elements;
 			return matrix.Elements;
 		}
 

@@ -166,8 +166,15 @@ namespace RbEngine.Entities
 			//	TODO: Get the interpolated rotation of the entity
 
 			//	Push the entity transform
-			Rendering.Renderer.Inst.PushTransform( Rendering.Transform.kLocalToView );
-			Rendering.Renderer.Inst.Translate( Rendering.Transform.kLocalToView, curPos.X, curPos.Y, curPos.Z );
+		//	Rendering.Renderer.Inst.PushTransform( Rendering.Transform.kLocalToView );
+		//	Rendering.Renderer.Inst.Translate( Rendering.Transform.kLocalToView, curPos.X, curPos.Y, curPos.Z );
+			Maths.Matrix44 mat = new Maths.Matrix44( );
+			mat.XAxis = Left;
+			mat.YAxis = Up;
+			mat.ZAxis = Facing;
+			mat.Translation = curPos;
+
+			Rendering.Renderer.Inst.PushTransform( Rendering.Transform.kLocalToView, mat );
 
 			//	TODO: Render associated IRender object
 			if ( m_Graphics != null )

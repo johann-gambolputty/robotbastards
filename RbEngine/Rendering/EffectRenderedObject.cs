@@ -5,7 +5,7 @@ namespace RbEngine.Rendering
 	/// <summary>
 	/// Wraps up an IRender object with a RenderEffect
 	/// </summary>
-	public class EffectRenderedObject : IRender
+	public class EffectRenderedObject : IRender, Components.IXmlLoader
 	{
 		/// <summary>
 		/// The effect
@@ -68,6 +68,30 @@ namespace RbEngine.Rendering
 
 		#endregion
 
+		#region IXmlLoader Members
+
+		/// <summary>
+		/// Parses the element that generated this object
+		/// </summary>
+		public bool ParseGeneratingElement( System.Xml.XmlElement element )
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Parses an element
+		/// </summary>
+		public bool ParseElement( System.Xml.XmlElement element )
+		{
+			if ( element.Name == "technique" )
+			{
+				m_Technique.SelectTechnique( element.GetAttribute( "name" ) );
+			}
+
+			return true;
+		}
+
+		#endregion
 
 		private IRender				m_RenderedObject;
 		private SelectedTechnique	m_Technique = new SelectedTechnique( );
