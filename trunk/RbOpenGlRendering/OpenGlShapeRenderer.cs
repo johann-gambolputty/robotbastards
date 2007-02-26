@@ -20,7 +20,7 @@ namespace RbOpenGlRendering
 		/// <param name="width"> Width of the rectangle </param>
 		/// <param name="height"> Height of the rectangle</param>
 		/// <param name="colour"> Rectangle colour </param>
-		public override void RenderRectangle( int x, int y, int width, int height, System.Drawing.Color colour )
+		public override void DrawRectangle( int x, int y, int width, int height, System.Drawing.Color colour )
 		{
 			Gl.glColor3ub( colour.R, colour.G, colour.B );
 			Gl.glBegin( Gl.GL_LINE_STRIP );
@@ -42,7 +42,7 @@ namespace RbOpenGlRendering
 		/// <param name="endX"> Line end x position </param>
 		/// <param name="endY"> Line end y position </param>
 		/// <param name="colour"> Line colour </param>
-		public override void RenderLine( int x, int y, int endX, int endY, System.Drawing.Color colour )
+		public override void DrawLine( int x, int y, int endX, int endY, System.Drawing.Color colour )
 		{
 		}
 
@@ -55,7 +55,7 @@ namespace RbOpenGlRendering
 		/// </summary>
 		/// <param name="start">Line start</param>
 		/// <param name="end">Line end</param>
-		public override void	RenderLine( Point3 start, Point3 end )
+		public override void	DrawLine( Point3 start, Point3 end )
 		{
 			Gl.glBegin( Gl.GL_LINES );
 				Gl.glVertex3f( start.X, start.Y, start.Z );
@@ -70,8 +70,7 @@ namespace RbOpenGlRendering
 		/// <param name="end"> End position of the cylinder </param>
 		/// <param name="radius"> Radius of the cylinder </param>
 		/// <param name="numCircumferenceSamples"> Number of subdivisions around the cylinder circumference</param>
-		/// 
-		public override void	RenderCylinder( Point3 start, Point3 end, float radius, int numCircumferenceSamples )
+		public override void	DrawCylinder( Point3 start, Point3 end, float radius, int numCircumferenceSamples )
 		{
 			float angleIncrement	= Constants.kTwoPi / ( float )numCircumferenceSamples;
 			float angle				= Constants.kTwoPi - angleIncrement;
@@ -133,7 +132,7 @@ namespace RbOpenGlRendering
 		/// <summary>
 		/// Renders a sphere, using a given sample rate at which to sample sphere longitude and latitude
 		/// </summary>
-		public override void RenderSphere( Point3 pt, float radius, int latitudeSamples, int longitudeSamples )
+		public override void DrawSphere( Point3 pt, float radius, int latitudeSamples, int longitudeSamples )
 		{
 			//	Render the sphere as a series of strips
 			float	latitudeAngleIncrement	= Constants.kPi / ( float )latitudeSamples;

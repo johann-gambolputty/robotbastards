@@ -16,7 +16,7 @@ namespace RbEngine.Maths
 	/// </note>
 	/// </remarks>
 	/// <seealso href="http://home.comcast.net/~tom_forsyth/blog.wiki.html#%5B%5BA%20matter%20of%20precision%5D%5D">Tom Forsyth's blog</seealso>
-	public class BigPoint3
+	public struct BigPoint3
 	{
 		/// <summary>
 		/// The number of units per metre
@@ -34,10 +34,13 @@ namespace RbEngine.Maths
 		public const float	ToMetres		= 1.0f / UnitsPerMetre;
 
 		/// <summary>
-		/// Constructor
+		/// Copy constructor
 		/// </summary>
-		public BigPoint3( )
+		public BigPoint3( BigPoint3 src )
 		{
+			m_X = src.m_X;
+			m_Y = src.m_Y;
+			m_Z = src.m_Z;
 		}
 
 		/// <summary>
@@ -45,9 +48,30 @@ namespace RbEngine.Maths
 		/// </summary>
 		public BigPoint3( long x, long y, long z )
 		{
-			m_Pt[ 0 ] = x;
-			m_Pt[ 1 ] = y;
-			m_Pt[ 2 ] = z;
+			m_X = x;
+			m_Y = y;
+			m_Z = z;
+		}
+
+		/// <summary>
+		/// Access to an indexed component of the vector (0==X,1==Y,2==Z)
+		/// </summary>
+		public unsafe long this[ int index ]
+		{
+			get
+			{
+				fixed ( long* pt = &m_X )
+				{
+					return pt[ index ];
+				}
+			}
+			set
+			{
+				fixed ( long* pt = &m_X )
+				{
+					pt[ index ] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -55,8 +79,8 @@ namespace RbEngine.Maths
 		/// </summary>
 		public long X
 		{
-			get { return m_Pt[ 0 ]; }
-			set { m_Pt[ 0 ] = value; }
+			get { return m_X; }
+			set { m_X = value; }
 		}
 
 		/// <summary>
@@ -64,8 +88,8 @@ namespace RbEngine.Maths
 		/// </summary>
 		public long Y
 		{
-			get { return m_Pt[ 1 ]; }
-			set { m_Pt[ 1 ] = value; }
+			get { return m_Y; }
+			set { m_Y = value; }
 		}
 
 		/// <summary>
@@ -73,8 +97,8 @@ namespace RbEngine.Maths
 		/// </summary>
 		public long Z
 		{
-			get { return m_Pt[ 2 ]; }
-			set { m_Pt[ 2 ] = value; }
+			get { return m_Z; }
+			set { m_Z = value; }
 		}
 
 		/// <summary>
@@ -97,13 +121,21 @@ namespace RbEngine.Maths
 		}
 
 		/// <summary>
+		/// Subtracts a vector from a point
+		/// </summary>
+		public static BigPoint3	operator - ( BigPoint3 pt, Vector3 vec )
+		{
+			return new BigPoint3( pt.X - ( long )( vec.X * FromMetres ), pt.Y - ( long )( vec.Y * FromMetres ), pt.Z - ( long )( vec.Z * FromMetres ) );
+		}
+
+		/// <summary>
 		/// Gets the squared distance from one point to another
 		/// </summary>
-		public float	SqrDistanceTo( BigPoint3 pt )
+		public long	SqrDistanceTo( BigPoint3 pt )
 		{
-			float diffX = ( float )( X - pt.X );
-			float diffY = ( float )( Y - pt.Y );
-			float diffZ = ( float )( Z - pt.Z );
+			long diffX = ( X - pt.X );
+			long diffY = ( Y - pt.Y );
+			long diffZ = ( Z - pt.Z );
 
 			return ( diffX * diffX ) + ( diffY * diffY ) + ( diffZ * diffZ );
 		}
@@ -116,9 +148,11 @@ namespace RbEngine.Maths
 		/// </remarks>
 		public float	DistanceTo( BigPoint3 pt )
 		{
-			return ( float )System.Math.Sqrt( SqrDistanceTo( pt ) );
+			return ( float )System.Math.Sqrt( ( double )SqrDistanceTo( pt ) );
 		}
 
-		private long[]	m_Pt = new long[ 3 ] { 0, 0, 0 };
+		private long	m_X;
+		private long	m_Y;
+		private long	m_Z;
 	}
 }

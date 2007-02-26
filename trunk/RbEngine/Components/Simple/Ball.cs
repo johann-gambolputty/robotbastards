@@ -46,9 +46,14 @@ namespace RbEngine.Components.Simple
 		{
 			if ( element.Name == "position" )
 			{
-				m_Sphere.Centre.X = float.Parse( element.GetAttribute( "x" ) );
-				m_Sphere.Centre.Y = float.Parse( element.GetAttribute( "y" ) );
-				m_Sphere.Centre.Z = float.Parse( element.GetAttribute( "z" ) );
+				Point3 centre = new Point3
+				(
+					float.Parse( element.GetAttribute( "x" ) ),
+					float.Parse( element.GetAttribute( "y" ) ),
+					float.Parse( element.GetAttribute( "z" ) )
+				);
+
+				m_Sphere.Centre = centre;
 				return true;
 			}
 			else if ( element.Name == "radius" )
@@ -94,9 +99,9 @@ namespace RbEngine.Components.Simple
 		public void Render( long renderTime )
 		{
 			Renderer.Inst.PushRenderState( m_LineState );
-			ShapeRenderer.Inst.RenderSphere( m_Sphere.Centre, m_Sphere.Radius );
+			ShapeRenderer.Inst.DrawSphere( m_Sphere.Centre, m_Sphere.Radius );
 			m_FilledState.Apply( );
-			ShapeRenderer.Inst.RenderSphere( m_Sphere.Centre, m_Sphere.Radius );
+			ShapeRenderer.Inst.DrawSphere( m_Sphere.Centre, m_Sphere.Radius );
 			Renderer.Inst.PopRenderState( );
 		}
 

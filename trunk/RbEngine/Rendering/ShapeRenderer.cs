@@ -29,7 +29,7 @@ namespace RbEngine.Rendering
 		/// <param name="width"> Width of the rectangle </param>
 		/// <param name="height"> Height of the rectangle</param>
 		/// <param name="colour"> Rectangle colour </param>
-		public abstract void RenderRectangle( int x, int y, int width, int height, System.Drawing.Color colour );
+		public abstract void	DrawRectangle( int x, int y, int width, int height, System.Drawing.Color colour );
 
 		/// <summary>
 		/// Renders a 2d line
@@ -39,7 +39,7 @@ namespace RbEngine.Rendering
 		/// <param name="endX"> Line end x position </param>
 		/// <param name="endY"> Line end y position </param>
 		/// <param name="colour"> Line colour </param>
-		public abstract void RenderLine( int x, int y, int endX, int endY, System.Drawing.Color colour );
+		public abstract void	DrawLine( int x, int y, int endX, int endY, System.Drawing.Color colour );
 
 		#endregion
 
@@ -50,7 +50,7 @@ namespace RbEngine.Rendering
 		/// </summary>
 		/// <param name="start">Line start</param>
 		/// <param name="end">Line end</param>
-		public abstract void	RenderLine( Point3 start, Point3 end );
+		public abstract void	DrawLine( Point3 start, Point3 end );
 
 		/// <summary>
 		/// Renders a cylinder
@@ -58,9 +58,9 @@ namespace RbEngine.Rendering
 		/// <param name="start"> Start position of the cylinder </param>
 		/// <param name="end"> End position of the cylinder </param>
 		/// <param name="radius"> Radius of the cylinder </param>
-		public void	RenderCylinder( Point3 start, Point3 end, float radius )
+		public void				DrawCylinder( Point3 start, Point3 end, float radius )
 		{
-			RenderCylinder( start, end, radius, 16 );
+			DrawCylinder( start, end, radius, 16 );
 		}
 
 		/// <summary>
@@ -71,23 +71,33 @@ namespace RbEngine.Rendering
 		/// <param name="radius"> Radius of the cylinder </param>
 		/// <param name="numCircumferenceSamples"> Number of subdivisions around the cylinder circumference</param>
 		/// 
-		public abstract void	RenderCylinder( Point3 start, Point3 end, float radius, int numCircumferenceSamples );
+		public abstract void	DrawCylinder( Point3 start, Point3 end, float radius, int numCircumferenceSamples );
 
 		/// <summary>
 		/// Renders a sphere
 		/// </summary>
-		public void RenderSphere( Point3 pt, float radius )
+		public void				DrawSphere( Point3 pt, float radius )
 		{
-			RenderSphere( pt, radius, 10, 10 );
+			DrawSphere( pt, radius, 10, 10 );
 		}
 
 		/// <summary>
 		/// Renders a sphere, using a given sample rate at which to sample sphere longitude and latitude
 		/// </summary>
-		public abstract void RenderSphere( Point3 pt, float radius, int latitudeSamples, int longitudeSamples );
+		public abstract void	DrawSphere( Point3 pt, float radius, int latitudeSamples, int longitudeSamples );
 
 		#endregion
 
+		public void DrawText( int x, int y, string s )
+		{
+			//	HACK: dirty dirty hack
+			if ( m_Font == null )
+			{
+				m_Font = RenderFactory.Inst.NewFont( );
+				m_Font.Setup( new System.Drawing.Font( "arial", 12 ) );
+			}
+			m_Font.DrawText( x, y, s );
+		}
 
 		/// <summary>
 		/// Protected constructor. Sets the ShapeRenderer.Inst singleton
@@ -99,6 +109,7 @@ namespace RbEngine.Rendering
 
 		#region	Private stuff
 
+		private RenderFont				m_Font;
 		private static ShapeRenderer	ms_Singleton;
 
 		#endregion

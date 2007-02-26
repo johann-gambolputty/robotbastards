@@ -1,28 +1,20 @@
 using System;
 
-
 namespace RbEngine.Maths
 {
 	/// <summary>
 	/// A Point3 is a point in world space. Units are the same as Vector3
 	/// </summary>
-	public class Point3
+	public struct Point3
 	{
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		public Point3( )
-		{
-		}
-
 		/// <summary>
 		/// Copy constructor
 		/// </summary>
 		public Point3( Point3 src )
 		{
-			m_Pt[ 0 ] = src.m_Pt[ 0 ];
-			m_Pt[ 1 ] = src.m_Pt[ 1 ];
-			m_Pt[ 2 ] = src.m_Pt[ 2 ];
+			m_X = src.m_X;
+			m_Y = src.m_Y;
+			m_Z = src.m_Z;
 		}
 
 		/// <summary>
@@ -30,9 +22,9 @@ namespace RbEngine.Maths
 		/// </summary>
 		public Point3( float x, float y, float z )
 		{
-			m_Pt[ 0 ] = x;
-			m_Pt[ 1 ] = y;
-			m_Pt[ 2 ] = z;
+			m_X = x;
+			m_Y = y;
+			m_Z = z;
 		}
 
 		/// <summary>
@@ -40,23 +32,29 @@ namespace RbEngine.Maths
 		/// </summary>
 		public void Set( float x, float y, float z )
 		{
-			m_Pt[ 0 ] = x;
-			m_Pt[ 1 ] = y;
-			m_Pt[ 2 ] = z;
+			m_X = x;
+			m_Y = y;
+			m_Z = z;
 		}
 
 		/// <summary>
 		/// Access to an indexed component of the vector (0==X,1==Y,2==Z)
 		/// </summary>
-		public float this[ int index ]
+		public unsafe float this[ int index ]
 		{
 			get
 			{
-				return m_Pt[ index ];
+				fixed ( float* pt = &m_X )
+				{
+					return pt[ index ];
+				}
 			}
 			set
 			{
-				m_Pt[ index ] = value;
+				fixed ( float* pt = &m_X )
+				{
+					pt[ index ] = value;
+				}
 			}
 		}
 
@@ -65,8 +63,8 @@ namespace RbEngine.Maths
 		/// </summary>
 		public float X
 		{
-			get { return m_Pt[ 0 ]; }
-			set { m_Pt[ 0 ] = value; }
+			get { return m_X; }
+			set { m_X = value; }
 		}
 
 		/// <summary>
@@ -74,8 +72,8 @@ namespace RbEngine.Maths
 		/// </summary>
 		public float Y
 		{
-			get { return m_Pt[ 1 ]; }
-			set { m_Pt[ 1 ] = value; }
+			get { return m_Y; }
+			set { m_Y = value; }
 		}
 
 		/// <summary>
@@ -83,8 +81,8 @@ namespace RbEngine.Maths
 		/// </summary>
 		public float Z
 		{
-			get { return m_Pt[ 2 ]; }
-			set { m_Pt[ 2 ] = value; }
+			get { return m_Z; }
+			set { m_Z = value; }
 		}
 
 		/// <summary>
@@ -131,6 +129,9 @@ namespace RbEngine.Maths
 			return ( float )System.Math.Sqrt( SqrDistanceTo( pt ) );
 		}
 
-		private float[]	m_Pt = new float[ 3 ] { 0, 0, 0 };
+
+		private float	m_X;
+		private float	m_Y;
+		private float	m_Z;
 	}
 }

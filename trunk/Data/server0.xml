@@ -19,14 +19,16 @@
 
 			<!-- Entities -->
 			<object type="RbEngine.Entities.Entity3">
-			
+
 				<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics">
+
 					<resource path="test1.cgfx" property="Effect"/>
 					<resource path="blob0.dae" property="RenderedObject"/>
 
 					<postLoad>
 						<technique name="BlobTechnique"/>
 					</postLoad>
+
 				</object>
 
 				<object type="RbEngine.Entities.TestUserEntityController">

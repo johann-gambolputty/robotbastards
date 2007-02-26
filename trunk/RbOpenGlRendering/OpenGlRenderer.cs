@@ -12,23 +12,31 @@ namespace RbOpenGlRendering
 	/// </summary>
 	public class OpenGlRenderer : Renderer
 	{
+		#region	Setup
+
+		/// <summary>
+		/// Sets up the renderer
+		/// </summary>
 		public OpenGlRenderer( )
 		{
 			Gl.glHint( Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST );
-			Gl.glDepthFunc( Gl.GL_LEQUAL );
-			Gl.glShadeModel( Gl.GL_SMOOTH );
 		}
 
+		/// <summary>
+		/// Loads all supported OpenGL extensions
+		/// </summary>
 		public unsafe static void LoadExtensions( )
 		{
-			IntPtr mem = Gl.glGetString( Gl.GL_EXTENSIONS );
-			string extensions = new string( ( sbyte* )mem );
+			sbyte* mem = ( sbyte* )Gl.glGetString( Gl.GL_EXTENSIONS );
+			string extensions = new string( mem );
 			Output.WriteLine( Output.RenderingInfo, extensions.Replace( ' ', '\n' ) );
 
 			bool result = GlExtensionLoader.LoadExtension( "glGenBuffersARB" );
 
 			GlExtensionLoader.LoadAllExtensions( );
 		}
+
+		#endregion
 
 		#region	Forms
 
@@ -181,8 +189,8 @@ namespace RbOpenGlRendering
 		{
 			switch ( type )
 			{
-				case Transform.kLocalToView		:	Gl.glMatrixMode( Gl.GL_MODELVIEW );		break;
-				case Transform.kViewToScreen	:	Gl.glMatrixMode( Gl.GL_PROJECTION );	break;
+				case Transform.LocalToView	:	Gl.glMatrixMode( Gl.GL_MODELVIEW );		break;
+				case Transform.ViewToScreen	:	Gl.glMatrixMode( Gl.GL_PROJECTION );	break;
 			}
 		}
 
@@ -204,8 +212,8 @@ namespace RbOpenGlRendering
 			Matrix44 mat = new Matrix44( );
 			switch ( type )
 			{
-				case Transform.kLocalToView		:	Gl.glGetFloatv( Gl.GL_MODELVIEW_MATRIX, mat.Elements );		break;
-				case Transform.kViewToScreen	:	Gl.glGetFloatv( Gl.GL_PROJECTION_MATRIX, mat.Elements );	break;
+				case Transform.LocalToView	:	Gl.glGetFloatv( Gl.GL_MODELVIEW_MATRIX, mat.Elements );		break;
+				case Transform.ViewToScreen	:	Gl.glGetFloatv( Gl.GL_PROJECTION_MATRIX, mat.Elements );	break;
 			}
 
 			return mat;

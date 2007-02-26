@@ -34,12 +34,21 @@ namespace RbOpenGlRendering
 		}
 
 		/// <summary>
-		/// Creates a new ApplyTexture2d object
+		/// Creates a new TextureSampler2d object
 		/// </summary>
 		public override TextureSampler2d	NewTextureSampler2d( )
 		{
 			return new OpenGlTextureSampler2d( );
 		}
+
+		/// <summary>
+		/// Creates a new RenderFont object
+		/// </summary>
+		public override RenderFont NewFont()
+		{
+			return new OpenGlRenderFont( );
+		}
+
 
 		/// <summary>
 		/// Creates a new Renderer object

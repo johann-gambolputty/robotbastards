@@ -186,6 +186,11 @@ namespace RbEngine.Rendering
 		public abstract TextureSampler2d	NewTextureSampler2d( );
 
 		/// <summary>
+		/// Creates a new RenderFont object
+		/// </summary>
+		public abstract RenderFont			NewFont( );
+
+		/// <summary>
 		/// Creates a new Renderer object
 		/// </summary>
 		protected abstract Renderer			NewRenderer( );

@@ -166,6 +166,8 @@ namespace RbEngine.Network
 			{
 				( ( Rendering.IRender )m_CameraController ).Render( );
 			}
+
+			ShapeRenderer.Inst.DrawText( 0, 0, "badgers" );
 		}
 
 		//

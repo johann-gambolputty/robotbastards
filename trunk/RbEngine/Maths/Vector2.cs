@@ -5,46 +5,50 @@ namespace RbEngine.Maths
 	/// <summary>
 	/// Summary description for Vector2.
 	/// </summary>
-	public class Vector2
+	public struct Vector2
 	{
 		#region	Vector constants
 
-		public static Vector2 XAxis
-		{
-			get
-			{
-				return new Vector2( 1, 0 );
-			}
-		}
+		/// <summary>
+		/// X axis
+		/// </summary>
+		public static readonly Vector2	XAxis = new Vector2( 1, 0 );
 
-		public static Vector2 YAxis
-		{
-			get
-			{
-				return new Vector2( 0, 1 );
-			}
-		}
+		/// <summary>
+		/// Y axis
+		/// </summary>
+		public static readonly Vector2	YAxis = new Vector2( 0, 1 );
+
+		/// <summary>
+		/// Origin
+		/// </summary>
+		public static readonly Vector2	Origin = new Vector2( 0, 0 );
 
 		#endregion
 
 		#region	Construction and setup
 
-		public Vector2( )
-		{
-		}
-
+		/// <summary>
+		/// Copy constructor
+		/// </summary>
 		public Vector2( Vector2 src )
 		{
-			X = src.X;
-			Y = src.Y;
+			m_X = src.X;
+			m_Y = src.Y;
 		}
 
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
 		public Vector2( float x, float y )
 		{
-			X = x;
-			Y = y;
+			m_X = x;
+			m_Y = y;
 		}
 
+		/// <summary>
+		/// Sets x and y elements of this vector
+		/// </summary>
 		public void Set( float x, float y )
 		{
 			X = x;
@@ -62,11 +66,11 @@ namespace RbEngine.Maths
 		{
 			get
 			{
-				return m_Vec[ 0 ];
+				return m_X;
 			}
 			set
 			{
-				m_Vec[ 0 ] = value;
+				m_X = value;
 			}
 		}
 
@@ -77,26 +81,32 @@ namespace RbEngine.Maths
 		{
 			get
 			{
-				return m_Vec[ 1 ];
+				return m_Y;
 			}
 			set
 			{
-				m_Vec[ 1 ] = value;
+				m_Y = value;
 			}
 		}
 
 		/// <summary>
 		/// Access to an indexed component of the vector (0==X,1==Y,2==Z)
 		/// </summary>
-		public float this[ int index ]
+		public unsafe float this[ int index ]
 		{
 			get
 			{
-				return m_Vec[ index ];
+				fixed ( float* vec = &m_X )
+				{
+					return vec[ index ];
+				}
 			}
 			set
 			{
-				m_Vec[ index ] = value;
+				fixed ( float* vec = &m_X )
+				{
+					vec[ index ] = value;
+				}
 			}
 		}
 
@@ -259,7 +269,8 @@ namespace RbEngine.Maths
 
 		#region	Fields
 
-		private float[] m_Vec = new float[ 2 ];
+		private float	m_X;
+		private float	m_Y;
 
 		#endregion
 	}

@@ -516,12 +516,12 @@ namespace RbOpenGlRendering.Resources
 
 					//	Convert the source semantic to an opengl client state
 					//	Swap y and z elements
-					//	TODO: Should be a resource flag
+					//	TODO: Should be a resource flag, at the very least
 					bool swapYz = false;
 					switch ( curSource.Semantic )
 					{
 						case "POSITION" :	curVbo.ClientState = Gl.GL_VERTEX_ARRAY; swapYz = true;	break;
-						case "NORMAL"	:	curVbo.ClientState = Gl.GL_NORMAL_ARRAY;				break;
+						case "NORMAL"	:	curVbo.ClientState = Gl.GL_NORMAL_ARRAY; swapYz = true;	break;
 						case "COLOR"	:	curVbo.ClientState = Gl.GL_COLOR_ARRAY;					break;
 						default			:
 							throw new ApplicationException( string.Format( "Unknown mesh semantic \"{0}\"", curSource.Semantic ) );
