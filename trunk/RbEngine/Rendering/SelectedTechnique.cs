@@ -139,6 +139,7 @@ namespace RbEngine.Rendering
 				render( );
 			}
 		}
+ 
 
 		/// <summary>
 		/// Selects a named technique from the current effect. Returns false if there is no technique with that name
@@ -152,6 +153,10 @@ namespace RbEngine.Rendering
 			{
 				m_Technique = technique;
 				return true;
+			}
+			else
+			{
+				Output.WriteLineCall( Output.RenderingWarning, "Could not find technique \"{0}\" in effect \"{1}\"", techniqueName, m_Effect.Name );
 			}
 			return false;
 		}

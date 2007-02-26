@@ -146,6 +146,19 @@ namespace RbEngine.Components
 			{
 				AddToParent( parentObject );
 			}
+			
+			//	Parse unhandled elements
+			if ( m_PostLoadElements != null )
+			{
+				if ( objectXmlLoader == null )
+				{
+					throw new RbXmlException( Element, "Could not handle elements: Object type \"{0}\" does not support IXmlLoader", Object.GetType( ).Name );
+				}
+				foreach ( XmlElement curElement in m_PostLoadElements )
+				{
+					objectXmlLoader.ParseElement( curElement );
+				}
+			}
 		}
 
 		private void AddToParent( object parentObject )
@@ -206,6 +219,18 @@ namespace RbEngine.Components
 		}
 
 		/// <summary>
+		/// Adds an XML element, to be parsed after the object is loaded
+		/// </summary>
+		public void			AddPostLoad( XmlElement element )
+		{
+			if ( m_PostLoadElements == null )
+			{
+				m_PostLoadElements = new ArrayList( );
+			}
+			m_PostLoadElements.Add( element );
+		}
+
+		/// <summary>
 		/// Creates an RbXmlBase instance from an XML element
 		/// </summary>
 		public static RbXmlBase	FromElement( XmlElement element )
@@ -232,10 +257,22 @@ namespace RbEngine.Components
 			{
 				if ( curNode.NodeType == XmlNodeType.Element )
 				{
-					Add( ( XmlElement )curNode );
+					if ( curNode.Name == "postLoad" )
+					{
+						foreach ( XmlNode postLoadNode in curNode.ChildNodes )
+						{
+							if ( postLoadNode.NodeType == XmlNodeType.Element )
+							{
+								AddPostLoad( ( XmlElement )postLoadNode );
+							}
+						}
+					}
+					else
+					{
+						Add( ( XmlElement )curNode );
+					}
 				}
 			}
-
 		}
 
 		protected RbXmlBase( XmlElement element )
@@ -249,6 +286,7 @@ namespace RbEngine.Components
 		private IParentObject	m_ObjectAsParent;
 		private string			m_BoundPropertyName;
 		private ArrayList		m_Elements;
+		private ArrayList		m_PostLoadElements;
 		private ArrayList		m_Children;
 	}
 
@@ -257,7 +295,6 @@ namespace RbEngine.Components
 	/// </summary>
 	public class RbXmlResource : RbXmlBase
 	{
-
 		/// <summary>
 		/// Generates the resource from an element
 		/// </summary>

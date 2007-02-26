@@ -19,6 +19,19 @@ float4		LightOrigin = float4( 1, 0, 0, 0 );
 float3		EyePos;
 
 
+SpecularTestOutput PlainVanilla( SpecularTestInput input )
+{
+	SpecularTestOutput output;
+
+	output.m_Position		= mul( ModelViewProj, input.m_Position );
+
+	float3 normal			= input.m_Normal; //normalize( mul( ModelView, input.m_Normal ).xyz );
+	float dp				= dot( normal, float3( 0, 0, 1 ) );//normalize( mul( ModelView, LightPos ).xyz ) );
+	output.m_Colour.rgba	= float4( dp, 0, 0, 1 );
+
+	return output;
+}
+
 SpecularTestOutput SpecularTest( SpecularTestInput input )
 {
 	SpecularTestOutput output;
@@ -56,4 +69,17 @@ technique SpecularTestTechnique
 		PolygonMode			= int2( Front, Fill );
 		VertexProgram		= compile arbvp1 SpecularTest( );
 	}	
+}
+
+technique BlobTechnique
+{
+	pass
+	{
+		ShadeModel		= Smooth;
+		FrontFace		= CW;
+		DepthFunc		= LEqual;
+		DepthTestEnable	= true;
+		PolygonMode		= int2( Front, Fill );
+		VertexProgram	= compile arbvp1 PlainVanilla( );
+	}
 }
