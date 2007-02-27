@@ -28,32 +28,36 @@ namespace RbOpenGlRendering
 		public override void Load( System.Drawing.Bitmap bmp )
 		{
 			//	Get the GL format of the bitmap, possibly converting it in the process
+			int glInternalFormat = 0;
 			int glFormat = 0;
 			int glType = 0;
-			bmp = CheckBmpFormat( bmp, out glFormat, out glType );
+			bmp = CheckBmpFormat( bmp, out glInternalFormat, out glFormat, out glType );
 
 			//	Lock the bitmap, and create the texture
 			BitmapData bmpData = bmp.LockBits( new Rectangle( 0, 0, bmp.Width, bmp.Height ), ImageLockMode.ReadOnly, bmp.PixelFormat );
-			Create( bmpData.Width, bmpData.Height, glFormat, glType, bmpData.Scan0 );
+			Create( bmpData.Width, bmpData.Height, glInternalFormat, glFormat, glType, bmpData.Scan0 );
 			bmp.UnlockBits( bmpData );
 		}
 
 		/// <summary>
 		/// Creates the texture
 		/// </summary>
-		private void Create( int width, int height, int glFormat, int glType, IntPtr bytes )
+		private void Create( int width, int height, int glInternalFormat, int glFormat, int glType, IntPtr bytes )
 		{
 			//	Generate a texture name
 			Gl.glGenTextures( 1, out m_TextureHandle );
 			Gl.glBindTexture( Gl.GL_TEXTURE_2D, m_TextureHandle );
 
-			Gl.glTexImage2D( Gl.GL_TEXTURE_2D, 0, Gl.GL_RGB, width, height, 0, glFormat, glType, bytes );
+			Gl.glTexImage2D( Gl.GL_TEXTURE_2D, 0, glInternalFormat, width, height, 0, glFormat, glType, bytes );
+
+			m_Width		= width;
+			m_Height	= height;
 		}
 
 		/// <summary>
 		/// Checks the format of a Bitmap. If it's not compatible with any OpenGL formats, it's converted to a format that is
 		/// </summary>
-		private Bitmap CheckBmpFormat( Bitmap bmp, out int glFormat, out int glType )
+		private Bitmap CheckBmpFormat( Bitmap bmp, out int glInternalFormat, out int glFormat, out int glType )
 		{
 			//	Handle direct mappings to GL texture image formats
 			switch ( bmp.PixelFormat )
@@ -69,13 +73,26 @@ namespace RbOpenGlRendering
 				case System.Drawing.Imaging.PixelFormat.Format1bppIndexed 		:	break;
 				case System.Drawing.Imaging.PixelFormat.Format24bppRgb			:
 				{
-					glFormat = Gl.GL_BGR_EXT;
-					glType = Gl.GL_UNSIGNED_INT;
+					glFormat			= Gl.GL_BGR_EXT;
+					glInternalFormat	= Gl.GL_RGB;
+					glType				= Gl.GL_UNSIGNED_BYTE;
 					return bmp;
 				}
-				case System.Drawing.Imaging.PixelFormat.Format32bppArgb			:	break;
+				case System.Drawing.Imaging.PixelFormat.Format32bppArgb			:
+				{
+					glInternalFormat	= Gl.GL_RGBA;
+					glFormat			= Gl.GL_BGRA_EXT;
+					glType				= Gl.GL_UNSIGNED_BYTE;
+					return bmp;
+				}
 				case System.Drawing.Imaging.PixelFormat.Format32bppPArgb		:	break;
-				case System.Drawing.Imaging.PixelFormat.Format32bppRgb			:	break;
+				case System.Drawing.Imaging.PixelFormat.Format32bppRgb			:
+				{
+					glInternalFormat	= Gl.GL_RGBA;
+					glFormat			= Gl.GL_BGRA_EXT;
+					glType				= Gl.GL_UNSIGNED_BYTE;
+					return bmp;
+				}
 				case System.Drawing.Imaging.PixelFormat.Format48bppRgb			:	break;
 				case System.Drawing.Imaging.PixelFormat.Format4bppIndexed		:	break;
 				case System.Drawing.Imaging.PixelFormat.Format64bppArgb			:	break;
@@ -90,6 +107,7 @@ namespace RbOpenGlRendering
 			//	Unhandled format. Convert the bitmap into a more manageable form whose GL format we know
 			bmp = bmp.Clone( new System.Drawing.Rectangle( 0, 0, bmp.Width, bmp.Height ), System.Drawing.Imaging.PixelFormat.Format24bppRgb );
 
+			glInternalFormat = Gl.GL_RGB;
 			glFormat = Gl.GL_BGR_EXT;
 			glType = Gl.GL_UNSIGNED_BYTE;
 

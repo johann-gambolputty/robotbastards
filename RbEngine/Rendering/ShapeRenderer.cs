@@ -96,7 +96,7 @@ namespace RbEngine.Rendering
 				m_Font = RenderFactory.Inst.NewFont( );
 				m_Font.Setup( new System.Drawing.Font( "arial", 12 ) );
 			}
-			m_Font.DrawText( x, y, s );
+			m_Font.DrawText( x, y, System.Drawing.Color.White, s );
 		}
 
 		/// <summary>

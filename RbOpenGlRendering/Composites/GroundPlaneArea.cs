@@ -21,9 +21,9 @@ namespace RbOpenGlRendering.Composites
 			gridRenderPass.Add
 			(
 				RenderFactory.Inst.NewRenderState( )
-					.SetPolygonRenderingMode( PolygonRenderMode.kLines )
-					.DisableCap( RenderStateFlag.kCullFrontFaces )
-					.DisableCap( RenderStateFlag.kCullBackFaces )
+					.SetPolygonRenderingMode( PolygonRenderMode.Lines )
+					.DisableCap( RenderStateFlag.CullFrontFaces )
+					.DisableCap( RenderStateFlag.CullBackFaces )
 					.SetDepthOffset( -0.5f )
 			);
 

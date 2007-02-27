@@ -12,37 +12,60 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Lighting flag
 		/// </summary>
-		kLighting					= 0x1,
+		Lighting					= 0x1,
 
 		/// <summary>
 		/// Depth testing flag
 		/// </summary>
-		kDepthTest					= 0x2,
+		DepthTest					= 0x2,
 
 		/// <summary>
 		/// Depth writing flag
 		/// </summary>
-		kDepthWrite					= 0x4,
+		DepthWrite					= 0x4,
 
 		/// <summary>
 		/// Front face culling flag
 		/// </summary>
-		kCullFrontFaces				= 0x8,
+		CullFrontFaces				= 0x8,
 
 		/// <summary>
 		/// Back face culling flag
 		/// </summary>
-		kCullBackFaces				= 0x10,
+		CullBackFaces				= 0x10,
 
 		/// <summary>
 		/// Backface winding flag
 		/// </summary>
-		kBackFacesAreClockwiseWound	= 0x20,
+		BackFacesAreClockwiseWound	= 0x20,
 
 		/// <summary>
 		/// 2D texture flag
 		/// </summary>
-		k2dTextures					= 0x40
+		Texture2d					= 0x40,
+
+		/// <summary>
+		/// Blending flag
+		/// </summary>
+		Blend						= 0x80
+	}
+
+	public enum BlendFactor
+	{
+		Zero,
+
+		DstColour,
+		OneMinusDstColour,
+		DstAlpha,
+		OneMinusDstAlpha,
+
+		SrcColour,
+		OneMinusSrcColour,
+		SrcAlpha,
+		OneMinusSrcAlpha,
+		SrcAlphaSaturate,
+
+		One
 	}
 
 	/// <summary>
@@ -53,42 +76,42 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Depth test will never be passed
 		/// </summary>
-		kNever,
+		Never,
 
 		/// <summary>
 		/// Depth test will be passed if the rendered depth is less than the fragment depth
 		/// </summary>
-		kLess,
+		Less,
 
 		/// <summary>
 		/// Depth test will be passed if the rendered depth is less than or equal to the fragment depth
 		/// </summary>
-		kLessOrEqual,
+		LessOrEqual,
 		
 		/// <summary>
 		/// Depth test will be passed if the rendered depth is equal to the fragment depth
 		/// </summary>
-		kEqual,
+		Equal,
 		
 		/// <summary>
 		/// Depth test will be passed if the rendered depth is not equal to the fragment depth
 		/// </summary>
-		kNotEqual,
+		NotEqual,
 		
 		/// <summary>
 		/// Depth test will be passed if the rendered depth is greater than or equal to the fragment depth
 		/// </summary>
-		kGreaterOrEqual,
+		GreaterOrEqual,
 		
 		/// <summary>
 		/// Depth test will be passed if the rendered depth is greater than the fragment depth
 		/// </summary>
-		kGreater,
+		Greater,
 		
 		/// <summary>
 		/// Depth test will always be passed
 		/// </summary>
-		kAlways
+		Always
 	}
 
 	/// <summary>
@@ -99,17 +122,17 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Polygons vertices are rendered as points
 		/// </summary>
-		kPoints,
+		Points,
 
 		/// <summary>
 		/// Polygon edges are rendered as edges
 		/// </summary>
-		kLines,
+		Lines,
 
 		/// <summary>
 		/// Polygons are rendered filled
 		/// </summary>
-		kFill
+		Fill
 	}
 
 	/// <summary>
@@ -117,7 +140,14 @@ namespace RbEngine.Rendering
 	/// </summary>
 	public enum PolygonShadeMode
 	{
+		/// <summary>
+		/// Flat shading
+		/// </summary>
 		Flat,
+
+		/// <summary>
+		/// Smooth shading
+		/// </summary>
 		Smooth
 	}
 
@@ -147,12 +177,23 @@ namespace RbEngine.Rendering
 		}
 
 		/// <summary>
+		/// Sets up the source and destination blend factors. Automatically enables blending
+		/// </summary>
+		public RenderState SetBlendMode( BlendFactor srcBlend, BlendFactor dstBlend )
+		{
+			m_SrcBlend = srcBlend;
+			m_DstBlend = dstBlend;
+			EnableCap( RenderStateFlag.Blend );
+			return this;
+		}
+
+		/// <summary>
 		/// Enables lighting (equivalent to EnableCap( RenderStateFlag.kLighting ))
 		/// </summary>
 		/// <returns></returns>
 		public RenderState EnableLighting( )
 		{
-			return SetCap( RenderStateFlag.kLighting, true );
+			return SetCap( RenderStateFlag.Lighting, true );
 		}
 
 		/// <summary>
@@ -273,12 +314,14 @@ namespace RbEngine.Rendering
 
 		#region	Protected stuff
 
+		protected BlendFactor		m_SrcBlend		= BlendFactor.One;
+		protected BlendFactor		m_DstBlend		= BlendFactor.Zero;
 		protected Color				m_Colour		= Color.Black;
 		protected PolygonShadeMode	m_ShadeMode		= PolygonShadeMode.Smooth;
-		protected PolygonRenderMode	m_FrontPolyMode	= PolygonRenderMode.kFill;
-		protected PolygonRenderMode	m_BackPolyMode	= PolygonRenderMode.kFill;
-		protected DepthTestPass		m_DepthTest		= DepthTestPass.kLessOrEqual;
-		protected RenderStateFlag	m_CapFlags		= RenderStateFlag.kDepthWrite | RenderStateFlag.kDepthTest;
+		protected PolygonRenderMode	m_FrontPolyMode	= PolygonRenderMode.Fill;
+		protected PolygonRenderMode	m_BackPolyMode	= PolygonRenderMode.Fill;
+		protected DepthTestPass		m_DepthTest		= DepthTestPass.LessOrEqual;
+		protected RenderStateFlag	m_CapFlags		= RenderStateFlag.DepthWrite | RenderStateFlag.DepthTest;
 		protected bool[]			m_Lights		= new bool[ 8 ];
 		protected float				m_PointSize		= 1;
 		protected float				m_LineWidth		= 1;

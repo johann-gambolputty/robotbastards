@@ -17,9 +17,9 @@ namespace RbEngine.Components.Simple
 		{
 			m_LineState = 
 				RenderFactory.Inst.NewRenderState( )
-					.SetPolygonRenderingMode( PolygonRenderMode.kLines )
-					.DisableCap( RenderStateFlag.kCullFrontFaces )
-					.DisableCap( RenderStateFlag.kCullBackFaces )
+					.SetPolygonRenderingMode( PolygonRenderMode.Lines )
+					.DisableCap( RenderStateFlag.CullFrontFaces )
+					.DisableCap( RenderStateFlag.CullBackFaces )
 					.SetDepthOffset( -1.0f );
 
 			m_FilledState =

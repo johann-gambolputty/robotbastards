@@ -29,6 +29,28 @@ namespace RbEngine.Rendering
 		}
 
 		/// <summary>
+		/// Gets the width of the texture
+		/// </summary>
+		public int	Width
+		{
+			get
+			{
+				return m_Width;
+			}
+		}
+
+		/// <summary>
+		/// Gets the height of the texture
+		/// </summary>
+		public int Height
+		{
+			get
+			{
+				return m_Height;
+			}
+		}
+
+		/// <summary>
 		/// Creates a texture from a resource, using the manifest resource stream
 		/// </summary>
 		public static Texture2d FromManifestResource( string name )
@@ -69,5 +91,11 @@ namespace RbEngine.Rendering
 
 		#endregion
 
+		#region	Protected stuff
+
+		protected int	m_Width;
+		protected int	m_Height;
+
+		#endregion
 	}
 }

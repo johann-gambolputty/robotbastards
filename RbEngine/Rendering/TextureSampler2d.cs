@@ -11,32 +11,32 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Chooses the nearest texel from the source texture
 		/// </summary>
-		kNearestTexel,
+		NearestTexel,
 
 		/// <summary>
 		/// Weighted average of the four nearest texels from the source texture
 		/// </summary>
-		kLinearTexel,
+		LinearTexel,
 
 		/// <summary>
 		/// Chooses the nearest texel from the nearest mipmap
 		/// </summary>
-		kNearestTexelNearestMipMap,
+		NearestTexelNearestMipMap,
 
 		/// <summary>
 		/// Takes the weighted average of the four nearest texels from the nearest mipmap
 		/// </summary>
-		kLinearTexelNearestMipMap,
+		LinearTexelNearestMipMap,
 
 		/// <summary>
 		/// Takes the nearest texel from the two nearest mipmaps, and returns their weighted average
 		/// </summary>
-		kNearestTexelLinearMipMap,
+		NearestTexelLinearMipMap,
 
 		/// <summary>
 		/// Takes the weighted average of the 4 nearest texels from the two nearest mipmaps, and returns the weighted average of these two values
 		/// </summary>
-		kLinearTexelLinearMipMap
+		LinearTexelLinearMipMap
 
 	};
 
@@ -48,12 +48,12 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Wraps texture coordinates back to the origin
 		/// </summary>
-		kRepeat,
+		Repeat,
 
 		/// <summary>
 		/// Clamps texture coordinates
 		/// </summary>
-		kClamp
+		Clamp
 	};
 
 	/// <summary>
@@ -64,22 +64,22 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Replaces fragment with texel
 		/// </summary>
-		kReplace,
+		Replace,
 
 		/// <summary>
 		/// Combines fragment and texel
 		/// </summary>
-		kModulate,
+		Modulate,
 		
 		/// <summary>
 		/// Blends fragment and texel
 		/// </summary>
-		kDecal,
+		Decal,
 
 		/// <summary>
 		/// Blends fragment and colour
 		/// </summary>
-		kBlend
+		Blend
 	};
 
 
@@ -204,11 +204,11 @@ namespace RbEngine.Rendering
 
 	//	private int				m_Unit;
 		private Texture2d		m_Texture;
-		private TextureFilter	m_MinFilter	= TextureFilter.kNearestTexel;
-		private TextureFilter	m_MagFilter = TextureFilter.kNearestTexel;
-		private TextureWrap		m_WrapS		= TextureWrap.kClamp;
-		private TextureWrap		m_WrapT		= TextureWrap.kClamp;
-		private TextureMode		m_Mode		= TextureMode.kReplace;
+		private TextureFilter	m_MinFilter	= TextureFilter.NearestTexel;
+		private TextureFilter	m_MagFilter = TextureFilter.NearestTexel;
+		private TextureWrap		m_WrapS		= TextureWrap.Clamp;
+		private TextureWrap		m_WrapT		= TextureWrap.Clamp;
+		private TextureMode		m_Mode		= TextureMode.Replace;
 
 		#endregion
 	}
