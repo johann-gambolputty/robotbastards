@@ -3,7 +3,7 @@ using System;
 namespace RbEngine.Maths
 {
 	/// <summary>
-	/// 4x4 matrix, used to transformation in R3
+	/// 4x4 matrix, used for transformation in R3
 	/// </summary>
 	public class Matrix44
 	{
