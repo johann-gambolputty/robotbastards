@@ -186,9 +186,8 @@ namespace RbEngine.Scene
 		/// <summary>
 		/// Parses the element that generated this scene
 		/// </summary>
-		public bool ParseGeneratingElement( System.Xml.XmlElement element )
+		public void ParseGeneratingElement( System.Xml.XmlElement element )
 		{
-			return true;
 		}
 
 		/// <summary>

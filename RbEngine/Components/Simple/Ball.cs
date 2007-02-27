@@ -34,9 +34,8 @@ namespace RbEngine.Components.Simple
 		/// <summary>
 		/// Parses the XML element that was responsible for creating this object
 		/// </summary>
-		public bool ParseGeneratingElement( System.Xml.XmlElement element )
+		public void ParseGeneratingElement( System.Xml.XmlElement element )
 		{
-			return true;
 		}
 
 		/// <summary>

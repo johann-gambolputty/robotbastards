@@ -2,6 +2,15 @@ using System;
 
 namespace RbEngine.Rendering
 {
+	/*
+	 * Overriding technique implementation
+	 * 
+	 * Use hash code of technique name
+	 * 
+	 * Can work in the RenderTechnique.Begin() call. 
+	 * 
+	 */
+
 	/// <summary>
 	/// Wraps up an IRender object with a RenderEffect
 	/// </summary>
@@ -73,9 +82,8 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Parses the element that generated this object
 		/// </summary>
-		public bool ParseGeneratingElement( System.Xml.XmlElement element )
+		public void ParseGeneratingElement( System.Xml.XmlElement element )
 		{
-			return true;
 		}
 
 		/// <summary>
@@ -86,9 +94,10 @@ namespace RbEngine.Rendering
 			if ( element.Name == "technique" )
 			{
 				m_Technique.SelectTechnique( element.GetAttribute( "name" ) );
+				return true;
 			}
 
-			return true;
+			return false;
 		}
 
 		#endregion

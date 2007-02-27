@@ -25,9 +25,9 @@
 					<resource path="test1.cgfx" property="Effect"/>
 					<resource path="blob0.dae" property="RenderedObject"/>
 
-					<postLoad>
+					<postLink>
 						<technique name="BlobTechnique"/>
-					</postLoad>
+					</postLink>
 
 				</object>
 

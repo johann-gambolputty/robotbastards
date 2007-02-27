@@ -39,6 +39,57 @@ namespace RbEngine.Network
 	 *
 	 */
 
+	public class OverrideTechnique : IApplicable
+	{
+		#region	Setup
+
+		/// <summary>
+		/// Constructor. When applied as is, this appliance will revert the global technique override
+		/// </summary>
+		public OverrideTechnique( )
+		{
+		}
+
+		/// <summary>
+		/// Constructor. When applied as is, this appliance will set the global technique override to overrideTechnique
+		/// </summary>
+		public OverrideTechnique( RenderTechnique overrideTechnique )
+		{
+			m_Technique = overrideTechnique;
+		}
+
+		/// <summary>
+		/// Technique
+		/// </summary>
+		public RenderTechnique	Technique
+		{
+			get
+			{
+				return m_Technique;
+			}
+			set
+			{
+				m_Technique = value;
+			}
+		}
+
+		#endregion
+
+		#region IApplicable Members
+
+		/// <summary>
+		/// Sets the attached technique as the global override (RenderTechnique.Override)
+		/// </summary>
+		public void Apply( )
+		{
+			RenderTechnique.Override = m_Technique;
+		}
+
+		#endregion
+
+		private RenderTechnique	m_Technique;
+	}
+
 	/// <summary>
 	/// Contains view dependent stuff and interaction. Communicates with server or serverproxy via IServer interface.
 	/// </summary>
@@ -59,23 +110,25 @@ namespace RbEngine.Network
 			(
 				new RenderPass
 				(
-					new ClearTargetDepth( ),
-					new ClearTargetColour( System.Drawing.Color.LightSlateGray ),
-					m_Camera
+					new ClearTargetDepth( )
+					, new ClearTargetColour( System.Drawing.Color.LightSlateGray )
+					, m_Camera
+					, new OverrideTechnique
+					(
+						new RenderTechnique
+						(
+							"testOverrideTechnique",
+							new RenderPass
+							(
+								RenderFactory.Inst.NewRenderState( ).SetColour( System.Drawing.Color.Brown )
+							)
+						)
+					)
 				)
 			);
+
 			m_SceneRenderEffect		= new RenderEffect( defaultTechnique );
 			m_SceneRenderTechnique	= new SelectedTechnique( defaultTechnique );
-
-			m_Control.MouseMove += new System.Windows.Forms.MouseEventHandler( TestMousePos );
-		}
-
-		int m_X;
-		int m_Y;
-		private void TestMousePos( object sender, System.Windows.Forms.MouseEventArgs args )
-		{
-			m_X = args.X;
-			m_Y = args.Y;
 		}
 
 		/// <summary>
@@ -132,7 +185,16 @@ namespace RbEngine.Network
 		}
 
 		// TODO: REMOVEME
-		public RbEngine.Cameras.SphereCamera Camera { get { return m_Camera; } }
+		/// <summary>
+		/// Client's active camera
+		/// </summary>
+		public RbEngine.Cameras.CameraBase Camera
+		{
+			get
+			{
+				return m_Camera;
+			}
+		}
 
 		private long m_LastRenderTime = TinyTime.CurrentTime;
 
@@ -194,9 +256,10 @@ namespace RbEngine.Network
 			m_LastRenderTime = curTime;
 		}
 
-		private int			m_FpsIndex = 0;
-		private float[]		m_Fps = new float[ 32 ];
-		private RenderFont	m_Font;
+		private int								m_FpsIndex = 0;
+		private float[]							m_Fps = new float[ 32 ];
+		private RenderFont						m_Font;
+
 		//
 		//	Shadow render technique
 		//

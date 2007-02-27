@@ -58,13 +58,24 @@ technique SpecularTestTechnique
 {
 	pass
 	{
-		ShadeModel			= Smooth;
-		FrontFace			= CW;
-		DepthFunc			= LEqual;
-		DepthTestEnable		= true;
-		PolygonMode			= int2( Front, Fill );
-		VertexProgram		= compile arbvp1 SpecularTest( );
-	}	
+		ShadeModel				= Smooth;
+		FrontFace				= CW;
+		DepthFunc				= LEqual;
+		DepthTestEnable			= true;
+		CullFaceEnable			= true;
+		PolygonMode				= int2( Front, Fill );
+		VertexProgram			= compile arbvp1 SpecularTest( );
+	}
+	pass
+	{
+		FrontFace				= CW;
+		DepthTestEnable			= true;
+		CullFaceEnable			= true;
+		PolygonMode				= int2( Front, Line );
+		PolygonOffsetLineEnable	= true;
+		PolygonOffset			= float2( -0.5, -0.5 );
+		LightingEnable			= true;	//	TODO: This is a bodge to get the wireframe rendered black
+	}
 }
 
 technique BlobTechnique
