@@ -14,11 +14,11 @@ namespace RbEngine.Components
 	///		<fooCount value="10"/>
 	/// </object>
 	/// </code>
-	/// The EngineXmlLoader will first create an instance of MyApp.MyClass, name it "foo" (using the INameObject interface).
+	/// The Components.XmlLoader will first create an instance of MyApp.MyClass, name it "foo" (using the INameObject interface).
 	/// When it encounters the child "object" element, it will create an instance of MyApp.TestClass, name it "test", and
 	/// add it to "foo" (using the IParentObject interface). The loader then encounters the "fooCount" element.  It does
 	/// not know how to handle this, so defers to "foo"'s IXmlLoader implementation. If MyApp.MyClass does not implement
-	/// the IXmlLoader interface, an exception will be thrown.
+	/// the IXmlLoader interface, or it's ParseElement() call returns false, an RbXmlException will be thrown.
 	/// </remarks>
 	public interface IXmlLoader
 	{
@@ -27,7 +27,7 @@ namespace RbEngine.Components
 		/// </summary>
 		/// <param name="element"> XmlElement that generated this object </param>
 		/// <returns>Returns true if the parse succeeded, otherwise false (exception thrown by loader)</returns>
-		bool ParseGeneratingElement( System.Xml.XmlElement element );
+		void ParseGeneratingElement( System.Xml.XmlElement element );
 
 		/// <summary>
 		/// Parses a given XML element

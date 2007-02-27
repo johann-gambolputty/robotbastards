@@ -29,20 +29,9 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Sets up this technique
 		/// </summary>
-		/// <param name="name"> Name of this technique </param>
-		/// <param name="pass"> Pass to Add() to this technique </param>
-		public RenderTechnique( string name, RenderPass pass )
-		{
-			m_Name = name;
-			Add( pass );
-		}
-
-		/// <summary>
-		/// Sets up this technique
-		/// </summary>
-		/// <param name="name"> Name of this technique </param>
-		/// <param name="passes"> Array of passes to Add() to the technique </param>
-		public RenderTechnique( string name, RenderPass[] passes )
+		/// <param name="name">Name of this technique</param>
+		/// <param name="passes">Parameter array of passes to Add() to the technique</param>
+		public RenderTechnique( string name, params RenderPass[] passes )
 		{
 			m_Name = name;
 
@@ -78,7 +67,29 @@ namespace RbEngine.Rendering
 
 		#endregion
 
+		#region	Overriding technique
+
+		/// <summary>
+		/// The override technique
+		/// </summary>
+		public static RenderTechnique	Override
+		{
+			get
+			{
+				return ms_Override;
+			}
+			set
+			{
+				ms_Override = value;
+			}
+		}
+
+		private static RenderTechnique	ms_Override;
+
+		#endregion
+
 		#region	Application
+
 
 		/// <summary>
 		/// The delegate type used by the Apply() method. It is used to render geometry between passes
@@ -91,22 +102,46 @@ namespace RbEngine.Rendering
 		/// <param name="render"></param>
 		public void Apply( RenderDelegate render )
 		{
-			Begin( );
-
-			foreach ( RenderPass pass in m_Passes )
+			RenderTechnique techniqueToApply = this;
+			if ( ms_Override != null )
 			{
-				pass.Begin( );
-				render( );
-				pass.End( );
+				//	TODO: Cache detected override alternative
+				techniqueToApply = ( Effect != null ) ? Effect.FindTechnique( ms_Override.Name ) : null;
+
+				if ( techniqueToApply == null )
+				{
+					techniqueToApply = ms_Override;
+				}
 			}
 
-			End( );
+			techniqueToApply.Begin( );
+
+			RenderTechnique	currentOverride	= Override;
+
+			foreach ( RenderPass pass in techniqueToApply.m_Passes )
+			{
+				pass.Begin( );
+
+				//	If the current pass has set an override technique, then make sure it's disabled at the end of the pass
+				bool disableOverride = ( ms_Override != currentOverride );
+
+				render( );
+				pass.End( );
+
+				//	Disable the current technique override
+				if ( disableOverride )
+				{
+					Override = null;
+				}
+			}
+
+			techniqueToApply.End( );
 		}
 
 		/// <summary>
 		/// Called by Apply() before any passes are applied
 		/// </summary>
-		public virtual void Begin( )
+		protected virtual void Begin( )
 		{
 			if ( m_Effect != null )
 			{
@@ -117,7 +152,7 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Called by Apply() after all passes are applied
 		/// </summary>
-		public virtual void End( )
+		protected virtual void End( )
 		{
 		}
 

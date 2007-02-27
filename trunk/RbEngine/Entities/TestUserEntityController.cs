@@ -59,7 +59,7 @@ namespace RbEngine.Entities
 			int screenY = ( ( Interaction.CommandCursorInputBinding.ClientBinding )binding ).Y;
 
 			//	TODO: Bodge (should use active camera's projection setup, + scene query, etc.)
-			Maths.Ray3 pickRay = binding.Client.Camera.PickRay( screenX, screenY );
+			Maths.Ray3 pickRay = ( ( Cameras.Camera3 )binding.Client.Camera ).PickRay( screenX, screenY );
 
 			Maths.Ray3Intersection intersection = Scene.ClosestRay3IntersectionQuery.Get( pickRay, binding.Client.Scene.Objects );
 			if ( intersection == null )

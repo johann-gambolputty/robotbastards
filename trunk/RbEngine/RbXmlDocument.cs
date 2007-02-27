@@ -114,11 +114,15 @@ namespace RbEngine
 	/// Extends XmlDocument to provide line information in created nodes (well, elements only, at the moment)
 	/// </summary>
 	/// <remarks>
-	/// Line information is available in XPathDocument and XmlReader, but not in XmlDocument. Nodes created by this
-	/// document implement the IXmlLineInfo interface that provide this information.
+	/// Line information is available in XPathDocument and XmlTextReader, but not in XmlDocument (because
+	/// documents can be created programatically, or by non-IXmlLineInfo supporting readers).
+	/// RbXmlDocument does some crappy tracking of line numbers and columns, creating nodes that implement
+	/// the IXmlLineInfo interface.
 	/// <note>
 	/// Forces preservation of whitespace (it's the only way to track the current line)
 	/// </note>
+	/// RbXmlException can be thrown along with an XmlNode created by this class, to generate an XmlException with
+	/// the appropriate location data in it.
 	/// </remarks>
 	public class RbXmlDocument : XmlDocument
 	{
@@ -145,6 +149,32 @@ namespace RbEngine
 		/// <returns>Returns a new XmlWhitespace object</returns>
 		public override XmlWhitespace CreateWhitespace( string text )
 		{
+			CheckTextForWhitespace( text );
+			return base.CreateWhitespace( text );
+		}
+
+		/// <summary>
+		/// Creates a new comment object
+		/// </summary>
+		public override XmlComment CreateComment( string data )
+		{
+			CheckTextForWhitespace( data );
+			return base.CreateComment( data );
+		}
+
+
+		/// <summary>
+		/// Creates a new text object
+		/// </summary>
+		public override XmlText CreateTextNode( string text )
+		{
+			CheckTextForWhitespace( text );
+			return base.CreateTextNode( text );
+		}
+
+
+		private void	CheckTextForWhitespace( string text )
+		{
 			for ( int index = 0; index < text.Length; ++index )
 			{
 				switch ( text[ index ] )
@@ -160,8 +190,8 @@ namespace RbEngine
 						break;
 				}
 			}
-			return base.CreateWhitespace( text );
 		}
+
 
 		private int		m_Line						= 1;
 		private int		m_Column					= 1;

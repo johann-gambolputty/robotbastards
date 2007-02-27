@@ -239,7 +239,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Components\RbXmlLoader.cs"
+                    RelPath = "Components\XmlLoader.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
