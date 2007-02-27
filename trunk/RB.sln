@@ -19,6 +19,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RbCollada", "RbCollada\RbCo
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RbParticleSystem", "RbParticleSystem\RbParticleSystem.vcproj", "{C85D4BF1-9D94-4289-96AE-EADD11C41A32}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -56,6 +60,12 @@ Global
 		{9DF0911A-E008-44FA-B7E2-58D2064543EB}.Documentation.Build.0 = Debug|.NET
 		{9DF0911A-E008-44FA-B7E2-58D2064543EB}.Release.ActiveCfg = Release|.NET
 		{9DF0911A-E008-44FA-B7E2-58D2064543EB}.Release.Build.0 = Release|.NET
+		{C85D4BF1-9D94-4289-96AE-EADD11C41A32}.Debug.ActiveCfg = Debug|Win32
+		{C85D4BF1-9D94-4289-96AE-EADD11C41A32}.Debug.Build.0 = Debug|Win32
+		{C85D4BF1-9D94-4289-96AE-EADD11C41A32}.Documentation.ActiveCfg = Debug|Win32
+		{C85D4BF1-9D94-4289-96AE-EADD11C41A32}.Documentation.Build.0 = Debug|Win32
+		{C85D4BF1-9D94-4289-96AE-EADD11C41A32}.Release.ActiveCfg = Release|Win32
+		{C85D4BF1-9D94-4289-96AE-EADD11C41A32}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

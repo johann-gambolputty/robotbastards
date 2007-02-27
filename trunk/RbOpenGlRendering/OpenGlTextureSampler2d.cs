@@ -24,10 +24,10 @@ namespace RbOpenGlRendering
 
 			switch ( Mode )
 			{
-				case TextureMode.kReplace	:	Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_REPLACE	);	break;
-				case TextureMode.kDecal		:	Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_DECAL	);	break;
-				case TextureMode.kBlend		:	Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_BLEND	);	break;
-				case TextureMode.kModulate	:	Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_MODULATE	);	break;
+				case TextureMode.Replace	:	Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_REPLACE	);	break;
+				case TextureMode.Decal		:	Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_DECAL	);	break;
+				case TextureMode.Blend		:	Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_BLEND	);	break;
+				case TextureMode.Modulate	:	Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_MODULATE	);	break;
 			}
 		}
 		
@@ -35,8 +35,8 @@ namespace RbOpenGlRendering
 		{
 			switch ( wrap )
 			{
-				case TextureWrap.kRepeat	:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, dir, Gl.GL_REPEAT );	break;
-				case TextureWrap.kClamp		:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, dir, Gl.GL_CLAMP );	break;
+				case TextureWrap.Repeat		:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, dir, Gl.GL_REPEAT );	break;
+				case TextureWrap.Clamp		:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, dir, Gl.GL_CLAMP );	break;
 			}
 		}
 
@@ -44,12 +44,12 @@ namespace RbOpenGlRendering
 		{
 			switch ( filter )
 			{
-				case TextureFilter.kNearestTexel				:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_NEAREST					);	break;
-				case TextureFilter.kLinearTexel					:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_LINEAR					);	break;
-				case TextureFilter.kNearestTexelNearestMipMap	:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_NEAREST_MIPMAP_NEAREST	);	break;
-				case TextureFilter.kLinearTexelNearestMipMap	:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_LINEAR_MIPMAP_NEAREST	);	break;
-				case TextureFilter.kNearestTexelLinearMipMap	:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_NEAREST_MIPMAP_LINEAR	);	break;
-				case TextureFilter.kLinearTexelLinearMipMap		:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_LINEAR_MIPMAP_LINEAR	);	break;
+				case TextureFilter.NearestTexel					:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_NEAREST					);	break;
+				case TextureFilter.LinearTexel					:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_LINEAR					);	break;
+				case TextureFilter.NearestTexelNearestMipMap	:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_NEAREST_MIPMAP_NEAREST	);	break;
+				case TextureFilter.LinearTexelNearestMipMap		:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_LINEAR_MIPMAP_NEAREST	);	break;
+				case TextureFilter.NearestTexelLinearMipMap		:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_NEAREST_MIPMAP_LINEAR	);	break;
+				case TextureFilter.LinearTexelLinearMipMap		:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_LINEAR_MIPMAP_LINEAR	);	break;
 			}
 		}
 

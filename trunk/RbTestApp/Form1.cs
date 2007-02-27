@@ -21,6 +21,10 @@ namespace RbTestApp
 
 		public Form1()
 		{
+			RbParticleSystem.ParticleSystem testSystem = new RbParticleSystem.ParticleSystem( );
+
+			testSystem.AddUpdater( new RbParticleSystem.ParticleSystemUpdater( ) );
+
 			//	Test to force initialisation of the typemanager
 			RbEngine.Components.MessageTypeManager.Inst.ToString( );
 
@@ -49,7 +53,6 @@ namespace RbTestApp
 			// Required for Windows Form Designer support
 			//
 			InitializeComponent();
-
 		}
 
 		private RbEngine.Network.ServerBase			m_Server;

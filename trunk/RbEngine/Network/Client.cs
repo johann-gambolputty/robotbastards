@@ -134,6 +134,8 @@ namespace RbEngine.Network
 		// TODO: REMOVEME
 		public RbEngine.Cameras.SphereCamera Camera { get { return m_Camera; } }
 
+		private long m_LastRenderTime = TinyTime.CurrentTime;
+
 		/// <summary>
 		/// Renders the scene
 		/// </summary>
@@ -167,9 +169,34 @@ namespace RbEngine.Network
 				( ( Rendering.IRender )m_CameraController ).Render( );
 			}
 
-			ShapeRenderer.Inst.DrawText( 0, 0, "badgers" );
+			ShowFps( );
 		}
 
+		private void		ShowFps( )
+		{
+			if ( m_Font == null )
+			{
+				m_Font = RenderFactory.Inst.NewFont( ).Setup( new System.Drawing.Font( "courier", 14 ) );
+			}
+
+			long curTime = TinyTime.CurrentTime;
+			float fps = 1.0f / ( float )TinyTime.ToSeconds( m_LastRenderTime, curTime );
+			m_Fps[ m_FpsIndex++ ] = fps;
+			m_FpsIndex = m_FpsIndex % m_Fps.Length;
+
+			float avgFps = 0;
+			for ( int fpsIndex = 0; fpsIndex < m_Fps.Length; ++fpsIndex )
+			{
+				avgFps += m_Fps[ fpsIndex ];
+			}
+			avgFps /= ( float )m_Fps.Length;
+			m_Font.DrawText( 0, 0, System.Drawing.Color.White, "FPS: {0}", avgFps.ToString( "G4" ) );
+			m_LastRenderTime = curTime;
+		}
+
+		private int			m_FpsIndex = 0;
+		private float[]		m_Fps = new float[ 32 ];
+		private RenderFont	m_Font;
 		//
 		//	Shadow render technique
 		//

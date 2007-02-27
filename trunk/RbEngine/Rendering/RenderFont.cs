@@ -83,6 +83,7 @@ namespace RbEngine.Rendering
 			chars.Add( 'a', 'z' );
 			chars.Add( 'A', 'Z' );
 			chars.Add( '0', '9' );
+			chars.Add( "_.:,'!?£$%^&*()[]{}|~#/" );
 
 			return Setup( font, chars );
 		}
@@ -97,15 +98,15 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Draws formatted text using this font, at a given position
 		/// </summary>
-		public void						DrawText( int x, int y, string str, params object[] formatArgs )
+		public void						DrawText( int x, int y, System.Drawing.Color colour, string str, params object[] formatArgs )
 		{
-			DrawText( x, y, string.Format( str, formatArgs ) );
+			DrawText( x, y, colour, string.Format( str, formatArgs ) );
 		}
 
 		/// <summary>
 		/// Draws text using this font, at a given position
 		/// </summary>
-		public abstract void			DrawText( int x, int y, string str );
+		public abstract void			DrawText( int x, int y, System.Drawing.Color colour, string str );
 
 	}
 }
