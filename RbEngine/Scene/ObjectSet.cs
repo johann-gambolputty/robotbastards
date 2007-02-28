@@ -11,7 +11,7 @@ namespace RbEngine.Scene
 	/// set. Classes that implement ObjectSet are usually set up to optimise one or more of these query types. For example, a spatially
 	/// organised ObjectSet would optimise spatial queries (those derived from SpatialQuery).
 	/// </remarks>
-	public abstract class ObjectSet
+	public abstract class ObjectSet : System.Collections.ICollection
 	{
 		#region	Set building
 
@@ -109,6 +109,52 @@ namespace RbEngine.Scene
 		/// <param name="select">Set object selection criteria</param>
 		/// <returns>First object that passes select</returns>
 		public abstract Object			SelectFirst( Query select );
+
+		#endregion
+
+		#region ICollection Members
+
+		public bool IsSynchronized
+		{
+			get
+			{
+				// TODO:  Add ObjectSet.IsSynchronized getter implementation
+				return false;
+			}
+		}
+
+		public int Count
+		{
+			get
+			{
+				// TODO:  Add ObjectSet.Count getter implementation
+				return 0;
+			}
+		}
+
+		public void CopyTo(Array array, int index)
+		{
+			// TODO:  Add ObjectSet.CopyTo implementation
+		}
+
+		public object SyncRoot
+		{
+			get
+			{
+				// TODO:  Add ObjectSet.SyncRoot getter implementation
+				return null;
+			}
+		}
+
+		#endregion
+
+		#region IEnumerable Members
+
+		public System.Collections.IEnumerator GetEnumerator()
+		{
+			// TODO:  Add ObjectSet.GetEnumerator implementation
+			return null;
+		}
 
 		#endregion
 	}

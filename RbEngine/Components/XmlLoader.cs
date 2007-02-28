@@ -352,7 +352,7 @@ namespace RbEngine.Components
 			/// <summary>
 			/// Loads child nodes from the generating element
 			/// </summary>
-			protected void LoadChildNodes( XmlElement element, Order order )
+			protected void			LoadChildNodes( XmlElement element, Order order )
 			{
 				//	Add child nodes
 				foreach ( XmlNode curNode in element.ChildNodes )
@@ -402,7 +402,7 @@ namespace RbEngine.Components
 			/// <summary>
 			/// Adds an object to a given list. If the list is null, it's created
 			/// </summary>
-			private void			AddObjectToList( ref ArrayList objectList, Object objectToAdd )
+			private void				AddObjectToList( ref ArrayList objectList, Object objectToAdd )
 			{
 				if ( objectList == null )
 				{
@@ -539,6 +539,19 @@ namespace RbEngine.Components
 			string m_ModelSetName;
 		}
 
+		/*
+		/// <summary>
+		/// Extends BaseLoader to set up an existing valid property in the loaded object
+		/// </summary>
+		private class ExistingPropertyLoader : BaseLoader
+		{
+			public ExistingPropertyLoader( XmlElement element ) :
+				base( element )
+			{
+			}
+		}
+		*/
+
 		/// <summary>
 		/// Extends BaseLoader to load a given object type
 		/// </summary>
@@ -575,8 +588,14 @@ namespace RbEngine.Components
 			}
 		}
 
+		/// <summary>
+		/// Loads a particular value
+		/// </summary>
 		private class ValueLoader : BaseLoader
 		{
+			/// <summary>
+			/// Constructor
+			/// </summary>
 			public ValueLoader( XmlElement element, Object val ) :
 				base( element )
 			{

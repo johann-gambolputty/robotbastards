@@ -3,21 +3,26 @@ using System.Collections;
 
 namespace RbEngine.Scene
 {
+
+	//	TODO: This should store weak references to the scene objects
+
 	/// <summary>
 	/// Handles rendering for a scene
 	/// </summary>
 	public class RenderManager
 	{
-
 		/// <summary>
 		/// Attaches this manager to a scene
 		/// </summary>
 		/// <param name="db">Scene to attach to</param>
 		public RenderManager( SceneDb db )
 		{
+			m_Scene = db;
 			m_AddObjectGraphToRenderer = new Components.ChildVisitorDelegate( AddObjectGraphToRenderer );
-			db.ObjectAdded += new SceneDb.ObjectAddedDelegate( OnObjectAddedToScene );
+			db.ObjectAddedToScene += new Components.ChildAddedDelegate( OnObjectAddedToScene );
 
+			//	Add existing scene objects to the renderer
+			db.Objects.Visit( m_AddObjectGraphToRenderer );
 		}
 
 		/// <summary>
@@ -42,7 +47,7 @@ namespace RbEngine.Scene
 		/// <summary>
 		/// If the specified object, or any of its child objects implement the Scene.ISceneRenderable interface, they get added to this manager
 		/// </summary>
-		private void OnObjectAddedToScene( SceneDb scene, Object obj )
+		private void OnObjectAddedToScene( Object scene, Object obj )
 		{
 			AddObjectGraphToRenderer( obj );
 		}
@@ -70,6 +75,7 @@ namespace RbEngine.Scene
 			return true;
 		}
 
+		private SceneDb							m_Scene;
 		private ArrayList						m_SceneRenderables = new ArrayList( );
 		private ArrayList						m_Renderables = new ArrayList( );
 		private Components.ChildVisitorDelegate	m_AddObjectGraphToRenderer;

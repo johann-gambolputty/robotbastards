@@ -3,9 +3,9 @@ using System;
 namespace RbEngine.Scene
 {
 	/// <summary>
-	/// Summary description for ISceneEvents.
+	/// Interface for objects that know about the scene that they have been added to
 	/// </summary>
-	public interface ISceneEvents
+	public interface ISceneObject
 	{
 		/// <summary>
 		/// Invoked when this object is added to a scene by SceneDb.Remove()

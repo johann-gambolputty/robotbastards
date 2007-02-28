@@ -188,6 +188,27 @@ namespace RbEngine.Components
 		#region IParentObject Members
 
 		/// <summary>
+		/// Event, invoked by AddChild() after a child object has been added
+		/// </summary>
+		public event ChildAddedDelegate		ChildAdded;
+
+		/// <summary>
+		/// Event, invoked by AddChild() before a child object has been removed
+		/// </summary>
+		public event ChildRemovedDelegate	ChildRemoved;
+
+		/// <summary>
+		/// Gets the child collection
+		/// </summary>
+		public ICollection					Children
+		{
+			get
+			{
+				return m_Children;
+			}
+		}
+
+		/// <summary>
 		/// Adds a child model set to this model set
 		/// </summary>
 		/// <param name="childModelSet">Child model set</param>
@@ -214,6 +235,32 @@ namespace RbEngine.Components
 			else
 			{
 				m_Children.Add( childObject );
+			}
+
+			if ( ChildAdded != null )
+			{
+				ChildAdded( this, childObject );
+			}
+		}
+
+		/// <summary>
+		/// Removes a child object from the model set
+		/// </summary>
+		/// <param name="childObject"> Object to remove </param>
+		public void RemoveChild( Object childObject )
+		{
+			if ( childObject is ModelSet )
+			{
+				m_ChildModelSets.Remove( childObject );
+			}
+			else
+			{
+				m_Children.Remove( childObject );
+			}
+
+			if ( ChildRemoved != null )
+			{
+				ChildRemoved( this, childObject );
 			}
 		}
 

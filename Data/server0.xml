@@ -9,6 +9,10 @@
 
 	<object type="RbEngine.Network.Server" name="server0">
 	    <object type="RbEngine.Scene.SceneDb" property="Scene">
+	    
+			<object type="RbEngine.Components.Component" property="Systems">
+				<object type="RbEngine.Scene.LightingManager"/>
+			</object>
 
 			<!-- Scene clocks -->
 			<!-- TODO: This should be a default clock, because it's referenced directly in the controller and command update code -->
@@ -34,6 +38,9 @@
 				<object type="RbEngine.Entities.TestUserEntityController">
 				</object>
 
+			</object>
+			
+			<object type="RbEngine.Rendering.PointLight">
 			</object>
 
 			<object type="RbEngine.Rendering.EffectRenderedObject">
