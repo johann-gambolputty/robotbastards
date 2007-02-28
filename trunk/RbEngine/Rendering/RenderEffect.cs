@@ -103,12 +103,50 @@ namespace RbEngine.Rendering
 		#region IParentObject Members
 
 		/// <summary>
+		/// Event, invoked by AddChild() after a child object has been added
+		/// </summary>
+		public event Components.ChildAddedDelegate		ChildAdded;
+
+		/// <summary>
+		/// Event, invoked by AddChild() before a child object has been removed
+		/// </summary>
+		public event Components.ChildRemovedDelegate	ChildRemoved;
+
+		/// <summary>
+		/// Gets the child technique collection
+		/// </summary>
+		public ICollection	Children
+		{
+			get
+			{
+				return m_Techniques;
+			}
+		}
+
+		/// <summary>
 		/// Adds a child object, but only if it's of type RenderTechnique
 		/// </summary>
 		/// <param name="childObject"> Child render technique</param>
-		public void AddChild(Object childObject )
+		public void AddChild( Object childObject )
 		{
 			Add( ( RenderTechnique )childObject );
+			if ( ChildAdded != null )
+			{
+				ChildAdded( this, childObject );
+			}
+		}
+
+		/// <summary>
+		/// Removes a child object, but only if it's of type RenderTechnique
+		/// </summary>
+		/// <param name="childObject"> Child render technique</param>
+		public void RemoveChild( Object childObject )
+		{
+			m_Techniques.Remove( childObject );
+			if ( ChildRemoved != null )
+			{
+				ChildRemoved( this, childObject );
+			}
 		}
 
 		/// <summary>

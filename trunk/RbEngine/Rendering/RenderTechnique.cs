@@ -6,7 +6,7 @@ namespace RbEngine.Rendering
 	/// <summary>
 	/// Stores a collection of RenderPass objects. For each pass, the technique applies it, then renders geometry using a callback
 	/// </summary>
-	public class RenderTechnique : Components.INamedObject, Components.IParentObject
+	public class RenderTechnique : Components.Node, Components.INamedObject
 	{
 		#region	Setup
 
@@ -47,7 +47,7 @@ namespace RbEngine.Rendering
 		/// <param name="pass"> The pass to add </param>
 		public void Add( RenderPass pass )
 		{
-			m_Passes.Add( pass );
+			AddChild( pass );
 		}
 
 		/// <summary>
@@ -90,7 +90,6 @@ namespace RbEngine.Rendering
 
 		#region	Application
 
-
 		/// <summary>
 		/// The delegate type used by the Apply() method. It is used to render geometry between passes
 		/// </summary>
@@ -118,7 +117,7 @@ namespace RbEngine.Rendering
 
 			RenderTechnique	currentOverride	= Override;
 
-			foreach ( RenderPass pass in techniqueToApply.m_Passes )
+			foreach ( RenderPass pass in techniqueToApply.Children )
 			{
 				pass.Begin( );
 
@@ -192,24 +191,9 @@ namespace RbEngine.Rendering
 		/// Adds a child object, but only if it's of type RenderPass
 		/// </summary>
 		/// <param name="childObject"> Child render pass</param>
-		public void AddChild(Object childObject)
+		public override void AddChild( Object childObject )
 		{
-			Add( ( RenderPass )childObject );
-		}
-
-		/// <summary>
-		/// Visits all passes, calling visitor() for each
-		/// </summary>
-		/// <param name="visitor">Visitor function</param>
-		public void VisitChildren( Components.ChildVisitorDelegate visitor )
-		{
-			for ( int childIndex = 0; childIndex < m_Passes.Count; ++childIndex )
-			{
-				if ( !visitor( m_Passes[ childIndex ] ) )
-				{
-					return;
-				}
-			}
+			base.AddChild( ( RenderPass )childObject );
 		}
 
 		#endregion
@@ -218,7 +202,6 @@ namespace RbEngine.Rendering
 
 		private RenderEffect	m_Effect;
 		private string			m_Name;
-		private ArrayList		m_Passes = new ArrayList( );
 
 		#endregion
 

@@ -81,6 +81,53 @@ namespace RbEngine.Rendering
 
 		#endregion
 
+		#region	Lighting
+
+		/// <summary>
+		/// Clears the light array. This is done every frame
+		/// </summary>
+		public void			ClearLights( )
+		{
+			m_NumLights = 0;
+		}
+
+		/// <summary>
+		/// Adds a light
+		/// </summary>
+		public virtual int	AddLight( Light light )
+		{
+			int index = m_NumLights++;
+			m_Lights[ index ] = light;
+			return index;
+		}
+
+		/// <summary>
+		/// Gets an indexed light
+		/// </summary>
+		public Light		GetLight( int index )
+		{
+			return m_Lights[ index ];
+		}
+
+		/// <summary>
+		/// Returns the number of active lights that have been added since the last 
+		/// </summary>
+		public int			NumActiveLights
+		{
+			get
+			{
+				return m_NumLights;
+			}
+		}
+
+		/// <summary>
+		/// The maximum number of lights supported
+		/// </summary>
+		public const int	MaxActiveLights = 8;
+
+
+		#endregion
+
 		#region	Standard operations
 
 		/// <summary>
@@ -97,6 +144,21 @@ namespace RbEngine.Rendering
 			{
 				return m_Control;
 			}
+		}
+
+		/// <summary>
+		/// Should be called at the beginning of each frame
+		/// </summary>
+		public virtual void		Begin( )
+		{
+			ClearLights( );
+		}
+
+		/// <summary>
+		/// Should be called at the end of each frame
+		/// </summary>
+		public virtual void		End( )
+		{
 		}
 
 		/// <summary>
@@ -279,6 +341,8 @@ namespace RbEngine.Rendering
 		private ArrayList			m_RenderStates	= new ArrayList( );
 		private Control				m_Control;
 		private Cameras.CameraBase	m_Camera;
+		private Light[]				m_Lights = new Light[ MaxActiveLights ];
+		private int					m_NumLights;
 
 		#endregion
 

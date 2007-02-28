@@ -239,6 +239,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Components\Node.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Components\XmlLoader.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -499,7 +504,22 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Rendering\Light.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Rendering\LightingGroup.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Rendering\Material.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Rendering\PointLight.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -629,12 +649,17 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Scene\ISceneEvents.cs"
+                    RelPath = "Scene\ISceneObject.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Scene\ISceneRenderable.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\LightingManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

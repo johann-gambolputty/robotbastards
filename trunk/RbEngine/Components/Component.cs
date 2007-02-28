@@ -56,9 +56,9 @@ namespace RbEngine.Components
 	//	</object>
 
 	/// <summary>
-	/// Handy base class that implements IInstanceable, IParentObject, IMessageHandler and INamedObject (TODO)
+	/// Handy base class that derives from Node, and implements IInstanceable, IMessageHandler and INamedObject (TODO)
 	/// </summary>
-	public class Component : IInstanceable, IParentObject, IChildObject, IMessageHandler
+	public class Component : Node, IInstanceable, IMessageHandler
 	{
 		#region	Messaging
 
@@ -143,60 +143,7 @@ namespace RbEngine.Components
 
 		#endregion
 
-		#region	IChildObject Members
-
-		/// <summary>
-		/// Called when this component is added to a parent object
-		/// </summary>
-		/// <param name="parentObject">Parent object</param>
-		public void			AddedToParent( Object obj )
-		{
-			m_Parent = obj;
-		}
-
-		/// <summary>
-		/// Access to the parent object
-		/// </summary>
-		public Object		Parent
-		{
-			get
-			{
-				return m_Parent;
-			}
-		}
-
-		#endregion
-
-		#region	IParentObject Members
-
-		/// <summary>
-		/// Adds a child to the child object list
-		/// </summary>
-		/// <param name="childObject"> Child object </param>
-		public void			AddChild( Object childObject )
-		{
-			m_Children.Add( childObject );
-
-			if ( childObject is IChildObject )
-			{
-				( ( IChildObject )childObject ).AddedToParent( this );
-			}
-		}
-
-		/// <summary>
-		/// Visits all children, calling visitor() for each
-		/// </summary>
-		/// <param name="visitor">Visitor function</param>
-		public void VisitChildren( ChildVisitorDelegate visitor )
-		{
-			for ( int childIndex = 0; childIndex < m_Children.Count; ++childIndex )
-			{
-				if ( !visitor( m_Children[ childIndex ] ) )
-				{
-					return;
-				}
-			}
-		}
+		#region	Child list
 
 		/// <summary>
 		/// Gets a child that is derived from, or implements, a given type
@@ -262,8 +209,6 @@ namespace RbEngine.Components
 			}
 		}
 
-		private Object							m_Parent			= null;
-		private System.Collections.Hashtable	m_RecipientChains	= null;
-		private ArrayList						m_Children			= new ArrayList( );
+		private System.Collections.Hashtable m_RecipientChains = null;
 	}
 }

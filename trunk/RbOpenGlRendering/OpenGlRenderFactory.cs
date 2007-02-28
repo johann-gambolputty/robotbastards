@@ -44,11 +44,10 @@ namespace RbOpenGlRendering
 		/// <summary>
 		/// Creates a new RenderFont object
 		/// </summary>
-		public override RenderFont NewFont()
+		public override RenderFont			NewFont( )
 		{
 			return new OpenGlRenderFont( );
 		}
-
 
 		/// <summary>
 		/// Creates a new Renderer object

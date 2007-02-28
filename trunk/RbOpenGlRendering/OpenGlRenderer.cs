@@ -51,6 +51,10 @@ namespace RbOpenGlRendering
 
 		#endregion
 
+		#region	Lighting
+
+		#endregion
+
 		#region	Standard operations
 
 		/// <summary>

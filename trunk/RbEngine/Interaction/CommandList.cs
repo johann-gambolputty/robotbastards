@@ -6,8 +6,27 @@ namespace RbEngine.Interaction
 	/// <summary>
 	/// A list of commands
 	/// </summary>
-	public class CommandList : Components.IParentObject
+	public class CommandList : Components.Node
 	{
+
+		/// <summary>
+		/// Setup
+		/// </summary>
+		public CommandList( )
+		{
+			m_Children = new ArrayList( );
+		}
+
+		/// <summary>
+		/// Access the command list (synonym for Components.Node.Children)
+		/// </summary>
+		public ArrayList	Commands
+		{
+			get
+			{
+				return m_Children;
+			}
+		}
 
 		/// <summary>
 		/// Binds all commands to the specified client
@@ -15,7 +34,7 @@ namespace RbEngine.Interaction
 		/// <param name="client">Client to bind to</param>
 		public void	BindToClient( Network.Client client )
 		{
-			foreach ( Command curCommand in m_Commands )
+			foreach ( Command curCommand in Commands )
 			{
 				curCommand.BindToClient( client );
 			}
@@ -27,7 +46,7 @@ namespace RbEngine.Interaction
 		/// <param name="cmd">Command to add</param>
 		public void AddCommand( Command cmd )
 		{
-			m_Commands.Add( cmd );
+			Commands.Add( cmd );
 		}
 
 		/// <summary>
@@ -36,42 +55,10 @@ namespace RbEngine.Interaction
 		/// <param name="commandTarget">Target to send command messages to</param>
 		public void	Update( Components.IMessageHandler commandTarget )
 		{
-			foreach ( Command curCommand in m_Commands )
+			foreach ( Command curCommand in Commands )
 			{
 				curCommand.Update( commandTarget );
 			}
 		}
-
-
-		#region IParentObject Members
-
-		/// <summary>
-		/// Adds the child to this command list
-		/// </summary>
-		/// <param name="childObject">Child object. Must be of type Command</param>
-		public void AddChild( Object childObject )
-		{
-			AddCommand( ( Command )childObject );
-		}
-
-		/// <summary>
-		/// Visits all commands in this command list
-		/// </summary>
-		/// <param name="visitor">Visitor delegate</param>
-		public void VisitChildren( RbEngine.Components.ChildVisitorDelegate visitor )
-		{
-			foreach ( Command curCommand in m_Commands )
-			{
-				if ( !visitor( curCommand ) )
-				{
-					return;
-				}
-			}
-		}
-
-		#endregion
-
-
-		private ArrayList m_Commands = new ArrayList( );
 	}
 }

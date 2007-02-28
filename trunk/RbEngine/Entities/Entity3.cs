@@ -27,7 +27,7 @@ namespace RbEngine.Entities
 	/// <summary>
 	/// An entity is any object that can be controlled and rendered. Entity3 represents an entity in 3 dimensional space
 	/// </summary>
-	public class Entity3 : Entity, Scene.ISceneRenderable, Scene.ISceneEvents
+	public class Entity3 : Entity, Scene.ISceneRenderable, Scene.ISceneObject
 	{
 		#region Entity frame
 
@@ -230,7 +230,7 @@ namespace RbEngine.Entities
 			m_Position.Step( updateClock.CurrentTickTime );
 		}
 
-		#region ISceneEvents Members
+		#region ISceneObject Members
 
 		/// <summary>
 		/// Called when this entity is added to a scene
