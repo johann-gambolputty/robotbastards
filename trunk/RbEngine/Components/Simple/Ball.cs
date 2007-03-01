@@ -1,11 +1,12 @@
 using System;
+using System.Collections;
 using RbEngine.Maths;
 using RbEngine.Rendering;
 
 namespace RbEngine.Components.Simple
 {
 	/// <summary>
-	/// A ball. Just for testing really (which is why it implements IRender (using the ShapeRenderer singleton and bodgy render states),
+	/// A ball. Just for testing really (which is why it implements Scene.ISceneRenderable (using the ShapeRenderer singleton and bodgy render states),
 	/// instead of deferring to a composite)
 	/// </summary>
 	public class Ball : Component, Maths.IRay3Intersector, IXmlLoader, Scene.ISceneRenderable
@@ -93,10 +94,22 @@ namespace RbEngine.Components.Simple
 		#region ISceneRenderable Members
 
 		/// <summary>
+		/// Rendering.IApplicable objects to apply before rendering
+		/// </summary>
+		public ApplianceList	PreRenderList
+		{
+			get
+			{
+				return m_PreRenders;
+			}
+		}
+
+		/// <summary>
 		/// Renders this object
 		/// </summary>
 		public void Render( long renderTime )
 		{
+			m_PreRenders.Apply( );
 			Renderer.Inst.PushRenderState( m_LineState );
 			ShapeRenderer.Inst.DrawSphere( m_Sphere.Centre, m_Sphere.Radius );
 			m_FilledState.Apply( );
@@ -106,7 +119,8 @@ namespace RbEngine.Components.Simple
 
 		#endregion
 
-		private Maths.Sphere3	m_Sphere	= new Sphere3( new Point3( ), 10.0f );
+		private ApplianceList	m_PreRenders	= new ApplianceList( );
+		private Maths.Sphere3	m_Sphere		= new Sphere3( new Point3( ), 10.0f );
 		private RenderState		m_LineState;
 		private RenderState		m_FilledState;
 	}

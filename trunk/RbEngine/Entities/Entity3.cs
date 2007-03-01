@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using RbEngine.Maths;
+using RbEngine.Rendering;
 
 namespace RbEngine.Entities
 {
@@ -23,6 +25,8 @@ namespace RbEngine.Entities
 	 * Setup should probably specify: Chain, Handlers, Commiter
 	 *
 	*/
+
+	//	TODO: Entities should not be renderable - they should have child nodes that handle all the rendering shit
 
 	/// <summary>
 	/// An entity is any object that can be controlled and rendered. Entity3 represents an entity in 3 dimensional space
@@ -125,11 +129,12 @@ namespace RbEngine.Entities
 
 		#region	Private stuff
 
-		private Maths.Point3Interpolator	m_Position	= new Maths.Point3Interpolator( );
-		private Vector3						m_XAxis		= Vector3.XAxis;
-		private Vector3						m_YAxis		= Vector3.YAxis;
-		private Vector3						m_ZAxis		= Vector3.ZAxis;
-		private Rendering.IRender			m_Graphics;
+		private ApplianceList				m_PreRenders	= new ApplianceList( );
+		private Maths.Point3Interpolator	m_Position		= new Maths.Point3Interpolator( );
+		private Vector3						m_XAxis			= Vector3.XAxis;
+		private Vector3						m_YAxis			= Vector3.YAxis;
+		private Vector3						m_ZAxis			= Vector3.ZAxis;
+		private IRender						m_Graphics;
 
 		#endregion
 
@@ -138,7 +143,7 @@ namespace RbEngine.Entities
 		/// <summary>
 		/// Entity graphics
 		/// </summary>
-		public Rendering.IRender	Graphics
+		public IRender	Graphics
 		{
 			get
 			{
@@ -155,10 +160,23 @@ namespace RbEngine.Entities
 		#region ISceneRenderable Members
 
 		/// <summary>
+		/// Gets the pre-render list for this entity
+		/// </summary>
+		public ApplianceList	PreRenderList
+		{
+			get
+			{
+				return m_PreRenders;
+			}
+		}
+
+		/// <summary>
 		/// Renders this entity
 		/// </summary>
 		public void Render( long renderTime )
 		{
+			m_PreRenders.Apply( );
+
 			//	Get the interpolated position of the entity
 			float t = ( float )( renderTime - m_Position.LastStepTime ) / ( float )m_Position.LastStepInterval;
 			Point3 curPos = m_Position.Get( t );
@@ -166,15 +184,15 @@ namespace RbEngine.Entities
 			//	TODO: Get the interpolated rotation of the entity
 
 			//	Push the entity transform
-		//	Rendering.Renderer.Inst.PushTransform( Rendering.Transform.kLocalToView );
-		//	Rendering.Renderer.Inst.Translate( Rendering.Transform.kLocalToView, curPos.X, curPos.Y, curPos.Z );
+		//	Renderer.Inst.PushTransform( Transform.kLocalToView );
+		//	Renderer.Inst.Translate( Transform.kLocalToView, curPos.X, curPos.Y, curPos.Z );
 			Maths.Matrix44 mat = new Maths.Matrix44( );
 			mat.XAxis = Left;
 			mat.YAxis = Up;
 			mat.ZAxis = Facing;
 			mat.Translation = curPos;
 
-			Rendering.Renderer.Inst.PushTransform( Rendering.Transform.LocalToView, mat );
+			Renderer.Inst.PushTransform( Transform.LocalToView, mat );
 
 			//	TODO: Render associated IRender object
 			if ( m_Graphics != null )
@@ -183,11 +201,11 @@ namespace RbEngine.Entities
 			}
 			else
 			{
-				Rendering.ShapeRenderer.Inst.DrawSphere( new Point3( 0, 5, 0 ), 5 );
+				ShapeRenderer.Inst.DrawSphere( new Point3( 0, 5, 0 ), 5 );
 			}
 
 			//	Pop the entity transform
-			Rendering.Renderer.Inst.PopTransform( Rendering.Transform.LocalToView );
+			Renderer.Inst.PopTransform( Transform.LocalToView );
 		}
 
 		#endregion

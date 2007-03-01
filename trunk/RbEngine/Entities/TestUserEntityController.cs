@@ -74,7 +74,7 @@ namespace RbEngine.Entities
 	/// <summary>
 	/// Summary description for TestUserEntityController.
 	/// </summary>
-	public class TestUserEntityController : Components.Component, Scene.ISceneRenderable
+	public class TestUserEntityController : Components.Component, Scene.ISceneRenderable, Scene.ISceneObject
 	{
 
 		/// <summary>
@@ -86,7 +86,7 @@ namespace RbEngine.Entities
 			//	<object type="RbEngine.Entities.TestUserEntityController">
 			//		<reference name="$server" property="CommandMessageSource"/>
 			//	</object>
-			CommandMessageSource = RbEngine.Network.ServerManager.Inst.FindServer( "server0" );
+		//	CommandMessageSource = RbEngine.Network.ServerManager.Inst.FindServer( "server0" );
 		}
 
 		/// <summary>
@@ -146,10 +146,11 @@ namespace RbEngine.Entities
 
 		#region ISceneRenderable Members
 
+		/// <summary>
+		/// Renders this object
+		/// </summary>
 		public void Render( long renderTime )
 		{
-		//	( ( Cameras.ProjectionCamera )Rendering.Renderer.Inst.Camera ).PickRay( 0, 0 );
-
 			Entity3			entity		= ( Entity3 )Parent;
 			Maths.Point3	pos			= entity.Position.Get( renderTime );
 			Maths.Point3	lookAtPos	= m_LookAt.Get( renderTime );
@@ -158,6 +159,25 @@ namespace RbEngine.Entities
 			Rendering.ShapeRenderer.Inst.DrawLine( pos, pos + entity.Left * 3.0f );
 			Rendering.ShapeRenderer.Inst.DrawLine( pos, pos + entity.Up * 3.0f );
 			Rendering.ShapeRenderer.Inst.DrawSphere( lookAtPos, 1.0f );
+		}
+
+		#endregion
+
+		#region ISceneObject Members
+
+		/// <summary>
+		/// Called when this object is added to a scene
+		/// </summary>
+		public void AddedToScene( Scene.SceneDb db )
+		{
+			CommandMessageSource = db.Server;
+		}
+
+		/// <summary>
+		/// Called when this object is removed from a scene
+		/// </summary>
+		public void RemovedFromScene( Scene.SceneDb db )
+		{
 		}
 
 		#endregion

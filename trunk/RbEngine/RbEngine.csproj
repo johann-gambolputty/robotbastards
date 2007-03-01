@@ -474,6 +474,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Rendering\ApplianceList.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Rendering\ClearTargetColour.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

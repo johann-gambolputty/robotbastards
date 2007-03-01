@@ -42,6 +42,10 @@ namespace RbEngine.Network
 			set
 			{
 				m_Scene = value;
+				if ( m_Scene != null )
+				{
+					m_Scene.Server = this;
+				}
 			}
 			get
 			{

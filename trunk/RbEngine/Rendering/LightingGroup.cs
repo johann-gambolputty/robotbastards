@@ -7,6 +7,34 @@ namespace RbEngine.Rendering
 	/// </summary>
 	public class LightingGroup : IApplicable
 	{
+		/// <summary>
+		/// Sets the object that this lighting group is associated with
+		/// </summary>
+		public LightingGroup( Object obj )
+		{
+			m_Object = obj;
+
+			( ( Scene.ISceneRenderable ) ).PreRenderList.Add( this );
+		}
+
+		/// <summary>
+		/// Gets the object that this lighting group is associated with
+		/// </summary>
+		public Object		AssociatedObject
+		{
+			get
+			{
+				return m_Object;
+			}
+		}
+
+		/// <summary>
+		/// Clears all lights from the group
+		/// </summary>
+		public void			ClearLights( )
+		{
+			m_NumLights = 0;
+		}
 
 		/// <summary>
 		/// Adds a light to the group
@@ -59,5 +87,8 @@ namespace RbEngine.Rendering
 		/// Number of lights
 		/// </summary>
 		private int			m_NumLights	= 0;
+		
+		private Object		m_Object;
+
 	}
 }
