@@ -23,6 +23,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RbParticleSystem", "RbParti
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RbOpenGlMd3Loader", "RbOpenGlMd3Loader\RbOpenGlMd3Loader.csproj", "{A618D894-9BAE-41EC-AE85-A4AE3321AAB6}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -66,6 +70,12 @@ Global
 		{C85D4BF1-9D94-4289-96AE-EADD11C41A32}.Documentation.Build.0 = Debug|Win32
 		{C85D4BF1-9D94-4289-96AE-EADD11C41A32}.Release.ActiveCfg = Release|Win32
 		{C85D4BF1-9D94-4289-96AE-EADD11C41A32}.Release.Build.0 = Release|Win32
+		{A618D894-9BAE-41EC-AE85-A4AE3321AAB6}.Debug.ActiveCfg = Debug|.NET
+		{A618D894-9BAE-41EC-AE85-A4AE3321AAB6}.Debug.Build.0 = Debug|.NET
+		{A618D894-9BAE-41EC-AE85-A4AE3321AAB6}.Documentation.ActiveCfg = Debug|.NET
+		{A618D894-9BAE-41EC-AE85-A4AE3321AAB6}.Documentation.Build.0 = Debug|.NET
+		{A618D894-9BAE-41EC-AE85-A4AE3321AAB6}.Release.ActiveCfg = Release|.NET
+		{A618D894-9BAE-41EC-AE85-A4AE3321AAB6}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
