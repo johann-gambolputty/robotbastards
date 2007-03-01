@@ -44,7 +44,10 @@ namespace RbOpenGlRendering.RbCg
 
 		#region	Effect application
 
-		public override void Apply()
+		/// <summary>
+		/// Applies this effect
+		/// </summary>
+		public override void Apply( )
 		{
 			for ( int bindingIndex = 0; bindingIndex < ( int )ShaderParameterBinding.NumBindings; ++bindingIndex )
 			{

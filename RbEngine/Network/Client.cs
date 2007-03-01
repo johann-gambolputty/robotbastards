@@ -113,6 +113,7 @@ namespace RbEngine.Network
 					new ClearTargetDepth( )
 					, new ClearTargetColour( System.Drawing.Color.LightSlateGray )
 					, m_Camera
+				/*
 					, new OverrideTechnique
 					(
 						new RenderTechnique
@@ -124,6 +125,7 @@ namespace RbEngine.Network
 							)
 						)
 					)
+					*/
 				)
 			);
 

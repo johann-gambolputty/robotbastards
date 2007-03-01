@@ -12,10 +12,31 @@ namespace RbEngine.Scene
 	public class RenderManager
 	{
 		/// <summary>
+		/// Delegate used by the PreRender event
+		/// </summary>
+		public delegate void		PreRenderDelegate( RenderManager renderManager );
+
+		/// <summary>
+		/// Called by Render() before anything it rendered
+		/// </summary>
+		public PreRenderDelegate	PreRender;
+
+		/// <summary>
+		/// The array of scene renderables (ISceneRenderable interface implementors)
+		/// </summary>
+		public ArrayList	SceneRenderables
+		{
+			get
+			{
+				return m_SceneRenderables;
+			}
+		}
+
+		/// <summary>
 		/// Attaches this manager to a scene
 		/// </summary>
 		/// <param name="db">Scene to attach to</param>
-		public RenderManager( SceneDb db )
+		public						RenderManager( SceneDb db )
 		{
 			m_Scene = db;
 			m_AddObjectGraphToRenderer = new Components.ChildVisitorDelegate( AddObjectGraphToRenderer );
@@ -28,8 +49,13 @@ namespace RbEngine.Scene
 		/// <summary>
 		/// Renders all the stored objects
 		/// </summary>
-		public void Render( )
+		public void					Render( )
 		{
+			if ( PreRender != null )
+			{
+				PreRender( this );
+			}
+
 			long curTime = TinyTime.CurrentTime;
 			foreach ( Scene.ISceneRenderable renderable in m_SceneRenderables )
 			{

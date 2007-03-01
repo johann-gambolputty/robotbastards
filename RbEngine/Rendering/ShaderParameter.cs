@@ -52,7 +52,22 @@ namespace RbEngine.Rendering
 		/// Parameter bound to current eye z axis (world space)
 		/// </summary>
 		EyeZAxis,
-		
+
+		/// <summary>
+		/// Position of the first light to affect the rendered object
+		/// </summary>
+		LightPos0,
+
+		/// <summary>
+		/// Position of the second light to affect the rendered object
+		/// </summary>
+		LightPos1,
+
+		/// <summary>
+		/// Position of the third light to affect the rendered object
+		/// </summary>
+		LightPos2,
+
 		/// <summary>
 		/// Total number of bindings
 		/// </summary>

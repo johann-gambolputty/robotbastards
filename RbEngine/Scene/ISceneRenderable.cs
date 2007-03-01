@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 
 namespace RbEngine.Scene
 {
@@ -7,6 +8,14 @@ namespace RbEngine.Scene
 	/// </summary>
 	public interface ISceneRenderable
 	{
+		/// <summary>
+		/// The list of IApplicable objects that must be applied at the beginning of Render()
+		/// </summary>
+		Rendering.ApplianceList PreRenderList
+		{
+			get;
+		}
+
 		/// <summary>
 		/// Renders the object
 		/// </summary>
