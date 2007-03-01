@@ -59,7 +59,7 @@ namespace RbEngine.Cameras
 			}
 			set
 			{
-				m_S = Maths.Utils.Wrap( value, 0, Maths.Constants.kTwoPi );
+				m_S = Maths.Utils.Wrap( value, 0, Maths.Constants.TwoPi );
 				UpdateCameraFrame( );
 			}
 		}
@@ -75,7 +75,7 @@ namespace RbEngine.Cameras
 			}
 			set
 			{
-				m_T = Maths.Utils.Clamp( value, 0.1f, Maths.Constants.kPi - 0.1f );
+				m_T = Maths.Utils.Clamp( value, 0.1f, Maths.Constants.Pi - 0.1f );
 				UpdateCameraFrame( );
 			}
 		}
@@ -117,7 +117,7 @@ namespace RbEngine.Cameras
 
 		#region	Private stuff
 
-		private float	m_S			= Maths.Constants.kPi;
+		private float	m_S			= Maths.Constants.Pi;
 		private float	m_T			= 0.1f;
 		private Point3	m_LookAt	= new Point3( );
 		private float	m_Zoom		= 100.0f;

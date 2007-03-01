@@ -74,8 +74,14 @@ namespace RbEngine.Resources
 			{
 				if ( curLoaderNode is System.Xml.XmlElement )
 				{
-					string			loaderTypeName	= curLoaderNode.Attributes[ "type" ].Value;
-					ResourceLoader	loader			= ( ResourceLoader )AppDomainUtils.CreateInstance( loaderTypeName );
+					System.Xml.XmlAttribute loaderAssembly = curLoaderNode.Attributes[ "assembly" ];	
+					if ( loaderAssembly != null )
+					{
+						AppDomain.CurrentDomain.Load( loaderAssembly.Value );
+					}
+
+					string loaderTypeName = curLoaderNode.Attributes[ "type" ].Value;
+					ResourceLoader loader = ( ResourceLoader )AppDomainUtils.CreateInstance( loaderTypeName );
 					if ( loader == null )
 					{
 						Output.WriteLineCall( Output.ResourceError, String.Format( "Unable to create instance for resource loader type \"{0}\"", loaderTypeName ) );

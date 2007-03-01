@@ -23,14 +23,13 @@ namespace RbOpenGlMd3Loader
 			//	http://icculus.org/homepages/phaethon/q3a/formats/md3format.html
 
 			//	Make sure of the MD3 identity
-			int ident	= reader.ReadInt32( );
-			if ( ident != 'IDP3' )
+			byte[] ident		= reader.ReadBytes( 4 );
+			if ( ( ident[ 0 ] != 'I' ) || ( ident[ 1 ] != 'D' ) || ( ident[ 2 ] != 'P' ) || ( ident[ 3 ] != '3' ) )
 			{
 				throw new ApplicationException( "Failed to load MD3 resource - stream did not start with 'IDP3' MD3 identifier" );
 			}
 
 			//	Read in header
-			int start			= reader.ReadInt32( );
 			int version			= reader.ReadInt32( );
 			string name			= ReadString( reader, MaxPathLength );
 			int flags			= reader.ReadInt32( );
@@ -43,9 +42,9 @@ namespace RbOpenGlMd3Loader
 			int surfacesOffset	= reader.ReadInt32( );
 			int eofOffset		= reader.ReadInt32( );
 
-			ReadFrames( reader, framesOffset );
-			ReadTags( reader, tagsOffset );
-			ReadSurfaces( reader, surfacesOffset );
+			ReadFrames( reader, framesOffset, numFrames );
+			ReadTags( reader, tagsOffset, numTags );
+			ReadSurfaces( reader, surfacesOffset, numSurfaces );
 
 			return null;
 		}
@@ -70,7 +69,7 @@ namespace RbOpenGlMd3Loader
 		private const int	MaxPathLength	= 64;
 		private const int	FrameNameLength	= 16;
 		private const float	XyzScale		= 1.0f / 64.0f;
-		private const float ByteToAngle		= Maths.Constants.TwoPi / 255.0f;
+		private const float ByteToAngle		= Constants.TwoPi / 255.0f;
 
 		#endregion
 
@@ -97,7 +96,7 @@ namespace RbOpenGlMd3Loader
 		/// </summary>
 		private string	ReadString( BinaryReader reader, int maxLength )
 		{
-			return new string( reader.ReadBytes( maxLength ) );
+			return new string( reader.ReadChars( maxLength ) );
 		}
 
 		#endregion
@@ -153,7 +152,7 @@ namespace RbOpenGlMd3Loader
 				int		flags			= reader.ReadInt32( );
 				int		numFrames		= reader.ReadInt32( );
 				int		numShaders		= reader.ReadInt32( );
-				int		numVerts		= reader.ReadInt32( );
+				int		numVertices		= reader.ReadInt32( );
 				int		numTriangles	= reader.ReadInt32( );
 				int		trianglesOffset	= reader.ReadInt32( );
 				int		shadersOffset	= reader.ReadInt32( );
@@ -165,7 +164,7 @@ namespace RbOpenGlMd3Loader
 				ReadTriangles( reader, offset + trianglesOffset, numTriangles );
 				ReadVertices( reader, offset + verticesOffset, numVertices );
 
-				reader.BaseStream.Seek( endOffset );
+				reader.BaseStream.Seek( endOffset, SeekOrigin.Begin );
 			}
 		}
 
@@ -174,7 +173,7 @@ namespace RbOpenGlMd3Loader
 		/// </summary>
 		private void	ReadShaders( BinaryReader reader, long offset, int numShaders )
 		{
-			reader.BaseStream.Seek( offset );
+			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 
 			for ( int shaderCount = 0; shaderCount < numShaders; ++shaderCount )
 			{
@@ -188,7 +187,7 @@ namespace RbOpenGlMd3Loader
 		/// </summary>
 		private void	ReadTriangles( BinaryReader reader, long offset, int numTriangles )
 		{
-			reader.BaseStream.Seek( offset );
+			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 
 			for ( int triangleCount = 0; triangleCount < numTriangles; ++triangleCount )
 			{
@@ -206,7 +205,7 @@ namespace RbOpenGlMd3Loader
 		/// <param name="numCoordinates"></param>
 		private void	ReadTextureCoordinates( BinaryReader reader, long offset, int numCoordinates )
 		{
-			reader.BaseStream.Seek( offset );
+			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 			
 			for ( int coordinateCount = 0; coordinateCount < numCoordinates; ++coordinateCount )
 			{
@@ -221,7 +220,7 @@ namespace RbOpenGlMd3Loader
 		/// </summary>
 		private void	ReadVertices( BinaryReader reader, long offset, int numVertices )
 		{
-			reader.BaseStream.Seek( offset );
+			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 			
 			for ( int vertexCount = 0; vertexCount < numVertices; ++vertexCount )
 			{

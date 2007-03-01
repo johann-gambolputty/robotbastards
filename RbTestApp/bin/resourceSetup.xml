@@ -8,6 +8,7 @@
 	<loaders>
 		<loader type="RbCollada.Loader"/>
 		<loader type="RbOpenGlRendering.RbCg.CgRenderEffectLoader"/>
+		<loader type="RbOpenGlMd3Loader.Loader" assembly="RbOpenGlMd3Loader"/>
 		<loader type="RbEngine.Components.XmlLoader"/>
 	</loaders>
 </resourceManager>

@@ -1,11 +1,12 @@
 using System;
+using Tao.OpenGl;
 
 namespace RbOpenGlRendering
 {
 	/// <summary>
 	/// Simple OpenGL mesh
 	/// </summary>
-	public class OpenGlMesh : IRender
+	public class OpenGlMesh : RbEngine.Rendering.IRender
 	{
 
 		#region	Group setup
@@ -50,7 +51,7 @@ namespace RbOpenGlRendering
 		/// <summary>
 		/// Sets up a vertex buffer with a float array of data
 		/// </summary>
-		public void			SetupVertexBuffer( int index, int numVertices, int clientState, int stride, int numElements, int usage, float[] buffer )
+		public void			SetupVertexBuffer( int index, int numVertices, int clientState, short stride, short numElements, int usage, float[] buffer )
 		{
 			VertexBufferObject curVbo;
 			curVbo.ClientState	= clientState;
@@ -63,7 +64,7 @@ namespace RbOpenGlRendering
 
 			//	Bind and fill the VBO
 			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, curVbo.Handle );
-			Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, ( 4 * curVbo.NumElements ) * numVertices, bufferData, usage );
+			Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, ( 4 * curVbo.NumElements ) * numVertices, buffer, usage );
 
 			m_VertexBufferObjects[ index ] = curVbo;
 		}
@@ -71,7 +72,7 @@ namespace RbOpenGlRendering
 		/// <summary>
 		/// Sets up a vertex buffer with an int array of data
 		/// </summary>
-		public void			SetupVertexBuffer( int index, int numVertices, int clientState, int stride, int numElements, int usage, int[] buffer )
+		public void			SetupVertexBuffer( int index, int numVertices, int clientState, short stride, short numElements, int usage, int[] buffer )
 		{
 			VertexBufferObject curVbo;
 			curVbo.ClientState	= clientState;
@@ -84,7 +85,7 @@ namespace RbOpenGlRendering
 
 			//	Bind and fill the VBO
 			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, curVbo.Handle );
-			Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, ( 4 * curVbo.NumElements ) * numVertices, bufferData, usage );
+			Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, ( 4 * curVbo.NumElements ) * numVertices, buffer, usage );
 
 			m_VertexBufferObjects[ index ] = curVbo;
 		}
@@ -92,7 +93,7 @@ namespace RbOpenGlRendering
 		/// <summary>
 		/// Sets up a vertex buffer with a byte array of data
 		/// </summary>
-		public void			SetupVertexBuffer( int index, int numVertices, int clientState, int stride, int numElements, int usage, byte[] buffer )
+		public void			SetupVertexBuffer( int index, int numVertices, int clientState, short stride, short numElements, int usage, byte[] buffer )
 		{
 			VertexBufferObject curVbo;
 			curVbo.ClientState	= clientState;
@@ -105,7 +106,7 @@ namespace RbOpenGlRendering
 
 			//	Bind and fill the VBO
 			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, curVbo.Handle );
-			Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, ( 1 * curVbo.NumElements ) * numVertices, bufferData, usage );
+			Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, ( 1 * curVbo.NumElements ) * numVertices, buffer, usage );
 
 			m_VertexBufferObjects[ index ] = curVbo;
 		}
