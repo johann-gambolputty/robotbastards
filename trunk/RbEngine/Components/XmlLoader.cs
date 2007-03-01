@@ -257,37 +257,75 @@ namespace RbEngine.Components
 			}
 
 			/// <summary>
+			/// Adds the loaded object(s) to the specified list
+			/// </summary>
+			private void			BindObjectToPropertyList( IList property )
+			{
+				if ( LoadedObject is IEnumerable )
+				{
+					foreach ( Object loadedChildObject in ( IEnumerable )LoadedObject )
+					{
+						property.Add( loadedChildObject );
+					}
+				}
+				else
+				{
+					property.Add( LoadedObject );
+				}
+			}
+
+			/// <summary>
+			/// Sets the specified property to the loaded object(s)
+			/// </summary>
+			private void			BindObjectToProperty( Object parentObject, System.Reflection.PropertyInfo property )
+			{
+				IEnumerable loadedEnumerable = LoadedObject as IEnumerable;
+				if ( loadedEnumerable != null )
+				{
+					IEnumerator enumerator = loadedEnumerable.GetEnumerator( );
+					if ( enumerator.MoveNext( ) )
+					{
+						property.SetValue( parentObject, enumerator.Current, null );
+					}
+					if ( enumerator.MoveNext( ) )
+					{
+						throw new RbXmlException( Element, "Could not bind list with more than one item to property \"{1}\"", property.Name );
+					}
+				}
+				else
+				{
+					property.SetValue( parentObject, LoadedObject, null );
+				}
+
+			}
+
+			/// <summary>
 			/// Binds an object to a named parent property
 			/// </summary>
 			private void			BindObjectToParentProperty( Object parentObject, string propertyName )
 			{
+				//	Can't bind a property if the parent is null
 				if ( parentObject == null )
 				{
 					throw new RbXmlException( Element, "Can't bind root object of type \"{0}\" to property \"{1}\"",  LoadedObject.GetType( ).Name, propertyName );
 				}
 
+				//	Find information about the bound property
 				System.Reflection.PropertyInfo boundProperty = parentObject.GetType( ).GetProperty( propertyName );
 				if ( boundProperty == null )
 				{
 					throw new RbXmlException( Element, "Object of type \"{0}\" did not have a property \"{1}\" to bind object of type \"{2}\" to", parentObject.GetType( ).Name, propertyName, LoadedObject.GetType( ).Name );
 				}
 
-				//	If the object is a list, it can only have one element
-				if ( LoadedObject is IList )
+				//	If the bound property is a list, then add the loaded object(s) to it
+				Object boundPropertyValue = boundProperty.GetValue( parentObject, null );
+				if ( boundPropertyValue is IList )
 				{
-					IList objectList = LoadedObject as IList;
-					if ( objectList.Count > 1 )
-					{
-						throw new RbXmlException( Element, "Could not bind list to property \"{1}\"", propertyName );
-					}
-					else
-					{
-						boundProperty.SetValue( parentObject, objectList[ 0 ], null );
-					}
+					BindObjectToPropertyList( ( IList )boundPropertyValue );
 				}
 				else
 				{
-					boundProperty.SetValue( parentObject, LoadedObject, null );
+					BindObjectToProperty( parentObject, boundProperty );
 				}
 			}
 
@@ -420,6 +458,7 @@ namespace RbEngine.Components
 				switch ( element.Name )
 				{
 					case "object"		: loader = new ObjectLoader( element );	break;
+					case "reference"	: loader = new ReferenceLoader( element ); break;
 					case "resource"		: loader = new ResourceLoader( element );	break;
 					case "string"		: loader = new ValueLoader( element, element.GetAttribute( "value" ) );	break;
 					case "int"			: loader = new ValueLoader( element, int.Parse( element.GetAttribute( "value" ) ) );	break;
@@ -551,6 +590,47 @@ namespace RbEngine.Components
 			}
 		}
 		*/
+
+		/// <summary>
+		/// Extends BaseLoader to load a reference to an existing object
+		/// </summary>
+		private class ReferenceLoader : BaseLoader
+		{
+			/// <summary>
+			/// Constructor. Creates the object
+			/// </summary>
+			/// <param name="element"></param>
+			public ReferenceLoader( XmlElement element ) :
+				base( element )
+			{
+			}
+
+			/// <summary>
+			/// Resolves the reference
+			/// </summary>
+			public override void Resolve( Object parentObject )
+			{
+				string modelPath = Element.GetAttribute( "modelPath" );
+				if ( modelPath != string.Empty )
+				{
+					try
+					{
+						LoadedObject = ModelSet.Find( modelPath );
+					}
+					catch ( Exception exception )
+					{
+						throw new RbXmlException( exception, Element, "Failed to resolve reference to model \"{0}\"", modelPath );
+					}
+				}
+				else
+				{
+					throw new RbXmlException( Element, "Only \"modelPath\" references are supported at the moment, sorry" );
+				}
+
+				base.Resolve( parentObject );
+			}
+
+		}
 
 		/// <summary>
 		/// Extends BaseLoader to load a given object type

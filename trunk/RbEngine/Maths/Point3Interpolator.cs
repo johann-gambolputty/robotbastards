@@ -21,35 +21,35 @@ namespace RbEngine.Maths
 		}
 
 		/// <summary>
-		/// The current position
+		/// The next position
 		/// </summary>
-		public Point3	Current
+		public Point3	Next
 		{
 			get
 			{
-				return m_Current;
+				return m_Next;
 			}
 			set
 			{
-				m_Current = value;
+				m_Next = value;
 			}
 		}
 
 		/// <summary>
-		/// Calculates an intermediate point between the previous and current points
+		/// Calculates an intermediate point between the previous and next points
 		/// </summary>
 		/// <param name="t">Time, in the range [0..1]</param>
-		/// <returns>Returns Previous, if t is 0, Current if t is 1, and an intermediate position if t is inbetween 0 and 1</returns>
+		/// <returns>Returns Previous, if t is 0, next if t is 1, and an intermediate position if t is inbetween 0 and 1</returns>
 		public Point3	Get( float t )
 		{
-			return ( Previous + ( Current - Previous ) * ( t < 0 ? 0 : ( t > 1 ? 1 : t ) ) );
+			return ( Previous + ( Next - Previous ) * ( t < 0 ? 0 : ( t > 1 ? 1 : t ) ) );
 		}
 
 		/// <summary>
-		/// Calculates an intermediate point between the previous and current points
+		/// Calculates an intermediate point between the previous and next points
 		/// </summary>
 		/// <param name="time">Time, in the same units as LastStepTime, LastStepInterval (TinyTime units)</param>
-		/// <returns>Returns Previous, if t is 0, Current if t is 1, and an intermediate position if t is inbetween 0 and 1</returns>
+		/// <returns>Returns Previous, if t is 0, Next if t is 1, and an intermediate position if t is inbetween 0 and 1</returns>
 		public Point3	Get( long time )
 		{
 			return Get( ( float )( time - m_LastStepTime ) / ( float )m_LastStepInterval );
@@ -60,20 +60,19 @@ namespace RbEngine.Maths
 		#region	Step
 
 		/// <summary>
-		/// Copies the current position in the previous position
+		/// Copies the next position in the previous position
 		/// </summary>
 		public void		Step( long curTime )
 		{
-			m_Previous			= m_Current;
-			m_Current			= new Point3( m_Current );
+			m_Previous			= m_Next;
+			m_Next				= new Point3( m_Next );
 			m_LastStepInterval	= ( curTime - m_LastStepTime );
 			m_LastStepTime		= curTime;
 		}
 
 		#endregion
 
-
-		#region	Timing		
+		#region	Timing	
 
 		/// <summary>
 		/// The last time interval between Step() calls
@@ -104,9 +103,9 @@ namespace RbEngine.Maths
 		private long	m_LastStepInterval;
 		private long	m_LastStepTime;
 		private Point3	m_Previous	= new Point3( );
+		private Point3	m_Next		= new Point3( );
 
 		#endregion
 
-		private Point3	m_Current	= new Point3( );
 	}
 }

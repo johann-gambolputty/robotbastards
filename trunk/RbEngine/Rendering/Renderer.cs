@@ -11,8 +11,16 @@ namespace RbEngine.Rendering
 	public enum Transform
 	{
 		/// <summary>
-		/// Transforms vertices from local space to view space
+		/// Transforms vertices from local space to world space
 		/// </summary>
+	//	LocalToWorld,
+
+		/// <summary>
+		/// Transforms vertices from world space to view space
+		/// </summary>
+	//	WorldToView,
+
+		//	TODO: REMOVEME (want separation between local to world and world to view transforms - it's easier to do lighting in world space :)
 		LocalToView,
 
 		/// <summary>
@@ -92,13 +100,11 @@ namespace RbEngine.Rendering
 		}
 
 		/// <summary>
-		/// Adds a light
+		/// Adds the specified light
 		/// </summary>
-		public virtual int	AddLight( Light light )
+		public void			AddLight( Light light )
 		{
-			int index = m_NumLights++;
-			m_Lights[ index ] = light;
-			return index;
+			m_Lights[ m_NumLights++ ] = light;
 		}
 
 		/// <summary>

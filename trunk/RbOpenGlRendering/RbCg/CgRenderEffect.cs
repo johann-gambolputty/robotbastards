@@ -88,6 +88,27 @@ namespace RbOpenGlRendering.RbCg
 						break;
 					}
 
+					case ShaderParameterBinding.PointLights :
+					{
+						//	TODO: This is REALLY SHIT. Need to refactor this mess
+						int numActiveLights = Renderer.Inst.NumActiveLights;
+						int numPointLights	= 0;
+						for ( int lightIndex = 0; lightIndex < numActiveLights; ++lightIndex )
+						{
+							PointLight curLight = Renderer.Inst.GetLight( lightIndex ) as PointLight;
+							if ( curLight != null )
+							{
+								IntPtr positionParam = Cg.cgGetArrayParameter( Cg.cgGetNamedStructParameter( param, "m_Positions" ), numPointLights );
+								Cg.cgSetParameter4f( positionParam, curLight.Position.X, curLight.Position.Y, curLight.Position.Z, 0 );
+								++numPointLights;
+							}
+						}
+
+						Cg.cgSetParameter1i( Cg.cgGetNamedStructParameter( param, "m_NumLights" ), numPointLights );
+
+						break;
+					}
+
 					default :
 					{
 						throw new ApplicationException( string.Format( "Unhandled shader parameter binding \"{0}\"", ( ( ShaderParameterBinding )bindingIndex ).ToString( ) ) );
@@ -208,6 +229,12 @@ namespace RbOpenGlRendering.RbCg
 					case "EyePos" :
 					{
 						m_Bindings[ ( int )ShaderParameterBinding.EyePosition ] = curParam;
+						break;
+					}
+
+					case "PointLights" :
+					{
+						m_Bindings[ ( int )ShaderParameterBinding.PointLights ] = curParam;
 						break;
 					}
 				}
