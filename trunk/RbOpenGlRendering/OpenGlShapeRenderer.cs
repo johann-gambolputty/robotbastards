@@ -72,8 +72,8 @@ namespace RbOpenGlRendering
 		/// <param name="numCircumferenceSamples"> Number of subdivisions around the cylinder circumference</param>
 		public override void	DrawCylinder( Point3 start, Point3 end, float radius, int numCircumferenceSamples )
 		{
-			float angleIncrement	= Constants.kTwoPi / ( float )numCircumferenceSamples;
-			float angle				= Constants.kTwoPi - angleIncrement;
+			float angleIncrement	= Constants.TwoPi / ( float )numCircumferenceSamples;
+			float angle				= Constants.TwoPi - angleIncrement;
 			float nextAngle			= 0.0f;
 
 			//	Want to rotate vector (0,1,0) to |(end - start)|, push a matrix containing this rotation
@@ -86,7 +86,7 @@ namespace RbOpenGlRendering
 
 			Vector3	upVec			= Vector3.YAxis.Dot( cylinderVec ) < 0.99f ? Vector3.YAxis : Vector3.ZAxis;
 			Vector3 rotateVec		= Vector3.Cross( upVec, cylinderVec );
-			float	rotation		= ( float )System.Math.Acos( upVec.Dot( cylinderVec ) ) * Constants.kRadiansToDegrees;
+			float	rotation		= ( float )System.Math.Acos( upVec.Dot( cylinderVec ) ) * Constants.RadiansToDegrees;
 
 			Gl.glTranslatef( start.X, start.Y, start.Z );
 			Gl.glRotatef( rotation, rotateVec.X, rotateVec.Y, rotateVec.Z );
@@ -135,8 +135,8 @@ namespace RbOpenGlRendering
 		public override void DrawSphere( Point3 pt, float radius, int latitudeSamples, int longitudeSamples )
 		{
 			//	Render the sphere as a series of strips
-			float	latitudeAngleIncrement	= Constants.kPi / ( float )latitudeSamples;
-			float	longitudeAngleIncrement	= Constants.kTwoPi / ( float )longitudeSamples;
+			float	latitudeAngleIncrement	= Constants.Pi / ( float )latitudeSamples;
+			float	longitudeAngleIncrement	= Constants.TwoPi / ( float )longitudeSamples;
 
 			float t		= 0.0f;
 			float nextT	= t + latitudeAngleIncrement;

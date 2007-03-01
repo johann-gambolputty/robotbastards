@@ -115,11 +115,6 @@
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
-                    Name = "RbOpenGlRendering"
-                    Project = "{26F15FA5-03D9-4A67-8568-8AC1A4ACB062}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-                />
-                <Reference
                     Name = "RbControls"
                     Project = "{00F2BBFF-CD5E-449B-9576-B8BAF0FD3239}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
@@ -151,6 +146,16 @@
                     Name = "RbParticleSystem"
                     Project = "{C85D4BF1-9D94-4289-96AE-EADD11C41A32}"
                     Package = "{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}"
+                />
+                <Reference
+                    Name = "RbOpenGlMd3Loader"
+                    Project = "{A618D894-9BAE-41EC-AE85-A4AE3321AAB6}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
+                    Name = "RbOpenGlRendering"
+                    Project = "{26F15FA5-03D9-4A67-8568-8AC1A4ACB062}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
             </References>
         </Build>

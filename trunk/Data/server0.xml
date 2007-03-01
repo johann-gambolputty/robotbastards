@@ -3,6 +3,7 @@
 
 	<modelSet name="effects">
 		<resource path="test1.cgfx" name="Test1"/>
+		<resource path="sarge\upper.md3" name="SargeUpper"/>
 	</modelSet>
 
 	<object type="RbEngine.Network.Server" name="server0">
