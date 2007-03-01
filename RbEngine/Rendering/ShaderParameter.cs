@@ -53,20 +53,11 @@ namespace RbEngine.Rendering
 		/// </summary>
 		EyeZAxis,
 
+		//	TODO: This is very specific - requires a certain data structure to be present in the shader... 
 		/// <summary>
-		/// Position of the first light to affect the rendered object
+		/// Data about the active point lights in the renderer
 		/// </summary>
-		LightPos0,
-
-		/// <summary>
-		/// Position of the second light to affect the rendered object
-		/// </summary>
-		LightPos1,
-
-		/// <summary>
-		/// Position of the third light to affect the rendered object
-		/// </summary>
-		LightPos2,
+		PointLights,
 
 		/// <summary>
 		/// Total number of bindings

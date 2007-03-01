@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rb>
 
-<!--
-	<modelSet name="graphics">
-		<resource path="crate0.dae"/>
+	<modelSet name="effects">
+		<resource path="test1.cgfx" name="Test1"/>
 	</modelSet>
--->
 
 	<object type="RbEngine.Network.Server" name="server0">
 	    <object type="RbEngine.Scene.SceneDb" property="Scene">
@@ -23,10 +21,13 @@
 
 			<!-- Entities -->
 			<object type="RbEngine.Entities.Entity3">
+			
+				<point3 x="12" y="0.5" z="10" property="NextPosition"/>
 
 				<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics">
 
-					<resource path="test1.cgfx" property="Effect"/>
+					<reference modelPath="effects/Test1" property="Effect"/>
+
 					<resource path="blob0.dae" property="RenderedObject"/>
 
 					<postLink>
@@ -35,17 +36,33 @@
 
 				</object>
 
+				<object type="RbEngine.Scene.LightingData"/>
+
 				<object type="RbEngine.Entities.TestUserEntityController">
 				</object>
 
 			</object>
 
-			<object type="RbEngine.Rendering.PointLight">
+			<!-- Lights -->
+			<object type="RbEngine.Entities.Entity3">
+			
+				<point3 x="12" y="40" z="30" property="NextPosition"/>
+
+				<object type="RbEngine.Rendering.PointLight">
+					<point3 x="12" y="40" z="30" property="Position"/>
+				</object>
+
+				<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics">
+					<resource path="light.cgfx" property="Effect"/>
+					<resource path="sphere.dae" property="RenderedObject"/>
+				</object>
+
 			</object>
 
+			<!-- Environment -->
 			<object type="RbEngine.Rendering.EffectRenderedObject">
 
-				<resource path="test1.cgfx" property="Effect"/>
+				<reference modelPath="effects/Test1" property="Effect"/>
 				<resource path="simpleEnvironment.dae" property="RenderedObject"/>
 
 			</object>

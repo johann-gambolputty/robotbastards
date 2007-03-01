@@ -1,5 +1,6 @@
 using System;
 using RbEngine.Components;
+using RbEngine.Rendering;
 
 namespace RbEngine.Entities
 {
@@ -114,37 +115,46 @@ namespace RbEngine.Entities
 			{
 				case ( int )TestCommands.Forward	:
 				{
-					if ( m_LookAt.Current.DistanceTo( entity.Position.Current ) > speed )
+					if ( m_LookAt.Next.DistanceTo( entity.Position.Next ) > speed )
 					{
-						entity.Position.Current += entity.Facing * speed;
+						entity.Position.Next += entity.Facing * speed;
 					}
 					break;
 				}
 
-				case ( int )TestCommands.Back		:	entity.Position.Current -= entity.Facing * speed;	break;
-				case ( int )TestCommands.Left		:	entity.Position.Current += entity.Left * speed;		break;
-				case ( int )TestCommands.Right		:	entity.Position.Current += entity.Right * speed;	break;
+				case ( int )TestCommands.Back		:	entity.Position.Next -= entity.Facing * speed;	break;
+				case ( int )TestCommands.Left		:	entity.Position.Next += entity.Left * speed;	break;
+				case ( int )TestCommands.Right		:	entity.Position.Next += entity.Right * speed;	break;
 
 				case ( int )TestCommands.LookAt		:
 				{
 					//	TODO: This is a bit of a cheat, because I know that this controller only ever receives one look at message
 					//	on every command update)
 					m_LookAt.Step( TinyTime.CurrentTime );
-					m_LookAt.Current = ( ( TestLookAtCommandMessage )msg ).LookAtPoint;
+					m_LookAt.Next = ( ( TestLookAtCommandMessage )msg ).LookAtPoint;
 
 					break;
 				}
 			}
 
-			entity.Facing	= ( m_LookAt.Current - entity.Position.Current ).MakeNormal( );
+			entity.Facing	= ( m_LookAt.Next - entity.Position.Next ).MakeNormal( );
 			entity.Left		= Maths.Vector3.Cross( entity.Up, entity.Facing ).MakeNormal( );
 
 			msg.DeliverToNextRecipient( );
 		}
 
-		private Maths.Point3Interpolator m_LookAt = new Maths.Point3Interpolator( );
-
 		#region ISceneRenderable Members
+
+		/// <summary>
+		/// Gets the list of objects to apply before rendering
+		/// </summary>
+		public ApplianceList	PreRenderList
+		{
+			get
+			{
+				return m_PreRenderAppliances;
+			}
+		}
 
 		/// <summary>
 		/// Renders this object
@@ -155,9 +165,9 @@ namespace RbEngine.Entities
 			Maths.Point3	pos			= entity.Position.Get( renderTime );
 			Maths.Point3	lookAtPos	= m_LookAt.Get( renderTime );
 
-			Rendering.ShapeRenderer.Inst.DrawLine( pos, pos + entity.Facing * 3.0f );
-			Rendering.ShapeRenderer.Inst.DrawLine( pos, pos + entity.Left * 3.0f );
-			Rendering.ShapeRenderer.Inst.DrawLine( pos, pos + entity.Up * 3.0f );
+		//	Rendering.ShapeRenderer.Inst.DrawLine( pos, pos + entity.Facing * 3.0f );
+		//	Rendering.ShapeRenderer.Inst.DrawLine( pos, pos + entity.Left * 3.0f );
+		//	Rendering.ShapeRenderer.Inst.DrawLine( pos, pos + entity.Up * 3.0f );
 			Rendering.ShapeRenderer.Inst.DrawSphere( lookAtPos, 1.0f );
 		}
 
@@ -179,6 +189,13 @@ namespace RbEngine.Entities
 		public void RemovedFromScene( Scene.SceneDb db )
 		{
 		}
+
+		#endregion
+
+		#region	Private stuff
+
+		private Maths.Point3Interpolator	m_LookAt				= new Maths.Point3Interpolator( );
+		private ApplianceList				m_PreRenderAppliances	= new ApplianceList( );
 
 		#endregion
 	}

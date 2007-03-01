@@ -1,0 +1,9 @@
+
+
+technique Main
+{
+	pass
+	{
+		DepthTestEnable = true;
+	}
+}

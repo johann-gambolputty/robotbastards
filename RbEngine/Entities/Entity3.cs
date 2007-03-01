@@ -50,6 +50,18 @@ namespace RbEngine.Entities
 			}
 		}
 
+		public Point3	NextPosition
+		{
+			get
+			{
+				return m_Position.Next;
+			}
+			set
+			{
+				m_Position.Next = value;
+			}
+		}
+
 		/// <summary>
 		/// The agent facing vector
 		/// </summary>

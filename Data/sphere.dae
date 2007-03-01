@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA version="1.4.0" xmlns="http://www.collada.org/2005/11/COLLADASchema">
+	<asset>
+		<contributor>
+			<author>Illusoft Collada 1.4.0 plugin for Blender - http://colladablender.illusoft.com</author>
+			<authoring_tool>Blender v:242 - Illusoft Collada Exporter v:0.2.65</authoring_tool>
+			<comments></comments>
+			<copyright></copyright>
+			<source_data>file://C:/Projects/Models/FirstModels/Environments/sphere.blend</source_data>
+		</contributor>
+		<created>2007-03-01T02:20:45.765000</created>
+		<modified>2007-03-01T02:20:45.765000</modified>
+		<unit meter="0.01" name="centimeter"/>
+		<up_axis>Z_UP</up_axis>
+	</asset>
+	<library_cameras>
+		<camera id="Camera-Camera" name="Camera-Camera">
+			<optics>
+				<technique_common>
+					<perspective>
+						<yfov>49.13434</yfov>
+						<znear>0.1</znear>
+						<zfar>100.0</zfar>
+					</perspective>
+				</technique_common>
+			</optics>
+		</camera>
+	</library_cameras>
+	<library_geometries>
+		<geometry id="Sphere-Geometry" name="Sphere-Geometry">
+			<mesh>
+				<source id="Sphere-Geometry-Position">
+					<float_array count="276" id="Sphere-Geometry-Position-array">0.62915 0.0 1.93633 1.19672 0.0 1.64714 1.64714 0.0 1.19672 1.93633 0.0 0.62915 2.03598 0.0 0.0 1.93633 0.0 -0.62915 1.64714 0.0 -1.19672 1.19672 0.0 -1.64714 0.62915 0.0 -1.93633 0.0 0.0 -2.03598 0.50899 0.36981 -1.93633 0.96816 0.70341 -1.64714 1.33256 0.96817 -1.19672 1.56652 1.13815 -0.62915 1.64714 1.19672 0.0 1.56652 1.13815 0.62915 1.33256 0.96817 1.19672 0.96817 0.70341 1.64714 0.50899 0.36981 1.93633 0.19442 0.59836 1.93633 0.36981 1.13815 1.64714 0.50899 1.56652 1.19672 0.59836 1.84156 0.62915 0.62915 1.93633 0.0 0.59836 1.84156 -0.62915 0.50899 1.56652 -1.19672 0.36981 1.13815 -1.64714 0.19442 0.59836 -1.93633 -0.19442 0.59836 -1.93633 -0.36981 1.13815 -1.64714 -0.50899 1.56652 -1.19672 -0.59836 1.84156 -0.62915 -0.62915 1.93633 0.0 -0.59836 1.84156 0.62915 -0.50899 1.56652 1.19672 -0.36981 1.13815 1.64714 -0.19442 0.59836 1.93633 -0.50899 0.36981 1.93633 -0.96817 0.70341 1.64714 -1.33257 0.96817 1.19672 -1.56652 1.13815 0.62915 -1.64714 1.19672 0.0 -1.56652 1.13815 -0.62915 -1.33257 0.96817 -1.19672 -0.96817 0.70341 -1.64714 -0.50899 0.36981 -1.93633 -0.62915 0.0 -1.93633 -1.19672 0.0 -1.64714 -1.64714 0.0 -1.19672 -1.93633 0.0 -0.62915 -2.03598 0.0 0.0 -1.93633 0.0 0.62915 -1.64714 0.0 1.19672 -1.19672 0.0 1.64714 -0.62915 0.0 1.93633 -0.50899 -0.36981 1.93633 -0.96817 -0.70341 1.64714 -1.33256 -0.96817 1.19672 -1.56652 -1.13815 0.62915 -1.64714 -1.19672 0.0 -1.56652 -1.13815 -0.62915 -1.33256 -0.96817 -1.19672 -0.96816 -0.70341 -1.64714 -0.50899 -0.36981 -1.93633 -0.19442 -0.59836 -1.93633 -0.36981 -1.13815 -1.64714 -0.50899 -1.56652 -1.19672 -0.59836 -1.84156 -0.62915 -0.62915 -1.93633 0.0 -0.59836 -1.84156 0.62915 -0.50899 -1.56652 1.19672 -0.36981 -1.13815 1.64714 -0.19442 -0.59836 1.93633 0.0 0.0 2.03598 0.19442 -0.59836 1.93633 0.36981 -1.13815 1.64714 0.509 -1.56652 1.19672 0.59836 -1.84156 0.62915 0.62915 -1.93633 0.0 0.59836 -1.84156 -0.62915 0.509 -1.56652 -1.19672 0.36981 -1.13815 -1.64714 0.19442 -0.59836 -1.93633 0.50899 -0.36981 -1.93633 0.96817 -0.70341 -1.64714 1.33257 -0.96816 -1.19672 1.56652 -1.13815 -0.62915 1.64714 -1.19672 0.0 1.56652 -1.13815 0.62915 1.33257 -0.96816 1.19672 0.96817 -0.70341 1.64714 0.50899 -0.36981 1.93633</float_array>
+					<technique_common>
+						<accessor count="92" source="#Sphere-Geometry-Position-array" stride="3">
+							<param name="X" type="float"/>
+							<param name="Y" type="float"/>
+							<param name="Z" type="float"/>
+						</accessor>
+					</technique_common>
+				</source>
+				<source id="Sphere-Geometry-Normals">
+					<float_array count="276" id="Sphere-Geometry-Normals-array">0.3083 0.0 0.95126 0.58681 0.0 0.80969 0.80831 0.0 0.5887 0.95083 0.0 0.30967 1.0 0.0 0.0 0.95083 0.0 -0.30967 0.80831 0.0 -0.5887 0.58681 0.0 -0.80969 0.3083 0.0 -0.95126 0.0 0.0 -1.0 0.2494 0.18119 -0.95126 0.47475 0.34492 -0.80969 0.65395 0.47511 -0.5887 0.76922 0.55889 -0.30967 0.80902 0.58776 0.0 0.76922 0.55889 0.30967 0.65395 0.47511 0.5887 0.47475 0.34492 0.80969 0.2494 0.18119 0.95126 0.09525 0.29319 0.95126 0.18131 0.55809 0.80969 0.24976 0.76876 0.5887 0.2938 0.90429 0.30967 0.309 0.95105 0.0 0.2938 0.90429 -0.30967 0.24976 0.76876 -0.5887 0.18131 0.55809 -0.80969 0.09525 0.29319 -0.95126 -0.09525 0.29319 -0.95126 -0.18131 0.55809 -0.80969 -0.24976 0.76876 -0.5887 -0.2938 0.90429 -0.30967 -0.309 0.95105 0.0 -0.2938 0.90429 0.30967 -0.24976 0.76876 0.5887 -0.18131 0.55809 0.80969 -0.09525 0.29319 0.95126 -0.2494 0.18119 0.95126 -0.47475 0.34492 0.80969 -0.65395 0.47511 0.5887 -0.76922 0.55889 0.30967 -0.80902 0.58776 0.0 -0.76922 0.55889 -0.30967 -0.65395 0.47511 -0.5887 -0.47475 0.34492 -0.80969 -0.2494 0.18119 -0.95126 -0.3083 0.0 -0.95126 -0.58681 0.0 -0.80969 -0.80831 0.0 -0.5887 -0.95083 0.0 -0.30967 -1.0 0.0 0.0 -0.95083 0.0 0.30967 -0.80831 0.0 0.5887 -0.58681 0.0 0.80969 -0.3083 0.0 0.95126 -0.2494 -0.18119 0.95126 -0.47475 -0.34492 0.80969 -0.65395 -0.47511 0.5887 -0.76922 -0.55889 0.30967 -0.80902 -0.58776 0.0 -0.76922 -0.55889 -0.30967 -0.65395 -0.47511 -0.5887 -0.47475 -0.34492 -0.80969 -0.2494 -0.18119 -0.95126 -0.09525 -0.29319 -0.95126 -0.18131 -0.55809 -0.80969 -0.24976 -0.76876 -0.5887 -0.2938 -0.90429 -0.30967 -0.309 -0.95105 0.0 -0.2938 -0.90429 0.30967 -0.24976 -0.76876 0.5887 -0.18131 -0.55809 0.80969 -0.09525 -0.29319 0.95126 0.0 0.0 1.0 0.09525 -0.29319 0.95126 0.18131 -0.55809 0.80969 0.24976 -0.76876 0.5887 0.2938 -0.90429 0.30967 0.309 -0.95105 0.0 0.2938 -0.90429 -0.30967 0.24976 -0.76876 -0.5887 0.18131 -0.55809 -0.80969 0.09525 -0.29319 -0.95126 0.2494 -0.18119 -0.95126 0.47475 -0.34492 -0.80969 0.65395 -0.47511 -0.5887 0.76922 -0.55889 -0.30967 0.80902 -0.58776 0.0 0.76922 -0.55889 0.30967 0.65395 -0.47511 0.5887 0.47475 -0.34492 0.80969 0.2494 -0.18119 0.95126</float_array>
+					<technique_common>
+						<accessor count="92" source="#Sphere-Geometry-Normals-array" stride="3">
+							<param name="X" type="float"/>
+							<param name="Y" type="float"/>
+							<param name="Z" type="float"/>
+						</accessor>
+					</technique_common>
+				</source>
+				<vertices id="Sphere-Geometry-Vertex">
+					<input semantic="POSITION" source="#Sphere-Geometry-Position"/>
+					<input semantic="NORMAL" source="#Sphere-Geometry-Normals"/>
+				</vertices>
+				<triangles count="180">
+					<input offset="0" semantic="VERTEX" source="#Sphere-Geometry-Vertex"/>
+					<p>9 10 8 8 10 11 11 7 8 7 11 12 12 6 7 6 12 13 13 5 6 5 13 14 14 4 5 4 14 15 15 3 4 3 15 16 16 2 3 2 16 17 17 1 2 18 0 1 1 17 18 0 18 73 18 19 73 17 20 19 19 18 17 16 21 20 20 17 16 15 22 21 21 16 15 14 23 22 22 15 14 13 24 23 23 14 13 12 25 24 24 13 12 11 26 25 25 12 11 10 27 26 26 11 10 9 27 10 9 28 27 27 28 29 29 26 27 26 29 30 30 25 26 25 30 31 31 24 25 24 31 32 32 23 24 23 32 33 33 22 23 22 33 34 34 21 22 21 34 35 35 20 21 20 35 36 36 19 20 19 36 73 36 37 73 35 38 37 37 36 35 34 39 38 38 35 34 33 40 39 39 34 33 32 41 40 40 33 32 31 42 41 41 32 31 30 43 42 42 31 30 29 44 43 43 30 29 28 45 44 44 29 28 9 45 28 9 46 45 45 46 47 47 44 45 44 47 48 48 43 44 43 48 49 49 42 43 42 49 50 50 41 42 41 50 51 51 40 41 40 51 52 52 39 40 39 52 53 53 38 39 38 53 54 54 37 38 37 54 73 54 55 73 53 56 55 55 54 53 52 57 56 56 53 52 51 58 57 57 52 51 50 59 58 58 51 50 49 60 59 59 50 49 48 61 60 60 49 48 47 62 61 61 48 47 46 63 62 62 47 46 9 63 46 9 64 63 63 64 65 65 62 63 62 65 66 66 61 62 61 66 67 67 60 61 60 67 68 68 59 60 59 68 69 69 58 59 58 69 70 70 57 58 57 70 71 71 56 57 56 71 72 72 55 56 55 72 73 72 74 73 71 75 74 74 72 71 70 76 75 75 71 70 69 77 76 76 70 69 68 78 77 77 69 68 67 79 78 78 68 67 66 80 79 79 67 66 65 81 80 80 66 65 64 82 81 81 65 64 9 82 64 9 83 82 82 83 84 84 81 82 81 84 85 85 80 81 80 85 86 86 79 80 79 86 87 87 78 79 78 87 88 88 77 78 77 88 89 89 76 77 76 89 90 90 75 76 75 90 91 91 74 75 74 91 73 91 0 73 0 91 90 90 1 0 89 2 1 1 90 89 88 3 2 2 89 88 87 4 3 3 88 87 86 5 4 4 87 86 85 6 5 5 86 85 84 7 6 6 85 84 83 8 7 7 84 83 9 8 83</p>
+				</triangles>
+			</mesh>
+		</geometry>
+	</library_geometries>
+	<library_lights>
+		<light id="Spot" name="Spot">
+			<technique_common>
+				<point>
+					<color>1.0 1.0 1.0</color>
+					<constant_attenuation>0.0</constant_attenuation>
+					<linear_attenuation>0.0</linear_attenuation>
+					<quadratic_attenuation>0.0</quadratic_attenuation>
+				</point>
+			</technique_common>
+		</light>
+	</library_lights>
+	<library_visual_scenes>
+		<visual_scene id="Scene" name="Scene">
+			<node id="Sphere" name="Sphere">
+				<translate>0.00099 0.00856 0.00016</translate>
+				<instance_geometry url="#Sphere-Geometry"/>
+			</node>
+			<node id="Lamp" name="Lamp">
+				<translate>0.0 -10.0 7.0</translate>
+				<rotate>0.0 0.0 1.0 0.0</rotate>
+				<rotate>0.0 1.0 0.0 0.0</rotate>
+				<rotate>1.0 0.0 0.0 47.53358</rotate>
+				<instance_light url="#Spot"/>
+			</node>
+			<node id="Camera" name="Camera">
+				<translate>6.28272 -5.0 5.8668</translate>
+				<rotate>0.0 0.0 1.0 52.75217</rotate>
+				<rotate>0.0 1.0 0.0 -1.23882</rotate>
+				<rotate>1.0 0.0 0.0 52.92767</rotate>
+				<instance_camera url="#Camera-Camera"/>
+			</node>
+		</visual_scene>
+	</library_visual_scenes>
+	<library_physics_materials>
+		<physics_material id="Sphere-PhysicsMaterial" name="Sphere-PhysicsMaterial">
+			<technique_common>
+				<dynamic_friction>0</dynamic_friction>
+				<restitution>0</restitution>
+				<static_friction>0</static_friction>
+			</technique_common>
+		</physics_material>
+	</library_physics_materials>
+	<library_physics_models>
+		<physics_model id="Sphere-PhysicsModel" name="Sphere-PhysicsModel">
+			<rigid_body name="Sphere-RigidBody" sid="Sphere-RigidBody">
+				<technique_common>
+					<instance_physics_material url="#Sphere-PhysicsMaterial"/>
+					<shape>
+						<box>
+							<half_extents>2.03598 1.93633 2.03598</half_extents>
+						</box>
+					</shape>
+					<dynamic>false</dynamic>
+					<mass>1.0</mass>
+				</technique_common>
+			</rigid_body>
+		</physics_model>
+	</library_physics_models>
+	<library_physics_scenes>
+		<physics_scene id="Scene-Physics" name="Scene-Physics">
+			<instance_physics_model url="#Sphere-PhysicsModel">
+				<instance_rigid_body body="Sphere-RigidBody" target="#Sphere"/>
+			</instance_physics_model>
+		</physics_scene>
+	</library_physics_scenes>
+	<scene>
+		<instance_visual_scene url="#Scene"/>
+		<instance_physics_scene url="#Scene-Physics"/>
+	</scene>
+</COLLADA>

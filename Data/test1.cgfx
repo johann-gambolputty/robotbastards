@@ -11,11 +11,18 @@ struct SpecularTestInput
 	float4	m_Normal : NORMAL;
 };
 
+struct PointLightArray
+{
+	float4		m_Positions[ 4 ];
+	int			m_NumLights;
+};
+
+PointLightArray	PointLights;
+
 float4x4	ModelViewProj;
 float4x4	ModelView;
 float4x4	InverseTransposeModelView;
-float4		LightPos = float4( 2, 5, 0, 0 );
-float4		LightOrigin = float4( 1, 0, 0, 0 );
+float4		LightPos = float4( 12, 40, 30, 0 );
 float3		EyePos;
 
 
@@ -40,7 +47,8 @@ SpecularTestOutput SpecularTest( SpecularTestInput input )
 
 	float3 normal		= normalize( mul( InverseTransposeModelView, input.m_Normal ).xyz );
 	float3 eyeVec		= normalize( mul( ModelView, float4( EyePos, 0 ) ).xyz );
-	float3 lightVec		= normalize( mul( ModelView, LightPos ).xyz );
+//	float3 lightVec		= normalize( mul( ModelView, LightPos ).xyz );
+	float3 lightVec		= normalize( mul( ModelView, PointLights.m_Positions[ 0 ] ).xyz );
 	float3 halfVec		= normalize( eyeVec + lightVec );
 
 	float diffuse		= dot( normal, lightVec );

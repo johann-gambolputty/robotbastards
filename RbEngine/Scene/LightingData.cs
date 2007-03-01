@@ -1,33 +1,13 @@
 using System;
+using RbEngine.Rendering;
 
-namespace RbEngine.Rendering
+namespace RbEngine.Scene
 {
 	/// <summary>
-	/// Stores a set of up to MaxLights lights that can be attached to an object
+	/// LightingData objects can be attached to ISceneRenderable objects, enabling those objects to be lit by the scene LightingManager
 	/// </summary>
-	public class LightingGroup : IApplicable
+	public class LightingData : Rendering.IApplicable, Components.IChildObject
 	{
-		/// <summary>
-		/// Sets the object that this lighting group is associated with
-		/// </summary>
-		public LightingGroup( Object obj )
-		{
-			m_Object = obj;
-
-			( ( Scene.ISceneRenderable ) ).PreRenderList.Add( this );
-		}
-
-		/// <summary>
-		/// Gets the object that this lighting group is associated with
-		/// </summary>
-		public Object		AssociatedObject
-		{
-			get
-			{
-				return m_Object;
-			}
-		}
-
 		/// <summary>
 		/// Clears all lights from the group
 		/// </summary>
@@ -87,8 +67,17 @@ namespace RbEngine.Rendering
 		/// Number of lights
 		/// </summary>
 		private int			m_NumLights	= 0;
-		
-		private Object		m_Object;
 
+		#region IChildObject Members
+
+		/// <summary>
+		/// Called when this object is added to a parent object
+		/// </summary>
+		public void AddedToParent( Object parentObject )
+		{
+			( ( ISceneRenderable )parentObject ).PreRenderList.Add( this );
+		}
+
+		#endregion
 	}
 }

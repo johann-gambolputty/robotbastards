@@ -36,17 +36,20 @@ namespace RbEngine.Scene
 		private void		PreRender( RenderManager renderMan )
 		{
 			int numLights = Maths.Utils.Min( m_Lights.Count, 3 ); 
-			foreach ( Rendering.LightingGroup group in m_LightingGroups )
+			foreach ( LightingData lighting in m_LightingData )
 			{
-				group.ClearLights( );
+				lighting.ClearLights( );
 				//	TODO: BODGE
 				for ( int lightIndex = 0; lightIndex < numLights; ++lightIndex )
 				{
-					group.AddLight( ( Rendering.Light )m_Lights[ lightIndex ] );
+					lighting.AddLight( ( Rendering.Light )m_Lights[ lightIndex ] );
 				}
 			}
 		}
 
+		/// <summary>
+		/// Looks for lights and lighting data getting added to the scene
+		/// </summary>
 		private void		OnObjectAddedToScene( Object parentObject, Object childObject )
 		{
 			if ( childObject is Rendering.Light )
@@ -55,20 +58,18 @@ namespace RbEngine.Scene
 			}
 			else
 			{
-				Components.IParentObject parent = childObject as Components.IParentObject;
-				if ( parent != null )
+				LightingData lighting = childObject as LightingData;
+				if ( lighting != null )
 				{
-					Rendering.LightingGroup group = new Rendering.LightingGroup( childObject );
-					parent.AddChild( group );
-					m_LightingGroups.Add( group );
+					m_LightingData.Add( lighting );
 				}
 			}
 		}
 
 		#region	Private stuff
 
-		private ArrayList	m_Lights			= new ArrayList( );
-		private ArrayList	m_LightingGroups	= new ArrayList( );
+		private ArrayList	m_Lights		= new ArrayList( );
+		private ArrayList	m_LightingData	= new ArrayList( );
 		private SceneDb		m_Scene;
 
 		#endregion
