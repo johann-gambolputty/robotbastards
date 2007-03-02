@@ -20,19 +20,12 @@ namespace RbOpenGlRendering
 		}
 
 		/// <summary>
-		/// Sets up a group
-		/// </summary>
-		public void			SetGroupPrimitiveType( int index, int primitiveType )
-		{
-			m_Groups[ index ].PrimitiveType = primitiveType;
-		}
-
-		/// <summary>
 		/// Sets up a group's index buffer
 		/// </summary>
-		public void			CreateGroupIndexBuffer( int index, int[] indices )
+		public void			CreateGroupIndexBuffer( int index, int[] indices, int primitiveType )
 		{
-			m_Groups[ index ].IndexBuffer = indices;
+			m_Groups[ index ].IndexBuffer	= indices;
+			m_Groups[ index ].PrimitiveType	= primitiveType;
 		}
 
 		#endregion
