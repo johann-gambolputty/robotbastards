@@ -2,7 +2,9 @@ using System;
 using System.IO;
 using RbEngine;
 using RbEngine.Maths;
+using RbEngine.Rendering;
 using RbOpenGlRendering;
+using Tao.OpenGl;
 
 namespace RbOpenGlMd3Loader
 {
@@ -43,13 +45,36 @@ namespace RbOpenGlMd3Loader
 			int surfacesOffset	= reader.ReadInt32( );
 			int eofOffset		= reader.ReadInt32( );
 
-			OpenGlMesh mesh = new OpenGlMesh( );
 
 			Frame[]		frames		= ReadFrames( reader, framesOffset, numFrames );
 			Tag[]		tags		= ReadTags( reader, tagsOffset, numTags );
 			Surface[]	surfaces	= ReadSurfaces( reader, surfacesOffset, numSurfaces );
 
-			return null;
+			OpenGlMesh mesh = new OpenGlMesh( );
+			mesh.CreateGroups( surfaces.Length );
+
+			for ( int surfaceIndex = 0; surfaceIndex < surfaces.Length; ++surfaceIndex )
+			{
+				Surface curSurface = surfaces[ surfaceIndex ];
+
+				mesh.CreateGroupIndexBuffer( surfaceIndex, curSurface.Triangles, Gl.GL_TRIANGLES );
+
+				mesh.CreateVertexBuffers( 3 );
+				mesh.SetupVertexBuffer( 0, curSurface.NumVertices, Gl.GL_VERTEX_ARRAY, 0, 3, Gl.GL_STATIC_DRAW_ARB, curSurface.Positions );
+				mesh.SetupVertexBuffer( 1, curSurface.NumVertices, Gl.GL_NORMAL_ARRAY, 0, 3, Gl.GL_STATIC_DRAW_ARB, curSurface.Normals );
+				mesh.SetupVertexBuffer( 2, curSurface.NumVertices, Gl.GL_TEXTURE_COORD_ARRAY, 0, 2, Gl.GL_STATIC_DRAW_ARB, curSurface.TextureUVs );
+
+				for ( int shaderIndex = 0; shaderIndex < curSurface.Shaders.Length; ++shaderIndex )
+				{
+					Shader curShader = curSurface.Shaders[ shaderIndex ];
+					
+					Texture2d newTexture = RenderFactory.Inst.NewTexture2d( );
+					newTexture.Load( curShader.Name );
+					mesh.AddTexture( newTexture );
+				}
+			}
+
+			return mesh;
 		}
 
 		private class Frame
@@ -70,9 +95,22 @@ namespace RbOpenGlMd3Loader
 			public Vector3	ZAxis;
 		}
 
+		private class Shader
+		{
+			public string	Name;
+			public int		Index;
+		}
+
 		private class Surface
 		{
-
+			public string	Name;
+			public int		Flags;
+			public int[]	Triangles;
+			public Shader[]	Shaders;
+			public float[]	Positions;
+			public float[]	Normals;
+			public float[]	TextureUVs;
+			public int		NumVertices;
 		}
 
 		/// <summary>
@@ -140,6 +178,7 @@ namespace RbOpenGlMd3Loader
 
 			for ( int frameCount = 0; frameCount < numFrames; ++frameCount )
 			{
+				frames[ frameCount]		= new Frame( );
 				Frame curFrame			= frames[ frameCount ];
 				curFrame.MinBounds		= ReadPoint( reader );
 				curFrame.MaxBounds		= ReadPoint( reader );
@@ -161,12 +200,13 @@ namespace RbOpenGlMd3Loader
 			Tag[] tags = new Tag[ numTags ];
 			for ( int tagCount = 0; tagCount < numTags; ++tagCount )
 			{
-				Tag curTag		= tags[ tagCount ];
-				curTag.Name		= ReadString( reader, MaxPathLength );
-				curTag.Origin	= ReadPoint( reader );
-				curTag.XAxis	= ReadVector( reader );
-				curTag.YAxis	= ReadVector( reader );
-				curTag.ZAxis	= ReadVector( reader );
+				tags[ tagCount ]	= new Tag( );
+				Tag curTag			= tags[ tagCount ];
+				curTag.Name			= ReadString( reader, MaxPathLength );
+				curTag.Origin		= ReadPoint( reader );
+				curTag.XAxis		= ReadVector( reader );
+				curTag.YAxis		= ReadVector( reader );
+				curTag.ZAxis		= ReadVector( reader );
 			}
 
 			return tags;
@@ -182,25 +222,31 @@ namespace RbOpenGlMd3Loader
 			Surface[] surfaces = new Surface[ numSurfaces ];
 			for ( int surfaceCount = 0; surfaceCount < numSurfaces; ++surfaceCount )
 			{
-				Surface curSurface		= surfaces[ surfaceCount ];
-				int		ident			= reader.ReadInt32( );
-				string	name			= ReadString( reader, MaxPathLength );
-				int		flags			= reader.ReadInt32( );
-				int		numFrames		= reader.ReadInt32( );
-				int		numShaders		= reader.ReadInt32( );
-				int		numVertices		= reader.ReadInt32( );
-				int		numTriangles	= reader.ReadInt32( );
-				int		trianglesOffset	= reader.ReadInt32( );
-				int		shadersOffset	= reader.ReadInt32( );
-				int		texturesOffset	= reader.ReadInt32( );
-				int		verticesOffset	= reader.ReadInt32( );
-				int		endOffset		= reader.ReadInt32( );
+				surfaces[ surfaceCount ]	= new Surface( );
+				Surface curSurface			= surfaces[ surfaceCount ];
+				int		ident				= reader.ReadInt32( );
 
-				ReadShaders( reader, offset + shadersOffset, numShaders );
-				ReadTriangles( reader, offset + trianglesOffset, numTriangles );
-				ReadVertices( reader, offset + verticesOffset, numVertices );
+				curSurface.Name				= ReadString( reader, MaxPathLength );
+				curSurface.Flags			= reader.ReadInt32( );
 
-				reader.BaseStream.Seek( endOffset, SeekOrigin.Begin );
+				int		numFrames			= reader.ReadInt32( );
+				int		numShaders			= reader.ReadInt32( );
+				int		numVertices			= reader.ReadInt32( ) * numFrames;
+				int		numTriangles		= reader.ReadInt32( );
+				int		trianglesOffset		= reader.ReadInt32( );
+				int		shadersOffset		= reader.ReadInt32( );
+				int		texturesOffset		= reader.ReadInt32( );
+				int		verticesOffset		= reader.ReadInt32( );
+				int		endOffset			= reader.ReadInt32( );
+
+				curSurface.NumVertices		= numVertices;
+				curSurface.Shaders			= ReadShaders( reader, offset + shadersOffset, numShaders );
+				curSurface.Triangles		= ReadTriangles( reader, offset + trianglesOffset, numTriangles );
+				curSurface.TextureUVs		= ReadTextureUVs( reader, offset + texturesOffset, numVertices );
+				ReadVertices( reader, offset + verticesOffset, numVertices, curSurface );
+
+				reader.BaseStream.Seek( offset + endOffset, SeekOrigin.Begin );
+				offset += endOffset;
 			}
 
 			return surfaces;
@@ -209,30 +255,39 @@ namespace RbOpenGlMd3Loader
 		/// <summary>
 		/// Reads surface shaders
 		/// </summary>
-		private void	ReadShaders( BinaryReader reader, long offset, int numShaders )
+		private Shader[]	ReadShaders( BinaryReader reader, long offset, int numShaders )
 		{
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 
+			Shader[] shaders = new Shader[ numShaders ];
 			for ( int shaderCount = 0; shaderCount < numShaders; ++shaderCount )
 			{
-				string	name		= ReadString( reader, MaxPathLength );
-				int		shaderIndex	= reader.ReadInt32( );
+				shaders[ shaderCount ]	= new Shader( );
+				Shader	curShader		= shaders[ shaderCount ];
+				curShader.Name			= ReadString( reader, MaxPathLength );
+				curShader.Index			= reader.ReadInt32( );
 			}
+
+			return shaders;
 		}
 
 		/// <summary>
 		/// Reads surface triangles
 		/// </summary>
-		private void	ReadTriangles( BinaryReader reader, long offset, int numTriangles )
+		private int[]	ReadTriangles( BinaryReader reader, long offset, int numTriangles )
 		{
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 
+			int[] triangles = new int[ 3 * numTriangles ];
+			int curTriIndex = 0;
 			for ( int triangleCount = 0; triangleCount < numTriangles; ++triangleCount )
 			{
-				int index0 = reader.ReadInt32( );
-				int index1 = reader.ReadInt32( );
-				int index2 = reader.ReadInt32( );
+				triangles[ curTriIndex++ ] = reader.ReadInt32( );
+				triangles[ curTriIndex++ ] = reader.ReadInt32( );
+				triangles[ curTriIndex++ ] = reader.ReadInt32( );
 			}
+
+			return triangles;
 		}
 
 		/// <summary>
@@ -241,38 +296,51 @@ namespace RbOpenGlMd3Loader
 		/// <param name="reader"></param>
 		/// <param name="offset"></param>
 		/// <param name="numCoordinates"></param>
-		private void	ReadTextureCoordinates( BinaryReader reader, long offset, int numCoordinates )
+		private float[]	ReadTextureUVs( BinaryReader reader, long offset, int numCoordinates )
 		{
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 			
+			float[] texCoords = new float[ numCoordinates * 2 ];
+			int coordinateIndex = 0;
 			for ( int coordinateCount = 0; coordinateCount < numCoordinates; ++coordinateCount )
 			{
-				float u = reader.ReadSingle( );
-				float v = reader.ReadSingle( );
+				texCoords[ coordinateIndex++ ] = reader.ReadSingle( );
+				texCoords[ coordinateIndex++ ] = reader.ReadSingle( );
 			}
+
+			return texCoords;
 		}
 
 
 		/// <summary>
 		/// Reads surface vertices (positions and normals)
 		/// </summary>
-		private void	ReadVertices( BinaryReader reader, long offset, int numVertices )
+		private void	ReadVertices( BinaryReader reader, long offset, int numVertices, Surface surface )
 		{
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
+
+			float[] positions	= new float[ numVertices * 3 ];
+			float[] normals		= new float[ numVertices * 3 ];
+
+			int positionIndex	= 0;
+			int normalIndex		= 0;
 			
 			for ( int vertexCount = 0; vertexCount < numVertices; ++vertexCount )
 			{
-				float x 	= ( ( float )reader.ReadInt16( ) ) * XyzScale;
-				float y 	= ( ( float )reader.ReadInt16( ) ) * XyzScale;
-				float z 	= ( ( float )reader.ReadInt16( ) ) * XyzScale;
+				positions[ positionIndex++ ] = ( ( float )reader.ReadInt16( ) ) * XyzScale;
+				positions[ positionIndex++ ] = ( ( float )reader.ReadInt16( ) ) * XyzScale;
+				positions[ positionIndex++ ] = ( ( float )reader.ReadInt16( ) ) * XyzScale;
 
 				float s		= ( float )( reader.ReadByte( ) ) * ByteToAngle;
 				float t		= ( float )( reader.ReadByte( ) ) * ByteToAngle;
 
-				float nX	= ( float )( System.Math.Cos( s ) * System.Math.Sin( t ) );
-				float nY	= ( float )( System.Math.Sin( s ) * System.Math.Sin( t ) );
-				float nZ	= ( float )( System.Math.Cos( t ) );
+				normals[ normalIndex++ ] = ( float )( System.Math.Cos( s ) * System.Math.Sin( t ) );
+				normals[ normalIndex++ ] = ( float )( System.Math.Sin( s ) * System.Math.Sin( t ) );
+				normals[ normalIndex++ ] = ( float )( System.Math.Cos( t ) );
    			}
+
+			surface.Positions	= positions;
+			surface.Normals		= normals;
 		}
 
 		#endregion

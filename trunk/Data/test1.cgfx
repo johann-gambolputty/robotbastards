@@ -86,6 +86,43 @@ technique SpecularTestTechnique
 	}
 }
 
+
+struct WireIn
+{
+	float4	pos : POSITION;
+	float4	normal : NORMAL;
+};
+
+struct WireOut
+{
+	float4 pos : POSITION;
+	float4 colour : COLOR0;
+};
+
+WireOut WireframeVertexShader( WireIn input )
+{
+	WireOut output;
+
+	output.pos		= mul( ModelViewProj, input.pos );
+	output.colour	= float4( 0, 0, 0, 1 );
+
+	return output;
+}
+
+technique Wireframe
+{
+	pass
+	{
+		ShadeModel		= Smooth;
+		FrontFace		= CW;
+		DepthFunc		= LEqual;
+		CullFaceEnable	= false;
+		DepthTestEnable	= false;
+		PolygonMode		= int2( FrontAndBack, Line );
+		VertexProgram	= compile arbvp1 WireframeVertexShader( );
+	}
+}
+
 technique BlobTechnique
 {
 	pass

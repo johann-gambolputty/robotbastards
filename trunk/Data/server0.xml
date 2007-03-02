@@ -3,7 +3,6 @@
 
 	<modelSet name="effects">
 		<resource path="test1.cgfx" name="Test1"/>
-		<resource path="sarge\upper.md3" name="SargeUpper"/>
 	</modelSet>
 
 	<object type="RbEngine.Network.Server" name="server0">
@@ -20,9 +19,24 @@
 			<!-- Test scenery :) -->
 			<object type="RbEngine.Components.Simple.GroundPlane"/>
 
+			<resource path="sarge\upper.md3" name="SargeUpper">
+				<reference modelPath="effects/Test1" property="Effect"/>
+				<string value="BlobTechnique" property="SelectedTechniqueName"/>
+			</resource>
+
+			<resource path="sarge\lower.md3" name="SargeLower">
+				<reference modelPath="effects/Test1" property="Effect"/>
+				<string value="BlobTechnique" property="SelectedTechniqueName"/>
+			</resource>
+
+			<resource path="sarge\head.md3" name="SargeHead">
+				<reference modelPath="effects/Test1" property="Effect"/>
+				<string value="BlobTechnique" property="SelectedTechniqueName"/>
+			</resource>
+
 			<!-- Entities -->
 			<object type="RbEngine.Entities.Entity3">
-			
+
 				<point3 x="12" y="0.5" z="10" property="NextPosition"/>
 
 				<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics">
@@ -53,21 +67,23 @@
 					<point3 x="12" y="40" z="30" property="Position"/>
 				</object>
 
+<!--
 				<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics">
 					<resource path="light.cgfx" property="Effect"/>
 					<resource path="sphere.dae" property="RenderedObject"/>
 				</object>
+-->
 
 			</object>
 
-			<!-- Environment -->
+			<!-- Environment
 			<object type="RbEngine.Rendering.EffectRenderedObject">
 
 				<reference modelPath="effects/Test1" property="Effect"/>
 				<resource path="simpleEnvironment.dae" property="RenderedObject"/>
 
 			</object>
-
+ -->
 		</object>
 	</object>
 

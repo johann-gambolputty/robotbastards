@@ -1,0 +1,45 @@
+sampler2D Sampler = sampler_state
+{
+	generateMipMap	= true;
+	minFilter		= LinearMipMapLinear;
+	magFilter		= Linear;
+};
+
+struct InputVertex
+{
+	float4	m_Position : POSITION;
+	float4	m_Normal : NORMAL;
+	float2	m_Tex0 : TEXCOORD0;
+};
+
+struct OutputVertex
+{
+	float4	m_Position : POSITION;
+	float2	m_Tex0 : TEXCOORD0;
+};
+
+float4x4	ModelViewProj;
+
+OutputVertex VertexShader( InputVertex input )
+{
+	OutputVertex output;
+	
+	output.m_Position	= mul( ModelViewProj, input.m_Position );
+	output.m_Tex0		= input.m_Tex0;
+	
+	return output;
+}
+
+technique Md3Technique
+{
+	pass
+	{
+		ShadeModel				= Smooth;
+		FrontFace				= CW;
+		DepthFunc				= LEqual;
+		DepthTestEnable			= true;
+		CullFaceEnable			= true;
+		PolygonMode				= int2( Front, Fill );
+		VertexProgram			= compile arbvp1 VertexShader( );
+	}
+}
