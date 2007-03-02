@@ -279,10 +279,10 @@ namespace RbEngine.Components
 			/// </summary>
 			private void			BindObjectToProperty( Object parentObject, System.Reflection.PropertyInfo property )
 			{
-				IEnumerable loadedEnumerable = LoadedObject as IEnumerable;
-				if ( loadedEnumerable != null )
+				ICollection loadedCollection = LoadedObject as ICollection;
+				if ( loadedCollection != null )
 				{
-					IEnumerator enumerator = loadedEnumerable.GetEnumerator( );
+					IEnumerator enumerator = loadedCollection.GetEnumerator( );
 					if ( enumerator.MoveNext( ) )
 					{
 						property.SetValue( parentObject, enumerator.Current, null );

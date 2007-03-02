@@ -1,4 +1,5 @@
 using System;
+using RbEngine.Rendering;
 using Tao.OpenGl;
 
 namespace RbOpenGlRendering
@@ -6,8 +7,15 @@ namespace RbOpenGlRendering
 	/// <summary>
 	/// Simple OpenGL mesh
 	/// </summary>
-	public class OpenGlMesh : RbEngine.Rendering.IRender
+	public class OpenGlMesh : IRender, RbEngine.Components.INamedObject
 	{
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		public OpenGlMesh( )
+		{
+			m_Technique.RenderCallback = new RenderTechnique.RenderDelegate( RenderMesh );
+		}
 
 		#region	Group setup
 
@@ -106,38 +114,80 @@ namespace RbOpenGlRendering
 
 		#endregion
 
+		#region	Texture setup
 
 		/// <summary>
-		/// Indexed vertex group
+		/// Sets up a texture
 		/// </summary>
-		private struct Group
+		public void AddTexture( Texture2d texture )
 		{
-			public int[]	IndexBuffer;
-			public int		PrimitiveType;
+			m_Textures[ m_NumTextures++ ].Texture = texture;
 		}
 
 		/// <summary>
-		/// Vertex buffer object
+		/// Gets a texture
 		/// </summary>
-		private struct VertexBufferObject
+		public Texture2d	GetTexture( int index )
 		{
-			public int		Handle;
-			public int		ClientState;
-			public int		ElementType;
-			public short	Stride;
-			public short	NumElements;
+			return m_Textures[ index ].Texture;
 		}
 
-		private Group[]					m_Groups;
-		private VertexBufferObject[]	m_VertexBufferObjects;
+		#endregion
+
+		#region	Mesh rendering properties
+
+		/// <summary>
+		/// The mesh render effect
+		/// </summary>
+		public RenderEffect	Effect
+		{
+			get
+			{
+				return m_Technique.Effect;
+			}
+			set
+			{
+				m_Technique.Effect = value;
+			}
+		}
+
+		/// <summary>
+		/// The selected render technique's name
+		/// </summary>
+		public string		SelectedTechniqueName
+		{
+			get
+			{
+				return ( m_Technique.Technique == null ) ? string.Empty : m_Technique.Technique.Name;
+			}
+			set
+			{
+				m_Technique.SelectTechnique( value );
+			}
+		}
+
+		#endregion
 		
 		#region IRender Members
 
 		/// <summary>
 		/// Renders this mesh
 		/// </summary>
-		public void Render()
+		public void Render( )
 		{
+			m_Technique.Apply( );
+		}
+
+		/// <summary>
+		/// Renders the mesh
+		/// </summary>
+		private void RenderMesh( )
+		{
+			for ( int textureIndex = 0; textureIndex < m_NumTextures; ++textureIndex )
+			{
+				m_Textures[ textureIndex ].Apply( );
+			}
+
 			//	TODO: This is a bit rubbish - disables all client states, enables them as needed
 			//	Can they be enabled, bound, then disabled?
 			Gl.glDisableClientState( Gl.GL_VERTEX_ARRAY );
@@ -174,6 +224,67 @@ namespace RbOpenGlRendering
 				Gl.glDrawElements( m_Groups[ groupIndex ].PrimitiveType, m_Groups[ groupIndex ].IndexBuffer.Length, Gl.GL_UNSIGNED_INT, m_Groups[ groupIndex ].IndexBuffer );
 			}
 		}
+
+		#endregion
+
+		#region INamedObject Members
+
+		/// <summary>
+		/// Event, invoked when the named of this mesh is changed
+		/// </summary>
+		public event RbEngine.Components.NameChangedDelegate NameChanged;
+
+		/// <summary>
+		/// The name of this mehs
+		/// </summary>
+		public string Name
+		{
+			get
+			{
+				return m_Name;
+			}
+			set
+			{
+				m_Name = value;
+				if ( NameChanged != null )
+				{
+					NameChanged( this );
+				}
+			}
+		}
+
+		#endregion
+		
+
+		#region	Private stuff
+
+		/// <summary>
+		/// Indexed vertex group
+		/// </summary>
+		private struct Group
+		{
+			public int[]				IndexBuffer;
+			public int					PrimitiveType;
+		}
+
+		/// <summary>
+		/// Vertex buffer object
+		/// </summary>
+		private struct VertexBufferObject
+		{
+			public int					Handle;
+			public int					ClientState;
+			public int					ElementType;
+			public short				Stride;
+			public short				NumElements;
+		}
+
+		private Group[]					m_Groups;
+		private VertexBufferObject[]	m_VertexBufferObjects;
+		private string					m_Name;
+		private SelectedTechnique		m_Technique = new SelectedTechnique( );
+		private TextureSampler2d[]		m_Textures = new TextureSampler2d[ 8 ];
+		private int						m_NumTextures;
 
 		#endregion
 	}

@@ -89,6 +89,17 @@
                     Project = "{26F15FA5-03D9-4A67-8568-8AC1A4ACB062}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
+                <Reference
+                    Name = "Tao.OpenGl"
+                    AssemblyName = "Tao.OpenGl"
+                    HintPath = "..\..\..\Program Files\Tao\bin\Tao.OpenGl.dll"
+                    AssemblyFolderKey = "hklm\tao"
+                />
+                <Reference
+                    Name = "System.Drawing"
+                    AssemblyName = "System.Drawing"
+                    HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Drawing.dll"
+                />
             </References>
         </Build>
         <Files>
