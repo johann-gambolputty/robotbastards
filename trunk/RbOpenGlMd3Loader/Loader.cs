@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using RbEngine;
 using RbEngine.Maths;
+using RbOpenGlRendering;
 
 namespace RbOpenGlMd3Loader
 {
@@ -42,11 +43,36 @@ namespace RbOpenGlMd3Loader
 			int surfacesOffset	= reader.ReadInt32( );
 			int eofOffset		= reader.ReadInt32( );
 
-			ReadFrames( reader, framesOffset, numFrames );
-			ReadTags( reader, tagsOffset, numTags );
-			ReadSurfaces( reader, surfacesOffset, numSurfaces );
+			OpenGlMesh mesh = new OpenGlMesh( );
+
+			Frame[]		frames		= ReadFrames( reader, framesOffset, numFrames );
+			Tag[]		tags		= ReadTags( reader, tagsOffset, numTags );
+			Surface[]	surfaces	= ReadSurfaces( reader, surfacesOffset, numSurfaces );
 
 			return null;
+		}
+
+		private class Frame
+		{
+			public string	Name;
+			public Point3	MinBounds;
+			public Point3	MaxBounds;
+			public Point3	Origin;
+			public float	Radius;
+		}
+
+		private class Tag
+		{
+			public string	Name;
+			public Point3	Origin;
+			public Vector3	XAxis;
+			public Vector3	YAxis;
+			public Vector3	ZAxis;
+		}
+
+		private class Surface
+		{
+
 		}
 
 		/// <summary>
@@ -106,47 +132,57 @@ namespace RbOpenGlMd3Loader
 		/// <summary>
 		/// Reads frame information
 		/// </summary>
-		private void	ReadFrames( BinaryReader reader, long offset, int numFrames )
+		private Frame[] ReadFrames( BinaryReader reader, long offset, int numFrames )
 		{
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 
+			Frame[] frames = new Frame[ numFrames ];
+
 			for ( int frameCount = 0; frameCount < numFrames; ++frameCount )
 			{
-				Point3 	minBounds 	= ReadPoint( reader );
-				Point3 	maxBounds 	= ReadPoint( reader );
-				Point3 	localOrigin	= ReadPoint( reader );
-				float	radius		= reader.ReadSingle( );
-				string	name		= ReadString( reader, FrameNameLength );
+				Frame curFrame			= frames[ frameCount ];
+				curFrame.MinBounds		= ReadPoint( reader );
+				curFrame.MaxBounds		= ReadPoint( reader );
+				curFrame.Origin			= ReadPoint( reader );
+				curFrame.Radius			= reader.ReadSingle( );
+				curFrame.Name			= ReadString( reader, FrameNameLength );
 			}
+
+			return frames;
 		}
 
 		/// <summary>
 		/// Reads tag information
 		/// </summary>
-		private void	ReadTags( BinaryReader reader, long offset, int numTags )
+		private Tag[]	ReadTags( BinaryReader reader, long offset, int numTags )
 		{
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 
+			Tag[] tags = new Tag[ numTags ];
 			for ( int tagCount = 0; tagCount < numTags; ++tagCount )
 			{
-				string	name		= ReadString( reader, MaxPathLength );
-				Point3	origin		= ReadPoint( reader );
-				Vector3	xAxis		= ReadVector( reader );
-				Vector3	yAxis		= ReadVector( reader );
-				Vector3	zAxis		= ReadVector( reader );
+				Tag curTag		= tags[ tagCount ];
+				curTag.Name		= ReadString( reader, MaxPathLength );
+				curTag.Origin	= ReadPoint( reader );
+				curTag.XAxis	= ReadVector( reader );
+				curTag.YAxis	= ReadVector( reader );
+				curTag.ZAxis	= ReadVector( reader );
 			}
+
+			return tags;
 		}
 		
 		/// <summary>
 		/// Reads surface information
 		/// </summary>
-		private void	ReadSurfaces( BinaryReader reader, long offset, int numSurfaces )
+		private Surface[] ReadSurfaces( BinaryReader reader, long offset, int numSurfaces )
 		{
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 			
+			Surface[] surfaces = new Surface[ numSurfaces ];
 			for ( int surfaceCount = 0; surfaceCount < numSurfaces; ++surfaceCount )
 			{
-				int		start			= reader.ReadInt32( );
+				Surface curSurface		= surfaces[ surfaceCount ];
 				int		ident			= reader.ReadInt32( );
 				string	name			= ReadString( reader, MaxPathLength );
 				int		flags			= reader.ReadInt32( );
@@ -166,6 +202,8 @@ namespace RbOpenGlMd3Loader
 
 				reader.BaseStream.Seek( endOffset, SeekOrigin.Begin );
 			}
+
+			return surfaces;
 		}
 
 		/// <summary>

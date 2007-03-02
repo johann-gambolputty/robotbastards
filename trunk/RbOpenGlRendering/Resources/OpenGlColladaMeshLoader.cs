@@ -354,7 +354,7 @@ namespace RbOpenGlRendering.Resources
 			}
 
 			private bool		m_StoredAsTriangles;
-			private ArrayList	m_Polygons			= new ArrayList( );
+			private ArrayList	m_Polygons = new ArrayList( );
 			private int			m_VertexIndexOffset;	//	TODO: Bodge (should work as semantics, again)
 			private int			m_IndexStride;
 
@@ -466,6 +466,7 @@ namespace RbOpenGlRendering.Resources
 			return BuildMesh( vertices, polygons );
 		}
 
+		/*
 		/// <summary>
 		/// COLLADA OpenGL mesh test class
 		/// </summary>
@@ -641,6 +642,7 @@ namespace RbOpenGlRendering.Resources
 
 			#endregion
 		}
+		*/
 
 		/// <summary>
 		/// Builds an OpenGL mesh
@@ -650,7 +652,97 @@ namespace RbOpenGlRendering.Resources
 		/// <returns></returns>
 		private object BuildMesh( MeshVertices vertices, MeshPolygons polygons )
 		{
-			return new TestMesh( vertices, polygons );
+			OpenGlMesh mesh = new OpenGlMesh( );
+
+			//	Set up the index buffer in the mesh
+			if ( polygons.StoredAsTriangles )
+			{
+				int[] indexBuffer = new int[ polygons.Polygons.Count * 3 ];
+
+				int curIndex = 0;
+				foreach ( MeshPolygon curPoly in polygons.Polygons )
+				{
+					indexBuffer[ curIndex++ ] = curPoly.Indices[ 0 ];
+					indexBuffer[ curIndex++ ] = curPoly.Indices[ 1 ];
+					indexBuffer[ curIndex++ ] = curPoly.Indices[ 2 ];
+				}
+
+				mesh.CreateGroups( 1 );
+				mesh.CreateGroupIndexBuffer( 0, indexBuffer, Gl.GL_TRIANGLES );
+			}
+			else
+			{
+				throw new ApplicationException( "sorry, non-triange index buffers not implemented yet" );
+			}
+
+			mesh.CreateVertexBuffers( vertices.Sources.Count );
+			int vboIndex = 0;
+
+			foreach ( MeshTaggedSource curSource in vertices.Sources )
+			{
+				//	Convert the source semantic to an opengl client state
+				//	Swap y and z elements
+				//	TODO: Should be a resource flag, at the very least
+				bool swapYz = false;
+				int clientState = 0;
+				switch ( curSource.Semantic )
+				{
+					case "POSITION" :	clientState = Gl.GL_VERTEX_ARRAY; swapYz = true;	break;
+					case "NORMAL"	:	clientState = Gl.GL_NORMAL_ARRAY; swapYz = true;	break;
+					case "COLOR"	:	clientState = Gl.GL_COLOR_ARRAY;					break;
+					default			:
+						throw new ApplicationException( string.Format( "Unknown mesh semantic \"{0}\"", curSource.Semantic ) );
+				}
+
+				//	Store the stride (note, for GL this has a slightly different meaning, I think. TODO: Check COLLADA spec. to make sure)
+				int		numObjects	= curSource.Source.Data.Count / curSource.Source.Stride;
+				short	stride		= 0;
+				short	numElements	= ( short )curSource.Source.Stride;
+
+				Type dataType = curSource.Source.DataType;
+				switch ( Type.GetTypeCode( dataType ) )
+				{
+					case TypeCode.Single :
+					{
+						//	HACK: Swap y and z coordinates - in blender (the 3d editor I'm currently using), z is up, in the engine, y is up.
+						float[] bufferData = ( float[] )curSource.Source.Data.ToArray( dataType );
+						if ( swapYz )
+						{
+							for ( int index = 0; index < bufferData.Length; index += 3 )
+							{
+								float tmp = bufferData[ index + 1 ];
+								bufferData[ index + 1 ] = bufferData[ index + 2 ];
+								bufferData[ index + 2 ] = tmp;
+							}
+						}
+						mesh.SetupVertexBuffer( vboIndex, numObjects, clientState, stride, numElements, Gl.GL_STATIC_DRAW_ARB, bufferData );
+						break;
+					}
+
+					case TypeCode.Int32 :
+					{
+						int[] bufferData = ( int[] )curSource.Source.Data.ToArray( dataType );	
+						mesh.SetupVertexBuffer( vboIndex, numObjects, clientState, stride, numElements, Gl.GL_STATIC_DRAW_ARB, bufferData );
+						break;
+					}
+
+					case TypeCode.Byte :
+					{
+						byte[] bufferData = ( byte[] )curSource.Source.Data.ToArray( dataType );
+						mesh.SetupVertexBuffer( vboIndex, numObjects, clientState, stride, numElements, Gl.GL_STATIC_DRAW_ARB, bufferData );
+						break;
+					}
+
+					default :
+					{
+						throw new ApplicationException( string.Format( "Unhandled vertex source type \"{0}\"", curSource.Source.DataType.Name ) );
+					}
+				}
+
+				++vboIndex;
+			}
+
+			return mesh;
 		}
 	}
 }
