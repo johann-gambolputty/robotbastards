@@ -26,7 +26,7 @@ OutputVertex VertexShader( InputVertex input )
 	
 	output.m_Position	= mul( ModelViewProj, input.m_Position );
 	output.m_Tex0		= input.m_Tex0;
-	
+
 	return output;
 }
 

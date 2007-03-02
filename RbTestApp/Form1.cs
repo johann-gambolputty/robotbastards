@@ -52,6 +52,7 @@ namespace RbTestApp
 			//
 			// Required for Windows Form Designer support
 			//
+			
 			InitializeComponent();
 		}
 
@@ -144,7 +145,6 @@ namespace RbTestApp
 
 		private void Form1_Load(object sender, System.EventArgs e)
 		{
-
 			//	Load the test server file
 			RbEngine.Resources.ResourceManager.Inst.Load( "server0.xml" );
 

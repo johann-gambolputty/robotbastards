@@ -1,23 +1,42 @@
 using System;
 using RbEngine.Rendering;
+using RbOpenGlRendering;
 using Tao.OpenGl;
 
-namespace RbOpenGlRendering
+namespace RbOpenGlMd3Loader
 {
 	/// <summary>
-	/// Simple OpenGL mesh
+	/// OpenGL mesh with support for MD3 animation
 	/// </summary>
-	public class OpenGlMesh : IRender, RbEngine.Components.INamedObject
+	public class Mesh : IRender, RbEngine.Components.INamedObject
 	{
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public OpenGlMesh( )
+		public Mesh( )
 		{
 			m_Technique.RenderCallback = new RenderTechnique.RenderDelegate( RenderMesh );
 		}
 
 		#region	Group setup
+
+		/// <summary>
+		/// Index group for this mesh
+		/// </summary>
+		/// <remarks>
+		/// MD3 meshes only use one index 
+		/// </remarks>
+		public OpenGlIndexedGroup	Group
+		{
+			get
+			{
+				return m_Group;
+			}
+			set
+			{
+				m_Group = value;
+			}
+		}
 
 		/// <summary>
 		/// Creates the mesh index buffer
@@ -37,7 +56,17 @@ namespace RbOpenGlRendering
 
 		#endregion
 
-		#region	Vertex buffer setup
+		#region	FrameSet setup
+
+		/// <summary>
+		/// A FrameSet stores a 
+		/// </summary>
+		public class FrameSet
+		{
+			OpenGlVertexBuffer[]	m_VertexBuffers;
+		}
+
+	//	public void			Create
 
 		/// <summary>
 		/// Creates

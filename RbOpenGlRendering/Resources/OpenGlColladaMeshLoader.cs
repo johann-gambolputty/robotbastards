@@ -490,7 +490,7 @@ namespace RbOpenGlRendering.Resources
 				}
 
 				mesh.CreateGroups( 1 );
-				mesh.CreateGroupIndexBuffer( 0, indexBuffer, Gl.GL_TRIANGLES );
+				mesh.SetGroup( 0, new OpenGlIndexedGroup( Gl.GL_TRIANGLES, indexBuffer ) );
 			}
 			else
 			{
@@ -537,21 +537,21 @@ namespace RbOpenGlRendering.Resources
 								bufferData[ index + 2 ] = tmp;
 							}
 						}
-						mesh.SetupVertexBuffer( vboIndex, numObjects, clientState, stride, numElements, Gl.GL_STATIC_DRAW_ARB, bufferData );
+						mesh.SetVertexBuffer( vboIndex, new OpenGlVertexBuffer( numObjects, clientState, stride, numElements, Gl.GL_STATIC_DRAW_ARB, bufferData ) );
 						break;
 					}
 
 					case TypeCode.Int32 :
 					{
 						int[] bufferData = ( int[] )curSource.Source.Data.ToArray( dataType );	
-						mesh.SetupVertexBuffer( vboIndex, numObjects, clientState, stride, numElements, Gl.GL_STATIC_DRAW_ARB, bufferData );
+						mesh.SetVertexBuffer( vboIndex, new OpenGlVertexBuffer( numObjects, clientState, stride, numElements, Gl.GL_STATIC_DRAW_ARB, bufferData ) );
 						break;
 					}
 
 					case TypeCode.Byte :
 					{
 						byte[] bufferData = ( byte[] )curSource.Source.Data.ToArray( dataType );
-						mesh.SetupVertexBuffer( vboIndex, numObjects, clientState, stride, numElements, Gl.GL_STATIC_DRAW_ARB, bufferData );
+						mesh.SetVertexBuffer( vboIndex, new OpenGlVertexBuffer( numObjects, clientState, stride, numElements, Gl.GL_STATIC_DRAW_ARB, bufferData ) );
 						break;
 					}
 

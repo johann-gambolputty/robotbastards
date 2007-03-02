@@ -25,6 +25,10 @@ namespace RbOpenGlMd3Loader
 
 			//	http://icculus.org/homepages/phaethon/q3a/formats/md3format.html
 
+			//	Get the input source directory (not using System.IO.Path.GetDirectory() because that strips of the final slash)
+			int		inputFilePos	= inputSource.LastIndexOfAny( new char[] { '/', '\\' } );
+			string	inputDir		= inputFilePos == -1 ? string.Empty : inputSource.Substring( 0, inputFilePos + 1 );
+
 			//	Make sure of the MD3 identity
 			byte[] ident		= reader.ReadBytes( 4 );
 			if ( ( ident[ 0 ] != 'I' ) || ( ident[ 1 ] != 'D' ) || ( ident[ 2 ] != 'P' ) || ( ident[ 3 ] != '3' ) )
@@ -57,21 +61,29 @@ namespace RbOpenGlMd3Loader
 			{
 				Surface curSurface = surfaces[ surfaceIndex ];
 
-				mesh.CreateGroupIndexBuffer( surfaceIndex, curSurface.Triangles, Gl.GL_TRIANGLES );
+				mesh.SetGroup( surfaceIndex, new OpenGlIndexedGroup( Gl.GL_TRIANGLES, curSurface.Triangles ) );
 
 				mesh.CreateVertexBuffers( 3 );
-				mesh.SetupVertexBuffer( 0, curSurface.NumVertices, Gl.GL_VERTEX_ARRAY, 0, 3, Gl.GL_STATIC_DRAW_ARB, curSurface.Positions );
-				mesh.SetupVertexBuffer( 1, curSurface.NumVertices, Gl.GL_NORMAL_ARRAY, 0, 3, Gl.GL_STATIC_DRAW_ARB, curSurface.Normals );
-				mesh.SetupVertexBuffer( 2, curSurface.NumVertices, Gl.GL_TEXTURE_COORD_ARRAY, 0, 2, Gl.GL_STATIC_DRAW_ARB, curSurface.TextureUVs );
+				mesh.SetVertexBuffer( 0, new OpenGlVertexBuffer( curSurface.NumVertices, Gl.GL_VERTEX_ARRAY, 0, 3, Gl.GL_STATIC_DRAW_ARB, curSurface.Positions ) );
+				mesh.SetVertexBuffer( 1, new OpenGlVertexBuffer( curSurface.NumVertices, Gl.GL_NORMAL_ARRAY, 0, 3, Gl.GL_STATIC_DRAW_ARB, curSurface.Normals ) );
+				mesh.SetVertexBuffer( 2, new OpenGlVertexBuffer( curSurface.NumVertices, Gl.GL_TEXTURE_COORD_ARRAY, 0, 2, Gl.GL_STATIC_DRAW_ARB, curSurface.TextureUVs ) );
 
+				/*
 				for ( int shaderIndex = 0; shaderIndex < curSurface.Shaders.Length; ++shaderIndex )
 				{
 					Shader curShader = curSurface.Shaders[ shaderIndex ];
-					
-					Texture2d newTexture = RenderFactory.Inst.NewTexture2d( );
-					newTexture.Load( curShader.Name );
-					mesh.AddTexture( newTexture );
+
+					if ( curShader.Name != string.Empty )
+					{
+						Texture2d newTexture = RenderFactory.Inst.NewTexture2d( );
+
+						string baseShaderName = System.IO.Path.GetFileName( curShader.Name );
+
+						newTexture.Load( inputDir + baseShaderName );
+						mesh.AddTexture( newTexture );
+					}
 				}
+				*/
 			}
 
 			return mesh;
@@ -160,7 +172,24 @@ namespace RbOpenGlMd3Loader
 		/// </summary>
 		private string	ReadString( BinaryReader reader, int maxLength )
 		{
-			return new string( reader.ReadChars( maxLength ) );
+			byte[] strBytes = reader.ReadBytes( maxLength );
+			char[] strChars = new char[ maxLength ];
+
+			int byteIndex = 0;
+			if ( ( strBytes[ 0 ] == 0 ) && ( strBytes[ 1 ] != 0 ) )
+			{
+				++byteIndex;
+			}
+
+			int numChars = 0;
+			for ( ; ( strBytes[ byteIndex ] != 0 ) && ( byteIndex < strBytes.Length ); ++numChars, ++byteIndex )
+			{
+				strChars[ numChars ] = ( char )strBytes[ byteIndex ];
+			}
+
+			//	For some reason, MD3 paths sometimes start with a null character...
+			string result = new string( strChars, 0, numChars );
+			return result;
 		}
 
 		#endregion
