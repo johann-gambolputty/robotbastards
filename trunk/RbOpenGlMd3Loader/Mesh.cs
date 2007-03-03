@@ -1,5 +1,6 @@
 using System;
 using RbEngine.Rendering;
+using RbEngine.Maths;
 using RbOpenGlRendering;
 using Tao.OpenGl;
 
@@ -18,40 +19,94 @@ namespace RbOpenGlMd3Loader
 			m_Technique.RenderCallback = new RenderTechnique.RenderDelegate( RenderMesh );
 		}
 
-		#region	Group setup
+		#region	Mesh tags
 
 		/// <summary>
-		/// Index group for this mesh
+		/// Tag information
 		/// </summary>
-		/// <remarks>
-		/// MD3 meshes only use one index 
-		/// </remarks>
-		public OpenGlIndexedGroup	Group
+		public class Tag
+		{
+			public string	Name;
+			public Point3	Origin;
+			public Vector3	XAxis;
+			public Vector3	YAxis;
+			public Vector3	ZAxis;
+		}
+
+		/// <summary>
+		/// Access to the tag that specifies the coordinate frame for the nested mesh
+		/// </summary>
+		public int		TransformTagIndex
+		{
+			set
+			{
+				m_TransformTagIndex = value;
+			}
+			get
+			{
+				return m_TransformTagIndex;
+			}
+		}
+
+		public int		TagsPerFrame
+		{
+			set
+			{
+				m_TagsPerFrame = value;
+			}
+			get
+			{
+				return m_TagsPerFrame;
+			}
+		}
+
+		int m_TagsPerFrame;
+
+		/// <summary>
+		/// Tag array access
+		/// </summary>
+		public Tag[]	Tags
+		{
+			set
+			{
+				m_Tags = value;
+			}
+			get
+			{
+				return m_Tags;
+			}
+		}
+		
+		/// <summary>
+		/// Finds a named tag
+		/// </summary>
+		public int		GetTagIndex( string name )
+		{
+			for ( int tagIndex = 0; tagIndex < m_Tags.Length; ++tagIndex )
+			{
+				if ( string.Compare( m_Tags[ tagIndex ].Name, name, true ) == 0 )
+				{
+					return tagIndex;
+				}
+			}
+			return -1;
+		}
+
+		#endregion
+
+		#region	Nested mesh
+
+		public Mesh	NestedMesh
 		{
 			get
 			{
-				return m_Group;
+				return m_NestedMesh;
 			}
 			set
 			{
-				m_Group = value;
+				m_NestedMesh = value;
 			}
-		}
 
-		/// <summary>
-		/// Creates the mesh index buffer
-		/// </summary>
-		public void			CreateGroups( int size )
-		{
-			m_Groups = new OpenGlIndexedGroup[ size ];
-		}
-
-		/// <summary>
-		/// Sets up a group's index buffer
-		/// </summary>
-		public void			SetGroup( int index, OpenGlIndexedGroup group )
-		{
-			m_Groups[ index ] = group;
 		}
 
 		#endregion
@@ -59,31 +114,176 @@ namespace RbOpenGlMd3Loader
 		#region	FrameSet setup
 
 		/// <summary>
-		/// A FrameSet stores a 
+		/// Information about a frame
 		/// </summary>
-		public class FrameSet
+		public class FrameInfo
 		{
-			OpenGlVertexBuffer[]	m_VertexBuffers;
-		}
+			/// <summary>
+			/// Frame origin
+			/// </summary>
+			public Point3	Origin
+			{
+				get
+				{
+					return m_Origin;
+				}
+				set
+				{
+					m_Origin = value;
+				}
+			}
 
-	//	public void			Create
+			private Point3	m_Origin;
+		}
 
 		/// <summary>
-		/// Creates
+		/// A surface frame stores some vertex buffers
 		/// </summary>
-		/// <param name="size"></param>
-		public void			CreateVertexBuffers( int size )
+		public class SurfaceFrame
 		{
-			m_VertexBuffers = new OpenGlVertexBuffer[ size ];
+			/// <summary>
+			/// Creates vertex buffers
+			/// </summary>
+			public void	CreateVertexBuffers( int numVertexBuffers )
+			{
+				m_VertexBuffers = new OpenGlVertexBuffer[ numVertexBuffers ];
+			}
+
+			/// <summary>
+			/// Sets a vertex buffer at an index in the vertex buffer array
+			/// </summary>
+			public void	SetVertexBuffer( int index, OpenGlVertexBuffer buffer )
+			{
+				m_VertexBuffers[ index ] = buffer;
+			}
+
+			/// <summary>
+			/// Gets the number of stored vertex buffers
+			/// </summary>
+			public int	NumVertexBuffers
+			{
+				get
+				{
+					return m_VertexBuffers.Length;
+				}
+			}
+
+			/// <summary>
+			/// Gets an indexed vertex buffer
+			/// </summary>
+			public OpenGlVertexBuffer	GetVertexBuffer( int index )
+			{
+				return m_VertexBuffers[ index ];
+			}
+
+
+			private OpenGlVertexBuffer[]	m_VertexBuffers;
 		}
 
 		/// <summary>
-		/// Sets a vertex buffer
+		/// Surface. Stores a set of frames
 		/// </summary>
-		public void			SetVertexBuffer( int index, OpenGlVertexBuffer vertexBuffer )
+		public class Surface
 		{
-			m_VertexBuffers[ index ] = vertexBuffer;
+			/// <summary>
+			/// Creates the frame list
+			/// </summary>
+			public void	CreateFrames( int numFrames )
+			{
+				m_Frames = new SurfaceFrame[ numFrames ];
+			}
+
+			/// <summary>
+			/// Sets an indexed frame
+			/// </summary>
+			public void	SetFrame( int index, SurfaceFrame frame )
+			{
+				m_Frames[ index ] = frame;
+			}
+
+			/// <summary>
+			/// Gets an indexed frame
+			/// </summary>
+			public SurfaceFrame	GetFrame( int index )
+			{
+				return m_Frames[ index ];
+			}
+
+			/// <summary>
+			/// Access to the surface's indexed group
+			/// </summary>
+			public OpenGlIndexedGroup	Group
+			{
+				get
+				{
+					return m_Group;
+				}
+				set
+				{
+					m_Group = value;
+				}
+			}
+
+			private SurfaceFrame[]		m_Frames;
+			private OpenGlIndexedGroup	m_Group;
 		}
+
+		/// <summary>
+		/// The current frame is the one that is rendered
+		/// </summary>
+		public int	CurrentFrame
+		{
+			get
+			{
+				return m_Frame;
+			}
+			set
+			{
+				m_Frame = value;
+			}
+		}
+
+		/// <summary>
+		/// Creates the frame information array
+		/// </summary>
+		public void			CreateFrameInfo( int numFrames )
+		{
+			m_FrameInfo = new FrameInfo[ numFrames ];
+		}
+
+		/// <summary>
+		/// Sets an indexed frame information object
+		/// </summary>
+		public void			SetFrameInfo( int frameIndex, FrameInfo info )
+		{
+			m_FrameInfo[ frameIndex ] = info;
+		}
+
+		/// <summary>
+		///	Creates the surfaces array
+		/// </summary>
+		public void			CreateSurfaces( int numSurfaces )
+		{
+			m_Surfaces = new Surface[ numSurfaces ];
+		}
+
+		/// <summary>
+		/// Sets an indexed surface
+		/// </summary>
+		public void			SetSurface( int surfaceIndex, Surface surface )
+		{
+			m_Surfaces[ surfaceIndex ] = surface;
+		}
+
+		/// <summary>
+		/// Gets an indexed surface
+		/// </summary>
+		public Surface		GetSurface( int surfaceIndex )
+		{
+			return m_Surfaces[ surfaceIndex ];
+		}
+
+		private Surface[]	m_Surfaces;
 
 		#endregion
 
@@ -149,32 +349,64 @@ namespace RbOpenGlMd3Loader
 		public void Render( )
 		{
 			m_Technique.Apply( );
+
+			if ( m_NestedMesh != null )
+			{
+				if ( m_TransformTagIndex != -1 )
+				{
+					Tag transformTag = Tags[ ( CurrentFrame * m_TagsPerFrame ) + m_TransformTagIndex ];
+
+					Matrix44 transform = new Matrix44( transformTag.Origin, transformTag.XAxis, transformTag.YAxis, transformTag.ZAxis );
+					Renderer.Inst.PushTransform( Transform.LocalToView, transform );
+
+				}
+
+				m_NestedMesh.Render( );
+
+				if ( m_TransformTagIndex != -1 )
+				{
+					Renderer.Inst.PopTransform( Transform.LocalToView );
+				}
+			}
+
 		}
+
+
+		private int	m_Frame;
 
 		/// <summary>
 		/// Renders the mesh
 		/// </summary>
 		private void RenderMesh( )
 		{
+			//	Apply textures
+			//	TODO: This should be part of the render technique
 			for ( int textureIndex = 0; textureIndex < m_NumTextures; ++textureIndex )
 			{
 				m_Textures[ textureIndex ].Apply( );
 			}
 
-			for ( int vbIndex = 0; vbIndex < m_VertexBuffers.Length; ++vbIndex )
+			//	Run through all stored surfaces
+			for ( int surfaceIndex = 0; surfaceIndex < m_Surfaces.Length; ++surfaceIndex )
 			{
-				m_VertexBuffers[ vbIndex ].Apply( );
+				SurfaceFrame curFrame = m_Surfaces[ surfaceIndex ].GetFrame( CurrentFrame );
+
+				//	Apply all vertex buffers in the current frame
+				for ( int vbIndex = 0; vbIndex < curFrame.NumVertexBuffers; ++vbIndex )
+				{
+					curFrame.GetVertexBuffer( vbIndex ).Apply( );
+				}
+
+				m_Surfaces[ surfaceIndex ].Group.Draw( );
+
+				//	TODO: Don't need to unapply the vertex buffers like this - could just enable all client arrays before hand, then
+				//	disable all after
+				for ( int vbIndex = 0; vbIndex < curFrame.NumVertexBuffers; ++vbIndex )
+				{
+					curFrame.GetVertexBuffer( vbIndex ).UnApply( );
+				}
 			}
 
-			for ( int groupIndex = 0; groupIndex < m_Groups.Length; ++groupIndex )
-			{
-				m_Groups[ groupIndex ].Draw( );
-			}
-			
-			for ( int vbIndex = 0; vbIndex < m_VertexBuffers.Length; ++vbIndex )
-			{
-				m_VertexBuffers[ vbIndex ].UnApply( );
-			}
 		}
 
 		#endregion
@@ -209,12 +441,14 @@ namespace RbOpenGlMd3Loader
 
 		#region	Private stuff
 
-		private OpenGlIndexedGroup[]	m_Groups;
-		private OpenGlVertexBuffer[]	m_VertexBuffers;
 		private string					m_Name;
 		private SelectedTechnique		m_Technique = new SelectedTechnique( );
 		private TextureSampler2d[]		m_Textures = new TextureSampler2d[ 8 ];
 		private int						m_NumTextures;
+		private FrameInfo[]				m_FrameInfo;
+		private Tag[]					m_Tags;
+		private int						m_TransformTagIndex = -1;
+		private Mesh					m_NestedMesh;
 
 		#endregion
 	}

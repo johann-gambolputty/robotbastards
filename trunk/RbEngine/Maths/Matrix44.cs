@@ -99,12 +99,13 @@ namespace RbEngine.Maths
 			get
 			{
 				return new Point3( Elements[ 12 ], Elements[ 13 ], Elements[ 14 ] );
+			//	return new Point3( Elements[ 3 ], Elements[ 7 ], Elements[ 11 ] );
 			}
 			set
 			{
-				Elements[ 12 ]  = value[ 0 ];
-				Elements[ 13 ]  = value[ 1 ];
-				Elements[ 14 ]	= value[ 2 ];
+				Elements[ 12 ]  = value[ 0 ];				Elements[ 13 ]  = value[ 1 ];				Elements[ 14 ]	= value[ 2 ];
+			//	Elements[ 3 ]  = value[ 0 ];				Elements[ 7 ]  = value[ 1 ];				Elements[ 11 ]	= value[ 2 ];
+
 			}
 		}
 		#endregion
@@ -133,6 +134,23 @@ namespace RbEngine.Maths
 			}
 		}
 
+		/// <summary>
+		/// Copies the specified source matrix
+		/// </summary>
+		public Matrix44( Point3 pos, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
+		{
+			//	Elements[ 0 ]  = xAxis.X; 	Elements[ 1 ]  = xAxis.Y; 	Elements[ 2 ]  = xAxis.Z; 	Elements[ 3 ]  = 0;
+			//	Elements[ 4 ]  = yAxis.X; 	Elements[ 5 ]  = yAxis.Y; 	Elements[ 6 ]  = yAxis.Z; 	Elements[ 7 ]  = 0;
+			//	Elements[ 8 ]  = zAxis.X; 	Elements[ 9 ]  = zAxis.Y; 	Elements[ 10 ] = zAxis.Z; 	Elements[ 11 ] = 0;
+			Elements[ 0 ]  = xAxis.X; 	Elements[ 1 ]  = yAxis.X; 	Elements[ 2 ]  = zAxis.X; 	Elements[ 3 ]  = 0;
+			Elements[ 4 ]  = xAxis.Y; 	Elements[ 5 ]  = yAxis.Y; 	Elements[ 6 ]  = zAxis.Y; 	Elements[ 7 ]  = 0;
+			Elements[ 8 ]  = xAxis.Z; 	Elements[ 9 ]  = yAxis.Z; 	Elements[ 10 ] = zAxis.Z; 	Elements[ 11 ] = 0;
+			Elements[ 12 ] = pos.X;		Elements[ 13 ] = pos.Y;		Elements[ 14 ] = pos.Z;		Elements[ 15 ] = 1;
+		//	Translation = pos;
+		//	XAxis = xAxis;
+		//	YAxis = yAxis;
+		//	ZAxis = zAxis;
+		}
 		/// <summary>
 		/// Sets up all the matrices' elements
 		/// </summary>

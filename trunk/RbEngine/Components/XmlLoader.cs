@@ -20,7 +20,7 @@ namespace RbEngine.Components
 	/// <summary>
 	/// Loads an XML object definition file
 	/// </summary>
-	public class XmlLoader : Resources.ResourceLoader
+	public class XmlLoader : Resources.ResourceStreamLoader
 	{
 
 		/// <summary>
@@ -459,7 +459,7 @@ namespace RbEngine.Components
 				{
 					case "object"		: loader = new ObjectLoader( element );	break;
 					case "reference"	: loader = new ReferenceLoader( element ); break;
-					case "resource"		: loader = new ResourceLoader( element );	break;
+					case "resource"		: loader = new ResourceStreamLoader( element );	break;
 					case "string"		: loader = new ValueLoader( element, element.GetAttribute( "value" ) );	break;
 					case "int"			: loader = new ValueLoader( element, int.Parse( element.GetAttribute( "value" ) ) );	break;
 					case "float"		: loader = new ValueLoader( element, float.Parse( element.GetAttribute( "value" ) ) );	break;
@@ -686,12 +686,12 @@ namespace RbEngine.Components
 		/// <summary>
 		/// Extends BaseLoader to load a given resource type
 		/// </summary>
-		private class ResourceLoader : BaseLoader
+		private class ResourceStreamLoader : BaseLoader
 		{
 			/// <summary>
 			/// Constructor. Loads the resource
 			/// </summary>
-			public ResourceLoader( XmlElement element ) :
+			public ResourceStreamLoader( XmlElement element ) :
 				base( element )
 			{
 				//	Create the new resource

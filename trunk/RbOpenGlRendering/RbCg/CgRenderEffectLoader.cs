@@ -6,7 +6,7 @@ namespace RbOpenGlRendering.RbCg
 	/// <summary>
 	/// Summary description for CgRenderEffectLoader.
 	/// </summary>
-	public class CgRenderEffectLoader : RbEngine.Resources.ResourceLoader
+	public class CgRenderEffectLoader : RbEngine.Resources.ResourceStreamLoader
 	{
 
 		/// <summary>

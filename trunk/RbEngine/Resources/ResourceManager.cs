@@ -35,9 +35,18 @@ namespace RbEngine.Resources
 		/// Adds a loader that can read resource streams
 		/// </summary>
 		/// <param name="loader"> Loader to add </param>
-		public void AddLoader( ResourceLoader loader )
+		public void AddLoader( ResourceStreamLoader loader )
 		{
-			m_Loaders.Add( loader );
+			m_StreamLoaders.Add( loader );
+		}
+
+		/// <summary>
+		/// Adds a loader that can read resource directory
+		/// </summary>
+		/// <param name="loader"> Loader to add </param>
+		public void AddLoader( ResourceDirectoryLoader loader )
+		{
+			m_DirectoryLoaders.Add( loader );
 		}
 
 		/// <summary>
@@ -81,7 +90,8 @@ namespace RbEngine.Resources
 					}
 
 					string loaderTypeName = curLoaderNode.Attributes[ "type" ].Value;
-					ResourceLoader loader = ( ResourceLoader )AppDomainUtils.CreateInstance( loaderTypeName );
+
+					object loader = AppDomainUtils.CreateInstance( loaderTypeName );
 					if ( loader == null )
 					{
 						Output.WriteLineCall( Output.ResourceError, String.Format( "Unable to create instance for resource loader type \"{0}\"", loaderTypeName ) );
@@ -107,12 +117,33 @@ namespace RbEngine.Resources
 		/// </remarks>
 		public Object Load( string path )
 		{
+			if ( System.IO.Path.GetExtension( path ) == string.Empty )
+			{
+				//	path was just a directory - see if there's a provider that recognises it
+				foreach ( ResourceProvider provider in m_Providers )
+				{
+					if ( provider.DirectoryExists( ref path ) )
+					{
+						foreach ( ResourceDirectoryLoader loader in m_DirectoryLoaders )
+						{
+							if ( loader.CanLoadDirectory( provider, path ) )
+							{
+								Output.WriteLineCall( Output.ResourceInfo, "Loading \"{0}\"", path );
+								return loader.Load( provider, path );
+							}
+						}
+						throw new System.ApplicationException( String.Format( "Could not find loader that could open resource directory {0}", path ) );
+					}
+				}
+				throw new System.ApplicationException( String.Format( "Could not open resource directory {0}", path ) );
+			}
+
 			foreach ( ResourceProvider provider in m_Providers )
 			{
 				System.IO.Stream input = provider.Open( ref path );
 				if ( input != null )
 				{
-					foreach( ResourceLoader loader in m_Loaders )
+					foreach( ResourceStreamLoader loader in m_StreamLoaders )
 					{
 						if ( loader.CanLoadStream( path, input ) )
 						{
@@ -128,7 +159,25 @@ namespace RbEngine.Resources
 		}
 
 		private ArrayList m_Providers = new ArrayList( );
-		private ArrayList m_Loaders = new ArrayList( );
+		private ArrayList m_StreamLoaders = new ArrayList( );
+		private ArrayList m_DirectoryLoaders = new ArrayList( );
+		
+		/// <summary>
+		/// Adds a loader that can read resource streams
+		/// </summary>
+		/// <param name="loader"> Loader to add </param>
+		private void AddLoader( object loader )
+		{
+			if ( loader is ResourceStreamLoader )
+			{
+				m_StreamLoaders.Add( loader );
+			}
+			else
+			{
+				m_DirectoryLoaders.Add( ( ResourceDirectoryLoader )loader );
+			}
+		}
+
 
 	}
 }

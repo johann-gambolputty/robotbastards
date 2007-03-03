@@ -639,7 +639,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Resources\ResourceLoader.cs"
+                    RelPath = "Resources\ResourceDirectoryLoader.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -650,6 +650,11 @@
                 />
                 <File
                     RelPath = "Resources\ResourceProvider.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Resources\ResourceStreamLoader.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

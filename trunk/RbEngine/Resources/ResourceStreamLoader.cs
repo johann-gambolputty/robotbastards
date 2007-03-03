@@ -3,10 +3,12 @@ using System;
 namespace RbEngine.Resources
 {
 	/// <summary>
-	/// Summary description for ResourceLoader.
+	/// Loads resources from streams
 	/// </summary>
-	public abstract class ResourceLoader
+	public abstract class ResourceStreamLoader
 	{
+		#region	Stream loading
+
 		/// <summary>
 		/// Loads a resource from a stream
 		/// </summary>
@@ -26,6 +28,8 @@ namespace RbEngine.Resources
 		/// at the header bytes).
 		/// </remarks>
 		public abstract bool CanLoadStream( string path, System.IO.Stream input );
+
+		#endregion
 
 	}
 }

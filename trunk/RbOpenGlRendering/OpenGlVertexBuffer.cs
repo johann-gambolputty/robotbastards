@@ -67,12 +67,13 @@ namespace RbOpenGlRendering
 		/// Sets up this vertex buffer
 		/// </summary>
 		/// <param name="numVertices">Number of vertices in the buffer</param>
+		/// <param name="offset">Offset from the start of buffer to the usable vertices (measured in vertices, not elements)</param>
 		/// <param name="clientState">OpenGL client state (e.g. GL_VERTEX_ARRAY)</param>
 		/// <param name="stride">Stride between vertices</param>
 		/// <param name="numElements">Number of floats per vertex</param>
 		/// <param name="usage">Buffer usage (e.g. GL_STATIC_BUFFER_ARB)</param>
 		/// <param name="buffer">Buffer data</param>
-		public			OpenGlVertexBuffer( int numVertices, int clientState, short stride, short numElements, int usage, float[] buffer )
+		public			OpenGlVertexBuffer( int numVertices, int offset, int clientState, short stride, short numElements, int usage, float[] buffer )
 		{
 			m_ClientState	= clientState;
 			m_Stride		= stride;
@@ -84,19 +85,30 @@ namespace RbOpenGlRendering
 
 			//	Bind and fill the VBO
 			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );
-			Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, ( 4 * numElements ) * numVertices, buffer, usage );
+
+			if ( offset == 0 )
+			{
+				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, ( 4 * numElements ) * numVertices, buffer, usage );
+			}
+			else
+			{
+				float[] subBuffer = new float[ numVertices * numElements ];
+				Array.Copy( buffer, offset * numElements, subBuffer, 0, numVertices * numElements );
+				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, ( 4 * numElements ) * numVertices, subBuffer, usage );
+			}
 		}
 
 		/// <summary>
 		/// Sets up this vertex buffer
 		/// </summary>
 		/// <param name="numVertices">Number of vertices in the buffer</param>
+		/// <param name="offset">Offset from the start of buffer to the usable vertices (measured in vertices, not elements)</param>
 		/// <param name="clientState">OpenGL client state (e.g. GL_VERTEX_ARRAY)</param>
 		/// <param name="stride">Stride between vertices</param>
 		/// <param name="numElements">Number of integers per vertex</param>
 		/// <param name="usage">Buffer usage (e.g. GL_STATIC_BUFFER_ARB)</param>
 		/// <param name="buffer">Buffer data</param>
-		public			OpenGlVertexBuffer( int numVertices, int clientState, short stride, short numElements, int usage, int[] buffer )
+		public			OpenGlVertexBuffer( int numVertices, int offset, int clientState, short stride, short numElements, int usage, int[] buffer )
 		{
 			m_ClientState	= clientState;
 			m_Stride		= stride;
@@ -108,19 +120,30 @@ namespace RbOpenGlRendering
 
 			//	Bind and fill the VBO
 			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );
-			Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, ( 4 * numElements ) * numVertices, buffer, usage );
+			
+			if ( offset == 0 )
+			{
+				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, ( 4 * numElements ) * numVertices, buffer, usage );
+			}
+			else
+			{
+				int[] subBuffer = new int[ numVertices * numElements ];
+				Array.Copy( buffer, offset * numElements, subBuffer, 0, numVertices * numElements );
+				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, ( 4 * numElements ) * numVertices, subBuffer, usage );
+			}
 		}
 
 		/// <summary>
 		/// Sets up this vertex buffer
 		/// </summary>
 		/// <param name="numVertices">Number of vertices in the buffer</param>
+		/// <param name="offset">Offset from the start of buffer to the usable vertices (measured in vertices, not elements)</param>
 		/// <param name="clientState">OpenGL client state (e.g. GL_VERTEX_ARRAY)</param>
 		/// <param name="stride">Stride between vertices</param>
 		/// <param name="numElements">Number of integers per vertex</param>
 		/// <param name="usage">Buffer usage (e.g. GL_STATIC_BUFFER_ARB)</param>
 		/// <param name="buffer">Buffer data</param>
-		public			OpenGlVertexBuffer( int numVertices, int clientState, short stride, short numElements, int usage, byte[] buffer )
+		public			OpenGlVertexBuffer( int numVertices, int offset, int clientState, short stride, short numElements, int usage, byte[] buffer )
 		{
 			m_ClientState	= clientState;
 			m_Stride		= stride;
@@ -132,7 +155,17 @@ namespace RbOpenGlRendering
 
 			//	Bind and fill the VBO
 			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );
-			Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, ( 1 * numElements ) * numVertices, buffer, usage );
+			
+			if ( offset == 0 )
+			{
+				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, ( 1 * numElements ) * numVertices, buffer, usage );
+			}
+			else
+			{
+				byte[] subBuffer = new byte[ numVertices * numElements ];
+				Array.Copy( buffer, offset * numElements, subBuffer, 0, numVertices * numElements );
+				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, ( 4 * numElements ) * numVertices, subBuffer, usage );
+			}
 		}
 
 		/// <summary>
