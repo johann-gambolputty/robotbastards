@@ -11,17 +11,105 @@ namespace RbOpenGlMd3Loader
 	/// <summary>
 	/// Loads Quake3 MD3 files, generating OpenGL meshes
 	/// </summary>
-	public class Loader : RbEngine.Resources.ResourceLoader
+	public class Loader : RbEngine.Resources.ResourceDirectoryLoader
 	{
 		/// <summary>
-		/// Loads a resource from a stream
+		/// Returns the mesh filename for a part
 		/// </summary>
-		/// <param name="input"> Input stream to load the resource from </param>
-		/// <param name="inputSource"> Source of the input stream (e.g. file path) </param>
-		/// <returns> The loaded resource </returns>
-		public override Object Load( Stream input, string inputSource )
+		private static string MeshFile( string directory, ModelPart part )
 		{
-			BinaryReader reader = new BinaryReader( input );
+			return Path.Combine( directory, part.ToString( ) + ".md3" );
+		}
+
+		/// <summary>
+		/// Returns the default skin filename for a part
+		/// </summary>
+		private static string DefaultSkinFile( string directory, ModelPart part )
+		{
+			return Path.Combine( directory, part.ToString( ) + "_default.skin" );
+		}
+
+		/// <summary>
+		/// Loads the MD3 resources in the specified directory
+		/// </summary>
+		/// <param name="provider"></param>
+		/// <param name="directory"></param>
+		/// <returns></returns>
+		public override object Load( RbEngine.Resources.ResourceProvider provider, string directory )
+		{
+			Model model = new Model( );
+
+			for ( int partIndex = 0; partIndex < ( int )ModelPart.NumParts; ++partIndex )
+			{
+				Mesh partMesh = LoadMd3( provider, MeshFile( directory, ( ModelPart )partIndex ) );
+				model.SetPartMesh( ( ModelPart )partIndex, partMesh );
+				
+				if ( partIndex > 0 )
+				{
+					model.GetPartMesh( ( ModelPart )( partIndex - 1 ) ).NestedMesh = partMesh;
+				}
+			}
+
+			model.GetPartMesh( ModelPart.Lower ).TransformTagIndex = model.GetPartMesh( ModelPart.Lower ).GetTagIndex( "tag_torso" );
+			model.GetPartMesh( ModelPart.Upper ).TransformTagIndex = model.GetPartMesh( ModelPart.Upper ).GetTagIndex( "tag_head" );
+
+			return model;
+		}
+
+		/// <summary>
+		/// Checks that the specified directory contains all the md3, skin and cfg files required to build the model
+		/// </summary>
+		public override bool CanLoadDirectory( RbEngine.Resources.ResourceProvider provider, string directory )
+		{
+			//	Does the head mesh exist in the directory?
+			if ( !provider.StreamExists( MeshFile( directory, ModelPart.Head ) ) )
+			{
+				return false;
+			}
+
+			//	Yep - check all the other parts exist
+			for ( int partIndex = 0; partIndex < ( int )ModelPart.NumParts; ++partIndex )
+			{
+				if ( !CheckFileExists( provider, directory, MeshFile( directory, ( ModelPart )partIndex ) ) ||
+					 !CheckFileExists( provider, directory, DefaultSkinFile( directory, ( ModelPart )partIndex ) ) )
+				{
+					return false;
+				}
+			}
+
+			return CheckFileExists( provider, directory, Path.Combine( directory, "animation.cfg" ) );
+		}
+
+		/// <summary>
+		/// Checks that a file exists
+		/// </summary>
+		private bool CheckFileExists( RbEngine.Resources.ResourceProvider provider, string directory, string path )
+		{
+			if ( provider.StreamExists( path ) )
+			{
+				return true;
+			}
+
+			RbEngine.Output.WriteLineCall( RbEngine.Output.ResourceWarning, "\"{0}\" looked like an MD3 resource directory, but it was missing \"{1}\"", directory, path );
+
+			return false;
+		}
+
+		/// <summary>
+		/// Loads a skin file
+		/// </summary>
+		private void LoadSkin( RbEngine.Resources.ResourceProvider provider, string inputSource )
+		{
+		}
+
+
+		/// <summary>
+		/// Loads an MD3 mesh resource from a stream
+		/// </summary>
+		private Mesh LoadMd3( RbEngine.Resources.ResourceProvider provider, string inputSource )
+		{
+			Stream			inputStream	= provider.Open( inputSource );
+			BinaryReader	reader		= new BinaryReader( inputStream );
 
 			//	http://icculus.org/homepages/phaethon/q3a/formats/md3format.html
 
@@ -49,42 +137,65 @@ namespace RbOpenGlMd3Loader
 			int surfacesOffset	= reader.ReadInt32( );
 			int eofOffset		= reader.ReadInt32( );
 
+			//	TODO: Can load directly into mesh frame, tag and surface structures - don't do this intermediate step
+			Mesh mesh = new Mesh( );
 
 			Frame[]		frames		= ReadFrames( reader, framesOffset, numFrames );
-			Tag[]		tags		= ReadTags( reader, tagsOffset, numTags );
+			mesh.Tags = ReadTags( reader, tagsOffset, numTags * numFrames );
+			mesh.TagsPerFrame = numTags;
 			Surface[]	surfaces	= ReadSurfaces( reader, surfacesOffset, numSurfaces );
 
-			OpenGlMesh mesh = new OpenGlMesh( );
-			mesh.CreateGroups( surfaces.Length );
+			mesh.CreateSurfaces( surfaces.Length );
+			mesh.CreateFrameInfo( frames.Length );
+
+			for ( int frameIndex = 0; frameIndex < numFrames; ++frameIndex )
+			{
+				Mesh.FrameInfo frameInfo = new Mesh.FrameInfo( );
+				frameInfo.Origin = frames[ frameIndex ].Origin;
+				mesh.SetFrameInfo( frameIndex, frameInfo );
+			}
 
 			for ( int surfaceIndex = 0; surfaceIndex < surfaces.Length; ++surfaceIndex )
 			{
 				Surface curSurface = surfaces[ surfaceIndex ];
 
-				mesh.SetGroup( surfaceIndex, new OpenGlIndexedGroup( Gl.GL_TRIANGLES, curSurface.Triangles ) );
+				Mesh.Surface meshSurface = new Mesh.Surface( );
 
-				mesh.CreateVertexBuffers( 3 );
-				mesh.SetVertexBuffer( 0, new OpenGlVertexBuffer( curSurface.NumVertices, Gl.GL_VERTEX_ARRAY, 0, 3, Gl.GL_STATIC_DRAW_ARB, curSurface.Positions ) );
-				mesh.SetVertexBuffer( 1, new OpenGlVertexBuffer( curSurface.NumVertices, Gl.GL_NORMAL_ARRAY, 0, 3, Gl.GL_STATIC_DRAW_ARB, curSurface.Normals ) );
-				mesh.SetVertexBuffer( 2, new OpenGlVertexBuffer( curSurface.NumVertices, Gl.GL_TEXTURE_COORD_ARRAY, 0, 2, Gl.GL_STATIC_DRAW_ARB, curSurface.TextureUVs ) );
+				meshSurface.Group = new OpenGlIndexedGroup( Gl.GL_TRIANGLES, curSurface.Triangles );
+				meshSurface.CreateFrames( numFrames );
 
-				/*
-				for ( int shaderIndex = 0; shaderIndex < curSurface.Shaders.Length; ++shaderIndex )
+				int offsetToFrame = 0;
+				for ( int frameIndex = 0; frameIndex < numFrames; ++frameIndex )
 				{
-					Shader curShader = curSurface.Shaders[ shaderIndex ];
+					Mesh.SurfaceFrame meshFrame = new Mesh.SurfaceFrame( );
+					meshFrame.CreateVertexBuffers( 3 );
+					meshFrame.SetVertexBuffer( 0, new OpenGlVertexBuffer( curSurface.NumVertices, offsetToFrame, Gl.GL_VERTEX_ARRAY, 0, 3, Gl.GL_STATIC_DRAW_ARB, curSurface.Positions ) );
+					meshFrame.SetVertexBuffer( 1, new OpenGlVertexBuffer( curSurface.NumVertices, offsetToFrame, Gl.GL_NORMAL_ARRAY, 0, 3, Gl.GL_STATIC_DRAW_ARB, curSurface.Normals ) );
+					meshFrame.SetVertexBuffer( 2, new OpenGlVertexBuffer( curSurface.NumVertices, offsetToFrame, Gl.GL_TEXTURE_COORD_ARRAY, 0, 2, Gl.GL_STATIC_DRAW_ARB, curSurface.TextureUVs ) );
 
-					if ( curShader.Name != string.Empty )
-					{
-						Texture2d newTexture = RenderFactory.Inst.NewTexture2d( );
+					meshSurface.SetFrame( frameIndex, meshFrame );
 
-						string baseShaderName = System.IO.Path.GetFileName( curShader.Name );
-
-						newTexture.Load( inputDir + baseShaderName );
-						mesh.AddTexture( newTexture );
-					}
+					offsetToFrame += curSurface.NumVertices;
 				}
-				*/
+
+				mesh.SetSurface( surfaceIndex, meshSurface );
 			}
+
+			//	TODO: REMOVE. test frames
+			if ( inputSource.IndexOf( "Upper" ) != -1 )
+			{
+				mesh.CurrentFrame = 130;
+			}
+			else if ( inputSource.IndexOf( "Head" ) != -1 )
+			{
+				mesh.CurrentFrame = 0;
+			}
+			else
+			{
+				mesh.CurrentFrame = 161;
+			}
+
+			inputStream.Close( );
 
 			return mesh;
 		}
@@ -96,15 +207,6 @@ namespace RbOpenGlMd3Loader
 			public Point3	MaxBounds;
 			public Point3	Origin;
 			public float	Radius;
-		}
-
-		private class Tag
-		{
-			public string	Name;
-			public Point3	Origin;
-			public Vector3	XAxis;
-			public Vector3	YAxis;
-			public Vector3	ZAxis;
 		}
 
 		private class Shader
@@ -123,21 +225,6 @@ namespace RbOpenGlMd3Loader
 			public float[]	Normals;
 			public float[]	TextureUVs;
 			public int		NumVertices;
-		}
-
-		/// <summary>
-		/// Returns true if this loader can load the specified stream
-		/// </summary>
-		/// <param name="path"> Stream path (contains extension that the loader can check)</param>
-		/// <param name="input"> Input stream (file types can be identified by peeking at header bytes) </param>
-		/// <returns> Returns true if the stream can </returns>
-		/// <remarks>
-		/// path can be null, in which case, the loader must be able to identify the resource type by checking the content in input (e.g. by peeking
-		/// at the header bytes).
-		/// </remarks>
-		public override bool CanLoadStream( string path, System.IO.Stream input )
-		{
-			return path.EndsWith( ".md3" );
 		}
 
 		#region	MD3 constants
@@ -222,15 +309,15 @@ namespace RbOpenGlMd3Loader
 		/// <summary>
 		/// Reads tag information
 		/// </summary>
-		private Tag[]	ReadTags( BinaryReader reader, long offset, int numTags )
+		private Mesh.Tag[]	ReadTags( BinaryReader reader, long offset, int numTags )
 		{
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 
-			Tag[] tags = new Tag[ numTags ];
+			Mesh.Tag[] tags = new Mesh.Tag[ numTags ];
 			for ( int tagCount = 0; tagCount < numTags; ++tagCount )
 			{
-				tags[ tagCount ]	= new Tag( );
-				Tag curTag			= tags[ tagCount ];
+				tags[ tagCount ]	= new Mesh.Tag( );
+				Mesh.Tag curTag			= tags[ tagCount ];
 				curTag.Name			= ReadString( reader, MaxPathLength );
 				curTag.Origin		= ReadPoint( reader );
 				curTag.XAxis		= ReadVector( reader );
@@ -260,7 +347,7 @@ namespace RbOpenGlMd3Loader
 
 				int		numFrames			= reader.ReadInt32( );
 				int		numShaders			= reader.ReadInt32( );
-				int		numVertices			= reader.ReadInt32( ) * numFrames;
+				int		numVertices			= reader.ReadInt32( );
 				int		numTriangles		= reader.ReadInt32( );
 				int		trianglesOffset		= reader.ReadInt32( );
 				int		shadersOffset		= reader.ReadInt32( );
@@ -268,11 +355,13 @@ namespace RbOpenGlMd3Loader
 				int		verticesOffset		= reader.ReadInt32( );
 				int		endOffset			= reader.ReadInt32( );
 
+				int		totalVertices		= numVertices * numFrames;
+
 				curSurface.NumVertices		= numVertices;
 				curSurface.Shaders			= ReadShaders( reader, offset + shadersOffset, numShaders );
 				curSurface.Triangles		= ReadTriangles( reader, offset + trianglesOffset, numTriangles );
-				curSurface.TextureUVs		= ReadTextureUVs( reader, offset + texturesOffset, numVertices );
-				ReadVertices( reader, offset + verticesOffset, numVertices, curSurface );
+				curSurface.TextureUVs		= ReadTextureUVs( reader, offset + texturesOffset, totalVertices );
+				ReadVertices( reader, offset + verticesOffset, totalVertices, curSurface );
 
 				reader.BaseStream.Seek( offset + endOffset, SeekOrigin.Begin );
 				offset += endOffset;

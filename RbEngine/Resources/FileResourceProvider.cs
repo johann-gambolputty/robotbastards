@@ -51,6 +51,31 @@ namespace RbEngine.Resources
 			}
 		}
 
+		/// <summary>
+		/// Returns true if the specified directory is available using this provider
+		/// </summary>
+		public override bool DirectoryExists( ref string directory )
+		{
+			foreach ( string baseDir in m_BaseDirs )
+			{
+				string fullDir = baseDir + directory;
+				if ( System.IO.Directory.Exists( fullDir ) )
+				{
+					directory = fullDir;
+					return true;
+				}
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Returns true if the named stream exists in this provider
+		/// </summary>
+		public override bool StreamExists( string path )
+		{
+			return System.IO.File.Exists( path );
+		}
+
 		#endregion
 
 		#region	IPathDirectory Methods

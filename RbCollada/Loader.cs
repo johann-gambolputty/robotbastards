@@ -12,9 +12,9 @@ namespace RbCollada
 	//	I guess the best solution is to not use COLLADA files in builds where this could be important. Bah.
 
 	/// <summary>
-	/// ResourceLoader that loads a COLLADA file
+	/// ResourceStreamLoader that loads a COLLADA file
 	/// </summary>
-	public class Loader : RbEngine.Resources.ResourceLoader
+	public class Loader : RbEngine.Resources.ResourceStreamLoader
 	{
 		/// <summary>
 		/// COLLADA loader

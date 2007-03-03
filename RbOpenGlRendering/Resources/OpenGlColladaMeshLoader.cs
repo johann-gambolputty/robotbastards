@@ -39,8 +39,8 @@ namespace RbOpenGlRendering.Resources
 	/// Object that loads COLLADA meshes
 	/// </summary>
 	/// <remarks>
-	/// This is NOT a ResourceLoader class. The full COLLADA format contains a lot of data that is not relevant to rendering (physics, 
-	/// animation, etc.). The full COLLADA format ResourceLoader is RbCollada.ColladaLoader, and it uses factory methods, like
+	/// This is NOT a ResourceStreamLoader class. The full COLLADA format contains a lot of data that is not relevant to rendering (physics, 
+	/// animation, etc.). The full COLLADA format ResourceStreamLoader is RbCollada.ColladaLoader, and it uses factory methods, like
 	/// RenderFactory.CreateComposite(), to create API-specific loaders 
 	/// </remarks>
 	public class OpenGlColladaMeshLoader : RbCollada.SectionLoader
@@ -537,21 +537,21 @@ namespace RbOpenGlRendering.Resources
 								bufferData[ index + 2 ] = tmp;
 							}
 						}
-						mesh.SetVertexBuffer( vboIndex, new OpenGlVertexBuffer( numObjects, clientState, stride, numElements, Gl.GL_STATIC_DRAW_ARB, bufferData ) );
+						mesh.SetVertexBuffer( vboIndex, new OpenGlVertexBuffer( numObjects, 0, clientState, stride, numElements, Gl.GL_STATIC_DRAW_ARB, bufferData ) );
 						break;
 					}
 
 					case TypeCode.Int32 :
 					{
 						int[] bufferData = ( int[] )curSource.Source.Data.ToArray( dataType );	
-						mesh.SetVertexBuffer( vboIndex, new OpenGlVertexBuffer( numObjects, clientState, stride, numElements, Gl.GL_STATIC_DRAW_ARB, bufferData ) );
+						mesh.SetVertexBuffer( vboIndex, new OpenGlVertexBuffer( numObjects, 0, clientState, stride, numElements, Gl.GL_STATIC_DRAW_ARB, bufferData ) );
 						break;
 					}
 
 					case TypeCode.Byte :
 					{
 						byte[] bufferData = ( byte[] )curSource.Source.Data.ToArray( dataType );
-						mesh.SetVertexBuffer( vboIndex, new OpenGlVertexBuffer( numObjects, clientState, stride, numElements, Gl.GL_STATIC_DRAW_ARB, bufferData ) );
+						mesh.SetVertexBuffer( vboIndex, new OpenGlVertexBuffer( numObjects, 0, clientState, stride, numElements, Gl.GL_STATIC_DRAW_ARB, bufferData ) );
 						break;
 					}
 

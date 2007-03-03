@@ -19,20 +19,11 @@
 			<!-- Test scenery :) -->
 			<object type="RbEngine.Components.Simple.GroundPlane"/>
 
-			<resource path="sarge\upper.md3" name="SargeUpper">
+			<resource path="sarge" name="sarge">
 				<reference modelPath="effects/Test1" property="Effect"/>
 				<string value="BlobTechnique" property="SelectedTechniqueName"/>
 			</resource>
 
-			<resource path="sarge\lower.md3" name="SargeLower">
-				<reference modelPath="effects/Test1" property="Effect"/>
-				<string value="BlobTechnique" property="SelectedTechniqueName"/>
-			</resource>
-
-			<resource path="sarge\head.md3" name="SargeHead">
-				<reference modelPath="effects/Test1" property="Effect"/>
-				<string value="BlobTechnique" property="SelectedTechniqueName"/>
-			</resource>
 
 			<!-- Entities -->
 			<object type="RbEngine.Entities.Entity3">
