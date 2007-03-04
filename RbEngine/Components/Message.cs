@@ -39,6 +39,16 @@ namespace RbEngine.Components
 		}
 
 		/// <summary>
+		/// Reads a message from a binary stream
+		/// </summary>
+		public static Message	CreateFromStream( System.IO.BinaryReader input )
+		{
+			Message msg = CreateFromTypeId( input.ReadUInt16( ) );
+			msg.Read( input );
+			return msg;
+		}
+
+		/// <summary>
 		/// Writes a message to the specified output stream
 		/// </summary>
 		/// <param name="output">Output stream</param>

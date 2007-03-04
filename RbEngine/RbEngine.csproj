@@ -484,6 +484,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Network\LocalServer.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Network\Server.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -500,6 +505,11 @@
                 />
                 <File
                     RelPath = "Network\ServerProxy.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\SocketServer.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
