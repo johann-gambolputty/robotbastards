@@ -1,8 +1,7 @@
 sampler2D Sampler = sampler_state
 {
 	minFilter		= Linear;
-	magFilter		= Linear;
-	
+	magFilter		= Linear;	
 };
 
 struct InputVertex

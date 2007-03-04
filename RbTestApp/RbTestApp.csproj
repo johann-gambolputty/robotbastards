@@ -175,6 +175,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "ConnectionForm.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ConnectionForm.resx"
+                    DependentUpon = "ConnectionForm.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "Form1.cs"
                     SubType = "Form"
                     BuildAction = "Compile"

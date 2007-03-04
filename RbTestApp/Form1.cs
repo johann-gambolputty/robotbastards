@@ -145,6 +145,13 @@ namespace RbTestApp
 
 		private void Form1_Load(object sender, System.EventArgs e)
 		{
+			ConnectionForm connectionDlg = new ConnectionForm( );
+			if ( connectionDlg.ShowDialog( this ) == DialogResult.Cancel )
+			{
+				Close( );
+				return;
+			}
+
 			//	Load the test server file
 			RbEngine.Resources.ResourceManager.Inst.Load( "server0.xml" );
 
