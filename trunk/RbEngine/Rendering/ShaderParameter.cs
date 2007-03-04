@@ -71,6 +71,15 @@ namespace RbEngine.Rendering
 	public abstract class ShaderParameter
 	{
 		/// <summary>
+		/// Sets the shader parameter to a texture
+		/// </summary>
+		/// <param name="val">New parameter value</param>
+		/// <remarks>
+		/// Assumes that this parameter is a texture sampler of some description
+		/// </remarks>
+		public abstract void	Set( Texture2d val );
+
+		/// <summary>
 		/// Sets the shader parameter to a single float value
 		/// </summary>
 		/// <param name="val"> New parameter value </param>

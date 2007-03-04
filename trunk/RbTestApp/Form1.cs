@@ -166,6 +166,10 @@ namespace RbTestApp
 			cmd.AddBinding( new RbEngine.Interaction.CommandKeyInputBinding( Keys.D ) );
 			commands.AddCommand( cmd );
 
+			cmd = new RbEngine.Interaction.Command( "jump", "Jumps", ( int )RbEngine.Entities.TestCommands.Jump );
+			cmd.AddBinding( new RbEngine.Interaction.CommandKeyInputBinding( Keys.Space ) );
+			commands.AddCommand( cmd );
+
 			cmd = new RbEngine.Entities.TestLookAtCommand( );
 			cmd.AddBinding( new RbEngine.Interaction.CommandMouseMoveInputBinding( ) );
 			commands.AddCommand( cmd );

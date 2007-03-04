@@ -219,7 +219,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Components\IInstanceable.cs"
+                    RelPath = "Components\IInstanceBuilder.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -290,6 +290,11 @@
                 />
                 <File
                     RelPath = "Entities\Entity3.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Entities\JumpRequest.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

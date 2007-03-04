@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rb>
 
+	<!--	TODO: This is defined before models, because the XmlLoader loads modelSets in definition order. -->
 	<modelSet name="effects">
 		<resource path="test1.cgfx" name="Test1"/>
+		<resource path="md3Effect.cgfx" name="MD3Effect"/>
+	</modelSet>
+
+	<modelSet name="models">
+		<resource path="sarge" name="sarge">
+			<reference modelPath="effects/MD3Effect" property="Effect"/>
+			<string value="MainTechnique" property="SelectedTechniqueName"/>
+		</resource>
 	</modelSet>
 
 	<object type="RbEngine.Network.Server" name="server0">
 	    <object type="RbEngine.Scene.SceneDb" property="Scene">
-	    
+
 			<object type="RbEngine.Components.Component" property="Systems">
 				<object type="RbEngine.Scene.LightingManager"/>
 			</object>
@@ -19,17 +28,13 @@
 			<!-- Test scenery :) -->
 			<object type="RbEngine.Components.Simple.GroundPlane"/>
 
-			<resource path="sarge" name="sarge">
-				<reference modelPath="effects/Test1" property="Effect"/>
-				<string value="BlobTechnique" property="SelectedTechniqueName"/>
-			</resource>
-
 
 			<!-- Entities -->
 			<object type="RbEngine.Entities.Entity3">
 
 				<point3 x="12" y="0.5" z="10" property="NextPosition"/>
 
+<!--
 				<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics">
 
 					<reference modelPath="effects/Test1" property="Effect"/>
@@ -41,6 +46,8 @@
 					</postLink>
 
 				</object>
+-->
+				<instance modelPath="models/sarge" property="Graphics" alwaysAddAsChild="true"/>
 
 				<object type="RbEngine.Scene.LightingData"/>
 

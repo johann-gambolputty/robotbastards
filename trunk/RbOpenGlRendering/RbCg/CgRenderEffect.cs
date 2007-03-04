@@ -49,6 +49,7 @@ namespace RbOpenGlRendering.RbCg
 		/// </summary>
 		public override void Apply( )
 		{
+			//	Set bound parameters
 			for ( int bindingIndex = 0; bindingIndex < ( int )ShaderParameterBinding.NumBindings; ++bindingIndex )
 			{
 				IntPtr param = m_Bindings[ bindingIndex ];
@@ -239,7 +240,7 @@ namespace RbOpenGlRendering.RbCg
 					}
 				}
 
-				m_Parameters.Add( new CgShaderParameter( curParam ) );
+				m_Parameters.Add( new CgShaderParameter( m_Context, curParam ) );
 			}
 
 			return true;
@@ -284,9 +285,10 @@ namespace RbOpenGlRendering.RbCg
 
 		#endregion
 
+
 		private IntPtr				m_Context;
 		private IntPtr				m_EffectHandle;
-		private ArrayList			m_Parameters	= new ArrayList( );
-		private IntPtr[]			m_Bindings		= new IntPtr[ ( int )ShaderParameterBinding.NumBindings ];
+		private ArrayList			m_Parameters		= new ArrayList( );
+		private IntPtr[]			m_Bindings			= new IntPtr[ ( int )ShaderParameterBinding.NumBindings ];
 	}
 }

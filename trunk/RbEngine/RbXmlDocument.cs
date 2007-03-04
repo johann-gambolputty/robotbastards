@@ -129,9 +129,10 @@ namespace RbEngine
 		/// <summary>
 		/// Document constructor
 		/// </summary>
-		public RbXmlDocument( )
+		public RbXmlDocument( string inputSource )
 		{
-			PreserveWhitespace = true;
+			PreserveWhitespace	= true;
+			m_InputSource		= inputSource;
 		}
 
 		/// <summary>
@@ -172,6 +173,17 @@ namespace RbEngine
 			return base.CreateTextNode( text );
 		}
 
+		/// <summary>
+		/// Returns the source of the XML (e.g. file path)
+		/// </summary>
+		public string	InputSource
+		{
+			get
+			{
+				return m_InputSource;
+			}
+		}
+
 
 		private void	CheckTextForWhitespace( string text )
 		{
@@ -195,5 +207,6 @@ namespace RbEngine
 
 		private int		m_Line						= 1;
 		private int		m_Column					= 1;
+		private string	m_InputSource;
 	}
 }

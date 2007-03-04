@@ -9,7 +9,7 @@ namespace RbEngine.Rendering
 	/// 2D texture data
 	/// </summary>
 	/// <seealso>ApplyTexture2d</seealso>
-	public abstract class Texture2d
+	public abstract class Texture2d : IApplicable
 	{
 		#region	Construction and setup
 
@@ -95,6 +95,15 @@ namespace RbEngine.Rendering
 
 		protected int	m_Width;
 		protected int	m_Height;
+
+		#endregion
+
+		#region IApplicable Members
+
+		/// <summary>
+		/// Applies this texture
+		/// </summary>
+		public abstract void Apply();
 
 		#endregion
 	}

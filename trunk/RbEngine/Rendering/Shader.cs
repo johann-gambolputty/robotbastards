@@ -31,6 +31,7 @@ namespace RbEngine.Rendering
 		{
 		}
 
+
 		#region INamedObject Members
 
 		/// <summary>
