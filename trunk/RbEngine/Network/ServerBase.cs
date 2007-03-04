@@ -1,4 +1,6 @@
 using System;
+using System.Net;
+using System.Net.Sockets;
 
 namespace RbEngine.Network
 {
@@ -59,6 +61,14 @@ namespace RbEngine.Network
 		public					ServerBase( )
 		{
 			ServerManager.Inst.RegisterServer( this );
+		}
+
+		/// <summary>
+		/// Talks and listens to clients
+		/// </summary>
+		private void			Converse( Socket socket )
+		{
+
 		}
 
 		/// <summary>

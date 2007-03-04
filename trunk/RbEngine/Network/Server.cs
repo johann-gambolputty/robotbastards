@@ -8,6 +8,14 @@ namespace RbEngine.Network
 	public class Server : ServerBase
 	{
 		/// <summary>
+		/// Listens for connection requests
+		/// </summary>
+		public void SetupConnection( string connectionString )
+		{
+
+		}
+
+		/// <summary>
 		/// Adds a client to the server
 		/// </summary>
 		/// <param name="client">Client to add</param>
