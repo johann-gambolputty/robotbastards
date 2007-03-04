@@ -10,6 +10,17 @@ namespace RbEngine.Entities
 	{
 
 		/// <summary>
+		/// Gets the distance covered by the movement
+		/// </summary>
+		public override float	Distance
+		{
+			get
+			{
+				return ( float )System.Math.Sqrt( MoveX * MoveX + MoveZ * MoveZ );
+			}
+		}
+
+		/// <summary>
 		/// X movement component
 		/// </summary>
 		public float	MoveX

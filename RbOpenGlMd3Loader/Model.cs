@@ -1,4 +1,6 @@
 using System;
+using RbEngine.Components;
+using RbEngine.Rendering;
 
 namespace RbOpenGlMd3Loader
 {
@@ -16,7 +18,7 @@ namespace RbOpenGlMd3Loader
 	/// <summary>
 	/// MD3 model
 	/// </summary>
-	public class Model : RbEngine.Components.INamedObject, RbEngine.Rendering.IRender
+	public class Model : INamedObject, IRender, IInstanceBuilder
 	{
 		#region	Meshes
 
@@ -34,6 +36,37 @@ namespace RbOpenGlMd3Loader
 		public Mesh GetPartMesh( ModelPart part )
 		{
 			return m_PartMeshes[ ( int )part ];
+		}
+
+		#endregion
+
+		#region	Animations
+
+		/// <summary>
+		/// Access to the animation set associated with this model
+		/// </summary>
+		public AnimationSet Animations
+		{
+			set
+			{
+				m_Animations = value;
+			}
+			get
+			{
+				return m_Animations;
+			}
+		}
+
+		#endregion
+
+		#region	IInstanceBuilder Members
+
+		/// <summary>
+		/// Creates an instance of this object
+		/// </summary>
+		public Object CreateInstance( )
+		{
+			return new ModelInstance( this );
 		}
 
 		#endregion
@@ -80,11 +113,6 @@ namespace RbOpenGlMd3Loader
 					m_PartMeshes[ partIndex ].Effect = value;
 				}
 			}
-			//	TODO: XmlLoader property bodge
-			get
-			{
-				return null;
-			}
 		}
 
 		/// <summary>
@@ -99,20 +127,17 @@ namespace RbOpenGlMd3Loader
 					m_PartMeshes[ partIndex ].SelectedTechniqueName = value;
 				}
 			}
-			//	TODO: XmlLoader property bodge
-			get
-			{
-				return null;
-			}
 		}
 
 		#endregion
-		
-		#region IRender Members
-		#endregion
 
-		private Mesh[]	m_PartMeshes = new Mesh[ ( int )ModelPart.NumParts ];
-		private string	m_Name;
+		/// <summary>
+		/// Renders the model with a particular set of animation layers
+		/// </summary>
+		public void Render( AnimationLayer[] layers )
+		{
+			m_PartMeshes[ 0 ].Render( layers );
+		}
 
 		#region IRender Members
 
@@ -125,5 +150,10 @@ namespace RbOpenGlMd3Loader
 		}
 
 		#endregion
+
+		private AnimationSet	m_Animations;
+		private Mesh[]			m_PartMeshes = new Mesh[ ( int )ModelPart.NumParts ];
+		private string			m_Name;
+
 	}
 }

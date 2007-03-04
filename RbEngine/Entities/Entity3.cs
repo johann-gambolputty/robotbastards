@@ -196,13 +196,7 @@ namespace RbEngine.Entities
 			//	TODO: Get the interpolated rotation of the entity
 
 			//	Push the entity transform
-		//	Renderer.Inst.PushTransform( Transform.kLocalToView );
-		//	Renderer.Inst.Translate( Transform.kLocalToView, curPos.X, curPos.Y, curPos.Z );
-			Maths.Matrix44 mat = new Maths.Matrix44( );
-			mat.XAxis = Left;
-			mat.YAxis = Up;
-			mat.ZAxis = Facing;
-			mat.Translation = curPos;
+			Maths.Matrix44 mat = new Maths.Matrix44( curPos, Left, Up, Facing );
 
 			Renderer.Inst.PushTransform( Transform.LocalToView, mat );
 
@@ -211,10 +205,6 @@ namespace RbEngine.Entities
 			{
 				m_Graphics.Render( );
 			}
-			else
-			{
-				ShapeRenderer.Inst.DrawSphere( new Point3( 0, 5, 0 ), 5 );
-			}
 
 			//	Pop the entity transform
 			Renderer.Inst.PopTransform( Transform.LocalToView );
@@ -222,7 +212,36 @@ namespace RbEngine.Entities
 
 		#endregion
 
-		public void		Update( )
+		#region	Entity message handling
+
+		/// <summary>
+		/// Handles a movement request message
+		/// </summary>
+		/// <param name="movement">Movement request message</param>
+		public override void				HandleMovement( MovementRequest movement )
+		{
+			MovementXzRequest moveXz = movement as MovementXzRequest;
+			if ( moveXz != null )
+			{
+				Vector3 moveVec = new Vector3( moveXz.MoveX, 0, moveXz.MoveZ );
+				if ( moveXz.Local )
+				{
+					//	Local movement relative to current frame
+					NextPosition += moveVec * Facing;
+					NextPosition += moveVec * Left;
+				}
+				else
+				{
+					NextPosition += moveVec;
+				}
+			}
+			base.HandleMovement( movement );
+		}
+
+
+		#endregion
+
+		public void		Update( Scene.Clock updateClock )
 		{
 			//	Entity frame update:
 			//		AI controller requests new position
@@ -253,10 +272,7 @@ namespace RbEngine.Entities
 			//		public ActionRequest Pending { get; set; };
 			//	};
 			//
-		}
 
-		private void StepMovement( Scene.Clock updateClock )
-		{
 			m_Position.Step( updateClock.CurrentTickTime );
 		}
 
@@ -268,8 +284,12 @@ namespace RbEngine.Entities
 		/// <param name="db">Scene database</param>
 		public void AddedToScene( RbEngine.Scene.SceneDb db )
 		{
+			//	Add the entity to the render manager
+			db.Rendering.AddObject( this );
+
+			//	Subscribe to the update clock
 			Scene.Clock updateClock = db.GetNamedClock( "updateClock" );
-            updateClock.Subscribe( new RbEngine.Scene.Clock.TickDelegate( StepMovement ) );
+            updateClock.Subscribe( new RbEngine.Scene.Clock.TickDelegate( Update ) );
 		}
 
 		/// <summary>
@@ -278,6 +298,8 @@ namespace RbEngine.Entities
 		/// <param name="db">Scene database</param>
 		public void RemovedFromScene( RbEngine.Scene.SceneDb db )
 		{
+			//	Remove the entity from the render manager
+			db.Rendering.RemoveObject( this );
 		}
 
 		#endregion

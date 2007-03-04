@@ -209,6 +209,11 @@ namespace RbEngine.Maths
 			return new Vector3( lhs.X - rhs.X, lhs.Y - rhs.Y, lhs.Z - rhs.Z );
 		}
 
+		public static Vector3 Multiply( Vector3 lhs, Vector3 rhs )
+		{
+			return new Vector3( lhs.X * rhs.X, lhs.Y * rhs.Y, lhs.Z * rhs.Z );
+		}
+
 		public static Vector3 MultiplyByValue( Vector3 lhs, float rhs )
 		{
 			return new Vector3( lhs.X * rhs, lhs.Y * rhs, lhs.Z * rhs );
@@ -231,6 +236,11 @@ namespace RbEngine.Maths
 		public static Vector3 operator - ( Vector3 lhs, Vector3 rhs )
 		{
 			return Subtract( lhs, rhs );
+		}
+
+		public static Vector3 operator * ( Vector3 lhs, Vector3 rhs )
+		{
+			return Multiply( lhs, rhs );
 		}
 
 		public static Vector3 operator * ( Vector3 lhs, float rhs )
@@ -315,5 +325,6 @@ namespace RbEngine.Maths
 		private float m_Z;
 
 		#endregion
+
 	}
 }

@@ -14,24 +14,69 @@ namespace RbOpenGlMd3Loader
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public Mesh( )
+		public Mesh( ModelPart part )
 		{
-			m_Technique.RenderCallback = new RenderTechnique.RenderDelegate( RenderMesh );
+			m_Part = part;
+			m_Technique.RenderCallback = new RenderTechnique.RenderDelegate( m_SurfaceRenderer.Render );
+		}
+
+		/// <summary>
+		/// Returns the model part that this mesh represents
+		/// </summary>
+		public ModelPart Part
+		{
+			get
+			{
+				return m_Part;
+			}
 		}
 
 		#region	Mesh tags
 
 		/// <summary>
-		/// Tag information
+		/// Tag information (each animation frame contains a set of tag data describing each named tag's coordinate frame)
 		/// </summary>
 		public class Tag
 		{
-			public string	Name;
 			public Point3	Origin;
 			public Vector3	XAxis;
 			public Vector3	YAxis;
 			public Vector3	ZAxis;
 		}
+
+		/// <summary>
+		/// Access to the tag name array
+		/// </summary>
+		public string[]		TagNames
+		{
+			get
+			{
+				return m_TagNames;
+			}
+			set
+			{
+				m_TagNames = value;
+			}
+		}
+
+		/// <summary>
+		/// Finds the index of a named tag
+		/// </summary>
+		public int		GetTagIndex( string name )
+		{
+			for ( int tagNameIndex = 0; tagNameIndex < m_TagNames.Length; ++tagNameIndex )
+			{
+				if ( string.Compare( m_TagNames[ tagNameIndex ], name, true ) == 0 )
+				{
+					return tagNameIndex;
+				}
+			}
+			return -1;
+		}
+
+		#endregion
+
+		#region	Nested mesh
 
 		/// <summary>
 		/// Access to the tag that specifies the coordinate frame for the nested mesh
@@ -48,54 +93,10 @@ namespace RbOpenGlMd3Loader
 			}
 		}
 
-		public int		TagsPerFrame
-		{
-			set
-			{
-				m_TagsPerFrame = value;
-			}
-			get
-			{
-				return m_TagsPerFrame;
-			}
-		}
-
-		int m_TagsPerFrame;
 
 		/// <summary>
-		/// Tag array access
+		/// Access to the mesh attached to this one by the transform tag
 		/// </summary>
-		public Tag[]	Tags
-		{
-			set
-			{
-				m_Tags = value;
-			}
-			get
-			{
-				return m_Tags;
-			}
-		}
-		
-		/// <summary>
-		/// Finds a named tag
-		/// </summary>
-		public int		GetTagIndex( string name )
-		{
-			for ( int tagIndex = 0; tagIndex < m_Tags.Length; ++tagIndex )
-			{
-				if ( string.Compare( m_Tags[ tagIndex ].Name, name, true ) == 0 )
-				{
-					return tagIndex;
-				}
-			}
-			return -1;
-		}
-
-		#endregion
-
-		#region	Nested mesh
-
 		public Mesh	NestedMesh
 		{
 			get
@@ -111,71 +112,74 @@ namespace RbOpenGlMd3Loader
 
 		#endregion
 
-		#region	FrameSet setup
+		#region	Frame information
 
 		/// <summary>
 		/// Information about a frame
 		/// </summary>
 		public class FrameInfo
 		{
-			/// <summary>
-			/// Frame origin
-			/// </summary>
-			public Point3	Origin
-			{
-				get
-				{
-					return m_Origin;
-				}
-				set
-				{
-					m_Origin = value;
-				}
-			}
-
-			private Point3	m_Origin;
+			public Point3	Origin;
+			public Point3	MinBounds;
+			public Point3	MaxBounds;
+			public float	Radius;
+			public string	Name;
+			public Tag[]	Tags;
 		}
 
 		/// <summary>
-		/// A surface frame stores some vertex buffers
+		/// The default frame is the one that is rendered if no animation layers are passed to Render()
+		/// </summary>
+		public int	DefaultFrame
+		{
+			get
+			{
+				return m_Frame;
+			}
+			set
+			{
+				m_Frame = value;
+			}
+		}
+
+		/// <summary>
+		///	Access to the frame information array
+		/// </summary>
+		public FrameInfo[]	FrameInfoList
+		{
+			get
+			{
+				return m_FrameInfo;
+			}
+			set
+			{
+				m_FrameInfo = value;
+			}
+		}
+
+		#endregion
+
+		#region	Surfaces
+
+		/// <summary>
+		/// A surface frame stores vertex buffers for a single animation frame
 		/// </summary>
 		public class SurfaceFrame
 		{
 			/// <summary>
-			/// Creates vertex buffers
+			/// Access to the frame's vertex buffers
 			/// </summary>
-			public void	CreateVertexBuffers( int numVertexBuffers )
-			{
-				m_VertexBuffers = new OpenGlVertexBuffer[ numVertexBuffers ];
-			}
-
-			/// <summary>
-			/// Sets a vertex buffer at an index in the vertex buffer array
-			/// </summary>
-			public void	SetVertexBuffer( int index, OpenGlVertexBuffer buffer )
-			{
-				m_VertexBuffers[ index ] = buffer;
-			}
-
-			/// <summary>
-			/// Gets the number of stored vertex buffers
-			/// </summary>
-			public int	NumVertexBuffers
+			public OpenGlVertexBuffer[] VertexBuffers
 			{
 				get
 				{
-					return m_VertexBuffers.Length;
+					return m_VertexBuffers;
+				}
+				set
+				{
+					m_VertexBuffers = value;
 				}
 			}
-
-			/// <summary>
-			/// Gets an indexed vertex buffer
-			/// </summary>
-			public OpenGlVertexBuffer	GetVertexBuffer( int index )
-			{
-				return m_VertexBuffers[ index ];
-			}
-
 
 			private OpenGlVertexBuffer[]	m_VertexBuffers;
 		}
@@ -186,27 +190,33 @@ namespace RbOpenGlMd3Loader
 		public class Surface
 		{
 			/// <summary>
-			/// Creates the frame list
+			/// Surface texture
 			/// </summary>
-			public void	CreateFrames( int numFrames )
+			public Texture2d			Texture
 			{
-				m_Frames = new SurfaceFrame[ numFrames ];
+				set
+				{
+					m_Texture = value;
+				}
+				get
+				{
+					return m_Texture;
+				}
 			}
 
 			/// <summary>
-			/// Sets an indexed frame
+			/// Access to the surface's frame list (vertex buffers for each animation frame)
 			/// </summary>
-			public void	SetFrame( int index, SurfaceFrame frame )
+			public SurfaceFrame[]		SurfaceFrames
 			{
-				m_Frames[ index ] = frame;
-			}
-
-			/// <summary>
-			/// Gets an indexed frame
-			/// </summary>
-			public SurfaceFrame	GetFrame( int index )
-			{
-				return m_Frames[ index ];
+				get
+				{
+					return m_Frames;
+				}
+				set
+				{
+					m_Frames = value;
+				}
 			}
 
 			/// <summary>
@@ -224,90 +234,46 @@ namespace RbOpenGlMd3Loader
 				}
 			}
 
+			/// <summary>
+			/// Access to texture coordinates used by this surface
+			/// </summary>
+			public OpenGlVertexBuffer	TextureUVs
+			{
+				get
+				{
+					return m_TextureUVs;
+				}
+				set
+				{
+					m_TextureUVs = value;
+				}
+			}
+
 			private SurfaceFrame[]		m_Frames;
 			private OpenGlIndexedGroup	m_Group;
+			private OpenGlVertexBuffer	m_TextureUVs;
+			private Texture2d			m_Texture;
 		}
 
 		/// <summary>
-		/// The current frame is the one that is rendered
+		/// Surface collection
 		/// </summary>
-		public int	CurrentFrame
+		public Surface[]	Surfaces
 		{
 			get
 			{
-				return m_Frame;
+				return m_Surfaces;
 			}
 			set
 			{
-				m_Frame = value;
+				m_Surfaces = value;
 			}
 		}
 
-		/// <summary>
-		/// Creates the frame information array
-		/// </summary>
-		public void			CreateFrameInfo( int numFrames )
-		{
-			m_FrameInfo = new FrameInfo[ numFrames ];
-		}
-
-		/// <summary>
-		/// Sets an indexed frame information object
-		/// </summary>
-		public void			SetFrameInfo( int frameIndex, FrameInfo info )
-		{
-			m_FrameInfo[ frameIndex ] = info;
-		}
-
-		/// <summary>
-		///	Creates the surfaces array
-		/// </summary>
-		public void			CreateSurfaces( int numSurfaces )
-		{
-			m_Surfaces = new Surface[ numSurfaces ];
-		}
-
-		/// <summary>
-		/// Sets an indexed surface
-		/// </summary>
-		public void			SetSurface( int surfaceIndex, Surface surface )
-		{
-			m_Surfaces[ surfaceIndex ] = surface;
-		}
-
-		/// <summary>
-		/// Gets an indexed surface
-		/// </summary>
-		public Surface		GetSurface( int surfaceIndex )
-		{
-			return m_Surfaces[ surfaceIndex ];
-		}
-
-		private Surface[]	m_Surfaces;
 
 		#endregion
 
-		#region	Texture setup
-
-		/// <summary>
-		/// Sets up a texture
-		/// </summary>
-		public void AddTexture( Texture2d texture )
-		{
-			m_Textures[ m_NumTextures++ ].Texture = texture;
-		}
-
-		/// <summary>
-		/// Gets a texture
-		/// </summary>
-		public Texture2d	GetTexture( int index )
-		{
-			return m_Textures[ index ].Texture;
-		}
-
-		#endregion
-
-		#region	Mesh rendering properties
+		#region	Mesh render effect
 
 		/// <summary>
 		/// The mesh render effect
@@ -335,7 +301,16 @@ namespace RbOpenGlMd3Loader
 			}
 			set
 			{
-				m_Technique.SelectTechnique( value );
+				m_TextureParameter = null;
+				if ( m_Technique.SelectTechnique( value ) )
+				{
+					//	Set up the shader parameter
+					if ( m_Technique.Effect != null )
+					{
+						//	TODO: Hardcoded sampler
+						m_TextureParameter = m_Technique.Effect.GetParameter( "Sampler" );
+					}
+				}
 			}
 		}
 
@@ -344,21 +319,101 @@ namespace RbOpenGlMd3Loader
 		#region IRender Members
 
 		/// <summary>
-		/// Renders this mesh
+		/// A bodge to allow technique application to work with individual surfaces
 		/// </summary>
-		public void Render( )
+		private class SurfaceRenderer
 		{
-			m_Technique.Apply( );
+			/// <summary>
+			/// Sets the surface to render
+			/// </summary>
+			public Surface	CurrentSurface
+			{
+				set
+				{
+					m_Surface = value;
+				}
+			}
+
+			/// <summary>
+			/// Sets the surface frame to render
+			/// </summary>
+			public SurfaceFrame	CurrentFrame
+			{
+				set
+				{
+					m_Frame = value;
+				}
+			}
+
+			/// <summary>
+			/// Renders the current surface and surface frame
+			/// </summary>
+			public void Render( )
+			{
+				//	Apply all vertex buffers in the current frame
+				int numVbs = m_Frame.VertexBuffers.Length;
+				for ( int vbIndex = 0; vbIndex < numVbs; ++vbIndex )
+				{
+					m_Frame.VertexBuffers[ vbIndex ].Apply( );
+				}
+				
+				if ( m_Surface.TextureUVs != null )
+				{
+					m_Surface.TextureUVs.Apply( );
+				}
+
+				m_Surface.Group.Draw( );
+
+				//	TODO: Don't need to unapply the vertex buffers like this - could just enable all client arrays before hand, then
+				//	disable all after
+				for ( int vbIndex = 0; vbIndex < numVbs; ++vbIndex )
+				{
+					m_Frame.VertexBuffers[ vbIndex ].UnApply( );
+				}
+			}
+
+			private Surface			m_Surface;
+			private SurfaceFrame	m_Frame;
+		}
+
+		/// <summary>
+		/// Renders thi
+		/// </summary>
+		/// <param name="layers"></param>
+		public void Render( AnimationLayer[] layers )
+		{
+			int currentFrame = DefaultFrame;
+			if ( layers != null )
+			{
+				currentFrame = ( layers[ ( int )Part ].CurrentAnimationFrame );
+			}
+
+			//	Assign texture sampler parameters
+			//	TODO: This should be part of the render technique
+			for ( int surfaceIndex = 0; surfaceIndex < m_Surfaces.Length; ++surfaceIndex )
+			{
+				Surface curSurface = m_Surfaces[ surfaceIndex ];
+
+				if ( m_TextureParameter != null )
+				{
+					m_TextureParameter.Set( curSurface.Texture );
+				}
+
+				m_SurfaceRenderer.CurrentSurface	= curSurface;
+				m_SurfaceRenderer.CurrentFrame		= curSurface.SurfaceFrames[ currentFrame ];
+
+				m_Technique.Apply( );
+			}
 
 			if ( m_NestedMesh != null )
 			{
 				if ( m_TransformTagIndex != -1 )
 				{
-					Tag transformTag = Tags[ ( CurrentFrame * m_TagsPerFrame ) + m_TransformTagIndex ];
+					FrameInfo	curFrame		= FrameInfoList[ currentFrame ];
+					Tag			transformTag	= curFrame.Tags[ TransformTagIndex ];
 
 					Matrix44 transform = new Matrix44( transformTag.Origin, transformTag.XAxis, transformTag.YAxis, transformTag.ZAxis );
 					Renderer.Inst.PushTransform( Transform.LocalToView, transform );
-
 				}
 
 				m_NestedMesh.Render( );
@@ -371,42 +426,12 @@ namespace RbOpenGlMd3Loader
 
 		}
 
-
-		private int	m_Frame;
-
 		/// <summary>
-		/// Renders the mesh
+		/// Renders this mesh
 		/// </summary>
-		private void RenderMesh( )
+		public void Render( )
 		{
-			//	Apply textures
-			//	TODO: This should be part of the render technique
-			for ( int textureIndex = 0; textureIndex < m_NumTextures; ++textureIndex )
-			{
-				m_Textures[ textureIndex ].Apply( );
-			}
-
-			//	Run through all stored surfaces
-			for ( int surfaceIndex = 0; surfaceIndex < m_Surfaces.Length; ++surfaceIndex )
-			{
-				SurfaceFrame curFrame = m_Surfaces[ surfaceIndex ].GetFrame( CurrentFrame );
-
-				//	Apply all vertex buffers in the current frame
-				for ( int vbIndex = 0; vbIndex < curFrame.NumVertexBuffers; ++vbIndex )
-				{
-					curFrame.GetVertexBuffer( vbIndex ).Apply( );
-				}
-
-				m_Surfaces[ surfaceIndex ].Group.Draw( );
-
-				//	TODO: Don't need to unapply the vertex buffers like this - could just enable all client arrays before hand, then
-				//	disable all after
-				for ( int vbIndex = 0; vbIndex < curFrame.NumVertexBuffers; ++vbIndex )
-				{
-					curFrame.GetVertexBuffer( vbIndex ).UnApply( );
-				}
-			}
-
+			Render( null );
 		}
 
 		#endregion
@@ -442,13 +467,16 @@ namespace RbOpenGlMd3Loader
 		#region	Private stuff
 
 		private string					m_Name;
+		private ModelPart				m_Part;
 		private SelectedTechnique		m_Technique = new SelectedTechnique( );
-		private TextureSampler2d[]		m_Textures = new TextureSampler2d[ 8 ];
-		private int						m_NumTextures;
+		private string[]				m_TagNames;
 		private FrameInfo[]				m_FrameInfo;
-		private Tag[]					m_Tags;
 		private int						m_TransformTagIndex = -1;
 		private Mesh					m_NestedMesh;
+		private int						m_Frame;
+		private Surface[]				m_Surfaces;
+		private SurfaceRenderer			m_SurfaceRenderer = new SurfaceRenderer( );
+		private ShaderParameter			m_TextureParameter;
 
 		#endregion
 	}

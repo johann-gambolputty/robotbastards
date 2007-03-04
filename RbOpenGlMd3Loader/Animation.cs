@@ -8,41 +8,111 @@ namespace RbOpenGlMd3Loader
 	/// </summary>
 	public class Animation : RbEngine.Animation.IAnimation
 	{
-		#region	INamedObject Members
+		/// <summary>
+		/// Animation setup
+		/// </summary>
+		public Animation( AnimationType animType, int firstFrame, int numFrames, int loopingFrames, int framesPerSecond )
+		{
+			m_AnimType			= animType;
+			m_FirstFrame		= firstFrame;
+			m_NumFrames			= numFrames;
+			m_LoopingFrames		= loopingFrames;
+			m_FramesPerSecond	= framesPerSecond;
+		}
 
 		/// <summary>
-		/// Event, invoked when the name is changed
+		/// Gets the first frame of this animation
 		/// </summary>
-		public event RbEngine.Components.NameChangedDelegate NameChanged;
-
-		/// <summary>
-		/// Sets the name of this object
-		/// </summary>
-		public string	Name
+		public int			FirstFrame
 		{
 			get
 			{
-				return m_Name;
+				return m_FirstFrame;
 			}
 			set
 			{
-				m_Name = value;
-				if ( NameChanged != null )
-				{
-					NameChanged( this );
-				}
+				m_FirstFrame = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets the last frame of this animation
+		/// </summary>
+		public int			LastFrame
+		{
+			get
+			{
+				return FirstFrame + NumFrames;
+			}
+		}
+
+		/// <summary>
+		/// Gets the number of frames this animation covers
+		/// </summary>
+		public int			NumFrames
+		{
+			get
+			{
+				return m_NumFrames;
+			}
+		}
+
+		/// <summary>
+		/// Gets the number of looping frames
+		/// </summary>
+		public int			LoopingFrames
+		{
+			get
+			{
+				return m_LoopingFrames;
+			}
+		}
+
+		/// <summary>
+		/// Gets the frames per second rate
+		/// </summary>
+		public int			FramesPerSecond
+		{
+			get
+			{
+				return m_FramesPerSecond;
+			}
+
+		}
+		/// <summary>
+		/// Gets the type of animation
+		/// </summary>
+		public AnimationType	AnimType
+		{
+			get
+			{
+				return m_AnimType;
+			}
+		}
+
+
+		#region	IAnimation Members
+
+		/// <summary>
+		/// Gets the name of this animation
+		/// </summary>
+		public string			Name
+		{
+			get
+			{
+				return m_AnimType.ToString( );
 			}
 		}
 
 		#endregion
 
-		#region	IAnimation Members
-
-		#endregion
-
 		#region	Private stuff
 
-		private string	m_Name;
+		private AnimationType	m_AnimType;
+		private int				m_FirstFrame;
+		private int				m_NumFrames;
+		private int				m_LoopingFrames;
+		private int				m_FramesPerSecond;
 
 		#endregion
 	}

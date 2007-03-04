@@ -114,6 +114,14 @@ namespace RbOpenGlRendering
 			return bmp;
 		}
 
+		/// <summary>
+		/// Applies this texture
+		/// </summary>
+		public override void Apply( )
+		{
+			Gl.glBindTexture( Gl.GL_TEXTURE_2D, TextureHandle );
+		}
+
 		private int	m_TextureHandle = -1;
 
 	}

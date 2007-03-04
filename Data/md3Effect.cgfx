@@ -1,8 +1,8 @@
 sampler2D Sampler = sampler_state
 {
-	generateMipMap	= true;
-	minFilter		= LinearMipMapLinear;
+	minFilter		= Linear;
 	magFilter		= Linear;
+	
 };
 
 struct InputVertex
@@ -20,7 +20,7 @@ struct OutputVertex
 
 float4x4	ModelViewProj;
 
-OutputVertex VertexShader( InputVertex input )
+OutputVertex SimpleTransformVertexShader( InputVertex input )
 {
 	OutputVertex output;
 	
@@ -30,7 +30,12 @@ OutputVertex VertexShader( InputVertex input )
 	return output;
 }
 
-technique Md3Technique
+float4	SimpleTextureFragmentShader( OutputVertex input ) : COLOR
+{
+	return tex2D( Sampler, input.m_Tex0 );
+}
+
+technique MainTechnique
 {
 	pass
 	{
@@ -40,6 +45,7 @@ technique Md3Technique
 		DepthTestEnable			= true;
 		CullFaceEnable			= true;
 		PolygonMode				= int2( Front, Fill );
-		VertexProgram			= compile arbvp1 VertexShader( );
+		VertexProgram			= compile arbvp1 SimpleTransformVertexShader( );
+		FragmentProgram			= compile arbfp1 SimpleTextureFragmentShader( );
 	}
 }

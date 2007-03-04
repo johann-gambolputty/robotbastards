@@ -44,7 +44,10 @@ namespace RbOpenGlMd3Loader
 
 		LegsTurn,
 
-		NumAnimations
+		NumAnimations,
+
+		FirstTorsoAnim	= TorsoGesture,
+		FirstLegAnim	= LegsWalkCrouch
 	}
 
 	/// <summary>
@@ -53,11 +56,22 @@ namespace RbOpenGlMd3Loader
 	public class AnimationSet : IAnimationSet
 	{
 		/// <summary>
-		/// Adds an animation to this set
+		/// Gets the animation frame array
 		/// </summary>
-		public void			Add( Animation anim )
+		public Animation[]	Animations
 		{
-			m_Animations[ anim.Name ] = anim;
+			get
+			{
+				return m_Animations;
+			}
+		}
+
+		/// <summary>
+		/// Gets an animation
+		/// </summary>
+		public Animation	GetAnimation( AnimationType animType )
+		{
+			return m_Animations[ ( int )animType ];
 		}
 
 		#region	IAnimationSet Members
@@ -67,11 +81,11 @@ namespace RbOpenGlMd3Loader
 		/// </summary>
 		public IAnimation	Find( string animationName )
 		{
-			return ( IAnimation )m_Animations[ animationName ];
+			return m_Animations[ ( int )Enum.Parse( typeof( AnimationType ), animationName, true ) ];
 		}
 
 		#endregion
 
-		private Hashtable	m_Animations = new Hashtable( );
+		private Animation[]			m_Animations	= new Animation[ ( int )AnimationType.NumAnimations ];
 	}
 }

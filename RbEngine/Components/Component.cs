@@ -58,7 +58,7 @@ namespace RbEngine.Components
 	/// <summary>
 	/// Handy base class that derives from Node, and implements IInstanceable, IMessageHandler and INamedObject (TODO)
 	/// </summary>
-	public class Component : Node, IInstanceable, IMessageHandler
+	public class Component : Node, IInstanceBuilder, IMessageHandler
 	{
 		#region	Messaging
 
@@ -193,9 +193,9 @@ namespace RbEngine.Components
 		{
 			foreach ( Object curChild in m_Children )
 			{
-				if ( curChild is IInstanceable )
+				if ( curChild is IInstanceBuilder )
 				{
-					instance.AddChild( ( ( IInstanceable )curChild ).CreateInstance( ) );
+					instance.AddChild( ( ( IInstanceBuilder )curChild ).CreateInstance( ) );
 				}
 				else if ( curChild is ICloneable )
 				{

@@ -31,7 +31,7 @@ namespace RbEngine.Components
 		/// <returns> Returns Engine.Main </returns>
 		public override Object Load( System.IO.Stream input, string inputSource )
 		{
-			XmlDocument doc = new RbXmlDocument( );
+			XmlDocument doc = new RbXmlDocument( inputSource );
 			try
 			{
 				doc.Load( input );
@@ -85,7 +85,6 @@ namespace RbEngine.Components
 		private Object LoadRb( XmlElement element )
 		{
 			ObjectLoader	rootObject		= null;
-			ModelSetLoader	rootModelSet	= null;
 
 			foreach ( XmlNode node in element.ChildNodes )
 			{
@@ -93,7 +92,8 @@ namespace RbEngine.Components
 				{
 					if ( node.Name == "modelSet" )
 					{
-						rootModelSet = new ModelSetLoader( ( XmlElement )node );
+						ModelSetLoader modelSet = new ModelSetLoader( ( XmlElement )node );
+						modelSet.Resolve( null );
 					}
 					else if ( node.Name == "object" )
 					{
@@ -108,11 +108,6 @@ namespace RbEngine.Components
 						throw new RbXmlException( node, "Did not handle \"{0}\" element: Only \"object\" and \"modelSet\" elements are allowed as direct children of <rb></rb> elements", node.Name );
 					}
 				}
-			}
-
-			if ( rootModelSet != null )
-			{
-				rootModelSet.Resolve( null );
 			}
 
 			if ( rootObject != null )
@@ -244,7 +239,7 @@ namespace RbEngine.Components
 				{
 					if ( objectXmlLoader == null )
 					{
-						throw new RbXmlException( Element, "Could not handle elements: Object type \"{0}\" does not support IXmlLoader", objectXmlLoader.GetType( ).Name );
+						throw new RbXmlException( Element, "Could not handle elements: Object type \"{0}\" does not support IXmlLoader", LoadedObject.GetType( ).Name );
 					}
 					foreach ( XmlElement curElement in elements )
 					{
@@ -318,7 +313,7 @@ namespace RbEngine.Components
 				}
 
 				//	If the bound property is a list, then add the loaded object(s) to it
-				Object boundPropertyValue = boundProperty.GetValue( parentObject, null );
+				Object boundPropertyValue = boundProperty.CanRead ? boundProperty.GetValue( parentObject, null ) : null;
 				if ( boundPropertyValue is IList )
 				{
 					BindObjectToPropertyList( ( IList )boundPropertyValue );
@@ -327,6 +322,14 @@ namespace RbEngine.Components
 				{
 					BindObjectToProperty( parentObject, boundProperty );
 				}
+
+				//	Let the object know it's been added to its parent (usually, IParentObject.AddChild() should do this, but because
+				//	LoadedObject is being bound directly to a property, then let's do the parent object's work for it)
+			//	if ( LoadedObject is IChildObject )
+			//	{
+			//		( ( IChildObject )LoadedObject ).AddedToParent( parentObject );
+			//	}
+				//	NOTE: Disabled in favour of an extra attribute "alwaysAddAsChild", handled in LinkObjectToParent()
 			}
 
 			/// <summary>
@@ -334,11 +337,14 @@ namespace RbEngine.Components
 			/// </summary>
 			private void			LinkObjectToParent( Object parentObject )
 			{
+				bool addToParent = ( parentObject != null );
 				if ( BoundPropertyName != string.Empty )
 				{
 					BindObjectToParentProperty( parentObject, BoundPropertyName );
+					addToParent = ( string.Compare( Element.GetAttribute( "alwaysAddAsChild" ), "true", true ) == 0 );
 				}
-				else if ( parentObject != null )
+				
+				if ( addToParent )
 				{
 					IParentObject parentObjectInterface = parentObject as IParentObject;
 					if ( parentObjectInterface == null )
@@ -460,6 +466,7 @@ namespace RbEngine.Components
 					case "object"		: loader = new ObjectLoader( element );	break;
 					case "reference"	: loader = new ReferenceLoader( element ); break;
 					case "resource"		: loader = new ResourceStreamLoader( element );	break;
+					case "instance"		: loader = new InstanceLoader( element ); break;
 					case "string"		: loader = new ValueLoader( element, element.GetAttribute( "value" ) );	break;
 					case "int"			: loader = new ValueLoader( element, int.Parse( element.GetAttribute( "value" ) ) );	break;
 					case "float"		: loader = new ValueLoader( element, float.Parse( element.GetAttribute( "value" ) ) );	break;
@@ -578,19 +585,6 @@ namespace RbEngine.Components
 			string m_ModelSetName;
 		}
 
-		/*
-		/// <summary>
-		/// Extends BaseLoader to set up an existing valid property in the loaded object
-		/// </summary>
-		private class ExistingPropertyLoader : BaseLoader
-		{
-			public ExistingPropertyLoader( XmlElement element ) :
-				base( element )
-			{
-			}
-		}
-		*/
-
 		/// <summary>
 		/// Extends BaseLoader to load a reference to an existing object
 		/// </summary>
@@ -681,6 +675,64 @@ namespace RbEngine.Components
 			{
 				LoadedObject = val;
 			}
+		}
+
+		/// <summary>
+		/// Extends BaseLoader to create instances
+		/// </summary>
+		private class InstanceLoader : BaseLoader
+		{
+			/// <summary>
+			/// Constructor. Instances the reference
+			/// </summary>
+			/// <param name="element"></param>
+			public InstanceLoader( XmlElement element ) :
+				base( element )
+			{
+			}
+
+			/// <summary>
+			/// Creates and resolves the instance
+			/// </summary>
+			/// <param name="parentObject"></param>
+			public override void Resolve( Object parentObject )
+			{
+				//	Find the object to instance
+				string modelPath = Element.GetAttribute( "modelPath" );
+				if ( modelPath != string.Empty )
+				{
+					try
+					{
+						LoadedObject = ModelSet.Find( modelPath );
+					}
+					catch ( Exception exception )
+					{
+						throw new RbXmlException( exception, Element, "Failed to resolve reference to model \"{0}\"", modelPath );
+					}
+				}
+				else
+				{
+					throw new RbXmlException( Element, "Only \"modelPath\" instances are supported at the moment, sorry" );
+				}
+
+				//	Instance the object
+				IInstanceBuilder instanceBuilder = LoadedObject as IInstanceBuilder;
+				if ( instanceBuilder == null )
+				{
+					//	No instance builder available - just keep a reference, but write a warning also
+					string	source	= ( ( RbXmlDocument )Element.OwnerDocument ).InputSource;
+					int		line	= ( ( IXmlLineInfo )Element ).LineNumber;
+					int		column	= ( ( IXmlLineInfo )Element ).LinePosition;
+					Output.WriteLineCall( Output.ResourceWarning, "<instance> tag specified an object (\"{0}\") that did not implement IInstanceBuilder - storing as reference\n{1}({2},{3}) : [{4}]Warning occurred here", modelPath, source, line, column, Output.ResourceWarning.DisplayName );
+				}
+				else
+				{
+					LoadedObject = instanceBuilder.CreateInstance( );
+				}
+
+				base.Resolve( parentObject );
+			}
+
 		}
 
 		/// <summary>

@@ -1,5 +1,6 @@
 using System;
 using RbEngine.Rendering;
+using Tao.Cg;
 
 namespace RbOpenGlRendering.RbCg
 {
@@ -11,10 +12,27 @@ namespace RbOpenGlRendering.RbCg
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
+		/// <param name="context">CG context</param>
 		/// <param name="parameterHandle"> CGparameter handle </param>
-		public CgShaderParameter( IntPtr parameterHandle )
+		public CgShaderParameter( IntPtr context, IntPtr parameterHandle )
 		{
+			m_Context	= context;
 			m_Parameter = parameterHandle;
+		}
+
+		/// <summary>
+		/// Sets the shader parameter to a texture
+		/// </summary>
+		/// <param name="val">New parameter value</param>
+		/// <remarks>
+		/// Assumes that this parameter is a texture sampler of some description
+		/// </remarks>
+		public override void	Set( Texture2d val )
+		{
+			val.Apply( );
+			CgGl.cgGLSetTextureParameter( m_Parameter, ( ( OpenGlTexture2d )val ).TextureHandle );
+			Cg.cgSetSamplerState( m_Parameter );
+			Tao.Cg.CgGl.cgGLSetManageTextureParameters( m_Context, true );
 		}
 
 		/// <summary>
@@ -23,7 +41,7 @@ namespace RbOpenGlRendering.RbCg
 		/// <param name="val"> New parameter value </param>
 		public override void	Set( float val )
 		{
-			Tao.Cg.Cg.cgSetParameter1f( m_Parameter, val );
+			Cg.cgSetParameter1f( m_Parameter, val );
 		}
 
 		/// <summary>
@@ -32,7 +50,7 @@ namespace RbOpenGlRendering.RbCg
 		/// <param name="val"> New parameter value </param>
 		public override void	Set( int val )
 		{
-			Tao.Cg.Cg.cgSetParameter1i( m_Parameter, val );
+			Cg.cgSetParameter1i( m_Parameter, val );
 		}
 
 		/// <summary>
@@ -42,7 +60,7 @@ namespace RbOpenGlRendering.RbCg
 		/// <param name="y"> Vector y component </param>
 		public override void	Set( float x, float y )
 		{
-			Tao.Cg.Cg.cgSetParameter2f( m_Parameter, x, y );
+			Cg.cgSetParameter2f( m_Parameter, x, y );
 		}
 
 		/// <summary>
@@ -52,7 +70,7 @@ namespace RbOpenGlRendering.RbCg
 		/// <param name="y"> Vector y component </param>
 		public override void	Set( int x, int y )
 		{
-			Tao.Cg.Cg.cgSetParameter2i( m_Parameter, x, y );
+			Cg.cgSetParameter2i( m_Parameter, x, y );
 		}
 
 		/// <summary>
@@ -63,7 +81,7 @@ namespace RbOpenGlRendering.RbCg
 		/// <param name="z"> Vector z component </param>
 		public override void	Set( float x, float y, float z )
 		{
-			Tao.Cg.Cg.cgSetParameter3f( m_Parameter, x, y, z );
+			Cg.cgSetParameter3f( m_Parameter, x, y, z );
 		}
 
 		/// <summary>
@@ -74,7 +92,7 @@ namespace RbOpenGlRendering.RbCg
 		/// <param name="z"> Vector z component </param>
 		public override void	Set( int x, int y, int z )
 		{
-			Tao.Cg.Cg.cgSetParameter3i( m_Parameter, x, y, z );
+			Cg.cgSetParameter3i( m_Parameter, x, y, z );
 		}
 
 		/// <summary>
@@ -87,7 +105,7 @@ namespace RbOpenGlRendering.RbCg
 		public override void	Set( float[] val )
 		{
 			//	TODO: CG function is incorrect
-		//	Tao.Cg.Cg.cgSetParameterValuefc( m_Parameter, val.Length, out val );
+		//	Cg.cgSetParameterValuefc( m_Parameter, val.Length, out val );
 		}
 
 		/// <summary>
@@ -100,7 +118,7 @@ namespace RbOpenGlRendering.RbCg
 		public override void	Set( int[] val )
 		{
 			//	TODO: CG function is incorrect (requires float[] parameter)
-			//	Tao.Cg.Cg.cgSetParameterValueic( m_Parameter, val.Length, out val );
+			//	Cg.cgSetParameterValueic( m_Parameter, val.Length, out val );
 		}
 
 		/// <summary>
@@ -115,5 +133,6 @@ namespace RbOpenGlRendering.RbCg
 		}
 
 		private IntPtr	m_Parameter;
+		private IntPtr	m_Context;
 	}
 }

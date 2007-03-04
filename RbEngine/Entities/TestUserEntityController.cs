@@ -11,6 +11,7 @@ namespace RbEngine.Entities
 		Left,
 		Right,
 		Shoot,
+		Jump,
 		LookAt
 	}
 
@@ -111,22 +112,27 @@ namespace RbEngine.Entities
 
 			//	TODO: HACK (should set entity better, instead of casting Parent. should send a MovementXzRequest, instead of directly modifying the position)
 			Entity3 entity = ( Entity3 )Parent;
-			switch ( ( ( Interaction.CommandMessage )msg ).Id )
+
+			Maths.Vector3 movement = new Maths.Vector3( );
+
+			switch ( ( TestCommands )( ( Interaction.CommandMessage )msg ).Id )
 			{
-				case ( int )TestCommands.Forward	:
+				case TestCommands.Forward	:
 				{
-					if ( m_LookAt.Next.DistanceTo( entity.Position.Next ) > speed )
+					float distanceToLookAt = m_LookAt.Next.DistanceTo( entity.Position.Next );
+					if ( distanceToLookAt > speed )
 					{
-						entity.Position.Next += entity.Facing * speed;
+						speed = ( distanceToLookAt > 80.0f ) ? 8.0f : speed;
+						movement = entity.Facing * speed;
 					}
 					break;
 				}
 
-				case ( int )TestCommands.Back		:	entity.Position.Next -= entity.Facing * speed;	break;
-				case ( int )TestCommands.Left		:	entity.Position.Next += entity.Left * speed;	break;
-				case ( int )TestCommands.Right		:	entity.Position.Next += entity.Right * speed;	break;
+				case TestCommands.Back		:	movement = entity.Facing * -speed;	break;
+				case TestCommands.Left		:	movement = entity.Left * speed;		break;
+				case TestCommands.Right		:	movement = entity.Right * speed;	break;
 
-				case ( int )TestCommands.LookAt		:
+				case TestCommands.LookAt	:
 				{
 					//	TODO: This is a bit of a cheat, because I know that this controller only ever receives one look at message
 					//	on every command update)
@@ -135,6 +141,19 @@ namespace RbEngine.Entities
 
 					break;
 				}
+
+				case TestCommands.Jump		:
+				{
+				//	Maths.Vector3 jumpVector = entity.Facing * 10.0f;
+					Maths.Vector3 jumpVector = Maths.Vector3.Origin;
+					entity.HandleMessage( new JumpRequest( jumpVector.X, jumpVector.Z, false ) );
+					break;
+				}
+			}
+
+			if ( movement.SqrLength > 0 )
+			{
+				entity.HandleMessage( new MovementXzRequest( movement.X, movement.Z, false ) );
 			}
 
 			entity.Facing	= ( m_LookAt.Next - entity.Position.Next ).MakeNormal( );
@@ -181,6 +200,9 @@ namespace RbEngine.Entities
 		public void AddedToScene( Scene.SceneDb db )
 		{
 			CommandMessageSource = db.Server;
+			
+			//	Add this object to the render manager
+			db.Rendering.AddObject( this );
 		}
 
 		/// <summary>
@@ -188,6 +210,8 @@ namespace RbEngine.Entities
 		/// </summary>
 		public void RemovedFromScene( Scene.SceneDb db )
 		{
+			//	Remove this object from the render manager
+			db.Rendering.RemoveObject( this );
 		}
 
 		#endregion

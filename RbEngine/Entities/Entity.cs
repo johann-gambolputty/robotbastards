@@ -34,6 +34,28 @@ namespace RbEngine.Entities
 		#region	Entity message handling
 
 		/// <summary>
+		/// Adds a recipient for messages of a given type
+		/// </summary>
+		/// <param name="messageType">Base class of messages that the recipient is interested in</param>
+		/// <param name="recipient">Recipient call</param>
+		/// <param name="order">Recipient order value</param>
+		public override void AddRecipient( Type messageType, Components.MessageRecipientDelegate recipient, int order )
+		{
+			if ( ( messageType == typeof( MovementRequest ) ) || ( messageType.IsSubclassOf( typeof( MovementRequest ) ) ) )
+			{
+				m_MovementRequests.AddRecipient( recipient, order );
+			}
+			else if ( ( messageType == typeof( RotationRequest ) ) || ( messageType.IsSubclassOf( typeof( RotationRequest ) ) ) )
+			{
+				m_RotationRequests.AddRecipient( recipient, order );
+			}
+			else
+			{
+				base.AddRecipient( messageType, recipient, order );
+			}
+		}
+
+		/// <summary>
 		/// Handles a movement request message
 		/// </summary>
 		/// <param name="movement">Movement request message</param>

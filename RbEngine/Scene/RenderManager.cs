@@ -39,11 +39,36 @@ namespace RbEngine.Scene
 		public						RenderManager( SceneDb db )
 		{
 			m_Scene = db;
-			m_AddObjectGraphToRenderer = new Components.ChildVisitorDelegate( AddObjectGraphToRenderer );
-			db.ObjectAddedToScene += new Components.ChildAddedDelegate( OnObjectAddedToScene );
+		}
 
-			//	Add existing scene objects to the renderer
-			db.Objects.Visit( m_AddObjectGraphToRenderer );
+		/// <summary>
+		/// Adds a renderable object (either implementing IRender or ISceneRenderable) to the render manager
+		/// </summary>
+		public void					AddObject( Object obj )
+		{
+			if ( obj is Scene.ISceneRenderable )
+			{
+				m_SceneRenderables.Add( obj );
+			}
+			else if ( obj is Rendering.IRender )
+			{
+				m_Renderables.Add( obj );
+			}
+		}
+
+		/// <summary>
+		/// Removes a renderable object from the render manager
+		/// </summary>
+		public void					RemoveObject( Object obj )
+		{
+			if ( obj is Scene.ISceneRenderable )
+			{
+				m_SceneRenderables.Remove( obj );
+			}
+			else if ( obj is Rendering.IRender )
+			{
+				m_Renderables.Remove( obj );
+			}
 		}
 
 		/// <summary>
@@ -70,41 +95,9 @@ namespace RbEngine.Scene
 
 		#region	Private stuff
 
-		/// <summary>
-		/// If the specified object, or any of its child objects implement the Scene.ISceneRenderable interface, they get added to this manager
-		/// </summary>
-		private void OnObjectAddedToScene( Object scene, Object obj )
-		{
-			AddObjectGraphToRenderer( obj );
-		}
-
-		/// <summary>
-		/// Adds an object and any child objects to this manager, if they implement the Scene.ISceneRenderable interface
-		/// </summary>
-		private bool AddObjectGraphToRenderer( Object obj )
-		{
-			if ( obj is Scene.ISceneRenderable )
-			{
-				m_SceneRenderables.Add( obj );
-			}
-			else if ( obj is Rendering.IRender )
-			{
-				m_Renderables.Add( obj );
-			}
-
-			Components.IParentObject parentObj = obj as Components.IParentObject;
-			if ( parentObj != null )
-			{
-				parentObj.VisitChildren( m_AddObjectGraphToRenderer );
-			}
-
-			return true;
-		}
-
-		private SceneDb							m_Scene;
-		private ArrayList						m_SceneRenderables = new ArrayList( );
-		private ArrayList						m_Renderables = new ArrayList( );
-		private Components.ChildVisitorDelegate	m_AddObjectGraphToRenderer;
+		private SceneDb		m_Scene;
+		private ArrayList	m_SceneRenderables = new ArrayList( );
+		private ArrayList	m_Renderables = new ArrayList( );
 
 		#endregion
 	}
