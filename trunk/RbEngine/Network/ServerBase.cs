@@ -64,25 +64,20 @@ namespace RbEngine.Network
 		}
 
 		/// <summary>
-		/// Talks and listens to clients
-		/// </summary>
-		private void			Converse( Socket socket )
-		{
-
-		}
-
-		/// <summary>
 		/// Adds a client to the server
 		/// </summary>
 		/// <param name="client">Client to add</param>
-		public abstract void	AddClient( Client client );
+		public virtual void	AddClient( Client client )
+		{
+		}
 
 		/// <summary>
 		/// Removes a client from the server
 		/// </summary>
 		/// <param name="client">Client to remove</param>
-		public abstract void	RemoveClient( Client client );
-
+		public virtual void	RemoveClient( Client client )
+		{
+		}
 
 		private Scene.SceneDb	m_Scene;
 		string					m_Name;
