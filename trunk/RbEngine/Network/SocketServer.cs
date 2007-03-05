@@ -16,12 +16,12 @@ namespace RbEngine.Network
 		/// </summary>
 		public void					StartConversation( )
 		{
-			Socket			socket	= CreateSocket( );
-			NetworkStream	stream	= new NetworkStream( socket );
-			m_SocketReader			= new BinaryReader( stream );
-			m_SocketWriter			= new BinaryWriter( stream );
+			m_Socket		= CreateSocket( );
+			m_Stream		= new NetworkStream( m_Socket );
+			m_SocketReader	= new BinaryReader( m_Stream );
+			m_SocketWriter	= new BinaryWriter( m_Stream );
 
-			m_Thread = new Thread( new ThreadState( Converse ) );
+			m_Thread = new Thread( new ThreadStart( Converse ) );
 			m_Thread.Start( );
 		}
 
@@ -37,7 +37,7 @@ namespace RbEngine.Network
 		{
 			while ( true )
 			{
-				if ( socket.Available > 0 )
+				if ( m_Socket.Available > 0 )
 				{
 					Components.Message msg = Components.Message.CreateFromStream( m_SocketReader );
 					base.HandleMessage( msg );
@@ -52,6 +52,8 @@ namespace RbEngine.Network
 		{
 			msg.Write( m_SocketWriter );
 		}
+
+		protected const int	Port	= 11000;
 
 
 		#region IDisposable Members
@@ -73,6 +75,8 @@ namespace RbEngine.Network
 
 		#region	Private stuff
 
+		private Socket			m_Socket;
+		private NetworkStream	m_Stream;
 		private BinaryReader	m_SocketReader;
 		private BinaryWriter	m_SocketWriter;
 		private Thread			m_Thread;

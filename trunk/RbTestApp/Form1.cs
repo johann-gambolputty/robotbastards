@@ -21,6 +21,7 @@ namespace RbTestApp
 
 		public Form1()
 		{
+
 			RbParticleSystem.ParticleSystem testSystem = new RbParticleSystem.ParticleSystem( );
 
 			testSystem.AddUpdater( new RbParticleSystem.ParticleSystemUpdater( ) );
@@ -38,6 +39,9 @@ namespace RbTestApp
 			{
 				RbEngine.Rendering.RenderFactory.Load( renderAssemblyName );
 			}
+
+			//	Add the render factory to the builder
+			RbEngine.Components.Builder.Main.AddFactory( RbEngine.Rendering.RenderFactory.Inst );
 
 			//	Load the resource manager setup file
 			string resourceSetupPath = System.Configuration.ConfigurationSettings.AppSettings[ "resourceSetupPath" ];

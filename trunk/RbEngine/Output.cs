@@ -105,6 +105,25 @@ namespace RbEngine
 
 		#endregion
 
+		#region	Common networking switches
+
+		/// <summary>
+		/// Switch for networking information. Disabled in non-DEBUG builds
+		/// </summary>
+		public static DebugSwitch		NetworkInfo			= new DebugSwitch( "networkInfo", "Network information diagnostic output" );
+
+		/// <summary>
+		/// Switch for networking warnings
+		/// </summary>
+		public static TraceSwitch		NetworkWarning 		= new TraceSwitch( "networkWarn", "Network warning diagnostic output" );
+
+		/// <summary>
+		/// Switch for networking errors
+		/// </summary>
+		public static TraceSwitch		NetworkError 		= new TraceSwitch( "networkError", "Network error diagnostic output" );
+
+		#endregion
+
 		#region	Trace switch outputs
 
 		/// <summary>
