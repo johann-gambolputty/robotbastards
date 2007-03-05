@@ -1,11 +1,14 @@
 using System;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
 
 namespace RbEngine.Network
 {
 	/// <summary>
 	/// Full-on server
 	/// </summary>
-	public class Server : SocketServer
+	public class Server : ServerBase
 	{
 		/// <summary>
 		/// Listens for connection requests
@@ -13,6 +16,25 @@ namespace RbEngine.Network
 		public void SetupConnection( string connectionString )
 		{
 			m_ConnectionString = connectionString;
+			Thread thread = new Thread( new ThreadStart( RunServerComms ) );
+			thread.Start( );
+		}
+
+
+		private void RunServerComms( )
+		{
+			IPAddress	address		= Dns.Resolve( m_ConnectionString ).AddressList[ 0 ];
+			TcpListener	listener	= new TcpListener( address, Port );
+
+			while ( true )
+			{
+				if ( listener.Pending )
+				{
+					Socket clientSocket = listener.AcceptSocket( );
+					Output.WriteLineCall( Output.NetworkInfo, "Accepted client \"{0}\"", );
+					m_Sockets.Add( clientSocket );
+				}
+			}
 		}
 
 		/// <summary>
@@ -24,7 +46,7 @@ namespace RbEngine.Network
 
 			TcpListener listener = new TcpListener( address, Port );
 
-			Socket socket;
+			Socket socket = null;
 			try
 			{
 				listener.Start( );
@@ -34,8 +56,9 @@ namespace RbEngine.Network
 				}
 				socket = listener.AcceptSocket( );
 			}
-			catch( Exception exception )
+			catch//( Exception exception )
 			{
+				
 			}
 
 			return socket;
@@ -57,5 +80,7 @@ namespace RbEngine.Network
 		public override void RemoveClient( Client client )
 		{
 		}
+
+		private string	m_ConnectionString;
 	}
 }

@@ -204,6 +204,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Components\Builder.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Components\Component.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
