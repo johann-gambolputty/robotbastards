@@ -337,7 +337,7 @@ namespace RbEngine.Rendering
 		public void PopRenderState( )
 		{
 			int lastIndex = m_RenderStates.Count - 1;
-			m_RenderStates[ lastIndex ].End( );
+			( ( RenderState )m_RenderStates[ lastIndex ] ).End( );
 			m_RenderStates.RemoveAt( lastIndex );
 		}
 

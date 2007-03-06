@@ -111,7 +111,7 @@ namespace RbEngine.Rendering
 				{
 					return ms_Override;
 				}
-				RenderTechnque eqvTechnique = Effect.FindTechnique( ms_Override.Name );
+				RenderTechnique eqvTechnique = Effect.FindTechnique( ms_Override.Name );
 				return eqvTechnique == null ? ms_Override : eqvTechnique;
 			}
 		}
@@ -120,7 +120,7 @@ namespace RbEngine.Rendering
 		/// Applies this technique. Applies a pass, then invokes the render delegate to render stuff, for each pass
 		/// </summary>
 		/// <param name="render"></param>
-		public void Apply( RenderDelegate render )
+		public virtual void Apply( RenderDelegate render )
 		{
 			RenderTechnique techniqueToApply = TechniqueToApply;
 			techniqueToApply.Begin( );
