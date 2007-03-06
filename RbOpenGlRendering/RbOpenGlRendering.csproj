@@ -204,6 +204,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "OpenGlRenderTarget.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "OpenGlShapeRenderer.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

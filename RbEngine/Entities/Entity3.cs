@@ -26,6 +26,41 @@ namespace RbEngine.Entities
 	 *
 	*/
 
+	/// <summary>
+	/// Standard movement message handling orders
+	/// </summary>
+	/// <remarks>
+	/// These are standard ordering values for MessageRecipientChain objects, that are handy syonyms for entity movement or rotation message handlers, for example:
+	/// <code>
+	///	messageHandler.AddRecipient( typeof( MovementRequest ), new MessageRecipientDelegate( HandleMovementRequest ), ( int )StandardMovementHandlerOrder.Physics );
+	/// </code>
+	/// will call HandleMovementRequest after any animation movement handlers have been called.
+	/// These order values are 
+	/// </remarks>
+	public enum StandardMovementHandlerOrder
+	{
+		/// <summary>
+		/// Order used by message handler that turns movement into animation, and also checks that the current movement can be accommodated by the current
+		/// animation
+		/// </summary>
+		Animation		= 10,
+
+		/// <summary>
+		/// Order used by the message handler that sends movement to the physics simulation
+		/// </summary>
+		Physics			= 20,
+
+		/// <summary>
+		/// Order used by the message handler that commits movement that has been processed by previous handlers to the target
+		/// </summary>
+		Commit			= 30,
+
+		/// <summary>
+		/// Order used by the message handler that sends the committed movement to the server
+		/// </summary>
+		ServerUpdate	= 40
+	}
+
 	//	TODO: Entities should not be renderable - they should have child nodes that handle all the rendering shit
 
 	/// <summary>
@@ -187,7 +222,7 @@ namespace RbEngine.Entities
 		/// </summary>
 		public void Render( long renderTime )
 		{
-			m_PreRenders.Apply( );
+			m_PreRenders.Begin( );
 
 			//	Get the interpolated position of the entity
 			float t = ( float )( renderTime - m_Position.LastStepTime ) / ( float )m_Position.LastStepInterval;
@@ -208,6 +243,8 @@ namespace RbEngine.Entities
 
 			//	Pop the entity transform
 			Renderer.Inst.PopTransform( Transform.LocalToView );
+
+			m_PreRenders.End( );
 		}
 
 		#endregion

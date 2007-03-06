@@ -22,8 +22,10 @@ namespace RbEngine.Cameras
 		public Maths.Point3			Unproject( int x, int y, float depth )
 		{
 			//	TODO: This is a bodge - don't abuse the rendering pipeline like this!
-			Apply( );
-			return Rendering.Renderer.Inst.Unproject( x, y, depth );
+			Begin( );
+			Maths.Point3 result = Rendering.Renderer.Inst.Unproject( x, y, depth );
+			End( );
+			return result;
 		}
 
 		/// <summary>
@@ -35,8 +37,10 @@ namespace RbEngine.Cameras
 		public Maths.Ray3			PickRay( int x, int y )
 		{
 			//	TODO: This is a bodge - don't abuse the rendering pipeline like this!
-			Apply( );
-			return new Maths.Ray3( Position, ( Rendering.Renderer.Inst.Unproject( x, y, 1 ) - Position ).MakeNormal( ) );
+			Begin( );
+			Maths.Ray3 result = new Maths.Ray3( Position, ( Rendering.Renderer.Inst.Unproject( x, y, 1 ) - Position ).MakeNormal( ) );
+			End( );
+			return result;
 		}
 
 		#endregion

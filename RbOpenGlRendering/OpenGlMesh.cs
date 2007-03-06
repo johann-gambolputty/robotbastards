@@ -129,23 +129,29 @@ namespace RbOpenGlRendering
 		{
 			for ( int textureIndex = 0; textureIndex < m_NumTextures; ++textureIndex )
 			{
-				m_Textures[ textureIndex ].Apply( );
+				m_Textures[ textureIndex ].Begin( );
 			}
 
 			for ( int vbIndex = 0; vbIndex < m_VertexBuffers.Length; ++vbIndex )
 			{
-				m_VertexBuffers[ vbIndex ].Apply( );
+				m_VertexBuffers[ vbIndex ].Begin( );
 			}
 
 			for ( int groupIndex = 0; groupIndex < m_Groups.Length; ++groupIndex )
 			{
 				m_Groups[ groupIndex ].Draw( );
 			}
-			
+
 			for ( int vbIndex = 0; vbIndex < m_VertexBuffers.Length; ++vbIndex )
 			{
-				m_VertexBuffers[ vbIndex ].UnApply( );
+				m_VertexBuffers[ vbIndex ].End( );
 			}
+
+			for ( int textureIndex = 0; textureIndex < m_NumTextures; ++textureIndex )
+			{
+				m_Textures[ textureIndex ].End( );
+			}
+
 		}
 
 		#endregion

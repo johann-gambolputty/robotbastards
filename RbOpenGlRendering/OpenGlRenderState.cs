@@ -12,7 +12,7 @@ namespace RbOpenGlRendering
 		/// <summary>
 		/// Applies this render state
 		/// </summary>
-		public override void Apply( )
+		public override void Begin( )
 		{
 			//	Apply flag caps
 			ApplyFlagCap( RenderStateFlag.Lighting, Gl.GL_LIGHTING );
@@ -106,6 +106,13 @@ namespace RbOpenGlRendering
 			}
 
 			Gl.glColor3ub( m_Colour.R, m_Colour.G, m_Colour.B );
+		}
+
+		/// <summary>
+		/// Stops applying this render state
+		/// </summary>
+		public override void End( )
+		{
 		}
 
 		private int GetBlendFactor( BlendFactor factor )

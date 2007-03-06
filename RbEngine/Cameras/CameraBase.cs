@@ -6,7 +6,7 @@ namespace RbEngine.Cameras
 	/// <summary>
 	/// Base class for cameras
 	/// </summary>
-	public abstract class CameraBase : Rendering.IApplicable
+	public abstract class CameraBase : Rendering.IAppliance
 	{
 
 		/// <summary>
@@ -17,9 +17,17 @@ namespace RbEngine.Cameras
 		/// <summary>
 		/// Applies camera transforms to the current renderer
 		/// </summary>
-		public virtual void		Apply( )
+		public virtual void		Begin( )
 		{
 			Rendering.Renderer.Inst.Camera = this;
+		}
+
+		/// <summary>
+		/// Should remove camera transforms from the current renderer
+		/// </summary>
+		public virtual void		End( )
+		{
+			Rendering.Renderer.Inst.Camera = null;
 		}
 	}
 }

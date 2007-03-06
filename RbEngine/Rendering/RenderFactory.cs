@@ -192,6 +192,11 @@ namespace RbEngine.Rendering
 		public abstract RenderFont			NewFont( );
 
 		/// <summary>
+		/// Creates a new RenderTarget object
+		/// </summary>
+		public abstract RenderTarget		NewRenderTarget( );
+
+		/// <summary>
 		/// Creates a new Renderer object
 		/// </summary>
 		protected abstract Renderer			NewRenderer( );

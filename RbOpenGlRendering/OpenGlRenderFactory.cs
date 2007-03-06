@@ -50,6 +50,14 @@ namespace RbOpenGlRendering
 		}
 
 		/// <summary>
+		/// Creates a new RenderTarget object
+		/// </summary>
+		public override RenderTarget		NewRenderTarget( )
+		{
+			return new OpenGlRenderTarget( );
+		}
+
+		/// <summary>
 		/// Creates a new Renderer object
 		/// </summary>
 		protected override Renderer			NewRenderer( )

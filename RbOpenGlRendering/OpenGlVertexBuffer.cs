@@ -171,7 +171,7 @@ namespace RbOpenGlRendering
 		/// <summary>
 		/// Applies this vertex buffer
 		/// </summary>
-		public void		Apply( )
+		public void		Begin( )
 		{
 			Gl.glEnableClientState( ClientState );
 			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );
@@ -198,9 +198,9 @@ namespace RbOpenGlRendering
 		}
 
 		/// <summary>
-		/// Disables the client state that was enabled by Apply()
+		/// Disables the client state that was enabled by Begin()
 		/// </summary>
-		public void		UnApply( )
+		public void End( )
 		{
 			Gl.glDisableClientState( ClientState );
 		}

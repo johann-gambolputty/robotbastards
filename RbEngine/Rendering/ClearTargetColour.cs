@@ -6,7 +6,7 @@ namespace RbEngine.Rendering
 	/// Render appliance, used for clearing the render target colour
 	/// </summary>
 	/// <seealso cref="Renderer.ClearColour"/>
-	public class ClearTargetColour : IApplicable
+	public class ClearTargetColour : IAppliance
 	{
 		/// <summary>
 		/// Clear colour
@@ -33,14 +33,21 @@ namespace RbEngine.Rendering
 			m_Colour = colour;
 		}
 
-		#region IApplicable Members
+		#region IAppliance Members
 
 		/// <summary>
 		/// Clears the current target, using Renderer.Clear()
 		/// </summary>
-		public void Apply()
+		public void Begin( )
 		{
 			Renderer.Inst.ClearColour( m_Colour );
+		}
+
+		/// <summary>
+		/// Does nothing (clearing doesn't really have an 'end')
+		/// </summary>
+		public void End( )
+		{
 		}
 
 		#endregion

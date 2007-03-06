@@ -29,10 +29,11 @@ namespace RbOpenGlRendering.RbCg
 		/// </remarks>
 		public override void	Set( Texture2d val )
 		{
-			val.Apply( );
+			val.Begin( );
 			CgGl.cgGLSetTextureParameter( m_Parameter, ( ( OpenGlTexture2d )val ).TextureHandle );
 			Cg.cgSetSamplerState( m_Parameter );
 			Tao.Cg.CgGl.cgGLSetManageTextureParameters( m_Context, true );
+			val.End( );
 		}
 
 		/// <summary>

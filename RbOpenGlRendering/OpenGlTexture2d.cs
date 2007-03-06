@@ -117,9 +117,16 @@ namespace RbOpenGlRendering
 		/// <summary>
 		/// Applies this texture
 		/// </summary>
-		public override void Apply( )
+		public override void Begin( )
 		{
 			Gl.glBindTexture( Gl.GL_TEXTURE_2D, TextureHandle );
+		}
+
+		/// <summary>
+		/// Stops applying this texture
+		/// </summary>
+		public override void End( )
+		{
 		}
 
 		private int	m_TextureHandle = -1;

@@ -6,7 +6,7 @@ namespace RbEngine.Scene
 	/// <summary>
 	/// LightingData objects can be attached to ISceneRenderable objects, enabling those objects to be lit by the scene LightingManager
 	/// </summary>
-	public class LightingData : Rendering.IApplicable, Components.IChildObject
+	public class LightingData : Rendering.IAppliance, Components.IChildObject
 	{
 		/// <summary>
 		/// Clears all lights from the group
@@ -35,12 +35,12 @@ namespace RbEngine.Scene
 			}
 		}
 
-		#region IApplicable Members
+		#region IAppliance Members
 
 		/// <summary>
-		/// Applies this lighting group
+		/// Starts applying this lighting group
 		/// </summary>
-		public void Apply( )
+		public void Begin( )
 		{
 			Renderer renderer = Renderer.Inst;
 
@@ -49,6 +49,13 @@ namespace RbEngine.Scene
 			{
 				renderer.AddLight( m_Lights[ lightIndex ] );
 			}
+		}
+
+		/// <summary>
+		/// Stops applying this lighting group
+		/// </summary>
+		public void End( )
+		{
 		}
 
 		#endregion

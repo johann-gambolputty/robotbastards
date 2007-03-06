@@ -544,7 +544,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Rendering\IApplicable.cs"
+                    RelPath = "Rendering\IAppliance.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -595,6 +595,11 @@
                 />
                 <File
                     RelPath = "Rendering\RenderState.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Rendering\RenderTarget.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
