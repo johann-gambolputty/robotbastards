@@ -47,7 +47,7 @@ namespace RbOpenGlRendering.RbCg
 		/// <summary>
 		/// Applies this effect
 		/// </summary>
-		public override void Apply( )
+		public override void Begin( )
 		{
 			//	Set bound parameters
 			for ( int bindingIndex = 0; bindingIndex < ( int )ShaderParameterBinding.NumBindings; ++bindingIndex )
@@ -133,6 +133,13 @@ namespace RbOpenGlRendering.RbCg
 		/// </summary>
 		EyeZAxis,
 		*/
+		}
+
+		/// <summary>
+		/// Stops applying this effect
+		/// </summary>
+		public override void End( )
+		{
 		}
 
 
@@ -274,7 +281,7 @@ namespace RbOpenGlRendering.RbCg
 		/// <param name="parameter"> Parameter to bind </param>
 		/// <param name="binding"> Render state variable to bind to </param>
 		/// <remarks>
-		/// This need only be called once, to set up the binding. Every time that the shader to which this parameter belongs is applied (IApplicable::Apply())
+		/// This need only be called once, to set up the binding. Every time that the shader to which this parameter belongs is applied (IAppliance::Apply())
 		/// the parameter is updated to match the value of bound variable.
 		/// If the parameter binding is set to ShaderParameterBinding.NoBinding, the parameter is unbound, and will no longer get updated.
 		/// </remarks>

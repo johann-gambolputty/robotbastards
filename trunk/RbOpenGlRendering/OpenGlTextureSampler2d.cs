@@ -12,7 +12,7 @@ namespace RbOpenGlRendering
 		/// <summary>
 		/// Applies the associated texture and texture parameters
 		/// </summary>
-		public override void Apply( )
+		public override void Begin( )
 		{
 			Gl.glBindTexture( Gl.GL_TEXTURE_2D, ( ( OpenGlTexture2d )Texture ).TextureHandle );
 
@@ -30,7 +30,14 @@ namespace RbOpenGlRendering
 				case TextureMode.Modulate	:	Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_MODULATE	);	break;
 			}
 		}
-		
+
+		/// <summary>
+		/// Stops applying this sampler
+		/// </summary>
+		public override void End( )
+		{
+		}
+
 		private void ApplyTextureWrap( int dir, TextureWrap wrap )
 		{
 			switch ( wrap )

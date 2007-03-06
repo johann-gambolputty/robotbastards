@@ -3,6 +3,9 @@ using System.Collections;
 
 namespace RbEngine.Rendering
 {
+
+	//	TODO: This is just an ApplianceList
+
 	/// <summary>
 	/// A render pass sets up the state of the renderer for rendering
 	/// </summary>
@@ -19,23 +22,23 @@ namespace RbEngine.Rendering
 		/// Setup constructor
 		/// </summary>
 		/// <param name="appliances">Appliances to add to the render pass</param>
-		public RenderPass( params IApplicable[] appliances )
+		public RenderPass( params IAppliance[] appliances )
 		{
 			Add( appliances );
 		}
 
 		/// <summary>
-		/// Adds an object to this render pass (must implement the Rendering.IApplicable interface)
+		/// Adds an object to this render pass (must implement the Rendering.IAppliance interface)
 		/// </summary>
-		public void						Add( IApplicable obj )
+		public void						Add( IAppliance obj )
 		{
 			m_Appliances.Add( obj );
 		}
 
 		/// <summary>
-		/// Adds an object to this render pass (must implement the Rendering.IApplicable interface)
+		/// Adds an object to this render pass (must implement the Rendering.IAppliance interface)
 		/// </summary>
-		public void						Add( params IApplicable[] appliances )
+		public void						Add( params IAppliance[] appliances )
 		{
 			for ( int index = 0; index < appliances.Length; ++index )
 			{
@@ -48,9 +51,9 @@ namespace RbEngine.Rendering
 		/// </summary>
 		public virtual void				Begin( )
 		{
-			foreach ( IApplicable appliance in m_Appliances )
+			foreach ( IAppliance appliance in m_Appliances )
 			{
-				appliance.Apply( );
+				appliance.Begin( );
 			}
 		}
 
@@ -59,6 +62,10 @@ namespace RbEngine.Rendering
 		/// </summary>
 		public virtual void				End( )
 		{
+			foreach ( IAppliance appliance in m_Appliances )
+			{
+				appliance.End( );
+			}
 		}
 
 		#region	Private stuff

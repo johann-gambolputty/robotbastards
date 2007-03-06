@@ -70,7 +70,7 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Applies the currently selected technique, then renders the attached object
 		/// </summary>
-		public void Render()
+		public void Render( )
 		{
 			m_Technique.Apply( );
 		}

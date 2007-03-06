@@ -198,7 +198,7 @@ namespace RbEngine.Rendering
 	/// <summary>
 	/// Summary description for RenderState.
 	/// </summary>
-	public abstract class RenderState : IApplicable
+	public abstract class RenderState : IAppliance
 	{
 		#region	Setup
 
@@ -351,10 +351,19 @@ namespace RbEngine.Rendering
 
 		#endregion
 
+		#region	IAppliance Members
+
 		/// <summary>
-		/// Applies this render state
+		/// Starts applying this render state
 		/// </summary>
-		public abstract void Apply( );
+		public abstract void Begin( );
+
+		/// <summary>
+		/// Stops applying this render state
+		/// </summary>
+		public abstract void End( );
+
+		#endregion
 
 		#region	Protected stuff
 

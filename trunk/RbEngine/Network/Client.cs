@@ -39,7 +39,7 @@ namespace RbEngine.Network
 	 *
 	 */
 
-	public class OverrideTechnique : IApplicable
+	public class OverrideTechnique : IAppliance
 	{
 		#region	Setup
 
@@ -75,14 +75,22 @@ namespace RbEngine.Network
 
 		#endregion
 
-		#region IApplicable Members
+		#region IAppliance Members
 
 		/// <summary>
 		/// Sets the attached technique as the global override (RenderTechnique.Override)
 		/// </summary>
-		public void Apply( )
+		public void Begin( )
 		{
 			RenderTechnique.Override = m_Technique;
+		}
+
+		/// <summary>
+		/// Disables the override
+		/// </summary>
+		public void End( )
+		{
+			RenderTechnique.Override = null;
 		}
 
 		#endregion

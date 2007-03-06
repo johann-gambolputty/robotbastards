@@ -354,22 +354,28 @@ namespace RbOpenGlMd3Loader
 				int numVbs = m_Frame.VertexBuffers.Length;
 				for ( int vbIndex = 0; vbIndex < numVbs; ++vbIndex )
 				{
-					m_Frame.VertexBuffers[ vbIndex ].Apply( );
+					m_Frame.VertexBuffers[ vbIndex ].Begin( );
 				}
 				
 				if ( m_Surface.TextureUVs != null )
 				{
-					m_Surface.TextureUVs.Apply( );
+					m_Surface.TextureUVs.Begin( );
 				}
 
 				m_Surface.Group.Draw( );
+
+				if ( m_Surface.TextureUVs != null )
+				{
+					m_Surface.TextureUVs.End( );
+				}
 
 				//	TODO: Don't need to unapply the vertex buffers like this - could just enable all client arrays before hand, then
 				//	disable all after
 				for ( int vbIndex = 0; vbIndex < numVbs; ++vbIndex )
 				{
-					m_Frame.VertexBuffers[ vbIndex ].UnApply( );
+					m_Frame.VertexBuffers[ vbIndex ].End( );
 				}
+
 			}
 
 			private Surface			m_Surface;

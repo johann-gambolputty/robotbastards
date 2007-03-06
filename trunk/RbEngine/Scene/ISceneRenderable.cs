@@ -9,7 +9,7 @@ namespace RbEngine.Scene
 	public interface ISceneRenderable
 	{
 		/// <summary>
-		/// The list of IApplicable objects that must be applied at the beginning of Render()
+		/// The list of IAppliance objects that must be applied at the beginning of Render()
 		/// </summary>
 		Rendering.ApplianceList PreRenderList
 		{

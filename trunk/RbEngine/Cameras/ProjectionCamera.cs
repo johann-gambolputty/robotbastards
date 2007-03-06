@@ -11,7 +11,7 @@ namespace RbEngine.Cameras
 		/// <summary>
 		/// Applies camera transforms to the current renderer
 		/// </summary>
-		public override void		Apply( )
+		public override void		Begin( )
 		{
 			Rendering.Renderer renderer = Rendering.Renderer.Inst;
 			int width = renderer.ViewportWidth;
@@ -20,8 +20,17 @@ namespace RbEngine.Cameras
 			float aspectRatio = ( height == 0 ) ? 1.0f : ( float )width / ( float )height;
 			Rendering.Renderer.Inst.SetPerspectiveProjectionTransform( m_PerspectiveFov, aspectRatio, m_PerspectiveZNear, m_PerspectiveZFar );
 
-			base.Apply( );
+			base.Begin( );
 		}
+
+		/// <summary>
+		/// Removes camera transforms from the renderer
+		/// </summary>
+		public override void End( )
+		{
+			base.End( );
+		}
+
 
 		#region	Public properties
 

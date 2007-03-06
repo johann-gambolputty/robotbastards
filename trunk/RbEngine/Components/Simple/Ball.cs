@@ -94,7 +94,7 @@ namespace RbEngine.Components.Simple
 		#region ISceneRenderable Members
 
 		/// <summary>
-		/// Rendering.IApplicable objects to apply before rendering
+		/// Rendering.IAppliance objects to apply before rendering
 		/// </summary>
 		public ApplianceList	PreRenderList
 		{
@@ -109,12 +109,19 @@ namespace RbEngine.Components.Simple
 		/// </summary>
 		public void Render( long renderTime )
 		{
-			m_PreRenders.Apply( );
+			m_PreRenders.Begin( );
+
 			Renderer.Inst.PushRenderState( m_LineState );
+
 			ShapeRenderer.Inst.DrawSphere( m_Sphere.Centre, m_Sphere.Radius );
-			m_FilledState.Apply( );
+
+			m_FilledState.Begin( );
 			ShapeRenderer.Inst.DrawSphere( m_Sphere.Centre, m_Sphere.Radius );
+			m_FilledState.End( );
+
 			Renderer.Inst.PopRenderState( );
+
+			m_PreRenders.End( );
 		}
 
 		#endregion

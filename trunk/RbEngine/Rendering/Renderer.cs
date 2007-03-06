@@ -313,7 +313,7 @@ namespace RbEngine.Rendering
 		public void PushRenderState( RenderState state )
 		{
 			m_RenderStates.Add( state );
-			state.Apply( );
+			state.Begin( );
 		}
 
 		/// <summary>
@@ -336,7 +336,9 @@ namespace RbEngine.Rendering
 		/// </summary>
 		public void PopRenderState( )
 		{
-			m_RenderStates.RemoveAt( m_RenderStates.Count - 1 );
+			int lastIndex = m_RenderStates.Count - 1;
+			m_RenderStates[ lastIndex ].End( );
+			m_RenderStates.RemoveAt( lastIndex );
 		}
 
 		#endregion

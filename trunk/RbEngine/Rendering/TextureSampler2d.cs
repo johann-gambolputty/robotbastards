@@ -86,7 +86,7 @@ namespace RbEngine.Rendering
 	/// <summary>
 	/// Abstract base class for sampling 2d textures
 	/// </summary>
-	public abstract class TextureSampler2d : IApplicable
+	public abstract class TextureSampler2d : IAppliance
 	{
 		/// <summary>
 		/// Default constructor
@@ -106,9 +106,14 @@ namespace RbEngine.Rendering
 		}
 
 		/// <summary>
-		/// Applies this texture
+		/// Starts applying this texture
 		/// </summary>
-		public abstract void	Apply( );
+		public abstract void	Begin( );
+		
+		/// <summary>
+		/// Stops applying this texture
+		/// </summary>
+		public abstract void	End( );
 
 		/// <summary>
 		/// Access to the bound texture

@@ -4,9 +4,9 @@ using System.Collections;
 namespace RbEngine.Rendering
 {
 	/// <summary>
-	/// Stores an array of IApplicable objects
+	/// Stores an array of IAppliance objects
 	/// </summary>
-	public class ApplianceList : IApplicable, IList
+	public class ApplianceList : IAppliance, IList
 	{
 		/// <summary>
 		/// Finds a stored appliance by type
@@ -32,18 +32,32 @@ namespace RbEngine.Rendering
 
 		#endregion
 
-		#region IApplicable Members
+		#region IAppliance Members
 
 		/// <summary>
-		/// Applies all the IApplicable objects in this list
+		/// Calls IAppliance.Begin() for all objects in the appliance list
 		/// </summary>
-		public void Apply()
+		public void Begin( )
 		{
 			if ( m_Appliances != null )
 			{
 				for ( int index = 0; index < m_Appliances.Count; ++index )
 				{
-					( ( IApplicable )m_Appliances[ index ] ).Apply( );
+					( ( IAppliance )m_Appliances[ index ] ).Begin( );
+				}
+			}
+		}
+
+		/// <summary>
+		/// Calls IAppliance.End() for all objects in the appliance list
+		/// </summary>
+		public void End( )
+		{
+			if ( m_Appliances != null )
+			{
+				for ( int index = 0; index < m_Appliances.Count; ++index )
+				{
+					( ( IAppliance )m_Appliances[ index ] ).End( );
 				}
 			}
 		}
@@ -91,7 +105,7 @@ namespace RbEngine.Rendering
 		/// </summary>
 		public void Insert( int index, object value )
 		{
-			m_Appliances.Insert( index, ( IApplicable )value );
+			m_Appliances.Insert( index, ( IAppliance )value );
 		}
 
 		/// <summary>

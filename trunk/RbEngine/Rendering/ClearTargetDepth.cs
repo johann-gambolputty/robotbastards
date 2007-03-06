@@ -5,7 +5,7 @@ namespace RbEngine.Rendering
 	/// <summary>
 	/// Clears target depth
 	/// </summary>
-	public class ClearTargetDepth : IApplicable
+	public class ClearTargetDepth : IAppliance
 	{
 		/// <summary>
 		/// Clear depth
@@ -32,14 +32,21 @@ namespace RbEngine.Rendering
 			m_Depth = depth;
 		}
 
-		#region IApplicable Members
+		#region IAppliance Members
 
 		/// <summary>
 		/// Clears the target depth
 		/// </summary>
-		public void Apply( )
+		public void Begin( )
 		{
 			Renderer.Inst.ClearDepth( m_Depth );
+		}
+
+		/// <summary>
+		/// Does nothing (clearing doesn't really have an 'end')
+		/// </summary>
+		public void End( )
+		{
 		}
 
 		#endregion

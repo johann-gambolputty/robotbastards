@@ -6,7 +6,7 @@ namespace RbEngine.Rendering
 	/// <summary>
 	/// Stores a collection of RenderPass objects. For each pass, the technique applies it, then renders geometry using a callback
 	/// </summary>
-	public class RenderTechnique : Components.Node, Components.INamedObject
+	public class RenderTechnique : Components.Node, Components.INamedObject, IAppliance
 	{
 		#region	Setup
 
@@ -96,63 +96,71 @@ namespace RbEngine.Rendering
 		public delegate void RenderDelegate( );
 
 		/// <summary>
+		/// Gets the technique that should be applied (either this technique, the override technique, or a technique in the parent effect with the same
+		/// name as the override technique)
+		/// </summary>
+		protected RenderTechnique TechniqueToApply
+		{
+			get
+			{
+				if ( ms_Override == null )
+				{
+					return this;
+				}
+				if ( Effect == null )
+				{
+					return ms_Override;
+				}
+				RenderTechnque eqvTechnique = Effect.FindTechnique( ms_Override.Name );
+				return eqvTechnique == null ? ms_Override : eqvTechnique;
+			}
+		}
+
+		/// <summary>
 		/// Applies this technique. Applies a pass, then invokes the render delegate to render stuff, for each pass
 		/// </summary>
 		/// <param name="render"></param>
 		public void Apply( RenderDelegate render )
 		{
-			RenderTechnique techniqueToApply = this;
-			if ( ms_Override != null )
-			{
-				//	TODO: Cache detected override alternative
-				techniqueToApply = ( Effect != null ) ? Effect.FindTechnique( ms_Override.Name ) : null;
-
-				if ( techniqueToApply == null )
-				{
-					techniqueToApply = ms_Override;
-				}
-			}
-
+			RenderTechnique techniqueToApply = TechniqueToApply;
 			techniqueToApply.Begin( );
-
-			RenderTechnique	currentOverride	= Override;
 
 			foreach ( RenderPass pass in techniqueToApply.Children )
 			{
 				pass.Begin( );
 
-				//	If the current pass has set an override technique, then make sure it's disabled at the end of the pass
-				bool disableOverride = ( ms_Override != currentOverride );
-
 				render( );
-				pass.End( );
 
-				//	Disable the current technique override
-				if ( disableOverride )
-				{
-					Override = null;
-				}
+				pass.End( );
 			}
 
 			techniqueToApply.End( );
 		}
 
+		#endregion
+
+		#region	IAppliance Members
+
 		/// <summary>
 		/// Called by Apply() before any passes are applied
 		/// </summary>
-		protected virtual void Begin( )
+		public virtual void Begin( )
 		{
 			if ( m_Effect != null )
 			{
-				m_Effect.Apply( );
+				m_Effect.Begin( );
 			}
 		}
 
 		/// <summary>
 		/// Called by Apply() after all passes are applied
 		/// </summary>
-		protected virtual void End( )
+		public virtual void End( )
 		{
+			if ( m_Effect != null )
+			{
+				m_Effect.End( );
+			}
 		}
 
 		#endregion
@@ -204,6 +212,5 @@ namespace RbEngine.Rendering
 		private string			m_Name;
 
 		#endregion
-
 	}
 }

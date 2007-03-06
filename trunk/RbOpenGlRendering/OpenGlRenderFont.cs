@@ -72,7 +72,7 @@ namespace RbOpenGlRendering
 		public override void		DrawText( int x, int y, System.Drawing.Color colour, string str )
 		{
 			Renderer.Inst.PushRenderState( m_RenderState );
-			m_FontTextureSampler.Apply( );
+			m_FontTextureSampler.Begin( );
 
 			Renderer.Inst.Push2d( );
 
@@ -118,6 +118,7 @@ namespace RbOpenGlRendering
 			}
 
 			Gl.glEnd( );
+			m_FontTextureSampler.End( );
 			Renderer.Inst.Pop2d( );
 			Renderer.Inst.PopRenderState( );
 		}
