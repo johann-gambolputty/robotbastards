@@ -109,7 +109,7 @@ namespace RbEngine.Components
 		{
 			Type baseType = typeof( Object );
 			for ( Type messageType = msg.GetType( ); messageType != baseType; messageType = messageType.BaseType )
-			{
+			{	
 				MessageRecipientChain chain = ( MessageRecipientChain )m_RecipientChains[ messageType ];
 				if ( chain != null )
 				{

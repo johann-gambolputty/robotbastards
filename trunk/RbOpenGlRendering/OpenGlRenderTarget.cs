@@ -47,7 +47,7 @@ namespace RbOpenGlRendering
 			}
 
 			//	Check if we've succesfully created the frame buffer object
-			GLenum status = glCheckFramebufferStatusEXT( GL_FRAMEBUFFER_EXT );
+			int status = Gl.glCheckFramebufferStatusEXT( Gl.GL_FRAMEBUFFER_EXT );
 			if ( status != Gl.GL_FRAMEBUFFER_COMPLETE_EXT )
 			{
 				throw new ApplicationException( string.Format( "Failed to create render target ({0}x{1} at {2}, {3} depth bits, {4} stencil bits). GL status = {5}", width, height, colourFormat, depthBits, stencilBits, status ) );

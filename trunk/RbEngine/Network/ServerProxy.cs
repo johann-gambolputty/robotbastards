@@ -8,29 +8,19 @@ namespace RbEngine.Network
 	/// <summary>
 	/// Proxy server
 	/// </summary>
-	public class ServerProxy : SocketServer
+	public class ServerProxy : ServerBase
 	{
 		/// <summary>
 		/// Sets up a connection to a server. Any messages that get sent to this proxy, get marshalled and forwarded to this server
 		/// </summary>
 		public void SetupConnection( string connectionString )
 		{
-			m_ConnectionString = connectionString;
-		}
-
-
-		/// <summary>
-		/// Creates a socket
-		/// </summary>
-		protected override Socket	CreateSocket( )
-		{
 			Socket socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
 
-			IPAddress address = Dns.Resolve( m_ConnectionString ).AddressList[ 0 ];
+			IPAddress address = Dns.Resolve( connectionString ).AddressList[ 0 ];
 
-			socket.Connect( new IPEndPoint( address, Port ) );
+			socket.Connect( new IPEndPoint( address, Server.Port ) );
 
-			return socket;
 		}
 
 
@@ -51,8 +41,6 @@ namespace RbEngine.Network
 		}
 
 		#region	Private stuff
-
-		private string m_ConnectionString;
 
 		#endregion
 	}
