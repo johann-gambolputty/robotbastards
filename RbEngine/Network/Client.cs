@@ -1,5 +1,6 @@
 using System;
 using RbEngine.Rendering;
+using RbEngine.Maths;
 
 namespace RbEngine.Network
 {
@@ -207,13 +208,23 @@ namespace RbEngine.Network
 		}
 
 		private long m_LastRenderTime = TinyTime.CurrentTime;
+		private RenderTechnique m_TestShadows;
+
+		static RenderTechnique MakeTestShadows( )
+		{
+			ShadowBufferRenderTechnique technique = new ShadowBufferRenderTechnique( );
+
+			technique.AddLight( new SpotLight( new Point3( 0, 10, 20 ), Point3.Origin ) );
+
+			return technique;
+		}
 
 		/// <summary>
 		/// Renders the scene
 		/// </summary>
 		public void Render( )
 		{
-			RbEngine.Rendering.Renderer renderer = RbEngine.Rendering.Renderer.Inst;
+			Renderer renderer = Renderer.Inst;
 
 			//	If there's no selected scene render technique, then set up the viewport, and do a default clear of colour and depth buffers 
 			if ( m_SceneRenderTechnique == null )
@@ -234,6 +245,15 @@ namespace RbEngine.Network
 				{
 					m_SceneRenderTechnique.Apply( new RenderTechnique.RenderDelegate( Scene.Rendering.Render ) );
 				}
+			}
+
+			if ( m_TestShadows == null )
+			{
+				m_TestShadows = MakeTestShadows( );
+			}
+			else
+			{
+				m_TestShadows.Apply( new RenderTechnique.RenderDelegate( Scene.Rendering.Render ) );
 			}
 
 			if ( m_CameraController is Rendering.IRender )
