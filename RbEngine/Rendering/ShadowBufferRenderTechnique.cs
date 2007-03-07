@@ -112,5 +112,6 @@ namespace RbEngine.Rendering
 
 		private ArrayList		m_Lights		= new ArrayList( );
 		private RenderTarget[]	m_RenderTargets	= new RenderTarget[ MaxLights ];
+	//	private Camera[]		m_LightCameras	= new Cameras[ MaxLights ];
 	}
 }

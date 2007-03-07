@@ -15,6 +15,15 @@ namespace RbControls
 			m_Client = new RbEngine.Network.Client( this );
 		}
 
+		private void InitializeComponent()
+		{
+			// 
+			// ClientDisplay
+			// 
+			this.Name = "ClientDisplay";
+
+		}
+
 		public RbEngine.Network.Client Client
 		{
 			get { return m_Client; }
