@@ -26,23 +26,34 @@ namespace RbOpenGlRendering
 		/// <param name="stencilBits">Number of bits per element in the stencil buffer (0 for no stencil buffer)</param>
 		public override void	Create( int width, int height, System.Drawing.Imaging.PixelFormat colourFormat, int depthBits, int stencilBits )
 		{
+			//	Generate the frame buffer object
 			Gl.glGenFramebuffersEXT( 1, out m_FboHandle );
 			Gl.glBindFramebufferEXT( Gl.GL_FRAMEBUFFER_EXT, m_FboHandle );
+			Output.Assert( Gl.glIsFramebufferEXT( m_FboHandle ) != 0, Output.ResourceError, "Expected FBO handle to be valid" );
 
+
+			//	Generate the depth render buffer object
 			if ( depthBits != 0 )
 			{
 				Gl.glGenFramebuffersEXT( 1, out m_FboDepthHandle );
 				Gl.glBindRenderbufferEXT( Gl.GL_RENDERBUFFER_EXT, m_FboDepthHandle );
-				Gl.glRenderbufferStorageEXT( Gl.GL_RENDERBUFFER_EXT, Gl.GL_DEPTH_COMPONENT24, width, height );
+				Gl.glRenderbufferStorageEXT( Gl.GL_RENDERBUFFER_EXT, Gl.GL_DEPTH_COMPONENT, width, height );
 				Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_DEPTH_ATTACHMENT_EXT, Gl.GL_RENDERBUFFER_EXT, m_FboDepthHandle );
 				OpenGlRenderer.CheckErrors( );
 			}
 
+			//	Generate the texture
 			if ( colourFormat != System.Drawing.Imaging.PixelFormat.Undefined )
 			{
 				//	Create a texture
 				OpenGlTexture2d texture = ( OpenGlTexture2d )RenderFactory.Inst.NewTexture2d( );
 				texture.Create( width, height, colourFormat );
+
+				//	Add texture parameters (barfs otherwise - incomplete attachements)
+				Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_CLAMP_TO_EDGE );
+				Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_CLAMP_TO_EDGE );
+				Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR );
+				Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR );
 				
 				//	Bind the texture to the frame buffer (creating it has already bound the texture)
 				Gl.glFramebufferTexture2DEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_COLOR_ATTACHMENT0_EXT, Gl.GL_TEXTURE_2D, texture.TextureHandle, 0 );
@@ -50,7 +61,7 @@ namespace RbOpenGlRendering
 
 				m_Texture = texture;
 			}
-
+			
 
 			if ( stencilBits != 0 )
 			{
@@ -104,7 +115,7 @@ namespace RbOpenGlRendering
 			//	Setup the viewport to the size of the frame buffer
 			Gl.glViewport( 0, 0, m_Width, m_Height );
 
-			Renderer.Inst.ClearVerticalGradient( System.Drawing.Color.BlanchedAlmond, System.Drawing.Color.BurlyWood );
+			Gl.glClearDepth( 1.0 );
 		}
 
 		/// <summary>
@@ -112,8 +123,6 @@ namespace RbOpenGlRendering
 		/// </summary>
 		public override void End( )
 		{
-			Gl.glFlush( );
-
 			//	Unbind the frame buffer
 			if ( m_FboHandle != -1 )
 			{

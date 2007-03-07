@@ -32,21 +32,7 @@
 			<!-- Entities -->
 			<object type="RbEngine.Entities.Entity3">
 
-				<point3 x="12" y="0.5" z="10" property="NextPosition"/>
-
-<!--
-				<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics">
-
-					<reference modelPath="effects/Test1" property="Effect"/>
-
-					<resource path="blob0.dae" property="RenderedObject"/>
-
-					<postLink>
-						<technique name="BlobTechnique"/>
-					</postLink>
-
-				</object>
--->
+				<point3 x="0" y="0.5" z="0" property="NextPosition"/>
 				<instance modelPath="models/sarge" property="Graphics" alwaysAddAsChild="true"/>
 
 				<object type="RbEngine.Scene.LightingData"/>
@@ -55,6 +41,7 @@
 				</object>
 
 			</object>
+
 
 			<!-- Lights -->
 			<object type="RbEngine.Entities.Entity3">
@@ -78,10 +65,12 @@
 			<object type="RbEngine.Rendering.EffectRenderedObject">
 
 				<reference modelPath="effects/Test1" property="Effect"/>
+				<string value="PlainVanilla" property="SelectedTechniqueName"/>
 				<resource path="simpleEnvironment.dae" property="RenderedObject"/>
 
 			</object>
- -->
+			-->
+ 
 		</object>
 	</object>
 

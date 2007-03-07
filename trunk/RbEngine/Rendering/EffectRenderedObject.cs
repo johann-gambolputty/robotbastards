@@ -14,7 +14,7 @@ namespace RbEngine.Rendering
 	/// <summary>
 	/// Wraps up an IRender object with a RenderEffect
 	/// </summary>
-	public class EffectRenderedObject : IRender, Components.IXmlLoader
+	public class EffectRenderedObject : IRender, Components.IXmlLoader, Scene.ISceneObject
 	{
 		/// <summary>
 		/// The effect
@@ -39,6 +39,17 @@ namespace RbEngine.Rendering
 			get
 			{
 				return m_Technique;
+			}
+		}
+
+		/// <summary>
+		/// Sets the selected technique by name
+		/// </summary>
+		public string				SelectedTechniqueName
+		{
+			set
+			{
+				m_Technique.SelectTechnique( value );
 			}
 		}
 
@@ -102,6 +113,26 @@ namespace RbEngine.Rendering
 
 		#endregion
 
+		#region ISceneObject Members
+
+		/// <summary>
+		/// Adds this object to the scene rendering manager
+		/// </summary>
+		public void AddedToScene( Scene.SceneDb db )
+		{
+			db.Rendering.AddObject( this );
+		}
+
+		/// <summary>
+		/// Removes this object to the scene rendering manager
+		/// </summary>
+		public void RemovedFromScene( Scene.SceneDb db )
+		{
+			db.Rendering.RemoveObject( this );
+		}
+
+		#endregion
+		
 		private IRender				m_RenderedObject;
 		private SelectedTechnique	m_Technique = new SelectedTechnique( );
 	}

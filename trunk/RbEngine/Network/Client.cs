@@ -104,12 +104,18 @@ namespace RbEngine.Network
 	/// </summary>
 	public class Client
 	{
+		private void OnLoad( )
+		{
+		}
 		/// <summary>
 		/// Client constructor
 		/// </summary>
 		public Client( System.Windows.Forms.Control control )
 		{
 			m_Control = control;
+
+			//	TODO: bodge to listen for control load event
+			( ( System.Windows.Forms.UserControl )control ).Load += new EventHandler( Client_Load );
 
 			m_Camera = new RbEngine.Cameras.SphereCamera( );
 
@@ -247,20 +253,12 @@ namespace RbEngine.Network
 				}
 			}
 
-			if ( m_TestShadows == null )
-			{
-				m_TestShadows = MakeTestShadows( );
-			}
-			else
-			{
-				m_TestShadows.Apply( new RenderTechnique.RenderDelegate( Scene.Rendering.Render ) );
-			}
-
 			if ( m_CameraController is Rendering.IRender )
 			{
 				( ( Rendering.IRender )m_CameraController ).Render( );
 			}
 
+			m_TestShadows.Apply( new RenderTechnique.RenderDelegate( Scene.Rendering.Render ) );
 			ShowFps( );
 		}
 
@@ -309,5 +307,10 @@ namespace RbEngine.Network
 		private SelectedTechnique				m_SceneRenderTechnique;
 		private RbEngine.Cameras.SphereCamera	m_Camera;
 		private Object							m_CameraController;
+
+		private void Client_Load(object sender, EventArgs e)
+		{
+			m_TestShadows = MakeTestShadows( );
+		}
 	}
 }
