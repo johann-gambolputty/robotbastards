@@ -108,6 +108,7 @@ namespace RbEngine.Maths
 
 			}
 		}
+
 		#endregion
 
 		#region	Construction
@@ -199,6 +200,35 @@ namespace RbEngine.Maths
 		#region	Operations
 
 		/// <summary>
+		/// Translation. Stores the result of this * T, where T is the translation matrix for (x,y,z)
+		/// </summary>
+		public void		Translate( float x, float y, float z )
+		{
+			//	TODO: This is pretty lazy :)
+			Matrix44 lhs = new Matrix44( this );
+			Matrix44 rhs = new Matrix44( 1, 0, 0, 0, 
+										 0, 1, 0, 0,
+										 0, 0, 1, 0,
+										 x, y, z, 1 );
+			StoreMultiply( lhs, rhs );
+		}
+
+		/// <summary>
+		/// Stores the result of multiplying lhs * rhs in this matrix
+		/// </summary>
+		public Matrix44	StoreMultiply( Matrix44 lhs, Matrix44 rhs )
+		{
+			for ( int row = 0; row < 4; ++row )
+			{
+				int col = 0;
+				result[ col, row ] = ( lhs[ 0, row ] * rhs[ col, 0 ] ) + ( lhs[ 1, row ] * rhs[ col, 1 ] )  + ( lhs[ 2, row ] * rhs[ col, 2 ] ) + ( lhs[ 3, row ] * rhs[ col, 3 ] ); ++col;
+				result[ col, row ] = ( lhs[ 0, row ] * rhs[ col, 0 ] ) + ( lhs[ 1, row ] * rhs[ col, 1 ] )  + ( lhs[ 2, row ] * rhs[ col, 2 ] ) + ( lhs[ 3, row ] * rhs[ col, 3 ] ); ++col;
+				result[ col, row ] = ( lhs[ 0, row ] * rhs[ col, 0 ] ) + ( lhs[ 1, row ] * rhs[ col, 1 ] )  + ( lhs[ 2, row ] * rhs[ col, 2 ] ) + ( lhs[ 3, row ] * rhs[ col, 3 ] ); ++col;
+				result[ col, row ] = ( lhs[ 0, row ] * rhs[ col, 0 ] ) + ( lhs[ 1, row ] * rhs[ col, 1 ] )  + ( lhs[ 2, row ] * rhs[ col, 2 ] ) + ( lhs[ 3, row ] * rhs[ col, 3 ] ); ++col;
+			}
+		}
+
+		/// <summary>
 		/// Multiplies a vector by this matrix, returning a new vector that stores the result
 		/// </summary>
 		public Vector3	Multiply( Vector3 In )
@@ -231,6 +261,26 @@ namespace RbEngine.Maths
 			return Result;
 		}
 
+		/// <summary>
+		/// Copies a matrix
+		/// </summary>
+		public void	Copy( Matrix44 src )
+		{
+			for ( int index = 0; index < 16; ++index )
+			{
+				Elements[ index ] = src.Elements[ index ];
+			}
+		}
+
+		/// <summary>
+		/// Creates a copy of this matrix
+		/// </summary>
+		public Matrix44	Copy( )
+		{
+			return new Matrix44( this );
+		}
+
 		#endregion
+
 	}
 }

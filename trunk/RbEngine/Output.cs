@@ -48,6 +48,25 @@ namespace RbEngine
 	/// </example>
 	public class Output
 	{
+		#region	Common switches
+
+		/// <summary>
+		/// Switch for generic information. Disabled in non-DEBUG builds
+		/// </summary>
+		public static DebugSwitch		Info		= new DebugSwitch( "info", "Generic information diagnostic output" );
+
+		/// <summary>
+		/// Switch for generic warnings
+		/// </summary>
+		public static TraceSwitch		Warning 	= new TraceSwitch( "warn", "Generic warning diagnostic output" );
+
+		/// <summary>
+		/// Switch for generic errors
+		/// </summary>
+		public static TraceSwitch		Error 		= new TraceSwitch( "error", "Generic error diagnostic output" );
+
+		#endregion
+
 		#region	Common rendering switches
 
 		/// <summary>
@@ -271,6 +290,31 @@ namespace RbEngine
 		public static void		Fail( DebugSwitch context, string str, params object[] formatArgs )
 		{
 			System.Diagnostics.Debug.Fail( String.Format( "[{0}] : ", context.DisplayName ) + String.Format( str, formatArgs ) );
+		}
+
+		#endregion
+
+		#region	Debug asserts
+
+		//	NOTE: This is to allow System.Diagnostics.Debug.Assert() to be called with TraceSwitch contexts
+		//	e.g. Output.DebugAssert( condition, Output.Error, "Some error check" );
+
+		/// <summary>
+		/// Debug.Assert wrapper
+		/// </summary>
+		[ Conditional( "DEBUG" ) ]
+		public static void	DebugAssert( bool condition, DebugSwitch context, string str, params object[] formatArgs )
+		{
+			System.Diagnostics.Debug.Assert( condition, String.Format( "[{0}] : ", context.DisplayName ) + String.Format( str, formatArgs ) );
+		}
+
+		/// <summary>
+		/// Debug.Assert wrapper
+		/// </summary>
+		[ Conditional( "DEBUG" ) ]
+		public static void	DebugAssert( bool condition, TraceSwitch context, string str, params object[] formatArgs )
+		{
+			System.Diagnostics.Debug.Assert( condition, String.Format( "[{0}] : ", context.DisplayName ) + String.Format( str, formatArgs ) );
 		}
 
 		#endregion

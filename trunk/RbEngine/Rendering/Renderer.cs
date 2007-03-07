@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Windows.Forms;
+using System.Drawing;
 using RbEngine.Maths;
 
 namespace RbEngine.Rendering
@@ -13,15 +14,15 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Transforms vertices from local space to world space
 		/// </summary>
-	//	LocalToWorld,
+		LocalToWorld,
 
 		/// <summary>
 		/// Transforms vertices from world space to view space
 		/// </summary>
-	//	WorldToView,
+		WorldToView,
 
 		//	TODO: REMOVEME (want separation between local to world and world to view transforms - it's easier to do lighting in world space :)
-		LocalToView,
+	//	LocalToView,
 
 		/// <summary>
 		/// Transforms vertices from view space to screen space (projective transform)
@@ -339,6 +340,36 @@ namespace RbEngine.Rendering
 			int lastIndex = m_RenderStates.Count - 1;
 			( ( RenderState )m_RenderStates[ lastIndex ] ).End( );
 			m_RenderStates.RemoveAt( lastIndex );
+		}
+
+		#endregion
+
+		#region	Frame dumps
+
+		/// <summary>
+		/// Creates an Image object from the colour buffer
+		/// </summary>
+		public abstract Image	ColourBufferToImage( );
+
+		/// <summary>
+		/// Creates an Image object from the depth buffer
+		/// </summary>
+		public abstract Image	DepthBufferToImage( );
+
+		/// <summary>
+		/// Saves the colour buffer to a file
+		/// </summary>
+		public void				SaveColourBuffer( string path, System.Drawing.Imaging.ImageFormat format )
+		{
+			ColourBufferToImage( ).Save( path, format );
+		}
+		
+		/// <summary>
+		/// Saves the depth buffer to a file
+		/// </summary>
+		public void				SaveDepthBuffer( string path, System.Drawing.Imaging.ImageFormat format )
+		{
+			DepthBufferToImage( ).Save( path, format );
 		}
 
 		#endregion

@@ -31,8 +31,6 @@ namespace RbOpenGlRendering
 			string extensions = new string( mem );
 			Output.WriteLine( Output.RenderingInfo, extensions.Replace( ' ', '\n' ) );
 
-			bool result = GlExtensionLoader.LoadExtension( "glGenBuffersARB" );
-
 			GlExtensionLoader.LoadAllExtensions( );
 		}
 
@@ -149,7 +147,7 @@ namespace RbOpenGlRendering
 		/// </summary>
 		public override void ClearDepth( float depth )
 		{
-			Gl.glClearDepth( 1.0f );
+			Gl.glClearDepth( depth );
 			Gl.glClear( Gl.GL_DEPTH_BUFFER_BIT );
 		}
 
@@ -193,7 +191,9 @@ namespace RbOpenGlRendering
 		{
 			switch ( type )
 			{
-				case Transform.LocalToView	:	Gl.glMatrixMode( Gl.GL_MODELVIEW );		break;
+				case Transform.WorldToView	:
+					Output.DebugAssert( m_LocalToWorldStack.Count == 1, Output.RenderingError, "Can't push view matrices after world matrices, because I am lazy" );
+				case Transform.LocalToWorld	:	Gl.glMatrixMode( Gl.GL_MODELVIEW );		break;
 				case Transform.ViewToScreen	:	Gl.glMatrixMode( Gl.GL_PROJECTION );	break;
 			}
 		}
@@ -203,8 +203,6 @@ namespace RbOpenGlRendering
 		/// </summary>
 		private float[] GetGlMatrix( Matrix44 matrix )
 		{
-		//	Matrix44 transposeMatrix = matrix.Transpose( );
-		//	return transposeMatrix.Elements;
 			return matrix.Elements;
 		}
 
@@ -216,8 +214,22 @@ namespace RbOpenGlRendering
 			Matrix44 mat = new Matrix44( );
 			switch ( type )
 			{
-				case Transform.LocalToView	:	Gl.glGetFloatv( Gl.GL_MODELVIEW_MATRIX, mat.Elements );		break;
-				case Transform.ViewToScreen	:	Gl.glGetFloatv( Gl.GL_PROJECTION_MATRIX, mat.Elements );	break;
+			//	case Transform.LocalToView	://	Gl.glGetFloatv( Gl.GL_MODELVIEW_MATRIX, mat.Elements );		break;
+				case Transform.LocalToWorld	:
+				{
+					mat.Copy( ( Matrix44 )m_LocalToWorldStack[ m_LocalToWorldStack.Count - 1 ] );
+					break;
+				}
+				case Transform.WorldToView	:
+				{
+					mat.Copy( ( Matrix44 )m_WorldToView[ m_WorldToView.Count - 1 ] );
+					break;
+				}
+				case Transform.ViewToScreen	:
+				{
+					Gl.glGetFloatv( Gl.GL_PROJECTION_MATRIX, mat.Elements );
+					break;
+				}
 			}
 
 			return mat;
@@ -370,7 +382,6 @@ namespace RbOpenGlRendering
 		#endregion
 
 		#region	Unprojection
-
 		
 		/// <summary>
 		/// Unprojects a point from screen space into world space
@@ -436,5 +447,69 @@ namespace RbOpenGlRendering
 		}
 
 		#endregion
+		
+		#region	Frame dumps
+
+		/// <summary>
+		/// Creates an Image object from the colour buffer
+		/// </summary>
+		public override unsafe System.Drawing.Image	ColourBufferToImage( )
+		{
+			int width			= ViewportWidth;
+			int height			= ViewportHeight;
+			int bytesPerPixel	= 4;	//	TODO: Bodge
+			byte[] bufferMem = new byte[ width * height * bytesPerPixel ];
+			Gl.glReadPixels( 0, 0, width, height, Gl.GL_RGBA, Gl.GL_UNSIGNED_BYTE, bufferMem );
+
+			System.Drawing.Bitmap bmp;
+			fixed ( byte* bufferMemPtr = bufferMem )
+			{
+				bmp = new System.Drawing.Bitmap( width, height, width * bytesPerPixel, System.Drawing.Imaging.PixelFormat.Format32bppArgb, ( IntPtr )bufferMemPtr );
+			}
+
+			return bmp;
+		}
+
+		/// <summary>
+		/// Creates an Image object from the depth buffer
+		/// </summary>
+		public override unsafe System.Drawing.Image	DepthBufferToImage( )
+		{
+			int width			= ViewportWidth;
+			int height			= ViewportHeight;
+			int bytesPerPixel	= 3;
+
+			float[] depthMem = new float[ width * height ];
+
+			Gl.glDepthRange( 0, 1 );
+			Gl.glPixelTransferf( Gl.GL_DEPTH_SCALE, 1 );
+			Gl.glPixelTransferf( Gl.GL_DEPTH_BIAS, 0 );
+			Gl.glReadPixels( 0, 0, width, height, Gl.GL_DEPTH_COMPONENT, Gl.GL_FLOAT, depthMem );
+
+			CheckErrors( );
+
+			byte[] bufferMem = new byte[ width * height * bytesPerPixel ];
+			int pixIndex = 0;
+			for ( int depthIndex = 0; depthIndex < depthMem.Length; ++depthIndex )
+			{
+				bufferMem[ pixIndex++ ] = ( byte )( depthMem[ depthIndex ] * 255.0f );
+				bufferMem[ pixIndex++ ] = ( byte )( depthMem[ depthIndex ] * 255.0f );
+				bufferMem[ pixIndex++ ] = ( byte )( depthMem[ depthIndex ] * 255.0f );
+			}
+
+			System.Drawing.Bitmap bmp;
+			fixed ( byte* bufferMemPtr = bufferMem )
+			{
+				bmp = new System.Drawing.Bitmap( width, height, width * bytesPerPixel, System.Drawing.Imaging.PixelFormat.Format24bppRgb, ( IntPtr )bufferMemPtr );
+			}
+
+			return bmp;
+		}
+
+		#endregion
+
+		private ArrayList	m_LocalToWorldStack	= new ArrayList( );
+		private ArrayList	m_WorldToViewStack	= new ArrayList( );
 	}
+
 }

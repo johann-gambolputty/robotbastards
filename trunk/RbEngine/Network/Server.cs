@@ -40,6 +40,8 @@ namespace RbEngine.Network
 			IPAddress	address		= Dns.Resolve( m_ConnectionString ).AddressList[ 0 ];
 			TcpListener	listener	= new TcpListener( address, Port );
 
+			Output.WriteLineCall( Output.NetworkInfo, "Listening for clients at \"{0}\"", listener.LocalEndpoint );
+
 			while ( true )
 			{
 				if ( listener.Pending( ) )

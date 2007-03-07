@@ -42,6 +42,7 @@ technique MainTechnique
 		FrontFace				= CW;
 		DepthFunc				= LEqual;
 		DepthTestEnable			= true;
+		DepthMask				= true;
 		CullFaceEnable			= true;
 		PolygonMode				= int2( Front, Fill );
 		VertexProgram			= compile arbvp1 SimpleTransformVertexShader( );

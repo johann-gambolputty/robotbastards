@@ -232,12 +232,21 @@ namespace RbEngine.Rendering
 		}
 
 		/// <summary>
-		/// Enables lighting (equivalent to EnableCap( RenderStateFlag.kLighting ))
+		/// Enables lighting (equivalent to SetCap( RenderStateFlag.kLighting, true ) )
 		/// </summary>
 		/// <returns></returns>
 		public RenderState EnableLighting( )
 		{
 			return SetCap( RenderStateFlag.Lighting, true );
+		}
+
+		/// <summary>
+		/// Disables lighting (equivalent to SetCap( RenderStateFlag.kLighting  false ) )
+		/// </summary>
+		/// <returns></returns>
+		public RenderState DisableLighting( )
+		{
+			return SetCap( RenderStateFlag.Lighting, false );
 		}
 
 		/// <summary>

@@ -60,6 +60,11 @@ namespace RbEngine.Rendering
 		/// </summary>
 		public abstract void	End( );
 
+		/// <summary>
+		/// Diagnostic function for saving the depth buffer to a file
+		/// </summary>
+		public abstract void	SaveDepthBuffer( string path );
+
 		#region	Protected Members
 
 		/// <summary>

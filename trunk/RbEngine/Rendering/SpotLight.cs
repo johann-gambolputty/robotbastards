@@ -60,10 +60,10 @@ namespace RbEngine.Rendering
 		public SpotLight( Point3 pos, Point3 lookAt )
 		{
 			Position	= pos;
-			Direction	= ( pos - lookAt ).MakeNormal( );
+			Direction	= ( lookAt - pos ).MakeNormal( );
 		}
 
 		private Vector3	m_Direction	= Vector3.ZAxis;
-		private float	m_Arc		= 45;
+		private float	m_Arc		= 90;
 	}
 }
