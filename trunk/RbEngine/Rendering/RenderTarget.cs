@@ -19,6 +19,28 @@ namespace RbEngine.Rendering
 		}
 
 		/// <summary>
+		/// Gets the width of the render target
+		/// </summary>
+		public int			Width
+		{
+			get
+			{
+				return m_Width;
+			}
+		}
+
+		/// <summary>
+		/// Gets the height of the render target
+		/// </summary>
+		public int			Height
+		{
+			get
+			{
+				return m_Height;
+			}
+		}
+
+		/// <summary>
 		/// Creates the render target
 		/// </summary>
 		/// <param name="width">Width of the render target</param>
@@ -44,6 +66,16 @@ namespace RbEngine.Rendering
 		/// Texture that colours are being rendered to
 		/// </summary>
 		protected Texture2d	m_Texture;
+
+		/// <summary>
+		/// Width of the render target
+		/// </summary>
+		protected int		m_Width;
+
+		/// <summary>
+		/// Height of the render target
+		/// </summary>
+		protected int		m_Height;
 
 		#endregion
 	}

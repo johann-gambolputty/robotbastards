@@ -73,7 +73,7 @@ namespace RbOpenGlRendering
 		/// <summary>
 		/// Checks for errors in the current state of the renderer, throwing an exception if there is one
 		/// </summary>
-		public void CheckErrors( )
+		public static void CheckErrors( )
 		{
 			int errorCode = Gl.glGetError( );
 			if ( errorCode != Gl.GL_NO_ERROR )

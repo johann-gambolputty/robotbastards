@@ -8,6 +8,11 @@ namespace RbEngine.Maths
 	public struct Point3
 	{
 		/// <summary>
+		/// Origin
+		/// </summary>
+		public static readonly Point3 Origin = new Point3( 0, 0, 0 );
+
+		/// <summary>
 		/// Copy constructor
 		/// </summary>
 		public Point3( Point3 src )

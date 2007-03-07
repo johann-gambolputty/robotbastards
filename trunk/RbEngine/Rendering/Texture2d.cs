@@ -29,6 +29,18 @@ namespace RbEngine.Rendering
 		}
 
 		/// <summary>
+		/// Creates an empty texture
+		/// </summary>
+		/// <param name="width">Width of the texture in pixels</param>
+		/// <param name="height">Height of the texture in pixels</param>
+		/// <param name="format">Format of the texture</param>
+		public abstract void Create( int width, int height, PixelFormat format );
+
+		#endregion
+
+		#region	Public properties
+
+		/// <summary>
 		/// Gets the width of the texture
 		/// </summary>
 		public int	Width
@@ -49,6 +61,21 @@ namespace RbEngine.Rendering
 				return m_Height;
 			}
 		}
+
+		/// <summary>
+		/// Gets the format of the texture
+		/// </summary>
+		public PixelFormat	Format
+		{
+			get
+			{
+				return m_Format;
+			}
+		}
+
+		#endregion
+
+		#region	Loading
 
 		/// <summary>
 		/// Creates a texture from a resource, using the manifest resource stream
@@ -91,10 +118,20 @@ namespace RbEngine.Rendering
 
 		#endregion
 
-		#region	Protected stuff
+		#region	Saving and conversion
 
-		protected int	m_Width;
-		protected int	m_Height;
+		/// <summary>
+		/// Generates an Image from the texture
+		/// </summary>
+		public abstract System.Drawing.Image ToImage( );
+
+		/// <summary>
+		/// Saves this texture to a file
+		/// </summary>
+		public void Save( string path )
+		{
+			ToImage( ).Save( path );
+		}
 
 		#endregion
 
@@ -111,5 +148,14 @@ namespace RbEngine.Rendering
 		public abstract void End( );
 
 		#endregion
+
+		#region	Protected stuff
+
+		protected int			m_Width;
+		protected int			m_Height;
+		protected PixelFormat	m_Format;
+
+		#endregion
+
 	}
 }
