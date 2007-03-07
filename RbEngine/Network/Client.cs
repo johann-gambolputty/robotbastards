@@ -220,7 +220,7 @@ namespace RbEngine.Network
 		{
 			ShadowBufferRenderTechnique technique = new ShadowBufferRenderTechnique( );
 
-			technique.AddLight( new SpotLight( new Point3( 0, 10, 20 ), Point3.Origin ) );
+			technique.AddLight( new SpotLight( new Point3( 10, 30, 30 ), Point3.Origin ) );
 
 			return technique;
 		}
@@ -258,7 +258,10 @@ namespace RbEngine.Network
 				( ( Rendering.IRender )m_CameraController ).Render( );
 			}
 
-			m_TestShadows.Apply( new RenderTechnique.RenderDelegate( Scene.Rendering.Render ) );
+			if ( m_TestShadows != null )
+			{
+				m_TestShadows.Apply( new RenderTechnique.RenderDelegate( Scene.Rendering.Render ) );
+			}
 			ShowFps( );
 		}
 
@@ -310,7 +313,14 @@ namespace RbEngine.Network
 
 		private void Client_Load(object sender, EventArgs e)
 		{
-			m_TestShadows = MakeTestShadows( );
+			try
+			{
+				m_TestShadows = MakeTestShadows( );
+			}
+			catch ( Exception exception )
+			{
+				Output.WriteLineCall( Output.RenderingError, ExceptionUtils.ToString( exception ) );
+			}
 		}
 	}
 }

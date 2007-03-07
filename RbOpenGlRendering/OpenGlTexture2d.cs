@@ -254,6 +254,7 @@ namespace RbOpenGlRendering
 		}
 
 		#endregion
+
 		private int	m_TextureHandle		= -1;
 		private int m_InternalGlFormat;
 		private int m_GlFormat;

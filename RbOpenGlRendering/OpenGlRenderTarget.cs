@@ -16,6 +16,9 @@ namespace RbOpenGlRendering
 			Dispose( );
 		}
 
+		private static bool	ms_CheckForExtension	= true;
+		private static bool ms_ExtensionPresent		= false;
+
 		/// <summary>
 		/// Creates the render target
 		/// </summary>
@@ -26,6 +29,18 @@ namespace RbOpenGlRendering
 		/// <param name="stencilBits">Number of bits per element in the stencil buffer (0 for no stencil buffer)</param>
 		public override void	Create( int width, int height, System.Drawing.Imaging.PixelFormat colourFormat, int depthBits, int stencilBits )
 		{
+			//	Requires the frame buffer extension
+			if ( ms_CheckForExtension )
+			{
+				ms_ExtensionPresent		= GlExtensionLoader.IsExtensionSupported( "GL_EXT_framebuffer_object" );
+				ms_CheckForExtension	= false;
+			}
+
+			if ( !ms_ExtensionPresent )
+			{
+				throw new System.ApplicationException( "FBO extension not available - can't create render target" );
+			}
+
 			//	Generate the frame buffer object
 			Gl.glGenFramebuffersEXT( 1, out m_FboHandle );
 			Gl.glBindFramebufferEXT( Gl.GL_FRAMEBUFFER_EXT, m_FboHandle );
@@ -94,6 +109,35 @@ namespace RbOpenGlRendering
 
 			m_Width		= width;
 			m_Height	= height;
+
+			Gl.glBindFramebufferEXT( Gl.GL_FRAMEBUFFER_EXT, 0 );
+		}
+
+		/// <summary>
+		/// Saves the depth buffer to a file. Render target must be bound for this to work (i.e. between Begin() and End() calls)
+		/// </summary>
+		public override unsafe void	SaveDepthBuffer( string path )
+		{
+			float[] depthPixels = new float[ Width * Height ];	//	depthels? dexels? who knows?
+			Gl.glReadPixels( 0, 0, Width, Height, Gl.GL_DEPTH_COMPONENT, Gl.GL_FLOAT, depthPixels );
+			OpenGlRenderer.CheckErrors( );
+
+			byte[] bufferMem = new byte[ Width * Height * 3 ];
+			int bufferIndex = 0;
+			for ( int depthIndex = 0; depthIndex < depthPixels.Length; ++depthIndex )
+			{
+				float scaledDepth = ( float )System.Math.Exp( depthPixels[ depthIndex ] );
+				bufferMem[ bufferIndex++ ] = ( byte )( scaledDepth * 255.0f );
+				bufferMem[ bufferIndex++ ] = ( byte )( scaledDepth * 255.0f );
+				bufferMem[ bufferIndex++ ] = ( byte )( scaledDepth * 255.0f );
+			}
+
+			System.Drawing.Bitmap bmp;
+			fixed ( byte* bufferMemPtr = bufferMem )
+			{
+				bmp = new System.Drawing.Bitmap( Width, Height, Width * 3, System.Drawing.Imaging.PixelFormat.Format24bppRgb, ( IntPtr )bufferMemPtr );
+			}
+			bmp.Save( path, System.Drawing.Imaging.ImageFormat.Png );
 		}
 
 		#region IAppliance Members
@@ -114,8 +158,6 @@ namespace RbOpenGlRendering
 
 			//	Setup the viewport to the size of the frame buffer
 			Gl.glViewport( 0, 0, m_Width, m_Height );
-
-			Gl.glClearDepth( 1.0 );
 		}
 
 		/// <summary>

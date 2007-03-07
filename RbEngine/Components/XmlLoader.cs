@@ -471,7 +471,7 @@ namespace RbEngine.Components
 					case "int"			: loader = new ValueLoader( element, int.Parse( element.GetAttribute( "value" ) ) );	break;
 					case "float"		: loader = new ValueLoader( element, float.Parse( element.GetAttribute( "value" ) ) );	break;
 					case "colour"		: loader = new ValueLoader( element, System.Drawing.Color.FromName( element.GetAttribute( "value" ) ) );	break;
-					case "vector3"		:
+					case "Vector3"		:
 					{
 						float x = float.Parse( element.GetAttribute( "x" ) );
 						float y = float.Parse( element.GetAttribute( "y" ) );
@@ -479,7 +479,7 @@ namespace RbEngine.Components
 						loader = new ValueLoader( element, new Maths.Vector3( x, y, z ) );
 						break;
 					}
-					case "point3"		:
+					case "Point3"		:
 					{
 						float x = float.Parse( element.GetAttribute( "x" ) );
 						float y = float.Parse( element.GetAttribute( "y" ) );

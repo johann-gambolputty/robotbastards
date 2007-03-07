@@ -102,14 +102,14 @@ namespace RbTestApp
 			this.clientDisplay1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.clientDisplay1.Location = new System.Drawing.Point(0, 0);
 			this.clientDisplay1.Name = "clientDisplay1";
-			this.clientDisplay1.Size = new System.Drawing.Size(104, 85);
+			this.clientDisplay1.Size = new System.Drawing.Size(232, 229);
 			this.clientDisplay1.StencilBits = ((System.Byte)(0));
 			this.clientDisplay1.TabIndex = 1;
 			// 
 			// Form1
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(104, 85);
+			this.ClientSize = new System.Drawing.Size(232, 229);
 			this.Controls.Add(this.clientDisplay1);
 			this.Name = "Form1";
 			this.Text = "Form1";
@@ -126,25 +126,8 @@ namespace RbTestApp
 		static void Main() 
 		{
 			//	TODO: Should use unhandled exception handler instead
-			bool catchUnhandledExceptions = false;
-			if ( !catchUnhandledExceptions )
-			{
-				Application.Run( new Form1( ) );
-			}
-			else
-			{
-				try
-				{
-					Application.Run( new Form1( ) );
-				}
-				catch ( Exception exception )
-				{
-					string exceptionString = ExceptionUtils.ToString( exception );
-
-					Output.WriteLine( TestAppOutput.Error, exceptionString );
-					MessageBox.Show( exceptionString );
-				}
-			}
+			Application.ThreadException += new System.Threading.ThreadExceptionEventHandler( ExceptionUtils.UnhandledThreadExceptionHandler );
+			Application.Run( new Form1( ) );
 		}
 
 		private void Form1_Load(object sender, System.EventArgs e)

@@ -80,6 +80,8 @@ namespace RbEngine.Rendering
 			}
 			set
 			{
+				Output.DebugAssert( ( value == null ) || ( ms_Override == null ), Output.RenderingError, "Only one override technique can be active at any one time" );
+
 				ms_Override = value;
 			}
 		}
@@ -125,13 +127,20 @@ namespace RbEngine.Rendering
 			RenderTechnique techniqueToApply = TechniqueToApply;
 			techniqueToApply.Begin( );
 
-			foreach ( RenderPass pass in techniqueToApply.Children )
+			if ( ( techniqueToApply.Children != null ) && ( techniqueToApply.Children.Count > 0 ) )
 			{
-				pass.Begin( );
+				foreach ( RenderPass pass in techniqueToApply.Children )
+				{
+					pass.Begin( );
 
+					render( );
+
+					pass.End( );
+				}
+			}
+			else
+			{
 				render( );
-
-				pass.End( );
 			}
 
 			techniqueToApply.End( );

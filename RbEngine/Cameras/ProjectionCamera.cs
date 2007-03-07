@@ -84,7 +84,7 @@ namespace RbEngine.Cameras
 		#region	Private stuff
 
 		private float			m_PerspectiveFov			= 45.0f;
-		private float			m_PerspectiveZNear			= 1.0f;
+		private float			m_PerspectiveZNear			= 5.0f;
 		private float			m_PerspectiveZFar			= 1000.0f;
 
 		#endregion

@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace RbEngine
 {
@@ -9,6 +10,29 @@ namespace RbEngine
 	/// </summary>
 	public class ExceptionUtils
 	{
+		/// <summary>
+		/// Unhandled exception handler for threads (form apps)
+		/// </summary>
+		public static void UnhandledThreadExceptionHandler( object sender, System.Threading.ThreadExceptionEventArgs args )
+		{
+			try
+			{
+				string exceptionString = ToString( args.Exception );
+				Output.WriteLineCall( Output.Error, exceptionString );
+
+				switch ( MessageBox.Show( exceptionString, "Unhandled Exception", MessageBoxButtons.AbortRetryIgnore ) )
+				{
+					case DialogResult.Abort		:	Application.Exit( );	break;
+					case DialogResult.Retry		:
+					case DialogResult.Ignore	:	break;
+				}
+			}
+			catch
+			{
+				Application.Exit( );
+			}
+		}
+
 		/// <summary>
 		/// Converts an exception to a string
 		/// </summary>

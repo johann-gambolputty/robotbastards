@@ -50,6 +50,7 @@ namespace RbControls
 			}
 		}
 
+
 		private RbEngine.Network.Client		m_Client;
 
 	}
