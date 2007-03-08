@@ -153,9 +153,9 @@ namespace RbOpenGlRendering
 					//	Cache an array of points on the first entry in this function, and read from
 					//	it instead of calculating points on the fly.
 					RenderST( s, t, radius, pt );
-					RenderST( s, nextT, radius, pt );
-					RenderST( nextS, nextT, radius, pt );
 					RenderST( nextS, t, radius, pt );
+					RenderST( nextS, nextT, radius, pt );
+					RenderST( s, nextT, radius, pt );
 
 					s = nextS;
 					nextS += longitudeAngleIncrement;

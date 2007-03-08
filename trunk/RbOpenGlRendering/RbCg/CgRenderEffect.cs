@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using RbEngine;
 using RbEngine.Rendering;
+using RbEngine.Maths;
 using Tao.Cg;
 
 namespace RbOpenGlRendering.RbCg
@@ -71,24 +72,27 @@ namespace RbOpenGlRendering.RbCg
 				{
 					case ShaderParameterBinding.ModelMatrix :
 					{
-						RbEngine.Maths.Matrix44 modelMatrix = Renderer.Inst.GetTransform( Transform.LocalToWorld );
+						Matrix44 modelMatrix = Renderer.Inst.GetTransform( Transform.LocalToWorld );
 						cgSetMatrixParameterfc( param, modelMatrix.Elements );
 						break;
 					}
 
 					case ShaderParameterBinding.ViewMatrix	:
 					{
-						RbEngine.Maths.Matrix44 viewMatrix = Renderer.Inst.GetTransform( Transform.WorldToView );
+						Matrix44 viewMatrix = Renderer.Inst.GetTransform( Transform.WorldToView );
 						cgSetMatrixParameterfc( param, viewMatrix.Elements );
 						break;
 					}
 
 					case ShaderParameterBinding.InverseTransposeModelMatrix :
 					{
-						RbEngine.Maths.Matrix44 itModelMatrix = new RbEngine.Maths.Matrix44( Renderer.Inst.GetTransform( Transform.LocalToWorld ) );
-						itModelMatrix.Translation = RbEngine.Maths.Point3.Origin;
-					//	itModelMatrix.Transpose( );
-					//	itModelMatrix.Invert( );
+						Matrix44	modelMatrix		= Renderer.Inst.GetTransform( Transform.LocalToWorld );
+						Matrix44 itModelMatrix	= new Matrix44( modelMatrix );
+						//	itModelMatrix.Translation = Point3.Origin;
+						itModelMatrix.Invert( );
+
+						System.Diagnostics.Debug.Assert( Matrix44.Identity.IsCloseTo( itModelMatrix * modelMatrix, 0.1f ) );
+						itModelMatrix.Transpose( );
 					//	itModelMatrix.StoreInverse( Renderer.Inst.GetTransform( Transform.LocalToWorld ) );
 
 						cgSetMatrixParameterfc( param, itModelMatrix.Elements );
@@ -132,8 +136,15 @@ namespace RbOpenGlRendering.RbCg
 
 					case ShaderParameterBinding.EyePosition :
 					{
-						RbEngine.Maths.Point3 eyePos = ( ( RbEngine.Cameras.Camera3 )Renderer.Inst.Camera ).Position;
+						Point3 eyePos = ( ( RbEngine.Cameras.Camera3 )Renderer.Inst.Camera ).Position;
 						Cg.cgSetParameter3f( param, eyePos.X, eyePos.Y, eyePos.Z );
+						break;
+					}
+
+					case ShaderParameterBinding.EyeZAxis :
+					{
+						Vector3 eyeVec = ( ( RbEngine.Cameras.Camera3 )Renderer.Inst.Camera ).ZAxis;
+						Cg.cgSetParameter3f( param, eyeVec.X, eyeVec.Y, eyeVec.Z );
 						break;
 					}
 
@@ -173,7 +184,7 @@ namespace RbOpenGlRendering.RbCg
 								IntPtr arcParam			= Cg.cgGetArrayParameter( Cg.cgGetNamedStructParameter( param, "m_ArcRadians" ), numSpotLights );
 								Cg.cgSetParameter4f( positionParam, curLight.Position.X, curLight.Position.Y, curLight.Position.Z, 0 );
 								Cg.cgSetParameter4f( directionParam, curLight.Direction.X, curLight.Direction.Y, curLight.Direction.Z, 0 );
-								Cg.cgSetParameter1f( arcParam, curLight.ArcDegrees * RbEngine.Maths.Constants.DegreesToRadians );
+								Cg.cgSetParameter1f( arcParam, curLight.ArcDegrees * Constants.DegreesToRadians );
 								++numSpotLights;
 							}
 						}

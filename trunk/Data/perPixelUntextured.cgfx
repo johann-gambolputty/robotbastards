@@ -1,0 +1,98 @@
+struct TestInput
+{
+	float4	m_Position : POSITION;
+	float4	m_Normal : NORMAL;
+};
+
+struct TestOutput
+{
+	float4	m_Position		: POSITION;
+	float3	m_ModelPos		: TEXCOORD0;
+	float3	m_ModelNormal	: TEXCOORD1;
+	float2	m_Texture		: TEXCOORD2;
+};
+
+struct SpotLightArray
+{
+	float3		m_Positions[ 4 ];
+	float3		m_Directions[ 4 ];
+	float		m_ArcRadians[ 4 ];
+	int			m_NumLights;
+};
+
+SpotLightArray	SpotLights;
+
+float4x4	ModelMatrix;
+float4x4	ViewMatrix;
+float4x4	ModelViewProjectionMatrix;
+float4x4	ModelViewMatrix;
+float4x4	InverseTransposeModelMatrix;
+float4x4	InverseTransposeModelViewMatrix;
+float3		EyePosition;
+float3		EyeZAxis;
+
+TestOutput TestVertexShader( TestInput input )
+{
+	TestOutput output;
+
+	output.m_Position		= mul( ModelViewProjectionMatrix, input.m_Position );
+	output.m_ModelPos		= mul( ModelMatrix, input.m_Position ).xyz;
+	output.m_ModelNormal	= normalize( mul( InverseTransposeModelMatrix, float4( input.m_Normal.xyz, 0 ) ).xyz );
+
+	return output;
+}
+
+float4 TestFragmentShader( TestOutput input ) : COLOR
+{
+	float3	normal		= normalize( input.m_ModelNormal );
+	float3	lightVec	= normalize( SpotLights.m_Positions[ 0 ] - input.m_ModelPos );
+	float3	halfVec		= normalize( lightVec + EyeZAxis );
+	float	diffuse		= dot( normal, lightVec );
+	float	specular	= dot( normal, halfVec );
+
+	float4	lighting	= lit( diffuse, specular, 32 );
+
+	float4	colour		= float4( ( lighting.y * float3( 1, 1, 1 ) ) + ( lighting.z * float3( 1, 1, 1 ) ), 1 );
+
+	return colour;
+}
+
+technique NormalTechnique
+{
+	pass
+	{
+		ShadeModel				= Smooth;
+		FrontFace				= CW;
+		DepthFunc				= LEqual;
+		DepthTestEnable			= true;
+		CullFaceEnable			= true;
+		PolygonMode				= int2( Front, Fill );
+		VertexProgram			= compile arbvp1 TestVertexShader( );
+		FragmentProgram			= compile arbfp1 TestFragmentShader( );
+	}
+}
+
+technique WireframeTechnique
+{
+	pass
+	{
+		ShadeModel				= Smooth;
+		FrontFace				= CW;
+		DepthFunc				= LEqual;
+		DepthTestEnable			= true;
+		CullFaceEnable			= true;
+		PolygonMode				= int2( Front, Fill );
+		VertexProgram			= compile arbvp1 TestVertexShader( );
+		FragmentProgram			= compile arbfp1 TestFragmentShader( );
+	}
+	pass
+	{
+		FrontFace				= CW;
+		DepthTestEnable			= true;
+		CullFaceEnable			= true;
+		PolygonMode				= int2( Front, Line );
+		PolygonOffsetLineEnable	= true;
+		PolygonOffset			= float2( -0.5, -0.5 );
+		LightingEnable			= true;	//	TODO: This is a bodge to get the wireframe rendered black
+	}
+}
