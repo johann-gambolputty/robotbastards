@@ -195,7 +195,7 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Gets the current matrix from the specified transform stack
 		/// </summary>
-		public abstract Matrix44		GetMatrix( Transform type );
+		public abstract Matrix44		GetTransform( Transform type );
 
 
 		/// <summary>

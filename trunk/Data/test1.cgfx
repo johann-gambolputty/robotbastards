@@ -11,29 +11,31 @@ struct SpecularTestInput
 	float4	m_Normal : NORMAL;
 };
 
-struct PointLightArray
+struct SpotLightArray
 {
 	float4		m_Positions[ 4 ];
+	float4		m_Directions[ 4 ];
+	float		m_ArcRadians[ 4 ];
 	int			m_NumLights;
 };
 
-PointLightArray	PointLights;
+SpotLightArray	SpotLights;
 
-float4x4	ModelViewProj;
-float4x4	ModelView;
-float4x4	InverseTransposeModelView;
+float4x4	ModelViewProjectionMatrix;
+float4x4	ModelViewMatrix;
+float4x4	InverseTransposeModelViewMatrix;
 float4		LightPos = float4( 12, 40, 30, 0 );
-float3		EyePos;
+float3		EyePosition;
 
 
 SpecularTestOutput PlainVanilla( SpecularTestInput input )
 {
 	SpecularTestOutput output;
 
-	output.m_Position		= mul( ModelViewProj, input.m_Position );
+	output.m_Position		= mul( ModelViewProjectionMatrix, input.m_Position );
 
-	float3 normal			= normalize( mul( InverseTransposeModelView, input.m_Normal ).xyz );
-	float dp				= dot( normal, float3( 0, 0, 1 ) ); //normalize( mul( ModelView, LightPos ).xyz ) );
+	float3 normal			= normalize( mul( InverseTransposeModelViewMatrix, input.m_Normal ).xyz );
+	float dp				= dot( normal, float3( 0, 0, 1 ) ); //normalize( mul( ModelViewMatrix, LightPos ).xyz ) );
 	output.m_Colour.rgba	= float4( dp, 0, 0, 1 );
 
 	return output;
@@ -43,12 +45,12 @@ SpecularTestOutput SpecularTest( SpecularTestInput input )
 {
 	SpecularTestOutput output;
 
-	output.m_Position	= mul( ModelViewProj, input.m_Position );
+	output.m_Position	= mul( ModelViewProjectionMatrix, input.m_Position );
 
-	float3 normal		= normalize( mul( InverseTransposeModelView, input.m_Normal ).xyz );
-	float3 eyeVec		= normalize( mul( ModelView, float4( EyePos, 0 ) ).xyz );
-//	float3 lightVec		= normalize( mul( ModelView, LightPos ).xyz );
-	float3 lightVec		= normalize( mul( ModelView, PointLights.m_Positions[ 0 ] ).xyz );
+	float3 normal		= normalize( mul( InverseTransposeModelViewMatrix, input.m_Normal ).xyz );
+	float3 eyeVec		= normalize( mul( ModelViewMatrix, float4( EyePosition, 0 ) ).xyz );
+//	float3 lightVec		= normalize( mul( ModelViewMatrix, LightPos ).xyz );
+	float3 lightVec		= normalize( mul( ModelViewMatrix, SpotLights.m_Positions[ 0 ] ).xyz );
 	float3 halfVec		= normalize( eyeVec + lightVec );
 
 	float diffuse		= dot( normal, lightVec );
@@ -61,6 +63,7 @@ SpecularTestOutput SpecularTest( SpecularTestInput input )
 
 	return output;
 }
+
 
 technique SpecularTestTechnique
 {
@@ -103,7 +106,7 @@ WireOut WireframeVertexShader( WireIn input )
 {
 	WireOut output;
 
-	output.pos		= mul( ModelViewProj, input.pos );
+	output.pos		= mul( ModelViewProjectionMatrix, input.pos );
 	output.colour	= float4( 0, 0, 0, 1 );
 
 	return output;

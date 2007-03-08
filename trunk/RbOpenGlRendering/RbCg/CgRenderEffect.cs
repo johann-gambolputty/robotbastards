@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Runtime.InteropServices;
+using System.Security;
 using RbEngine;
 using RbEngine.Rendering;
 using Tao.Cg;
@@ -44,10 +46,18 @@ namespace RbOpenGlRendering.RbCg
 
 		#region	Effect application
 
+		//	NOTE: These functions were incorrectly imported into Tao (declared matrix parameter as "out float")
+		
+		[ DllImport( "cg.dll", CallingConvention = CallingConvention.Cdecl ), SuppressUnmanagedCodeSecurity ]
+		public static extern void cgSetMatrixParameterfc( IntPtr param, float[] matrix );
+
+		[ DllImport( "cg.dll", CallingConvention = CallingConvention.Cdecl ), SuppressUnmanagedCodeSecurity ]
+		public static extern void cgSetMatrixParameterfr( IntPtr param, float[] matrix );
+
 		/// <summary>
 		/// Applies this effect
 		/// </summary>
-		public override void Begin( )
+		public override unsafe void Begin( )
 		{
 			//	Set bound parameters
 			for ( int bindingIndex = 0; bindingIndex < ( int )ShaderParameterBinding.NumBindings; ++bindingIndex )
@@ -59,6 +69,44 @@ namespace RbOpenGlRendering.RbCg
 				}
 				switch ( ( ShaderParameterBinding )bindingIndex )
 				{
+					case ShaderParameterBinding.ModelMatrix :
+					{
+						RbEngine.Maths.Matrix44 modelMatrix = Renderer.Inst.GetTransform( Transform.LocalToWorld );
+						cgSetMatrixParameterfc( param, modelMatrix.Elements );
+						break;
+					}
+
+					case ShaderParameterBinding.ViewMatrix	:
+					{
+						RbEngine.Maths.Matrix44 viewMatrix = Renderer.Inst.GetTransform( Transform.WorldToView );
+						cgSetMatrixParameterfc( param, viewMatrix.Elements );
+						break;
+					}
+
+					case ShaderParameterBinding.InverseTransposeModelMatrix :
+					{
+						RbEngine.Maths.Matrix44 itModelMatrix = new RbEngine.Maths.Matrix44( Renderer.Inst.GetTransform( Transform.LocalToWorld ) );
+						itModelMatrix.Translation = RbEngine.Maths.Point3.Origin;
+					//	itModelMatrix.Transpose( );
+					//	itModelMatrix.Invert( );
+					//	itModelMatrix.StoreInverse( Renderer.Inst.GetTransform( Transform.LocalToWorld ) );
+
+						cgSetMatrixParameterfc( param, itModelMatrix.Elements );
+						break;
+					}
+
+					case ShaderParameterBinding.ProjectionMatrix :
+					{
+						CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_PROJECTION_MATRIX, CgGl.CG_GL_MATRIX_IDENTITY );
+						break;
+					}
+
+					case ShaderParameterBinding.TextureMatrix :
+					{
+						CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_TEXTURE_MATRIX, CgGl.CG_GL_MATRIX_IDENTITY );
+						break;
+					}
+
 					case ShaderParameterBinding.ModelViewMatrix :
 					{
 						CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_MATRIX, CgGl.CG_GL_MATRIX_IDENTITY );
@@ -239,37 +287,10 @@ namespace RbOpenGlRendering.RbCg
 			{
 				//	Default bindings
 				//	HACK: This is a bodge; should really use parameter annotations to determine such bindings
-				switch ( Cg.cgGetParameterName( curParam ) )
+				ShaderParameterBinding binding = ShaderParameter.GetBindingFromParameterName( Cg.cgGetParameterName( curParam ) );
+				if ( binding != ShaderParameterBinding.NumBindings )
 				{
-					case "ModelViewProj" :
-					{
-						m_Bindings[ ( int )ShaderParameterBinding.ModelViewProjectionMatrix ] = curParam;
-						break;
-					}
-
-					case "ModelView" :
-					{
-						m_Bindings[ ( int )ShaderParameterBinding.ModelViewMatrix ] = curParam;
-						break;
-					}
-
-					case "InverseTransposeModelView" :
-					{
-						m_Bindings[ ( int )ShaderParameterBinding.InverseTransposeModelViewMatrix ] = curParam;
-						break;
-					}
-
-					case "EyePos" :
-					{
-						m_Bindings[ ( int )ShaderParameterBinding.EyePosition ] = curParam;
-						break;
-					}
-
-					case "PointLights" :
-					{
-						m_Bindings[ ( int )ShaderParameterBinding.PointLights ] = curParam;
-						break;
-					}
+					m_Bindings[ ( int )binding ] = curParam;
 				}
 
 				m_Parameters.Add( new CgShaderParameter( m_Context, curParam ) );

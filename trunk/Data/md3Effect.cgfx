@@ -14,24 +14,54 @@ struct InputVertex
 struct OutputVertex
 {
 	float4	m_Position : POSITION;
+	float4	m_Colour : COLOR0;
 	float2	m_Tex0 : TEXCOORD0;
 };
 
-float4x4	ModelViewProj;
+struct SpotLightArray
+{
+	float4	m_Positions[ 4 ];
+	float4	m_Directions[ 4 ];
+	float	m_ArcRadians[ 4 ];
+	int		m_NumLights;
+};
+
+SpotLightArray	SpotLights;
+float4x4		ModelMatrix;
+float4x4		ViewMatrix;
+float4x4		InverseTransposeModelMatrix;
+float4x4		ModelViewMatrix;
+float4x4		InverseTransposeModelViewMatrix;
+float4x4		ModelViewProjectionMatrix;
+float4x4		ProjectionMatrix;
+
+
 
 OutputVertex SimpleTransformVertexShader( InputVertex input )
 {
 	OutputVertex output;
-	
-	output.m_Position	= mul( ModelViewProj, input.m_Position );
+	output.m_Position	= mul( ModelViewProjectionMatrix, input.m_Position );
+//	output.m_Position	= mul( ProjectionMatrix, mul( ViewMatrix, mul( ModelMatrix, input.m_Position ) ) );	//	Just to check that my rubbishy hacked on matrix crap is working
 	output.m_Tex0		= input.m_Tex0;
+
+	//	World space lighting
+	float4	worldPos	= mul( ModelMatrix, input.m_Position );
+	float3	worldNormal	= normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
+	float3	lightVec	= normalize( ( SpotLights.m_Positions[ 0 ] - worldPos ).xyz );
+//	float	diffuse		= dot( worldNormal, lightVec );
+	float	diffuse		= ( dot( worldNormal, lightVec ) + 1 ) / 2;
+
+	//	Colour
+	output.m_Colour.rgb	= diffuse.xxx;
+	output.m_Colour.a	= 1;
 
 	return output;
 }
 
 float4	SimpleTextureFragmentShader( OutputVertex input ) : COLOR
 {
-	return tex2D( Sampler, input.m_Tex0 );
+//	return tex2D( Sampler, input.m_Tex0 ) * input.m_Colour;
+	return input.m_Colour;
 }
 
 technique MainTechnique

@@ -284,7 +284,7 @@ namespace RbOpenGlRendering
 		/// <summary>
 		/// Gets the current matrix from the specified transform stack
 		/// </summary>
-		public override Matrix44 GetMatrix( Transform type )
+		public override Matrix44 GetTransform( Transform type )
 		{
 			Matrix44 mat = new Matrix44( );
 			switch ( type )

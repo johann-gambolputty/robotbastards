@@ -24,6 +24,20 @@ namespace RbEngine.Rendering
 		}
 
 		/// <summary>
+		/// Sets the direction of the light by looking at a given point
+		/// </summary>
+		/// <remarks>
+		/// Light position must be set before calling LookAt
+		/// </remarks>
+		public Point3	LookAt
+		{
+			set
+			{
+				m_Direction = ( Position - value ).MakeNormal( );
+			}
+		}
+
+		/// <summary>
 		/// Access to the arc of the light
 		/// </summary>
 		public float	ArcDegrees

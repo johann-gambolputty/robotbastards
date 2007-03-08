@@ -349,7 +349,7 @@ namespace RbEngine.Components
 					IParentObject parentObjectInterface = parentObject as IParentObject;
 					if ( parentObjectInterface == null )
 					{
-						throw new RbXmlException( Element, "Could not add child object of type \"{0}\": Parent object type \"{1}\" does not support IParentObject", parentObject.GetType( ).Name, LoadedObject.GetType( ).Name );
+						throw new RbXmlException( Element, "Could not add child object of type \"{0}\": Parent object type \"{1}\" does not support IParentObject", LoadedObject.GetType( ).Name, parentObject.GetType( ).Name );
 					}
 
 					parentObjectInterface.AddChild( LoadedObject );
