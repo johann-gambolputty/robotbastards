@@ -195,6 +195,37 @@ namespace RbEngine.Maths
 			return Elements[ X + ( Y * 4 ) ];
 		}
 
+		/// <summary>
+		/// Sets up this matrix as a look-at matrix
+		/// </summary>
+		public void SetLookAt( Point3 origin, Point3 lookAt, Vector3 up )
+		{
+			Vector3 zAxis = ( origin - lookAt ).MakeNormal( );
+			Vector3 yAxis = up;
+			Vector3 xAxis = Vector3.Cross( yAxis, zAxis );
+			yAxis = Vector3.Cross( zAxis, xAxis );
+
+			Elements[ 0 ]  = xAxis.X; 	Elements[ 1 ]  = yAxis.X; 	Elements[ 2 ]  = zAxis.X; 	Elements[ 3 ]  = 0;
+			Elements[ 4 ]  = xAxis.Y; 	Elements[ 5 ]  = yAxis.Y; 	Elements[ 6 ]  = zAxis.Y; 	Elements[ 7 ]  = 0;
+			Elements[ 8 ]  = xAxis.Z; 	Elements[ 9 ]  = yAxis.Z; 	Elements[ 10 ] = zAxis.Z; 	Elements[ 11 ] = 0;
+			Elements[ 12 ] = 0;			Elements[ 13 ] = 0;			Elements[ 14 ] = 0;			Elements[ 15 ] = 1;
+
+			Translate( -origin.X, -origin.Y, -origin.Z );
+			/*
+			Vector3 zAxis = ( lookAt - origin ).MakeNormal( );
+			Vector3 yAxis = up;
+			Vector3 xAxis = Vector3.Cross( yAxis, zAxis );
+			yAxis = Vector3.Cross( zAxis, xAxis );
+
+			Elements[ 0 ]  = xAxis.X; 	Elements[ 1 ]  = xAxis.Y; 	Elements[ 2 ]  = xAxis.Z; 	Elements[ 3 ]  = 0;
+			Elements[ 4 ]  = yAxis.X; 	Elements[ 5 ]  = yAxis.Y; 	Elements[ 6 ]  = yAxis.Z; 	Elements[ 7 ]  = 0;
+			Elements[ 8 ]  = zAxis.X; 	Elements[ 9 ]  = zAxis.Y; 	Elements[ 10 ] = zAxis.Z; 	Elements[ 11 ] = 0;
+			Elements[ 12 ] = 0;			Elements[ 13 ] = 0;			Elements[ 14 ] = 0;			Elements[ 15 ] = 1;
+
+			Translate( -origin.X, -origin.Y, -origin.Z );
+			*/
+		}
+
 		#endregion
 
 		#region	Operations
@@ -216,16 +247,39 @@ namespace RbEngine.Maths
 		/// <summary>
 		/// Stores the result of multiplying lhs * rhs in this matrix
 		/// </summary>
-		public Matrix44	StoreMultiply( Matrix44 lhs, Matrix44 rhs )
+		public void StoreMultiply( Matrix44 lhs, Matrix44 rhs )
 		{
+			/*
 			for ( int row = 0; row < 4; ++row )
 			{
 				int col = 0;
-				result[ col, row ] = ( lhs[ 0, row ] * rhs[ col, 0 ] ) + ( lhs[ 1, row ] * rhs[ col, 1 ] )  + ( lhs[ 2, row ] * rhs[ col, 2 ] ) + ( lhs[ 3, row ] * rhs[ col, 3 ] ); ++col;
-				result[ col, row ] = ( lhs[ 0, row ] * rhs[ col, 0 ] ) + ( lhs[ 1, row ] * rhs[ col, 1 ] )  + ( lhs[ 2, row ] * rhs[ col, 2 ] ) + ( lhs[ 3, row ] * rhs[ col, 3 ] ); ++col;
-				result[ col, row ] = ( lhs[ 0, row ] * rhs[ col, 0 ] ) + ( lhs[ 1, row ] * rhs[ col, 1 ] )  + ( lhs[ 2, row ] * rhs[ col, 2 ] ) + ( lhs[ 3, row ] * rhs[ col, 3 ] ); ++col;
-				result[ col, row ] = ( lhs[ 0, row ] * rhs[ col, 0 ] ) + ( lhs[ 1, row ] * rhs[ col, 1 ] )  + ( lhs[ 2, row ] * rhs[ col, 2 ] ) + ( lhs[ 3, row ] * rhs[ col, 3 ] ); ++col;
+				this[ col, row ] = ( lhs[ 0, row ] * rhs[ col, 0 ] ) + ( lhs[ 1, row ] * rhs[ col, 1 ] )  + ( lhs[ 2, row ] * rhs[ col, 2 ] ) + ( lhs[ 3, row ] * rhs[ col, 3 ] ); ++col;
+				this[ col, row ] = ( lhs[ 0, row ] * rhs[ col, 0 ] ) + ( lhs[ 1, row ] * rhs[ col, 1 ] )  + ( lhs[ 2, row ] * rhs[ col, 2 ] ) + ( lhs[ 3, row ] * rhs[ col, 3 ] ); ++col;
+				this[ col, row ] = ( lhs[ 0, row ] * rhs[ col, 0 ] ) + ( lhs[ 1, row ] * rhs[ col, 1 ] )  + ( lhs[ 2, row ] * rhs[ col, 2 ] ) + ( lhs[ 3, row ] * rhs[ col, 3 ] ); ++col;
+				this[ col, row ] = ( lhs[ 0, row ] * rhs[ col, 0 ] ) + ( lhs[ 1, row ] * rhs[ col, 1 ] )  + ( lhs[ 2, row ] * rhs[ col, 2 ] ) + ( lhs[ 3, row ] * rhs[ col, 3 ] ); ++col;
 			}
+			*/
+			for ( int row = 0; row < 4; ++row )
+			{
+				for ( int col = 0; col < 4; ++col )
+				{
+					this[ col, row ] = 0;
+					for ( int mul = 0; mul < 4; ++mul )
+					{
+						this[ col, row ] += lhs[ col, mul ] * rhs[ mul, row ];
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Stores the result of multiplying this * rhs in this matrix
+		/// </summary>
+		public void StoreMultiply( Matrix44 rhs )
+		{
+			//	TODO: CHEATER!
+			Matrix44 tmp = new Matrix44( this );
+			StoreMultiply( tmp, rhs );
 		}
 
 		/// <summary>
@@ -238,6 +292,18 @@ namespace RbEngine.Maths
 			float z = ( In.X * Elements[ 2 ] ) + ( In.Y * Elements[ 6 ] ) + ( In.Z * Elements[ 10 ] ) + ( Elements[ 14 ] );
 
 			return new Vector3( x, y, z );
+		}
+
+		/// <summary>
+		/// Multiplies a point by this matrix, returning a new point that stores the result
+		/// </summary>
+		public Point3	Multiply( Point3 In )
+		{
+			float x = ( In.X * Elements[ 0 ] ) + ( In.Y * Elements[ 4 ] ) + ( In.Z * Elements[ 8  ] ) + ( Elements[ 12 ] );
+			float y = ( In.X * Elements[ 1 ] ) + ( In.Y * Elements[ 5 ] ) + ( In.Z * Elements[ 9  ] ) + ( Elements[ 13 ] );
+			float z = ( In.X * Elements[ 2 ] ) + ( In.Y * Elements[ 6 ] ) + ( In.Z * Elements[ 10 ] ) + ( Elements[ 14 ] );
+
+			return new Point3( x, y, z );
 		}
 
 		/// <summary>

@@ -110,6 +110,31 @@ namespace RbOpenGlRendering.RbCg
 						break;
 					}
 
+					case ShaderParameterBinding.SpotLights :
+					{
+						//	TODO: This is REALLY SHIT. Need to refactor this mess
+						int numActiveLights = Renderer.Inst.NumActiveLights;
+						int numSpotLights	= 0;
+						for ( int lightIndex = 0; lightIndex < numActiveLights; ++lightIndex )
+						{
+							SpotLight curLight = Renderer.Inst.GetLight( lightIndex ) as SpotLight;
+							if ( curLight != null )
+							{
+								IntPtr positionParam	= Cg.cgGetArrayParameter( Cg.cgGetNamedStructParameter( param, "m_Positions" ), numSpotLights );
+								IntPtr directionParam	= Cg.cgGetArrayParameter( Cg.cgGetNamedStructParameter( param, "m_Directions" ), numSpotLights );
+								IntPtr arcParam			= Cg.cgGetArrayParameter( Cg.cgGetNamedStructParameter( param, "m_ArcRadians" ), numSpotLights );
+								Cg.cgSetParameter4f( positionParam, curLight.Position.X, curLight.Position.Y, curLight.Position.Z, 0 );
+								Cg.cgSetParameter4f( directionParam, curLight.Direction.X, curLight.Direction.Y, curLight.Direction.Z, 0 );
+								Cg.cgSetParameter1f( arcParam, curLight.ArcDegrees * RbEngine.Maths.Constants.DegreesToRadians );
+								++numSpotLights;
+							}
+						}
+
+						Cg.cgSetParameter1i( Cg.cgGetNamedStructParameter( param, "m_NumLights" ), numSpotLights );
+
+						break;
+					}
+
 					default :
 					{
 						throw new ApplicationException( string.Format( "Unhandled shader parameter binding \"{0}\"", ( ( ShaderParameterBinding )bindingIndex ).ToString( ) ) );

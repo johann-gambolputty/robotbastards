@@ -419,14 +419,14 @@ namespace RbOpenGlMd3Loader
 					Tag			transformTag	= curFrame.Tags[ TransformTagIndex ];
 
 					Matrix44 transform = new Matrix44( transformTag.Origin, transformTag.XAxis, transformTag.YAxis, transformTag.ZAxis );
-					Renderer.Inst.PushTransform( Transform.LocalToView, transform );
+					Renderer.Inst.PushTransform( Transform.LocalToWorld, transform );
 				}
 
 				m_NestedMesh.Render( );
 
 				if ( m_TransformTagIndex != -1 )
 				{
-					Renderer.Inst.PopTransform( Transform.LocalToView );
+					Renderer.Inst.PopTransform( Transform.LocalToWorld );
 				}
 			}
 

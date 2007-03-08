@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Windows.Forms;
 using RbEngine;
 using RbEngine.Rendering;
@@ -14,12 +15,97 @@ namespace RbOpenGlRendering
 	{
 		#region	Setup
 
+		private Matrix44 GetMv( )
+		{
+			Matrix44 mat = new Matrix44( );
+			Gl.glGetFloatv( Gl.GL_MODELVIEW_MATRIX, mat.Elements );
+			return mat;
+		}
+
+		private void PrintMatrix( Matrix44 mat )
+		{
+			for ( int row = 0; row < 4; ++row )
+			{
+				for ( int col = 0; col < 4; ++col )
+				{
+					System.Diagnostics.Debug.Write( string.Format( "{0} ", mat[ col, row ].ToString( "G4" ) ) );
+				}
+				System.Diagnostics.Debug.WriteLine( "" );
+			}
+		}
+
+		private void EnsureMvCorrectness( Matrix44 test )
+		{
+			Matrix44 mvMat = GetMv( );
+
+			System.Diagnostics.Debug.WriteLine( "Matrix44:" );
+			PrintMatrix( test );
+
+			System.Diagnostics.Debug.WriteLine( "\nGL Matrix44" );
+			PrintMatrix( mvMat );
+
+			for ( int row = 0; row < 4; ++row )
+			{
+				for ( int col = 0; col < 4; ++col )
+				{
+					float diff = mvMat[ col, row ] - test[ col, row ];
+					Output.DebugAssert( System.Math.Abs( diff ) < 0.1f, Output.RenderingError, "MV not correct" );
+				}
+			}
+		}
+
 		/// <summary>
 		/// Sets up the renderer
 		/// </summary>
 		public OpenGlRenderer( )
 		{
 			Gl.glHint( Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST );
+
+			int stackIndex = 0;
+			for ( ; stackIndex < m_LocalToWorldStack.Length; ++stackIndex )
+			{
+				m_LocalToWorldStack[ stackIndex ] = new Matrix44( );
+			}
+			for ( stackIndex = 0; stackIndex < m_WorldToViewStack.Length; ++stackIndex )
+			{
+				m_WorldToViewStack[ stackIndex ] = new Matrix44( );
+			}
+
+		}
+
+		private void TestMatrices( )
+		{
+			Gl.glMatrixMode( Gl.GL_MODELVIEW );
+			Gl.glPushMatrix( );
+			Gl.glLoadIdentity( );
+
+			//	Test stuff...
+			Matrix44 testMatrix = new Matrix44( );
+			Gl.glTranslatef( 10, 0, 0 );		testMatrix.Translate( 10, 0, 0 );
+			EnsureMvCorrectness( testMatrix );
+
+			Gl.glTranslatef( 10, 0, 0 );		testMatrix.Translate( 10, 0, 0 );
+			EnsureMvCorrectness( testMatrix );
+
+			float[] testArray = new float[ 16 ]
+			{
+				0, 0, 1, 0,
+			    0, 1,  0, 0,
+			    -1, 0,  0, 0,
+			    0, 0,  0, 1
+			};
+
+			Gl.glLoadMatrixf( testArray );
+			Gl.glTranslatef( -10, 0, 0 );
+
+		//	Gl.glLoadIdentity( ); Glu.gluLookAt( 10, 0, 0, 0, 0, 0, 0, 1, 0 );
+			testMatrix.SetLookAt( new Point3( 10, 0, 0 ), Point3.Origin, Vector3.YAxis );
+			EnsureMvCorrectness( testMatrix );
+
+			
+
+			Gl.glPopMatrix( );
+
 		}
 
 		/// <summary>
@@ -32,6 +118,7 @@ namespace RbOpenGlRendering
 			Output.WriteLine( Output.RenderingInfo, extensions.Replace( ' ', '\n' ) );
 
 			GlExtensionLoader.LoadAllExtensions( );
+
 		}
 
 		#endregion
@@ -64,6 +151,7 @@ namespace RbOpenGlRendering
 			{
 				base.CurrentControl = value;
 				SetViewport( 0, 0, value.Width, value.Height );
+			//	TestMatrices( );
 			}
 		}
 
@@ -184,19 +272,6 @@ namespace RbOpenGlRendering
 
 		#region	Transform pipeline
 
-		/// <summary>
-		/// Helper to set the current transform mode
-		/// </summary>
-		private void SetTransformMode( Transform type )
-		{
-			switch ( type )
-			{
-				case Transform.WorldToView	:
-					Output.DebugAssert( m_LocalToWorldStack.Count == 1, Output.RenderingError, "Can't push view matrices after world matrices, because I am lazy" );
-				case Transform.LocalToWorld	:	Gl.glMatrixMode( Gl.GL_MODELVIEW );		break;
-				case Transform.ViewToScreen	:	Gl.glMatrixMode( Gl.GL_PROJECTION );	break;
-			}
-		}
 
 		/// <summary>
 		/// Helper to convert a Matrix44 to a GL-friendly float array
@@ -214,15 +289,14 @@ namespace RbOpenGlRendering
 			Matrix44 mat = new Matrix44( );
 			switch ( type )
 			{
-			//	case Transform.LocalToView	://	Gl.glGetFloatv( Gl.GL_MODELVIEW_MATRIX, mat.Elements );		break;
 				case Transform.LocalToWorld	:
 				{
-					mat.Copy( ( Matrix44 )m_LocalToWorldStack[ m_LocalToWorldStack.Count - 1 ] );
+					mat.Copy( CurrentLocalToWorld );
 					break;
 				}
 				case Transform.WorldToView	:
 				{
-					mat.Copy( ( Matrix44 )m_WorldToView[ m_WorldToView.Count - 1 ] );
+					mat.Copy( CurrentWorldToView );
 					break;
 				}
 				case Transform.ViewToScreen	:
@@ -283,8 +357,27 @@ namespace RbOpenGlRendering
 		/// </summary>
 		public override void	Translate( Transform type, float x, float y, float z )
 		{
-			SetTransformMode( type );
-			Gl.glTranslatef( x, y, z );
+			switch ( type )
+			{
+				case Transform.LocalToWorld :
+				{
+					CurrentLocalToWorld.Translate( x, y, z );
+					UpdateModelView( );
+					break;
+				}
+				case Transform.WorldToView :
+				{
+					CurrentWorldToView.Translate( x, y, z );
+					UpdateModelView( );
+					break;
+				}
+				case Transform.ViewToScreen :
+				{
+					Gl.glMatrixMode( Gl.GL_PROJECTION );
+					Gl.glTranslatef( x, y, z );
+					break;
+				}
+			}
 		}
 
 		/// <summary>
@@ -292,9 +385,34 @@ namespace RbOpenGlRendering
 		/// </summary>
 		public override void	PushTransform( Transform type, Matrix44 matrix )
 		{
-			SetTransformMode( type );
-			Gl.glPushMatrix( );
-			Gl.glMultMatrixf( GetGlMatrix( matrix ) );
+			switch ( type )
+			{
+				case Transform.LocalToWorld :
+				{
+					Matrix44 lastLocalToWorld = CurrentLocalToWorld;
+					++m_TopOfLocalToWorldStack;
+					CurrentLocalToWorld.StoreMultiply( lastLocalToWorld, matrix );
+					UpdateModelView( );
+					break;
+				}
+
+				case Transform.WorldToView :
+				{
+					Matrix44 lastWorldToView = CurrentWorldToView;
+					++m_TopOfWorldToViewStack;
+					CurrentWorldToView.StoreMultiply( lastWorldToView, matrix );
+					UpdateModelView( );
+					break;
+				}
+
+				case Transform.ViewToScreen :
+				{
+					Gl.glMatrixMode( Gl.GL_PROJECTION );
+					Gl.glPushMatrix( );
+					Gl.glMultMatrixf( GetGlMatrix( matrix ) );
+					break;
+				}
+			}
 		}
 
 		/// <summary>
@@ -302,8 +420,33 @@ namespace RbOpenGlRendering
 		/// </summary>
 		public override void	PushTransform( Transform type )
 		{
-			SetTransformMode( type );
-			Gl.glPushMatrix( );
+			switch ( type )
+			{
+				case Transform.LocalToWorld :
+				{
+					Matrix44 lastLocalToWorld = CurrentLocalToWorld;
+					++m_TopOfLocalToWorldStack;
+					CurrentLocalToWorld.Copy( lastLocalToWorld );
+					UpdateModelView( );
+					break;
+				}
+
+				case Transform.WorldToView :
+				{
+					Matrix44 lastWorldToView = CurrentWorldToView;
+					++m_TopOfWorldToViewStack;
+					CurrentWorldToView.Copy( lastWorldToView );
+					UpdateModelView( );
+					break;
+				}
+
+				case Transform.ViewToScreen :
+				{
+					Gl.glMatrixMode( Gl.GL_PROJECTION );
+					Gl.glPushMatrix( );
+					break;
+				}
+			}
 		}
 
 		/// <summary>
@@ -311,9 +454,15 @@ namespace RbOpenGlRendering
 		/// </summary>
 		public override void SetLookAtTransform( Point3 lookAt, Point3 camPos, Vector3 camYAxis )
 		{
-			Gl.glMatrixMode( Gl.GL_MODELVIEW );
-			Gl.glLoadIdentity( );
-			Glu.gluLookAt( camPos.X, camPos.Y, camPos.Z, lookAt.X, lookAt.Y, lookAt.Z, camYAxis.X, camYAxis.Y, camYAxis.Z );
+			CurrentWorldToView.SetLookAt( camPos, lookAt, camYAxis );
+			UpdateModelView( );
+
+		//	Gl.glMatrixMode( Gl.GL_MODELVIEW );
+		//	Gl.glPushMatrix( );
+		//	Gl.glLoadIdentity( );
+		//	Glu.gluLookAt( camPos.X, camPos.Y, camPos.Z, lookAt.X, lookAt.Y, lookAt.Z, camYAxis.X, camYAxis.Y, camYAxis.Z );
+		//	EnsureMvCorrectness( CurrentWorldToView );
+		//	Gl.glPopMatrix( );
 		}
 
 		/// <summary>
@@ -331,8 +480,29 @@ namespace RbOpenGlRendering
 		/// </summary>
 		public override void SetTransform( Transform type, Matrix44 matrix )
 		{
-			SetTransformMode( type );
-			Gl.glLoadMatrixf( GetGlMatrix( matrix ) );
+			switch ( type )
+			{
+				case Transform.LocalToWorld :
+				{
+					CurrentLocalToWorld.Copy( matrix );
+					UpdateModelView( );
+					break;
+				}
+
+				case Transform.WorldToView :
+				{
+					CurrentWorldToView.Copy( matrix );
+					UpdateModelView( );
+					break;
+				}
+
+				case Transform.ViewToScreen :
+				{
+					Gl.glMatrixMode( Gl.GL_PROJECTION );
+					Gl.glLoadMatrixf( GetGlMatrix( matrix ) );
+					break;
+				}
+			}
 		}
 
 		/// <summary>
@@ -340,8 +510,29 @@ namespace RbOpenGlRendering
 		/// </summary>
 		public override void PopTransform( Transform type )
 		{
-			SetTransformMode( type );
-			Gl.glPopMatrix( );
+			switch ( type )
+			{
+				case Transform.LocalToWorld :
+				{
+					--m_TopOfLocalToWorldStack;
+					UpdateModelView( );
+					break;
+				}
+
+				case Transform.WorldToView :
+				{
+					--m_TopOfWorldToViewStack;
+					UpdateModelView( );
+					break;
+				}
+
+				case Transform.ViewToScreen :
+				{
+					Gl.glMatrixMode( Gl.GL_PROJECTION );
+					Gl.glPopMatrix( );
+					break;
+				}
+			}
 		}
 
 		/// <summary>
@@ -508,8 +699,56 @@ namespace RbOpenGlRendering
 
 		#endregion
 
-		private ArrayList	m_LocalToWorldStack	= new ArrayList( );
-		private ArrayList	m_WorldToViewStack	= new ArrayList( );
+		#region	Local to world transforms
+
+		/// <summary>
+		/// Gets the current local to world transform
+		/// </summary>
+		private Matrix44	CurrentLocalToWorld
+		{
+			get
+			{
+				return m_LocalToWorldStack[ m_TopOfLocalToWorldStack ];
+			}
+		}
+		
+
+		private Matrix44[]	m_LocalToWorldStack			= new Matrix44[ 8 ];
+		private int			m_TopOfLocalToWorldStack	= 0;
+
+		#endregion
+
+		#region	World to view transforms
+
+		/// <summary>
+		/// Gets the current world to view transform
+		/// </summary>
+		private Matrix44	CurrentWorldToView
+		{
+			get
+			{
+				return m_WorldToViewStack[ m_TopOfWorldToViewStack ];
+			}
+		}
+
+		private Matrix44[]	m_WorldToViewStack			= new Matrix44[ 4 ];
+		private int			m_TopOfWorldToViewStack		= 0;
+
+		#endregion
+
+		#region	ModelView transform
+		
+		/// <summary>
+		/// Updates the local to view matrix
+		/// </summary>
+		private void UpdateModelView( )
+		{
+			Gl.glMatrixMode( Gl.GL_MODELVIEW );
+			Gl.glLoadMatrixf( GetGlMatrix( CurrentWorldToView ) );
+			Gl.glMultMatrixf( GetGlMatrix( CurrentLocalToWorld ) );
+		}
+
+		#endregion
 	}
 
 }
