@@ -639,6 +639,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Rendering\Sphere.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Rendering\SpotLight.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

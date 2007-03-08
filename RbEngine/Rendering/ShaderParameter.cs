@@ -6,12 +6,40 @@ namespace RbEngine.Rendering
 	/// <summary>
 	/// Binding options for a shader parameter
 	/// </summary>
+	/// <remarks>
+	/// When adding values to this enum, update ShaderParameter.CreateBindingParameterNames()
+	/// </remarks>
 	public enum ShaderParameterBinding
 	{
 		/// <summary>
 		/// Unbound parameter
 		/// </summary>
 		NoBinding,
+
+		/// <summary>
+		/// Parameter bound to the current model matrix
+		/// </summary>
+		ModelMatrix,
+
+		/// <summary>
+		/// Parameter bound to the current model matrix
+		/// </summary>
+		InverseTransposeModelMatrix,
+
+		/// <summary>
+		/// Parameter bound to the current view matrix
+		/// </summary>
+		ViewMatrix,
+
+		/// <summary>
+		/// Parameter bound to the current projection matrix
+		/// </summary>
+		ProjectionMatrix,
+
+		/// <summary>
+		/// Parameter bound to current texture matrix
+		/// </summary>
+		TextureMatrix,
 
 		/// <summary>
 		/// Parameter bound to current model view matrix
@@ -99,6 +127,76 @@ namespace RbEngine.Rendering
 	/// </summary>
 	public abstract class ShaderParameter
 	{
+		#region	Binding parameter names
+
+		/// <summary>
+		/// Gets the name of a bound parameter name
+		/// </summary>
+		public static string	GetBindingParameterName( ShaderParameterBinding param )
+		{
+			return ms_BindingParameterNames[ ( int )param ];
+		}
+
+		/// <summary>
+		/// Returns the parameter binding from a parameter name
+		/// </summary>
+		/// <param name="name">Parameter name</param>
+		/// <returns>The binding implied by the parameter name, or ShaderParameterBinding.NumBindings if no binding is implied</returns>
+		public static ShaderParameterBinding	GetBindingFromParameterName( string name )
+		{
+			for ( int nameIndex = 0; nameIndex < ( int )ShaderParameterBinding.NumBindings; ++nameIndex )
+			{
+				if ( string.Compare( ms_BindingParameterNames[ nameIndex ], name, true ) == 0 )
+				{
+					return ( ShaderParameterBinding )nameIndex;
+				}
+			}
+			return ShaderParameterBinding.NumBindings;
+		}
+
+		/// <summary>
+		/// Creates binding parameter names
+		/// </summary>
+		/// <returns>Array of parameter names that get bound to various render state values</returns>
+		private static string[]	CreateBindingParameterNames( )
+		{
+			string[] names = new string[ ( int )ShaderParameterBinding.NumBindings ];
+
+			names[ ( int )ShaderParameterBinding.NoBinding ]						= "";
+			names[ ( int )ShaderParameterBinding.ModelMatrix ]						= "ModelMatrix";
+			names[ ( int )ShaderParameterBinding.InverseTransposeModelMatrix ]		= "InverseTransposeModelMatrix";
+			names[ ( int )ShaderParameterBinding.ViewMatrix ]						= "ViewMatrix";
+			names[ ( int )ShaderParameterBinding.ProjectionMatrix ]					= "ProjectionMatrix";
+			names[ ( int )ShaderParameterBinding.TextureMatrix ]					= "TextureMatrix";
+			names[ ( int )ShaderParameterBinding.ModelViewMatrix ]					= "ModelViewMatrix";
+			names[ ( int )ShaderParameterBinding.InverseModelViewMatrix ]			= "InverseModelViewMatrix";
+			names[ ( int )ShaderParameterBinding.InverseTransposeModelViewMatrix ]	= "InverseTransposeModelViewMatrix";
+			names[ ( int )ShaderParameterBinding.ModelViewProjectionMatrix ]		= "ModelViewProjectionMatrix";
+			names[ ( int )ShaderParameterBinding.EyePosition ]						= "EyePosition";
+			names[ ( int )ShaderParameterBinding.EyeXAxis ] 						= "EyeXAxis";
+			names[ ( int )ShaderParameterBinding.EyeYAxis ] 						= "EyeYAxis";
+			names[ ( int )ShaderParameterBinding.EyeZAxis ] 						= "EyeZAxis";
+			names[ ( int )ShaderParameterBinding.PointLights ]						= "PointLights";
+			names[ ( int )ShaderParameterBinding.SpotLights ]						= "SpotLights";
+
+			//	Make sure that all names are present and correct
+			for ( int nameIndex = 0; nameIndex < ( int )ShaderParameterBinding.NumBindings; ++nameIndex )
+			{
+				if ( names[ nameIndex ] == null )
+				{
+					throw new ApplicationException( string.Format( "Missing parameter name for shader binding \"{0}\"", ( ( ShaderParameterBinding )nameIndex ).ToString( ) ) );
+				}
+			}
+
+			return names;
+		}
+
+		private static string[]	ms_BindingParameterNames = CreateBindingParameterNames( );
+
+		#endregion
+
+
+
 		/// <summary>
 		/// Sets the shader parameter to a texture
 		/// </summary>

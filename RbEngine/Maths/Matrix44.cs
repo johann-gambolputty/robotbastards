@@ -7,6 +7,15 @@ namespace RbEngine.Maths
 	/// </summary>
 	public class Matrix44
 	{
+		#region	Predefined matrices
+
+		/// <summary>
+		/// Identity matrix
+		/// </summary>
+		public static readonly Matrix44 Identity = new Matrix44( );
+
+		#endregion
+
 		#region	Public properties
 
 		/// <summary>
@@ -14,14 +23,19 @@ namespace RbEngine.Maths
 		/// </summary>
 		public float[ ] Elements = new float[ 16 ];
 
+
 		/// <summary>
-		/// An identity matrix
+		/// 1-dimensional indexer for this matrix
 		/// </summary>
-		public static Matrix44 Identity
+		public float this[ int index ]
 		{
 			get
 			{
-				return new Matrix44( );
+				return Elements[ index ];
+			}
+			set
+			{
+				Elements[ index ] = value;
 			}
 		}
 
@@ -249,27 +263,120 @@ namespace RbEngine.Maths
 		/// </summary>
 		public void StoreMultiply( Matrix44 lhs, Matrix44 rhs )
 		{
-			/*
 			for ( int row = 0; row < 4; ++row )
 			{
 				int col = 0;
-				this[ col, row ] = ( lhs[ 0, row ] * rhs[ col, 0 ] ) + ( lhs[ 1, row ] * rhs[ col, 1 ] )  + ( lhs[ 2, row ] * rhs[ col, 2 ] ) + ( lhs[ 3, row ] * rhs[ col, 3 ] ); ++col;
-				this[ col, row ] = ( lhs[ 0, row ] * rhs[ col, 0 ] ) + ( lhs[ 1, row ] * rhs[ col, 1 ] )  + ( lhs[ 2, row ] * rhs[ col, 2 ] ) + ( lhs[ 3, row ] * rhs[ col, 3 ] ); ++col;
-				this[ col, row ] = ( lhs[ 0, row ] * rhs[ col, 0 ] ) + ( lhs[ 1, row ] * rhs[ col, 1 ] )  + ( lhs[ 2, row ] * rhs[ col, 2 ] ) + ( lhs[ 3, row ] * rhs[ col, 3 ] ); ++col;
-				this[ col, row ] = ( lhs[ 0, row ] * rhs[ col, 0 ] ) + ( lhs[ 1, row ] * rhs[ col, 1 ] )  + ( lhs[ 2, row ] * rhs[ col, 2 ] ) + ( lhs[ 3, row ] * rhs[ col, 3 ] ); ++col;
+				this[ col, row ] = ( lhs[ col, 0 ] * rhs[ 0, row ] ) + ( lhs[ col, 1 ] * rhs[ 1, row ] )  + ( lhs[ col, 2 ] * rhs[ 2, row ] ) + ( lhs[ col, 3 ] * rhs[ 3, row ] ); ++col;
+				this[ col, row ] = ( lhs[ col, 0 ] * rhs[ 0, row ] ) + ( lhs[ col, 1 ] * rhs[ 1, row ] )  + ( lhs[ col, 2 ] * rhs[ 2, row ] ) + ( lhs[ col, 3 ] * rhs[ 3, row ] ); ++col;
+				this[ col, row ] = ( lhs[ col, 0 ] * rhs[ 0, row ] ) + ( lhs[ col, 1 ] * rhs[ 1, row ] )  + ( lhs[ col, 2 ] * rhs[ 2, row ] ) + ( lhs[ col, 3 ] * rhs[ 3, row ] ); ++col;
+				this[ col, row ] = ( lhs[ col, 0 ] * rhs[ 0, row ] ) + ( lhs[ col, 1 ] * rhs[ 1, row ] )  + ( lhs[ col, 2 ] * rhs[ 2, row ] ) + ( lhs[ col, 3 ] * rhs[ 3, row ] ); ++col;
 			}
-			*/
-			for ( int row = 0; row < 4; ++row )
+		}
+
+		/// <summary>
+		/// Inverts this matrix (so M.M' = I)
+		/// </summary>
+		public void Invert( )
+		{
+			Matrix44 tmp = new Matrix44( this );
+			StoreInverse( tmp );
+		}
+
+		/// <summary>
+		/// Stores the inverse of mat (mat.mat'=I) in this matrix
+		/// </summary>
+		/// <remarks>
+		/// The generic inverse of a matrix A is found by dividing the adjoint of A by the determinant of A. The adjoint B of a matrix A is
+		/// defined by B=bij, where bij is the determinant of A with row i and column j removed (the co-factors of A).
+		/// I was too lazy to fully expand the calculations this implies for a 4x4 matrix, so I grabbed and adapted the following code from
+		/// http://www.geometrictools.com
+		/// </remarks>
+		public void StoreInverse( Matrix44 mat )
+		{
+			//	The inverse of an nxn matrix A is the adjoint of A divided through by the determinant of A
+			//	Because the adjoint and determinant use the same sub-matrix determinants, we can store these values and use them in both calculations:
+
+			float a0 = mat[  0 ] * mat[  5 ] - mat[  1 ] * mat[  4 ];
+			float a1 = mat[  0 ] * mat[  6 ] - mat[  2 ] * mat[  4 ];
+			float a2 = mat[  0 ] * mat[  7 ] - mat[  3 ] * mat[  4 ];
+			float a3 = mat[  1 ] * mat[  6 ] - mat[  2 ] * mat[  5 ];
+			float a4 = mat[  1 ] * mat[  7 ] - mat[  3 ] * mat[  5 ];
+			float a5 = mat[  2 ] * mat[  7 ] - mat[  3 ] * mat[  6 ];
+			float b0 = mat[  8 ] * mat[ 13 ] - mat[  9 ] * mat[ 12 ];
+			float b1 = mat[  8 ] * mat[ 14 ] - mat[ 10 ] * mat[ 12 ];
+			float b2 = mat[  8 ] * mat[ 15 ] - mat[ 11 ] * mat[ 12 ];
+			float b3 = mat[  9 ] * mat[ 14 ] - mat[ 10 ] * mat[ 13 ];
+			float b4 = mat[  9 ] * mat[ 15 ] - mat[ 11 ] * mat[ 13 ];
+			float b5 = mat[ 10 ] * mat[ 15 ] - mat[ 11 ] * mat[ 14 ];
+
+			float det = a0 * b5 - a1 * b4 + a2 * b3 + a3 * b2 - a4 * b1 + a5 * b0;
+			if ( ( det > -0.0001f ) && ( det < 0.0001f ) )
 			{
-				for ( int col = 0; col < 4; ++col )
-				{
-					this[ col, row ] = 0;
-					for ( int mul = 0; mul < 4; ++mul )
-					{
-						this[ col, row ] += lhs[ col, mul ] * rhs[ mul, row ];
-					}
-				}
+				//	Maybe store zero matrix instead?
+				throw new ApplicationException( "Tried to take the inverse of a matrix with determinant of zero" );
 			}
+
+			//	Store the reciprocal of the determinant
+			float rcpDet = 1.0f / det;
+
+			//	Store the adjoint of mat in this matrix
+			this[  0 ] = ( +mat[  5 ] * b5 - mat[  6 ] * b4 + mat[  7 ] * b3 ) * rcpDet;
+			this[  4 ] = ( -mat[  4 ] * b5 + mat[  6 ] * b2 - mat[  7 ] * b1 ) * rcpDet;
+			this[  8 ] = ( +mat[  4 ] * b4 - mat[  5 ] * b2 + mat[  7 ] * b0 ) * rcpDet;
+			this[ 12 ] = ( -mat[  4 ] * b3 + mat[  5 ] * b1 - mat[  6 ] * b0 ) * rcpDet;
+			this[  1 ] = ( -mat[  1 ] * b5 + mat[  2 ] * b4 - mat[  3 ] * b3 ) * rcpDet;
+			this[  5 ] = ( +mat[  0 ] * b5 - mat[  2 ] * b2 + mat[  3 ] * b1 ) * rcpDet;
+			this[  9 ] = ( -mat[  0 ] * b4 + mat[  1 ] * b2 - mat[  3 ] * b0 ) * rcpDet;
+			this[ 13 ] = ( +mat[  0 ] * b3 - mat[  1 ] * b1 + mat[  2 ] * b0 ) * rcpDet;
+			this[  2 ] = ( +mat[ 13 ] * a5 - mat[ 14 ] * a4 + mat[ 15 ] * a3 ) * rcpDet;
+			this[  6 ] = ( -mat[ 12 ] * a5 + mat[ 14 ] * a2 - mat[ 15 ] * a1 ) * rcpDet;
+			this[ 10 ] = ( +mat[ 12 ] * a4 - mat[ 13 ] * a2 + mat[ 15 ] * a0 ) * rcpDet;
+			this[ 14 ] = ( -mat[ 12 ] * a3 + mat[ 13 ] * a1 - mat[ 14 ] * a0 ) * rcpDet;
+			this[  3 ] = ( -mat[  9 ] * a5 + mat[ 10 ] * a4 - mat[ 11 ] * a3 ) * rcpDet;
+			this[  7 ] = ( +mat[  8 ] * a5 - mat[ 10 ] * a2 + mat[ 11 ] * a1 ) * rcpDet;
+			this[ 11 ] = ( -mat[  8 ] * a4 + mat[  9 ] * a2 - mat[ 11 ] * a0 ) * rcpDet;
+			this[ 15 ] = ( +mat[  8 ] * a3 - mat[  9 ] * a1 + mat[ 10 ] * a0 ) * rcpDet;
+		}
+
+		/// <summary>
+		/// Gets the determinant of this matrix
+		/// </summary>
+		/// <remarks>
+		/// The determinant of an NxN matrix A is the sum of aij.Pij, with i=1 and j=0..N-1,  where aij is the matrix element at (i,j), and
+		/// Pij is the determinant of A with row i and column j removed, multiplied by -1 if i+j is odd, or 1 if i+j is even.
+		/// As with the adjoint operation in StoreInverse(), I was too lazy to fully expand the calculations this implies for a 4x4 matrix, so
+		/// I grabbed and adapted the following code from http://www.geometrictools.com
+		/// <note>
+		/// The determinant is not cached in the matrix, but is calculated on the fly. Don't access this property too often.
+		/// </note>
+		/// </remarks>
+		public float Determinant
+		{
+			get
+			{
+				float a0 = this[  0 ] * this[  5 ] - this[  1 ] * this[  4 ];
+				float a1 = this[  0 ] * this[  6 ] - this[  2 ] * this[  4 ];
+				float a2 = this[  0 ] * this[  7 ] - this[  3 ] * this[  4 ];
+				float a3 = this[  1 ] * this[  6 ] - this[  2 ] * this[  5 ];
+				float a4 = this[  1 ] * this[  7 ] - this[  3 ] * this[  5 ];
+				float a5 = this[  2 ] * this[  7 ] - this[  3 ] * this[  6 ];
+				float b0 = this[  8 ] * this[ 13 ] - this[  9 ] * this[ 12 ];
+				float b1 = this[  8 ] * this[ 14 ] - this[ 10 ] * this[ 12 ];
+				float b2 = this[  8 ] * this[ 15 ] - this[ 11 ] * this[ 12 ];
+				float b3 = this[  9 ] * this[ 14 ] - this[ 10 ] * this[ 13 ];
+				float b4 = this[  9 ] * this[ 15 ] - this[ 11 ] * this[ 13 ];
+				float b5 = this[ 10 ] * this[ 15 ] - this[ 11 ] * this[ 14 ];
+
+				float det = a0 * b5 - a1 * b4 + a2 * b3 + a3 * b2 - a4 * b1 + a5 * b0;
+				return det;
+			}
+		}
+
+		/// <summary>
+		/// Stores the inverse transpose of mat in this matrix. This is used to create a matrix that can be used to transform vertex normals
+		/// </summary>
+		public void StoreInverseTranspose( Matrix44 mat )
+		{
 		}
 
 		/// <summary>
@@ -314,17 +421,17 @@ namespace RbEngine.Maths
 		/// </remarks>
 		public Matrix44 Transpose( )
 		{
-			Matrix44 Result = new Matrix44( );
+			Matrix44 result = new Matrix44( );
 
-			for ( int Row = 0; Row < 4; ++Row )
+			for ( int row = 0; row < 4; ++row )
 			{
-				for ( int Col = 0; Col < 4; ++Col )
+				for ( int col = 0; col < 4; ++col )
 				{
-					Result.Set( Row, Col, Get( Col, Row ) );
+					result.Set( row, col, Get( col, row ) );
 				}
 			}
 
-			return Result;
+			return result;
 		}
 
 		/// <summary>

@@ -107,6 +107,11 @@ namespace RbEngine.Components
 		/// </summary>
 		public virtual void	HandleMessage( Message msg )
 		{
+			if ( m_RecipientChains == null )
+			{
+				return;
+			}
+
 			Type baseType = typeof( Object );
 			for ( Type messageType = msg.GetType( ); messageType != baseType; messageType = messageType.BaseType )
 			{	
