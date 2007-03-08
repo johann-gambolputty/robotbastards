@@ -57,7 +57,36 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Data about the active point lights in the renderer
 		/// </summary>
+		/// <remarks>
+		/// Binds to a struct like this:
+		/// <code>
+		/// struct PointLights
+		/// {
+		///    int m_NumLights;
+		///    float4 m_Positions[ 4 ];
+		/// }
+		/// </code>
+		/// </remarks>
 		PointLights,
+
+
+		//	TODO: This is very specific - requires a certain data structure to be present in the shader... 
+		/// <summary>
+		/// Data about the active spotlights in the renderer
+		/// </summary>
+		/// <remarks>
+		/// Binds to a struct like this:
+		/// <code>
+		/// struct SpotLights
+		/// {
+		///    int m_NumLights;
+		///    float4 m_Positions[ 4 ];
+		///    float4 m_Directions[ 4 ];
+		///    float  m_ArcRadians[ 4 ];
+		/// }
+		/// </code>
+		/// </remarks>
+		SpotLights,
 
 		/// <summary>
 		/// Total number of bindings

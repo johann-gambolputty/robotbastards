@@ -105,7 +105,8 @@ namespace RbEngine.Rendering
 		{
 			Begin( );
 
-			Renderer.Inst.PushTransform( Transform.LocalToView );
+			Renderer.Inst.PushTransform( Transform.LocalToWorld );
+			Renderer.Inst.PushTransform( Transform.WorldToView );
 			Renderer.Inst.PushTransform( Transform.ViewToScreen );
 
 			for ( int lightIndex = 0; lightIndex < m_Lights.Count; ++lightIndex )
@@ -158,7 +159,8 @@ namespace RbEngine.Rendering
 
 			}
 
-			Renderer.Inst.PopTransform( Transform.LocalToView );
+			Renderer.Inst.PopTransform( Transform.LocalToWorld );
+			Renderer.Inst.PopTransform( Transform.WorldToView );
 			Renderer.Inst.PopTransform( Transform.ViewToScreen );
 
 			End( );

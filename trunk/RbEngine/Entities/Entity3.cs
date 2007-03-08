@@ -233,7 +233,7 @@ namespace RbEngine.Entities
 			//	Push the entity transform
 			Maths.Matrix44 mat = new Maths.Matrix44( curPos, Left, Up, Facing );
 
-			Renderer.Inst.PushTransform( Transform.LocalToView, mat );
+			Renderer.Inst.PushTransform( Transform.LocalToWorld, mat );
 
 			//	TODO: Render associated IRender object
 			if ( m_Graphics != null )
@@ -242,7 +242,7 @@ namespace RbEngine.Entities
 			}
 
 			//	Pop the entity transform
-			Renderer.Inst.PopTransform( Transform.LocalToView );
+			Renderer.Inst.PopTransform( Transform.LocalToWorld );
 
 			m_PreRenders.End( );
 		}
