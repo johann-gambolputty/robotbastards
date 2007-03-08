@@ -240,6 +240,31 @@ namespace RbEngine.Maths
 			*/
 		}
 
+		/// <summary>
+		/// Multiplication operator
+		/// </summary>
+		public static Matrix44	operator * ( Matrix44 lhs, Matrix44 rhs )
+		{
+			Matrix44 mat = new Matrix44( );
+			mat.StoreMultiply( lhs, rhs );
+			return mat;
+		}
+
+		/// <summary>
+		/// Returns true if the two matrices are equal, within a given tolerance per element
+		/// </summary>
+		public bool IsCloseTo( Matrix44 mat, float tol )
+		{
+			for ( int index = 0; index < 16; ++index )
+			{
+				if ( System.Math.Abs( this[ index ] - mat[ index ] ) < tol )
+				{
+					return false;
+				}
+			}
+			return false;
+		}
+
 		#endregion
 
 		#region	Operations

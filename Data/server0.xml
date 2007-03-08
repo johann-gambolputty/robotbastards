@@ -3,14 +3,14 @@
 
 	<!--	TODO: This is defined before models, because the XmlLoader loads modelSets in definition order. -->
 	<modelSet name="effects">
-		<resource path="test1.cgfx" name="Test1"/>
-		<resource path="md3Effect.cgfx" name="MD3Effect"/>
+		<resource path="perPixelUntextured.cgfx" name="perPixelUntextured"/>
+		<resource path="perPixelTextured.cgfx" name="perPixelTextured"/>
 	</modelSet>
 
 	<modelSet name="models">
 		<resource path="sarge" name="sarge">
-			<reference modelPath="effects/MD3Effect" property="Effect"/>
-			<string value="MainTechnique" property="SelectedTechniqueName"/>
+			<reference modelPath="effects/perPixelTextured" property="Effect"/>
+			<string value="NormalTechnique" property="SelectedTechniqueName"/>
 		</resource>
 	</modelSet>
 
@@ -34,14 +34,17 @@
 
 				<Point3 x="20" y="0.5" z="0" property="NextPosition"/>
 				
-				
-				<!-- <instance modelPath="models/sarge" property="Graphics" alwaysAddAsChild="true"/> -->
+				<!--
+				<instance modelPath="models/sarge" property="Graphics" alwaysAddAsChild="true"/>
+				-->
+
 				<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics">
 
-					<reference modelPath="effects/Test1" property="Effect"/>
-					<string value="SpecularTestTechnique" property="SelectedTechniqueName"/>
+					<reference modelPath="effects/perPixelUntextured" property="Effect"/>
+					<string value="NormalTechnique" property="SelectedTechniqueName"/>
 					<object type="RbEngine.Rendering.Sphere" property="RenderedObject">
-						<float value="20" property="Radius"/>
+						<float value="10" property="Radius"/>
+						<Point3 x="0" y="10" z="0" property="Centre"/>
 					</object>
 				</object>
 
@@ -56,10 +59,10 @@
 			<!-- Lights -->
 			<object type="RbEngine.Entities.Entity3">
 
-				<Point3 x="50" y="20" z="50" property="NextPosition"/>
+				<Point3 x="50" y="50" z="50" property="NextPosition"/>
 
 				<object type="RbEngine.Rendering.SpotLight">
-					<Point3 x="50" y="20" z="50" property="Position"/>
+					<Point3 x="50" y="50" z="50" property="Position"/>
 					<Point3 x="0" y="0" z="0" property="LookAt"/>
 					<float value="90" property="ArcDegrees"/>
 				</object>
@@ -71,13 +74,13 @@
 
 			</object>
 
-			<!-- Environment
+			<!-- Environment -->
 			<object type="RbEngine.Entities.Entity3">
 
 				<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics" alwaysAddAsChild="true">
 
-					<reference modelPath="effects/Test1" property="Effect"/>
-					<string value="SpecularTestTechnique" property="SelectedTechniqueName"/>
+					<reference modelPath="effects/perPixelUntextured" property="Effect"/>
+					<string value="WireframeTechnique" property="SelectedTechniqueName"/>
 					<resource path="simpleEnvironment.dae" property="RenderedObject"/>
 
 				</object>
@@ -85,7 +88,6 @@
 				<object type="RbEngine.Scene.LightingData"/>
 
 			</object>
-			-->
 		</object>
 	</object>
 
