@@ -107,46 +107,38 @@ namespace RbEngine.Network
 		private void OnLoad( )
 		{
 		}
+
+
+		#region	Client events
+
+		/// <summary>
+		/// Delegate for the ServerChanged event
+		/// </summary>
+		public delegate void				ServerChangedDelegate( Client client );
+
+		/// <summary>
+		/// Event, invoked when the server in this client has been set
+		/// </summary>
+		public event ServerChangedDelegate	ServerChanged;
+
+		#endregion
+
+		#region	Client setup
+
 		/// <summary>
 		/// Client constructor
 		/// </summary>
 		public Client( System.Windows.Forms.Control control )
 		{
-			m_Control = control;
+			m_Control	= control;
+			m_Camera	= new RbEngine.Cameras.SphereCamera( );
 
-			//	TODO: bodge to listen for control load event
-			( ( System.Windows.Forms.UserControl )control ).Load += new EventHandler( Client_Load );
-
-			m_Camera = new RbEngine.Cameras.SphereCamera( );
-
-			//	TODO: Overkill? Wrap up all the passes into a nice Client3Pass object, that sets up the object for 3d rendering, with a bunch of options
-			RenderTechnique defaultTechnique= new RenderTechnique( );
-			defaultTechnique.Add
-			(
-				new RenderPass
-				(
-					new ClearTargetDepth( )
-					, new ClearTargetColour( System.Drawing.Color.LightSlateGray )
-					, m_Camera
-				/*
-					, new OverrideTechnique
-					(
-						new RenderTechnique
-						(
-							"testOverrideTechnique",
-							new RenderPass
-							(
-								RenderFactory.Inst.NewRenderState( ).SetColour( System.Drawing.Color.Brown )
-							)
-						)
-					)
-					*/
-				)
-			);
-
-			m_SceneRenderEffect		= new RenderEffect( defaultTechnique );
-			m_SceneRenderTechnique	= new SelectedTechnique( defaultTechnique );
+			ServerChanged += new ServerChangedDelegate( OnServerChanged );
 		}
+
+		#endregion
+
+		#region	Client properties
 
 		/// <summary>
 		/// The control this client is associated with
@@ -175,6 +167,10 @@ namespace RbEngine.Network
 					m_Server.RemoveClient( this );
 				}
 				m_Server = value;
+				if ( ServerChanged != null )
+				{
+					ServerChanged( this );
+				}
 				if ( m_Server != null )
 				{
 					m_Server.AddClient( this );
@@ -213,6 +209,10 @@ namespace RbEngine.Network
 			}
 		}
 
+		#endregion
+
+		#region	Client rendering
+
 		/// <summary>
 		/// Renders the scene
 		/// </summary>
@@ -231,13 +231,17 @@ namespace RbEngine.Network
 			//	If there's a scene on the server, then render it
 			if ( Scene != null )
 			{
-				if ( m_SceneRenderTechnique == null )
+				if ( m_ShadowRenderTechnique != null )
 				{
-					Scene.Rendering.Render( );
+					m_ShadowRenderTechnique.Apply( );
+				}
+				else if ( m_SceneRenderTechnique != null )
+				{
+					m_SceneRenderTechnique.Apply( );
 				}
 				else
 				{
-					m_SceneRenderTechnique.Apply( new RenderTechnique.RenderDelegate( Scene.Rendering.Render ) );
+					Scene.Rendering.Render( );
 				}
 			}
 
@@ -271,32 +275,20 @@ namespace RbEngine.Network
 			m_LastRenderTime = curTime;
 		}
 
+		#endregion
+
 		private int								m_FpsIndex = 0;
 		private float[]							m_Fps = new float[ 32 ];
 		private RenderFont						m_Font;
-
-		//
-		//	Shadow render technique
-		//
-		//		- Lighting manager
-		//			- Determine shadow lights, active lights
-		//		- Run through shadow lights
-		//			- Setup render target for light
-		//			- Apply transform for light
-		//			- Render scene (forced shadow technique)
-		//		- Apply camera transform
-		//		- Render scene (shadow technique)
-		//
-
 		private System.Windows.Forms.Control	m_Control;
 		private ServerBase						m_Server;
-		private RenderEffect					m_SceneRenderEffect;
 		private SelectedTechnique				m_SceneRenderTechnique;
+		private SelectedTechnique				m_ShadowRenderTechnique;
 		private RbEngine.Cameras.SphereCamera	m_Camera;
 		private Object							m_CameraController;
 		private long							m_LastRenderTime = TinyTime.CurrentTime;
 
-		static RenderTechnique MakeTestShadows( )
+		RenderTechnique MakeShadowRenderTechnique( )
 		{
 			ShadowBufferRenderTechnique technique = new ShadowBufferRenderTechnique( );
 
@@ -305,15 +297,36 @@ namespace RbEngine.Network
 			return technique;
 		}
 
-		private void Client_Load(object sender, EventArgs e)
+		RenderTechnique MakeSceneRenderTechnique( )
 		{
-			try
+			//	TODO: Overkill? Wrap up all the passes into a nice Client3Pass object, that sets up the object for 3d rendering, with a bunch of options
+			RenderTechnique technique= new RenderTechnique( );
+			technique.Add
+			(
+				new RenderPass
+				(
+					new ClearTargetDepth( )
+					, new ClearTargetColour( System.Drawing.Color.LightSlateGray )
+					, m_Camera
+				)
+			);
+
+			return technique;
+		}
+
+
+		private void OnServerChanged( Client client )
+		{
+			//	Set up scene rendering techniques
+			if ( Scene != null )
 			{
-			//	m_SceneRenderTechnique.Technique = MakeTestShadows( );
-			}
-			catch ( Exception exception )
-			{
-				Output.WriteLineCall( Output.RenderingError, ExceptionUtils.ToString( exception ) );
+				m_SceneRenderTechnique					= new SelectedTechnique( );
+				m_SceneRenderTechnique.Technique		= MakeSceneRenderTechnique( );
+				m_SceneRenderTechnique.RenderCallback	= new RenderTechnique.RenderDelegate( Scene.Rendering.Render );
+
+				m_ShadowRenderTechnique					= new SelectedTechnique( );
+				m_ShadowRenderTechnique.Technique		= MakeShadowRenderTechnique( );
+				m_ShadowRenderTechnique.RenderCallback	= new RenderTechnique.RenderDelegate( m_SceneRenderTechnique.Apply );
 			}
 		}
 	}

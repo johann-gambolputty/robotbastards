@@ -66,8 +66,7 @@ namespace RbEngine.Rendering
 					RenderTarget target = RenderFactory.Inst.NewRenderTarget( );
 
 					//	TODO: Remove hardcoded render target format
-					//	target.Create( 512, 512, System.Drawing.Imaging.PixelFormat.Undefined, 24, 0 );
-					target.Create( 512, 512, System.Drawing.Imaging.PixelFormat.Format32bppArgb, 24, 0 );
+					target.Create( 512, 512, TextureFormat.Undefined, 24, 0, true );
 
 					m_RenderTargets[ lightIndex ] = target;
 				}
@@ -103,11 +102,20 @@ namespace RbEngine.Rendering
 		/// </summary>
 		public override void Apply( RenderDelegate render )
 		{
+			//	No lights? Then just render...
+			if ( m_Lights.Count == 0 )
+			{
+				render( );
+				return;
+			}
+
 			Begin( );
 
 			Renderer.Inst.PushTransform( Transform.LocalToWorld );
 			Renderer.Inst.PushTransform( Transform.WorldToView );
 			Renderer.Inst.PushTransform( Transform.ViewToScreen );
+
+			Renderer.Inst.SetTransform( Transform.LocalToWorld, Matrix44.Identity );
 
 			for ( int lightIndex = 0; lightIndex < m_Lights.Count; ++lightIndex )
 			{
@@ -123,6 +131,9 @@ namespace RbEngine.Rendering
 
 				Renderer.Inst.SetLookAtTransform( curLight.Position + curLight.Direction, curLight.Position, Vector3.YAxis * -1.0f );	//	NOTE: negative y axis used
 				Renderer.Inst.SetPerspectiveProjectionTransform( curLight.ArcDegrees, aspectRatio, 5.0f, 100.0f );	//	TODO: Arbitrary z range
+
+				//	Set the current MVP matrix as a texture matrix. This is for after, when the scene is rendered properly
+				Renderer.Inst.SetTransform( Renderer.TextureTransform( lightIndex ), Renderer.Inst.GetTransform( Transform.ViewToScreen ) * Renderer.Inst.GetTransform( Transform.WorldToView ) );
 
 				//	Set up the render target for the light
 				curTarget.Begin( );
@@ -151,12 +162,12 @@ namespace RbEngine.Rendering
 				//	Save the depth buffer
 				if ( ms_DumpLights )
 				{
-					curTarget.SaveDepthBuffer( string.Format( "LightView{0}.png", lightIndex ) );
+					curTarget.DepthTexture.Save( string.Format( "LightView{0}.png", lightIndex ) );
 					ms_DumpLights = false;
 				}
+
 				//	Stop using the current render target
 				curTarget.End( );
-
 			}
 
 			Renderer.Inst.PopTransform( Transform.LocalToWorld );
@@ -164,15 +175,27 @@ namespace RbEngine.Rendering
 			Renderer.Inst.PopTransform( Transform.ViewToScreen );
 
 			End( );
-			
+
+			//	Apply all light textures
+			for ( int lightIndex = 0; lightIndex < m_Lights.Count; ++lightIndex )
+			{
+				Renderer.Inst.BindTexture( lightIndex, m_RenderTargets[ lightIndex ].DepthTexture );
+			}
+
 			//	Render the scene normally
 			render( );
+
+			//	Stops applying all light textures
+			for ( int lightIndex = 0; lightIndex < m_Lights.Count; ++lightIndex )
+			{
+				Renderer.Inst.UnbindTexture( lightIndex );
+			}
 		}
 
-		private static bool		ms_DumpLights	= false;
+		private static bool		ms_DumpLights	= true;
 
+		private ShaderParameter	m_ShadowMapSampler;
 		private ArrayList		m_Lights		= new ArrayList( );
 		private RenderTarget[]	m_RenderTargets	= new RenderTarget[ MaxLights ];
-	//	private Camera[]		m_LightCameras	= new Cameras[ MaxLights ];
 	}
 }

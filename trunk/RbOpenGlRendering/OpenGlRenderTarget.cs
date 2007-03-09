@@ -27,7 +27,8 @@ namespace RbOpenGlRendering
 		/// <param name="colourFormat">Format of the render target colour buffer. If this is Undefined, then no colour buffer is created</param>
 		/// <param name="depthBits">Number of bits per element in the depth buffer (0 for no depth buffer)</param>
 		/// <param name="stencilBits">Number of bits per element in the stencil buffer (0 for no stencil buffer)</param>
-		public override void	Create( int width, int height, System.Drawing.Imaging.PixelFormat colourFormat, int depthBits, int stencilBits )
+		/// <param name="depthBufferAsTexture">If true, then depth buffer storage is created in a texture</param>
+		public override void	Create( int width, int height, TextureFormat colourFormat, int depthBits, int stencilBits, bool depthBufferAsTexture )
 		{
 			//	Requires the frame buffer extension
 			if ( ms_CheckForExtension )
@@ -46,19 +47,40 @@ namespace RbOpenGlRendering
 			Gl.glBindFramebufferEXT( Gl.GL_FRAMEBUFFER_EXT, m_FboHandle );
 			Output.Assert( Gl.glIsFramebufferEXT( m_FboHandle ) != 0, Output.ResourceError, "Expected FBO handle to be valid" );
 
-
 			//	Generate the depth render buffer object
 			if ( depthBits != 0 )
 			{
-				Gl.glGenFramebuffersEXT( 1, out m_FboDepthHandle );
-				Gl.glBindRenderbufferEXT( Gl.GL_RENDERBUFFER_EXT, m_FboDepthHandle );
-				Gl.glRenderbufferStorageEXT( Gl.GL_RENDERBUFFER_EXT, Gl.GL_DEPTH_COMPONENT, width, height );
-				Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_DEPTH_ATTACHMENT_EXT, Gl.GL_RENDERBUFFER_EXT, m_FboDepthHandle );
+				if ( depthBufferAsTexture )
+				{
+					//	TODO: Add check for extension
+					OpenGlTexture2d texture = ( OpenGlTexture2d )RenderFactory.Inst.NewTexture2d( );
+
+					//	TODO: Determine depth format
+					texture.Create( width, height, TextureFormat.Depth24 );
+
+					//	Add texture parameters (barfs otherwise - incomplete attachements)
+					Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_CLAMP_TO_EDGE );
+					Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_CLAMP_TO_EDGE );
+					Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR );
+					Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR );
+
+					Gl.glFramebufferTexture2DEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_DEPTH_ATTACHMENT_EXT, Gl.GL_TEXTURE_2D, texture.TextureHandle, 0 );
+
+					m_DepthTexture = texture;
+				}
+				else
+				{
+
+					Gl.glGenFramebuffersEXT( 1, out m_FboDepthHandle );
+					Gl.glBindRenderbufferEXT( Gl.GL_RENDERBUFFER_EXT, m_FboDepthHandle );
+					Gl.glRenderbufferStorageEXT( Gl.GL_RENDERBUFFER_EXT, Gl.GL_DEPTH_COMPONENT, width, height );
+					Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_DEPTH_ATTACHMENT_EXT, Gl.GL_RENDERBUFFER_EXT, m_FboDepthHandle );
+				}
 				OpenGlRenderer.CheckErrors( );
 			}
 
 			//	Generate the texture
-			if ( colourFormat != System.Drawing.Imaging.PixelFormat.Undefined )
+			if ( colourFormat != TextureFormat.Undefined )
 			{
 				//	Create a texture
 				OpenGlTexture2d texture = ( OpenGlTexture2d )RenderFactory.Inst.NewTexture2d( );
@@ -69,12 +91,18 @@ namespace RbOpenGlRendering
 				Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_CLAMP_TO_EDGE );
 				Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR );
 				Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR );
-				
+
 				//	Bind the texture to the frame buffer (creating it has already bound the texture)
 				Gl.glFramebufferTexture2DEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_COLOR_ATTACHMENT0_EXT, Gl.GL_TEXTURE_2D, texture.TextureHandle, 0 );
 				OpenGlRenderer.CheckErrors( );
 
 				m_Texture = texture;
+			}
+			else
+			{
+				// No color buffer to draw to or read from
+				Gl.glDrawBuffer( Gl.GL_NONE );
+				Gl.glReadBuffer( Gl.GL_NONE );
 			}
 			
 
@@ -98,6 +126,7 @@ namespace RbOpenGlRendering
 					case Gl.GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT				:	problem = "GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT";				break;
 					case Gl.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT	:	problem = "GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT";	break;
 					case Gl.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT			:	problem = "GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT";			break;
+					case Gl.GL_FRAMEBUFFER_UNSUPPORTED_EXT						:	problem = "GL_FRAMEBUFFER_UNSUPPORTED_EXT";						break;
 				}
 
 				throw new ApplicationException( string.Format( "Failed to create render target ({0}x{1} at {2}, {3} depth bits, {4} stencil bits). GL status = {5} ({6})", width, height, colourFormat, depthBits, stencilBits, status, problem ) );

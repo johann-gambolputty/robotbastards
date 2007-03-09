@@ -5,6 +5,7 @@
 	<modelSet name="effects">
 		<resource path="perPixelUntextured.cgfx" name="perPixelUntextured"/>
 		<resource path="perPixelTextured.cgfx" name="perPixelTextured"/>
+		<resource path="perPixelUntexturedShadowed.cgfx" name="perPixelUntexturedShadowed"/>
 	</modelSet>
 
 	<modelSet name="models">
@@ -79,7 +80,7 @@
 
 				<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics" alwaysAddAsChild="true">
 
-					<reference modelPath="effects/perPixelUntextured" property="Effect"/>
+					<reference modelPath="effects/perPixelUntexturedShadowed" property="Effect"/>
 					<string value="WireframeTechnique" property="SelectedTechniqueName"/>
 					<resource path="simpleEnvironment.dae" property="RenderedObject"/>
 

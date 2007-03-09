@@ -48,7 +48,7 @@ namespace RbOpenGlRendering.RbCg
 		#region	Effect application
 
 		//	NOTE: These functions were incorrectly imported into Tao (declared matrix parameter as "out float")
-		
+
 		[ DllImport( "cg.dll", CallingConvention = CallingConvention.Cdecl ), SuppressUnmanagedCodeSecurity ]
 		public static extern void cgSetMatrixParameterfc( IntPtr param, float[] matrix );
 
@@ -188,6 +188,12 @@ namespace RbOpenGlRendering.RbCg
 
 						Cg.cgSetParameter1i( Cg.cgGetNamedStructParameter( param, "m_NumLights" ), numSpotLights );
 
+						break;
+					}
+
+					case ShaderParameterBinding.Texture0 :
+					{
+						CgShaderParameter.BindTexture( m_Context, param, Renderer.Inst.GetTexture( 0 ) );
 						break;
 					}
 

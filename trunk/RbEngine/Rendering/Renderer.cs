@@ -30,6 +30,46 @@ namespace RbEngine.Rendering
 		ViewToScreen,
 
 		/// <summary>
+		/// Texture unit 0 transform
+		/// </summary>
+		Texture0,
+
+		/// <summary>
+		/// Texture unit 1 transform
+		/// </summary>
+		Texture1,
+
+		/// <summary>
+		/// Texture unit 2 transform
+		/// </summary>
+		Texture2,
+
+		/// <summary>
+		/// Texture unit 3 transform
+		/// </summary>
+		Texture3,
+
+		/// <summary>
+		/// Texture unit 4 transform
+		/// </summary>
+		Texture4,
+
+		/// <summary>
+		/// Texture unit 5 transform
+		/// </summary>
+		Texture5,
+
+		/// <summary>
+		/// Texture unit 6 transform
+		/// </summary>
+		Texture6,
+
+		/// <summary>
+		/// Texture unit 7 transform
+		/// </summary>
+		Texture7,
+
+		/// <summary>
 		/// Total number of transforms
 		/// </summary>
 		Count
@@ -40,7 +80,6 @@ namespace RbEngine.Rendering
 	/// </summary>
 	public abstract class Renderer
 	{
-
 		#region	Construction and singleton access
 
 		/// <summary>
@@ -219,6 +258,15 @@ namespace RbEngine.Rendering
 		}
 
 		/// <summary>
+		/// Gets an indexed texture transform
+		/// </summary>
+		public static Transform			TextureTransform( int textureUnit )
+		{
+			Transform result = ( Transform )( ( int )Transform.Texture0 + textureUnit );
+			return result;
+		}
+
+		/// <summary>
 		/// Sets an identity matrix in the projection and model view transforms
 		/// </summary>
 		public abstract void			Set2d( );
@@ -288,6 +336,39 @@ namespace RbEngine.Rendering
 		public abstract int				ViewportHeight
 		{
 			get;
+		}
+
+		#endregion
+
+		#region	Textures
+
+		/// <summary>
+		/// The maximum number of texture stages
+		/// </summary>
+		public const int			MaxTextures = 8;
+
+		/// <summary>
+		/// Binds a texture to the indexed texture stage
+		/// </summary>
+		public virtual void			BindTexture( int index, Texture2d texture )
+		{
+			m_Textures[ index ] = texture;
+		}
+
+		/// <summary>
+		/// Unbinds a texture from the indexed texture stage
+		/// </summary>
+		public virtual void			UnbindTexture( int index )
+		{
+			m_Textures[ index ] = null;
+		}
+
+		/// <summary>
+		/// Gets a 2D texture, indexed by stage
+		/// </summary>
+		public Texture2d			GetTexture( int index )
+		{
+			return m_Textures[ index ];
 		}
 
 		#endregion
@@ -382,6 +463,7 @@ namespace RbEngine.Rendering
 		private Cameras.CameraBase	m_Camera;
 		private Light[]				m_Lights = new Light[ MaxActiveLights ];
 		private int					m_NumLights;
+		private Texture2d[]			m_Textures = new Texture2d[ MaxTextures ];
 
 		#endregion
 
