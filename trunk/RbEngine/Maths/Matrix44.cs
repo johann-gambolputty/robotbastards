@@ -257,12 +257,12 @@ namespace RbEngine.Maths
 		{
 			for ( int index = 0; index < 16; ++index )
 			{
-				if ( System.Math.Abs( this[ index ] - mat[ index ] ) < tol )
+				if ( System.Math.Abs( this[ index ] - mat[ index ] ) > tol )
 				{
 					return false;
 				}
 			}
-			return false;
+			return true;
 		}
 
 		#endregion
@@ -439,24 +439,31 @@ namespace RbEngine.Maths
 		}
 
 		/// <summary>
-		/// Creates a new Matrix44 and stores the transpose of this matrix in it
+		/// In-place transposition of this matrix
 		/// </summary>
 		/// <remarks>
 		/// If this matrix is orthogonal, then Tranpose() returns the inverse of this matrix (i.e. Tranpose(A).A == Identity)
 		/// </remarks>
-		public Matrix44 Transpose( )
+		public void Transpose( )
 		{
-			Matrix44 result = new Matrix44( );
+			//	TODO: LAZY
+			Matrix44 result = new Matrix44( this );
+			StoreTranspose( result );
+		}
 
+		/// <summary>
+		/// Stores the transpose of mat in this matrix
+		/// </summary>
+		/// <param name="mat"></param>
+		public void StoreTranspose( Matrix44 mat )
+		{
 			for ( int row = 0; row < 4; ++row )
 			{
 				for ( int col = 0; col < 4; ++col )
 				{
-					result.Set( row, col, Get( col, row ) );
+					this[ row, col ] = mat[ col, row ];
 				}
 			}
-
-			return result;
 		}
 
 		/// <summary>

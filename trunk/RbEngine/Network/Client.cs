@@ -213,18 +213,6 @@ namespace RbEngine.Network
 			}
 		}
 
-		private long m_LastRenderTime = TinyTime.CurrentTime;
-		private RenderTechnique m_TestShadows;
-
-		static RenderTechnique MakeTestShadows( )
-		{
-			ShadowBufferRenderTechnique technique = new ShadowBufferRenderTechnique( );
-
-			technique.AddLight( new SpotLight( new Point3( 10, 30, 30 ), Point3.Origin ) );
-
-			return technique;
-		}
-
 		/// <summary>
 		/// Renders the scene
 		/// </summary>
@@ -258,10 +246,6 @@ namespace RbEngine.Network
 				( ( Rendering.IRender )m_CameraController ).Render( );
 			}
 
-			if ( m_TestShadows != null )
-			{
-				m_TestShadows.Apply( new RenderTechnique.RenderDelegate( Scene.Rendering.Render ) );
-			}
 			ShowFps( );
 		}
 
@@ -310,12 +294,22 @@ namespace RbEngine.Network
 		private SelectedTechnique				m_SceneRenderTechnique;
 		private RbEngine.Cameras.SphereCamera	m_Camera;
 		private Object							m_CameraController;
+		private long							m_LastRenderTime = TinyTime.CurrentTime;
+
+		static RenderTechnique MakeTestShadows( )
+		{
+			ShadowBufferRenderTechnique technique = new ShadowBufferRenderTechnique( );
+
+			technique.AddLight( new SpotLight( new Point3( 10, 30, 30 ), Point3.Origin ) );
+
+			return technique;
+		}
 
 		private void Client_Load(object sender, EventArgs e)
 		{
 			try
 			{
-				m_TestShadows = MakeTestShadows( );
+			//	m_SceneRenderTechnique.Technique = MakeTestShadows( );
 			}
 			catch ( Exception exception )
 			{

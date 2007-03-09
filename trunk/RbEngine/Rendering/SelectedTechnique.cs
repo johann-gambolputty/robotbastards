@@ -83,10 +83,17 @@ namespace RbEngine.Rendering
 			}
 			set
 			{
-				System.Diagnostics.Trace.Assert( m_Effect != null, String.Format( "Effect must be set before technique \"{0}\" is selected", value.Name ) );
-				System.Diagnostics.Trace.Assert( m_Effect.GetTechniqueIndex( value ) != -1, String.Format( "Technique \"{0}\" did not exist in effect", value.Name ) );
-
+			//	System.Diagnostics.Trace.Assert( m_Effect != null, String.Format( "Effect must be set before technique \"{0}\" is selected", value.Name ) );
+			//	System.Diagnostics.Trace.Assert( m_Effect.GetTechniqueIndex( value ) != -1, String.Format( "Technique \"{0}\" did not exist in effect", value.Name ) );
 				m_Technique = value;
+				if ( m_Technique != null )
+				{
+					m_Effect = m_Technique.Effect;
+				}
+				else
+				{
+					m_Effect = null;
+				}
 			}
 		}
 
