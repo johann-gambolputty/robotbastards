@@ -86,14 +86,10 @@ namespace RbOpenGlRendering.RbCg
 
 					case ShaderParameterBinding.InverseTransposeModelMatrix :
 					{
-						Matrix44	modelMatrix		= Renderer.Inst.GetTransform( Transform.LocalToWorld );
-						Matrix44 itModelMatrix	= new Matrix44( modelMatrix );
-						//	itModelMatrix.Translation = Point3.Origin;
-						itModelMatrix.Invert( );
-
-						System.Diagnostics.Debug.Assert( Matrix44.Identity.IsCloseTo( itModelMatrix * modelMatrix, 0.1f ) );
+						Matrix44 itModelMatrix	= Renderer.Inst.GetTransform( Transform.LocalToWorld );
+						itModelMatrix.Translation = Point3.Origin;
 						itModelMatrix.Transpose( );
-					//	itModelMatrix.StoreInverse( Renderer.Inst.GetTransform( Transform.LocalToWorld ) );
+						itModelMatrix.Invert( );
 
 						cgSetMatrixParameterfc( param, itModelMatrix.Elements );
 						break;
@@ -116,6 +112,7 @@ namespace RbOpenGlRendering.RbCg
 						CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_MATRIX, CgGl.CG_GL_MATRIX_IDENTITY );
 						break;
 					}
+
 					case ShaderParameterBinding.InverseModelViewMatrix :
 					{
 						CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_MATRIX, CgGl.CG_GL_MATRIX_INVERSE );

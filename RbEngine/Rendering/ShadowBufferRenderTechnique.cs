@@ -164,6 +164,9 @@ namespace RbEngine.Rendering
 			Renderer.Inst.PopTransform( Transform.ViewToScreen );
 
 			End( );
+			
+			//	Render the scene normally
+			render( );
 		}
 
 		private static bool		ms_DumpLights	= false;
