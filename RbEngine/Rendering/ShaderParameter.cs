@@ -116,6 +116,12 @@ namespace RbEngine.Rendering
 		/// </remarks>
 		SpotLights,
 
+
+		/// <summary>
+		/// Binds the parameter to the first texture in the renderer. Parameter must be a texture sampler
+		/// </summary>
+		Texture0,
+
 		/// <summary>
 		/// Total number of bindings
 		/// </summary>
@@ -178,6 +184,7 @@ namespace RbEngine.Rendering
 			names[ ( int )ShaderParameterBinding.EyeZAxis ] 						= "EyeZAxis";
 			names[ ( int )ShaderParameterBinding.PointLights ]						= "PointLights";
 			names[ ( int )ShaderParameterBinding.SpotLights ]						= "SpotLights";
+			names[ ( int )ShaderParameterBinding.Texture0 ]							= "Texture0";
 
 			//	Make sure that all names are present and correct
 			for ( int nameIndex = 0; nameIndex < ( int )ShaderParameterBinding.NumBindings; ++nameIndex )

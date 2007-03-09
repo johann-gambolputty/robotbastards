@@ -1,6 +1,7 @@
 using System;
 using RbEngine.Rendering;
 using Tao.Cg;
+using Tao.OpenGl;
 
 namespace RbOpenGlRendering.RbCg
 {
@@ -20,6 +21,20 @@ namespace RbOpenGlRendering.RbCg
 			m_Parameter = parameterHandle;
 		}
 
+
+		/// <summary>
+		/// Binds a texture to a sampler parameter (shared with CgRenderEffect)
+		/// </summary>
+		public static void		BindTexture( IntPtr context, IntPtr parameter, Texture2d tex )
+		{
+			int texHandle = ( ( OpenGlTexture2d )tex ).TextureHandle;
+			Gl.glBindTexture( Gl.GL_TEXTURE_2D,texHandle  );
+			CgGl.cgGLSetTextureParameter( parameter, texHandle );
+			Cg.cgSetSamplerState( parameter );
+			Tao.Cg.CgGl.cgGLSetManageTextureParameters( context, true );
+			Gl.glBindTexture( Gl.GL_TEXTURE_2D, 0 );
+		}
+
 		/// <summary>
 		/// Sets the shader parameter to a texture
 		/// </summary>
@@ -29,11 +44,7 @@ namespace RbOpenGlRendering.RbCg
 		/// </remarks>
 		public override void	Set( Texture2d val )
 		{
-			val.Begin( );
-			CgGl.cgGLSetTextureParameter( m_Parameter, ( ( OpenGlTexture2d )val ).TextureHandle );
-			Cg.cgSetSamplerState( m_Parameter );
-			Tao.Cg.CgGl.cgGLSetManageTextureParameters( m_Context, true );
-			val.End( );
+			BindTexture( m_Context, m_Parameter, val );
 		}
 
 		/// <summary>

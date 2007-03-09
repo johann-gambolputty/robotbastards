@@ -353,6 +353,31 @@ namespace RbOpenGlRendering
 		}
 
 		/// <summary>
+		/// Sets up an OpenGL matrix mode that has a direct correspondence with a Transform value
+		/// </summary>
+		/// <param name="type"></param>
+		private void SetSupportedMatrixMode( Transform type )
+		{
+			switch ( type )
+			{
+				case Transform.ViewToScreen :
+				{
+					Gl.glMatrixMode( Gl.GL_PROJECTION );
+					break;
+				}
+				case Transform.Texture0		:
+				{
+					Gl.glMatrixMode( Gl.GL_TEXTURE );
+					break;
+				}
+				//	TODO: HMMmmmm I'm not really sure how to handle texture transforms, because that implies setting the active texture stage to 1-7, 
+				//	with no nice way of resetting it after... I suppose RB could use the transform state model that OpenGL uses, because that would
+				//	map easily to DirectX (but the reverse isn't easy)
+				default : throw new ApplicationException( string.Format( "\"{0}\" is not supported in Translate()" ) );
+			}
+		}
+
+		/// <summary>
 		/// Translates the current transform in the specified transform stack
 		/// </summary>
 		public override void	Translate( Transform type, float x, float y, float z )
@@ -371,9 +396,9 @@ namespace RbOpenGlRendering
 					UpdateModelView( );
 					break;
 				}
-				case Transform.ViewToScreen :
+				default :
 				{
-					Gl.glMatrixMode( Gl.GL_PROJECTION );
+					SetSupportedMatrixMode( type );
 					Gl.glTranslatef( x, y, z );
 					break;
 				}
@@ -405,9 +430,9 @@ namespace RbOpenGlRendering
 					break;
 				}
 
-				case Transform.ViewToScreen :
+				default :
 				{
-					Gl.glMatrixMode( Gl.GL_PROJECTION );
+					SetSupportedMatrixMode( type );
 					Gl.glPushMatrix( );
 					Gl.glMultMatrixf( GetGlMatrix( matrix ) );
 					break;
@@ -440,9 +465,9 @@ namespace RbOpenGlRendering
 					break;
 				}
 
-				case Transform.ViewToScreen :
+				default :
 				{
-					Gl.glMatrixMode( Gl.GL_PROJECTION );
+					SetSupportedMatrixMode( type );
 					Gl.glPushMatrix( );
 					break;
 				}
@@ -496,9 +521,9 @@ namespace RbOpenGlRendering
 					break;
 				}
 
-				case Transform.ViewToScreen :
+				default :
 				{
-					Gl.glMatrixMode( Gl.GL_PROJECTION );
+					SetSupportedMatrixMode( type );
 					Gl.glLoadMatrixf( GetGlMatrix( matrix ) );
 					break;
 				}
@@ -526,9 +551,9 @@ namespace RbOpenGlRendering
 					break;
 				}
 
-				case Transform.ViewToScreen :
+				default :
 				{
-					Gl.glMatrixMode( Gl.GL_PROJECTION );
+					SetSupportedMatrixMode( type );
 					Gl.glPopMatrix( );
 					break;
 				}
@@ -568,6 +593,30 @@ namespace RbOpenGlRendering
 			{
 				return m_Height;
 			}
+		}
+
+		#endregion
+
+		#region	Textures
+
+		/// <summary>
+		/// Applies a texture to the indexed texture stage
+		/// </summary>
+		public override void			BindTexture( int index, Texture2d texture )
+		{
+			Output.DebugAssert( index == 0, Output.RenderingError, "Multitexture unsupported, sorry" );
+
+			Gl.glBindTexture( Gl.GL_TEXTURE_2D, ( ( OpenGlTexture2d )texture ).TextureHandle );
+			base.BindTexture( index, texture );
+		}
+
+		/// <summary>
+		/// Unbinds a texture from the indexed texture stage
+		/// </summary>
+		public override void			UnbindTexture( int index )
+		{
+			Gl.glBindTexture( Gl.GL_TEXTURE_2D, 0 );
+			base.UnbindTexture( index );
 		}
 
 		#endregion
@@ -638,7 +687,7 @@ namespace RbOpenGlRendering
 		}
 
 		#endregion
-		
+
 		#region	Frame dumps
 
 		/// <summary>
@@ -737,7 +786,7 @@ namespace RbOpenGlRendering
 		#endregion
 
 		#region	ModelView transform
-		
+
 		/// <summary>
 		/// Updates the local to view matrix
 		/// </summary>

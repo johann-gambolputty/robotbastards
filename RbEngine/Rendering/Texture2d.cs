@@ -6,11 +6,68 @@ using System.Resources;
 namespace RbEngine.Rendering
 {
 	/// <summary>
+	/// Texture formats
+	/// </summary>
+	public enum TextureFormat
+	{
+		Undefined,
+
+		Depth16,
+		Depth24,
+		Depth32,
+
+		R8G8B8,
+		B8G8R8,
+
+		R8G8B8X8,
+		B8G8R8X8,
+
+		R8G8B8A8,
+		B8G8R8A8,
+
+		A8R8G8B8,
+		A8B8G8R8,
+	}
+
+	/// <summary>
 	/// 2D texture data
 	/// </summary>
+	/// <remarks>
+	/// To apply a texture, use Renderer.ApplyTexture(), or a TextureSampler2d object
+	/// </remarks>
 	/// <seealso>ApplyTexture2d</seealso>
-	public abstract class Texture2d : IAppliance
+	public abstract class Texture2d
 	{
+		#region	Texture Format
+
+		/// <summary>
+		/// Returns the size in bits of a given texture format
+		/// </summary>
+		public static int GetTextureFormatSize( TextureFormat format )
+		{
+			switch ( format )
+			{
+				case TextureFormat.Depth16	:	return 16;
+				case TextureFormat.Depth24	:	return 24;
+				case TextureFormat.Depth32	:	return 32;
+
+				case TextureFormat.R8G8B8	:	return 24;
+				case TextureFormat.B8G8R8	:	return 24;
+
+				case TextureFormat.R8G8B8X8	:	return 32;
+				case TextureFormat.B8G8R8X8	:	return 32;
+
+				case TextureFormat.R8G8B8A8	:	return 32;
+				case TextureFormat.B8G8R8A8	:	return 32;
+
+				case TextureFormat.A8R8G8B8	:	return 32;
+				case TextureFormat.A8B8G8R8	:	return 32;
+			}
+			return 0;
+		}
+
+		#endregion
+
 		#region	Construction and setup
 
 		/// <summary>
@@ -34,7 +91,7 @@ namespace RbEngine.Rendering
 		/// <param name="width">Width of the texture in pixels</param>
 		/// <param name="height">Height of the texture in pixels</param>
 		/// <param name="format">Format of the texture</param>
-		public abstract void Create( int width, int height, PixelFormat format );
+		public abstract void Create( int width, int height, TextureFormat format );
 
 		#endregion
 
@@ -65,7 +122,7 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Gets the format of the texture
 		/// </summary>
-		public PixelFormat	Format
+		public TextureFormat	Format
 		{
 			get
 			{
@@ -135,25 +192,12 @@ namespace RbEngine.Rendering
 
 		#endregion
 
-		#region IAppliance Members
-
-		/// <summary>
-		/// Starts applying this texture
-		/// </summary>
-		public abstract void Begin( );
-
-		/// <summary>
-		/// Stops applying this texture
-		/// </summary>
-		public abstract void End( );
-
-		#endregion
 
 		#region	Protected stuff
 
 		protected int			m_Width;
 		protected int			m_Height;
-		protected PixelFormat	m_Format;
+		protected TextureFormat	m_Format;
 
 		#endregion
 

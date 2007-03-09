@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using RbEngine;
 using RbEngine.Rendering;
 using Tao.OpenGl;
 
@@ -38,7 +39,7 @@ namespace RbOpenGlRendering
 		/// <param name="width">Width of the texture in pixels</param>
 		/// <param name="height">Height of the texture in pixels</param>
 		/// <param name="format">Format of the texture</param>
-		public override void Create( int width, int height, PixelFormat format )
+		public override void Create( int width, int height, TextureFormat format )
 		{
 			if ( m_TextureHandle != -1 )
 			{
@@ -46,7 +47,7 @@ namespace RbOpenGlRendering
 			}
 
 			//	Get the GL format of the bitmap, possibly converting it in the process
-			m_Format	= CheckPixelFormat( format, out m_InternalGlFormat, out m_GlFormat, out m_GlType );
+			m_Format	= CheckTextureFormat( format, out m_InternalGlFormat, out m_GlFormat, out m_GlType );
 			m_Width		= width;
 			m_Height	= height;
 
@@ -74,7 +75,7 @@ namespace RbOpenGlRendering
 			Create( bmpData.Width, bmpData.Height, glInternalFormat, glFormat, glType, bmpData.Scan0 );
 			bmp.UnlockBits( bmpData );
 
-			m_Format = bmp.PixelFormat;
+			m_Format = PixelFormatToTextureFormat( bmp.PixelFormat );
 		}
 
 		/// <summary>
@@ -101,12 +102,149 @@ namespace RbOpenGlRendering
 		}
 
 		/// <summary>
-		/// Checks if a pixel format is valid
+		/// Converts a PixelFormat value into a TextureFormat
+		/// </summary>
+		private TextureFormat	PixelFormatToTextureFormat( PixelFormat pixFormat )
+		{
+			switch ( pixFormat )
+			{
+				case PixelFormat.Format24bppRgb		:	return TextureFormat.R8G8B8;
+				case PixelFormat.Format32bppArgb	:	return TextureFormat.A8R8G8B8;
+				case PixelFormat.Format32bppRgb		:	return TextureFormat.R8G8B8X8;
+			}
+
+			Output.WriteLineCall( Output.RenderingWarning, "No mapping available between pixel format \"{0}\" and TextureFormat - defaulting to R8G8B8", pixFormat.ToString( ) );
+			return TextureFormat.R8G8B8;
+		}
+
+		/// <summary>
+		/// Converts a TextureFormat value into a PixelFormat value
+		/// </summary>
+		private PixelFormat	TextureFormatToPixelFormat( TextureFormat texFormat )
+		{
+			switch ( texFormat )
+			{
+				case TextureFormat.Depth16			:	break;	//	No mapping
+				case TextureFormat.Depth24			:	break;	//	No mapping
+				case TextureFormat.Depth32			:	break;	//	No mapping
+
+				case TextureFormat.R8G8B8			:	return PixelFormat.Format24bppRgb;
+				case TextureFormat.B8G8R8			:	break;	//	No mapping
+
+				case TextureFormat.R8G8B8X8			:	return PixelFormat.Format32bppRgb;
+				case TextureFormat.B8G8R8X8			:	break;	//	No mapping
+
+				case TextureFormat.R8G8B8A8			:	break;	//	No mapping
+				case TextureFormat.B8G8R8A8			:	break;	//	No mapping
+
+				case TextureFormat.A8R8G8B8			:	return PixelFormat.Format32bppArgb;
+				case TextureFormat.A8B8G8R8			:	break;	//	No mapping
+			}
+
+			return PixelFormat.Undefined;
+		}
+
+		/// <summary>
+		/// Checks if a texture format is valid
 		/// </summary>
 		/// <param name="format">Format to check</param>
 		/// <param name="glInternalFormat">Output GL internal texture format</param>
 		/// <param name="glFormat">Output GL texture format</param>
 		/// <param name="glType">OUtput GL texel type</param>
+		/// <returns>Returns either format, if it was directly supported by OpenGL, or a reasonable alternative</returns>
+		private TextureFormat CheckTextureFormat( TextureFormat format, out int glInternalFormat, out int glFormat, out int glType )
+		{
+			//	Handle direct mappings to GL texture image formats
+			switch ( format )
+			{
+				case TextureFormat.Depth16			:
+				{
+					glInternalFormat	= Gl.GL_DEPTH_COMPONENT16_ARB;
+					glFormat			= Gl.GL_DEPTH_COMPONENT;
+					glType				= Gl.GL_FLOAT;	//	TODO: Is this correct?
+					return format;
+				}
+				case TextureFormat.Depth24			:
+				{
+					glInternalFormat	= Gl.GL_DEPTH_COMPONENT24_ARB;
+					glFormat			= Gl.GL_DEPTH_COMPONENT;
+					glType				= Gl.GL_FLOAT;	//	TODO: Is this correct?
+					return format;
+				}
+				case TextureFormat.Depth32			:
+				{
+					glInternalFormat	= Gl.GL_DEPTH_COMPONENT32_ARB;
+					glFormat			= Gl.GL_DEPTH_COMPONENT;
+					glType				= Gl.GL_FLOAT;	//	TODO: Is this correct?
+					return format;
+				}
+				case TextureFormat.R8G8B8			:
+				{
+					glFormat			= Gl.GL_BGR_EXT;
+					glInternalFormat	= Gl.GL_RGB;
+					glType				= Gl.GL_UNSIGNED_BYTE;
+					return format;
+				}
+				case TextureFormat.B8G8R8			:
+				{
+					glFormat			= Gl.GL_RGB;
+					glInternalFormat	= Gl.GL_RGB;
+					glType				= Gl.GL_UNSIGNED_BYTE;
+					return format;
+				}
+				case TextureFormat.R8G8B8X8			:
+				{
+					//	TODO: Not right...
+					glFormat			= Gl.GL_BGR_EXT;
+					glInternalFormat	= Gl.GL_RGB;
+					glType				= Gl.GL_UNSIGNED_BYTE;
+					return format;
+				}
+				case TextureFormat.B8G8R8X8			:
+				{
+					//	TODO: Not right...
+					glFormat			= Gl.GL_RGB;
+					glInternalFormat	= Gl.GL_RGB;
+					glType				= Gl.GL_UNSIGNED_BYTE;
+					return format;
+				}
+				case TextureFormat.R8G8B8A8			:
+				{
+					glFormat			= Gl.GL_ABGR_EXT;
+					glInternalFormat	= Gl.GL_RGB;
+					glType				= Gl.GL_UNSIGNED_BYTE;
+					return format;
+				}
+				case TextureFormat.A8R8G8B8			:
+				{
+					glFormat			= Gl.GL_BGRA_EXT;
+					glInternalFormat	= Gl.GL_RGB;
+					glType				= Gl.GL_UNSIGNED_BYTE;
+					return format;
+				}
+				case TextureFormat.A8B8G8R8			:
+				{
+					glFormat			= Gl.GL_RGBA;
+					glInternalFormat	= Gl.GL_RGB;
+					glType				= Gl.GL_UNSIGNED_BYTE;
+					return format;
+				}
+			}
+
+			glFormat			= Gl.GL_BGR_EXT;
+			glInternalFormat	= Gl.GL_RGB;
+			glType				= Gl.GL_UNSIGNED_BYTE;
+
+			return TextureFormat.R8G8B8;
+		}
+
+		/// <summary>
+		/// Checks if a pixel format is valid
+		/// </summary>
+		/// <param name="format">Format to check</param>
+		/// <param name="glInternalFormat">Output GL internal texture format</param>
+		/// <param name="glFormat">Output GL texture format</param>
+		/// <param name="glType">Output GL texel type</param>
 		/// <returns>Returns either format, if it was directly supported by OpenGL, or a reasonable alternative</returns>
 		private PixelFormat CheckPixelFormat( PixelFormat format, out int glInternalFormat, out int glFormat, out int glType )
 		{
@@ -196,22 +334,56 @@ namespace RbOpenGlRendering
 			}
 
 			//	Bind the texture
-			Begin( );
+			Renderer.Inst.BindTexture( 0, this );
 
 			//	HACK: Makes lots of assumptions about format...
-			int bytesPerPixel = System.Drawing.Image.GetPixelFormatSize( Format ) / 8;
-			byte[] textureMemory = new byte[ Width * Height * bytesPerPixel ];
-
-			Gl.glGetTexImage( Gl.GL_TEXTURE_2D, 0, m_GlFormat, m_GlType, textureMemory );
 
 			System.Drawing.Bitmap bmp;
-			fixed ( byte* textureMemoryPtr = textureMemory )
+			if ( ( Format == TextureFormat.Depth16 ) || ( Format == TextureFormat.Depth24 ) || ( Format == TextureFormat.Depth32 ) )
 			{
-				bmp = new System.Drawing.Bitmap( Width, Height, Width * bytesPerPixel, Format, ( IntPtr )textureMemoryPtr );
+				//	Handle depth textures
+
+				//	Get texture memory
+				float[] textureMemory = new float[ Width * Height ];
+				Gl.glGetTexImage( Gl.GL_TEXTURE_2D, 0, m_GlFormat, m_GlType, textureMemory );
+				
+				//	Create image memory
+				byte[] imageMemory = new byte[ Width * Height * 3 ];
+				int imageIndex = 0;
+				for ( int texIndex = 0; texIndex < textureMemory.Length; ++texIndex )
+				{
+					byte grey = ( byte )( System.Math.Exp( textureMemory[ texIndex ] ) * 255.0f );
+					imageMemory[ imageIndex++ ] = grey;
+					imageMemory[ imageIndex++ ] = grey;
+					imageMemory[ imageIndex++ ] = grey;
+				}
+
+				//	Create a Bitmap object from the image memory
+				fixed ( byte* imageMemoryPtr = imageMemory )
+				{
+					bmp = new System.Drawing.Bitmap( Width, Height, Width * 3, PixelFormat.Format24bppRgb, ( IntPtr )imageMemoryPtr );
+				}
+			}
+			else
+			{
+				//	Handle colour textures
+
+				//	Get texture memory
+				int bytesPerPixel = GetTextureFormatSize( Format ) / 8;
+				byte[] textureMemory = new byte[ Width * Height * bytesPerPixel ];
+				Gl.glGetTexImage( Gl.GL_TEXTURE_2D, 0, m_GlFormat, m_GlType, textureMemory );
+
+				//	Create a Bitmap object from image memory
+				fixed ( byte* textureMemoryPtr = textureMemory )
+				{
+					//	TODO: Add per-case check of Format - in cases with no mapping (see TextureFormatToPixelFormat()), do a manual conversion
+					bmp = new System.Drawing.Bitmap( Width, Height, Width * bytesPerPixel, TextureFormatToPixelFormat( Format ), ( IntPtr )textureMemoryPtr );
+				}
 			}
 
 			//	Unbind the texture
-			End( );
+			Renderer.Inst.UnbindTexture( 0 );
+
 
 			//	Disable 2D texturing
 			if ( requires2DTexturesEnabled )
@@ -222,21 +394,6 @@ namespace RbOpenGlRendering
 			return bmp;
 		}
 
-
-		/// <summary>
-		/// Applies this texture
-		/// </summary>
-		public override void Begin( )
-		{
-			Gl.glBindTexture( Gl.GL_TEXTURE_2D, TextureHandle );
-		}
-
-		/// <summary>
-		/// Stops applying this texture
-		/// </summary>
-		public override void End( )
-		{
-		}
 
 		#region IDisposable Members
 
