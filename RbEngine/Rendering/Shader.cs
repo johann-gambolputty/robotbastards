@@ -17,21 +17,6 @@ namespace RbEngine.Rendering
 			return null;
 		}
 
-		/// <summary>
-		/// Binds a parameter from this shader to a render state
-		/// </summary>
-		/// <param name="parameter"> Parameter to bind </param>
-		/// <param name="binding"> Render state variable to bind to </param>
-		/// <remarks>
-		/// This need only be called once, to set up the binding. Every time that the shader to which this parameter belongs is applied (IAppliance::Apply())
-		/// the parameter is updated to match the value of bound variable.
-		/// If the parameter binding is set to ShaderParameterBinding.NoBinding, the parameter is unbound, and will no longer get updated.
-		/// </remarks>
-		public virtual void				BindParameter( ShaderParameter parameter, ShaderParameterBinding binding )
-		{
-		}
-
-
 		#region INamedObject Members
 
 		/// <summary>

@@ -10,42 +10,17 @@ namespace RbOpenGlRendering.RbCg
 	/// </summary>
 	public class CgShaderParameterBindings : ShaderParameterBindings
 	{
-		/// <summary>
-		/// Event, gets called when CreateBinding(), CreateArrayBinding() is called
-		/// </summary>
-		public event NewBindingDelegate	OnNewBinding;
-
-		/// <summary>
-		/// Adds a delegate to an event that gets called when CreateBinding(), CreateArrayBinding() is called. Also, called for all existing default and custom bindings
-		/// </summary>
-		public override void							AddNewBindingListener( NewBindingDelegate newBinding )
-		{
-			for ( int defaultIndex = 0; defaultIndex < ( int )ShaderParameterDefaultBinding.NumBindings; ++defaultIndex )
-			{
-				newBinding( m_DefaultBindings[ defaultIndex ] );
-			}
-
-			foreach ( ShaderParameterBinding customBinding in m_CustomBindings )
-			{
-				newBinding( customBinding );
-			}
-
-			OnNewBinding += newBinding;
-		}
 
 		/// <summary>
 		/// Creates a binding
 		/// </summary>
 		/// <returns></returns>
-		public override ShaderParameterCustomBinding	CreateBinding( string name, ValueType type )
+		public override ShaderParameterCustomBinding	CreateBinding( string name, ShaderParameterCustomBinding.ValueType type )
 		{
-			ShaderParameterBinding newBinding = new CgShaderParameterCustomBinding( type, 0 );
+			CgShaderParameterCustomBinding newBinding = new CgShaderParameterCustomBinding( name, type, 0 );
 			m_CustomBindings.Add( newBinding );
-			
-			if ( OnNewBinding != null )
-			{
-				OnNewBinding( newBinding );
-			}
+
+			AddNewBinding( newBinding );
 
 			return newBinding;
 		}
@@ -53,14 +28,10 @@ namespace RbOpenGlRendering.RbCg
 		/// <summary>
 		/// Creates a binding to an array
 		/// </summary>
-		public override ShaderParameterCustomBinding	CreateBinding( string name, ValueType type, int arraySize )
+		public override ShaderParameterCustomBinding	CreateBinding( string name, ShaderParameterCustomBinding.ValueType type, int arraySize )
 		{
-			ShaderParameterBinding newBinding = new CgShaderParameterCustomBinding( type, arraySize );
-			
-			if ( OnNewBinding != null )
-			{
-				OnNewBinding( newBinding );
-			}
+			CgShaderParameterCustomBinding newBinding = new CgShaderParameterCustomBinding( name, type, arraySize );
+			AddNewBinding( newBinding );
 
 			return newBinding;
 		}
@@ -78,6 +49,14 @@ namespace RbOpenGlRendering.RbCg
 		/// </summary>
 		public override ShaderParameterBinding			GetBinding( string name )
 		{
+			for ( int defaultIndex = 0; defaultIndex < ( int )ShaderParameterDefaultBinding.NumDefaults; ++defaultIndex )
+			{
+				if ( string.Compare( ( ( ShaderParameterDefaultBinding )defaultIndex ).ToString( ), name ) == 0 )
+				{
+					return m_DefaultBindings[ defaultIndex ];
+				}
+			}
+
 			foreach ( CgShaderParameterCustomBinding customBinding in m_CustomBindings )
 			{
 				if ( string.Compare( customBinding.Name, name, true ) == 0 )
@@ -88,9 +67,20 @@ namespace RbOpenGlRendering.RbCg
 
 			return null;
 		}
+
+		/// <summary>
+		/// Creates default bindings
+		/// </summary>
+		public CgShaderParameterBindings( )
+		{
+			for ( int defaultIndex = 0; defaultIndex < m_DefaultBindings.Length; ++defaultIndex )
+			{
+				m_DefaultBindings[ defaultIndex ] = new CgShaderParameterDefaultBinding( ( ShaderParameterDefaultBinding )defaultIndex );
+			}
+		}
 		
 		private ArrayList							m_CustomBindings	= new ArrayList( );
-		private CgShaderParameterDefaultBinding[]	m_DefaultBindings	= new CgShaderParameterDefaultBinding[ ( int )ShaderParameterDefaultBinding.NumBindings ];
+		private CgShaderParameterDefaultBinding[]	m_DefaultBindings	= new CgShaderParameterDefaultBinding[ ( int )ShaderParameterDefaultBinding.NumDefaults ];
 
 	}
 }

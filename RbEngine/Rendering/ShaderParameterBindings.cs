@@ -123,78 +123,18 @@ namespace RbEngine.Rendering
 	/// </summary>
 	public abstract class ShaderParameterBinding
 	{
-		/*
-		#region	Default parameter names
-
-		/// <summary>
-		/// Gets the name of a default binding parameter
-		/// </summary>
-		public static string	GetDefaultBindingParameterName( Default binding )
-		{
-			return ms_DefaultParameterNames[ ( int )binding ];
-		}
-
-		/// <summary>
-		/// Returns the parameter binding from a parameter name
-		/// </summary>
-		/// <param name="name">Parameter name</param>
-		/// <returns>The binding implied by the parameter name, or ShaderParameterBinding.NumBindings if no binding is implied</returns>
-		public static Default	GetDefaultBindingFromParameterName( string name )
-		{
-			for ( int nameIndex = 0; nameIndex < ( int )ShaderParameterBinding.NumBindings; ++nameIndex )
-			{
-				if ( string.Compare( ms_BindingParameterNames[ nameIndex ], name, true ) == 0 )
-				{
-					return ( ShaderParameterBinding )nameIndex;
-				}
-			}
-			return ShaderParameterBinding.NumBindings;
-		}
-
-		/// <summary>
-		/// Creates binding parameter names
-		/// </summary>
-		/// <returns>Array of parameter names that get bound to various render state values</returns>
-		private static string[]	CreateBindingParameterNames( )
-		{
-			string[] names = new string[ ( int )ShaderParameterBinding.NumBindings ];
-
-			names[ ( int )ShaderParameterBinding.NoBinding ]						= "";
-			names[ ( int )ShaderParameterBinding.ModelMatrix ]						= "ModelMatrix";
-			names[ ( int )ShaderParameterBinding.InverseTransposeModelMatrix ]		= "InverseTransposeModelMatrix";
-			names[ ( int )ShaderParameterBinding.ViewMatrix ]						= "ViewMatrix";
-			names[ ( int )ShaderParameterBinding.ProjectionMatrix ]					= "ProjectionMatrix";
-			names[ ( int )ShaderParameterBinding.TextureMatrix ]					= "TextureMatrix";
-			names[ ( int )ShaderParameterBinding.ModelViewMatrix ]					= "ModelViewMatrix";
-			names[ ( int )ShaderParameterBinding.InverseModelViewMatrix ]			= "InverseModelViewMatrix";
-			names[ ( int )ShaderParameterBinding.InverseTransposeModelViewMatrix ]	= "InverseTransposeModelViewMatrix";
-			names[ ( int )ShaderParameterBinding.ModelViewProjectionMatrix ]		= "ModelViewProjectionMatrix";
-			names[ ( int )ShaderParameterBinding.EyePosition ]						= "EyePosition";
-			names[ ( int )ShaderParameterBinding.EyeXAxis ] 						= "EyeXAxis";
-			names[ ( int )ShaderParameterBinding.EyeYAxis ] 						= "EyeYAxis";
-			names[ ( int )ShaderParameterBinding.EyeZAxis ] 						= "EyeZAxis";
-			names[ ( int )ShaderParameterBinding.PointLights ]						= "PointLights";
-			names[ ( int )ShaderParameterBinding.SpotLights ]						= "SpotLights";
-			names[ ( int )ShaderParameterBinding.ShadowMatrix ]						= "ShadowMatrix";
-			names[ ( int )ShaderParameterBinding.Texture0 ]							= "Texture0";
-
-			//	Make sure that all names are present and correct
-			for ( int nameIndex = 0; nameIndex < ( int )ShaderParameterBinding.NumBindings; ++nameIndex )
-			{
-				if ( names[ nameIndex ] == null )
-				{
-					throw new ApplicationException( string.Format( "Missing parameter name for shader binding \"{0}\"", ( ( ShaderParameterBinding )nameIndex ).ToString( ) ) );
-				}
-			}
-
-			return names;
-		}
-
-		private static string[]	ms_BindingParameterNames = CreateBindingParameterNames( );
-
-		#endregion
-		*/
 		#region	Shader parameter binding
+
+		/// <summary>
+		/// Name of the binding
+		/// </summary>
+		public string			Name
+		{
+			get
+			{
+				return m_Name;
+			}
+		}
 
 		/// <summary>
 		/// Adds a parameter to this binding
@@ -216,6 +156,15 @@ namespace RbEngine.Rendering
 
 		#endregion
 
+		/// <summary>
+		/// Sets the name of this binding
+		/// </summary>
+		protected				ShaderParameterBinding( string name )
+		{
+			m_Name = name;
+		}
+
+		private string			m_Name;
 	}
 
 	/// <summary>
@@ -301,6 +250,14 @@ namespace RbEngine.Rendering
 		public abstract void SetAt( int index, Vector3 val );
 
 		#endregion
+
+		/// <summary>
+		/// Sets the name of this binding
+		/// </summary>
+		protected ShaderParameterCustomBinding( string name ) :
+			base( name )
+		{
+		}
 	}
 
 	/// <summary>
@@ -324,22 +281,29 @@ namespace RbEngine.Rendering
 		/// </summary>
 		public delegate void							NewBindingDelegate( ShaderParameterBinding binding );
 
+		/// <summary>
+		/// Event, called whenever a new binding is added to the set
+		/// </summary>
+		public event NewBindingDelegate					OnNewBinding;
 
 		/// <summary>
-		/// Adds a delegate to an event that gets called when CreateBinding(), CreateArrayBinding() is called. Also, called for all existing default and custom bindings
+		/// Invokes the OnNewBinding event
 		/// </summary>
-		public abstract void							AddNewBindingListener( NewBindingDelegate newBinding );
+		protected void AddNewBinding( ShaderParameterBinding binding )
+		{
+			OnNewBinding( binding );
+		}
 
 		/// <summary>
 		/// Creates a binding
 		/// </summary>
 		/// <returns></returns>
-		public abstract ShaderParameterCustomBinding	CreateBinding( string name, ValueType type );
+		public abstract ShaderParameterCustomBinding	CreateBinding( string name, ShaderParameterCustomBinding.ValueType type );
 
 		/// <summary>
 		/// Creates a binding to an array
 		/// </summary>
-		public abstract ShaderParameterCustomBinding	CreateBinding( string name, ValueType type, int arraySize );
+		public abstract ShaderParameterCustomBinding	CreateBinding( string name, ShaderParameterCustomBinding.ValueType type, int arraySize );
 
 		/// <summary>
 		/// Gets a default binding
