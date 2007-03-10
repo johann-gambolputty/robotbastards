@@ -1,7 +1,5 @@
 using System;
 using System.Collections;
-using System.Runtime.InteropServices;
-using System.Security;
 using RbEngine;
 using RbEngine.Rendering;
 using RbEngine.Maths;
@@ -47,179 +45,21 @@ namespace RbOpenGlRendering.RbCg
 
 		#region	Effect application
 
-		//	NOTE: These functions were incorrectly imported into Tao (declared matrix parameter as "out float")
-
-		[ DllImport( "cg.dll", CallingConvention = CallingConvention.Cdecl ), SuppressUnmanagedCodeSecurity ]
-		public static extern void cgSetMatrixParameterfc( IntPtr param, float[] matrix );
-
-		[ DllImport( "cg.dll", CallingConvention = CallingConvention.Cdecl ), SuppressUnmanagedCodeSecurity ]
-		public static extern void cgSetMatrixParameterfr( IntPtr param, float[] matrix );
-
 		/// <summary>
 		/// Applies this effect
 		/// </summary>
-		public override unsafe void Begin( )
+		public override void Begin( )
 		{
-			//	Set bound parameters
-			for ( int bindingIndex = 0; bindingIndex < ( int )ShaderParameterBinding.NumBindings; ++bindingIndex )
+			foreach ( CgShaderParameter curParam in m_Parameters )
 			{
-				IntPtr param = m_Bindings[ bindingIndex ];
-				if ( param == IntPtr.Zero )
+				if ( curParam.Binding == null )
 				{
-					continue;
 				}
-				switch ( ( ShaderParameterBinding )bindingIndex )
+				else
 				{
-					case ShaderParameterBinding.ModelMatrix :
-					{
-						Matrix44 modelMatrix = Renderer.Inst.GetTransform( Transform.LocalToWorld );
-						cgSetMatrixParameterfc( param, modelMatrix.Elements );
-						break;
-					}
-
-					case ShaderParameterBinding.ViewMatrix	:
-					{
-						Matrix44 viewMatrix = Renderer.Inst.GetTransform( Transform.WorldToView );
-						cgSetMatrixParameterfc( param, viewMatrix.Elements );
-						break;
-					}
-
-					case ShaderParameterBinding.InverseTransposeModelMatrix :
-					{
-						Matrix44 itModelMatrix	= Renderer.Inst.GetTransform( Transform.LocalToWorld );
-						itModelMatrix.Translation = Point3.Origin;
-						itModelMatrix.Transpose( );
-						itModelMatrix.Invert( );
-
-						cgSetMatrixParameterfc( param, itModelMatrix.Elements );
-						break;
-					}
-
-					case ShaderParameterBinding.ProjectionMatrix :
-					{
-						CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_PROJECTION_MATRIX, CgGl.CG_GL_MATRIX_IDENTITY );
-						break;
-					}
-
-					case ShaderParameterBinding.TextureMatrix :
-					{
-						CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_TEXTURE_MATRIX, CgGl.CG_GL_MATRIX_IDENTITY );
-						break;
-					}
-
-					case ShaderParameterBinding.ModelViewMatrix :
-					{
-						CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_MATRIX, CgGl.CG_GL_MATRIX_IDENTITY );
-						break;
-					}
-
-					case ShaderParameterBinding.InverseModelViewMatrix :
-					{
-						CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_MATRIX, CgGl.CG_GL_MATRIX_INVERSE );
-						break;
-					}
-
-					case ShaderParameterBinding.InverseTransposeModelViewMatrix	:
-					{
-						CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_MATRIX, CgGl.CG_GL_MATRIX_INVERSE_TRANSPOSE );
-						break;
-					}
-
-					case ShaderParameterBinding.ModelViewProjectionMatrix :
-					{
-						CgGl.cgGLSetStateMatrixParameter( param, CgGl.CG_GL_MODELVIEW_PROJECTION_MATRIX, CgGl.CG_GL_MATRIX_IDENTITY );
-						break;
-					}
-
-					case ShaderParameterBinding.EyePosition :
-					{
-						Point3 eyePos = ( ( RbEngine.Cameras.Camera3 )Renderer.Inst.Camera ).Position;
-						Cg.cgSetParameter3f( param, eyePos.X, eyePos.Y, eyePos.Z );
-						break;
-					}
-
-					case ShaderParameterBinding.EyeZAxis :
-					{
-						Vector3 eyeVec = ( ( RbEngine.Cameras.Camera3 )Renderer.Inst.Camera ).ZAxis;
-						Cg.cgSetParameter3f( param, eyeVec.X, eyeVec.Y, eyeVec.Z );
-						break;
-					}
-
-					case ShaderParameterBinding.PointLights :
-					{
-						//	TODO: This is REALLY SHIT. Need to refactor this mess
-						int numActiveLights = Renderer.Inst.NumActiveLights;
-						int numPointLights	= 0;
-						for ( int lightIndex = 0; lightIndex < numActiveLights; ++lightIndex )
-						{
-							PointLight curLight = Renderer.Inst.GetLight( lightIndex ) as PointLight;
-							if ( curLight != null )
-							{
-								IntPtr positionParam = Cg.cgGetArrayParameter( Cg.cgGetNamedStructParameter( param, "m_Positions" ), numPointLights );
-								Cg.cgSetParameter4f( positionParam, curLight.Position.X, curLight.Position.Y, curLight.Position.Z, 0 );
-								++numPointLights;
-							}
-						}
-
-						Cg.cgSetParameter1i( Cg.cgGetNamedStructParameter( param, "m_NumLights" ), numPointLights );
-
-						break;
-					}
-
-					case ShaderParameterBinding.SpotLights :
-					{
-						//	TODO: This is REALLY SHIT. Need to refactor this mess
-						int numActiveLights = Renderer.Inst.NumActiveLights;
-						int numSpotLights	= 0;
-						for ( int lightIndex = 0; lightIndex < numActiveLights; ++lightIndex )
-						{
-							SpotLight curLight = Renderer.Inst.GetLight( lightIndex ) as SpotLight;
-							if ( curLight != null )
-							{
-								IntPtr positionParam	= Cg.cgGetArrayParameter( Cg.cgGetNamedStructParameter( param, "m_Positions" ), numSpotLights );
-								IntPtr directionParam	= Cg.cgGetArrayParameter( Cg.cgGetNamedStructParameter( param, "m_Directions" ), numSpotLights );
-								IntPtr arcParam			= Cg.cgGetArrayParameter( Cg.cgGetNamedStructParameter( param, "m_ArcRadians" ), numSpotLights );
-								Cg.cgSetParameter4f( positionParam, curLight.Position.X, curLight.Position.Y, curLight.Position.Z, 0 );
-								Cg.cgSetParameter4f( directionParam, curLight.Direction.X, curLight.Direction.Y, curLight.Direction.Z, 0 );
-								Cg.cgSetParameter1f( arcParam, curLight.ArcDegrees * Constants.DegreesToRadians );
-								++numSpotLights;
-							}
-						}
-
-						Cg.cgSetParameter1i( Cg.cgGetNamedStructParameter( param, "m_NumLights" ), numSpotLights );
-
-						break;
-					}
-
-					case ShaderParameterBinding.Texture0 :
-					{
-						CgShaderParameter.BindTexture( m_Context, param, Renderer.Inst.GetTexture( 0 ) );
-						break;
-					}
-
-					default :
-					{
-						throw new ApplicationException( string.Format( "Unhandled shader parameter binding \"{0}\"", ( ( ShaderParameterBinding )bindingIndex ).ToString( ) ) );
-					}
+					curParam.Binding.ApplyTo( curParam );
 				}
 			}
-			/*
-		
-		/// <summary>
-		/// Parameter bound to current eye x axis (world space)
-		/// </summary>
-		EyeXAxis,
-		
-		/// <summary>
-		/// Parameter bound to current eye y axis(world space)
-		/// </summary>
-		EyeYAxis,
-		
-		/// <summary>
-		/// Parameter bound to current eye z axis (world space)
-		/// </summary>
-		EyeZAxis,
-		*/
 		}
 
 		/// <summary>
@@ -307,7 +147,7 @@ namespace RbOpenGlRendering.RbCg
 					m_Bindings[ ( int )binding ] = curParam;
 				}
 
-				m_Parameters.Add( new CgShaderParameter( m_Context, curParam ) );
+				m_Parameters.Add( new CgShaderParameter( m_Context, this, curParam ) );
 			}
 
 			return true;

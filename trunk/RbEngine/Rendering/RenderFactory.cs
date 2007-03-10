@@ -168,43 +168,48 @@ namespace RbEngine.Rendering
 		/// Creates a new RenderState object
 		/// </summary>
 		[ Components.BuilderMethod ]
-		public abstract RenderState			NewRenderState( );
+		public abstract RenderState					NewRenderState( );
 
 		/// <summary>
 		/// Creates a new Material object
 		/// </summary>
-		public abstract Material			NewMaterial( );
+		public abstract Material					NewMaterial( );
 
 		/// <summary>
 		/// Creates a new Texture2d object
 		/// </summary>
 		/// <returns></returns>
-		public abstract Texture2d			NewTexture2d( );
+		public abstract Texture2d					NewTexture2d( );
 
 		/// <summary>
 		/// Creates a new TextureSampler2d object
 		/// </summary>
-		public abstract TextureSampler2d	NewTextureSampler2d( );
+		public abstract TextureSampler2d			NewTextureSampler2d( );
 
 		/// <summary>
 		/// Creates a new RenderFont object
 		/// </summary>
-		public abstract RenderFont			NewFont( );
+		public abstract RenderFont					NewFont( );
 
 		/// <summary>
 		/// Creates a new RenderTarget object
 		/// </summary>
-		public abstract RenderTarget		NewRenderTarget( );
+		public abstract RenderTarget				NewRenderTarget( );
 
 		/// <summary>
 		/// Creates a new Renderer object
 		/// </summary>
-		protected abstract Renderer			NewRenderer( );
+		protected abstract Renderer					NewRenderer( );
 
 		/// <summary>
 		/// Creates a new ShapeRenderer object
 		/// </summary>
-		protected abstract ShapeRenderer	NewShapeRenderer( );
+		protected abstract ShapeRenderer			NewShapeRenderer( );
+
+		/// <summary>
+		/// Creates a new ShaderParamterBindings object
+		/// </summary>
+		protected abstract ShaderParameterBindings	NewShaderParameterBindings( );
 
 		/// <summary>
 		/// Protected constructor. Sets up the Renderer and ShapeRenderer 
@@ -212,8 +217,9 @@ namespace RbEngine.Rendering
 		protected RenderFactory( )
 		{
 			ms_Singleton = this;
-			NewRenderer( );			//	Renderer constructor sets the Renderer singleton
-			NewShapeRenderer( );	//	ShapeRenderer constructor sets the ShapeRenderer singleton
+			NewRenderer( );					//	Renderer constructor sets the Renderer singleton
+			NewShapeRenderer( );			//	ShapeRenderer constructor sets the ShapeRenderer singleton
+			NewShaderParameterBindings( );	//	ShaderParameterBindings constructor sets the ShaderParameterBindings singleton
 		}
 
 		private System.Collections.Hashtable	m_CompositeNameMap		= new System.Collections.Hashtable( );

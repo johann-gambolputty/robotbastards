@@ -629,6 +629,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Rendering\ShaderParameterBindings.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Rendering\ShadowBufferRenderTechnique.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

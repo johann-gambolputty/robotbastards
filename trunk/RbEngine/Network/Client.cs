@@ -292,7 +292,7 @@ namespace RbEngine.Network
 		{
 			ShadowBufferRenderTechnique technique = new ShadowBufferRenderTechnique( );
 
-			technique.AddLight( new SpotLight( new Point3( 10, 30, 30 ), Point3.Origin ) );
+			technique.AddLight( new SpotLight( new Point3( 30, 30, 30 ), Point3.Origin ) );
 
 			return technique;
 		}
