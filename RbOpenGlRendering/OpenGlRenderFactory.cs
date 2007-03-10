@@ -72,5 +72,13 @@ namespace RbOpenGlRendering
 		{
 			return new OpenGlShapeRenderer( );
 		}
+		
+		/// <summary>
+		/// Creates a new ShaderParameterBindings object
+		/// </summary>
+		protected override ShaderParameterBindings	NewShaderParameterBindings( )
+		{
+			return new CgShaderParameterBindings( );
+		}
 	}
 }

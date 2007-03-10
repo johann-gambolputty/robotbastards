@@ -159,23 +159,23 @@ namespace RbOpenGlRendering
 			{
 				case TextureFormat.Depth16			:
 				{
-					glInternalFormat	= Gl.GL_DEPTH_COMPONENT16_ARB;
+					glInternalFormat	= Gl.GL_DEPTH_COMPONENT16;
 					glFormat			= Gl.GL_DEPTH_COMPONENT;
-					glType				= Gl.GL_FLOAT;	//	TODO: Is this correct?
+					glType				= Gl.GL_UNSIGNED_SHORT;	//	TODO: Is this correct?
 					return format;
 				}
 				case TextureFormat.Depth24			:
 				{
-					glInternalFormat	= Gl.GL_DEPTH_COMPONENT24_ARB;
+					glInternalFormat	= Gl.GL_DEPTH_COMPONENT24;
 					glFormat			= Gl.GL_DEPTH_COMPONENT;
-					glType				= Gl.GL_FLOAT;	//	TODO: Is this correct?
+					glType				= Gl.GL_UNSIGNED_INT;	//	TODO: Is this correct?
 					return format;
 				}
 				case TextureFormat.Depth32			:
 				{
-					glInternalFormat	= Gl.GL_DEPTH_COMPONENT32_ARB;
+					glInternalFormat	= Gl.GL_DEPTH_COMPONENT32;
 					glFormat			= Gl.GL_DEPTH_COMPONENT;
-					glType				= Gl.GL_FLOAT;	//	TODO: Is this correct?
+					glType				= Gl.GL_UNSIGNED_INT;	//	TODO: Is this correct?
 					return format;
 				}
 				case TextureFormat.R8G8B8			:
@@ -323,6 +323,7 @@ namespace RbOpenGlRendering
 		{
 			if ( m_TextureHandle == -1 )
 			{
+				Output.WriteLineCall( Output.RenderingWarning, "COuld not convert texture to image - handle was invalid" );
 				return null;
 			}
 
@@ -345,14 +346,35 @@ namespace RbOpenGlRendering
 
 				//	Get texture memory
 				float[] textureMemory = new float[ Width * Height ];
-				Gl.glGetTexImage( Gl.GL_TEXTURE_2D, 0, m_GlFormat, m_GlType, textureMemory );
-				
+				Gl.glGetTexImage( Gl.GL_TEXTURE_2D, 0, m_GlFormat, Gl.GL_FLOAT, textureMemory );
+
+				//	Create bitmap
+				bmp = new System.Drawing.Bitmap( Width, Height, PixelFormat.Format24bppRgb );
+
 				//	Create image memory
-				byte[] imageMemory = new byte[ Width * Height * 3 ];
-				int imageIndex = 0;
+				int texIndex = 0;
+				for ( int h = 0; h < Height; ++h )
+				{
+					for ( int w = 0; w < Width; ++w, ++texIndex )
+					{
+						float depth = ( ( float )textureMemory[ texIndex ] );
+					//	byte grey = ( byte )( System.Math.Exp( depth ) * 255.0f);
+						byte grey = ( byte )( depth * 255.0f );
+						bmp.SetPixel( w, h, System.Drawing.Color.FromArgb( grey, grey, grey ) );
+					}
+				}
+
+				//	NOTE: Was using this code, but it was crashing occasionally when using the bitmap, making me think that the
+				//	garbage collector was cleaning up imageMemory while is was being used, and the System.Drawing.Bitmap is
+				//	expecting the memory given to it to be permanent (maybe...)
+
+				/*
+			//	byte[] imageMemory = new byte[ Width * Height * 3 ];
+			//	int imageIndex = 0;
 				for ( int texIndex = 0; texIndex < textureMemory.Length; ++texIndex )
 				{
-					byte grey = ( byte )( System.Math.Exp( textureMemory[ texIndex ] ) * 255.0f );
+					float depth = ( ( float )textureMemory[ texIndex ] );
+					byte grey = ( byte )( System.Math.Exp( depth ) * 255.0f);
 					imageMemory[ imageIndex++ ] = grey;
 					imageMemory[ imageIndex++ ] = grey;
 					imageMemory[ imageIndex++ ] = grey;
@@ -363,6 +385,7 @@ namespace RbOpenGlRendering
 				{
 					bmp = new System.Drawing.Bitmap( Width, Height, Width * 3, PixelFormat.Format24bppRgb, ( IntPtr )imageMemoryPtr );
 				}
+				*/
 			}
 			else
 			{
@@ -372,6 +395,8 @@ namespace RbOpenGlRendering
 				int bytesPerPixel = GetTextureFormatSize( Format ) / 8;
 				byte[] textureMemory = new byte[ Width * Height * bytesPerPixel ];
 				Gl.glGetTexImage( Gl.GL_TEXTURE_2D, 0, m_GlFormat, m_GlType, textureMemory );
+
+				//	TODO: Same problem as above...
 
 				//	Create a Bitmap object from image memory
 				fixed ( byte* textureMemoryPtr = textureMemory )
@@ -383,7 +408,6 @@ namespace RbOpenGlRendering
 
 			//	Unbind the texture
 			Renderer.Inst.UnbindTexture( 0 );
-
 
 			//	Disable 2D texturing
 			if ( requires2DTexturesEnabled )

@@ -11,11 +11,38 @@ namespace RbOpenGlRendering.RbCg
 	public class CgShaderParameter : ShaderParameter
 	{
 		/// <summary>
+		/// Gets the CG context that this parameter is from
+		/// </summary>
+		public IntPtr					Context
+		{
+			get
+			{
+				return m_Context;
+			}
+		}
+
+		/// <summary>
+		/// Gets the parameter binding associated with this parameter
+		/// </summary>
+		public ShaderParameterBinding	Binding
+		{
+			get
+			{
+				return m_Binding;
+			}
+			set
+			{
+				m_Binding = value;
+			}
+		}
+
+		/// <summary>
 		/// Setup constructor
 		/// </summary>
 		/// <param name="context">CG context</param>
 		/// <param name="parameterHandle"> CGparameter handle </param>
-		public CgShaderParameter( IntPtr context, IntPtr parameterHandle )
+		public CgShaderParameter( IntPtr context, Shader source, IntPtr parameterHandle ) :
+			base( source )
 		{
 			m_Context	= context;
 			m_Parameter = parameterHandle;
@@ -144,7 +171,8 @@ namespace RbOpenGlRendering.RbCg
 			}
 		}
 
-		private IntPtr	m_Parameter;
-		private IntPtr	m_Context;
+		private ShaderParameterBinding	m_Binding;
+		private IntPtr					m_Parameter;
+		private IntPtr					m_Context;
 	}
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using RbEngine.Maths;
 
+
 namespace RbEngine.Rendering
 {
 	/// <summary>
@@ -30,12 +31,16 @@ namespace RbEngine.Rendering
 		/// </summary>
 		private static RenderTechnique	ms_OverrideTechnique;
 
+		private ShaderParameterCustomBinding	m_ShadowMatrixBinding;
+
 		/// <summary>
 		/// Sets up the technique
 		/// </summary>
 		/// <exception cref="ApplicationException">Thrown if internal render target creation is not successful</exception>
 		public ShadowBufferRenderTechnique( )
 		{
+			m_ShadowMatrixBinding = ShaderParameterBindings.Inst.CreateBinding( "ShadowMatrix", ShaderParameterCustomBinding.ValueType.Matrix );
+
 			if ( ms_OverrideTechnique == null )
 			{
 				/*
@@ -57,6 +62,12 @@ namespace RbEngine.Rendering
 				//	TODO: This should be an embedded resource, directly compiled from a hardcoded string, or something
 				RenderEffect effect = ( RenderEffect )Resources.ResourceManager.Inst.Load( "shadowRenderEffect.cgfx" );
 				ms_OverrideTechnique = effect.FindTechnique( "DefaultTechnique" );
+
+				m_ShadowMatrix = effect.GetParameter( "ShadowMatrix" );
+				if ( m_ShadowMatrix == null )
+				{
+					throw new ApplicationException( "Unable to find \"ShadowMatrix\" parameter in shadow render effect" );
+				}
 			}
 
 			try
@@ -66,7 +77,7 @@ namespace RbEngine.Rendering
 					RenderTarget target = RenderFactory.Inst.NewRenderTarget( );
 
 					//	TODO: Remove hardcoded render target format
-					target.Create( 512, 512, TextureFormat.Undefined, 24, 0, true );
+					target.Create( 512, 512, TextureFormat.Undefined, 16, 0, true );
 
 					m_RenderTargets[ lightIndex ] = target;
 				}
@@ -132,8 +143,8 @@ namespace RbEngine.Rendering
 				Renderer.Inst.SetLookAtTransform( curLight.Position + curLight.Direction, curLight.Position, Vector3.YAxis * -1.0f );	//	NOTE: negative y axis used
 				Renderer.Inst.SetPerspectiveProjectionTransform( curLight.ArcDegrees, aspectRatio, 5.0f, 100.0f );	//	TODO: Arbitrary z range
 
-				//	Set the current MVP matrix as a texture matrix. This is for after, when the scene is rendered properly
-				Renderer.Inst.SetTransform( Renderer.TextureTransform( lightIndex ), Renderer.Inst.GetTransform( Transform.ViewToScreen ) * Renderer.Inst.GetTransform( Transform.WorldToView ) );
+				//	Set the current MVP matrix as the shadow transform. This is for after, when the scene is rendered properly
+				m_ShadowMatrixBinding.Set( Renderer.Inst.GetTransform( Transform.ViewToScreen ) * Renderer.Inst.GetTransform( Transform.WorldToView ) );
 
 				//	Set up the render target for the light
 				curTarget.Begin( );
@@ -159,15 +170,15 @@ namespace RbEngine.Rendering
 
 				RenderTechnique.Override = null;
 
+				//	Stop using the current render target
+				curTarget.End( );
+
 				//	Save the depth buffer
 				if ( ms_DumpLights )
 				{
 					curTarget.DepthTexture.Save( string.Format( "LightView{0}.png", lightIndex ) );
 					ms_DumpLights = false;
 				}
-
-				//	Stop using the current render target
-				curTarget.End( );
 			}
 
 			Renderer.Inst.PopTransform( Transform.LocalToWorld );
@@ -175,6 +186,42 @@ namespace RbEngine.Rendering
 			Renderer.Inst.PopTransform( Transform.ViewToScreen );
 
 			End( );
+
+			/*
+			Gl.glMatrixMode( Gl.GL_TEXTURE );
+			Gl.glLoadIdentity( );
+			
+			Renderer.Inst.Push2d( );
+
+			Gl.glDepthMask( false );
+			Gl.glDisable( Gl.GL_DEPTH_TEST );
+			Gl.glDisable( Gl.GL_CULL_FACE );
+			Gl.glPolygonMode( Gl.GL_FRONT_AND_BACK, Gl.GL_FILL );
+			Gl.glEnable( Gl.GL_TEXTURE_2D );
+
+			Renderer.Inst.BindTexture( 0, m_RenderTargets[ 0 ].DepthTexture );
+
+			Gl.glBegin( Gl.GL_QUADS );
+
+		//	Gl.glColor3ub( 255, 255, 255 );
+			Gl.glTexCoord2f( 0, 0 );
+			Gl.glVertex2i( 0, 0 );
+			
+			Gl.glTexCoord2f( 0, 1 );
+			Gl.glVertex2i( 0, 100 );
+			
+			Gl.glTexCoord2f( 1, 1 );
+			Gl.glVertex2i( 100, 100 );
+			
+			Gl.glTexCoord2f( 1, 0 );
+			Gl.glVertex2i( 100, 0 );
+
+			Gl.glEnd( );
+
+			Renderer.Inst.UnbindTexture( 0 );
+
+			Renderer.Inst.Pop2d( );
+			*/
 
 			//	Apply all light textures
 			for ( int lightIndex = 0; lightIndex < m_Lights.Count; ++lightIndex )
@@ -194,7 +241,7 @@ namespace RbEngine.Rendering
 
 		private static bool		ms_DumpLights	= true;
 
-		private ShaderParameter	m_ShadowMapSampler;
+		private ShaderParameter	m_ShadowMatrix;
 		private ArrayList		m_Lights		= new ArrayList( );
 		private RenderTarget[]	m_RenderTargets	= new RenderTarget[ MaxLights ];
 	}

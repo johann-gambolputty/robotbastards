@@ -52,17 +52,32 @@ namespace RbOpenGlRendering
 			{
 				if ( depthBufferAsTexture )
 				{
-					//	TODO: Add check for extension
+					//	Make sure extension is supported
+					if ( !GlExtensionLoader.IsExtensionSupported( "GL_ARB_depth_texture" ) )
+					{
+						throw new ApplicationException( "Can't add depth texture to render target - unsupported" );
+					}
+
+
+					Gl.glEnable( Gl.GL_TEXTURE_2D );
+
+					//	Create the depth texture
 					OpenGlTexture2d texture = ( OpenGlTexture2d )RenderFactory.Inst.NewTexture2d( );
+					switch ( depthBits )
+					{
+						case 16 :	texture.Create( width, height, TextureFormat.Depth16 );	break;
+						case 24 :	texture.Create( width, height, TextureFormat.Depth24 );	break;
+						case 32 :	texture.Create( width, height, TextureFormat.Depth32 );	break;
+						default	:	throw new ApplicationException( string.Format( "Unsupported render target depth buffer size of {0} bits", depthBits ) );
+					}
 
-					//	TODO: Determine depth format
-					texture.Create( width, height, TextureFormat.Depth24 );
-
-					//	Add texture parameters (barfs otherwise - incomplete attachements)
+					//	Add texture parameters (barfs otherwise - incomplete attachements)		
+					Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_DEPTH_TEXTURE_MODE, Gl.GL_LUMINANCE );
+					Gl.glTexEnvf( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_REPLACE );
 					Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_CLAMP_TO_EDGE );
 					Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_CLAMP_TO_EDGE );
-					Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR );
-					Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR );
+					Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_NEAREST );
+					Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_NEAREST );
 
 					Gl.glFramebufferTexture2DEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_DEPTH_ATTACHMENT_EXT, Gl.GL_TEXTURE_2D, texture.TextureHandle, 0 );
 
@@ -127,6 +142,7 @@ namespace RbOpenGlRendering
 					case Gl.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT	:	problem = "GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT";	break;
 					case Gl.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT			:	problem = "GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT";			break;
 					case Gl.GL_FRAMEBUFFER_UNSUPPORTED_EXT						:	problem = "GL_FRAMEBUFFER_UNSUPPORTED_EXT";						break;
+					default														:	problem = "unknown error";										break;
 				}
 
 				throw new ApplicationException( string.Format( "Failed to create render target ({0}x{1} at {2}, {3} depth bits, {4} stencil bits). GL status = {5} ({6})", width, height, colourFormat, depthBits, stencilBits, status, problem ) );

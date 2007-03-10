@@ -15,7 +15,7 @@ struct TestOutput
 	float4	m_Position		: POSITION;
 	float3	m_ModelPos		: TEXCOORD0;
 	float3	m_ModelNormal	: TEXCOORD1;
-	float4	m_ShadowTexture	: TEXCOORD2;
+	float3	m_ShadowTexture	: TEXCOORD2;
 };
 
 struct SpotLightArray
@@ -52,10 +52,12 @@ TestOutput TestVertexShader( TestInput input )
 
 float4 TestFragmentShader( TestOutput input ) : COLOR
 {
-	float shadowDepth = tex2D( Texture0, mul( TextureMatrix, input.m_ShadowTexture ).xy );
+	float shadowDepth = tex2D( Texture0, mul( TextureMatrix, float4( input.m_ShadowTexture, 1 ) ).xy );
 //	float shadowDepth = tex2D( Texture0, input.m_ShadowTexture );
-//	shadowDepth = ( shadowDepth * shadowDepth );
+	shadowDepth = ( shadowDepth * shadowDepth );
 	return float4( shadowDepth.xxx, 1 );
+	
+
 	/*
 
 	float3	normal		= normalize( input.m_ModelNormal );

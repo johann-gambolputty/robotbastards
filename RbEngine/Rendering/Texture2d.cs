@@ -187,7 +187,11 @@ namespace RbEngine.Rendering
 		/// </summary>
 		public void Save( string path )
 		{
-			ToImage( ).Save( path );
+			System.Drawing.Image img = ToImage( );
+			if ( img != null )
+			{
+				img.Save( path );
+			}
 		}
 
 		#endregion

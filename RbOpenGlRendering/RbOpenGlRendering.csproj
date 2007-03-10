@@ -254,6 +254,21 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "RbCg\CgShaderParameterBindings.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "RbCg\CgShaderParameterCustomBinding.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "RbCg\CgShaderParameterDefaultBinding.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Resources\OpenGlColladaMeshLoader.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
