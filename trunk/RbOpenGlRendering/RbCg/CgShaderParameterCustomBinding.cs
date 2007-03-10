@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using RbEngine;
 using RbEngine.Rendering;
 using RbEngine.Maths;
 using Tao.Cg;
@@ -13,13 +14,16 @@ namespace RbOpenGlRendering.RbCg
 	{
 		private Object		m_Value;
 		private ValueType	m_Type;
+		private int			m_ArraySize;
 
 		/// <summary>
 		/// Sets the CG context and array size for this binding
 		/// </summary>
-		public CgShaderParameterCustomBinding( ValueType type, int arraySize )
+		public CgShaderParameterCustomBinding( string name, ValueType type, int arraySize ) :
+				base( name )
 		{
-			m_ValueType = type;
+			m_Type		= type;
+			m_ArraySize	= arraySize;
 			if ( arraySize > 0 )
 			{
 				switch ( type )
@@ -68,32 +72,97 @@ namespace RbOpenGlRendering.RbCg
 		{
 			IntPtr param = ( ( CgShaderParameter )parameter ).Parameter;
 
-			if ( arraySize > 0 )
+			if ( m_ArraySize > 0 )
 			{
-				switch ( type )
+				switch ( m_Type )
 				{
 					case ValueType.Int		:
 					{
 						int[] array = ( int[] )m_Value;
-						for ( int arrayIndex = 0; arrayIndex < arraySize;++arrayIndex )
-						{
-							Cg.cgSetParameter1i( elementParam, array[ arrayIndex ] );
-						}
-						Cg.cgSetParameterValuei
+						CgShaderParameter.cgSetParameterValueic( param, array );
+					//	for ( int arrayIndex = 0; arrayIndex < arraySize; ++arrayIndex )
+					//	{
+					//		IntPtr elementParam = Cg.cgGetArrayParameter( param, arrayIndex );
+					//		Cg.cgSetParameter1i( elementParam, array[ arrayIndex ] );
+					//	}
+						break;
 					}
-					case ValueType.Float	:	Cg.cgSetParameter1f( elementParam, ( float[] )( m_Value )[ arrayIndex ] );	break;
-					case ValueType.Vector2	:	Cg.cgSetParameter1i( elementParam, ( int[] )( m_Value )[ arrayIndex ] );	break;
-					case ValueType.Vector3	:	Cg.cgSetParameter1i( elementParam, ( int[] )( m_Value )[ arrayIndex ] );	break;
-					case ValueType.Matrix	:	Cg.cgSetParameter1i( elementParam, ( int[] )( m_Value )[ arrayIndex ] );	break;
-						for ( int arrayIndex = 0; arrayIndex < arraySize; ++arrayIndex )
+					case ValueType.Float	:
+					{
+						float[] array = ( float[] )m_Value;
+						CgShaderParameter.cgSetParameterValuefc( param, array );
+					//	for ( int arrayIndex = 0; arrayIndex < arraySize; ++arrayIndex )
+					//	{
+					//		IntPtr elementParam = Cg.cgGetArrayParameter( param, arrayIndex );
+					//		Cg.cgSetParameter1f( elementParam, array[ arrayIndex ] );
+					//	}
+						break;
+					}
+					case ValueType.Vector2	:
+					{
+						Vector2[] array = ( Vector2[] )m_Value;
+						for ( int arrayIndex = 0; arrayIndex < m_ArraySize; ++arrayIndex )
 						{
 							IntPtr elementParam = Cg.cgGetArrayParameter( param, arrayIndex );
+							Cg.cgSetParameter2f( elementParam, array[ arrayIndex ].X, array[ arrayIndex ].Y );
 						}
+						break;
+					}
+					case ValueType.Vector3	:
+					{
+						Vector3[] array = ( Vector3[] )m_Value;
+						for ( int arrayIndex = 0; arrayIndex < m_ArraySize; ++arrayIndex )
+						{
+							IntPtr elementParam = Cg.cgGetArrayParameter( param, arrayIndex );
+							Cg.cgSetParameter3f( elementParam, array[ arrayIndex ].X, array[ arrayIndex ].Y, array[ arrayIndex ].Z );
+						}
+						break;
+					}
+					case ValueType.Matrix	:
+					{
+						Matrix44[] array = ( Matrix44[] )m_Value;
+						for ( int arrayIndex = 0; arrayIndex < m_ArraySize; ++arrayIndex )
+						{
+							IntPtr elementParam = Cg.cgGetArrayParameter( param, arrayIndex );
+							CgShaderParameter.cgSetMatrixParameterfc( elementParam, array[ arrayIndex ].Elements );
+						}
+						break;
+					}
 				}
-			}
 			}
 			else
 			{
+				switch ( m_Type )
+				{
+					case ValueType.Int		:
+					{
+						Cg.cgSetParameter1i( param, ( int )m_Value );
+						break;
+					}
+					case ValueType.Float	:
+					{
+						Cg.cgSetParameter1f( param, ( float )m_Value );
+						break;
+					}
+					case ValueType.Vector2	:
+					{
+						Vector2 val = ( Vector2 )m_Value;
+						Cg.cgSetParameter2f( param, val.X, val.Y );
+						break;
+					}
+					case ValueType.Vector3	:
+					{
+						Vector3 val = ( Vector3 )m_Value;
+						Cg.cgSetParameter3f( param, val.X, val.Y, val.Z );
+						break;
+					}
+					case ValueType.Matrix	:
+					{
+						Matrix44 val = ( Matrix44 )m_Value;
+						CgShaderParameter.cgSetMatrixParameterfc( param, val.Elements );
+						break;
+					}
+				}
 			}
 
 		}
@@ -104,34 +173,66 @@ namespace RbOpenGlRendering.RbCg
 		#region	Single value setters
 
 		/// <summary>
+		/// Checks a type
+		/// </summary>
+		private void CheckType( ValueType expected )
+		{
+			Output.DebugAssert( m_Type == expected, Output.RenderingError, "Set() failed - binding is of type \"{0}\", value is of type \"{1}\"", m_Type.ToString( ), expected.ToString( ) );
+		}
+
+		/// <summary>
 		/// Sets the value of this binding to an integer
 		/// </summary>
-		public override void Set( int val );
+		public override void Set( int val )
+		{
+			CheckType( ValueType.Int );
+			m_Value = val;
+		}
 
 		/// <summary>
 		/// Sets the value of this binding to a floating point value
 		/// </summary>
-		public override void Set( float val );
+		public override void Set( float val )
+		{
+			CheckType( ValueType.Float );
+			m_Value = val;
+		}
 
 		/// <summary>
 		/// Sets the value of this binding to a 2d vector
 		/// </summary>
-		public override void Set( Vector2 val );
+		public override void Set( Vector2 val )
+		{
+			CheckType( ValueType.Vector2 );
+			m_Value = val;
+		}
 
 		/// <summary>
 		/// Sets the value of this binding to a 3d point
 		/// </summary>
-		public override void Set( Point3 val );
+		public override void Set( Point3 val )
+		{
+			CheckType( ValueType.Vector3 );
+			m_Value = new Vector3( val.X, val.Y, val.Z );
+		}
 
 		/// <summary>
 		/// Sets the value of this binding to a 3d vector
 		/// </summary>
-		public override void Set( Vector3 val );
+		public override void Set( Vector3 val )
+		{
+			CheckType( ValueType.Vector3 );
+			m_Value = val;
+		}
 
 		/// <summary>
 		/// Sets the value of this binding to a matrix
 		/// </summary>
-		public override void Set( Matrix44 val );
+		public override void Set( Matrix44 val )
+		{
+			CheckType( ValueType.Matrix );
+			m_Value = val;
+		}
 
 		#endregion
 
@@ -140,27 +241,47 @@ namespace RbOpenGlRendering.RbCg
 		/// <summary>
 		/// Sets the value at the specified index to an integer
 		/// </summary>
-		public override void SetAt( int index, int val );
+		public override void SetAt( int index, int val )
+		{
+			CheckType( ValueType.Int );
+			( ( int[] )m_Value )[ index ] = val;
+		}
 		
 		/// <summary>
 		/// Sets the value at the specified index to a floating point value
 		/// </summary>
-		public override void SetAt( int index, float val );
+		public override void SetAt( int index, float val )
+		{
+			CheckType( ValueType.Float );
+			( ( float[] )m_Value )[ index ] = val;
+		}
 		
 		/// <summary>
 		/// Sets the value at the specified index to a 2d vector
 		/// </summary>
-		public override void SetAt( int index, Vector2 val );
+		public override void SetAt( int index, Vector2 val )
+		{
+			CheckType( ValueType.Vector2 );
+			( ( Vector2[] )m_Value )[ index ] = val;
+		}
 		
 		/// <summary>
 		/// Sets the value at the specified index to a 3d point
 		/// </summary>
-		public override void SetAt( int index, Point3 val );
+		public override void SetAt( int index, Point3 val )
+		{
+			CheckType( ValueType.Vector3 );
+			( ( Vector3[] )m_Value )[ index ] = new Vector3( val.X, val.Y, val.Z );
+		}
 		
 		/// <summary>
 		/// Sets the value at the specified index to a 3d vector
 		/// </summary>
-		public override void SetAt( int index, Vector3 val );
+		public override void SetAt( int index, Vector3 val )
+		{
+			CheckType( ValueType.Vector3 );
+			( ( Vector3[] )m_Value )[ index ] = val;
+		}
 
 		#endregion
 	}

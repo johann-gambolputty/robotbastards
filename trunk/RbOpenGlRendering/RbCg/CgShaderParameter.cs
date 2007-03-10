@@ -1,4 +1,6 @@
 using System;
+using System.Runtime.InteropServices;
+using System.Security;
 using RbEngine.Rendering;
 using Tao.Cg;
 using Tao.OpenGl;
@@ -10,10 +12,35 @@ namespace RbOpenGlRendering.RbCg
 	/// </summary>
 	public class CgShaderParameter : ShaderParameter
 	{
+		//	NOTE: These functions were incorrectly imported into Tao (declared matrix/array parameters as "out float")
+
+		[ DllImport( "cg.dll", CallingConvention = CallingConvention.Cdecl ), SuppressUnmanagedCodeSecurity ]
+		public static extern void cgSetParameterValueic( IntPtr param, int[] array );
+
+		[ DllImport( "cg.dll", CallingConvention = CallingConvention.Cdecl ), SuppressUnmanagedCodeSecurity ]
+		public static extern void cgSetParameterValuefc( IntPtr param, float[] array );
+
+		[ DllImport( "cg.dll", CallingConvention = CallingConvention.Cdecl ), SuppressUnmanagedCodeSecurity ]
+		public static extern void cgSetMatrixParameterfc( IntPtr param, float[] matrix );
+
+		[ DllImport( "cg.dll", CallingConvention = CallingConvention.Cdecl ), SuppressUnmanagedCodeSecurity ]
+		public static extern void cgSetMatrixParameterfr( IntPtr param, float[] matrix );
+
 		/// <summary>
-		/// Gets the CG context that this parameter is from
+		/// Gets the name of this parameter
 		/// </summary>
-		public IntPtr					Context
+		public string					Name
+		{
+			get
+			{
+				return Cg.cgGetParameterName( m_Parameter );
+			}
+		}
+
+			/// <summary>
+			/// Gets the CG context that this parameter is from
+			/// </summary>
+			public IntPtr					Context
 		{
 			get
 			{
@@ -59,7 +86,7 @@ namespace RbOpenGlRendering.RbCg
 			CgGl.cgGLSetTextureParameter( parameter, texHandle );
 			Cg.cgSetSamplerState( parameter );
 			Tao.Cg.CgGl.cgGLSetManageTextureParameters( context, true );
-			Gl.glBindTexture( Gl.GL_TEXTURE_2D, 0 );
+		//	Gl.glBindTexture( Gl.GL_TEXTURE_2D, 0 );
 		}
 
 		/// <summary>

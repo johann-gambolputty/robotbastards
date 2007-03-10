@@ -28,6 +28,7 @@ struct SpotLightArray
 
 SpotLightArray	SpotLights;
 
+float4x4	ShadowMatrix;
 float4x4	ModelMatrix;
 float4x4	ViewMatrix;
 float4x4	ModelViewProjectionMatrix;
@@ -52,11 +53,9 @@ TestOutput TestVertexShader( TestInput input )
 
 float4 TestFragmentShader( TestOutput input ) : COLOR
 {
-	float shadowDepth = tex2D( Texture0, mul( TextureMatrix, float4( input.m_ShadowTexture, 1 ) ).xy );
-//	float shadowDepth = tex2D( Texture0, input.m_ShadowTexture );
+	float shadowDepth = tex2D( Texture0, mul( ShadowMatrix, float4( input.m_ShadowTexture, 0 ) ).xy / float2( 512, 512 ) ).r;
 	shadowDepth = ( shadowDepth * shadowDepth );
 	return float4( shadowDepth.xxx, 1 );
-	
 
 	/*
 

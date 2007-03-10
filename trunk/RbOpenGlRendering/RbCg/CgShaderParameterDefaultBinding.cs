@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
-using System.Runtime.InteropServices;
-using System.Security;
+using RbEngine.Maths;
 using RbEngine.Rendering;
+using Tao.Cg;
 
 namespace RbOpenGlRendering.RbCg
 {
@@ -14,12 +14,10 @@ namespace RbOpenGlRendering.RbCg
 		/// <summary>
 		/// Sets up this binding
 		/// </summary>
-		/// <param name="cgContext"></param>
-		/// <param name="binding"></param>
-		public CgShaderParameterDefaultBinding( ValueType type, ShaderParameterDefaultBinding binding )
+		public CgShaderParameterDefaultBinding( ShaderParameterDefaultBinding binding ) :
+			base( binding.ToString( ) )
 		{
-			m_Type		= type;
-			m_Binding	= binding;
+			m_Binding = binding;
 		}
 
 		/// <summary>
@@ -36,12 +34,6 @@ namespace RbOpenGlRendering.RbCg
 		{
 		}
 
-		//	NOTE: These functions were incorrectly imported into Tao (declared matrix parameter as "out float")
-		[ DllImport( "cg.dll", CallingConvention = CallingConvention.Cdecl ), SuppressUnmanagedCodeSecurity ]
-		public static extern void cgSetMatrixParameterfc( IntPtr param, float[] matrix );
-
-		[ DllImport( "cg.dll", CallingConvention = CallingConvention.Cdecl ), SuppressUnmanagedCodeSecurity ]
-		public static extern void cgSetMatrixParameterfr( IntPtr param, float[] matrix );
 
 		/// <summary>
 		/// Applies this binding to a particular shader parameter
@@ -56,14 +48,14 @@ namespace RbOpenGlRendering.RbCg
 				case ShaderParameterDefaultBinding.ModelMatrix :
 				{
 					Matrix44 modelMatrix = Renderer.Inst.GetTransform( Transform.LocalToWorld );
-					cgSetMatrixParameterfc( param, modelMatrix.Elements );
+					CgShaderParameter.cgSetMatrixParameterfc( param, modelMatrix.Elements );
 					break;
 				}
 
 				case ShaderParameterDefaultBinding.ViewMatrix	:
 				{
 					Matrix44 viewMatrix = Renderer.Inst.GetTransform( Transform.WorldToView );
-					cgSetMatrixParameterfc( param, viewMatrix.Elements );
+					CgShaderParameter.cgSetMatrixParameterfc( param, viewMatrix.Elements );
 					break;
 				}
 
@@ -74,7 +66,7 @@ namespace RbOpenGlRendering.RbCg
 					itModelMatrix.Transpose( );
 					itModelMatrix.Invert( );
 
-					cgSetMatrixParameterfc( param, itModelMatrix.Elements );
+					CgShaderParameter.cgSetMatrixParameterfc( param, itModelMatrix.Elements );
 					break;
 				}
 
@@ -187,8 +179,6 @@ namespace RbOpenGlRendering.RbCg
 			}
 		}
 
-		private ValueType						m_Type;
-		private ShaderParameterDefaultBinding	m_Binding;
-		private Object							m_Value;
+		private ShaderParameterDefaultBinding m_Binding;
 	}
 }

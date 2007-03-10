@@ -78,7 +78,7 @@ namespace RbOpenGlRendering
 		/// </summary>
 		protected override ShaderParameterBindings	NewShaderParameterBindings( )
 		{
-			return new CgShaderParameterBindings( );
+			return new RbCg.CgShaderParameterBindings( );
 		}
 	}
 }

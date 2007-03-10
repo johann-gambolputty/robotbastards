@@ -109,6 +109,12 @@
                     AssemblyName = "System.Windows.Forms"
                     HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Windows.Forms.dll"
                 />
+                <Reference
+                    Name = "Tao.OpenGl"
+                    AssemblyName = "Tao.OpenGl"
+                    HintPath = "..\..\..\Program Files\Tao\bin\Tao.OpenGl.dll"
+                    AssemblyFolderKey = "hklm\tao"
+                />
             </References>
         </Build>
         <Files>

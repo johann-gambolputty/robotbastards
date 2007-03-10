@@ -139,18 +139,31 @@ namespace RbOpenGlRendering.RbCg
 			//	Run through all the parameters in the effect, creating CgShaderParameter objects for each
 			for ( IntPtr curParam = Cg.cgGetFirstEffectParameter( m_EffectHandle ); curParam != IntPtr.Zero; curParam = Cg.cgGetNextParameter( curParam ) )
 			{
-				//	Default bindings
-				//	HACK: This is a bodge; should really use parameter annotations to determine such bindings
-				ShaderParameterBinding binding = ShaderParameter.GetBindingFromParameterName( Cg.cgGetParameterName( curParam ) );
-				if ( binding != ShaderParameterBinding.NumBindings )
-				{
-					m_Bindings[ ( int )binding ] = curParam;
-				}
+				CgShaderParameter newParam = new CgShaderParameter( m_Context, this, curParam );
+				m_Parameters.Add( newParam );
 
-				m_Parameters.Add( new CgShaderParameter( m_Context, this, curParam ) );
+				newParam.Binding = ShaderParameterBindings.Inst.GetBinding( newParam.Name );
 			}
+			//	Add a listener to the shader binding collection (this initialis
+			ShaderParameterBindings.Inst.OnNewBinding += new ShaderParameterBindings.NewBindingDelegate( OnNewBinding );
 
 			return true;
+		}
+
+		/// <summary>
+		/// Determines if the new binding can be applied to any of this effect's parameters
+		/// </summary>
+		/// <param name="binding"></param>
+		private void OnNewBinding( ShaderParameterBinding binding )
+		{
+			foreach ( CgShaderParameter curParam in m_Parameters )
+			{
+				if ( curParam.Name == binding.Name )
+				{
+					curParam.Binding = binding;
+					break;
+				}
+			}
 		}
 
 		#endregion
@@ -175,27 +188,11 @@ namespace RbOpenGlRendering.RbCg
 			return null;
 		}
 
-		/// <summary>
-		/// Binds a parameter from this shader to a render state
-		/// </summary>
-		/// <param name="parameter"> Parameter to bind </param>
-		/// <param name="binding"> Render state variable to bind to </param>
-		/// <remarks>
-		/// This need only be called once, to set up the binding. Every time that the shader to which this parameter belongs is applied (IAppliance::Apply())
-		/// the parameter is updated to match the value of bound variable.
-		/// If the parameter binding is set to ShaderParameterBinding.NoBinding, the parameter is unbound, and will no longer get updated.
-		/// </remarks>
-		public override void				BindParameter( ShaderParameter parameter, ShaderParameterBinding binding )
-		{
-			m_Bindings[ ( int )binding ] = ( ( CgShaderParameter )parameter ).Parameter;
-		}
-
 		#endregion
 
 
 		private IntPtr				m_Context;
 		private IntPtr				m_EffectHandle;
-		private ArrayList			m_Parameters		= new ArrayList( );
-		private IntPtr[]			m_Bindings			= new IntPtr[ ( int )ShaderParameterBinding.NumBindings ];
+		private ArrayList			m_Parameters = new ArrayList( );
 	}
 }

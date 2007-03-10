@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using RbEngine.Maths;
 
+using Tao.OpenGl;
 
 namespace RbEngine.Rendering
 {
@@ -27,18 +28,12 @@ namespace RbEngine.Rendering
 		}
 
 		/// <summary>
-		/// Override technique
-		/// </summary>
-		private static RenderTechnique	ms_OverrideTechnique;
-
-		private ShaderParameterCustomBinding	m_ShadowMatrixBinding;
-
-		/// <summary>
 		/// Sets up the technique
 		/// </summary>
 		/// <exception cref="ApplicationException">Thrown if internal render target creation is not successful</exception>
 		public ShadowBufferRenderTechnique( )
 		{
+			//	Create a shader parameter binding to the shadow matrix
 			m_ShadowMatrixBinding = ShaderParameterBindings.Inst.CreateBinding( "ShadowMatrix", ShaderParameterCustomBinding.ValueType.Matrix );
 
 			if ( ms_OverrideTechnique == null )
@@ -62,12 +57,6 @@ namespace RbEngine.Rendering
 				//	TODO: This should be an embedded resource, directly compiled from a hardcoded string, or something
 				RenderEffect effect = ( RenderEffect )Resources.ResourceManager.Inst.Load( "shadowRenderEffect.cgfx" );
 				ms_OverrideTechnique = effect.FindTechnique( "DefaultTechnique" );
-
-				m_ShadowMatrix = effect.GetParameter( "ShadowMatrix" );
-				if ( m_ShadowMatrix == null )
-				{
-					throw new ApplicationException( "Unable to find \"ShadowMatrix\" parameter in shadow render effect" );
-				}
 			}
 
 			try
@@ -140,7 +129,7 @@ namespace RbEngine.Rendering
 				int		height		= curTarget.Height;
 				float	aspectRatio	= ( height == 0 ) ? 1.0f : ( ( float )width / ( float )height );
 
-				Renderer.Inst.SetLookAtTransform( curLight.Position + curLight.Direction, curLight.Position, Vector3.YAxis * -1.0f );	//	NOTE: negative y axis used
+				Renderer.Inst.SetLookAtTransform( curLight.Position + curLight.Direction, curLight.Position, Vector3.YAxis );	//	NOTE: negative y axis used
 				Renderer.Inst.SetPerspectiveProjectionTransform( curLight.ArcDegrees, aspectRatio, 5.0f, 100.0f );	//	TODO: Arbitrary z range
 
 				//	Set the current MVP matrix as the shadow transform. This is for after, when the scene is rendered properly
@@ -193,7 +182,7 @@ namespace RbEngine.Rendering
 			
 			Renderer.Inst.Push2d( );
 
-			Gl.glDepthMask( false );
+		//	Gl.glDepthMask( false );
 			Gl.glDisable( Gl.GL_DEPTH_TEST );
 			Gl.glDisable( Gl.GL_CULL_FACE );
 			Gl.glPolygonMode( Gl.GL_FRONT_AND_BACK, Gl.GL_FILL );
@@ -229,6 +218,16 @@ namespace RbEngine.Rendering
 				Renderer.Inst.BindTexture( lightIndex, m_RenderTargets[ lightIndex ].DepthTexture );
 			}
 
+			if ( testTexture == null )
+			{
+				testTexture = ( Texture2d )RenderFactory.Inst.NewTexture2d( );
+				testTexture.Load( "c:\\projects\\rb\\data\\test.png" );
+			}
+			else
+			{
+			//	Renderer.Inst.BindTexture( 0, testTexture );
+			}
+
 			//	Render the scene normally
 			render( );
 
@@ -239,10 +238,12 @@ namespace RbEngine.Rendering
 			}
 		}
 
-		private static bool		ms_DumpLights	= true;
+		private Texture2d testTexture;
+		private static RenderTechnique			ms_OverrideTechnique;
+		private static bool						ms_DumpLights	= true;
 
-		private ShaderParameter	m_ShadowMatrix;
-		private ArrayList		m_Lights		= new ArrayList( );
-		private RenderTarget[]	m_RenderTargets	= new RenderTarget[ MaxLights ];
+		private ArrayList						m_Lights		= new ArrayList( );
+		private RenderTarget[]					m_RenderTargets	= new RenderTarget[ MaxLights ];
+		private ShaderParameterCustomBinding	m_ShadowMatrixBinding;
 	}
 }
