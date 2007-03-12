@@ -1,7 +1,7 @@
 sampler2D Texture0 = sampler_state
 {
-	CompareMode	= CompareRToTexture;
-	CompareFunc	= Less;
+//	CompareMode	= CompareRToTexture;
+//	CompareFunc	= Less;
 	DepthMode	= Luminance;
 	MinFilter	= Nearest;
 	MagFilter	= Nearest;
@@ -36,6 +36,8 @@ struct SpotLightArray
 SpotLightArray	SpotLights;
 
 float4x4	ShadowMatrix;
+float		ShadowNearZ;
+float		ShadowFarZ;
 float4x4	ModelMatrix;
 float4x4	ModelViewProjectionMatrix;
 float4x4	InverseTransposeModelMatrix;
@@ -59,13 +61,10 @@ float4 TestFragmentShader( TestOutput input ) : COLOR
 	float4	lightPos		= input.m_LightPos;
 	float	rcp2W			= 1.0f / ( lightPos.w * 2 );
 	float2	uv				= float2( lightPos.x * rcp2W, lightPos.y * rcp2W ) + float2( 0.5f, 0.5f );	//	TODO: Move scale and translation to transform
-//	float4	uv				= float4( ( lightPos.x * rcp2W ) + 0.5f, ( lightPos.y * rcp2W ) + 0.5f, lightPos.z / lightPos.w, 1 );
-//	float	storedDepth		= tex2D( Texture0, uv ).r;
 
-	return tex2D( Texture0, uv );
-
-	/*
-	float	shadowFactor	= storedDepth >= ( lightPos.z / lightPos.w ) ? 1 : 0.3f;
+	float	storedDepth		= tex2D( Texture0, uv ).r;
+	float	lightDepth		= ( 1.f / ShadowNearZ - 1.f / lightPos.z ) / ( 1.f / ShadowNearZ - 1.f / ShadowFarZ );
+	float	shadowFactor	= storedDepth >= lightDepth ? 1 : 0.3f;
 
 	float3	normal			= input.m_ModelNormal;
 	float3	lightVec		= input.m_VecToLight;
@@ -78,7 +77,6 @@ float4 TestFragmentShader( TestOutput input ) : COLOR
 	float4	colour			= float4( lighting.y.xxx + lighting.z.xxx, 1 );
 
 	return colour;
-	*/
 }
 
 technique NormalTechnique
@@ -90,6 +88,8 @@ technique NormalTechnique
 		DepthTestEnable			= true;
 		CullFaceEnable			= true;
 		PolygonMode				= int2( Front, Fill );
+		PolygonOffset			= float2( 0, 0 );
+		PolygonOffsetFillEnable	= false;
 		VertexProgram			= compile arbvp1 TestVertexShader( );
 		FragmentProgram			= compile arbfp1 TestFragmentShader( );
 	}
@@ -104,6 +104,8 @@ technique WireframeTechnique
 		DepthTestEnable			= true;
 		CullFaceEnable			= true;
 		PolygonMode				= int2( Front, Fill );
+		PolygonOffset			= float2( 0, 0 );
+		PolygonOffsetFillEnable	= false;
 		VertexProgram			= compile arbvp1 TestVertexShader( );
 		FragmentProgram			= compile arbfp1 TestFragmentShader( );
 	}

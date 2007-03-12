@@ -38,30 +38,15 @@ namespace RbEngine.Rendering
 		/// <exception cref="ApplicationException">Thrown if internal render target creation is not successful</exception>
 		public ShadowBufferRenderTechnique( )
 		{
-
+			//	Create a technique that is used to override standard scene rendering techniques (for shadow buffer generation)
 			if ( ms_OverrideTechnique == null )
 			{
-				/*
-				ms_OverrideTechnique = 
-					new RenderTechnique
-					(
-						"ShadowBufferRender",
-						new RenderPass
-						(
-							RenderFactory.Inst.NewRenderState( )
-								.DisableLighting( )
-								.DisableCap( RenderStateFlag.Texture2d )
-								.SetColour( System.Drawing.Color.White )
-								.DisableCap( RenderStateFlag.DepthTest )
-								.DisableCap( RenderStateFlag.CullFrontFaces | RenderStateFlag.CullBackFaces )
-						)
-					);
-				*/
 				//	TODO: This should be an embedded resource, directly compiled from a hardcoded string, or something
 				RenderEffect effect = ( RenderEffect )Resources.ResourceManager.Inst.Load( DepthTextureMethod ? "shadowMapDepthTexture.cgfx" : "shadowMapTexture.cgfx" );
 				ms_OverrideTechnique = effect.FindTechnique( "DefaultTechnique" );
 			}
 
+			//	Create render targets for up to MaxLights lights
 			try
 			{
 				for ( int lightIndex = 0; lightIndex < MaxLights; ++lightIndex )
@@ -78,10 +63,11 @@ namespace RbEngine.Rendering
 			{
 				throw new ApplicationException( "Failed to create shadow buffer render technique (render target creation failed)", exception );
 			}
-			
-			//	Create a shader parameter binding to the shadow matrix
-			m_ShadowMatrixBinding = ShaderParameterBindings.Inst.CreateBinding( "ShadowMatrix", ShaderParameterCustomBinding.ValueType.Matrix );
 
+			//	Create a shader parameter binding to the shadow matrix
+			m_ShadowMatrixBinding	= ShaderParameterBindings.Inst.CreateBinding( "ShadowMatrix", ShaderParameterCustomBinding.ValueType.Matrix );
+			m_ShadowNearZBinding	= ShaderParameterBindings.Inst.CreateBinding( "ShadowNearZ", ShaderParameterCustomBinding.ValueType.Float );
+			m_ShadowFarZBinding		= ShaderParameterBindings.Inst.CreateBinding( "ShadowFarZ", ShaderParameterCustomBinding.ValueType.Float );
 		}
 
 		/// <summary>
@@ -109,6 +95,8 @@ namespace RbEngine.Rendering
 		/// </summary>
 		public override void Apply( RenderDelegate render )
 		{
+			//	Determine the active set of lights
+
 			//	No lights? Then just render...
 			if ( m_Lights.Count == 0 )
 			{
@@ -124,6 +112,19 @@ namespace RbEngine.Rendering
 
 			Renderer.Inst.SetTransform( Transform.LocalToWorld, Matrix44.Identity );
 
+			//
+			//	Ideal:
+			//		- Run through currently active lights
+			//		- Query the scene renderables for any intersecting the current light's cone
+			//		- Render all objects in that list to current render target
+			//		- as before
+			//
+			//	Issues:
+			//		- Needs access to the light manager
+			//		- Naive inside-cone query will return the entire environment. Query needs to be aware of environment subsections (e.g. BSP nodes)
+			//
+
+
 			for ( int lightIndex = 0; lightIndex < m_Lights.Count; ++lightIndex )
 			{
 				RenderTarget	curTarget	= m_RenderTargets[ lightIndex ];
@@ -137,10 +138,15 @@ namespace RbEngine.Rendering
 				float	aspectRatio	= ( height == 0 ) ? 1.0f : ( ( float )width / ( float )height );
 
 				Renderer.Inst.SetLookAtTransform( curLight.Position + curLight.Direction, curLight.Position, Vector3.YAxis );
-				Renderer.Inst.SetPerspectiveProjectionTransform( curLight.ArcDegrees, aspectRatio, 2.0f, 500.0f );	//	TODO: Arbitrary z range
+				Renderer.Inst.SetPerspectiveProjectionTransform( curLight.ArcDegrees, aspectRatio, m_NearZ, m_FarZ );
 
 				//	Set the current MVP matrix as the shadow transform. This is for after, when the scene is rendered properly
 				m_ShadowMatrixBinding.Set( Renderer.Inst.GetTransform( Transform.ViewToScreen ) * Renderer.Inst.GetTransform( Transform.WorldToView ) );
+
+				//	Set near and far Z plane bindings
+				//	NOTE: This could be done once in setup - kept here for now so I can change them on the fly
+				m_ShadowNearZBinding.Set( m_NearZ );
+				m_ShadowFarZBinding.Set( m_FarZ );
 
 				//	Set up the render target for the light
 				curTarget.Begin( );
@@ -211,6 +217,10 @@ namespace RbEngine.Rendering
 
 		private ArrayList						m_Lights		= new ArrayList( );
 		private RenderTarget[]					m_RenderTargets	= new RenderTarget[ MaxLights ];
+		private float							m_NearZ			= 1.0f;
+		private float							m_FarZ			= 500.0f;
 		private ShaderParameterCustomBinding	m_ShadowMatrixBinding;
+		private ShaderParameterCustomBinding	m_ShadowNearZBinding;
+		private ShaderParameterCustomBinding	m_ShadowFarZBinding;
 	}
 }

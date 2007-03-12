@@ -66,7 +66,7 @@
 				<object type="RbEngine.Rendering.SpotLight">
 					<Point3 x="30" y="30" z="30" property="Position"/>
 					<Point3 x="0" y="0" z="0" property="LookAt"/>
-					<float value="45" property="ArcDegrees"/>
+					<float value="85" property="ArcDegrees"/>
 				</object>
 
 				<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics">
