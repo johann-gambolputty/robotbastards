@@ -119,7 +119,6 @@ namespace RbEngine.Maths
 				Elements[ 12 ]  = value[ 0 ];
 				Elements[ 13 ]  = value[ 1 ];
 				Elements[ 14 ]	= value[ 2 ];
-
 			}
 		}
 
@@ -225,19 +224,32 @@ namespace RbEngine.Maths
 			Elements[ 12 ] = 0;			Elements[ 13 ] = 0;			Elements[ 14 ] = 0;			Elements[ 15 ] = 1;
 
 			Translate( -origin.X, -origin.Y, -origin.Z );
-			/*
-			Vector3 zAxis = ( lookAt - origin ).MakeNormal( );
-			Vector3 yAxis = up;
-			Vector3 xAxis = Vector3.Cross( yAxis, zAxis );
-			yAxis = Vector3.Cross( zAxis, xAxis );
+		}
 
-			Elements[ 0 ]  = xAxis.X; 	Elements[ 1 ]  = xAxis.Y; 	Elements[ 2 ]  = xAxis.Z; 	Elements[ 3 ]  = 0;
-			Elements[ 4 ]  = yAxis.X; 	Elements[ 5 ]  = yAxis.Y; 	Elements[ 6 ]  = yAxis.Z; 	Elements[ 7 ]  = 0;
-			Elements[ 8 ]  = zAxis.X; 	Elements[ 9 ]  = zAxis.Y; 	Elements[ 10 ] = zAxis.Z; 	Elements[ 11 ] = 0;
-			Elements[ 12 ] = 0;			Elements[ 13 ] = 0;			Elements[ 14 ] = 0;			Elements[ 15 ] = 1;
+		/// <summary>
+		/// Sets up this matrix as a scale matrix
+		/// </summary>
+		public void SetScale( float x, float y, float z )
+		{
+			Elements[ 0 ]  = x; 	Elements[ 1 ]  = 0; 	Elements[ 2 ]  = 0; 	Elements[ 3 ]  = 0;
+			Elements[ 4 ]  = 0; 	Elements[ 5 ]  = y; 	Elements[ 6 ]  = 0; 	Elements[ 7 ]  = 0;
+			Elements[ 8 ]  = 0; 	Elements[ 9 ]  = 0; 	Elements[ 10 ] = z; 	Elements[ 11 ] = 0;
+			Elements[ 12 ] = 0;		Elements[ 13 ] = 0;		Elements[ 14 ] = 0;		Elements[ 15 ] = 1;
+		}
 
-			Translate( -origin.X, -origin.Y, -origin.Z );
-			*/
+		/// <summary>
+		/// Scales this matrix
+		/// </summary>
+		public void Scale( float x, float y, float z )
+		{
+			//	TODO: CHEAT! AGAIN!
+			Matrix44 mat = new Matrix44( this );
+			Matrix44 scaleMat = new Matrix44( x, 0, 0, 0,
+											  0, y, 0, 0,
+											  0, 0, z, 0,
+											  0, 0, 0, 1 );
+
+			StoreMultiply( mat, scaleMat );
 		}
 
 		/// <summary>

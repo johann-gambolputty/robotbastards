@@ -64,13 +64,13 @@ float4 TestFragmentShader( TestOutput input ) : COLOR
 
 	float	storedDepth		= tex2D( Texture0, uv ).r;
 	float	lightDepth		= ( 1.f / ShadowNearZ - 1.f / lightPos.z ) / ( 1.f / ShadowNearZ - 1.f / ShadowFarZ );
-	float	shadowFactor	= storedDepth >= lightDepth ? 1 : 0.3f;
-
 	float3	normal			= input.m_ModelNormal;
 	float3	lightVec		= input.m_VecToLight;
 	float3	halfVec			= normalize( lightVec + EyeZAxis );
 
-	float	spotDiffuse		= dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ? dot( normal, lightVec ) * shadowFactor.xxx : 0.2f;
+	float	shadowFactor	= ( storedDepth >= lightDepth ) && ( dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ) ? 1 : 0.3f;
+
+	float	spotDiffuse		= dot( normal, lightVec ) * shadowFactor.xxx;
 	float	specular		= dot( normal, halfVec );
 	float4	lighting		= lit( spotDiffuse, specular, 64 );
 
