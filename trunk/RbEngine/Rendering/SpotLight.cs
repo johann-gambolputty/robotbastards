@@ -77,6 +77,16 @@ namespace RbEngine.Rendering
 			Direction	= ( lookAt - pos ).MakeNormal( );
 		}
 
+		/// <summary>
+		/// Setup initialisation (spotlight at pos, looking towards lookAt)
+		/// </summary>
+		public SpotLight( Point3 pos, Point3 lookAt, float arcDegrees )
+		{
+			Position	= pos;
+			Direction	= ( lookAt - pos ).MakeNormal( );
+			m_Arc		= arcDegrees;
+		}
+
 		private Vector3	m_Direction	= Vector3.ZAxis;
 		private float	m_Arc		= 90;
 	}

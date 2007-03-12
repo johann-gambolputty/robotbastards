@@ -141,7 +141,8 @@ namespace RbEngine.Rendering
 				Renderer.Inst.SetPerspectiveProjectionTransform( curLight.ArcDegrees, aspectRatio, m_NearZ, m_FarZ );
 
 				//	Set the current MVP matrix as the shadow transform. This is for after, when the scene is rendered properly
-				m_ShadowMatrixBinding.Set( Renderer.Inst.GetTransform( Transform.ViewToScreen ) * Renderer.Inst.GetTransform( Transform.WorldToView ) );
+				Matrix44 shadowMat = Renderer.Inst.GetTransform( Transform.ViewToScreen ) * Renderer.Inst.GetTransform( Transform.WorldToView );
+				m_ShadowMatrixBinding.Set( shadowMat );
 
 				//	Set near and far Z plane bindings
 				//	NOTE: This could be done once in setup - kept here for now so I can change them on the fly
