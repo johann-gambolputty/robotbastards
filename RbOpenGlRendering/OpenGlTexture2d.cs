@@ -161,7 +161,7 @@ namespace RbOpenGlRendering
 				{
 					glInternalFormat	= Gl.GL_DEPTH_COMPONENT16;
 					glFormat			= Gl.GL_DEPTH_COMPONENT;
-					glType				= Gl.GL_UNSIGNED_SHORT;	//	TODO: Is this correct?
+					glType				= Gl.GL_FLOAT;	//	TODO: Is this correct?
 					return format;
 				}
 				case TextureFormat.Depth24			:

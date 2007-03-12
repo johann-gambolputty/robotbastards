@@ -153,10 +153,10 @@ namespace RbOpenGlRendering.RbCg
 						{
 							IntPtr positionParam	= Cg.cgGetArrayParameter( Cg.cgGetNamedStructParameter( param, "m_Positions" ), numSpotLights );
 							IntPtr directionParam	= Cg.cgGetArrayParameter( Cg.cgGetNamedStructParameter( param, "m_Directions" ), numSpotLights );
-							IntPtr arcParam			= Cg.cgGetArrayParameter( Cg.cgGetNamedStructParameter( param, "m_ArcRadians" ), numSpotLights );
-							Cg.cgSetParameter4f( positionParam, curLight.Position.X, curLight.Position.Y, curLight.Position.Z, 0 );
-							Cg.cgSetParameter4f( directionParam, curLight.Direction.X, curLight.Direction.Y, curLight.Direction.Z, 0 );
-							Cg.cgSetParameter1f( arcParam, curLight.ArcDegrees * Constants.DegreesToRadians );
+							IntPtr arcParam			= Cg.cgGetArrayParameter( Cg.cgGetNamedStructParameter( param, "m_CosArc" ), numSpotLights );
+							Cg.cgSetParameter3f( positionParam, curLight.Position.X, curLight.Position.Y, curLight.Position.Z );
+							Cg.cgSetParameter3f( directionParam, curLight.Direction.X, curLight.Direction.Y, curLight.Direction.Z );
+							Cg.cgSetParameter1f( arcParam, ( float )System.Math.Cos( curLight.ArcDegrees * Constants.DegreesToRadians ) );
 							++numSpotLights;
 						}
 					}

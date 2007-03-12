@@ -1,7 +1,13 @@
 sampler2D Texture0 = sampler_state
 {
-	minFilter		= Linear;
-	magFilter		= Linear;	
+	CompareMode	= CompareRToTexture;
+	CompareFunc	= Less;
+	DepthMode	= Luminance;
+	MinFilter	= Nearest;
+	MagFilter	= Nearest;
+	WrapS		= ClampToBorder;
+	WrapT		= ClampToBorder;
+	BorderColor	= float4( 1, 1, 1, 1 );
 };
 
 struct TestInput
@@ -15,14 +21,15 @@ struct TestOutput
 	float4	m_Position		: POSITION;
 	float3	m_ModelPos		: TEXCOORD0;
 	float3	m_ModelNormal	: TEXCOORD1;
-	float3	m_ShadowTexture	: TEXCOORD2;
+	float4	m_LightPos		: TEXCOORD2;
+	float3	m_VecToLight	: TEXCOORD3;
 };
 
 struct SpotLightArray
 {
 	float3		m_Positions[ 4 ];
 	float3		m_Directions[ 4 ];
-	float		m_ArcRadians[ 4 ];
+	float		m_CosArc[ 4 ];
 	int			m_NumLights;
 };
 
@@ -30,13 +37,8 @@ SpotLightArray	SpotLights;
 
 float4x4	ShadowMatrix;
 float4x4	ModelMatrix;
-float4x4	ViewMatrix;
 float4x4	ModelViewProjectionMatrix;
-float4x4	ModelViewMatrix;
 float4x4	InverseTransposeModelMatrix;
-float4x4	InverseTransposeModelViewMatrix;
-float4x4	TextureMatrix;
-float3		EyePosition;
 float3		EyeZAxis;
 
 TestOutput TestVertexShader( TestInput input )
@@ -46,28 +48,34 @@ TestOutput TestVertexShader( TestInput input )
 	output.m_Position		= mul( ModelViewProjectionMatrix, input.m_Position );
 	output.m_ModelPos		= mul( ModelMatrix, input.m_Position ).xyz;
 	output.m_ModelNormal	= normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
-	output.m_ShadowTexture	= mul( ModelMatrix, input.m_Position );
+	output.m_LightPos		= mul( ShadowMatrix, mul( ModelMatrix, input.m_Position ) );
+	output.m_VecToLight		= normalize( SpotLights.m_Positions[ 0 ] - output.m_ModelPos );
 
 	return output;
 }
 
 float4 TestFragmentShader( TestOutput input ) : COLOR
 {
-	float shadowDepth = tex2D( Texture0, mul( ShadowMatrix, float4( input.m_ShadowTexture, 0 ) ).xy / float2( 512, 512 ) ).r;
-	shadowDepth = ( shadowDepth * shadowDepth );
-	return float4( shadowDepth.xxx, 1 );
+	float4	lightPos		= input.m_LightPos;
+	float	rcp2W			= 1.0f / ( lightPos.w * 2 );
+	float2	uv				= float2( lightPos.x * rcp2W, lightPos.y * rcp2W ) + float2( 0.5f, 0.5f );	//	TODO: Move scale and translation to transform
+//	float4	uv				= float4( ( lightPos.x * rcp2W ) + 0.5f, ( lightPos.y * rcp2W ) + 0.5f, lightPos.z / lightPos.w, 1 );
+//	float	storedDepth		= tex2D( Texture0, uv ).r;
+
+	return tex2D( Texture0, uv );
 
 	/*
+	float	shadowFactor	= storedDepth >= ( lightPos.z / lightPos.w ) ? 1 : 0.3f;
 
-	float3	normal		= normalize( input.m_ModelNormal );
-	float3	lightVec	= normalize( SpotLights.m_Positions[ 0 ] - input.m_ModelPos );
-	float3	halfVec		= normalize( lightVec + EyeZAxis );
-	float	diffuse		= dot( normal, lightVec );
-	float	specular	= dot( normal, halfVec );
+	float3	normal			= input.m_ModelNormal;
+	float3	lightVec		= input.m_VecToLight;
+	float3	halfVec			= normalize( lightVec + EyeZAxis );
 
-	float4	lighting	= lit( diffuse, specular, 32 );
+	float	spotDiffuse		= dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ? dot( normal, lightVec ) * shadowFactor.xxx : 0.2f;
+	float	specular		= dot( normal, halfVec );
+	float4	lighting		= lit( spotDiffuse, specular, 64 );
 
-	float4	colour		= float4( ( lighting.y * float3( 1, 1, 1 ) ) + ( lighting.z * float3( 1, 1, 1 ) ), 1 );
+	float4	colour			= float4( lighting.y.xxx + lighting.z.xxx, 1 );
 
 	return colour;
 	*/
