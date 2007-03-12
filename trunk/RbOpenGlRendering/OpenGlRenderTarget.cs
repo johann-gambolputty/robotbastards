@@ -72,12 +72,14 @@ namespace RbOpenGlRendering
 					}
 
 					//	Add texture parameters (barfs otherwise - incomplete attachements)		
-					Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_DEPTH_TEXTURE_MODE, Gl.GL_LUMINANCE );
-					Gl.glTexEnvf( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_REPLACE );
+				//	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_DEPTH_TEXTURE_MODE, Gl.GL_LUMINANCE );
+				//	Gl.glTexEnvf( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_REPLACE );
 					Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_CLAMP_TO_EDGE );
 					Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_CLAMP_TO_EDGE );
 					Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_NEAREST );
 					Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_NEAREST );
+				//	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_COMPARE_MODE, Gl.GL_COMPARE_R_TO_TEXTURE );
+				//	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_COMPARE_FUNC, Gl.GL_LESS );
 
 					Gl.glFramebufferTexture2DEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_DEPTH_ATTACHMENT_EXT, Gl.GL_TEXTURE_2D, texture.TextureHandle, 0 );
 

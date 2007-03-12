@@ -98,7 +98,7 @@ namespace RbTestApp
 			// 
 			this.clientDisplay1.ColourBits = ((System.Byte)(32));
 			this.clientDisplay1.ContinuousRendering = true;
-			this.clientDisplay1.DepthBits = ((System.Byte)(24));
+			this.clientDisplay1.DepthBits = ((System.Byte)(16));
 			this.clientDisplay1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.clientDisplay1.Location = new System.Drawing.Point(0, 0);
 			this.clientDisplay1.Name = "clientDisplay1";

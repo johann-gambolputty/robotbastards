@@ -1,7 +1,0 @@
-
-technique WireFilled
-{
-	pass
-	{
-	}
-}

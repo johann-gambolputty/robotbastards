@@ -28,13 +28,16 @@ namespace RbEngine.Rendering
 		}
 
 		/// <summary>
+		/// Temporary bodge to switch between depth texture and normal texture for shadow map source
+		/// </summary>
+		public static bool	DepthTextureMethod = true;
+
+		/// <summary>
 		/// Sets up the technique
 		/// </summary>
 		/// <exception cref="ApplicationException">Thrown if internal render target creation is not successful</exception>
 		public ShadowBufferRenderTechnique( )
 		{
-			//	Create a shader parameter binding to the shadow matrix
-			m_ShadowMatrixBinding = ShaderParameterBindings.Inst.CreateBinding( "ShadowMatrix", ShaderParameterCustomBinding.ValueType.Matrix );
 
 			if ( ms_OverrideTechnique == null )
 			{
@@ -55,7 +58,7 @@ namespace RbEngine.Rendering
 					);
 				*/
 				//	TODO: This should be an embedded resource, directly compiled from a hardcoded string, or something
-				RenderEffect effect = ( RenderEffect )Resources.ResourceManager.Inst.Load( "shadowRenderEffect.cgfx" );
+				RenderEffect effect = ( RenderEffect )Resources.ResourceManager.Inst.Load( DepthTextureMethod ? "shadowMapDepthTexture.cgfx" : "shadowMapTexture.cgfx" );
 				ms_OverrideTechnique = effect.FindTechnique( "DefaultTechnique" );
 			}
 
@@ -66,7 +69,7 @@ namespace RbEngine.Rendering
 					RenderTarget target = RenderFactory.Inst.NewRenderTarget( );
 
 					//	TODO: Remove hardcoded render target format
-					target.Create( 512, 512, TextureFormat.Undefined, 16, 0, true );
+					target.Create( 512, 512, DepthTextureMethod ? TextureFormat.Undefined : TextureFormat.R8G8B8, 16, 0, DepthTextureMethod );
 
 					m_RenderTargets[ lightIndex ] = target;
 				}
@@ -75,6 +78,10 @@ namespace RbEngine.Rendering
 			{
 				throw new ApplicationException( "Failed to create shadow buffer render technique (render target creation failed)", exception );
 			}
+			
+			//	Create a shader parameter binding to the shadow matrix
+			m_ShadowMatrixBinding = ShaderParameterBindings.Inst.CreateBinding( "ShadowMatrix", ShaderParameterCustomBinding.ValueType.Matrix );
+
 		}
 
 		/// <summary>
@@ -129,8 +136,8 @@ namespace RbEngine.Rendering
 				int		height		= curTarget.Height;
 				float	aspectRatio	= ( height == 0 ) ? 1.0f : ( ( float )width / ( float )height );
 
-				Renderer.Inst.SetLookAtTransform( curLight.Position + curLight.Direction, curLight.Position, Vector3.YAxis );	//	NOTE: negative y axis used
-				Renderer.Inst.SetPerspectiveProjectionTransform( curLight.ArcDegrees, aspectRatio, 5.0f, 100.0f );	//	TODO: Arbitrary z range
+				Renderer.Inst.SetLookAtTransform( curLight.Position + curLight.Direction, curLight.Position, Vector3.YAxis );
+				Renderer.Inst.SetPerspectiveProjectionTransform( curLight.ArcDegrees, aspectRatio, 2.0f, 500.0f );	//	TODO: Arbitrary z range
 
 				//	Set the current MVP matrix as the shadow transform. This is for after, when the scene is rendered properly
 				m_ShadowMatrixBinding.Set( Renderer.Inst.GetTransform( Transform.ViewToScreen ) * Renderer.Inst.GetTransform( Transform.WorldToView ) );
@@ -165,7 +172,14 @@ namespace RbEngine.Rendering
 				//	Save the depth buffer
 				if ( ms_DumpLights )
 				{
-					curTarget.DepthTexture.Save( string.Format( "LightView{0}.png", lightIndex ) );
+					if ( DepthTextureMethod )
+					{
+						curTarget.DepthTexture.Save( string.Format( "LightView{0}.png", lightIndex ) );
+					}
+					else
+					{
+						curTarget.Texture.Save( string.Format( "LightView{0}.png", lightIndex ) );
+					}
 					ms_DumpLights = false;
 				}
 			}
@@ -176,56 +190,10 @@ namespace RbEngine.Rendering
 
 			End( );
 
-			/*
-			Gl.glMatrixMode( Gl.GL_TEXTURE );
-			Gl.glLoadIdentity( );
-			
-			Renderer.Inst.Push2d( );
-
-		//	Gl.glDepthMask( false );
-			Gl.glDisable( Gl.GL_DEPTH_TEST );
-			Gl.glDisable( Gl.GL_CULL_FACE );
-			Gl.glPolygonMode( Gl.GL_FRONT_AND_BACK, Gl.GL_FILL );
-			Gl.glEnable( Gl.GL_TEXTURE_2D );
-
-			Renderer.Inst.BindTexture( 0, m_RenderTargets[ 0 ].DepthTexture );
-
-			Gl.glBegin( Gl.GL_QUADS );
-
-		//	Gl.glColor3ub( 255, 255, 255 );
-			Gl.glTexCoord2f( 0, 0 );
-			Gl.glVertex2i( 0, 0 );
-			
-			Gl.glTexCoord2f( 0, 1 );
-			Gl.glVertex2i( 0, 100 );
-			
-			Gl.glTexCoord2f( 1, 1 );
-			Gl.glVertex2i( 100, 100 );
-			
-			Gl.glTexCoord2f( 1, 0 );
-			Gl.glVertex2i( 100, 0 );
-
-			Gl.glEnd( );
-
-			Renderer.Inst.UnbindTexture( 0 );
-
-			Renderer.Inst.Pop2d( );
-			*/
-
 			//	Apply all light textures
 			for ( int lightIndex = 0; lightIndex < m_Lights.Count; ++lightIndex )
 			{
-				Renderer.Inst.BindTexture( lightIndex, m_RenderTargets[ lightIndex ].DepthTexture );
-			}
-
-			if ( testTexture == null )
-			{
-				testTexture = ( Texture2d )RenderFactory.Inst.NewTexture2d( );
-				testTexture.Load( "c:\\projects\\rb\\data\\test.png" );
-			}
-			else
-			{
-			//	Renderer.Inst.BindTexture( 0, testTexture );
+				Renderer.Inst.BindTexture( lightIndex, DepthTextureMethod ? m_RenderTargets[ lightIndex ].DepthTexture : m_RenderTargets[ lightIndex ].Texture );
 			}
 
 			//	Render the scene normally
@@ -238,7 +206,6 @@ namespace RbEngine.Rendering
 			}
 		}
 
-		private Texture2d testTexture;
 		private static RenderTechnique			ms_OverrideTechnique;
 		private static bool						ms_DumpLights	= true;
 
