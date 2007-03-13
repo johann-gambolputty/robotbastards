@@ -307,7 +307,7 @@ namespace RbOpenGlMd3Loader
 					//	Set up the shader parameter
 					if ( m_Technique.Effect != null )
 					{
-						//	TODO: Hardcoded sampler
+						//	TODO: Hardcoded sampler (unnecessary now - first texture is automatically bound to named sampler "Texture0")
 						m_TextureParameter = m_Technique.Effect.GetParameter( "Sampler" );
 					}
 				}

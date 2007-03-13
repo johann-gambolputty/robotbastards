@@ -495,6 +495,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Network\ClientToServerConnection.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Network\LocalServer.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -516,6 +521,11 @@
                 />
                 <File
                     RelPath = "Network\ServerProxy.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\ServerToClientConnection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -591,6 +601,11 @@
                 />
                 <File
                     RelPath = "Rendering\RenderFont.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Rendering\RenderFonts.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -730,6 +745,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Scene\FpsDisplay.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Scene\ISceneObject.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -766,6 +786,11 @@
                 />
                 <File
                     RelPath = "Scene\SceneDb.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\SceneView.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

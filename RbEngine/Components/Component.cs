@@ -60,7 +60,7 @@ namespace RbEngine.Components
 	/// </summary>
 	public class Component : Node, IInstanceBuilder, IMessageHandler
 	{
-		#region	Messaging
+		#region	Messaging tests
 
 		//	TODO: Add nice reflection based thing
 		//
@@ -101,6 +101,10 @@ namespace RbEngine.Components
 		public void OnDamage( Message msg )
 		{
 		}
+
+		#endregion
+
+		#region	IMessageHandler Members
 
 		/// <summary>
 		/// Adds the message to a recipient chain, if there is one
