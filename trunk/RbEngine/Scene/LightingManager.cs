@@ -39,7 +39,7 @@ namespace RbEngine.Scene
 			foreach ( LightingData lighting in m_LightingData )
 			{
 				lighting.ClearLights( );
-				//	TODO: BODGE
+				//	TODO: BODGE - need proper light selection based on camera
 				for ( int lightIndex = 0; lightIndex < numLights; ++lightIndex )
 				{
 					lighting.AddLight( ( Rendering.Light )m_Lights[ lightIndex ] );

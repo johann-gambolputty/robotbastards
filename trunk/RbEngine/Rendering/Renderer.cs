@@ -21,9 +21,6 @@ namespace RbEngine.Rendering
 		/// </summary>
 		WorldToView,
 
-		//	TODO: REMOVEME (want separation between local to world and world to view transforms - it's easier to do lighting in world space :)
-	//	LocalToView,
-
 		/// <summary>
 		/// Transforms vertices from view space to screen space (projective transform)
 		/// </summary>
@@ -119,6 +116,52 @@ namespace RbEngine.Rendering
 
 		#endregion
 
+		#region	Rendering context
+
+		//	TODO: I really don't like this stuff being here - it would be far better to have a RenderContext object that is passed around in ISceneRenderable.Render(),
+		//	but that breaks with the design of the rest of the renderer (an opengl-style state machine with all state encapsulated by the Renderer)
+
+		/// <summary>
+		/// The control currently being rendered to
+		/// </summary>
+		/// <seealso cref="ControlRenderContext.BeginPaint()"/>
+		public virtual Control	CurrentControl
+		{
+			set
+			{
+				m_Control = value;
+			}
+			get
+			{
+				return m_Control;
+			}
+		}
+
+
+
+		/// <summary>
+		/// The current camera
+		/// </summary>
+		/// <remarks>
+		/// This sets up data that is only required for following reasons:
+		///		- PickRay() is being called
+		///		- A ShaderParameter is bound to ShaderParameterBinding.EyePosition, ShaderParameterBinding.EyeXAxis, ShaderParameterBinding.EyeYAxis or ShaderParameterBinding.EyeZAxis
+		/// </remarks>
+		public Cameras.CameraBase		Camera
+		{
+			set
+			{
+				m_Camera = value;
+			}
+			get
+			{
+				return m_Camera;
+			}
+		}
+
+
+		#endregion
+
 		#region	Forms
 
 		/// <summary>
@@ -177,22 +220,6 @@ namespace RbEngine.Rendering
 		#region	Standard operations
 
 		/// <summary>
-		/// The control currently being rendered to
-		/// </summary>
-		/// <seealso cref="ControlRenderContext.BeginPaint()"/>
-		public virtual Control	CurrentControl
-		{
-			set
-			{
-				m_Control = value;
-			}
-			get
-			{
-				return m_Control;
-			}
-		}
-
-		/// <summary>
 		/// Should be called at the beginning of each frame
 		/// </summary>
 		public virtual void		Begin( )
@@ -235,27 +262,6 @@ namespace RbEngine.Rendering
 		/// Gets the current matrix from the specified transform stack
 		/// </summary>
 		public abstract Matrix44		GetTransform( Transform type );
-
-
-		/// <summary>
-		/// The current camera
-		/// </summary>
-		/// <remarks>
-		/// This sets up data that is only required for following reasons:
-		///		- PickRay() is being called
-		///		- A ShaderParameter is bound to ShaderParameterBinding.EyePosition, ShaderParameterBinding.EyeXAxis, ShaderParameterBinding.EyeYAxis or ShaderParameterBinding.EyeZAxis
-		/// </remarks>
-		public Cameras.CameraBase		Camera
-		{
-			set
-			{
-				m_Camera = value;
-			}
-			get
-			{
-				return m_Camera;
-			}
-		}
 
 		/// <summary>
 		/// Gets an indexed texture transform
