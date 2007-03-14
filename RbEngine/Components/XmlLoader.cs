@@ -31,6 +31,18 @@ namespace RbEngine.Components
 		/// <returns> Returns Engine.Main </returns>
 		public override Object Load( System.IO.Stream input, string inputSource )
 		{
+			return Load( input, inputSource, null );
+		}
+
+		/// <summary>
+		/// Loads into a resource from a stream
+		/// </summary>
+		/// <param name="input"> Input stream to load the resource from </param>
+		/// <param name="inputSource"> Source of the input stream (e.g. file path) </param>
+		/// <param name="resource">Existing resource object</param>
+		/// <returns>Returns resource</returns>
+		public override Object Load( System.IO.Stream input, string inputSource, Object resource )
+		{
 			XmlDocument doc = new RbXmlDocument( inputSource );
 			try
 			{
@@ -46,7 +58,7 @@ namespace RbEngine.Components
 						}
 						else
 						{
-							Object result = LoadRb( ( XmlElement )curNode );
+							Object result = LoadRb( ( XmlElement )curNode, resource );
 							return result;
 						}
 					}
@@ -82,9 +94,12 @@ namespace RbEngine.Components
 		/// </summary>
 		/// <param name="element">XML "rb" element</param>
 		/// <returns>Returns the root object, if one was defined</returns>
-		private Object LoadRb( XmlElement element )
+		private Object LoadRb( XmlElement element, Object rootObject )
 		{
-			ObjectLoader	rootObject		= null;
+			RootObjectLoader loader = new RootObjectLoader( element, rootObject );
+			loader.Resolve( null );
+			return loader.LoadedObject;
+			/*
 
 			foreach ( XmlNode node in element.ChildNodes )
 			{
@@ -117,6 +132,7 @@ namespace RbEngine.Components
 			}
 
 			return null;
+			*/
 		}
 
 		/// <summary>
@@ -346,13 +362,32 @@ namespace RbEngine.Components
 				
 				if ( addToParent )
 				{
-					IParentObject parentObjectInterface = parentObject as IParentObject;
-					if ( parentObjectInterface == null )
+					if ( parentObject is IParentObject )
 					{
-						throw new RbXmlException( Element, "Could not add child object of type \"{0}\": Parent object type \"{1}\" does not support IParentObject", LoadedObject.GetType( ).Name, parentObject.GetType( ).Name );
+						//	Add child to IParentObject parent
+						( ( IParentObject )parentObject ).AddChild( LoadedObject );
+					}
+					else if ( parentObject is IDictionary )
+					{
+						//	Add child to IDictionary parent
+						//	TODO: Should be able to specify key separately?
+						if ( !( LoadedObject is INamedObject ) )
+						{
+							throw new RbXmlException( Element, "Could not add child object of type \"{0}\" to IDictionary: Does not implement INamedObject interface", LoadedObject.GetType( ).Name );
+						}
+						( ( IDictionary )parentObject ).Add( ( ( INamedObject )LoadedObject ).Name, LoadedObject );
+					}
+					else if ( parentObject is IList )
+					{
+						//	Add child to IList parent
+						( ( IList )parentObject ).Add( LoadedObject );
+					}
+					else
+					{
+						//	Parent object could not store LoadedObject - error!
+						throw new RbXmlException( Element, "Could not add child object of type \"{0}\": Parent object type \"{1}\" does not support IParentObject, IList or IDictionary", LoadedObject.GetType( ).Name, parentObject.GetType( ).Name );
 					}
 
-					parentObjectInterface.AddChild( LoadedObject );
 				}
 			}
 			
@@ -507,6 +542,81 @@ namespace RbEngine.Components
 			private ArrayList		m_PostLinkElements;
 
 			#endregion
+		}
+
+		/// <summary>
+		/// Loader responsible for handling the root "<rb>" element
+		/// </summary>
+		private class RootObjectLoader : BaseLoader
+		{
+
+			/// <summary>
+			/// Constructor
+			/// </summary>
+			/// <param name="element">The "rb" element</param>
+			/// <param name="rootObject">Existing root object to load into. Can be null</param>
+			public RootObjectLoader( XmlElement element, Object rootObject ) :
+				base( element )
+			{
+				LoadedObject = rootObject;
+				bool allowedMultipleChildren = ( rootObject != null );
+
+				//	Run through all the child elements of rbElement
+				foreach ( XmlNode node in element.ChildNodes )
+				{
+					//	Skip non-elements
+					if ( node.NodeType != XmlNodeType.Element )
+					{
+						continue;
+					}
+					if ( node.Name == "modelSet" )
+					{
+						//	Load and resolve model sets
+						ModelSetLoader modelSet = new ModelSetLoader( ( XmlElement )node );
+						modelSet.Resolve( null );
+					}
+					else if ( !allowedMultipleChildren )
+					{
+						if ( node.Name == "object" )
+						{
+							if ( m_RootLoader != null )
+							{
+								throw new RbXmlException( node, "Only allowed one root object within the <rb> element" );
+							}
+							m_RootLoader = new ObjectLoader( ( XmlElement )node );
+						}
+						else
+						{
+							throw new RbXmlException( node, "Did not handle \"{0}\" element: Only \"object\" and \"modelSet\" elements are allowed as direct children of <rb></rb> elements", node.Name );
+						}
+					}
+					else
+					{
+						LoadElement( ( XmlElement )node, Order.Default );
+					}
+				}
+			}
+
+			/// <summary>
+			/// Resolves this loader
+			/// </summary>
+			/// <param name="parentObject">Parent object. Should be null (ignored by this method, anyway)</param>
+			public override void Resolve( Object parentObject )
+			{
+				base.Resolve( parentObject );
+				if ( LoadedObject == null )
+				{
+					m_RootLoader.Resolve( parentObject );
+					LoadedObject = m_RootLoader.LoadedObject;
+				}
+				else
+				{
+					Resolve( LoadedObject );
+				}
+			}
+
+			private ObjectLoader	m_RootLoader;
+
 		}
 
 		/// <summary>

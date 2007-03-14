@@ -107,6 +107,8 @@ namespace RbEngine.Resources
 
 		#endregion
 
+		#region	Loading
+
 		/// <summary>
 		/// Finds a provider that can load a stream from a path, then finds a loader that can read the stream and turn it into a resource
 		/// </summary>
@@ -116,6 +118,20 @@ namespace RbEngine.Resources
 		/// Throws a System.ApplicationException if the path could not be opened by any provider, or if there were no loaders that could read the opened stream
 		/// </remarks>
 		public Object Load( string path )
+		{
+			return Load( path, null );
+		}
+
+		/// <summary>
+		/// Finds a provider that can load a stream from a path, then finds a loader that can read the stream and read it into a resource
+		/// </summary>
+		/// <param name="path"> Resource path </param>
+		/// <returns>Returns resource</returns>
+		/// <param name="resource">Existing resource to load into</param>
+		/// <remarks>
+		/// Throws a System.ApplicationException if the path could not be opened by any provider, or if there were no loaders that could read the opened stream
+		/// </remarks>
+		public Object Load( string path, Object resource )
 		{
 			if ( System.IO.Path.GetExtension( path ) == string.Empty )
 			{
@@ -129,6 +145,8 @@ namespace RbEngine.Resources
 							if ( loader.CanLoadDirectory( provider, path ) )
 							{
 								Output.WriteLineCall( Output.ResourceInfo, "Loading \"{0}\"", path );
+								
+								//	TODO: Needs to handle Load when resource is not null
 								return loader.Load( provider, path );
 							}
 						}
@@ -148,7 +166,7 @@ namespace RbEngine.Resources
 						if ( loader.CanLoadStream( path, input ) )
 						{
 							Output.WriteLineCall( Output.ResourceInfo, "Loading \"{0}\"", path );
-							return loader.Load( input, path );
+							return ( resource == null ) ? loader.Load( input, path ) : loader.Load( input, path, resource );
 						}
 					}
 					throw new System.ApplicationException( String.Format( "Could not find loader that could open stream {0}", path ) );
@@ -158,10 +176,14 @@ namespace RbEngine.Resources
 			throw new System.ApplicationException( String.Format( "Could not open resource stream {0}", path ) );
 		}
 
+		#endregion
+
+		#region	Private stuff
+
 		private ArrayList m_Providers = new ArrayList( );
 		private ArrayList m_StreamLoaders = new ArrayList( );
 		private ArrayList m_DirectoryLoaders = new ArrayList( );
-		
+
 		/// <summary>
 		/// Adds a loader that can read resource streams
 		/// </summary>
@@ -178,6 +200,7 @@ namespace RbEngine.Resources
 			}
 		}
 
+		#endregion
 
 	}
 }

@@ -94,7 +94,8 @@ namespace RbEngine.Scene
 		/// </summary>
 		public SceneView( )
 		{
-			m_RenderScene = new RenderTechnique.RenderDelegate( RenderScene );
+		//	m_ViewTechnique.Technique		= CreateCoreViewTechnique( );
+			m_ViewTechnique.RenderCallback	= new RenderTechnique.RenderDelegate( RenderScene );
 		}
 
 		/// <summary>
@@ -102,8 +103,10 @@ namespace RbEngine.Scene
 		/// </summary>
 		public SceneView( Scene.SceneDb scene )
 		{
-			m_Scene			= scene;
-			m_RenderScene	= new RenderTechnique.RenderDelegate( RenderScene );
+			m_Scene	= scene;
+
+		//	m_ViewTechnique.Technique		= CreateCoreViewTechnique( );
+			m_ViewTechnique.RenderCallback	= new RenderTechnique.RenderDelegate( RenderScene );
 		}
 
 		#endregion
@@ -133,7 +136,7 @@ namespace RbEngine.Scene
 			}
 			else
 			{
-				m_ViewTechnique.Apply( m_RenderScene );
+				m_ViewTechnique.Apply( );
 			}
 
 			//	Render any attachments to this object (e.g. FPS counter, etc.)
@@ -172,7 +175,7 @@ namespace RbEngine.Scene
 		/// Creates a RenderTechnique that 
 		/// </summary>
 		/// <returns></returns>
-		private RenderTechnique					CreateCoreViewTechnique( )
+		private RenderTechnique				CreateCoreViewTechnique( )
 		{
 			//	TODO: Overkill? Wrap up all the passes into a nice Client3Pass object, that sets up the object for 3d rendering, with a bunch of options
 			RenderTechnique technique= new RenderTechnique( );
@@ -186,11 +189,11 @@ namespace RbEngine.Scene
 				)
 			);
 
+			return technique;
 		}
 
 		private Scene.SceneDb					m_Scene;
 		private SelectedTechnique				m_ViewTechnique	 = new SelectedTechnique( );
-		private RenderTechnique.RenderDelegate	m_RenderScene;
 		private Cameras.CameraBase				m_Camera;
 	}
 }

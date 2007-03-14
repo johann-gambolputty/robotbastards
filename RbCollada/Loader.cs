@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Xml;
 using System.Reflection;
+using RbEngine.Components;
 
 namespace RbCollada
 {
@@ -38,9 +39,32 @@ namespace RbCollada
 		/// <returns> The loaded resource </returns>
 		public override Object Load( System.IO.Stream input, string inputSource )
 		{
-			XmlTextReader reader = new XmlTextReader( input );
 			ArrayList results = new ArrayList( );
 
+            return Load( input, inputSource, results );
+		}
+
+		/// <summary>
+		/// Loads a COLLADA resource into an array
+		/// </summary>
+		/// <exception cref="ApplicationException">Thrown if resource is not an IList or IParentObject</exception>
+		public override Object Load( System.IO.Stream input, string inputSource, Object resource )
+		{
+			IList			listResults		= resource as IList;
+			IParentObject	parentResults	= resource as IParentObject;
+			if ( ( listResults == null ) && ( parentResults == null ) )
+			{
+				throw new ApplicationException( string.Format( "Failed to load \"{0}\": The COLLADA loader can only load into an IList or IParentObject", inputSource ) );
+			}
+
+			//	This is a bit of a cheat. We'll just load everything into an array, then at the end, if parentResults is not null, all the stored objects in the list
+			//	are transferred to the parent object
+			if ( listResults == null )
+			{
+				listResults = new ArrayList( );
+			}
+
+			XmlTextReader reader = new XmlTextReader( input );
 			try
 			{
 				while ( reader.Read( ) )
@@ -53,7 +77,7 @@ namespace RbCollada
 						}
 						else
 						{
-							ParseCOLLADA( reader, results );
+							ParseCOLLADA( reader, listResults );
 						}
 					}
 				}
@@ -69,13 +93,23 @@ namespace RbCollada
 				throw new ApplicationException( msg, e );
 			}
 
-			return results;
+			//	Transfer list to parent
+			if ( parentResults != null )
+			{
+				foreach ( Object obj in listResults )
+				{
+					parentResults.AddChild( obj );
+				}
+			}
+
+			return resource;
 		}
+
 
 		/// <summary>
 		/// Parses the root section ("COLLADA") of a collada file
 		/// </summary>
-		private void ParseCOLLADA( XmlReader reader, ArrayList results )
+		private void ParseCOLLADA( XmlReader reader, IList results )
 		{
 			while ( reader.Read( ) )
 			{
@@ -96,7 +130,7 @@ namespace RbCollada
 		/// <summary>
 		/// Parses the "library_geometries" section
 		/// </summary>
-		private void ParseLibraryGeometries( XmlReader reader, ArrayList results )
+		private void ParseLibraryGeometries( XmlReader reader, IList results )
 		{
 			if ( !reader.IsEmptyElement )
 			{
@@ -120,7 +154,7 @@ namespace RbCollada
 		/// <summary>
 		/// Parses the "geometry" section
 		/// </summary>
-		private void ParseGeometry( XmlReader reader, ArrayList results )
+		private void ParseGeometry( XmlReader reader, IList results )
 		{
 			string geometryName = reader.GetAttribute( "name" );
 			if ( !reader.IsEmptyElement )
@@ -141,9 +175,9 @@ namespace RbCollada
 								results.Add( newMesh );
 
 								//	Name the mesh
-								if ( newMesh is RbEngine.Components.INamedObject )
+								if ( newMesh is INamedObject )
 								{
-									( ( RbEngine.Components.INamedObject )newMesh ).Name = geometryName;
+									( ( INamedObject )newMesh ).Name = geometryName;
 								}
 							}
 						}
