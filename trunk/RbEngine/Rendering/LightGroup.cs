@@ -6,7 +6,7 @@ namespace RbEngine.Rendering
 	/// <summary>
 	/// A bunch of lights
 	/// </summary>
-	public class LightGroup : IAppliance
+	public class LightGroup : IAppliance, Components.IChildObject
 	{
 		#region	Light list management
 
@@ -37,6 +37,14 @@ namespace RbEngine.Rendering
 		public void			Remove( Light light )
 		{
 			m_Lights.Remove( light );
+		}
+
+		/// <summary>
+		/// Removes all lights in the group
+		/// </summary>
+		public void			Clear( )
+		{
+			m_Lights.Clear( );
 		}
 
 		/// <summary>
@@ -88,7 +96,21 @@ namespace RbEngine.Rendering
 
 		#endregion
 		
-		private ArrayList	m_Lights = new ArrayList( );
+		#region IChildObject Members
 
+		/// <summary>
+		/// If the parent object is an ISceneRenderable object, this LightGroup adds itself to the ISceneRenderable.PreRenderList
+		/// </summary>
+		public void AddedToParent( Object parentObject )
+		{
+			if ( parentObject is Scene.ISceneRenderable )
+			{
+				( ( Scene.ISceneRenderable )parentObject ).PreRenderList.Add( this );
+			}
+		}
+
+		#endregion
+
+		private ArrayList	m_Lights = new ArrayList( );
 	}
 }

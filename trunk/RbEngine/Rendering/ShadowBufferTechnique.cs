@@ -5,10 +5,16 @@ using RbEngine.Maths;
 namespace RbEngine.Rendering
 {
 	/// <summary>
-	/// Builds up to 4 depth textures for lights in a scene
+	/// Builds up to 4 depth textures for lights
 	/// </summary>
+	/// <remarks>
+	/// This will do nothing, until a LightGroup is associated with the technique, using the ShadowLights property.
+	/// Any child techniques this technique has will be applied after the shadow buffer build step.
+	/// </remarks>
 	public class ShadowBufferTechnique : Components.Node, ITechnique
 	{
+		#region	Technique properties
+
 		/// <summary>
 		/// Maximum number of shadow casting lights
 		/// </summary>
@@ -26,9 +32,28 @@ namespace RbEngine.Rendering
 		}
 
 		/// <summary>
+		/// The light group this technique uses to get shadow lights from
+		/// </summary>
+		public LightGroup				ShadowLights
+		{
+			get
+			{
+				return m_ShadowLights;
+			}
+			set
+			{
+				m_ShadowLights = value;
+			}
+		}
+
+		/// <summary>
 		/// Temporary bodge to switch between depth texture and normal texture for shadow map source
 		/// </summary>
-		public static bool	DepthTextureMethod = true;
+		public static bool				DepthTextureMethod = true;
+
+		#endregion
+
+		#region	Construction
 
 		/// <summary>
 		/// Sets up the builder
@@ -68,6 +93,8 @@ namespace RbEngine.Rendering
 			m_ShadowFarZBinding		= ShaderParameterBindings.Inst.CreateBinding( "ShadowFarZ", ShaderParameterCustomBinding.ValueType.Float );
 		}
 
+		#endregion
+
 		#region	IRender Members
 
 		/// <summary>
@@ -93,12 +120,18 @@ namespace RbEngine.Rendering
 			//		- Naive inside-cone query will return the entire environment. Query needs to be aware of environment subsections (e.g. BSP nodes)
 			//
 
-			int numLights = lights.NumLights > MaxLights ? MaxLights : lights.NumLights;
-
+			int numLights	= lights.NumLights > MaxLights ? MaxLights : lights.NumLights;
+			int numBuffers	= 0;
 			for ( int lightIndex = 0; lightIndex < numLights; ++lightIndex )
 			{
-				RenderTarget	curTarget	= m_RenderTargets[ lightIndex ];
-				SpotLight		curLight	= ( SpotLight )lights[ lightIndex ];	//	TODO: Assuming spotlight
+				//	The shadow buffer technique can currently only work with spotlights
+				if ( !( lights[ lightIndex ] is SpotLight ) || ( !lights[ lightIndex ].ShadowCaster ) )
+				{
+					continue;
+				}
+
+				RenderTarget	curTarget	= m_RenderTargets[ numBuffers++ ];
+				SpotLight		curLight	= ( SpotLight )lights[ lightIndex ];	
 
 				//	Set up the transform for the current light
 
@@ -138,38 +171,36 @@ namespace RbEngine.Rendering
 				{
 					if ( DepthTextureMethod )
 					{
-						curTarget.DepthTexture.Save( string.Format( "LightView{0}.png", lightIndex ) );
+						curTarget.DepthTexture.Save( string.Format( "ShadowBuffer{0}.png", numBuffers - 1 ) );
 					}
 					else
 					{
-						curTarget.Texture.Save( string.Format( "LightView{0}.png", lightIndex ) );
+						curTarget.Texture.Save( string.Format( "ShadowBuffer{0}.png", numBuffers - 1 ) );
 					}
-					ms_DumpLights = false;
 				}
 			}
+			ms_DumpLights = false;
 
 			Renderer.Inst.PopTransform( Transform.LocalToWorld );
 			Renderer.Inst.PopTransform( Transform.WorldToView );
 			Renderer.Inst.PopTransform( Transform.ViewToScreen );
 
-			return numLights;
+			return numBuffers;
 		}
 
 		/// <summary>
 		/// Applies this technique
 		/// </summary>
-		public void Apply( TechniqueRenderDelegate render )
+		public virtual void Apply( TechniqueRenderDelegate render )
 		{
-			//	Determine the active set of lights
-			LightGroup lights = GetParentLightGroup( );
-
+			//	Make the shadow depth buffers
 			int numBuffers = 0;
-			if ( ( lights != null ) && ( lights.NumLights > 0 ) )
+			if ( ( ShadowLights != null ) && ( ShadowLights.NumLights > 0 ) )
 			{
-				numBuffers = MakeBuffers( render, lights );
+				numBuffers = MakeBuffers( render, ShadowLights );
 			}
 
-			//	Apply all light textures
+			//	Apply all shadow depth buffer textures
 			for ( int bufferIndex = 0; bufferIndex < numBuffers; ++bufferIndex )
 			{
 				Renderer.Inst.BindTexture( bufferIndex, DepthTextureMethod ? m_RenderTargets[ bufferIndex ].DepthTexture : m_RenderTargets[ bufferIndex ].Texture );
@@ -184,7 +215,7 @@ namespace RbEngine.Rendering
 				}
 			}
 
-			//	Stops applying all light textures
+			//	Unbind all the shadow depth buffer textures
 			for ( int bufferIndex = 0; bufferIndex < numBuffers; ++bufferIndex )
 			{
 				Renderer.Inst.UnbindTexture( bufferIndex );
@@ -193,50 +224,10 @@ namespace RbEngine.Rendering
 
 		#endregion
 
-		#region IChildObject Members
-
-		/// <summary>
-		/// Tries to extract a LightGroup from the parent object
-		/// </summary>
-		public override void AddedToParent( Object parentObject )
-		{
-			base.AddedToParent( parentObject );
-			m_ParentLights	= null;
-			m_ParentLights	= GetParentLightGroup( );
-		}
-
-		#endregion
-
-		private LightGroup	GetParentLightGroup( )
-		{
-			//	Check if the parent's light group has already been cached
-			if ( m_ParentLights != null )
-			{
-				return m_ParentLights;
-			}
-
-			//	No parent? No light group
-			if ( ( Parent == null ) || ( !( Parent is Components.IParentObject ) ) )
-			{
-				return null;
-			}
-
-			//	Try to find the light group in the parent's child list
-			foreach ( Object childObj in ( ( Components.IParentObject )Parent ).Children )
-			{
-				if ( childObj is LightGroup )
-				{
-					return ( LightGroup )childObj;
-				}
-			}
-
-			return null;
-		}
 
 		private static RenderTechnique			ms_OverrideTechnique;
 		private static bool						ms_DumpLights	= true;
-
-		private LightGroup						m_ParentLights	= null;
+		private LightGroup						m_ShadowLights	= null;
 		private RenderTarget[]					m_RenderTargets	= new RenderTarget[ MaxLights ];
 		private float							m_NearZ			= 1.0f;
 		private float							m_FarZ			= 500.0f;

@@ -18,7 +18,7 @@ namespace RbEngine.Rendering
 			}
 			set
 			{
-				m_ShadowCaster = true;
+				m_ShadowCaster = value;
 			}
 		}
 
@@ -37,7 +37,7 @@ namespace RbEngine.Rendering
 			}
 		}
 
-		private bool					m_ShadowCaster = false;
+		private bool					m_ShadowCaster = true;
 		private System.Drawing.Color	m_Colour;
 	}
 }

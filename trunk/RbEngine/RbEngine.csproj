@@ -760,6 +760,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Scene\ILightingManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Scene\ISceneObject.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -800,12 +805,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Scene\SceneView.cs"
+                    RelPath = "Scene\SceneShadowBufferTechnique.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Scene\SceneViewLightGroup.cs"
+                    RelPath = "Scene\SceneView.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

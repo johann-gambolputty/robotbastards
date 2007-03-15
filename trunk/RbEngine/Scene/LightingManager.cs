@@ -6,7 +6,7 @@ namespace RbEngine.Scene
 	/// <summary>
 	/// Manages lighting in a scene
 	/// </summary>
-	public class LightingManager : ISceneObject
+	public class LightingManager : ISceneObject, ILightingManager
 	{
 		#region ISceneObject Members
 
@@ -71,6 +71,43 @@ namespace RbEngine.Scene
 		private ArrayList	m_Lights		= new ArrayList( );
 		private ArrayList	m_LightingData	= new ArrayList( );
 		private SceneDb		m_Scene;
+
+		#endregion
+
+		#region ILightingManager Members
+
+		/// <summary>
+		/// Fills a light group with lights, based on their distances from the specified camera's frustum, intensities, and other properties
+		/// </summary>
+		public void GetCameraLightGroup( Cameras.Camera3 camera, Rendering.LightGroup lights )
+		{
+			//	TODO: bodge
+			GetObjectLightGroup( camera.Position, lights );
+		}
+
+		/// <summary>
+		/// Fills a light group with lights, based on their distances from a specified point, intensities, and other properties
+		/// </summary>
+		public void GetObjectLightGroup( Maths.Point3 pos, Rendering.LightGroup lights )
+		{
+			//	TODO: bodge
+			lights.Clear( );
+			for ( int lightIndex = 0; lightIndex < m_Lights.Count; ++lightIndex )
+			{
+				lights.Add( ( Rendering.Light )m_Lights[ lightIndex ] );
+			}
+		}
+
+		/// <summary>
+		/// Gets the array of lights in the scene
+		/// </summary>
+		public ArrayList Lights
+		{
+			get
+			{
+				return m_Lights;
+			}
+		}
 
 		#endregion
 	}
