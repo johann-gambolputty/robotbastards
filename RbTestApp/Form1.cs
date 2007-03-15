@@ -98,13 +98,15 @@ namespace RbTestApp
 			// 
 			this.sceneDisplay1.ColourBits = ((System.Byte)(32));
 			this.sceneDisplay1.ContinuousRendering = true;
-			this.sceneDisplay1.DepthBits = ((System.Byte)(16));
+			this.sceneDisplay1.DepthBits = ((System.Byte)(24));
 			this.sceneDisplay1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.sceneDisplay1.Location = new System.Drawing.Point(0, 0);
 			this.sceneDisplay1.Name = "sceneDisplay1";
+			this.sceneDisplay1.Scene = null;
+			this.sceneDisplay1.SceneViewSetupFile = "sceneView0.xml";
 			this.sceneDisplay1.Size = new System.Drawing.Size(232, 229);
 			this.sceneDisplay1.StencilBits = ((System.Byte)(0));
-			this.sceneDisplay1.TabIndex = 1;
+			this.sceneDisplay1.TabIndex = 0;
 			// 
 			// Form1
 			// 
@@ -125,7 +127,6 @@ namespace RbTestApp
 		[STAThread]
 		static void Main() 
 		{
-			//	TODO: Should use unhandled exception handler instead
 			Application.ThreadException += new System.Threading.ThreadExceptionEventHandler( ExceptionUtils.UnhandledThreadExceptionHandler );
 			Application.Run( new Form1( ) );
 		}

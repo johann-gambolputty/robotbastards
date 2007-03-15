@@ -29,16 +29,6 @@ namespace RbEngine.Scene
 
 		#endregion
 
-		#region	Visiting
-
-		/// <summary>
-		/// Visits all objects in this set
-		/// </summary>
-		/// <param name="visitor">Visitor function</param>
-		public abstract void Visit( Components.ChildVisitorDelegate visitor );
-
-		#endregion
-
 		#region	Set selection
 
 		/// <summary>

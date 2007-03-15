@@ -313,7 +313,7 @@ namespace RbEngine.Components
 			/// <summary>
 			/// Binds an object to a named parent property
 			/// </summary>
-			private void			BindObjectToParentProperty( Object parentObject, string propertyName )
+			private void			BindObjectToParentProperty( Object parentObject, string propertyName, bool addedAsChild )
 			{
 				//	Can't bind a property if the parent is null
 				if ( parentObject == null )
@@ -341,25 +341,24 @@ namespace RbEngine.Components
 
 				//	Let the object know it's been added to its parent (usually, IParentObject.AddChild() should do this, but because
 				//	LoadedObject is being bound directly to a property, then let's do the parent object's work for it)
-			//	if ( LoadedObject is IChildObject )
-			//	{
-			//		( ( IChildObject )LoadedObject ).AddedToParent( parentObject );
-			//	}
-				//	NOTE: Disabled in favour of an extra attribute "alwaysAddAsChild", handled in LinkObjectToParent()
+				if ( ( !addedAsChild ) && ( LoadedObject is IChildObject ) )
+				{
+					( ( IChildObject )LoadedObject ).AddedToParent( parentObject );
+				}
 			}
 
 			/// <summary>
 			/// Adds the loaded object to its parent
 			/// </summary>
-			private void			LinkObjectToParent( Object parentObject )
+			private void		LinkObjectToParent( Object parentObject )
 			{
 				bool addToParent = ( parentObject != null );
 				if ( BoundPropertyName != string.Empty )
 				{
-					BindObjectToParentProperty( parentObject, BoundPropertyName );
 					addToParent = ( string.Compare( Element.GetAttribute( "alwaysAddAsChild" ), "true", true ) == 0 );
+					BindObjectToParentProperty( parentObject, BoundPropertyName, addToParent );
 				}
-				
+
 				if ( addToParent )
 				{
 					if ( parentObject is IParentObject )
@@ -545,7 +544,7 @@ namespace RbEngine.Components
 		}
 
 		/// <summary>
-		/// Loader responsible for handling the root "<rb>" element
+		/// Loader responsible for handling the root "rb" element
 		/// </summary>
 		private class RootObjectLoader : BaseLoader
 		{
@@ -558,7 +557,8 @@ namespace RbEngine.Components
 			public RootObjectLoader( XmlElement element, Object rootObject ) :
 				base( element )
 			{
-				LoadedObject = rootObject;
+
+				m_RootObject = rootObject;
 				bool allowedMultipleChildren = ( rootObject != null );
 
 				//	Run through all the child elements of rbElement
@@ -603,19 +603,20 @@ namespace RbEngine.Components
 			/// <param name="parentObject">Parent object. Should be null (ignored by this method, anyway)</param>
 			public override void Resolve( Object parentObject )
 			{
-				base.Resolve( parentObject );
-				if ( LoadedObject == null )
+				if ( m_RootObject == null )
 				{
-					m_RootLoader.Resolve( parentObject );
+					m_RootLoader.Resolve( null );
 					LoadedObject = m_RootLoader.LoadedObject;
 				}
 				else
 				{
-					Resolve( LoadedObject );
+					LoadedObject = m_RootObject;
+					base.Resolve( null );
 				}
 			}
 
 			private ObjectLoader	m_RootLoader;
+			private Object			m_RootObject;
 
 		}
 

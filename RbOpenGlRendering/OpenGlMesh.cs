@@ -14,7 +14,6 @@ namespace RbOpenGlRendering
 		/// </summary>
 		public OpenGlMesh( )
 		{
-			m_Technique.RenderCallback = new RenderTechnique.RenderDelegate( RenderMesh );
 		}
 
 		#region	Group setup
@@ -98,7 +97,7 @@ namespace RbOpenGlRendering
 		/// <summary>
 		/// The selected render technique's name
 		/// </summary>
-		public string		SelectedTechniqueName
+		public string		AppliedTechniqueName
 		{
 			get
 			{
@@ -119,7 +118,7 @@ namespace RbOpenGlRendering
 		/// </summary>
 		public void Render( )
 		{
-			m_Technique.Apply( );
+			m_Technique.Apply( new TechniqueRenderDelegate( RenderMesh ) );
 		}
 
 		/// <summary>
@@ -189,7 +188,7 @@ namespace RbOpenGlRendering
 		private OpenGlIndexedGroup[]	m_Groups;
 		private OpenGlVertexBuffer[]	m_VertexBuffers;
 		private string					m_Name;
-		private SelectedTechnique		m_Technique = new SelectedTechnique( );
+		private AppliedTechnique		m_Technique = new AppliedTechnique( );
 		private TextureSampler2d[]		m_Textures = new TextureSampler2d[ 8 ];
 		private int						m_NumTextures;
 

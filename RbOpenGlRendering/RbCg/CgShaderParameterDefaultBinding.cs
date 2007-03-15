@@ -108,15 +108,23 @@ namespace RbOpenGlRendering.RbCg
 
 				case ShaderParameterDefaultBinding.EyePosition :
 				{
-					Point3 eyePos = ( ( RbEngine.Cameras.Camera3 )Renderer.Inst.Camera ).Position;
-					Cg.cgSetParameter3f( param, eyePos.X, eyePos.Y, eyePos.Z );
+					RbEngine.Cameras.Camera3 curCam = ( ( RbEngine.Cameras.Camera3 )Renderer.Inst.Camera );
+					if ( curCam != null )
+					{
+						Point3 eyePos = curCam.Position;
+						Cg.cgSetParameter3f( param, eyePos.X, eyePos.Y, eyePos.Z );
+					}
 					break;
 				}
 
 				case ShaderParameterDefaultBinding.EyeZAxis :
 				{
-					Vector3 eyeVec = ( ( RbEngine.Cameras.Camera3 )Renderer.Inst.Camera ).ZAxis;
-					Cg.cgSetParameter3f( param, eyeVec.X, eyeVec.Y, eyeVec.Z );
+					RbEngine.Cameras.Camera3 curCam = ( ( RbEngine.Cameras.Camera3 )Renderer.Inst.Camera );
+					if ( curCam != null )
+					{
+						Vector3 eyeVec = curCam.ZAxis;
+						Cg.cgSetParameter3f( param, eyeVec.X, eyeVec.Y, eyeVec.Z );
+					}
 					break;
 				}
 

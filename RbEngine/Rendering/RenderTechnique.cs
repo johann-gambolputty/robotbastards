@@ -6,7 +6,7 @@ namespace RbEngine.Rendering
 	/// <summary>
 	/// Stores a collection of RenderPass objects. For each pass, the technique applies it, then renders geometry using a callback
 	/// </summary>
-	public class RenderTechnique : Components.Node, Components.INamedObject, IAppliance
+	public class RenderTechnique : Components.Node, Components.INamedObject, ITechnique
 	{
 		#region	Setup
 
@@ -93,11 +93,6 @@ namespace RbEngine.Rendering
 		#region	Application
 
 		/// <summary>
-		/// The delegate type used by the Apply() method. It is used to render geometry between passes
-		/// </summary>
-		public delegate void RenderDelegate( );
-
-		/// <summary>
 		/// Gets the technique that should be applied (either this technique, the override technique, or a technique in the parent effect with the same
 		/// name as the override technique)
 		/// </summary>
@@ -118,16 +113,20 @@ namespace RbEngine.Rendering
 			}
 		}
 
+		#endregion
+
+		#region	ITechnique Members
+
 		/// <summary>
 		/// Applies this technique. Applies a pass, then invokes the render delegate to render stuff, for each pass
 		/// </summary>
 		/// <param name="render"></param>
-		public virtual void Apply( RenderDelegate render )
+		public virtual void Apply( TechniqueRenderDelegate render )
 		{
 			RenderTechnique techniqueToApply = TechniqueToApply;
 			techniqueToApply.Begin( );
 
-			if ( ( techniqueToApply.Children != null ) && ( techniqueToApply.Children.Count > 0 ) )
+			if ( techniqueToApply.Children.Count > 0 )
 			{
 				foreach ( RenderPass pass in techniqueToApply.Children )
 				{
@@ -146,14 +145,10 @@ namespace RbEngine.Rendering
 			techniqueToApply.End( );
 		}
 
-		#endregion
-
-		#region	IAppliance Members
-
 		/// <summary>
 		/// Called by Apply() before any passes are applied
 		/// </summary>
-		public virtual void Begin( )
+		protected virtual void Begin( )
 		{
 			if ( m_Effect != null )
 			{
@@ -164,7 +159,7 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Called by Apply() after all passes are applied
 		/// </summary>
-		public virtual void End( )
+		protected virtual void End( )
 		{
 			if ( m_Effect != null )
 			{

@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Windows.Forms;
 using RbEngine.Rendering;
 
 
@@ -22,51 +24,24 @@ namespace RbEngine.Scene
 			}
 			set
 			{
+				if ( m_Scene != null )
+				{
+					RemoveChildrenFromScene( this, m_Scene );
+				}
+
 				m_Scene = value;
-			}
-		}
 
-		/// <summary>
-		/// Gets the technique used to render the scene
-		/// </summary>
-		public SelectedTechnique	ViewTechnique
-		{
-			get
-			{
-				return m_ViewTechnique;
-			}
-		}
+				if ( m_Scene != null )
+				{
+					AddChildrenToScene( this, m_Scene );
+				}
 
-		/// <summary>
-		/// Access to the RenderEffect that the ViewTechnique uses
-		/// </summary>
-		public RenderEffect			ViewTechniqueEffect
-		{
-			set
-			{
-				m_ViewTechnique.Effect = value;
-			}
-			get
-			{
-				return m_ViewTechnique.Effect;
-			}
-		}
-
-		/// <summary>
-		/// Access to the name of the technique that the ViewTechnique uses
-		/// </summary>
-		/// <remarks>
-		/// If this is set, then the ViewTechnique must have been assigned an effect
-		/// </remarks>
-		public string				ViewTechniqueName
-		{
-			set
-			{
-				m_ViewTechnique.Technique = m_ViewTechnique.Effect.FindTechnique( value );
-			}
-			get
-			{
-				return m_ViewTechnique.Technique == null ? string.Empty : m_ViewTechnique.Technique.Name;
+				//	Create a controller for the camera
+				//	TODO: A bit nasty...
+				if ( ( m_CameraController == null ) && ( m_Scene != null ) )
+				{
+					m_CameraController = m_Camera.CreateDefaultController( m_Control, m_Scene );
+				}
 			}
 		}
 
@@ -82,6 +57,24 @@ namespace RbEngine.Scene
 			set
 			{
 				m_Camera = value;
+
+				//	Create a controller for the camera
+				//	TODO: A bit nasty...
+				if ( m_Scene != null )
+				{
+					m_CameraController = m_Camera.CreateDefaultController( m_Control, m_Scene );
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the list of view techniques that this view uses to render the scene
+		/// </summary>
+		public ArrayList			ViewTechniques
+		{
+			get
+			{
+				return m_ViewTechniques;
 			}
 		}
 
@@ -92,21 +85,32 @@ namespace RbEngine.Scene
 		/// <summary>
 		/// Empty viewer
 		/// </summary>
-		public SceneView( )
+		public SceneView( Control control )
 		{
-		//	m_ViewTechnique.Technique		= CreateCoreViewTechnique( );
-			m_ViewTechnique.RenderCallback	= new RenderTechnique.RenderDelegate( RenderScene );
+			m_Control = control;
 		}
 
 		/// <summary>
 		/// Sets up this view to look at the specified scene
 		/// </summary>
-		public SceneView( Scene.SceneDb scene )
+		public SceneView( Control control, Scene.SceneDb scene )
 		{
+			m_Control = control;
 			m_Scene	= scene;
+		}
 
-		//	m_ViewTechnique.Technique		= CreateCoreViewTechnique( );
-			m_ViewTechnique.RenderCallback	= new RenderTechnique.RenderDelegate( RenderScene );
+		#endregion
+
+		#region	Setup
+
+		/// <summary>
+		/// Loads the setup for this view from a resource
+		/// </summary>
+		public void Load( string path )
+		{
+			//	TODO: If there's more than one scene view, it makes sense to load all the scene view techniques into a ModelSet and 
+			//	reference them
+			Resources.ResourceManager.Inst.Load( path, this );
 		}
 
 		#endregion
@@ -116,7 +120,7 @@ namespace RbEngine.Scene
 		/// <summary>
 		/// Renders the view
 		/// </summary>
-		public void					Render( System.Windows.Forms.Control control )
+		public void					RenderView( )
 		{
 			if ( m_Scene == null )
 			{
@@ -124,11 +128,16 @@ namespace RbEngine.Scene
 			}
 
 			Renderer renderer = Renderer.Inst;
-			renderer.CurrentControl = control;
+			renderer.CurrentControl = m_Control;
 
-			if ( m_ViewTechnique.Technique == null )
+			if ( Camera != null )
 			{
-				renderer.SetViewport( 0, 0, control.Width, control.Height );
+				Camera.Begin( );
+			}
+
+			if ( m_ViewTechniques.Count == 0 )
+			{
+				renderer.SetViewport( 0, 0, m_Control.Width, m_Control.Height );
 				renderer.ClearDepth( 1.0f );
 				renderer.ClearVerticalGradient( System.Drawing.Color.LightSkyBlue, System.Drawing.Color.Black );
 
@@ -136,7 +145,11 @@ namespace RbEngine.Scene
 			}
 			else
 			{
-				m_ViewTechnique.Apply( );
+				TechniqueRenderDelegate render = new TechniqueRenderDelegate( RenderScene );
+				foreach ( ITechnique viewTechnique in m_ViewTechniques )
+				{
+					viewTechnique.Apply( render );
+				}
 			}
 
 			//	Render any attachments to this object (e.g. FPS counter, etc.)
@@ -156,12 +169,17 @@ namespace RbEngine.Scene
 					}
 				}
 			}
+
+			if ( Camera != null )
+			{
+				Camera.End( );
+			}
 		}
 
 		/// <summary>
-		/// Renders the scene
+		/// Renders the associated scene.
 		/// </summary>
-		private void				RenderScene( )
+		private void  RenderScene( )
 		{
 			if ( Scene != null )
 			{
@@ -171,29 +189,70 @@ namespace RbEngine.Scene
 
 		#endregion
 
-		/// <summary>
-		/// Creates a RenderTechnique that 
-		/// </summary>
-		/// <returns></returns>
-		private RenderTechnique				CreateCoreViewTechnique( )
-		{
-			//	TODO: Overkill? Wrap up all the passes into a nice Client3Pass object, that sets up the object for 3d rendering, with a bunch of options
-			RenderTechnique technique= new RenderTechnique( );
-			technique.Add
-			(
-				new RenderPass
-				(
-					new ClearTargetDepth( )
-					, new ClearTargetColour( System.Drawing.Color.LightSlateGray )
-					, m_Camera
-				)
-			);
+		#region	Child objects
 
-			return technique;
+		/// <summary>
+		/// Adds a child object to this view. Any children that implement ISceneObject get ISceneObject.AddedToScene() called
+		/// </summary>
+		/// <param name="childObject"></param>
+		public override void AddChild( Object childObject )
+		{
+			if ( ( Scene != null ) && ( childObject is ISceneObject ) )
+			{
+				( ( ISceneObject )childObject ).AddedToScene( Scene );
+				AddChildrenToScene( childObject, Scene );
+
+				//	TODO: Should add callbacks to track new objects added to childObject
+			}
+
+			base.AddChild( childObject );
 		}
 
-		private Scene.SceneDb					m_Scene;
-		private SelectedTechnique				m_ViewTechnique	 = new SelectedTechnique( );
-		private Cameras.CameraBase				m_Camera;
+		/// <summary>
+		/// Runs through all children of an object, removing them, and their children, from a scene
+		/// </summary>
+		private void RemoveChildrenFromScene( Object obj, SceneDb scene )
+		{
+			Components.IParentObject parentObj = obj as Components.IParentObject;
+			if ( parentObj != null )
+			{
+				foreach ( Object childObj in parentObj.Children )
+				{
+					if ( childObj is ISceneObject )
+					{
+						( ( ISceneObject )childObj ).RemovedFromScene( scene );
+					}
+
+					RemoveChildrenFromScene( childObj, scene );
+				}
+			}
+		}
+
+		/// <summary>
+		/// Runs through all children of an object, adding them, and their children, to a scene
+		/// </summary>
+		private void AddChildrenToScene( Object obj, SceneDb scene )
+		{
+			Components.IParentObject parentObj = obj as Components.IParentObject;
+			if ( parentObj != null )
+			{
+				foreach ( Object childObj in parentObj.Children )
+				{
+					if ( childObj is ISceneObject )
+					{
+						( ( ISceneObject )childObj ).AddedToScene( scene );
+					}
+					AddChildrenToScene( childObj, scene );
+				}
+			}
+		}
+
+		#endregion
+
+		private ArrayList			m_ViewTechniques = new ArrayList( );
+		private Scene.SceneDb		m_Scene;
+		private Cameras.CameraBase	m_Camera;
+		private Control				m_Control;
+		private Object				m_CameraController;
 	}
 }

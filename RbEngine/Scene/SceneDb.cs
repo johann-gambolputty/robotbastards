@@ -249,21 +249,12 @@ namespace RbEngine.Scene
 			}
 		}
 
-		/// <summary>
-		/// Visits all objects in the scene
-		/// </summary>
-		/// <param name="visitor">Visitor function</param>
-		public void VisitChildren( Components.ChildVisitorDelegate visitor )
-		{
-			Objects.Visit( visitor );
-		}
-
 		private void OnObjectGraphAdded( Object parentObject, Object rootObject )
 		{
 			OnChildObjectAdded( parentObject, rootObject );
 
 			Components.IParentObject rootParentObject = rootObject as Components.IParentObject;
-			if ( ( rootParentObject != null ) && ( rootParentObject.Children != null ) )
+			if ( rootParentObject != null )
 			{
 				foreach ( Object curChildObject in rootParentObject.Children )
 				{

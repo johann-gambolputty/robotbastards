@@ -20,10 +20,11 @@ namespace RbEngine.Interaction
 					base( client )
 			{
 				m_Key = key;
-				client.Control.KeyDown += new KeyEventHandler( OnKeyDown );
-				client.Control.KeyUp += new KeyEventHandler( OnKeyUp );
+				//	TODO: Missing client now...
+			//	client.Control.KeyDown += new KeyEventHandler( OnKeyDown );
+			//	client.Control.KeyUp += new KeyEventHandler( OnKeyUp );
 			}
-			
+
 			private void	OnKeyDown( object sender, KeyEventArgs args )
 			{
 				if ( args.KeyCode == m_Key )

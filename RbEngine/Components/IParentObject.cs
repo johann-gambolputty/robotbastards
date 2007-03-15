@@ -5,11 +5,6 @@ namespace RbEngine.Components
 {
 
 	/// <summary>
-	/// Delegate, used by IParentObject.VisitChildren()
-	/// </summary>
-	public delegate bool ChildVisitorDelegate( Object child );
-
-	/// <summary>
 	/// Delegate for the IParentObject.ChildAdded event
 	/// </summary>
 	public delegate void ChildAddedDelegate( Object parent, Object child );
@@ -61,10 +56,5 @@ namespace RbEngine.Components
 		/// </remarks>
 		void						RemoveChild( Object childObject );
 
-		/// <summary>
-		/// Visits all children, calling visitor() for each
-		/// </summary>
-		/// <param name="visitor">Visitor function</param>
-		void						VisitChildren( ChildVisitorDelegate visitor );
 	}
 }
