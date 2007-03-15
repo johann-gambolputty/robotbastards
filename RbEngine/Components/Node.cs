@@ -112,9 +112,7 @@ namespace RbEngine.Components
 		{
 			for ( int childIndex = 0; childIndex < m_Children.Count; ++childIndex )
 			{
-				if ( Convert.ChangeType( m_Children[ childIndex ], type ) != null )
-			//	or
-			//	if ( Reflection.Binder.ChangeType( .. ) )
+				if ( type.IsInstanceOfType( m_Children[ childIndex ] ) )
 				{
 					return m_Children[ childIndex ];
 				}
@@ -124,7 +122,7 @@ namespace RbEngine.Components
 		}
 
 		/// <summary>
-		/// Finds the first child object that subclasses the specified type
+		/// Finds the first child object that implements INamedObject, and has the name specified in str
 		/// </summary>
 		public Object	FindChild( string str, bool caseSensitive )
 		{

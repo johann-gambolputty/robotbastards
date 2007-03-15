@@ -10,16 +10,12 @@
 	<!-- Scene view camera -->
 	<object type="RbEngine.Cameras.SphereCamera" property="Camera"/>
 
-	<!-- Scene lights (required for ShadowBufferBuilder) -->
-	<object type="RbEngine.Scene.SceneViewLightGroup"/>
-
-
 	<!-- Scene view techniques -->
 	<!-- A set of IRender objects applied in sequence to render the SceneView -->
 
 	<!-- Shadow buffer builder -->
 	<!-- Requires that the SceneView object has a LightingData component -->
-	<object type="RbEngine.Rendering.ShadowBufferTechnique" property="ViewTechniques">
+	<object type="RbEngine.Scene.SceneShadowBufferTechnique" property="ViewTechniques" alwaysAddAsChild="true">
 	
 		<!-- Standard scene technique -->
 		<object type="RbEngine.Rendering.AppliedTechnique">
