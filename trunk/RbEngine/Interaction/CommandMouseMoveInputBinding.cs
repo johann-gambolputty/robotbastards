@@ -21,7 +21,9 @@ namespace RbEngine.Interaction
 					base( client )
 			{
 				m_Button = button;
-				client.Control.MouseMove += new MouseEventHandler( OnMouseMove );
+				
+				//	TODO: Missing client now...
+			//	client.Control.MouseMove += new MouseEventHandler( OnMouseMove );
 			}
 
 			/// <summary>

@@ -8,7 +8,7 @@ namespace RbEngine.Rendering
 	/// </summary>
 	/// <seealso>Shader</seealso>
 	/// <seealso>RenderTechnique</seealso>
-	/// <seealso>SelectedTechnique</seealso>
+	/// <seealso>AppliedTechnique</seealso>
 	public class RenderEffect : Shader, Components.IParentObject, IAppliance
 	{
 		#region	Construction
@@ -146,21 +146,6 @@ namespace RbEngine.Rendering
 			if ( ChildRemoved != null )
 			{
 				ChildRemoved( this, childObject );
-			}
-		}
-
-		/// <summary>
-		/// Visits all child techniques, calling visitor() for each
-		/// </summary>
-		/// <param name="visitor">Visitor function</param>
-		public void VisitChildren( Components.ChildVisitorDelegate visitor )
-		{
-			for ( int childIndex = 0; childIndex < m_Techniques.Count; ++childIndex )
-			{
-				if ( !visitor( m_Techniques[ childIndex ] ) )
-				{
-					return;
-				}
 			}
 		}
 

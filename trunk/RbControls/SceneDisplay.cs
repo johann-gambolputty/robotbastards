@@ -1,4 +1,6 @@
 using System;
+using System.Windows.Forms;
+using System.ComponentModel;
 using RbEngine.Scene;
 
 namespace RbControls
@@ -8,6 +10,22 @@ namespace RbControls
 	/// </summary>
 	public class SceneDisplay : Display
 	{
+		/// <summary>
+		/// Sets the number of depth bits used by the control
+		/// </summary>
+		[ Category( "Scene rendering properties" ), Description( "Scene view setup file path" ) ]
+		public string SceneViewSetupFile
+		{
+			get
+			{
+				return m_SetupFile;
+			}
+			set
+			{
+				m_SetupFile = value;
+			}
+		}
+
 		/// <summary>
 		/// Sets the scene to be rendered (shortcut to access the scene in the SceneView object)
 		/// </summary>
@@ -40,6 +58,8 @@ namespace RbControls
 		/// </summary>
 		public SceneDisplay( )
 		{
+			m_View = new SceneView( this );
+			InitializeComponent( );
 		}
 
 		/// <summary>
@@ -47,7 +67,9 @@ namespace RbControls
 		/// </summary>
 		public SceneDisplay( SceneDb scene )
 		{
+			m_View = new SceneView( this );
 			Scene = scene;
+			InitializeComponent( );
 		}
 
 		private void InitializeComponent()
@@ -56,6 +78,7 @@ namespace RbControls
 			// SceneDisplay
 			// 
 			this.Name = "SceneDisplay";
+			this.Load += new System.EventHandler(this.SceneDisplay_Load);
 
 		}
 
@@ -66,7 +89,7 @@ namespace RbControls
 		{
 			if ( m_View != null )
 			{
-				m_View.Render( this );
+				m_View.RenderView( );
 			}
 			else
 			{
@@ -80,6 +103,18 @@ namespace RbControls
 		}
 
 
-		private SceneView m_View = new SceneView( );
+		private SceneView	m_View;
+		private string		m_SetupFile	= string.Empty;
+
+		/// <summary>
+		/// Loads the scene view description from the setup file
+		/// </summary>
+		private void SceneDisplay_Load(object sender, System.EventArgs e)
+		{
+			if ( m_SetupFile != string.Empty )
+			{
+				m_View.Load( m_SetupFile );
+			}
+		}
 	}
 }

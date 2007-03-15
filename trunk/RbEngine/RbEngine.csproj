@@ -540,6 +540,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Rendering\AppliedTechnique.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Rendering\ClearTargetColour.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -570,7 +575,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Rendering\ITechnique.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Rendering\Light.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Rendering\LightGroup.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -630,11 +645,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Rendering\SelectedTechnique.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Rendering\SetupControlTarget.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -655,7 +665,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Rendering\ShadowBufferRenderTechnique.cs"
+                    RelPath = "Rendering\ShadowBufferTechnique.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -791,6 +801,11 @@
                 />
                 <File
                     RelPath = "Scene\SceneView.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\SceneViewLightGroup.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

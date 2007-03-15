@@ -57,6 +57,8 @@ namespace RbEngine.Entities
 		/// </summary>
 		protected override Interaction.CommandMessage	GenerateMessageFromActiveBinding( Interaction.CommandInputBinding.ClientBinding binding )
 		{
+			//	TODO: Missing client now. fix
+			/*
 			int screenX = ( ( Interaction.CommandCursorInputBinding.ClientBinding )binding ).X;
 			int screenY = ( ( Interaction.CommandCursorInputBinding.ClientBinding )binding ).Y;
 
@@ -70,6 +72,8 @@ namespace RbEngine.Entities
 			}
 
 			return new TestLookAtCommandMessage( this, binding.Client, intersection.IntersectionPosition );
+			*/
+			return null;
 		}
 	}
 

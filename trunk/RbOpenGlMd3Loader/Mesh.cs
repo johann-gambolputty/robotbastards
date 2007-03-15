@@ -17,7 +17,6 @@ namespace RbOpenGlMd3Loader
 		public Mesh( ModelPart part )
 		{
 			m_Part = part;
-			m_Technique.RenderCallback = new RenderTechnique.RenderDelegate( m_SurfaceRenderer.Render );
 		}
 
 		/// <summary>
@@ -293,7 +292,7 @@ namespace RbOpenGlMd3Loader
 		/// <summary>
 		/// The selected render technique's name
 		/// </summary>
-		public string		SelectedTechniqueName
+		public string		AppliedTechniqueName
 		{
 			get
 			{
@@ -408,7 +407,7 @@ namespace RbOpenGlMd3Loader
 				m_SurfaceRenderer.CurrentSurface	= curSurface;
 				m_SurfaceRenderer.CurrentFrame		= curSurface.SurfaceFrames[ currentFrame ];
 
-				m_Technique.Apply( );
+				m_Technique.Apply( new TechniqueRenderDelegate( m_SurfaceRenderer.Render ) );
 			}
 
 			if ( m_NestedMesh != null )
@@ -474,7 +473,7 @@ namespace RbOpenGlMd3Loader
 
 		private string					m_Name;
 		private ModelPart				m_Part;
-		private SelectedTechnique		m_Technique = new SelectedTechnique( );
+		private AppliedTechnique		m_Technique = new AppliedTechnique( );
 		private string[]				m_TagNames;
 		private FrameInfo[]				m_FrameInfo;
 		private int						m_TransformTagIndex = -1;

@@ -2,14 +2,12 @@ using System;
 using System.Collections;
 using RbEngine.Maths;
 
-using Tao.OpenGl;
-
 namespace RbEngine.Rendering
 {
 	/// <summary>
-	/// Render technique for shadows
+	/// Builds up to 4 depth textures for lights in a scene
 	/// </summary>
-	public class ShadowBufferRenderTechnique : RenderTechnique
+	public class ShadowBufferTechnique : Components.Node, ITechnique
 	{
 		/// <summary>
 		/// Maximum number of shadow casting lights
@@ -33,10 +31,10 @@ namespace RbEngine.Rendering
 		public static bool	DepthTextureMethod = true;
 
 		/// <summary>
-		/// Sets up the technique
+		/// Sets up the builder
 		/// </summary>
 		/// <exception cref="ApplicationException">Thrown if internal render target creation is not successful</exception>
-		public ShadowBufferRenderTechnique( )
+		public ShadowBufferTechnique( )
 		{
 			//	Create a technique that is used to override standard scene rendering techniques (for shadow buffer generation)
 			if ( ms_OverrideTechnique == null )
@@ -70,42 +68,13 @@ namespace RbEngine.Rendering
 			m_ShadowFarZBinding		= ShaderParameterBindings.Inst.CreateBinding( "ShadowFarZ", ShaderParameterCustomBinding.ValueType.Float );
 		}
 
-		/// <summary>
-		/// Adds a light to the render technique
-		/// </summary>
-		public void AddLight( SpotLight light )
-		{
-			if ( m_Lights.Count >= MaxLights )
-			{
-				throw new ApplicationException( "Tried to add too many lights to the shadow render technique" );
-			}
-			m_Lights.Add( light );
-		}
+		#region	IRender Members
 
 		/// <summary>
-		/// Removes a light from the render technique
+		/// Makes the shadow buffers
 		/// </summary>
-		public void RemoveLight( SpotLight light )
+		private int MakeBuffers( TechniqueRenderDelegate render, LightGroup lights )
 		{
-			m_Lights.Remove( light );
-		}
-
-		/// <summary>
-		/// Applies this technique
-		/// </summary>
-		public override void Apply( RenderDelegate render )
-		{
-			//	Determine the active set of lights
-
-			//	No lights? Then just render...
-			if ( m_Lights.Count == 0 )
-			{
-				render( );
-				return;
-			}
-
-			Begin( );
-
 			Renderer.Inst.PushTransform( Transform.LocalToWorld );
 			Renderer.Inst.PushTransform( Transform.WorldToView );
 			Renderer.Inst.PushTransform( Transform.ViewToScreen );
@@ -124,11 +93,12 @@ namespace RbEngine.Rendering
 			//		- Naive inside-cone query will return the entire environment. Query needs to be aware of environment subsections (e.g. BSP nodes)
 			//
 
+			int numLights = lights.NumLights > MaxLights ? MaxLights : lights.NumLights;
 
-			for ( int lightIndex = 0; lightIndex < m_Lights.Count; ++lightIndex )
+			for ( int lightIndex = 0; lightIndex < numLights; ++lightIndex )
 			{
 				RenderTarget	curTarget	= m_RenderTargets[ lightIndex ];
-				SpotLight		curLight	= ( SpotLight )m_Lights[ lightIndex ];
+				SpotLight		curLight	= ( SpotLight )lights[ lightIndex ];	//	TODO: Assuming spotlight
 
 				//	Set up the transform for the current light
 
@@ -156,20 +126,7 @@ namespace RbEngine.Rendering
 
 				RenderTechnique.Override = ms_OverrideTechnique;
 
-				//	Render the scene
-				if ( ( Children != null ) && ( Children.Count > 0 ) )
-				{
-					foreach ( RenderPass pass in Children )
-					{
-						pass.Begin( );
-						render( );
-						pass.End( );
-					}
-				}
-				else
-				{
-					render( );
-				}
+				render( );
 
 				RenderTechnique.Override = null;
 
@@ -195,28 +152,91 @@ namespace RbEngine.Rendering
 			Renderer.Inst.PopTransform( Transform.WorldToView );
 			Renderer.Inst.PopTransform( Transform.ViewToScreen );
 
-			End( );
+			return numLights;
+		}
+
+		/// <summary>
+		/// Applies this technique
+		/// </summary>
+		public void Apply( TechniqueRenderDelegate render )
+		{
+			//	Determine the active set of lights
+			LightGroup lights = GetParentLightGroup( );
+
+			int numBuffers = 0;
+			if ( ( lights != null ) && ( lights.NumLights > 0 ) )
+			{
+				numBuffers = MakeBuffers( render, lights );
+			}
 
 			//	Apply all light textures
-			for ( int lightIndex = 0; lightIndex < m_Lights.Count; ++lightIndex )
+			for ( int bufferIndex = 0; bufferIndex < numBuffers; ++bufferIndex )
 			{
-				Renderer.Inst.BindTexture( lightIndex, DepthTextureMethod ? m_RenderTargets[ lightIndex ].DepthTexture : m_RenderTargets[ lightIndex ].Texture );
+				Renderer.Inst.BindTexture( bufferIndex, DepthTextureMethod ? m_RenderTargets[ bufferIndex ].DepthTexture : m_RenderTargets[ bufferIndex ].Texture );
 			}
 
-			//	Render the scene normally
-			render( );
+			//	Apply all child techniques
+			foreach ( Object childObj in Children )
+			{
+				if ( childObj is ITechnique )
+				{
+					( ( ITechnique )childObj ).Apply( render );
+				}
+			}
 
 			//	Stops applying all light textures
-			for ( int lightIndex = 0; lightIndex < m_Lights.Count; ++lightIndex )
+			for ( int bufferIndex = 0; bufferIndex < numBuffers; ++bufferIndex )
 			{
-				Renderer.Inst.UnbindTexture( lightIndex );
+				Renderer.Inst.UnbindTexture( bufferIndex );
 			}
+		}
+
+		#endregion
+
+		#region IChildObject Members
+
+		/// <summary>
+		/// Tries to extract a LightGroup from the parent object
+		/// </summary>
+		public override void AddedToParent( Object parentObject )
+		{
+			base.AddedToParent( parentObject );
+			m_ParentLights	= null;
+			m_ParentLights	= GetParentLightGroup( );
+		}
+
+		#endregion
+
+		private LightGroup	GetParentLightGroup( )
+		{
+			//	Check if the parent's light group has already been cached
+			if ( m_ParentLights != null )
+			{
+				return m_ParentLights;
+			}
+
+			//	No parent? No light group
+			if ( ( Parent == null ) || ( !( Parent is Components.IParentObject ) ) )
+			{
+				return null;
+			}
+
+			//	Try to find the light group in the parent's child list
+			foreach ( Object childObj in ( ( Components.IParentObject )Parent ).Children )
+			{
+				if ( childObj is LightGroup )
+				{
+					return ( LightGroup )childObj;
+				}
+			}
+
+			return null;
 		}
 
 		private static RenderTechnique			ms_OverrideTechnique;
 		private static bool						ms_DumpLights	= true;
 
-		private ArrayList						m_Lights		= new ArrayList( );
+		private LightGroup						m_ParentLights	= null;
 		private RenderTarget[]					m_RenderTargets	= new RenderTarget[ MaxLights ];
 		private float							m_NearZ			= 1.0f;
 		private float							m_FarZ			= 500.0f;

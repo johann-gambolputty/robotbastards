@@ -34,7 +34,7 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// The currently selected technique in Effect
 		/// </summary>
-		public SelectedTechnique	Technique
+		public AppliedTechnique	Technique
 		{
 			get
 			{
@@ -45,7 +45,7 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Sets the selected technique by name
 		/// </summary>
-		public string				SelectedTechniqueName
+		public string				AppliedTechniqueName
 		{
 			set
 			{
@@ -65,7 +65,6 @@ namespace RbEngine.Rendering
 			set
 			{
 				m_RenderedObject = value;
-				m_Technique.RenderCallback = new RenderTechnique.RenderDelegate( m_RenderedObject.Render );
 			}
 		}
 
@@ -83,7 +82,7 @@ namespace RbEngine.Rendering
 		/// </summary>
 		public void Render( )
 		{
-			m_Technique.Apply( );
+			m_Technique.Apply( new TechniqueRenderDelegate( m_RenderedObject.Render ) );
 		}
 
 		#endregion
@@ -134,6 +133,6 @@ namespace RbEngine.Rendering
 		#endregion
 		
 		private IRender				m_RenderedObject;
-		private SelectedTechnique	m_Technique = new SelectedTechnique( );
+		private AppliedTechnique	m_Technique = new AppliedTechnique( );
 	}
 }

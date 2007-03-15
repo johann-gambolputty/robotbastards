@@ -43,8 +43,7 @@ namespace RbOpenGlRendering.Composites
 
 			m_Effect = new RenderEffect( technique );
 
-			m_Technique = new SelectedTechnique( m_Effect );
-			m_Technique.RenderCallback = new RenderTechnique.RenderDelegate( RenderPlane );
+			m_Technique = new AppliedTechnique( m_Effect );
 		}
 
 		/// <summary>
@@ -81,7 +80,7 @@ namespace RbOpenGlRendering.Composites
 				MakeCallList( );
 			}
 
-			m_Technique.Apply( );
+			m_Technique.Apply( new TechniqueRenderDelegate( RenderPlane ) );
 		}
 
 		private void RenderPlane( )
@@ -93,7 +92,7 @@ namespace RbOpenGlRendering.Composites
 
 		private int					m_CallList	= -1;
 		private RenderEffect		m_Effect;
-		private SelectedTechnique	m_Technique;
+		private AppliedTechnique	m_Technique;
 
 		/// <summary>
 		/// Destroys the call list that renders the ground plane

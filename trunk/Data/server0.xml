@@ -11,7 +11,7 @@
 	<modelSet name="models">
 		<resource path="sarge" name="sarge">
 			<reference modelPath="effects/perPixelTextured" property="Effect"/>
-			<string value="NormalTechnique" property="SelectedTechniqueName"/>
+			<string value="NormalTechnique" property="AppliedTechniqueName"/>
 		</resource>
 	</modelSet>
 
@@ -42,7 +42,7 @@
 				<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics">
 
 					<reference modelPath="effects/perPixelUntextured" property="Effect"/>
-					<string value="NormalTechnique" property="SelectedTechniqueName"/>
+					<string value="NormalTechnique" property="AppliedTechniqueName"/>
 					<object type="RbEngine.Rendering.Sphere" property="RenderedObject">
 						<float value="10" property="Radius"/>
 						<Point3 x="0" y="10" z="0" property="Centre"/>
@@ -82,7 +82,7 @@
 				<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics" alwaysAddAsChild="true">
 
 					<reference modelPath="effects/perPixelUntexturedShadowed" property="Effect"/>
-					<string value="WireframeTechnique" property="SelectedTechniqueName"/>
+					<string value="WireframeTechnique" property="AppliedTechniqueName"/>
 					<resource path="simpleEnvironment.dae" property="RenderedObject"/>
 
 				</object>

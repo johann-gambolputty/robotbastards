@@ -118,13 +118,13 @@ namespace RbOpenGlMd3Loader
 		/// <summary>
 		/// The selected render technique's name
 		/// </summary>
-		public string		SelectedTechniqueName
+		public string		AppliedTechniqueName
 		{
 			set
 			{
 				for ( int partIndex = 0; partIndex < m_PartMeshes.Length; ++partIndex )
 				{
-					m_PartMeshes[ partIndex ].SelectedTechniqueName = value;
+					m_PartMeshes[ partIndex ].AppliedTechniqueName = value;
 				}
 			}
 		}

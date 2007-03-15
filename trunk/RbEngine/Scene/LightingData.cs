@@ -63,7 +63,7 @@ namespace RbEngine.Scene
 		/// <summary>
 		/// Maximum number of lights in a group
 		/// </summary>
-		public const int	MaxLights = 4;
+		public const int	MaxLights	= 4;
 
 		/// <summary>
 		/// Stores lights that have been added to this 
@@ -82,7 +82,10 @@ namespace RbEngine.Scene
 		/// </summary>
 		public void AddedToParent( Object parentObject )
 		{
-			( ( ISceneRenderable )parentObject ).PreRenderList.Add( this );
+			if ( parentObject is ISceneRenderable )
+			{
+				( ( ISceneRenderable )parentObject ).PreRenderList.Add( this );
+			}
 		}
 
 		#endregion

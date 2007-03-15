@@ -81,12 +81,15 @@ namespace RbOpenGlRendering.RbCg
 		/// </summary>
 		public static void		BindTexture( IntPtr context, IntPtr parameter, Texture2d tex )
 		{
-			int texHandle = ( ( OpenGlTexture2d )tex ).TextureHandle;
-			Gl.glBindTexture( Gl.GL_TEXTURE_2D,texHandle  );
-			CgGl.cgGLSetTextureParameter( parameter, texHandle );
-			Cg.cgSetSamplerState( parameter );
-			Tao.Cg.CgGl.cgGLSetManageTextureParameters( context, true );
-		//	Gl.glBindTexture( Gl.GL_TEXTURE_2D, 0 );
+			if ( tex != null )
+			{
+				int texHandle = ( ( OpenGlTexture2d )tex ).TextureHandle;
+				Gl.glBindTexture( Gl.GL_TEXTURE_2D, texHandle );
+				CgGl.cgGLSetTextureParameter( parameter, texHandle );
+				Cg.cgSetSamplerState( parameter );
+				Tao.Cg.CgGl.cgGLSetManageTextureParameters( context, true );
+			//	Gl.glBindTexture( Gl.GL_TEXTURE_2D, 0 );
+			}
 		}
 
 		/// <summary>

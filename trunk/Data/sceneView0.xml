@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<!--
+	This file is used to set up a SceneView object. The object must be passed into the ResourceManager.Load() method for this to work.
+	See SceneView.Load() for an example
+-->
+
+<rb>
+
+	<!-- Scene view camera -->
+	<object type="RbEngine.Cameras.SphereCamera" property="Camera"/>
+
+	<!-- Scene lights (required for ShadowBufferBuilder) -->
+	<object type="RbEngine.Scene.SceneViewLightGroup"/>
+
+
+	<!-- Scene view techniques -->
+	<!-- A set of IRender objects applied in sequence to render the SceneView -->
+
+	<!-- Shadow buffer builder -->
+	<!-- Requires that the SceneView object has a LightingData component -->
+	<object type="RbEngine.Rendering.ShadowBufferTechnique" property="ViewTechniques">
+	
+		<!-- Standard scene technique -->
+		<object type="RbEngine.Rendering.AppliedTechnique">
+
+			<!-- Set up a technique to clear the depth and colour buffers, apply the view camera, and render the scene -->
+			<object type="RbEngine.Rendering.RenderTechnique" property="Technique">
+
+				<object type="RbEngine.Rendering.RenderPass">
+					<object type="RbEngine.Rendering.ClearTargetDepth"/>
+					<object type="RbEngine.Rendering.ClearTargetColour"/>
+				</object>
+
+			</object>
+
+		</object>
+
+	</object>
+
+</rb>
