@@ -29,7 +29,6 @@
 			<!-- Test scenery :) -->
 			<object type="RbEngine.Components.Simple.GroundPlane"/>
 
-
 			<!-- Entities -->
 			<object type="RbEngine.Entities.Entity3">
 

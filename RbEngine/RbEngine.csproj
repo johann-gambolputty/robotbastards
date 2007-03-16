@@ -340,12 +340,32 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Interaction\CommandCursorEventArgs.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Interaction\CommandCursorInputBinding.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Interaction\CommandEventArgs.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Interaction\CommandInput.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Interaction\CommandInputBinding.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Interaction\CommandKeyInput.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -360,7 +380,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Interaction\CommandMessage.cs"
+                    RelPath = "Interaction\CommandListManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Interaction\CommandMouseMoveInput.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -735,22 +760,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Scene\ArrayObjectSet.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Scene\Clock.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Scene\ClosestRay3IntersectionQuery.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Scene\DelegateQuery.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -761,6 +771,11 @@
                 />
                 <File
                     RelPath = "Scene\ILightingManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\IRayCaster.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -785,16 +800,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Scene\ObjectSet.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Scene\Query.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Scene\RenderManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -811,21 +816,6 @@
                 />
                 <File
                     RelPath = "Scene\SceneView.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Scene\SpatialQuery.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Scene\TypeGraphObjectSet.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Scene\TypeQuery.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

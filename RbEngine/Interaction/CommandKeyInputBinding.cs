@@ -9,60 +9,40 @@ namespace RbEngine.Interaction
 	public class CommandKeyInputBinding : CommandInputBinding
 	{
 		/// <summary>
-		/// Client-specific binding
-		/// </summary>
-		private new class ClientBinding : CommandInputBinding.ClientBinding
-		{
-			/// <summary>
-			/// Setup constructor
-			/// </summary>
-			public ClientBinding( Network.Client client, Keys key ) :
-					base( client )
-			{
-				m_Key = key;
-				//	TODO: Missing client now...
-			//	client.Control.KeyDown += new KeyEventHandler( OnKeyDown );
-			//	client.Control.KeyUp += new KeyEventHandler( OnKeyUp );
-			}
-
-			private void	OnKeyDown( object sender, KeyEventArgs args )
-			{
-				if ( args.KeyCode == m_Key )
-				{
-					m_Active = true;
-				}
-			}
-
-			private void	OnKeyUp( object sender, KeyEventArgs args )
-			{
-				if ( args.KeyCode == m_Key )
-				{
-					m_Active = false;
-				}
-			}
-			
-			private Keys	m_Key;
-		}
-
-		/// <summary>
 		/// Setup constructor
 		/// </summary>
 		/// <param name="key">Key to check for</param>
-		public CommandKeyInputBinding( Keys key )
+		public CommandKeyInputBinding( Scene.SceneView view, Keys key ) :
+			base( view )
 		{
 			m_Key = key;
+
+			view.Control.OnKeyDown += new KeyEventHandler( OnKeyDown );
+			view.Control.OnKeyUp += new KeyEventHandler( OnKeyUp );
 		}
 
 		/// <summary>
-		/// Binds to the specified client
+		/// Handles a key down even in the scene view's control
 		/// </summary>
-		/// <param name="client">Client to bind to</param>
-		public override CommandInputBinding.ClientBinding		BindToClient( Network.Client client )
+		private void OnKeyDown( KeyEventArgs args )
 		{
-			return new ClientBinding( client, m_Key );
+			if ( args.KeyCode == m_Key )
+			{
+				m_Active = true;
+			}
 		}
 
-		private Keys				m_Key;
+		/// <summary>
+		/// Handles a key up even in the scene view's control
+		/// </summary>
+		private void OnKeyUp( KeyEventArgs args )
+		{
+			if ( args.KeyCode == m_Key )
+			{
+				m_Active = false;
+			}
+		}
 
+		private Keys m_Key;
 	}
 }

@@ -94,8 +94,15 @@ namespace RbEngine.Cameras
 			m_Camera.LookAt = newLookAt;
 
 			//	Resolve
-			Maths.Ray3				pickRay			= new Maths.Ray3( m_Camera.Position, ( newLookAt - m_Camera.Position ).MakeNormal( ) );
-			Maths.Ray3Intersection	intersection	= Scene.ClosestRay3IntersectionQuery.Get( pickRay, m_Scene.Objects );
+			Maths.Ray3 pickRay = new Maths.Ray3( m_Camera.Position, ( newLookAt - m_Camera.Position ).MakeNormal( ) );
+
+			Scene.IRayCaster raycaster = ( Scene.IRayCaster )m_Scene.GetSystem( typeof( Scene.IRayCaster ) );
+			if ( raycaster == null )
+			{
+				return;
+			}
+
+			Maths.Ray3Intersection intersection = raycaster.CastRay( m_Camera.Position, ( newLookAt - m_Camera.Position ).MakeNormal( ), null );
 			if ( intersection != null )
 			{
 				newLookAt = intersection.IntersectionPosition;

@@ -6,17 +6,8 @@ namespace RbEngine.Interaction
 	/// <summary>
 	/// A list of commands
 	/// </summary>
-	public class CommandList : Components.Node
+	public class CommandList : Components.Node, Components.INamedObject
 	{
-
-		/// <summary>
-		/// Setup
-		/// </summary>
-		public CommandList( )
-		{
-			m_Children = new ArrayList( );
-		}
-
 		/// <summary>
 		/// Access the command list (synonym for Components.Node.Children)
 		/// </summary>
@@ -24,19 +15,19 @@ namespace RbEngine.Interaction
 		{
 			get
 			{
-				return m_Children;
+				return Children;
 			}
 		}
 
 		/// <summary>
-		/// Binds all commands to the specified client
+		/// Binds all commands to the specified scene view
 		/// </summary>
-		/// <param name="client">Client to bind to</param>
-		public void	BindToClient( Network.Client client )
+		/// <param name="client">View to bind to</param>
+		public void	BindToView( Scene.SceneView view )
 		{
 			foreach ( Command curCommand in Commands )
 			{
-				curCommand.BindToClient( client );
+				curCommand.BindToView( view );
 			}
 		}
 
@@ -50,15 +41,40 @@ namespace RbEngine.Interaction
 		}
 
 		/// <summary>
-		/// Updates the list of commands. Active commands send their command messages to the specified target
+		/// Updates the list of commands
 		/// </summary>
-		/// <param name="commandTarget">Target to send command messages to</param>
-		public void	Update( Components.IMessageHandler commandTarget )
+		public void	Update( )
 		{
 			foreach ( Command curCommand in Commands )
 			{
-				curCommand.Update( commandTarget );
+				curCommand.Update( );
 			}
 		}
+
+		#region INamedObject Members
+
+		/// <summary>
+		/// Access to the name of this object
+		/// </summary>
+		public string Name
+		{
+			get
+			{
+				return m_Name;
+			}
+			set
+			{
+				m_Name = value;
+			}
+		}
+
+		/// <summary>
+		/// Event, invoked when the name of this object changes
+		/// </summary>
+		public event Components.NameChangedDelegate NameChanged;
+
+		#endregion
+
+		private string	m_Name;
 	}
 }

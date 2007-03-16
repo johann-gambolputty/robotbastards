@@ -3,67 +3,49 @@ using System;
 namespace RbEngine.Interaction
 {
 	/// <summary>
-	/// Binds input events from a client to a Command object
+	/// Binds input events from a scene view to a Command object
 	/// </summary>
-	/// <remarks>
-	/// An input binding can be bound to 1 or more clients - it's up to the CommandInputBinding derived class
-	/// to subscribe to input events from those clients, using the BindToClient() method.
-	/// </remarks>
 	public abstract class CommandInputBinding
 	{
 		/// <summary>
-		/// Base class for client-specific bindings
+		/// Scene view that this is bound to
 		/// </summary>
-		public class ClientBinding
+		public Scene.SceneView	View
 		{
-			/// <summary>
-			/// true if the input that activates the command is present
-			/// </summary>
-			public bool					Active
+			get
 			{
-				get
-				{
-					return m_Active;
-				}
+				return m_View;
 			}
-
-			/// <summary>
-			/// The bound client
-			/// </summary>
-			public Network.Client		Client
-			{
-				get
-				{
-					return m_Client;
-				}
-			}
-
-			/// <summary>
-			/// Sets the bound client
-			/// </summary>
-			/// <param name="client">Client to bind to</param>
-			public						 ClientBinding( Network.Client client )
-			{
-				m_Client = client;
-			}
-
-			/// <summary>
-			/// Set to true if the input that activates the command is present
-			/// </summary>
-			protected bool				m_Active;
-
-			/// <summary>
-			/// The bound client
-			/// </summary>
-			protected Network.Client	m_Client;
-
 		}
 
 		/// <summary>
-		/// Binds to the specified client
+		/// True if the input associated with this binding is active
 		/// </summary>
-		/// <param name="client"></param>
-		public abstract ClientBinding	BindToClient( Network.Client client );
+		public bool	Active
+		{
+			get
+			{
+				return m_Active;
+			}
+		}
 
+		/// <summary>
+		/// Sets the scene view that this input binding is associated with
+		/// </summary>
+		/// <param name="view"></param>
+		public CommandInputBinding( Scene.SceneView view )
+		{
+			m_View = view;
+		}
+
+		/// <summary>
+		/// Creates a CommandEventArgs object for this binding
+		/// </summary>
+		public virtual CommandEventArgs CreateEventArgs( Command cmd )
+		{
+			return new CommandEventArgs( cmd );
+		}
+
+		protected bool	m_Active = false;
 	}
 }

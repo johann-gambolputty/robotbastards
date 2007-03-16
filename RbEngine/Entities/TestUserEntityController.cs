@@ -4,7 +4,10 @@ using RbEngine.Rendering;
 
 namespace RbEngine.Entities
 {
-	public enum TestCommands
+	/// <summary>
+	/// Test command set
+	/// </summary>
+	public enum TestCommandId
 	{
 		Forward,
 		Back,
@@ -13,68 +16,6 @@ namespace RbEngine.Entities
 		Shoot,
 		Jump,
 		LookAt
-	}
-
-	public class TestLookAtCommandMessage : Interaction.CommandMessage
-	{
-		public TestLookAtCommandMessage( Interaction.Command cmd, Network.Client client, Maths.Point3 pt ) :
-			base( cmd, client )
-		{
-			m_Point = pt;
-		}
-
-		public Maths.Point3		LookAtPoint
-		{
-			get
-			{
-				return m_Point;
-			}
-		}
-
-		private Maths.Point3 m_Point;
-	}
-
-	public class TestLookAtCommand : Interaction.Command
-	{
-
-		public TestLookAtCommand( ) :
-			base( "lookAt", "Looks at where the mouse is pointing", ( ushort )TestCommands.LookAt )
-		{
-
-		}
-
-		/// <summary>
-		/// Adds an input binding to this command
-		/// </summary>
-		/// <param name="binding">Binding to add (must be derived from <see cref="Interaction.CommandCursorInputBinding"/>)</param>
-		public override void							AddBinding( Interaction.CommandInputBinding binding )
-		{
-			base.AddBinding( ( Interaction.CommandCursorInputBinding )binding );
-		}
-
-		/// <summary>
-		/// Generates a TestLookAtCommandMessage from the active binding
-		/// </summary>
-		protected override Interaction.CommandMessage	GenerateMessageFromActiveBinding( Interaction.CommandInputBinding.ClientBinding binding )
-		{
-			//	TODO: Missing client now. fix
-			/*
-			int screenX = ( ( Interaction.CommandCursorInputBinding.ClientBinding )binding ).X;
-			int screenY = ( ( Interaction.CommandCursorInputBinding.ClientBinding )binding ).Y;
-
-			//	TODO: Bodge (should use active camera's projection setup, + scene query, etc.)
-			Maths.Ray3 pickRay = ( ( Cameras.Camera3 )binding.Client.Camera ).PickRay( screenX, screenY );
-
-			Maths.Ray3Intersection intersection = Scene.ClosestRay3IntersectionQuery.Get( pickRay, binding.Client.Scene.Objects );
-			if ( intersection == null )
-			{
-				return null;
-			}
-
-			return new TestLookAtCommandMessage( this, binding.Client, intersection.IntersectionPosition );
-			*/
-			return null;
-		}
 	}
 
 	/// <summary>
@@ -88,11 +29,6 @@ namespace RbEngine.Entities
 		/// </summary>
 		public TestUserEntityController( )
 		{
-			//	TODO: HACK REMOVEME. Requires reference resolution in RbXmlLoader, so controller can be defined as:
-			//	<object type="RbEngine.Entities.TestUserEntityController">
-			//		<reference name="$server" property="CommandMessageSource"/>
-			//	</object>
-		//	CommandMessageSource = RbEngine.Network.ServerManager.Inst.FindServer( "server0" );
 		}
 
 		/// <summary>

@@ -33,5 +33,7 @@
 		</object>
 
 	</object>
+	
+	<object type="RbEngine.Scene.FpsDisplay"/>
 
 </rb>
