@@ -35,21 +35,7 @@
 
 				<Point3 x="20" y="0.5" z="0" property="NextPosition"/>
 
-				<!-- -->
 				<instance modelPath="models/sarge" property="Graphics" alwaysAddAsChild="true"/>
-
-				<!--
-				<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics">
-
-					<reference modelPath="effects/perPixelUntextured" property="Effect"/>
-					<string value="NormalTechnique" property="AppliedTechniqueName"/>
-					<object type="RbEngine.Rendering.Sphere" property="RenderedObject">
-						<float value="10" property="Radius"/>
-						<Point3 x="0" y="10" z="0" property="Centre"/>
-					</object>
-				</object>
-				-->
-
 				<object type="RbEngine.Scene.LightingData"/>
 
 				<object type="RbEngine.Entities.TestUserEntityController">
@@ -57,16 +43,15 @@
 
 			</object>
 
-
 			<!-- Lights -->
 			<object type="RbEngine.Entities.Entity3">
 
-				<Point3 x="30" y="30" z="30" property="NextPosition"/>
+				<Point3 x="50" y="30" z="30" property="NextPosition"/>
 
 				<object type="RbEngine.Rendering.SpotLight">
-					<Point3 x="30" y="30" z="30" property="Position"/>
+					<Point3 x="50" y="30" z="30" property="Position"/>
 					<Point3 x="0" y="0" z="0" property="LookAt"/>
-					<float value="55" property="ArcDegrees"/>
+					<float value="40" property="ArcDegrees"/>
 				</object>
 
 				<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics">

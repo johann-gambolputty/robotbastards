@@ -1,7 +1,5 @@
 sampler2D Texture0 = sampler_state
 {
-//	CompareMode	= CompareRToTexture;
-//	CompareFunc	= Less;
 	DepthMode	= Luminance;
 	MinFilter	= Nearest;
 	MagFilter	= Nearest;
@@ -68,7 +66,7 @@ float4 TestFragmentShader( TestOutput input ) : COLOR
 	float3	lightVec		= input.m_VecToLight;
 	float3	halfVec			= normalize( lightVec + EyeZAxis );
 
-	float	shadowFactor	= ( storedDepth >= lightDepth ) && ( dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ) ? 1 : 0.3f;
+	float	shadowFactor	= ( storedDepth >= lightDepth ) && ( -dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ) ? 1 : 0.3f;
 
 	float	spotDiffuse		= dot( normal, lightVec ) * shadowFactor.xxx;
 	float	specular		= dot( normal, halfVec );

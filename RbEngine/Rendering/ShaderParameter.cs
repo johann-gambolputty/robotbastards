@@ -32,7 +32,8 @@ namespace RbEngine.Rendering
 		/// </summary>
 		/// <param name="val">New parameter value</param>
 		/// <remarks>
-		/// Assumes that this parameter is a texture sampler of some description
+		/// Assumes that this parameter is a texture sampler of some description. Assumes that the texture
+		/// is already set up in the renderer
 		/// </remarks>
 		public abstract void	Set( Texture2d val );
 

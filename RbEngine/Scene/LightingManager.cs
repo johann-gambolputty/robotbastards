@@ -94,7 +94,7 @@ namespace RbEngine.Scene
 			lights.Clear( );
 			for ( int lightIndex = 0; lightIndex < m_Lights.Count; ++lightIndex )
 			{
-				lights.Add( ( Rendering.Light )m_Lights[ lightIndex ] );
+				lights.Add( ( Rendering.Light )m_Lights[ lightIndex ] );;
 			}
 		}
 

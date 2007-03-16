@@ -177,9 +177,9 @@ namespace RbEngine.Rendering
 					{
 						curTarget.Texture.Save( string.Format( "ShadowBuffer{0}.png", numBuffers - 1 ) );
 					}
+					ms_DumpLights = false;
 				}
 			}
-			ms_DumpLights = false;
 
 			Renderer.Inst.PopTransform( Transform.LocalToWorld );
 			Renderer.Inst.PopTransform( Transform.WorldToView );
@@ -230,7 +230,7 @@ namespace RbEngine.Rendering
 		private LightGroup						m_ShadowLights	= null;
 		private RenderTarget[]					m_RenderTargets	= new RenderTarget[ MaxLights ];
 		private float							m_NearZ			= 1.0f;
-		private float							m_FarZ			= 500.0f;
+		private float							m_FarZ			= 800.0f;
 		private ShaderParameterCustomBinding	m_ShadowMatrixBinding;
 		private ShaderParameterCustomBinding	m_ShadowNearZBinding;
 		private ShaderParameterCustomBinding	m_ShadowFarZBinding;

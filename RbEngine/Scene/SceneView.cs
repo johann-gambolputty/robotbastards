@@ -135,6 +135,8 @@ namespace RbEngine.Scene
 				Camera.Begin( );
 			}
 
+			m_Scene.Rendering.RenderUpdate( );
+
 			if ( m_ViewTechniques.Count == 0 )
 			{
 				renderer.SetViewport( 0, 0, m_Control.Width, m_Control.Height );
