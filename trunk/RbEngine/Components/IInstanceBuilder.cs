@@ -11,5 +11,10 @@ namespace RbEngine.Components
 		/// Creates an instance of this object
 		/// </summary>
 		object CreateInstance( );
+
+		/// <summary>
+		/// Creates an instance of this object, using a list of parameters to pass to the constructor
+		/// </summary>
+		object CreateInstance( object[] constructorParams );
 	}
 }

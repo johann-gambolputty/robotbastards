@@ -69,6 +69,14 @@ namespace RbOpenGlMd3Loader
 			return new ModelInstance( this );
 		}
 
+		/// <summary>
+		/// Creates an instance of this object, with the specified object list as construction parameters
+		/// </summary>
+		public Object CreateInstance( object[] constructorParams )
+		{
+			throw new ApplicationException( "Can't instance RbOpenGlMd3Loader.Model with parameters" );
+		}
+
 		#endregion
 
 		#region INamedObject Members

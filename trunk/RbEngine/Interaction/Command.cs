@@ -3,11 +3,42 @@ using System.Collections;
 
 namespace RbEngine.Interaction
 {
+
+	/// <summary>
+	/// Delegate, used by the Command.Activated, Command.Active, Command.Deactivated and Command.Inactive events
+	/// </summary>
+	public delegate void	CommandEventDelegate( CommandEventArgs args );
+
 	/// <summary>
 	/// User command
 	/// </summary>
 	public class Command
 	{
+		#region	Command events
+
+		/// <summary>
+		/// Event, fired on the frame that this command becomes active (e.g. the first frame a key is pressed)
+		/// </summary>
+		public event CommandEventDelegate	Activated;
+
+		/// <summary>
+		/// Events, fired every frame that the command is active (e.g. the first and subsequent frames that a key is pressed)
+		/// </summary>
+		public event CommandEventDelegate	Active;
+
+		/// <summary>
+		/// Event, fired on the frame that this command becomes inactive (e.g. the frame that a key is raised)
+		/// </summary>
+		public event CommandEventDelegate	Deactivated;
+
+		/// <summary>
+		/// Event, fired every frame that the command is inactive (e.g. every frame that a key is not pressed)
+		/// </summary>
+		public event CommandEventDelegate	Inactive;
+
+
+		#endregion
+
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
@@ -22,15 +53,6 @@ namespace RbEngine.Interaction
 		}
 
 		/// <summary>
-		/// Adds an input binding to this command
-		/// </summary>
-		/// <param name="binding"></param>
-		public virtual void			AddBinding( CommandInputBinding binding )
-		{
-			m_BindingTemplates.Add( binding );
-		}
-
-		/// <summary>
 		/// Command identifier
 		/// </summary>
 		public ushort				Id
@@ -41,74 +63,110 @@ namespace RbEngine.Interaction
 			}
 		}
 
+		#region	Command input
+
 		/// <summary>
-		/// The list of CommandInputBinding objects
+		/// The list of CommandInput objects
 		/// </summary>
-		public ArrayList			Bindings
+		public ArrayList			Inputs
 		{
 			get
 			{
-				return m_BindingTemplates;
+				return m_Inputs;
 			}
 		}
 
 		/// <summary>
-		/// Binds this command to a given client
+		/// Adds an input binding to this command
 		/// </summary>
-		/// <param name="client">Client to bind to</param>
-		/// <seealso cref="CommandInputBinding">CommandInputBinding</seealso>
-		public void					BindToClient( Network.Client client )
+		public virtual void			AddInput( CommandInput input )
 		{
-			foreach ( CommandInputBinding binding in m_BindingTemplates )
+			m_Inputs.Add( input );
+		}
+
+		/// <summary>
+		/// Binds this command to a given scene view
+		/// </summary>
+		/// <param name="view">View to bind to</param>
+		public void					BindToView( Scene.SceneView view )
+		{
+			foreach ( CommandInput curInput in m_Inputs )
 			{
-				m_ClientBindings.Add( binding.BindToClient( client ) );
+				m_Bindings.Add( input.BindToView( view ) );
 			}
 		}
 
 		/// <summary>
-		/// Updates the command
+		/// Unbinds this command from a given scene view
 		/// </summary>
-		public void					Update( Components.IMessageHandler commandTarget )
+		/// <param name="view">View to unbind from</param>
+		public void					UnbindFromView( Scene.SceneView view )
 		{
-			foreach ( CommandInputBinding.ClientBinding binding in m_ClientBindings )
+			for ( int bindingIndex = 0; bindingIndex < m_Bindings.Count; )
 			{
-				if ( binding.Active )
+				if ( ( ( CommandInputBinding )m_Bindings[ bindingIndex ] ).View == view )
 				{
-					CommandMessage msg = GenerateMessageFromActiveBinding( binding );
-					if ( msg != null )
-					{
-						commandTarget.HandleMessage( msg );
-						return;
-					}
+					m_Bindings.RemoveAt( bindingIndex );
+				}
+				else
+				{
+					++bindingIndex;
 				}
 			}
 		}
 
+		#endregion
+
 		/// <summary>
-		/// Generates a CommandMessage form an active input binding
+		/// Updates this command
 		/// </summary>
-		protected virtual CommandMessage	GenerateMessageFromActiveBinding( CommandInputBinding.ClientBinding binding )
+		public void					Update( )
 		{
-			return new CommandMessage( this, binding.Client );
+			bool wasActive = ( m_LastActiveUpdate == m_UpdateCount );
+			++m_UpdateCount;
+
+			foreach ( CommandInputBinding curBinding in m_Bindings )
+			{
+				if ( curBinding.Active )
+				{
+					//	Always invoke the Active event if the command is active
+					if ( Active != null )
+					{
+						Active( curBinding.CreateEventArgs( ) );
+					}
+					//	Invoke the Activated event if the command has only just gone active
+					if ( ( !wasActive ) && ( Activated != null ) )
+					{
+						Activated( curBinding.CreateEventArgs( ) );
+					}
+					m_LastActiveUpdate = m_UpdateCount;
+				}
+			}
+
+			if ( m_LastActiveUpdate != m_UpdateCount )
+			{
+				//	Always invoke the Inactive event, if the command is inactive
+				if ( Inactive != null )
+				{
+					Inactive( curBinding.CreateEventArgs( ) );
+				}
+				//	Invoke the Deactivated event if the command has only just gone inactive
+				if ( ( wasActive ) && ( Deactivated != null ) )
+				{
+					Deactivated( curBinding.CreateEventArgs( ) );
+				}
+			}
 		}
-
-		/// <summary>
-		/// Active event delegate type
-		/// </summary>
-	//	public delegate void		ActiveDelegate( );
-
-		/// <summary>
-		/// Event, invoked by this command when it is active
-		/// </summary>
-	//	public event ActiveDelegate	Active;
 
 		#region	Private stuff
 
 		private string				m_Name;
 		private string				m_Description;
-		private ArrayList			m_BindingTemplates	= new ArrayList( );
-		private ArrayList			m_ClientBindings	= new ArrayList( );
+		private ArrayList			m_Inputs	= new ArrayList( );
+		private ArrayList			m_Bindings	= new ArrayList( );
 		private ushort				m_Id;
+		private int					m_UpdateCount;
+		private int					m_LastActiveUpdate;
 
 		#endregion
 	}

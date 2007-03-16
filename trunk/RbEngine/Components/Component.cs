@@ -58,7 +58,7 @@ namespace RbEngine.Components
 	/// <summary>
 	/// Handy base class that derives from Node, and implements IInstanceable, IMessageHandler and INamedObject (TODO)
 	/// </summary>
-	public class Component : Node, IInstanceBuilder, IMessageHandler
+	public class Component : Node, IMessageHandler
 	{
 		#region	Messaging tests
 
@@ -173,50 +173,6 @@ namespace RbEngine.Components
 		}
 
 		#endregion
-
-		#region IInstanceable Members
-
-		/// <summary>
-		/// Creates a new instance of the derived type of this component, then tries to create instances of all the child objects
-		/// </summary>
-		/// <returns> Returns the new instance </returns>
-		public object CreateInstance( )
-		{
-			Component clone = ( Component )Activator.CreateInstance( GetType( ) );
-			InstanceChildren( clone );
-			return clone;
-		}
-
-		#endregion
-
-		/// <summary>
-		/// Helper method for CreateInstance() - instances all child objects belonging to this component
-		/// </summary>
-		/// <param name="instance"> The instance to add child instances to</param>
-		/// <remarks>
-		/// If a child object of this component implements IInstanceable, then IInstanceable.CreateInstance() is called to instance it. If a child object
-		/// of this component implements ICloneable, then ICloneable.Clone() is called to instance it. If a child object implements neither
-		/// of these interfaces, a reference to the existing child object is added to the instance component
-		/// </remarks>
-		protected void InstanceChildren( Component instance )
-		{
-			foreach ( Object curChild in m_Children )
-			{
-				if ( curChild is IInstanceBuilder )
-				{
-					instance.AddChild( ( ( IInstanceBuilder )curChild ).CreateInstance( ) );
-				}
-				else if ( curChild is ICloneable )
-				{
-					instance.AddChild( ( ( ICloneable )curChild ).Clone( ) );
-				}
-				else
-				{
-					Output.WriteLineCall( Output.ComponentWarning, "Could not instance child node of type \"{0}\"", curChild.GetType( ).Name );
-					instance.AddChild( curChild );
-				}
-			}
-		}
 
 		private System.Collections.Hashtable m_RecipientChains = null;
 	}

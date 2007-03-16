@@ -78,6 +78,17 @@ namespace RbEngine.Scene
 			}
 		}
 
+		/// <summary>
+		/// Gets the control associated with this view
+		/// </summary>
+		public Control				Control
+		{
+			get
+			{
+				return m_Control;
+			}
+		}
+
 		#endregion
 
 		#region	Constructors

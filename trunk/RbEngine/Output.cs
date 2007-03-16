@@ -124,6 +124,25 @@ namespace RbEngine
 
 		#endregion
 
+		#region	Common scene switches
+
+		/// <summary>
+		/// Switch for scene information. Disabled in non-DEBUG builds
+		/// </summary>
+		public static DebugSwitch		SceneInfo			= new DebugSwitch( "sceneInfo", "Scene information diagnostic output" );
+
+		/// <summary>
+		/// Switch for scene warnings
+		/// </summary>
+		public static TraceSwitch		SceneWarning		= new TraceSwitch( "sceneWarn", "Scene warning diagnostic output" );
+
+		/// <summary>
+		/// Switch for scene errors
+		/// </summary>
+		public static TraceSwitch		SceneError	 		= new TraceSwitch( "sceneError", "Scene error diagnostic output" );
+
+		#endregion
+
 		#region	Common networking switches
 
 		/// <summary>

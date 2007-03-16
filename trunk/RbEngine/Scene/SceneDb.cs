@@ -159,17 +159,6 @@ namespace RbEngine.Scene
 			m_OnChildAdded	= new Components.ChildAddedDelegate( OnChildObjectAdded );
 		}
 
-		/// <summary>
-		/// All the objects making up the scene
-		/// </summary>
-		public ObjectSet	Objects
-		{
-			get
-			{
-				return m_Objects;
-			}
-		}
-
 		#endregion
 
 
@@ -197,7 +186,7 @@ namespace RbEngine.Scene
 		{
 			get
 			{
-				return Objects;
+				return m_Children;
 			}
 		}
 
@@ -210,7 +199,7 @@ namespace RbEngine.Scene
 		/// </remarks>
 		public void AddChild( Object childObject )
 		{
-			Objects.Add( childObject );
+			m_Children.Add( childObject );
 
 			Components.IChildObject childInterface = childObject as Components.IChildObject;
 			if ( childInterface != null )
@@ -235,7 +224,7 @@ namespace RbEngine.Scene
 		/// </remarks>
 		public void RemoveChild( Object childObject )
 		{
-			Objects.Remove( childObject );
+			m_Children.Remove( childObject );
 
 			if ( ChildRemoved != null )
 			{
@@ -308,12 +297,18 @@ namespace RbEngine.Scene
 
 		#endregion
 
-		private ObjectSet						m_Objects	= new TypeGraphObjectSet( );
+		#region	Private stuff
+
+		private ArrayList						m_Children	= new ArrayList( );
 		private RenderManager					m_Rendering;
 		private ArrayList						m_Clocks	= new ArrayList( );
 		private bool							m_Paused	= true;
 		private Components.Node					m_Systems;
 		private Components.ChildAddedDelegate	m_OnChildAdded;
 		private Network.ServerBase				m_Server;
+
+		private static SceneDb					ms_CurrentBuild;
+
+		#endregion
 	}
 }
