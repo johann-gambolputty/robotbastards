@@ -72,15 +72,21 @@ namespace RbEngine.Scene
 		}
 
 		/// <summary>
-		/// Renders all the stored objects
+		/// The PreRender update step. This should be called prior to calling Render()
 		/// </summary>
-		public void					Render( )
+		public void					RenderUpdate( )
 		{
 			if ( PreRender != null )
 			{
 				PreRender( this );
 			}
+		}
 
+		/// <summary>
+		/// Renders all the stored objects
+		/// </summary>
+		public void					Render( )
+		{
 			long curTime = TinyTime.CurrentTime;
 			foreach ( Scene.ISceneRenderable renderable in m_SceneRenderables )
 			{

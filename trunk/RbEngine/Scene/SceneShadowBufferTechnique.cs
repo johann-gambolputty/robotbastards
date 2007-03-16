@@ -3,7 +3,7 @@ using System;
 namespace RbEngine.Scene
 {
 	/// <summary>
-	/// Summary description for SceneShadowBufferTechnique.
+	/// Extends ShadowBufferTechnique, providing the ShadowLights property from the scene lighting manager
 	/// </summary>
 	public class SceneShadowBufferTechnique : Rendering.ShadowBufferTechnique, ISceneObject
 	{

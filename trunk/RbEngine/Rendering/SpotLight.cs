@@ -33,7 +33,7 @@ namespace RbEngine.Rendering
 		{
 			set
 			{
-				m_Direction = ( Position - value ).MakeNormal( );
+				m_Direction = ( value - Position ).MakeNormal( );
 			}
 		}
 

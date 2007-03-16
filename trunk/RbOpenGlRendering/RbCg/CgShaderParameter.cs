@@ -84,11 +84,9 @@ namespace RbOpenGlRendering.RbCg
 			if ( tex != null )
 			{
 				int texHandle = ( ( OpenGlTexture2d )tex ).TextureHandle;
-				Gl.glBindTexture( Gl.GL_TEXTURE_2D, texHandle );
 				CgGl.cgGLSetTextureParameter( parameter, texHandle );
 				Cg.cgSetSamplerState( parameter );
 				Tao.Cg.CgGl.cgGLSetManageTextureParameters( context, true );
-			//	Gl.glBindTexture( Gl.GL_TEXTURE_2D, 0 );
 			}
 		}
 
@@ -97,7 +95,8 @@ namespace RbOpenGlRendering.RbCg
 		/// </summary>
 		/// <param name="val">New parameter value</param>
 		/// <remarks>
-		/// Assumes that this parameter is a texture sampler of some description
+		/// Assumes that this parameter is a texture sampler of some description. Texture must already be bound to the
+		/// renderer
 		/// </remarks>
 		public override void	Set( Texture2d val )
 		{
