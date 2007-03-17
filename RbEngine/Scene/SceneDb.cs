@@ -307,8 +307,6 @@ namespace RbEngine.Scene
 		private Components.ChildAddedDelegate	m_OnChildAdded;
 		private Network.ServerBase				m_Server;
 
-		private static SceneDb					ms_CurrentBuild;
-
 		#endregion
 	}
 }

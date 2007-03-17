@@ -102,7 +102,7 @@ namespace RbEngine.Cameras
 				return;
 			}
 
-			Maths.Ray3Intersection intersection = raycaster.CastRay( m_Camera.Position, ( newLookAt - m_Camera.Position ).MakeNormal( ), null );
+			Maths.Ray3Intersection intersection = raycaster.GetFirstIntersection( pickRay, null );
 			if ( intersection != null )
 			{
 				newLookAt = intersection.IntersectionPosition;

@@ -7,6 +7,9 @@
 
 <rb>
 
+	<!-- Active command set -->
+	<string value="TestCommands" property="ActiveCommandListName"/>
+
 	<!-- Scene view camera -->
 	<object type="RbEngine.Cameras.SphereCamera" property="Camera"/>
 

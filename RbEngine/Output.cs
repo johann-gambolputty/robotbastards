@@ -162,6 +162,25 @@ namespace RbEngine
 
 		#endregion
 
+		#region	Common input switches
+
+		/// <summary>
+		/// Switch for input information. Disabled in non-DEBUG builds
+		/// </summary>
+		public static DebugSwitch		InputInfo			= new DebugSwitch( "inputInfo", "Input information diagnostic output" );
+
+		/// <summary>
+		/// Switch for input warnings
+		/// </summary>
+		public static TraceSwitch		InputWarning		= new TraceSwitch( "inputWarn", "Input warning diagnostic output" );
+
+		/// <summary>
+		/// Switch for input errors
+		/// </summary>
+		public static TraceSwitch		InputError	 		= new TraceSwitch( "inputError", "Input error diagnostic output" );
+
+		#endregion
+
 		#region	Trace switch outputs
 
 		/// <summary>

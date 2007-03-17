@@ -17,14 +17,14 @@ namespace RbEngine.Interaction
 		{
 			m_Key = key;
 
-			view.Control.OnKeyDown += new KeyEventHandler( OnKeyDown );
-			view.Control.OnKeyUp += new KeyEventHandler( OnKeyUp );
+			view.Control.KeyDown	+= new KeyEventHandler( OnKeyDown );
+			view.Control.KeyUp		+= new KeyEventHandler( OnKeyUp );
 		}
 
 		/// <summary>
 		/// Handles a key down even in the scene view's control
 		/// </summary>
-		private void OnKeyDown( KeyEventArgs args )
+		private void OnKeyDown( object sender, KeyEventArgs args )
 		{
 			if ( args.KeyCode == m_Key )
 			{
@@ -35,7 +35,7 @@ namespace RbEngine.Interaction
 		/// <summary>
 		/// Handles a key up even in the scene view's control
 		/// </summary>
-		private void OnKeyUp( KeyEventArgs args )
+		private void OnKeyUp( object sender, KeyEventArgs args )
 		{
 			if ( args.KeyCode == m_Key )
 			{

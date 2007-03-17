@@ -33,6 +33,15 @@ namespace RbEngine
 		}
 
 		/// <summary>
+		/// Converts the specified time period, measured in ticks, into seconds
+		/// </summary>
+		/// <returns>Returns the time period in seconds</returns>
+		public static double		ToSeconds( long period )
+		{
+			return ToSeconds( 0, period );
+		}
+
+		/// <summary>
 		/// Gets the time period from when the tiny clock started ticking, to the current time, in seconds
 		/// </summary>
 		/// <returns>Returns the time period in seconds</returns>

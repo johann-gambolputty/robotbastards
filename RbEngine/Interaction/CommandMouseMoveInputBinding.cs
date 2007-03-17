@@ -15,8 +15,7 @@ namespace RbEngine.Interaction
 		public CommandMouseMoveInputBinding( Scene.SceneView view, MouseButtons button ) :
 				base( view )
 		{
-			m_View		= view;
-			m_Button	= button;
+			m_Button = button;
 
 			view.Control.MouseMove += new MouseEventHandler( OnMouseMove );
 		}
