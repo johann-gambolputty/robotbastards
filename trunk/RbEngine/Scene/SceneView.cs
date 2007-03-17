@@ -14,6 +14,49 @@ namespace RbEngine.Scene
 		#region	Public properties
 
 		/// <summary>
+		/// Access to the active command list
+		/// </summary>
+		public Interaction.CommandList	ActiveCommands
+		{
+			get
+			{
+				return m_ActiveCommands;
+			}
+			set
+			{
+				if ( m_ActiveCommands != null )
+				{
+					Output.WriteLineCall( Output.SceneInfo, "Unbinding command list \"{0}\"", m_ActiveCommands.Name );
+					m_ActiveCommands.UnbindFromView( this );
+				}
+				m_ActiveCommands = value;
+				if ( m_ActiveCommands != null )
+				{
+					Output.WriteLineCall( Output.SceneInfo, "Binding command list \"{0}\"", m_ActiveCommands.Name );
+					m_ActiveCommands.BindToView( this );
+				}
+			}
+		}
+
+
+		/// <summary>
+		/// Sets the ActiveCommands command list by looking up the command list manager with the value string
+		/// </summary>
+		public string				ActiveCommandListName
+		{
+			set
+			{
+				ActiveCommands = Interaction.CommandListManager.Inst.Get( value );
+				if ( ActiveCommands == null )
+				{
+					throw new ApplicationException( string.Format( "Could not find command list \"{0}\" to set scene view active commands", value ) );
+				}
+			}
+		}
+
+
+
+		/// <summary>
 		/// Access to the scene being viewed
 		/// </summary>
 		public SceneDb				Scene
@@ -262,10 +305,11 @@ namespace RbEngine.Scene
 
 		#endregion
 
-		private ArrayList			m_ViewTechniques = new ArrayList( );
-		private Scene.SceneDb		m_Scene;
-		private Cameras.CameraBase	m_Camera;
-		private Control				m_Control;
-		private Object				m_CameraController;
+		private ArrayList				m_ViewTechniques = new ArrayList( );
+		private Scene.SceneDb			m_Scene;
+		private Cameras.CameraBase		m_Camera;
+		private Control					m_Control;
+		private Object					m_CameraController;
+		private Interaction.CommandList	m_ActiveCommands;
 	}
 }

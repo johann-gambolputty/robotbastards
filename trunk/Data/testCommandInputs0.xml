@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rb>
+	<inputs command="Forward">
+		<input type="RbEngine.Interaction.CommandKeyInput" key="Up"/>
+		<input type="RbEngine.Interaction.CommandKeyInput" key="W"/>
+	</inputs>
+
+	<inputs command="Back">
+		<input type="RbEngine.Interaction.CommandKeyInput" key="Down"/>
+		<input type="RbEngine.Interaction.CommandKeyInput" key="S"/>
+	</inputs>
+
+	<inputs command="Left">
+		<input type="RbEngine.Interaction.CommandKeyInput" key="Left"/>
+		<input type="RbEngine.Interaction.CommandKeyInput" key="A"/>
+	</inputs>
+
+	<inputs command="Right">
+		<input type="RbEngine.Interaction.CommandKeyInput" key="Right"/>
+		<input type="RbEngine.Interaction.CommandKeyInput" key="D"/>
+	</inputs>
+
+	<inputs command="Jump">
+		<input type="RbEngine.Interaction.CommandKeyInput" key="Space"/>
+	</inputs>
+
+	<inputs command="LookAt">
+		<input type="RbEngine.Interaction.CommandMouseMoveInput"/>
+	</inputs>
+
+</rb>

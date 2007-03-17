@@ -13,7 +13,7 @@ namespace RbEngine.Interaction
 		public CommandEventArgs( Command cmd, Scene.SceneView view )
 		{
 			m_Command	= cmd;
-			m_View		= View;
+			m_View		= view;
 		}
 
 		/// <summary>

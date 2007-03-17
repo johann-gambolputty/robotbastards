@@ -69,6 +69,17 @@ namespace RbEngine.Components.Simple
 		#region	IRay3Intersector Members
 
 		/// <summary>
+		/// Gets the layer(s) that this object belongs to. Returns 0 (i.e. included in all raycasts) because this is a crappy test object
+		/// </summary>
+		public ulong			Layer
+		{
+			get
+			{
+				return 0;
+			}
+		}
+
+		/// <summary>
 		/// Checks if a ray intersects this object
 		/// </summary>
 		/// <param name="ray">Ray to check</param>

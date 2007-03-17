@@ -53,6 +53,9 @@ namespace RbTestApp
 				RbEngine.Resources.ResourceManager.Inst.Setup( ( System.Xml.XmlElement )doc.SelectSingleNode( "/resourceManager" ) );
 			}
 
+			//	Load in the test commands
+			RbEngine.Resources.ResourceManager.Inst.Load( "testCommandInputs0.xml", RbEngine.Entities.TestUserEntityController.Commands );
+
 			//
 			// Required for Windows Form Designer support
 			//
@@ -61,12 +64,11 @@ namespace RbTestApp
 		}
 
 		private RbEngine.Network.ServerBase			m_Server;
-		private RbEngine.Interaction.CommandList	m_Commands;
 
 		private void InputUpdateTimerTick( RbEngine.Scene.Clock clock )
 		{
 			//	TODO: Should the server be the command target?
-			m_Commands.Update( m_Server );
+		//	m_Commands.Update( );
 		}
 
 		/// <summary>
@@ -143,6 +145,7 @@ namespace RbTestApp
 			//	Load the test server file
 			RbEngine.Resources.ResourceManager.Inst.Load( "server0.xml" );
 
+			/*
 			RbEngine.Interaction.CommandList commands = new RbEngine.Interaction.CommandList( );
 
 			RbEngine.Interaction.Command cmd = new RbEngine.Interaction.Command( "forward", "moves forward", ( int )RbEngine.Entities.TestCommands.Forward );
@@ -170,6 +173,7 @@ namespace RbTestApp
 			commands.AddCommand( cmd );
 
 			m_Commands = commands;
+			*/
 
 			//	Set up server and client displays
 			m_Server = RbEngine.Network.ServerManager.Inst.FindServer( "server0" );

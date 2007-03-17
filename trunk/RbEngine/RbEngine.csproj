@@ -350,6 +350,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Interaction\CommandEnumDescriptionAttribute.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Interaction\CommandEventArgs.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -796,6 +801,11 @@
                 />
                 <File
                     RelPath = "Scene\LightingManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\RayCastManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -6,7 +6,7 @@ namespace RbEngine.Interaction
 	/// <summary>
 	/// Input from keystrokes
 	/// </summary>
-	public class CommandKeyInput : CommandInput
+	public class CommandKeyInput : CommandInput, Components.IXmlLoader
 	{
 		/// <summary>
 		/// Setup constructor
@@ -18,6 +18,14 @@ namespace RbEngine.Interaction
 		}
 
 		/// <summary>
+		/// Default constructor. Assigns no key
+		/// </summary>
+		public CommandKeyInput( )
+		{
+			m_Key = Keys.None;
+		}
+
+		/// <summary>
 		/// Creates a CommandKeyInputBinding associated with the specified view
 		/// </summary>
 		public override CommandInputBinding BindToView( Scene.SceneView view )
@@ -26,5 +34,25 @@ namespace RbEngine.Interaction
 		}
 
 		private Keys m_Key;
+
+		#region IXmlLoader Members
+
+		/// <summary>
+		/// Parses the generating element of this object
+		/// </summary>
+		public void ParseGeneratingElement( System.Xml.XmlElement element )
+		{
+			m_Key = ( Keys )Enum.Parse( typeof( Keys ), element.GetAttribute( "key" ), true );
+		}
+
+		/// <summary>
+		/// Parses an element in the definition of this object
+		/// </summary>
+		public bool ParseElement(System.Xml.XmlElement element)
+		{
+			return false;
+		}
+
+		#endregion
 	}
 }

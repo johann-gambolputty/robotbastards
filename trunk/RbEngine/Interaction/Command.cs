@@ -5,7 +5,7 @@ namespace RbEngine.Interaction
 {
 
 	/// <summary>
-	/// Delegate, used by the Command.Activated, Command.Active, Command.Deactivated and Command.Inactive events
+	/// Delegate, used by the Command.Activated and Command.Active events
 	/// </summary>
 	public delegate void	CommandEventDelegate( CommandEventArgs args );
 
@@ -25,17 +25,6 @@ namespace RbEngine.Interaction
 		/// Events, fired every frame that the command is active (e.g. the first and subsequent frames that a key is pressed)
 		/// </summary>
 		public event CommandEventDelegate	Active;
-
-		/// <summary>
-		/// Event, fired on the frame that this command becomes inactive (e.g. the frame that a key is raised)
-		/// </summary>
-		public event CommandEventDelegate	Deactivated;
-
-		/// <summary>
-		/// Event, fired every frame that the command is inactive (e.g. every frame that a key is not pressed)
-		/// </summary>
-		public event CommandEventDelegate	Inactive;
-
 
 		#endregion
 
@@ -92,7 +81,7 @@ namespace RbEngine.Interaction
 		{
 			foreach ( CommandInput curInput in m_Inputs )
 			{
-				m_Bindings.Add( input.BindToView( view ) );
+				m_Bindings.Add( curInput.BindToView( view ) );
 			}
 		}
 
@@ -132,31 +121,44 @@ namespace RbEngine.Interaction
 					//	Always invoke the Active event if the command is active
 					if ( Active != null )
 					{
-						Active( curBinding.CreateEventArgs( ) );
+						Active( curBinding.CreateEventArgs( this ) );
 					}
 					//	Invoke the Activated event if the command has only just gone active
 					if ( ( !wasActive ) && ( Activated != null ) )
 					{
-						Activated( curBinding.CreateEventArgs( ) );
+						Activated( curBinding.CreateEventArgs( this ) );
 					}
 					m_LastActiveUpdate = m_UpdateCount;
-				}
-			}
-
-			if ( m_LastActiveUpdate != m_UpdateCount )
-			{
-				//	Always invoke the Inactive event, if the command is inactive
-				if ( Inactive != null )
-				{
-					Inactive( curBinding.CreateEventArgs( ) );
-				}
-				//	Invoke the Deactivated event if the command has only just gone inactive
-				if ( ( wasActive ) && ( Deactivated != null ) )
-				{
-					Deactivated( curBinding.CreateEventArgs( ) );
+					break;
 				}
 			}
 		}
+
+		#region	Public properties
+
+		/// <summary>
+		/// Gets the name of this command
+		/// </summary>
+		public string				Name
+		{
+			get
+			{
+				return m_Name;
+			}
+		}
+
+		/// <summary>
+		/// Gets the description of this command
+		/// </summary>
+		public string				Description
+		{
+			get
+			{
+				return m_Description;
+			}
+		}
+
+		#endregion
 
 		#region	Private stuff
 

@@ -5,7 +5,7 @@ namespace RbEngine.Interaction
 	/// <summary>
 	/// Summary description for CommandCursorEventArgs.
 	/// </summary>
-	public class CommandCursorEventArgs
+	public class CommandCursorEventArgs : CommandEventArgs
 	{
 		/// <summary>
 		/// X position of the cursor

@@ -28,7 +28,6 @@ namespace RbEngine.Interaction
 				return m_Active;
 			}
 		}
-
 		/// <summary>
 		/// Sets the scene view that this input binding is associated with
 		/// </summary>
@@ -43,9 +42,10 @@ namespace RbEngine.Interaction
 		/// </summary>
 		public virtual CommandEventArgs CreateEventArgs( Command cmd )
 		{
-			return new CommandEventArgs( cmd );
+			return new CommandEventArgs( cmd, View );
 		}
 
-		protected bool	m_Active = false;
+		private Scene.SceneView	m_View;
+		protected bool			m_Active = false;
 	}
 }

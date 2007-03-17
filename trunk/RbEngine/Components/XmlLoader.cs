@@ -261,7 +261,7 @@ namespace RbEngine.Components
 					{
 						if ( !objectXmlLoader.ParseElement( curElement ) )
 						{
-							throw new RbXmlException( curElement, "Element was not handled by parent object of type \"{0}\"", LoadedObject.GetType( ).Name );
+							throw new RbXmlException( curElement, "Element \"{0}\" was not handled by parent object of type \"{1}\"", curElement.Name, LoadedObject.GetType( ).Name );
 						}
 					}
 				}
@@ -729,7 +729,23 @@ namespace RbEngine.Components
 				}
 				else
 				{
-					throw new RbXmlException( Element, "Only \"modelPath\" references are supported at the moment, sorry" );
+					string propertyName = Element.GetAttribute( "property" );
+					if ( propertyName != string.Empty )
+					{
+						try
+						{
+							System.Reflection.PropertyInfo referencedProperty = parentObject.GetType( ).GetProperty( propertyName );
+							LoadedObject = referencedProperty.GetValue( parentObject, null );
+						}
+						catch ( Exception exception )
+						{
+							throw new RbXmlException( exception, Element, "Failed to resolve reference to property \"{0}\"", propertyName );
+						}
+					}
+					else
+					{
+						throw new RbXmlException( Element, "Only \"modelPath\" and \"property\" references are supported at the moment, sorry" );
+					}
 				}
 
 				base.Resolve( parentObject );

@@ -5,7 +5,7 @@ namespace RbEngine.Components.Simple
 	/// <summary>
 	/// The ground plane (XZ plane)
 	/// </summary>
-	public class GroundPlane : Component, Maths.IRay3Intersector //, Scene.ISceneRenderable
+	public class GroundPlane : Component, Maths.IRay3Intersector, Scene.ISceneObject
 	{
 
 		/// <summary>
@@ -17,6 +17,17 @@ namespace RbEngine.Components.Simple
 		}
 
 		#region IRay3Intersector Members
+
+		/// <summary>
+		/// Gets the layer(s) that this object belongs to. Returns 0 (i.e. included in all raycasts) because this is a crappy test object
+		/// </summary>
+		public ulong			Layer
+		{
+			get
+			{
+				return 0;
+			}
+		}
 
 		/// <summary>
 		/// Checks if a ray intersects this object
@@ -57,5 +68,33 @@ namespace RbEngine.Components.Simple
 
 	//	private Rendering.IRender	m_Graphics;
 		private Maths.Plane3		m_Plane = new Maths.Plane3( new Maths.Vector3( 0, 1, 0 ), 0 );
+
+		#region ISceneObject Members
+
+		/// <summary>
+		/// Adds this object to the scene's ray cast manager
+		/// </summary>
+		public void AddedToScene( Scene.SceneDb db )
+		{
+			Scene.IRayCaster rayCaster = ( Scene.IRayCaster )db.GetSystem( typeof( Scene.IRayCaster ) );
+			if ( rayCaster != null )
+			{
+				rayCaster.Add( this );
+			}
+		}
+
+		/// <summary>
+		/// Removes this object from the scene's ray cast manager
+		/// </summary>
+		public void RemovedFromScene( Scene.SceneDb db )
+		{
+			Scene.IRayCaster rayCaster = ( Scene.IRayCaster )db.GetSystem( typeof( Scene.IRayCaster ) );
+			if ( rayCaster != null )
+			{
+				rayCaster.Remove( this );
+			}
+		}
+
+		#endregion
 	}
 }

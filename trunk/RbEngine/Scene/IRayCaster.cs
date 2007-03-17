@@ -15,13 +15,22 @@ namespace RbEngine.Scene
 	public interface IRayCaster
 	{
 		/// <summary>
+		/// Adds an intersectable geometry object to the ray caster
+		/// </summary>
+		void Add( Maths.IRay3Intersector intersector );
+
+		/// <summary>
+		/// Removes an intersectable geometry object from the ray caster
+		/// </summary>
+		void Remove( Maths.IRay3Intersector intersector );
+
+		/// <summary>
 		/// Casts a ray
 		/// </summary>
-		/// <param name="origin">Ray origin</param>
-		/// <param name="direction">Ray direction</param>
+		/// <param name="ray">Ray to cast</param>
 		/// <param name="options">Options for determining which layers to check, objects to exclude, maximum ray length (!) etc.</param>
 		/// <returns>Returns null if no intersection occurred, or details about the intersection</returns>
-		Maths.Ray3Intersection	CastRay( Maths.Point3 origin, Maths.Vector3 direction, RayCastOptions options );
+		Maths.Ray3Intersection	GetFirstIntersection( Maths.Ray3 ray, RayCastOptions options );
 	}
 
 	/// <summary>
@@ -137,6 +146,14 @@ namespace RbEngine.Scene
 		#region	Layers
 
 		/// <summary>
+		/// Returns true if the specified layer is included in the layers stored in this object
+		/// </summary>
+		public bool				IsLayerIncluded( ulong layer )
+		{
+			return ( layer == 0 ) || ( ( layer & m_Layers ) != 0 );
+		}
+
+		/// <summary>
 		/// Access to the layers bit field
 		/// </summary>
 		public ulong			Layers
@@ -199,11 +216,24 @@ namespace RbEngine.Scene
 
 		#endregion
 
+		/// <summary>
+		/// Gets a static default constructed RayCastOptions object
+		/// </summary>
+		public static RayCastOptions Default
+		{
+			get
+			{
+				return ms_Default;
+			}
+		}
+
 		#region	Private stuff
 
-		private ArrayList	m_Exclusions	= new ArrayList( );
-		private ulong		m_Layers		= ulong.MaxValue;
-		private float		m_MaxLength		= float.MaxValue;
+		private ArrayList				m_Exclusions	= new ArrayList( );
+		private ulong					m_Layers		= ulong.MaxValue;
+		private float					m_MaxLength		= float.MaxValue;
+
+		private static RayCastOptions	ms_Default		= new RayCastOptions( );
 
 		#endregion
 	}

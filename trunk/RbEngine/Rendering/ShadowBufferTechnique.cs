@@ -141,7 +141,7 @@ namespace RbEngine.Rendering
 				float	aspectRatio	= ( height == 0 ) ? 1.0f : ( ( float )width / ( float )height );
 
 				Renderer.Inst.SetLookAtTransform( curLight.Position + curLight.Direction, curLight.Position, Vector3.YAxis );
-				Renderer.Inst.SetPerspectiveProjectionTransform( curLight.ArcDegrees, aspectRatio, m_NearZ, m_FarZ );
+				Renderer.Inst.SetPerspectiveProjectionTransform( curLight.ArcDegrees * 2, aspectRatio, m_NearZ, m_FarZ );
 
 				//	Set the current MVP matrix as the shadow transform. This is for after, when the scene is rendered properly
 				Matrix44 shadowMat = Renderer.Inst.GetTransform( Transform.ViewToScreen ) * Renderer.Inst.GetTransform( Transform.WorldToView );
