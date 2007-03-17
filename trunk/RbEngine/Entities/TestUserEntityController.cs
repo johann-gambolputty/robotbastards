@@ -135,6 +135,10 @@ namespace RbEngine.Entities
 			{
 				m_LookAt.Next = pickIntersection.IntersectionPosition;
 			}
+
+			Entity3 entity = ParentEntity;
+			entity.Facing	= ( m_LookAt.Next - entity.Position.Next ).MakeNormal( );
+			entity.Left		= Maths.Vector3.Cross( entity.Up, entity.Facing ).MakeNormal( );
 		}
 
 		/// <summary>
