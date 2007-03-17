@@ -13,11 +13,12 @@ namespace RbEngine.Interaction
 		/// </summary>
 		/// <param name="button">Button to press</param>
 		public CommandMouseMoveInputBinding( Scene.SceneView view, MouseButtons button ) :
-				base( view )
+			base( view )
 		{
 			m_Button = button;
 
 			view.Control.MouseMove += new MouseEventHandler( OnMouseMove );
+			view.Control.MouseLeave += new EventHandler( OnMouseLeave );
 		}
 
 		/// <summary>
@@ -41,6 +42,12 @@ namespace RbEngine.Interaction
 			m_Y = args.Y;
 		}
 
+		private void			OnMouseLeave( object sender, EventArgs args )
+		{
+			m_Active = false;
+		}
+
 		private MouseButtons	m_Button;
+
 	}
 }
