@@ -13,6 +13,19 @@ namespace RbControls
 	/// </summary>
 	public class Display : System.Windows.Forms.UserControl
 	{
+
+		/// <summary>
+		/// Accepts cursor keys
+		/// </summary>
+		protected override bool IsInputKey( Keys keyData )
+		{
+			if ( ( keyData == Keys.Up ) || ( keyData == Keys.Down ) || ( keyData == Keys.Left ) || ( keyData == Keys.Right ) )
+			{
+				return true;
+			}
+			return base.IsInputKey( keyData );
+		}
+
 		/// <summary>
 		/// Override control creation parameters to support OpenGL requirements
 		/// </summary>

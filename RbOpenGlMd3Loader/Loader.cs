@@ -4,6 +4,7 @@ using System.Collections;
 using RbEngine;
 using RbEngine.Maths;
 using RbEngine.Rendering;
+using RbEngine.Resources;
 using RbOpenGlRendering;
 using Tao.OpenGl;
 
@@ -12,9 +13,17 @@ namespace RbOpenGlMd3Loader
 	/// <summary>
 	/// Loads Quake3 MD3 files, generating OpenGL meshes
 	/// </summary>
-	public class Loader : RbEngine.Resources.ResourceDirectoryLoader
+	public class Loader : ResourceDirectoryLoader
 	{
 		#region	ResourceDirectoryLoader Members
+
+		/// <summary>
+		/// Loads... stuff
+		/// </summary>
+		public override object Load( ResourceProvider provider, string directory, LoadParameters parameters )
+		{
+			throw new ApplicationException( "MD3 loader does not take parmeters" );
+		}
 
 		/// <summary>
 		/// Loads the MD3 resources in the specified directory

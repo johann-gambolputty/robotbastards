@@ -164,7 +164,7 @@ namespace RbEngine.Scene
 		{
 			//	TODO: If there's more than one scene view, it makes sense to load all the scene view techniques into a ModelSet and 
 			//	reference them
-			Resources.ResourceManager.Inst.Load( path, this );
+			Resources.ResourceManager.Inst.Load( path, new Resources.LoadParameters( this ) );
 		}
 
 		#endregion

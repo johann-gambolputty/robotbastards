@@ -41,14 +41,26 @@ namespace RbCollada
 		{
 			ArrayList results = new ArrayList( );
 
-            return Load( input, inputSource, results );
+            return LoadResource( input, inputSource, results );
 		}
 
 		/// <summary>
 		/// Loads a COLLADA resource into an array
 		/// </summary>
 		/// <exception cref="ApplicationException">Thrown if resource is not an IList or IParentObject</exception>
-		public override Object Load( System.IO.Stream input, string inputSource, Object resource )
+		public override Object Load( System.IO.Stream input, string inputSource, RbEngine.Resources.LoadParameters parameters )
+		{
+			return LoadResource( input, inputSource, parameters == null ? new System.Collections.ArrayList( ) : parameters.Target );
+		}
+
+		/// <summary>
+		/// Loads a COLLADA resource into an array
+		/// </summary>
+		/// <param name="input"></param>
+		/// <param name="inputSource"></param>
+		/// <param name="resource"></param>
+		/// <returns></returns>
+		public Object LoadResource( System.IO.Stream input, string inputSource, Object resource )
 		{
 			IList			listResults		= resource as IList;
 			IParentObject	parentResults	= resource as IParentObject;

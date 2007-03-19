@@ -33,9 +33,9 @@ namespace RbOpenGlRendering.RbCg
 		/// Loads into a resource from a stream
 		/// </summary>
 		/// <exception cref="ApplicationException"></exception>
-		public override Object Load( System.IO.Stream input, string inputSource, Object resource )
+		public override Object Load( System.IO.Stream input, string inputSource, RbEngine.Resources.LoadParameters parameters )
 		{
-			throw new ApplicationException( string.Format( "Failed to load \"{0}\": The COLLADA loader can't load into an existing resource", inputSource ) );
+			return Load( input, inputSource );
 		}
 
 		/// <summary>

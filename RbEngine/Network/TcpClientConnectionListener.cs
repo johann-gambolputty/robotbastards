@@ -9,18 +9,11 @@ namespace RbEngine.Network
 	/// Listens out for client connection requests, creating new TcpServerToClientConnection objects for each one
 	/// </summary>
 	/// <remarks>
-	/// Must be added as a child to a Connections object
+	/// Must be added as a child to a Connections object.
+	/// Only starts its listening thread when it is attached to a scene
 	/// </remarks>
-	public class TcpClientConnectionListener : IDisposable
+	public class TcpClientConnectionListener : IDisposable, Scene.ISceneObject
 	{
-		/// <summary>
-		/// Kicks off the thread that listens for client connection requests
-		/// </summary>
-		public TcpClientConnectionListener( )
-		{
-			m_Thread = new Thread( new ThreadStart( Listen ) );
-			m_Thread.Start( );
-		}
 
 		/// <summary>
 		/// Kills the listener thread
@@ -136,6 +129,29 @@ namespace RbEngine.Network
 		private void	AddClient( Socket clientSocket )
 		{
 			Output.WriteLineCall( Output.NetworkInfo, "Accepting client \"{0}\"", clientSocket.RemoteEndPoint );
+		}
+
+		#endregion
+
+		#region ISceneObject Members
+
+		/// <summary>
+		/// Adds this object to the scene
+		/// </summary>
+		public void AddedToScene( Scene.SceneDb db )
+		{
+			db.Disposing += new Scene.SceneDb.DisposingDelegate( Dispose );
+			
+			m_Thread = new Thread( new ThreadStart( Listen ) );
+			m_Thread.Name = "Client Connection Listener";
+			m_Thread.Start( );
+		}
+
+		/// <summary>
+		/// Removes this object from the scene
+		/// </summary>
+		public void RemovedFromScene( Scene.SceneDb db )
+		{
 		}
 
 		#endregion
