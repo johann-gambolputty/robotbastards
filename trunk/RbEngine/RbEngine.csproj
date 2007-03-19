@@ -220,6 +220,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Components\ComponentLoadParameters.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Components\Engine.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -525,7 +530,17 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Network\ClientToServerConnection.cs"
+                    RelPath = "Network\ConnectionBase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\Connections.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\IConnection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -555,12 +570,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Network\ServerToClientConnections.cs"
+                    RelPath = "Network\SocketServer.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Network\SocketServer.cs"
+                    RelPath = "Network\TcpClientConnectionListener.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -570,7 +585,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Network\TcpServerToClientConnections.cs"
+                    RelPath = "Network\TcpServerToClientConnection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -755,6 +770,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Resources\LoadParameters.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Resources\ResourceDirectoryLoader.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -821,6 +841,11 @@
                 />
                 <File
                     RelPath = "Scene\RenderManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\SceneComponentFactory.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
