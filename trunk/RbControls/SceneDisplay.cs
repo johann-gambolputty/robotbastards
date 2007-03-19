@@ -111,9 +111,12 @@ namespace RbControls
 		/// </summary>
 		private void SceneDisplay_Load(object sender, System.EventArgs e)
 		{
-			if ( m_SetupFile != string.Empty )
+			if ( !DesignMode )
 			{
-				m_View.Load( m_SetupFile );
+				if ( m_SetupFile != string.Empty )
+				{
+					m_View.Load( m_SetupFile );
+				}
 			}
 		}
 	}
