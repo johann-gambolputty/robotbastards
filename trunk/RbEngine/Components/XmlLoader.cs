@@ -37,11 +37,11 @@ namespace RbEngine.Components
 		/// <summary>
 		/// Loads into a resource from a stream
 		/// </summary>
-		/// <param name="input"> Input stream to load the resource from </param>
-		/// <param name="inputSource"> Source of the input stream (e.g. file path) </param>
-		/// <param name="resource">Existing resource object</param>
+		/// <param name="input">Input stream to load the resource from</param>
+		/// <param name="inputSource">Source of the input stream (e.g. file path)</param>
+		/// <param name="parameters">Load parameters</param>
 		/// <returns>Returns resource</returns>
-		public override Object Load( System.IO.Stream input, string inputSource, Object resource )
+		public override Object Load( System.IO.Stream input, string inputSource, Resources.LoadParameters parameters )
 		{
 			XmlDocument doc = new RbXmlDocument( inputSource );
 			try
@@ -58,7 +58,7 @@ namespace RbEngine.Components
 						}
 						else
 						{
-							Object result = LoadRb( ( XmlElement )curNode, resource );
+							Object result = LoadRb( ( XmlElement )curNode, parameters == null ? null : parameters.Target );
 							return result;
 						}
 					}

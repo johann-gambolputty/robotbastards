@@ -87,7 +87,6 @@ namespace RbOpenGlRendering
 				}
 				else
 				{
-
 					Gl.glGenFramebuffersEXT( 1, out m_FboDepthHandle );
 					Gl.glBindRenderbufferEXT( Gl.GL_RENDERBUFFER_EXT, m_FboDepthHandle );
 					Gl.glRenderbufferStorageEXT( Gl.GL_RENDERBUFFER_EXT, Gl.GL_DEPTH_COMPONENT, width, height );
@@ -183,8 +182,8 @@ namespace RbOpenGlRendering
 			fixed ( byte* bufferMemPtr = bufferMem )
 			{
 				bmp = new System.Drawing.Bitmap( Width, Height, Width * 3, System.Drawing.Imaging.PixelFormat.Format24bppRgb, ( IntPtr )bufferMemPtr );
+				bmp.Save( path, System.Drawing.Imaging.ImageFormat.Png );
 			}
-			bmp.Save( path, System.Drawing.Imaging.ImageFormat.Png );
 		}
 
 		#region IAppliance Members

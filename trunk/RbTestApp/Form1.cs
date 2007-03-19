@@ -3,8 +3,9 @@ using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.Data;
+usifg System.Data;
 using RbEngine;
+using RbEngine.Resources;
 
 namespace RbTestApp
 {
@@ -14,6 +15,8 @@ namespace RbTestApp
 	public class Form1 : System.Windows.Forms.Form
 	{
 		private RbControls.SceneDisplay sceneDisplay1;
+		private System.Windows.Forms.Splitter splitter1;
+		private RbControls.SceneDisplay sceneDisplay2;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -50,11 +53,12 @@ namespace RbTestApp
 				System.Xml.XmlDocument doc = new System.Xml.XmlDocument( );
 				doc.Load( resourceSetupPath );
 
-				RbEngine.Resources.ResourceManager.Inst.Setup( ( System.Xml.XmlElement )doc.SelectSingleNode( "/resourceManager" ) );
+				ResourceManager.Inst.Setup( ( System.Xml.XmlElement )doc.SelectSingleNode( "/resourceManager" ) );
 			}
 
 			//	Load in the test commands
-			RbEngine.Resources.ResourceManager.Inst.Load( "testCommandInputs0.xml", RbEngine.Entities.TestUserEntityController.Commands );
+			LoadParameters parameters = new LoadParameters( RbEngine.Entities.TestUserEntityController.Commands );
+			ResourceManager.Inst.Load( "testCommandInputs0.xml", parameters );
 
 			//
 			// Required for Windows Form Designer support
@@ -64,12 +68,6 @@ namespace RbTestApp
 		}
 
 		private RbEngine.Network.ServerBase			m_Server;
-
-		private void InputUpdateTimerTick( RbEngine.Scene.Clock clock )
-		{
-			//	TODO: Should the server be the command target?
-		//	m_Commands.Update( );
-		}
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -94,6 +92,8 @@ namespace RbTestApp
 		private void InitializeComponent()
 		{
 			this.sceneDisplay1 = new RbControls.SceneDisplay();
+			this.splitter1 = new System.Windows.Forms.Splitter();
+			this.sceneDisplay2 = new RbControls.SceneDisplay();
 			this.SuspendLayout();
 			// 
 			// sceneDisplay1
@@ -101,23 +101,48 @@ namespace RbTestApp
 			this.sceneDisplay1.ColourBits = ((System.Byte)(32));
 			this.sceneDisplay1.ContinuousRendering = true;
 			this.sceneDisplay1.DepthBits = ((System.Byte)(24));
-			this.sceneDisplay1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.sceneDisplay1.Dock = System.Windows.Forms.DockStyle.Left;
 			this.sceneDisplay1.Location = new System.Drawing.Point(0, 0);
 			this.sceneDisplay1.Name = "sceneDisplay1";
 			this.sceneDisplay1.Scene = null;
 			this.sceneDisplay1.SceneViewSetupFile = "sceneView0.xml";
-			this.sceneDisplay1.Size = new System.Drawing.Size(336, 214);
+			this.sceneDisplay1.Size = new System.Drawing.Size(192, 334);
 			this.sceneDisplay1.StencilBits = ((System.Byte)(0));
 			this.sceneDisplay1.TabIndex = 0;
+			// 
+			// splitter1
+			// 
+			this.splitter1.Location = new System.Drawing.Point(192, 0);
+			this.splitter1.Name = "splitter1";
+			this.splitter1.Size = new System.Drawing.Size(8, 334);
+			this.splitter1.TabIndex = 1;
+			this.splitter1.TabStop = false;
+			// 
+			// sceneDisplay2
+			// 
+			this.sceneDisplay2.ColourBits = ((System.Byte)(32));
+			this.sceneDisplay2.ContinuousRendering = true;
+			this.sceneDisplay2.DepthBits = ((System.Byte)(24));
+			this.sceneDisplay2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.sceneDisplay2.Location = new System.Drawing.Point(200, 0);
+			this.sceneDisplay2.Name = "sceneDisplay2";
+			this.sceneDisplay2.Scene = null;
+			this.sceneDisplay2.SceneViewSetupFile = "sceneView0.xml";
+			this.sceneDisplay2.Size = new System.Drawing.Size(264, 334);
+			this.sceneDisplay2.StencilBits = ((System.Byte)(0));
+			this.sceneDisplay2.TabIndex = 2;
 			// 
 			// Form1
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(336, 214);
+			this.ClientSize = new System.Drawing.Size(464, 334);
+			this.Controls.Add(this.sceneDisplay2);
+			this.Controls.Add(this.splitter1);
 			this.Controls.Add(this.sceneDisplay1);
 			this.Name = "Form1";
 			this.Text = "Form1";
 			this.Load += new System.EventHandler(this.Form1_Load);
+			this.Closed += new System.EventHandler(this.Form1_Closed);
 			this.ResumeLayout(false);
 
 		}
@@ -135,45 +160,9 @@ namespace RbTestApp
 
 		private void Form1_Load(object sender, System.EventArgs e)
 		{
-			ConnectionForm connectionDlg = new ConnectionForm( );
-			if ( connectionDlg.ShowDialog( this ) == DialogResult.Cancel )
-			{
-				Close( );
-				return;
-			}
-
 			//	Load the test server file
-			RbEngine.Resources.ResourceManager.Inst.Load( "server0.xml" );
-
-			/*
-			RbEngine.Interaction.CommandList commands = new RbEngine.Interaction.CommandList( );
-
-			RbEngine.Interaction.Command cmd = new RbEngine.Interaction.Command( "forward", "moves forward", ( int )RbEngine.Entities.TestCommands.Forward );
-			cmd.AddBinding( new RbEngine.Interaction.CommandKeyInputBinding( Keys.W ) );
-			commands.AddCommand( cmd );
-
-			cmd = new RbEngine.Interaction.Command( "back", "moves backwards", ( int )RbEngine.Entities.TestCommands.Back );
-			cmd.AddBinding( new RbEngine.Interaction.CommandKeyInputBinding( Keys.S ) );
-			commands.AddCommand( cmd );
-
-			cmd = new RbEngine.Interaction.Command( "left", "moves left", ( int )RbEngine.Entities.TestCommands.Left );
-			cmd.AddBinding( new RbEngine.Interaction.CommandKeyInputBinding( Keys.A ) );
-			commands.AddCommand( cmd );
-
-			cmd = new RbEngine.Interaction.Command( "right", "moves right", ( int )RbEngine.Entities.TestCommands.Right );
-			cmd.AddBinding( new RbEngine.Interaction.CommandKeyInputBinding( Keys.D ) );
-			commands.AddCommand( cmd );
-
-			cmd = new RbEngine.Interaction.Command( "jump", "Jumps", ( int )RbEngine.Entities.TestCommands.Jump );
-			cmd.AddBinding( new RbEngine.Interaction.CommandKeyInputBinding( Keys.Space ) );
-			commands.AddCommand( cmd );
-
-			cmd = new RbEngine.Entities.TestLookAtCommand( );
-			cmd.AddBinding( new RbEngine.Interaction.CommandMouseMoveInputBinding( ) );
-			commands.AddCommand( cmd );
-
-			m_Commands = commands;
-			*/
+			string setupFile = "server0.xml";
+			ResourceManager.Inst.Load( setupFile );
 
 			//	Set up server and client displays
 			m_Server = RbEngine.Network.ServerManager.Inst.FindServer( "server0" );
@@ -187,11 +176,17 @@ namespace RbTestApp
 						sceneDisplay.Scene = m_Server.Scene;
 					}
 				}
+			}
+		}
 
-				if ( m_Server.Scene != null )
-				{
-					m_Server.Scene.GetNamedClock( "updateClock" ).Subscribe( new RbEngine.Scene.Clock.TickDelegate( InputUpdateTimerTick ) );
-				}
+		private void Form1_Closed(object sender, System.EventArgs e)
+		{
+			//	Dispose of the scene
+			if ( ( m_Server != null ) && ( m_Server.Scene != null ) )
+			{
+				m_Server.Scene.Dispose( );
+				m_Server.Scene = null;
+				m_Server = null;
 			}
 		}
 	}

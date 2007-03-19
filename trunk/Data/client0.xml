@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rb>
+
+	<!--	TODO: This is defined before models, because the XmlLoader loads modelSets in definition order. -->
+	<modelSet name="effects">
+		<resource path="perPixelUntextured.cgfx" name="perPixelUntextured"/>
+		<resource path="perPixelTextured.cgfx" name="perPixelTextured"/>
+		<resource path="perPixelUntexturedShadowed.cgfx" name="perPixelUntexturedShadowed"/>
+	</modelSet>
+
+	<modelSet name="models">
+		<resource path="sarge" name="sarge">
+			<reference modelPath="effects/perPixelTextured" property="Effect"/>
+			<string value="NormalTechnique" property="AppliedTechniqueName"/>
+		</resource>
+	</modelSet>
+
+	<object type="RbEngine.Network.ServerProxy" name="server0">
+	    <object type="RbEngine.Scene.SceneDb" property="Scene">
+
+			<!-- Scene systems -->
+			<object type="RbEngine.Components.Component" property="Systems">
+
+				<object type="RbEngine.Scene.LightingManager"/>
+
+				<object type="RbEngine.Scene.RayCastManager"/>
+
+				<object type="RbEngine.Network.TcpClientToServerConnection">
+					<string value="localhost" property="ConnectionString"/>
+					<int value="11000" property="Port"/>
+				</object>
+
+			</object>
+
+			<!-- Scene clocks -->
+			<!-- TODO: This should be a default clock, because it's referenced directly in the controller and command update code -->
+			<clock name="updateClock" ticksPerSecond="20"/>
+
+			<!-- Test scenery :) -->
+			<object type="RbEngine.Components.Simple.GroundPlane"/>
+
+			<!-- Entities -->
+			<object type="RbEngine.Entities.Entity3">
+
+				<Point3 x="20" y="0.5" z="0" property="NextPosition"/>
+
+				<instance modelPath="models/sarge" property="Graphics" alwaysAddAsChild="true"/>
+				<object type="RbEngine.Scene.LightingData"/>
+
+				<object type="RbEngine.Entities.TestUserEntityController">
+				</object>
+
+			</object>
+
+			<!-- Lights -->
+			<object type="RbEngine.Entities.Entity3">
+
+				<Point3 x="50" y="30" z="30" property="NextPosition"/>
+
+				<object type="RbEngine.Rendering.SpotLight">
+					<Point3 x="50" y="30" z="30" property="Position"/>
+					<Point3 x="0" y="0" z="0" property="LookAt"/>
+					<float value="40" property="ArcDegrees"/>
+				</object>
+
+				<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics">
+					<resource path="light.cgfx" property="Effect"/>
+					<resource path="sphere.dae" property="RenderedObject"/>
+				</object>
+
+			</object>
+
+			<!-- Environment -->
+			<object type="RbEngine.Entities.Entity3">
+
+				<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics" alwaysAddAsChild="true">
+
+					<reference modelPath="effects/perPixelUntexturedShadowed" property="Effect"/>
+					<string value="WireframeTechnique" property="AppliedTechniqueName"/>
+					<resource path="simpleEnvironment.dae" property="RenderedObject"/>
+
+				</object>
+
+				<object type="RbEngine.Scene.LightingData"/>
+
+			</object>
+		</object>
+	</object>
+
+</rb>

@@ -41,8 +41,27 @@ namespace RbEngine.Scene
 	/// scene is a bit more complicated - it's achieved by sending CommandMessage messages directly to an object in the scene (usually a controller
 	/// that is attached to an entity), or to a forwarding object, that scene objects listen to (usually the server).
 	/// </remarks>
-	public class SceneDb : Components.IParentObject, Components.IXmlLoader
+	public class SceneDb : Components.IParentObject, Components.IXmlLoader, IDisposable
 	{
+		#region	Dispose event
+
+		/// <summary>
+		/// Delegate, used by the Disposing event
+		/// </summary>
+		public delegate void			DisposingDelegate( );
+
+		/// <summary>
+		/// Event, invoked when the scene is about to be destroyed
+		/// </summary>
+		public event DisposingDelegate	Disposing;
+
+		#endregion
+
+		~SceneDb( )
+		{
+			Dispose( );
+		}
+
 		#region	Scene clocks
 
 		/// <summary>
@@ -160,7 +179,6 @@ namespace RbEngine.Scene
 		}
 
 		#endregion
-
 
 		#region IParentObject Members
 
@@ -306,6 +324,22 @@ namespace RbEngine.Scene
 		private Components.Node					m_Systems;
 		private Components.ChildAddedDelegate	m_OnChildAdded;
 		private Network.ServerBase				m_Server;
+
+		#endregion
+
+		#region IDisposable Members
+
+		/// <summary>
+		/// Fires the Disposing event
+		/// </summary>
+		public void Dispose( )
+		{
+			if ( Disposing != null )
+			{
+				Disposing( );
+				Disposing = null;
+			}
+		}
 
 		#endregion
 	}

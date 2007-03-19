@@ -131,7 +131,7 @@ namespace RbEngine.Resources
 		/// <remarks>
 		/// Throws a System.ApplicationException if the path could not be opened by any provider, or if there were no loaders that could read the opened stream
 		/// </remarks>
-		public Object Load( string path, Object resource )
+		public Object Load( string path, LoadParameters parameters )
 		{
 			if ( System.IO.Path.GetExtension( path ) == string.Empty )
 			{
@@ -147,7 +147,7 @@ namespace RbEngine.Resources
 								Output.WriteLineCall( Output.ResourceInfo, "Loading \"{0}\"", path );
 								
 								//	TODO: Needs to handle Load when resource is not null
-								return loader.Load( provider, path );
+								return parameters == null ? loader.Load( provider, path ) : loader.Load( provider, path, parameters );
 							}
 						}
 						throw new System.ApplicationException( String.Format( "Could not find loader that could open resource directory {0}", path ) );
@@ -166,7 +166,7 @@ namespace RbEngine.Resources
 						if ( loader.CanLoadStream( path, input ) )
 						{
 							Output.WriteLineCall( Output.ResourceInfo, "Loading \"{0}\"", path );
-							return ( resource == null ) ? loader.Load( input, path ) : loader.Load( input, path, resource );
+							return ( parameters == null ) ? loader.Load( input, path ) : loader.Load( input, path, parameters );
 						}
 					}
 					throw new System.ApplicationException( String.Format( "Could not find loader that could open stream {0}", path ) );
