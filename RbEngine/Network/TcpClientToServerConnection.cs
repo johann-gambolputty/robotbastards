@@ -10,7 +10,7 @@ namespace RbEngine.Network
 	/// <summary>
 	/// Implements ClientToServerConnection using TCP sockets
 	/// </summary>
-	public class TcpClientToServerConnection : ClientToServerConnection, IDisposable
+	public class TcpClientToServerConnection : ConnectionBase, IDisposable
 	{
 		/// <summary>
 		/// Access to the connection string
@@ -30,8 +30,17 @@ namespace RbEngine.Network
 		/// <summary>
 		/// The port through which the connection is made
 		/// </summary>
-		public const int Port = 11000;
-
+		public int	Port
+		{
+			set
+			{
+				m_Port = value;
+			}
+			get
+			{
+				return m_Port;
+			}
+		}
 
 		/// <summary>
 		/// Kills the connection
@@ -101,7 +110,7 @@ namespace RbEngine.Network
 		/// <summary>
 		/// Writes the specified message to the server network stream
 		/// </summary>
-		public override void DeliverMessageToServer( Components.Message msg )
+		public override void DeliverMessage( Components.Message msg )
 		{
 			lock ( m_PendingMessages )
 			{
@@ -137,6 +146,6 @@ namespace RbEngine.Network
 		private NetworkStream	m_Stream;
 		private BinaryReader	m_Reader;
 		private BinaryWriter	m_Writer;
-
+		private int				m_Port = 11000;
 	}
 }

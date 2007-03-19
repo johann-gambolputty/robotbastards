@@ -22,9 +22,9 @@ namespace RbEngine.Resources
 		/// </summary>
 		/// <param name="input"> Input stream to load the resource from </param>
 		/// <param name="inputSource"> Source of the input stream (e.g. file path) </param>
-		/// <param name="resource">Existing resource object</param>
+		/// <param name="parameters">Loading parameters</param>
 		/// <returns>Returns resource</returns>
-		public abstract Object Load( System.IO.Stream input, string inputSource, Object resource );
+		public abstract Object Load( System.IO.Stream input, string inputSource, LoadParameters parameters );
 
 		/// <summary>
 		/// Returns true if this loader can load the specified stream
