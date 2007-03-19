@@ -555,12 +555,22 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Network\ServerToClientConnection.cs"
+                    RelPath = "Network\ServerToClientConnections.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Network\SocketServer.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\TcpClientToServerConnection.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\TcpServerToClientConnections.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

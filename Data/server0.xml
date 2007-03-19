@@ -20,8 +20,14 @@
 
 			<!-- Scene systems -->
 			<object type="RbEngine.Components.Component" property="Systems">
+
 				<object type="RbEngine.Scene.LightingManager"/>
+
 				<object type="RbEngine.Scene.RayCastManager"/>
+
+				<object type="RbEngine.Network.TcpClientToServerConection" >
+				</object>
+
 			</object>
 
 			<!-- Scene clocks -->

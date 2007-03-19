@@ -4,9 +4,9 @@ using RbEngine.Components;
 namespace RbEngine.Network
 {
 	/// <summary>
-	/// The connection between a server and a client
+	/// Abstract base class for managing the connections between a server and a set of clients
 	/// </summary>
-	public abstract class ServerToClientConnection : IMessageHandler
+	public abstract class ServerToClientConnections : IMessageHandler
 	{
 		#region	Client message delivery
 

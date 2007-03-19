@@ -8,6 +8,7 @@ namespace RbEngine.Network
 	/// </summary>
 	public abstract class ClientToServerConnection : IMessageHandler
 	{
+
 		#region	Server message delivery
 
 		/// <summary>
