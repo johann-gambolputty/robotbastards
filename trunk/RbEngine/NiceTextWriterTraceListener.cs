@@ -8,31 +8,28 @@ namespace RbEngine
 	/// </summary>
 	public class NiceTextWriterTraceListener : System.Diagnostics.TextWriterTraceListener
 	{
+		/// <summary>
+		/// Sets up the output file
+		/// </summary>
+		/// <param name="outputFilePath">Path to the output file</param>
 		public NiceTextWriterTraceListener( string outputFilePath )
 		{
-			//	If the output file exists, then rename it
-			if ( System.IO.File.Exists( outputFilePath ) )
+			DateTime	now				= DateTime.Now;
+			string		directory		= string.Format( "Outputs {0}-{1}-{2}", now.Year, now.Month, now.Day );
+			if ( !System.IO.Directory.Exists( directory ) )
 			{
-				int extIndex = outputFilePath.LastIndexOfAny( new char[] { '.' } );
-				string basePath = outputFilePath.Substring( 0, extIndex );
-				string extension = outputFilePath.Substring( extIndex );
-
-				string		altPath		= outputFilePath;
-				ArrayList	fileNames	= new ArrayList( );
-				fileNames.Add( altPath );
-
-				//	Count the number of files with the name [Name]X[extension]
-				while ( ( System.IO.File.Exists( altPath ) ) && ( fileNames.Count < 10 ) )
-				{
-					altPath = basePath + ( fileNames.Count - 1 ).ToString( ) + extension;
-					fileNames.Add( altPath );
-				}
-
-				for ( int copyIndex = fileNames.Count - 1; copyIndex >= 1; --copyIndex )
-				{
-					System.IO.File.Copy( ( string )fileNames[ copyIndex - 1 ], ( string )fileNames[ copyIndex ], true );
-				}
+				System.IO.Directory.CreateDirectory( directory );
 			}
+
+			int			extIndex		= outputFilePath.LastIndexOfAny( new char[] { '.' } );
+			string		basePath		= outputFilePath.Substring( 0, extIndex );
+			string		extension		= outputFilePath.Substring( extIndex );
+			int			outputFileCount = 0;
+
+			do
+			{
+				outputFilePath = directory + "/" + basePath + ( outputFileCount++ ).ToString( ) + extension;
+			} while ( System.IO.File.Exists( outputFilePath ) );
 
 			//	Open a stream writer to stomp all over the existing file
 			Writer = new System.IO.StreamWriter( outputFilePath, false );

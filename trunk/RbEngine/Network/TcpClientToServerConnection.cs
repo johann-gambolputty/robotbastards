@@ -10,7 +10,7 @@ namespace RbEngine.Network
 	/// <summary>
 	/// Implements ClientToServerConnection using TCP sockets
 	/// </summary>
-	public class TcpClientToServerConnection : ConnectionBase, IDisposable
+	public class TcpClientToServerConnection : ConnectionBase, IDisposable, Scene.ISceneObject
 	{
 		/// <summary>
 		/// Access to the connection string
@@ -102,7 +102,6 @@ namespace RbEngine.Network
 						msg.Write( m_Writer );
 					}
 					m_PendingMessages.Clear( );
-					m_Thread.Suspend( );
 				}
 			}
 		}
@@ -115,12 +114,29 @@ namespace RbEngine.Network
 			lock ( m_PendingMessages )
 			{
 				m_PendingMessages.Add( msg );
-				if ( m_Thread != null )
-				{
-					m_Thread.Resume( );
-				}
 			}
 		}
+
+		#region ISceneObject Members
+
+		/// <summary>
+		/// Called when this object is added to a scene
+		/// </summary>
+		public void AddedToScene( Scene.SceneDb db )
+		{
+			db.Disposing += new RbEngine.Scene.SceneDb.DisposingDelegate( Dispose );
+			Run( );
+		}
+
+		/// <summary>
+		/// Called when this object is removed from a scene
+		/// </summary>
+		public void RemovedFromScene( Scene.SceneDb db )
+		{
+			Dispose( );
+		}
+
+		#endregion
 
 		#region IDisposable Members
 
