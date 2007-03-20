@@ -185,6 +185,16 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "SetupForm.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "SetupForm.resx"
+                    DependentUpon = "SetupForm.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "TestAppOutput.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
