@@ -155,6 +155,8 @@ namespace RbEngine.Network
 
 		#endregion
 
+		#region	Private stuff
+
 		private string			m_Connection		= "localhost";
 		private ArrayList		m_PendingMessages	= new ArrayList( );
 		private Thread			m_Thread;
@@ -163,5 +165,7 @@ namespace RbEngine.Network
 		private BinaryReader	m_Reader;
 		private BinaryWriter	m_Writer;
 		private int				m_Port = 11000;
+
+		#endregion
 	}
 }

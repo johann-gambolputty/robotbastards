@@ -40,9 +40,6 @@ namespace RbTestApp
 				RbEngine.Rendering.RenderFactory.Load( renderAssemblyName );
 			}
 
-			//	Add the render factory to the builder
-			RbEngine.Components.Builder.Main.AddFactory( RbEngine.Rendering.RenderFactory.Inst );
-
 			//	Load the resource manager setup file
 			string resourceSetupPath = System.Configuration.ConfigurationSettings.AppSettings[ "resourceSetupPath" ];
 			if ( resourceSetupPath != null )

@@ -24,9 +24,16 @@
 
 			<object type="RbEngine.Scene.RayCastManager"/>
 
-			<object type="RbEngine.Network.TcpClientToServerConnection">
-				<string value="localhost" property="ConnectionString"/>
-				<int value="11000" property="Port"/>
+			<object type="RbEngine.Network.Connections">
+				<object type="RbEngine.Network.TcpClientToServerConnection">
+					<string value="updateConnection" property="Name"/>
+					<string value="localhost" property="ConnectionString"/>
+					<int value="11000" property="Port"/>
+				</object>
+			</object>
+
+			<object type="RbEngine.Network.ClientUpdateManager">
+				<string value="updateConnection" property="ConnectionName"/>
 			</object>
 
 		</object>

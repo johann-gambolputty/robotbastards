@@ -118,9 +118,10 @@ namespace RbEngine.Network
 
 		#region	Private stuff
 
-		private Thread	m_Thread;
-		private string	m_ConnectionString	= "localhost";
-		private int		m_Port				= 11000;
+		private Thread			m_Thread;
+		private string			m_ConnectionString	= "localhost";
+		private int				m_Port				= 11000;
+		private Scene.SceneDb	m_Scene;
 
 
 		/// <summary>
@@ -129,6 +130,14 @@ namespace RbEngine.Network
 		private void	AddClient( Socket clientSocket )
 		{
 			Output.WriteLineCall( Output.NetworkInfo, "Accepting client \"{0}\"", clientSocket.RemoteEndPoint );
+
+			Connections connections = ( Connections )m_Scene.GetSystem( typeof( Connections ) );
+			if ( connections == null )
+			{
+				throw new ApplicationException( "Cannot create client connection with a Connections object in the scene systems" );
+			}
+
+			connections.AddChild( new TcpServerToClientConnection( clientSocket ) );
 		}
 
 		#endregion
@@ -140,6 +149,7 @@ namespace RbEngine.Network
 		/// </summary>
 		public void AddedToScene( Scene.SceneDb db )
 		{
+			m_Scene = db;
 			db.Disposing += new Scene.SceneDb.DisposingDelegate( Dispose );
 			
 			m_Thread = new Thread( new ThreadStart( Listen ) );
@@ -152,6 +162,7 @@ namespace RbEngine.Network
 		/// </summary>
 		public void RemovedFromScene( Scene.SceneDb db )
 		{
+			m_Scene = null;
 		}
 
 		#endregion

@@ -17,7 +17,7 @@ namespace RbEngine.Scene
 		{
 			m_Scene = db;
 			m_Scene.Rendering.PreRender	+= new RenderManager.PreRenderDelegate( PreRender );
-			m_Scene.ObjectAddedToScene	+= new Components.ChildAddedDelegate( OnObjectAddedToScene );
+			m_Scene.AddedToContext += new Components.AddedToContextDelegate( OnObjectAddedToScene );
 		}
 
 		/// <summary>
@@ -50,7 +50,7 @@ namespace RbEngine.Scene
 		/// <summary>
 		/// Looks for lights and lighting data getting added to the scene
 		/// </summary>
-		private void		OnObjectAddedToScene( Object parentObject, Object childObject )
+		private void		OnObjectAddedToScene( Components.IContext sceneContext, Object childObject )
 		{
 			if ( childObject is Rendering.Light )
 			{

@@ -2,42 +2,6 @@ using System;
 
 namespace RbEngine.Components
 {
-
-	/// <summary>
-	/// Component factory interface
-	/// </summary>
-	public interface IComponentFactory
-	{
-		object Create( Type type );
-	}
-
-	/// <summary>
-	/// The default component factory
-	/// </summary>
-	public class DefaultComponentFactory : IComponentFactory
-	{
-		/// <summary>
-		/// Creates an object of the specified type
-		/// </summary>
-		public object	Create( Type type )
-		{
-			return System.Activator.CreateInstance( type );
-		}
-
-		/// <summary>
-		/// The default component factory
-		/// </summary>
-		public static DefaultComponentFactory	Inst
-		{
-			get
-			{
-				return ms_Singleton;
-			}
-		}
-
-		private static DefaultComponentFactory ms_Singleton = new DefaultComponentFactory( );
-	}
-
 	/// <summary>
 	/// Loading parameters for component description files
 	/// </summary>
@@ -48,7 +12,7 @@ namespace RbEngine.Components
 		/// </summary>
 		public ComponentLoadParameters( )
 		{
-			m_DefaultFactory = DefaultComponentFactory.Inst;
+			m_DefaultFactory = Builder.Inst;
 		}
 
 		/// <summary>
@@ -58,13 +22,13 @@ namespace RbEngine.Components
 		public ComponentLoadParameters( Object target ) :
 			base( target )
 		{
-			m_DefaultFactory = DefaultComponentFactory.Inst;
+			m_DefaultFactory = Builder.Inst;
 		}
 
 		/// <summary>
 		/// Sets the default factory, that is used to create objects
 		/// </summary>
-		public ComponentLoadParameters SetDefaultFactory( IComponentFactory factory )
+		public ComponentLoadParameters SetDefaultFactory( IBuilder factory )
 		{
 			m_DefaultFactory = factory;
 			return this;
@@ -73,7 +37,7 @@ namespace RbEngine.Components
 		/// <summary>
 		/// Gets the default factory
 		/// </summary>
-		public IComponentFactory	DefaultFactory
+		public IBuilder	DefaultFactory
 		{
 			get
 			{
@@ -81,6 +45,6 @@ namespace RbEngine.Components
 			}
 		}
 
-		private IComponentFactory	m_DefaultFactory;
+		private IBuilder	m_DefaultFactory;
 	}
 }

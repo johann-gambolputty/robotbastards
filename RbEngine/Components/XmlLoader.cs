@@ -96,43 +96,9 @@ namespace RbEngine.Components
 		/// <returns>Returns the root object, if one was defined</returns>
 		private Object LoadRb( XmlElement element, Object rootObject )
 		{
-			RootObjectLoader loader = new RootObjectLoader( element, rootObject );
+			RootObjectLoader loader = new RootObjectLoader( null, element, rootObject );
 			loader.Resolve( null );
 			return loader.LoadedObject;
-			/*
-
-			foreach ( XmlNode node in element.ChildNodes )
-			{
-				if ( node.NodeType == XmlNodeType.Element )
-				{
-					if ( node.Name == "modelSet" )
-					{
-						ModelSetLoader modelSet = new ModelSetLoader( ( XmlElement )node );
-						modelSet.Resolve( null );
-					}
-					else if ( node.Name == "object" )
-					{
-						if ( rootObject != null )
-						{
-							throw new RbXmlException( node, "Only allowed one root object within the <rb></rb> elements" );
-						}
-						rootObject = new ObjectLoader( ( XmlElement )node );
-					}
-					else
-					{
-						throw new RbXmlException( node, "Did not handle \"{0}\" element: Only \"object\" and \"modelSet\" elements are allowed as direct children of <rb></rb> elements", node.Name );
-					}
-				}
-			}
-
-			if ( rootObject != null )
-			{
-				rootObject.Resolve( null );
-				return rootObject.LoadedObject;
-			}
-
-			return null;
-			*/
 		}
 
 		/// <summary>
@@ -140,11 +106,21 @@ namespace RbEngine.Components
 		/// </summary>
 		private class BaseLoader
 		{
+
+			/// <summary>
+			/// Gets the context from a specified loader
+			/// </summary>
+			public IContext	GetContext( BaseLoader loader )
+			{
+				return ( loader == null ) ? null : ( loader.m_Context == null ? GetContext( loader.m_ParentLoader ) : loader.m_Context );
+			}
+
 			/// <summary>
 			/// Constructor. Sets the generating element
 			/// </summary>
-			protected BaseLoader( XmlElement element )
+			protected BaseLoader( BaseLoader parentLoader, XmlElement element )
 			{
+				m_ParentLoader		= parentLoader;
 				m_Element			= element;
 				m_BoundPropertyName	= element.GetAttribute( "property" );
 			}
@@ -159,6 +135,13 @@ namespace RbEngine.Components
 				set
 				{
 					m_LoadedObject = value;
+
+					//	If the loaded object is an IContext, then store it
+					IContext loadedContext = m_LoadedObject as IContext;
+					if ( loadedContext != null )
+					{
+						m_Context = loadedContext;
+					}
 				}
 				get
 				{
@@ -192,6 +175,12 @@ namespace RbEngine.Components
 
 				//	Parse post-link elements
 				ParseElements( objectXmlLoader, m_PostLinkElements );
+
+				IContext context = GetContext( m_ParentLoader );
+				if ( context != null )
+				{
+					context.AddToContext( LoadedObject );
+				}
 			}
 
 			#endregion
@@ -458,7 +447,7 @@ namespace RbEngine.Components
 			/// </summary>
 			protected void			LoadElement( XmlElement element, Order order )
 			{
-				BaseLoader loader = CreateLoaderFromElement( element );
+				BaseLoader loader = CreateLoaderFromElement( this, element );
 				if ( loader != null )
 				{
 					AddChildLoader( loader, order );
@@ -492,25 +481,25 @@ namespace RbEngine.Components
 			/// <summary>
 			/// Creates an RbXmlBase instance from an XML element
 			/// </summary>
-			private static BaseLoader	CreateLoaderFromElement( XmlElement element )
+			private static BaseLoader	CreateLoaderFromElement( BaseLoader parentLoader, XmlElement element )
 			{
 				BaseLoader loader = null;
 				switch ( element.Name )
 				{
-					case "object"		: loader = new ObjectLoader( element );	break;
-					case "reference"	: loader = new ReferenceLoader( element ); break;
-					case "resource"		: loader = new ResourceStreamLoader( element );	break;
-					case "instance"		: loader = new InstanceLoader( element ); break;
-					case "string"		: loader = new ValueLoader( element, element.GetAttribute( "value" ) );	break;
-					case "int"			: loader = new ValueLoader( element, int.Parse( element.GetAttribute( "value" ) ) );	break;
-					case "float"		: loader = new ValueLoader( element, float.Parse( element.GetAttribute( "value" ) ) );	break;
-					case "colour"		: loader = new ValueLoader( element, System.Drawing.Color.FromName( element.GetAttribute( "value" ) ) );	break;
+					case "object"		: loader = new ObjectLoader( parentLoader, element );	break;
+					case "reference"	: loader = new ReferenceLoader( parentLoader, element ); break;
+					case "resource"		: loader = new ResourceStreamLoader( parentLoader, element );	break;
+					case "instance"		: loader = new InstanceLoader( parentLoader, element ); break;
+					case "string"		: loader = new ValueLoader( parentLoader, element, element.GetAttribute( "value" ) );	break;
+					case "int"			: loader = new ValueLoader( parentLoader, element, int.Parse( element.GetAttribute( "value" ) ) );	break;
+					case "float"		: loader = new ValueLoader( parentLoader, element, float.Parse( element.GetAttribute( "value" ) ) );	break;
+					case "colour"		: loader = new ValueLoader( parentLoader, element, System.Drawing.Color.FromName( element.GetAttribute( "value" ) ) );	break;
 					case "Vector3"		:
 					{
 						float x = float.Parse( element.GetAttribute( "x" ) );
 						float y = float.Parse( element.GetAttribute( "y" ) );
 						float z = float.Parse( element.GetAttribute( "z" ) );
-						loader = new ValueLoader( element, new Maths.Vector3( x, y, z ) );
+						loader = new ValueLoader( parentLoader, element, new Maths.Vector3( x, y, z ) );
 						break;
 					}
 					case "Point3"		:
@@ -518,7 +507,7 @@ namespace RbEngine.Components
 						float x = float.Parse( element.GetAttribute( "x" ) );
 						float y = float.Parse( element.GetAttribute( "y" ) );
 						float z = float.Parse( element.GetAttribute( "z" ) );
-						loader = new ValueLoader( element, new Maths.Point3( x, y, z ) );
+						loader = new ValueLoader( parentLoader, element, new Maths.Point3( x, y, z ) );
 						break;
 					}
 				//	case "reference"	: loader =  new ReferenceLoader( element ); 
@@ -532,6 +521,7 @@ namespace RbEngine.Components
 
 			#region	Private stuff
 
+			private BaseLoader		m_ParentLoader;
 			private XmlElement		m_Element;
 			private string			m_BoundPropertyName;
 			private Object			m_LoadedObject;
@@ -539,6 +529,7 @@ namespace RbEngine.Components
 			private ArrayList		m_PreLinkElements;
 			private ArrayList		m_PostLinkChildren;
 			private ArrayList		m_PostLinkElements;
+			private IContext		m_Context;
 
 			#endregion
 		}
@@ -554,8 +545,8 @@ namespace RbEngine.Components
 			/// </summary>
 			/// <param name="element">The "rb" element</param>
 			/// <param name="rootObject">Existing root object to load into. Can be null</param>
-			public RootObjectLoader( XmlElement element, Object rootObject ) :
-				base( element )
+			public RootObjectLoader( BaseLoader parentLoader, XmlElement element, Object rootObject ) :
+				base( parentLoader, element )
 			{
 
 				m_RootObject = rootObject;
@@ -572,7 +563,7 @@ namespace RbEngine.Components
 					if ( node.Name == "modelSet" )
 					{
 						//	Load and resolve model sets
-						ModelSetLoader modelSet = new ModelSetLoader( ( XmlElement )node );
+						ModelSetLoader modelSet = new ModelSetLoader( this, ( XmlElement )node );
 						modelSet.Resolve( null );
 					}
 					else if ( !allowedMultipleChildren )
@@ -583,7 +574,7 @@ namespace RbEngine.Components
 							{
 								throw new RbXmlException( node, "Only allowed one root object within the <rb> element" );
 							}
-							m_RootLoader = new ObjectLoader( ( XmlElement )node );
+							m_RootLoader = new ObjectLoader( this, ( XmlElement )node );
 						}
 						else
 						{
@@ -628,8 +619,8 @@ namespace RbEngine.Components
 			/// <summary>
 			/// Constructor. Creates the model set
 			/// </summary>
-			public ModelSetLoader( XmlElement element ) :
-				base( element )
+			public ModelSetLoader( BaseLoader parentLoader, XmlElement element ) :
+				base( parentLoader, element )
 			{
 				//	Find an existing modelset, or creates a new model set
 				m_ModelSetName = element.GetAttribute( "name" );
@@ -640,7 +631,7 @@ namespace RbEngine.Components
 					{
 						if ( curNode.Name == "modelSet" )
 						{
-							AddChildLoader( new ModelSetLoader( ( XmlElement )curNode ), Order.Default );
+							AddChildLoader( new ModelSetLoader( this, ( XmlElement )curNode ), Order.Default );
 						}
 						else
 						{
@@ -705,8 +696,8 @@ namespace RbEngine.Components
 			/// Constructor. Creates the object
 			/// </summary>
 			/// <param name="element"></param>
-			public ReferenceLoader( XmlElement element ) :
-				base( element )
+			public ReferenceLoader( BaseLoader parentLoader, XmlElement element ) :
+				base( parentLoader, element )
 			{
 			}
 
@@ -761,8 +752,8 @@ namespace RbEngine.Components
 			/// <summary>
 			/// Constructor. Creates the object
 			/// </summary>
-			public ObjectLoader( XmlElement element ) :
-				base( element )
+			public ObjectLoader( BaseLoader parentLoader, XmlElement element ) :
+				base( parentLoader, element )
 			{
 				//	Create the new object
 				//	TODO: Add assembly attribute?
@@ -797,8 +788,8 @@ namespace RbEngine.Components
 			/// <summary>
 			/// Constructor
 			/// </summary>
-			public ValueLoader( XmlElement element, Object val ) :
-				base( element )
+			public ValueLoader( BaseLoader parentLoader, XmlElement element, Object val ) :
+				base( parentLoader, element )
 			{
 				LoadedObject = val;
 			}
@@ -813,8 +804,8 @@ namespace RbEngine.Components
 			/// Constructor. Instances the reference
 			/// </summary>
 			/// <param name="element"></param>
-			public InstanceLoader( XmlElement element ) :
-				base( element )
+			public InstanceLoader( BaseLoader parentLoader, XmlElement element ) :
+				base( parentLoader, element )
 			{
 			}
 
@@ -870,8 +861,8 @@ namespace RbEngine.Components
 			/// <summary>
 			/// Constructor. Loads the resource
 			/// </summary>
-			public ResourceStreamLoader( XmlElement element ) :
-				base( element )
+			public ResourceStreamLoader( BaseLoader parentLoader, XmlElement element ) :
+				base( parentLoader, element )
 			{
 				//	Create the new resource
 				string resourcePath = element.GetAttribute( "path" );

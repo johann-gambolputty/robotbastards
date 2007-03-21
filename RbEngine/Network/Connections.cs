@@ -6,14 +6,17 @@ namespace RbEngine.Network
 	/// <summary>
 	/// A set of client-to-server and server-to-client connections
 	/// </summary>
-	public class Connections
+	public class Connections : Components.IParentObject
 	{
+		#region	Connections
+
 		/// <summary>
 		/// Gets a named client to server connection
 		/// </summary>
-		public IConnection	GetClientToServerConnection( string connectionName )
+		public IConnection	GetConnection( string connectionName )
 		{
-			foreach ( IConnection curConnection in m_ServerConnections )
+			//	Run through the connection list
+			foreach ( IConnection curConnection in m_Connections )
 			{
 				if ( string.Compare( curConnection.Name, connectionName, true ) == 0 )
 				{
@@ -21,24 +24,64 @@ namespace RbEngine.Network
 				}
 			}
 			return null;
+		}
+
+		#endregion
+
+		#region	Private stuff
+
+		private ArrayList m_Connections = new ArrayList( );
+
+		#endregion
+
+		#region IParentObject Members
+
+		/// <summary>
+		/// Called when a connection is added to this object
+		/// </summary>
+		public event Components.ChildAddedDelegate ChildAdded;
+
+		/// <summary>
+		/// Called when a connection is removed from this object
+		/// </summary>
+		public event Components.ChildRemovedDelegate ChildRemoved;
+
+		/// <summary>
+		/// The connection collection
+		/// </summary>
+		public ICollection Children
+		{
+			get
+			{
+				return m_Connections;
+			}
 		}
 
 		/// <summary>
-		/// Gets a named server to client connection
+		/// Adds a connection (child must implement the IConnection interface)
 		/// </summary>
-		public IConnection	GetServerToClientConnection( string connectionName )
+		/// <param name="childObject"></param>
+		public void AddChild( Object childObject )
 		{
-			foreach ( IConnection curConnection in m_ClientConnections )
+			m_Connections.Add( ( IConnection )childObject );
+			if ( ChildAdded != null )
 			{
-				if ( string.Compare( curConnection.Name, connectionName, true ) == 0 )
-				{
-					return curConnection;
-				}
+				ChildAdded( this, childObject );
 			}
-			return null;
 		}
 
-		private ArrayList	m_ClientConnections = new ArrayList( );
-		private ArrayList	m_ServerConnections	= new ArrayList( );
+		/// <summary>
+		/// Removes a connection
+		/// </summary>
+		public void RemoveChild(Object childObject)
+		{
+			m_Connections.Remove( childObject );
+			if ( ChildRemoved != null )
+			{
+				ChildRemoved( this, childObject );
+			}
+		}
+
+		#endregion
 	}
 }
