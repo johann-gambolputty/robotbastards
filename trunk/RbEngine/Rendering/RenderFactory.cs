@@ -167,7 +167,6 @@ namespace RbEngine.Rendering
 		/// <summary>
 		/// Creates a new RenderState object
 		/// </summary>
-		[ Components.BuilderMethod ]
 		public abstract RenderState					NewRenderState( );
 
 		/// <summary>

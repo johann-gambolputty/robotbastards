@@ -16,7 +16,7 @@ namespace RbEngine.Network
 		/// Creates this connection from a socket
 		/// </summary>
 		/// <param name="socket">Active socket, created by TcpClientConnectionRequestListener</param>
-		TcpServerToClientConnection( Socket socket )
+		public TcpServerToClientConnection( Socket socket )
 		{
 			m_Socket	= socket;
 			m_Stream	= new NetworkStream( socket );

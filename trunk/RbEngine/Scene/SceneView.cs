@@ -9,7 +9,7 @@ namespace RbEngine.Scene
 	/// <summary>
 	/// Scene viewer
 	/// </summary>
-	public class SceneView : Components.Node
+	public class SceneView : Components.Node, Components.IContext
 	{
 		#region	Public properties
 
@@ -67,16 +67,15 @@ namespace RbEngine.Scene
 			}
 			set
 			{
-				if ( m_Scene != null )
-				{
-					RemoveChildrenFromScene( this, m_Scene );
-				}
-
 				m_Scene = value;
 
 				if ( m_Scene != null )
 				{
-					AddChildrenToScene( this, m_Scene );
+					foreach ( object curObject in m_SceneContextObjects )
+					{
+						m_Scene.AddToContext( curObject );
+					}
+					m_SceneContextObjects.Clear( );
 				}
 
 				//	Create a controller for the camera
@@ -245,71 +244,67 @@ namespace RbEngine.Scene
 
 		#endregion
 
-		#region	Child objects
+		#region IContext Members
 
 		/// <summary>
-		/// Adds a child object to this view. Any children that implement ISceneObject get ISceneObject.AddedToScene() called
+		/// Event, invoked when an object is added to this context
 		/// </summary>
-		/// <param name="childObject"></param>
-		public override void AddChild( Object childObject )
-		{
-			if ( ( Scene != null ) && ( childObject is ISceneObject ) )
-			{
-				( ( ISceneObject )childObject ).AddedToScene( Scene );
-				AddChildrenToScene( childObject, Scene );
+		public event Components.AddedToContextDelegate AddedToContext;
 
-				//	TODO: Should add callbacks to track new objects added to childObject
+		/// <summary>
+		/// Event, invoked when an object is removed from this context
+		/// </summary>
+		public event Components.RemovedFromContextDelegate RemovedFromContext;
+
+		/// <summary>
+		/// Adds an object to this view
+		/// </summary>
+		public void AddToContext( Object obj )
+		{
+			if ( Scene == null )
+			{
+				m_SceneContextObjects.Add( obj );
 			}
-
-			base.AddChild( childObject );
-		}
-
-		/// <summary>
-		/// Runs through all children of an object, removing them, and their children, from a scene
-		/// </summary>
-		private void RemoveChildrenFromScene( Object obj, SceneDb scene )
-		{
-			Components.IParentObject parentObj = obj as Components.IParentObject;
-			if ( parentObj != null )
+			else
 			{
-				foreach ( Object childObj in parentObj.Children )
-				{
-					if ( childObj is ISceneObject )
-					{
-						( ( ISceneObject )childObj ).RemovedFromScene( scene );
-					}
-
-					RemoveChildrenFromScene( childObj, scene );
-				}
+				Scene.AddToContext( obj );
+			}
+			if ( AddedToContext != null )
+			{
+				AddedToContext( this, obj );
 			}
 		}
 
 		/// <summary>
-		/// Runs through all children of an object, adding them, and their children, to a scene
+		/// Removes an object from this view
 		/// </summary>
-		private void AddChildrenToScene( Object obj, SceneDb scene )
+		public void RemoveFromContext( Object obj )
 		{
-			Components.IParentObject parentObj = obj as Components.IParentObject;
-			if ( parentObj != null )
+			m_SceneContextObjects.Remove( obj );
+			if ( Scene != null )
 			{
-				foreach ( Object childObj in parentObj.Children )
-				{
-					if ( childObj is ISceneObject )
-					{
-						( ( ISceneObject )childObj ).AddedToScene( scene );
-					}
-					AddChildrenToScene( childObj, scene );
-				}
+				Scene.RemoveFromContext( obj );
+			}
+			if ( RemovedFromContext != null )
+			{
+				RemovedFromContext( this, obj );
 			}
 		}
 
 		#endregion
 
-		private ArrayList				m_ViewTechniques = new ArrayList( );
+		#region	Private stuff
+
+		private ArrayList				m_AllObjects			= new ArrayList( );
+		private ArrayList				m_SceneContextObjects	= new ArrayList( );
+		private ArrayList				m_ViewTechniques		= new ArrayList( );
 		private Scene.SceneDb			m_Scene;
 		private Cameras.CameraBase		m_Camera;
 		private Control					m_Control;
 		private Object					m_CameraController;
 		private Interaction.CommandList	m_ActiveCommands;
+
+		#endregion
+
 	}
 }

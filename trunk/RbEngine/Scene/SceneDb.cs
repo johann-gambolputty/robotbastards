@@ -41,7 +41,7 @@ namespace RbEngine.Scene
 	/// scene is a bit more complicated - it's achieved by sending CommandMessage messages directly to an object in the scene (usually a controller
 	/// that is attached to an entity), or to a forwarding object, that scene objects listen to (usually the server).
 	/// </remarks>
-	public class SceneDb : Components.IParentObject, Components.IXmlLoader, IDisposable
+	public class SceneDb : Components.IParentObject, Components.IXmlLoader, Components.IContext, IDisposable
 	{
 		#region	Dispose event
 
@@ -146,11 +146,6 @@ namespace RbEngine.Scene
 			set
 			{
 				m_Systems = value;
-
-				if ( m_Systems != null )
-				{
-					OnObjectGraphAdded( this, m_Systems );
-				}
 			}
 		}
 
@@ -175,17 +170,11 @@ namespace RbEngine.Scene
 		public SceneDb( )
 		{
 			m_Rendering		= new RenderManager( this );
-			m_OnChildAdded	= new Components.ChildAddedDelegate( OnChildObjectAdded );
 		}
 
 		#endregion
 
 		#region IParentObject Members
-
-		/// <summary>
-		/// Event, invoked when a child object is added to the scene (even if that object is not a direct descendant of the scene)
-		/// </summary>
-		public event Components.ChildAddedDelegate		ObjectAddedToScene;
 
 		/// <summary>
 		/// Event, invoked by AddChild() after a child object has been added
@@ -213,24 +202,16 @@ namespace RbEngine.Scene
 		/// </summary>
 		/// <param name="childObject">Object to add</param>
 		/// <remarks>
-		/// Invokes the ChildAdded event, the ObjectAddedToScene event, and ISceneObject.AddedToScene(), if childObject implements that interface
+		/// Invokes the ChildAdded event
 		/// </remarks>
 		public void AddChild( Object childObject )
 		{
 			m_Children.Add( childObject );
-
-			Components.IChildObject childInterface = childObject as Components.IChildObject;
-			if ( childInterface != null )
-			{
-				childInterface.AddedToParent( this );
-			}
-
+			
 			if ( ChildAdded != null )
 			{
 				ChildAdded( this, childObject );
 			}
-
-			OnObjectGraphAdded( this, childObject );
 		}
 
 		/// <summary>
@@ -238,7 +219,7 @@ namespace RbEngine.Scene
 		/// </summary>
 		/// <param name="childObject">Object to remove</param>
 		/// <remarks>
-		/// Invokes the ChildRemoved event. If obj implements the ISceneObject interface, it gets ISceneObject.RemovedFromScene() called
+		/// Invokes the ChildRemoved event
 		/// </remarks>
 		public void RemoveChild( Object childObject )
 		{
@@ -247,44 +228,6 @@ namespace RbEngine.Scene
 			if ( ChildRemoved != null )
 			{
 				ChildRemoved( this, childObject );
-			}
-
-			ISceneObject events = childObject as ISceneObject;
-			if ( events != null )
-			{
-				events.RemovedFromScene( this );
-			}
-		}
-
-		private void OnObjectGraphAdded( Object parentObject, Object rootObject )
-		{
-			OnChildObjectAdded( parentObject, rootObject );
-
-			Components.IParentObject rootParentObject = rootObject as Components.IParentObject;
-			if ( rootParentObject != null )
-			{
-				foreach ( Object curChildObject in rootParentObject.Children )
-				{
-					OnObjectGraphAdded( rootObject, curChildObject );
-				}
-			}
-		}
-
-		private void OnChildObjectAdded( Object parentObject, Object childObject )
-		{
-			if ( childObject is Components.IParentObject )
-			{
-				( ( Components.IParentObject )childObject ).ChildAdded += m_OnChildAdded;
-			}
-
-			if ( childObject is ISceneObject )
-			{
-				( ( ISceneObject )childObject ).AddedToScene( this );
-			}
-
-			if ( ObjectAddedToScene != null )
-			{
-				ObjectAddedToScene( parentObject, childObject );
 			}
 		}
 
@@ -322,7 +265,6 @@ namespace RbEngine.Scene
 		private ArrayList						m_Clocks	= new ArrayList( );
 		private bool							m_Paused	= true;
 		private Components.Node					m_Systems;
-		private Components.ChildAddedDelegate	m_OnChildAdded;
 		private Network.ServerBase				m_Server;
 
 		#endregion
@@ -338,6 +280,53 @@ namespace RbEngine.Scene
 			{
 				Disposing( );
 				Disposing = null;
+			}
+		}
+
+		#endregion
+
+		#region	IContext Members
+
+		/// <summary>
+		/// Event, invoked by AddToContext()
+		/// </summary>
+		public event Components.AddedToContextDelegate		AddedToContext;
+
+		/// <summary>
+		/// Event, invoked by RemoveFromContext()
+		/// </summary>
+		public event Components.RemovedFromContextDelegate	RemovedFromContext;
+
+		/// <summary>
+		/// Adds an item to this context
+		/// </summary>
+		public void AddToContext( Object obj )
+		{
+			ISceneObject sceneObj = obj as ISceneObject;
+			if ( sceneObj != null )
+			{
+				sceneObj.AddedToScene( this );
+			}
+			if ( AddedToContext != null )
+			{
+				AddedToContext( this, obj );
+			}
+		}
+
+		/// <summary>
+		/// Removes an item from this context
+		/// </summary>
+		/// <param name="obj"></param>
+		public void RemoveFromContext( Object obj )
+		{
+			ISceneObject sceneObj = obj as ISceneObject;
+			if ( sceneObj != null )
+			{
+				sceneObj.RemovedFromScene( this );
+			}
+			if ( RemovedFromContext != null )
+			{
+				RemovedFromContext( this, obj );
 			}
 		}
 

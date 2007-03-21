@@ -230,7 +230,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Components\IBuilder.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Components\IChildObject.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Components\IContext.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -526,6 +536,11 @@
                 />
                 <File
                     RelPath = "Network\Client.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\ClientUpdateManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
