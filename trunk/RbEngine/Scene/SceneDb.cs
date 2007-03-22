@@ -102,25 +102,6 @@ namespace RbEngine.Scene
 
 		#endregion
 
-		#region	Scene server
-
-		/// <summary>
-		/// Server that this scene belongs to
-		/// </summary>
-		public Network.ServerBase	Server
-		{
-			set
-			{
-				m_Server = value;
-			}
-			get
-			{
-				return m_Server;
-			}
-		}
-
-		#endregion
-
 		#region	Scene systems
 
 		/// <summary>
@@ -265,7 +246,6 @@ namespace RbEngine.Scene
 		private ArrayList						m_Clocks	= new ArrayList( );
 		private bool							m_Paused	= true;
 		private Components.Node					m_Systems;
-		private Network.ServerBase				m_Server;
 
 		#endregion
 

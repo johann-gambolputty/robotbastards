@@ -16,13 +16,18 @@ namespace RbEngine.Network
 		/// Creates this connection from a socket
 		/// </summary>
 		/// <param name="socket">Active socket, created by TcpClientConnectionRequestListener</param>
-		public TcpServerToClientConnection( Socket socket )
+		public TcpServerToClientConnection( Scene.SceneDb scene, Socket socket )
 		{
+			//	Listen out for the scene dying - the connection will get closed at that point
+			scene.Disposing += new RbEngine.Scene.SceneDb.DisposingDelegate( Dispose );
+
+			//	Create a network stream for the socket, and objects to read and write to the stream
 			m_Socket	= socket;
 			m_Stream	= new NetworkStream( socket );
 			m_Writer	= new BinaryWriter( m_Stream );
 			m_Reader	= new BinaryReader( m_Stream );
 
+			//	Kick off a thread that sends pending messages to the client
 			m_Thread = new Thread( new ThreadStart( RunConnection ) );
 			m_Thread.Start( );
 		}
