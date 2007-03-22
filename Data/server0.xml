@@ -25,6 +25,8 @@
 			<object type="RbEngine.Scene.RayCastManager"/>
 
 			<object type="RbEngine.Network.TcpClientConnectionListener"/>
+			
+			<object type="RbEngine.Network.Connections"/>
 
 		</object>
 
