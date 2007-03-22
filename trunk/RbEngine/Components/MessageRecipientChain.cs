@@ -14,9 +14,34 @@ namespace RbEngine.Components
 	}
 
 	/// <summary>
-	/// Delegate that handles messages
+	/// MessageRecipientDelegate return values
 	/// </summary>
-	public delegate void MessageRecipientDelegate( Message msg );
+	public enum MessageRecipientResult
+	{
+		/// <summary>
+		/// Delivers the message to the next recipient in the chain (calls <see cref="Message.DeliverToNextRecipient"/>)
+		/// </summary>
+		DeliverToNext,
+
+		/// <summary>
+		/// Removes the message from the recipient chain (calls <see cref="Message.RemoveFromRecipientChain"/>)
+		/// </summary>
+		RemoveFromChain,
+
+		/// <summary>
+		/// Message has been held by the recipient, and it'll be passed on at some later time
+		/// </summary>
+		/// <remarks>
+		/// The recipient becomes responsible for calling <see cref="Message.DeliverToNextRecipient"/>, or <see cref="Message.RemoveFromRecipientChain"/>
+		/// at some later point
+		/// </remarks>
+		Deferred
+	}
+
+	/// <summary>
+	/// Delegate that handles messages for MessageRecipientChain.Deliver()
+	/// </summary>
+	public delegate MessageRecipientResult MessageRecipientDelegate( Message msg );
 
 	/// <summary>
 	/// Stores an ordered list of recipients
@@ -30,15 +55,8 @@ namespace RbEngine.Components
 		/// <param name="order">Recipient order</param>
 		public void				AddRecipient( MessageRecipientDelegate recipient, int order )
 		{
-			//	TODO: proper ordering
-			if ( order == ( int )MessageRecipientOrder.First )
-			{
-				m_Recipients.Insert( 0, recipient );
-			}
-			else
-			{
-				m_Recipients.Add( recipient );
-			}
+			m_Recipients.Add( new Recipient( recipient, order ) );
+			m_Recipients.Sort( );
 		}
 
 		/// <summary>
@@ -59,7 +77,12 @@ namespace RbEngine.Components
 			if ( m_Recipients.Count > 0 )
 			{
 				msg.AddToRecipientChain( this );
-				( ( MessageRecipientDelegate )m_Recipients[ 0 ] )( msg );
+				switch ( ( ( Recipient )m_Recipients[ 0 ] ).RecipientDelegate( msg ) )
+				{
+					case MessageRecipientResult.DeliverToNext	: msg.DeliverToNextRecipient( );	break;
+					case MessageRecipientResult.RemoveFromChain	: msg.RemoveFromRecipientChain( );	break;
+					case MessageRecipientResult.Deferred		: break;
+				}
 			}
 		}
 
@@ -78,12 +101,50 @@ namespace RbEngine.Components
 
 			if ( recipientIndex >= numRecipients )
 			{
+				//	Message reached the end of the chain
 				msg.RemoveFromRecipientChain( );
 			}
 			else
 			{
-				( ( MessageRecipientDelegate )m_Recipients[ recipientIndex ] )( msg );
+				//	Let the current recipient handle the message
+				switch ( ( ( Recipient )m_Recipients[ recipientIndex ] ).RecipientDelegate( msg ) )
+				{
+					case MessageRecipientResult.DeliverToNext	: msg.DeliverToNextRecipient( );	break;
+					case MessageRecipientResult.RemoveFromChain	: msg.RemoveFromRecipientChain( );	break;
+					case MessageRecipientResult.Deferred		: break;
+				}
 			}
+		}
+
+		/// <summary>
+		/// Ordered recipient information
+		/// </summary>
+		private struct Recipient : IComparable
+		{
+			public int						Order;
+			public MessageRecipientDelegate	RecipientDelegate;
+
+			/// <summary>
+			/// Sets up this recipient
+			/// </summary>
+			public Recipient( MessageRecipientDelegate recipientDelegate, int order )
+			{
+				RecipientDelegate	= recipientDelegate;
+				Order				= order;
+			}
+
+			#region IComparable Members
+
+			/// <summary>
+			/// Compares this recipient with another
+			/// </summary>
+			public int CompareTo( object obj )
+			{
+				int objOrder = ( ( Recipient )obj ).Order;
+				return ( Order < objOrder ) ? -1 : ( Order > objOrder ? 1 : 0 );
+			}
+
+			#endregion
 		}
 
 		private ArrayList	m_Recipients = new ArrayList( );
