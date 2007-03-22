@@ -27,6 +27,14 @@ namespace RbEngine.Network
 		}
 
 		/// <summary>
+		/// Returns true if connects to a client
+		/// </summary>
+		public abstract bool	ConnectionToClient
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Delivers a message over this connection
 		/// </summary>
 		/// <param name="msg">Message to deliver</param>

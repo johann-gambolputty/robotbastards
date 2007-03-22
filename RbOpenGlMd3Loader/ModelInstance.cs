@@ -138,7 +138,7 @@ namespace RbOpenGlMd3Loader
 		/// <summary>
 		/// Handles a movement request message
 		/// </summary>
-		public void HandleMovementRequest( Message msg )
+		public MessageRecipientResult HandleMovementRequest( Message msg )
 		{
 			if ( msg is JumpRequest )
 			{
@@ -158,6 +158,8 @@ namespace RbOpenGlMd3Loader
 					}
 				}
 			}
+
+			return MessageRecipientResult.DeliverToNext;
 		}
 
 		private enum MovementState

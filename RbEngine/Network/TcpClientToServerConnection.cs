@@ -43,6 +43,17 @@ namespace RbEngine.Network
 		}
 
 		/// <summary>
+		/// Returns true (this is a client connection)
+		/// </summary>
+		public override bool	ConnectionToClient
+		{
+			get
+			{
+				return true;
+			}
+		}
+
+		/// <summary>
 		/// Kills the connection
 		/// </summary>
 		~TcpClientToServerConnection( )

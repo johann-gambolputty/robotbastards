@@ -320,6 +320,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Entities\EntityActionClientUpdater.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Entities\JumpRequest.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -535,11 +540,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Network\Client.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Network\ClientUpdateManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -551,6 +551,16 @@
                 />
                 <File
                     RelPath = "Network\Connections.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\IClientManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\IClientUpdater.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

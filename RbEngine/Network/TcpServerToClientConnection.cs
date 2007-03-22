@@ -13,6 +13,17 @@ namespace RbEngine.Network
 	public class TcpServerToClientConnection : ConnectionBase, IDisposable
 	{
 		/// <summary>
+		/// Returns false (this is a server connection)
+		/// </summary>
+		public override bool	ConnectionToClient
+		{
+			get
+			{
+				return false;
+			}
+		}
+
+		/// <summary>
 		/// Creates this connection from a socket
 		/// </summary>
 		/// <param name="socket">Active socket, created by TcpClientConnectionRequestListener</param>
@@ -76,7 +87,7 @@ namespace RbEngine.Network
 					m_PendingMessages.Clear( );
 				}
 
-				//	TODO: Should block the thread until more messages are pending
+				//	TODO: Should block the thread until more messages are pending, or there's data available on the connection
 			}
 		}
 

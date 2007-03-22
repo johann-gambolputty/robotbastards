@@ -25,8 +25,10 @@
 			<object type="RbEngine.Scene.RayCastManager"/>
 
 			<object type="RbEngine.Network.TcpClientConnectionListener"/>
-			
+
 			<object type="RbEngine.Network.Connections"/>
+
+			<object type="RbEngine.Network.ClientUpdateManager"/>
 
 		</object>
 
@@ -45,8 +47,7 @@
 			<instance modelPath="models/sarge" property="Graphics" alwaysAddAsChild="true"/>
 			<object type="RbEngine.Scene.LightingData"/>
 
-			<object type="RbEngine.Entities.TestUserEntityController">
-			</object>
+			<object type="RbEngine.Entities.TestUserEntityController"/>
 
 		</object>
 
