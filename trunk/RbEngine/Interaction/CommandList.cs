@@ -31,7 +31,7 @@ namespace RbEngine.Interaction
 		/// <summary>
 		/// Binds all commands to the specified scene view
 		/// </summary>
-		/// <param name="client">View to bind to</param>
+		/// <param name="view">View to bind to</param>
 		public void	BindToView( Scene.SceneView view )
 		{
 			foreach ( Command curCommand in Commands )

@@ -9,16 +9,15 @@ namespace RbEngine.Interaction
 	public class CommandMouseMoveInput : CommandInput
 	{
 		/// <summary>
-		/// Setup constructor
+		/// Default constructor. Bindings to this input will trigger when the mouse moves with no buttons pressed
 		/// </summary>
-		/// <param name="button">Button to check for</param>
 		public CommandMouseMoveInput( )
 		{
 			m_Button = MouseButtons.None;
 		}
 
 		/// <summary>
-		/// Setup constructor
+		/// Setup constructor. Bindings to this input will trigger when the mouse moves with a particular button pressed
 		/// </summary>
 		/// <param name="button">Button to check for along with movement</param>
 		public CommandMouseMoveInput( MouseButtons button )

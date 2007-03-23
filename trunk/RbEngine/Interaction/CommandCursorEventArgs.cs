@@ -54,7 +54,6 @@ namespace RbEngine.Interaction
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		/// <param name="client">Bound client</param>
 		public CommandCursorEventArgs( Command cmd, Scene.SceneView view, int x, int y, int lastX, int lastY ) :
 			base( cmd, view )
 		{

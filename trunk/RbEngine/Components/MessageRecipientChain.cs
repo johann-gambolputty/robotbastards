@@ -8,8 +8,19 @@ namespace RbEngine.Components
 	/// </summary>
 	public enum MessageRecipientOrder
 	{
+		/// <summary>
+		/// Denotes that the recipient will be the among the first recipients in a recipient chain to process messages
+		/// </summary>
 		First	= 0,
+		
+		/// <summary>
+		/// Denotes that the recipient will be occupy a default position in the recipient chain
+		/// </summary>
 		Default	= 50,
+		
+		/// <summary>
+		/// Denotes that the recipient will be among the last recipients in a recipient chain to process messages
+		/// </summary>
 		Last	= 100
 	}
 
@@ -89,6 +100,7 @@ namespace RbEngine.Components
 		/// <summary>
 		/// Delivers a message to the next recipient in the list
 		/// </summary>
+		/// <param name="recipientIndex">A reference to the index of the recipient in the chain. Set to the index of the next valid recipient</param>
 		/// <param name="msg">Message to deliver</param>
 		public void				DeliverToNext( ref int recipientIndex, Message msg )
 		{

@@ -95,9 +95,24 @@ namespace RbEngine.Cameras
 
 		#region	Protected stuff
 		
+		/// <summary>
+		/// Camera X axis
+		/// </summary>
 		protected Vector3	m_XAxis		= new Vector3( 1, 0, 0 );
+		
+		/// <summary>
+		/// Camera Y axis
+		/// </summary>
 		protected Vector3	m_YAxis		= new Vector3( 0, 1, 0 );
+		
+		/// <summary>
+		/// Camera Z axis
+		/// </summary>
 		protected Vector3	m_ZAxis		= new Vector3( 0, 0, 1 );
+		
+		/// <summary>
+		/// Camera position
+		/// </summary>
 		protected Point3	m_Pos		= new Point3( );
 
 		#endregion

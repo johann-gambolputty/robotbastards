@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using RbEngine.Components;
 
 namespace RbEngine.Network.Runt
 {
@@ -14,9 +15,22 @@ namespace RbEngine.Network.Runt
 	/// Sends clients update messages using the Q3 unreliable network model
 	/// </summary>
 	/// <remarks>
-	/// A great description of the Q3 network model can be found on http://bookofhook.com/
+	/// <note>
+	/// A great description of the Q3 network model can be found on <see cref="http://bookofhook.com"/>.
+	/// </note>
+	/// The ClientUpdateManager keeps track of a number of IClientUpdater objects. These track the state of objects on a server, and 
+	/// send updates to clients, through the ClientUpdateManager, on state changes. Given a reliable connection, this would be all that
+	/// was required, but the ClientUpdateManager and IClientUpdater are designed to work with unreliable protocols. (... TODO: ...)
+	/// 
+	/// <note>
 	/// The ClientUpdateManager can work with any IConnection type - reliable or unreliable (although it's obviously
-	/// designed for an unreliable context). 
+	/// designed for an unreliable context).
+	/// </note>
+	/// 
+	/// <note>
+	/// A Connections object must exist in the scene systems for ClientUpdateManager to function.
+	/// </note>
+	/// 
 	/// </remarks>
 	public class ClientUpdateManager : Scene.ISceneObject
 	{
@@ -40,17 +54,104 @@ namespace RbEngine.Network.Runt
 
 		#endregion
 
+
+		#region	ClientConnection
+
+		/// <summary>
+		/// A connection to a client
+		/// </summary>
+		private class ClientConnection
+		{
+			/// <summary>
+			/// Gets the connection to the client
+			/// </summary>
+			public IConnection Connection
+			{
+				get
+				{
+					return m_Connection;
+				}
+			}
+
+			/// <summary>
+			/// Gets the index of the client
+			/// </summary>
+			public int			ClientIndex
+			{
+				get
+				{
+					return m_ClientIndex;
+				}
+			}
+
+			/// <summary>
+			/// Gets the current sequence value of the client
+			/// </summary>
+			public int			CurrentSequence
+			{
+				get
+				{
+					return m_CurrentSequence;
+				}
+				set
+				{
+					m_CurrentSequence = value;
+				}
+			}
+
+			/// <summary>
+			/// Sets up the client connection
+			/// </summary>
+			public ClientConnection( IConnection connection, int clientIndex )
+			{
+				m_Connection		= connection;
+				m_ClientIndex		= clientIndex;
+				m_CurrentSequence	= -1;
+			}
+
+			private IConnection	m_Connection;
+			private int			m_ClientIndex;
+			private int			m_CurrentSequence;
+		}
+
+		#endregion
+
 		#region	Private stuff
 
-		private ArrayList	m_Connections	= new ArrayList( );
-		private ArrayList	m_Updaters		= new ArrayList( );
+		private ArrayList	m_Clients	= new ArrayList( );
+		private ArrayList	m_Updaters	= new ArrayList( );
+		private int			m_Sequence	= 0;
 
 		/// <summary>
 		/// Adds a new connection
 		/// </summary>
 		private void OnNewClientConnection( IConnection connection )
 		{
-			m_Connections.Add( connection );
+			//	Add information about the connection to the m_Clients list
+			int clientIndex = m_Clients.Count;
+			m_Clients.Add( new ClientConnection( connection, clientIndex ) );
+
+			//	Listen for new messages from the client
+			connection.AddRecipient( typeof( ServerMessage ), new MessageRecipientDelegate( OnReceivedServerMessage ), ( int )MessageRecipientOrder.First );
+
+			//	Tell all updaters about the new client
+			foreach ( IClientUpdater updater in m_Updaters )
+			{
+				updater.AddNewClient( clientIndex );
+			}
+		}
+
+		/// <summary>
+		/// Called when a new ServerMessage is received
+		/// </summary>
+		/// <param name="serverMsg">ServerMessage object</param>
+		private MessageRecipientResult OnReceivedServerMessage( Message msg )
+		{
+			//	Find the client
+			ServerMessage serverMsg = ( ServerMessage )msg;
+		//	m_Clients[ serverMsg.ClientIndex ];
+
+			return MessageRecipientResult.DeliverToNext;
 		}
 
 		/// <summary>
@@ -58,40 +159,30 @@ namespace RbEngine.Network.Runt
 		/// </summary>
 		private void OnTick( Scene.Clock clock )
 		{
-			//	Run through all the updaters
-			foreach ( IClientUpdater curUpdater in m_Updaters )
+			//	Run through all the client connections
+			for ( int clientIndex = 0; clientIndex < m_Clients.Count; ++clientIndex )
 			{
-				Components.Message[] updateMessages = curUpdater.CreateUpdateMessages( );
-				if ( ( updateMessages != null ) && ( updateMessages.Length > 0 ) )
+				//	Skip past removed connections
+				if ( m_Clients[ clientIndex ] == null )
 				{
-					//	Concrete update model:
-					//	- Server side:
-					//		- Updater local update:
-					//			- Each updater stores states up to last client ACK
-					//		- Updater client update:
-					//			- For each client
-					//				- Each updater calculates the delta from the current state to the state at the time of the last client ACK
-					//				- Each updater returns information to the update manager (in the form of a message), containing the updater state deltas
-					//				- The update manager batches those messages and sends them to the current client, with an attached sequence number denoting
-					//				  the current tick count
-					//
-					//	- Client side:
-					//		- Listener server update:
-					//			- If a message is received by the server listener
-					//				- If its sequence number is less than the last received batch message sequence number, the message is ignored (handles unreliable protocol)
-					//				- Otherwise, the updater messages are unbatched, and directed to the appropriate locations
-					//					- Also, an acknowledgment is sent to the server, storing the batch message sequence number (the acknowledgement must be reliable?)
-					//		- Server updater:
-					//			- 
+					continue;
+				}
 
-					//	Run through all the messages generated by the updater
-					for ( int messageIndex = 0; messageIndex < updateMessages.Length; ++messageIndex )
+				//	Get the current connection
+				ClientConnection curConnection = ( ClientConnection )m_Clients[ clientIndex ];
+
+				//	Run through all the updaters
+				foreach ( IClientUpdater curUpdater in m_Updaters )
+				{
+					//	Get the current updater to generate update messages for the current client
+					Message[] updateMessages = curUpdater.CreateUpdateMessages( curConnection.ClientIndex, curConnection.CurrentSequence, m_Sequence );
+					if ( updateMessages != null )
 					{
-						//	Run through all the connections
-						foreach ( IConnection curConnection in m_Connections )
+						//	Run through all the messages generated by the updater
+						for ( int messageIndex = 0; messageIndex < updateMessages.Length; ++messageIndex )
 						{
 							//	Deliver the message to the client
-							curConnection.DeliverMessage( updateMessages[ messageIndex ] );
+							curConnection.Connection.DeliverMessage( updateMessages[ messageIndex ] );
 						}
 					}
 				}

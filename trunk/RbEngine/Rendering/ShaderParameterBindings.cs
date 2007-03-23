@@ -179,10 +179,29 @@ namespace RbEngine.Rendering
 		/// </summary>
 		public enum ValueType
 		{
-			Int,
-			Float,
+			/// <summary>
+			/// 32-bit integer
+			/// </summary>
+			Int32,
+
+			/// <summary>
+			/// 32-bit floating point
+			/// </summary>
+			Float32,
+
+			/// <summary>
+			/// 2 element 32-bit floating point vector
+			/// </summary>
 			Vector2,
+			
+			/// <summary>
+			/// 3 element 32-bit floating point vector
+			/// </summary>
 			Vector3,
+			
+			/// <summary>
+			/// 4x4 32-bit floating point matrix
+			/// </summary>
 			Matrix
 		}
 

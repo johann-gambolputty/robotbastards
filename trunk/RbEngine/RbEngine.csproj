@@ -64,7 +64,7 @@
                 />
                 <Config
                     Name = "Documentation"
-                    AllowUnsafeBlocks = "false"
+                    AllowUnsafeBlocks = "true"
                     BaseAddress = "285212672"
                     CheckForOverflowUnderflow = "false"
                     ConfigurationOverrideFile = ""
@@ -221,11 +221,6 @@
                 />
                 <File
                     RelPath = "Components\ComponentLoadParameters.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Components\Engine.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -581,6 +576,11 @@
                 />
                 <File
                     RelPath = "Network\Runt\IClientUpdater.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\Runt\ServerMessage.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

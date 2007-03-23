@@ -94,6 +94,9 @@ namespace RbControls
 			}
 		}
 
+		/// <summary>
+		/// Sets continuous rendering. If ContinuousRendering is true, the control will be invalidated repeatedly by a rendering timer at 30fps
+		/// </summary>
 		[ Category( "Rendering properties" ), Description( "Sets control to always invalidate itself" ) ]
 		public bool ContinuousRendering
 		{

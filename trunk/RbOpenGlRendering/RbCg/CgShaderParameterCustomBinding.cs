@@ -28,8 +28,8 @@ namespace RbOpenGlRendering.RbCg
 			{
 				switch ( type )
 				{
-					case ValueType.Int		:	m_Value = new int[ arraySize ];			break;
-					case ValueType.Float	:	m_Value = new float[ arraySize ];		break;
+					case ValueType.Int32	:	m_Value = new int[ arraySize ];			break;
+					case ValueType.Float32	:	m_Value = new float[ arraySize ];		break;
 					case ValueType.Vector2	:	m_Value = new Vector2[ arraySize ];		break;
 					case ValueType.Vector3	:	m_Value = new Vector3[ arraySize ];		break;
 					case ValueType.Matrix	:	m_Value = new Matrix44[ arraySize ];	break;
@@ -39,8 +39,8 @@ namespace RbOpenGlRendering.RbCg
 			{
 				switch ( type )
 				{
-					case ValueType.Int		:	m_Value = new int( );		break;
-					case ValueType.Float	:	m_Value = new float( );		break;
+					case ValueType.Int32	:	m_Value = new int( );		break;
+					case ValueType.Float32	:	m_Value = new float( );		break;
 					case ValueType.Vector2	:	m_Value = new Vector2( );	break;
 					case ValueType.Vector3	:	m_Value = new Vector3( );	break;
 					case ValueType.Matrix	:	m_Value = new Matrix44( );	break;
@@ -76,7 +76,7 @@ namespace RbOpenGlRendering.RbCg
 			{
 				switch ( m_Type )
 				{
-					case ValueType.Int		:
+					case ValueType.Int32	:
 					{
 						int[] array = ( int[] )m_Value;
 						CgShaderParameter.cgSetParameterValueic( param, array );
@@ -87,7 +87,7 @@ namespace RbOpenGlRendering.RbCg
 					//	}
 						break;
 					}
-					case ValueType.Float	:
+					case ValueType.Float32	:
 					{
 						float[] array = ( float[] )m_Value;
 						CgShaderParameter.cgSetParameterValuefc( param, array );
@@ -134,12 +134,12 @@ namespace RbOpenGlRendering.RbCg
 			{
 				switch ( m_Type )
 				{
-					case ValueType.Int		:
+					case ValueType.Int32		:
 					{
 						Cg.cgSetParameter1i( param, ( int )m_Value );
 						break;
 					}
-					case ValueType.Float	:
+					case ValueType.Float32	:
 					{
 						Cg.cgSetParameter1f( param, ( float )m_Value );
 						break;
@@ -185,7 +185,7 @@ namespace RbOpenGlRendering.RbCg
 		/// </summary>
 		public override void Set( int val )
 		{
-			CheckType( ValueType.Int );
+			CheckType( ValueType.Int32 );
 			m_Value = val;
 		}
 
@@ -194,7 +194,7 @@ namespace RbOpenGlRendering.RbCg
 		/// </summary>
 		public override void Set( float val )
 		{
-			CheckType( ValueType.Float );
+			CheckType( ValueType.Float32 );
 			m_Value = val;
 		}
 
@@ -243,7 +243,7 @@ namespace RbOpenGlRendering.RbCg
 		/// </summary>
 		public override void SetAt( int index, int val )
 		{
-			CheckType( ValueType.Int );
+			CheckType( ValueType.Int32 );
 			( ( int[] )m_Value )[ index ] = val;
 		}
 		
@@ -252,7 +252,7 @@ namespace RbOpenGlRendering.RbCg
 		/// </summary>
 		public override void SetAt( int index, float val )
 		{
-			CheckType( ValueType.Float );
+			CheckType( ValueType.Float32 );
 			( ( float[] )m_Value )[ index ] = val;
 		}
 		

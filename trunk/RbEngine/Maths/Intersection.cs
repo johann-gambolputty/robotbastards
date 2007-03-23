@@ -8,9 +8,74 @@ namespace RbEngine.Maths
 	public class Intersection
 	{
 		/// <summary>
+		/// Intersects a ray with a triangle
+		/// </summary>
+		public static Ray3Intersection GetRayTriangleIntersection( Ray3 ray, Point3 pt0, Point3 pt1, Point3 pt2 )
+		{
+			return GetRayTriangleIntersection( ray, pt0, pt1, pt2, float.MaxValue );
+		}
+
+		
+		/// <summary>
+		/// Intersects a ray with a triangle. If the intersection point is beyond a given distance from the ray origin, the intersection is rejected
+		/// </summary>
+		public static Ray3Intersection GetRayTriangleIntersection( Ray3 ray, Point3 pt0, Point3 pt1, Point3 pt2, float maxDistance )
+		{
+			Vector3 uVec			= ( pt1 - pt0 );
+			Vector3 vVec			= ( pt2 - pt0 );
+			Vector3 nVec			= Vector3.Cross( uVec, vVec );
+			float	nVecSqrLength	= nVec.SqrLength;
+			if ( nVecSqrLength < 0.001f )
+			{
+				//	Degenerate tri - no intersection
+				return null;
+			}
+
+			Vector3 w0	= ray.Origin - pt0;
+			float	a	= -nVec.Dot( w0 );
+			float	b	= nVec.Dot( ray.Direction );
+			if ( System.Math.Abs( b ) < 0.001f )
+			{
+				//	Ray is parallel to the tri - reject
+				return null;
+			}
+			float	r	= a / b;
+			if ( r < 0 )
+			{
+				//	Ray goes away from the tri - reject
+				return null;
+			}
+
+			//	Ray intersects tri plane - calculate position in tri
+			Point3	pt	= ray.Origin + ray.Direction * r;
+
+			float	uu	= uVec.Dot( uVec );
+			float	uv	= uVec.Dot( vVec );
+			float	vv	= vVec.Dot( vVec );
+			Vector3	w	= pt - pt0;
+			float	wu	= w.Dot( uVec );
+			float	wv	= w.Dot( vVec );
+
+			float	d	= ( uv * uv - uu * vv );
+			float	s	= ( uv * wv - vv * wu ) / d;
+			if ( s < 0 || s > 1 )
+			{
+				return null;
+			}
+			float	t	= ( uv * wu - uu * wv ) / d;
+			if ( t < 0 || t > 1 )
+			{
+				return null;
+			}
+
+			nVec /= ( float )System.Math.Sqrt( nVecSqrLength );
+			return new Ray3Intersection( pt, nVec, r );
+		}
+
+		/// <summary>
 		/// Tests for an intersection between a ray and a sphere
 		/// </summary>
-		public static Ray3Intersection GetIntersection( Ray3 ray, Sphere3 sphere )
+		public static Ray3Intersection GetRayIntersection( Ray3 ray, Sphere3 sphere )
 		{
 			Vector3	originToCentre			= ray.Origin - sphere.Centre;
 
@@ -63,7 +128,7 @@ namespace RbEngine.Maths
 		/// <summary>
 		/// Tests for an intersection between a ray and a plane
 		/// </summary>
-		public static bool TestIntersection( Ray3 ray, Plane3 plane )
+		public static bool TestRayIntersection( Ray3 ray, Plane3 plane )
 		{
 			float	startDot	= plane.Normal.Dot( ray.Origin );
 			float	diffDot		= plane.Normal.Dot( ray.Direction );
@@ -80,7 +145,7 @@ namespace RbEngine.Maths
 		/// <summary>
 		/// Returns information about an intersection between a ray and a plane
 		/// </summary>
-		public static Ray3Intersection GetIntersection( Ray3 ray, Plane3 plane )
+		public static Ray3Intersection GetRayIntersection( Ray3 ray, Plane3 plane )
 		{
 			float	startDot	= plane.Normal.Dot( ray.Origin );
 			float	diffDot		= plane.Normal.Dot( ray.Direction );

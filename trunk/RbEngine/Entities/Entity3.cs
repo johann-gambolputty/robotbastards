@@ -85,6 +85,12 @@ namespace RbEngine.Entities
 			}
 		}
 
+		/// <summary>
+		/// The next position of the entity
+		/// </summary>
+		/// <remarks>
+		/// This accesses the next position in the Point3Interpolator that governs this entity's world position
+		/// </remarks>
 		public Point3	NextPosition
 		{
 			get
@@ -278,6 +284,10 @@ namespace RbEngine.Entities
 
 		#endregion
 
+		/// <summary>
+		/// Updates this entity
+		/// </summary>
+		/// <param name="updateClock">The clock that caused this update to fire</param>
 		public void		Update( Scene.Clock updateClock )
 		{
 			//	Entity frame update:

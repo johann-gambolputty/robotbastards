@@ -11,6 +11,7 @@ namespace RbEngine.Interaction
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
+		/// <param name="view">The view that this binding is attached to</param>
 		/// <param name="key">Key to check for</param>
 		public CommandKeyInputBinding( Scene.SceneView view, Keys key ) :
 			base( view )

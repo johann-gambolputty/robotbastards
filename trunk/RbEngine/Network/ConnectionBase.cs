@@ -50,18 +50,7 @@ namespace RbEngine.Network
 		public void HandleMessage( Components.Message msg )
 		{
 			DeliverMessage( msg );
-
-			//	Deliver message to anybody that's interested
-			Type baseType = typeof( Object );
-			for ( Type messageType = msg.GetType( ); messageType != baseType; messageType = messageType.BaseType )
-			{
-				MessageRecipientChain chain = ( MessageRecipientChain )m_RecipientChains[ messageType ];
-				if ( chain != null )
-				{
-					chain.Deliver( msg );
-					return;
-				}
-			}
+			DeliverMessageToRecipients( msg );
 		}
 
 		/// <summary>
@@ -79,6 +68,24 @@ namespace RbEngine.Network
 				m_RecipientChains[ messageType ] = chain;
 			}
 			chain.AddRecipient( recipient, order );
+		}
+
+		/// <summary>
+		/// Delivers a specified message to all the recipients
+		/// </summary>
+		protected void DeliverMessageToRecipients( Components.Message msg )
+		{
+			//	Deliver message to anybody that's interested
+			Type baseType = typeof( Object );
+			for ( Type messageType = msg.GetType( ); messageType != baseType; messageType = messageType.BaseType )
+			{
+				MessageRecipientChain chain = ( MessageRecipientChain )m_RecipientChains[ messageType ];
+				if ( chain != null )
+				{
+					chain.Deliver( msg );
+					return;
+				}
+			}
 		}
 
 		#endregion

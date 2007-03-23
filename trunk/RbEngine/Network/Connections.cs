@@ -67,6 +67,7 @@ namespace RbEngine.Network
 		/// </summary>
 		public event NewServerConnectionDelegate		NewServerConnection;
 
+
 		/// <summary>
 		/// The connection collection
 		/// </summary>

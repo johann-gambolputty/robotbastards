@@ -93,7 +93,8 @@ namespace RbEngine.Components
 		/// Loads the root "rb" element, which can consist of any number of "modelSet" elements, and one "object" element
 		/// </summary>
 		/// <param name="element">XML "rb" element</param>
-		/// <returns>Returns the root object, if one was defined</returns>
+		/// <param name="rootObject">The root object to load into</param>
+		/// <returns>Returns rootObject</returns>
 		private Object LoadRb( XmlElement element, Object rootObject )
 		{
 			RootObjectLoader loader = new RootObjectLoader( null, element, rootObject );
@@ -399,7 +400,7 @@ namespace RbEngine.Components
 
 			/// <summary>
 			/// Adds a child object loader to the specified child list
-			/// </summary>e="order"></param>
+			/// </summary>
 			protected void			AddChildLoader( BaseLoader loader, Order order )
 			{
 				if ( order == Order.Default )
@@ -543,6 +544,7 @@ namespace RbEngine.Components
 			/// <summary>
 			/// Constructor
 			/// </summary>
+			/// <param name="parentLoader">The parent BaseLoader. Can be null to denote the root object loader</param>
 			/// <param name="element">The "rb" element</param>
 			/// <param name="rootObject">Existing root object to load into. Can be null</param>
 			public RootObjectLoader( BaseLoader parentLoader, XmlElement element, Object rootObject ) :
@@ -695,7 +697,6 @@ namespace RbEngine.Components
 			/// <summary>
 			/// Constructor. Creates the object
 			/// </summary>
-			/// <param name="element"></param>
 			public ReferenceLoader( BaseLoader parentLoader, XmlElement element ) :
 				base( parentLoader, element )
 			{
@@ -803,7 +804,6 @@ namespace RbEngine.Components
 			/// <summary>
 			/// Constructor. Instances the reference
 			/// </summary>
-			/// <param name="element"></param>
 			public InstanceLoader( BaseLoader parentLoader, XmlElement element ) :
 				base( parentLoader, element )
 			{
