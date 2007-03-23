@@ -38,7 +38,7 @@ namespace RbEngine.Network
 			m_Writer	= new BinaryWriter( m_Stream );
 			m_Reader	= new BinaryReader( m_Stream );
 
-			//	Kick off a thread that sends pending messages to the client
+  			//	Kick off a thread that sends pending messages to the client
 			m_Thread = new Thread( new ThreadStart( RunConnection ) );
 			m_Thread.Start( );
 		}
