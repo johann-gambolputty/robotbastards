@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace RbEngine.Network
+namespace RbEngine.Network.Runt
 {
 	/*
 	 * TcpClientConnectionListener listens out for client connections. If it finds one, it creates
@@ -11,8 +11,13 @@ namespace RbEngine.Network
 	 */
 
 	/// <summary>
-	/// Listens for client update messages over the client-server connection
+	/// Sends clients update messages using the Q3 unreliable network model
 	/// </summary>
+	/// <remarks>
+	/// A great description of the Q3 network model can be found on http://bookofhook.com/
+	/// The ClientUpdateManager can work with any IConnection type - reliable or unreliable (although it's obviously
+	/// designed for an unreliable context). 
+	/// </remarks>
 	public class ClientUpdateManager : Scene.ISceneObject
 	{
 		#region	Updaters

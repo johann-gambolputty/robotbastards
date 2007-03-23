@@ -540,11 +540,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Network\ClientUpdateManager.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Network\ConnectionBase.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -556,11 +551,6 @@
                 />
                 <File
                     RelPath = "Network\IClientManager.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Network\IClientUpdater.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -581,6 +571,16 @@
                 />
                 <File
                     RelPath = "Network\TcpServerToClientConnection.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\Runt\ClientUpdateManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\Runt\IClientUpdater.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

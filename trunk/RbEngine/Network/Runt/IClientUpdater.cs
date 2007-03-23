@@ -1,6 +1,6 @@
 using System;
 
-namespace RbEngine.Network
+namespace RbEngine.Network.Runt
 {
 	/// <summary>
 	/// Interface for updating a network client
