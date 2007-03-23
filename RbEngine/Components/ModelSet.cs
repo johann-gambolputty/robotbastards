@@ -90,35 +90,35 @@ namespace RbEngine.Components
 		/// <summary>
 		/// Finds an object in a model set with a given name
 		/// </summary>
-		/// <param name="path"> Object path. This is in the form of a file path, with model sets as directories, and the final name specifying the object </param>
+		/// <param name="path">Path to the model, relative to this modelset</param>
 		/// <returns>The named object</returns>
 		/// <exception cref="System.ApplicationException">Thrown if the name cannot be resolved to an object</exception>
-		public static Object	Find( string name )
+		public static Object	Find( string path )
 		{
-			return ms_Main.Find( 0, name.Split( new char[] { '/', '\\' } ) );
+			return ms_Main.Find( 0, path.Split( new char[] { '/', '\\' } ) );
 		}
 
 		/// <summary>
 		/// Finds a model set with a given name, throwing an exception if it can't be found
 		/// </summary>
-		/// <param name="path"> Model set path. This is in the form of a file path, with model sets as directories </param>
+		/// <param name="path">Model set path, relative to the main model set. This is in the form of a file path, with model sets as directories</param>
 		/// <returns>The named model set</returns>
 		/// <exception cref="System.ApplicationException">Thrown if the name cannot be resolved to an object</exception>
-		public static ModelSet	FindModelSet( string name )
+		public static ModelSet	FindModelSet( string path )
 		{
-			return ms_Main.FindModelSet( 0, name.Split( new char[] { '/', '\\' } ), true );
+			return ms_Main.FindModelSet( 0, path.Split( new char[] { '/', '\\' } ), true );
 		}
 
 		/// <summary>
 		/// Finds a model set with a given name, optionally throwing an exception if it can't be found
 		/// </summary>
-		/// <param name="path"> Model set path. This is in the form of a file path, with model sets as directories </param>
+		/// <param name="path"> Model set path, relative to the main model set. This is in the form of a file path, with model sets as directories</param>
 		/// <param name="throwOnFail"> If true, and the model set path can't be resolved, an exception is thrown </param>
 		/// <returns>The named model set</returns>
 		/// <exception cref="System.ApplicationException">Thrown if the name cannot be resolved to an object, and throwOnFail is true</exception>
-		public static ModelSet FindModelSet( string name, bool throwOnFail )
+		public static ModelSet FindModelSet( string path, bool throwOnFail )
 		{
-			return ms_Main.FindModelSet( 0, name.Split( new char[] { '/', '\\' } ), throwOnFail );
+			return ms_Main.FindModelSet( 0, path.Split( new char[] { '/', '\\' } ), throwOnFail );
 		}
 
 		/// <summary>

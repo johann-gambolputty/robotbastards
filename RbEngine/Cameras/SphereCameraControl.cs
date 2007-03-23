@@ -189,7 +189,10 @@ namespace RbEngine.Cameras
 
 		#region IDisposable Members
 
-		public void Dispose()
+		/// <summary>
+		/// Removes the control events
+		/// </summary>
+		public void Dispose( )
 		{
 			m_Control.MouseDown -= new MouseEventHandler( OnMouseDown );
 			m_Control.MouseUp -= new MouseEventHandler( OnMouseUp );

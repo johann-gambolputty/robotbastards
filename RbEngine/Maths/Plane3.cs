@@ -53,8 +53,8 @@ namespace RbEngine.Maths
 			}
 		}
 
-		public Vector3	m_Normal	= new Vector3( 0, 0, 0 );
-		public float	m_Distance	= 0;
+		private Vector3	m_Normal	= new Vector3( 0, 0, 0 );
+		private float	m_Distance	= 0;
 
 	}
 }

@@ -144,24 +144,36 @@ namespace RbEngine.Maths
 
 		#region	In place overloaded operator secondary functions
 
+		/// <summary>
+		/// In-place add.
+		/// </summary>
 		public void IpAdd( Vector2 rhs )
 		{
 			X += rhs.X;
 			Y += rhs.Y;
 		}
 
+		/// <summary>
+		/// In-place subtraction
+		/// </summary>
 		public void IpSubtract( Vector2 rhs )
 		{
 			X -= rhs.X;
 			Y -= rhs.Y;
 		}
 
+		/// <summary>
+		/// In-place multiplication by a scalar
+		/// </summary>
 		public void IpMultiplyByValue( float rhs )
 		{
 			X *= rhs;
 			Y *= rhs;
 		}
 
+		/// <summary>
+		/// In-place division by a scalar
+		/// </summary>
 		public void IpDivideByValue( float rhs )
 		{
 			X /= rhs;
@@ -172,21 +184,33 @@ namespace RbEngine.Maths
 
 		#region	Overloaded operator secondary functions
 
+		/// <summary>
+		/// Adds lhs to rhs and returns the result
+		/// </summary>
 		public static Vector2 Add( Vector2 lhs, Vector2 rhs )
 		{
 			return new Vector2( lhs.X + rhs.X, lhs.Y + rhs.Y );
 		}
 
+		/// <summary>
+		/// Subtracts rhs from lhs and returns the result
+		/// </summary>
 		public static Vector2 Subtract( Vector2 lhs, Vector2 rhs )
 		{
 			return new Vector2( lhs.X - rhs.X, lhs.Y - rhs.Y );
 		}
 
+		/// <summary>
+		/// Multiplies the vector lhs by the scalar rhs and returns the result
+		/// </summary>
 		public static Vector2 MultiplyByValue( Vector2 lhs, float rhs )
 		{
 			return new Vector2( lhs.X * rhs, lhs.Y * rhs );
 		}
 
+		/// <summary>
+		/// Divides the vector lhs by the scalar rhs and returns the result
+		/// </summary>
 		public static Vector2 DivideByValue( Vector2 lhs, float rhs )
 		{
 			return new Vector2( lhs.X / rhs, lhs.Y / rhs );
@@ -196,21 +220,33 @@ namespace RbEngine.Maths
 
 		#region	Overloaded arithmetic operators
 
+		/// <summary>
+		/// Adds lhs to rhs and returns the result
+		/// </summary>
 		public static Vector2 operator + ( Vector2 lhs, Vector2 rhs )
 		{
 			return Add( lhs, rhs );
 		}
 
+		/// <summary>
+		/// Subtracts rhs from lhs and returns the result
+		/// </summary>
 		public static Vector2 operator - ( Vector2 lhs, Vector2 rhs )
 		{
 			return Subtract( lhs, rhs );
 		}
 
+		/// <summary>
+		/// Multiplies the vector lhs by the scalar rhs and returns the result
+		/// </summary>
 		public static Vector2 operator * ( Vector2 lhs, float rhs )
 		{
 			return MultiplyByValue( lhs, rhs );
 		}
 
+		/// <summary>
+		/// Divides the vector lhs by the scalar rhs and returns the result
+		/// </summary>
 		public static Vector2 operator / ( Vector2 lhs, float rhs )
 		{
 			return DivideByValue( lhs, rhs );

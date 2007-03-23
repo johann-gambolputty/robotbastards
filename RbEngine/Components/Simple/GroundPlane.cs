@@ -36,7 +36,7 @@ namespace RbEngine.Components.Simple
 		/// <returns>true if the ray intersects this object</returns>
 		public bool TestIntersection( Maths.Ray3 ray )
 		{
-			return Maths.Intersection.TestIntersection( ray, m_Plane );
+			return Maths.Intersection.TestRayIntersection( ray, m_Plane );
 		}
 
 		/// <summary>
@@ -46,7 +46,7 @@ namespace RbEngine.Components.Simple
 		/// <returns>Intersection information. If no intersection takes place, this method returns null</returns>
 		public Maths.Ray3Intersection GetIntersection( Maths.Ray3 ray )
 		{
-			return Maths.Intersection.GetIntersection( ray, m_Plane );
+			return Maths.Intersection.GetRayIntersection( ray, m_Plane );
 		}
 
 		#endregion

@@ -87,7 +87,7 @@ namespace RbEngine.Components.Simple
 		public bool				TestIntersection( Ray3 ray )
 		{
 			//	TODO: This is lazy
-			return Maths.Intersection.GetIntersection( ray, m_Sphere ) != null;
+			return Maths.Intersection.GetRayIntersection( ray, m_Sphere ) != null;
 		}
 
 		/// <summary>
@@ -97,7 +97,7 @@ namespace RbEngine.Components.Simple
 		/// <returns>Intersection information. If no intersection takes place, this method returns null</returns>
 		public Ray3Intersection	GetIntersection( Ray3 ray )
 		{
-			return Maths.Intersection.GetIntersection( ray, m_Sphere );
+			return Maths.Intersection.GetRayIntersection( ray, m_Sphere );
 		}
 
 		#endregion

@@ -43,7 +43,8 @@ namespace RbEngine.Maths
 		/// <summary>
 		/// Close to zero check
 		/// </summary>
-		/// <param name="val"> Value </param>
+		/// <param name="val">Value</param>
+		/// <param name="epsilon">If val is within this tolerance of zero, this function returns true</param>
 		/// <returns> Returns true if val is within epsilon of zero </returns>
 		public static bool CloseToZero( float val, float epsilon )
 		{

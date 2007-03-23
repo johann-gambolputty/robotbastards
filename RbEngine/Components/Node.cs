@@ -142,7 +142,14 @@ namespace RbEngine.Components
 
 		#region	Protected stuff
 
+		/// <summary>
+		/// This node's parent object
+		/// </summary>
 		protected Object	m_Parent;
+
+		/// <summary>
+		/// This node's child objects
+		/// </summary>
 		protected ArrayList	m_Children = new ArrayList( );
 
 		#endregion

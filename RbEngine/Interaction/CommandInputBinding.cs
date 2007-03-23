@@ -46,6 +46,10 @@ namespace RbEngine.Interaction
 		}
 
 		private Scene.SceneView	m_View;
+
+		/// <summary>
+		/// Active binding flag
+		/// </summary>
 		protected bool			m_Active = false;
 	}
 }

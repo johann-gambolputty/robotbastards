@@ -28,7 +28,7 @@
 
 			<object type="RbEngine.Network.Connections"/>
 
-			<object type="RbEngine.Network.ClientUpdateManager"/>
+			<object type="RbEngine.Network.Runt.ClientUpdateManager"/>
 
 		</object>
 

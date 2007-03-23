@@ -23,9 +23,24 @@ namespace RbEngine.Interaction
 			return new CommandCursorEventArgs( cmd, View, m_X, m_Y, m_LastX, m_LastY );
 		}
 
+		/// <summary>
+		/// X position of the cursor
+		/// </summary>
 		protected int m_X;
+
+		/// <summary>
+		/// Y position of the cursor
+		/// </summary>
 		protected int m_Y;
+
+		/// <summary>
+		/// Last X position of the cursor
+		/// </summary>
 		protected int m_LastX;
+
+		/// <summary>
+		/// Last Y position of the cursor
+		/// </summary>
 		protected int m_LastY;
 	}
 }

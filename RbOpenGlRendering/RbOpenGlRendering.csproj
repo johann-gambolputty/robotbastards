@@ -64,7 +64,7 @@
                 />
                 <Config
                     Name = "Documentation"
-                    AllowUnsafeBlocks = "false"
+                    AllowUnsafeBlocks = "true"
                     BaseAddress = "285212672"
                     CheckForOverflowUnderflow = "false"
                     ConfigurationOverrideFile = ""

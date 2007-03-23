@@ -11,6 +11,7 @@ namespace RbEngine.Interaction
 		/// <summary>
 		/// Setup constructor. Specifies the button that must be pressed while the mouse is being moved, for the command to fire
 		/// </summary>
+		/// <param name="view">View that this binding is attached to</param>
 		/// <param name="button">Button to press</param>
 		public CommandMouseMoveInputBinding( Scene.SceneView view, MouseButtons button ) :
 			base( view )

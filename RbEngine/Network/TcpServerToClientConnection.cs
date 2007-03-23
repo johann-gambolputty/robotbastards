@@ -87,7 +87,25 @@ namespace RbEngine.Network
 					m_PendingMessages.Clear( );
 				}
 
-				//	TODO: Should block the thread until more messages are pending, or there's data available on the connection
+				//	Read any messages that have appeared at the client socket, passing them on to any interested parties using
+				//	the message recipient chain
+				if ( m_Socket.Available > 0 )
+				{
+					lock ( m_ReceivedMesages )
+					{
+						while ( m_Socket.Available > 0 )
+						{
+							Components.Message newMessage = Components.Message.ReadMessage( m_Reader );
+							if ( newMessage == null )
+							{
+								throw new ApplicationException( "Invalid message appeared at client socket" );
+							}
+
+							//	TODO: ...
+							m_ReceivedMesages.Add( newMessage );
+						}
+					}
+				}
 			}
 		}
 
@@ -117,7 +135,8 @@ namespace RbEngine.Network
 		private NetworkStream	m_Stream;
 		private BinaryReader	m_Reader;
 		private BinaryWriter	m_Writer;
-		private ArrayList		m_PendingMessages = new ArrayList( );
+		private ArrayList		m_PendingMessages	= new ArrayList( );
+		private ArrayList		m_ReceivedMesages	= new ArrayList( );
 
 		#endregion
 	}
