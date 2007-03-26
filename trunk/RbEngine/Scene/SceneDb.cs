@@ -150,7 +150,15 @@ namespace RbEngine.Scene
 		/// </remarks>
 		public SceneDb( )
 		{
-			m_Rendering		= new RenderManager( this );
+			m_Rendering = new RenderManager( this );
+		}
+
+		/// <summary>
+		/// Gets a scene object from its identifier
+		/// </summary>
+		public Object GetSceneObjectById( Components.ObjectId id )
+		{
+			return m_ChildIdMap[ id ];
 		}
 
 		#endregion
@@ -241,11 +249,12 @@ namespace RbEngine.Scene
 
 		#region	Private stuff
 
-		private ArrayList						m_Children	= new ArrayList( );
+		private ArrayList						m_Children		= new ArrayList( );
 		private RenderManager					m_Rendering;
-		private ArrayList						m_Clocks	= new ArrayList( );
-		private bool							m_Paused	= true;
+		private ArrayList						m_Clocks		= new ArrayList( );
+		private bool							m_Paused		= true;
 		private Components.Node					m_Systems;
+		private Hashtable						m_ChildIdMap	= new Hashtable( );
 
 		#endregion
 
@@ -282,11 +291,21 @@ namespace RbEngine.Scene
 		/// </summary>
 		public void AddToContext( Object obj )
 		{
+			//	Inform ISceneObject objects that they've been added to the scene
 			ISceneObject sceneObj = obj as ISceneObject;
 			if ( sceneObj != null )
 			{
 				sceneObj.AddedToScene( this );
 			}
+
+			//	Add IUnique objects the child ID map
+			Components.IUnique uniqueObj = obj as Components.IUnique;
+			if ( uniqueObj != null )
+			{
+				m_ChildIdMap[ uniqueObj.Id ] = obj;
+			}
+
+			//	Invoke the AddedToContext event
 			if ( AddedToContext != null )
 			{
 				AddedToContext( this, obj );
@@ -299,11 +318,21 @@ namespace RbEngine.Scene
 		/// <param name="obj"></param>
 		public void RemoveFromContext( Object obj )
 		{
+			//	Inform ISceneObject objects that they've been removed from the scene
 			ISceneObject sceneObj = obj as ISceneObject;
 			if ( sceneObj != null )
 			{
 				sceneObj.RemovedFromScene( this );
 			}
+
+			//	Remove IUnique objects the child ID map
+			Components.IUnique uniqueObj = obj as Components.IUnique;
+			if ( uniqueObj != null )
+			{
+				m_ChildIdMap.Remove( uniqueObj.Id );
+			}
+
+			//	Invoke the RemovedFromContext event
 			if ( RemovedFromContext != null )
 			{
 				RemovedFromContext( this, obj );

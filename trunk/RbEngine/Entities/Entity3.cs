@@ -51,14 +51,14 @@ namespace RbEngine.Entities
 		Physics			= 20,
 
 		/// <summary>
-		/// Order used by the message handler that commits movement that has been processed by previous handlers to the target
-		/// </summary>
-		Commit			= 30,
-
-		/// <summary>
 		/// Order used by the message handler that sends the committed movement to the server
 		/// </summary>
-		ServerUpdate	= 40
+		ServerUpdate	= 30,
+
+		/// <summary>
+		/// Order used by the message handler that commits movement that has been processed by previous handlers to the target
+		/// </summary>
+		Commit			= 40
 	}
 
 	//	TODO: Entities should not be renderable - they should have child nodes that handle all the rendering shit

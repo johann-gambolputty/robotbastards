@@ -7,30 +7,8 @@ namespace RbEngine.Entities
 	/// <summary>
 	/// Sends entity action messages to a server
 	/// </summary>
-	public class EntityActionServerUpdater : Components.IMessageHandler, Scene.ISceneObject, Components.IChildObject
+	public class EntityActionServerUpdater : Scene.ISceneObject, Components.IChildObject, Network.Runt.IServerUpdater
 	{
-		#region IMessageHandler Members
-
-		/// <summary>
-		/// Sends a message on to the 
-		/// </summary>
-		/// <param name="msg"></param>
-		public void HandleMessage( Components.Message msg )
-		{
-
-		}
-
-		/// <summary>
-		/// Throws an exception - can't add recipients
-		/// </summary>
-		public void AddRecipient(Type messageType, RbEngine.Components.MessageRecipientDelegate recipient, int order)
-		{
-			//	TODO: AddRecipient() should be in a different interface
-			throw new ApplicationException( "Can't add recipients" );
-		}
-
-		#endregion
-
 		#region ISceneObject Members
 
 		/// <summary>
@@ -38,8 +16,17 @@ namespace RbEngine.Entities
 		/// </summary>
 		public void AddedToScene( Scene.SceneDb db )
 		{
-			Network.Connections connections = ( Network.Connections )db.GetSystem( typeof( Network.Connections ) );
-			connections.NewServerConnection += new Network.NewServerConnectionDelegate( OnNewServerConnection );
+			//	Add this updater to the server updater
+			Network.Runt.ServerUpdateManager updateManager = ( Network.Runt.ServerUpdateManager )db.GetSystem( typeof( Network.Runt.ServerUpdateManager ) );
+			if ( updateManager == null )
+			{
+				throw new ApplicationException( "EntityActionServerUpdater requires a ServerUpdateManager to present in the scene systems" );
+			}
+
+			updateManager.AddUpdater( this );
+
+		//	Network.Connections connections = ( Network.Connections )db.GetSystem( typeof( Network.Connections ) );
+		//	connections.NewServerConnection += new Network.NewServerConnectionDelegate( OnNewServerConnection );
 		}
 
 		/// <summary>
@@ -92,6 +79,20 @@ namespace RbEngine.Entities
 			return MessageRecipientResult.RemoveFromChain;
 		}
 
+		#region IServerUpdater Members
 
+		/// <summary>
+		/// Adds all stored messages to the specified messages list
+		/// </summary>
+		public void GetUpdateMessages( ArrayList messages )
+		{
+			foreach ( Message msg in m_Messages )
+			{
+				messages.Add( msg );
+			}
+			m_Messages.Clear( );
+		}
+
+		#endregion
 	}
 }
