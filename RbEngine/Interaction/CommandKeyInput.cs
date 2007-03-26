@@ -28,9 +28,9 @@ namespace RbEngine.Interaction
 		/// <summary>
 		/// Creates a CommandKeyInputBinding associated with the specified view
 		/// </summary>
-		public override CommandInputBinding BindToView( Scene.SceneView view )
+		public override CommandInputBinding BindToView( Command cmd, Scene.SceneView view )
 		{
-			return new CommandKeyInputBinding( view, m_Key );
+			return new CommandKeyInputBinding( cmd, view, m_Key );
 		}
 
 		private Keys m_Key;

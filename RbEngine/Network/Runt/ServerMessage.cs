@@ -30,13 +30,13 @@ namespace RbEngine.Network.Runt
 		}
 
 		/// <summary>
-		/// Gets the base message attached to this server message
+		/// Gets the base messages attached to this server message
 		/// </summary>
-		public Components.Message BaseMessage
+		public Components.Message[] BaseMessages
 		{
 			get
 			{
-				return m_BaseMessage;
+				return m_BaseMessages;
 			}
 		}
 
@@ -75,8 +75,8 @@ namespace RbEngine.Network.Runt
 			m_BaseMessage	= Components.Message.ReadMessage( input );
 		}
 
-		private int					m_ClientId;
-		private uint				m_Sequence;
-		private Components.Message	m_BaseMessage;
+		private int						m_ClientId;
+		private uint					m_Sequence;
+		private Components.Message[]	m_BaseMessages;
 	}
 }

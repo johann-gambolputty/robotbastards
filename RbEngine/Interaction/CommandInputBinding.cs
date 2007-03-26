@@ -27,29 +27,24 @@ namespace RbEngine.Interaction
 			{
 				return m_Active;
 			}
+			set
+			{
+				m_Active = value;
+			}
 		}
+
 		/// <summary>
 		/// Sets the scene view that this input binding is associated with
 		/// </summary>
 		/// <param name="view"></param>
-		public CommandInputBinding( Scene.SceneView view )
+		public CommandInputBinding( Command cmd, Scene.SceneView view )
 		{
-			m_View = view;
-		}
-
-		/// <summary>
-		/// Creates a CommandEventArgs object for this binding
-		/// </summary>
-		public virtual CommandEventArgs CreateEventArgs( Command cmd )
-		{
-			return new CommandEventArgs( cmd, View );
+			m_View		= view;
+			m_Command	= cmd;
 		}
 
 		private Scene.SceneView	m_View;
-
-		/// <summary>
-		/// Active binding flag
-		/// </summary>
-		protected bool			m_Active = false;
+		private bool			m_Active;
+		private Command			m_Command;
 	}
 }

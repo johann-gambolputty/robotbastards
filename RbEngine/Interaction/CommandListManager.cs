@@ -45,6 +45,21 @@ namespace RbEngine.Interaction
 		}
 
 		/// <summary>
+		/// Gets the command list from the hash of its name
+		/// </summary>
+		public CommandList			GetFromStringHash( int stringHash )
+		{
+			foreach ( CommandList curList in m_CommandLists )
+			{
+				if ( curList.Name.GetHashCode( ) == stringHash )
+				{
+					return curList;
+				}
+			}
+			return null;
+		}
+
+		/// <summary>
 		/// Creates a CommandList from an enumerated type
 		/// </summary>
 		public static CommandList	CreateFromEnum( Type enumType )

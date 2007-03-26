@@ -29,10 +29,15 @@ namespace RbEngine.Network
 		/// <summary>
 		/// Returns true if connects to a client
 		/// </summary>
-		public abstract bool	ConnectionToClient
+		public abstract bool ConnectionToClient
 		{
 			get;
 		}
+
+		/// <summary>
+		/// Received message event
+		/// </summary>
+		public event ConnectionReceivedMessageDelegate	ReceivedMessage;
 
 		/// <summary>
 		/// Delivers a message over this connection
@@ -40,51 +45,14 @@ namespace RbEngine.Network
 		/// <param name="msg">Message to deliver</param>
 		public abstract void DeliverMessage( Components.Message msg );
 
-		#endregion
-
-		#region IMessageHandler Members
-
 		/// <summary>
-		/// Delivers the message over the connection, and also to any recipients added by the AddRecipient() call
+		/// Invokes the ReceivedMessage event
 		/// </summary>
-		public void HandleMessage( Components.Message msg )
+		protected void OnReceivedMessage( Components.Message msg )
 		{
-			DeliverMessage( msg );
-			DeliverMessageToRecipients( msg );
-		}
-
-		/// <summary>
-		/// Adds a recipient. Any messages of, or derived from, the specified type, get passed to the specified delegate
-		/// </summary>
-		/// <param name="messageType">Type of message to look out for</param>
-		/// <param name="recipient">Delegate to call if this object receives a message of the correct type</param>
-		/// <param name="order">Recipient order</param>
-		public void AddRecipient( Type messageType, Components.MessageRecipientDelegate recipient, int order )
-		{
-			MessageRecipientChain chain = ( MessageRecipientChain )m_RecipientChains[ messageType ];
-			if ( chain == null )
+			if ( ReceivedMessage != null )
 			{
-				chain = new MessageRecipientChain( );
-				m_RecipientChains[ messageType ] = chain;
-			}
-			chain.AddRecipient( recipient, order );
-		}
-
-		/// <summary>
-		/// Delivers a specified message to all the recipients
-		/// </summary>
-		protected void DeliverMessageToRecipients( Components.Message msg )
-		{
-			//	Deliver message to anybody that's interested
-			Type baseType = typeof( Object );
-			for ( Type messageType = msg.GetType( ); messageType != baseType; messageType = messageType.BaseType )
-			{
-				MessageRecipientChain chain = ( MessageRecipientChain )m_RecipientChains[ messageType ];
-				if ( chain != null )
-				{
-					chain.Deliver( msg );
-					return;
-				}
+				ReceivedMessage( this, msg );
 			}
 		}
 
@@ -92,8 +60,7 @@ namespace RbEngine.Network
 
 		#region	Private stuff
 
-		private Hashtable	m_RecipientChains	= new Hashtable( );
-		private string		m_Name				= string.Empty;
+		private string m_Name = string.Empty;
 
 		#endregion
 

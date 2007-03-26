@@ -11,10 +11,11 @@ namespace RbEngine.Interaction
 		/// <summary>
 		/// Setup constructor. Specifies the button that must be pressed while the mouse is being moved, for the command to fire
 		/// </summary>
+		/// <param name="cmd">Binding command</param>
 		/// <param name="view">View that this binding is attached to</param>
 		/// <param name="button">Button to press</param>
-		public CommandMouseMoveInputBinding( Scene.SceneView view, MouseButtons button ) :
-			base( view )
+		public CommandMouseMoveInputBinding( Command cmd, Scene.SceneView view, MouseButtons button ) :
+			base( cmd, view )
 		{
 			m_Button = button;
 
@@ -32,11 +33,11 @@ namespace RbEngine.Interaction
 
 			if ( m_Button == MouseButtons.None )
 			{
-				m_Active = true;
+				Active = true;
 			}
 			else
 			{
-				m_Active = ( args.Button == m_Button );
+				Active = ( args.Button == m_Button );
 			}
 
 			m_X = args.X;
@@ -45,7 +46,7 @@ namespace RbEngine.Interaction
 
 		private void			OnMouseLeave( object sender, EventArgs args )
 		{
-			m_Active = false;
+			Active = false;
 		}
 
 		private MouseButtons	m_Button;

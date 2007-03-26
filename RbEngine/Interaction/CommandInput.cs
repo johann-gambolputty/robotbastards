@@ -10,6 +10,6 @@ namespace RbEngine.Interaction
 		/// <summary>
 		/// Binds this input to a view, creating a CommandInputBinding
 		/// </summary>
-		public abstract CommandInputBinding	BindToView( Scene.SceneView view );
+		public abstract CommandInputBinding	BindToView( Command cmd, Scene.SceneView view );
 	}
 }

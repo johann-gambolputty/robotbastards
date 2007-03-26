@@ -28,9 +28,9 @@ namespace RbEngine.Interaction
 		/// <summary>
 		/// Creates a CommandMouseMoveInputBinding associated with the specified view
 		/// </summary>
-		public override CommandInputBinding BindToView( Scene.SceneView view )
+		public override CommandInputBinding BindToView( Command cmd, Scene.SceneView view )
 		{
-			return new CommandMouseMoveInputBinding( view, m_Button );
+			return new CommandMouseMoveInputBinding( cmd, view, m_Button );
 		}
 
 		private MouseButtons m_Button;

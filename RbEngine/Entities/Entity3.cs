@@ -335,7 +335,7 @@ namespace RbEngine.Entities
 			db.Rendering.AddObject( this );
 
 			//	Subscribe to the update clock
-			Scene.Clock updateClock = db.GetNamedClock( "updateClock" );
+			Scene.Clock updateClock = db.GetNamedClock( "UpdateClock" );
             updateClock.Subscribe( new RbEngine.Scene.Clock.TickDelegate( Update ) );
 		}
 
