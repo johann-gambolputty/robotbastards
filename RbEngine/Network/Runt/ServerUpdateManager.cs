@@ -4,7 +4,7 @@ using System.Collections;
 namespace RbEngine.Network.Runt
 {
 	/// <summary>
-	/// Summary description for ServerUpdateManager.
+	/// Manages objects that update the server
 	/// </summary>
 	public class ServerUpdateManager : Scene.ISceneObject
 	{
@@ -65,7 +65,7 @@ namespace RbEngine.Network.Runt
 		#endregion
 		
 		private ArrayList	m_Updaters = new ArrayList( );
-		private int			m_Sequence = 0;
+		private uint		m_Sequence = 0;
 		private IConnection	m_ServerConnection;
 
 
@@ -99,7 +99,7 @@ namespace RbEngine.Network.Runt
 			}
 
 			//	TODO: Missing proper client identifier
-			m_ServerConnection.DeliverMessage( new ServerMessage( m_Sequence, 0 , ( Message[] )messages.ToArray( typeof( Message[] ) ) ) );
+			m_ServerConnection.DeliverMessage( new ServerMessage( m_Sequence, 0 , ( UpdateMessage[] )messages.ToArray( typeof( UpdateMessage[] ) ) ) );
 		}
 	}
 }

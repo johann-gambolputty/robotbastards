@@ -130,6 +130,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "BinaryReaderHelpers.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "ExceptionUtils.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -260,6 +265,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Components\IUnique.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Components\IXmlLoader.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -286,6 +296,11 @@
                 />
                 <File
                     RelPath = "Components\Node.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Components\ObjectId.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -565,6 +580,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Network\Runt\ClientMessage.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Network\Runt\ClientUpdateManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -586,6 +606,16 @@
                 />
                 <File
                     RelPath = "Network\Runt\ServerUpdateManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\Runt\UpdateMessage.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\Runt\WrapUpdateMessage.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

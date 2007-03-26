@@ -46,6 +46,7 @@ namespace RbEngine.Network.Runt
 		public void AddUpdater( IClientUpdater updater )
 		{
 			m_Updaters.Add( updater );
+			m_UpdaterIdMap[ updater.Id ] = updater;
 		}
 
 		/// <summary>
@@ -54,10 +55,10 @@ namespace RbEngine.Network.Runt
 		public void RemoveUpdater( IClientUpdater updater )
 		{
 			m_Updaters.Remove( updater );
+			m_UpdaterIdMap.Remove( updater.Id );
 		}
 
 		#endregion
-
 
 		#region	ClientConnection
 
@@ -80,11 +81,11 @@ namespace RbEngine.Network.Runt
 			/// <summary>
 			/// Gets the index of the client
 			/// </summary>
-			public int			ClientIndex
+			public int			ClientId
 			{
 				get
 				{
-					return m_ClientIndex;
+					return m_ClientId;
 				}
 			}
 
@@ -106,15 +107,15 @@ namespace RbEngine.Network.Runt
 			/// <summary>
 			/// Sets up the client connection
 			/// </summary>
-			public ClientConnection( IConnection connection, int clientIndex )
+			public ClientConnection( IConnection connection, int clientId )
 			{
 				m_Connection		= connection;
-				m_ClientIndex		= clientIndex;
+				m_ClientId			= clientId;
 				m_CurrentSequence	= -1;
 			}
 
 			private IConnection	m_Connection;
-			private int			m_ClientIndex;
+			private int			m_ClientId;
 			private int			m_CurrentSequence;
 		}
 
@@ -122,9 +123,11 @@ namespace RbEngine.Network.Runt
 
 		#region	Private stuff
 
-		private ArrayList	m_Clients				= new ArrayList( );
-		private ArrayList	m_Updaters				= new ArrayList( );
-		private int			m_Sequence				= 0;
+		private Scene.SceneDb	m_Scene;
+		private ArrayList		m_Clients		= new ArrayList( );
+		private ArrayList		m_Updaters		= new ArrayList( );
+		private Hashtable		m_UpdaterIdMap	= new Hashtable( );
+		private int				m_Sequence	= 0;
 
 		/// <summary>
 		/// Adds a new connection
@@ -132,8 +135,8 @@ namespace RbEngine.Network.Runt
 		private void OnNewClientConnection( IConnection connection )
 		{
 			//	Add information about the connection to the m_Clients list
-			int clientIndex = m_Clients.Count;
-			m_Clients.Add( new ClientConnection( connection, clientIndex ) );
+			int clientId = m_Clients.Count;
+			m_Clients.Add( new ClientConnection( connection, clientId ) );
 
 			connection.ReceivedMessage += new ConnectionReceivedMessageDelegate( OnReceivedServerMessage );
 		}
@@ -146,6 +149,32 @@ namespace RbEngine.Network.Runt
 		{
 			ServerMessage serverMsg = ( ServerMessage )msg;
 
+			//	Find the client ID
+			foreach ( ClientConnection curClient in m_Clients )
+			{
+				if ( curClient.ClientId == serverMsg.ClientId )
+				{
+					//	Found the client specified in the message. If the client is already at a later sequence than the one specified in the server
+					//	message (because of unreliable delivery order), then just ignore the message
+					if ( curClient.CurrentSequence >= serverMsg.Sequence )
+					{
+						return;
+					}
+
+					//	Otherwise, update the client sequence value
+					curClient.CurrentSequence = serverMsg.Sequence;
+					break;
+				}
+			}
+
+			//	Run through all the base update messages stored in the server message
+			foreach ( UpdateMessage updateMsg in serverMsg.BaseMessages )
+			{
+				//	TODO: UpdateMessage objects are generated in sequence by the equivalent IServerUpdater on the client, so updaterMsg.TargetId is likely
+				//	to by the same as the previous ID - cache this
+				IClientUpdater updater = m_UpdaterIdMap[ updaterMsg.TargetId ];
+				updater.HandleUpdateMessage( updateMsg );
+			}
 		}
 
 		/// <summary>
@@ -169,9 +198,11 @@ namespace RbEngine.Network.Runt
 				}
 			}
 
+			//	Inform all the client updaters what the oldest client sequence is
+			//	Each updater must store state up to the oldest client sequence, if the updater is using state deltas
 			foreach ( IClientUpdater curUpdater in m_Updaters )
 			{
-				curUpdater.OldestClientSequence = oldestClientSequence;
+				curUpdater.SetOldestClientSequence( oldestClientSequence );
 			}
 
 			//	Run through all the client connections
@@ -213,6 +244,8 @@ namespace RbEngine.Network.Runt
 		/// </summary>
 		public void AddedToScene( Scene.SceneDb db )
 		{
+			m_Scene = db;
+
 			//	Get the Connections object from the scene systems
 			Connections connections = ( Connections )db.GetSystem( typeof( Connections ) );
 			if ( connections == null )

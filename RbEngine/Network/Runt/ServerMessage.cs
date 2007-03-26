@@ -30,9 +30,9 @@ namespace RbEngine.Network.Runt
 		}
 
 		/// <summary>
-		/// Gets the base messages attached to this server message
+		/// Gets the base update messages attached to this server message
 		/// </summary>
-		public Components.Message[] BaseMessages
+		public UpdateMessage[] BaseMessages
 		{
 			get
 			{
@@ -45,11 +45,11 @@ namespace RbEngine.Network.Runt
 		/// </summary>
 		/// <param name="sequenceNumber">The server sequence number</param>
 		/// <param name="baseMessage">The base message</param>
-		public ServerMessage( uint sequence, int clientId, Components.Message baseMessage )
+		public ServerMessage( uint sequence, int clientId, UpdateMessage[] baseMessages )
 		{
 			m_ClientId		= clientId;
 			m_Sequence		= sequence;
-			m_BaseMessage	= baseMessage;
+			m_BaseMessages	= baseMessages;
 		}
 		
 		/// <summary>
@@ -59,9 +59,15 @@ namespace RbEngine.Network.Runt
 		public override void		Write( System.IO.BinaryWriter output )
 		{
 			base.Write( output );
+
 			output.Write( m_ClientId );
 			output.Write( m_Sequence );
-            m_BaseMessage.Write( output );	
+			output.Write( m_BaseMessages.Length );
+
+			for ( int msgIndex = 0; msgIndex < m_BaseMessages.Length; ++msgIndex )
+			{
+				m_BaseMessages[ msgIndex ].Write( output );	
+			}
 		}
 
 		/// <summary>
@@ -72,11 +78,18 @@ namespace RbEngine.Network.Runt
 		{
 			m_ClientId		= input.ReadInt32( );
 			m_Sequence		= input.ReadUInt32( );
-			m_BaseMessage	= Components.Message.ReadMessage( input );
+
+			int numMessages = input.ReadInt32( );
+			m_BaseMessages	= new UpdateMessage[ numMessages ];
+
+			for ( int msgIndex = 0; msgIndex < numMessages; ++msgIndex )
+			{
+				m_BaseMessages[ msgIndex ] = ( UpdateMessage )Components.Message.ReadMessage( input );
+			}
 		}
 
-		private int						m_ClientId;
-		private uint					m_Sequence;
-		private Components.Message[]	m_BaseMessages;
+		private int				m_ClientId;
+		private uint			m_Sequence;
+		private UpdateMessage[]	m_BaseMessages;
 	}
 }

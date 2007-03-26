@@ -11,21 +11,30 @@ namespace RbEngine.Network.Runt
 	public interface IClientUpdater
 	{
 		/// <summary>
+		/// Gets the unique ID of this updater (usually the ID of the parent object)
+		/// </summary>
+		Components.ObjectId Id
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Handles an update message sent from a client
+		/// </summary>
+		void HandleClientUpdate( UpdateMessage msg );
+
+		/// <summary>
 		/// Sets the oldest client sequence value
 		/// </summary>
 		/// <remarks>
 		/// Set by ClientUpdateManager. This is the sequence value of the least up-to-date client connected to the server.
 		/// </remarks>
-		int OldestClientSequence
-		{
-			set;
-		}
+		void SetOldestClientSequence( int sequence );
 
 		/// <summary>
-		/// Creates a message that updates a network client
+		/// Creates a series of messages that updates a network client
 		/// </summary>
-		/// <param name="currentClientState">The sequence number of the current client state. If this is -1, the client has (apparently) not received states from the server</param>
-		/// <returns>New update messages</returns>
-		Components.Message[] CreateUpdateMessages( int clientSequence, int serverSequence );
+		UpdateMessage[] CreateUpdateMessages( int clientSequence, int serverSequence );
+
 	}
 }

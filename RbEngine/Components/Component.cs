@@ -58,7 +58,7 @@ namespace RbEngine.Components
 	/// <summary>
 	/// Handy base class that derives from Node, and implements IInstanceable, IMessageHandler and INamedObject (TODO)
 	/// </summary>
-	public class Component : Node, IMessageHandler
+	public class Component : Node, IMessageHandler, IUnique
 	{
 		#region	Messaging tests
 
@@ -152,6 +152,25 @@ namespace RbEngine.Components
 
 		#endregion
 
+		#region	IUnique Members
+
+		/// <summary>
+		/// Access to the unique ID of this component
+		/// </summary>
+		public ObjectId	Id
+		{
+			get
+			{
+				return m_Id;
+			}
+			set
+			{
+				m_Id = value;
+			}
+		}
+
+		#endregion
+
 		#region	Child list
 
 		/// <summary>
@@ -174,6 +193,7 @@ namespace RbEngine.Components
 
 		#endregion
 
-		private System.Collections.Hashtable m_RecipientChains = null;
+		private ObjectId						m_Id				= new ObjectId( );
+		private System.Collections.Hashtable	m_RecipientChains	= null;
 	}
 }

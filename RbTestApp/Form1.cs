@@ -98,14 +98,14 @@ namespace RbTestApp
 			this.sceneDisplay1.Name = "sceneDisplay1";
 			this.sceneDisplay1.Scene = null;
 			this.sceneDisplay1.SceneViewSetupFile = "sceneView0.xml";
-			this.sceneDisplay1.Size = new System.Drawing.Size(248, 221);
+			this.sceneDisplay1.Size = new System.Drawing.Size(400, 357);
 			this.sceneDisplay1.StencilBits = ((System.Byte)(0));
 			this.sceneDisplay1.TabIndex = 0;
 			// 
 			// Form1
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(248, 221);
+			this.ClientSize = new System.Drawing.Size(400, 357);
 			this.Controls.Add(this.sceneDisplay1);
 			this.Name = "Form1";
 			this.Text = "Form1";
