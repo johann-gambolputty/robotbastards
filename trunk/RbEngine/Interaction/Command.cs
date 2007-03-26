@@ -7,7 +7,7 @@ namespace RbEngine.Interaction
 	/// <summary>
 	/// Delegate, used by the Command.Activated and Command.Active events
 	/// </summary>
-	public delegate void	CommandEventDelegate( CommandEventArgs args );
+	public delegate void CommandEventDelegate( CommandInputBinding binding );
 
 	/// <summary>
 	/// User command
@@ -81,7 +81,7 @@ namespace RbEngine.Interaction
 		{
 			foreach ( CommandInput curInput in m_Inputs )
 			{
-				m_Bindings.Add( curInput.BindToView( view ) );
+				m_Bindings.Add( curInput.BindToView( this, view ) );
 			}
 		}
 
@@ -121,12 +121,12 @@ namespace RbEngine.Interaction
 					//	Always invoke the Active event if the command is active
 					if ( Active != null )
 					{
-						Active( curBinding.CreateEventArgs( this ) );
+						Active( curBinding );
 					}
 					//	Invoke the Activated event if the command has only just gone active
 					if ( ( !wasActive ) && ( Activated != null ) )
 					{
-						Activated( curBinding.CreateEventArgs( this ) );
+						Activated( curBinding );
 					}
 					m_LastActiveUpdate = m_UpdateCount;
 					break;

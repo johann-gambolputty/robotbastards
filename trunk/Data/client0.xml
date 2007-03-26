@@ -40,7 +40,7 @@
 
 		<!-- Scene clocks -->
 		<!-- TODO: This should be a default clock, because it's referenced directly in the controller and command update code -->
-		<clock name="updateClock" ticksPerSecond="20"/>
+		<clock name="UpdateClock" ticksPerSecond="20"/>
 
 		<!-- Test scenery :) -->
 		<object type="RbEngine.Components.Simple.GroundPlane"/>
@@ -53,8 +53,8 @@
 			<instance modelPath="models/sarge" property="Graphics" alwaysAddAsChild="true"/>
 			<object type="RbEngine.Scene.LightingData"/>
 
-			<object type="RbEngine.Entities.TestUserEntityController">
-			</object>
+			<object type="RbEngine.Entities.TestUserEntityController"/>	
+			<object type="RbEngine.Entities.EntityActionServerUpdater"/>
 
 		</object>
 

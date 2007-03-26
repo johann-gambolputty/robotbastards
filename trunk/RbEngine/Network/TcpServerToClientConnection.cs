@@ -29,6 +29,16 @@ namespace RbEngine.Network
 		/// <param name="socket">Active socket, created by TcpClientConnectionRequestListener</param>
 		public TcpServerToClientConnection( Scene.SceneDb scene, Socket socket )
 		{
+			//	
+			Scene.Clock networkClock = scene.GetNamedClock( "NetworkClock" );
+			if ( networkClock == null )
+			{
+				throw new ApplicationException( "TcpServerToClientConnection requires a clock named \"NetworkClock\" in the scene" );
+			}
+
+			//	TODO: Dispense with thread - only use network clock tick?
+			networkClock.Subscribe( new Scene.Clock.TickDelegate( OnTick ) );
+
 			//	Listen out for the scene dying - the connection will get closed at that point
 			scene.Disposing += new RbEngine.Scene.SceneDb.DisposingDelegate( Dispose );
 
@@ -38,7 +48,7 @@ namespace RbEngine.Network
 			m_Writer	= new BinaryWriter( m_Stream );
 			m_Reader	= new BinaryReader( m_Stream );
 
-  			//	Kick off a thread that sends pending messages to the client
+			//	Kick off a thread that sends pending messages to the client
 			m_Thread = new Thread( new ThreadStart( RunConnection ) );
 			m_Thread.Start( );
 		}
@@ -91,7 +101,7 @@ namespace RbEngine.Network
 				//	the message recipient chain
 				if ( m_Socket.Available > 0 )
 				{
-					lock ( m_ReceivedMesages )
+					lock ( m_ReceivedMessages )
 					{
 						while ( m_Socket.Available > 0 )
 						{
@@ -102,7 +112,7 @@ namespace RbEngine.Network
 							}
 
 							//	TODO: ...
-							m_ReceivedMesages.Add( newMessage );
+							m_ReceivedMessages.Add( newMessage );
 						}
 					}
 				}
@@ -136,7 +146,22 @@ namespace RbEngine.Network
 		private BinaryReader	m_Reader;
 		private BinaryWriter	m_Writer;
 		private ArrayList		m_PendingMessages	= new ArrayList( );
-		private ArrayList		m_ReceivedMesages	= new ArrayList( );
+		private ArrayList		m_ReceivedMessages	= new ArrayList( );
+
+		/// <summary>
+		/// Network click tick
+		/// </summary>
+		private void			OnTick( Scene.Clock clock )
+		{
+			lock ( m_ReceivedMessages )
+			{
+				foreach ( Components.Message curMessage in m_ReceivedMessages )
+				{
+					OnReceivedMessage( curMessage );
+				}
+				m_ReceivedMessages.Clear( );
+			}
+		}
 
 		#endregion
 	}

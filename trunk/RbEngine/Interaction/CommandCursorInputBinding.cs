@@ -10,17 +10,53 @@ namespace RbEngine.Interaction
 		/// <summary>
 		/// Sets up this binding
 		/// </summary>
-		public CommandCursorInputBinding( Scene.SceneView view ) :
-			base( view )
+		public CommandCursorInputBinding( Command cmd, Scene.SceneView view ) :
+			base( cmd, view )
 		{
 		}
 
 		/// <summary>
-		/// Creates a CommandCursorEventArgs object
+		/// Gets the X coordinate of the cursor
 		/// </summary>
-		public override CommandEventArgs CreateEventArgs(Command cmd)
+		public int X
 		{
-			return new CommandCursorEventArgs( cmd, View, m_X, m_Y, m_LastX, m_LastY );
+			get
+			{
+				return m_X;
+			}
+		}
+
+		/// <summary>
+		/// Gets the Y coordinate of the cursor
+		/// </summary>
+		public int Y
+		{
+			get
+			{
+				return m_Y;
+			}
+		}
+
+		/// <summary>
+		/// Gets the last X coordinate of the cursor
+		/// </summary>
+		public int LastX
+		{
+			get
+			{
+				return m_LastX;
+			}
+		}
+
+		/// <summary>
+		/// Gets the last Y coordinate of the cursor
+		/// </summary>
+		public int LastY
+		{
+			get
+			{
+				return m_LastY;
+			}
 		}
 
 		/// <summary>

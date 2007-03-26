@@ -13,8 +13,8 @@ namespace RbEngine.Interaction
 		/// </summary>
 		/// <param name="view">The view that this binding is attached to</param>
 		/// <param name="key">Key to check for</param>
-		public CommandKeyInputBinding( Scene.SceneView view, Keys key ) :
-			base( view )
+		public CommandKeyInputBinding( Command cmd, Scene.SceneView view, Keys key ) :
+			base( cmd, view )
 		{
 			m_Key = key;
 
@@ -29,7 +29,7 @@ namespace RbEngine.Interaction
 		{
 			if ( args.KeyCode == m_Key )
 			{
-				m_Active = true;
+				Active = true;
 			}
 		}
 
@@ -40,7 +40,7 @@ namespace RbEngine.Interaction
 		{
 			if ( args.KeyCode == m_Key )
 			{
-				m_Active = false;
+				Active = false;
 			}
 		}
 

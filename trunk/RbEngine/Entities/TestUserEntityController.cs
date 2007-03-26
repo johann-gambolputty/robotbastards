@@ -73,7 +73,7 @@ namespace RbEngine.Entities
 			}
 		}
 
-		private void OnForward( Interaction.CommandEventArgs args )
+		private void OnForward( Interaction.CommandInputBinding binding )
 		{
 			Entity3	entity				= ParentEntity;
 			float	distanceToLookAt	= m_LookAt.Next.DistanceTo( entity.Position.Next );
@@ -85,37 +85,37 @@ namespace RbEngine.Entities
 			}
 		}
 
-		private void OnBack( Interaction.CommandEventArgs args )
+		private void OnBack( Interaction.CommandInputBinding binding )
 		{
 			SendMovement( ParentEntity.Facing * -Speed );
 		}
 
-		private void OnLeft( Interaction.CommandEventArgs args )
+		private void OnLeft( Interaction.CommandInputBinding binding )
 		{
 			SendMovement( ParentEntity.Left * Speed );
 		}
 
-		private void OnRight( Interaction.CommandEventArgs args )
+		private void OnRight( Interaction.CommandInputBinding binding )
 		{
 			SendMovement( ParentEntity.Right * Speed );
 		}
 
-		private void OnShoot( Interaction.CommandEventArgs args )
+		private void OnShoot( Interaction.CommandInputBinding binding )
 		{
 		}
 
-		private void OnJump( Interaction.CommandEventArgs args )
+		private void OnJump( Interaction.CommandInputBinding binding )
 		{
 			ParentEntity.HandleMessage( new JumpRequest( 0, 0, false ) );
 		}
 
-		private void OnLookAt( Interaction.CommandEventArgs args )
+		private void OnLookAt( Interaction.CommandInputBinding binding )
 		{
 			//	TODO: This is a bit of a cheat, because I know that this controller only ever receives one look at message
 			//	on every command update)
 			m_LookAt.Step( TinyTime.CurrentTime );
 
-			Scene.SceneDb db = args.View.Scene;
+			Scene.SceneDb db = binding.View.Scene;
 			if ( db == null )
 			{
 				return;
@@ -126,9 +126,9 @@ namespace RbEngine.Entities
 				return;
 			}
 
-			Interaction.CommandCursorEventArgs cursorArgs = ( Interaction.CommandCursorEventArgs )args;
+			Interaction.CommandCursorInputBinding cursorBinding = ( Interaction.CommandCursorInputBinding )binding;
 
-			Maths.Ray3				pickRay				= ( ( Cameras.Camera3 )args.View.Camera ).PickRay( cursorArgs.X, cursorArgs.Y );
+			Maths.Ray3				pickRay				= ( ( Cameras.Camera3 )cursorBinding.View.Camera ).PickRay( cursorBinding.X, cursorBinding.Y );
 			Maths.Ray3Intersection	pickIntersection	= rayCaster.GetFirstIntersection( pickRay, null );
 
 			if ( pickIntersection != null )
@@ -136,7 +136,7 @@ namespace RbEngine.Entities
 				m_LookAt.Next = pickIntersection.IntersectionPosition;
 			}
 
-			Entity3 entity = ParentEntity;
+			Entity3 entity	= ParentEntity;
 			entity.Facing	= ( m_LookAt.Next - entity.Position.Next ).MakeNormal( );
 			entity.Left		= Maths.Vector3.Cross( entity.Up, entity.Facing ).MakeNormal( );
 		}

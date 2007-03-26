@@ -65,7 +65,7 @@ namespace RbOpenGlMd3Loader
 		/// <param name="db">Database that this object was added to</param>
 		public void	AddedToScene( SceneDb db )
 		{
-			db.GetNamedClock( "updateClock" ).Subscribe( new Clock.TickDelegate( Update ) );
+			db.GetNamedClock( "UpdateClock" ).Subscribe( new Clock.TickDelegate( Update ) );
 		}
 
 		/// <summary>

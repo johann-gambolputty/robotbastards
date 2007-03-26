@@ -320,6 +320,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Entities\EntityActionServerUpdater.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Entities\JumpRequest.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -355,22 +360,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Interaction\CommandCursorEventArgs.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Interaction\CommandCursorInputBinding.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Interaction\CommandEnumDescriptionAttribute.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Interaction\CommandEventArgs.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -580,7 +575,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Network\Runt\IServerUpdater.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Network\Runt\ServerMessage.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\Runt\ServerUpdateManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

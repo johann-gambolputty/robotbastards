@@ -7,17 +7,27 @@ namespace RbEngine.Entities
 	/// <summary>
 	/// Sends entity action messages to a client
 	/// </summary>
-	public class EntityActionClientUpdater : Network.Runt.IClientUpdater, Components.IChildObject
+	public class EntityActionClientUpdater : Network.Runt.IClientUpdater, Components.IChildObject, Scene.ISceneObject
 	{
 		#region IClientUpdater Members
 
 		/// <summary>
-		/// Informs this updater that it must be able to create update messages for a new client with the specified index
+		/// Sets the oldest client sequence value
 		/// </summary>
-		/// <param name="clientIndex">New client's index</param>
-		public void AddNewClient( int clientIndex )
+		/// <remarks>
+		/// Set by ClientUpdateManager. This is the sequence value of the least up-to-date client connected to the server.
+		/// </remarks>
+		public int OldestClientSequence
 		{
-			//	Don't care about new clients - this updater just maintains state to the oldest ack-ed client state
+			set
+			{
+				//	Remove all messages from the message list that are older than the oldest value
+				while ( ( m_UpdateMessageSequences.Count > 0 ) && ( ( int )m_UpdateMessageSequences[ 0 ] < value ) )
+				{
+					m_UpdateMessageSequences.RemoveAt( 0 );
+					m_UpdateMessages.RemoveAt( 0 );
+				}
+			}
 		}
 
 		//	TODO: This is pretty bad - instead of calculating movement deltas, I've just batched up all movement messages
@@ -27,10 +37,23 @@ namespace RbEngine.Entities
 		/// <summary>
 		/// Creates a message used to update the client
 		/// </summary>
-		public Message[] CreateUpdateMessages( int clientIndex, int clientSequence, int serverSequence )
+		public Message[] CreateUpdateMessages( int clientSequence, int serverSequence )
 		{
-			Message[] messages = ( Message[] )m_UpdateMessages.ToArray( typeof( Message[] ) );
-			m_UpdateMessages.Clear( );
+			if ( m_NumUpdateMessages == 0 )
+			{
+				return null;
+			}
+
+			int messageCount	= 0;
+			int messageIndex	= 0;
+			for ( ; messageCount < m_; ++messageCount )
+			{
+				if ( m_UpdateMessageSequences[ messageIndex ] )
+				{
+				}
+			}
+
+			m_NumUpdateMessages = 0;
 			return messages;
 		}
 
@@ -56,15 +79,41 @@ namespace RbEngine.Entities
 		{
 			if ( msg is MovementRequest )
 			{
-				//	TODO: Aggregate movements (e.g. two MovementXzRequest objects could be aggregated into a single request)
-				m_UpdateMessages.Add( msg );
-				m_UpdateMessageSequences.Add( m_CurrentSequence );
+				if ( m_NumUpdateMessages < MaxUpdateMessages )
+				{
+					//	TODO: Aggregate movements (e.g. two MovementXzRequest objects could be aggregated into a single request)
+					m_UpdateMessages[ m_UpdateMessageIndex ]			= msg;
+					m_UpdateMessageSequences[ m_UpdateMessageIndex ]	= m_CurrentSequence;
+
+					m_UpdateMessageIndex = ( m_UpdateMessageIndex + 1 ) % MaxUpdateMessages;
+					++m_NumUpdateMessages;
+				}
+				else
+				{
+					//	TODO: Client should be disconnected
+				}
 			}
 			return MessageRecipientResult.DeliverToNext;
 		}
 
-		private ArrayList	m_UpdateMessages			= new ArrayList( );
-		private ArrayList	m_UpdateMessageSequences	= new ArrayList( );
+		#region ISceneObject Members
+
+		public void AddedToScene( Scene.SceneDb db )
+		{
+		}
+
+		public void RemovedFromScene( Scene.SceneDb db )
+		{ 
+		}
+
+		#endregion
+
+		private const int	MaxUpdateMessages = 128;
+
+		private Message[]	m_UpdateMessages			= new Message[ MaxUpdateMessages ];
+		private int[]		m_UpdateMessageSequences	= new int[ MaxUpdateMessages ];
+		private int			m_UpdateMessageIndex		= 0;
+		private int			m_NumUpdateMessages			= 0;
 		private int			m_CurrentSequence			= 0;
 	}
 }
