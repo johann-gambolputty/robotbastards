@@ -19,6 +19,13 @@ namespace RbEngine.Network.Runt
 		}
 
 		/// <summary>
+		/// Default constructor. Required for serialisation
+		/// </summary>
+		public WrapUpdateMessage( )
+		{
+		}
+
+		/// <summary>
 		/// Sets the wrapped message, and the target identifier
 		/// </summary>
 		public WrapUpdateMessage( Components.ObjectId targetId, Components.Message msg ) :

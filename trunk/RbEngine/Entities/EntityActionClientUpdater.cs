@@ -7,7 +7,7 @@ namespace RbEngine.Entities
 	/// <summary>
 	/// Sends entity action messages to a client
 	/// </summary>
-	public class EntityActionClientUpdater : Network.Runt.IClientUpdater, Components.IChildObject
+	public class EntityActionClientUpdater : Network.Runt.IClientUpdater, Components.IChildObject, Scene.ISceneObject
 	{
 		#region IClientUpdater Members
 
@@ -25,9 +25,12 @@ namespace RbEngine.Entities
 		/// <summary>
 		/// Handles an update message sent from a client
 		/// </summary>
-		void HandleClientUpdate( UpdateMessage msg )
+		public void HandleClientUpdate( Network.Runt.UpdateMessage msg )
 		{
-
+			//	TODO: This is very wrong. The content of the update message should be passed along the movement recipient chain
+			//	and set in the entity by a movement committer object
+			Message baseMsg = ( ( Network.Runt.WrapUpdateMessage )msg ).BaseMessage;
+			( ( Components.IMessageHandler )m_Parent ).HandleMessage( baseMsg );
 		}
 
 
@@ -37,7 +40,7 @@ namespace RbEngine.Entities
 		/// <remarks>
 		/// Set by ClientUpdateManager. This is the sequence value of the least up-to-date client connected to the server.
 		/// </remarks>
-		public void SetOldestClientSequence( int sequence )
+		public void SetOldestClientSequence( uint sequence )
 		{
 			if ( m_NumUpdateMessages == 0 )
 			{
@@ -55,7 +58,7 @@ namespace RbEngine.Entities
 				}
 
 				m_UpdateMessages[ messageIndex ]			= null;
-				m_UpdateMessageSequences[ messageIndex ]	= -1;
+				m_UpdateMessageSequences[ messageIndex ]	= 0;
 
 				messageIndex = ( messageIndex + 1 ) % MaxUpdateMessages;
 			}
@@ -71,13 +74,13 @@ namespace RbEngine.Entities
 		/// <summary>
 		/// Creates messages used to update the client
 		/// </summary>
-		public Network.Runt.UpdateMessage[] CreateUpdateMessages( int clientSequence, int serverSequence )
+		public void GetUpdateMessages( System.Collections.ArrayList messages, uint clientSequence, uint serverSequence )
 		{
 			m_CurrentSequence = serverSequence;
 
 			if ( m_NumUpdateMessages == 0 )
 			{
-				return null;
+				return;
 			}
 
 			//	Determine the index of the first update message that the client should receive
@@ -97,19 +100,16 @@ namespace RbEngine.Entities
 			int updateMessageCount = m_NumUpdateMessages - messageCount;
 			if ( updateMessageCount == 0 )
 			{
-				return null;
+				return;
 			}
 
 			//	Create a message array and fill it with the remaining messages
-			Components.ObjectId				id			= ( ( Components.IUnique )m_Parent ).Id;
-			Network.Runt.UpdateMessage[]	messages	= new Network.Runt.UpdateMessage[ updateMessageCount ];
+			Components.ObjectId id = ( ( Components.IUnique )m_Parent ).Id;
 			for ( messageCount = 0; messageCount < updateMessageCount; ++messageCount )
 			{
-				messages[ messageCount ] = new Network.Runt.WrapUpdateMessage( id, m_UpdateMessages[ messageIndex ] );
+				messages.Add( new Network.Runt.WrapUpdateMessage( id, m_UpdateMessages[ messageIndex ] ) );
 				messageIndex = ( messageIndex + 1 ) % MaxUpdateMessages;
 			}
-
-			return messages;
 		}
 
 		#endregion
@@ -121,9 +121,11 @@ namespace RbEngine.Entities
 		/// </summary>
 		public void AddedToParent( Object parentObject )
 		{
+			//	Add this object to the recipient list for movement requests
 			m_Parent = parentObject;
 			IMessageHandler parentMessages = ( IMessageHandler )parentObject;
 			parentMessages.AddRecipient( typeof( MovementRequest ), new MessageRecipientDelegate( HandleMovementRequest ), ( int )MessageRecipientOrder.Last );
+
 		}
 
 		#endregion
@@ -155,11 +157,37 @@ namespace RbEngine.Entities
 		private const int	MaxUpdateMessages = 128;
 
 		private Message[]	m_UpdateMessages			= new Message[ MaxUpdateMessages ];
-		private int[]		m_UpdateMessageSequences	= new int[ MaxUpdateMessages ];
+		private uint[]		m_UpdateMessageSequences	= new uint[ MaxUpdateMessages ];
 		private int			m_FirstUpdateMessageIndex	= 0;
 		private int			m_CurUpdateMessageIndex		= 0;
 		private int			m_NumUpdateMessages			= 0;
-		private int			m_CurrentSequence			= 0;
+		private uint		m_CurrentSequence			= 0;
 		private Object		m_Parent;
+
+		#region ISceneObject Members
+
+		/// <summary>
+		/// Called when this object is added to the scene
+		/// </summary>
+		public void AddedToScene( Scene.SceneDb db )
+		{
+			//	Add this updater to the server updater
+			Network.Runt.ClientUpdateManager updateManager = ( Network.Runt.ClientUpdateManager )db.GetSystem( typeof( Network.Runt.ClientUpdateManager ) );
+			if ( updateManager == null )
+			{
+				throw new ApplicationException( "EntityActionClientUpdater requires a ClientUpdateManager to present in the scene systems" );
+			}
+
+			updateManager.AddUpdater( this );
+		}
+
+		/// <summary>
+		/// Called when this object is removed from the scene
+		/// </summary>
+		public void RemovedFromScene( RbEngine.Scene.SceneDb db )
+		{
+		}
+
+		#endregion
 	}
 }

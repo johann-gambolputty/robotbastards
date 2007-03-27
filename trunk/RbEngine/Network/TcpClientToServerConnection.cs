@@ -43,13 +43,13 @@ namespace RbEngine.Network
 		}
 
 		/// <summary>
-		/// Returns true (this is a client connection)
+		/// Returns false (this is a server connection)
 		/// </summary>
 		public override bool	ConnectionToClient
 		{
 			get
 			{
-				return true;
+				return false;
 			}
 		}
 

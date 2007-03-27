@@ -24,9 +24,6 @@ namespace RbEngine.Entities
 			}
 
 			updateManager.AddUpdater( this );
-
-		//	Network.Connections connections = ( Network.Connections )db.GetSystem( typeof( Network.Connections ) );
-		//	connections.NewServerConnection += new Network.NewServerConnectionDelegate( OnNewServerConnection );
 		}
 
 		/// <summary>
@@ -46,6 +43,7 @@ namespace RbEngine.Entities
 		/// <param name="parentObject">Parent object</param>
 		public void AddedToParent( Object parentObject )
 		{
+			m_Parent = parentObject;
 			( ( IMessageHandler )parentObject ).AddRecipient( typeof( MovementRequest ), new MessageRecipientDelegate( OnActionMessage ), ( int )MessageRecipientOrder.Last );
 		}
 
@@ -53,6 +51,7 @@ namespace RbEngine.Entities
 
 		private Network.IConnection m_ServerConnection;
 		private ArrayList			m_Messages = new ArrayList( );
+		private object				m_Parent;
 
 		/// <summary>
 		/// Called when a server connection is created
@@ -73,6 +72,7 @@ namespace RbEngine.Entities
 		/// </summary>
 		private MessageRecipientResult OnActionMessage( Message msg )
 		{
+			//	TODO: Limit the number of stored messages
 			m_Messages.Add( msg );
 
 			//	Removes the message from the chain - don't want any more objects processing this
@@ -82,13 +82,21 @@ namespace RbEngine.Entities
 		#region IServerUpdater Members
 
 		/// <summary>
+		/// Handles an update message sent from a server
+		/// </summary>
+		public void HandleServerUpdate( Network.Runt.UpdateMessage msg )
+		{
+		}
+
+		/// <summary>
 		/// Adds all stored messages to the specified messages list
 		/// </summary>
 		public void GetUpdateMessages( ArrayList messages )
 		{
+			Components.ObjectId id = ( ( Components.IUnique )m_Parent ).Id;
 			foreach ( Message msg in m_Messages )
 			{
-				messages.Add( msg );
+				messages.Add( new Network.Runt.WrapUpdateMessage( id, msg ) );
 			}
 			m_Messages.Clear( );
 		}

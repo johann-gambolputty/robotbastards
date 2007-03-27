@@ -13,13 +13,13 @@ namespace RbEngine.Network
 	public class TcpServerToClientConnection : ConnectionBase, IDisposable
 	{
 		/// <summary>
-		/// Returns false (this is a server connection)
+		/// Returns true (connects a server to a client)
 		/// </summary>
 		public override bool	ConnectionToClient
 		{
 			get
 			{
-				return false;
+				return true;
 			}
 		}
 

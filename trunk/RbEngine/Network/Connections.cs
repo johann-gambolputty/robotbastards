@@ -21,6 +21,17 @@ namespace RbEngine.Network
 		#region	Connections
 
 		/// <summary>
+		/// Gets the list of all connections
+		/// </summary>
+		public ArrayList	AllConnections
+		{
+			get
+			{
+				return m_Connections;
+			}
+		}
+
+		/// <summary>
 		/// Gets a named client to server connection
 		/// </summary>
 		public IConnection	GetConnection( string connectionName )

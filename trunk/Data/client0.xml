@@ -26,27 +26,28 @@
 
 			<object type="RbEngine.Network.Connections">
 				<object type="RbEngine.Network.TcpClientToServerConnection">
-					<string value="updateConnection" property="Name"/>
+					<string value="RuntServer" property="Name"/>
 					<string value="localhost" property="ConnectionString"/>
 					<int value="11000" property="Port"/>
 				</object>
 			</object>
 
-			<object type="RbEngine.Network.ClientUpdateManager">
-				<string value="updateConnection" property="ConnectionName"/>
-			</object>
+			<object type="RbEngine.Network.Runt.ServerUpdateManager"/>
 
 		</object>
 
 		<!-- Scene clocks -->
 		<!-- TODO: This should be a default clock, because it's referenced directly in the controller and command update code -->
-		<clock name="UpdateClock" ticksPerSecond="20"/>
+		<clock name="UpdateClock" ticksPerSecond="15"/>
+		<clock name="NetworkClock" ticksPerSecond="15"/>
 
 		<!-- Test scenery :) -->
 		<object type="RbEngine.Components.Simple.GroundPlane"/>
 
 		<!-- Entities -->
 		<object type="RbEngine.Entities.Entity3">
+
+			<objectId value="1" property="Id"/>
 
 			<Point3 x="20" y="0.5" z="0" property="NextPosition"/>
 

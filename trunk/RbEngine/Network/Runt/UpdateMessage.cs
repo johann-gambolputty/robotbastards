@@ -20,6 +20,13 @@ namespace RbEngine.Network.Runt
 		}
 
 		/// <summary>
+		/// Default constructor. Required for serialisation
+		/// </summary>
+		public UpdateMessage( )
+		{
+		}
+
+		/// <summary>
 		/// Sets the target identifier
 		/// </summary>
 		public UpdateMessage( ObjectId targetId )

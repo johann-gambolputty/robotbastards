@@ -12,7 +12,7 @@ namespace RbEngine.Components
 		/// </summary>
 		public ObjectId( )
 		{
-			Id = ms_UniqueId++;
+			Id = --ms_UniqueId;
 		}
 
 		/// <summary>
@@ -45,6 +45,23 @@ namespace RbEngine.Components
 		public override int GetHashCode( )
 		{
 			return Id;
+		}
+
+		/// <summary>
+		/// Returns true if this ID is equal to another
+		/// </summary>
+		public override bool Equals( object obj )
+		{
+			return Id == ( ( ObjectId )obj ).Id;
+		}
+
+
+		/// <summary>
+		/// Parses an object identifier
+		/// </summary>
+		public static ObjectId Parse( string str )
+		{
+			return new ObjectId( int.Parse( str ) );
 		}
 
 

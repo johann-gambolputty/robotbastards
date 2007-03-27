@@ -3,9 +3,9 @@ using System;
 namespace RbEngine.Network.Runt
 {
 	/// <summary>
-	/// Summary description for ClientMessage.
+	/// A message sent from a server to a client
 	/// </summary>
-	public class ClientMessage
+	public class ClientMessage : Components.Message
 	{
 		/// <summary>
 		/// Sets up this client message
