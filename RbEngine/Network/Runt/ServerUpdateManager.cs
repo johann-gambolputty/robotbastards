@@ -42,8 +42,14 @@ namespace RbEngine.Network.Runt
 				throw new ApplicationException( "ServerUpdateManager requires that a Connections object be present in the scene systems" );
 			}
 
-			//	Subscribe to the new server connection event
-			connections.NewServerConnection += new NewServerConnectionDelegate( OnNewServerConnection );
+			//	Is there a RUNT server connection already active?
+			m_ServerConnection = connections.GetConnection( "RuntServer" );
+			if ( m_ServerConnection == null )
+			{
+				//	Subscribe to the new server connection event
+				Output.WriteLineCall( Output.NetworkInfo, "No \"RuntServer\" server connection exists yet - subscribing to new server connection event" );
+				connections.NewServerConnection += new NewServerConnectionDelegate( OnNewServerConnection );
+			}
 
 			//	Subscribe to the network clock
 			Scene.Clock networkClock = db.GetNamedClock( "NetworkClock" );
@@ -78,7 +84,10 @@ namespace RbEngine.Network.Runt
 				//	TODO: ...
 				throw new ApplicationException( "ServerUpdateManager can only handle one server connection" );
 			}
-			m_ServerConnection = connection;
+			if ( connection.Name == "RuntServer" )
+			{
+				m_ServerConnection = connection;
+			}
 		}
 
 		/// <summary>
@@ -98,8 +107,11 @@ namespace RbEngine.Network.Runt
 				updater.GetUpdateMessages( messages );
 			}
 
-			//	TODO: Missing proper client identifier
-			m_ServerConnection.DeliverMessage( new ServerMessage( m_Sequence, 0 , ( UpdateMessage[] )messages.ToArray( typeof( UpdateMessage[] ) ) ) );
+			if ( messages.Count > 0 )
+			{
+				ServerMessage msg = new ServerMessage( m_Sequence, 0 , ( UpdateMessage[] )messages.ToArray( typeof( UpdateMessage ) ) );
+				m_ServerConnection.DeliverMessage( msg );
+			}
 		}
 	}
 }

@@ -48,6 +48,13 @@ namespace RbEngine.Entities
 		}
 
 		/// <summary>
+		/// Default constructor, required for serialisation
+		/// </summary>
+		public MovementXzRequest( )
+		{
+		}
+
+		/// <summary>
 		/// Sets up the movement request
 		/// </summary>
 		/// <param name="moveX">Movement on x axis</param>
@@ -59,6 +66,30 @@ namespace RbEngine.Entities
 			m_MoveZ		= moveZ;
 			m_Local		= local;
 		}
+
+
+		/// <summary>
+		/// Reads this message
+		/// </summary>
+		protected override void Read( System.IO.BinaryReader input )
+		{
+			base.Read( input );
+			BinaryReaderHelpers.Read( input, out m_MoveX );
+			BinaryReaderHelpers.Read( input, out m_MoveZ );
+			BinaryReaderHelpers.Read( input, out m_Local );
+		}
+
+		/// <summary>
+		/// Writes this message
+		/// </summary>
+		public override void Write( System.IO.BinaryWriter output )
+		{
+			base.Write( output );
+			output.Write( m_MoveX );
+			output.Write( m_MoveZ );
+			output.Write( m_Local );
+		}
+
 
 		private float	m_MoveX;
 		private float	m_MoveZ;

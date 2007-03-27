@@ -14,7 +14,6 @@ namespace RbTestApp
 	/// </summary>
 	public class Form1 : System.Windows.Forms.Form
 	{
-		private RbControls.SceneDisplay sceneDisplay1;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -61,7 +60,13 @@ namespace RbTestApp
 			InitializeComponent();
 		}
 
-		private RbEngine.Scene.SceneDb	m_Scene;
+		private RbControls.SceneDisplay serverDisplay;
+		private RbControls.SceneDisplay clientDisplay;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label2;
+
+		private RbEngine.Scene.SceneDb	m_ServerScene;
+		private RbEngine.Scene.SceneDb	m_ClientScene;
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -85,28 +90,62 @@ namespace RbTestApp
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.sceneDisplay1 = new RbControls.SceneDisplay();
+			this.serverDisplay = new RbControls.SceneDisplay();
+			this.clientDisplay = new RbControls.SceneDisplay();
+			this.label1 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
-			// sceneDisplay1
+			// serverDisplay
 			// 
-			this.sceneDisplay1.ColourBits = ((System.Byte)(32));
-			this.sceneDisplay1.ContinuousRendering = true;
-			this.sceneDisplay1.DepthBits = ((System.Byte)(24));
-			this.sceneDisplay1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.sceneDisplay1.Location = new System.Drawing.Point(0, 0);
-			this.sceneDisplay1.Name = "sceneDisplay1";
-			this.sceneDisplay1.Scene = null;
-			this.sceneDisplay1.SceneViewSetupFile = "sceneView0.xml";
-			this.sceneDisplay1.Size = new System.Drawing.Size(400, 357);
-			this.sceneDisplay1.StencilBits = ((System.Byte)(0));
-			this.sceneDisplay1.TabIndex = 0;
+			this.serverDisplay.ColourBits = ((System.Byte)(32));
+			this.serverDisplay.ContinuousRendering = true;
+			this.serverDisplay.DepthBits = ((System.Byte)(24));
+			this.serverDisplay.Location = new System.Drawing.Point(8, 8);
+			this.serverDisplay.Name = "serverDisplay";
+			this.serverDisplay.Scene = null;
+			this.serverDisplay.SceneViewSetupFile = "sceneView0.xml";
+			this.serverDisplay.Size = new System.Drawing.Size(224, 248);
+			this.serverDisplay.StencilBits = ((System.Byte)(0));
+			this.serverDisplay.TabIndex = 0;
+			// 
+			// clientDisplay
+			// 
+			this.clientDisplay.ColourBits = ((System.Byte)(32));
+			this.clientDisplay.ContinuousRendering = true;
+			this.clientDisplay.DepthBits = ((System.Byte)(24));
+			this.clientDisplay.Location = new System.Drawing.Point(240, 8);
+			this.clientDisplay.Name = "clientDisplay";
+			this.clientDisplay.Scene = null;
+			this.clientDisplay.SceneViewSetupFile = "sceneView0.xml";
+			this.clientDisplay.Size = new System.Drawing.Size(224, 248);
+			this.clientDisplay.StencilBits = ((System.Byte)(0));
+			this.clientDisplay.TabIndex = 1;
+			// 
+			// label1
+			// 
+			this.label1.Location = new System.Drawing.Point(8, 264);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(88, 16);
+			this.label1.TabIndex = 2;
+			this.label1.Text = "Server";
+			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(240, 264);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(88, 16);
+			this.label2.TabIndex = 3;
+			this.label2.Text = "Client";
 			// 
 			// Form1
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(400, 357);
-			this.Controls.Add(this.sceneDisplay1);
+			this.ClientSize = new System.Drawing.Size(472, 294);
+			this.Controls.Add(this.label2);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.clientDisplay);
+			this.Controls.Add(this.serverDisplay);
 			this.Name = "Form1";
 			this.Text = "Form1";
 			this.Load += new System.EventHandler(this.Form1_Load);
@@ -128,6 +167,7 @@ namespace RbTestApp
 
 		private void Form1_Load(object sender, System.EventArgs e)
 		{
+			/*
 			SetupForm setupDlg = new SetupForm( );
 			if ( setupDlg.ShowDialog( this ) == DialogResult.Cancel )
 			{
@@ -152,16 +192,29 @@ namespace RbTestApp
 					}
 				}
 			}
+			*/
+			
+			m_ServerScene = ( RbEngine.Scene.SceneDb )ResourceManager.Inst.Load( "server0.xml" );
+			m_ClientScene = ( RbEngine.Scene.SceneDb )ResourceManager.Inst.Load( "client0.xml" );
+
+			serverDisplay.Scene = m_ServerScene;
+			clientDisplay.Scene = m_ClientScene;
+
+
 		}
 
 		private void Form1_Closed(object sender, System.EventArgs e)
 		{
 			//	Dispose of the scene
-			if ( m_Scene != null )
-			{
-				m_Scene.Dispose( );
-				m_Scene = null;
-			}
+		//	if ( m_Scene != null )
+		//	{
+		//		m_Scene.Dispose( );
+		//		m_Scene = null;
+		//	}
+			m_ServerScene.Dispose( );
+			m_ServerScene = null;
+			m_ClientScene.Dispose( );
+			m_ClientScene = null;
 		}
 	}
 }

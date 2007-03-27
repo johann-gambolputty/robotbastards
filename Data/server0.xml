@@ -43,13 +43,13 @@
 		<!-- Entities -->
 		<object type="RbEngine.Entities.Entity3">
 
+			<objectId value="1" property="Id"/>
+
 			<Point3 x="20" y="0.5" z="0" property="NextPosition"/>
 
 			<instance modelPath="models/sarge" property="Graphics" alwaysAddAsChild="true"/>
 
 			<object type="RbEngine.Scene.LightingData"/>
-
-			<object type="RbEngine.Entities.TestUserEntityController"/>
 
 			<object type="RbEngine.Entities.EntityActionClientUpdater"/>
 

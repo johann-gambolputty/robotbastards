@@ -41,6 +41,13 @@ namespace RbEngine.Network.Runt
 		}
 
 		/// <summary>
+		/// Default constructor. Required for serialisation
+		/// </summary>
+		public ServerMessage( )
+		{
+		}
+
+		/// <summary>
 		/// Sets up this message
 		/// </summary>
 		/// <param name="sequenceNumber">The server sequence number</param>

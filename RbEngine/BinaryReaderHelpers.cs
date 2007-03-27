@@ -8,6 +8,14 @@ namespace RbEngine
 	public class BinaryReaderHelpers
 	{
 		/// <summary>
+		/// Reads a bool value
+		/// </summary>
+		public static void Read( System.IO.BinaryReader reader, out bool val )
+		{
+			val = reader.ReadBoolean( );
+		}
+
+		/// <summary>
 		/// Reads a 8-bit signed integer
 		/// </summary>
 		public static void Read( System.IO.BinaryReader reader, out sbyte val )

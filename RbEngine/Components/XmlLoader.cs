@@ -495,6 +495,7 @@ namespace RbEngine.Components
 					case "int"			: loader = new ValueLoader( parentLoader, element, int.Parse( element.GetAttribute( "value" ) ) );	break;
 					case "float"		: loader = new ValueLoader( parentLoader, element, float.Parse( element.GetAttribute( "value" ) ) );	break;
 					case "colour"		: loader = new ValueLoader( parentLoader, element, System.Drawing.Color.FromName( element.GetAttribute( "value" ) ) );	break;
+					case "objectId"		: loader = new ValueLoader( parentLoader, element, ObjectId.Parse( element.GetAttribute( "value" ) ) ); break;
 					case "Vector3"		:
 					{
 						float x = float.Parse( element.GetAttribute( "x" ) );

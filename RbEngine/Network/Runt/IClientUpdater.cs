@@ -29,12 +29,12 @@ namespace RbEngine.Network.Runt
 		/// <remarks>
 		/// Set by ClientUpdateManager. This is the sequence value of the least up-to-date client connected to the server.
 		/// </remarks>
-		void SetOldestClientSequence( int sequence );
+		void SetOldestClientSequence( uint sequence );
 
 		/// <summary>
 		/// Creates a series of messages that updates a network client
 		/// </summary>
-		UpdateMessage[] CreateUpdateMessages( int clientSequence, int serverSequence );
+		void GetUpdateMessages( System.Collections.ArrayList messages, uint clientSequence, uint serverSequence );
 
 	}
 }

@@ -35,7 +35,8 @@ namespace RbEngine.Components
 		/// <returns> Returns a new message of the specified type </returns>
 		public static Message	CreateFromTypeId( MessageTypeId typeId )
 		{
-			return ( Message )Activator.CreateInstance( MessageTypeManager.Inst.GetMessageTypeFromId( typeId ) );
+			Type messageType = MessageTypeManager.Inst.GetMessageTypeFromId( typeId );
+			return ( Message )Activator.CreateInstance( messageType );
 		}
 
 		/// <summary>
