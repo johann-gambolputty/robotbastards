@@ -545,11 +545,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Network\ConnectionBase.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Network\Connections.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -565,17 +560,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Network\SocketConnection.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Network\TcpClientConnectionListener.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Network\TcpClientToServerConnection.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Network\TcpServerToClientConnection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

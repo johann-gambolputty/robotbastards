@@ -38,9 +38,6 @@ namespace RbEngine.Network
 		/// Delivers a message over this connection
 		/// </summary>
 		/// <param name="msg">Message to deliver</param>
-		/// <remarks>
-		/// This should be invoked by any implementation of IMessageHandler.HandleMessage()
-		/// </remarks>
 		void DeliverMessage( Components.Message msg );
 	}
 }

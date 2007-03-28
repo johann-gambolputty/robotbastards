@@ -39,7 +39,7 @@
 		<!-- Scene clocks -->
 		<!-- TODO: This should be a default clock, because it's referenced directly in the controller and command update code -->
 		<clock name="UpdateClock" ticksPerSecond="15"/>
-		<clock name="NetworkClock" ticksPerSecond="15"/>
+		<clock name="NetworkClock" ticksPerSecond="30"/>
 
 		<!-- Test scenery :) -->
 		<object type="RbEngine.Components.Simple.GroundPlane"/>
