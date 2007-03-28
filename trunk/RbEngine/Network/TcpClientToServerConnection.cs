@@ -8,9 +8,9 @@ using System.Collections;
 namespace RbEngine.Network
 {
 	/// <summary>
-	/// Implements ClientToServerConnection using TCP sockets
+	/// Implements IConnection by decorating a SocketConnection, created from a TCP socket and various setup bits and pieces
 	/// </summary>
-	public class TcpClientToServerConnection : ConnectionBase, IDisposable, Scene.ISceneObject
+	public class TcpClientToServerConnection : IDisposable, IConnection, Scene.ISceneObject
 	{
 		/// <summary>
 		/// Access to the connection string
@@ -19,11 +19,11 @@ namespace RbEngine.Network
 		{
 			set
 			{
-				m_Connection = value;
+				m_ConnectionString = value;
 			}
 			get
 			{
-				return m_Connection;
+				return m_ConnectionString;
 			}
 		}
 
@@ -43,17 +43,6 @@ namespace RbEngine.Network
 		}
 
 		/// <summary>
-		/// Returns false (this is a server connection)
-		/// </summary>
-		public override bool	ConnectionToClient
-		{
-			get
-			{
-				return false;
-			}
-		}
-
-		/// <summary>
 		/// Kills the connection
 		/// </summary>
 		~TcpClientToServerConnection( )
@@ -62,21 +51,11 @@ namespace RbEngine.Network
 		}
 
 		/// <summary>
-		/// Connects to the server
-		/// </summary>
-		public void		Run( )
-		{
-			Output.DebugAssert( m_Thread == null, Output.NetworkError, "Can only call Run() once" );
-			m_Thread = new Thread( new ThreadStart( RunConnection ) );
-			m_Thread.Start( );
-		}
-
-		/// <summary>
 		/// Runs the connection
 		/// </summary>
-		private void	RunConnection( )
+		private void	RunConnection( Scene.SceneDb scene )
 		{
-			m_Socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
+			Socket socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
 
 			IPEndPoint endPoint = null;
 			try
@@ -90,12 +69,10 @@ namespace RbEngine.Network
 
 				//	Connect to end point
 				Output.WriteLineCall( Output.NetworkInfo, "Attempting to connect to \"{0}\"", endPoint );
-				m_Socket.Connect( endPoint );
+				socket.Connect( endPoint );
 
-				//	Create a network stream for the socket, and readers and writers for that stream
-				m_Stream	= new NetworkStream( m_Socket );
-				m_Writer	= new BinaryWriter( m_Stream );
-				m_Reader	= new BinaryReader( m_Stream );
+				m_BaseConnection = new SocketConnection( scene, socket, false );
+				m_BaseConnection.ReceivedMessage += new ConnectionReceivedMessageDelegate( BaseConnectionReceivedMessage );
 			}
 			catch ( Exception exception )
 			{
@@ -104,27 +81,16 @@ namespace RbEngine.Network
 			}
 
 			Output.WriteLineCall( Output.NetworkInfo, "Connected to \"{0}\"", endPoint );
-			while ( true )
-			{
-				lock ( m_PendingMessages )
-				{
-					foreach ( Components.Message msg in m_PendingMessages )
-					{
-						msg.Write( m_Writer );
-					}
-					m_PendingMessages.Clear( );
-				}
-			}
 		}
 
 		/// <summary>
-		/// Writes the specified message to the server network stream
+		/// Called when the base connection object receives a message
 		/// </summary>
-		public override void DeliverMessage( Components.Message msg )
+		private void BaseConnectionReceivedMessage( IConnection connection, Components.Message msg )
 		{
-			lock ( m_PendingMessages )
+			if ( ReceivedMessage != null )
 			{
-				m_PendingMessages.Add( msg );
+				ReceivedMessage( this, msg );
 			}
 		}
 
@@ -135,8 +101,7 @@ namespace RbEngine.Network
 		/// </summary>
 		public void AddedToScene( Scene.SceneDb db )
 		{
-			db.Disposing += new RbEngine.Scene.SceneDb.DisposingDelegate( Dispose );
-			Run( );
+			RunConnection( db );
 		}
 
 		/// <summary>
@@ -144,7 +109,6 @@ namespace RbEngine.Network
 		/// </summary>
 		public void RemovedFromScene( Scene.SceneDb db )
 		{
-			Dispose( );
 		}
 
 		#endregion
@@ -152,15 +116,13 @@ namespace RbEngine.Network
 		#region IDisposable Members
 
 		/// <summary>
-		/// Kills the connection thread
+		/// Disposes the base connection
 		/// </summary>
 		public void Dispose( )
 		{
-			if ( m_Thread != null )
+			if ( m_BaseConnection is IDisposable )
 			{
-				m_Thread.Abort( );
-				m_Thread.Join( );
-				m_Thread = null;
+				( ( IDisposable )m_BaseConnection ).Dispose( );
 			}
 		}
 
@@ -168,14 +130,57 @@ namespace RbEngine.Network
 
 		#region	Private stuff
 
-		private string			m_Connection		= "localhost";
-		private ArrayList		m_PendingMessages	= new ArrayList( );
-		private Thread			m_Thread;
-		private Socket			m_Socket;
-		private NetworkStream	m_Stream;
-		private BinaryReader	m_Reader;
-		private BinaryWriter	m_Writer;
-		private int				m_Port = 11000;
+		private string		m_ConnectionString	= "localhost";
+		private int			m_Port				= 11000;
+		private IConnection	m_BaseConnection;
+		private string		m_Name;
+
+		#endregion
+
+		#region IConnection Members
+
+		/// <summary>
+		/// The name of this connection
+		/// </summary>
+		public string Name
+		{
+			get
+			{
+				return m_Name;
+			}
+			set
+			{
+				m_Name = value;
+			}
+		}
+
+		/// <summary>
+		/// This is a connection to a server - returns false
+		/// </summary>
+		public bool ConnectionToClient
+		{
+			get
+			{
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Invoked when this connection receives a message
+		/// </summary>
+		public event RbEngine.Network.ConnectionReceivedMessageDelegate ReceivedMessage;
+
+		/// <summary>
+		/// Delivers a message over this connection
+		/// </summary>
+		/// <param name="msg">Message to deliver</param>
+		public void DeliverMessage( Components.Message msg )
+		{
+			if ( m_BaseConnection != null )
+			{
+				m_BaseConnection.DeliverMessage( msg );
+			}
+		}
 
 		#endregion
 	}

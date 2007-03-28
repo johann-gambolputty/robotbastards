@@ -137,7 +137,7 @@ namespace RbEngine.Network
 				throw new ApplicationException( "Cannot create client connection without a Connections object in the scene systems" );
 			}
 
-			connections.AddChild( new TcpServerToClientConnection( m_Scene, clientSocket ) );
+			connections.AddChild( new SocketConnection( m_Scene, clientSocket, true ) );
 		}
 
 		#endregion
