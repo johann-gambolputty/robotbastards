@@ -385,12 +385,27 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Interaction\CommandEnumInputInterpreterAttribute.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Interaction\CommandInput.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Interaction\CommandInputBinding.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Interaction\CommandInputInterpreter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Interaction\CommandInputListener.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -415,12 +430,32 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Interaction\CommandMessage.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Interaction\CommandMouseMoveInput.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Interaction\CommandMouseMoveInputBinding.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Interaction\CommandScenePickInterpreter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Interaction\CommandScenePickMessage.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Interaction\CommandServerUpdater.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

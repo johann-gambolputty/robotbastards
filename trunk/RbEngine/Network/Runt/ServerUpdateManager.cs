@@ -8,6 +8,17 @@ namespace RbEngine.Network.Runt
 	/// </summary>
 	public class ServerUpdateManager : Scene.ISceneObject
 	{
+		/// <summary>
+		/// Gets the connection to the server
+		/// </summary>
+		public IConnection	ServerConnection
+		{
+			get
+			{
+				return m_ServerConnection;
+			}
+		}
+
 		#region	Updaters
 
 		/// <summary>

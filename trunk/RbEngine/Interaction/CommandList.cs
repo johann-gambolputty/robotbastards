@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Reflection;
 
 namespace RbEngine.Interaction
 {
@@ -8,6 +9,42 @@ namespace RbEngine.Interaction
 	/// </summary>
 	public class CommandList : Components.Node, Components.INamedObject, Components.IXmlLoader
 	{
+		#region	Command events
+
+		/// <summary>
+		/// Event, fired for any command that has just become active
+		/// </summary>
+		public event CommandEventDelegate	CommandActivated;
+
+		/// <summary>
+		/// Event, fired for every active command, every frame
+		/// </summary>
+		public event CommandEventDelegate	CommandActive;
+
+		/// <summary>
+		/// Invokes the Activated event. Called by Command.Update()
+		/// </summary>
+		public void OnCommandActivated( CommandMessage message )
+		{
+			if ( CommandActivated != null )
+			{
+				CommandActivated( message );
+			}
+		}
+
+		/// <summary>
+		/// Invokes the Active event. Called by Command.Update()
+		/// </summary>
+		public void OnCommandActive( CommandMessage message )
+		{
+			if ( CommandActive != null )
+			{
+				CommandActive( message );
+			}
+		}
+
+		#endregion
+
 		/// <summary>
 		/// Access the command list (synonym for Components.Node.Children)
 		/// </summary>
@@ -91,13 +128,52 @@ namespace RbEngine.Interaction
 		}
 
 		/// <summary>
+		/// Creates this command list from an enum
+		/// </summary>
+		public void AddEnumCommands( Type enumType )
+		{
+			Output.WriteLineCall( Output.InputInfo, "Creating command list from enum \"{0}\"", enumType.Name );
+
+			string[]	commandNames	= Enum.GetNames( enumType );
+			int[]		commandValues	= ( int[] )Enum.GetValues( enumType );
+
+			for ( int commandIndex = 0; commandIndex < commandNames.Length; ++commandIndex )
+			{
+				string name			= commandNames[ commandIndex ];
+				string description	= string.Empty;
+
+				MemberInfo[]	info	= enumType.GetMember( name );
+				object[]		attribs	= info[ 0 ].GetCustomAttributes( typeof( CommandEnumDescriptionAttribute ), false );
+				if ( attribs.Length > 0 )
+				{
+					description = ( ( CommandEnumDescriptionAttribute )attribs[ 0 ] ).Description;
+				}
+
+				CommandInputInterpreter interpreter = null;
+				attribs = info[ 0 ].GetCustomAttributes( typeof( CommandEnumInputInterpreterAttribute ), false );
+				if ( attribs.Length > 0 )
+				{
+					Type interpreterType = ( ( CommandEnumInputInterpreterAttribute )attribs[ 0 ] ).InterpreterType;
+					interpreter = ( CommandInputInterpreter )System.Activator.CreateInstance( interpreterType );
+				}
+
+				Output.WriteLineCall( Output.InputInfo, "Adding enum command \"{0}\"", name );
+
+				Command newCommand		= new Command( name, description, ( ushort )commandValues[ commandIndex ] );
+				newCommand.Interpreter	= interpreter;
+
+				AddCommand( newCommand );
+			}
+		}
+
+		/// <summary>
 		/// Updates the list of commands
 		/// </summary>
 		public void	Update( )
 		{
 			foreach ( Command curCommand in Commands )
 			{
-				curCommand.Update( );
+				curCommand.Update( this );
 			}
 		}
 

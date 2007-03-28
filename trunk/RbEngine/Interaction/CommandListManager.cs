@@ -64,28 +64,8 @@ namespace RbEngine.Interaction
 		/// </summary>
 		public static CommandList	CreateFromEnum( Type enumType )
 		{
-			Output.WriteLineCall( Output.InputInfo, "Creating command list from enum \"{0}\"", enumType.Name );
-
-			CommandList commands		= new CommandList( enumType.Name );
-			string[]	commandNames	= Enum.GetNames( enumType );
-			int[]		commandValues	= ( int[] )Enum.GetValues( enumType );
-
-			for ( int commandIndex = 0; commandIndex < commandNames.Length; ++commandIndex )
-			{
-				string name			= commandNames[ commandIndex ];
-				string description	= string.Empty;
-
-				MemberInfo[]	info	= enumType.GetMember( name );
-				object[]		attribs	= info[ 0 ].GetCustomAttributes( typeof( CommandEnumDescriptionAttribute ), false );
-				if ( attribs.Length > 0 )
-				{
-					description = ( ( CommandEnumDescriptionAttribute )attribs[ 0 ] ).Description;
-				}
-
-				Output.WriteLineCall( Output.InputInfo, "Adding enum command \"{0}\"", name );
-				commands.AddCommand( new Command( name, description, ( ushort )commandValues[ commandIndex ] ) );
-			}
-
+			CommandList commands = new CommandList( enumType.Name );
+			commands.AddEnumCommands( enumType );
 			return commands;
 		}
 

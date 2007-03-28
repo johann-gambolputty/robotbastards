@@ -7,7 +7,7 @@ namespace RbEngine.Interaction
 	/// <summary>
 	/// Delegate, used by the Command.Activated and Command.Active events
 	/// </summary>
-	public delegate void CommandEventDelegate( CommandInputBinding binding );
+	public delegate void CommandEventDelegate( CommandMessage message );
 
 	/// <summary>
 	/// User command
@@ -25,6 +25,25 @@ namespace RbEngine.Interaction
 		/// Events, fired every frame that the command is active (e.g. the first and subsequent frames that a key is pressed)
 		/// </summary>
 		public event CommandEventDelegate	Active;
+
+		#endregion
+
+		#region	Command interpreter
+
+		/// <summary>
+		/// Access to the interpreter associated with this command
+		/// </summary>
+		public CommandInputInterpreter Interpreter
+		{
+			get
+			{
+				return m_Interpreter;
+			}
+			set
+			{
+				m_Interpreter = value;
+			}
+		}
 
 		#endregion
 
@@ -109,7 +128,7 @@ namespace RbEngine.Interaction
 		/// <summary>
 		/// Updates this command
 		/// </summary>
-		public void					Update( )
+		public void					Update( CommandList commands )
 		{
 			bool wasActive = ( m_LastActiveUpdate == m_UpdateCount );
 			++m_UpdateCount;
@@ -118,15 +137,27 @@ namespace RbEngine.Interaction
 			{
 				if ( curBinding.Active )
 				{
+					CommandMessage message = curBinding.CreateCommandMessage( );
+					if ( message == null )
+					{
+						message = new CommandMessage( this );
+					}
+
 					//	Always invoke the Active event if the command is active
 					if ( Active != null )
 					{
-						Active( curBinding );
+						Active( message );
 					}
+					commands.OnCommandActive( message );
+
 					//	Invoke the Activated event if the command has only just gone active
-					if ( ( !wasActive ) && ( Activated != null ) )
+					if ( !wasActive )
 					{
-						Activated( curBinding );
+						if ( Activated != null )
+						{
+							Activated( message );
+						}
+						commands.OnCommandActivated( message );
 					}
 					m_LastActiveUpdate = m_UpdateCount;
 					break;
@@ -162,13 +193,14 @@ namespace RbEngine.Interaction
 
 		#region	Private stuff
 
-		private string				m_Name;
-		private string				m_Description;
-		private ArrayList			m_Inputs	= new ArrayList( );
-		private ArrayList			m_Bindings	= new ArrayList( );
-		private ushort				m_Id;
-		private int					m_UpdateCount;
-		private int					m_LastActiveUpdate;
+		private string					m_Name;
+		private string					m_Description;
+		private ArrayList				m_Inputs	= new ArrayList( );
+		private ArrayList				m_Bindings	= new ArrayList( );
+		private ushort					m_Id;
+		private int						m_UpdateCount;
+		private int						m_LastActiveUpdate;
+		private CommandInputInterpreter	m_Interpreter;
 
 		#endregion
 	}
