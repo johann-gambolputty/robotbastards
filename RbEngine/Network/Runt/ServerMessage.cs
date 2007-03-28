@@ -32,11 +32,11 @@ namespace RbEngine.Network.Runt
 		/// <summary>
 		/// Gets the base update messages attached to this server message
 		/// </summary>
-		public UpdateMessage[] BaseMessages
+		public UpdateMessage[] UpdateMessages
 		{
 			get
 			{
-				return m_BaseMessages;
+				return m_UpdateMessages;
 			}
 		}
 
@@ -52,11 +52,11 @@ namespace RbEngine.Network.Runt
 		/// </summary>
 		/// <param name="sequenceNumber">The server sequence number</param>
 		/// <param name="baseMessage">The base message</param>
-		public ServerMessage( uint sequence, int clientId, UpdateMessage[] baseMessages )
+		public ServerMessage( uint sequence, int clientId, UpdateMessage[] updateMessages )
 		{
-			m_ClientId		= clientId;
-			m_Sequence		= sequence;
-			m_BaseMessages	= baseMessages;
+			m_ClientId			= clientId;
+			m_Sequence			= sequence;
+			m_UpdateMessages	= updateMessages;
 		}
 		
 		/// <summary>
@@ -69,11 +69,11 @@ namespace RbEngine.Network.Runt
 
 			output.Write( m_ClientId );
 			output.Write( m_Sequence );
-			output.Write( m_BaseMessages.Length );
+			output.Write( m_UpdateMessages.Length );
 
-			for ( int msgIndex = 0; msgIndex < m_BaseMessages.Length; ++msgIndex )
+			for ( int msgIndex = 0; msgIndex < m_UpdateMessages.Length; ++msgIndex )
 			{
-				m_BaseMessages[ msgIndex ].Write( output );	
+				m_UpdateMessages[ msgIndex ].Write( output );	
 			}
 		}
 
@@ -87,16 +87,16 @@ namespace RbEngine.Network.Runt
 			m_Sequence		= input.ReadUInt32( );
 
 			int numMessages = input.ReadInt32( );
-			m_BaseMessages	= new UpdateMessage[ numMessages ];
+			m_UpdateMessages	= new UpdateMessage[ numMessages ];
 
 			for ( int msgIndex = 0; msgIndex < numMessages; ++msgIndex )
 			{
-				m_BaseMessages[ msgIndex ] = ( UpdateMessage )Components.Message.ReadMessage( input );
+				m_UpdateMessages[ msgIndex ] = ( UpdateMessage )Components.Message.ReadMessage( input );
 			}
 		}
 
 		private int				m_ClientId;
 		private uint			m_Sequence;
-		private UpdateMessage[]	m_BaseMessages;
+		private UpdateMessage[]	m_UpdateMessages;
 	}
 }

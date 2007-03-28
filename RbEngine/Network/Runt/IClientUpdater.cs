@@ -8,16 +8,8 @@ namespace RbEngine.Network.Runt
 	/// <remarks>
 	/// updater must subscribe to a ClientUpdateManager
 	/// </remarks>
-	public interface IClientUpdater
+	public interface IClientUpdater : Components.IUnique
 	{
-		/// <summary>
-		/// Gets the unique ID of this updater (usually the ID of the parent object)
-		/// </summary>
-		Components.ObjectId Id
-		{
-			get;
-		}
-
 		/// <summary>
 		/// Handles an update message sent from a client
 		/// </summary>

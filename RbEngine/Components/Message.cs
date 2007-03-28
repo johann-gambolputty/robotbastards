@@ -125,7 +125,31 @@ namespace RbEngine.Components
 
 		#endregion
 
+		#region	Message sender
+
+		/// <summary>
+		/// Access to the (optional) sender of this message
+		/// </summary>
+		public object Sender
+		{
+			get
+			{
+				return m_Sender;
+			}
+			set
+			{
+				m_Sender = value;
+			}
+		}
+
+		#endregion
+
+		#region	Private stuff
+
 		private MessageRecipientChain	m_Recipients;
 		private int						m_RecipientIndex;
+		private Object					m_Sender;
+
+		#endregion
 	}
 }

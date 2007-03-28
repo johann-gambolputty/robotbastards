@@ -22,6 +22,7 @@ namespace RbEngine.Interaction
 			m_CommandId = checked( ( byte )cmd.Id );
 		}
 
+
 		/// <summary>
 		/// Gets the ID of the command
 		/// </summary>
