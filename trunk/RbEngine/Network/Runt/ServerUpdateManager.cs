@@ -27,6 +27,7 @@ namespace RbEngine.Network.Runt
 		public void AddUpdater( IServerUpdater updater )
 		{
 			m_Updaters.Add( updater );
+			m_UpdaterIdMap[ updater.Id ] = updater;
 		}
 
 		/// <summary>
@@ -35,6 +36,7 @@ namespace RbEngine.Network.Runt
 		public void RemoveUpdater( IServerUpdater updater )
 		{
 			m_Updaters.Remove( updater );
+			m_UpdaterIdMap.Remove( updater.Id );
 		}
 
 		#endregion
@@ -54,12 +56,16 @@ namespace RbEngine.Network.Runt
 			}
 
 			//	Is there a RUNT server connection already active?
-			m_ServerConnection = connections.GetConnection( "RuntServer" );
-			if ( m_ServerConnection == null )
+			IConnection serverConnection = connections.GetConnection( "RuntServer" );
+			if ( serverConnection == null )
 			{
 				//	Subscribe to the new server connection event
 				Output.WriteLineCall( Output.NetworkInfo, "No \"RuntServer\" server connection exists yet - subscribing to new server connection event" );
 				connections.NewServerConnection += new NewServerConnectionDelegate( OnNewServerConnection );
+			}
+			else
+			{
+				OnNewServerConnection( serverConnection );
 			}
 
 			//	Subscribe to the network clock
@@ -80,9 +86,10 @@ namespace RbEngine.Network.Runt
 		}
 
 		#endregion
-		
-		private ArrayList	m_Updaters = new ArrayList( );
-		private uint		m_Sequence = 0;
+
+		private Hashtable	m_UpdaterIdMap	= new Hashtable( );
+		private ArrayList	m_Updaters		= new ArrayList( );
+		private uint		m_Sequence		= 0;
 		private IConnection	m_ServerConnection;
 
 
@@ -98,6 +105,23 @@ namespace RbEngine.Network.Runt
 			if ( connection.Name == "RuntServer" )
 			{
 				m_ServerConnection = connection;
+				connection.ReceivedMessage += new ConnectionReceivedMessageDelegate( OnReceivedServerMessage );
+			}
+		}
+
+		/// <summary>
+		/// Called when the client receives a message from the server
+		/// </summary>
+		private void OnReceivedServerMessage( IConnection connection, Components.Message msg )
+		{
+			ClientMessage clientMsg = ( ClientMessage )msg;
+
+			//	TODO: Handle out-of-synch messages
+
+			foreach ( UpdateMessage curUpdateMessage in clientMsg.UpdateMessages )
+			{
+				IServerUpdater updater = ( IServerUpdater )m_UpdaterIdMap[ curUpdateMessage.TargetId ];
+				updater.HandleServerUpdate( curUpdateMessage );
 			}
 		}
 

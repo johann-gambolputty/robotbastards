@@ -8,12 +8,11 @@ namespace RbEngine.Components
 	public interface IUnique
 	{
 		/// <summary>
-		/// Access to the unique identifier of this object
+		/// Gets the unique identifier of this object
 		/// </summary>
 		ObjectId Id
 		{
 			get;
-			set;
 		}
 	}
 }

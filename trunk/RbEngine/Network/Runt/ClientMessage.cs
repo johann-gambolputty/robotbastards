@@ -8,6 +8,17 @@ namespace RbEngine.Network.Runt
 	public class ClientMessage : Components.Message
 	{
 		/// <summary>
+		/// Gets the attached base update messages
+		/// </summary>
+		public UpdateMessage[] UpdateMessages
+		{
+			get
+			{
+				return m_UpdateMessages;
+			}
+		}
+
+		/// <summary>
 		/// Default constructor, for serialisation
 		/// </summary>
 		public ClientMessage( )
@@ -30,7 +41,7 @@ namespace RbEngine.Network.Runt
 		{
 			base.Read( input );
 			BinaryReaderHelpers.Read( input, out m_Sequence );
-			
+
 			int numMessages = input.ReadInt32( );
 			if ( numMessages == 0 )
 			{
@@ -59,8 +70,6 @@ namespace RbEngine.Network.Runt
 				m_UpdateMessages[ msgIndex ].Write( output );
 			}
 		}
-
-
 
 		private uint			m_Sequence;
 		private UpdateMessage[] m_UpdateMessages;

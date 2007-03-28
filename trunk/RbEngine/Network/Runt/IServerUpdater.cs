@@ -5,7 +5,7 @@ namespace RbEngine.Network.Runt
 	/// <summary>
 	/// Interface for server updater objects
 	/// </summary>
-	public interface IServerUpdater
+	public interface IServerUpdater : Components.IUnique
 	{
 		/// <summary>
 		/// Handles an update message sent from a server

@@ -4,12 +4,8 @@ using RbEngine.Components;
 
 namespace RbEngine.Network.Runt
 {
-	/*
-	 * TcpClientConnectionListener listens out for client connections. If it finds one, it creates
-	 * a connection, and a ClientUpdateManager based on that connection. The manager updates on
-	 * a fixed time-step. Entity client update components subscribe to the manager, which requests
-	 * update messages, which it collates into a single large packet that is sent over the connection
-	 */
+	//	TODO: There's some symmetry between ClientUpdateManager and ServerUpdateManager (more so if split up by client connection), ClientMessage
+	//	and ServerMessage, and implementations of IClientUpdater and IServerUpdater...
 
 	/// <summary>
 	/// Sends clients update messages using the Q3 unreliable network model
@@ -169,7 +165,7 @@ namespace RbEngine.Network.Runt
 			}
 
 			//	Run through all the base update messages stored in the server message
-			foreach ( UpdateMessage updateMsg in serverMsg.BaseMessages )
+			foreach ( UpdateMessage updateMsg in serverMsg.UpdateMessages )
 			{
 				//	TODO: UpdateMessage objects are generated in sequence by the equivalent IServerUpdater on the client, so updaterMsg.TargetId is likely
 				//	to by the same as the previous ID - cache this

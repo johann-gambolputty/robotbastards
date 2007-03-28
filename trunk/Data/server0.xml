@@ -35,7 +35,7 @@
 		<!-- Scene clocks -->
 		<!-- TODO: This should be a default clock, because it's referenced directly in the controller and command update code -->
 		<clock name="UpdateClock"	ticksPerSecond="15"/>
-		<clock name="NetworkClock"	ticksPerSecond="20"/>
+		<clock name="NetworkClock"	ticksPerSecond="60"/>
 
 		<!-- Test scenery :) -->
 		<object type="RbEngine.Components.Simple.GroundPlane"/>
@@ -47,11 +47,11 @@
 
 			<Point3 x="20" y="0.5" z="0" property="NextPosition"/>
 
-			<instance modelPath="models/sarge" property="Graphics" alwaysAddAsChild="true"/>
+			<instance modelPath="models/sarge" property="Graphics"/>
 
 			<object type="RbEngine.Scene.LightingData"/>
 
-			<object type="RbEngine.Entities.EntityActionClientUpdater"/>
+			<object type="RbEngine.Interaction.CommandClientUpdater"/>
 			<object type="RbEngine.Entities.TestUserEntityController"/>
 
 		</object>
@@ -77,7 +77,7 @@
 		<!-- Environment -->
 		<object type="RbEngine.Entities.Entity3">
 
-			<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics" alwaysAddAsChild="true">
+			<object type="RbEngine.Rendering.EffectRenderedObject" property="Graphics">
 
 				<reference modelPath="effects/perPixelUntexturedShadowed" property="Effect"/>
 				<string value="WireframeTechnique" property="AppliedTechniqueName"/>
