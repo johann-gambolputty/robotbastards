@@ -50,7 +50,9 @@ namespace RbTestApp
 			}
 
 			//	Load in the test commands
-			LoadParameters parameters = new LoadParameters( RbEngine.Entities.TestUserEntityController.Commands );
+			RbEngine.Interaction.CommandList testCommandList = RbEngine.Interaction.CommandListManager.CreateFromEnum( typeof( RbEngine.Entities.TestCommands ) );
+
+			LoadParameters parameters = new LoadParameters( testCommandList );
 			ResourceManager.Inst.Load( "testCommandInputs0.xml", parameters );
 
 			//

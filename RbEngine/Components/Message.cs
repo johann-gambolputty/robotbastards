@@ -36,7 +36,18 @@ namespace RbEngine.Components
 		public static Message	CreateFromTypeId( MessageTypeId typeId )
 		{
 			Type messageType = MessageTypeManager.Inst.GetMessageTypeFromId( typeId );
-			return ( Message )Activator.CreateInstance( messageType );
+			if ( messageType == null )
+			{
+				throw new ApplicationException( string.Format( "Can't match type ID \"{0}\" to message type", messageType ) );
+			}
+			try
+			{
+				return ( Message )Activator.CreateInstance( messageType );
+			}
+			catch ( Exception exception )
+			{
+				throw new ApplicationException( string.Format( "Failed to create message of type \"{0}\"", messageType ), exception );
+			}
 		}
 
 		/// <summary>

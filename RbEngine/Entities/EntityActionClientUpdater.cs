@@ -125,7 +125,6 @@ namespace RbEngine.Entities
 			m_Parent = parentObject;
 			IMessageHandler parentMessages = ( IMessageHandler )parentObject;
 			parentMessages.AddRecipient( typeof( MovementRequest ), new MessageRecipientDelegate( HandleMovementRequest ), ( int )MessageRecipientOrder.Last );
-
 		}
 
 		#endregion

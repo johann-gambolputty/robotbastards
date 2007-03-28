@@ -37,7 +37,7 @@ namespace RbEngine.Network.Runt
 		/// <summary>
 		/// Reads this message
 		/// </summary>
-		protected override void Read(System.IO.BinaryReader input)
+		protected override void Read( System.IO.BinaryReader input )
 		{
 			base.Read( input );
 			m_Message = Components.Message.ReadMessage( input );
