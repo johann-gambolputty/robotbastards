@@ -8,7 +8,7 @@ namespace RbEngine.Scene
 	public interface ISceneObject
 	{
 		/// <summary>
-		/// Invoked when this object is added to a scene by SceneDb.Remove()
+		/// Invoked when this object is added to a scene by SceneDb.Add()
 		/// </summary>
 		/// <param name="db">Database that this object was added to</param>
 		void	AddedToScene( SceneDb db );

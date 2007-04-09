@@ -365,11 +365,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Interaction\CommandClientUpdater.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Interaction\CommandCursorInputBinding.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -436,6 +431,16 @@
                 />
                 <File
                     RelPath = "Interaction\CommandMouseMoveInputBinding.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Interaction\CommandRemoteTransfer.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Interaction\CommandRemoteUpdater.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -605,37 +610,47 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Network\Runt\ClientMessage.cs"
+                    RelPath = "Network\Runt\IRemoteUpdater.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Network\Runt\ClientUpdateManager.cs"
+                    RelPath = "Network\Runt\IUpdateHandler.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Network\Runt\IClientUpdater.cs"
+                    RelPath = "Network\Runt\IUpdateProvider.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Network\Runt\IServerUpdater.cs"
+                    RelPath = "Network\Runt\MessageBufferUpdater.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Network\Runt\ServerMessage.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Network\Runt\ServerUpdateManager.cs"
+                    RelPath = "Network\Runt\RemoteUpdateManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Network\Runt\UpdateMessage.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\Runt\UpdateMessageBatch.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\Runt\UpdateSource.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\Runt\UpdateTarget.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

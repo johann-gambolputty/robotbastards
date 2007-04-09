@@ -452,11 +452,6 @@ namespace RbOpenGlMd3Loader
 		#region INamedObject Members
 
 		/// <summary>
-		/// Event, invoked when the named of this mesh is changed
-		/// </summary>
-		public event RbEngine.Components.NameChangedDelegate NameChanged;
-
-		/// <summary>
 		/// The name of this mesh
 		/// </summary>
 		public string Name
@@ -468,10 +463,6 @@ namespace RbOpenGlMd3Loader
 			set
 			{
 				m_Name = value;
-				if ( NameChanged != null )
-				{
-					NameChanged( this );
-				}
 			}
 		}
 

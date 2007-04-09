@@ -191,17 +191,8 @@ namespace RbEngine.Interaction
 			set
 			{
 				m_Name = value;
-				if ( NameChanged != null )
-				{
-					NameChanged( this );
-				}
 			}
 		}
-
-		/// <summary>
-		/// Event, invoked when the name of this object changes
-		/// </summary>
-		public event Components.NameChangedDelegate NameChanged;
 
 		#endregion
 

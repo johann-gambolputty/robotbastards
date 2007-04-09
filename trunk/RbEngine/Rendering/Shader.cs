@@ -31,17 +31,8 @@ namespace RbEngine.Rendering
 			set
 			{
 				m_Name = value;
-				if ( NameChanged != null )
-				{
-					NameChanged( this );
-				}
 			}
 		}
-
-		/// <summary>
-		/// Shader name changed event
-		/// </summary>
-		public event Components.NameChangedDelegate NameChanged;
 
 		#endregion
 

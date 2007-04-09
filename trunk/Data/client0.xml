@@ -32,7 +32,8 @@
 				</object>
 			</object>
 
-			<object type="RbEngine.Network.Runt.ServerUpdateManager"/>
+		<!--	<object type="RbEngine.Network.Runt.ServerUpdateManager"/> -->
+			<object type="RbEngine.Network.Runt.RemoteUpdateManager"/>
 
 		</object>
 
@@ -58,7 +59,8 @@
 				<string value="TestCommands" property="CommandListName"/>
 			</object>
 
-			<object type="RbEngine.Interaction.CommandServerUpdater"/>
+	<!--	<object type="RbEngine.Interaction.CommandServerUpdater"/> -->
+			<object type="RbEngine.Interaction.CommandRemoteTransfer"/>
 			<object type="RbEngine.Entities.TestUserEntityController"/>
 
 		</object>

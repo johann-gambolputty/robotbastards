@@ -82,11 +82,6 @@ namespace RbOpenGlMd3Loader
 		#region INamedObject Members
 
 		/// <summary>
-		/// Name changed event
-		/// </summary>
-		public event RbEngine.Components.NameChangedDelegate NameChanged;
-
-		/// <summary>
 		/// Model name
 		/// </summary>
 		public string Name
@@ -98,10 +93,6 @@ namespace RbOpenGlMd3Loader
 			set
 			{
 				m_Name = value;
-				if ( NameChanged != null )
-				{
-					NameChanged( this );
-				}
 			}
 		}
 

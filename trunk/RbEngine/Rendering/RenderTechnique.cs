@@ -183,17 +183,8 @@ namespace RbEngine.Rendering
 			set
 			{
 				m_Name = value;
-				if ( NameChanged != null )
-				{
-					NameChanged( this );
-				}
 			}
 		}
-
-		/// <summary>
-		/// Event, invoked when the name of this technique has been changed
-		/// </summary>
-		public event Components.NameChangedDelegate NameChanged;
 
 		#endregion
 

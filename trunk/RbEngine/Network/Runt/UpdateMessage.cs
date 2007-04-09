@@ -31,6 +31,21 @@ namespace RbEngine.Network.Runt
 		}
 
 		/// <summary>
+		/// The sequence that this message was generated at
+		/// </summary>
+		public uint			Sequence
+		{
+			get
+			{
+				return m_Sequence;
+			}
+			set
+			{
+				m_Sequence = value;
+			}
+		}
+
+		/// <summary>
 		/// Default constructor. Required for serialisation
 		/// </summary>
 		public UpdateMessage( )
@@ -40,10 +55,11 @@ namespace RbEngine.Network.Runt
 		/// <summary>
 		/// Sets the target identifier
 		/// </summary>
-		public UpdateMessage( ObjectId targetId, Message payload )
+		public UpdateMessage( ObjectId targetId, uint sequence, Message payload )
 		{
 			m_TargetId	= targetId;
 			m_Payload	= payload;
+			m_Sequence	= sequence;
 		}
 
 		/// <summary>
@@ -57,6 +73,8 @@ namespace RbEngine.Network.Runt
 			BinaryReaderHelpers.Read( input, out newId.Id );
 			m_TargetId = newId;
 
+			BinaryReaderHelpers.Read( input, out m_Sequence );
+
 			m_Payload = Message.ReadMessage( input );
 		}
 
@@ -67,10 +85,12 @@ namespace RbEngine.Network.Runt
 		{
 			base.Write( output );
 			output.Write( TargetId.Id );
+			output.Write( m_Sequence );
 			m_Payload.Write( output );
 		}
 
 		private ObjectId	m_TargetId;
 		private Message		m_Payload;
+		private uint		m_Sequence;
 	}
 }

@@ -4,14 +4,9 @@ using System.Collections;
 namespace RbEngine.Network
 {
 	/// <summary>
-	/// Delegate, used by Connections.NewClientConnection event
+	/// Delegate, used by the Connections new connection events
 	/// </summary>
-	public delegate void NewClientConnectionDelegate( IConnection connection );
-
-	/// <summary>
-	/// Delegate, used by Connections.NewServerConnection event
-	/// </summary>
-	public delegate void NewServerConnectionDelegate( IConnection connection );
+	public delegate void NewConnectionDelegate( IConnection connection );
 
 	/// <summary>
 	/// A set of client-to-server and server-to-client connections
@@ -69,14 +64,19 @@ namespace RbEngine.Network
 		public event Components.ChildRemovedDelegate	ChildRemoved;
 
 		/// <summary>
-		/// Event, invoked when a child client connection is added. A typed version of ChildAdded
+		/// Event, invoked when a client connection is added. A typed version of ChildAdded
 		/// </summary>
-		public event NewClientConnectionDelegate		NewClientConnection;
+		public event NewConnectionDelegate				NewClientConnection;
 
 		/// <summary>
-		/// Event, invoked when a child server connection is added. A typed version of ChildAdded
+		/// Event, invoked when a server connection is added. A typed version of ChildAdded
 		/// </summary>
-		public event NewServerConnectionDelegate		NewServerConnection;
+		public event NewConnectionDelegate				NewServerConnection;
+
+		/// <summary>
+		/// Event, invoked when a connection is added. A typed version of ChildAdded
+		/// </summary>
+		public event NewConnectionDelegate				NewConnection;
 
 
 		/// <summary>
@@ -104,6 +104,10 @@ namespace RbEngine.Network
 			IConnection connection = childObject as IConnection;
 			if ( connection != null )
 			{
+				if ( NewConnection != null )
+				{
+					NewConnection( connection );
+				}
 				if ( connection.ConnectionToClient )
 				{
 					//	Client connection. Invoke the NewClientConnection event, and create handlers
