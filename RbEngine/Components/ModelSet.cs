@@ -280,17 +280,8 @@ namespace RbEngine.Components
 			set
 			{
 				m_Name = value;
-				if ( NameChanged != null )
-				{
-					NameChanged( this );
-				}
 			}
 		}
-
-		/// <summary>
-		/// ModelSet name changed event
-		/// </summary>
-		public event RbEngine.Components.NameChangedDelegate NameChanged;
 
 		#endregion
 
