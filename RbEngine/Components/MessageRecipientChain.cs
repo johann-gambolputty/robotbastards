@@ -80,6 +80,24 @@ namespace RbEngine.Components
 		}
 
 		/// <summary>
+		/// Removes a recipient from this chain
+		/// </summary>
+		public void				RemoveRecipient( Object recipient )
+		{
+			for ( int index = 0; index < m_Recipients.Count; ++index )
+			{
+				object curRecipient = ( ( Recipient )m_Recipients[ index ] ).RecipientDelegate.Target;
+				if ( curRecipient == recipient )
+				{
+					m_Recipients.RemoveAt( index );
+					return;
+				}
+			}
+
+			throw new ApplicationException( "Could not find recipient in message recipient chain" );
+		}
+
+		/// <summary>
 		/// Attaches a message to this recipient list, and delivers it to the first recipient
 		/// </summary>
 		/// <param name="msg">Message to deliver</param>

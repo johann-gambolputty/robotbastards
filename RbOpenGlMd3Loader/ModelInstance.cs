@@ -129,9 +129,9 @@ namespace RbOpenGlMd3Loader
 		/// </summary>
 		public void AddedToParent( object parentObject )
 		{
-			if ( parentObject is IMessageHandler )
+			if ( parentObject is IMessageHub )
 			{
-				( ( IMessageHandler )parentObject ).AddRecipient( typeof( RbEngine.Entities.MovementRequest ), new MessageRecipientDelegate( HandleMovementRequest ), ( int )MessageRecipientOrder.Last );
+				( ( IMessageHub )parentObject ).AddRecipient( typeof( RbEngine.Entities.MovementRequest ), new MessageRecipientDelegate( HandleMovementRequest ), ( int )MessageRecipientOrder.Last );
 			}
 		}
 

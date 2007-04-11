@@ -6,7 +6,7 @@ namespace RbEngine.Network.Runt
 	/// <summary>
 	/// Keeps one or more UpdateTarget objects synchronised by sending UpdateMessageBatch messages to them
 	/// </summary>
-	public class UpdateSource : Scene.ISceneObject, Components.INamedObject
+	public class UpdateSource : Scene.ISceneObject
 	{
 		#region	Providers
 
@@ -78,8 +78,7 @@ namespace RbEngine.Network.Runt
 
 		#region	Private stuff
 
-		private string		m_Name;
-		private uint		m _Sequence;
+		private uint		m_Sequence;
 		private ArrayList	m_Providers = new ArrayList( );
 		private ArrayList	m_Targets	= new ArrayList( );
 
@@ -88,17 +87,59 @@ namespace RbEngine.Network.Runt
 		/// </summary>
 		private void OnNewConnection( IConnection connection )
 		{
-			//	Add information about the connection to the m_Clients list
+			//	Add information about the connection to the m_Targets list
 			m_Targets.Add( new TargetConnection( connection ) );
-			connection.ReceivedMessage += new ConnectionReceivedMessageDelegate( OnReceivedMessage );
-		}
-
-		private void OnReceivedMessage( IConnection connection, Components.Message msg )
-		{
 		}
 
 		private void OnTick( Scene.Clock networkClock )
 		{
+			if ( m_Targets.Count == 0 )
+			{
+				//	TODO: There are no targets, so none of the updaters should be storing any state...
+				return;
+			}
+
+			uint oldestSequence = uint.MaxValue;
+
+			//	Determine the oldest target sequence
+			foreach ( TargetConnection target in m_Targets )
+			{
+				if ( target.Sequence < oldestSequence )
+				{
+					oldestSequence = target.Sequence;
+				}
+			}
+
+			//	Inform all the update providers what the oldest target sequence is
+			foreach ( IUpdateProvider provider in m_Providers )
+			{
+				provider.SetOldestTargetSequence( oldestSequence );
+				provider.SetLocalSequence( m_Sequence );
+			}
+
+			ArrayList messages = new ArrayList( );
+
+			//	Run through all the target connections
+			foreach ( TargetConnection target in m_Targets )
+			{
+				//	Collate update messages from all the update providers in the messages array
+				foreach ( IUpdateProvider provider in m_Providers )
+				{
+					provider.GetUpdateMessages( messages, target.Sequence );
+				}
+
+				
+				//	Always send an UpdateBatchMessage, even if the message array is empty - this will inform the target
+				//	what sequence number we're at
+				UpdateMessageBatch msg = new UpdateMessageBatch( m_Sequence, ( UpdateMessage[] )messages.ToArray( typeof( UpdateMessage ) ) );
+
+				//	Deliver the message to the client
+				target.Connection.DeliverMessage( msg );
+
+				messages.Clear( );
+			}
+
+			++m_Sequence;
 		}
 
 		#endregion
@@ -141,25 +182,6 @@ namespace RbEngine.Network.Runt
 		/// <param name="db">Database that this object was removed from</param>
 		public void	RemovedFromScene( Scene.SceneDb db )
 		{
-		}
-
-		#endregion
-
-		#region INamedObject Members
-
-		/// <summary>
-		/// Gets the name of this source
-		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return m_Name;
-			}
-			set
-			{
-				m_Name = value;
-			}
 		}
 
 		#endregion

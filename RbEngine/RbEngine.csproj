@@ -255,6 +255,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Components\IMessageHub.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Components\INamedObject.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -610,6 +615,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Network\Runt\ChildUpdateHandler.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\Runt\ChildUpdateProvider.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Network\Runt\IRemoteUpdater.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -631,6 +646,11 @@
                 />
                 <File
                     RelPath = "Network\Runt\RemoteUpdateManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Network\Runt\TargetAckMessage.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

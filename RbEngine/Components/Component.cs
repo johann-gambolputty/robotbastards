@@ -56,9 +56,9 @@ namespace RbEngine.Components
 	//	</object>
 
 	/// <summary>
-	/// Handy base class that derives from Node, and implements IInstanceable, IMessageHandler and INamedObject (TODO)
+	/// Handy base class that derives from Node, and implements IMessageHandler, IMessageHub and IUnique
 	/// </summary>
-	public class Component : Node, IMessageHandler, IUnique
+	public class Component : Node, IMessageHandler, IMessageHub, IUnique
 	{
 		#region	Messaging tests
 
@@ -127,6 +127,9 @@ namespace RbEngine.Components
 				}
 			}
 		}
+		#endregion
+
+		#region	IMessageHub Members
 
 		/// <summary>
 		/// Adds a recipient for messages of a given type
@@ -148,6 +151,18 @@ namespace RbEngine.Components
 				m_RecipientChains[ messageType ] = chain;
 			}
 			chain.AddRecipient( recipient, order );
+		}
+
+		/// <summary>
+		/// Removes a recipient from a given type of message chain
+		/// </summary>
+		public virtual void RemoveRecipient( Type messageType, object recipient )
+		{
+			MessageRecipientChain chain = ( MessageRecipientChain )m_RecipientChains[ messageType ];
+			if ( chain != null )
+			{
+				chain.RemoveRecipient( recipient );
+			}
 		}
 
 		#endregion

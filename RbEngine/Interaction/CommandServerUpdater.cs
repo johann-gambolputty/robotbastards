@@ -79,7 +79,7 @@ namespace RbEngine.Interaction
 		{
 			m_Parent = parentObject;
 
-			( ( Components.IMessageHandler )m_Parent ).AddRecipient( typeof( CommandMessage ), new Components.MessageRecipientDelegate( ReceivedCommandMessage ), ( int )Components.MessageRecipientOrder.First );
+			( ( Components.IMessageHub )m_Parent ).AddRecipient( typeof( CommandMessage ), new Components.MessageRecipientDelegate( ReceivedCommandMessage ), ( int )Components.MessageRecipientOrder.First );
 		}
 
 		#endregion
