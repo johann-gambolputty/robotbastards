@@ -28,7 +28,8 @@
 
 			<object type="RbEngine.Network.Connections"/>
 
-			<object type="RbEngine.Network.Runt.RemoteUpdateManager"/>
+			<object type="RbEngine.Network.Runt.UpdateSource"/>
+			<object type="RbEngine.Network.Runt.UpdateTarget"/>
 
 		</object>
 
@@ -51,7 +52,8 @@
 
 			<object type="RbEngine.Scene.LightingData"/>
 
-		<!--	<object type="RbEngine.Interaction.CommandRemoteUpdater"/> -->
+			<object type="RbEngine.Network.Runt.ChildUpdateHandler"/>
+
 			<object type="RbEngine.Entities.TestUserEntityController"/>
 
 		</object>

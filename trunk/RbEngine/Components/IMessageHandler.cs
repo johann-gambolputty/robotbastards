@@ -12,14 +12,5 @@ namespace RbEngine.Components
 		/// </summary>
 		/// <param name="msg">Message to handle</param>
 		void HandleMessage( Message msg );
-
-		/// <summary>
-		/// Adds a recipient for messages of a given type
-		/// </summary>
-		/// <param name="messageType">Base class of messages that the recipient is interested in</param>
-		/// <param name="recipient">Recipient call</param>
-		/// <param name="order">Recipient order value</param>
-		/// <seealso cref="MessageRecipientChain.AddRecipient"/>
-		void AddRecipient( Type messageType, MessageRecipientDelegate recipient, int order );
 	}
 }

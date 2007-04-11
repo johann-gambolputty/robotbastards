@@ -278,7 +278,7 @@ namespace RbEngine.Entities
 		public void AddedToParent( Object parentObject )
 		{
 			m_Parent = parentObject;
-			( ( Components.IMessageHandler )parentObject ).AddRecipient( typeof( Interaction.CommandMessage ), new Components.MessageRecipientDelegate( ReceivedCommandMessage ), ( int )Components.MessageRecipientOrder.Default );
+			( ( Components.IMessageHub )parentObject ).AddRecipient( typeof( Interaction.CommandMessage ), new Components.MessageRecipientDelegate( ReceivedCommandMessage ), ( int )Components.MessageRecipientOrder.Default );
 		}
 
 		#endregion

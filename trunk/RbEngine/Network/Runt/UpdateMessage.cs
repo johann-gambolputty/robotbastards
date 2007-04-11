@@ -3,6 +3,10 @@ using RbEngine.Components;
 
 namespace RbEngine.Network.Runt
 {
+	//	TODO: Update messages should batch up a set of child messages (like UpdateMessageBatch) - this is
+	//	because sequential update messages tend to be sent to the same target, and have the same
+	//	sequence number so it would be cheaper to store TargetId externally
+
 	/// <summary>
 	/// Base message class for update messages passed between client and server in ServerMessage objects
 	/// </summary>
