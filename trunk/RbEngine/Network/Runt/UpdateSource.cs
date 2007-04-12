@@ -89,8 +89,32 @@ namespace RbEngine.Network.Runt
 		{
 			//	Add information about the connection to the m_Targets list
 			m_Targets.Add( new TargetConnection( connection ) );
+
+			//	Listen out for new messages coming over the target connection
+			connection.ReceivedMessage += new ConnectionReceivedMessageDelegate( OnReceivedMessage );
 		}
 
+		/// <summary>
+		/// Called when the specified connection receives a message
+		/// </summary>
+		private void OnReceivedMessage( IConnection connection, Components.Message msg )
+		{
+			if ( msg is ISequenceMessage )
+			{
+				foreach ( TargetConnection target in m_Targets )
+				{
+					if ( target.Connection == connection )
+					{
+						target.Sequence = ( ( ISequenceMessage )msg ).Sequence;
+						return;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Network clock tick
+		/// </summary>
 		private void OnTick( Scene.Clock networkClock )
 		{
 			if ( m_Targets.Count == 0 )
