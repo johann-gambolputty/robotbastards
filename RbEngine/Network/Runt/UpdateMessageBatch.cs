@@ -5,8 +5,10 @@ namespace RbEngine.Network.Runt
 	/// <summary>
 	/// A batch of update messages
 	/// </summary>
-	public class UpdateMessageBatch : Components.Message
+	public class UpdateMessageBatch : Components.Message, ISequenceMessage
 	{
+		#region	ISequenceMessage Members
+
 		/// <summary>
 		/// Gets the sequence value of the local object
 		/// </summary>
@@ -17,6 +19,8 @@ namespace RbEngine.Network.Runt
 				return m_Sequence;
 			}
 		}
+
+		#endregion
 
 		/// <summary>
 		/// Gets the update message array
@@ -74,11 +78,18 @@ namespace RbEngine.Network.Runt
 			base.Write( output );
 			output.Write( m_Sequence );
 
-			output.Write( m_Messages.Length );
-
-			for ( int messageIndex = 0; messageIndex < m_Messages.Length; ++messageIndex )
+			if ( m_Messages != null )
 			{
-				m_Messages[ messageIndex ].Write( output );
+				output.Write( m_Messages.Length );
+
+				for ( int messageIndex = 0; messageIndex < m_Messages.Length; ++messageIndex )
+				{
+					m_Messages[ messageIndex ].Write( output );
+				}
+			}
+			else
+			{
+				output.Write( ( int )0 );
 			}
 		}
 

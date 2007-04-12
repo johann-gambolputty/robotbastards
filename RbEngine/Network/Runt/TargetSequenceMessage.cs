@@ -3,10 +3,12 @@ using System;
 namespace RbEngine.Network.Runt
 {
 	/// <summary>
-	/// UpdateTarget acknowledgement
+	/// Summary description for TargetSequenceMessage.
 	/// </summary>
-	public class TargetAckMessage : Components.Message
+	public class TargetSequenceMessage : Components.Message, ISequenceMessage
 	{
+		#region	ISequenceMessage Members
+
 		/// <summary>
 		/// Target sequence
 		/// </summary>
@@ -18,17 +20,19 @@ namespace RbEngine.Network.Runt
 			}
 		}
 
+		#endregion
+
 		/// <summary>
 		/// Default constructor for serialisation
 		/// </summary>
-		public TargetAckMessage( )
+		public TargetSequenceMessage( )
 		{
 		}
 
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		public TargetAckMessage( uint sequence )
+		public TargetSequenceMessage( uint sequence )
 		{
 			m_Sequence = sequence;
 		}

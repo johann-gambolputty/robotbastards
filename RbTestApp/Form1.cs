@@ -68,6 +68,8 @@ namespace RbTestApp
 		private System.Windows.Forms.Label label2;
 
 		private RbEngine.Scene.SceneDb	m_ServerScene;
+		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.Splitter splitter1;
 		private RbEngine.Scene.SceneDb	m_ClientScene;
 
 		/// <summary>
@@ -96,6 +98,9 @@ namespace RbTestApp
 			this.clientDisplay = new RbControls.SceneDisplay();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.splitter1 = new System.Windows.Forms.Splitter();
+			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// serverDisplay
@@ -103,11 +108,12 @@ namespace RbTestApp
 			this.serverDisplay.ColourBits = ((System.Byte)(32));
 			this.serverDisplay.ContinuousRendering = true;
 			this.serverDisplay.DepthBits = ((System.Byte)(24));
-			this.serverDisplay.Location = new System.Drawing.Point(8, 8);
+			this.serverDisplay.Dock = System.Windows.Forms.DockStyle.Left;
+			this.serverDisplay.Location = new System.Drawing.Point(0, 0);
 			this.serverDisplay.Name = "serverDisplay";
 			this.serverDisplay.Scene = null;
 			this.serverDisplay.SceneViewSetupFile = "sceneView0.xml";
-			this.serverDisplay.Size = new System.Drawing.Size(224, 248);
+			this.serverDisplay.Size = new System.Drawing.Size(104, 132);
 			this.serverDisplay.StencilBits = ((System.Byte)(0));
 			this.serverDisplay.TabIndex = 0;
 			// 
@@ -116,17 +122,19 @@ namespace RbTestApp
 			this.clientDisplay.ColourBits = ((System.Byte)(32));
 			this.clientDisplay.ContinuousRendering = true;
 			this.clientDisplay.DepthBits = ((System.Byte)(24));
-			this.clientDisplay.Location = new System.Drawing.Point(240, 8);
+			this.clientDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.clientDisplay.Location = new System.Drawing.Point(0, 0);
 			this.clientDisplay.Name = "clientDisplay";
 			this.clientDisplay.Scene = null;
 			this.clientDisplay.SceneViewSetupFile = "sceneView0.xml";
-			this.clientDisplay.Size = new System.Drawing.Size(224, 248);
+			this.clientDisplay.Size = new System.Drawing.Size(220, 132);
 			this.clientDisplay.StencilBits = ((System.Byte)(0));
 			this.clientDisplay.TabIndex = 1;
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(8, 264);
+			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.label1.Location = new System.Drawing.Point(8, 152);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(88, 16);
 			this.label1.TabIndex = 2;
@@ -134,24 +142,47 @@ namespace RbTestApp
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(240, 264);
+			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.label2.Location = new System.Drawing.Point(120, 152);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(88, 16);
 			this.label2.TabIndex = 3;
 			this.label2.Text = "Client";
 			// 
+			// panel1
+			// 
+			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+				| System.Windows.Forms.AnchorStyles.Left) 
+				| System.Windows.Forms.AnchorStyles.Right)));
+			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panel1.Controls.Add(this.splitter1);
+			this.panel1.Controls.Add(this.serverDisplay);
+			this.panel1.Controls.Add(this.clientDisplay);
+			this.panel1.Location = new System.Drawing.Point(8, 8);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(224, 136);
+			this.panel1.TabIndex = 4;
+			// 
+			// splitter1
+			// 
+			this.splitter1.Location = new System.Drawing.Point(104, 0);
+			this.splitter1.Name = "splitter1";
+			this.splitter1.Size = new System.Drawing.Size(3, 132);
+			this.splitter1.TabIndex = 1;
+			this.splitter1.TabStop = false;
+			// 
 			// Form1
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(472, 294);
+			this.ClientSize = new System.Drawing.Size(240, 173);
+			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
-			this.Controls.Add(this.clientDisplay);
-			this.Controls.Add(this.serverDisplay);
 			this.Name = "Form1";
 			this.Text = "Form1";
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.Closed += new System.EventHandler(this.Form1_Closed);
+			this.panel1.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}

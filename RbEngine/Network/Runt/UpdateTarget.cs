@@ -82,6 +82,12 @@ namespace RbEngine.Network.Runt
 		/// </summary>
 		private void OnReceivedMessage( IConnection connection, Components.Message msg )
 		{
+			if ( !( msg is UpdateMessageBatch ) )
+			{
+				//	Not interested
+				return;
+			}
+
 			UpdateMessageBatch batchMsg = ( UpdateMessageBatch )msg;
 			if ( batchMsg.Sequence < m_Sequence )
 			{
@@ -100,8 +106,8 @@ namespace RbEngine.Network.Runt
 			m_Sequence = batchMsg.Sequence;
 
 			//	Let's let the source know that we got an update! yay!
-			//	TODO: Should be a different message type - bit lazy to reuse this one
-			connection.DeliverMessage( new UpdateMessageBatch( m_Sequence, null ) );
+			//	TODO: Should this be sent at every frame?
+			connection.DeliverMessage( new TargetSequenceMessage( m_Sequence ) );
 		}
 
 		#endregion

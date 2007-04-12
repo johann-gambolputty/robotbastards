@@ -54,6 +54,11 @@
 
 			<object type="RbEngine.Network.Runt.ChildUpdateHandler"/>
 
+			<object type="RbEngine.Network.Runt.ChildUpdateProvider">
+				<bool value="false" property="IgnoreUpdateHandlerMessages"/>
+				<bool value="false" property="RemoveBufferedMessages"/>
+			</object>
+
 			<object type="RbEngine.Entities.TestUserEntityController"/>
 
 		</object>

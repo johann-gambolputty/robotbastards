@@ -630,6 +630,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Network\Runt\ISequenceMessage.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Network\Runt\IUpdateHandler.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -650,7 +655,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Network\Runt\TargetAckMessage.cs"
+                    RelPath = "Network\Runt\TargetSequenceMessage.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

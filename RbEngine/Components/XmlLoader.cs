@@ -489,13 +489,14 @@ namespace RbEngine.Components
 				{
 					case "object"		: loader = new ObjectLoader( parentLoader, element );	break;
 					case "reference"	: loader = new ReferenceLoader( parentLoader, element ); break;
-					case "resource"		: loader = new ResourceStreamLoader( parentLoader, element );	break;
+					case "resource"		: loader = new ResourceStreamLoader( parentLoader, element ); break;
 					case "instance"		: loader = new InstanceLoader( parentLoader, element ); break;
-					case "string"		: loader = new ValueLoader( parentLoader, element, element.GetAttribute( "value" ) );	break;
-					case "int"			: loader = new ValueLoader( parentLoader, element, int.Parse( element.GetAttribute( "value" ) ) );	break;
-					case "float"		: loader = new ValueLoader( parentLoader, element, float.Parse( element.GetAttribute( "value" ) ) );	break;
-					case "colour"		: loader = new ValueLoader( parentLoader, element, System.Drawing.Color.FromName( element.GetAttribute( "value" ) ) );	break;
-					case "type"			: loader = new ValueLoader( parentLoader, element, AppDomainUtils.FindType( element.GetAttribute( "value" ) ) );	break;
+					case "string"		: loader = new ValueLoader( parentLoader, element, element.GetAttribute( "value" ) ); break;
+					case "int"			: loader = new ValueLoader( parentLoader, element, int.Parse( element.GetAttribute( "value" ) ) ); break;
+					case "float"		: loader = new ValueLoader( parentLoader, element, float.Parse( element.GetAttribute( "value" ) ) ); break;
+					case "colour"		: loader = new ValueLoader( parentLoader, element, System.Drawing.Color.FromName( element.GetAttribute( "value" ) ) ); break;
+					case "bool"			: loader = new ValueLoader( parentLoader, element, bool.Parse( element.GetAttribute( "value" ) ) ); break;
+					case "type"			: loader = new ValueLoader( parentLoader, element, AppDomainUtils.FindType( element.GetAttribute( "value" ) ) ); break;
 					case "objectId"		: loader = new ValueLoader( parentLoader, element, ObjectId.Parse( element.GetAttribute( "value" ) ) ); break;
 					case "Vector3"		:
 					{

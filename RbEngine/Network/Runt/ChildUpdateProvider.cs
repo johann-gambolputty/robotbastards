@@ -12,6 +12,36 @@ namespace RbEngine.Network.Runt
 		#region	Public properties
 
 		/// <summary>
+		/// If true, then this object ignores messages sent from an IUpdateHandler
+		/// </summary>
+		public bool IgnoreUpdateHandlerMessages
+		{
+			get
+			{
+				return m_IgnoreUpdateHandlerMessages;
+			}
+			set
+			{
+				m_IgnoreUpdateHandlerMessages = value;
+			}
+		}
+
+		/// <summary>
+		/// If true, then messages that are buffered by this object are removed from the recipient chain
+		/// </summary>
+		public bool RemoveBufferedMessages
+		{
+			get
+			{
+				return m_RemoveBufferedMessages;
+			}
+			set
+			{
+				m_RemoveBufferedMessages = value;
+			}
+		}
+
+		/// <summary>
 		/// Access to the message type used by this update provider
 		/// </summary>
 		public Type UpdateMessageType
@@ -120,6 +150,8 @@ namespace RbEngine.Network.Runt
 		private Type					m_UpdateMessageType;
 		private MessageBufferUpdater	m_Buffer = new MessageBufferUpdater( );
 		private uint					m_Sequence;
+		private bool					m_IgnoreUpdateHandlerMessages = true;
+		private bool					m_RemoveBufferedMessages = true;
 
 		/// <summary>
 		/// Removes this object from its parent's recipient chain
@@ -151,20 +183,15 @@ namespace RbEngine.Network.Runt
 			//	If the message came from an update handler with the same ID, then just ignore the message. Why? Because
 			//	that means that the handler received a message from the source, which is also the target for this update
 			//	provider's messages, meaning the message will be endlessly circulating
-			//	TODO: Maybe just make this a flag (IgnoreUpdateHandlerMessages?) rather than use the ID?
-			if ( msg.Sender != null )
+			if ( ( m_IgnoreUpdateHandlerMessages ) && ( msg.Sender is IUpdateHandler ) )
 			{
-				IUpdateHandler handler = ( IUpdateHandler )msg.Sender;
-				if ( ( handler != null ) && ( handler.Id == Id ) )
-				{
-					return MessageRecipientResult.DeliverToNext;
-				}
+				return MessageRecipientResult.DeliverToNext;
 			}
 
 			//	Add the message to the message buffer, and don't let the rest of the chain handle the message
 			m_Buffer.AddMessage( new UpdateMessage( Id, m_Sequence, msg ), m_Sequence );
 
-			return MessageRecipientResult.RemoveFromChain;
+			return m_RemoveBufferedMessages ? MessageRecipientResult.RemoveFromChain : MessageRecipientResult.DeliverToNext;
 		}
 
 		#endregion
