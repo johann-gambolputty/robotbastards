@@ -24,22 +24,22 @@ namespace RbEngine.Interaction
 		/// <summary>
 		/// Invokes the Activated event. Called by Command.Update()
 		/// </summary>
-		public void OnCommandActivated( CommandMessage message )
+		public void OnCommandActivated( Scene.SceneView view, CommandMessage message )
 		{
 			if ( CommandActivated != null )
 			{
-				CommandActivated( message );
+				CommandActivated( view, message );
 			}
 		}
 
 		/// <summary>
 		/// Invokes the Active event. Called by Command.Update()
 		/// </summary>
-		public void OnCommandActive( CommandMessage message )
+		public void OnCommandActive( Scene.SceneView view, CommandMessage message )
 		{
 			if ( CommandActive != null )
 			{
-				CommandActive( message );
+				CommandActive( view, message );
 			}
 		}
 
@@ -118,6 +118,7 @@ namespace RbEngine.Interaction
 			}
 			return null;
 		}
+
 		/// <summary>
 		/// Adds a command
 		/// </summary>

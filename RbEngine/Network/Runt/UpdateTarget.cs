@@ -89,7 +89,7 @@ namespace RbEngine.Network.Runt
 			}
 
 			UpdateMessageBatch batchMsg = ( UpdateMessageBatch )msg;
-			if ( batchMsg.Sequence < m_Sequence )
+			if ( batchMsg.Sequence < m_Sequence )	//	TODO: Should be <=. Just ordering issues between update message creation and sequence increment
 			{
 				return;
 			}
@@ -99,14 +99,18 @@ namespace RbEngine.Network.Runt
 			{
 				foreach ( UpdateMessage updateMsg in batchMsg.Messages )
 				{
-					IUpdateHandler handler = ( IUpdateHandler )m_HandlerMap[ updateMsg.TargetId ];
-					handler.Handle( updateMsg );
+					if ( updateMsg.Sequence >= m_Sequence )	//	TODO: Should be >. Just ordering issues between update message creation and sequence increment
+					{
+						IUpdateHandler handler = ( IUpdateHandler )m_HandlerMap[ updateMsg.TargetId ];
+						handler.Handle( updateMsg );
+					}
 				}
 			}
 			m_Sequence = batchMsg.Sequence;
 
 			//	Let's let the source know that we got an update! yay!
 			//	TODO: Should this be sent at every frame?
+			//	TODO: If there's an update source, then the information about the target sequence can be piggy-backed in an UpdateMessageBatch
 			connection.DeliverMessage( new TargetSequenceMessage( m_Sequence ) );
 		}
 

@@ -440,27 +440,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Interaction\CommandRemoteTransfer.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Interaction\CommandRemoteUpdater.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Interaction\CommandScenePickInterpreter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Interaction\CommandScenePickMessage.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Interaction\CommandServerUpdater.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -625,11 +610,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Network\Runt\IRemoteUpdater.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Network\Runt\ISequenceMessage.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -646,11 +626,6 @@
                 />
                 <File
                     RelPath = "Network\Runt\MessageBufferUpdater.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Network\Runt\RemoteUpdateManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -59,7 +59,7 @@ namespace RbEngine.Network
 		private void Listen( )
 		{
 			IPAddress address = null;
-
+	
 			//	Try to resolve the connection string
 			try
 			{
@@ -97,7 +97,6 @@ namespace RbEngine.Network
 				Thread.Sleep( 10 );
 			}
 		}
-
 
 		#region IDisposable Members
 

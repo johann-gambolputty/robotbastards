@@ -45,7 +45,7 @@
 		<!-- Test scenery :) -->
 		<object type="RbEngine.Components.Simple.GroundPlane"/>
 
-		<!-- Entities -->
+		<!-- Client-controlled entity -->
 		<object type="RbEngine.Entities.Entity3">
 
 			<objectId value="1" property="Id"/>
@@ -62,6 +62,22 @@
 			<object type="RbEngine.Network.Runt.ChildUpdateProvider">
 				<type value="RbEngine.Interaction.CommandMessage" property="UpdateMessageType"/>
 			</object>
+
+			<object type="RbEngine.Network.Runt.ChildUpdateHandler"/>
+
+			<object type="RbEngine.Entities.TestUserEntityController"/>
+
+		</object>
+
+		<!-- Server-contoller entity -->
+		<object type="RbEngine.Entities.Entity3">
+
+			<objectId value="2" property="Id"/>
+
+			<Point3 x="-50" y="0.5" z="-50" property="NextPosition"/>
+
+			<instance modelPath="models/sarge" property="Graphics"/>
+			<object type="RbEngine.Scene.LightingData"/>
 
 			<object type="RbEngine.Network.Runt.ChildUpdateHandler"/>
 
