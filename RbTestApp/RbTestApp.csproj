@@ -175,6 +175,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "DisplayForm.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "DisplayForm.resx"
+                    DependentUpon = "DisplayForm.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "Form1.cs"
                     SubType = "Form"
                     BuildAction = "Compile"
@@ -182,16 +192,6 @@
                 <File
                     RelPath = "Form1.resx"
                     DependentUpon = "Form1.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "SetupForm.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SetupForm.resx"
-                    DependentUpon = "SetupForm.cs"
                     BuildAction = "EmbeddedResource"
                 />
                 <File

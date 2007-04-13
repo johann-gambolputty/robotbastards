@@ -191,7 +191,12 @@ namespace RbEngine.Network.Runt
 			//	Add the message to the message buffer, and don't let the rest of the chain handle the message
 			m_Buffer.AddMessage( new UpdateMessage( Id, m_Sequence, msg ), m_Sequence );
 
-			return m_RemoveBufferedMessages ? MessageRecipientResult.RemoveFromChain : MessageRecipientResult.DeliverToNext;
+			if ( m_RemoveBufferedMessages )
+			{
+				return MessageRecipientResult.RemoveFromChain;
+			}
+
+			return MessageRecipientResult.DeliverToNext;
 		}
 
 		#endregion
