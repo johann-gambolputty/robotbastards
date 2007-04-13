@@ -7,7 +7,7 @@ namespace RbEngine.Interaction
 	/// <summary>
 	/// Delegate, used by the Command.Activated and Command.Active events
 	/// </summary>
-	public delegate void CommandEventDelegate( CommandMessage message );
+	public delegate void CommandEventDelegate( Scene.SceneView view, CommandMessage message );
 
 	/// <summary>
 	/// User command
@@ -146,18 +146,18 @@ namespace RbEngine.Interaction
 					//	Always invoke the Active event if the command is active
 					if ( Active != null )
 					{
-						Active( message );
+						Active( curBinding.View, message );
 					}
-					commands.OnCommandActive( message );
+					commands.OnCommandActive( curBinding.View, message );
 
 					//	Invoke the Activated event if the command has only just gone active
 					if ( !wasActive )
 					{
 						if ( Activated != null )
 						{
-							Activated( message );
+							Activated( curBinding.View, message );
 						}
-						commands.OnCommandActivated( message );
+						commands.OnCommandActivated( curBinding.View, message );
 					}
 					m_LastActiveUpdate = m_UpdateCount;
 					break;

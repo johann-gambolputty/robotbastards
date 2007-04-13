@@ -21,11 +21,8 @@ namespace RbTestApp
 
 		public Form1()
 		{
-			RbParticleSystem.ParticleSystem testSystem = new RbParticleSystem.ParticleSystem( );
-
-			testSystem.AddUpdater( new RbParticleSystem.ParticleSystemUpdater( ) );
-
 			//	Test to force initialisation of the typemanager
+			//	TODO: REMOVEME
 			RbEngine.Components.MessageTypeManager.Inst.ToString( );
 
 			//	Load the rendering implementation assembly
@@ -62,12 +59,10 @@ namespace RbTestApp
 			InitializeComponent();
 		}
 
-		private RbEngine.Scene.SceneDb	m_ServerScene;
 		private System.Windows.Forms.Button createClientButton;
 		private System.Windows.Forms.Button createServerButton;
+		private System.Windows.Forms.TextBox clientIpTextBox;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBox1;
-		private RbEngine.Scene.SceneDb	m_ClientScene;
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -94,7 +89,7 @@ namespace RbTestApp
 			this.createClientButton = new System.Windows.Forms.Button();
 			this.createServerButton = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
-			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.clientIpTextBox = new System.Windows.Forms.TextBox();
 			this.SuspendLayout();
 			// 
 			// createClientButton
@@ -113,6 +108,7 @@ namespace RbTestApp
 			this.createServerButton.Size = new System.Drawing.Size(104, 24);
 			this.createServerButton.TabIndex = 1;
 			this.createServerButton.Text = "Create server";
+			this.createServerButton.Click += new System.EventHandler(this.createServerButton_Click);
 			// 
 			// label1
 			// 
@@ -123,19 +119,19 @@ namespace RbTestApp
 			this.label1.Text = "IP";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
 			// 
-			// textBox1
+			// clientIpTextBox
 			// 
-			this.textBox1.Location = new System.Drawing.Point(136, 8);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(184, 20);
-			this.textBox1.TabIndex = 3;
-			this.textBox1.Text = "clientIpTextBox";
+			this.clientIpTextBox.Location = new System.Drawing.Point(136, 8);
+			this.clientIpTextBox.Name = "clientIpTextBox";
+			this.clientIpTextBox.Size = new System.Drawing.Size(184, 20);
+			this.clientIpTextBox.TabIndex = 3;
+			this.clientIpTextBox.Text = "localhost";
 			// 
 			// Form1
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
 			this.ClientSize = new System.Drawing.Size(328, 78);
-			this.Controls.Add(this.textBox1);
+			this.Controls.Add(this.clientIpTextBox);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.createServerButton);
 			this.Controls.Add(this.createClientButton);
@@ -187,14 +183,12 @@ namespace RbTestApp
 				}
 			}
 			*/
-			
-			m_ServerScene = ( RbEngine.Scene.SceneDb )ResourceManager.Inst.Load( "server0.xml" );
-			m_ClientScene = ( RbEngine.Scene.SceneDb )ResourceManager.Inst.Load( "client0.xml" );
 
-			serverDisplay.Scene = m_ServerScene;
-			clientDisplay.Scene = m_ClientScene;
+		//	m_ServerScene = ( RbEngine.Scene.SceneDb )ResourceManager.Inst.Load( "server0.xml" );
+		//	m_ClientScene = ( RbEngine.Scene.SceneDb )ResourceManager.Inst.Load( "client0.xml" );
 
-
+		//	serverDisplay.Scene = m_ServerScene;
+		//	clientDisplay.Scene = m_ClientScene;
 		}
 
 		private void Form1_Closed(object sender, System.EventArgs e)
@@ -205,15 +199,21 @@ namespace RbTestApp
 		//		m_Scene.Dispose( );
 		//		m_Scene = null;
 		//	}
-			m_ServerScene.Dispose( );
-			m_ServerScene = null;
-			m_ClientScene.Dispose( );
-			m_ClientScene = null;
+			//	m_ServerScene.Dispose( );
+			//	m_ServerScene = null;
+			//	m_ClientScene.Dispose( );
+			//	m_ClientScene = null;
 		}
 
 		private void createClientButton_Click(object sender, System.EventArgs e)
 		{
-			DisplayForm form = new DisplayForm( );
+			DisplayForm form = new DisplayForm( "client0.xml" );
+			form.Show( );
+		}
+
+		private void createServerButton_Click(object sender, System.EventArgs e)
+		{
+			DisplayForm form = new DisplayForm( "server0.xml" );
 			form.Show( );
 		}
 	}

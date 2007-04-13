@@ -99,13 +99,13 @@ namespace RbEngine.Network.Runt
 		/// </summary>
 		private void OnReceivedMessage( IConnection connection, Components.Message msg )
 		{
-			if ( msg is ISequenceMessage )
+			if ( msg is TargetSequenceMessage )
 			{
 				foreach ( TargetConnection target in m_Targets )
 				{
 					if ( target.Connection == connection )
 					{
-						target.Sequence = ( ( ISequenceMessage )msg ).Sequence;
+						target.Sequence = ( ( TargetSequenceMessage )msg ).Sequence;
 						return;
 					}
 				}
@@ -152,7 +152,6 @@ namespace RbEngine.Network.Runt
 					provider.GetUpdateMessages( messages, target.Sequence );
 				}
 
-				
 				//	Always send an UpdateBatchMessage, even if the message array is empty - this will inform the target
 				//	what sequence number we're at
 				UpdateMessageBatch msg = new UpdateMessageBatch( m_Sequence, ( UpdateMessage[] )messages.ToArray( typeof( UpdateMessage ) ) );

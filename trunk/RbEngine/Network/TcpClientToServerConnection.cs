@@ -101,7 +101,16 @@ namespace RbEngine.Network
 		/// </summary>
 		public void AddedToScene( Scene.SceneDb db )
 		{
-			RunConnection( db );
+			try
+			{
+				RunConnection( db );
+			}
+			catch ( Exception ex )
+			{
+				//	NOTE: For testing purposes, we'll let connection failure slide. In the future, RunConnection shouldn't fail - it should be in a separate thread that keeps polling for
+				//	a server
+				Output.WriteLineCall( Output.NetworkError, "Failed to open connection:\n{0}", ex );
+			}
 		}
 
 		/// <summary>
