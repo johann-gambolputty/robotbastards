@@ -134,6 +134,16 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "OutputDisplay.cs"
+                    SubType = "UserControl"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "OutputDisplay.resx"
+                    DependentUpon = "OutputDisplay.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "SceneDisplay.cs"
                     SubType = "UserControl"
                     BuildAction = "Compile"
@@ -141,6 +151,16 @@
                 <File
                     RelPath = "SceneDisplay.resx"
                     DependentUpon = "SceneDisplay.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "TabControlEx.cs"
+                    SubType = "Component"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "TabControlEx.resx"
+                    DependentUpon = "TabControlEx.cs"
                     BuildAction = "EmbeddedResource"
                 />
             </Include>
