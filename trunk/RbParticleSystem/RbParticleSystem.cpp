@@ -7,10 +7,6 @@
 
 namespace RbParticleSystem
 {
-	ParticleSystemUpdater::~ParticleSystemUpdater( )
-	{
-	}
-
 	void ParticleSystem::AddUpdater( ParticleSystemUpdater* updater )
 	{
 

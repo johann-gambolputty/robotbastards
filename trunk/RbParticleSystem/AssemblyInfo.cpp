@@ -3,6 +3,12 @@
 using namespace System::Reflection;
 using namespace System::Runtime::CompilerServices;
 
+//	Important: I've had to comment this stuff out temporarily, because, for some reason, the ProDG .NET integration
+//	breaks when a new version of the .NET CLR is installed (I think...)
+//	http://www.thescripts.com/forum/thread443049.html
+//
+
+/*
 //
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -56,3 +62,4 @@ using namespace System::Runtime::CompilerServices;
 [assembly:AssemblyKeyFileAttribute("")];
 [assembly:AssemblyKeyNameAttribute("")];
 
+*/

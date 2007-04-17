@@ -62,6 +62,7 @@ namespace RbTestApp
 		private System.Windows.Forms.Button createClientButton;
 		private System.Windows.Forms.Button createServerButton;
 		private System.Windows.Forms.TextBox clientIpTextBox;
+		private RbControls.OutputDisplay outputDisplay1;
 		private System.Windows.Forms.Label label1;
 
 		/// <summary>
@@ -90,6 +91,7 @@ namespace RbTestApp
 			this.createServerButton = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.clientIpTextBox = new System.Windows.Forms.TextBox();
+			this.outputDisplay1 = new RbControls.OutputDisplay();
 			this.SuspendLayout();
 			// 
 			// createClientButton
@@ -127,15 +129,25 @@ namespace RbTestApp
 			this.clientIpTextBox.TabIndex = 3;
 			this.clientIpTextBox.Text = "localhost";
 			// 
+			// outputDisplay1
+			// 
+			this.outputDisplay1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+				| System.Windows.Forms.AnchorStyles.Left) 
+				| System.Windows.Forms.AnchorStyles.Right)));
+			this.outputDisplay1.Location = new System.Drawing.Point(8, 72);
+			this.outputDisplay1.Name = "outputDisplay1";
+			this.outputDisplay1.Size = new System.Drawing.Size(312, 224);
+			this.outputDisplay1.TabIndex = 4;
+			// 
 			// Form1
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(328, 78);
+			this.ClientSize = new System.Drawing.Size(328, 301);
+			this.Controls.Add(this.outputDisplay1);
 			this.Controls.Add(this.clientIpTextBox);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.createServerButton);
 			this.Controls.Add(this.createClientButton);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
 			this.Name = "Form1";
 			this.Text = "RB";
 			this.Load += new System.EventHandler(this.Form1_Load);
