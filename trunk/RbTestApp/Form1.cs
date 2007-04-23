@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Data;
 using RbEngine;
 using RbEngine.Resources;
+using RbEngine.Network;
 
 namespace RbTestApp
 {
@@ -62,7 +63,8 @@ namespace RbTestApp
 		private System.Windows.Forms.Button createClientButton;
 		private System.Windows.Forms.Button createServerButton;
 		private System.Windows.Forms.TextBox clientIpTextBox;
-		private RbControls.OutputDisplay outputDisplay1;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.TextBox portTextBox;
 		private System.Windows.Forms.Label label1;
 
 		/// <summary>
@@ -91,12 +93,13 @@ namespace RbTestApp
 			this.createServerButton = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.clientIpTextBox = new System.Windows.Forms.TextBox();
-			this.outputDisplay1 = new RbControls.OutputDisplay();
+			this.label2 = new System.Windows.Forms.Label();
+			this.portTextBox = new System.Windows.Forms.TextBox();
 			this.SuspendLayout();
 			// 
 			// createClientButton
 			// 
-			this.createClientButton.Location = new System.Drawing.Point(8, 8);
+			this.createClientButton.Location = new System.Drawing.Point(8, 40);
 			this.createClientButton.Name = "createClientButton";
 			this.createClientButton.Size = new System.Drawing.Size(104, 24);
 			this.createClientButton.TabIndex = 0;
@@ -105,7 +108,7 @@ namespace RbTestApp
 			// 
 			// createServerButton
 			// 
-			this.createServerButton.Location = new System.Drawing.Point(8, 40);
+			this.createServerButton.Location = new System.Drawing.Point(144, 40);
 			this.createServerButton.Name = "createServerButton";
 			this.createServerButton.Size = new System.Drawing.Size(104, 24);
 			this.createServerButton.TabIndex = 1;
@@ -114,7 +117,7 @@ namespace RbTestApp
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(120, 8);
+			this.label1.Location = new System.Drawing.Point(8, 8);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(16, 16);
 			this.label1.TabIndex = 2;
@@ -123,31 +126,40 @@ namespace RbTestApp
 			// 
 			// clientIpTextBox
 			// 
-			this.clientIpTextBox.Location = new System.Drawing.Point(136, 8);
+			this.clientIpTextBox.Location = new System.Drawing.Point(24, 8);
 			this.clientIpTextBox.Name = "clientIpTextBox";
-			this.clientIpTextBox.Size = new System.Drawing.Size(184, 20);
+			this.clientIpTextBox.Size = new System.Drawing.Size(128, 20);
 			this.clientIpTextBox.TabIndex = 3;
 			this.clientIpTextBox.Text = "localhost";
 			// 
-			// outputDisplay1
+			// label2
 			// 
-			this.outputDisplay1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-				| System.Windows.Forms.AnchorStyles.Left) 
-				| System.Windows.Forms.AnchorStyles.Right)));
-			this.outputDisplay1.Location = new System.Drawing.Point(8, 72);
-			this.outputDisplay1.Name = "outputDisplay1";
-			this.outputDisplay1.Size = new System.Drawing.Size(312, 224);
-			this.outputDisplay1.TabIndex = 4;
+			this.label2.Location = new System.Drawing.Point(160, 8);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(32, 16);
+			this.label2.TabIndex = 4;
+			this.label2.Text = "Port";
+			this.label2.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+			// 
+			// portTextBox
+			// 
+			this.portTextBox.Location = new System.Drawing.Point(192, 8);
+			this.portTextBox.Name = "portTextBox";
+			this.portTextBox.Size = new System.Drawing.Size(56, 20);
+			this.portTextBox.TabIndex = 5;
+			this.portTextBox.Text = "11000";
 			// 
 			// Form1
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(328, 301);
-			this.Controls.Add(this.outputDisplay1);
+			this.ClientSize = new System.Drawing.Size(254, 76);
+			this.Controls.Add(this.portTextBox);
+			this.Controls.Add(this.label2);
 			this.Controls.Add(this.clientIpTextBox);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.createServerButton);
 			this.Controls.Add(this.createClientButton);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
 			this.Name = "Form1";
 			this.Text = "RB";
 			this.Load += new System.EventHandler(this.Form1_Load);
@@ -169,64 +181,41 @@ namespace RbTestApp
 
 		private void Form1_Load(object sender, System.EventArgs e)
 		{
-			/*
-			SetupForm setupDlg = new SetupForm( );
-			if ( setupDlg.ShowDialog( this ) == DialogResult.Cancel )
-			{
-				this.Close( );
-				Output.WriteLine( TestAppOutput.Info, "User exit" );
-				return;
-			}
-
-			//	Load the test server file
-			string setupFile = setupDlg.SetupFile;
-			m_Scene = ( RbEngine.Scene.SceneDb )ResourceManager.Inst.Load( setupFile );
-
-			//	Set up server and client displays
-			if ( m_Scene != null )
-			{
-				foreach( Control curControl in Controls )
-				{
-					RbControls.SceneDisplay sceneDisplay = curControl as RbControls.SceneDisplay;
-					if ( sceneDisplay != null )
-					{
-						sceneDisplay.Scene = m_Scene;
-					}
-				}
-			}
-			*/
-
-		//	m_ServerScene = ( RbEngine.Scene.SceneDb )ResourceManager.Inst.Load( "server0.xml" );
-		//	m_ClientScene = ( RbEngine.Scene.SceneDb )ResourceManager.Inst.Load( "client0.xml" );
-
-		//	serverDisplay.Scene = m_ServerScene;
-		//	clientDisplay.Scene = m_ClientScene;
+			System.Net.IPAddress[] addresses = System.Net.Dns.Resolve( System.Net.Dns.GetHostName( ) ).AddressList;
+			string hostIp = addresses[ 0 ].ToString( );
+			clientIpTextBox.Text = hostIp;
 		}
 
 		private void Form1_Closed(object sender, System.EventArgs e)
 		{
-			//	Dispose of the scene
-		//	if ( m_Scene != null )
-		//	{
-		//		m_Scene.Dispose( );
-		//		m_Scene = null;
-		//	}
-			//	m_ServerScene.Dispose( );
-			//	m_ServerScene = null;
-			//	m_ClientScene.Dispose( );
-			//	m_ClientScene = null;
 		}
 
 		private void createClientButton_Click(object sender, System.EventArgs e)
 		{
 			DisplayForm form = new DisplayForm( "client0.xml" );
 			form.Show( );
+
+			Connections connections = ( Connections )form.Scene.GetSystem( typeof( Connections ) );
+			if ( connections == null )
+			{
+				Output.Fail( Output.NetworkError, "Client setup file must contain a Connections object" );
+			}
+			else
+			{
+				IConnection connection = new TcpClientToServerConnection( clientIpTextBox.Text, int.Parse( portTextBox.Text ) );
+				form.Scene.AddToContext( connection );
+				connections.AddChild( connection );
+			}
 		}
 
 		private void createServerButton_Click(object sender, System.EventArgs e)
 		{
 			DisplayForm form = new DisplayForm( "server0.xml" );
 			form.Show( );
+
+			TcpClientConnectionListener listener = new TcpClientConnectionListener( clientIpTextBox.Text, int.Parse( portTextBox.Text ) );
+			form.Scene.AddToContext( listener );
+			form.Scene.Systems.AddChild( listener );
 		}
 	}
 }
