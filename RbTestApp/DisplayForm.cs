@@ -22,6 +22,14 @@ namespace RbTestApp
 		private RbEngine.Scene.SceneDb	m_Scene;
 		private string					m_SceneSetupFilename;
 
+		public RbEngine.Scene.SceneDb	Scene
+		{
+			get
+			{
+				return m_Scene;
+			}
+		}
+
 		public DisplayForm( string sceneSetupFilename )
 		{
 			m_SceneSetupFilename = sceneSetupFilename;
