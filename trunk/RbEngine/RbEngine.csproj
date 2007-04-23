@@ -235,6 +235,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Components\IBuilderProvider.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Components\IChildObject.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -906,6 +911,11 @@
                 />
                 <File
                     RelPath = "Scene\RenderManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scene\SceneBuilder.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
