@@ -6,6 +6,8 @@ using Tao.OpenGl;
 
 namespace RbOpenGlMd3Loader
 {
+
+
 	/// <summary>
 	/// OpenGL mesh with support for MD3 animation
 	/// </summary>
