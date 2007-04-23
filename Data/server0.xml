@@ -24,7 +24,9 @@
 
 			<object type="RbEngine.Scene.RayCastManager"/>
 
+<!-- added programmatically now
 			<object type="RbEngine.Network.TcpClientConnectionListener"/>
+-->
 
 			<object type="RbEngine.Network.Connections"/>
 

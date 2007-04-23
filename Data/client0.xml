@@ -25,11 +25,14 @@
 			<object type="RbEngine.Scene.RayCastManager"/>
 
 			<object type="RbEngine.Network.Connections">
+
+			<!-- added programmatically now
 				<object type="RbEngine.Network.TcpClientToServerConnection">
-					<string value="RuntServer" property="Name"/>
-					<string value="localhost" property="ConnectionString"/>
+					<string value="192.168.2.2" property="ConnectionString"/>
 					<int value="11000" property="Port"/>
 				</object>
+			-->
+
 			</object>
 
 			<object type="RbEngine.Network.Runt.UpdateSource"/>
