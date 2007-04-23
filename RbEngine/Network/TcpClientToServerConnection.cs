@@ -43,6 +43,22 @@ namespace RbEngine.Network
 		}
 
 		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public TcpClientToServerConnection( )
+		{
+		}
+		
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		public TcpClientToServerConnection( string connectionString, int port )
+		{
+			ConnectionString = connectionString;
+			Port = port;
+		}
+
+		/// <summary>
 		/// Kills the connection
 		/// </summary>
 		~TcpClientToServerConnection( )

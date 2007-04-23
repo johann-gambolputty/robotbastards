@@ -16,6 +16,22 @@ namespace RbEngine.Network
 	{
 
 		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public TcpClientConnectionListener( )
+		{
+		}
+
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		public TcpClientConnectionListener( string connectionString, int port )
+		{
+			ConnectionString = connectionString;
+			Port = port;
+		}
+
+		/// <summary>
 		/// Kills the listener thread
 		/// </summary>
 		~TcpClientConnectionListener( )

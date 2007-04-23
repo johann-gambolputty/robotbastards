@@ -117,6 +117,14 @@ namespace RbEngine.Components
 			}
 
 			/// <summary>
+			/// Gets the builder from a specified loader
+			/// </summary>
+			public IBuilder GetBuilder( BaseLoader loader )
+			{
+				return ( loader == null ) ? null : ( loader.m_Builder == null ? GetBuilder( loader.m_ParentLoader ) : loader.m_Builder );
+			}
+
+			/// <summary>
 			/// Constructor. Sets the generating element
 			/// </summary>
 			protected BaseLoader( BaseLoader parentLoader, XmlElement element )
@@ -534,6 +542,7 @@ namespace RbEngine.Components
 			private ArrayList		m_PostLinkChildren;
 			private ArrayList		m_PostLinkElements;
 			private IContext		m_Context;
+			private IBuilder		m_Builder;
 
 			#endregion
 		}
@@ -762,7 +771,17 @@ namespace RbEngine.Components
 				//	Create the new object
 				//	TODO: Add assembly attribute?
 				string newObjectTypeName = element.GetAttribute( "type" );
-				LoadedObject = AppDomainUtils.CreateInstance( newObjectTypeName );
+				Type newObjectType = AppDomainUtils.FindType( newObjectTypeName );
+
+				IBuilder builder = GetBuilder( this );
+				if ( builder != null )
+				{
+					LoadedObject = builder.Create( newObjectType );
+				}
+				else
+				{
+					LoadedObject = Activator.CreateInstance( newObjectType );
+				}
 
 				if ( LoadedObject == null )
 				{
