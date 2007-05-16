@@ -196,7 +196,6 @@ namespace RbEngine.Rendering
 
 		#endregion
 
-
 		#region	Protected stuff
 
 		protected int			m_Width;
