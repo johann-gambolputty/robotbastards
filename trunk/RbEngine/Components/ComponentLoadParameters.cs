@@ -12,7 +12,6 @@ namespace RbEngine.Components
 		/// </summary>
 		public ComponentLoadParameters( )
 		{
-			m_DefaultFactory = Builder.Inst;
 		}
 
 		/// <summary>
@@ -22,29 +21,23 @@ namespace RbEngine.Components
 		public ComponentLoadParameters( Object target ) :
 			base( target )
 		{
-			m_DefaultFactory = Builder.Inst;
 		}
 
 		/// <summary>
-		/// Sets the default factory, that is used to create objects
+		/// Associated type factory. Can be null
 		/// </summary>
-		public ComponentLoadParameters SetDefaultFactory( IBuilder factory )
-		{
-			m_DefaultFactory = factory;
-			return this;
-		}
-
-		/// <summary>
-		/// Gets the default factory
-		/// </summary>
-		public IBuilder	DefaultFactory
+		public ITypeFactory Factory
 		{
 			get
 			{
-				return m_DefaultFactory;
+				return m_Factory;
+			}
+			set
+			{
+				m_Factory = value;
 			}
 		}
 
-		private IBuilder	m_DefaultFactory;
+		private ITypeFactory m_Factory;
 	}
 }

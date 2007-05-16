@@ -4,19 +4,6 @@ using System.Collections;
 
 namespace RbEngine.Components
 {
-	/*
-	 * Design for factory support in XML:
-	 * 
-	 * 1:
-	 *		<object factory="RenderFactory" call="NewRenderState"/>
-	 * 
-	 * OK, but that implies that all factories have "Inst" singletons. Can factories be temporary inputs?
-	 * 
-	 * NOTE: It would be good to tie this into the instancing architecture
-	 * 
-	 *		<object instanceOf="RenderState"/>
-	 */
-
 	/// <summary>
 	/// Loads an XML object definition file
 	/// </summary>
@@ -43,6 +30,16 @@ namespace RbEngine.Components
 		/// <returns>Returns resource</returns>
 		public override Object Load( System.IO.Stream input, string inputSource, Resources.LoadParameters parameters )
 		{
+			ITypeFactory factory = null;
+			if ( parameters is ComponentLoadParameters )
+			{
+				factory = ( parameters as ComponentLoadParameters ).Factory;
+			}
+			else
+			{
+				factory = new TypeFactory( );
+			}
+
 			XmlDocument doc = new RbXmlDocument( inputSource );
 			try
 			{
@@ -58,7 +55,7 @@ namespace RbEngine.Components
 						}
 						else
 						{
-							Object result = LoadRb( ( XmlElement )curNode, parameters == null ? null : parameters.Target );
+							Object result = LoadRb( ( XmlElement )curNode, parameters == null ? null : parameters.Target, factory );
 							return result;
 						}
 					}
@@ -94,10 +91,11 @@ namespace RbEngine.Components
 		/// </summary>
 		/// <param name="element">XML "rb" element</param>
 		/// <param name="rootObject">The root object to load into</param>
+		/// <param name="factory">Factory, used to create objects from object elements</param>
 		/// <returns>Returns rootObject</returns>
-		private Object LoadRb( XmlElement element, Object rootObject )
+		private Object LoadRb( XmlElement element, Object rootObject, ITypeFactory factory )
 		{
-			RootObjectLoader loader = new RootObjectLoader( null, element, rootObject );
+			RootObjectLoader loader = new RootObjectLoader( null, element, rootObject, factory );
 			loader.Resolve( null );
 			return loader.LoadedObject;
 		}
@@ -114,14 +112,6 @@ namespace RbEngine.Components
 			public IContext	GetContext( BaseLoader loader )
 			{
 				return ( loader == null ) ? null : ( loader.m_Context == null ? GetContext( loader.m_ParentLoader ) : loader.m_Context );
-			}
-
-			/// <summary>
-			/// Gets the builder from a specified loader
-			/// </summary>
-			public IBuilder GetBuilder( BaseLoader loader )
-			{
-				return ( loader == null ) ? null : ( loader.m_Builder == null ? GetBuilder( loader.m_ParentLoader ) : loader.m_Builder );
 			}
 
 			/// <summary>
@@ -428,7 +418,7 @@ namespace RbEngine.Components
 			/// <summary>
 			/// Loads child nodes from the generating element
 			/// </summary>
-			protected void			LoadChildNodes( XmlElement element, Order order )
+			protected void			LoadChildNodes( XmlElement element, Order order, ITypeFactory factory )
 			{
 				//	Add child nodes
 				foreach ( XmlNode curNode in element.ChildNodes )
@@ -437,15 +427,15 @@ namespace RbEngine.Components
 					{
 						if ( curNode.Name == "postLink" )
 						{
-							LoadChildNodes( ( XmlElement )curNode, Order.PostLink );
+							LoadChildNodes( ( XmlElement )curNode, Order.PostLink, factory );
 						}
 						else if ( curNode.Name == "preLink" )
 						{
-							LoadChildNodes( ( XmlElement )curNode, Order.PreLink );
+							LoadChildNodes( ( XmlElement )curNode, Order.PreLink, factory );
 						}
 						else
 						{
-							LoadElement( ( XmlElement )curNode, order );
+							LoadElement( ( XmlElement )curNode, order, factory );
 						}
 					}
 				}
@@ -454,9 +444,9 @@ namespace RbEngine.Components
 			/// <summary>
 			/// Adds an element, using default ordering
 			/// </summary>
-			protected void			LoadElement( XmlElement element, Order order )
+			protected void			LoadElement( XmlElement element, Order order, ITypeFactory factory )
 			{
-				BaseLoader loader = CreateLoaderFromElement( this, element );
+				BaseLoader loader = CreateLoaderFromElement( this, element, factory );
 				if ( loader != null )
 				{
 					AddChildLoader( loader, order );
@@ -490,14 +480,14 @@ namespace RbEngine.Components
 			/// <summary>
 			/// Creates an RbXmlBase instance from an XML element
 			/// </summary>
-			private static BaseLoader	CreateLoaderFromElement( BaseLoader parentLoader, XmlElement element )
+			private static BaseLoader	CreateLoaderFromElement( BaseLoader parentLoader, XmlElement element, ITypeFactory factory )
 			{
 				BaseLoader loader = null;
 				switch ( element.Name )
 				{
-					case "object"		: loader = new ObjectLoader( parentLoader, element );	break;
+					case "object"		: loader = new ObjectLoader( parentLoader, element, factory );	break;
 					case "reference"	: loader = new ReferenceLoader( parentLoader, element ); break;
-					case "resource"		: loader = new ResourceStreamLoader( parentLoader, element ); break;
+					case "resource"		: loader = new ResourceStreamLoader( parentLoader, element, factory ); break;
 					case "instance"		: loader = new InstanceLoader( parentLoader, element ); break;
 					case "string"		: loader = new ValueLoader( parentLoader, element, element.GetAttribute( "value" ) ); break;
 					case "int"			: loader = new ValueLoader( parentLoader, element, int.Parse( element.GetAttribute( "value" ) ) ); break;
@@ -542,7 +532,6 @@ namespace RbEngine.Components
 			private ArrayList		m_PostLinkChildren;
 			private ArrayList		m_PostLinkElements;
 			private IContext		m_Context;
-			private IBuilder		m_Builder;
 
 			#endregion
 		}
@@ -559,10 +548,9 @@ namespace RbEngine.Components
 			/// <param name="parentLoader">The parent BaseLoader. Can be null to denote the root object loader</param>
 			/// <param name="element">The "rb" element</param>
 			/// <param name="rootObject">Existing root object to load into. Can be null</param>
-			public RootObjectLoader( BaseLoader parentLoader, XmlElement element, Object rootObject ) :
+			public RootObjectLoader( BaseLoader parentLoader, XmlElement element, Object rootObject, ITypeFactory factory ) :
 				base( parentLoader, element )
 			{
-
 				m_RootObject = rootObject;
 				bool allowedMultipleChildren = ( rootObject != null );
 
@@ -577,7 +565,7 @@ namespace RbEngine.Components
 					if ( node.Name == "modelSet" )
 					{
 						//	Load and resolve model sets
-						ModelSetLoader modelSet = new ModelSetLoader( this, ( XmlElement )node );
+						ModelSetLoader modelSet = new ModelSetLoader( this, ( XmlElement )node, factory );
 						modelSet.Resolve( null );
 					}
 					else if ( !allowedMultipleChildren )
@@ -588,7 +576,7 @@ namespace RbEngine.Components
 							{
 								throw new RbXmlException( node, "Only allowed one root object within the <rb> element" );
 							}
-							m_RootLoader = new ObjectLoader( this, ( XmlElement )node );
+							m_RootLoader = new ObjectLoader( this, ( XmlElement )node, factory );
 						}
 						else
 						{
@@ -597,7 +585,7 @@ namespace RbEngine.Components
 					}
 					else
 					{
-						LoadElement( ( XmlElement )node, Order.Default );
+						LoadElement( ( XmlElement )node, Order.Default, factory );
 					}
 				}
 			}
@@ -633,7 +621,7 @@ namespace RbEngine.Components
 			/// <summary>
 			/// Constructor. Creates the model set
 			/// </summary>
-			public ModelSetLoader( BaseLoader parentLoader, XmlElement element ) :
+			public ModelSetLoader( BaseLoader parentLoader, XmlElement element, ITypeFactory factory ) :
 				base( parentLoader, element )
 			{
 				//	Find an existing modelset, or creates a new model set
@@ -645,11 +633,11 @@ namespace RbEngine.Components
 					{
 						if ( curNode.Name == "modelSet" )
 						{
-							AddChildLoader( new ModelSetLoader( this, ( XmlElement )curNode ), Order.Default );
+							AddChildLoader( new ModelSetLoader( this, ( XmlElement )curNode, factory ), Order.Default );
 						}
 						else
 						{
-							LoadElement( ( XmlElement )curNode, Order.Default );
+							LoadElement( ( XmlElement )curNode, Order.Default, factory );
 						}
 					}
 				}
@@ -765,7 +753,7 @@ namespace RbEngine.Components
 			/// <summary>
 			/// Constructor. Creates the object
 			/// </summary>
-			public ObjectLoader( BaseLoader parentLoader, XmlElement element ) :
+			public ObjectLoader( BaseLoader parentLoader, XmlElement element, ITypeFactory factory ) :
 				base( parentLoader, element )
 			{
 				//	Create the new object
@@ -773,15 +761,7 @@ namespace RbEngine.Components
 				string newObjectTypeName = element.GetAttribute( "type" );
 				Type newObjectType = AppDomainUtils.FindType( newObjectTypeName );
 
-				IBuilder builder = GetBuilder( this );
-				if ( builder != null )
-				{
-					LoadedObject = builder.Create( newObjectType );
-				}
-				else
-				{
-					LoadedObject = Activator.CreateInstance( newObjectType );
-				}
+				LoadedObject = factory.Create( newObjectType );
 
 				if ( LoadedObject == null )
 				{
@@ -799,7 +779,7 @@ namespace RbEngine.Components
 					( ( Components.INamedObject )LoadedObject ).Name = newObjectName;
 				}
 
-				LoadChildNodes( element, Order.Default );
+				LoadChildNodes( element, Order.Default, factory );
 			}
 		}
 
@@ -883,7 +863,7 @@ namespace RbEngine.Components
 			/// <summary>
 			/// Constructor. Loads the resource
 			/// </summary>
-			public ResourceStreamLoader( BaseLoader parentLoader, XmlElement element ) :
+			public ResourceStreamLoader( BaseLoader parentLoader, XmlElement element, ITypeFactory factory ) :
 				base( parentLoader, element )
 			{
 				//	Create the new resource
@@ -909,7 +889,7 @@ namespace RbEngine.Components
 					( ( Components.INamedObject )loadResult ).Name = newResourceName;
 				}
 
-				LoadChildNodes( element, Order.Default );
+				LoadChildNodes( element, Order.Default, factory );
 			}
 		}
 	}

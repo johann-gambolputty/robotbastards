@@ -215,27 +215,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Components\Builder.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Components\Component.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Components\ComponentLoadParameters.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Components\IBuilder.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Components\IBuilderProvider.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -271,6 +256,11 @@
                 />
                 <File
                     RelPath = "Components\IParentObject.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Components\ITypeFactory.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -311,6 +301,11 @@
                 />
                 <File
                     RelPath = "Components\ObjectId.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Components\TypeFactory.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -911,16 +906,6 @@
                 />
                 <File
                     RelPath = "Scene\RenderManager.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Scene\SceneBuilder.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Scene\SceneComponentFactory.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
