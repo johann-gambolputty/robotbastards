@@ -66,12 +66,22 @@ namespace RbEngine.Network
 			Dispose( );
 		}
 
+
 		/// <summary>
 		/// Runs the connection
 		/// </summary>
 		private void	RunConnection( Scene.SceneDb scene )
 		{
-			Socket socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
+			Socket socket = null;
+			try
+			{
+				//	Create a socket
+				socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
+			}
+			catch ( SocketException ex )
+			{
+				throw new ApplicationException( "Failed to create client to server connection socket", ex );
+			}
 
 			IPEndPoint endPoint = null;
 			try
@@ -83,20 +93,20 @@ namespace RbEngine.Network
 				//	Create end point
 				endPoint = new IPEndPoint( address, Port );
 
-				//	Connect to end point
-				Output.WriteLineCall( Output.NetworkInfo, "Attempting to connect to \"{0}\"", endPoint );
+				//	Connect to the end point
 				socket.Connect( endPoint );
 
+				//	Create a SocketConnection from the freshly connected socket
 				m_BaseConnection = new SocketConnection( scene, socket, false );
 				m_BaseConnection.ReceivedMessage += new ConnectionReceivedMessageDelegate( BaseConnectionReceivedMessage );
-			}
-			catch ( Exception exception )
-			{
-				//	Failed to connect
-				throw new ApplicationException( string.Format( "Failed to connect client to \"{0}\"", endPoint ), exception );
-			}
 
-			Output.WriteLineCall( Output.NetworkInfo, "Connected to \"{0}\"", endPoint );
+				Output.WriteLineCall( Output.NetworkInfo, "Connected to \"{0}\"", endPoint );
+
+			}
+			catch ( Exception ex )
+			{
+				throw new ApplicationException( string.Format( "Failed to initialise connection to client \"{0}\" ({1})", endPoint, ConnectionString ), ex );
+			}
 		}
 
 		/// <summary>
@@ -155,10 +165,10 @@ namespace RbEngine.Network
 
 		#region	Private stuff
 
-		private string		m_ConnectionString	= "localhost";
-		private int			m_Port				= 11000;
-		private IConnection	m_BaseConnection;
-		private string		m_Name;
+		private string			m_ConnectionString	= "localhost";
+		private int				m_Port				= 11000;
+		private IConnection		m_BaseConnection;
+		private string			m_Name;
 
 		#endregion
 
@@ -191,6 +201,17 @@ namespace RbEngine.Network
 		}
 
 		/// <summary>
+		/// Returns true if the connection is connected
+		/// </summary>
+		public bool IsConnected
+		{
+			get
+			{
+				return ( m_BaseConnection != null ) && ( m_BaseConnection.IsConnected );
+			}
+		}
+
+		/// <summary>
 		/// Invoked when this connection receives a message
 		/// </summary>
 		public event RbEngine.Network.ConnectionReceivedMessageDelegate ReceivedMessage;
@@ -208,5 +229,6 @@ namespace RbEngine.Network
 		}
 
 		#endregion
+
 	}
 }

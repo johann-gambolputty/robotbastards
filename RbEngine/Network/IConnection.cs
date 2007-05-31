@@ -30,6 +30,14 @@ namespace RbEngine.Network
 		}
 
 		/// <summary>
+		/// Returns true if the connection is connected
+		/// </summary>
+		bool IsConnected
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Received message event
 		/// </summary>
 		event ConnectionReceivedMessageDelegate	ReceivedMessage;

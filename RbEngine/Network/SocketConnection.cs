@@ -57,8 +57,22 @@ namespace RbEngine.Network
 		/// </summary>
 		public void OnNetworkTick( Scene.Clock networkClock )
 		{
-			ReceiveIncomingMessages( );
-			DeliverOutgoingMessages( );
+			try
+			{
+				ReceiveIncomingMessages( );
+			}
+			catch ( System.Net.Sockets.SocketException ex )
+			{
+				Output.WriteLineCall( Output.NetworkError, "Failed to receive messages over socket \"{0}\":\n{1}", m_Socket, ExceptionUtils.ToString( ex ) );
+			}
+			try
+			{
+				DeliverOutgoingMessages( );
+			}
+			catch ( System.Net.Sockets.SocketException ex )
+			{
+				Output.WriteLineCall( Output.NetworkError, "Failed to deliver messages over socket \"{0}\":\n{1}", m_Socket, ExceptionUtils.ToString( ex ) );
+			}
 		}
 
 		/// <summary>
@@ -66,7 +80,7 @@ namespace RbEngine.Network
 		/// </summary>
 		private void ReceiveIncomingMessages( )
 		{
-			if ( ( m_Socket == null ) || ( m_Socket.Available == 0 ) )
+			if ( ( !IsConnected ) || ( m_Socket.Available == 0 ) )
 			{
 				return;
 			}
@@ -97,7 +111,7 @@ namespace RbEngine.Network
 		private void DeliverOutgoingMessages( )
 		{
 			//	Early out if there's no socket, or no outgoing messages
-			if ( ( m_Socket == null ) || ( m_OutgoingMessages.Count == 0 ) )
+			if ( ( !IsConnected ) || ( m_OutgoingMessages.Count == 0 ) )
 			{
 				return;
 			}
@@ -163,6 +177,18 @@ namespace RbEngine.Network
 				return m_Client;
 			}
 		}
+
+		/// <summary>
+		/// Returns true if the connection is connected
+		/// </summary>
+		public bool IsConnected
+		{
+			get
+			{
+				return ( m_Socket != null ) && ( m_Socket.Connected );
+			}
+		}
+
 
 		/// <summary>
 		/// Event, invoked when the connection receives a message
