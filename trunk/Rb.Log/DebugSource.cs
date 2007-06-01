@@ -11,38 +11,16 @@ namespace Rb.Log
     public class DebugSource : Source
     {
         #region Public construction
-        
-        /// <summary>
-        /// Sets up the source object. Source name is the severity
-        /// </summary>
-        /// <param name="parent">The parent of the source</param>
-        /// <param name="severity">Source severity</param>
-        public DebugSource( Source parent, Severity severity ) :
-            base( parent, severity )
-        {
-            
-        }
 
-        /// <summary>
-        /// Sets up the source's name. Parent is the Root source
-        /// </summary>
-        /// <param name="name">Source name</param>
-        /// <param name="severity">Source severity</param>
-        public DebugSource( string name, Severity severity ) :
-            base( name, severity )
-        {
-        }
-
-        /// <summary>
-        /// Sets up the source's parent and name
-        /// </summary>
-        /// <param name="parent">Source parent</param>
-        /// <param name="name">Source name</param>
-        /// <param name="severity">Source severity</param>
-        public DebugSource( Source parent, string name, Severity severity ) :
-            base( parent, name, severity )
-        {
-        }
+		/// <summary>
+		/// Sets up the tag and severity of this source
+		/// </summary>
+		/// <param name="parent">Parent tag</param>
+		/// <param name="severity">Source severity</param>
+		public DebugSource( Tag parent, Severity severity ) :
+			base( parent, severity )
+		{
+		}
 
         #endregion
 

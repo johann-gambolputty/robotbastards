@@ -27,6 +27,14 @@ namespace Rb.Log
         /// <summary>
         /// Errors
         /// </summary>
-        Error
+        Error,
+
+		/// <summary>
+		/// Total number of values
+		/// </summary>
+		/// <remarks>
+		/// Must remain at the end of the enum
+		/// </remarks>
+		Count
     }
 }

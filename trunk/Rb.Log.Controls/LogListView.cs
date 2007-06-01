@@ -79,9 +79,9 @@ namespace Rb.Log.Controls
                 return;
             }
 
-            if ( m_logListView.IsHandleCreated )
+			if ( m_logListView.IsHandleCreated )
             {
-                string[] lines = entry.Message.Split(new char[] { '\n' });
+                string[] lines = entry.Message.Split( new char[] { '\n' } );
                 lock ( m_Lock )
                 {
                     foreach ( string line in lines )
