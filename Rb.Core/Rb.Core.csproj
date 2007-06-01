@@ -1,0 +1,104 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Rb.Core</RootNamespace>
+    <AssemblyName>Rb.Core</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppDomainUtils.cs" />
+    <Compile Include="BinaryReaderHelpers.cs" />
+    <Compile Include="Components\ComponentHelpers.cs" />
+    <Compile Include="Components\IMessageHandler.cs" />
+    <Compile Include="Components\IMessageHub.cs" />
+    <Compile Include="Components\INamed.cs" />
+    <Compile Include="Components\IUnique.cs" />
+    <Compile Include="Components\Message.cs" />
+    <Compile Include="Components\MessageRecipientChain.cs" />
+    <Compile Include="ExceptionUtils.cs" />
+    <Compile Include="Logs.cs" />
+    <Compile Include="Maths\BigPoint3.cs" />
+    <Compile Include="Maths\CatmullRomSpline.cs" />
+    <Compile Include="Maths\Constants.cs" />
+    <Compile Include="Maths\ControlledSpline.cs" />
+    <Compile Include="Maths\GaussianQuadrature.cs" />
+    <Compile Include="Maths\Integral.cs" />
+    <Compile Include="Maths\Intersection.cs" />
+    <Compile Include="Maths\IRay3Intersector.cs" />
+    <Compile Include="Maths\Line3.cs" />
+    <Compile Include="Maths\Matrix44.cs" />
+    <Compile Include="Maths\OffsetCatmullRomSpline.cs" />
+    <Compile Include="Maths\Plane3.cs" />
+    <Compile Include="Maths\Point3.cs" />
+    <Compile Include="Maths\Point3Interpolator.cs" />
+    <Compile Include="Maths\Ray3.cs" />
+    <Compile Include="Maths\Ray3Intersection.cs" />
+    <Compile Include="Maths\Sphere3.cs" />
+    <Compile Include="Maths\Spline.cs" />
+    <Compile Include="Maths\SplineControlPoint.cs" />
+    <Compile Include="Maths\SplineControlPoints.cs" />
+    <Compile Include="Maths\SplineFrame.cs" />
+    <Compile Include="Maths\Utils.cs" />
+    <Compile Include="Maths\Vector2.cs" />
+    <Compile Include="Maths\Vector3.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\FileResourceProvider.cs" />
+    <Compile Include="Resources\IPathDirectory.cs" />
+    <Compile Include="Resources\LoadParameters.cs" />
+    <Compile Include="Resources\ResourceDirectoryLoader.cs" />
+    <Compile Include="Resources\ResourceManager.cs" />
+    <Compile Include="Resources\ResourceProvider.cs" />
+    <Compile Include="Resources\ResourceStreamLoader.cs" />
+    <Compile Include="TinyTime.cs" />
+    <Compile Include="World\ISceneController.cs" />
+    <Compile Include="World\ISceneViewer.cs" />
+    <Compile Include="World\Scene.cs" />
+    <Compile Include="World\SceneControllers.cs" />
+    <Compile Include="World\SceneObjects.cs" />
+    <Compile Include="World\SceneViewers.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rb.Log\Rb.Log.csproj">
+      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
+      <Name>Rb.Log</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
