@@ -2,9 +2,6 @@
 
 namespace Rb.Core.World
 {
-	// TODO: AP: REMOVEME
-	public interface ISceneObject { };
-
 	/// <summary>
 	/// Delegate, used by the SceneObjects.OnObjectAdded event
 	/// </summary>
@@ -86,14 +83,10 @@ namespace Rb.Core.World
 
 		#endregion
 
-
 		#region Private stuff
 
 		private Scene m_Scene;
 
 		#endregion
-
-
-
 	}
 }
