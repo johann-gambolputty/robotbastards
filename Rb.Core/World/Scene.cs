@@ -47,7 +47,6 @@ namespace Rb.Core.World
 		/// <summary>
 		/// Adds a named service
 		/// </summary>
-		/// <param name="serviceName">Service name</param>
 		/// <param name="service">Service object</param>
 		public void AddService( object service )
 		{
