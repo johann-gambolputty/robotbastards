@@ -3,7 +3,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-namespace Rb.Core
+namespace Rb.Core.Utils
 {
 	/// <summary>
 	/// Exception utilities.

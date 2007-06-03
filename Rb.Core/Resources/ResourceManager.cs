@@ -62,7 +62,7 @@ namespace Rb.Core.Resources
 				if ( curProviderNode is System.Xml.XmlElement )
 				{
 					string providerTypeName = curProviderNode.Attributes[ "type" ].Value;
-					ResourceProvider newProvider = ( ResourceProvider )AppDomainUtils.CreateInstance( providerTypeName );
+					ResourceProvider newProvider = ( ResourceProvider )Utils.AppDomainUtils.CreateInstance( providerTypeName );
 					if ( newProvider == null )
 					{
 						ResourcesLog.Error( "Unable to find type for provider \"{0}\"", providerTypeName );
@@ -91,7 +91,7 @@ namespace Rb.Core.Resources
 
 					string loaderTypeName = curLoaderNode.Attributes[ "type" ].Value;
 
-					object loader = AppDomainUtils.CreateInstance( loaderTypeName );
+					object loader = Utils.AppDomainUtils.CreateInstance( loaderTypeName );
 					if ( loader == null )
 					{
 						ResourcesLog.Error( "Unable to create instance for resource loader type \"{0}\"", loaderTypeName );

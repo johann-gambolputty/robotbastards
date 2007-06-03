@@ -1,0 +1,11 @@
+﻿<NUnitProject>
+  <Settings activeconfig="Debug" />
+  <Config name="Debug" binpathtype="Auto">
+    <assembly path="Rb.Core.Tests\bin\Debug\Rb.Core.Tests.dll" />
+    <assembly path="Rb.Log.Tests\bin\Debug\Rb.Log.Tests.dll" />
+  </Config>
+  <Config name="Release" binpathtype="Auto">
+    <assembly path="Rb.Core.Tests\bin\Release\Rb.Core.Tests.dll" />
+    <assembly path="Rb.Log.Tests\bin\Release\Rb.Log.Tests.dll" />
+  </Config>
+</NUnitProject>

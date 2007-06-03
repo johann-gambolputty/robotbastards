@@ -61,13 +61,13 @@ namespace Rb.Core.Components
         /// <summary>
         /// The current IBuilder singleton
         /// </summary>
-        public IBuilder Instance
+        public static IBuilder Instance
         {
             get { return ms_Instance; }
             set { ms_Instance = value; }
         }
 
-        private IBuilder ms_Instance;
+        private static IBuilder ms_Instance;
 
         #endregion
     }

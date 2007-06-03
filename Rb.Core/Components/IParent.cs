@@ -15,7 +15,7 @@ namespace Rb.Core.Components
         /// <summary>
         /// Gets the child object collection
         /// </summary>
-        public ICollection Children
+        ICollection Children
         {
             get;
         }

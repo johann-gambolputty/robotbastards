@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Rb.Core
+namespace Rb.Core.Utils
 {
 	/// <summary>
 	/// Provides fine grain timing, and a shared start time for Scene.Clock objects

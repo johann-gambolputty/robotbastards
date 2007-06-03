@@ -4,34 +4,40 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Text;
-using System.Collections;
 using System.Windows.Forms;
 
 namespace Rb.Log.Controls
 {
-    public partial class LogListView : UserControl
-    {
-        public LogListView()
-        {
-            InitializeComponent();
+	public partial class LogListView : ListView
+	{
+		public LogListView( )
+		{
+			InitializeComponent( );
 
-            m_logListView.OwnerDraw = true;
-            m_logListView.DrawColumnHeader += new DrawListViewColumnHeaderEventHandler( LogListView_DrawColumnHeader );
-            m_logListView.DrawItem += new DrawListViewItemEventHandler( LogListView_DrawItem );
+			DoubleBuffered = true;
 
-            Rb.Log.Source.OnNewLogEntry += new OnNewLogEntryDelegate( OnNewLogEntry );
-        }
+			OwnerDraw = true;
+			DrawColumnHeader += new DrawListViewColumnHeaderEventHandler( LogListView_DrawColumnHeader );
+			DrawItem += new DrawListViewItemEventHandler( LogListView_DrawItem );
 
-        void LogListView_DrawItem( object sender, DrawListViewItemEventArgs e )
+			Rb.Log.Source.OnNewLogEntry += new OnNewLogEntryDelegate( OnNewLogEntry );
+		}
+
+		~LogListView( )
+		{
+			Rb.Log.Source.OnNewLogEntry -= new OnNewLogEntryDelegate( OnNewLogEntry );
+		}
+
+		void LogListView_DrawItem( object sender, DrawListViewItemEventArgs e )
         {
             Entry entry = ( Entry )e.Item.Tag;
             System.Drawing.Color backCol = System.Drawing.Color.White;
 
             switch ( entry.Severity )
             {
-                case Severity.Info : backCol = Color.BlanchedAlmond; break;
-                case Severity.Warning : backCol = Color.Orange; break;
-                case Severity.Error: backCol = Color.Red; break;
+                case Severity.Info		: backCol = Color.BlanchedAlmond; break;
+                case Severity.Warning	: backCol = Color.Orange; break;
+                case Severity.Error		: backCol = Color.Red; break;
             }
 
             if ( e.Item.Selected )
@@ -46,7 +52,7 @@ namespace Rb.Log.Controls
             }
         }
 
-        static void LogListView_DrawColumnHeader( object sender, DrawListViewColumnHeaderEventArgs e )
+		static void LogListView_DrawColumnHeader( object sender, DrawListViewColumnHeaderEventArgs e )
         {
             e.DrawDefault = true;
         }
@@ -56,11 +62,11 @@ namespace Rb.Log.Controls
             return true;
         }
 
-        private void AddListViewItem( ListView view, ListViewItem item )
+        private void AddListViewItem( ListViewItem item )
         {
-            if ( view.IsHandleCreated )
+            if ( IsHandleCreated )
             {
-                view.Items.Add( item );
+                Items.Add( item );
 
                 if ( m_TrackingLastItem )
                 {
@@ -70,7 +76,7 @@ namespace Rb.Log.Controls
             }
         }
 
-        private delegate void AddListViewItemDelegate( ListView view, ListViewItem item );
+        private delegate void AddListViewItemDelegate( ListViewItem item );
 
         private void OnNewLogEntry( Entry entry )
         {
@@ -79,7 +85,7 @@ namespace Rb.Log.Controls
                 return;
             }
 
-			if ( m_logListView.IsHandleCreated )
+			if ( IsHandleCreated )
             {
                 string[] lines = entry.Message.Split( new char[] { '\n' } );
                 lock ( m_Lock )
@@ -97,7 +103,8 @@ namespace Rb.Log.Controls
                         newItem.SubItems.Add( line );
                         newItem.Tag = entry;
 
-                        Invoke( new AddListViewItemDelegate( AddListViewItem ), m_logListView, newItem );   
+						//	TODO: AP: If the list view is destroy at the point, this blocks
+                        Invoke( new AddListViewItemDelegate( AddListViewItem ), newItem );   
                     }
                 }
             }
@@ -126,23 +133,18 @@ namespace Rb.Log.Controls
 
         private bool            m_TrackingLastItem = true;
 
-        private void LogListView_DoubleClick(object sender, EventArgs e)
-        {
-            //  TODO: AP: Open up visual studio, go to log entry location
-        }
-
-        private void m_logListView_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if ( m_logListView.SelectedIndices.Count == 0 )
-            {
-                return;
-            }
-            m_TrackingLastItem = ( m_logListView.SelectedIndices[ 0 ] == ( m_logListView.Items.Count - 1 ) );
-            if ( !m_TrackingLastItem )
-            {
-                m_logListView.SelectedItems[ 0 ].Selected = true;
-                m_logListView.SelectedItems[ 0 ].EnsureVisible( );
-            }
-        }
-    }
+		private void LogListView_SelectedIndexChanged( object sender, EventArgs e )
+		{
+			if ( SelectedIndices.Count == 0 )
+			{
+				return;
+			}
+			m_TrackingLastItem = ( SelectedIndices[ 0 ] == ( Items.Count - 1 ) );
+			if ( !m_TrackingLastItem )
+			{
+				SelectedItems[ 0 ].Selected = true;
+				SelectedItems[ 0 ].EnsureVisible( );
+			}
+		}
+	}
 }

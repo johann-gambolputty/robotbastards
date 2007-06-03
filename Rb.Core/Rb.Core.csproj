@@ -36,8 +36,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppDomainUtils.cs" />
-    <Compile Include="BinaryReaderHelpers.cs" />
     <Compile Include="Components\Builder.cs" />
     <Compile Include="Components\ComponentHelpers.cs" />
     <Compile Include="Components\IBuilder.cs" />
@@ -48,9 +46,7 @@
     <Compile Include="Components\IParent.cs" />
     <Compile Include="Components\IUnique.cs" />
     <Compile Include="Components\Message.cs" />
-    <Compile Include="Components\MessageMap.cs" />
     <Compile Include="Components\MessageRecipientChain.cs" />
-    <Compile Include="ExceptionUtils.cs" />
     <Compile Include="Logs.cs" />
     <Compile Include="Maths\BigPoint3.cs" />
     <Compile Include="Maths\CatmullRomSpline.cs" />
@@ -84,7 +80,11 @@
     <Compile Include="Resources\ResourceManager.cs" />
     <Compile Include="Resources\ResourceProvider.cs" />
     <Compile Include="Resources\ResourceStreamLoader.cs" />
-    <Compile Include="TinyTime.cs" />
+    <Compile Include="Utils\AppDomainUtils.cs" />
+    <Compile Include="Utils\BinaryReaderHelpers.cs" />
+    <Compile Include="Utils\DispatchMap.cs" />
+    <Compile Include="Utils\ExceptionUtils.cs" />
+    <Compile Include="Utils\TinyTime.cs" />
     <Compile Include="World\ISceneController.cs" />
     <Compile Include="World\ISceneObject.cs" />
     <Compile Include="World\ISceneViewer.cs" />

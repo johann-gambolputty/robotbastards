@@ -1,6 +1,6 @@
 using System;
 
-namespace Rb.Core
+namespace Rb.Core.Utils
 {
 	/// <summary>
 	/// Helpers for reading data by type

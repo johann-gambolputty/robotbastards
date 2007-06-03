@@ -100,9 +100,9 @@ namespace Rb.Core
 	/// Static log class for components
 	/// </summary>
 	/// <example>
-	/// ComponentsLog.Error( "No tea" );
+	/// ComponentLog.Error( "No tea" );
 	/// </example>
-	public class ComponentsLog : StaticTag< ComponentsLog >
+	public class ComponentLog : StaticTag< ComponentLog >
 	{
 		public override string TagName
 		{
