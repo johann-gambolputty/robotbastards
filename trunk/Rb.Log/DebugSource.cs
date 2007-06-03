@@ -34,8 +34,20 @@ namespace Rb.Log
         [ ConditionalAttribute( "DEBUG" )]
         public new void Write( string msg, params object[] args )
         {
-            base.Write( msg, args );
+            base.Write( 2, msg, args );
         }
+
+		/// <summary>
+		/// Generates a log entry. Skips a given number of stack frames to get the location
+		/// </summary>
+		/// <param name="skip">Number of frames to skip</param>
+		/// <param name="msg">Message string</param>
+		/// <param name="args">Format arguments</param>
+		[ConditionalAttribute( "DEBUG" )]
+		public new void Write( int skip, string msg, params object[ ] args )
+		{
+			base.Write( skip + 1, msg, args );
+		}
 
         #endregion
    

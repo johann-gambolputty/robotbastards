@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace Rb.Core
+namespace Rb.Core.Utils
 {
 	/// <summary>
 	/// Utilities for find types and resources in all assemblies in the app domain

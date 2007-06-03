@@ -13,6 +13,6 @@ namespace Rb.Core.World
         /// Sets the scene that this object was created for
         /// </summary>
         /// <param name="scene">Scene</param>
-        public void SetSceneContext( Scene scene );
+        void SetSceneContext( Scene scene );
     }
 }

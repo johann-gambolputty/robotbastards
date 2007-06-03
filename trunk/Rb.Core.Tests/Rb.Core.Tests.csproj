@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}</ProjectGuid>
+    <ProjectGuid>{63BABD0F-DDAC-4B7C-A528-E57AD43B2B12}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rb.Log.Controls</RootNamespace>
-    <AssemblyName>Rb.Log.Controls</AssemblyName>
+    <RootNamespace>Rb.Core.Tests</RootNamespace>
+    <AssemblyName>Rb.Core.Tests</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,32 +28,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.4.1.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LogListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="LogListView.Designer.cs">
-      <DependentUpon>LogListView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestDispatchMap.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rb.Log\Rb.Log.csproj">
-      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
-      <Name>Rb.Log</Name>
+    <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="LogListView.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>LogListView.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

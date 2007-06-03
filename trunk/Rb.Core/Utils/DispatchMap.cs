@@ -4,52 +4,13 @@ using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Rb.Core.Components
+namespace Rb.Core.Utils
 {
     /// <summary>
     /// Marks a method as a dispatch method
     /// </summary>
     public class DispatchAttribute : Attribute
     {
-    }
-
-    public class TestDispatchMap
-    {
-        public class Base { }
-        public class Derived0 : Base { }
-        public class Derived1 : Base { }
-        public class Derived2 : Base { }
-        public class Derived3 : Base { }
-
-        public class Handler
-        {
-            [Dispatch]
-            Type Handle( Base inst ) { return typeof( Base ); }
-            
-            [Dispatch]
-            Type Handle( Derived0 inst ) { return typeof( Derived0 ); }
-            
-            [Dispatch]
-            Type Handle( Derived1 inst ) { return typeof( Derived1 ); }
-            
-            [Dispatch]
-            Type Handle( Derived2 inst ) { return typeof( Derived2 ); }
-        }
-
-        public static void Test0( )
-        {
-            DispatchMap map = DispatchMapT< Handler >.Instance;
-
-            Handler handler = new Handler( );
-
-            Type returnedType = null;
-
-            returnedType = ( Type )map.Dispatch( handler, new Base( ) );        ComponentsLog.Info( "Send Base, processed {0}", returnedType );
-            returnedType = ( Type )map.Dispatch( handler, new Derived0( ) );    ComponentsLog.Info( "Send Derived0, processed {0}", returnedType );
-            returnedType = ( Type )map.Dispatch( handler, new Derived1( ) );    ComponentsLog.Info( "Send Derived1, processed {0}", returnedType );
-            returnedType = ( Type )map.Dispatch( handler, new Derived2( ) );    ComponentsLog.Info( "Send Derived2, processed {0}", returnedType );
-            returnedType = ( Type )map.Dispatch( handler, new Derived3( ) );    ComponentsLog.Info( "Send Derived3, processed {0}", returnedType );
-        }
     }
 
     //  TODO: AP: Add DispatchMap class parameterised by return type
@@ -66,9 +27,13 @@ namespace Rb.Core.Components
         /// <returns>Returns a DispatchMap for type t</returns>
         public static DispatchMap Get( Type t )
         {
-            DispatchMap map = ms_Maps[ t ];
-            if ( map == null )
+            DispatchMap map = null;
+            if ( ms_Maps.ContainsKey( t ) )
             {
+				map = ms_Maps[ t ];
+			}
+			else
+			{
                 map = new DispatchMap( t );
                 ms_Maps[ t ] = map;
             }
@@ -83,7 +48,7 @@ namespace Rb.Core.Components
         public static DispatchMap SafeGet( Type t )
         {
             DispatchMap map = null;
-            lock ( m_Map )
+            lock ( ms_Maps )
             {
                 map = Get( t );
             }
@@ -105,18 +70,17 @@ namespace Rb.Core.Components
 
         #region Private stuff
 
-        private class MethodComparer : IComparer< MethodInfo, MethodInfo >
+		/// <summary>
+		/// Compares two methods that take 1 parameter.
+		/// </summary>
+        private class MethodComparer : IComparer< MethodInfo >
         {
             public int Compare( MethodInfo lhs, MethodInfo rhs )
             {
-                Type lhsType = lhs.ReturnType;
-                Type rhsType = rhs.ReturnType;
+                Type lhsType = lhs.GetParameters( )[ 0 ].ParameterType;
+				Type rhsType = rhs.GetParameters( )[ 0 ].ParameterType;
 
-                if ( lhsType.IsDerivedFrom( rhsType ) )
-                {
-                    return 1;
-                }
-                if ( rhsType.IsDerivedFrom( lhsType ) )
+                if ( lhsType.IsSubclassOf( rhsType ) )
                 {
                     return -1;
                 }
@@ -132,29 +96,41 @@ namespace Rb.Core.Components
         {
             ComponentLog.Info( "Building dispatch map for type \"{0}\"", t );
 
-            //  Get the list of dispatch methods in the specified type
-            MethodInfo[] methods = GetDispatchMethods( t.GetMethods( ) );
-            if ( methods.Length == 0 )
-            {
-                m_Dispatch = new DispatchDelegate( EmptyDispatch );
-                return;
-            }
+			DynamicMethod dispatchMethod = new DynamicMethod( "Dispatch", typeof( object ), new Type[ ] { typeof( object ), typeof( object ) }, t, true );
+			ILGenerator generator = dispatchMethod.GetILGenerator( );
 
-            Type returnType = methods[ 0 ].ReturnType;
-            DynamicMethod dispatchMethod = new DynamicMethod( "Dispatch", returnType, new Type[] { typeof( object ), typeof( object ) }, t, true ); 
-            ILGenerator generator = dispatchMethod.GetILGenerator( );
+			Build( t, generator );
 
-            // Sort the array, so the method with the most derived parameter type comes first
-            Array.Sort( methods, new MethodComparer( ) );
+			generator.Emit( OpCodes.Ldnull );
+			generator.Emit( OpCodes.Ret );
 
-            //  Build the dispatcher
-            foreach ( MethodInfo method in methods )
-            {
-                AddHandlerMethod( method, generator, returnType );
-            }
-
-            m_Dispatch = ( DispatchDelegate )handleMessage.CreateDelegate( typeof( DispatchDelegate ) );
+			Dispatch = ( DispatchDelegate )dispatchMethod.CreateDelegate( typeof( DispatchDelegate ) );
         }
+
+		private void Build( Type t, ILGenerator generator )
+		{
+			//  Get the list of dispatch methods in the specified type
+			MethodInfo[ ] methods = GetDispatchMethods( t.GetMethods( ) ).ToArray( );
+			if ( methods.Length > 0 )
+			{
+				Type returnType = methods[ 0 ].ReturnType;
+
+				// Sort the array, so the method with the most derived parameter type comes first
+				Array.Sort( methods, new MethodComparer( ) );
+
+				//  Build the dispatcher
+				foreach ( MethodInfo method in methods )
+				{
+					AddHandlerMethod( method, generator, returnType );
+				}
+			}
+
+			Type subclass = t.BaseType;
+			if ( ( subclass != null ) && ( subclass != typeof( object ) ) )
+			{
+				Build( subclass, generator );
+			}
+		}
 
         /// <summary>
         /// Validates a dispatch method
@@ -166,12 +142,12 @@ namespace Rb.Core.Components
             ParameterInfo[] parameters = method.GetParameters( );
             if ( parameters.Length != 1 )
             {
-                throw new ApplicationException( "Dispatch method \"{0}\" can have only 1 parameter", method );
+				throw new ApplicationException( string.Format( "Dispatch method \"{0}\" can have only 1 parameter", method ) );
             }
             Type paramType = parameters[ 0 ].ParameterType;
             if ( method.ReturnType != returnType )
             {
-                throw new ApplicationException("Dispatch method \"{0}\" did not have the consistent return type (\"{1}\")", method, returnType);
+				throw new ApplicationException( string.Format( "Dispatch method \"{0}\" did not have the consistent return type (\"{1}\")", method, returnType ) );
             }
         }
 
@@ -210,16 +186,16 @@ namespace Rb.Core.Components
         /// <param name="method">Handler method</param>
         /// <param name="generator">IL generator for main handler method</param>
         /// <param name="returnType">The return type of the previous handler method (null if this is the first)</param>
-        /// <returns>The return typeof method</returns>
-        private static Type AddHandlerMethod( MethodInfo method, ILGenerator generator, Type returnType )
+        private static void AddHandlerMethod( MethodInfo method, ILGenerator generator, Type returnType )
         {
+			Type paramType = method.GetParameters( )[ 0 ].ParameterType;
             ComponentLog.Verbose( "Building calling code for dispatch method \"{0}\". Dispatch type is \"{1}\"", method, paramType );
 
-            generator.Emit( OpCodes.Ldarg_1 );                  //  Load argument 1 (the message) onto the stack
-            generator.Emit( OpCodes.Isinst, paramType );        //  Test if the argument is the right message type (null or object pushed)
+            generator.Emit( OpCodes.Ldarg_1 );                  //  Load argument 1 (the argument) onto the stack
+            generator.Emit( OpCodes.Isinst, paramType );        //  Test if the argument is the right type (null or object pushed)
 
             Label isNullBranch = generator.DefineLabel( );
-            generator.Emit( OpCodes.Brfalse, isNullBranch );    //  If the cast message is null, then jump to the null branch
+			generator.Emit( OpCodes.Brfalse, isNullBranch );    //  If the argument cast returned null, then jump to the null branch
 
             if ( method.IsStatic )
             {
@@ -246,13 +222,13 @@ namespace Rb.Core.Components
             {
                 generator.Emit( OpCodes.Ldnull );               //  Load null onto the stack
             }
+			else if ( returnType.IsValueType )
+			{
+				generator.Emit( OpCodes.Box, returnType );		//	Box value types
+			}
 
             generator.Emit( OpCodes.Ret );                      //  Return instruction
             generator.MarkLabel( isNullBranch );                //  Mark the null branch label
-        }
-
-        private void EmptyDispatch(object obj, object arg)
-        {
         }
 
         private static Dictionary< Type, DispatchMap > ms_Maps = new Dictionary< Type, DispatchMap >( );
