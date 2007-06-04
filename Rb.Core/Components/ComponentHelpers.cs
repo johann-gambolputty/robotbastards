@@ -16,7 +16,7 @@ namespace Rb.Core.Components
 		public static string GetName( object obj )
 		{
 			INamed named = obj as INamed;
-			return ( named == null ) ? "" : named.Name;
+			return ( named == null ) ? obj.ToString( ) : named.Name;
 		}
 	}
 

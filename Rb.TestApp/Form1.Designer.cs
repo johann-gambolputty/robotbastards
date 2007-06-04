@@ -28,34 +28,34 @@ namespace Rb.TestApp
         /// </summary>
         private void InitializeComponent()
         {
-			this.logListView1 = new Rb.Log.Controls.LogListView( );
-			this.SuspendLayout( );
-			// 
-			// logListView1
-			// 
-			this.logListView1.AllowColumnReorder = true;
-			this.logListView1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.logListView1.FullRowSelect = true;
-			this.logListView1.GridLines = true;
-			this.logListView1.Location = new System.Drawing.Point( 0, 0 );
-			this.logListView1.MultiSelect = false;
-			this.logListView1.Name = "logListView1";
-			this.logListView1.OwnerDraw = true;
-			this.logListView1.Size = new System.Drawing.Size( 722, 325 );
-			this.logListView1.TabIndex = 0;
-			this.logListView1.UseCompatibleStateImageBehavior = false;
-			this.logListView1.View = System.Windows.Forms.View.Details;
-			// 
-			// Form1
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size( 722, 325 );
-			this.Controls.Add( this.logListView1 );
-			this.Name = "Form1";
-			this.Text = "Form1";
-			this.Load += new System.EventHandler( this.Form1_Load );
-			this.ResumeLayout( false );
+            this.logListView1 = new Rb.Log.Controls.LogListView();
+            this.SuspendLayout();
+            // 
+            // logListView1
+            // 
+            this.logListView1.AllowColumnReorder = true;
+            this.logListView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logListView1.FullRowSelect = true;
+            this.logListView1.GridLines = true;
+            this.logListView1.Location = new System.Drawing.Point(0, 0);
+            this.logListView1.MultiSelect = false;
+            this.logListView1.Name = "logListView1";
+            this.logListView1.OwnerDraw = true;
+            this.logListView1.Size = new System.Drawing.Size(648, 258);
+            this.logListView1.TabIndex = 0;
+            this.logListView1.UseCompatibleStateImageBehavior = false;
+            this.logListView1.View = System.Windows.Forms.View.Details;
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(648, 258);
+            this.Controls.Add(this.logListView1);
+            this.Name = "Form1";
+            this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
+            this.ResumeLayout(false);
 
         }
 

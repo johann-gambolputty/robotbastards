@@ -151,6 +151,22 @@ namespace Rb.Log
 
 		#region Public properties
 
+        /// <summary>
+        /// Returns the list of child tags associated with this tag
+        /// </summary>
+        public List< Tag > ChildTags
+        {
+            get { return m_ChildTags; }
+        }
+
+        /// <summary>
+        /// Returns the array of sources associated with this tag
+        /// </summary>
+	    public Source[] Sources
+	    {
+	        get { return m_Sources; }
+	    }
+
 		/// <summary>
 		/// Gets the full name of this tag
 		/// </summary>
@@ -182,6 +198,14 @@ namespace Rb.Log
 		{
 			get { return m_Parent == null; }
 		}
+
+        /// <summary>
+        /// Gets the parent of this tag
+        /// </summary>
+	    public Tag Parent
+	    {
+	        get { return m_Parent; }
+	    }
 
 		/// <summary>
 		/// Suppresses or enables log entries written from this and all child sources

@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="Components\Builder.cs" />
     <Compile Include="Components\ComponentHelpers.cs" />
+    <Compile Include="Components\ComponentLoadParameters.cs" />
     <Compile Include="Components\IBuilder.cs" />
     <Compile Include="Components\IChild.cs" />
     <Compile Include="Components\IMessageHandler.cs" />

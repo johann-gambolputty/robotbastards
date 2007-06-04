@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Rb.Core.Resources
 {
@@ -23,6 +24,23 @@ namespace Rb.Core.Resources
 			m_Target = target;
 		}
 
+        /// <summary>
+        /// Dynamic property indexer
+        /// </summary>
+        /// <param name="name">Property name</param>
+        /// <returns>Property value</returns>
+	    public object this[ string name ]
+	    {
+            get
+            {
+                return m_Properties.ContainsKey( name ) ? m_Properties[ name ] : null;
+            }
+            set
+            {
+                m_Properties[ name ] = value;
+            }
+	    }
+
 		/// <summary>
 		/// Gets the target object
 		/// </summary>
@@ -34,6 +52,7 @@ namespace Rb.Core.Resources
 			}
 		}
 
-		private Object	m_Target;
+		private Object	                        m_Target;
+	    private Dictionary< string, object >    m_Properties = new Dictionary< string, object >( );
 	}
 }
