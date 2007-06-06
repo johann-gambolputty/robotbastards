@@ -5,7 +5,7 @@ namespace Rb.Core.Resources
 	/// <summary>
 	/// Loads resources from streams
 	/// </summary>
-	public abstract class ResourceStreamLoader
+    public abstract class ResourceStreamLoader : ResourceLoader
 	{
 		#region	Stream loading
 

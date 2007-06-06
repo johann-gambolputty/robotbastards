@@ -1,7 +1,8 @@
 using System;
 using System.Text;
-using System.Text.RegularExpressions;
+using System.Collections.Generic;
 using System.Windows.Forms;
+using Rb.Log;
 
 namespace Rb.Core.Utils
 {
@@ -18,7 +19,7 @@ namespace Rb.Core.Utils
 			try
 			{
 				string exceptionString = ToString( args.Exception );
-				Rb.Log.App.Error( exceptionString );
+				App.Error( exceptionString );
 
 				switch ( MessageBox.Show( exceptionString, "Unhandled Exception", MessageBoxButtons.AbortRetryIgnore ) )
 				{
@@ -47,10 +48,55 @@ namespace Rb.Core.Utils
 
 		private const string kNewLine = "\r\n"; // <== GRRR
 
-		/// <summary>
+        /// <summary>
+        /// Writes an exception into one or more log entries, storing them in entries
+        /// </summary>
+        /// <param name="source">Log source</param>
+        /// <param name="ex">Exception</param>
+        /// <param name="entries">Log entry list</param>
+        public static void ToLogEntries( Source source, Exception ex, IList< Entry > entries )
+        {
+            if ( ex == null )
+            {
+                return;
+            }
+            ExceptionStackTraceInfo info = new ExceptionStackTraceInfo( ex.StackTrace );
+            
+            Entry baseEntry = new Entry( source, ex.Message );
+            if ( info.HasMatch )
+            {
+                baseEntry.Locate( info.File, int.Parse( info.Line ), 1, info.Method );
+                info.NextMatch( );
+            }
+
+            Source.HandleEntry( baseEntry );
+
+            while ( info.HasMatch )
+            {
+                Source.HandleEntry( new Entry( source, "" ).Locate( info.File, int.Parse( info.Line ), 1, info.Method ) );
+                info.NextMatch( );
+            }
+        }
+
+        /// <summary>
+        /// Writes an exception into one or more log entries
+        /// </summary>
+        /// <param name="source">Log source</param>
+        /// <param name="ex">Exception</param>
+        public static void ToLog( Source source, Exception ex )
+        {
+            List< Entry > entries = new List< Entry >( );
+            ToLogEntries( source, ex, entries );
+            foreach ( Entry entry in entries )
+            {
+                Source.HandleEntry( entry );
+            }
+        }
+
+	    /// <summary>
 		/// Converts an exception to a string, with a given number of tabs preceeding the output
 		/// </summary>
-		public static string ToString( System.Exception e, int tabs )
+		public static string ToString( Exception e, int tabs )
 		{
 			if ( e == null )
 			{
@@ -77,20 +123,15 @@ namespace Rb.Core.Utils
 			//	GRRR there's no representation of the stack trace apart from the string :(
 			//	Tear it apart using regular expressions and rebuild
 			//	TODO: If no matches are found, then just write the StackTrace to the builder
-			for ( Match callMatch = ms_CallDumpExp.Match( e.StackTrace ); callMatch.Success; callMatch = callMatch.NextMatch( ) )
+            for ( ExceptionStackTraceInfo info = new ExceptionStackTraceInfo( e.StackTrace ); info.HasMatch; info.NextMatch( ) )
 			{
 				builder.AppendFormat( tabString );
-				builder.AppendFormat( "{0}({1}): {2}", callMatch.Groups[ 2 ].Value, callMatch.Groups[ 3 ].Value, callMatch.Groups[ 1 ].Value );
+				builder.AppendFormat( "{0}({1}): {2}", info.File, info.Line, info.Method );
 				builder.Append( kNewLine );
 			}
 
 			return builder.ToString( ) + ToString( e.InnerException, tabs + 1 );
 		}
-
-		/// <summary>
-		/// Call dump regular expression. Usually in the format " at X in Y: line Z", where X is the function name, Y is the filename, Z is the line number
-		/// </summary>
-		private static Regex ms_CallDumpExp = new Regex( @" at (.+) in (.+)\:line ([0-9]+)" );
 
 	}
 }

@@ -1,28 +1,34 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Xml;
 
 namespace Rb.Core.Resources
 {
 	/// <summary>
-	/// Summary description for ResourceManager.
+	/// Resource management
 	/// </summary>
 	public class ResourceManager
-	{
+    {
+        #region Singleton
 
-		static public ResourceManager Inst
+        /// <summary>
+        /// Resource manager singleton
+        /// </summary>
+		static public ResourceManager Instance
 		{
 			get
 			{
 				return ms_Singleton;
 			}
-		}
+        }
 
-		static ResourceManager ms_Singleton = new ResourceManager( );
+        #endregion
 
-		#region	Setup
 
-		/// <summary>
+        #region	Setup
+
+        /// <summary>
 		/// Adds a provider that can open streams for resources
 		/// </summary>
 		/// <param name="provider"> Provider to add </param>
@@ -53,52 +59,31 @@ namespace Rb.Core.Resources
 		/// Sets up the manager from an XML definition
 		/// </summary>
 		/// <param name="element"> Element that created this manager </param>
-		public void Setup( System.Xml.XmlElement element )
+		public void Setup( XmlElement element )
 		{
 			//	Load providers
-			System.Xml.XmlNodeList providerNodes = element.SelectNodes( "providers/provider" );
-			foreach ( System.Xml.XmlNode curProviderNode in providerNodes )
+			XmlNodeList providerNodes = element.SelectNodes( "providers/provider" );
+			foreach ( XmlNode curProviderNode in providerNodes )
 			{
-				if ( curProviderNode is System.Xml.XmlElement )
-				{
-					string providerTypeName = curProviderNode.Attributes[ "type" ].Value;
-					ResourceProvider newProvider = ( ResourceProvider )Utils.AppDomainUtils.CreateInstance( providerTypeName );
-					if ( newProvider == null )
-					{
-						ResourcesLog.Error( "Unable to find type for provider \"{0}\"", providerTypeName );
-					}
-					else
-					{
-						ResourcesLog.Info( "Creating resource provider \"{0}\"", providerTypeName );
-
-						newProvider.Setup( ( System.Xml.XmlElement ) curProviderNode );
-
-                        AddProvider( newProvider );
-					}
+				if ( curProviderNode is XmlElement )
+                {
+                    ResourceProvider provider = CreateInstance< ResourceProvider >( curProviderNode, "resource provider" );
+                    if ( provider != null )
+                    {
+                        provider.Setup( ( XmlElement )curProviderNode );
+                        AddProvider( provider );
+                    }
 				}
 			}
 
 			//	Load loaders
-			foreach ( System.Xml.XmlNode curLoaderNode in element.SelectNodes( "loaders/loader" ) )
+			foreach ( XmlNode curLoaderNode in element.SelectNodes( "loaders/loader" ) )
 			{
-				if ( curLoaderNode is System.Xml.XmlElement )
-				{
-					System.Xml.XmlAttribute loaderAssembly = curLoaderNode.Attributes[ "assembly" ];	
-					if ( loaderAssembly != null )
+				if ( curLoaderNode is XmlElement )
+                {
+                    ResourceLoader loader = CreateInstance < ResourceLoader >( curLoaderNode, "resource loader" );
+                    if ( loader != null )
 					{
-						AppDomain.CurrentDomain.Load( loaderAssembly.Value );
-					}
-
-					string loaderTypeName = curLoaderNode.Attributes[ "type" ].Value;
-
-					object loader = Utils.AppDomainUtils.CreateInstance( loaderTypeName );
-					if ( loader == null )
-					{
-						ResourcesLog.Error( "Unable to create instance for resource loader type \"{0}\"", loaderTypeName );
-					}
-					else
-					{
-						ResourcesLog.Info( "Creating resource loader \"{0}\"", loaderTypeName );
 						AddLoader( loader );
 					}
 				}
@@ -127,7 +112,7 @@ namespace Rb.Core.Resources
 		/// </summary>
 		/// <param name="path"> Resource path </param>
 		/// <returns>Returns resource</returns>
-		/// <param name="resource">Existing resource to load into</param>
+        /// <param name="parameters">Load parameters</param>
 		/// <remarks>
 		/// Throws a System.ApplicationException if the path could not be opened by any provider, or if there were no loaders that could read the opened stream
 		/// </remarks>
@@ -180,15 +165,16 @@ namespace Rb.Core.Resources
 
 		#region	Private stuff
 
-		private ArrayList m_Providers = new ArrayList( );
-		private ArrayList m_StreamLoaders = new ArrayList( );
-		private ArrayList m_DirectoryLoaders = new ArrayList( );
+		private ArrayList               m_Providers = new ArrayList( );
+		private ArrayList               m_StreamLoaders = new ArrayList( );
+		private ArrayList               m_DirectoryLoaders = new ArrayList( );
+        private static ResourceManager  ms_Singleton = new ResourceManager( );
 
 		/// <summary>
 		/// Adds a loader that can read resource streams
 		/// </summary>
 		/// <param name="loader"> Loader to add </param>
-		private void AddLoader( object loader )
+		private void AddLoader( ResourceLoader loader )
 		{
 			if ( loader is ResourceStreamLoader )
 			{
@@ -199,6 +185,52 @@ namespace Rb.Core.Resources
 				m_DirectoryLoaders.Add( ( ResourceDirectoryLoader )loader );
 			}
 		}
+        
+        /// <summary>
+        /// Creates an object instance from information stored in an XML element
+        /// </summary>
+        /// <param name="node">XML node. Attribute "type" specifies the type to instance, optional attribute "assembly" specified the assembly to load</param>
+        /// <param name="context">Name of the context in which the instance is being created. Used for log output</param>
+        /// <returns>New instance</returns>
+        private static T CreateInstance< T >( XmlNode node, string context )
+        {
+            string          typeName            = node.Attributes[ "type" ].Value;
+            XmlAttribute    assemblyAttribute   = node.Attributes[ "assembly" ];
+
+            object result = null;
+            if ( assemblyAttribute != null )
+            {
+                result = AppDomain.CurrentDomain.Load( assemblyAttribute.Value ).CreateInstance( typeName );
+                if ( result == null )
+                {
+                    ResourcesLog.Error("Unable to create instance for {0} type \"{1}\" from assembly \"{2}\"", context, typeName, assemblyAttribute.Value);
+                }
+                else
+                {
+                    ResourcesLog.Info( "Successfully created {0} type \"{1}\" from assembly \"{2}\"", context, typeName, assemblyAttribute.Value );
+                }
+            }
+            else
+            {
+                result = Utils.AppDomainUtils.CreateInstance( typeName );
+                if ( result == null )
+                {
+                    ResourcesLog.Error( "Unable to create instance for {0} type \"{1}\" from current app domain", context, typeName );
+                }
+                else
+                {
+                    ResourcesLog.Info( "Successfully created {0} type \"{1}\" from current app domain", context, typeName );
+                }
+            }
+
+            if ( !( result is T ) )
+            {
+                ResourcesLog.Error( "Created instance of {0} type \"{1}\" but could not cast it to \"{2}\"", context, typeName, typeof( T ) );
+                return default( T );
+            }
+
+            return ( T )result;
+        }
 
 		#endregion
 

@@ -41,6 +41,7 @@
     <Compile Include="Components\ComponentLoadParameters.cs" />
     <Compile Include="Components\IBuilder.cs" />
     <Compile Include="Components\IChild.cs" />
+    <Compile Include="Components\IInstanceBuilder.cs" />
     <Compile Include="Components\IMessageHandler.cs" />
     <Compile Include="Components\IMessageHub.cs" />
     <Compile Include="Components\INamed.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Resources\IPathDirectory.cs" />
     <Compile Include="Resources\LoadParameters.cs" />
     <Compile Include="Resources\ResourceDirectoryLoader.cs" />
+    <Compile Include="Resources\ResourceLoader.cs" />
     <Compile Include="Resources\ResourceManager.cs" />
     <Compile Include="Resources\ResourceProvider.cs" />
     <Compile Include="Resources\ResourceStreamLoader.cs" />
@@ -85,7 +87,9 @@
     <Compile Include="Utils\BinaryReaderHelpers.cs" />
     <Compile Include="Utils\DispatchMap.cs" />
     <Compile Include="Utils\ExceptionUtils.cs" />
+    <Compile Include="Utils\ExceptionStackTraceInfo.cs" />
     <Compile Include="Utils\TinyTime.cs" />
+    <Compile Include="Utils\XmlHelpers.cs" />
     <Compile Include="World\ISceneController.cs" />
     <Compile Include="World\ISceneObject.cs" />
     <Compile Include="World\ISceneViewer.cs" />

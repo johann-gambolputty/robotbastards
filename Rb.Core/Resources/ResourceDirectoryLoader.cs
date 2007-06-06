@@ -5,7 +5,7 @@ namespace Rb.Core.Resources
 	/// <summary>
 	/// Loads resources from directories
 	/// </summary>
-	public abstract class ResourceDirectoryLoader
+    public abstract class ResourceDirectoryLoader : ResourceLoader
 	{
 		#region	Directory loading
 

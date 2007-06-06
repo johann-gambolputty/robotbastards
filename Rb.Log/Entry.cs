@@ -82,9 +82,9 @@ namespace Rb.Log
         /// <returns>String representation of this entry</returns>
         public override string ToString( )
         {
-            if (m_CachedString == null)
+            if ( m_CachedString == null )
             {
-                m_CachedString = string.Format("{0}({1},{2}):[{3}->{4}]<{5}>{6}", File, Line, Column, Thread, Method, Source, Message);
+                m_CachedString = string.Format( "{0}({1},{2}):[{3}->{4}]<{5}>{6}", File, Line, Column, Thread, Method, Source, Message );
             }
             return m_CachedString;
         }

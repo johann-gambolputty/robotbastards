@@ -1,8 +1,4 @@
 using System;
-using System.Diagnostics;
-using System.Collections;
-using System.Text;
-using System.Collections.Generic;
 
 namespace Rb.Log
 {
@@ -109,14 +105,23 @@ namespace Rb.Log
 				//	(skip gets 2 extra to cope with the Locate() call, and this call)
 				Entry newEntry = new Entry( this, string.Format( msg, args ) ).Locate( skip + 2 );
 
-				System.Diagnostics.Trace.WriteLine( newEntry.ToString( ) );
-
-				if ( OnNewLogEntry != null )
-				{
-					OnNewLogEntry( newEntry );
-				}
+                HandleEntry( newEntry );
 			}
 		}
+
+        /// <summary>
+        /// Handles a new log entry
+        /// </summary>
+        /// <param name="entry">New log entry</param>
+        public static void HandleEntry( Entry entry )
+        {
+			System.Diagnostics.Trace.WriteLine( entry.ToString( ) );
+
+			if ( OnNewLogEntry != null )
+			{
+				OnNewLogEntry( entry );
+			}
+        }
 
         /// <summary>
         /// Invoked when a new log entry is created
