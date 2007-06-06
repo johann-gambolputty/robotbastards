@@ -67,7 +67,7 @@ namespace Rb.Core.Components
             set { ms_Instance = value; }
         }
 
-        private static IBuilder ms_Instance;
+        private static IBuilder ms_Instance = new Builder( );
 
         #endregion
     }

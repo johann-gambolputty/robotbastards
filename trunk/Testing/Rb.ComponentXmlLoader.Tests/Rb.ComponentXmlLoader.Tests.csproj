@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{61B562C4-66D5-4048-B482-858A791249A2}</ProjectGuid>
+    <ProjectGuid>{46367F66-7E89-448D-B038-2DA69C2754B6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rb.ComponentXmlLoader</RootNamespace>
-    <AssemblyName>Rb.ComponentXmlLoader</AssemblyName>
+    <RootNamespace>Rb.ComponentXmlLoader.Tests</RootNamespace>
+    <AssemblyName>Rb.ComponentXmlLoader.Tests</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,30 +28,23 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.2.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseBuilder.cs" />
-    <Compile Include="Errors.cs" />
-    <Compile Include="InstanceBuilder.cs" />
-    <Compile Include="Loader.cs" />
-    <Compile Include="ObjectBuilder.cs" />
+    <Compile Include="TestLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReferenceBuilder.cs" />
-    <Compile Include="ResourceBuilder.cs" />
-    <Compile Include="RootBuilder.cs" />
-    <Compile Include="ValueBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">
+    <ProjectReference Include="..\..\Rb.ComponentXmlLoader\Rb.ComponentXmlLoader.csproj">
+      <Project>{61B562C4-66D5-4048-B482-858A791249A2}</Project>
+      <Name>Rb.ComponentXmlLoader</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rb.Log\Rb.Log.csproj">
-      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
-      <Name>Rb.Log</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

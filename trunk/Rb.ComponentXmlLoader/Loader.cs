@@ -1,9 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Xml;
 
 using Rb.Core.Resources;
 using Rb.Core.Components;
+using Rb.Core;
+using Rb.Log;
 
 namespace Rb.ComponentXmlLoader
 {
@@ -34,17 +35,45 @@ namespace Rb.ComponentXmlLoader
 		/// <returns>Returns resource</returns>
 		public override Object Load( System.IO.Stream input, string inputSource, LoadParameters parameters )
 		{
-		    BaseBuilder builder;
-            if ( parameters.Target != null )
+            XmlTextReader reader = new XmlTextReader( input );
+		    reader.WhitespaceHandling = WhitespaceHandling.Significant;
+            try
             {
-                builder = new ReferenceBuilder( ( ComponentLoadParameters )parameters, parameters.Target );
+                if ( reader.MoveToContent( ) == XmlNodeType.None )
+                {
+                    ResourcesLog.Warning( "XML component resource \"{0}\" was empty - returning null", inputSource );
+                    return null;
+                }
             }
-            else
+            catch ( XmlException ex )
             {
-                builder = new ReferenceBuilder( ( ComponentLoadParameters )parameters, parameters.Target );
+                ResourcesLog.Error( "Moving to XML component resource \"{0}\" content threw an exception", inputSource );
+
+                Entry entry = new Entry( ResourcesLog.GetSource( Severity.Error ), ex.Message );
+                Source.HandleEntry( entry.Locate( inputSource, ex.LineNumber, ex.LinePosition, "" ) );
+                return null;
             }
 
-            builder.Resolve( );
+            ErrorCollection errors = new ErrorCollection( inputSource );
+		    BaseBuilder builder = BaseBuilder.CreateBuilderFromReader( ( ComponentLoadParameters )parameters, errors, reader );
+
+            if ( errors.Count == 0 )
+            {
+                BaseBuilder.SafePostCreate( builder );
+                if ( errors.Count == 0 )
+                {
+                    BaseBuilder.SafeResolve( builder, null );
+                }
+            }
+
+            if ( errors.Count > 0 )
+            {
+                foreach ( Entry error in errors )
+                {
+                    Source.HandleEntry( error );
+                }
+                throw new ApplicationException( string.Format( "Failed to load component XML resource \"{0}\" (see log for details)", inputSource ) );
+            }
 
 		    return builder.BuildObject;
 		}
