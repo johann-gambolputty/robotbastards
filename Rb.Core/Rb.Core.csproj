@@ -37,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\Builder.cs" />
+    <Compile Include="Components\Component.cs" />
     <Compile Include="Components\ComponentHelpers.cs" />
     <Compile Include="Components\ComponentLoadParameters.cs" />
     <Compile Include="Components\IBuilder.cs" />
@@ -48,6 +49,7 @@
     <Compile Include="Components\IParent.cs" />
     <Compile Include="Components\IUnique.cs" />
     <Compile Include="Components\Message.cs" />
+    <Compile Include="Components\MessageHub.cs" />
     <Compile Include="Components\MessageRecipientChain.cs" />
     <Compile Include="Logs.cs" />
     <Compile Include="Maths\BigPoint3.cs" />

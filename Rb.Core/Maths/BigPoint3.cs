@@ -1,6 +1,6 @@
 using System;
 
-namespace RbEngine.Maths
+namespace Rb.Core.Maths
 {
 	/// <summary>
 	/// A point in world space, using 64 bit integers to store coordinates (units are in millimetres)
