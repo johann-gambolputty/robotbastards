@@ -12,7 +12,7 @@ namespace Rb.Core.Components
 		/// <summary>
 		/// Gets the message type id associated with a message type
 		/// </summary>
-		public static MessageTypeId	IdFromType( Type messageType )
+		public static MessageTypeId IdFromType( Type messageType )
 		{
 			return ( MessageTypeId )( messageType.GetHashCode( ) );
 		}
@@ -20,7 +20,7 @@ namespace Rb.Core.Components
 		/// <summary>
 		/// Gets the type identifier of this message
 		/// </summary>
-		public MessageTypeId	TypeId
+		public MessageTypeId TypeId
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Rb.Core.Components
 		/// </summary>
 		/// <param name="typeId"> Message type identifier </param>
 		/// <returns> Returns a new message of the specified type </returns>
-		public static Message	CreateFromTypeId( MessageTypeId typeId )
+		public static Message CreateFromTypeId( MessageTypeId typeId )
 		{
 			// TODO: AP: COMPLETEME (use MessageBuilder instead?)
 			Type messageType = null; // MessageTypeManager.Inst.GetMessageTypeFromId( typeId );
@@ -54,7 +54,7 @@ namespace Rb.Core.Components
 		/// <summary>
 		/// Reads a message from a binary stream
 		/// </summary>
-		public static Message	CreateFromStream( System.IO.BinaryReader input )
+		public static Message CreateFromStream( System.IO.BinaryReader input )
 		{
 			Message msg = CreateFromTypeId( input.ReadUInt16( ) );
 			msg.Read( input );
@@ -68,7 +68,7 @@ namespace Rb.Core.Components
 		/// <remarks>
 		/// This implementation writes the message type ID to the stream
 		/// </remarks>
-		public virtual void		Write( System.IO.BinaryWriter output )
+		public virtual void Write( System.IO.BinaryWriter output )
 		{
 			output.Write( TypeId );
 		}
@@ -77,7 +77,7 @@ namespace Rb.Core.Components
 		/// Reads a message from the specified stream
 		/// </summary>
 		/// <param name="input"> Input stream </param>
-		protected virtual void	Read( System.IO.BinaryReader input )
+		protected virtual void Read( System.IO.BinaryReader input )
 		{
 		}
 
@@ -86,7 +86,7 @@ namespace Rb.Core.Components
 		/// </summary>
 		/// <param name="input">Input stream</param>
 		/// <returns>Returns the new message</returns>
-		public static Message	ReadMessage( System.IO.BinaryReader input )
+		public static Message ReadMessage( System.IO.BinaryReader input )
 		{
 			Message msg = CreateFromTypeId( input.ReadUInt16( ) );
 			msg.Read( input );
@@ -99,7 +99,7 @@ namespace Rb.Core.Components
 		/// Adds this message to a recipient list
 		/// </summary>
 		/// <param name="recipients">Recipient chain</param>
-		public void					AddToRecipientChain( MessageRecipientChain recipients )
+		public void AddToRecipientChain( MessageRecipientChain recipients )
 		{
 			m_Recipients		= recipients;
 			m_RecipientIndex	= 0;
@@ -108,7 +108,7 @@ namespace Rb.Core.Components
 		/// <summary>
 		/// Delivers this message to the next recipient in the recipient chain that it is attached to
 		/// </summary>
-		public void					DeliverToNextRecipient( )
+		public void DeliverToNextRecipient( )
 		{
 			if ( m_Recipients != null )
 			{
@@ -119,7 +119,7 @@ namespace Rb.Core.Components
 		/// <summary>
 		/// Removes this message from a recipient list
 		/// </summary>
-		public void					RemoveFromRecipientChain( )
+		public void RemoveFromRecipientChain( )
 		{
 			m_Recipients = null;
 		}

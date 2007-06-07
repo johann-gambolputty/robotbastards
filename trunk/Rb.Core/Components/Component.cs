@@ -7,7 +7,7 @@ namespace Rb.Core.Components
 	/// <summary>
 	/// Component is a handy implementation of a bunch of component interfaces
 	/// </summary>
-	class Component : Node, IUnique, IMessageHandler, IMessageHub
+	public class Component : Node, IUnique, IMessageHandler, IMessageHub
 	{
 		#region IUnique Members
 
@@ -22,20 +22,20 @@ namespace Rb.Core.Components
 
 		#endregion
 
-
 		#region IMessageHandler Members
 
 		/// <summary>
 		/// Handles a message
 		/// </summary>
 		/// <param name="msg">Message to handle</param>
-		public void HandleMessage( Message msg )
+		public object HandleMessage( Message msg )
 		{
+            DeliverMessageToRecipients( msg );
 			if ( m_MessageMap == null )
 			{
-				m_MessageMap = DispatchMap.SafeGet( GetType( ) );
+				m_MessageMap = Rb.Core.Utils.DispatchMap.SafeGet( GetType( ) );
 			}
-			m_MessageMap.Dispatch( this, msg );
+			return m_MessageMap.Dispatch( this, msg );
 		}
 
 		#endregion
@@ -70,14 +70,25 @@ namespace Rb.Core.Components
 			}
 			m_MessageHub.RemoveRecipient( messageType, obj );
 		}
+		
+		/// <summary>
+		/// Sends a message to all recipients of that message type
+		/// </summary>
+		public void DeliverMessageToRecipients( Message msg )
+		{
+			if ( m_MessageHub != null )
+			{
+			    m_MessageHub.DeliverMessageToRecipients( msg );
+            }
+		}
 
 		#endregion
 
 		#region Private stuff
 
-		private Guid m_Id = Guid.Empty;
-		private Utils.DispatchMap m_MessageMap;
-		private MessageHub m_MessageHub;
+		private Guid			    m_Id = Guid.Empty;
+		private Utils.DispatchMap	m_MessageMap;
+		private MessageHub		    m_MessageHub;
 
 		#endregion
 	}

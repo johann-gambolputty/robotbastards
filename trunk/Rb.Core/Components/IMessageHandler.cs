@@ -11,6 +11,7 @@ namespace Rb.Core.Components
 		/// Handles messages
 		/// </summary>
 		/// <param name="msg">Message to handle</param>
-		void HandleMessage( Message msg );
+		/// <returns>User-defined return value</returns>
+        object HandleMessage( Message msg );
 	}
 }

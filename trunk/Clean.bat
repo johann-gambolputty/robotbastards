@@ -1,4 +1,5 @@
-call "%VS71COMNTOOLS%vsvars32.bat"
+REM call "%VS71COMNTOOLS%vsvars32.bat"
+call vsvars32.bat
 devenv RB.sln /clean Debug
 devenv RB.sln /clean Release
 devenv RB.sln /clean Documentation

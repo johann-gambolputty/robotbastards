@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.ComponentXmlLoader", "Rb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.ComponentXmlLoader.Tests", "Testing\Rb.ComponentXmlLoader.Tests\Rb.ComponentXmlLoader.Tests.csproj", "{46367F66-7E89-448D-B038-2DA69C2754B6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Rendering", "Rb.Rendering\Rb.Rendering.csproj", "{EC130734-6F0F-402B-8215-9F133F0ADEE4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{46367F66-7E89-448D-B038-2DA69C2754B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46367F66-7E89-448D-B038-2DA69C2754B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46367F66-7E89-448D-B038-2DA69C2754B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC130734-6F0F-402B-8215-9F133F0ADEE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC130734-6F0F-402B-8215-9F133F0ADEE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC130734-6F0F-402B-8215-9F133F0ADEE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC130734-6F0F-402B-8215-9F133F0ADEE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
