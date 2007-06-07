@@ -60,11 +60,27 @@ namespace Rb.Core.Components
 	public class MessageRecipientChain
 	{
 		/// <summary>
+		/// Setup constructor. Sets the type of message this chain handles
+		/// </summary>
+		public MessageRecipientChain( Type messageType )
+		{
+			m_MessageType = messageType;
+		}
+
+		/// <summary>
+		/// Gets the type of message this chain handles
+		/// </summary>
+		public Type MessageType
+		{
+			get { return m_MessageType; }
+		}
+	
+		/// <summary>
 		/// Adds a recipient to the recipient list. The recipient will be among the first to receive delivered messages
 		/// </summary>
 		/// <param name="recipient">New message recipient</param>
 		/// <param name="order">Recipient order</param>
-		public void				AddRecipient( MessageRecipientDelegate recipient, int order )
+		public void AddRecipient( MessageRecipientDelegate recipient, int order )
 		{
 			m_Recipients.Add( new Recipient( recipient, order ) );
 			m_Recipients.Sort( );
@@ -74,7 +90,7 @@ namespace Rb.Core.Components
 		/// Adds a recipient to the end of the recipient list. The recipient will be among the last to receive delivered messages
 		/// </summary>
 		/// <param name="recipient">New message recipient</param>
-		public void				AddRecipientToEnd( MessageRecipientDelegate recipient )
+		public void AddRecipientToEnd( MessageRecipientDelegate recipient )
 		{
 			m_Recipients.Add( recipient );
 		}
@@ -82,7 +98,7 @@ namespace Rb.Core.Components
 		/// <summary>
 		/// Removes a recipient from this chain
 		/// </summary>
-		public void				RemoveRecipient( Object recipient )
+		public void RemoveRecipient( Object recipient )
 		{
 			for ( int index = 0; index < m_Recipients.Count; ++index )
 			{
@@ -101,7 +117,7 @@ namespace Rb.Core.Components
 		/// Attaches a message to this recipient list, and delivers it to the first recipient
 		/// </summary>
 		/// <param name="msg">Message to deliver</param>
-		public void				Deliver( Message msg )
+		public void Deliver( Message msg )
 		{
 			if ( m_Recipients.Count > 0 )
 			{
@@ -120,7 +136,7 @@ namespace Rb.Core.Components
 		/// </summary>
 		/// <param name="recipientIndex">A reference to the index of the recipient in the chain. Set to the index of the next valid recipient</param>
 		/// <param name="msg">Message to deliver</param>
-		public void				DeliverToNext( ref int recipientIndex, Message msg )
+		public void DeliverToNext( ref int recipientIndex, Message msg )
 		{
 			int numRecipients = m_Recipients.Count;
 			do
@@ -149,7 +165,7 @@ namespace Rb.Core.Components
 		/// <summary>
 		/// Ordered recipient information
 		/// </summary>
-		private struct Recipient : IComparable
+		private struct Recipient : IComparable< Recipient >
 		{
 			public int						Order;
 			public MessageRecipientDelegate	RecipientDelegate;
@@ -168,15 +184,16 @@ namespace Rb.Core.Components
 			/// <summary>
 			/// Compares this recipient with another
 			/// </summary>
-			public int CompareTo( object obj )
+			public int CompareTo( Recipient obj )
 			{
-				int objOrder = ( ( Recipient )obj ).Order;
+				int objOrder = obj.Order;
 				return ( Order < objOrder ) ? -1 : ( Order > objOrder ? 1 : 0 );
 			}
 
 			#endregion
 		}
 
+	    private Type        m_MessageType;
 		private ArrayList	m_Recipients = new ArrayList( );
 	}
 }

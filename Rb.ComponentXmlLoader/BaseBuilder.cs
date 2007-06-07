@@ -82,22 +82,28 @@ namespace Rb.ComponentXmlLoader
                         result = new ValueBuilder( parameters, errors, reader, double.Parse( reader.GetAttribute( "value" ) ) );
                         break;
                     case "point3"   :
-                        float x = float.Parse( reader.GetAttribute( "x" ) );
-						float y = float.Parse( reader.GetAttribute( "y" ) );
-						float z = float.Parse( reader.GetAttribute( "y" ) );
-						result = new ValueBuilder( parameters, errors, reader, new Point3( x, y, z ) );
-						break;
+                        {
+                            float x = float.Parse( reader.GetAttribute( "x" ) );
+						    float y = float.Parse( reader.GetAttribute( "y" ) );
+						    float z = float.Parse( reader.GetAttribute( "y" ) );
+						    result = new ValueBuilder( parameters, errors, reader, new Point3( x, y, z ) );
+						    break;
+                        }
 					case "vector2"	:
-						float x = float.Parse( reader.GetAttribute( "x" ) );
-						float y = float.Parse( reader.GetAttribute( "y" ) );
-						result = new ValueBuilder( parameters, errors, reader, new Vector2( x, y ) );
-						break;
+                        {
+						    float x = float.Parse( reader.GetAttribute( "x" ) );
+						    float y = float.Parse( reader.GetAttribute( "y" ) );
+						    result = new ValueBuilder( parameters, errors, reader, new Vector2( x, y ) );
+						    break;
+                        }
 					case "vector3"	:
-						float x = float.Parse( reader.GetAttribute( "x" ) );
-						float y = float.Parse( reader.GetAttribute( "y" ) );
-						float z = float.Parse( reader.GetAttribute( "y" ) );
-						result = new ValueBuilder( parameters, errors, reader, new Vector3( x, y, z ) );
-						break;
+                        {
+						    float x = float.Parse( reader.GetAttribute( "x" ) );
+						    float y = float.Parse( reader.GetAttribute( "y" ) );
+						    float z = float.Parse( reader.GetAttribute( "y" ) );
+						    result = new ValueBuilder( parameters, errors, reader, new Vector3( x, y, z ) );
+						    break;
+                        }
                     case "point2"   :
                     case "quat"     :
                         {
@@ -208,10 +214,12 @@ namespace Rb.ComponentXmlLoader
                     if ( m_Id != null )
                     {
                         IUnique uniqueObject = m_Object as IUnique;
+                        Guid guid = new Guid( m_Id );
                         if ( uniqueObject != null )
                         {
-                            uniqueObject.Id = new Guid( m_Id );
+                            uniqueObject.Id = guid;
                         }
+                        Parameters.Objects[ guid ] = m_Object;
                     }
                 }
             }
