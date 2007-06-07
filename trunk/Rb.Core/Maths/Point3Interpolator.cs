@@ -1,6 +1,6 @@
 using System;
 
-namespace RbEngine.Maths
+namespace Rb.Core.Maths
 {
 	/// <summary>
 	/// Stores two points and provides a method for interpolating between them

@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace RbEngine.Maths
+namespace Rb.Core.Maths
 {
 	/// <summary>
 	/// Stores a collection of control points that defines the shape of a ControlledSpline

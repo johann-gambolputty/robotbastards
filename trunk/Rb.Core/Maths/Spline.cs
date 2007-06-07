@@ -1,6 +1,6 @@
 using System;
 
-namespace RbEngine.Maths
+namespace Rb.Core.Maths
 {
 	/// <summary>
 	/// Abstract base class for spline curves (should be "Curve" instead?)

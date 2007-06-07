@@ -1,6 +1,6 @@
 using System;
 
-namespace RbEngine.Maths
+namespace Rb.Core.Maths
 {
 	/// <summary>
 	/// 3 element floating point vector

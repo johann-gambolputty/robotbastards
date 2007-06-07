@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using NUnit.Framework;
 
+using Rb.Core.Components;
 using Rb.ComponentXmlLoader;
 
 namespace Rb.ComponentXmlLoader.Tests
@@ -14,12 +15,18 @@ namespace Rb.ComponentXmlLoader.Tests
     {
         public static int Definition = 0;
 
-        public class Root
+        public class Root : Node, IUnique
         {
             public Root( )
             {
                 Assert.AreEqual( Definition++, 0 );
             }
+
+			public Guid Id
+			{
+				get { return m_Id; }
+				set { m_Id = value; }
+			}
 
             public int Value
             {
@@ -29,6 +36,8 @@ namespace Rb.ComponentXmlLoader.Tests
                     Assert.AreEqual( Definition++, 1 );
                 }
             }
+
+			private Guid m_Id = Guid.Empty;
         }
 
         [Test]

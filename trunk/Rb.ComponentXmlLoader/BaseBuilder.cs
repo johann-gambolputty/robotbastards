@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml;
 using System.Reflection;
 
+using Rb.Core.Maths;
 using Rb.Core.Components;
 using Rb.Core.Utils;
 using Rb.Core;
@@ -38,7 +39,7 @@ namespace Rb.ComponentXmlLoader
                     case "ref"      : result = new ReferenceBuilder( parameters, errors, reader );      break;
                     case "resource" : result = new ResourceBuilder( parameters, errors, reader );       break;
                     case "instance" : result = new InstanceBuilder( parameters, errors, reader );       break;
-                    case "string":
+                    case "string"	:
                         result = new ValueBuilder( parameters, errors, reader, reader.GetAttribute( "value" ) );
                         break;
                     case "guid"     :
@@ -80,10 +81,24 @@ namespace Rb.ComponentXmlLoader
                     case "double"   :
                         result = new ValueBuilder( parameters, errors, reader, double.Parse( reader.GetAttribute( "value" ) ) );
                         break;
-                    case "point2"   :
                     case "point3"   :
-                    case "vector2"  :
-                    case "vector3"  :
+                        float x = float.Parse( reader.GetAttribute( "x" ) );
+						float y = float.Parse( reader.GetAttribute( "y" ) );
+						float z = float.Parse( reader.GetAttribute( "y" ) );
+						result = new ValueBuilder( parameters, errors, reader, new Point3( x, y, z ) );
+						break;
+					case "vector2"	:
+						float x = float.Parse( reader.GetAttribute( "x" ) );
+						float y = float.Parse( reader.GetAttribute( "y" ) );
+						result = new ValueBuilder( parameters, errors, reader, new Vector2( x, y ) );
+						break;
+					case "vector3"	:
+						float x = float.Parse( reader.GetAttribute( "x" ) );
+						float y = float.Parse( reader.GetAttribute( "y" ) );
+						float z = float.Parse( reader.GetAttribute( "y" ) );
+						result = new ValueBuilder( parameters, errors, reader, new Vector3( x, y, z ) );
+						break;
+                    case "point2"   :
                     case "quat"     :
                         {
                             errors.Add( reader, "Element is not yet supported", reader.Name );

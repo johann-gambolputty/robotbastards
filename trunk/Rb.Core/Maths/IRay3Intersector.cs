@@ -1,6 +1,6 @@
 using System;
 
-namespace RbEngine.Maths
+namespace Rb.Core.Maths
 {
 	/// <summary>
 	/// Interface for objects that can be intersected by a ray
