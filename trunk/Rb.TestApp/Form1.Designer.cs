@@ -28,15 +28,16 @@ namespace Rb.TestApp
         /// </summary>
         private void InitializeComponent()
         {
-            this.logListView1 = new Rb.Log.Controls.LogListView();
+            this.logListView1 = new Rb.Log.Controls.Vs.VsLogListView();
             this.SuspendLayout();
             // 
             // logListView1
             // 
             this.logListView1.AllowColumnReorder = true;
             this.logListView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logListView1.ErrorColour = System.Drawing.Color.Red;
             this.logListView1.FullRowSelect = true;
-            this.logListView1.GridLines = true;
+            this.logListView1.InfoColour = System.Drawing.Color.BlanchedAlmond;
             this.logListView1.Location = new System.Drawing.Point(0, 0);
             this.logListView1.MultiSelect = false;
             this.logListView1.Name = "logListView1";
@@ -44,7 +45,9 @@ namespace Rb.TestApp
             this.logListView1.Size = new System.Drawing.Size(648, 258);
             this.logListView1.TabIndex = 0;
             this.logListView1.UseCompatibleStateImageBehavior = false;
+            this.logListView1.VerboseColour = System.Drawing.Color.White;
             this.logListView1.View = System.Windows.Forms.View.Details;
+            this.logListView1.WarningColour = System.Drawing.Color.Orange;
             // 
             // Form1
             // 
@@ -61,7 +64,8 @@ namespace Rb.TestApp
 
         #endregion
 
-		private Rb.Log.Controls.LogListView logListView1;
+        private Rb.Log.Controls.Vs.VsLogListView logListView1;
+
     }
 }
 

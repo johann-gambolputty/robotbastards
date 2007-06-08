@@ -5,7 +5,7 @@ using System.Text;
 namespace Rb.Rendering
 {
     /// <summary>
-    /// Interface for objects that modify the render state prior to rendering, and restore it after
+    /// Passes modify the rendering of objects in parallel (unlike ITechnique, which modifies serially)
     /// </summary>
     public interface IPass
     {

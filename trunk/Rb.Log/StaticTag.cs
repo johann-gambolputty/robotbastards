@@ -40,7 +40,7 @@ namespace Rb.Log
 		[Conditional( "DEBUG" )]
 		public static void DebugVerbose( string msg, params object[ ] args )
 		{
-			ms_Root.GetDebugSource( Severity.Verbose ).Write( msg, args );
+			ms_Root.GetDebugSource( Severity.Verbose ).Write( 1, msg, args );
 		}
 
 		/// <summary>
@@ -51,7 +51,7 @@ namespace Rb.Log
 		[Conditional( "DEBUG" )]
 		public static void DebugInfo( string msg, params object[ ] args )
 		{
-			ms_Root.GetDebugSource( Severity.Info ).Write( msg, args );
+			ms_Root.GetDebugSource( Severity.Info ).Write( 1, msg, args );
 		}
 
 		/// <summary>
@@ -62,7 +62,7 @@ namespace Rb.Log
 		[Conditional( "DEBUG" )]
 		public static void DebugWarning( string msg, params object[ ] args )
 		{
-			ms_Root.GetDebugSource( Severity.Warning ).Write( msg, args );
+			ms_Root.GetDebugSource( Severity.Warning ).Write( 1, msg, args );
 		}
 
 		/// <summary>
@@ -73,7 +73,7 @@ namespace Rb.Log
 		[Conditional( "DEBUG" )]
 		public static void DebugError( string msg, params object[ ] args )
 		{
-			ms_Root.GetDebugSource( Severity.Error ).Write( msg, args );
+			ms_Root.GetDebugSource( Severity.Error ).Write( 1, msg, args );
 		}
 
 		#endregion
@@ -87,7 +87,7 @@ namespace Rb.Log
 		/// <param name="args">Format arguments</param>
 		public static void Verbose( string msg, params object[ ] args )
 		{
-			ms_Root.GetSource( Severity.Verbose ).Write( msg, args );
+			ms_Root.GetSource( Severity.Verbose ).Write( 1, msg, args );
 		}
 
 		/// <summary>
@@ -97,7 +97,7 @@ namespace Rb.Log
 		/// <param name="args">Format arguments</param>
 		public static void Info( string msg, params object[ ] args )
 		{
-			ms_Root.GetSource( Severity.Info ).Write( msg, args );
+			ms_Root.GetSource( Severity.Info ).Write( 1, msg, args );
 		}
 
 		/// <summary>
@@ -107,7 +107,7 @@ namespace Rb.Log
 		/// <param name="args">Format arguments</param>
 		public static void Warning( string msg, params object[ ] args )
 		{
-			ms_Root.GetSource( Severity.Warning ).Write( msg, args );
+			ms_Root.GetSource( Severity.Warning ).Write( 1, msg, args );
 		}
 
 		/// <summary>
@@ -117,7 +117,7 @@ namespace Rb.Log
 		/// <param name="args">Format arguments</param>
 		public static void Error( string msg, params object[ ] args )
 		{
-			ms_Root.GetSource( Severity.Error ).Write( msg, args );
+			ms_Root.GetSource( Severity.Error ).Write( 1, msg, args );
 		}
 
 		#endregion

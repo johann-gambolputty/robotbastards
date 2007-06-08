@@ -168,7 +168,7 @@ namespace Rb.ComponentXmlLoader
         /// <summary>
         /// Called before resolution and after creation
         /// </summary>
-        public virtual void PostCreate( )
+        public virtual void PostCreate( BaseBuilder parentBuilder )
         {
             PostCreateChildBuilders( m_PreLinkBuilders );
             PostCreateChildBuilders( m_PostLinkBuilders );
@@ -230,11 +230,11 @@ namespace Rb.ComponentXmlLoader
         /// <summary>
         /// Calls BaseBuilder.PostCreate() on the specified builder object
         /// </summary>
-        public static void SafePostCreate( BaseBuilder builder )
+        public static void SafePostCreate( BaseBuilder builder, BaseBuilder parentBuilder )
         {
             try
             {
-                builder.PostCreate( );
+                builder.PostCreate( parentBuilder );
             }
             catch ( Exception ex )
             {
@@ -500,11 +500,11 @@ namespace Rb.ComponentXmlLoader
         /// Calls BaseBuilder.PostCreate() for a child list of BaseBuilder objects
         /// </summary>
         /// <param name="builders">Child BaseBuilder list</param>
-        private static void PostCreateChildBuilders( List< BaseBuilder > builders )
+        private void PostCreateChildBuilders( List< BaseBuilder > builders )
         {
             foreach ( BaseBuilder builder in builders )
             {
-                builder.PostCreate( );
+                SafePostCreate( builder, this );
             }
         }
 
@@ -516,7 +516,7 @@ namespace Rb.ComponentXmlLoader
         {
             foreach ( BaseBuilder builder in builders )
             {
-                builder.Resolve( this );
+                SafeResolve( builder, this );
             }
         }
 
