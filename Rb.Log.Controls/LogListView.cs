@@ -2,16 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Rb.Log.Controls
 {
 	public partial class LogListView : ListView
-	{
-		public LogListView( )
+    {
+        #region Construction and destruction
+
+        public LogListView( )
 		{
+            m_SourceColours[ ( int )Severity.Verbose ]  = Color.White;
+            m_SourceColours[ ( int )Severity.Info ]     = Color.BlanchedAlmond;
+            m_SourceColours[ ( int )Severity.Warning ]  = Color.Orange;
+            m_SourceColours[ ( int )Severity.Error ]    = Color.Red;
+
 			InitializeComponent( );
 
 			DoubleBuffered = true;
@@ -27,22 +32,81 @@ namespace Rb.Log.Controls
 		{
 			Rb.Log.Source.OnNewLogEntry -= new OnNewLogEntryDelegate( OnNewLogEntry );
 		}
+        
 
-		void LogListView_DrawItem( object sender, DrawListViewItemEventArgs e )
+        static LogListView( )
+        {
+            Rb.Log.Source.OnNewLogEntry += new OnNewLogEntryDelegate( AddEntryToCache );
+        }
+
+        #endregion
+
+        #region Source colour properties
+
+        public Color VerboseColour
+        {
+            get { return GetSourceColour(Severity.Verbose); }
+            set { SetSourceColour(Severity.Verbose, value); }
+        }
+        public Color InfoColour
+        {
+            get { return GetSourceColour(Severity.Info); }
+            set { SetSourceColour(Severity.Info, value); }
+        }
+        public Color WarningColour
+        {
+            get { return GetSourceColour(Severity.Warning); }
+            set { SetSourceColour(Severity.Warning, value); }
+        }
+        public Color ErrorColour
+        {
+            get { return GetSourceColour(Severity.Error); }
+            set { SetSourceColour(Severity.Error, value); }
+        }
+
+        #endregion
+
+        #region Private source colours
+
+        private Color[] m_SourceColours = new Color[ ( int )Severity.Count ];
+
+        private Color GetSourceColour( Severity s )
+        {
+            return m_SourceColours[ ( int )s ];
+        }
+
+        private void SetSourceColour( Severity s, Color col )
+        {
+            m_SourceColours[ ( int )s ] = col;
+        }
+
+        #endregion
+
+        #region View rendering
+        
+        private void RefreshView( )
+        {
+            Items.Clear( );
+
+            for ( int cacheIndex = ms_CacheStart; cacheIndex != ms_CacheIndex; cacheIndex = ( cacheIndex + 1 ) % ms_Cache.Length )
+            {
+                OnNewLogEntry( ms_Cache[ cacheIndex ] );
+            }
+        }
+
+        void LogListView_DrawItem( object sender, DrawListViewItemEventArgs e )
         {
             Entry entry = ( Entry )e.Item.Tag;
-            System.Drawing.Color backCol = System.Drawing.Color.White;
-
-            switch ( entry.Severity )
-            {
-                case Severity.Info		: backCol = Color.BlanchedAlmond; break;
-                case Severity.Warning	: backCol = Color.Orange; break;
-                case Severity.Error		: backCol = Color.Red; break;
-            }
+            System.Drawing.Color backCol = m_SourceColours[ ( int )entry.Severity ];
 
             if ( e.Item.Selected )
             {
-                backCol = ControlPaint.Dark( backCol );
+                float darkFactor = 2.0f / 3.0f;
+                float darkR = backCol.R * darkFactor;
+                float darkG = backCol.G * darkFactor;
+                float darkB = backCol.B * darkFactor;
+
+                backCol = Color.FromArgb( ( int )darkR, ( int )darkG, ( int )darkB );
             }
             e.Graphics.FillRectangle( new SolidBrush( backCol ), e.Bounds );
 
@@ -57,10 +121,14 @@ namespace Rb.Log.Controls
             e.DrawDefault = true;
         }
 
-        private bool EntryPassesFilter( Entry entry )
-        {
-            return IsSourceVisible( entry.Source );
-        }
+        #endregion
+
+        #region Entry handling
+
+        private bool    m_TrackingLastItem  = true;
+        private object  m_Lock              = new object();
+
+        private delegate void AddListViewItemDelegate( ListViewItem item );
 
         private void AddListViewItem( ListViewItem item )
         {
@@ -75,8 +143,6 @@ namespace Rb.Log.Controls
                 }
             }
         }
-
-        private delegate void AddListViewItemDelegate( ListViewItem item );
 
         private void OnNewLogEntry( Entry entry )
         {
@@ -116,6 +182,14 @@ namespace Rb.Log.Controls
             }
         }
 
+        #endregion
+
+        #region Entry caching
+
+        private static Entry[]  ms_Cache        = new Entry[ 1000 ];
+        private static int      ms_CacheStart   = 0;
+        private static int      ms_CacheIndex   = 0;
+
         private static void AddEntryToCache( Entry entry )
         {
             ms_Cache[ ms_CacheIndex ] = entry;
@@ -126,13 +200,17 @@ namespace Rb.Log.Controls
             }
         }
 
-        static LogListView( )
-        {
-            Rb.Log.Source.OnNewLogEntry += new OnNewLogEntryDelegate( AddEntryToCache );
-        }
+        #endregion
 
+        #region Entry filtering
+        
         private Dictionary< Rb.Log.Source, bool >   m_SourceFilter = new Dictionary< Rb.Log.Source, bool >( );
         private Dictionary< Rb.Log.Tag, bool >      m_TagFilter = new Dictionary< Rb.Log.Tag, bool >( );
+
+        private bool EntryPassesFilter(Entry entry)
+        {
+            return IsSourceVisible(entry.Source);
+        }
 
         private bool IsSourceVisible( Rb.Log.Source source )
         {
@@ -206,15 +284,11 @@ namespace Rb.Log.Controls
             RefreshView();
         }
 
-        private static Entry[]  ms_Cache            = new Entry[ 1000 ];
-        private static int      ms_CacheStart       = 0;
-        private static int      ms_CacheIndex       = 0;
+        #endregion
 
-        private object          m_Lock              = new object( );
+        #region Interaction
 
-        private bool            m_TrackingLastItem  = true;
-
-		private void LogListView_SelectedIndexChanged( object sender, EventArgs e )
+        private void LogListView_SelectedIndexChanged( object sender, EventArgs e )
 		{
 			if ( SelectedIndices.Count == 0 )
 			{
@@ -226,15 +300,6 @@ namespace Rb.Log.Controls
 				SelectedItems[ 0 ].Selected = true;
 				SelectedItems[ 0 ].EnsureVisible( );
 			}
-		}
-        private void RefreshView( )
-        {
-            Items.Clear( );
-
-            for ( int cacheIndex = ms_CacheStart; cacheIndex != ms_CacheIndex; cacheIndex = ( cacheIndex + 1 ) % ms_Cache.Length )
-            {
-                OnNewLogEntry( ms_Cache[ cacheIndex ] );
-            }
         }
 
         private void BuildSourceFilterContextMenu(ContextMenu menu, Rb.Log.Source source, string prefix)
@@ -288,5 +353,7 @@ namespace Rb.Log.Controls
                 contextMenu.Show( this, e.Location );
             }
         }
-	}
+
+        #endregion
+    }
 }

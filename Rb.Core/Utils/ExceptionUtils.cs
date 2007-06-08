@@ -60,7 +60,7 @@ namespace Rb.Core.Utils
             {
                 return;
             }
-            ExceptionStackTraceInfo info = new ExceptionStackTraceInfo( ex.StackTrace );
+            StackTraceInfo info = new StackTraceInfo( ex.StackTrace );
             
             Entry baseEntry = new Entry( source, ex.Message );
             if ( info.HasMatch )
@@ -123,7 +123,7 @@ namespace Rb.Core.Utils
 			//	GRRR there's no representation of the stack trace apart from the string :(
 			//	Tear it apart using regular expressions and rebuild
 			//	TODO: If no matches are found, then just write the StackTrace to the builder
-            for ( ExceptionStackTraceInfo info = new ExceptionStackTraceInfo( e.StackTrace ); info.HasMatch; info.NextMatch( ) )
+            for ( StackTraceInfo info = new StackTraceInfo( e.StackTrace ); info.HasMatch; info.NextMatch( ) )
 			{
 				builder.AppendFormat( tabString );
 				builder.AppendFormat( "{0}({1}): {2}", info.File, info.Line, info.Method );

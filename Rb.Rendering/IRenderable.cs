@@ -9,6 +9,9 @@ namespace Rb.Rendering
     /// </summary>
     public interface IRenderable
     {
-        void Render( );
+        /// <summary>
+        /// Renders this object in context
+        /// </summary>
+        void Render( IRenderContext context );
     }
 }

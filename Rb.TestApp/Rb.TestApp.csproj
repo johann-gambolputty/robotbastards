@@ -73,6 +73,10 @@
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rb.Log.Controls.Vs\Rb.Log.Controls.Vs.csproj">
+      <Project>{592DDD2E-6E38-4EB1-AD47-800193530D3B}</Project>
+      <Name>Rb.Log.Controls.Vs</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rb.Log.Controls\Rb.Log.Controls.csproj">
       <Project>{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}</Project>
       <Name>Rb.Log.Controls</Name>

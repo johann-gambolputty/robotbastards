@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 
-using Rb.Core.Utils;
 using Rb.Core.Components;
 
 namespace Rb.ComponentXmlLoader
@@ -33,9 +30,16 @@ namespace Rb.ComponentXmlLoader
         /// <summary>
         /// Resolves the reference
         /// </summary>
-        public override void PostCreate( )
+        public override void PostCreate( BaseBuilder parentBuilder )
         {
-            BuildObject = Parameters.Objects[ new Guid( m_ObjectId ) ];
+            if ( m_ObjectId == "parent" )
+            {
+                BuildObject = parentBuilder.BuildObject;
+            }
+            else
+            {
+                BuildObject = Parameters.Objects[ new Guid( m_ObjectId ) ];
+            }
         }
 
         private string m_ObjectId;

@@ -1,5 +1,3 @@
-using System;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Rb.Core.Utils
@@ -7,15 +5,15 @@ namespace Rb.Core.Utils
     /// <summary>
     /// Breaks up a stack trace string (from Exception.StackTrace or Environment.StackTrace) into component parts
     /// </summary>
-    public class ExceptionStackTraceInfo
+    public class StackTraceInfo
     {
         /// <summary>
         /// Setup constructor
         /// </summary>
         /// <param name="trace">Stack trace string</param>
-        public ExceptionStackTraceInfo( string trace )
+        public StackTraceInfo( string trace )
         {
-            m_Match = ms_StackTraceExp.Match(trace);
+            m_Match = ms_StackTraceExp.Match( trace );
         }
 
         /// <summary>
@@ -57,7 +55,6 @@ namespace Rb.Core.Utils
         {
             m_Match = m_Match.NextMatch( );
         }
-
 
         #region Private stuff
 
