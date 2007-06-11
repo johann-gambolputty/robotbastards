@@ -31,14 +31,14 @@ namespace Rb.ComponentXmlLoader
         /// <summary>
         /// Called prior to Resolve()
         /// </summary>
-        public override void PostCreate( )
+        public override void PostCreate( BaseBuilder parentBuilder )
         {
             if ( m_ExternalTarget == null )
             {
                 object rootObject = null;
                 BuildObject = rootObject;
             }
-            base.PostCreate( );
+			base.PostCreate( parentBuilder );
         }
 
         private object m_ExternalTarget;

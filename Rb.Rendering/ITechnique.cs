@@ -18,9 +18,6 @@ namespace Rb.Rendering
         /// </summary>
         /// <param name="technique">Technique to substitute</param>
         /// <returns>true if this technique can substitute the specified technique</returns>
-        /// <remarks>
-        /// 
-        /// </remarks>
         bool IsSubstituteFor( ITechnique technique );
     }
 }

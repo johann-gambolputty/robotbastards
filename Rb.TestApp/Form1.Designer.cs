@@ -28,7 +28,7 @@ namespace Rb.TestApp
         /// </summary>
         private void InitializeComponent()
         {
-            this.logListView1 = new Rb.Log.Controls.Vs.VsLogListView();
+            this.logListView1 = new Rb.Log.Controls.Vs.VsLogListView1();
             this.SuspendLayout();
             // 
             // logListView1
@@ -64,7 +64,7 @@ namespace Rb.TestApp
 
         #endregion
 
-        private Rb.Log.Controls.Vs.VsLogListView logListView1;
+        private Rb.Log.Controls.Vs.VsLogListView1 logListView1;
 
     }
 }
