@@ -41,11 +41,11 @@
     <Compile Include="TestMessages.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Rb.ComponentXmlLoader\Rb.ComponentXmlLoader.csproj">
+    <ProjectReference Include="..\..\Source\Rb.ComponentXmlLoader\Rb.ComponentXmlLoader.csproj">
       <Project>{61B562C4-66D5-4048-B482-858A791249A2}</Project>
       <Name>Rb.ComponentXmlLoader</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Rb.Core\Rb.Core.csproj">
+    <ProjectReference Include="..\..\Source\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
     </ProjectReference>

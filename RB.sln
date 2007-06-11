@@ -1,21 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Log", "Rb.Log\Rb.Log.csproj", "{55C5FE75-D492-41DE-B355-4D2681ADA1A0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Log", "Source\Rb.Log\Rb.Log.csproj", "{55C5FE75-D492-41DE-B355-4D2681ADA1A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Log.Controls", "Rb.Log.Controls\Rb.Log.Controls.csproj", "{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Log.Controls", "Source\Rb.Log.Controls\Rb.Log.Controls.csproj", "{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.TestApp", "Rb.TestApp\Rb.TestApp.csproj", "{A526C855-0E1B-4DDB-8508-3B26F7640682}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.TestApp", "Source\Rb.TestApp\Rb.TestApp.csproj", "{A526C855-0E1B-4DDB-8508-3B26F7640682}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Core", "Rb.Core\Rb.Core.csproj", "{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Core", "Source\Rb.Core\Rb.Core.csproj", "{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.ComponentXmlLoader", "Rb.ComponentXmlLoader\Rb.ComponentXmlLoader.csproj", "{61B562C4-66D5-4048-B482-858A791249A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.ComponentXmlLoader", "Source\Rb.ComponentXmlLoader\Rb.ComponentXmlLoader.csproj", "{61B562C4-66D5-4048-B482-858A791249A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.ComponentXmlLoader.Tests", "Testing\Rb.ComponentXmlLoader.Tests\Rb.ComponentXmlLoader.Tests.csproj", "{46367F66-7E89-448D-B038-2DA69C2754B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Rendering", "Rb.Rendering\Rb.Rendering.csproj", "{EC130734-6F0F-402B-8215-9F133F0ADEE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Rendering", "Source\Rb.Rendering\Rb.Rendering.csproj", "{EC130734-6F0F-402B-8215-9F133F0ADEE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Log.Controls.Vs", "Rb.Log.Controls.Vs\Rb.Log.Controls.Vs.csproj", "{592DDD2E-6E38-4EB1-AD47-800193530D3B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Log.Controls.Vs", "Source\Rb.Log.Controls.Vs\Rb.Log.Controls.Vs.csproj", "{592DDD2E-6E38-4EB1-AD47-800193530D3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.World", "Source\Rb.World\Rb.World.csproj", "{46980366-998B-4178-87B7-B04DD3B21979}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Interaction", "Source\Rb.Interaction\Rb.Interaction.csproj", "{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +59,14 @@ Global
 		{592DDD2E-6E38-4EB1-AD47-800193530D3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{592DDD2E-6E38-4EB1-AD47-800193530D3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{592DDD2E-6E38-4EB1-AD47-800193530D3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
