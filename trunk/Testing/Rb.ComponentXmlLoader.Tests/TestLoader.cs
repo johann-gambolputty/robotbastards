@@ -22,6 +22,17 @@ namespace Rb.ComponentXmlLoader.Tests
                 Assert.AreEqual( Definition++, 0 );
             }
 
+			public object Call( )
+			{
+				return this;
+			}
+
+			public object Call( string val )
+			{
+				Assert.AreEqual( val, "hello" );
+				return this;
+			}
+
 			public Guid Id
 			{
 				get { return m_Id; }
@@ -73,7 +84,40 @@ namespace Rb.ComponentXmlLoader.Tests
             
             object obj = parameters.Objects[ id ];
             Assert.IsInstanceOfType( typeof( Root ), obj );
-
         }
+
+		[Test]
+		public void TestCall( )
+		{
+			Guid id = new Guid( GuidString );
+			string content =
+				@"<?xml version=""1.0"" encoding=""utf-8""?>" +
+				@"<rb>" +
+				@"  <object type=""Rb.ComponentXmlLoader.Tests.TestLoader+Root"" id=""" + GuidString + @""">" +
+				@"      <method objectId=""" + GuidString + @""" call=""Call""/>" +
+				@"      <method objectId=""" + GuidString + @""" call=""Call"">" +
+				@"			<parameters>" +
+				@"				<string value=""hello""/>" +
+				@"			</parameters>" +
+				@"		</method>" +
+				@"  </object>" +
+				@"</rb>" +
+				"";
+
+			Loader loader = new Loader( );
+
+			byte[] contentBytes = System.Text.Encoding.ASCII.GetBytes( content );
+
+			Definition = 0;
+
+			ComponentLoadParameters parameters = new ComponentLoadParameters( );
+
+			loader.Load( new System.IO.MemoryStream( contentBytes ), new StackFrame( 0, true ).GetFileName( ), parameters );
+
+			Assert.IsTrue( parameters.Objects.ContainsKey( id ) );
+
+			object obj = parameters.Objects[ id ];
+			Assert.IsInstanceOfType( typeof( Root ), obj );
+		}
     }
 }

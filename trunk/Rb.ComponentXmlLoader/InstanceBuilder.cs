@@ -24,9 +24,9 @@ namespace Rb.ComponentXmlLoader
         /// <summary>
         /// Resolves the reference
         /// </summary>
-        public override void PostCreate( )
+		public override void PostCreate( BaseBuilder parentBuilder )
         {
-            base.PostCreate( );
+			base.PostCreate( parentBuilder );
             BuildObject = ( ( IInstanceBuilder )BuildObject ).CreateInstance( );
         }
     }

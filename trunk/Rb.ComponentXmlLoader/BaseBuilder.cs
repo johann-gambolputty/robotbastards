@@ -39,6 +39,7 @@ namespace Rb.ComponentXmlLoader
                     case "ref"      : result = new ReferenceBuilder( parameters, errors, reader );      break;
                     case "resource" : result = new ResourceBuilder( parameters, errors, reader );       break;
                     case "instance" : result = new InstanceBuilder( parameters, errors, reader );       break;
+					case "method"	: result = new MethodBuilder( parameters, errors, reader );			break;
                     case "string"	:
                         result = new ValueBuilder( parameters, errors, reader, reader.GetAttribute( "value" ) );
                         break;
@@ -162,7 +163,7 @@ namespace Rb.ComponentXmlLoader
         /// </summary>
         public void ReadChildBuilders( XmlReader reader )
         {
-            HandleChildElements( reader, LinkStep.Default );
+            HandleChildElements( reader, GetBuilders( LinkStep.Default ) );
         }
 
         /// <summary>
@@ -444,20 +445,33 @@ namespace Rb.ComponentXmlLoader
             }
         }
 
+		/// <summary>
+		/// Handles an element, creating a new builder from it and adding it to builders
+		/// </summary>
+		/// <param name="reader">Reader, positioned at the element</param>
+		/// <param name="builders">Builder list</param>
+		protected virtual void HandleElement( XmlReader reader, List< BaseBuilder > builders )
+		{
+			//  Create a builder from the element and add it to the current builder set
+			BaseBuilder builder = CreateBuilderFromReader( Parameters, Errors, reader );
+			if ( builder != null )
+			{
+				builders.Add( builder );
+			}
+		}
+
         /// <summary>
         /// Handles an element's children, in a given link context
         /// </summary>
         /// <param name="reader">Reader, positioned at the parent element</param>
-        /// <param name="step">Link context</param>
-        protected void HandleChildElements( XmlReader reader, LinkStep step )
+		/// <param name="builders">Builder list</param>
+        protected void HandleChildElements( XmlReader reader, List< BaseBuilder > builders )
         {
             if ( reader.IsEmptyElement )
             {
                 reader.Read( );
                 return;
             }
-
-            List< BaseBuilder > builders = GetBuilders( step );
 
             reader.ReadStartElement( );
 
@@ -471,21 +485,16 @@ namespace Rb.ComponentXmlLoader
                 if ( reader.Name == "preLink")
                 {
                     //  Recurse in "preLink" element
-                    HandleChildElements( reader, LinkStep.PreLink );
+                    HandleChildElements( reader, GetBuilders( LinkStep.PreLink ) );
                 }
                 else if ( reader.Name == "postLink" )
                 {
                     //  Recurse in "postLink" element
-                    HandleChildElements( reader, LinkStep.PostLink );
+                    HandleChildElements( reader, GetBuilders( LinkStep.PostLink ) );
                 }
                 else
                 {
-                    //  Create a builder from the element and add it to the current builder set
-                    BaseBuilder builder = CreateBuilderFromReader( Parameters, Errors, reader );
-                    if ( builder != null )
-                    {
-                        builders.Add( builder );
-                    }
+					HandleElement( reader, builders );
                 }
             }
 

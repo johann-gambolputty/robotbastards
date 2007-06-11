@@ -59,7 +59,7 @@ namespace Rb.ComponentXmlLoader
 
             if ( errors.Count == 0 )
             {
-                BaseBuilder.SafePostCreate( builder );
+                BaseBuilder.SafePostCreate( builder, null );
                 if ( errors.Count == 0 )
                 {
                     BaseBuilder.SafeResolve( builder, null );
