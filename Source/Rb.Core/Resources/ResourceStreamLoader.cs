@@ -6,7 +6,19 @@ namespace Rb.Core.Resources
 	/// Loads resources from streams
 	/// </summary>
     public abstract class ResourceStreamLoader : ResourceLoader
-	{
+    {
+        #region Resource caching
+
+        /// <summary>
+        /// Gets the resource cache for this loader. By default, this is a global cache shared by all stream loader objects
+        /// </summary>
+        public override IResourceCache Cache
+        {
+            get { return ms_Cache; }
+        }
+
+        #endregion
+
 		#region	Stream loading
 
 		/// <summary>
@@ -14,17 +26,19 @@ namespace Rb.Core.Resources
 		/// </summary>
 		/// <param name="input"> Input stream to load the resource from </param>
 		/// <param name="inputSource"> Source of the input stream (e.g. file path) </param>
+        /// <param name="canCacheResult">Set by the method. If true, then the return value can be cached in association with the source</param>
 		/// <returns> The loaded resource </returns>
-		public abstract Object Load( System.IO.Stream input, string inputSource );
+		public abstract Object Load( System.IO.Stream input, string inputSource, out bool canCacheResult );
 
 		/// <summary>
 		/// Loads into a resource from a stream
 		/// </summary>
 		/// <param name="input"> Input stream to load the resource from </param>
-		/// <param name="inputSource"> Source of the input stream (e.g. file path) </param>
-		/// <param name="parameters">Loading parameters</param>
+        /// <param name="inputSource"> Source of the input stream (e.g. file path) </param>
+        /// <param name="canCacheResult">Set by the method. If true, then the return value can be cached in association with the source</param>
+        /// <param name="parameters">Loading parameters</param>
 		/// <returns>Returns resource</returns>
-		public abstract Object Load( System.IO.Stream input, string inputSource, LoadParameters parameters );
+		public abstract Object Load( System.IO.Stream input, string inputSource, out bool canCacheResult, LoadParameters parameters );
 
 		/// <summary>
 		/// Returns true if this loader can load the specified stream
@@ -40,5 +54,10 @@ namespace Rb.Core.Resources
 
 		#endregion
 
+        #region Private stuff
+
+        private static ResourceCache ms_Cache = new ResourceCache( );
+
+        #endregion
 	}
 }

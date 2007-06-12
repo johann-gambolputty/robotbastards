@@ -16,7 +16,7 @@ namespace Rb.Rendering
 		#region	Assembly loaders
 
 		/// <summary>
-		/// Loads an assembly that implements the <c>RbEngine.Rendering</c> namespace
+		/// Loads an assembly that implements the RenderFactory class
 		/// </summary>
 		/// <param name="renderAssemblyName">Assembly name</param>
 		/// <exception cref="ApplicationException">Thrown if the assembly does not contain a class that implements RenderFactory</exception>
@@ -48,13 +48,14 @@ namespace Rb.Rendering
 				}
 			}
 
-			throw new ApplicationException( String.Format( "No type in assembly \"{0}\" implemented RenderFactory" ) );
+			throw new ApplicationException( String.Format( "No type in assembly \"{0}\" implemented RenderFactory", renderAssemblyName ) );
 		}
 
 		/// <summary>
 		/// Adds the Composite-derived classes in the specified assembly
 		/// </summary>
-		/// <param name="compositeAssembly"> Assembly to check </param>
+        /// <param name="compositeAssembly"> Assembly to check </param>
+        [ObsoleteAttribute("Composites suck")]
 		private void AddAssemblyComposites( System.Reflection.Assembly compositeAssembly )
 		{
 			foreach ( Type curType in compositeAssembly.GetTypes( ) )
@@ -79,6 +80,10 @@ namespace Rb.Rendering
 			}
 		}
 
+        /// <summary>
+        /// Called when a new assembly is loaded. Checks it for composite types
+        /// </summary>
+        [ObsoleteAttribute("Composites suck")]
 		private static void OnAssemblyLoad( object sender, AssemblyLoadEventArgs args )
 		{
 			RenderFactory.Inst.AddAssemblyComposites( args.LoadedAssembly );
@@ -107,16 +112,18 @@ namespace Rb.Rendering
 		/// Returns the Type object representing a composite with the specified name
 		/// </summary>
 		/// <param name="typeName">Type name</param>
-		/// <returns>Returns the named composite Type</returns>
-		public Type						GetCompositeTypeFromName( string typeName )
+        /// <returns>Returns the named composite Type</returns>
+        [ObsoleteAttribute("Composites suck")]
+		public Type GetCompositeTypeFromName( string typeName )
 		{
 			return ( Type )m_CompositeNameMap[ typeName ];
 		}
 
 		/// <summary>
 		/// Returns a Composite-derived class's Type object that implements a specified Composite base type
-		/// </summary>
-		public Type						GetCompositeTypeFromBaseType( Type baseType )
+        /// </summary>
+        [ObsoleteAttribute("Composites suck")]
+		public Type GetCompositeTypeFromBaseType( Type baseType )
 		{
 			return ( Type )m_CompositeBaseTypeMap[ baseType ];
 		}
@@ -135,8 +142,9 @@ namespace Rb.Rendering
 		/// Mesh newMesh = ( Mesh )RenderFactory.Inst.NewComposite( "Mesh" );
 		/// </code>
 		/// </example>
-		/// <seealso cref="GetCompositeTypeFromName">GetCompositeTypeFromName</seealso>
-		public Composites.Composite			NewComposite( string typeName )
+        /// <seealso cref="GetCompositeTypeFromName">GetCompositeTypeFromName</seealso>
+        [ObsoleteAttribute("Composites suck")]
+		public Composites.Composite NewComposite( string typeName )
 		{
 			return ( Composites.Composite )System.Activator.CreateInstance( GetCompositeTypeFromName( typeName ) );
 		}
@@ -156,8 +164,9 @@ namespace Rb.Rendering
 		/// Mesh newMesh = ( Mesh )RenderFactory.Inst.NewComposite( typeof( Mesh ) );
 		/// </code>
 		/// </example>
-		/// <seealso cref="GetCompositeTypeFromBaseType">GetCompositeTypeFromBaseType</seealso>
-		public Composites.Composite			NewComposite( Type baseType )
+        /// <seealso cref="GetCompositeTypeFromBaseType">GetCompositeTypeFromBaseType</seealso>
+        [ObsoleteAttribute("Composites suck")]
+		public Composites.Composite NewComposite( Type baseType )
 		{
 			return ( Composites.Composite )System.Activator.CreateInstance( GetCompositeTypeFromBaseType( baseType ) );
 		}

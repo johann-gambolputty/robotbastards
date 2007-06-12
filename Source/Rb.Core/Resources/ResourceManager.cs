@@ -17,14 +17,30 @@ namespace Rb.Core.Resources
         /// </summary>
 		static public ResourceManager Instance
 		{
-			get
-			{
-				return ms_Singleton;
-			}
+			get { return ms_Singleton; }
         }
 
         #endregion
 
+        #region Caching
+
+        /// <summary>
+        /// Clears out the contents of the resource caches
+        /// </summary>
+        public void ClearResourceCaches( )
+        {
+            foreach ( ResourceLoader loader in m_StreamLoaders )
+            {
+                loader.Cache.Clear( );
+            }
+
+            foreach ( ResourceLoader loader in m_DirectoryLoaders )
+            {
+                loader.Cache.Clear( );
+            }
+        }
+
+        #endregion
 
         #region	Setup
 
@@ -94,6 +110,45 @@ namespace Rb.Core.Resources
 
 		#region	Loading
 
+        /// <summary>
+        /// Finds a ResourceProvider that can open a named stream
+        /// </summary>
+        /// <param name="path">Stream path</param>
+        /// <returns>Returns a resource provider that can load path</returns>
+        /// <exception cref="ApplicationException">Thrown if no provider can be found that supports the specified path</exception>
+        public System.IO.Stream OpenStream( string path )
+        {
+			//	path was just a directory - see if there's a provider that recognises it
+			foreach ( ResourceProvider provider in m_Providers )
+			{
+                System.IO.Stream stream = provider.Open( path );
+                if ( stream != null )
+                {
+                    return null;
+                }
+            }
+			throw new ApplicationException( string.Format( "Could not find provider that could open resource stream \"{0}\"", path ) );
+		}
+
+        /// <summary>
+        /// Returns a ResourceProvider that can create a stream from a given path
+        /// </summary>
+        /// <param name="path">Stream path</param>
+        /// <returns>Returns a resource provider that can load path</returns>
+        /// <exception cref="ApplicationException">Thrown if no provider can be found that supports the specified path</exception>
+        public ResourceProvider FindDirectoryProvider( ref string path )
+        {
+			//	path was just a directory - see if there's a provider that recognises it
+			foreach ( ResourceProvider provider in m_Providers )
+			{
+				if ( provider.DirectoryExists( ref path ) )
+				{
+				    return provider;
+				}
+            }
+			throw new ApplicationException( string.Format( "Could not find provider that could open resource directory \"{0}\"", path ) );
+		}
+
 		/// <summary>
 		/// Finds a provider that can load a stream from a path, then finds a loader that can read the stream and turn it into a resource
 		/// </summary>
@@ -120,48 +175,88 @@ namespace Rb.Core.Resources
 		{
 			if ( System.IO.Path.GetExtension( path ) == string.Empty )
 			{
-				//	path was just a directory - see if there's a provider that recognises it
-				foreach ( ResourceProvider provider in m_Providers )
-				{
-					if ( provider.DirectoryExists( ref path ) )
-					{
-						foreach ( ResourceDirectoryLoader loader in m_DirectoryLoaders )
-						{
-							if ( loader.CanLoadDirectory( provider, path ) )
-							{
-								ResourcesLog.Info( "Loading \"{0}\"", path );
-								
-								//	TODO: Needs to handle Load when resource is not null
-								return parameters == null ? loader.Load( provider, path ) : loader.Load( provider, path, parameters );
-							}
-						}
-						throw new System.ApplicationException( String.Format( "Could not find loader that could open resource directory {0}", path ) );
-					}
-				}
-				throw new System.ApplicationException( String.Format( "Could not open resource directory {0}", path ) );
+                ResourceProvider provider = FindDirectoryProvider( ref path );
+
+				foreach ( ResourceDirectoryLoader loader in m_DirectoryLoaders )
+                {
+                    if ( !loader.CanLoadDirectory( provider, path ) )
+                    {
+                        continue;
+                    }
+
+				    ResourcesLog.Info( "Loading \"{0}\"", path );
+
+                    //	TODO: AP: Needs to handle Load when resource is not null
+                    object result = loader.Cache.Find( path );
+                    if ( result != null )
+                    {
+                        ResourcesLog.Info( "Retrieved \"{0}\" from directory resource cache", path );
+                        return result;
+                    }
+
+                    bool canCache;
+                    if ( parameters == null )
+                    {
+                        result = loader.Load( provider, path, out canCache );
+                    }
+                    else
+                    {
+                        result = loader.Load( provider, path, out canCache, parameters );
+                    }
+
+                    //  Cache the result
+                    if ( canCache && ( result != null ) )
+                    {
+                        ResourcesLog.Verbose( "Adding \"{0}\" to resource cache", path );
+                        loader.Cache.Add( path, result );
+                    }
+                    return result;
+                }
+
+				throw new ApplicationException( string.Format( "Could not find a loader that could load directory resource \"{0}\"", path ) );
 			}
 
-			foreach ( ResourceProvider provider in m_Providers )
+            System.IO.Stream input = OpenStream( path );
+            
+			foreach( ResourceStreamLoader loader in m_StreamLoaders )
 			{
-				System.IO.Stream input = provider.Open( ref path );
-				if ( input != null )
+				if ( !loader.CanLoadStream( path, input ) )
 				{
-					foreach( ResourceStreamLoader loader in m_StreamLoaders )
-					{
-						if ( loader.CanLoadStream( path, input ) )
-						{
-							ResourcesLog.Info( "Loading \"{0}\"", path );
-							return ( parameters == null ) ? loader.Load( input, path ) : loader.Load( input, path, parameters );
-						}
-					}
-					throw new System.ApplicationException( String.Format( "Could not find loader that could open stream {0}", path ) );
+				    continue;
 				}
-			}
+                
+			    ResourcesLog.Info( "Loading \"{0}\"", path );
 
-			throw new System.ApplicationException( String.Format( "Could not open resource stream {0}", path ) );
+                object result = loader.Cache.Find( path );
+                if ( result != null )
+                {
+                    ResourcesLog.Info( "Retrieved \"{0}\" from stream resource cache", path );
+                    return result;
+                }
+
+                bool canCache;
+                if ( parameters == null )
+                {
+                    result = loader.Load( input, path, out canCache );
+                }
+                else
+                {
+                    result = loader.Load( input, path, out canCache, parameters );
+                }
+
+                if ( ( result != null ) && ( canCache ) )
+                {
+                    ResourcesLog.Verbose( "Adding \"{0}\" to resource cache", path );
+                    loader.Cache.Add( path, result );
+                }
+                return result;
+            }
+
+			throw new ApplicationException( string.Format( "Could not find loader that could open stream \"{0}\"", path ) );
 		}
 
 		#endregion
+
 
 		#region	Private stuff
 
