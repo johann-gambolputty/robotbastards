@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RbControls</name>
+    </assembly>
+    <members>
+        <member name="T:RbControls.Display">
+            <summary>
+            Summary description for UserControl1.
+            </summary>
+        </member>
+        <member name="F:RbControls.Display.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:RbControls.Display.#ctor">
+            <summary>
+            Creates a control rendering context, using RbEngine.Rendering.Renderer.CreateControlContext(). Sets up the control styles from that,
+            then does the usual InitializeComponent() thing
+            </summary>
+        </member>
+        <member name="M:RbControls.Display.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:RbControls.Display.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:RbControls.Display.OnPaintBackground(System.Windows.Forms.PaintEventArgs)">
+            <summary>
+            Does nothing - rendering of everything, including background, is done through the renderer
+            </summary>
+        </member>
+        <member name="M:RbControls.Display.SetupViewport">
+            <summary>
+            Sets up the control rendering viewport
+            </summary>
+        </member>
+        <member name="M:RbControls.Display.BeginPaint">
+            <summary>
+            Begins rendering
+            </summary>
+        </member>
+        <member name="M:RbControls.Display.Draw">
+            <summary>
+            Draws the contents of the control
+            </summary>
+        </member>
+        <member name="M:RbControls.Display.EndPaint">
+            <summary>
+            Ends rendering
+            </summary>
+        </member>
+        <member name="P:RbControls.Display.CreateParams">
+            <summary>
+            Override control creation parameters to support OpenGL requirements
+            </summary>
+        </member>
+        <member name="P:RbControls.Display.ColourBits">
+            <summary>
+            Sets the colour depth of the control
+            </summary>
+        </member>
+        <member name="P:RbControls.Display.DepthBits">
+            <summary>
+            Sets the number of depth bits used by the control
+            </summary>
+        </member>
+        <member name="P:RbControls.Display.StencilBits">
+            <summary>
+            Sets the number of stencil bits used by the control
+            </summary>
+        </member>
+    </members>
+</doc>
