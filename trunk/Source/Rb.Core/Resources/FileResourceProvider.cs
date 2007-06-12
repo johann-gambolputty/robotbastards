@@ -4,7 +4,7 @@ using System.Collections;
 namespace Rb.Core.Resources
 {
 	/// <summary>
-	/// Summary description for FileResourceProvider.
+	/// Standard file system implementation of ResourceProvider. Provides support for IPathDirectory also
 	/// </summary>
 	public class FileResourceProvider : ResourceProvider, IPathDirectory
 	{

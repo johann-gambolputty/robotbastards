@@ -21,9 +21,9 @@ namespace Rb.ComponentXmlLoader
 		/// <param name="input"> Input stream to load the resource from </param>
 		/// <param name="inputSource"> Source of the input stream (e.g. file path) </param>
 		/// <returns> The loaded resource </returns>
-		public override Object Load( System.IO.Stream input, string inputSource )
+		public override Object Load( System.IO.Stream input, out bool canCache, string inputSource )
 		{
-		    return Load( input, inputSource, new ComponentLoadParameters( ) );
+		    return Load( input, inputSource, out canCache, new ComponentLoadParameters( ) );
 		}
 
 		/// <summary>
@@ -33,8 +33,13 @@ namespace Rb.ComponentXmlLoader
 		/// <param name="inputSource"> Source of the input stream (e.g. file path) </param>
 		/// <param name="parameters">Loading parameters</param>
 		/// <returns>Returns resource</returns>
-		public override Object Load( System.IO.Stream input, string inputSource, LoadParameters parameters )
+		public override Object Load( System.IO.Stream input, string inputSource, out bool canCache, LoadParameters parameters )
 		{
+            //  Mark result as uncacheable
+            //  TODO: AP: This is a bit unfair - if parameters are invariant, then its possible that the resource can be
+            //  cached (although not certain). There should be a tag in the XML itself... (<cacheable/>)
+		    canCache = false;
+
             XmlTextReader reader = new XmlTextReader( input );
 		    reader.WhitespaceHandling = WhitespaceHandling.Significant;
             try
@@ -94,6 +99,5 @@ namespace Rb.ComponentXmlLoader
 		}
 
 		#endregion
-
     }
 }

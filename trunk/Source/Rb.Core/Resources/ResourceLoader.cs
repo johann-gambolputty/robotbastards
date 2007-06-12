@@ -9,5 +9,16 @@ namespace Rb.Core.Resources
     /// </summary>
     public abstract class ResourceLoader
     {
+        #region Resource caching
+
+        /// <summary>
+        /// Gets the resource cache for this loader
+        /// </summary>
+        public abstract IResourceCache Cache
+        {
+            get;
+        }
+
+        #endregion
     }
 }

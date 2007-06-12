@@ -35,6 +35,7 @@
   <ItemGroup>
     <Compile Include="BaseBuilder.cs" />
     <Compile Include="Errors.cs" />
+    <Compile Include="IncludeBuilder.cs" />
     <Compile Include="InstanceBuilder.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="MethodBuilder.cs" />
