@@ -43,7 +43,7 @@ namespace Rb.World
         public object CreateInstance( Type type )
         {
             IBuilder builder = ( m_Builder == null ? Builder.Instance : m_Builder );
-            return OnNewInstance( m_Builder.CreateInstance( type ) );
+            return OnNewInstance( builder.CreateInstance( type ) );
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Rb.World
         public object CreateInstance( Type type, object[] constructorArgs )
         {
             IBuilder builder = ( m_Builder == null ? Builder.Instance : m_Builder );
-            return OnNewInstance( m_Builder.CreateInstance( type, constructorArgs ) );
+            return OnNewInstance( builder.CreateInstance( type, constructorArgs ) );
         }
 
         #endregion

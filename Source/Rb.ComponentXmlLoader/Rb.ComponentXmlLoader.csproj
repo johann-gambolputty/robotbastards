@@ -36,6 +36,7 @@
     <Compile Include="BaseBuilder.cs" />
     <Compile Include="Errors.cs" />
     <Compile Include="InstanceBuilder.cs" />
+    <Compile Include="ListBuilder.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="MethodBuilder.cs" />
     <Compile Include="ObjectBuilder.cs" />
@@ -43,6 +44,7 @@
     <Compile Include="ReferenceBuilder.cs" />
     <Compile Include="ResourceBuilder.cs" />
     <Compile Include="RootBuilder.cs" />
+    <Compile Include="TypeBuilder.cs" />
     <Compile Include="ValueBuilder.cs" />
   </ItemGroup>
   <ItemGroup>

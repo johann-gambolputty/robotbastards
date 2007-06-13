@@ -1,11 +1,11 @@
-using System;
+using Rb.Core.Components;
 
 namespace Rb.Rendering
 {
 	/// <summary>
-	/// Summary description for Shader.
+	/// Shader is a base class for collections of techniques
 	/// </summary>
-	public class Shader : Components.INamedObject
+	public class Shader : INamed
 	{
 		/// <summary>
 		/// Finds a shader parameter by name
@@ -17,7 +17,7 @@ namespace Rb.Rendering
 			return null;
 		}
 
-		#region INamedObject Members
+		#region INamed Members
 
 		/// <summary>
 		/// Shader name

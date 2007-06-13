@@ -18,8 +18,8 @@ namespace Rb.ComponentXmlLoader
         /// <param name="parameters">Load parameters</param>
         /// <param name="errors">Error collection</param>
         /// <param name="reader">XML reader positioned at the element that created this builder</param>
-        public ResourceBuilder( ComponentLoadParameters parameters, ErrorCollection errors, XmlReader reader ) :
-            base( parameters, errors, reader )
+        public ResourceBuilder( ComponentLoadParameters parameters, ErrorCollection errors, XmlReader reader, BaseBuilder parentBuilder ) :
+            base( parameters, errors, reader, parentBuilder )
         {
             string resourcePath = reader.GetAttribute( "path" );
             BuildObject = ResourceManager.Instance.Load( resourcePath );

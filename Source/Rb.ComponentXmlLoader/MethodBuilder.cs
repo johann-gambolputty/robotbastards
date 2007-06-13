@@ -18,8 +18,9 @@ namespace Rb.ComponentXmlLoader
         /// <param name="parameters">Load parameters</param>
         /// <param name="errors">Error collection</param>
         /// <param name="reader">XML reader positioned at the element that created this builder</param>
-        public MethodBuilder( ComponentLoadParameters parameters, ErrorCollection errors, XmlReader reader ) :
-            base( parameters, errors, reader )
+        /// <param name="parentBuilder">Parent builder</param>
+        public MethodBuilder( ComponentLoadParameters parameters, ErrorCollection errors, XmlReader reader, BaseBuilder parentBuilder ) :
+            base( parameters, errors, reader, parentBuilder )
         {
 			m_MethodName = reader.GetAttribute( "call" );
         }
@@ -28,14 +29,14 @@ namespace Rb.ComponentXmlLoader
 		/// Invokes the method to create the build object
 		/// </summary>
 		/// <param name="parentBuilder">Parent builder</param>
-        public override void PostCreate( BaseBuilder parentBuilder )
+        public override void PostCreate( )
         {
-            base.PostCreate( parentBuilder );
+            base.PostCreate( );
 
 			//	Call PostCreate() for all parameter builders
 			foreach ( BaseBuilder builder in m_ParamBuilders )
 			{
-				SafePostCreate( builder, this );
+				SafePostCreate( builder );
 			}
 
 			//	Call Resolve() for all parameter builders, and create parameter type and
@@ -46,16 +47,17 @@ namespace Rb.ComponentXmlLoader
 			foreach ( BaseBuilder builder in m_ParamBuilders )
 			{
 				// TODO: AP: A bit dodgy - doing resolution phase during post create phase...
-				SafeResolve( builder, this );
+				SafeResolve( builder );
 				parameters[ paramIndex ] = builder.BuildObject;
 				parameterTypes[ paramIndex ] = builder.BuildObject.GetType( );
+			    ++paramIndex;
 			}
 
 			//	Find the method
 			MethodInfo method = BuildObject.GetType( ).GetMethod( m_MethodName, parameterTypes );//, BindingFlags.Public | BindingFlags.Instance );
 			if ( method == null )
 			{
-				throw new ApplicationException( string.Format( "Could not find method \"{0}\" in type \"{1}\"", m_MethodName, BuildObject.GetType( ) ) );
+				throw new ApplicationException( string.Format( "Could not find method \"{0}\" in type \"{1}\" (may be incorrect parameter types)", m_MethodName, BuildObject.GetType( ) ) );
 			}
 
 			//	Invoke the method

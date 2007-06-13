@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Rb.World
@@ -24,7 +25,7 @@ namespace Rb.World
 
 		#region	Services
 
-		/// <summary>
+        /// <summary>
 		/// Gets a typed service
 		/// </summary>
 		/// <param name="serviceType">Service type</param>
@@ -51,14 +52,27 @@ namespace Rb.World
 		public void AddService( object service )
 		{
 			Type key = service.GetType( );
+			WorldLog.Info( "Adding service of type \"{0}\"", key );
+
 			if ( m_Services.ContainsKey( key ) )
 			{
-				WorldLog.Warning( "Overwriting service of type \"{0}\"", key );
+				WorldLog.Warning( "Service of type \"{0}\" already existed - overwriting", key );
 			}
 
 			m_Services[ service.GetType( ) ] = service;
-			WorldLog.Info( "Added service of type \"{0}\"", key );
 		}
+
+        /// <summary>
+        /// Adds a list of services to the scene
+        /// </summary>
+        /// <param name="services">Scene services</param>
+        public void AddServices( ICollection services )
+        {
+            foreach( object service in services )
+            {
+                AddService( service );
+            }
+        }
 
 		/// <summary>
 		/// Removes a service

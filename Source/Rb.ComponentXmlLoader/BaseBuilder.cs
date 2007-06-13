@@ -23,78 +23,81 @@ namespace Rb.ComponentXmlLoader
         /// <summary>
         /// Creates a BaseBuilder-derived object from a name
         /// </summary>
+        /// <param name="parentBuilder">Parent builder</param>
         /// <param name="parameters">Load parameters</param>
         /// <param name="errors">Error collection</param>
         /// <param name="reader">XML reader</param>
         /// <returns>Returns the new builder, or null if there as an error</returns>
-        public static BaseBuilder CreateBuilderFromReader( ComponentLoadParameters parameters, ErrorCollection errors, XmlReader reader )
+        public static BaseBuilder CreateBuilderFromReader( BaseBuilder parentBuilder, ComponentLoadParameters parameters, ErrorCollection errors, XmlReader reader )
         {
             BaseBuilder result = null;
             try
             {
                 switch ( reader.Name )
                 {
-                    case "rb"       : result = new RootBuilder( parameters, errors, reader );           break;
-                    case "object"   : result = new ObjectBuilder( parameters, errors, reader );         break;
-                    case "ref"      : result = new ReferenceBuilder( parameters, errors, reader );      break;
-                    case "resource" : result = new ResourceBuilder( parameters, errors, reader );       break;
-                    case "instance" : result = new InstanceBuilder( parameters, errors, reader );       break;
-					case "method"	: result = new MethodBuilder( parameters, errors, reader );			break;
+                    case "rb"       : result = new RootBuilder( parameters, errors, reader );                          break;
+                    case "object"   : result = new ObjectBuilder( parameters, errors, reader, parentBuilder );         break;
+                    case "ref"      : result = new ReferenceBuilder( parameters, errors, reader, parentBuilder );      break;
+                    case "resource" : result = new ResourceBuilder( parameters, errors, reader, parentBuilder );       break;
+                    case "instance" : result = new InstanceBuilder( parameters, errors, reader, parentBuilder );       break;
+					case "method"	: result = new MethodBuilder( parameters, errors, reader, parentBuilder );         break;
+                    case "list"     : result = new ListBuilder( parameters, errors, reader, parentBuilder );           break;
+                    case "type"     : result = new TypeBuilder( parameters, errors, reader, parentBuilder, "value" );  break;
                     case "string"	:
-                        result = new ValueBuilder( parameters, errors, reader, reader.GetAttribute( "value" ) );
+                        result = new ValueBuilder( parameters, errors, reader, parentBuilder, reader.GetAttribute( "value" ) );
                         break;
                     case "guid"     :
-                        result = new ValueBuilder( parameters, errors, reader, new Guid( reader.GetAttribute( "value" ) ) );
+                        result = new ValueBuilder( parameters, errors, reader, parentBuilder, new Guid( reader.GetAttribute( "value" ) ) );
                         break;
                     case "bool"     :
-                        result = new ValueBuilder( parameters, errors, reader, bool.Parse( reader.GetAttribute( "value" ) ) );
+                        result = new ValueBuilder( parameters, errors, reader, parentBuilder, bool.Parse( reader.GetAttribute( "value" ) ) );
                         break;
                     case "char"     :
-                        result = new ValueBuilder( parameters, errors, reader, char.Parse( reader.GetAttribute( "value" ) ) );
+                        result = new ValueBuilder( parameters, errors, reader, parentBuilder, char.Parse( reader.GetAttribute( "value" ) ) );
                         break;
                     case "byte"     :
-                        result = new ValueBuilder( parameters, errors, reader, byte.Parse( reader.GetAttribute( "value" ) ) );
+                        result = new ValueBuilder( parameters, errors, reader, parentBuilder, byte.Parse( reader.GetAttribute( "value" ) ) );
                         break;
                     case "sbyte"    :
-                        result = new ValueBuilder( parameters, errors, reader, sbyte.Parse( reader.GetAttribute( "value" ) ) );
+                        result = new ValueBuilder( parameters, errors, reader, parentBuilder, sbyte.Parse( reader.GetAttribute( "value" ) ) );
                         break;
                     case "short"    :
-                        result = new ValueBuilder( parameters, errors, reader, short.Parse( reader.GetAttribute( "value" ) ) );
+                        result = new ValueBuilder( parameters, errors, reader, parentBuilder, short.Parse( reader.GetAttribute( "value" ) ) );
                         break;
                     case "ushort"   :
-                        result = new ValueBuilder( parameters, errors, reader, ushort.Parse( reader.GetAttribute( "value" ) ) );
+                        result = new ValueBuilder( parameters, errors, reader, parentBuilder, ushort.Parse( reader.GetAttribute( "value" ) ) );
                         break;
                     case "int"      :
-                        result = new ValueBuilder( parameters, errors, reader, int.Parse( reader.GetAttribute( "value") ) );
+                        result = new ValueBuilder( parameters, errors, reader, parentBuilder, int.Parse( reader.GetAttribute( "value") ) );
                         break;
                     case "uint":
-                        result = new ValueBuilder( parameters, errors, reader, uint.Parse( reader.GetAttribute( "value" ) ) );
+                        result = new ValueBuilder( parameters, errors, reader, parentBuilder, uint.Parse( reader.GetAttribute( "value" ) ) );
                         break;
                     case "long"     :
-                        result = new ValueBuilder( parameters, errors, reader, long.Parse( reader.GetAttribute( "value" ) ) );
+                        result = new ValueBuilder( parameters, errors, reader, parentBuilder, long.Parse( reader.GetAttribute( "value" ) ) );
                         break;
                     case "ulong"    :
-                        result = new ValueBuilder( parameters, errors, reader, ulong.Parse( reader.GetAttribute( "value" ) ) );
+                        result = new ValueBuilder( parameters, errors, reader, parentBuilder, ulong.Parse( reader.GetAttribute( "value" ) ) );
                         break;
                     case "float"    :
-                        result = new ValueBuilder( parameters, errors, reader, float.Parse( reader.GetAttribute( "value" ) ) );
+                        result = new ValueBuilder( parameters, errors, reader, parentBuilder, float.Parse( reader.GetAttribute( "value" ) ) );
                         break;
                     case "double"   :
-                        result = new ValueBuilder( parameters, errors, reader, double.Parse( reader.GetAttribute( "value" ) ) );
+                        result = new ValueBuilder( parameters, errors, reader, parentBuilder, double.Parse( reader.GetAttribute( "value" ) ) );
                         break;
                     case "point3"   :
                         {
                             float x = float.Parse( reader.GetAttribute( "x" ) );
 						    float y = float.Parse( reader.GetAttribute( "y" ) );
 						    float z = float.Parse( reader.GetAttribute( "y" ) );
-						    result = new ValueBuilder( parameters, errors, reader, new Point3( x, y, z ) );
+						    result = new ValueBuilder( parameters, errors, reader, parentBuilder, new Point3( x, y, z ) );
 						    break;
                         }
 					case "vector2"	:
                         {
 						    float x = float.Parse( reader.GetAttribute( "x" ) );
 						    float y = float.Parse( reader.GetAttribute( "y" ) );
-						    result = new ValueBuilder( parameters, errors, reader, new Vector2( x, y ) );
+						    result = new ValueBuilder( parameters, errors, reader, parentBuilder, new Vector2( x, y ) );
 						    break;
                         }
 					case "vector3"	:
@@ -102,7 +105,7 @@ namespace Rb.ComponentXmlLoader
 						    float x = float.Parse( reader.GetAttribute( "x" ) );
 						    float y = float.Parse( reader.GetAttribute( "y" ) );
 						    float z = float.Parse( reader.GetAttribute( "y" ) );
-						    result = new ValueBuilder( parameters, errors, reader, new Vector3( x, y, z ) );
+						    result = new ValueBuilder( parameters, errors, reader, parentBuilder, new Vector3( x, y, z ) );
 						    break;
                         }
                     case "point2"   :
@@ -128,7 +131,15 @@ namespace Rb.ComponentXmlLoader
 
             if ( result != null )
             {
-                result.ReadChildBuilders( reader );
+                string name = reader.Name;
+                try
+                {
+                    result.ReadChildBuilders( reader );
+                }
+                catch ( Exception ex )
+                {
+                    errors.Add( reader, ex, "Exception thrown while reading children from builder \"{0}\"", name );
+                }
             }
 
             return result;
@@ -142,7 +153,8 @@ namespace Rb.ComponentXmlLoader
         /// <param name="parameters">Load parameters</param>
         /// <param name="errors">Error collection</param>
         /// <param name="reader">XML reader positioned at the element that created this builder</param>
-        public BaseBuilder( ComponentLoadParameters parameters, ErrorCollection errors, XmlReader reader )
+        /// <param name="parentBuilder">Parent builder</param>
+        public BaseBuilder( ComponentLoadParameters parameters, ErrorCollection errors, XmlReader reader, BaseBuilder parentBuilder )
         {
             IXmlLineInfo lineInfo = reader as IXmlLineInfo;
             if ( lineInfo != null )
@@ -151,6 +163,7 @@ namespace Rb.ComponentXmlLoader
                 m_Column    = lineInfo.LinePosition;
             }
 
+            m_ParentBuilder = parentBuilder;
             m_Errors        = errors;
             m_Parameters    = parameters;
             m_Property      = reader.GetAttribute( "property" );
@@ -169,7 +182,7 @@ namespace Rb.ComponentXmlLoader
         /// <summary>
         /// Called before resolution and after creation
         /// </summary>
-        public virtual void PostCreate( BaseBuilder parentBuilder )
+        public virtual void PostCreate( )
         {
             PostCreateChildBuilders( m_PreLinkBuilders );
             PostCreateChildBuilders( m_PostLinkBuilders );
@@ -178,15 +191,15 @@ namespace Rb.ComponentXmlLoader
         /// <summary>
         /// Resolves this builder
         /// </summary>
-        public virtual void Resolve( BaseBuilder parentBuilder )
+        public virtual void Resolve( )
         {
             //  Resolve pre-link objects
             ResolveChildBuilders( m_PreLinkBuilders );
 
             //  Link built object to its parent
-            if ( parentBuilder != null )
+            if ( ParentBuilder != null )
             {
-                Link( parentBuilder.BuildObject );
+                Link( ParentBuilder.BuildObject );
             }
 
             //  Resolve post-link objects
@@ -226,16 +239,32 @@ namespace Rb.ComponentXmlLoader
             }
         }
 
+        /// <summary>
+        /// Gets the parent builder
+        /// </summary>
+        public BaseBuilder ParentBuilder
+        {
+            get { return m_ParentBuilder;  }
+        }
+
+        /// <summary>
+        /// Returns true if this is the root builder
+        /// </summary>
+        public bool IsRoot
+        {
+            get { return m_ParentBuilder == null; }
+        }
+
         #region Safe methods
 
         /// <summary>
         /// Calls BaseBuilder.PostCreate() on the specified builder object
         /// </summary>
-        public static void SafePostCreate( BaseBuilder builder, BaseBuilder parentBuilder )
+        public static void SafePostCreate( BaseBuilder builder )
         {
             try
             {
-                builder.PostCreate( parentBuilder );
+                builder.PostCreate( );
             }
             catch ( Exception ex )
             {
@@ -246,11 +275,11 @@ namespace Rb.ComponentXmlLoader
         /// <summary>
         /// Calls BaseBuilder.Resolve() on the specified builder object
         /// </summary>
-        public static void SafeResolve( BaseBuilder builder, BaseBuilder parentBuilder )
+        public static void SafeResolve( BaseBuilder builder )
         {
             try
             {
-                builder.Resolve( parentBuilder );
+                builder.Resolve( );
             }
             catch ( Exception ex )
             {
@@ -453,7 +482,7 @@ namespace Rb.ComponentXmlLoader
 		protected virtual void HandleElement( XmlReader reader, List< BaseBuilder > builders )
 		{
 			//  Create a builder from the element and add it to the current builder set
-			BaseBuilder builder = CreateBuilderFromReader( Parameters, Errors, reader );
+			BaseBuilder builder = CreateBuilderFromReader( this, Parameters, Errors, reader );
 			if ( builder != null )
 			{
 				builders.Add( builder );
@@ -479,6 +508,7 @@ namespace Rb.ComponentXmlLoader
             {
                 if ( reader.NodeType != XmlNodeType.Element )
                 {
+                    reader.Read( );
                     continue;
                 }
 
@@ -500,6 +530,18 @@ namespace Rb.ComponentXmlLoader
 
             reader.ReadEndElement( );
         }
+        
+        /// <summary>
+        /// Gets the list of builders for a given link step
+        /// </summary>
+        protected List< BaseBuilder > GetBuilders( LinkStep step )
+        {
+            if ( step == LinkStep.Default )
+            {
+                step = DefaultLinkStep;
+            }
+            return ( step == LinkStep.PreLink ? m_PreLinkBuilders : m_PostLinkBuilders );
+        }
 
         #endregion
 
@@ -513,7 +555,7 @@ namespace Rb.ComponentXmlLoader
         {
             foreach ( BaseBuilder builder in builders )
             {
-                SafePostCreate( builder, this );
+                SafePostCreate( builder );
             }
         }
 
@@ -525,24 +567,13 @@ namespace Rb.ComponentXmlLoader
         {
             foreach ( BaseBuilder builder in builders )
             {
-                SafeResolve( builder, this );
+                SafeResolve( builder );
             }
-        }
-
-        /// <summary>
-        /// Gets the list of builders for a given link step
-        /// </summary>
-        private List< BaseBuilder > GetBuilders( LinkStep step )
-        {
-            if ( step == LinkStep.Default )
-            {
-                step = DefaultLinkStep;
-            }
-            return ( step == LinkStep.PreLink ? m_PreLinkBuilders : m_PostLinkBuilders );
         }
 
         #endregion
 
+        private BaseBuilder             m_ParentBuilder;
         private ErrorCollection         m_Errors;
         private int                     m_Line;
         private int                     m_Column;

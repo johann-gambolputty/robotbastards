@@ -69,11 +69,11 @@ namespace Rb.Core.Utils
                 info.NextMatch( );
             }
 
-            Source.HandleEntry( baseEntry );
+            entries.Add( baseEntry );
 
             while ( info.HasMatch )
             {
-                Source.HandleEntry( new Entry( source, "" ).Locate( info.File, int.Parse( info.Line ), 1, info.Method ) );
+                entries.Add( new Entry( source, "" ).Locate( info.File, int.Parse( info.Line ), 1, info.Method ) );
                 info.NextMatch( );
             }
         }

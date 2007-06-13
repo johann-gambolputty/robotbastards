@@ -18,7 +18,7 @@ namespace Rb.ComponentXmlLoader
         /// <param name="errors">Error log</param>
         /// <param name="reader">XML reader positioned at the element that created this builder</param>
         public RootBuilder( ComponentLoadParameters parameters, ErrorCollection errors, XmlReader reader ) :
-            base( parameters, errors, reader )
+            base( parameters, errors, reader, null )
         {
             if ( reader.Name != "rb" )
             {
@@ -31,14 +31,31 @@ namespace Rb.ComponentXmlLoader
         /// <summary>
         /// Called prior to Resolve()
         /// </summary>
-        public override void PostCreate( BaseBuilder parentBuilder )
+        public override void PostCreate( )
         {
             if ( m_ExternalTarget == null )
             {
-                object rootObject = null;
-                BuildObject = rootObject;
+                GetBuildObject( LinkStep.PreLink );
+                GetBuildObject( LinkStep.PostLink );
             }
-			base.PostCreate( parentBuilder );
+			base.PostCreate( );
+        }
+
+        /// <summary>
+        /// Gets the BuildObject for this builder.
+        /// </summary>
+        /// <param name="step">Child builder list to check</param>
+        private void GetBuildObject( LinkStep step )
+        {
+            foreach ( BaseBuilder builder in GetBuilders( step ) )
+            {
+                if ( BuildObject != null )
+                {
+                    Errors.Add( builder, "The root <rb> object can only have one child element, if it has no external target" );
+                    return;
+                }
+                BuildObject = builder.BuildObject;
+            }
         }
 
         private object m_ExternalTarget;

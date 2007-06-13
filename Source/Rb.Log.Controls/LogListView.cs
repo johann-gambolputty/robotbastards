@@ -97,17 +97,21 @@ namespace Rb.Log.Controls
         void LogListView_DrawItem( object sender, DrawListViewItemEventArgs e )
         {
             Entry entry = ( Entry )e.Item.Tag;
+            bool oddItem = (e.ItemIndex % 2) != 0;
             System.Drawing.Color backCol = m_SourceColours[ ( int )entry.Severity ];
 
+            float factor = 1.0f;
             if ( e.Item.Selected )
             {
-                float darkFactor = 2.0f / 3.0f;
-                float darkR = backCol.R * darkFactor;
-                float darkG = backCol.G * darkFactor;
-                float darkB = backCol.B * darkFactor;
-
-                backCol = Color.FromArgb( ( int )darkR, ( int )darkG, ( int )darkB );
+                factor = oddItem ? 0.6f : 0.75f;
             }
+            else
+            {
+                factor = oddItem ? 0.9f : 1.0f;
+            }
+            
+            backCol = Color.FromArgb( ( int )( backCol.R * factor ), ( int )( backCol.G * factor ), ( int )( backCol.B * factor ) );
+
             e.Graphics.FillRectangle( new SolidBrush( backCol ), e.Bounds );
 
             foreach ( ListViewItem.ListViewSubItem subItem in e.Item.SubItems )

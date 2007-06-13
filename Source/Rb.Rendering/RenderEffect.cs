@@ -1,15 +1,12 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Rb.Rendering
 {
 	/// <summary>
-	/// Stores a set of techniques (RenderTechnique objects) that can be used for rendering geometry
+	/// Stores a set of techniques that can be used for rendering stuff
 	/// </summary>
-	/// <seealso>Shader</seealso>
-	/// <seealso>RenderTechnique</seealso>
-	/// <seealso>AppliedTechnique</seealso>
-	public class RenderEffect : Shader, Components.IParentObject, IAppliance
+	public class RenderEffect : Shader, IPass
 	{
 		#region	Construction
 
@@ -21,12 +18,15 @@ namespace Rb.Rendering
 		}
 
 		/// <summary>
-		/// Creates a render effect with one technique
+		/// Creates a render effect with one or more techniques
 		/// </summary>
-		/// <param name="technique"> Technique to add </param>
-		public RenderEffect( RenderTechnique technique )
+		/// <param name="techniques">Techniques to add</param>
+		public RenderEffect( params ITechnique[] techniques )
 		{
-			Add( technique );
+            foreach ( ITechnique technique in techniques )
+            {
+			    Add( technique );
+            }
 		}
 
 		#endregion
@@ -38,9 +38,9 @@ namespace Rb.Rendering
 		/// </summary>
 		/// <param name="name"> Name of the technique to look for (case-sensitive match to RenderTechnique.Name)</param>
 		/// <returns> Returns the named technique. Returns null if no technique with the specified name can be found </returns>
-		public RenderTechnique	FindTechnique( string name )
+		public ITechnique FindTechnique( string name )
 		{
-			foreach ( RenderTechnique technique in m_Techniques )
+            foreach ( ITechnique technique in m_Techniques )
 			{
 				if ( technique.Name == name )
 				{
@@ -54,20 +54,26 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Adds a generic render technique to the effect
 		/// </summary>
-		public void				Add( RenderTechnique technique )
+		public void Add( ITechnique technique )
 		{
 			m_Techniques.Add( technique );
-			technique.Effect = this;
+
+            //  hmmm....
+		    RenderTechnique renderTechnique = technique as RenderTechnique;
+            if ( renderTechnique != null )
+            {
+			    renderTechnique.Effect = this;
+            }
 		}
 
 		/// <summary>
 		/// Returns the indexed technique
 		/// </summary>
-		/// <param name="index"> Technique index, in range [0..GetNumTechniques()] </param>
+        /// <param name="index"> Technique index, in range [0..TechniqueCount-1] </param>
 		/// <returns> The indexed technique </returns>
-		public RenderTechnique	GetTechnique( int index )
+		public ITechnique GetTechnique( int index )
 		{
-			return ( RenderTechnique )m_Techniques[ index ];
+			return m_Techniques[ index ];
 		}
 
 		/// <summary>
@@ -75,7 +81,7 @@ namespace Rb.Rendering
 		/// </summary>
 		/// <param name="technique"> Technique to look for </param>
 		/// <returns> Returns -1 if the technique can't be found </returns>
-		public int				GetTechniqueIndex( RenderTechnique technique )
+		public int GetTechniqueIndex( ITechnique technique )
 		{
 			return m_Techniques.IndexOf( technique );
 		}
@@ -84,74 +90,29 @@ namespace Rb.Rendering
 		/// <summary>
 		/// The number of techniques stored in this effect
 		/// </summary>
-		public int				TechniqueCount
+		public int TechniqueCount
 		{
-			get
-			{
-				return m_Techniques.Count;
-			}
+			get { return m_Techniques.Count; }
 		}
+
+        /// <summary>
+        /// Technique list getter
+        /// </summary>
+        // TODO: AP: Make a proper TechniqueList class, that handles RenderTechnique.Add()
+	    public IList< ITechnique > Techniques
+	    {
+	        get { return m_Techniques; }
+	    }
 
 		#endregion
 
 		#region	Private stuff
 
-		private ArrayList		m_Techniques	= new ArrayList( );
+		private List< ITechnique > m_Techniques	= new List< ITechnique >( );
 
 		#endregion
 
-		#region IParentObject Members
-
-		/// <summary>
-		/// Event, invoked by AddChild() after a child object has been added
-		/// </summary>
-		public event Components.ChildAddedDelegate		ChildAdded;
-
-		/// <summary>
-		/// Event, invoked by AddChild() before a child object has been removed
-		/// </summary>
-		public event Components.ChildRemovedDelegate	ChildRemoved;
-
-		/// <summary>
-		/// Gets the child technique collection
-		/// </summary>
-		public ICollection	Children
-		{
-			get
-			{
-				return m_Techniques;
-			}
-		}
-
-		/// <summary>
-		/// Adds a child object, but only if it's of type RenderTechnique
-		/// </summary>
-		/// <param name="childObject"> Child render technique</param>
-		public void AddChild( Object childObject )
-		{
-			Add( ( RenderTechnique )childObject );
-			if ( ChildAdded != null )
-			{
-				ChildAdded( this, childObject );
-			}
-		}
-
-		/// <summary>
-		/// Removes a child object, but only if it's of type RenderTechnique
-		/// </summary>
-		/// <param name="childObject"> Child render technique</param>
-		public void RemoveChild( Object childObject )
-		{
-			m_Techniques.Remove( childObject );
-			if ( ChildRemoved != null )
-			{
-				ChildRemoved( this, childObject );
-			}
-		}
-
-		#endregion
-
-		#region	IAppliance Members
+		#region	IPass Members
 
 		/// <summary>
 		/// Starts using this shader

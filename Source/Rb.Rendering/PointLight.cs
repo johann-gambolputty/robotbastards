@@ -1,5 +1,4 @@
-using System;
-using RbEngine.Maths;
+using Rb.Core.Maths;
 
 namespace Rb.Rendering
 {
@@ -13,14 +12,8 @@ namespace Rb.Rendering
 		/// </summary>
 		public Point3	Position
 		{
-			get
-			{
-				return m_Position;
-			}
-			set
-			{
-				m_Position = value;
-			}
+			get { return m_Position; }
+			set { m_Position = value; }
 		}
 
 		/// <summary>
@@ -28,14 +21,8 @@ namespace Rb.Rendering
 		/// </summary>
 		public float	InnerRadius
 		{
-			get
-			{
-				return m_InnerRadius;
-			}
-			set
-			{
-				m_InnerRadius = value;
-			}
+			get { return m_InnerRadius; }
+			set { m_InnerRadius = value; }
 		}
 
 		/// <summary>
@@ -43,14 +30,8 @@ namespace Rb.Rendering
 		/// </summary>
 		public float	OuterRadius
 		{
-			get
-			{
-				return m_OuterRadius;
-			}
-			set
-			{
-				m_OuterRadius = value;
-			}
+			get { return m_OuterRadius; }
+			set { m_OuterRadius = value; }
 		}
 
 		/// <summary>
@@ -58,14 +39,8 @@ namespace Rb.Rendering
 		/// </summary>
 		public float	Attenuation
 		{
-			get
-			{
-				return m_Attenuation;
-			}
-			set
-			{
-				m_Attenuation = value;
-			}
+			get { return m_Attenuation; }
+			set { m_Attenuation = value; }
 		}
 
 		private Point3	m_Position = new Point3( );

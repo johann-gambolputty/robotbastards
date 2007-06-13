@@ -35,11 +35,9 @@ namespace Rb.ComponentXmlLoader
 		/// <returns>Returns resource</returns>
 		public override Object Load( System.IO.Stream input, string inputSource, out bool canCache, LoadParameters parameters )
 		{
+		    canCache = false;
+
 			ErrorCollection errors = new ErrorCollection( inputSource );
-			//  Mark result as uncacheable
-			//  TODO: AP: This is a bit unfair - if parameters are invariant, then its possible that the resource can be
-			//  cached (although not certain). There should be a tag in the XML itself... (<cacheable/>)
-			canCache = false;
 
 			XmlTextReader reader = new XmlTextReader( input );
 			reader.WhitespaceHandling = WhitespaceHandling.Significant;
@@ -57,17 +55,27 @@ namespace Rb.ComponentXmlLoader
 
 				Entry entry = new Entry( ResourcesLog.GetSource( Severity.Error ), ex.Message );
 				Source.HandleEntry( entry.Locate( inputSource, ex.LineNumber, ex.LinePosition, "" ) );
-				return null;
+
+			    throw new ApplicationException( string.Format( "Failed to load component XML resource \"{0}\" (see log for details)", inputSource ) );
 			}
-			BaseBuilder builder = BaseBuilder.CreateBuilderFromReader( ( ComponentLoadParameters )parameters, errors, reader );
+
+            string cacheable = reader.GetAttribute( "cacheable" );
+            canCache = ( cacheable != null ) && ( ( cacheable == "yes" ) || ( cacheable == "true" ) );
+
+			BaseBuilder builder = BaseBuilder.CreateBuilderFromReader( null, ( ComponentLoadParameters )parameters, errors, reader );
 
             if ( errors.Count == 0 )
             {
-                BaseBuilder.SafePostCreate( builder, null );
+                BaseBuilder.SafePostCreate( builder );
                 if ( errors.Count == 0 )
                 {
-                    BaseBuilder.SafeResolve( builder, null );
+                    BaseBuilder.SafeResolve( builder );
                 }
+            }
+
+            if ( ( builder.BuildObject == null ) && ( errors.Count == 0 ) )
+            {
+                errors.Add( builder, "Empty components file" );
             }
 
             if ( errors.Count > 0 )
