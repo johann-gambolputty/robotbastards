@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace RbEngine.Rendering
+namespace Rb.Rendering
 {
 	/// <summary>
 	/// Stores a collection of RenderPass objects. For each pass, the technique applies it, then renders geometry using a callback

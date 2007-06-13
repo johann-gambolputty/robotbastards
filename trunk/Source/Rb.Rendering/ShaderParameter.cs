@@ -1,6 +1,6 @@
 using System;
 
-namespace RbEngine.Rendering
+namespace Rb.Rendering
 {
 
 	/// <summary>

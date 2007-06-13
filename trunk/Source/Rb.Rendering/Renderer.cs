@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using RbEngine.Maths;
 
-namespace RbEngine.Rendering
+namespace Rb.Rendering
 {
 	/// <summary>
 	/// Transform types

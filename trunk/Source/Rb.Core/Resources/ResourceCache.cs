@@ -28,9 +28,9 @@ namespace Rb.Core.Resources
         /// <returns>Resource object (null if key could not be found)</returns>
         public object Find( string key )
         {
-            WeakReference weakRef = m_Cache[ key ];
-            if ( weakRef == null )
-            {
+            WeakReference weakRef;
+			if ( !m_Cache.TryGetValue( key, out weakRef ) )
+			{
                 return null;
             }
             if ( weakRef.Target == null )

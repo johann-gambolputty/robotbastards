@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using RbEngine.Maths;
 
-namespace RbEngine.Rendering
+namespace Rb.Rendering
 {
 	/// <summary>
 	/// Builds up to 4 depth textures for lights

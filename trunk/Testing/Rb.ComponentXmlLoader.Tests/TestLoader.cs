@@ -78,10 +78,11 @@ namespace Rb.ComponentXmlLoader.Tests
 
             ComponentLoadParameters parameters = new ComponentLoadParameters( );
 
-            loader.Load( new System.IO.MemoryStream( contentBytes ), new StackFrame( 0, true ).GetFileName( ), parameters );
+			bool canCache;
+			loader.Load( new System.IO.MemoryStream( contentBytes ), new StackFrame( 0, true ).GetFileName( ), out canCache, parameters );
 
             Assert.IsTrue( parameters.Objects.ContainsKey( id ) );
-            
+
             object obj = parameters.Objects[ id ];
             Assert.IsInstanceOfType( typeof( Root ), obj );
         }
@@ -112,7 +113,8 @@ namespace Rb.ComponentXmlLoader.Tests
 
 			ComponentLoadParameters parameters = new ComponentLoadParameters( );
 
-			loader.Load( new System.IO.MemoryStream( contentBytes ), new StackFrame( 0, true ).GetFileName( ), parameters );
+			bool canCache;
+			loader.Load( new System.IO.MemoryStream( contentBytes ), new StackFrame( 0, true ).GetFileName( ), out canCache, parameters );
 
 			Assert.IsTrue( parameters.Objects.ContainsKey( id ) );
 
