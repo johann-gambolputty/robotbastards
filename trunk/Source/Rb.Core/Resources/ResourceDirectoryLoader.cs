@@ -14,7 +14,7 @@ namespace Rb.Core.Resources
         /// </summary>
         public override IResourceCache Cache
         {
-            get { return ms_Cache; }
+            get { return m_Cache; }
         }
 
         #endregion
@@ -49,7 +49,7 @@ namespace Rb.Core.Resources
 
         #region Private stuff
 
-        private static ResourceCache ms_Cache = new ResourceCache( );
+        private ResourceCache m_Cache = new ResourceCache( );
         
         #endregion
     }

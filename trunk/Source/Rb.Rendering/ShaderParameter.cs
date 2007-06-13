@@ -13,10 +13,7 @@ namespace Rb.Rendering
 		/// </summary>
 		public Shader	Source
 		{
-			get
-			{
-				return m_Source;
-			}
+			get { return m_Source; }
 		}
 
 		/// <summary>

@@ -84,7 +84,7 @@ namespace Rb.Log
         {
             if ( m_CachedString == null )
             {
-                m_CachedString = string.Format( "{0}({1},{2}):[{3}->{4}]<{5}>{6}", File, Line, Column, Thread, Method, Source, Message );
+                m_CachedString = string.Format( "{0}({1},{2}):<{5}>{6}[{3}->{4}]", File, Line, Column, Thread, Method, Source, Message );
             }
             return m_CachedString;
         }

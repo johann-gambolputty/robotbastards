@@ -7,6 +7,9 @@ using System.Text;
 using System.Windows.Forms;
 
 using Rb.Core.Resources;
+using Rb.Core.Components;
+
+using Rb.World;
 
 namespace Rb.TestApp
 {
@@ -24,7 +27,13 @@ namespace Rb.TestApp
 
 			ResourceManager.Instance.Setup( "../resourceSetup.xml" );
 
-			ResourceManager.Instance.Load( "scene0.components.xml" );
+            Scene scene = new Scene( );
+
+            //  Set the global scene builder (erk...)
+            Builder.Instance = new SceneBuilder(scene, Builder.Instance );
+
+            ComponentLoadParameters loadParams = new ComponentLoadParameters( scene );
+            ResourceManager.Instance.Load( "scene0.components.xml", loadParams );
 		}
     }
 }

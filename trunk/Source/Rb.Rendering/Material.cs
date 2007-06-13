@@ -5,7 +5,7 @@ namespace Rb.Rendering
 	/// <summary>
 	/// Summary description for Material.
 	/// </summary>
-	public abstract class Material : IAppliance
+	public abstract class Material : IPass
 	{
 		/// <summary>
 		/// The ambient response of the material
@@ -18,9 +18,9 @@ namespace Rb.Rendering
 			}
 			set
 			{
-				m_Ambient[ 0 ] = ( float)value.R / 255.0f;
-				m_Ambient[ 1 ] = ( float)value.G / 255.0f;
-				m_Ambient[ 2 ] = ( float)value.B / 255.0f;
+				m_Ambient[ 0 ] = ( float )value.R / 255.0f;
+				m_Ambient[ 1 ] = ( float )value.G / 255.0f;
+				m_Ambient[ 2 ] = ( float )value.B / 255.0f;
 			}
 		}
 
@@ -35,9 +35,9 @@ namespace Rb.Rendering
 			}
 			set
 			{
-				m_Diffuse[ 0 ] = ( float)value.R / 255.0f;
-				m_Diffuse[ 1 ] = ( float)value.G / 255.0f;
-				m_Diffuse[ 2 ] = ( float)value.B / 255.0f;
+				m_Diffuse[ 0 ] = ( float )value.R / 255.0f;
+				m_Diffuse[ 1 ] = ( float )value.G / 255.0f;
+				m_Diffuse[ 2 ] = ( float )value.B / 255.0f;
 			}
 		}
 

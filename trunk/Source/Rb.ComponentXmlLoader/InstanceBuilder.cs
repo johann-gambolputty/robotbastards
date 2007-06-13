@@ -16,17 +16,18 @@ namespace Rb.ComponentXmlLoader
         /// <param name="parameters">Load parameters</param>
         /// <param name="errors">Error collection</param>
         /// <param name="reader">XML reader positioned at the element that created this builder</param>
-        public InstanceBuilder( ComponentLoadParameters parameters, ErrorCollection errors, XmlReader reader ) :
-            base( parameters, errors, reader )
+        /// <param name="parentBuilder">Parent builder</param>
+        public InstanceBuilder( ComponentLoadParameters parameters, ErrorCollection errors, XmlReader reader, BaseBuilder parentBuilder ) :
+            base( parameters, errors, reader, parentBuilder )
         {
         }
 
         /// <summary>
         /// Resolves the reference
         /// </summary>
-		public override void PostCreate( BaseBuilder parentBuilder )
+		public override void PostCreate( )
         {
-			base.PostCreate( parentBuilder );
+			base.PostCreate( );
             BuildObject = ( ( IInstanceBuilder )BuildObject ).CreateInstance( );
         }
     }

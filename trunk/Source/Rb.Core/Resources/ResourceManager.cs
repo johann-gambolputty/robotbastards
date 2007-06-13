@@ -139,7 +139,7 @@ namespace Rb.Core.Resources
 					return stream;
                 }
             }
-			throw new ApplicationException( string.Format( "Could not find provider that could open resource stream \"{0}\"", path ) );
+			throw new ApplicationException( string.Format( "Could not open resource stream \"{0}\"", path ) );
 		}
 
         /// <summary>

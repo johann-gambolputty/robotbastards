@@ -1,10 +1,11 @@
+using Rb.Core.Components;
 
 namespace Rb.Rendering
 {
     /// <summary>
     /// Techniques modify the rendering of an object in serial (unlike IPass, which modifies in parallel)
     /// </summary>
-    public interface ITechnique
+    public interface ITechnique : INamed
     {
         /// <summary>
         /// Applies this technique when rendering the specified object

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rb>
+
+  <method objectId="this" call="AddServices">
+    <parameters>
+      <list>
+        <object type="Rb.World.LightingManager"/>
+      </list>
+    </parameters>
+  </method>
+
+  <object type="Rb.World.Entities.Entity3d">
+
+    <guid value="{BE726C7E-26EA-433e-974A-B57396EE5FB5}" property="Id"/>
+
+    <point3 x="20" y="0.5" z="0" property="NextPosition"/>
+
+    <object type="Rb.World.Entities.HostedController">
+
+      <method objectId="this" call="LoadLocalController">
+        <parameters>
+          <guid value="{8D7200EA-0D49-4384-9A44-2532ECB1FE55}"/>
+          <string value="PlayerController.components.xml"/>
+        </parameters>
+      </method>
+
+      <object type="Rb.World.Entities.SampleController"/>
+
+    </object>
+
+  </object>
+
+</rb>

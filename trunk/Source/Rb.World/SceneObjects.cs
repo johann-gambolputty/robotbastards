@@ -17,7 +17,6 @@ namespace Rb.World
 	/// </summary>
 	public class SceneObjects
 	{
-
 		#region	Public construction
 
 		/// <summary>
@@ -36,7 +35,7 @@ namespace Rb.World
 		/// <summary>
 		/// Adds a scene object
 		/// </summary>
-		/// <param name="object">Object to add</param>
+        /// <param name="obj">Object to add</param>
 		public void Add( ISceneObject obj )
 		{
 			if ( OnObjectAdded != null )
@@ -48,7 +47,7 @@ namespace Rb.World
 		/// <summary>
 		/// Removes a scene object
 		/// </summary>
-		/// <param name="object">Object to remove</param>
+        /// <param name="obj">Object to remove</param>
 		public void Remove( ISceneObject obj )
 		{
 			if ( OnObjectRemoved != null )

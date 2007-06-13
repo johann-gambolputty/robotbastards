@@ -33,9 +33,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Entities\Entity3d.cs" />
+    <Compile Include="Entities\HostedController.cs" />
+    <Compile Include="Entities\NetworkHostedController.cs" />
+    <Compile Include="IHost.cs" />
     <Compile Include="ISceneController.cs" />
     <Compile Include="ISceneObject.cs" />
     <Compile Include="ISceneViewer.cs" />
+    <Compile Include="LightingManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="SceneBuilder.cs" />

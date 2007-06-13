@@ -58,6 +58,40 @@ namespace Rb.ComponentXmlLoader.Tests
         private string GuidString = "{D7743458-D782-4f34-A9E0-082399F12A21}";
 
         [Test]
+        public void TestEmpty()
+        {
+            try
+            {
+                byte[] contentBytes = System.Text.Encoding.ASCII.GetBytes("");
+                bool canCache;
+
+                new Loader( ).Load( new System.IO.MemoryStream( contentBytes ), new StackFrame( 0, true ).GetFileName( ), out canCache );
+
+                Assert.Fail( "Expected empty test to fail and throw an ApplicationException" );
+            }
+            catch ( System.ApplicationException ex )
+            {
+            }
+        }
+
+        [Test]
+        public void TestNoContent( )
+        {
+            try
+            {
+                byte[] contentBytes = System.Text.Encoding.ASCII.GetBytes( @"<?xml version=""1.0"" encoding=""utf-8""?><rb/>" );
+                bool canCache;
+                new Loader().Load( new System.IO.MemoryStream( contentBytes ), new StackFrame( 0, true ).GetFileName( ), out canCache );
+
+                Assert.Fail("Expected no content test to fail and throw an ApplicationException");
+            }
+            catch ( System.ApplicationException ex )
+            {
+                
+            }
+        }
+
+        [Test]
         public void TestSimple( )
         {
             Guid id = new Guid( GuidString );
