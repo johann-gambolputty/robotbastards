@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace RbEngine.Rendering
+namespace Rb.Rendering
 {
 	/// <summary>
 	/// Stores a set of techniques (RenderTechnique objects) that can be used for rendering geometry

@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Drawing;
 
-namespace RbEngine.Rendering
+namespace Rb.Rendering
 {
 	/// <summary>
 	/// Abstract base class for fonts

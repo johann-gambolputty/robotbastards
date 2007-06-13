@@ -1,7 +1,7 @@
 using System;
 using System.Drawing;
 
-namespace RbEngine.Rendering
+namespace Rb.Rendering
 {
 	/// <summary>
 	/// Flagged rendering capabilities

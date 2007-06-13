@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace RbEngine.Rendering
+namespace Rb.Rendering
 {
     //  TODO: AP: Removed IChild interface, so light group no longer adds itself to parent ISceneRenderable pre-render list. Need to
     //  determine alternative mechanism for applying light group pass to renderables.

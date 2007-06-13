@@ -1,7 +1,7 @@
 using System;
 using RbEngine.Maths;
 
-namespace RbEngine.Rendering
+namespace Rb.Rendering
 {
 	/// <summary>
 	/// Summary description for ShapeRenderer.

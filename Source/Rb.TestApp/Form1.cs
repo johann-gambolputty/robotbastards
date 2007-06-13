@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
+using Rb.Core.Resources;
+
 namespace Rb.TestApp
 {
     public partial class Form1 : Form
@@ -19,10 +21,10 @@ namespace Rb.TestApp
 		private void Form1_Load ( object sender, EventArgs e )
 		{
 		    Rb.Log.App.Info( "Beginning Rb.TestApp at {0}", DateTime.Now );
-            Rb.World.WorldLog.Verbose( "World verbose" );
-            Rb.Core.ComponentLog.Info( "Component info" );
-            Rb.Core.NetworkLog.Warning( "Network warning" );
-            Rb.Core.ResourcesLog.Error( "Resources error" );
+
+			ResourceManager.Instance.Setup( "../resourceSetup.xml" );
+
+			ResourceManager.Instance.Load( "scene0.components.xml" );
 		}
     }
 }

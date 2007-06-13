@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace RbEngine.Rendering
+namespace Rb.Rendering
 {
 
 	//	TODO: This is just an ApplianceList

@@ -72,6 +72,18 @@ namespace Rb.Core.Resources
 		}
 
 		/// <summary>
+		/// Sets up the manager from an XML file
+		/// </summary>
+		/// <param name="xmlSetupFilePath">Setup file path</param>
+		public void Setup( string xmlSetupFilePath )
+		{
+			System.Xml.XmlDocument doc = new System.Xml.XmlDocument( );
+			doc.Load( xmlSetupFilePath );
+
+			Setup( ( System.Xml.XmlElement )doc.SelectSingleNode( "/resourceManager" ) );
+		}
+
+		/// <summary>
 		/// Sets up the manager from an XML definition
 		/// </summary>
 		/// <param name="element"> Element that created this manager </param>
@@ -116,15 +128,15 @@ namespace Rb.Core.Resources
         /// <param name="path">Stream path</param>
         /// <returns>Returns a resource provider that can load path</returns>
         /// <exception cref="ApplicationException">Thrown if no provider can be found that supports the specified path</exception>
-        public System.IO.Stream OpenStream( string path )
+        public System.IO.Stream OpenStream( ref string path )
         {
 			//	path was just a directory - see if there's a provider that recognises it
 			foreach ( ResourceProvider provider in m_Providers )
 			{
-                System.IO.Stream stream = provider.Open( path );
+                System.IO.Stream stream = provider.Open( ref path );
                 if ( stream != null )
                 {
-                    return null;
+					return stream;
                 }
             }
 			throw new ApplicationException( string.Format( "Could not find provider that could open resource stream \"{0}\"", path ) );
@@ -216,7 +228,7 @@ namespace Rb.Core.Resources
 				throw new ApplicationException( string.Format( "Could not find a loader that could load directory resource \"{0}\"", path ) );
 			}
 
-            System.IO.Stream input = OpenStream( path );
+            System.IO.Stream input = OpenStream( ref path );
             
 			foreach( ResourceStreamLoader loader in m_StreamLoaders )
 			{
