@@ -1,12 +1,63 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Rb.Log
 {
+    /// <summary>
+    /// Log entry
+    /// </summary>
     public class Entry
     {
+        #region Entry creation from log files
+
+        /// <summary>
+        /// Creates an array of Entry objects by parsing the contents of a log file
+        /// </summary>
+        /// <param name="path">Log file path</param>
+        /// <returns>Returns entry array</returns>
+        public static Entry[] CreateEntriesFromLogFile( string path )
+        {
+            StreamReader reader = System.IO.File.OpenText( path );
+            return CreateEntriesFromLogText( reader );
+        }
+
+        /// <summary>
+        /// Creates an array of Entry objects by parsing the contents of a log stream
+        /// </summary>
+        /// <param name="reader">Log text reader</param>
+        /// <returns>Returns entry array</returns>
+        public static Entry[] CreateEntriesFromLogText( TextReader reader )
+        {
+            List< Entry > entries = new List< Entry >( );
+
+            foreach ( Match curMatch in LogEntryRegex.Matches( reader.ReadToEnd( ) ) )
+            {
+                string file     = curMatch.Groups[ "File" ].Value;
+                string line     = curMatch.Groups[ "Line" ].Value;
+                string column   = curMatch.Groups[ "Column" ].Value;
+                string source   = curMatch.Groups[ "Source" ].Value;
+                string message  = curMatch.Groups[ "Message" ].Value;
+                string thread   = curMatch.Groups[ "Thread" ].Value;
+                string method   = curMatch.Groups[ "Method" ].Value;
+
+                //  TODO: AP: Time not written/read
+                Entry newEntry = new Entry( Log.Source.BuildFromString( source ), message, thread, System.DateTime.Now.TimeOfDay );
+                newEntry.Locate( file, int.Parse( line ), int.Parse( column ), method );
+                entries.Add( newEntry );
+            }
+
+            return entries.ToArray( );
+        }
+
+        private static Regex LogEntryRegex = new Regex
+            (
+                @"(?<File>.*)\((?<Line>\d+),(?<Column>\d+)\)\:\<(?<Source>(?:\w+\.?)+)\>(?<Message>.*)\[(?<Thread>\d+)->(?<Method>.*)\]"
+            );
+
+        #endregion
 
         #region Public construction
 
@@ -27,6 +78,22 @@ namespace Rb.Log
             {
                 m_ThreadName = System.Threading.Thread.CurrentThread.ManagedThreadId.ToString( );
             }
+        }
+        
+        /// <summary>
+        /// Setup constructor
+        /// </summary>
+        /// <param name="source">Message source</param>
+        /// <param name="message">Message string</param>
+        /// <param name="threadName">Thread source</param>
+        /// <param name="time">Time that entry was generated</param>
+        public Entry( Source source, string message, string threadName, System.TimeSpan time )
+        {
+            m_Source        = source;
+            m_Message       = message;
+            m_ThreadName    = threadName;
+            m_Time          = time;
+            m_Id            = m_MessageId++;
         }
 
         #endregion

@@ -268,7 +268,7 @@ namespace Rb.ComponentXmlLoader
             }
             catch ( Exception ex )
             {
-                builder.Errors.Add(builder, ex, "Builder threw an exception during post-creation phase");
+                builder.Errors.Add( builder, ex, "Builder threw an exception during post-creation phase" );
             }
         }
 

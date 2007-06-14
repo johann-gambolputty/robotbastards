@@ -15,19 +15,16 @@
 
     <point3 x="20" y="0.5" z="0" property="NextPosition"/>
 
-    <object type="Rb.World.Entities.HostedController">
+    <method objectId="this" call="SetupController">
+      <parameters>
+        <guid value="{8D7200EA-0D49-4384-9A44-2532ECB1FE55}"/>
+        <string value="userInputListener.components.xml"/>
+      </parameters>
+    </method>
 
-      <method objectId="this" call="LoadLocalController">
-        <parameters>
-          <guid value="{8D7200EA-0D49-4384-9A44-2532ECB1FE55}"/>
-          <string value="PlayerController.components.xml"/>
-        </parameters>
-      </method>
-
-      <object type="Rb.World.Entities.SampleController"/>
-
-    </object>
+    <object type="Rb.World.Entities.SampleController"/>
 
   </object>
+
 
 </rb>

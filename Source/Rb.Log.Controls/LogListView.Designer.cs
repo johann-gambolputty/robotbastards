@@ -82,6 +82,7 @@ namespace Rb.Log.Controls
             // LogListView
             // 
             this.AllowColumnReorder = true;
+            this.AllowDrop = true;
             this.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.m_IdColumn,
             this.m_MessageColumn,
@@ -98,6 +99,8 @@ namespace Rb.Log.Controls
             this.Size = new System.Drawing.Size(796, 277);
             this.UseCompatibleStateImageBehavior = false;
             this.View = System.Windows.Forms.View.Details;
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.LogListView_DragEnter);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.LogListView_DragDrop);
             this.SelectedIndexChanged += new System.EventHandler(this.LogListView_SelectedIndexChanged);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LogListView_MouseDown);
             this.ResumeLayout(false);

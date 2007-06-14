@@ -1,5 +1,6 @@
 using System;
 using Rb.Core.Components;
+using Rb.Core.Resources;
 
 namespace Rb.World.Entities
 {
@@ -8,29 +9,37 @@ namespace Rb.World.Entities
     /// </summary>
     public class Entity : Component, ISceneObject
     {
+        #region Controller
+
         /// <summary>
         /// If the current host's ID is equal to hostId, then the specified local controller is added
         /// </summary>
         /// <param name="hostId">ID of the local controller's host</param>
-        /// <param name="path">Local controller path</param>
-        public void LoadLocalController( Guid hostId, string path )
+        /// <param name="controllerPath">Path to the resource that describes the controller</param>
+        public void SetupController( Guid hostId, string controllerPath )
         {
             IHost host = m_Scene.GetService< IHost >( );
-            if ( ( host == null ) || ( host.Id == Guid.Empty ) )
+            if ( ( host == null ) || ( host.HostType == HostType.Local ) )
             {
-                //  The scene host is the local controller host - create away
-                ( ( IParent )Parent ).AddChild( ResourceManager.Instance.Load( path ) );
+                //  Local hosts can't receive commands from remote controllers, so the controller
+                //  must be created locally
+                AddChild( ResourceManager.Instance.Load( controllerPath ) );
             }
             else if ( host.Id == hostId )
             {
                 //  The scene host is the local controller host - create away
-                ( ( IParent )Parent ).AddChild( ResourceManager.Instance.Load( path ) );
+                AddChild( ResourceManager.Instance.Load( controllerPath ) );
+
+                //  Also need listeners and so forth
             }
             else
             {
-                throw new ApplicationException( "Controllers can only be hosted locally" );
+                //  Also need listeners and so forth
+                throw new ApplicationException( "Unimplemented" );
             }
         }
+
+        #endregion
 
         #region ISceneObject Members
 

@@ -359,5 +359,24 @@ namespace Rb.Log.Controls
         }
 
         #endregion
+
+        private void LogListView_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] filenames = ( string[] )e.Data.GetData( "FileName" );
+            Entry[] entries = Entry.CreateEntriesFromLogFile( filenames[ 0 ] );
+
+            foreach ( Entry entry in entries )
+            {
+                OnNewLogEntry( entry );
+            }
+        }
+
+        private void LogListView_DragEnter(object sender, DragEventArgs e)
+        {
+            if ( e.Data.GetDataPresent( "FileName" ) )
+            {
+                e.Effect = DragDropEffects.Link;
+            }
+        }
     }
 }

@@ -33,7 +33,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App.cs" />
+    <Compile Include="AppLog.cs" />
     <Compile Include="DebugSource.cs" />
     <Compile Include="Entry.cs" />
     <Compile Include="FileLogger.cs" />

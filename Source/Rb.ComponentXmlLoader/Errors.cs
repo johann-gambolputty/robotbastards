@@ -63,15 +63,27 @@ namespace Rb.ComponentXmlLoader
 
         public void Add( int line, int column, Exception ex, string format, params object[] args )
         {
+            Add( line, column, format, args );
+            IndentedAdd( "    ", ex );
+        }
+
+
+        private void IndentedAdd( string indent, Exception ex )
+        {
             //  Convert the exception into log entries
             List< Entry > entries = new List< Entry >( );
-            ExceptionUtils.ToLogEntries( ResourcesLog.GetSource( Severity.Error ), ex, entries );
+            ExceptionUtils.ToLogEntries( ResourcesLog.GetSource( Severity.Error ), ex, entries, indent );
 
             //  Store the log entries in the error collection
-            Add( line, column, format, args );
             foreach ( Entry curEntry in entries )
             {
                 Add( curEntry );
+            }
+
+            //  Inner exception
+            if ( ex.InnerException != null )
+            {
+                IndentedAdd( indent + "    ", ex.InnerException );
             }
         }
 
