@@ -68,7 +68,6 @@ namespace Rb.Core.Components
 
 		#endregion
 
-
 		#region IChild Members
 
 		/// <summary>

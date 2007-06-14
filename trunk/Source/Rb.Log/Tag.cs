@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Diagnostics;
 
 namespace Rb.Log
@@ -33,9 +31,28 @@ namespace Rb.Log
 
 		#endregion
 
-		#region Debug source output helpers
+        #region Child tags
 
-		/// <summary>
+        /// <summary>
+        /// Finds a child tag with a given name
+        /// </summary>
+        public Tag FindChildTag( string name )
+        {
+            foreach ( Tag childTag in m_ChildTags )
+            {
+                if ( childTag.Name == name )
+                {
+                    return childTag;
+                }
+            }
+            return null;
+        }
+
+        #endregion
+
+        #region Debug source output helpers
+
+        /// <summary>
 		/// Writes to the DebugSource for the Severity.DebugVerbose level
 		/// </summary>
 		/// <param name="msg">Message string</param>
@@ -224,7 +241,7 @@ namespace Rb.Log
 				{
 					src.Suppress = value;
 				}
-				foreach ( Source src in m_DebugSources )
+				foreach ( DebugSource src in m_DebugSources )
 				{
 					src.Suppress = value;
 				}

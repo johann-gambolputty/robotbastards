@@ -35,8 +35,7 @@
   <ItemGroup>
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\Entity3d.cs" />
-    <Compile Include="Entities\HostedController.cs" />
-    <Compile Include="Entities\NetworkHostedController.cs" />
+    <Compile Include="Entities\SampleController.cs" />
     <Compile Include="IHost.cs" />
     <Compile Include="ISceneController.cs" />
     <Compile Include="ISceneObject.cs" />

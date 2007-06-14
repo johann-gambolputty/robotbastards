@@ -69,10 +69,34 @@ namespace Rb.Log
         #region Public methods
 
         /// <summary>
+        /// Builds or finds a source from a '.' seperated string
+        /// </summary>
+        /// <param name="str">Tags and source string</param>
+        /// <returns>New/found source</returns>
+        public static Source BuildFromString( string str )
+        {
+            string[] sepStr = str.Split( new char[] { '.' } );
+
+            Tag curTag = Tag.Root;
+            for ( int strIndex = 0; strIndex < sepStr.Length - 1; ++strIndex )
+            {
+                Tag childTag = curTag.FindChildTag( sepStr[ strIndex ] );
+                if ( childTag == null )
+                {
+                    childTag = new Tag( curTag, sepStr[ strIndex ] );
+                }
+                curTag = childTag;
+            }
+
+            Severity severity = ( Severity )Enum.Parse( typeof( Severity ), sepStr[ sepStr.Length - 1 ] );
+            return curTag.GetSource( severity );
+        }
+
+        /// <summary>
         /// Converts this source to a string
         /// </summary>
         /// <returns>String name</returns>
-        public override string ToString( )
+        public override string ToString()
         {
             return FullName;
         }

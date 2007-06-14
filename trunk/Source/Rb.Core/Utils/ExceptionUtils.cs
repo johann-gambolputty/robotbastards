@@ -19,7 +19,7 @@ namespace Rb.Core.Utils
 			try
 			{
 				string exceptionString = ToString( args.Exception );
-				App.Error( exceptionString );
+				AppLog.Error( exceptionString );
 
 				switch ( MessageBox.Show( exceptionString, "Unhandled Exception", MessageBoxButtons.AbortRetryIgnore ) )
 				{
@@ -56,13 +56,25 @@ namespace Rb.Core.Utils
         /// <param name="entries">Log entry list</param>
         public static void ToLogEntries( Source source, Exception ex, IList< Entry > entries )
         {
+            ToLogEntries( source, ex, entries, "" );
+        }
+
+        /// <summary>
+        /// Writes an exception into one or more log entries, storing them in entries with a given prefix
+        /// </summary>
+        /// <param name="source">Log source</param>
+        /// <param name="ex">Exception</param>
+        /// <param name="entries">Log entry list</param>
+        /// <param name="prefix">Entry string prefix</param>
+        public static void ToLogEntries( Source source, Exception ex, IList< Entry > entries, string prefix )
+        {
             if ( ex == null )
             {
                 return;
             }
             StackTraceInfo info = new StackTraceInfo( ex.StackTrace );
             
-            Entry baseEntry = new Entry( source, ex.Message );
+            Entry baseEntry = new Entry( source, prefix + ex.Message );
             if ( info.HasMatch )
             {
                 baseEntry.Locate( info.File, int.Parse( info.Line ), 1, info.Method );
@@ -73,7 +85,7 @@ namespace Rb.Core.Utils
 
             while ( info.HasMatch )
             {
-                entries.Add( new Entry( source, "" ).Locate( info.File, int.Parse( info.Line ), 1, info.Method ) );
+                entries.Add( new Entry( source, prefix + "(call stack)" ).Locate( info.File, int.Parse( info.Line ), 1, info.Method ) );
                 info.NextMatch( );
             }
         }

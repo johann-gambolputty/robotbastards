@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{78507092-001D-4771-B893-687A22AAB924}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rb.Interaction</RootNamespace>
-    <AssemblyName>Rb.Interaction</AssemblyName>
+    <RootNamespace>Rb.LogViewer</RootNamespace>
+    <AssemblyName>Rb.LogViewer</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,33 +30,51 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command.cs" />
-    <Compile Include="CommandCursorInputBinding.cs" />
-    <Compile Include="CommandEnumDescriptionAttribute.cs" />
-    <Compile Include="CommandEnumInputInterpreterAttribute.cs" />
-    <Compile Include="CommandInput.cs" />
-    <Compile Include="CommandInputBinding.cs" />
-    <Compile Include="CommandInputInterpreter.cs" />
-    <Compile Include="CommandInputListener.cs" />
-    <Compile Include="CommandKeyInput.cs" />
-    <Compile Include="CommandKeyInputBinding.cs" />
-    <Compile Include="CommandList.cs" />
-    <Compile Include="CommandListManager.cs" />
-    <Compile Include="CommandMessage.cs" />
-    <Compile Include="CommandMouseMoveInput.cs" />
-    <Compile Include="CommandMouseMoveInputBinding.cs" />
-    <Compile Include="CommandScenePickInterpreter.cs" />
-    <Compile Include="CommandScenePickMessage.cs" />
-    <Compile Include="InteractionLog.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">
-      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
-      <Name>Rb.Core</Name>
+    <ProjectReference Include="..\Rb.Log.Controls.Vs\Rb.Log.Controls.Vs.csproj">
+      <Project>{592DDD2E-6E38-4EB1-AD47-800193530D3B}</Project>
+      <Name>Rb.Log.Controls.Vs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Log.Controls\Rb.Log.Controls.csproj">
+      <Project>{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}</Project>
+      <Name>Rb.Log.Controls</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rb.Log\Rb.Log.csproj">
       <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>

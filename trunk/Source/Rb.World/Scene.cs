@@ -32,7 +32,8 @@ namespace Rb.World
 		/// <returns>Returns the service object. Returns null if the service does not exist</returns>
 		public object GetService( Type serviceType )
 		{
-			return m_Services[ serviceType ];
+            object result;
+			return m_Services.TryGetValue( serviceType, out result ) ? result : null;
 		}
 
 		/// <summary>
@@ -51,15 +52,13 @@ namespace Rb.World
 		/// <param name="service">Service object</param>
 		public void AddService( object service )
 		{
-			Type key = service.GetType( );
-			WorldLog.Info( "Adding service of type \"{0}\"", key );
+			AddService( service.GetType( ), service );
 
-			if ( m_Services.ContainsKey( key ) )
-			{
-				WorldLog.Warning( "Service of type \"{0}\" already existed - overwriting", key );
-			}
-
-			m_Services[ service.GetType( ) ] = service;
+            //  Also register the service with all the interfaces that it supports
+            foreach ( Type interfaceType in service.GetType( ).GetInterfaces( ) )
+            {
+                AddService( interfaceType, service );
+            }
 		}
 
         /// <summary>
@@ -130,6 +129,23 @@ namespace Rb.World
 		private SceneViewers					m_Viewers;
 		private SceneControllers				m_Controllers;
 		private SceneObjects					m_Objects;
+
+        /// <summary>
+        /// Associates a service with a key
+        /// </summary>
+        /// <param name="key">Service type key</param>
+        /// <param name="service">Service object</param>
+        private void AddService( Type key, object service )
+        {
+			WorldLog.Info( "Adding service of type \"{0}\"", key );
+
+			if ( m_Services.ContainsKey( key ) )
+			{
+				WorldLog.Warning( "Service of type \"{0}\" already existed - overwriting", key );
+			}
+
+            m_Services[ key ] = service;
+        }
 
 		#endregion
 	}
