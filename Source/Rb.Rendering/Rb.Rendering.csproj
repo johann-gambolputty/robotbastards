@@ -34,7 +34,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cameras\Camera3.cs" />
+    <Compile Include="Cameras\CameraBase.cs" />
+    <Compile Include="Cameras\ProjectionCamera.cs" />
+    <Compile Include="Cameras\SphereCamera.cs" />
     <Compile Include="GraphicsLog.cs" />
+    <Compile Include="Composite.cs" />
     <Compile Include="IPass.cs" />
     <Compile Include="IRenderable.cs" />
     <Compile Include="IRenderContext.cs" />

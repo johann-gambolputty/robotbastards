@@ -10,8 +10,9 @@ namespace Rb.Rendering
         /// <summary>
         /// Applies this technique when rendering the specified object
         /// </summary>
-        /// <param name="renderable"></param>
-        void Apply( IRenderable renderable );
+        /// <param name="context">Rendering context</param>
+        /// <param name="renderable">Object to render</param>
+        void Apply( IRenderContext context, IRenderable renderable );
 
         /// <summary>
         /// Returns true if this technique is a reasonable substitute for the specified technique

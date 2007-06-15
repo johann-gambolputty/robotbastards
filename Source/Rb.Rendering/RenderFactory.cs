@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Rb.Rendering
 {
@@ -55,23 +55,22 @@ namespace Rb.Rendering
 		/// Adds the Composite-derived classes in the specified assembly
 		/// </summary>
         /// <param name="compositeAssembly"> Assembly to check </param>
-        [ObsoleteAttribute("Composites suck")]
 		private void AddAssemblyComposites( System.Reflection.Assembly compositeAssembly )
 		{
 			foreach ( Type curType in compositeAssembly.GetTypes( ) )
 			{
-				if ( curType.IsSubclassOf( typeof( Composites.Composite ) ) )
+				if ( curType.IsSubclassOf( typeof( Composite ) ) )
 				{
 					if ( m_CompositeNameMap.ContainsKey( curType.Name ) )
 					{
-						Output.WriteLineCall( Output.RenderingError, "Composite type \"{0}\" already exists in the rendering factory composite map", curType.Name );
+						GraphicsLog.Warning( "Composite type \"{0}\" already exists in the rendering factory composite map", curType.Name );
 					}
 					else
 					{
-						Output.WriteLineCall( Output.RenderingInfo, "Adding composite type \"{0}\" to render factory", curType.Name );
+						GraphicsLog.Verbose( "Adding composite type \"{0}\" to render factory", curType.Name );
 						m_CompositeNameMap.Add( curType.Name, curType );
 
-						for ( Type baseType = curType; baseType != typeof( Composites.Composite ); baseType = baseType.BaseType )
+						for ( Type baseType = curType; baseType != typeof( Composite ); baseType = baseType.BaseType )
 						{
 							m_CompositeBaseTypeMap.Add( baseType, curType );
 						}
@@ -83,7 +82,6 @@ namespace Rb.Rendering
         /// <summary>
         /// Called when a new assembly is loaded. Checks it for composite types
         /// </summary>
-        [ObsoleteAttribute("Composites suck")]
 		private static void OnAssemblyLoad( object sender, AssemblyLoadEventArgs args )
 		{
 			RenderFactory.Inst.AddAssemblyComposites( args.LoadedAssembly );
@@ -113,19 +111,17 @@ namespace Rb.Rendering
 		/// </summary>
 		/// <param name="typeName">Type name</param>
         /// <returns>Returns the named composite Type</returns>
-        [ObsoleteAttribute("Composites suck")]
 		public Type GetCompositeTypeFromName( string typeName )
 		{
-			return ( Type )m_CompositeNameMap[ typeName ];
+			return m_CompositeNameMap[ typeName ];
 		}
 
 		/// <summary>
 		/// Returns a Composite-derived class's Type object that implements a specified Composite base type
         /// </summary>
-        [ObsoleteAttribute("Composites suck")]
 		public Type GetCompositeTypeFromBaseType( Type baseType )
 		{
-			return ( Type )m_CompositeBaseTypeMap[ baseType ];
+			return m_CompositeBaseTypeMap[ baseType ];
 		}
 
 		/// <summary>
@@ -143,10 +139,9 @@ namespace Rb.Rendering
 		/// </code>
 		/// </example>
         /// <seealso cref="GetCompositeTypeFromName">GetCompositeTypeFromName</seealso>
-        [ObsoleteAttribute("Composites suck")]
-		public Composites.Composite NewComposite( string typeName )
+		public object NewComposite( string typeName )
 		{
-			return ( Composites.Composite )System.Activator.CreateInstance( GetCompositeTypeFromName( typeName ) );
+			return System.Activator.CreateInstance( GetCompositeTypeFromName( typeName ) );
 		}
 
 
@@ -165,10 +160,9 @@ namespace Rb.Rendering
 		/// </code>
 		/// </example>
         /// <seealso cref="GetCompositeTypeFromBaseType">GetCompositeTypeFromBaseType</seealso>
-        [ObsoleteAttribute("Composites suck")]
-		public Composites.Composite NewComposite( Type baseType )
+		public object NewComposite( Type baseType )
 		{
-			return ( Composites.Composite )System.Activator.CreateInstance( GetCompositeTypeFromBaseType( baseType ) );
+			return System.Activator.CreateInstance( GetCompositeTypeFromBaseType( baseType ) );
 		}
 
 		#endregion
@@ -230,9 +224,9 @@ namespace Rb.Rendering
 			NewShaderParameterBindings( );	//	ShaderParameterBindings constructor sets the ShaderParameterBindings singleton
 		}
 
-		private System.Collections.Hashtable	m_CompositeNameMap		= new System.Collections.Hashtable( );
-		private System.Collections.Hashtable	m_CompositeBaseTypeMap	= new System.Collections.Hashtable( );
-		private static RenderFactory			ms_Singleton;
+		private Dictionary< string, Type >  m_CompositeNameMap		= new Dictionary< string, Type >( );
+		private Dictionary< Type, Type >	m_CompositeBaseTypeMap	= new Dictionary< Type, Type >( );
+		private static RenderFactory		ms_Singleton;
 
 	}
 }

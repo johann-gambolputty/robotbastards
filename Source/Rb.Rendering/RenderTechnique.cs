@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-
 using Rb.Core.Components;
 
 namespace Rb.Rendering
@@ -8,7 +6,7 @@ namespace Rb.Rendering
 	/// <summary>
 	/// Stores a collection of RenderPass objects. For each pass, the technique applies it, then renders geometry using a callback
 	/// </summary>
-	public class RenderTechnique : Node, INamedObject, ITechnique
+	public class RenderTechnique : Node, ITechnique
 	{
 		#region	Setup
 
@@ -57,94 +55,50 @@ namespace Rb.Rendering
 		/// </summary>
 		public RenderEffect Effect
 		{
-			get
-			{
-				return m_Effect;
-			}
-			set
-			{
-				m_Effect = value;
-			}
-		}
-
-		#endregion
-
-		#region	Overriding technique
-
-		/// <summary>
-		/// The override technique
-		/// </summary>
-		public static RenderTechnique	Override
-		{
-			get
-			{
-				return ms_Override;
-			}
-			set
-			{
-				Output.DebugAssert( ( value == null ) || ( ms_Override == null ), Output.RenderingError, "Only one override technique can be active at any one time" );
-
-				ms_Override = value;
-			}
-		}
-
-		private static RenderTechnique	ms_Override;
-
-		#endregion
-
-		#region	Application
-
-		/// <summary>
-		/// Gets the technique that should be applied (either this technique, the override technique, or a technique in the parent effect with the same
-		/// name as the override technique)
-		/// </summary>
-		protected RenderTechnique TechniqueToApply
-		{
-			get
-			{
-				if ( ms_Override == null )
-				{
-					return this;
-				}
-				if ( Effect == null )
-				{
-					return ms_Override;
-				}
-				RenderTechnique eqvTechnique = Effect.FindTechnique( ms_Override.Name );
-				return eqvTechnique == null ? ms_Override : eqvTechnique;
-			}
+			get { return m_Effect; }
+			set { m_Effect = value; }
 		}
 
 		#endregion
 
 		#region	ITechnique Members
 
+        /// <summary>
+        /// Returns true if this technique is a reasonable substitute for the specified technique
+        /// </summary>
+        /// <param name="technique">Technique to substitute</param>
+        /// <returns>true if this technique can substitute the specified technique</returns>
+        public virtual bool IsSubstituteFor( ITechnique technique )
+        {
+            return ( Name == technique.Name );
+        }
+
 		/// <summary>
 		/// Applies this technique. Applies a pass, then invokes the render delegate to render stuff, for each pass
-		/// </summary>
-		/// <param name="render"></param>
-		public virtual void Apply( TechniqueRenderDelegate render )
+        /// </summary>
+        /// <param name="context">Rendering context</param>
+        /// <param name="renderable">Object to render</param>
+		public virtual void Apply( IRenderContext context, IRenderable renderable )
 		{
-			RenderTechnique techniqueToApply = TechniqueToApply;
-			techniqueToApply.Begin( );
+			Begin( );
 
-			if ( techniqueToApply.Children.Count > 0 )
+			if ( Children.Count > 0 )
 			{
-				foreach ( RenderPass pass in techniqueToApply.Children )
+				foreach ( RenderPass pass in Children )
 				{
 					pass.Begin( );
 
-					render( );
+					renderable.Render( context );
 
 					pass.End( );
 				}
 			}
 			else
 			{
-				render( );
+                renderable.Render( context );
 			}
 
-			techniqueToApply.End( );
+			End( );
 		}
 
 		/// <summary>
@@ -171,7 +125,7 @@ namespace Rb.Rendering
 
 		#endregion
 
-		#region INamedObject Members
+		#region INamed Members
 
 		/// <summary>
 		/// Access to the name of this technique
@@ -186,19 +140,6 @@ namespace Rb.Rendering
 			{
 				m_Name = value;
 			}
-		}
-
-		#endregion
-
-		#region IParentObject Members
-
-		/// <summary>
-		/// Adds a child object, but only if it's of type RenderPass
-		/// </summary>
-		/// <param name="childObject"> Child render pass</param>
-		public override void AddChild( Object childObject )
-		{
-			base.AddChild( ( RenderPass )childObject );
 		}
 
 		#endregion
