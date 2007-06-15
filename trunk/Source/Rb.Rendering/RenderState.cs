@@ -198,7 +198,7 @@ namespace Rb.Rendering
 	/// <summary>
 	/// Summary description for RenderState.
 	/// </summary>
-	public abstract class RenderState : IAppliance
+	public abstract class RenderState : IPass
 	{
 		#region	Setup
 
@@ -360,7 +360,7 @@ namespace Rb.Rendering
 
 		#endregion
 
-		#region	IAppliance Members
+		#region	IPass Members
 
 		/// <summary>
 		/// Starts applying this render state

@@ -86,7 +86,7 @@ namespace Rb.Rendering
 	/// <summary>
 	/// Abstract base class for sampling 2d textures
 	/// </summary>
-	public abstract class TextureSampler2d : IAppliance
+	public abstract class TextureSampler2d : IPass
 	{
 		/// <summary>
 		/// Default constructor
@@ -105,104 +105,73 @@ namespace Rb.Rendering
 			m_Texture = texture;
 		}
 
+
+		#region IPass methods
+
 		/// <summary>
 		/// Starts applying this texture
 		/// </summary>
-		public abstract void	Begin( );
+		public abstract void Begin( );
 		
 		/// <summary>
 		/// Stops applying this texture
 		/// </summary>
-		public abstract void	End( );
+		public abstract void End( );
+
+		#endregion
 
 		/// <summary>
 		/// Access to the bound texture
 		/// </summary>
-		public Texture2d		Texture
+		public Texture2d Texture
 		{
-			get
-			{
-				return m_Texture;
-			}
-			set
-			{
-				m_Texture = value;
-			}
+			get { return m_Texture; }
+			set { m_Texture = value; }
 		}
 
 		/// <summary>
 		/// The filter used when the area covered by a fragment is greater than the area of a texel
 		/// </summary>
-		public TextureFilter	MinFilter
+		public TextureFilter MinFilter
 		{
-			get
-			{
-				return m_MinFilter;
-			}
-			set
-			{
-				m_MinFilter = value;
-			}
+			get { return m_MinFilter; }
+			set { m_MinFilter = value; }
 		}
 
 		/// <summary>
 		/// The filter used when the area covered by a fragment is less than the area of a texel. Can be either kNearest or kLinear
 		/// </summary>
-		public TextureFilter	MagFilter
+		public TextureFilter MagFilter
 		{
-			get
-			{
-				return m_MagFilter;
-			}
-			set
-			{
-				m_MagFilter = value;
-			}
+			get { return m_MagFilter; }
+			set { m_MagFilter = value; }
 		}
 
 		/// <summary>
 		/// Access to the way the texture sampling changes when the texture S coordinate reaches the edge of the texture
 		/// </summary>
-		public TextureWrap		WrapS
+		public TextureWrap WrapS
 		{
-			get
-			{
-				return m_WrapS;
-			}
-			set
-			{
-				m_WrapS = value;
-			}
+			get { return m_WrapS; }
+			set { m_WrapS = value; }
 		}
 
 		/// <summary>
 		/// Access to the way the texture sampling changes when the texture T coordinate reaches the edge of the texture
 		/// </summary>
-		public TextureWrap		WrapT
+		public TextureWrap WrapT
 		{
-			get
-			{
-				return m_WrapT;
-			}
-			set
-			{
-				m_WrapT = value;
-			}
+			get { return m_WrapT; }
+			set { m_WrapT = value; }
 		}
 
 		/// <summary>
 		/// Sets the way that the texture is interpreted when texturing a fragment
 		/// </summary>
-		public TextureMode		Mode
+		public TextureMode Mode
 		{
-			get
-			{
-				return m_Mode;
-			}
-			set
-			{
-				m_Mode = value;
-			}
+			get { return m_Mode; }
+			set { m_Mode = value; }
 		}
 
 		#region	Private stuff
@@ -216,5 +185,6 @@ namespace Rb.Rendering
 		private TextureMode		m_Mode		= TextureMode.Replace;
 
 		#endregion
+
 	}
 }

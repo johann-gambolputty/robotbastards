@@ -6,6 +6,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Log.Controls", "Source\Rb.Log.Controls\Rb.Log.Controls.csproj", "{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.TestApp", "Source\Rb.TestApp\Rb.TestApp.csproj", "{A526C855-0E1B-4DDB-8508-3B26F7640682}"
+	ProjectSection(ProjectDependencies) = postProject
+		{61B562C4-66D5-4048-B482-858A791249A2} = {61B562C4-66D5-4048-B482-858A791249A2}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Core", "Source\Rb.Core\Rb.Core.csproj", "{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}"
 EndProject
