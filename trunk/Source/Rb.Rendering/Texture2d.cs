@@ -1,7 +1,5 @@
-using System;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Resources;
+using Rb.Core.Utils;
 
 namespace Rb.Rendering
 {

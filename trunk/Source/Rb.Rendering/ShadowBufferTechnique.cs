@@ -1,6 +1,7 @@
 using System;
-using System.Collections;
 using Rb.Core.Maths;
+using Rb.Core.Components;
+using Rb.Core.Resources;
 
 namespace Rb.Rendering
 {
@@ -11,7 +12,7 @@ namespace Rb.Rendering
 	/// This will do nothing, until a LightGroup is associated with the technique, using the ShadowLights property.
 	/// Any child techniques this technique has will be applied after the shadow buffer build step.
 	/// </remarks>
-	public class ShadowBufferTechnique : Rb.Core.Components.Node, ITechnique
+	public class ShadowBufferTechnique : Node, ITechnique
 	{
 		#region	Technique properties
 
@@ -23,12 +24,9 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Gets the technique that the shadow buffer render technique uses to override rendered objects' techniques
 		/// </summary>
-		public static RenderTechnique	OverrideTechnique
+		public static ITechnique	    OverrideTechnique
 		{
-			get
-			{
-				return ms_OverrideTechnique;
-			}
+			get { return ms_OverrideTechnique; }
 		}
 
 		/// <summary>
@@ -61,11 +59,13 @@ namespace Rb.Rendering
 		/// <exception cref="ApplicationException">Thrown if internal render target creation is not successful</exception>
 		public ShadowBufferTechnique( )
 		{
+		    m_Name = GetType( ).Name;
+
 			//	Create a technique that is used to override standard scene rendering techniques (for shadow buffer generation)
 			if ( ms_OverrideTechnique == null )
 			{
 				//	TODO: This should be an embedded resource, directly compiled from a hardcoded string, or something
-				RenderEffect effect = ( RenderEffect )Resources.ResourceManager.Inst.Load( DepthTextureMethod ? "shadowMapDepthTexture.cgfx" : "shadowMapTexture.cgfx" );
+				RenderEffect effect = ( RenderEffect )ResourceManager.Instance.Load( DepthTextureMethod ? "shadowMapDepthTexture.cgfx" : "shadowMapTexture.cgfx" );
 				ms_OverrideTechnique = effect.FindTechnique( "DefaultTechnique" );
 			}
 
@@ -95,12 +95,84 @@ namespace Rb.Rendering
 
 		#endregion
 
-		#region	IRender Members
+        #region INamed Members
 
+        /// <summary>
+        /// Access to the name of this object
+        /// </summary>
+	    public string Name
+	    {
+	        get { return m_Name; }
+            set { m_Name = value; }
+	    }
+
+        #endregion
+
+        #region	ITechnique Members
+
+        /// <summary>
+        /// Always returns false - the shadow buffer technique can't be used as a substitute for any other technique
+        /// </summary>
+        /// <param name="techniqe">Technique being sustituted</param>
+        /// <returns>Always false</returns>
+        public bool IsSubstituteFor( ITechnique techniqe )
+        {
+            return false;
+        }
+
+		/// <summary>
+		/// Applies this technique
+		/// </summary>
+		public virtual void Apply( IRenderContext context, IRenderable renderable )
+		{
+			//	Make the shadow depth buffers
+			int numBuffers = 0;
+			if ( ( ShadowLights != null ) && ( ShadowLights.NumLights > 0 ) )
+			{
+				numBuffers = MakeBuffers( renderable, context, ShadowLights );
+			}
+
+			//	Apply all shadow depth buffer textures
+			for ( int bufferIndex = 0; bufferIndex < numBuffers; ++bufferIndex )
+			{
+				Renderer.Inst.BindTexture( bufferIndex, DepthTextureMethod ? m_RenderTargets[ bufferIndex ].DepthTexture : m_RenderTargets[ bufferIndex ].Texture );
+			}
+
+			//	Apply all child techniques
+			foreach ( Object childObj in Children )
+			{
+				if ( childObj is ITechnique )
+				{
+					( ( ITechnique )childObj ).Apply( context, renderable );
+				}
+			}
+
+			//	Unbind all the shadow depth buffer textures
+			for ( int bufferIndex = 0; bufferIndex < numBuffers; ++bufferIndex )
+			{
+				Renderer.Inst.UnbindTexture( bufferIndex );
+			}
+		}
+
+		#endregion
+
+        #region Private stuff
+
+        private static ITechnique			    ms_OverrideTechnique;
+		private static bool						ms_DumpLights	= true;
+		private LightGroup						m_ShadowLights	= null;
+		private RenderTarget[]					m_RenderTargets	= new RenderTarget[ MaxLights ];
+		private float							m_NearZ			= 1.0f;
+		private float							m_FarZ			= 800.0f;
+		private ShaderParameterCustomBinding	m_ShadowMatrixBinding;
+		private ShaderParameterCustomBinding	m_ShadowNearZBinding;
+		private ShaderParameterCustomBinding	m_ShadowFarZBinding;
+        private string                          m_Name;
+        
 		/// <summary>
 		/// Makes the shadow buffers
 		/// </summary>
-		private int MakeBuffers( TechniqueRenderDelegate render, LightGroup lights )
+		private int MakeBuffers( IRenderable renderable, IRenderContext context, LightGroup lights )
 		{
 			Renderer.Inst.PushTransform( Transform.LocalToWorld );
 			Renderer.Inst.PushTransform( Transform.WorldToView );
@@ -157,11 +229,11 @@ namespace Rb.Rendering
 				Rendering.Renderer.Inst.ClearColour( System.Drawing.Color.Black );
 				Rendering.Renderer.Inst.ClearDepth( 1.0f );
 
-				RenderTechnique.Override = ms_OverrideTechnique;
+			    context.GlobalTechnique = ms_OverrideTechnique;
 
-				render( );
+                renderable.Render( context );
 
-				RenderTechnique.Override = null;
+                context.GlobalTechnique = null;
 
 				//	Stop using the current render target
 				curTarget.End( );
@@ -186,53 +258,8 @@ namespace Rb.Rendering
 			Renderer.Inst.PopTransform( Transform.ViewToScreen );
 
 			return numBuffers;
-		}
+        }
 
-		/// <summary>
-		/// Applies this technique
-		/// </summary>
-		public virtual void Apply( TechniqueRenderDelegate render )
-		{
-			//	Make the shadow depth buffers
-			int numBuffers = 0;
-			if ( ( ShadowLights != null ) && ( ShadowLights.NumLights > 0 ) )
-			{
-				numBuffers = MakeBuffers( render, ShadowLights );
-			}
-
-			//	Apply all shadow depth buffer textures
-			for ( int bufferIndex = 0; bufferIndex < numBuffers; ++bufferIndex )
-			{
-				Renderer.Inst.BindTexture( bufferIndex, DepthTextureMethod ? m_RenderTargets[ bufferIndex ].DepthTexture : m_RenderTargets[ bufferIndex ].Texture );
-			}
-
-			//	Apply all child techniques
-			foreach ( Object childObj in Children )
-			{
-				if ( childObj is ITechnique )
-				{
-					( ( ITechnique )childObj ).Apply( render );
-				}
-			}
-
-			//	Unbind all the shadow depth buffer textures
-			for ( int bufferIndex = 0; bufferIndex < numBuffers; ++bufferIndex )
-			{
-				Renderer.Inst.UnbindTexture( bufferIndex );
-			}
-		}
-
-		#endregion
-
-
-		private static RenderTechnique			ms_OverrideTechnique;
-		private static bool						ms_DumpLights	= true;
-		private LightGroup						m_ShadowLights	= null;
-		private RenderTarget[]					m_RenderTargets	= new RenderTarget[ MaxLights ];
-		private float							m_NearZ			= 1.0f;
-		private float							m_FarZ			= 800.0f;
-		private ShaderParameterCustomBinding	m_ShadowMatrixBinding;
-		private ShaderParameterCustomBinding	m_ShadowNearZBinding;
-		private ShaderParameterCustomBinding	m_ShadowFarZBinding;
-	}
+        #endregion
+    }
 }

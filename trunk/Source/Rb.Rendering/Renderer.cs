@@ -95,16 +95,6 @@ namespace Rb.Rendering
 
 		#endregion
 
-		#region	Forms
-
-		/// <summary>
-		/// Returns a rendering context for a control
-		/// </summary>
-		/// <param name="control"> Control to set up </param>
-		public abstract ControlRenderContext	CreateControlContext( System.Windows.Forms.Control control );
-
-		#endregion
-
 		#region	Lighting
 
 		/// <summary>
@@ -136,10 +126,7 @@ namespace Rb.Rendering
 		/// </summary>
 		public int			NumActiveLights
 		{
-			get
-			{
-				return m_NumLights;
-			}
+			get { return m_NumLights; }
 		}
 
 		/// <summary>
@@ -284,12 +271,12 @@ namespace Rb.Rendering
 		/// <summary>
 		/// The maximum number of texture stages
 		/// </summary>
-		public const int			MaxTextures = 8;
+		public const int MaxTextures = 8;
 
 		/// <summary>
 		/// Binds a texture to the indexed texture stage
 		/// </summary>
-		public virtual void			BindTexture( int index, Texture2d texture )
+		public virtual void BindTexture( int index, Texture2d texture )
 		{
 			m_Textures[ index ] = texture;
 		}
@@ -297,7 +284,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Unbinds a texture from the indexed texture stage
 		/// </summary>
-		public virtual void			UnbindTexture( int index )
+		public virtual void UnbindTexture( int index )
 		{
 			m_Textures[ index ] = null;
 		}
@@ -305,7 +292,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Gets a 2D texture, indexed by stage
 		/// </summary>
-		public Texture2d			GetTexture( int index )
+		public Texture2d GetTexture( int index )
 		{
 			return m_Textures[ index ];
 		}
@@ -317,12 +304,12 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Unprojects a point from screen space into world space
 		/// </summary>
-		public abstract Maths.Point3	Unproject( int x, int y, float depth );
+		public abstract Point3 Unproject( int x, int y, float depth );
 
 		/// <summary>
 		/// Makes a 3d ray in world space from a screen space position
 		/// </summary>
-		public abstract Maths.Ray3		PickRay( int x, int y );
+		public abstract Ray3 PickRay( int x, int y );
 
 		#endregion
 
@@ -398,7 +385,6 @@ namespace Rb.Rendering
 
 		private static Renderer		ms_Singleton;
 		private ArrayList			m_RenderStates	= new ArrayList( );
-		private Control				m_Control;
 		private Cameras.CameraBase	m_Camera;
 		private Light[]				m_Lights = new Light[ MaxActiveLights ];
 		private int					m_NumLights;

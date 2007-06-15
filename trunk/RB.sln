@@ -32,6 +32,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{962DDAAD-9
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.LogViewer", "Source\Rb.LogViewer\Rb.LogViewer.csproj", "{78507092-001D-4771-B893-687A22AAB924}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Rendering.OpenGl", "Source\Rb.Rendering.OpenGl\Rb.Rendering.OpenGl.csproj", "{19DCB365-3040-4431-86E9-29183FA34EF7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,6 +84,10 @@ Global
 		{78507092-001D-4771-B893-687A22AAB924}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78507092-001D-4771-B893-687A22AAB924}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78507092-001D-4771-B893-687A22AAB924}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
