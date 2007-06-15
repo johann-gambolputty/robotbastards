@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using RbEngine.Maths;
+using Rb.Core.Maths;
 
 namespace Rb.Rendering
 {
@@ -11,7 +11,7 @@ namespace Rb.Rendering
 	/// This will do nothing, until a LightGroup is associated with the technique, using the ShadowLights property.
 	/// Any child techniques this technique has will be applied after the shadow buffer build step.
 	/// </remarks>
-	public class ShadowBufferTechnique : Components.Node, ITechnique
+	public class ShadowBufferTechnique : Rb.Core.Components.Node, ITechnique
 	{
 		#region	Technique properties
 

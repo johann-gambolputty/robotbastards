@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 
+using Rb.Core.Components;
+
 namespace Rb.Rendering
 {
 	/// <summary>
 	/// Stores a collection of RenderPass objects. For each pass, the technique applies it, then renders geometry using a callback
 	/// </summary>
-	public class RenderTechnique : Components.Node, Components.INamedObject, ITechnique
+	public class RenderTechnique : Node, INamedObject, ITechnique
 	{
 		#region	Setup
 

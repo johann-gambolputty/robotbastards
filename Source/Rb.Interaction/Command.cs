@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Rb.Core.Interaction
 {
@@ -35,14 +35,8 @@ namespace Rb.Core.Interaction
 		/// </summary>
 		public CommandInputInterpreter Interpreter
 		{
-			get
-			{
-				return m_Interpreter;
-			}
-			set
-			{
-				m_Interpreter = value;
-			}
+			get { return m_Interpreter; }
+			set { m_Interpreter = value; }
 		}
 
 		#endregion
@@ -63,12 +57,9 @@ namespace Rb.Core.Interaction
 		/// <summary>
 		/// Command identifier
 		/// </summary>
-		public ushort				Id
+		public ushort Id
 		{
-			get
-			{
-				return m_Id;
-			}
+			get { return m_Id; }
 		}
 
 		#region	Command input
@@ -76,18 +67,15 @@ namespace Rb.Core.Interaction
 		/// <summary>
 		/// The list of CommandInput objects
 		/// </summary>
-		public ArrayList			Inputs
+		public ICollection< CommandInput > Inputs
 		{
-			get
-			{
-				return m_Inputs;
-			}
+			get { return m_Inputs; }
 		}
 
 		/// <summary>
 		/// Adds an input binding to this command
 		/// </summary>
-		public virtual void			AddInput( CommandInput input )
+		public virtual void AddInput( CommandInput input )
 		{
 			m_Inputs.Add( input );
 		}
@@ -96,7 +84,7 @@ namespace Rb.Core.Interaction
 		/// Binds this command to a given scene view
 		/// </summary>
 		/// <param name="view">View to bind to</param>
-		public void					BindToView( Scene.SceneView view )
+		public void BindToView( Scene.SceneView view )
 		{
 			foreach ( CommandInput curInput in m_Inputs )
 			{
@@ -108,7 +96,7 @@ namespace Rb.Core.Interaction
 		/// Unbinds this command from a given scene view
 		/// </summary>
 		/// <param name="view">View to unbind from</param>
-		public void					UnbindFromView( Scene.SceneView view )
+		public void UnbindFromView( Scene.SceneView view )
 		{
 			for ( int bindingIndex = 0; bindingIndex < m_Bindings.Count; )
 			{
@@ -128,7 +116,7 @@ namespace Rb.Core.Interaction
 		/// <summary>
 		/// Updates this command
 		/// </summary>
-		public void					Update( CommandList commands )
+		public void Update( CommandList commands )
 		{
 			bool wasActive = ( m_LastActiveUpdate == m_UpdateCount );
 			++m_UpdateCount;
@@ -170,37 +158,31 @@ namespace Rb.Core.Interaction
 		/// <summary>
 		/// Gets the name of this command
 		/// </summary>
-		public string				Name
+		public string Name
 		{
-			get
-			{
-				return m_Name;
-			}
+			get { return m_Name; }
 		}
 
 		/// <summary>
 		/// Gets the description of this command
 		/// </summary>
-		public string				Description
+		public string Description
 		{
-			get
-			{
-				return m_Description;
-			}
+			get { return m_Description; }
 		}
 
 		#endregion
 
 		#region	Private stuff
 
-		private string					m_Name;
-		private string					m_Description;
-		private ArrayList				m_Inputs	= new ArrayList( );
-		private ArrayList				m_Bindings	= new ArrayList( );
-		private ushort					m_Id;
-		private int						m_UpdateCount;
-		private int						m_LastActiveUpdate;
-		private CommandInputInterpreter	m_Interpreter;
+		private string						m_Name;
+		private string						m_Description;
+		private List< CommandInput >		m_Inputs	= new List< CommandInput >( );
+		private List< CommandInputBinding >	m_Bindings	= new List< CommandInputBinding >( );
+		private ushort						m_Id;
+		private int							m_UpdateCount;
+		private int							m_LastActiveUpdate;
+		private CommandInputInterpreter		m_Interpreter;
 
 		#endregion
 	}

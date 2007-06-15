@@ -29,7 +29,9 @@ namespace Rb.ComponentXmlLoader
 		/// Invokes the method to create the build object
 		/// </summary>
         public override void PostCreate( )
-        {
+		{
+			base.PostCreate( );
+
 			//	Call PostCreate() for all parameter builders
 			foreach ( BaseBuilder builder in m_ParamBuilders )
 			{
@@ -59,8 +61,6 @@ namespace Rb.ComponentXmlLoader
 
 			//	Invoke the method
 			BuildObject = method.Invoke( BuildObject, parameters );
-
-            base.PostCreate( );
         }
 
 		/// <summary>

@@ -1,5 +1,5 @@
 using System;
-using RbEngine.Maths;
+using Rb.Core.Maths;
 
 namespace Rb.Rendering
 {
@@ -13,10 +13,7 @@ namespace Rb.Rendering
 		/// </summary>
 		public static ShapeRenderer Inst
 		{
-			get
-			{
-				return ms_Singleton;
-			}
+			get { return ms_Singleton; }
 		}
 
 		#region 2d Rendering
@@ -88,6 +85,12 @@ namespace Rb.Rendering
 
 		#endregion
 
+		/// <summary>
+		/// Draws a string, using this font, at position (x,y)
+		/// </summary>
+		/// <param name="x">X screen coordinate</param>
+		/// <param name="y">Y screen coordinate</param>
+		/// <param name="s">String to display</param>
 		public void DrawText( int x, int y, string s )
 		{
 			//	HACK: dirty dirty hack

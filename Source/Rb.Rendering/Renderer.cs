@@ -54,6 +54,7 @@ namespace Rb.Rendering
 		//	TODO: I really don't like this stuff being here - it would be far better to have a RenderContext object that is passed around in ISceneRenderable.Render(),
 		//	but that breaks with the design of the rest of the renderer (an opengl-style state machine with all state encapsulated by the Renderer)
 
+		/*
 		/// <summary>
 		/// The control currently being rendered to
 		/// </summary>
@@ -69,8 +70,7 @@ namespace Rb.Rendering
 				return m_Control;
 			}
 		}
-
-
+		*/
 
 		/// <summary>
 		/// The current camera
@@ -80,7 +80,7 @@ namespace Rb.Rendering
 		///		- PickRay() is being called
 		///		- A ShaderParameter is bound to ShaderParameterBinding.EyePosition, ShaderParameterBinding.EyeXAxis, ShaderParameterBinding.EyeYAxis or ShaderParameterBinding.EyeZAxis
 		/// </remarks>
-		public Cameras.CameraBase		Camera
+		public Cameras.CameraBase Camera
 		{
 			set
 			{

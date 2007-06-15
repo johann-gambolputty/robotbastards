@@ -1,5 +1,5 @@
 using System;
-using RbEngine.Maths;
+using Rb.Core.Maths;
 
 namespace Rb.Rendering
 {
