@@ -7,9 +7,9 @@ using Tao.OpenGl;
 namespace Rb.Rendering.OpenGl
 {
 	/// <summary>
-	/// Summary description for OpenGlRenderFont.
+	/// OpenGL implementation of RenderFont.
 	/// </summary>
-	public class OpenGlRenderFont : RenderFont
+	public class OpenGlRenderFont : Rb.Rendering.RenderFont
 	{
 
 		/// <summary>
@@ -42,21 +42,21 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="font">Font to build from</param>
 		/// <param name="characters">Set of characters to build the font texture from</param>
 		/// <returns>Returns this</returns>
-		public override RenderFont	Setup( System.Drawing.Font font, CharacterSet characters )
+		public override Rb.Rendering.RenderFont Setup( Font font, CharacterSet characters )
 		{
 			Bitmap img = BuildFontImage( font, characters );
-			img.Save( string.Format( "{0}{1}.png", font.Name, font.Size ), System.Drawing.Imaging.ImageFormat.Png );
+			img.Save( string.Format( "{0}{1}.png", font.Name, font.Size ), ImageFormat.Png );
 
-			m_FontTextureSampler			= RenderFactory.Inst.NewTextureSampler2d( );
-			m_FontTextureSampler.Texture	= RenderFactory.Inst.NewTexture2d( );
+			m_FontTextureSampler			= OpenGlRenderFactory.Inst.NewTextureSampler2d( );
+			m_FontTextureSampler.Texture	= OpenGlRenderFactory.Inst.NewTexture2d( );
 			m_FontTextureSampler.Texture.Load( img );
 			m_FontTextureSampler.Mode		= TextureMode.Modulate;
 
 			return this;
 		}
 
-		private RenderState	m_RenderState =
-			RenderFactory.Inst.NewRenderState( )
+		private RenderState m_RenderState =
+			OpenGlRenderFactory.Inst.NewRenderState( )
 				.DisableCap( RenderStateFlag.DepthTest )
 				.SetBlendMode( BlendFactor.SrcAlpha, BlendFactor.OneMinusSrcAlpha )
 				.SetPolygonRenderingMode( PolygonRenderMode.Fill )
@@ -69,10 +69,10 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="str">Text to draw</param>
 		public override void		DrawText( int x, int y, System.Drawing.Color colour, string str )
 		{
-			Renderer.Inst.PushRenderState( m_RenderState );
+			OpenGlRenderer.Inst.PushRenderState( m_RenderState );
 			m_FontTextureSampler.Begin( );
 
-			Renderer.Inst.Push2d( );
+			OpenGlRenderer.Inst.Push2d( );
 
 			Gl.glColor3ub( colour.R, colour.G, colour.B );
 
@@ -117,8 +117,8 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glEnd( );
 			m_FontTextureSampler.End( );
-			Renderer.Inst.Pop2d( );
-			Renderer.Inst.PopRenderState( );
+			OpenGlRenderer.Inst.Pop2d( );
+			OpenGlRenderer.Inst.PopRenderState( );
 		}
 
 		private TextureSampler2d	m_FontTextureSampler;

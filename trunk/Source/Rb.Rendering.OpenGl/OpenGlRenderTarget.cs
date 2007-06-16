@@ -7,7 +7,7 @@ namespace Rb.Rendering.OpenGl
 	/// <summary>
 	/// Implements the RenderTarget abstract class using OpenGL frame buffer objects
 	/// </summary>
-	public class OpenGlRenderTarget : RenderTarget, IDisposable
+	public class OpenGlRenderTarget : Rb.Rendering.RenderTarget, IDisposable
 	{
 		~OpenGlRenderTarget( )
 		{
@@ -26,24 +26,28 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="depthBits">Number of bits per element in the depth buffer (0 for no depth buffer)</param>
 		/// <param name="stencilBits">Number of bits per element in the stencil buffer (0 for no stencil buffer)</param>
 		/// <param name="depthBufferAsTexture">If true, then depth buffer storage is created in a texture</param>
-		public override void	Create( int width, int height, TextureFormat colourFormat, int depthBits, int stencilBits, bool depthBufferAsTexture )
+		public unsafe override void Create( int width, int height, TextureFormat colourFormat, int depthBits, int stencilBits, bool depthBufferAsTexture )
 		{
 			//	Requires the frame buffer extension
 			if ( ms_CheckForExtension )
 			{
-				ms_ExtensionPresent		= GlExtensionLoader.IsExtensionSupported( "GL_EXT_framebuffer_object" );
+				ms_ExtensionPresent		= Gl.IsExtensionSupported( "GL_EXT_framebuffer_object" );
 				ms_CheckForExtension	= false;
 			}
 
 			if ( !ms_ExtensionPresent )
 			{
-				throw new System.ApplicationException( "FBO extension not available - can't create render target" );
+				throw new ApplicationException( "FBO extension not available - can't create render target" );
 			}
 
 			//	Generate the frame buffer object
-			Gl.glGenFramebuffersEXT( 1, out m_FboHandle );
+			fixed ( int* handleMem = &m_FboHandle )
+			{
+				Gl.glGenFramebuffersEXT( 1, ( IntPtr )handleMem );
+			}
 			Gl.glBindFramebufferEXT( Gl.GL_FRAMEBUFFER_EXT, m_FboHandle );
-			Output.Assert( Gl.glIsFramebufferEXT( m_FboHandle ) != 0, Output.ResourceError, "Expected FBO handle to be valid" );
+
+			GraphicsLog.Assert( Gl.glIsFramebufferEXT( m_FboHandle ) != 0, "Expected FBO handle to be valid" );
 
 			//	Generate the depth render buffer object
 			if ( depthBits != 0 )
@@ -51,7 +55,7 @@ namespace Rb.Rendering.OpenGl
 				if ( depthBufferAsTexture )
 				{
 					//	Make sure extension is supported
-					if ( !GlExtensionLoader.IsExtensionSupported( "GL_ARB_depth_texture" ) )
+					if ( !Gl.IsExtensionSupported( "GL_ARB_depth_texture" ) )
 					{
 						throw new ApplicationException( "Can't add depth texture to render target - unsupported" );
 					}
@@ -60,7 +64,7 @@ namespace Rb.Rendering.OpenGl
 					Gl.glEnable( Gl.GL_TEXTURE_2D );
 
 					//	Create the depth texture
-					OpenGlTexture2d texture = ( OpenGlTexture2d )RenderFactory.Inst.NewTexture2d( );
+					OpenGlTexture2d texture = ( OpenGlTexture2d )OpenGlRenderFactory.Inst.NewTexture2d( );
 					switch ( depthBits )
 					{
 						case 16 :	texture.Create( width, height, TextureFormat.Depth16 );	break;
@@ -85,7 +89,10 @@ namespace Rb.Rendering.OpenGl
 				}
 				else
 				{
-					Gl.glGenFramebuffersEXT( 1, out m_FboDepthHandle );
+					fixed ( int* handleMem = &m_FboDepthHandle )
+					{
+						Gl.glGenFramebuffersEXT( 1, ( IntPtr )handleMem );
+					}
 					Gl.glBindRenderbufferEXT( Gl.GL_RENDERBUFFER_EXT, m_FboDepthHandle );
 					Gl.glRenderbufferStorageEXT( Gl.GL_RENDERBUFFER_EXT, Gl.GL_DEPTH_COMPONENT, width, height );
 					Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_DEPTH_ATTACHMENT_EXT, Gl.GL_RENDERBUFFER_EXT, m_FboDepthHandle );
@@ -97,7 +104,7 @@ namespace Rb.Rendering.OpenGl
 			if ( colourFormat != TextureFormat.Undefined )
 			{
 				//	Create a texture
-				OpenGlTexture2d texture = ( OpenGlTexture2d )RenderFactory.Inst.NewTexture2d( );
+				OpenGlTexture2d texture = ( OpenGlTexture2d )OpenGlRenderFactory.Inst.NewTexture2d( );
 				texture.Create( width, height, colourFormat );
 
 				//	Add texture parameters (barfs otherwise - incomplete attachements)
@@ -133,10 +140,10 @@ namespace Rb.Rendering.OpenGl
 				string problem = "";
 				switch ( status )
 				{
-					case Gl.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENTS_EXT			:	problem = "GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENTS_EXT";			break;
+					//case Gl.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENTS_EXT			:	problem = "GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENTS_EXT";			break;
 					case Gl.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT			:	problem = "GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT";			break;
 					case Gl.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT			:	problem = "GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT";			break;
-					case Gl.GL_FRAMEBUFFER_INCOMPLETE_DUPLICATE_ATTACHMENT_EXT	:	problem = "GL_FRAMEBUFFER_INCOMPLETE_DUPLICATE_ATTACHMENT_EXT";	break;
+					//case Gl.GL_FRAMEBUFFER_INCOMPLETE_DUPLICATE_ATTACHMENT_EXT	:	problem = "GL_FRAMEBUFFER_INCOMPLETE_DUPLICATE_ATTACHMENT_EXT";	break;
 					case Gl.GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT				:	problem = "GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT";				break;
 					case Gl.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT	:	problem = "GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT";	break;
 					case Gl.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT			:	problem = "GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT";			break;
@@ -148,7 +155,7 @@ namespace Rb.Rendering.OpenGl
 			}
 			else
 			{
-				Output.WriteLineCall( Output.RenderingInfo, "Created render target ({0}x{1} at {2}, {3} depth bits, {4} stencil bits)", width, height, colourFormat, depthBits, stencilBits );
+				GraphicsLog.Info( "Created render target ({0}x{1} at {2}, {3} depth bits, {4} stencil bits)", width, height, colourFormat, depthBits, stencilBits );
 			}
 
 			m_Width		= width;
@@ -192,7 +199,7 @@ namespace Rb.Rendering.OpenGl
 		public override void Begin( )
 		{
 			//	Bind the frame buffer
-			if ( m_FboHandle != -1 )
+			if ( m_FboHandle != InvalidHandle )
 			{
 				Gl.glBindFramebufferEXT( Gl.GL_FRAMEBUFFER_EXT, m_FboHandle );
 			}
@@ -210,7 +217,7 @@ namespace Rb.Rendering.OpenGl
 		public override void End( )
 		{
 			//	Unbind the frame buffer
-			if ( m_FboHandle != -1 )
+			if ( m_FboHandle != InvalidHandle )
 			{
 				Gl.glBindFramebufferEXT( Gl.GL_FRAMEBUFFER_EXT, 0 );
 			}
@@ -228,17 +235,17 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public void Dispose( )
 		{
-			if ( m_FboHandle != -1 )
+			if ( m_FboHandle != InvalidHandle )
 			{
 				//	TODO: GL context isn't available now, so delete will fail
 			//	Gl.glDeleteFramebuffersEXT( 1, ref m_FboHandle );
-				m_FboHandle = -1;
+				m_FboHandle = InvalidHandle;
 			}
-			if ( m_FboDepthHandle != -1 )
+			if ( m_FboDepthHandle != InvalidHandle )
 			{
 				//	TODO: GL context isn't available now, so delete will fail
 			//	Gl.glDeleteRenderbuffersEXT( 1, ref m_FboDepthHandle );
-				m_FboDepthHandle = -1;
+				m_FboDepthHandle = InvalidHandle;
 			}
 		}
 
@@ -246,8 +253,10 @@ namespace Rb.Rendering.OpenGl
 
 		#region	Private stuff
 
-		private int	m_FboHandle			= -1;
-		private int	m_FboDepthHandle	= -1;
+		private const int InvalidHandle = -1;
+
+		private int m_FboHandle = InvalidHandle;
+		private int m_FboDepthHandle = InvalidHandle;
 
 		#endregion
 

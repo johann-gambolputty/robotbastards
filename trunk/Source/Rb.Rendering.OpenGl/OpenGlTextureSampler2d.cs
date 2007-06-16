@@ -8,11 +8,20 @@ namespace Rb.Rendering.OpenGl
 	public class OpenGlTextureSampler2d : TextureSampler2d
 	{
 		/// <summary>
+		/// OpenGl texture access
+		/// </summary>
+		public new OpenGlTexture2d Texture
+		{
+			get { return ( OpenGlTexture2d )base.Texture;  }
+			set { base.Texture = value;  }
+		}
+
+		/// <summary>
 		/// Applies the associated texture and texture parameters
 		/// </summary>
 		public override void Begin( )
 		{
-			Renderer.Inst.BindTexture( 0, Texture );
+			OpenGlRenderer.Inst.BindTexture( 0, Texture );
 
 			ApplyTextureFilter( Gl.GL_TEXTURE_MIN_FILTER, MinFilter );
 			ApplyTextureFilter( Gl.GL_TEXTURE_MAG_FILTER, MagFilter );
@@ -34,10 +43,10 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public override void End( )
 		{
-			Renderer.Inst.UnbindTexture( 0 );
+			OpenGlRenderer.Inst.UnbindTexture( 0 );
 		}
 
-		private void ApplyTextureWrap( int dir, TextureWrap wrap )
+		private static void ApplyTextureWrap( int dir, TextureWrap wrap )
 		{
 			switch ( wrap )
 			{
@@ -46,7 +55,7 @@ namespace Rb.Rendering.OpenGl
 			}
 		}
 
-		private void ApplyTextureFilter( int filterType, TextureFilter filter )
+		private static void ApplyTextureFilter( int filterType, TextureFilter filter )
 		{
 			switch ( filter )
 			{

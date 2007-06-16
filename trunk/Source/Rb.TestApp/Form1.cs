@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using System.Windows.Forms;
 
 using Rb.Core.Resources;
@@ -13,15 +14,27 @@ namespace Rb.TestApp
     public partial class Form1 : Form
     {
         public Form1()
-        {
+		{
+			AppLog.Info( "Beginning Rb.TestApp at {0}", DateTime.Now );
+
+			string renderAssembly = ConfigurationManager.AppSettings[ "renderAssembly" ];
+			if ( renderAssembly  == null )
+			{
+				renderAssembly = "Rb.Rendering.OpenGl.Windows";
+			}
+			Rb.Rendering.RenderFactory.Load( renderAssembly );
+
             InitializeComponent();
 		}
 
 		private void Form1_Load ( object sender, EventArgs e )
 		{
-		    AppLog.Info( "Beginning Rb.TestApp at {0}", DateTime.Now );
-
-			ResourceManager.Instance.Setup( "../resourceSetup.xml" );
+			string resourceSetupPath = ConfigurationManager.AppSettings[ "resourceSetupPath" ];
+			if ( resourceSetupPath == null )
+			{
+				resourceSetupPath = "../resourceSetup.xml";
+			}
+			ResourceManager.Instance.Setup( resourceSetupPath );
 
             Scene scene = new Scene( );
 

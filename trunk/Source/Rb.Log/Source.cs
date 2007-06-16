@@ -105,7 +105,30 @@ namespace Rb.Log
 
         #region Output
 
-        /// <summary>
+		/// <summary>
+		/// Asserts that a condition is true
+		/// </summary>
+		/// <param name="condition">Condition to test</param>
+		/// <param name="msg">Message on failure</param>
+		/// <param name="args">Message format parameters</param>
+		public void Assert( bool condition, string msg, params object[] args )
+		{
+			//	TODO: AP: ...
+			System.Diagnostics.Trace.Assert( condition, string.Format( msg, args ) );
+		}
+
+		/// <summary>
+		/// Fails, with a given message
+		/// </summary>
+		/// <param name="msg">Message</param>
+		/// <param name="args">Message format parameters</param>
+		public void Fail( string msg, params object[] args )
+		{
+			//	TODO: AP: ...
+			System.Diagnostics.Trace.Fail( string.Format( msg, args ) );
+		}
+
+    	/// <summary>
         /// Generates a log entry
         /// </summary>
         /// <param name="msg">Message string</param>

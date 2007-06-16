@@ -24,8 +24,9 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// </summary>
 		/// <param name="input"> Input stream to load the resource from </param>
 		/// <returns> The loaded resource </returns>
-		public override Object Load( System.IO.Stream input, string inputSource )
+		public override Object Load( System.IO.Stream input, string inputSource, out bool canCache )
 		{
+			canCache = true;
 			return new CgRenderEffect( m_Context, input, inputSource );
 		}
 
@@ -33,9 +34,9 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// Loads into a resource from a stream
 		/// </summary>
 		/// <exception cref="ApplicationException"></exception>
-		public override Object Load( System.IO.Stream input, string inputSource, LoadParameters parameters )
+		public override Object Load( System.IO.Stream input, string inputSource, out bool canCache, LoadParameters parameters )
 		{
-			return Load( input, inputSource );
+			return Load( input, inputSource, out canCache );
 		}
 
 		/// <summary>

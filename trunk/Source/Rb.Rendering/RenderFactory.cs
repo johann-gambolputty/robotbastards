@@ -39,7 +39,7 @@ namespace Rb.Rendering
 			{
 				if ( curType.IsSubclassOf( typeof( RenderFactory ) ) )
 				{
-					RenderFactory factory = ( RenderFactory )System.Activator.CreateInstance( curType );
+					RenderFactory factory = ( RenderFactory )Activator.CreateInstance( curType );
 					factory.AddAssemblyComposites( renderAssembly );
 
 					AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler( OnAssemblyLoad );
@@ -104,7 +104,16 @@ namespace Rb.Rendering
 
 		#endregion
 
-		#region	Composites
+		#region Platform factory
+
+		/// <summary>
+		/// Display setup creator
+		/// </summary>
+		public abstract IDisplaySetup CreateDisplaySetup( );
+
+		#endregion
+
+		#region	Composites factory
 
 		/// <summary>
 		/// Returns the Type object representing a composite with the specified name
@@ -167,6 +176,8 @@ namespace Rb.Rendering
 
 		#endregion
 
+		#region Factory
+
 		/// <summary>
 		/// Creates a new RenderState object
 		/// </summary>
@@ -213,6 +224,10 @@ namespace Rb.Rendering
 		/// </summary>
 		protected abstract ShaderParameterBindings NewShaderParameterBindings( );
 
+		#endregion
+
+		#region Protected stuff
+
 		/// <summary>
 		/// Protected constructor. Sets up the Renderer and ShapeRenderer 
 		/// </summary>
@@ -224,9 +239,14 @@ namespace Rb.Rendering
 			NewShaderParameterBindings( );	//	ShaderParameterBindings constructor sets the ShaderParameterBindings singleton
 		}
 
+		#endregion
+
+		#region Private stuff
+
 		private Dictionary< string, Type >  m_CompositeNameMap		= new Dictionary< string, Type >( );
 		private Dictionary< Type, Type >	m_CompositeBaseTypeMap	= new Dictionary< Type, Type >( );
 		private static RenderFactory		ms_Singleton;
 
+		#endregion
 	}
 }
