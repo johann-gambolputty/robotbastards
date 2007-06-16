@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</ProjectGuid>
+    <ProjectGuid>{F2F59120-9F01-4910-BB19-16FA628AE56C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rb.Rendering</RootNamespace>
-    <AssemblyName>Rb.Rendering</AssemblyName>
+    <RootNamespace>Rb.Rendering.OpenGl.Windows</RootNamespace>
+    <AssemblyName>Rb.Rendering.OpenGl.Windows</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,54 +31,38 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="Tao.OpenGl, Version=2.1.0.4, Culture=neutral, PublicKeyToken=1ca010269a4501ef, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\ThirdParty\Tao 2.0\bin\Tao.OpenGl.dll</HintPath>
+    </Reference>
+    <Reference Include="Tao.Platform.Windows, Version=1.0.0.4, Culture=neutral, PublicKeyToken=701104b2da67a104, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\ThirdParty\Tao 2.0\bin\Tao.Platform.Windows.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cameras\Camera3.cs" />
-    <Compile Include="Cameras\CameraBase.cs" />
-    <Compile Include="Cameras\ProjectionCamera.cs" />
-    <Compile Include="Cameras\SphereCamera.cs" />
-    <Compile Include="IDisplaySetup.cs" />
-    <Compile Include="GraphicsLog.cs" />
-    <Compile Include="Composite.cs" />
-    <Compile Include="IPass.cs" />
-    <Compile Include="IRenderable.cs" />
-    <Compile Include="IRenderContext.cs" />
-    <Compile Include="ITechnique.cs" />
-    <Compile Include="Light.cs" />
-    <Compile Include="LightGroup.cs" />
-    <Compile Include="Material.cs" />
-    <Compile Include="PointLight.cs" />
+    <Compile Include="DisplaySetup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RenderEffect.cs" />
-    <Compile Include="Renderer.cs" />
-    <Compile Include="RenderFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="RenderFont.cs" />
-    <Compile Include="RenderFonts.cs" />
-    <Compile Include="RenderPass.cs" />
-    <Compile Include="RenderState.cs" />
-    <Compile Include="RenderTarget.cs" />
-    <Compile Include="RenderTechnique.cs" />
-    <Compile Include="Shader.cs" />
-    <Compile Include="ShaderParameter.cs" />
-    <Compile Include="ShaderParameterBindings.cs" />
-    <Compile Include="ShadowBufferTechnique.cs" />
-    <Compile Include="ShapeRenderer.cs" />
-    <Compile Include="SpotLight.cs" />
-    <Compile Include="Texture2d.cs" />
-    <Compile Include="TextureSampler2d.cs" />
-    <Compile Include="Transform.cs" />
+    <Compile Include="RenderFactory.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">
-      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
-      <Name>Rb.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Rb.Log\Rb.Log.csproj">
       <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
       <Name>Rb.Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Rendering.OpenGl\Rb.Rendering.OpenGl.csproj">
+      <Project>{19DCB365-3040-4431-86E9-29183FA34EF7}</Project>
+      <Name>Rb.Rendering.OpenGl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Rendering.Windows\Rb.Rendering.Windows.csproj">
+      <Project>{39A57BC2-BE73-41A7-BBC2-A9D0C28D5A06}</Project>
+      <Name>Rb.Rendering.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Rendering\Rb.Rendering.csproj">
+      <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
+      <Name>Rb.Rendering</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

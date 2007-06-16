@@ -5,7 +5,7 @@ namespace Rb.Rendering.OpenGl
 	/// <summary>
 	/// Summary description for OpenGlMaterial.
 	/// </summary>
-	public class OpenGlMaterial : Material
+	public class OpenGlMaterial : Rb.Rendering.Material
 	{
 		/// <summary>
 		/// Applies this material

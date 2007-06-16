@@ -1,7 +1,6 @@
 using System;
-using System.Collections;
 using Rb.Core.Maths;
-using Tao.Cg;
+using TaoCg = Tao.Cg.Cg;
 
 namespace Rb.Rendering.OpenGl.Cg
 {
@@ -80,8 +79,8 @@ namespace Rb.Rendering.OpenGl.Cg
 						CgShaderParameter.cgSetParameterValueic( param, array );
 					//	for ( int arrayIndex = 0; arrayIndex < arraySize; ++arrayIndex )
 					//	{
-					//		IntPtr elementParam = Cg.cgGetArrayParameter( param, arrayIndex );
-					//		Cg.cgSetParameter1i( elementParam, array[ arrayIndex ] );
+					//		IntPtr elementParam = TaoCg.cgGetArrayParameter( param, arrayIndex );
+					//		TaoCg.cgSetParameter1i( elementParam, array[ arrayIndex ] );
 					//	}
 						break;
 					}
@@ -91,8 +90,8 @@ namespace Rb.Rendering.OpenGl.Cg
 						CgShaderParameter.cgSetParameterValuefc( param, array );
 					//	for ( int arrayIndex = 0; arrayIndex < arraySize; ++arrayIndex )
 					//	{
-					//		IntPtr elementParam = Cg.cgGetArrayParameter( param, arrayIndex );
-					//		Cg.cgSetParameter1f( elementParam, array[ arrayIndex ] );
+					//		IntPtr elementParam = TaoCg.cgGetArrayParameter( param, arrayIndex );
+					//		TaoCg.cgSetParameter1f( elementParam, array[ arrayIndex ] );
 					//	}
 						break;
 					}
@@ -101,8 +100,8 @@ namespace Rb.Rendering.OpenGl.Cg
 						Vector2[] array = ( Vector2[] )m_Value;
 						for ( int arrayIndex = 0; arrayIndex < m_ArraySize; ++arrayIndex )
 						{
-							IntPtr elementParam = Cg.cgGetArrayParameter( param, arrayIndex );
-							Cg.cgSetParameter2f( elementParam, array[ arrayIndex ].X, array[ arrayIndex ].Y );
+							IntPtr elementParam = TaoCg.cgGetArrayParameter( param, arrayIndex );
+							TaoCg.cgSetParameter2f( elementParam, array[ arrayIndex ].X, array[ arrayIndex ].Y );
 						}
 						break;
 					}
@@ -111,8 +110,8 @@ namespace Rb.Rendering.OpenGl.Cg
 						Vector3[] array = ( Vector3[] )m_Value;
 						for ( int arrayIndex = 0; arrayIndex < m_ArraySize; ++arrayIndex )
 						{
-							IntPtr elementParam = Cg.cgGetArrayParameter( param, arrayIndex );
-							Cg.cgSetParameter3f( elementParam, array[ arrayIndex ].X, array[ arrayIndex ].Y, array[ arrayIndex ].Z );
+							IntPtr elementParam = TaoCg.cgGetArrayParameter( param, arrayIndex );
+							TaoCg.cgSetParameter3f( elementParam, array[ arrayIndex ].X, array[ arrayIndex ].Y, array[ arrayIndex ].Z );
 						}
 						break;
 					}
@@ -121,7 +120,7 @@ namespace Rb.Rendering.OpenGl.Cg
 						Matrix44[] array = ( Matrix44[] )m_Value;
 						for ( int arrayIndex = 0; arrayIndex < m_ArraySize; ++arrayIndex )
 						{
-							IntPtr elementParam = Cg.cgGetArrayParameter( param, arrayIndex );
+							IntPtr elementParam = TaoCg.cgGetArrayParameter( param, arrayIndex );
 							CgShaderParameter.cgSetMatrixParameterfc( elementParam, array[ arrayIndex ].Elements );
 						}
 						break;
@@ -134,24 +133,24 @@ namespace Rb.Rendering.OpenGl.Cg
 				{
 					case ValueType.Int32		:
 					{
-						Cg.cgSetParameter1i( param, ( int )m_Value );
+						TaoCg.cgSetParameter1i( param, ( int )m_Value );
 						break;
 					}
 					case ValueType.Float32	:
 					{
-						Cg.cgSetParameter1f( param, ( float )m_Value );
+						TaoCg.cgSetParameter1f( param, ( float )m_Value );
 						break;
 					}
 					case ValueType.Vector2	:
 					{
 						Vector2 val = ( Vector2 )m_Value;
-						Cg.cgSetParameter2f( param, val.X, val.Y );
+						TaoCg.cgSetParameter2f( param, val.X, val.Y );
 						break;
 					}
 					case ValueType.Vector3	:
 					{
 						Vector3 val = ( Vector3 )m_Value;
-						Cg.cgSetParameter3f( param, val.X, val.Y, val.Z );
+						TaoCg.cgSetParameter3f( param, val.X, val.Y, val.Z );
 						break;
 					}
 					case ValueType.Matrix	:
@@ -175,7 +174,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// </summary>
 		private void CheckType( ValueType expected )
 		{
-			Output.DebugAssert( m_Type == expected, Output.RenderingError, "Set() failed - binding is of type \"{0}\", value is of type \"{1}\"", m_Type.ToString( ), expected.ToString( ) );
+			GraphicsLog.Assert( m_Type == expected, "Set() failed - binding is of type \"{0}\", value is of type \"{1}\"", m_Type.ToString( ), expected.ToString( ) );
 		}
 
 		/// <summary>

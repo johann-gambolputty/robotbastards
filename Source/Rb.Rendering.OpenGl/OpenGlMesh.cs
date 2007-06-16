@@ -61,7 +61,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Sets up a texture
 		/// </summary>
-		public void AddTexture( Texture2d texture )
+		public void AddTexture( OpenGlTexture2d texture )
 		{
 			m_Textures[ m_NumTextures++ ].Texture = texture;
 		}
@@ -69,13 +69,14 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Gets a texture
 		/// </summary>
-		public Texture2d	GetTexture( int index )
+		public OpenGlTexture2d	GetTexture( int index )
 		{
 			return m_Textures[ index ].Texture;
 		}
 
 		#endregion
 
+		/*
 		#region	Mesh rendering properties
 
 		/// <summary>
@@ -109,15 +110,18 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		#endregion
+		 */
 		
-		#region IRender Members
+		#region IRenderable Members
 
 		/// <summary>
 		/// Renders this mesh
 		/// </summary>
         public void Render( IRenderContext context )
 		{
-			m_Technique.Apply( context, new TechniqueRenderDelegate( RenderMesh ) );
+			//	TODO: AP: ...
+			//context.RenderInContext( m_Technique, this );
+			//m_Technique.Apply( context, new TechniqueRenderDelegate( RenderMesh ) );
 		}
 
 		/// <summary>
@@ -175,12 +179,12 @@ namespace Rb.Rendering.OpenGl
 
 		#region	Private stuff
 
-		private OpenGlIndexedGroup[]	m_Groups;
-		private OpenGlVertexBuffer[]	m_VertexBuffers;
-		private string					m_Name;
-		private AppliedTechnique		m_Technique = new AppliedTechnique( );
-		private TextureSampler2d[]		m_Textures = new TextureSampler2d[ 8 ];
-		private int						m_NumTextures;
+		private OpenGlIndexedGroup[]		m_Groups;
+		private OpenGlVertexBuffer[]		m_VertexBuffers;
+		private string						m_Name;
+		private ITechnique					m_Technique;
+		private OpenGlTextureSampler2d[]	m_Textures = new OpenGlTextureSampler2d[ 8 ];
+		private int							m_NumTextures;
 
 		#endregion
 	}

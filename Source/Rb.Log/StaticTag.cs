@@ -81,6 +81,27 @@ namespace Rb.Log
 		#region Source output helpers
 
 		/// <summary>
+		/// Asserts that a condition is true
+		/// </summary>
+		/// <param name="condition">Condition to test</param>
+		/// <param name="msg">Message on failure</param>
+		/// <param name="args">Message format parameters</param>
+		public static void Assert( bool condition, string msg, params object[] args )
+		{
+			GetSource( Severity.Error ).Assert( condition, msg, args );
+		}
+
+		/// <summary>
+		/// Fails, with a given message
+		/// </summary>
+		/// <param name="msg">Message</param>
+		/// <param name="args">Message format parameters</param>
+		public static void Fail( string msg, params object[] args )
+		{
+			GetSource( Severity.Error ).Fail( msg, args );
+		}
+
+		/// <summary>
 		/// Writes to the Source for the Severity.Verbose level
 		/// </summary>
 		/// <param name="msg">Message string</param>

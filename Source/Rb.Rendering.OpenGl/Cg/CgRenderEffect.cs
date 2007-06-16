@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
-using Rb.Core.Maths;
-using Tao.Cg;
+using TaoCg = Tao.Cg.Cg;
 
 namespace Rb.Rendering.OpenGl.Cg
 {
@@ -33,8 +32,9 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// <summary>
 		/// Creates the effect, loading it from a .cgfx stream
 		/// </summary>
-		/// <param name="context"> Handle to the CG context that created this effect </param>
-		/// <param name="path"> Path to the effect file </param>
+		/// <param name="context">Handle to the CG context that created this effect</param>
+		/// <param name="input">Input stream</param>
+		/// <param name="inputSource">Input stream path</param>
 		public CgRenderEffect( IntPtr context, System.IO.Stream input, string inputSource )
 		{
 			m_Context = context;
@@ -78,23 +78,24 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// <param name="path"> Path to the effect file </param>
 		public void	Load( string path )
 		{
-			if ( !CreateFromHandle( Cg.cgCreateEffectFromFile( m_Context, path, null ) ) )
+			if ( !CreateFromHandle( TaoCg.cgCreateEffectFromFile( m_Context, path, null ) ) )
 			{
-				throw new System.ApplicationException( String.Format( "Unable to create CG effect from path \"{0}\"\n{1}", path, Cg.cgGetLastListing( m_Context ) ) );
+				throw new ApplicationException( string.Format( "Unable to create CG effect from path \"{0}\"\n{1}", path, TaoCg.cgGetLastListing( m_Context ) ) );
 			}
 		}
 
 		/// <summary>
 		/// Loads this effect from a .cgfx stream
 		/// </summary>
-		/// <param name="path"> Stream containing the .cgfx file </param>
+		/// <param name="input">Stream containing the .cgfx file</param>
+		/// <param name="inputSource">Input stream path</param>
 		public void Load( System.IO.Stream input, string inputSource )
 		{
 			System.IO.StreamReader reader = new System.IO.StreamReader( input );
 			string str = reader.ReadToEnd( );
-			if ( !CreateFromHandle( Cg.cgCreateEffect( m_Context, str, null ) ) )
+			if ( !CreateFromHandle( TaoCg.cgCreateEffect( m_Context, str, null ) ) )
 			{
-				throw new System.ApplicationException( String.Format( "Unable to create CG effect from stream \"{0}\"\n{1}", inputSource, Cg.cgGetLastListing( m_Context ) ) );
+				throw new ApplicationException( string.Format( "Unable to create CG effect from stream \"{0}\"\n{1}", inputSource, TaoCg.cgGetLastListing( m_Context ) ) );
 			}
 		}
 
@@ -112,12 +113,12 @@ namespace Rb.Rendering.OpenGl.Cg
 			m_EffectHandle = effectHandle;
 
 			//	Run through all the techniques in the effect
-			for ( IntPtr curTechnique = Cg.cgGetFirstTechnique( m_EffectHandle ); curTechnique != IntPtr.Zero; curTechnique = Cg.cgGetNextTechnique( curTechnique ) )
+			for ( IntPtr curTechnique = TaoCg.cgGetFirstTechnique( m_EffectHandle ); curTechnique != IntPtr.Zero; curTechnique = TaoCg.cgGetNextTechnique( curTechnique ) )
 			{
-				string techniqueName = Cg.cgGetTechniqueName( curTechnique );
-				if ( Cg.cgValidateTechnique( curTechnique ) == 0 )
+				string techniqueName = TaoCg.cgGetTechniqueName( curTechnique );
+				if ( TaoCg.cgValidateTechnique( curTechnique ) == 0 )
 				{
-					Output.WriteLineCall( Output.RenderingWarning, "Unable to validate technique \"{0}\" - {1}", techniqueName, Cg.cgGetLastListing( m_Context ) );
+					GraphicsLog.Warning( "Unable to validate technique \"{0}\" - {1}", techniqueName, TaoCg.cgGetLastListing( m_Context ) );
 					continue;
 				}
 
@@ -125,7 +126,7 @@ namespace Rb.Rendering.OpenGl.Cg
 				RenderTechnique newTechnique = new RenderTechnique( techniqueName );
 
 				//	Run through all the CG passes in the current technique
-				for ( IntPtr curPass = Cg.cgGetFirstPass( curTechnique ); curPass != IntPtr.Zero; curPass = Cg.cgGetNextPass( curPass ) )
+				for ( IntPtr curPass = TaoCg.cgGetFirstPass( curTechnique ); curPass != IntPtr.Zero; curPass = TaoCg.cgGetNextPass( curPass ) )
 				{
 					//	Create a CgRenderPass wrapper around the current pass, and add it to the current technique
 					newTechnique.Add( new CgRenderPass( curPass ) );
@@ -135,7 +136,7 @@ namespace Rb.Rendering.OpenGl.Cg
 			}
 
 			//	Run through all the parameters in the effect, creating CgShaderParameter objects for each
-			for ( IntPtr curParam = Cg.cgGetFirstEffectParameter( m_EffectHandle ); curParam != IntPtr.Zero; curParam = Cg.cgGetNextParameter( curParam ) )
+			for ( IntPtr curParam = TaoCg.cgGetFirstEffectParameter( m_EffectHandle ); curParam != IntPtr.Zero; curParam = TaoCg.cgGetNextParameter( curParam ) )
 			{
 				CgShaderParameter newParam = new CgShaderParameter( m_Context, this, curParam );
 				m_Parameters.Add( newParam );
@@ -177,7 +178,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		{
 			foreach ( CgShaderParameter curParam in m_Parameters )
 			{
-				if ( Cg.cgGetParameterName( curParam.Parameter ) == name )
+				if ( TaoCg.cgGetParameterName( curParam.Parameter ) == name )
 				{
 					return curParam;
 				}

@@ -6,7 +6,7 @@ namespace Rb.Rendering.OpenGl
 	/// <summary>
 	/// Summary description for OpenGlRenderState.
 	/// </summary>
-	public class OpenGlRenderState : RenderState
+	public class OpenGlRenderState : Rb.Rendering.RenderState
 	{
 		/// <summary>
 		/// Applies this render state
@@ -18,7 +18,7 @@ namespace Rb.Rendering.OpenGl
 			ApplyFlagCap( RenderStateFlag.DepthTest, Gl.GL_DEPTH_TEST );
 			ApplyFlagCap( RenderStateFlag.Texture2d, Gl.GL_TEXTURE_2D );
 			ApplyFlagCap( RenderStateFlag.Blend, Gl.GL_BLEND );
-			Gl.glDepthMask( ( m_CapFlags & RenderStateFlag.DepthWrite ) != 0 );
+			Gl.glDepthMask( ( m_CapFlags & RenderStateFlag.DepthWrite ) != 0 ? 1 : 0 );
 
 			switch ( m_DepthTest )
 			{

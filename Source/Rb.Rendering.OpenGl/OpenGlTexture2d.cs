@@ -16,10 +16,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public int	TextureHandle
 		{
-			get
-			{
-				return m_TextureHandle;
-			}
+			get { return m_TextureHandle; }
 		}
 
 		/// <summary>
@@ -30,19 +27,15 @@ namespace Rb.Rendering.OpenGl
 			Dispose( );
 		}
 
-
 		/// <summary>
 		/// Creates an empty texture
 		/// </summary>
 		/// <param name="width">Width of the texture in pixels</param>
 		/// <param name="height">Height of the texture in pixels</param>
 		/// <param name="format">Format of the texture</param>
-		public override void Create( int width, int height, TextureFormat format )
+		public unsafe override void Create( int width, int height, TextureFormat format )
 		{
-			if ( m_TextureHandle != -1 )
-			{
-				Gl.glDeleteTextures( 1, ref m_TextureHandle );
-			}
+			DestroyCurrent( );
 
 			//	Get the GL format of the bitmap, possibly converting it in the process
 			m_Format	= CheckTextureFormat( format, out m_InternalGlFormat, out m_GlFormat, out m_GlType );
@@ -50,7 +43,10 @@ namespace Rb.Rendering.OpenGl
 			m_Height	= height;
 
 			//	Generate a texture name
-			Gl.glGenTextures( 1, out m_TextureHandle );
+			fixed ( int* handleMem = &m_TextureHandle )
+			{
+				Gl.glGenTextures( 1, ( IntPtr )handleMem );
+			}
 			Gl.glBindTexture( Gl.GL_TEXTURE_2D, m_TextureHandle );
 
 			byte[] nullArray = null;
@@ -60,7 +56,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Loads the texture from bitmap data
 		/// </summary>
-		public override void Load( System.Drawing.Bitmap bmp )
+		public override void Load( Bitmap bmp )
 		{
 			//	Get the GL format of the bitmap, possibly converting it in the process
 			int glInternalFormat = 0;
@@ -76,18 +72,30 @@ namespace Rb.Rendering.OpenGl
 			m_Format = PixelFormatToTextureFormat( bmp.PixelFormat );
 		}
 
+		private unsafe void DestroyCurrent( )
+		{
+			if ( m_TextureHandle != InvalidHandle )
+			{
+				fixed ( int* handleMem = &m_TextureHandle )
+				{
+					Gl.glDeleteTextures( 1, ( IntPtr )handleMem );
+				}
+				m_TextureHandle = InvalidHandle;
+			}
+		}
+
 		/// <summary>
 		/// Creates the texture
 		/// </summary>
-		private void Create( int width, int height, int glInternalFormat, int glFormat, int glType, IntPtr bytes )
+		private unsafe void Create( int width, int height, int glInternalFormat, int glFormat, int glType, IntPtr bytes )
 		{
-			if ( m_TextureHandle != -1 )
-			{
-				Gl.glDeleteTextures( 1, ref m_TextureHandle );
-			}
+			DestroyCurrent( );
 
 			//	Generate a texture name
-			Gl.glGenTextures( 1, out m_TextureHandle );
+			fixed ( int* handleMem = &m_TextureHandle )
+			{
+				Gl.glGenTextures( 1, ( IntPtr )handleMem );
+			}
 			Gl.glBindTexture( Gl.GL_TEXTURE_2D, m_TextureHandle );
 
 			Gl.glTexImage2D( Gl.GL_TEXTURE_2D, 0, glInternalFormat, width, height, 0, glFormat, glType, bytes );
@@ -102,7 +110,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Converts a PixelFormat value into a TextureFormat
 		/// </summary>
-		private TextureFormat	PixelFormatToTextureFormat( PixelFormat pixFormat )
+		private static TextureFormat PixelFormatToTextureFormat( PixelFormat pixFormat )
 		{
 			switch ( pixFormat )
 			{
@@ -111,14 +119,14 @@ namespace Rb.Rendering.OpenGl
 				case PixelFormat.Format32bppRgb		:	return TextureFormat.R8G8B8X8;
 			}
 
-			Output.WriteLineCall( Output.RenderingWarning, "No mapping available between pixel format \"{0}\" and TextureFormat - defaulting to R8G8B8", pixFormat.ToString( ) );
+			GraphicsLog.Warning( "No mapping available between pixel format \"{0}\" and TextureFormat - defaulting to R8G8B8", pixFormat.ToString( ) );
 			return TextureFormat.R8G8B8;
 		}
 
 		/// <summary>
 		/// Converts a TextureFormat value into a PixelFormat value
 		/// </summary>
-		private PixelFormat	TextureFormatToPixelFormat( TextureFormat texFormat )
+		private static PixelFormat TextureFormatToPixelFormat( TextureFormat texFormat )
 		{
 			switch ( texFormat )
 			{
@@ -150,7 +158,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="glFormat">Output GL texture format</param>
 		/// <param name="glType">OUtput GL texel type</param>
 		/// <returns>Returns either format, if it was directly supported by OpenGL, or a reasonable alternative</returns>
-		private TextureFormat CheckTextureFormat( TextureFormat format, out int glInternalFormat, out int glFormat, out int glType )
+		private static TextureFormat CheckTextureFormat( TextureFormat format, out int glInternalFormat, out int glFormat, out int glType )
 		{
 			//	Handle direct mappings to GL texture image formats
 			switch ( format )
@@ -244,7 +252,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="glFormat">Output GL texture format</param>
 		/// <param name="glType">Output GL texel type</param>
 		/// <returns>Returns either format, if it was directly supported by OpenGL, or a reasonable alternative</returns>
-		private PixelFormat CheckPixelFormat( PixelFormat format, out int glInternalFormat, out int glFormat, out int glType )
+		private static PixelFormat CheckPixelFormat( PixelFormat format, out int glInternalFormat, out int glFormat, out int glType )
 		{
 			//	Handle direct mappings to GL texture image formats
 			switch ( format )
@@ -301,7 +309,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Checks the format of a Bitmap. If it's not compatible with any OpenGL formats, it's converted to a format that is
 		/// </summary>
-		private Bitmap CheckBmpFormat( Bitmap bmp, out int glInternalFormat, out int glFormat, out int glType )
+		private static Bitmap CheckBmpFormat( Bitmap bmp, out int glInternalFormat, out int glFormat, out int glType )
 		{
 			PixelFormat format = CheckPixelFormat( bmp.PixelFormat, out glInternalFormat, out glFormat, out glType );
 			if ( format == bmp.PixelFormat )
@@ -311,17 +319,17 @@ namespace Rb.Rendering.OpenGl
 			}
 
 			//	Unhandled format. Convert the bitmap into a more manageable form whose GL format we know
-			return bmp.Clone( new System.Drawing.Rectangle( 0, 0, bmp.Width, bmp.Height ), format );
+			return bmp.Clone( new Rectangle( 0, 0, bmp.Width, bmp.Height ), format );
 		}
 
 		/// <summary>
 		/// Converts this texture to an image
 		/// </summary>
-		public unsafe override System.Drawing.Image ToImage( )
+		public unsafe override Image ToImage( )
 		{
-			if ( m_TextureHandle == -1 )
+			if ( m_TextureHandle == InvalidHandle )
 			{
-				Output.WriteLineCall( Output.RenderingWarning, "COuld not convert texture to image - handle was invalid" );
+				GraphicsLog.Warning( "COuld not convert texture to image - handle was invalid" );
 				return null;
 			}
 
@@ -333,11 +341,11 @@ namespace Rb.Rendering.OpenGl
 			}
 
 			//	Bind the texture
-			Renderer.Inst.BindTexture( 0, this );
+			OpenGlRenderer.Inst.BindTexture( 0, this );
 
 			//	HACK: Makes lots of assumptions about format...
 
-			System.Drawing.Bitmap bmp;
+			Bitmap bmp;
 			if ( ( Format == TextureFormat.Depth16 ) || ( Format == TextureFormat.Depth24 ) || ( Format == TextureFormat.Depth32 ) )
 			{
 				//	Handle depth textures
@@ -347,7 +355,7 @@ namespace Rb.Rendering.OpenGl
 				Gl.glGetTexImage( Gl.GL_TEXTURE_2D, 0, m_GlFormat, Gl.GL_FLOAT, textureMemory );
 
 				//	Create bitmap
-				bmp = new System.Drawing.Bitmap( Width, Height, PixelFormat.Format24bppRgb );
+				bmp = new Bitmap( Width, Height, PixelFormat.Format24bppRgb );
 
 				//	Create image memory
 				int texIndex = 0;
@@ -358,7 +366,7 @@ namespace Rb.Rendering.OpenGl
 						float depth = ( ( float )textureMemory[ texIndex ] );
 					//	byte grey = ( byte )( System.Math.Exp( depth ) * 255.0f);
 						byte grey = ( byte )( depth * 255.0f );
-						bmp.SetPixel( w, h, System.Drawing.Color.FromArgb( grey, grey, grey ) );
+						bmp.SetPixel( w, h, Color.FromArgb( grey, grey, grey ) );
 					}
 				}
 
@@ -400,12 +408,12 @@ namespace Rb.Rendering.OpenGl
 				fixed ( byte* textureMemoryPtr = textureMemory )
 				{
 					//	TODO: Add per-case check of Format - in cases with no mapping (see TextureFormatToPixelFormat()), do a manual conversion
-					bmp = new System.Drawing.Bitmap( Width, Height, Width * bytesPerPixel, TextureFormatToPixelFormat( Format ), ( IntPtr )textureMemoryPtr );
+					bmp = new Bitmap( Width, Height, Width * bytesPerPixel, TextureFormatToPixelFormat( Format ), ( IntPtr )textureMemoryPtr );
 				}
 			}
 
 			//	Unbind the texture
-			Renderer.Inst.UnbindTexture( 0 );
+			OpenGlRenderer.Inst.UnbindTexture( 0 );
 
 			//	Disable 2D texturing
 			if ( requires2DTexturesEnabled )
@@ -424,19 +432,21 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public void Dispose( )
 		{
-			if ( m_TextureHandle != -1 )
+			if ( m_TextureHandle != InvalidHandle )
 			{
 				//	TODO: ... can't delete, because the GL context has disappeared
 			//	Gl.glDeleteTextures( 1, ref m_TextureHandle );
-				m_TextureHandle = -1;
+				m_TextureHandle = InvalidHandle;
 			}
 		}
 
 		#endregion
 
-		private int	m_TextureHandle		= -1;
-		private int m_InternalGlFormat;
-		private int m_GlFormat;
-		private int m_GlType;
+		private const int InvalidHandle = -1;
+
+		private int		m_TextureHandle = InvalidHandle;
+		private int		m_InternalGlFormat;
+		private int		m_GlFormat;
+		private int		m_GlType;
 	}
 }

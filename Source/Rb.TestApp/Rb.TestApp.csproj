@@ -29,6 +29,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
@@ -84,6 +85,14 @@
     <ProjectReference Include="..\Rb.Log\Rb.Log.csproj">
       <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
       <Name>Rb.Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Rendering.Windows\Rb.Rendering.Windows.csproj">
+      <Project>{39A57BC2-BE73-41A7-BBC2-A9D0C28D5A06}</Project>
+      <Name>Rb.Rendering.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Rendering\Rb.Rendering.csproj">
+      <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
+      <Name>Rb.Rendering</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rb.World\Rb.World.csproj">
       <Project>{46980366-998B-4178-87B7-B04DD3B21979}</Project>

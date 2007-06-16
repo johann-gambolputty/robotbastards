@@ -11,45 +11,6 @@ namespace Rb.Rendering.OpenGl
 	{
 		#region	Setup
 
-		private Matrix44 GetMv( )
-		{
-			Matrix44 mat = new Matrix44( );
-			Gl.glGetFloatv( Gl.GL_MODELVIEW_MATRIX, mat.Elements );
-			return mat;
-		}
-
-		private void PrintMatrix( Matrix44 mat )
-		{
-			for ( int row = 0; row < 4; ++row )
-			{
-				for ( int col = 0; col < 4; ++col )
-				{
-					System.Diagnostics.Debug.Write( string.Format( "{0} ", mat[ col, row ].ToString( "G4" ) ) );
-				}
-				System.Diagnostics.Debug.WriteLine( "" );
-			}
-		}
-
-		private void EnsureMvCorrectness( Matrix44 test )
-		{
-			Matrix44 mvMat = GetMv( );
-
-			System.Diagnostics.Debug.WriteLine( "Matrix44:" );
-			PrintMatrix( test );
-
-			System.Diagnostics.Debug.WriteLine( "\nGL Matrix44" );
-			PrintMatrix( mvMat );
-
-			for ( int row = 0; row < 4; ++row )
-			{
-				for ( int col = 0; col < 4; ++col )
-				{
-					float diff = mvMat[ col, row ] - test[ col, row ];
-					Output.DebugAssert( System.Math.Abs( diff ) < 0.1f, Output.RenderingError, "MV not correct" );
-				}
-			}
-		}
-
 		/// <summary>
 		/// Sets up the renderer
 		/// </summary>
@@ -68,66 +29,13 @@ namespace Rb.Rendering.OpenGl
 			}
 
 		}
-
-		private void TestMatrices( )
-		{
-			Gl.glMatrixMode( Gl.GL_MODELVIEW );
-			Gl.glPushMatrix( );
-			Gl.glLoadIdentity( );
-
-			//	Test stuff...
-			Matrix44 testMatrix = new Matrix44( );
-			Gl.glTranslatef( 10, 0, 0 );		testMatrix.Translate( 10, 0, 0 );
-			EnsureMvCorrectness( testMatrix );
-
-			Gl.glTranslatef( 10, 0, 0 );		testMatrix.Translate( 10, 0, 0 );
-			EnsureMvCorrectness( testMatrix );
-
-			float[] testArray = new float[ 16 ]
-			{
-				0, 0, 1, 0,
-			    0, 1,  0, 0,
-			    -1, 0,  0, 0,
-			    0, 0,  0, 1
-			};
-
-			Gl.glLoadMatrixf( testArray );
-			Gl.glTranslatef( -10, 0, 0 );
-
-		//	Gl.glLoadIdentity( ); Glu.gluLookAt( 10, 0, 0, 0, 0, 0, 0, 1, 0 );
-			testMatrix.SetLookAt( new Point3( 10, 0, 0 ), Point3.Origin, Vector3.YAxis );
-			EnsureMvCorrectness( testMatrix );
-
-			
-
-			Gl.glPopMatrix( );
-
-		}
-
 		/// <summary>
 		/// Loads all supported OpenGL extensions
 		/// </summary>
 		public unsafe static void LoadExtensions( )
 		{
-			sbyte* mem = ( sbyte* )Gl.glGetString( Gl.GL_EXTENSIONS );
-			string extensions = new string( mem );
-			Output.WriteLine( Output.RenderingInfo, extensions.Replace( ' ', '\n' ) );
-
-			GlExtensionLoader.LoadAllExtensions( );
-
-		}
-
-		#endregion
-
-		#region	Forms
-
-		/// <summary>
-		/// Sets up a control to be rendered to by this renderer
-		/// </summary>
-		/// <param name="control"> Control to set up </param>
-		public override ControlRenderContext	CreateControlContext( System.Windows.Forms.Control control )
-		{
-			return new OpenGlControlRenderContext( );
+			string extensions = Gl.glGetString( Gl.GL_EXTENSIONS );
+			GraphicsLog.Info( extensions.Replace( ' ', '\n' ) );
 		}
 
 		#endregion
@@ -139,20 +47,6 @@ namespace Rb.Rendering.OpenGl
 		#region	Standard operations
 
 		/// <summary>
-		/// Current control setup
-		/// </summary>
-		public override Control CurrentControl
-		{
-			set
-			{
-				base.CurrentControl = value;
-				SetViewport( 0, 0, value.Width, value.Height );
-			//	TestMatrices( );
-			}
-		}
-
-
-		/// <summary>
 		/// Checks for errors in the current state of the renderer, throwing an exception if there is one
 		/// </summary>
 		public static void CheckErrors( )
@@ -160,7 +54,7 @@ namespace Rb.Rendering.OpenGl
 			int errorCode = Gl.glGetError( );
 			if ( errorCode != Gl.GL_NO_ERROR )
 			{
-				throw new System.ApplicationException( String.Format( "GL error: {0}", Glu.gluErrorString( errorCode ) ) );
+				throw new ApplicationException( string.Format( "GL error: {0}", Glu.gluErrorString( errorCode ) ) );
 			}
 		}
 
@@ -169,7 +63,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public override void	ClearColour( System.Drawing.Color colour )
 		{
-			Gl.glClearColor( ( float )colour.R / 255.0f, ( float )colour.G / 255.0f, ( float )colour.B / 255.0f, 1.0f );
+			Gl.glClearColor( colour.R / 255.0f, colour.G / 255.0f, colour.B / 255.0f, 1.0f );
 			Gl.glClear( Gl.GL_COLOR_BUFFER_BIT );
 		}
 
@@ -186,7 +80,7 @@ namespace Rb.Rendering.OpenGl
 			Gl.glPushMatrix( );
 			Gl.glLoadIdentity( );
 
-			Gl.glDepthMask( false );
+			Gl.glDepthMask( 0 );
 
 			Gl.glBegin( Gl.GL_QUADS );
 			Draw2dQuad( -1, -1, 2, 2, topColour, topColour, bottomColour, bottomColour );
@@ -211,7 +105,7 @@ namespace Rb.Rendering.OpenGl
 			Gl.glPushMatrix( );
 			Gl.glLoadIdentity( );
 
-			Gl.glDepthMask( false );
+			Gl.glDepthMask( 0 );
 
 			Gl.glBegin( Gl.GL_QUADS );
 			Draw2dQuad( -1, -1, 1, 1, outerColour, centreColour, outerColour, outerColour );
@@ -598,9 +492,9 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Applies a texture to the indexed texture stage
 		/// </summary>
-		public override void			BindTexture( int index, Texture2d texture )
+		public override void BindTexture( int index, Rb.Rendering.Texture2d texture )
 		{
-			Output.DebugAssert( index == 0, Output.RenderingError, "Multitexture unsupported, sorry" );
+			GraphicsLog.Assert( index == 0, "Multitexture unsupported, sorry" );
 
 			Gl.glBindTexture( Gl.GL_TEXTURE_2D, ( ( OpenGlTexture2d )texture ).TextureHandle );
 			base.BindTexture( index, texture );
@@ -609,7 +503,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Unbinds a texture from the indexed texture stage
 		/// </summary>
-		public override void			UnbindTexture( int index )
+		public override void UnbindTexture( int index )
 		{
 			Gl.glBindTexture( Gl.GL_TEXTURE_2D, 0 );
 			base.UnbindTexture( index );

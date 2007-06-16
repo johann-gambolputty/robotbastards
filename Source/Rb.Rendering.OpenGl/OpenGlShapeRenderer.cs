@@ -6,7 +6,7 @@ namespace Rb.Rendering.OpenGl
 	/// <summary>
 	/// OpenGL implementation of ShapeRenderer
 	/// </summary>
-	public class OpenGlShapeRenderer : ShapeRenderer
+	public class OpenGlShapeRenderer : Rb.Rendering.ShapeRenderer
 	{
 		#region 2d Rendering
 
