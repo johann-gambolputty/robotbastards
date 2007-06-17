@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 namespace Rb.Rendering
 {
+    //  TODO: AP: Rename me?
 
 	/// <summary>
 	/// A render pass sets up the state of the renderer for rendering
@@ -28,7 +29,7 @@ namespace Rb.Rendering
         /// Adds all enumerable IPass objects in passes
         /// </summary>
         /// <param name="passes">Passes enumeration</param>
-        public RenderPass(IEnumerable<IPass> passes)
+        public RenderPass( IEnumerable< IPass > passes )
         {
             Add( passes );
         }
