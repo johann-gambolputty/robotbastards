@@ -11,7 +11,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Gets the shader that this parameter came from
 		/// </summary>
-		public Shader	Source
+		public IShader	Source
 		{
 			get { return m_Source; }
 		}

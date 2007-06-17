@@ -66,7 +66,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// </summary>
 		/// <param name="context">CG context</param>
 		/// <param name="parameterHandle"> CGparameter handle </param>
-		public CgShaderParameter( IntPtr context, Shader source, IntPtr parameterHandle ) :
+		public CgShaderParameter( IntPtr context, IShader source, IntPtr parameterHandle ) :
 			base( source )
 		{
 			m_Context	= context;

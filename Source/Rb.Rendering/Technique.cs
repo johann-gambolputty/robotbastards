@@ -51,12 +51,12 @@ namespace Rb.Rendering
 		}
 
 		/// <summary>
-		/// The effect that owns this technique
+		/// The shader that owns this technique
 		/// </summary>
-		public RenderEffect Effect
+		public IShader Shader
 		{
-			get { return m_Effect; }
-			set { m_Effect = value; }
+			get { return m_Shader; }
+			set { m_Shader = value; }
 		}
 
 		#endregion
@@ -132,21 +132,15 @@ namespace Rb.Rendering
 		/// </summary>
 		public string Name
 		{
-			get
-			{
-				return m_Name;
-			}
-			set
-			{
-				m_Name = value;
-			}
+			get { return m_Name; }
+			set { m_Name = value; }
 		}
 
 		#endregion
 
 		#region	Private stuff
 
-		private RenderEffect	m_Effect;
+		private IShader			m_Shader;
 		private string			m_Name;
 
 		#endregion

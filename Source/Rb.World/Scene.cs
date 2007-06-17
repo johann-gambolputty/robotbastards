@@ -46,7 +46,7 @@ namespace Rb.World
             {
                 WorldLog.Warning( string.Format( "Clock with name \"{0}\" already exists in the scene - overwriting...", clock.Name ) );
             }
-            WorldLog.Info( "Adding clock \"{0}\" (tick interval {1}ms)", clock.Name, clock.Interval );
+			WorldLog.Info( "Adding clock \"{0}\" (tick interval {1}ms)", clock.Name, clock.TickTime );
             m_Clocks[ clock.Name ] = clock;
         }
 
@@ -54,7 +54,7 @@ namespace Rb.World
         /// Adds a set of clocks to the scene
         /// </summary>
         /// <param name="clocks">Clocks to add</param>
-        public void AddClocks( IEnumerable< Clock > clocks )
+        public void AddClocks( IEnumerable clocks )
         {
             foreach ( Clock curClock in clocks )
             {

@@ -130,10 +130,7 @@ namespace Rb.Rendering
 		/// </summary>
 		public string			Name
 		{
-			get
-			{
-				return m_Name;
-			}
+			get { return m_Name; }
 		}
 
 		/// <summary>
