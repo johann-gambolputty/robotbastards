@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Rb.Core.Utils;
 
 namespace Rb.World
 {
@@ -23,7 +24,47 @@ namespace Rb.World
 
 		#endregion
 
-		#region	Services
+        #region Clocks
+
+        /// <summary>
+        /// Gets a named clock. Throws an exception on failure
+        /// </summary>
+        /// <param name="name">Clock name</param>
+        /// <returns>Returns clock</returns>
+        public Clock GetClock( string name )
+        {
+            return m_Clocks[ name ];
+        }
+
+        /// <summary>
+        /// Adds a single clock to the scene
+        /// </summary>
+        /// <param name="clock">Clock to add</param>
+        public void AddClock( Clock clock )
+        {
+            if ( m_Clocks.ContainsKey( clock.Name ) )
+            {
+                WorldLog.Warning( string.Format( "Clock with name \"{0}\" already exists in the scene - overwriting...", clock.Name ) );
+            }
+            WorldLog.Info( "Adding clock \"{0}\" (tick interval {1}ms)", clock.Name, clock.Interval );
+            m_Clocks[ clock.Name ] = clock;
+        }
+
+        /// <summary>
+        /// Adds a set of clocks to the scene
+        /// </summary>
+        /// <param name="clocks">Clocks to add</param>
+        public void AddClocks( IEnumerable< Clock > clocks )
+        {
+            foreach ( Clock curClock in clocks )
+            {
+                AddClock( curClock );
+            }
+        }
+
+        #endregion
+
+        #region	Services
 
         /// <summary>
 		/// Gets a typed service
@@ -124,11 +165,13 @@ namespace Rb.World
 		#endregion
 
 		#region	Private stuff
-
+        
+        private Dictionary< string, Clock >     m_Clocks = new Dictionary< string, Clock >( );
         private Dictionary< Type, object >		m_Services = new Dictionary< Type, object >( );
 		private SceneViewers					m_Viewers;
 		private SceneControllers				m_Controllers;
 		private SceneObjects					m_Objects;
+
 
         /// <summary>
         /// Associates a service with a key
