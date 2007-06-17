@@ -1,12 +1,11 @@
 using System;
-using System.Collections;
 
 namespace Rb.Core.Utils
 {
 	/// <summary>
 	/// For objects that update on a regular basis, e.g. for physics, rendering, AI, etc.
 	/// </summary>
-	public class Clock
+	public class Clock : Components.INamed
 	{
 		/// <summary>
 		/// Sets up the clock
@@ -43,9 +42,19 @@ namespace Rb.Core.Utils
 		/// </summary>
 		public int		TickTime
 		{
-			get { return ( int )m_Interval; }
+			get { return m_Timer.Interval; }
 			set { m_Timer.Interval = value; }
 		}
+
+		/// <summary>
+		/// Returns the actual interval time between the last update and the current update
+		/// </summary>
+		public int		LastInterval
+		{
+			get { return m_Interval;  }
+		}
+
+		#region INamed implementation
 
 		/// <summary>
 		/// The clock name
@@ -53,7 +62,10 @@ namespace Rb.Core.Utils
 		public string	Name
 		{
 			get { return m_Name; }
+			set { m_Name = value; }
 		}
+
+		#endregion
 
 		/// <summary>
 		/// Delegate for the Tick event

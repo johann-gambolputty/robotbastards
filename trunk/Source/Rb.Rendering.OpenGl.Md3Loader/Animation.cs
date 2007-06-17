@@ -25,14 +25,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public int			FirstFrame
 		{
-			get
-			{
-				return m_FirstFrame;
-			}
-			set
-			{
-				m_FirstFrame = value;
-			}
+			get { return m_FirstFrame; }
+			set { m_FirstFrame = value; }
 		}
 
 		/// <summary>
@@ -40,10 +34,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public int			LastFrame
 		{
-			get
-			{
-				return FirstFrame + NumFrames;
-			}
+			get { return FirstFrame + NumFrames; }
 		}
 
 		/// <summary>
@@ -51,10 +42,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public int			NumFrames
 		{
-			get
-			{
-				return m_NumFrames;
-			}
+			get { return m_NumFrames; }
 		}
 
 		/// <summary>
@@ -62,10 +50,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public int			LoopingFrames
 		{
-			get
-			{
-				return m_LoopingFrames;
-			}
+			get { return m_LoopingFrames; }
 		}
 
 		/// <summary>
@@ -73,10 +58,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public int			FramesPerSecond
 		{
-			get
-			{
-				return m_FramesPerSecond;
-			}
+			get { return m_FramesPerSecond; }
 
 		}
 		/// <summary>
@@ -84,14 +66,11 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public AnimationType	AnimType
 		{
-			get
-			{
-				return m_AnimType;
-			}
+			get { return m_AnimType; }
 		}
 
 
-		#region	IAnimation Members
+		#region	INamed Members
 
 		/// <summary>
 		/// Gets the name of this animation
@@ -101,6 +80,10 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			get
 			{
 				return m_AnimType.ToString( );
+			}
+			set
+			{
+				throw new ApplicationException( "Can't set the name of an MD3 animation" );
 			}
 		}
 

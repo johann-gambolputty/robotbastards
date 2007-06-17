@@ -138,12 +138,12 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			m_PartMeshes[ 0 ].Render( layers );
 		}
 
-		#region IRender Members
+		#region IRenderable Members
 
 		/// <summary>
 		/// Render all part meshes
 		/// </summary>
-		public void Render( )
+		public void Render( IRenderContext context )
 		{
 			m_PartMeshes[ 0 ].Render( );
 		}
