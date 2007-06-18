@@ -5,15 +5,15 @@ using TaoCg = Tao.Cg.Cg;
 namespace Rb.Rendering.OpenGl.Cg
 {
 	/// <summary>
-	/// Summary description for CgRenderEffect.
+	/// A CG effect
 	/// </summary>
-	public class CgRenderEffect : RenderEffect
+	public class CgEffect : Effect
 	{
 		/// <summary>
 		/// Creates the effect
 		/// </summary>
 		/// <param name="context"> Handle to the CG context that created this effect </param>
-		public CgRenderEffect( IntPtr context )
+		public CgEffect( IntPtr context )
 		{
 			m_Context = context;
 		}
@@ -23,7 +23,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// </summary>
 		/// <param name="context"> Handle to the CG context that created this effect </param>
 		/// <param name="path"> Path to the effect file </param>
-		public CgRenderEffect( IntPtr context, string path )
+		public CgEffect( IntPtr context, string path )
 		{
 			m_Context = context;
 			Load( path );
@@ -35,7 +35,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// <param name="context">Handle to the CG context that created this effect</param>
 		/// <param name="input">Input stream</param>
 		/// <param name="inputSource">Input stream path</param>
-		public CgRenderEffect( IntPtr context, System.IO.Stream input, string inputSource )
+		public CgEffect( IntPtr context, System.IO.Stream input, string inputSource )
 		{
 			m_Context = context;
 			Load( input, inputSource );
@@ -66,7 +66,6 @@ namespace Rb.Rendering.OpenGl.Cg
 		public override void End( )
 		{
 		}
-
 
 		#endregion
 
@@ -122,14 +121,14 @@ namespace Rb.Rendering.OpenGl.Cg
 					continue;
 				}
 
-				//	Create a RenderTechnique wrapper around the current technique
-				RenderTechnique newTechnique = new RenderTechnique( techniqueName );
+				//	Create a Technique wrapper around the current technique
+				Technique newTechnique = new Technique( techniqueName );
 
 				//	Run through all the CG passes in the current technique
 				for ( IntPtr curPass = TaoCg.cgGetFirstPass( curTechnique ); curPass != IntPtr.Zero; curPass = TaoCg.cgGetNextPass( curPass ) )
 				{
 					//	Create a CgRenderPass wrapper around the current pass, and add it to the current technique
-					newTechnique.Add( new CgRenderPass( curPass ) );
+					newTechnique.Add( new CgPass( curPass ) );
 				}
 
 				Add( newTechnique );
@@ -188,7 +187,6 @@ namespace Rb.Rendering.OpenGl.Cg
 		}
 
 		#endregion
-
 
 		private IntPtr				m_Context;
 		private IntPtr				m_EffectHandle;

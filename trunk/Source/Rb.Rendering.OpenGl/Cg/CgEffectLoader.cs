@@ -6,13 +6,13 @@ namespace Rb.Rendering.OpenGl.Cg
 	/// <summary>
 	/// Summary description for CgRenderEffectLoader.
 	/// </summary>
-	public class CgRenderEffectLoader : ResourceStreamLoader
+	public class CgEffectLoader : ResourceStreamLoader
 	{
 
 		/// <summary>
 		/// Creates the internal CG context that effects are created from
 		/// </summary>
-		public CgRenderEffectLoader( )
+		public CgEffectLoader( )
 		{
 			m_Context = Tao.Cg.Cg.cgCreateContext( );
 			
@@ -27,7 +27,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		public override Object Load( System.IO.Stream input, string inputSource, out bool canCache )
 		{
 			canCache = true;
-			return new CgRenderEffect( m_Context, input, inputSource );
+			return new CgEffect( m_Context, input, inputSource );
 		}
 
 		/// <summary>

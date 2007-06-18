@@ -34,6 +34,8 @@
 
     <point3 x="20" y="0.5" z="0" property="NextPosition"/>
 
+    <resource path="sarge" property="Graphics"/>
+
     <method objectId="this" call="SetupController">
       <parameters>
         <guid value="{8D7200EA-0D49-4384-9A44-2532ECB1FE55}"/>

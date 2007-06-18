@@ -43,9 +43,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cg\CgRenderEffect.cs" />
-    <Compile Include="Cg\CgRenderEffectLoader.cs" />
-    <Compile Include="Cg\CgRenderPass.cs" />
+    <Compile Include="Cg\CgEffect.cs" />
+    <Compile Include="Cg\CgEffectLoader.cs" />
+    <Compile Include="Cg\CgPass.cs" />
     <Compile Include="Cg\CgShaderParameter.cs" />
     <Compile Include="Cg\CgShaderParameterBindings.cs" />
     <Compile Include="Cg\CgShaderParameterCustomBinding.cs" />

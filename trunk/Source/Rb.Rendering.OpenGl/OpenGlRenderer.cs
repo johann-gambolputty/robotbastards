@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using Rb.Core.Maths;
 using Tao.OpenGl;
 
@@ -16,8 +17,6 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public OpenGlRenderer( )
 		{
-			Gl.glHint( Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST );
-
 			int stackIndex = 0;
 			for ( ; stackIndex < m_LocalToWorldStack.Length; ++stackIndex )
 			{
@@ -27,15 +26,20 @@ namespace Rb.Rendering.OpenGl
 			{
 				m_WorldToViewStack[ stackIndex ] = new Matrix44( );
 			}
-
 		}
-		/// <summary>
+
+        /// <summary>
 		/// Loads all supported OpenGL extensions
 		/// </summary>
 		public unsafe static void LoadExtensions( )
-		{
-			string extensions = Gl.glGetString( Gl.GL_EXTENSIONS );
-			GraphicsLog.Info( extensions.Replace( ' ', '\n' ) );
+        {	
+            //	Add a default renderstate
+			Inst.PushRenderState( RenderFactory.Inst.NewRenderState( ) );
+
+            string extensions = Gl.glGetString( Gl.GL_EXTENSIONS );
+            GraphicsLog.Info( extensions.Replace( ' ', '\n' ) );
+
+            Gl.glHint( Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST );
 		}
 
 		#endregion

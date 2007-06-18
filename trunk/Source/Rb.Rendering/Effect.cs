@@ -6,14 +6,14 @@ namespace Rb.Rendering
 	/// <summary>
 	/// Stores a set of techniques that can be used for rendering stuff
 	/// </summary>
-	public class RenderEffect : IShader
+	public class Effect : IEffect
 	{
 		#region	Construction
 
 		/// <summary>
 		/// Creates a render effect with no techniques
 		/// </summary>
-		public RenderEffect( )
+		public Effect( )
 		{
 		}
 
@@ -21,7 +21,7 @@ namespace Rb.Rendering
 		/// Creates a render effect with one or more techniques
 		/// </summary>
 		/// <param name="techniques">Techniques to add</param>
-		public RenderEffect( params ITechnique[] techniques )
+		public Effect( params ITechnique[] techniques )
 		{
             foreach ( ITechnique technique in techniques )
             {
@@ -36,7 +36,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Finds a named technique
 		/// </summary>
-		/// <param name="name"> Name of the technique to look for (case-sensitive match to RenderTechnique.Name)</param>
+		/// <param name="name"> Name of the technique to look for (case-sensitive match to Technique.Name)</param>
 		/// <returns> Returns the named technique. Returns null if no technique with the specified name can be found </returns>
 		public ITechnique FindTechnique( string name )
 		{
@@ -57,13 +57,7 @@ namespace Rb.Rendering
 		public void Add( ITechnique technique )
 		{
 			m_Techniques.Add( technique );
-
-            //  hmmm....
-		    RenderTechnique renderTechnique = technique as RenderTechnique;
-            if ( renderTechnique != null )
-            {
-			    renderTechnique.Effect = this;
-            }
+		    technique.Effect = this;
 		}
 
 		/// <summary>
@@ -96,29 +90,68 @@ namespace Rb.Rendering
 		}
 
         /// <summary>
-        /// Technique list getter
+        /// Technique collection getter
         /// </summary>
-        // TODO: AP: Make a proper TechniqueList class, that handles RenderTechnique.Add()
-	    public IList< ITechnique > Techniques
+        /// <remarks>
+        /// Can only add techniques via Add()
+        /// </remarks>
+	    public ICollection< ITechnique > Techniques
 	    {
 	        get { return m_Techniques; }
 	    }
 
 		#endregion
 
-		#region	Private stuff
+        #region IEffect Members
 
-		private List< ITechnique > m_Techniques	= new List< ITechnique >( );
+        /// <summary>
+        /// Gets a shader parameter by its name
+        /// </summary>
+        /// <param name="name">Parameter name</param>
+        /// <returns>Returns the named shader parameter, or null if it doesn't exist</returns>
+        public virtual ShaderParameter GetParameter( string name )
+        {
+            return null;
+        }
 
-		#endregion
+        /// <summary>
+        /// Gets a technique from its name
+        /// </summary>
+        public virtual ITechnique GetTechnique( string name )
+        {
+            return FindTechnique( name );
+        }
 
-		#region	IPass Members
 
-		/// <summary>
+        /// <summary>
+        /// Finds a technique in this effect that can substitute the specified technique
+        /// </summary>
+        /// <param name="technique">Technique to substitute</param>
+        /// <returns>
+        /// Returns an ITechnique from this effect that can substitute technique. If none
+        /// can be found, technique is returned.
+        /// </returns>
+        public virtual ITechnique SubstituteTechnique( ITechnique technique )
+        {
+            foreach ( ITechnique substituteTechnique in m_Techniques )
+            {
+                if ( substituteTechnique.IsSubstituteFor( technique ) )
+                {
+                    return substituteTechnique;
+                }
+            }
+            return technique;
+        }
+
+        #endregion
+
+        #region	IPass Members
+
+        /// <summary>
 		/// Starts using this shader
 		/// </summary>
 		/// <remarks>
-		/// Called from RenderTechnique.Begin()
+		/// Called from Technique.Begin()
 		/// </remarks>
 		public virtual void Begin( )
 		{
@@ -128,13 +161,19 @@ namespace Rb.Rendering
 		/// Stops using this shader
 		/// </summary>
 		/// <remarks>
-		/// Called from RenderTechnique.End()
+		/// Called from Technique.End()
 		/// </remarks>
 		public virtual void End( )
 		{
 		}
 
 		#endregion
+
+        #region	Private stuff
+
+        private List< ITechnique > m_Techniques = new List< ITechnique >( );
+
+        #endregion
 	}
 
 }

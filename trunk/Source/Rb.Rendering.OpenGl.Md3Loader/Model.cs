@@ -103,7 +103,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Applies the specified render effect to all part meshes
 		/// </summary>
-		public Rb.Rendering.RenderEffect	Effect
+		public Rb.Rendering.Effect	Effect
 		{
 			set
 			{
@@ -117,13 +117,13 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// The selected render technique's name
 		/// </summary>
-		public string		AppliedTechniqueName
+		public string		CurrentTechniqueName
 		{
 			set
 			{
 				for ( int partIndex = 0; partIndex < m_PartMeshes.Length; ++partIndex )
 				{
-					m_PartMeshes[ partIndex ].AppliedTechniqueName = value;
+					m_PartMeshes[ partIndex ].CurrentTechniqueName = value;
 				}
 			}
 		}
@@ -133,9 +133,9 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Renders the model with a particular set of animation layers
 		/// </summary>
-		public void Render( AnimationLayer[] layers )
+		public void Render( IRenderContext context, AnimationLayer[] layers )
 		{
-			m_PartMeshes[ 0 ].Render( layers );
+			m_PartMeshes[ 0 ].Render( context, layers );
 		}
 
 		#region IRenderable Members
@@ -145,7 +145,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public void Render( IRenderContext context )
 		{
-			m_PartMeshes[ 0 ].Render( );
+			m_PartMeshes[ 0 ].Render( context );
 		}
 
 		#endregion

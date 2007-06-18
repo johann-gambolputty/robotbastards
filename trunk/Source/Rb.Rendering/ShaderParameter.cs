@@ -4,27 +4,37 @@ namespace Rb.Rendering
 {
 
 	/// <summary>
-	/// Summary description for ShaderParameter.
+	/// A ShaderParameter represents a parameter in an effect
 	/// </summary>
 	public abstract class ShaderParameter
-	{
-		/// <summary>
+    {
+        #region Construction
+
+        /// <summary>
+        /// Sets the source of this parameter
+        /// </summary>
+        public ShaderParameter( IEffect source )
+        {
+            m_Source = source;
+        }
+
+        #endregion
+
+        #region Public properties
+
+        /// <summary>
 		/// Gets the shader that this parameter came from
 		/// </summary>
-		public IShader	Source
+		public IEffect	Source
 		{
 			get { return m_Source; }
-		}
+        }
 
-		/// <summary>
-		/// Sets the source of this parameter
-		/// </summary>
-		public ShaderParameter( Shader source )
-		{
-			m_Source = source;
-		}
+        #endregion
 
-		/// <summary>
+        #region Parameter setters
+
+        /// <summary>
 		/// Sets the shader parameter to a texture
 		/// </summary>
 		/// <param name="val">New parameter value</param>
@@ -88,6 +98,12 @@ namespace Rb.Rendering
 		/// <param name="val"> New parameter value </param>
 		public abstract void	Set( int[] val );
 
-		private Shader			m_Source;
-	}
+        #endregion
+
+        #region Private stuff
+
+        private IEffect			m_Source;
+
+        #endregion
+    }
 }

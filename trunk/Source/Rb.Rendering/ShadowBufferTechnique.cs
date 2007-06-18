@@ -12,19 +12,19 @@ namespace Rb.Rendering
 	/// This will do nothing, until a LightGroup is associated with the technique, using the ShadowLights property.
 	/// Any child techniques this technique has will be applied after the shadow buffer build step.
 	/// </remarks>
-	public class ShadowBufferTechnique : Node, ITechnique
+	public class ShadowBufferTechnique : Technique
 	{
 		#region	Technique properties
 
 		/// <summary>
 		/// Maximum number of shadow casting lights
 		/// </summary>
-		public const int				MaxLights = 4;
+		public const int			MaxLights = 4;
 
 		/// <summary>
 		/// Gets the technique that the shadow buffer render technique uses to override rendered objects' techniques
 		/// </summary>
-		public static ITechnique	    OverrideTechnique
+		public static ITechnique    OverrideTechnique
 		{
 			get { return ms_OverrideTechnique; }
 		}
@@ -32,22 +32,16 @@ namespace Rb.Rendering
 		/// <summary>
 		/// The light group this technique uses to get shadow lights from
 		/// </summary>
-		public LightGroup				ShadowLights
+		public LightGroup			ShadowLights
 		{
-			get
-			{
-				return m_ShadowLights;
-			}
-			set
-			{
-				m_ShadowLights = value;
-			}
+			get { return m_ShadowLights; }
+			set { m_ShadowLights = value; }
 		}
 
 		/// <summary>
 		/// Temporary bodge to switch between depth texture and normal texture for shadow map source
 		/// </summary>
-		public static bool				DepthTextureMethod = true;
+		public static bool			DepthTextureMethod = true;
 
 		#endregion
 
@@ -59,13 +53,13 @@ namespace Rb.Rendering
 		/// <exception cref="ApplicationException">Thrown if internal render target creation is not successful</exception>
 		public ShadowBufferTechnique( )
 		{
-		    m_Name = GetType( ).Name;
+		    Name = GetType( ).Name;
 
 			//	Create a technique that is used to override standard scene rendering techniques (for shadow buffer generation)
 			if ( ms_OverrideTechnique == null )
 			{
 				//	TODO: This should be an embedded resource, directly compiled from a hardcoded string, or something
-				RenderEffect effect = ( RenderEffect )ResourceManager.Instance.Load( DepthTextureMethod ? "shadowMapDepthTexture.cgfx" : "shadowMapTexture.cgfx" );
+				Effect effect = ( Effect )ResourceManager.Instance.Load( DepthTextureMethod ? "shadowMapDepthTexture.cgfx" : "shadowMapTexture.cgfx" );
 				ms_OverrideTechnique = effect.FindTechnique( "DefaultTechnique" );
 			}
 
@@ -95,35 +89,12 @@ namespace Rb.Rendering
 
 		#endregion
 
-        #region INamed Members
-
-        /// <summary>
-        /// Access to the name of this object
-        /// </summary>
-	    public string Name
-	    {
-	        get { return m_Name; }
-            set { m_Name = value; }
-	    }
-
-        #endregion
-
-        #region	ITechnique Members
-
-        /// <summary>
-        /// Always returns false - the shadow buffer technique can't be used as a substitute for any other technique
-        /// </summary>
-        /// <param name="techniqe">Technique being sustituted</param>
-        /// <returns>Always false</returns>
-        public bool IsSubstituteFor( ITechnique techniqe )
-        {
-            return false;
-        }
+        #region	Technique Overrides
 
 		/// <summary>
 		/// Applies this technique
 		/// </summary>
-		public virtual void Apply( IRenderContext context, IRenderable renderable )
+		public override void Apply( IRenderContext context, IRenderable renderable )
 		{
 			//	Make the shadow depth buffers
 			int numBuffers = 0;
@@ -167,7 +138,6 @@ namespace Rb.Rendering
 		private ShaderParameterCustomBinding	m_ShadowMatrixBinding;
 		private ShaderParameterCustomBinding	m_ShadowNearZBinding;
 		private ShaderParameterCustomBinding	m_ShadowFarZBinding;
-        private string                          m_Name;
         
 		/// <summary>
 		/// Makes the shadow buffers
@@ -229,6 +199,8 @@ namespace Rb.Rendering
 				Rendering.Renderer.Inst.ClearColour( System.Drawing.Color.Black );
 				Rendering.Renderer.Inst.ClearDepth( 1.0f );
 
+                //  Set the global technique to the override technique (this forces all objects to be rendered using the
+                //  override technique, unlesss they support a valid substitute technique), and render away...
 			    context.GlobalTechnique = ms_OverrideTechnique;
 
                 renderable.Render( context );

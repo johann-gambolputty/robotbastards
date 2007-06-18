@@ -5,12 +5,12 @@ namespace Rb.Rendering.OpenGl.Cg
 	/// <summary>
 	/// Implements a RenderPass object using a CGpass
 	/// </summary>
-	public class CgRenderPass : RenderPass
+	public class CgPass : Pass
 	{
 		/// <summary>
 		/// Sets the CGpass handle
 		/// </summary>
-		public CgRenderPass( IntPtr passHandle )
+		public CgPass( IntPtr passHandle )
 		{
 			m_Pass = passHandle;
 		}

@@ -13,6 +13,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public OpenGlMesh( )
 		{
+            m_RenderMesh = new DelegateRenderable( RenderMesh );
 		}
 
 		#region	Group setup
@@ -76,41 +77,33 @@ namespace Rb.Rendering.OpenGl
 
 		#endregion
 
-		/*
 		#region	Mesh rendering properties
 
 		/// <summary>
 		/// The mesh render effect
 		/// </summary>
-		public RenderEffect	Effect
+		public IEffect Effect
 		{
-			get
-			{
-				return m_Technique.Effect;
-			}
-			set
-			{
-				m_Technique.Effect = value;
-			}
+			get { return m_Technique.Effect; }
+			set { m_Technique.Effect = value; }
 		}
 
 		/// <summary>
 		/// The selected render technique's name
 		/// </summary>
-		public string		AppliedTechniqueName
+		public string CurrentTechniqueName
 		{
 			get
 			{
-				return ( m_Technique.Technique == null ) ? string.Empty : m_Technique.Technique.Name;
+			    return m_Technique.Technique == null ? string.Empty : m_Technique.Technique.Name;
 			}
 			set
 			{
-				m_Technique.SelectTechnique( value );
+                m_Technique.Select( value );
 			}
 		}
 
 		#endregion
-		 */
 		
 		#region IRenderable Members
 
@@ -119,15 +112,13 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
         public void Render( IRenderContext context )
 		{
-			//	TODO: AP: ...
-			//context.RenderInContext( m_Technique, this );
-			//m_Technique.Apply( context, new TechniqueRenderDelegate( RenderMesh ) );
+            context.ApplyTechnique( m_Technique.Technique, m_RenderMesh );
 		}
 
 		/// <summary>
 		/// Renders the mesh
 		/// </summary>
-		private void RenderMesh( )
+		private void RenderMesh( IRenderContext context )
 		{
 			for ( int textureIndex = 0; textureIndex < m_NumTextures; ++textureIndex )
 			{
@@ -158,31 +149,26 @@ namespace Rb.Rendering.OpenGl
 
 		#endregion
 
-		#region INamedObject Members
+		#region INamed Members
 
 		/// <summary>
 		/// The name of this mesh
 		/// </summary>
 		public string Name
 		{
-			get
-			{
-				return m_Name;
-			}
-			set
-			{
-				m_Name = value;
-			}
+			get { return m_Name; }
+			set { m_Name = value; }
 		}
 
 		#endregion	
 
 		#region	Private stuff
 
+        private DelegateRenderable          m_RenderMesh;
 		private OpenGlIndexedGroup[]		m_Groups;
 		private OpenGlVertexBuffer[]		m_VertexBuffers;
 		private string						m_Name;
-		private ITechnique					m_Technique;
+        private TechniqueSelector           m_Technique = new TechniqueSelector( );
 		private OpenGlTextureSampler2d[]	m_Textures = new OpenGlTextureSampler2d[ 8 ];
 		private int							m_NumTextures;
 

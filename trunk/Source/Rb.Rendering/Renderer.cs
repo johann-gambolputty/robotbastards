@@ -19,9 +19,6 @@ namespace Rb.Rendering
 		{
 			System.Diagnostics.Trace.Assert( ms_Singleton == null, "Only one Renderer object is allowed" );
 			ms_Singleton = this;
-
-			//	Add a default renderstate
-			PushRenderState( RenderFactory.Inst.NewRenderState( ) );
 		}
 
 		/// <summary>
@@ -49,9 +46,15 @@ namespace Rb.Rendering
 
 		#endregion
 
-		#region	Rendering context
+        #region Setup
 
-		//	TODO: I really don't like this stuff being here - it would be far better to have a RenderContext object that is passed around in ISceneRenderable.Render(),
+        //  TODO: Add first setup all to push first render state
+
+        #endregion
+
+        #region	Rendering context
+
+        //	TODO: I really don't like this stuff being here - it would be far better to have a RenderContext object that is passed around in ISceneRenderable.Render(),
 		//	but that breaks with the design of the rest of the renderer (an opengl-style state machine with all state encapsulated by the Renderer)
 
 		/*

@@ -11,34 +11,60 @@ namespace Rb.Rendering
 	{
 		#region IRenderContext Members
 
+        /// <summary>
+        /// Sets or gets the global technique
+        /// </summary>
 		public ITechnique GlobalTechnique
 		{
-			get
-			{
-				throw new Exception( "The method or operation is not implemented." );
-			}
-			set
-			{
-				throw new Exception( "The method or operation is not implemented." );
-			}
+			get { return m_GlobalTechnique; }
+			set { m_GlobalTechnique = value; }
 		}
 
-		public void RenderInContext( ITechnique technique, IRenderable renderable )
+
+        /// <summary>
+        /// Renders a renderable object using a given technique
+        /// </summary>
+		public void ApplyTechnique( ITechnique technique, IRenderable renderable )
 		{
-			if ( m_GlobalTechnique != null )
+			if ( GlobalTechnique != null )
 			{
+                if ( technique != null )
+			    {
+                    if ( technique.Effect != null )
+                    {
+                        //  GlobalTechnique and technique exist. technique is part of an effect group. Apply a substitute to GlobalTechnique
+                        technique.Effect.SubstituteTechnique( GlobalTechnique ).Apply( this, renderable );
+                    }
+                    else if ( technique.IsSubstituteFor( GlobalTechnique ) )
+                    {
+                        //  GlobalTechnique and technique exist. technique is a substitute for GlobalTechnique. Apply technique
+                        technique.Apply( this, renderable );
+                    }
+                    else
+                    {
+                        //  GlobalTechnique and technique exist. technique is not a substitute for GlobalTechnique. Apply GlobalTechnique
+                        GlobalTechnique.Apply( this, renderable );
+                    }
+			    }
+                else
+                {
+                    //  GlobalTechnique exists, technique was null. Apply GlobalTechnique
+                    GlobalTechnique.Apply( this, renderable );
+                }
 			}
-			else
+			else if ( technique != null )
 			{
-				if ( technique != null )
-				{
-					technique.Apply( renderable.Render );
-				}
+                //  GlobalTechnique doesn't exist, technique does. Apply technique
+                technique.Apply( this, renderable );
+			}
+            else
+			{
+                //  Neither GlobalTechnique or technique exist. Render object directly
+			    renderable.Render( this );
 			}
 		}
 
 		#endregion
-
 
 		#region Private stuff
 

@@ -30,6 +30,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Tao.OpenGl, Version=2.1.0.4, Culture=neutral, PublicKeyToken=1ca010269a4501ef, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -41,7 +42,6 @@
     <Compile Include="AnimationControl.cs" />
     <Compile Include="AnimationLayer.cs" />
     <Compile Include="AnimationSet.cs" />
-    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="Mesh.cs" />
     <Compile Include="Model.cs" />
@@ -56,6 +56,10 @@
     <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Log\Rb.Log.csproj">
+      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
+      <Name>Rb.Log</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rb.Rendering.OpenGl\Rb.Rendering.OpenGl.csproj">
       <Project>{19DCB365-3040-4431-86E9-29183FA34EF7}</Project>
