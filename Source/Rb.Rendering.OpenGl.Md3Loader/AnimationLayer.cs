@@ -1,10 +1,10 @@
-using System;
 using Rb.Animation;
+using Rb.Core.Maths;
 
 namespace Rb.Rendering.OpenGl.Md3Loader
 {
 	/// <summary>
-	/// Summary description for AnimationLayer.
+	/// MD3 animation layer.
 	/// </summary>
 	public class AnimationLayer : IAnimationLayer
 	{
@@ -13,7 +13,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		/// <param name="set">The set of animations that this layer can use</param>
+        /// <param name="layerAnimations">The set of animations that this layer can use</param>
+        /// <param name="part">The body part associated with this layer</param>
 		public AnimationLayer( AnimationSet layerAnimations, ModelPart part )
 		{
 			m_Animations = layerAnimations;
@@ -104,7 +105,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				if ( m_CurrentAnimation.LoopingFrames > 0 )
 				{
 					//	Looping animation - keep playing
-					m_CurrentAnimationFrame = Rb.Maths.Utils.Wrap( m_CurrentAnimationFrame + 1, m_CurrentAnimation.FirstFrame, m_CurrentAnimation.LastFrame - 1 );
+					m_CurrentAnimationFrame = Utils.Wrap( m_CurrentAnimationFrame + 1, m_CurrentAnimation.FirstFrame, m_CurrentAnimation.LastFrame - 1 );
 					return true;
 				}
 				++m_CurrentAnimationFrame;

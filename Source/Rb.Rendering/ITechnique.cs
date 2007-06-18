@@ -8,13 +8,13 @@ namespace Rb.Rendering
     public interface ITechnique : INamed
     {
 		/// <summary>
-		/// Gets the effect that this technique belongs to
+		/// Access to the effect that this technique belongs to
 		/// </summary>
-		IShader Effect
-		{
-			get;
-		}
-
+        IEffect Effect
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Applies this technique when rendering the specified object

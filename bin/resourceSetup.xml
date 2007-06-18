@@ -13,6 +13,7 @@
 		<loader type="RbEngine.Components.XmlLoader"/>
     -->
     <loader type="Rb.ComponentXmlLoader.Loader" assembly="Rb.ComponentXmlLoader"/>
+    <loader type="Rb.Rendering.OpenGl.Md3Loader.Loader" assembly="Rb.Rendering.OpenGl.Md3Loader"/>
 	</loaders>
 </resourceManager>
 

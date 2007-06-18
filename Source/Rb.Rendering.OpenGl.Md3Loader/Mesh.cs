@@ -278,7 +278,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// The mesh render effect
 		/// </summary>
-		public RenderEffect	Effect
+		public IEffect	Effect
 		{
 			get
 			{
@@ -293,7 +293,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// The selected render technique's name
 		/// </summary>
-		public string		AppliedTechniqueName
+		public string		CurrentTechniqueName
 		{
 			get
 			{
@@ -302,36 +302,33 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			set
 			{
 				m_TextureParameter = null;
-				if ( m_Technique.SelectTechnique( value ) )
+
+                m_Technique.Select( value );
+
+				//	Set up the shader parameter
+				if ( m_Technique.Effect != null )
 				{
-					//	Set up the shader parameter
-					if ( m_Technique.Effect != null )
-					{
-						//	TODO: Hardcoded sampler (unnecessary now - first texture is automatically bound to named sampler "Texture0")
-						m_TextureParameter = m_Technique.Effect.GetParameter( "Sampler" );
-					}
+					//	TODO: AP: Hardcoded sampler (unnecessary now - first texture is automatically bound to named sampler "Texture0")
+					m_TextureParameter = m_Technique.Effect.GetParameter( "Sampler" );
 				}
 			}
 		}
 
 		#endregion
 		
-		#region IRender Members
+		#region IRenderable Members
 
 		/// <summary>
 		/// A bodge to allow technique application to work with individual surfaces
 		/// </summary>
-		private class SurfaceRenderer
+		private class SurfaceRenderer : IRenderable
 		{
 			/// <summary>
 			/// Sets the surface to render
 			/// </summary>
 			public Surface	CurrentSurface
 			{
-				set
-				{
-					m_Surface = value;
-				}
+				set { m_Surface = value; }
 			}
 
 			/// <summary>
@@ -339,17 +336,24 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			/// </summary>
 			public SurfaceFrame	CurrentFrame
 			{
-				set
-				{
-					m_Frame = value;
-				}
-			}
+				set { m_Frame = value; }
+            }
 
-			/// <summary>
-			/// Renders the current surface and surface frame
-			/// </summary>
-			public void Render( )
-			{
+            #region Private stuff
+
+            private Surface			m_Surface;
+			private SurfaceFrame	m_Frame;
+
+            #endregion
+
+            #region IRenderable Members
+
+            /// <summary>
+            /// Renders this surface
+            /// </summary>
+            /// <param name="context"></param>
+            public void Render( IRenderContext context )
+            {
 				//	Apply all vertex buffers in the current frame
 				int numVbs = m_Frame.VertexBuffers.Length;
 				for ( int vbIndex = 0; vbIndex < numVbs; ++vbIndex )
@@ -376,17 +380,15 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 					m_Frame.VertexBuffers[ vbIndex ].End( );
 				}
 
-			}
+            }
 
-			private Surface			m_Surface;
-			private SurfaceFrame	m_Frame;
-		}
+            #endregion
+        }
 
 		/// <summary>
-		/// Renders thi
+		/// Renders this mesh using the given context and animation setup
 		/// </summary>
-		/// <param name="layers"></param>
-		public void Render( AnimationLayer[] layers )
+		public void Render( IRenderContext context, AnimationLayer[] layers )
 		{
 			int currentFrame = DefaultFrame;
 			if ( layers != null )
@@ -412,7 +414,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				m_SurfaceRenderer.CurrentSurface	= curSurface;
 				m_SurfaceRenderer.CurrentFrame		= curSurface.SurfaceFrames[ currentFrame ];
 
-				m_Technique.Apply( new TechniqueRenderDelegate( m_SurfaceRenderer.Render ) );
+				m_Technique.Apply( context, m_SurfaceRenderer );
 			}
 
 			if ( m_NestedMesh != null )
@@ -426,7 +428,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 					Renderer.Inst.PushTransform( Transform.LocalToWorld, transform );
 				}
 
-				m_NestedMesh.Render( );
+				m_NestedMesh.Render( context );
 
 				if ( m_TransformTagIndex != -1 )
 				{
@@ -443,9 +445,9 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Renders this mesh
 		/// </summary>
-		public void Render( )
+		public void Render( IRenderContext context )
 		{
-			Render( null );
+			Render( context, null );
 		}
 
 		#endregion
@@ -473,7 +475,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 		private string					m_Name;
 		private ModelPart				m_Part;
-		private ITechnique      		m_Technique = new ITechnique( );
+		private TechniqueSelector      	m_Technique = new TechniqueSelector( );
 		private string[]				m_TagNames;
 		private FrameInfo[]				m_FrameInfo;
 		private int						m_TransformTagIndex = -1;

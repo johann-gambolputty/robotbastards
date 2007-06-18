@@ -1,16 +1,19 @@
-using System;
 
 namespace Rb.Rendering.OpenGl
 {
 	/// <summary>
 	/// Implementation of RenderFactory
 	/// </summary>
-	public abstract class OpenGlRenderFactory : Rb.Rendering.RenderFactory
+	public abstract class OpenGlRenderFactory : RenderFactory
 	{
-		/// <summary>
+        public OpenGlRenderFactory()
+        {
+        }
+
+	    /// <summary>
 		/// Creates a new RenderState object
 		/// </summary>
-		public override Rb.Rendering.RenderState NewRenderState( )
+		public override RenderState NewRenderState( )
 		{
 			return new OpenGlRenderState( );
 		}
@@ -18,7 +21,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Creates a new Material object
 		/// </summary>
-		public override Rb.Rendering.Material NewMaterial( )
+		public override Material NewMaterial( )
 		{
 			return new OpenGlMaterial( );
 		}
@@ -27,7 +30,7 @@ namespace Rb.Rendering.OpenGl
 		/// Creates a new Texture2d object
 		/// </summary>
 		/// <returns></returns>
-		public override Rb.Rendering.Texture2d NewTexture2d( )
+		public override Texture2d NewTexture2d( )
 		{
 			return new OpenGlTexture2d( );
 		}
@@ -35,7 +38,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Creates a new TextureSampler2d object
 		/// </summary>
-		public override Rb.Rendering.TextureSampler2d NewTextureSampler2d( )
+		public override TextureSampler2d NewTextureSampler2d( )
 		{
 			return new OpenGlTextureSampler2d( );
 		}
@@ -43,7 +46,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Creates a new RenderFont object
 		/// </summary>
-		public override Rb.Rendering.RenderFont NewFont( )
+		public override RenderFont NewFont( )
 		{
 			return new OpenGlRenderFont( );
 		}
@@ -51,7 +54,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Creates a new RenderTarget object
 		/// </summary>
-		public override Rb.Rendering.RenderTarget NewRenderTarget( )
+		public override RenderTarget NewRenderTarget( )
 		{
 			return new OpenGlRenderTarget( );
 		}
@@ -59,7 +62,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Creates a new Renderer object
 		/// </summary>
-		protected override Rb.Rendering.Renderer NewRenderer( )
+		protected override Renderer NewRenderer( )
 		{
 			return new OpenGlRenderer( );
 		}
@@ -67,7 +70,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Creates a new ShapeRenderer object
 		/// </summary>
-		protected override Rb.Rendering.ShapeRenderer NewShapeRenderer( )
+		protected override ShapeRenderer NewShapeRenderer( )
 		{
 			return new OpenGlShapeRenderer( );
 		}

@@ -1,6 +1,7 @@
 using System;
 using Rb.Core.Components;
 using Rb.Core.Resources;
+using Rb.Rendering;
 
 namespace Rb.World.Entities
 {
@@ -41,6 +42,19 @@ namespace Rb.World.Entities
 
         #endregion
 
+        #region Graphics
+
+        /// <summary>
+        /// Entity graphical representation
+        /// </summary>
+        public IRenderable Graphics
+        {
+            get { return m_Graphics; }
+            set { m_Graphics = value; }
+        }
+
+        #endregion
+
         #region ISceneObject Members
 
         /// <summary>
@@ -56,6 +70,12 @@ namespace Rb.World.Entities
         #region Protected stuff
 
         protected Scene m_Scene;
+
+        #endregion
+
+        #region Private stuff
+
+        private IRenderable m_Graphics;
 
         #endregion
     }

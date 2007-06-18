@@ -1,6 +1,6 @@
-using System;
-using System.Collections;
+using System.Collections.Generic;
 using Rb.Animation;
+using Rb.Core.Components;
 
 namespace Rb.Rendering.OpenGl.Md3Loader
 {
@@ -12,7 +12,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Adds an animation layer to the control
 		/// </summary>
-		public void				AddLayer( AnimationLayer layer )
+		public void AddLayer( AnimationLayer layer )
 		{
 			m_Layers.Add( layer );
 		}
@@ -20,18 +20,18 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Gets an animation layer
 		/// </summary>
-		public IAnimationLayer	GetLayer( string name )
+		public IAnimationLayer GetLayer( string name )
 		{
 			for ( int layerIndex = 0; layerIndex < m_Layers.Count; ++layerIndex )
 			{
-				if ( ( ( Rb.Components.INamedObject )m_Layers[ layerIndex ] ).Name == name )
+				if ( ( ( INamed )m_Layers[ layerIndex ] ).Name == name )
 				{
-					return ( IAnimationLayer )m_Layers[ layerIndex ];
+					return m_Layers[ layerIndex ];
 				}
 			}
 			return null;
 		}
 
-		private ArrayList		m_Layers = new ArrayList( );
+		private List< AnimationLayer > m_Layers = new List< AnimationLayer >( );
 	}
 }

@@ -7,12 +7,12 @@ namespace Rb.Rendering
 	/// <summary>
 	/// A render pass sets up the state of the renderer for rendering
 	/// </summary>
-	public class RenderPass : IPass
+	public class Pass : IPass
 	{
 		/// <summary>
 		/// Default constructor (no child passes)
 		/// </summary>
-		public RenderPass( )
+		public Pass( )
 		{
 		}
 
@@ -20,7 +20,7 @@ namespace Rb.Rendering
 		/// Setup constructor
 		/// </summary>
 		/// <param name="passes">Passes to add to this render pass</param>
-		public RenderPass( params IPass[] passes )
+		public Pass( params IPass[] passes )
 		{
 			Add( passes );
 		}
@@ -29,7 +29,7 @@ namespace Rb.Rendering
         /// Adds all enumerable IPass objects in passes
         /// </summary>
         /// <param name="passes">Passes enumeration</param>
-        public RenderPass( IEnumerable< IPass > passes )
+        public Pass( IEnumerable< IPass > passes )
         {
             Add( passes );
         }

@@ -7,7 +7,7 @@ namespace Rb.Rendering.OpenGl.Windows
 	/// <summary>
 	/// Windows implementation of OpenGlRenderFactory
 	/// </summary>
-	public class RenderFactory : Rb.Rendering.OpenGl.OpenGlRenderFactory
+	public class RenderFactory : OpenGlRenderFactory
 	{
 		/// <summary>
 		/// Display setup creator

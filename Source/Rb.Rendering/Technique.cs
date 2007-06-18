@@ -6,14 +6,14 @@ namespace Rb.Rendering
 	/// <summary>
 	/// Stores a collection of RenderPass objects. For each pass, the technique applies it, then renders geometry using a callback
 	/// </summary>
-	public class RenderTechnique : Node, ITechnique
-	{
-		#region	Setup
+	public class Technique : Node, ITechnique
+    {
+        #region	Setup
 
-		/// <summary>
+        /// <summary>
 		/// Sets the name of this technique to an empty string
 		/// </summary>
-		public RenderTechnique( )
+		public Technique( )
 		{
 			m_Name = "";
 		}
@@ -21,7 +21,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Sets up the name of this technique
 		/// </summary>
-		public RenderTechnique( string name )
+		public Technique( string name )
 		{
 			m_Name = name;
 		}
@@ -31,7 +31,7 @@ namespace Rb.Rendering
 		/// </summary>
 		/// <param name="name">Name of this technique</param>
 		/// <param name="passes">Parameter array of passes to Add() to the technique</param>
-		public RenderTechnique( string name, params RenderPass[] passes )
+		public Technique( string name, params Pass[] passes )
 		{
 			m_Name = name;
 
@@ -45,18 +45,18 @@ namespace Rb.Rendering
 		/// Adds a new render pass to this technique
 		/// </summary>
 		/// <param name="pass"> The pass to add </param>
-		public void Add( RenderPass pass )
+		public void Add( Pass pass )
 		{
 			AddChild( pass );
 		}
 
 		/// <summary>
-		/// The shader that owns this technique
+		/// The effect that owns this technique
 		/// </summary>
-		public IShader Shader
+		public IEffect Effect
 		{
-			get { return m_Shader; }
-			set { m_Shader = value; }
+			get { return m_Effect; }
+			set { m_Effect = value; }
 		}
 
 		#endregion
@@ -84,7 +84,7 @@ namespace Rb.Rendering
 
 			if ( Children.Count > 0 )
 			{
-				foreach ( RenderPass pass in Children )
+				foreach ( Pass pass in Children )
 				{
 					pass.Begin( );
 
@@ -140,8 +140,8 @@ namespace Rb.Rendering
 
 		#region	Private stuff
 
-		private IShader			m_Shader;
-		private string			m_Name;
+        private IEffect m_Effect;
+		private string  m_Name;
 
 		#endregion
 	}

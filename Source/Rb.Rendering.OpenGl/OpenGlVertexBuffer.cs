@@ -81,10 +81,7 @@ namespace Rb.Rendering.OpenGl
 			m_ElementType	= Gl.GL_FLOAT;
 
 			//	Generate a VBO
-			fixed ( int* handleMem = &m_Handle )
-			{
-				Gl.glGenBuffersARB( 1, ( IntPtr )handleMem );
-			}
+            CreateBufferHandle( );
 
 			//	Bind and fill the VBO
 			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );
@@ -99,6 +96,13 @@ namespace Rb.Rendering.OpenGl
 				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( ( 4 * numElements ) * numVertices ), subBuffer, usage );
 			}
 		}
+
+        private void CreateBufferHandle( )
+        {
+            int[] buffer = new int[ 1 ] { 0 };
+            Gl.glGenBuffersARB( 1, buffer );
+            m_Handle = buffer[ 0 ];
+        }
 
 		/// <summary>
 		/// Sets up this vertex buffer
@@ -118,10 +122,7 @@ namespace Rb.Rendering.OpenGl
 			m_ElementType	= Gl.GL_INT;
 
 			//	Generate a VBO
-			fixed ( int* handleMem = &m_Handle )
-			{
-				Gl.glGenBuffersARB( 1, ( IntPtr )handleMem );
-			}
+            CreateBufferHandle( );
 
 			//	Bind and fill the VBO
 			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );
@@ -156,14 +157,11 @@ namespace Rb.Rendering.OpenGl
 			m_ElementType	= Gl.GL_UNSIGNED_BYTE;
 
 			//	Generate a VBO
-			fixed ( int* handleMem = &m_Handle )
-			{
-				Gl.glGenBuffersARB( 1,( IntPtr )handleMem );
-			}
+            CreateBufferHandle( );
 
 			//	Bind and fill the VBO
 			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );
-			
+
 			if ( offset == 0 )
 			{
 				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( ( 1 * numElements ) * numVertices ), buffer, usage );

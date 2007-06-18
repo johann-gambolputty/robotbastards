@@ -41,7 +41,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public void Render( IRenderContext context )
 		{
-			m_Source.Render( m_Layers );
+			m_Source.Render( context, m_Layers );
 		}
 
 		#endregion
@@ -61,20 +61,12 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		#region	ISceneObject Members
 
 		/// <summary>
-		/// Invoked when this object is added to a scene
+		/// Invoked when this object is created for a given scene
 		/// </summary>
         /// <param name="scene">Scene that this object was added to</param>
-		public void	AddedToScene( Scene scene )
+		public void	SetSceneContext( Scene scene )
 		{
-			db.GetNamedClock( "UpdateClock" ).Subscribe( new Clock.TickDelegate( Update ) );
-		}
-
-		/// <summary>
-		/// Invoked when this object is removed from a scene by Scene.Remove()
-		/// </summary>
-		/// <param name="scene">Scene that this object was removed from</param>
-		public void	RemovedFromScene( Scene scene )
-		{
+            scene.GetClock( "animationClock" ).Subscribe( new Clock.TickDelegate( Update ) );
 		}
 
 		#endregion
@@ -132,7 +124,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		{
 			if ( parentObject is IMessageHub )
 			{
-				( ( IMessageHub )parentObject ).AddRecipient( typeof( Rb.Entities.MovementRequest ), new MessageRecipientDelegate( HandleMovementRequest ), ( int )MessageRecipientOrder.Last );
+				( ( IMessageHub )parentObject ).AddRecipient( typeof( Rb.World.Entities.MovementRequest ), new MessageRecipientDelegate( HandleMovementRequest ), ( int )MessageRecipientOrder.Last );
 			}
 		}
 

@@ -56,11 +56,7 @@ namespace Rb.Rendering.Windows
 		/// </summary>
 		public Display( )
 		{
-			if ( Renderer.Exists )
-			{
-				m_Setup = ( IWindowsDisplaySetup )RenderFactory.Inst.CreateDisplaySetup( );
-			}
-
+            m_Setup = ( IWindowsDisplaySetup )RenderFactory.Inst.CreateDisplaySetup( );
 			if ( m_Setup != null )
 			{
 				SetStyle( m_Setup.AddStyles, true );
