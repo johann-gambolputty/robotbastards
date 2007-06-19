@@ -42,6 +42,7 @@
     <Compile Include="Components\ComponentLoadParameters.cs" />
     <Compile Include="Components\IBuilder.cs" />
     <Compile Include="Components\IChild.cs" />
+    <Compile Include="Components\Identifiers.cs" />
     <Compile Include="Components\IInstanceBuilder.cs" />
     <Compile Include="Components\IMessageHandler.cs" />
     <Compile Include="Components\IMessageHub.cs" />
