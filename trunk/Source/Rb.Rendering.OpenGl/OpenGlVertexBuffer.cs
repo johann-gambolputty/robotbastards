@@ -62,6 +62,7 @@ namespace Rb.Rendering.OpenGl
 				return m_NumElements;
 			}
 		}
+        
 
 		/// <summary>
 		/// Sets up this vertex buffer
@@ -75,16 +76,9 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="buffer">Buffer data</param>
 		public unsafe OpenGlVertexBuffer( int numVertices, int offset, int clientState, short stride, short numElements, int usage, float[] buffer )
 		{
-			m_ClientState	= clientState;
-			m_Stride		= stride;
-			m_NumElements	= numElements;
-			m_ElementType	= Gl.GL_FLOAT;
-
-			//	Generate a VBO
-            CreateBufferHandle( );
+            SetupAndBindBuffer( clientState, stride, numElements, Gl.GL_FLOAT );
 
 			//	Bind and fill the VBO
-			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );
 			if ( offset == 0 )
 			{
 				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( ( 4 * numElements ) * numVertices ), buffer, usage );
@@ -96,13 +90,6 @@ namespace Rb.Rendering.OpenGl
 				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( ( 4 * numElements ) * numVertices ), subBuffer, usage );
 			}
 		}
-
-        private void CreateBufferHandle( )
-        {
-            int[] buffer = new int[ 1 ] { 0 };
-            Gl.glGenBuffersARB( 1, buffer );
-            m_Handle = buffer[ 0 ];
-        }
 
 		/// <summary>
 		/// Sets up this vertex buffer
@@ -116,17 +103,8 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="buffer">Buffer data</param>
 		public unsafe OpenGlVertexBuffer( int numVertices, int offset, int clientState, short stride, short numElements, int usage, int[] buffer )
 		{
-			m_ClientState	= clientState;
-			m_Stride		= stride;
-			m_NumElements	= numElements;
-			m_ElementType	= Gl.GL_INT;
+            SetupAndBindBuffer( clientState, stride, numElements, Gl.GL_INT );
 
-			//	Generate a VBO
-            CreateBufferHandle( );
-
-			//	Bind and fill the VBO
-			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );
-			
 			if ( offset == 0 )
 			{
 				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( ( 4 * numElements ) * numVertices ), buffer, usage );
@@ -151,16 +129,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="buffer">Buffer data</param>
 		public unsafe OpenGlVertexBuffer( int numVertices, int offset, int clientState, short stride, short numElements, int usage, byte[] buffer )
 		{
-			m_ClientState	= clientState;
-			m_Stride		= stride;
-			m_NumElements	= numElements;
-			m_ElementType	= Gl.GL_UNSIGNED_BYTE;
-
-			//	Generate a VBO
-            CreateBufferHandle( );
-
-			//	Bind and fill the VBO
-			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );
+            SetupAndBindBuffer( clientState, stride, numElements, Gl.GL_UNSIGNED_BYTE );
 
 			if ( offset == 0 )
 			{
@@ -216,5 +185,22 @@ namespace Rb.Rendering.OpenGl
 		private int		m_ElementType;
 		private short	m_Stride;
 		private short	m_NumElements;
+
+        /// <summary>
+        /// Sets up buffer parameters, creates the buffer, and binds it
+        /// </summary>
+        private void SetupAndBindBuffer( int clientState, short stride, short numElements, int elementType )
+        {
+            m_ClientState   = clientState;
+            m_Stride        = stride;
+            m_NumElements   = numElements;
+            m_ElementType   = elementType;
+
+            int[] buffer = new int[ 1 ] { 0 };
+            Gl.glGenBuffersARB( 1, buffer );
+            m_Handle = buffer[ 0 ];
+
+            Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );
+        }
 	}
 }
