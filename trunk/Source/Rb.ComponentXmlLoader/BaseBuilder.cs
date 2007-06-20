@@ -167,6 +167,7 @@ namespace Rb.ComponentXmlLoader
             m_Errors        = errors;
             m_Parameters    = parameters;
             m_Property      = reader.GetAttribute( "property" );
+            m_DynProperty   = reader.GetAttribute( "dynProperty" );
             m_Name          = reader.GetAttribute( "name" );
             m_Id            = reader.GetAttribute( "id" );
         }
@@ -459,6 +460,17 @@ namespace Rb.ComponentXmlLoader
             	LinkToProperty( parent, property );
             	return;
             }
+            if ( m_DynProperty != null )
+            {
+                ISupportsDynamicProperties dynPropertySupport = parent as ISupportsDynamicProperties;
+                if ( dynPropertySupport == null )
+                {
+                    string err = string.Format( "Parent \"{0}\" of type \"{1}\" does not support dynamic properties", ComponentHelpers.GetName( BuildObject ), parent.GetType( ) );
+            		throw new ApplicationException( err );
+                }
+                dynPropertySupport.Properties[ m_DynProperty ] = BuildObject;
+                return;
+            }
             
             IParent componentParent = parent as IParent;
             if ( componentParent != null )
@@ -580,6 +592,7 @@ namespace Rb.ComponentXmlLoader
         private string                  m_Name;
         private string                  m_Id;
         private string                  m_Property;
+        private string                  m_DynProperty;
         private ComponentLoadParameters m_Parameters;
         private object                  m_Object;
         private List< BaseBuilder >     m_PreLinkBuilders   = new List< BaseBuilder >( );

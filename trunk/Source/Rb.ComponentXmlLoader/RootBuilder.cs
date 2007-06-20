@@ -33,12 +33,12 @@ namespace Rb.ComponentXmlLoader
         /// </summary>
         public override void PostCreate( )
         {
+            base.PostCreate( );
             if ( m_ExternalTarget == null )
             {
                 GetBuildObject( LinkStep.PreLink );
                 GetBuildObject( LinkStep.PostLink );
             }
-			base.PostCreate( );
         }
 
         /// <summary>

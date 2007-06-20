@@ -92,6 +92,28 @@ namespace Rb.ComponentXmlLoader.Tests
         }
 
         [Test]
+        public void TestDynamicProperties( )
+        {
+            string content =
+                @"<?xml version=""1.0"" encoding=""utf-8""?>" +
+                @"<rb>" +
+                @"  <object type=""Rb.Core.Components.Component"">" +
+                @"      <int value=""10"" dynProperty=""intValue""/>" +
+                @"      <string value=""badgers"" dynProperty=""strValue""/>" +
+                @"  </object>" +
+                @"</rb>" +
+                "";
+
+            byte[] contentBytes = System.Text.Encoding.ASCII.GetBytes( content );
+
+            bool canCache;
+            object result = new Loader( ).Load( new System.IO.MemoryStream( contentBytes ), new StackFrame( 0, true ).GetFileName( ), out canCache );
+        
+            Assert.AreEqual( ( ( ISupportsDynamicProperties )result ).Properties[ "intValue" ], 10 );
+            Assert.AreEqual( ( ( ISupportsDynamicProperties )result ).Properties[ "strValue" ], "badgers" );
+        }
+
+        [Test]
         public void TestSimple( )
         {
             Guid id = new Guid( GuidString );

@@ -1,4 +1,3 @@
-using System;
 using System.Xml;
 
 using Rb.Core.Resources;
@@ -18,6 +17,7 @@ namespace Rb.ComponentXmlLoader
         /// <param name="parameters">Load parameters</param>
         /// <param name="errors">Error collection</param>
         /// <param name="reader">XML reader positioned at the element that created this builder</param>
+        /// <param name="parentBuilder">Parent builder</param>
         public ResourceBuilder( ComponentLoadParameters parameters, ErrorCollection errors, XmlReader reader, BaseBuilder parentBuilder ) :
             base( parameters, errors, reader, parentBuilder )
         {
