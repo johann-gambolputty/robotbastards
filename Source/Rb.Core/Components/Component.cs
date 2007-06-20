@@ -7,7 +7,7 @@ namespace Rb.Core.Components
 	/// <summary>
 	/// Component is a handy implementation of a bunch of component interfaces
 	/// </summary>
-	public class Component : Node, IUnique, IMessageHandler, IMessageHub
+	public class Component : Node, IUnique, IMessageHandler, IMessageHub, ISupportsDynamicProperties
 	{
 		#region IUnique Members
 
@@ -84,12 +84,33 @@ namespace Rb.Core.Components
 
 		#endregion
 
+        #region ISupportsDynamicProperties Members
+
+        /// <summary>
+        /// Gets dynamic properties associated with this object
+        /// </summary>
+        public IDynamicProperties Properties
+        {
+            get
+            {
+                if ( m_DynProperties == null )
+                {
+                    m_DynProperties = new DynamicProperties( );
+                }
+                return m_DynProperties;
+            }
+        }
+
+        #endregion
+        
 		#region Private stuff
 
 		private Guid			    m_Id = Guid.Empty;
 		private Utils.DispatchMap	m_MessageMap;
 		private MessageHub		    m_MessageHub;
+        private IDynamicProperties  m_DynProperties;
 
 		#endregion
-	}
+
+    }
 }

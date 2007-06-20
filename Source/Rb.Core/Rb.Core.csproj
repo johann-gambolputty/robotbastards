@@ -40,13 +40,17 @@
     <Compile Include="Components\Component.cs" />
     <Compile Include="Components\ComponentHelpers.cs" />
     <Compile Include="Components\ComponentLoadParameters.cs" />
+    <Compile Include="Components\DynamicProperties.cs" />
+    <Compile Include="Components\DynamicProperty.cs" />
     <Compile Include="Components\IBuilder.cs" />
     <Compile Include="Components\IChild.cs" />
+    <Compile Include="Components\IDynamicProperties.cs" />
     <Compile Include="Components\IInstanceBuilder.cs" />
     <Compile Include="Components\IMessageHandler.cs" />
     <Compile Include="Components\IMessageHub.cs" />
     <Compile Include="Components\INamed.cs" />
     <Compile Include="Components\IParent.cs" />
+    <Compile Include="Components\ISupportsDynamicProperties.cs" />
     <Compile Include="Components\IUnique.cs" />
     <Compile Include="Components\Message.cs" />
     <Compile Include="Components\MessageHub.cs" />
