@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
 using System.Xml;
+using System.Reflection;
 
 using Rb.Core.Components;
 using Rb.Core.Utils;
@@ -12,7 +11,7 @@ namespace Rb.ComponentXmlLoader
     /// <summary>
     /// Creates an object of a given type
     /// </summary>
-    internal class ObjectBuilder : TypeBuilder
+    internal class ObjectBuilder : BaseBuilder
     {
         /// <summary>
         /// Setup constructor
@@ -22,8 +21,39 @@ namespace Rb.ComponentXmlLoader
         /// <param name="reader">XML reader positioned at the element that created this object</param>
         /// <param name="parentBuilder">Parent builder</param>
         public ObjectBuilder( ComponentLoadParameters parameters, ErrorCollection errors, XmlReader reader, BaseBuilder parentBuilder ) :
-            base( parameters, errors, reader, parentBuilder, "type" )
-        {
+            base( parameters, errors, reader, parentBuilder )
+		{
+			//  Retrieve type name and optional assembly name from the element
+			string typeName = reader.GetAttribute( "type" );
+			string assemblyName = reader.GetAttribute( "assembly" );
+
+			if ( typeName == null )
+			{
+				throw new ApplicationException( string.Format( "Element \"{0}\" requires a \"type\" attribute", reader.Name ) );
+			}
+
+			Type objectType = null;
+			if ( assemblyName == null )
+			{
+				//  Get the object type from the currently loaded set of assemblies
+				objectType = AppDomainUtils.FindType( typeName );
+				if ( objectType == null )
+				{
+					throw new ApplicationException( string.Format( "Failed to find type \"{0}\" in app domain", typeName ) );
+				}
+			}
+			else
+			{
+				//  Get the object type from the specified assembly
+				Assembly assembly = AppDomain.CurrentDomain.Load( assemblyName );
+				objectType = assembly.GetType( typeName );
+				if ( objectType == null )
+				{
+					throw new ApplicationException( string.Format( "Failed to find type \"{0}\" in assembly \"{1}\"", typeName, assemblyName ) );
+				}
+			}
+
+			m_BuildType = objectType;
         }
 
 		/// <summary>
@@ -33,7 +63,7 @@ namespace Rb.ComponentXmlLoader
         {
             if ( m_ParamBuilders.Count == 0 )
             {
-                BuildObject = Parameters.Builder.CreateInstance( ( Type )BuildObject );
+				BuildObject = Parameters.Builder.CreateInstance( m_BuildType );
             }
             else
             {
@@ -55,7 +85,7 @@ namespace Rb.ComponentXmlLoader
                     ++paramIndex;
                 }
 
-                BuildObject = Parameters.Builder.CreateInstance( ( Type )BuildObject, parameters );
+				BuildObject = Parameters.Builder.CreateInstance( m_BuildType, parameters );
             }
 
             base.PostCreate( );
@@ -78,6 +108,7 @@ namespace Rb.ComponentXmlLoader
 			}
 		}
 
-        private List< BaseBuilder > m_ParamBuilders = new List< BaseBuilder >( );
+		private Type				m_BuildType;
+        private List< BaseBuilder >	m_ParamBuilders = new List< BaseBuilder >( );
     }
 }

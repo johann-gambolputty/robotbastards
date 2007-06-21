@@ -28,9 +28,7 @@
     </parameters>
   </method>
 
-  <object type="Rb.World.Entities.Entity3d">
-
-    <guid value="{BE726C7E-26EA-433e-974A-B57396EE5FB5}" property="Id"/>
+  <object type="Rb.World.Entities.Entity3d" id="{BE726C7E-26EA-433e-974A-B57396EE5FB5}">
 
     <point3 x="20" y="0.5" z="0" property="NextPosition"/>
 

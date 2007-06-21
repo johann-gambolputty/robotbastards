@@ -39,11 +39,11 @@ namespace Rb.TestApp
             Scene scene = new Scene( );
 
             //  Set the global scene builder (erk...)
-            Builder.Instance = new SceneBuilder(scene, Builder.Instance );
+            Builder.Instance = new SceneBuilder( scene, Builder.Instance );
 
             try
             {
-                ComponentLoadParameters loadParams = new ComponentLoadParameters( scene );
+                ComponentLoadParameters loadParams = new ComponentLoadParameters( scene.Objects, scene );
                 ResourceManager.Instance.Load( "scene0.components.xml", loadParams );
             }
             catch ( Exception ex )
