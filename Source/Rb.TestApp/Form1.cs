@@ -15,6 +15,9 @@ namespace Rb.TestApp
     {
         public Form1()
 		{
+        	//LogViewer viewer = new LogViewer( );
+			//viewer.Show( this );
+
 			AppLog.Info( "Beginning Rb.TestApp at {0}", DateTime.Now );
 
 			string renderAssembly = ConfigurationManager.AppSettings[ "renderAssembly" ];
@@ -27,7 +30,7 @@ namespace Rb.TestApp
             InitializeComponent();
 		}
 
-		private void Form1_Load ( object sender, EventArgs e )
+		private void Form1_Load( object sender, EventArgs e )
 		{
 			string resourceSetupPath = ConfigurationManager.AppSettings[ "resourceSetupPath" ];
 			if ( resourceSetupPath == null )

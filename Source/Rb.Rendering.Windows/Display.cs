@@ -56,11 +56,14 @@ namespace Rb.Rendering.Windows
 		/// </summary>
 		public Display( )
 		{
-            m_Setup = ( IWindowsDisplaySetup )RenderFactory.Inst.CreateDisplaySetup( );
-			if ( m_Setup != null )
+			if ( RenderFactory.Inst != null )
 			{
-				SetStyle( m_Setup.AddStyles, true );
-				SetStyle( m_Setup.RemoveStyles, false );
+				m_Setup = ( IWindowsDisplaySetup )RenderFactory.Inst.CreateDisplaySetup( );
+				if ( m_Setup != null )
+				{
+					SetStyle( m_Setup.AddStyles, true );
+					SetStyle( m_Setup.RemoveStyles, false );
+				}
 			}
 
 			InitializeComponent( );
@@ -69,6 +72,7 @@ namespace Rb.Rendering.Windows
 
 			if ( ( m_ContinuousRendering ) && ( !DesignMode ) )
 			{
+				//	TODO: AP: Hacky rendering timer
 				m_RenderingTimer			= new Timer( );
 				m_RenderingTimer.Tick		+= new EventHandler( RenderTick );
 				m_RenderingTimer.Interval	= ( int )( 100.0f / 30.0f );
@@ -142,6 +146,7 @@ namespace Rb.Rendering.Windows
 		/// </summary>
 		protected virtual void Draw( )
 		{
+			Renderer.Inst.ClearDepth( 1.0f );
 			Renderer.Inst.ClearVerticalGradient( Color.LightSkyBlue, Color.Black );
 		}
 

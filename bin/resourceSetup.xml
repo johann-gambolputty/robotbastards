@@ -6,12 +6,6 @@
 		</provider>
 	</providers>
 	<loaders>
-    <!--
-		<loader type="RbCollada.Loader"/>
-		<loader type="RbOpenGlRendering.RbCg.CgRenderEffectLoader"/>
-		<loader type="RbOpenGlMd3Loader.Loader" assembly="RbOpenGlMd3Loader"/>
-		<loader type="RbEngine.Components.XmlLoader"/>
-    -->
     <loader type="Rb.ComponentXmlLoader.Loader" assembly="Rb.ComponentXmlLoader"/>
     <loader type="Rb.Rendering.OpenGl.Md3Loader.Loader" assembly="Rb.Rendering.OpenGl.Md3Loader"/>
 	</loaders>
