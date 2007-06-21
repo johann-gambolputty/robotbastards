@@ -9,10 +9,6 @@ namespace Rb.Core.Components
 	/// </summary>
 	public class ObjectMap : IObjectMap
 	{
-
-		Dictionary< Guid, object > m_All = new Dictionary< Guid, object >( );
-		Dictionary< Type, Dictionary< Guid, object > > m_Types = new Dictionary< Type, Dictionary< Guid, object > >( );
-
 		#region IObjectMap Members
 
 		/// <summary>
@@ -35,11 +31,9 @@ namespace Rb.Core.Components
 		public void Add( Guid key, object value )
 		{
 			m_All[ key ] = value;
-			ComponentLog.Info( "ObjectMap: Adding object, type \"{0}\", key \"{1}\"", value.GetType( ), key );
+			ComponentLog.Verbose( "ObjectMap: Adding object, type \"{0}\", key \"{1}\"", value.GetType( ), key );
 			for ( Type baseType = value.GetType( ); baseType != typeof( object ); baseType = baseType.BaseType )
 			{
-				ComponentLog.Verbose( "ObjectMap: Adding object to type map \"{0}\"", baseType );
-
 				GetTypeMap( baseType )[ key ] = value;
 			}
 
@@ -58,7 +52,7 @@ namespace Rb.Core.Components
 
 		public bool Remove( Guid key )
 		{
-			ComponentLog.Verbose( "Removing object \"{0}\"", key );
+			ComponentLog.Verbose( "ObjectMap: Removing object \"{0}\"", key );
 			object obj;
 			if ( !m_All.TryGetValue( key, out obj ) )
 			{
@@ -69,7 +63,6 @@ namespace Rb.Core.Components
 
 			for ( Type baseType = obj.GetType( ); baseType != typeof( object ); baseType = baseType.BaseType )
 			{
-				ComponentLog.Verbose( "ObjectMap: Removing object from type map \"{0}\"", baseType );
 				m_Types[ baseType ].Remove( key );
 			}
 
@@ -161,6 +154,9 @@ namespace Rb.Core.Components
 		#endregion
 
 		#region Private stuff
+
+		Dictionary<Guid, object> m_All = new Dictionary<Guid, object>( );
+		Dictionary<Type, Dictionary<Guid, object>> m_Types = new Dictionary<Type, Dictionary<Guid, object>>( );
 
 		private void AddInterfaces( Guid key, object obj, Type type )
 		{

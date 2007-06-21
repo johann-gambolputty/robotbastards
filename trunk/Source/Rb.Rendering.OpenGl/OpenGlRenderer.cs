@@ -33,13 +33,14 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public unsafe static void LoadExtensions( )
         {	
-            //	Add a default renderstate
-			Inst.PushRenderState( RenderFactory.Inst.NewRenderState( ) );
-
             string extensions = Gl.glGetString( Gl.GL_EXTENSIONS );
             GraphicsLog.Info( extensions.Replace( ' ', '\n' ) );
 
             Gl.glHint( Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST );
+
+			//	Add a default renderstate
+			//	TODO: AP: Causes display corruption if I do this
+			//Inst.PushRenderState( RenderFactory.Inst.NewRenderState( ) );
 		}
 
 		#endregion
