@@ -49,6 +49,7 @@
     <Compile Include="Components\IMessageHandler.cs" />
     <Compile Include="Components\IMessageHub.cs" />
     <Compile Include="Components\INamed.cs" />
+    <Compile Include="Components\IObjectMap.cs" />
     <Compile Include="Components\IParent.cs" />
     <Compile Include="Components\ISupportsDynamicProperties.cs" />
     <Compile Include="Components\IUnique.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Components\MessageHub.cs" />
     <Compile Include="Components\MessageRecipientChain.cs" />
     <Compile Include="Components\Node.cs" />
+    <Compile Include="Components\ObjectMap.cs" />
     <Compile Include="Logs.cs" />
     <Compile Include="Maths\BigPoint3.cs" />
     <Compile Include="Maths\CatmullRomSpline.cs" />

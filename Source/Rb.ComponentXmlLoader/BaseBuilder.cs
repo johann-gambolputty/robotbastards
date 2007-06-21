@@ -35,14 +35,14 @@ namespace Rb.ComponentXmlLoader
             {
                 switch ( reader.Name )
                 {
-                    case "rb"       : result = new RootBuilder( parameters, errors, reader );                          break;
-                    case "object"   : result = new ObjectBuilder( parameters, errors, reader, parentBuilder );         break;
-                    case "ref"      : result = new ReferenceBuilder( parameters, errors, reader, parentBuilder );      break;
-                    case "resource" : result = new ResourceBuilder( parameters, errors, reader, parentBuilder );       break;
-                    case "instance" : result = new InstanceBuilder( parameters, errors, reader, parentBuilder );       break;
-					case "method"	: result = new MethodBuilder( parameters, errors, reader, parentBuilder );         break;
-                    case "list"     : result = new ListBuilder( parameters, errors, reader, parentBuilder );           break;
-                    case "type"     : result = new TypeBuilder( parameters, errors, reader, parentBuilder, "value" );  break;
+                    case "rb"       : result = new RootBuilder( parameters, errors, reader );							break;
+                    case "object"   : result = new ObjectBuilder( parameters, errors, reader, parentBuilder );			break;
+                    case "ref"      : result = new ReferenceBuilder( parameters, errors, reader, parentBuilder );		break;
+                    case "resource" : result = new ResourceBuilder( parameters, errors, reader, parentBuilder );		break;
+                    case "instance" : result = new InstanceBuilder( parameters, errors, reader, parentBuilder );		break;
+					case "method"	: result = new MethodBuilder( parameters, errors, reader, parentBuilder );			break;
+                    case "list"     : result = new ListBuilder( parameters, errors, reader, parentBuilder );			break;
+                    case "type"     : result = new TypeBuilder( parameters, errors, reader, parentBuilder );			break;
                     case "string"	:
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, reader.GetAttribute( "value" ) );
                         break;
@@ -224,7 +224,11 @@ namespace Rb.ComponentXmlLoader
                         if ( namedObject != null )
                         {
                             namedObject.Name = m_Name;
-                        }
+						}
+						else
+						{
+							throw new ApplicationException( string.Format( "Can't set name: Object of type \"{0}\" does not implement INamed", m_Object.GetType( ) ) );
+						}
                     }
                     if ( m_Id != null )
                     {
@@ -233,6 +237,10 @@ namespace Rb.ComponentXmlLoader
                         if ( uniqueObject != null )
                         {
                             uniqueObject.Id = guid;
+                        }
+						else
+                        {
+                        	throw new ApplicationException(string.Format("Can't set ID: Object of type \"{0}\" does not implement INamed", m_Object.GetType( ) ) );
                         }
                         Parameters.Objects[ guid ] = m_Object;
                     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Rb.Core.Utils;
+using Rb.Core.Components;
 
 namespace Rb.World
 {
@@ -19,7 +20,6 @@ namespace Rb.World
 		{
 			m_Viewers		= new SceneViewers( this );
 			m_Controllers	= new SceneControllers( this );
-			m_Objects		= new SceneObjects( this );
 		}
 
 		#endregion
@@ -157,7 +157,7 @@ namespace Rb.World
 		/// <summary>
 		/// Gets the scene object set
 		/// </summary>
-		public SceneObjects Objects
+		public ObjectMap Objects
 		{
 			get { return m_Objects; }
 		}
@@ -166,11 +166,11 @@ namespace Rb.World
 
 		#region	Private stuff
         
-        private Dictionary< string, Clock >     m_Clocks = new Dictionary< string, Clock >( );
-        private Dictionary< Type, object >		m_Services = new Dictionary< Type, object >( );
+        private Dictionary< string, Clock >     m_Clocks	= new Dictionary< string, Clock >( );
+		private Dictionary< Type, object >		m_Services	= new Dictionary< Type, object >( );
+		private ObjectMap						m_Objects	= new ObjectMap( );
 		private SceneViewers					m_Viewers;
 		private SceneControllers				m_Controllers;
-		private SceneObjects					m_Objects;
 
 
         /// <summary>
