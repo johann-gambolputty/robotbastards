@@ -8,7 +8,7 @@ namespace Rb.World.Entities
     /// <summary>
     /// Entity class
     /// </summary>
-    public class Entity : Component, ISceneObject
+    public class Entity : Component, ISceneObject, IRenderable
     {
         #region Controller
 
@@ -63,6 +63,19 @@ namespace Rb.World.Entities
         public void SetSceneContext( Scene scene )
         {
             m_Scene = scene;
+            scene.Renderables.Add( this );
+        }
+
+        #endregion
+
+        #region IRenderable Members
+
+        public void Render( IRenderContext context )
+        {
+            if ( Graphics != null )
+            {
+                Graphics.Render( context );
+            }
         }
 
         #endregion

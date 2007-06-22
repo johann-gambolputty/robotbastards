@@ -92,7 +92,7 @@ namespace Rb.ComponentXmlLoader
         }
 
 		/// <summary>
-		/// Reads "<param/>" elements
+		/// Reads "<parameters/>" elements
 		/// </summary>
 		/// <param name="reader">XML reader positioned at element</param>
 		/// <param name="builders">Builder list</param>

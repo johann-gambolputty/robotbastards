@@ -1,39 +1,24 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <rb>
 
-  <method objectId="this" call="AddClocks">
+  <!-- Scene setup -->
+  <resource path="defaultSceneSetup.components.xml">
     <parameters>
-      <list>
-        <object type="Rb.Core.Utils.Clock">
-          <parameters>
-            <string value="networkClock"/>
-            <int value="1"/>
-          </parameters>
-        </object>
-        <object type="Rb.Core.Utils.Clock">
-          <parameters>
-            <string value="animationClock"/>
-            <int value="1"/>
-          </parameters>
-        </object>
-      </list>
+      <ref objectId="parent" property="Target"/>
     </parameters>
-  </method>
+  </resource>
 
-  <method objectId="this" call="AddServices">
-    <parameters>
-      <list>
-        <object type="Rb.World.LightingManager"/>
-      </list>
-    </parameters>
-  </method>
+  <object type="Rb.Rendering.Cameras.SphereCamera" id="{9A805D0A-3841-4da3-BF07-1058B5A651A2}">
+  </object>
 
+  <!-- Entities -->  
   <object type="Rb.World.Entities.Entity3d" id="{BE726C7E-26EA-433e-974A-B57396EE5FB5}">
 
     <point3 x="20" y="0.5" z="0" property="NextPosition"/>
 
     <resource path="sarge" property="Graphics"/>
 
+    <!-- TODO: Replace with proxy object? (this would allow better serialisation) -->
     <method objectId="this" call="SetupController">
       <parameters>
         <guid value="{8D7200EA-0D49-4384-9A44-2532ECB1FE55}"/>

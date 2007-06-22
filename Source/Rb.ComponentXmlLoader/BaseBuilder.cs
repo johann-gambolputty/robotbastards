@@ -216,6 +216,8 @@ namespace Rb.ComponentXmlLoader
             set
             {
                 m_Object = value;
+
+                //  TODO: AP: Move naming and identification to specific builders? (i.e. ObjectBuilder only)
                 if ( ( m_Object != null ) && ( AllowIdentification ) )
                 {
                     if ( m_Name != null )
@@ -240,7 +242,7 @@ namespace Rb.ComponentXmlLoader
                         }
 						else
                         {
-                        	throw new ApplicationException(string.Format("Can't set ID: Object of type \"{0}\" does not implement INamed", m_Object.GetType( ) ) );
+                        	//throw new ApplicationException( string.Format( "Can't set ID: Object of type \"{0}\" does not implement INamed", m_Object.GetType( ) ) );
                         }
                         Parameters.Objects[ guid ] = m_Object;
                     }

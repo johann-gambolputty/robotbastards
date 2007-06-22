@@ -46,10 +46,8 @@ namespace Rb.Core.Resources
 		/// </summary>
 		public Object	Target
 		{
-			get
-			{
-				return m_Target;
-			}
+			get { return m_Target; }
+            set { m_Target = value; }
 		}
 
 		private Object	                        m_Target;

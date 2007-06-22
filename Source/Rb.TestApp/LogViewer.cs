@@ -8,11 +8,11 @@ using System.Windows.Forms;
 
 namespace Rb.TestApp
 {
-	public partial class LogViewer : Form
-	{
-		public LogViewer( )
-		{
-			InitializeComponent( );
-		}
-	}
+    public partial class LogViewer : Form
+    {
+        public LogViewer()
+        {
+            InitializeComponent();
+        }
+    }
 }

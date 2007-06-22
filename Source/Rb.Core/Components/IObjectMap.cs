@@ -18,5 +18,10 @@ namespace Rb.Core.Components
 		/// Gets an object of a given type, and key, from the map
 		/// </summary>
 		object Get< T >( Guid key );
+
+        /// <summary>
+        /// Gets all objects of a given type from the map
+        /// </summary>
+        IEnumerable< T > GetAllOfType< T >( );
     }
 }

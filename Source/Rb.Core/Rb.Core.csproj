@@ -88,6 +88,7 @@
     <Compile Include="Resources\IPathDirectory.cs" />
     <Compile Include="Resources\IResourceCache.cs" />
     <Compile Include="Resources\LoadParameters.cs" />
+    <Compile Include="Resources\ResourcePreLoadState.cs" />
     <Compile Include="Resources\ResourceCache.cs" />
     <Compile Include="Resources\ResourceDirectoryLoader.cs" />
     <Compile Include="Resources\ResourceLoader.cs" />

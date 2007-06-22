@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using Rb.Core.Utils;
 using Rb.Core.Components;
+using Rb.Rendering;
 
 namespace Rb.World
 {
 	/// <summary>
 	/// Manages all objects in the scene, and the services that tend to them
 	/// </summary>
-	public class Scene
+	public class Scene : IRenderable
 	{
 		#region Public construction
 
@@ -154,6 +155,14 @@ namespace Rb.World
 			get { return m_Controllers; }
 		}
 
+        /// <summary>
+        /// Gets the list of renderable objects in the scene
+        /// </summary>
+        public RenderableList Renderables
+        {
+            get { return m_Renderables; }
+        }
+
 		/// <summary>
 		/// Gets the scene object set
 		/// </summary>
@@ -164,6 +173,19 @@ namespace Rb.World
 
 		#endregion
 
+        #region IRenderable Members
+
+        /// <summary>
+        /// Renders the scene
+        /// </summary>
+        /// <param name="context">Render context</param>
+        public void Render( IRenderContext context )
+        {
+            m_Renderables.Render( context );
+        }
+
+        #endregion
+
 		#region	Private stuff
         
         private Dictionary< string, Clock >     m_Clocks	= new Dictionary< string, Clock >( );
@@ -171,6 +193,7 @@ namespace Rb.World
 		private ObjectMap						m_Objects	= new ObjectMap( );
 		private SceneViewers					m_Viewers;
 		private SceneControllers				m_Controllers;
+        private RenderableList                  m_Renderables = new RenderableList( );
 
 
         /// <summary>
@@ -191,5 +214,6 @@ namespace Rb.World
         }
 
 		#endregion
-	}
+
+    }
 }

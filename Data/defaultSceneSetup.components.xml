@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<rb>
+
+  <method objectId="this" call="AddClocks">
+    <parameters>
+      <list>
+        <object type="Rb.Core.Utils.Clock">
+          <parameters>
+            <string value="networkClock"/>
+            <int value="1"/>
+          </parameters>
+        </object>
+        <object type="Rb.Core.Utils.Clock">
+          <parameters>
+            <string value="animationClock"/>
+            <int value="1"/>
+          </parameters>
+        </object>
+      </list>
+    </parameters>
+  </method>
+
+  <method objectId="this" call="AddServices">
+    <parameters>
+      <list>
+        <object type="Rb.World.LightingManager"/>
+      </list>
+    </parameters>
+  </method>
+
+</rb>

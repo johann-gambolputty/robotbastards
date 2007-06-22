@@ -174,6 +174,47 @@ namespace Rb.Core.Resources
 			return Load( path, null );
 		}
 
+        /// <summary>
+        /// Creates a pre-load state for a given resource path
+        /// </summary>
+        /// <param name="path">Location of a resource to load</param>
+        /// <param name="parameters">Load parameters (can be null)</param>
+        /// <returns>Returns a PreLoadState that can be used to load the resource</returns>
+        public ResourcePreLoadState CreatePreLoadState( string path, LoadParameters parameters )
+        {
+            //  TODO: AP: This should be made more generic
+
+			if ( System.IO.Path.GetExtension( path ) == string.Empty )
+			{
+                ResourceProvider provider = FindDirectoryProvider( ref path );
+
+				foreach ( ResourceDirectoryLoader loader in m_DirectoryLoaders )
+                {
+                    if ( !loader.CanLoadDirectory( provider, path ) )
+                    {
+                        continue;
+                    }
+
+                    return new ResourceDirectoryLoader.DirectoryPreLoadState( loader, parameters, path, provider );
+                }
+
+				throw new ApplicationException( string.Format( "Could not find a loader that could load directory resource \"{0}\"", path ) );
+			}
+
+            System.IO.Stream input = OpenStream( ref path );
+			foreach( ResourceStreamLoader loader in m_StreamLoaders )
+			{
+				if ( !loader.CanLoadStream( path, input ) )
+				{
+				    continue;
+				}
+
+                return new ResourceStreamLoader.StreamPreLoadState( loader, parameters, path, input );
+            }
+
+			throw new ApplicationException( string.Format( "Could not find loader that could open stream \"{0}\"", path ) );
+        }
+
 		/// <summary>
 		/// Finds a provider that can load a stream from a path, then finds a loader that can read the stream and read it into a resource
 		/// </summary>
@@ -185,6 +226,10 @@ namespace Rb.Core.Resources
 		/// </remarks>
 		public Object Load( string path, LoadParameters parameters )
 		{
+            ResourcePreLoadState state = CreatePreLoadState( path, parameters );
+            return state.Load( );
+
+            /*
 			if ( System.IO.Path.GetExtension( path ) == string.Empty )
 			{
                 ResourceProvider provider = FindDirectoryProvider( ref path );
@@ -202,7 +247,7 @@ namespace Rb.Core.Resources
                     object result = loader.Cache.Find( path );
                     if ( result != null )
                     {
-                        ResourcesLog.Info( "Retrieved \"{0}\" from directory resource cache", path );
+                        ResourcesLog.Verbose( "Retrieved \"{0}\" from directory resource cache", path );
                         return result;
                     }
 
@@ -242,7 +287,7 @@ namespace Rb.Core.Resources
                 object result = loader.Cache.Find( path );
                 if ( result != null )
                 {
-                    ResourcesLog.Info( "Retrieved \"{0}\" from stream resource cache", path );
+                    ResourcesLog.Verbose( "Retrieved \"{0}\" from stream resource cache", path );
                     return result;
                 }
 
@@ -265,6 +310,7 @@ namespace Rb.Core.Resources
             }
 
 			throw new ApplicationException( string.Format( "Could not find loader that could open stream \"{0}\"", path ) );
+            */
 		}
 
 		#endregion

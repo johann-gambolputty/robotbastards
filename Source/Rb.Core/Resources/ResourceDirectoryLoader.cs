@@ -47,6 +47,55 @@ namespace Rb.Core.Resources
 
 		#endregion
 
+        #region PreLoadState
+
+        /// <summary>
+        /// PreLoadState for the stream loader type
+        /// </summary>
+        public class DirectoryPreLoadState : ResourcePreLoadState
+        {
+            /// <summary>
+            /// Sets up the preload state
+            /// </summary>
+            /// <param name="loader">Associated loader</param>
+            /// <param name="parameters">Parameters to send to <see cref="ResourceDirectoryLoader.Load"/></param>
+            /// <param name="location">Resource location (directory path)</param>
+            /// <param name="provider">Provider that can load resources from the directory</param>
+            public DirectoryPreLoadState( ResourceLoader loader, LoadParameters parameters, string location, ResourceProvider provider ) :
+                base( loader, parameters, location )
+            {
+                m_Provider = provider;
+            }
+
+            /// <summary>
+            /// Loads and returns the resource
+            /// </summary>
+            public override object Load( )
+            {
+                object result = base.Load( );
+                if ( result != null )
+                {
+                    return result;
+                }
+
+                bool canCache;
+                if ( Parameters == null )
+                {
+                    result = ( ( ResourceDirectoryLoader )Loader ).Load( m_Provider, Location, out canCache );
+                }
+                else
+                {
+                    result = ( ( ResourceDirectoryLoader )Loader ).Load( m_Provider, Location, out canCache, Parameters );
+                }
+
+                return PostLoad( result, canCache );
+            }
+
+            private ResourceProvider m_Provider;
+        }
+
+        #endregion
+
         #region Private stuff
 
         private ResourceCache m_Cache = new ResourceCache( );

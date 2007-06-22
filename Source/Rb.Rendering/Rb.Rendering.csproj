@@ -52,6 +52,7 @@
     <Compile Include="Material.cs" />
     <Compile Include="PointLight.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RenderableList.cs" />
     <Compile Include="RenderContext.cs" />
     <Compile Include="Renderer.cs" />
     <Compile Include="RenderFactory.cs">
@@ -73,6 +74,7 @@
     <Compile Include="Texture2d.cs" />
     <Compile Include="TextureSampler2d.cs" />
     <Compile Include="Transform.cs" />
+    <Compile Include="Viewer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">
