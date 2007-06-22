@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using Rb.Core.Resources;
 using Rb.Core.Components;
 using Rb.Core.Utils;
-
+using Rb.Rendering;
 using Rb.World;
 using Rb.Log;
 
@@ -15,8 +15,8 @@ namespace Rb.TestApp
     {
         public Form1()
 		{
-        	//LogViewer viewer = new LogViewer( );
-			//viewer.Show( this );
+        	LogViewer viewer = new LogViewer( );
+			viewer.Show( this );
 
 			AppLog.Info( "Beginning Rb.TestApp at {0}", DateTime.Now );
 
@@ -48,6 +48,8 @@ namespace Rb.TestApp
             {
                 ComponentLoadParameters loadParams = new ComponentLoadParameters( scene.Objects, scene );
                 ResourceManager.Instance.Load( "scene0.components.xml", loadParams );
+
+                display1.AddViewer( new Viewer( new Rb.Rendering.Cameras.SphereCamera( ), scene ) );
             }
             catch ( Exception ex )
             {

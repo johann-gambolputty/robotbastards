@@ -19,10 +19,27 @@ namespace Rb.Core.Components
 			return m_Types[ objectType ][ key ];
 		}
 
+        /// <summary>
+        /// Gets an object of a given type, and key, from the map
+        /// </summary>
 		public object Get< T >( Guid key )
 		{
 			return Get( typeof( T ), key );
 		}
+        
+        /// <summary>
+        /// Gets all objects of a given type from the map
+        /// </summary>
+        public IEnumerable< T > GetAllOfType< T >( )
+        {
+            if ( m_Types.ContainsKey( typeof( T ) ) )
+            {
+                foreach ( KeyValuePair< Guid, object > kvp in m_Types[ typeof( T ) ] )
+                {
+                    yield return ( T )kvp.Value;
+                }
+            }
+        }
 
 		#endregion
 

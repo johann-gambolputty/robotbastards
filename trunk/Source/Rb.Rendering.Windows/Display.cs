@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace Rb.Rendering.Windows
@@ -146,8 +147,12 @@ namespace Rb.Rendering.Windows
 		/// </summary>
 		protected virtual void Draw( )
 		{
-			Renderer.Inst.ClearDepth( 1.0f );
-			Renderer.Inst.ClearVerticalGradient( Color.LightSkyBlue, Color.Black );
+	        Renderer.Inst.ClearDepth( 1.0f );
+	        Renderer.Inst.ClearVerticalGradient( Color.LightSkyBlue, Color.Black );
+            foreach ( Viewer viewer in Viewers )
+            {
+                viewer.Render( );
+            }
 		}
 
 		/// <summary>
@@ -168,11 +173,41 @@ namespace Rb.Rendering.Windows
 				Invalidate( );
 				m_AlreadyInvalidated = true;
 			}
-		}
+        }
 
-		#region	Private stuff
+        #region Viewers
 
-		private byte 					m_StencilBits			= 0;
+        /// <summary>
+        /// Gets the collection of viewers
+        /// </summary>
+	    public ICollection< Viewer > Viewers
+	    {
+	        get { return m_Viewers; }
+	    }
+
+        /// <summary>
+        /// Adds a viewer
+        /// </summary>
+        /// <param name="viewer">Viewer to add</param>
+        public void AddViewer( Viewer viewer )
+        {
+            m_Viewers.Add( viewer );
+        }
+
+        /// <summary>
+        /// Removes a viewer
+        /// </summary>
+        /// <param name="viewer">Viewer to remove</param>
+        public void RemoveViewer( Viewer viewer )
+        {
+            m_Viewers.Remove( viewer );
+        }
+
+        #endregion
+
+        #region	Private stuff
+
+        private byte 					m_StencilBits			= 0;
 		private byte 					m_DepthBits				= 24;
 		private byte 					m_ColourBits			= 32;
 		private IWindowsDisplaySetup	m_Setup					= null;
@@ -180,6 +215,7 @@ namespace Rb.Rendering.Windows
 		private bool					m_ContinuousRendering	= true;
 		private bool					m_AlreadyInvalidated	= false;
 		private Timer					m_RenderingTimer;
+        private List< Viewer >          m_Viewers               = new List< Viewer >( );
 
 		#endregion
 

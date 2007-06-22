@@ -9,8 +9,24 @@ using Rb.Log;
 namespace Rb.ComponentXmlLoader
 {
     /// <summary>
-    /// Loads a .component.xml file
+    /// Loads a .components.xml file
     /// </summary>
+    /// <remarks>
+    /// Format:
+    /// All component xml files should have the prefix ".components.xml".
+    /// They should have a root element <rb></rb>
+    /// The root element represents the returned object - therefore, it is bound to the input target
+    /// (LoadParameters.Target). If there is no target, then <rb/> can have only one child element, 
+    /// and that is the returned value.
+    /// Example:
+    /// <rb>
+    ///     <resource path="badger.model"/>
+    /// </rb>
+    /// In this instance, a resource ("badger.model") is loaded. Because it's the only child of the
+    /// <rb/> element, it's returned as the result of the Load() call. If a valid target had been
+    /// passed into Load() then the resource would have been added as a child to the target.
+    /// 
+    /// </remarks>
     public class Loader : ResourceStreamLoader
     {
 		#region	Stream loading
@@ -104,6 +120,14 @@ namespace Rb.ComponentXmlLoader
 		{
 		    return path.EndsWith( ".components.xml", StringComparison.CurrentCultureIgnoreCase );
 		}
+
+        /// <summary>
+        /// Creates a new empty ComponentLoadParameters object
+        /// </summary>
+        public override LoadParameters CreateDefaultLoadParameters( )
+        {
+            return new ComponentLoadParameters( );
+        }
 
 		#endregion
     }

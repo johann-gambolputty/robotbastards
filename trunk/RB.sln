@@ -25,6 +25,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Interaction", "Source\Rb
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{962DDAAD-9BDF-440E-BCF6-D97A79E609F7}"
 	ProjectSection(SolutionItems) = preProject
+		Data\defaultSceneSetup.components.xml = Data\defaultSceneSetup.components.xml
 		Data\scene0.components.xml = Data\scene0.components.xml
 		Data\userInputListener.components.xml = Data\userInputListener.components.xml
 	EndProjectSection

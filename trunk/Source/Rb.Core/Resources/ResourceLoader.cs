@@ -20,5 +20,18 @@ namespace Rb.Core.Resources
         }
 
         #endregion
+
+        #region Load parameters
+
+        /// <summary>
+        /// Creates default loading parameters for this loader
+        /// </summary>
+        public virtual LoadParameters CreateDefaultLoadParameters( )
+        {
+            return new LoadParameters( );
+        }
+
+        #endregion
+
     }
 }

@@ -26,7 +26,6 @@ namespace Rb.Rendering.Cameras
 			base.Begin( );
 		}
 
-
 		#region IUpdater Members
 
 		/// <summary>
