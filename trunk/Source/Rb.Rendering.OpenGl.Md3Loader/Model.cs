@@ -103,7 +103,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Applies the specified render effect to all part meshes
 		/// </summary>
-		public Rb.Rendering.Effect	Effect
+		public IEffect Effect
 		{
 			set
 			{
@@ -117,13 +117,13 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// The selected render technique's name
 		/// </summary>
-		public string		CurrentTechniqueName
+		public string TechniqueName
 		{
 			set
 			{
 				for ( int partIndex = 0; partIndex < m_PartMeshes.Length; ++partIndex )
 				{
-					m_PartMeshes[ partIndex ].CurrentTechniqueName = value;
+					m_PartMeshes[ partIndex ].TechniqueName = value;
 				}
 			}
 		}

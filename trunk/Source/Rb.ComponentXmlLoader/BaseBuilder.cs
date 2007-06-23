@@ -19,6 +19,35 @@ namespace Rb.ComponentXmlLoader
     internal class BaseBuilder
     {
         #region Factory
+
+		/// <summary>
+		/// Creates a Color object from attributes stored in an xml element
+		/// </summary>
+		private static System.Drawing.Color MakeColour( XmlReader reader )
+		{
+			string value = reader.GetAttribute( "value" );
+			if ( value != null )
+			{
+				return System.Drawing.Color.FromName( value );
+			}
+
+			string rStr = reader.GetAttribute( "r" );
+			string bStr = reader.GetAttribute( "g" );
+			string gStr = reader.GetAttribute( "b" );
+			string aStr = reader.GetAttribute( "a" );
+
+			if ( rStr == null || bStr == null || gStr == null )
+			{
+				throw new ApplicationException( string.Format( "<{0}> tags need either a value attribute, or \"r\", \"b\" and \"g\" attributes", reader.Name ) );
+			}
+
+			int r	= int.Parse( rStr );
+			int g	= int.Parse( gStr );
+			int b	= int.Parse( bStr );
+			int a	= ( aStr == null ) ? 255 : int.Parse( aStr );
+
+			return System.Drawing.Color.FromArgb( a, r, g, b );
+		}
         
         /// <summary>
         /// Creates a BaseBuilder-derived object from a name
@@ -43,6 +72,9 @@ namespace Rb.ComponentXmlLoader
 					case "method"	: result = new MethodBuilder( parameters, errors, reader, parentBuilder );			break;
                     case "list"     : result = new ListBuilder( parameters, errors, reader, parentBuilder );			break;
                     case "type"     : result = new TypeBuilder( parameters, errors, reader, parentBuilder );			break;
+					case "colour":
+						result = new ValueBuilder( parameters, errors, reader, parentBuilder, MakeColour( reader ) );
+						break;
                     case "string"	:
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, reader.GetAttribute( "value" ) );
                         break;

@@ -13,14 +13,8 @@ namespace Rb.Rendering
 		/// </summary>
 		public Vector3	Direction
 		{
-			get
-			{
-				return m_Direction;
-			}
-			set
-			{
-				m_Direction = value;
-			}
+			get { return m_Direction; }
+			set { m_Direction = value; }
 		}
 
 		/// <summary>
@@ -42,14 +36,8 @@ namespace Rb.Rendering
 		/// </summary>
 		public float	ArcDegrees
 		{
-			get
-			{
-				return m_Arc;
-			}
-			set
-			{
-				m_Arc = value;
-			}
+			get { return m_Arc; }
+			set { m_Arc = value; }
 		}
 
 		/// <summary>

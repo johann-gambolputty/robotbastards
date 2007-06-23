@@ -175,12 +175,26 @@ namespace Rb.World
 
         #region IRenderable Members
 
+		/// <summary>
+		/// Delegate, used by PreRender
+		/// </summary>
+		public delegate void RenderEventDelegate( Scene scene );
+
+		/// <summary>
+		/// Pre-render event, invoked by Render() before anything gets rendered
+		/// </summary>
+		public event RenderEventDelegate PreRender;
+
         /// <summary>
         /// Renders the scene
         /// </summary>
         /// <param name="context">Render context</param>
         public void Render( IRenderContext context )
         {
+			if ( PreRender != null )
+			{
+				PreRender( this );
+			}
             m_Renderables.Render( context );
         }
 

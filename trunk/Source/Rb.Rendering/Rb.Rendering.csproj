@@ -39,6 +39,8 @@
     <Compile Include="Cameras\ProjectionCamera.cs" />
     <Compile Include="Cameras\SphereCamera.cs" />
     <Compile Include="DelegateRenderable.cs" />
+    <Compile Include="EffectRenderedObject.cs" />
+    <Compile Include="FpsDisplay.cs" />
     <Compile Include="IDisplaySetup.cs" />
     <Compile Include="GraphicsLog.cs" />
     <Compile Include="Composite.cs" />

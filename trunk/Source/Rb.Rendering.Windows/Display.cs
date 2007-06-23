@@ -94,25 +94,26 @@ namespace Rb.Rendering.Windows
 		{
 			if ( m_Setup == null )
 			{
-				e.Graphics.Clear( Color.White );
-				return;
-			}
-
-			if ( DesignMode )
-			{
-				if ( m_DesignImage == null )
+				if ( DesignMode )
 				{
-					m_DesignImage = m_Setup.CreateDesignImage( );
+					if ( m_DesignImage == null )
+					{
+						m_DesignImage = Properties.Resources.Blessed;
+					}
+
+					e.Graphics.Clear( Color.White );
+
+					if ( m_DesignImage != null )
+					{
+						e.Graphics.DrawImage( m_DesignImage, 0, 0, Width, Height );
+					}
+
+					e.Graphics.DrawRectangle( new Pen( Color.Black, 2 ), 1, 1, Width - 2, Height - 2 );
 				}
-
-				e.Graphics.Clear( Color.White );
-
-				if ( m_DesignImage != null )
+				else
 				{
-					e.Graphics.DrawImage( m_DesignImage, new Point( 0, 0 ) );
+					e.Graphics.Clear( Color.White );
 				}
-
-				e.Graphics.DrawRectangle( new Pen( Color.Black, 2 ), 1, 1, Width - 2, Height - 2 );
 			}
 			else
 			{
@@ -121,9 +122,9 @@ namespace Rb.Rendering.Windows
 					Draw( );
 					EndPaint( );
 				}
-			}
 
-			m_AlreadyInvalidated = false;
+				m_AlreadyInvalidated = false;
+			}
 		}
 
 		/// <summary>

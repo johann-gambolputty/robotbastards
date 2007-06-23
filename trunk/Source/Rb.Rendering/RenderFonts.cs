@@ -26,7 +26,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Gets a default font
 		/// </summary>
-		public static RenderFont			GetDefaultFont( DefaultFont font )
+		public static RenderFont GetDefaultFont( DefaultFont font )
 		{
 			if ( ms_DefaultFonts[ ( int )font ] == null )
 			{
@@ -41,7 +41,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Creates a default RenderFont
 		/// </summary>
-		private static System.Drawing.Font	CreateDefaultSystemFont( DefaultFont font )
+		private static System.Drawing.Font CreateDefaultSystemFont( DefaultFont font )
 		{
 			switch ( font )
 			{

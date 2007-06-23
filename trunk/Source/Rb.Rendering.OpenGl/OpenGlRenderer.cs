@@ -47,6 +47,30 @@ namespace Rb.Rendering.OpenGl
 
 		#region	Lighting
 
+		/// <summary>
+		/// Clears the light array. This is done every frame
+		/// </summary>
+		public override void ClearLights( )
+		{
+			//	TODO: AP: Lights should work for non-effect rendered object
+			for ( int lightIndex = 0; lightIndex < NumActiveLights; ++lightIndex )
+			{
+				Gl.glDisable( Gl.GL_LIGHT0 + lightIndex );
+			}
+			base.ClearLights( );
+		}
+
+		/// <summary>
+		/// Adds the specified light
+		/// </summary>
+		public override void AddLight( Light light )
+		{
+			//	TODO: AP: Lights should work for non-effect rendered objects
+			int lightId = NumActiveLights;
+			Gl.glEnable( Gl.GL_LIGHT0 + lightId );
+			base.AddLight( light );
+		}
+
 		#endregion
 
 		#region	Standard operations

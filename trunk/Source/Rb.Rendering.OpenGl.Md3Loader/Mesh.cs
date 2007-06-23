@@ -293,7 +293,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// The selected render technique's name
 		/// </summary>
-		public string		CurrentTechniqueName
+		public string TechniqueName
 		{
 			get
 			{

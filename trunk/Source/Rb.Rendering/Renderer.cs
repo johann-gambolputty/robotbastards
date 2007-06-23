@@ -103,7 +103,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Clears the light array. This is done every frame
 		/// </summary>
-		public void			ClearLights( )
+		public virtual void ClearLights( )
 		{
 			m_NumLights = 0;
 		}
@@ -111,7 +111,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Adds the specified light
 		/// </summary>
-		public void			AddLight( Light light )
+		public virtual void AddLight( Light light )
 		{
 			m_Lights[ m_NumLights++ ] = light;
 		}
@@ -119,7 +119,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Gets an indexed light
 		/// </summary>
-		public Light		GetLight( int index )
+		public Light GetLight( int index )
 		{
 			return m_Lights[ index ];
 		}
@@ -127,7 +127,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Returns the number of active lights that have been added since the last 
 		/// </summary>
-		public int			NumActiveLights
+		public int NumActiveLights
 		{
 			get { return m_NumLights; }
 		}
@@ -135,7 +135,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// The maximum number of lights supported
 		/// </summary>
-		public const int	MaxActiveLights = 8;
+		public const int MaxActiveLights = 8;
 
 
 		#endregion

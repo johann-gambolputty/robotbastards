@@ -72,6 +72,8 @@ namespace Rb.ComponentXmlLoader
             {
                 BuildObject = BuildObject.GetType( ).GetProperty( property ).GetValue( BuildObject, null );
             }
+
+			base.PostCreate( );
         }
 
         private string m_ObjectId;
