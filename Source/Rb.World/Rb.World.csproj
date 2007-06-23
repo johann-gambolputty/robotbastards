@@ -39,10 +39,14 @@
     <Compile Include="Entities\MovementRequest.cs" />
     <Compile Include="Entities\SampleController.cs" />
     <Compile Include="IHost.cs" />
+    <Compile Include="ILightingManager.cs" />
+    <Compile Include="ILightMeter.cs" />
     <Compile Include="ISceneController.cs" />
     <Compile Include="ISceneObject.cs" />
     <Compile Include="ISceneViewer.cs" />
     <Compile Include="LightingManager.cs" />
+    <Compile Include="LightMeter.cs" />
+    <Compile Include="LightSocket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="SceneBuilder.cs" />

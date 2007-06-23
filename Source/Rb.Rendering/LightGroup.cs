@@ -14,37 +14,12 @@ namespace Rb.Rendering
 		#region	Light list management
 
 		/// <summary>
-		/// Gets the list of lights making up this group
+		/// The lights making up the group
 		/// </summary>
-		public ICollection< Light > Lights
+		public Light[] Lights
 		{
 			get { return m_Lights; }
-		}
-
-		/// <summary>
-		/// Adds a light to this group
-		/// </summary>
-		/// <param name="light">Light to add</param>
-		public void Add( Light light )
-		{
-			m_Lights.Add( light );
-		}
-
-		/// <summary>
-		/// Removes a light from this group
-		/// </summary>
-		/// <param name="light">Light to remove</param>
-		public void Remove( Light light )
-		{
-			m_Lights.Remove( light );
-		}
-
-		/// <summary>
-		/// Removes all lights in the group
-		/// </summary>
-		public void Clear( )
-		{
-			m_Lights.Clear( );
+			set { m_Lights = value;  }
 		}
 
 		/// <summary>
@@ -52,7 +27,7 @@ namespace Rb.Rendering
 		/// </summary>
 		public int NumLights
 		{
-			get { return m_Lights.Count; }
+			get { return m_Lights.Length; }
 		}
 
 		/// <summary>
@@ -60,10 +35,7 @@ namespace Rb.Rendering
 		/// </summary>
 		public Light this[ int index ]
 		{
-			get
-			{
-				return m_Lights[ index ];
-			}
+			get { return m_Lights[ index ]; }
 		}
 
 		#endregion
@@ -77,7 +49,7 @@ namespace Rb.Rendering
 		{
 			Renderer renderer = Renderer.Inst;
 
-			for ( int lightIndex = 0; lightIndex < NumLights; ++lightIndex )
+			for ( int lightIndex = 0; lightIndex < m_Lights.Length; ++lightIndex )
 			{
 				renderer.AddLight( m_Lights[ lightIndex ] );
 			}
@@ -93,6 +65,6 @@ namespace Rb.Rendering
 
 		#endregion
 
-		private List< Light > m_Lights = new List< Light >( );
+		private Light[] m_Lights;
 	}
 }

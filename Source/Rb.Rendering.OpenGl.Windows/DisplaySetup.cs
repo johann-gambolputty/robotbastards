@@ -54,14 +54,6 @@ namespace Rb.Rendering.OpenGl.Windows
 			}
 		}
 
-		/// <summary>
-		/// Creates an image that is displayed in this control in design mode
-		/// </summary>
-		public System.Drawing.Image CreateDesignImage( )
-		{
-			return null;
-		}
-
 		#endregion
 
 		#region IDisplaySetup Implementation

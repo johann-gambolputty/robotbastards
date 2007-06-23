@@ -1,0 +1,51 @@
+sampler2D Sampler = sampler_state
+{
+	minFilter		= Linear;
+	magFilter		= Linear;	
+};
+
+struct InputVertex
+{
+	float4	m_Position : POSITION;
+	float4	m_Normal : NORMAL;
+	float2	m_Texture : TEXCOORD0;
+};
+
+
+struct OutputVertex
+{
+	float4	m_Position	: POSITION;
+	float2	m_Texture	: TEXCOORD0;
+};
+
+float4x4 ModelViewProjectionMatrix;
+
+OutputVertex TestVertexShader( InputVertex input )
+{
+	OutputVertex output;
+
+	output.m_Position	= mul( ModelViewProjectionMatrix, input.m_Position );
+	output.m_Texture	= input.m_Texture;
+
+	return output;
+}
+
+float4 TestFragmentShader( OutputVertex input ) : COLOR
+{
+	return tex2D( Sampler, input.m_Texture );
+}
+
+technique NormalTechnique
+{
+	pass
+	{
+		ShadeModel				= Smooth;
+		FrontFace				= CW;
+		DepthFunc				= LEqual;
+		DepthTestEnable			= true;
+		CullFaceEnable			= true;
+		PolygonMode				= int2( Front, Fill );
+		VertexProgram			= compile arbvp1 TestVertexShader( );
+		FragmentProgram			= compile arbfp1 TestFragmentShader( );
+	}
+}

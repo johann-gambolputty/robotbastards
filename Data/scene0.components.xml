@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <rb>
 
-  <!-- Scene setup -->
+  <!-- Default scene setup -->
   <resource path="defaultSceneSetup.components.xml">
     <parameters>
       <ref objectId="parent" property="Target"/>
     </parameters>
   </resource>
 
-  <object type="Rb.Rendering.Cameras.SphereCamera" id="{9A805D0A-3841-4da3-BF07-1058B5A651A2}">
+  <!-- Debugging -->
+  <ref objectId="this" access="Renderables">
+    <object type="Rb.Rendering.FpsDisplay">
+      <colour value="Black" property="TextColour"/>
+    </object>
+  </ref>
+
+  <!--Lighting -->
+  <object type="Rb.World.LightSocket">
+    <object type="Rb.Rendering.SpotLight" property="Light">
+      <point3 x="50" y="30" z="30" property="Position"/>
+      <point3 x="0" y="0" z="0" property="LookAt"/>
+      <float value="40" property="ArcDegrees"/>
+    </object>
   </object>
 
   <!-- Entities -->  
@@ -16,7 +29,18 @@
 
     <point3 x="20" y="0.5" z="0" property="NextPosition"/>
 
-    <resource path="sarge" property="Graphics"/>
+    <object type="Rb.Rendering.EffectRenderedObject" property="Graphics">
+
+      <object type="Rb.Rendering.Technique" property="Technique">
+        <object type="Rb.World.LightMeter"/>
+      </object>
+
+      <resource path="sarge" property="RenderedObject">
+        <resource path="perPixelTextured.cgfx" property="Effect"/>
+        <string value="NormalTechnique" property="TechniqueName"/>
+      </resource>
+
+    </object>
 
     <!-- TODO: Replace with proxy object? (this would allow better serialisation) -->
     <method objectId="this" call="SetupController">

@@ -84,7 +84,7 @@ namespace Rb.Rendering
 
 			if ( Children.Count > 0 )
 			{
-				foreach ( Pass pass in Children )
+				foreach ( IPass pass in Children )
 				{
 					pass.Begin( );
 

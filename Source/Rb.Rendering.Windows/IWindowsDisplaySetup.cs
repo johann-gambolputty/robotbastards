@@ -30,11 +30,5 @@ namespace Rb.Rendering.Windows
 		{
 			get;
 		}
-
-		/// <summary>
-		/// Creates an image that is displayed in this control in design mode
-		/// </summary>
-		System.Drawing.Image CreateDesignImage( );
-
 	}
 }
