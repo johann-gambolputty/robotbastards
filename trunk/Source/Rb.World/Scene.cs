@@ -10,7 +10,7 @@ namespace Rb.World
 	/// <summary>
 	/// Manages all objects in the scene, and the services that tend to them
 	/// </summary>
-	public class Scene : IRenderable
+    public class Scene : IRenderable
 	{
 		#region Public construction
 

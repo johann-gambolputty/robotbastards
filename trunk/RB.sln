@@ -51,6 +51,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bin", "bin", "{AAC34E29-464
 		bin\resourceSetup.xml = bin\resourceSetup.xml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Interaction.Windows", "Source\Rb.Interaction.Windows\Rb.Interaction.Windows.csproj", "{4ECD7CBC-1D3E-4C87-852E-77488B549711}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -121,6 +123,10 @@ Global
 		{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4ECD7CBC-1D3E-4C87-852E-77488B549711}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4ECD7CBC-1D3E-4C87-852E-77488B549711}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4ECD7CBC-1D3E-4C87-852E-77488B549711}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4ECD7CBC-1D3E-4C87-852E-77488B549711}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,189 +1,130 @@
-using System;
 using System.Collections.Generic;
 
-namespace Rb.Core.Interaction
+namespace Rb.Interaction
 {
+    /// <summary>
+    /// Delegate used by <see cref="Command"/> events
+    /// </summary>
+    /// <param name="input">Input that activated the command</param>
+    /// <param name="msg">Command details</param>
+    public delegate void CommandEventDelegate( IInput input, CommandMessage msg );
 
-	/// <summary>
-	/// Delegate, used by the Command.Activated and Command.Active events
-	/// </summary>
-	public delegate void CommandEventDelegate( Scene.SceneView view, CommandMessage message );
+    /// <summary>
+    /// A command
+    /// </summary>
+    public class Command
+    {
+        #region Setup
 
-	/// <summary>
-	/// User command
-	/// </summary>
-	public class Command
-	{
-		#region	Command events
+        /// <summary>
+        /// Setup constructor
+        /// </summary>
+        /// <param name="name">Command name</param>
+        /// <param name="description">Command description</param>
+        /// <param name="id">Command unique identifier</param>
+        public Command( string name, string description, byte id )
+        {
+            m_Name = name;
+            m_Description = description;
+            m_Id = id;
+        }
 
-		/// <summary>
-		/// Event, fired on the frame that this command becomes active (e.g. the first frame a key is pressed)
-		/// </summary>
-		public event CommandEventDelegate	Activated;
+        #endregion
 
-		/// <summary>
-		/// Events, fired every frame that the command is active (e.g. the first and subsequent frames that a key is pressed)
-		/// </summary>
-		public event CommandEventDelegate	Active;
+        #region Events
 
-		#endregion
+        /// <summary>
+        /// Event, fired when the command is activated (first frame of activation)
+        /// </summary>
+        public event CommandEventDelegate Activated;
 
-		#region	Command interpreter
+        /// <summary>
+        /// Event, fired when the command active
+        /// </summary>
+        public event CommandEventDelegate Active;
 
-		/// <summary>
-		/// Access to the interpreter associated with this command
-		/// </summary>
-		public CommandInputInterpreter Interpreter
-		{
-			get { return m_Interpreter; }
-			set { m_Interpreter = value; }
-		}
+        #endregion
 
-		#endregion
+        #region Public properties
 
-		/// <summary>
-		/// Setup constructor
-		/// </summary>
-		/// <param name="name">Command name</param>
-		/// <param name="description">Command description</param>
-		/// <param name="id">Identifier for the command</param>
-		public Command( string name, string description, ushort id )
-		{
-			m_Name			= name;
-			m_Description	= description;
-			m_Id			= id;
-		}
+        /// <summary>
+        /// Command name
+        /// </summary>
+        public string Name
+        {
+            get { return m_Name; }
+        }
 
-		/// <summary>
-		/// Command identifier
-		/// </summary>
-		public ushort Id
-		{
-			get { return m_Id; }
-		}
+        /// <summary>
+        /// Command description
+        /// </summary>
+        public string Description
+        {
+            get { return m_Description;  }
+        }
 
-		#region	Command input
+        /// <summary>
+        /// Command identifier
+        /// </summary>
+        public byte Id
+        {
+            get { return m_Id; }
+        }
 
-		/// <summary>
-		/// The list of CommandInput objects
-		/// </summary>
-		public ICollection< CommandInput > Inputs
-		{
-			get { return m_Inputs; }
-		}
+        /// <summary>
+        /// Command inputs
+        /// </summary>
+        public IList< IInput > Inputs
+        {
+            get { return m_Inputs; }
+        }
 
-		/// <summary>
-		/// Adds an input binding to this command
-		/// </summary>
-		public virtual void AddInput( CommandInput input )
-		{
-			m_Inputs.Add( input );
-		}
+        #endregion
 
-		/// <summary>
-		/// Binds this command to a given scene view
-		/// </summary>
-		/// <param name="view">View to bind to</param>
-		public void BindToView( Scene.SceneView view )
-		{
-			foreach ( CommandInput curInput in m_Inputs )
-			{
-				m_Bindings.Add( curInput.BindToView( this, view ) );
-			}
-		}
-
-		/// <summary>
-		/// Unbinds this command from a given scene view
-		/// </summary>
-		/// <param name="view">View to unbind from</param>
-		public void UnbindFromView( Scene.SceneView view )
-		{
-			for ( int bindingIndex = 0; bindingIndex < m_Bindings.Count; )
-			{
-				if ( ( ( CommandInputBinding )m_Bindings[ bindingIndex ] ).View == view )
-				{
-					m_Bindings.RemoveAt( bindingIndex );
-				}
-				else
-				{
-					++bindingIndex;
-				}
-			}
-		}
-
-		#endregion
-
-		/// <summary>
-		/// Updates this command
-		/// </summary>
-		public void Update( CommandList commands )
-		{
+        /// <summary>
+        /// Command update
+        /// </summary>
+        public void Update( )
+        {
 			bool wasActive = ( m_LastActiveUpdate == m_UpdateCount );
 			++m_UpdateCount;
 
-			foreach ( CommandInputBinding curBinding in m_Bindings )
-			{
-				if ( curBinding.Active )
+            foreach ( IInput input in m_Inputs )
+            {
+                if ( input.IsActive )
 				{
-					CommandMessage message = curBinding.CreateCommandMessage( );
-					if ( message == null )
-					{
-						message = new CommandMessage( this );
-					}
+					CommandMessage message = input.CreateCommandMessage( this );
 
 					//	Always invoke the Active event if the command is active
 					if ( Active != null )
 					{
-						Active( curBinding.View, message );
+						Active( input, message );
 					}
-					commands.OnCommandActive( curBinding.View, message );
 
 					//	Invoke the Activated event if the command has only just gone active
 					if ( !wasActive )
 					{
 						if ( Activated != null )
 						{
-							Activated( curBinding.View, message );
+							Activated( input, message );
 						}
-						commands.OnCommandActivated( curBinding.View, message );
 					}
 					m_LastActiveUpdate = m_UpdateCount;
 					break;
 				}
-			}
-		}
+            }
+        }
 
-		#region	Public properties
+        #region Private stuff
 
-		/// <summary>
-		/// Gets the name of this command
-		/// </summary>
-		public string Name
-		{
-			get { return m_Name; }
-		}
+        private string          m_Name;
+        private string          m_Description;
+        private byte            m_Id;
 
-		/// <summary>
-		/// Gets the description of this command
-		/// </summary>
-		public string Description
-		{
-			get { return m_Description; }
-		}
+        private List< IInput >  m_Inputs = new List< IInput >( );
+		private uint			m_UpdateCount;
+		private uint			m_LastActiveUpdate;
 
-		#endregion
-
-		#region	Private stuff
-
-		private string						m_Name;
-		private string						m_Description;
-		private List< CommandInput >		m_Inputs	= new List< CommandInput >( );
-		private List< CommandInputBinding >	m_Bindings	= new List< CommandInputBinding >( );
-		private ushort						m_Id;
-		private int							m_UpdateCount;
-		private int							m_LastActiveUpdate;
-		private CommandInputInterpreter		m_Interpreter;
-
-		#endregion
-	}
+        #endregion
+    }
 }

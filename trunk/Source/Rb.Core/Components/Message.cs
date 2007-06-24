@@ -1,7 +1,5 @@
 using System;
 
-using MessageTypeId = System.UInt16;
-
 namespace Rb.Core.Components
 {
 	/// <summary>
@@ -9,90 +7,6 @@ namespace Rb.Core.Components
 	/// </summary>
 	public abstract class Message
 	{
-		/// <summary>
-		/// Gets the message type id associated with a message type
-		/// </summary>
-		public static MessageTypeId IdFromType( Type messageType )
-		{
-			return ( MessageTypeId )( messageType.GetHashCode( ) );
-		}
-
-		/// <summary>
-		/// Gets the type identifier of this message
-		/// </summary>
-		public MessageTypeId TypeId
-		{
-			get
-			{
-				return IdFromType( GetType( ) );
-			}
-		}
-
-		/// <summary>
-		/// Creates a message from a type ID
-		/// </summary>
-		/// <param name="typeId"> Message type identifier </param>
-		/// <returns> Returns a new message of the specified type </returns>
-		public static Message CreateFromTypeId( MessageTypeId typeId )
-		{
-			// TODO: AP: COMPLETEME (use MessageBuilder instead?)
-			Type messageType = null; // MessageTypeManager.Inst.GetMessageTypeFromId( typeId );
-			if ( messageType == null )
-			{
-				throw new ApplicationException( string.Format( "Can't match type ID \"{0}\" to message type", messageType ) );
-			}
-			try
-			{
-				return ( Message )Activator.CreateInstance( messageType );
-			}
-			catch ( Exception exception )
-			{
-				throw new ApplicationException( string.Format( "Failed to create message of type \"{0}\"", messageType ), exception );
-			}
-		}
-
-		/// <summary>
-		/// Reads a message from a binary stream
-		/// </summary>
-		public static Message CreateFromStream( System.IO.BinaryReader input )
-		{
-			Message msg = CreateFromTypeId( input.ReadUInt16( ) );
-			msg.Read( input );
-			return msg;
-		}
-
-		/// <summary>
-		/// Writes a message to the specified output stream
-		/// </summary>
-		/// <param name="output">Output stream</param>
-		/// <remarks>
-		/// This implementation writes the message type ID to the stream
-		/// </remarks>
-		public virtual void Write( System.IO.BinaryWriter output )
-		{
-			output.Write( TypeId );
-		}
-
-		/// <summary>
-		/// Reads a message from the specified stream
-		/// </summary>
-		/// <param name="input"> Input stream </param>
-		protected virtual void Read( System.IO.BinaryReader input )
-		{
-		}
-
-		/// <summary>
-		/// Reads a message from the specified stream
-		/// </summary>
-		/// <param name="input">Input stream</param>
-		/// <returns>Returns the new message</returns>
-		public static Message ReadMessage( System.IO.BinaryReader input )
-		{
-			Message msg = CreateFromTypeId( input.ReadUInt16( ) );
-			msg.Read( input );
-			return msg;
-		}
-
 		#region	Message recipient chain support
 
 		/// <summary>
@@ -133,14 +47,8 @@ namespace Rb.Core.Components
 		/// </summary>
 		public object Sender
 		{
-			get
-			{
-				return m_Sender;
-			}
-			set
-			{
-				m_Sender = value;
-			}
+			get { return m_Sender; }
+			set { m_Sender = value; }
 		}
 
 		#endregion

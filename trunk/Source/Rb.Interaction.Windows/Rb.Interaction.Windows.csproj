@@ -4,17 +4,17 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</ProjectGuid>
+    <ProjectGuid>{4ECD7CBC-1D3E-4C87-852E-77488B549711}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rb.Interaction</RootNamespace>
-    <AssemblyName>Rb.Interaction</AssemblyName>
+    <RootNamespace>Rb.Interaction.Windows</RootNamespace>
+    <AssemblyName>Rb.Interaction.Windows</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -22,7 +22,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\Release\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -30,36 +30,20 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command.cs" />
-    <Compile Include="CommandDescriptionAttribute.cs" />
-    <Compile Include="CommandList.cs" />
-    <Compile Include="CommandListManager.cs" />
-    <Compile Include="CommandMessage.cs" />
-    <Compile Include="CursorInput.cs" />
-    <Compile Include="CursorPickInput.cs" />
-    <Compile Include="IInput.cs" />
-    <Compile Include="Input.cs" />
-    <Compile Include="InputContext.cs" />
-    <Compile Include="InputTemplate.cs" />
-    <Compile Include="InteractionLog.cs" />
-    <Compile Include="PickCommandMessage.cs" />
+    <Compile Include="KeyInput.cs" />
+    <Compile Include="KeyInputTemplate.cs" />
+    <Compile Include="MouseCursorInput.cs" />
+    <Compile Include="MouseCursorInputTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">
-      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
-      <Name>Rb.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rb.Log\Rb.Log.csproj">
-      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
-      <Name>Rb.Log</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rb.Rendering\Rb.Rendering.csproj">
-      <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
-      <Name>Rb.Rendering</Name>
+    <ProjectReference Include="..\Rb.Interaction\Rb.Interaction.csproj">
+      <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
+      <Name>Rb.Interaction</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
