@@ -1,25 +1,24 @@
-using System;
 using System.Windows.Forms;
 
-namespace Rb.Core.Interaction
+namespace Rb.Interaction.Windows
 {
-	/// <summary>
-	/// Binds a command to a keypress
-	/// </summary>
-	public class CommandKeyInputBinding : CommandInputBinding
-	{
+    /// <summary>
+    /// Keyboard input
+    /// </summary>
+    public class KeyInput : Input
+    {
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		/// <param name="view">The view that this binding is attached to</param>
+        /// <param name="context">The input context</param>
 		/// <param name="key">Key to check for</param>
-		public CommandKeyInputBinding( Command cmd, Scene.SceneView view, Keys key ) :
-			base( cmd, view )
+		public KeyInput( InputContext context, Keys key ) :
+			base( context )
 		{
 			m_Key = key;
 
-			view.Control.KeyDown	+= new KeyEventHandler( OnKeyDown );
-			view.Control.KeyUp		+= new KeyEventHandler( OnKeyUp );
+			( ( Control )context.Control ).KeyDown += new KeyEventHandler( OnKeyDown );
+            ( ( Control )context.Control ).KeyUp += new KeyEventHandler( OnKeyUp );
 		}
 
 		/// <summary>
@@ -29,7 +28,7 @@ namespace Rb.Core.Interaction
 		{
 			if ( args.KeyCode == m_Key )
 			{
-				Active = true;
+                IsActive = true;
 			}
 		}
 
@@ -40,10 +39,11 @@ namespace Rb.Core.Interaction
 		{
 			if ( args.KeyCode == m_Key )
 			{
-				Active = false;
+                IsActive = false;
 			}
 		}
 
 		private Keys m_Key;
-	}
+
+    }
 }

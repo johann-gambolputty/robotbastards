@@ -1,6 +1,6 @@
 using System;
 
-namespace Rb.Core.Interaction
+namespace Rb.Interaction
 {
 	/// <summary>
 	/// Description attribute that can be attached to an enum value.
@@ -12,32 +12,38 @@ namespace Rb.Core.Interaction
 	/// <example>
 	/// public enum MyCommands
 	/// {
-	///		[ Interaction.CommandEnumDescription( "Self Destructs" ) ]
-	///		[ Interaction.CommandEnumInputInterpreter( typeof( MyCommandInputInterpreter ) ) ]
+	///		[ Interaction.CommandDescription( "Self Destruct", "Destructs self" ) ]
 	///		SelfDestruct
 	/// }
 	/// </example>
-	public class CommandEnumDescriptionAttribute : Attribute
+	public class CommandDescriptionAttribute : Attribute
 	{
 		/// <summary>
 		/// Stores the description
 		/// </summary>
-		public CommandEnumDescriptionAttribute( string description )
+        public CommandDescriptionAttribute( string name, string description )
 		{
+		    m_Name = name;
 			m_Description = description;
 		}
 
 		/// <summary>
 		/// Gets the command description
 		/// </summary>
-		public string	Description
+		public string Description
 		{
-			get
-			{
-				return m_Description;
-			}
+			get { return m_Description; }
 		}
 
+        /// <summary>
+        /// Gets the command name
+        /// </summary>
+	    public string Name
+	    {
+	        get { return m_Name; }
+	    }
+
+	    private string m_Name;
 		private string m_Description;
 	}
 }

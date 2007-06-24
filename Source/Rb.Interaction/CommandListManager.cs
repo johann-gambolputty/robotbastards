@@ -1,8 +1,7 @@
-using System;
-using System.Collections;
-using System.Reflection;
+using System.Collections.Generic;
+using Rb.Core.Utils;
 
-namespace Rb.Core.Interaction
+namespace Rb.Interaction
 {
 	/// <summary>
 	/// Stores a dictionary of CommandList objects
@@ -12,27 +11,24 @@ namespace Rb.Core.Interaction
 		/// <summary>
 		/// Gets the singleton instance of CommandListManager
 		/// </summary>
-		public static CommandListManager	Inst
+		public static CommandListManager Inst
 		{
-			get
-			{
-				return ms_Singleton;
-			}
+			get { return ms_Singleton; }
 		}
 
 		/// <summary>
 		/// Adds a command list
 		/// </summary>
-		public void					Add( CommandList commands )
+		public void Add( CommandList commands )
 		{
-			Output.WriteLineCall( Output.InputInfo, "Adding command list \"{0}\" to command list manager", commands.Name );
+			InteractionLog.Info( "Adding command list \"{0}\" to command list manager", commands.Name );
 			m_CommandLists.Add( commands );
 		}
 
 		/// <summary>
 		/// Gets a named command list
 		/// </summary>
-		public CommandList			Get( string name )
+		public CommandList Get( string name )
 		{
 			foreach ( CommandList curList in m_CommandLists )
 			{
@@ -45,47 +41,19 @@ namespace Rb.Core.Interaction
 		}
 
 		/// <summary>
-		/// Gets the command list from the hash of its name
-		/// </summary>
-		public CommandList			GetFromStringHash( int stringHash )
-		{
-			foreach ( CommandList curList in m_CommandLists )
-			{
-				if ( curList.Name.GetHashCode( ) == stringHash )
-				{
-					return curList;
-				}
-			}
-			return null;
-		}
-
-		/// <summary>
-		/// Creates a CommandList from an enumerated type
-		/// </summary>
-		public static CommandList	CreateFromEnum( Type enumType )
-		{
-			CommandList commands = new CommandList( enumType.Name );
-			commands.AddEnumCommands( enumType );
-			return commands;
-		}
-
-		/// <summary>
 		/// Stored command lists
 		/// </summary>
-		public ArrayList			CommandLists
+		public IList< CommandList > CommandLists
 		{
-			get
-			{
-				return m_CommandLists;
-			}
+			get { return m_CommandLists; }
 		}
 
 		private CommandListManager( )
 		{
-			m_UpdateClock.Subscribe( new Scene.Clock.TickDelegate( UpdateLists ) );
+			m_UpdateClock.Subscribe( new Clock.TickDelegate( UpdateLists ) );
 		}
 
-		private void UpdateLists( Scene.Clock clock )
+		private void UpdateLists( Clock clock )
 		{
 			foreach ( CommandList curList in m_CommandLists )
 			{
@@ -93,8 +61,8 @@ namespace Rb.Core.Interaction
 			}
 		}
 
-		private Scene.Clock					m_UpdateClock	= new Scene.Clock( "InputUpdateClock", 1 );
-		private ArrayList					m_CommandLists	= new ArrayList( );
+		private Clock					    m_UpdateClock	= new Clock( "InputUpdateClock", 1 );
+		private List< CommandList >			m_CommandLists	= new List< CommandList >( );
 		private static CommandListManager	ms_Singleton	= new CommandListManager( );
 
 	}
