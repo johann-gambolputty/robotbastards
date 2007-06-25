@@ -44,6 +44,14 @@ namespace Rb.AssemblySelector
             {
                 AddAssembly( assembly );
             }
+
+            AppDomain.AssemblyLoad += new AssemblyLoadEventHandler( OnAssemblyLoad );
+        }
+
+        private void OnAssemblyLoad( object sender, AssemblyLoadEventArgs args )
+        {
+            //  TODO: AP: is a check required to see if the load was reflection-only?
+            AddAssembly( args.LoadedAssembly );
         }
 
         public static AssemblySelector BuildSelector( string selectionString )
@@ -84,11 +92,11 @@ namespace Rb.AssemblySelector
                 if ( selector.MatchesFilename( file ) )
                 {
                     string assembly = file.Substring( 0, file.LastIndexOf( ".dll" ) );
-                    Assembly curAssembly = AppDomain.CurrentDomain.Load( assembly );
+                    Assembly curAssembly = Assembly.ReflectionOnlyLoad( assembly );
 
                     if ( selector.MatchesAssembly( curAssembly ) )
                     {
-                        return curAssembly;
+                        return Assembly.Load( path );
                     }
                 }
             }
