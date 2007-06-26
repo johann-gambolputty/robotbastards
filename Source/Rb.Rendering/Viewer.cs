@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Rb.Core.Utils;
 
 namespace Rb.Rendering
@@ -10,28 +7,49 @@ namespace Rb.Rendering
     /// </summary>
     public class Viewer
     {
+		/// <summary>
+		/// The rendering context for the viewer
+		/// </summary>
         public IRenderContext Context
         {
             get { return m_Context; }
             set { m_Context = value; }
         }
 
+		/// <summary>
+		/// The current camera
+		/// </summary>
         public Cameras.CameraBase Camera
         {
             get { return m_Camera;  }
             set { m_Camera = value; }
         }
 
+		/// <summary>
+		/// The object rendered in the view
+		/// </summary>
         public IRenderable Renderable
         {
             get { return m_Renderable; }
             set { m_Renderable = value; }
         }
 
+		/// <summary>
+		/// Default constructor
+		/// </summary>
         public Viewer( )
+<<<<<<< .mine
+        {   
+=======
         {
+>>>>>>> .r142
         }
 
+		/// <summary>
+		/// Viewer setup
+		/// </summary>
+		/// <param name="camera"></param>
+		/// <param name="renderable"></param>
         public Viewer( Cameras.CameraBase camera, IRenderable renderable )
         {
             m_Camera = camera;
@@ -39,6 +57,9 @@ namespace Rb.Rendering
 			//m_Context.GlobalTechnique = new ShadowBufferTechnique( );
         }
 
+		/// <summary>
+		/// Renders the view
+		/// </summary>
         public void Render( )
         {
 			m_Context.RenderTime = TinyTime.CurrentTime;
