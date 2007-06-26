@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.IO;
 using System.Text.RegularExpressions;
 
 namespace Rb.AssemblySelector
@@ -11,47 +12,128 @@ namespace Rb.AssemblySelector
         {
             get { return ms_Singleton; }
         }
-
-        public void AddAssembly( Assembly assembly )
-        {
-            object[] idAttributes = assembly.GetCustomAttributes( typeof( AssemblyIdentifierAttribute ), true );
-            foreach ( AssemblyIdentifierAttribute idAttribute in idAttributes )
-            {
-                if ( !idAttribute.AddToIdMap )
-                {
-                    continue;
-                }
-
-                IdList identifiers;
-                if ( !m_Map.TryGetValue( idAttribute.Identifier, out identifiers ) )
-                {
-                    identifiers = new IdList( );
-                    m_Map.Add( idAttribute.Identifier, identifiers );
-                }
-
-                if ( identifiers.IndexOf( idAttribute.Value ) == -1 )
-                {
-                    identifiers.Add( idAttribute.Value );
-                }
-            }
-        }
-
         private static IdentifierMap ms_Singleton = new IdentifierMap( );
-
+        
         private IdentifierMap( )
         {
             foreach ( Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                AddAssembly( assembly );
+                AddAssemblyToMap( assembly );
             }
 
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler( OnAssemblyLoad );
+
+            AddAssemblyIdentifiers( ".", SearchOption.TopDirectoryOnly );
+        }
+
+        public Assembly Load( string selectionString )
+        {
+            AssemblySelector selector = BuildSelector( selectionString );
+
+            foreach ( KeyValuePair< string, AssemblyIdentifiers > kvp in m_Map )
+            {
+                if ( ( selector.MatchesFilename( kvp.Key ) ) && ( selector.MatchesIdentifiers( kvp.Value ) ) )
+                {
+                    return Assembly.Load( kvp.Key );
+                }
+            }
+            return null;
+        }
+
+        public void AddAssemblyIdentifiers( string directory, SearchOption option )
+        {
+            foreach ( string file in System.IO.Directory.GetFiles( directory, "*.dll", option ) )
+            {
+                string assemblyName = System.IO.Path.GetFileNameWithoutExtension( file );
+                Assembly curAssembly = Assembly.ReflectionOnlyLoad(assemblyName);
+
+                AddAssemblyToMap( curAssembly );
+            }
+        }
+
+        public class AssemblyIdentifiers : Dictionary< string, string >
+        {
+        }
+
+        private class AssemblyMap : Dictionary< string, AssemblyIdentifiers >
+        {
+        }
+
+        private class ValueList : List< string >
+        {
+        }
+
+        private class IdMap : Dictionary< string, ValueList >
+        {
+        }
+
+        private AssemblyMap m_Map = new AssemblyMap( );
+        private IdMap m_IdMap = new IdMap( );
+
+        private static AssemblyIdentifiers CreateAssemblyIdentifiers( Assembly assembly )
+        {
+            AssemblyIdentifiers identifiers = null;
+			foreach ( CustomAttributeData idAttribute in CustomAttributeData.GetCustomAttributes( assembly ) )
+			{
+				if ( idAttribute.Constructor.DeclaringType.GUID == typeof( AssemblyIdentifierAttribute ).GUID )
+				{
+                    if ( identifiers == null )
+                    {
+                        identifiers = new AssemblyIdentifiers( );
+                    }
+                    string id = idAttribute.ConstructorArguments[ 0 ].Value.ToString( );
+                    string val = idAttribute.ConstructorArguments[ 1 ].Value.ToString( );
+
+                    identifiers[ id ] = val;
+				}
+			}
+            return identifiers;
+        }
+
+        private void AddAssemblyToMap( Assembly assembly )
+        {
+            string assemblyKey = assembly.GetName().Name;
+            if ( m_Map.ContainsKey( assemblyKey ) )
+            {
+                return;
+            }
+
+            AssemblyIdentifiers identifiers = CreateAssemblyIdentifiers( assembly );
+            if ( identifiers == null )
+            {
+                return;
+            }
+            m_Map[ assemblyKey ] = identifiers;
+
+            foreach ( KeyValuePair< string, string > identifier in identifiers )
+            {
+			    ValueList values;
+                if ( !m_IdMap.TryGetValue( identifier.Key, out values ) )
+                {
+                    values = new ValueList( );
+                    m_IdMap.Add( identifier.Key, values );
+                }
+                if ( values.IndexOf( identifier.Value ) == -1 )
+                {
+                    values.Add( identifier.Value );
+                }
+            }
         }
 
         private void OnAssemblyLoad( object sender, AssemblyLoadEventArgs args )
         {
-            //  TODO: AP: is a check required to see if the load was reflection-only?
-            AddAssembly( args.LoadedAssembly );
+            AddAssemblyToMap( args.LoadedAssembly );
+        }
+        
+        public bool IsMatchingId( string id, string value )
+        {
+            ValueList values;
+            if ( !m_IdMap.TryGetValue( id, out values ) )
+            {
+                return false;
+            }
+
+            return values.IndexOf( value ) != -1;
         }
 
         public static AssemblySelector BuildSelector( string selectionString )
@@ -83,6 +165,31 @@ namespace Rb.AssemblySelector
 
         private static Regex SelectRegex = new Regex(@"(?<Named>name=(?<Name>\w+))|(?<Matches>(?<Id>\w+)=(?<Value>\w+))|(?<Exists>\w+)");
 
+        /*
+        public void AddAssembly( Assembly assembly )
+        {
+            object[] idAttributes = assembly.GetCustomAttributes( typeof( AssemblyIdentifierAttribute ), true );
+            foreach ( AssemblyIdentifierAttribute idAttribute in idAttributes )
+            {
+                if ( !idAttribute.AddToIdMap )
+                {
+                    continue;
+                }
+
+                IdList identifiers;
+                if ( !m_Map.TryGetValue( idAttribute.Identifier, out identifiers ) )
+                {
+                    identifiers = new IdList( );
+                    m_Map.Add( idAttribute.Identifier, identifiers );
+                }
+
+                if ( identifiers.IndexOf( idAttribute.Value ) == -1 )
+                {
+                    identifiers.Add( idAttribute.Value );
+                }
+            }
+        }
+
         public Assembly Load( string searchString, string selectionString, string directory, System.IO.SearchOption option )
         {
             AssemblySelector selector = BuildSelector( selectionString );
@@ -94,7 +201,7 @@ namespace Rb.AssemblySelector
                     string assembly = System.IO.Path.GetFileNameWithoutExtension( file );
                     Assembly curAssembly = Assembly.ReflectionOnlyLoad( assembly );
 
-                    if ( selector.MatchesAssembly( curAssembly ) )
+                    if ( selector.MatchesIdentifiers( curAssembly ) )
                     {
                         return Assembly.Load( assembly );
                     }
@@ -103,6 +210,7 @@ namespace Rb.AssemblySelector
 
             return null;
         }
+        */
 
         public class AssemblySelector
         {
@@ -111,41 +219,17 @@ namespace Rb.AssemblySelector
                 m_Next = nextSelector;
             }
 
-            public bool MatchesAssembly( Assembly assembly )
+            public virtual bool MatchesFilename( string assemblyName )
             {
-				List< CustomAttributeData > idAttributes = new List<CustomAttributeData>( );
-				foreach ( CustomAttributeData attribute in CustomAttributeData.GetCustomAttributes( assembly ) )
-				{
-					if ( attribute.Constructor.DeclaringType.GUID == typeof( AssemblyIdentifierAttribute ).GUID )
-					{
-						idAttributes.Add( attribute );
-					}
-				}
-				return MatchesAssembly( assembly, idAttributes );
+                return ( m_Next == null ) ? true : m_Next.MatchesFilename( assemblyName );
             }
 
-            public virtual bool MatchesFilename( string path )
+			public virtual bool MatchesIdentifiers( AssemblyIdentifiers identifiers )
             {
-                return ( m_Next == null ) ? true : m_Next.MatchesFilename( path );
-            }
-
-			public virtual bool MatchesAssembly( Assembly assembly, IList<CustomAttributeData> idAttributes )
-            {
-                return ( m_Next == null ) ? true : m_Next.MatchesAssembly( assembly, idAttributes );
+                return ( m_Next == null ) ? true : m_Next.MatchesIdentifiers( identifiers );
             }
 
             private AssemblySelector m_Next;
-        }
-
-        public bool IsMatchingId( string id, string value )
-        {
-            IdList identifiers;
-            if ( !m_Map.TryGetValue( id, out identifiers ) )
-            {
-                return false;
-            }
-
-            return identifiers.IndexOf( value ) != -1;
         }
 
         private class IdExistsSelector : AssemblySelector
@@ -156,15 +240,13 @@ namespace Rb.AssemblySelector
                 m_Id = id;
             }
 
-			public override bool MatchesAssembly( Assembly assembly, IList<CustomAttributeData> idAttributes )
+			public override bool MatchesIdentifiers( AssemblyIdentifiers identifiers )
             {
-				foreach ( CustomAttributeData idAttribute in idAttributes )
+                foreach ( KeyValuePair< string, string > kvp in identifiers )
                 {
-					string id	= idAttribute.ConstructorArguments[ 0 ].Value.ToString( );
-					string val	= idAttribute.ConstructorArguments[ 1 ].Value.ToString( );
-                    if ( ( id == m_Id ) && ( Instance.IsMatchingId( id, val ) ) )
+                    if ( ( kvp.Key == m_Id ) && ( Instance.IsMatchingId( kvp.Key, kvp.Value ) ) )
                     {
-                        return base.MatchesAssembly( assembly, idAttributes );
+                        return base.MatchesIdentifiers( identifiers );
                     }
                 }
                 return false;
@@ -186,7 +268,6 @@ namespace Rb.AssemblySelector
                 return path.Contains( m_Name ) && base.MatchesFilename( path );
             }
 
-
             private string m_Name;
         }
         
@@ -199,17 +280,15 @@ namespace Rb.AssemblySelector
                 m_Value = value;
             }
 
-			public override bool MatchesAssembly( Assembly assembly, IList<CustomAttributeData> idAttributes )
+			public override bool MatchesIdentifiers( AssemblyIdentifiers identifiers )
 			{
-				foreach ( CustomAttributeData idAttribute in idAttributes )
-				{
-					string id = idAttribute.ConstructorArguments[ 0 ].Value.ToString( );
-					string val = idAttribute.ConstructorArguments[ 1 ].Value.ToString( );
-					if ( ( id == m_Id ) && ( val == m_Value ) )
-					{
-						return base.MatchesAssembly( assembly, idAttributes );
-					}
-				}
+                foreach ( KeyValuePair< string, string > kvp in identifiers )
+                {
+                    if ( ( kvp.Key == m_Id ) && ( kvp.Value == m_Value ) )
+                    {
+                        return base.MatchesIdentifiers( identifiers );
+                    }
+                }
 
                 return false;
             }
@@ -218,14 +297,5 @@ namespace Rb.AssemblySelector
             private string m_Value;
         }
 
-        private class IdList : List< string >
-        {
-        }
-
-        private class IdMap : Dictionary< string, IdList >
-        {
-        }
-
-        private IdMap m_Map = new IdMap( );
     }
 }

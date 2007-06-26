@@ -57,7 +57,9 @@ namespace Rb.TestApp
                 ComponentLoadParameters loadParams = new ComponentLoadParameters( scene.Objects, scene );
                 ResourceManager.Instance.Load( "scene0.components.xml", loadParams );
 
-                display1.AddViewer( new Viewer( new Rendering.Cameras.SphereCamera( ), scene ) );
+                Viewer viewer = new Viewer( new Rendering.Cameras.SphereCamera( ), scene );
+                display1.AddViewer( viewer );
+                viewer.Context.GlobalTechnique = Builder.CreateInstance< World.Rendering.SceneShadowBufferTechnique >( Builder.Instance );
             }
             catch ( Exception ex )
             {

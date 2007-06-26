@@ -25,7 +25,7 @@
   </object>
 
   <!--Evironment-->
-  <object type="Rb.World.SceneRenderable">
+  <object type="Rb.World.Rendering.SceneRenderable">
 
     <object type="Rb.Rendering.EffectRenderedObject">
 

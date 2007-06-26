@@ -18,7 +18,7 @@ namespace Rb.ColladaLoader
 		/// </summary>
 		public Loader( )
 		{
-			Assembly assembly = AssemblySelector.IdentifierMap.Instance.Load( "*.dll", "Collada=SectionLoader;GraphicsApi", ".", System.IO.SearchOption.TopDirectoryOnly );
+			Assembly assembly = AssemblySelector.IdentifierMap.Instance.Load( "Collada=SectionLoader;GraphicsApi" );
 			if ( assembly != null )
 			{
 				FindColladaLoadersInAssembly( assembly );

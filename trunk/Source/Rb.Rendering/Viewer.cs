@@ -38,11 +38,7 @@ namespace Rb.Rendering
 		/// Default constructor
 		/// </summary>
         public Viewer( )
-<<<<<<< .mine
-        {   
-=======
         {
->>>>>>> .r142
         }
 
 		/// <summary>

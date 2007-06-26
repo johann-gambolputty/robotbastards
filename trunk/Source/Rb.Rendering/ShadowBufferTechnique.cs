@@ -1,6 +1,5 @@
 using System;
 using Rb.Core.Maths;
-using Rb.Core.Components;
 using Rb.Core.Resources;
 
 namespace Rb.Rendering
@@ -110,13 +109,20 @@ namespace Rb.Rendering
 			}
 
 			//	Apply all child techniques
-			foreach ( Object childObj in Children )
-			{
-				if ( childObj is ITechnique )
-				{
-					( ( ITechnique )childObj ).Apply( context, renderable );
-				}
-			}
+            if ( Children.Count > 0 )
+            {
+			    foreach ( Object childObj in Children )
+			    {
+				    if ( childObj is ITechnique )
+				    {
+					    ( ( ITechnique )childObj ).Apply( context, renderable );
+				    }
+			    }
+            }
+            else
+            {
+                renderable.Render( context );
+            }
 
 			//	Unbind all the shadow depth buffer textures
 			for ( int bufferIndex = 0; bufferIndex < numBuffers; ++bufferIndex )
@@ -129,109 +135,111 @@ namespace Rb.Rendering
 
         #region Private stuff
 
-        private static ITechnique			    ms_OverrideTechnique;
-		private static bool						ms_DumpLights	= true;
-		private LightGroup						m_ShadowLights	= null;
-		private RenderTarget[]					m_RenderTargets	= new RenderTarget[ MaxLights ];
-		private float							m_NearZ			= 1.0f;
-		private float							m_FarZ			= 800.0f;
-		private ShaderParameterCustomBinding	m_ShadowMatrixBinding;
-		private ShaderParameterCustomBinding	m_ShadowNearZBinding;
-		private ShaderParameterCustomBinding	m_ShadowFarZBinding;
-        
-		/// <summary>
-		/// Makes the shadow buffers
-		/// </summary>
-		private int MakeBuffers( IRenderable renderable, IRenderContext context, LightGroup lights )
-		{
-			Renderer.Inst.PushTransform( Transform.LocalToWorld );
-			Renderer.Inst.PushTransform( Transform.WorldToView );
-			Renderer.Inst.PushTransform( Transform.ViewToScreen );
+        private static ITechnique               ms_OverrideTechnique;
+        private static bool                     ms_DumpLights = true;
 
-			Renderer.Inst.SetTransform( Transform.LocalToWorld, Matrix44.Identity );
+        private LightGroup                      m_ShadowLights;
+        private RenderTarget[]                  m_RenderTargets = new RenderTarget[MaxLights];
+        private float                           m_NearZ = 1.0f;
+        private float                           m_FarZ = 800.0f;
+        private ShaderParameterCustomBinding    m_ShadowMatrixBinding;
+        private ShaderParameterCustomBinding    m_ShadowNearZBinding;
+        private ShaderParameterCustomBinding    m_ShadowFarZBinding;
 
-			//
-			//	Ideal:
-			//		- Run through currently active lights
-			//		- Query the scene renderables for any intersecting the current light's cone
-			//		- Render all objects in that list to current render target
-			//		- as before
-			//
-			//	Issues:
-			//		- Needs access to the light manager
-			//		- Naive inside-cone query will return the entire environment. Query needs to be aware of environment subsections (e.g. BSP nodes)
-			//
+        /// <summary>
+        /// Makes the shadow buffers
+        /// </summary>
+        private int MakeBuffers( IRenderable renderable, IRenderContext context, LightGroup lights )
+        {
+            Renderer.Inst.PushTransform( Transform.LocalToWorld );
+            Renderer.Inst.PushTransform( Transform.WorldToView );
+            Renderer.Inst.PushTransform( Transform.ViewToScreen );
 
-			int numLights	= lights.NumLights > MaxLights ? MaxLights : lights.NumLights;
-			int numBuffers	= 0;
-			for ( int lightIndex = 0; lightIndex < numLights; ++lightIndex )
-			{
-				//	The shadow buffer technique can currently only work with spotlights
-				if ( !( lights[ lightIndex ] is SpotLight ) || ( !lights[ lightIndex ].ShadowCaster ) )
-				{
-					continue;
-				}
+            Renderer.Inst.SetTransform( Transform.LocalToWorld, Matrix44.Identity );
 
-				RenderTarget	curTarget	= m_RenderTargets[ numBuffers++ ];
-				SpotLight		curLight	= ( SpotLight )lights[ lightIndex ];	
+            //
+            //	Ideal:
+            //		- Run through currently active lights
+            //		- Query the scene renderables for any intersecting the current light's cone
+            //		- Render all objects in that list to current render target
+            //		- as before
+            //
+            //	Issues:
+            //		- Needs access to the light manager
+            //		- Naive inside-cone query will return the entire environment. Query needs to be aware of environment subsections (e.g. BSP nodes)
+            //
 
-				//	Set up the transform for the current light
+            int numLights = lights.NumLights > MaxLights ? MaxLights : lights.NumLights;
+            int numBuffers = 0;
+            for ( int lightIndex = 0; lightIndex < numLights; ++lightIndex )
+            {
+                //	The shadow buffer technique can currently only work with spotlights
+                if ( !( lights[ lightIndex ] is SpotLight ) || ( !lights[ lightIndex ].ShadowCaster ) )
+                {
+                    continue;
+                }
 
-				//	TODO: Need proper Y axis
-				int		width		= curTarget.Width;
-				int		height		= curTarget.Height;
-				float	aspectRatio	= ( height == 0 ) ? 1.0f : ( ( float )width / ( float )height );
+                RenderTarget curTarget = m_RenderTargets[ numBuffers++ ];
+                SpotLight curLight = ( SpotLight )lights[ lightIndex ];
 
-				Renderer.Inst.SetLookAtTransform( curLight.Position + curLight.Direction, curLight.Position, Vector3.YAxis );
-				Renderer.Inst.SetPerspectiveProjectionTransform( curLight.ArcDegrees * 2, aspectRatio, m_NearZ, m_FarZ );
+                //	Set up the transform for the current light
 
-				//	Set the current MVP matrix as the shadow transform. This is for after, when the scene is rendered properly
-				Matrix44 shadowMat = Renderer.Inst.GetTransform( Transform.ViewToScreen ) * Renderer.Inst.GetTransform( Transform.WorldToView );
-				m_ShadowMatrixBinding.Set( shadowMat );
+                //	TODO: Need proper Y axis
+                int width = curTarget.Width;
+                int height = curTarget.Height;
+                float aspectRatio = (height == 0) ? 1.0f : ( ( float )width / ( float )height );
 
-				//	Set near and far Z plane bindings
-				//	NOTE: This could be done once in setup - kept here for now so I can change them on the fly
-				m_ShadowNearZBinding.Set( m_NearZ );
-				m_ShadowFarZBinding.Set( m_FarZ );
+                Renderer.Inst.SetLookAtTransform( curLight.Position + curLight.Direction, curLight.Position, Vector3.YAxis );
+                Renderer.Inst.SetPerspectiveProjectionTransform( curLight.ArcDegrees * 2, aspectRatio, m_NearZ, m_FarZ );
 
-				//	Set up the render target for the light
-				curTarget.Begin( );
-				Rendering.Renderer.Inst.ClearColour( System.Drawing.Color.Black );
-				Rendering.Renderer.Inst.ClearDepth( 1.0f );
+                //	Set the current MVP matrix as the shadow transform. This is for after, when the scene is rendered properly
+                Matrix44 shadowMat = Renderer.Inst.GetTransform( Transform.ViewToScreen ) * Renderer.Inst.GetTransform( Transform.WorldToView );
+                m_ShadowMatrixBinding.Set( shadowMat );
+
+                //	Set near and far Z plane bindings
+                //	NOTE: This could be done once in setup - kept here for now so I can change them on the fly
+                m_ShadowNearZBinding.Set( m_NearZ );
+                m_ShadowFarZBinding.Set( m_FarZ );
+
+                //	Set up the render target for the light
+                curTarget.Begin();
+                Rendering.Renderer.Inst.ClearColour( System.Drawing.Color.Black );
+                Rendering.Renderer.Inst.ClearDepth( 1.0f );
 
                 //  Set the global technique to the override technique (this forces all objects to be rendered using the
                 //  override technique, unlesss they support a valid substitute technique), and render away...
-			    context.GlobalTechnique = ms_OverrideTechnique;
+                context.GlobalTechnique = ms_OverrideTechnique;
 
                 renderable.Render( context );
 
                 context.GlobalTechnique = null;
 
-				//	Stop using the current render target
-				curTarget.End( );
+                //	Stop using the current render target
+                curTarget.End( );
 
-				//	Save the depth buffer
-				if ( ms_DumpLights )
-				{
-					if ( DepthTextureMethod )
-					{
-						curTarget.DepthTexture.Save( string.Format( "ShadowBuffer{0}.png", numBuffers - 1 ) );
-					}
-					else
-					{
-						curTarget.Texture.Save( string.Format( "ShadowBuffer{0}.png", numBuffers - 1 ) );
-					}
-					ms_DumpLights = false;
-				}
-			}
+                //	Save the depth buffer
+                if ( ms_DumpLights )
+                {
+                    if ( DepthTextureMethod )
+                    {
+                        curTarget.DepthTexture.Save( string.Format( "ShadowBuffer{0}.png", numBuffers - 1 ) );
+                    }
+                    else
+                    {
+                        curTarget.Texture.Save( string.Format( "ShadowBuffer{0}.png", numBuffers - 1 ) );
+                    }
+                    ms_DumpLights = false;
+                }
+            }
 
-			Renderer.Inst.PopTransform( Transform.LocalToWorld );
-			Renderer.Inst.PopTransform( Transform.WorldToView );
-			Renderer.Inst.PopTransform( Transform.ViewToScreen );
+            Renderer.Inst.PopTransform(Transform.LocalToWorld);
+            Renderer.Inst.PopTransform(Transform.WorldToView);
+            Renderer.Inst.PopTransform(Transform.ViewToScreen);
 
-			return numBuffers;
+            return numBuffers;
         }
 
         #endregion
+
     }
 }
