@@ -203,8 +203,8 @@ namespace Rb.Rendering
 
                 //	Set up the render target for the light
                 curTarget.Begin();
-                Rendering.Renderer.Inst.ClearColour( System.Drawing.Color.Black );
-                Rendering.Renderer.Inst.ClearDepth( 1.0f );
+                Renderer.Inst.ClearColour( System.Drawing.Color.Black );
+                Renderer.Inst.ClearDepth( 1.0f );
 
                 //  Set the global technique to the override technique (this forces all objects to be rendered using the
                 //  override technique, unlesss they support a valid substitute technique), and render away...
@@ -232,9 +232,9 @@ namespace Rb.Rendering
                 }
             }
 
-            Renderer.Inst.PopTransform(Transform.LocalToWorld);
-            Renderer.Inst.PopTransform(Transform.WorldToView);
-            Renderer.Inst.PopTransform(Transform.ViewToScreen);
+            Renderer.Inst.PopTransform( Transform.LocalToWorld );
+            Renderer.Inst.PopTransform( Transform.WorldToView );
+            Renderer.Inst.PopTransform( Transform.ViewToScreen );
 
             return numBuffers;
         }

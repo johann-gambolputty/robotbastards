@@ -50,7 +50,6 @@ namespace Rb.Rendering
         {
             m_Camera = camera;
             m_Renderable = renderable;
-			//m_Context.GlobalTechnique = new ShadowBufferTechnique( );
         }
 
 		/// <summary>
