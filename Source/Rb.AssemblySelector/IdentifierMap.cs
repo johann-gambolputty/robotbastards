@@ -45,7 +45,7 @@ namespace Rb.AssemblySelector
                 AddAssembly( assembly );
             }
 
-            AppDomain.AssemblyLoad += new AssemblyLoadEventHandler( OnAssemblyLoad );
+            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler( OnAssemblyLoad );
         }
 
         private void OnAssemblyLoad( object sender, AssemblyLoadEventArgs args )
@@ -91,12 +91,12 @@ namespace Rb.AssemblySelector
             {
                 if ( selector.MatchesFilename( file ) )
                 {
-                    string assembly = file.Substring( 0, file.LastIndexOf( ".dll" ) );
+                    string assembly = System.IO.Path.GetFileNameWithoutExtension( file );
                     Assembly curAssembly = Assembly.ReflectionOnlyLoad( assembly );
 
                     if ( selector.MatchesAssembly( curAssembly ) )
                     {
-                        return Assembly.Load( path );
+                        return Assembly.Load( assembly );
                     }
                 }
             }
@@ -113,8 +113,15 @@ namespace Rb.AssemblySelector
 
             public bool MatchesAssembly( Assembly assembly )
             {
-                AssemblyIdentifierAttribute[] idAttributes = ( AssemblyIdentifierAttribute[] )assembly.GetCustomAttributes( typeof( AssemblyIdentifierAttribute ), true );
-                return MatchesAssembly( assembly, idAttributes );
+				List< CustomAttributeData > idAttributes = new List<CustomAttributeData>( );
+				foreach ( CustomAttributeData attribute in CustomAttributeData.GetCustomAttributes( assembly ) )
+				{
+					if ( attribute.Constructor.DeclaringType.GUID == typeof( AssemblyIdentifierAttribute ).GUID )
+					{
+						idAttributes.Add( attribute );
+					}
+				}
+				return MatchesAssembly( assembly, idAttributes );
             }
 
             public virtual bool MatchesFilename( string path )
@@ -122,7 +129,7 @@ namespace Rb.AssemblySelector
                 return ( m_Next == null ) ? true : m_Next.MatchesFilename( path );
             }
 
-            public virtual bool MatchesAssembly(Assembly assembly, AssemblyIdentifierAttribute[] idAttributes)
+			public virtual bool MatchesAssembly( Assembly assembly, IList<CustomAttributeData> idAttributes )
             {
                 return ( m_Next == null ) ? true : m_Next.MatchesAssembly( assembly, idAttributes );
             }
@@ -148,12 +155,14 @@ namespace Rb.AssemblySelector
             {
                 m_Id = id;
             }
-            
-            public override bool MatchesAssembly( Assembly assembly, AssemblyIdentifierAttribute[] idAttributes )
+
+			public override bool MatchesAssembly( Assembly assembly, IList<CustomAttributeData> idAttributes )
             {
-                foreach ( AssemblyIdentifierAttribute idAttribute in idAttributes )
+				foreach ( CustomAttributeData idAttribute in idAttributes )
                 {
-                    if ( ( idAttribute.Identifier == m_Id ) && ( Instance.IsMatchingId( idAttribute.Identifier, idAttribute.Value ) ) )
+					string id	= idAttribute.ConstructorArguments[ 0 ].Value.ToString( );
+					string val	= idAttribute.ConstructorArguments[ 1 ].Value.ToString( );
+                    if ( ( id == m_Id ) && ( Instance.IsMatchingId( id, val ) ) )
                     {
                         return base.MatchesAssembly( assembly, idAttributes );
                     }
@@ -190,15 +199,18 @@ namespace Rb.AssemblySelector
                 m_Value = value;
             }
 
-            public override bool MatchesAssembly( Assembly assembly, AssemblyIdentifierAttribute[] idAttributes )
-            {
-                foreach ( AssemblyIdentifierAttribute idAttribute in idAttributes )
-                {
-                    if ( ( idAttribute.Identifier == m_Id ) && ( idAttribute.Value == m_Value ) )
-                    {
-                        return base.MatchesAssembly( assembly, idAttributes );
-                    }
-                }
+			public override bool MatchesAssembly( Assembly assembly, IList<CustomAttributeData> idAttributes )
+			{
+				foreach ( CustomAttributeData idAttribute in idAttributes )
+				{
+					string id = idAttribute.ConstructorArguments[ 0 ].Value.ToString( );
+					string val = idAttribute.ConstructorArguments[ 1 ].Value.ToString( );
+					if ( ( id == m_Id ) && ( val == m_Value ) )
+					{
+						return base.MatchesAssembly( assembly, idAttributes );
+					}
+				}
+
                 return false;
             }
 

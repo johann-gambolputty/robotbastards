@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{46980366-998B-4178-87B7-B04DD3B21979}</ProjectGuid>
+    <ProjectGuid>{2358F245-118D-43DD-838B-FF196EECFD6B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rb.World</RootNamespace>
-    <AssemblyName>Rb.World</AssemblyName>
+    <RootNamespace>Rb.Rendering.OpenGl.ColladaSectionLoaders</RootNamespace>
+    <AssemblyName>Rb.Rendering.OpenGl.ColladaSectionLoaders</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,39 +31,31 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Tao.OpenGl, Version=2.1.0.4, Culture=neutral, PublicKeyToken=1ca010269a4501ef, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\ThirdParty\Tao 2.0\bin\Tao.OpenGl.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\Entity.cs" />
-    <Compile Include="Entities\Entity3d.cs" />
-    <Compile Include="Entities\JumpRequest.cs" />
-    <Compile Include="Entities\MovementRequest.cs" />
-    <Compile Include="Entities\MovementXzRequest.cs" />
-    <Compile Include="IHost.cs" />
-    <Compile Include="ILightingManager.cs" />
-    <Compile Include="ILightMeter.cs" />
-    <Compile Include="ISceneController.cs" />
-    <Compile Include="ISceneObject.cs" />
-    <Compile Include="ISceneViewer.cs" />
-    <Compile Include="LightingManager.cs" />
-    <Compile Include="LightMeter.cs" />
-    <Compile Include="LightSocket.cs" />
+    <Compile Include="MeshSectionLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scene.cs" />
-    <Compile Include="SceneBuilder.cs" />
-    <Compile Include="SceneControllers.cs" />
-    <Compile Include="SceneObjects.cs" />
-    <Compile Include="SceneRenderable.cs" />
-    <Compile Include="SceneViewers.cs" />
-    <Compile Include="WorldLog.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Rb.AssemblySelector\Rb.AssemblySelector.csproj">
+      <Project>{2097B22A-91A5-4CFF-8CCB-846A10523CB9}</Project>
+      <Name>Rb.AssemblySelector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.ColladaLoader\Rb.ColladaLoader.csproj">
+      <Project>{3829217F-FEC7-4C1A-832C-CA76EFCCF911}</Project>
+      <Name>Rb.ColladaLoader</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rb.Log\Rb.Log.csproj">
-      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
-      <Name>Rb.Log</Name>
+    <ProjectReference Include="..\Rb.Rendering.OpenGl\Rb.Rendering.OpenGl.csproj">
+      <Project>{19DCB365-3040-4431-86E9-29183FA34EF7}</Project>
+      <Name>Rb.Rendering.OpenGl</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rb.Rendering\Rb.Rendering.csproj">
       <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>

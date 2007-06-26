@@ -28,7 +28,7 @@ namespace Rb.ComponentXmlLoader
 		public override void PostCreate( )
         {
 			base.PostCreate( );
-            BuildObject = ( ( IInstanceBuilder )BuildObject ).CreateInstance( );
+            BuildObject = ( ( IInstanceBuilder )BuildObject ).CreateInstance( Parameters.Builder );
         }
     }
 }

@@ -64,9 +64,9 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Creates an instance of this object
 		/// </summary>
-		public Object CreateInstance( )
+		public Object CreateInstance( IBuilder builder )
 		{
-			return new ModelInstance( this );
+			return Builder.CreateInstance< ModelInstance >( builder, this );
 		}
 
 		/// <summary>

@@ -19,14 +19,16 @@ namespace Rb.Interaction
         /// <summary>
         /// Setup constructor
         /// </summary>
-        /// <param name="name">Command name</param>
+		/// <param name="name">Command name</param>
+		/// <param name="displayName">Command display name</param>
         /// <param name="description">Command description</param>
         /// <param name="id">Command unique identifier</param>
-        public Command( string name, string description, byte id )
+        public Command( string name, string displayName, string description, byte id )
         {
-            m_Name = name;
-            m_Description = description;
-            m_Id = id;
+            m_Name			= name;
+			m_DisplayName	= displayName;
+            m_Description	= description;
+            m_Id			= id;
         }
 
         #endregion
@@ -84,7 +86,7 @@ namespace Rb.Interaction
         /// <summary>
         /// Command update
         /// </summary>
-        public void Update( )
+        public void Update( CommandList commands )
         {
 			bool wasActive = ( m_LastActiveUpdate == m_UpdateCount );
 			++m_UpdateCount;
@@ -100,6 +102,10 @@ namespace Rb.Interaction
 					{
 						Active( input, message );
 					}
+					if ( commands != null )
+					{
+						commands.OnCommandActive( input, message );
+					}
 
 					//	Invoke the Activated event if the command has only just gone active
 					if ( !wasActive )
@@ -107,6 +113,10 @@ namespace Rb.Interaction
 						if ( Activated != null )
 						{
 							Activated( input, message );
+						}
+						if ( commands != null )
+						{
+							commands.OnCommandActivated( input, message );
 						}
 					}
 					m_LastActiveUpdate = m_UpdateCount;
@@ -118,6 +128,7 @@ namespace Rb.Interaction
         #region Private stuff
 
         private string          m_Name;
+		private string			m_DisplayName;
         private string          m_Description;
         private byte            m_Id;
 

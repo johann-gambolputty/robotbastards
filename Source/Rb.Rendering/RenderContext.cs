@@ -11,6 +11,15 @@ namespace Rb.Rendering
 	{
 		#region IRenderContext Members
 
+		/// <summary>
+		/// Time that the render occurred in TinyTime clock ticks
+		/// </summary>
+		public long RenderTime
+		{
+			get { return m_RenderTime; }
+			set { m_RenderTime = value;  }
+		}
+
         /// <summary>
         /// Sets or gets the global technique
         /// </summary>
@@ -68,7 +77,8 @@ namespace Rb.Rendering
 
 		#region Private stuff
 
-		private ITechnique m_GlobalTechnique;
+		private ITechnique	m_GlobalTechnique;
+		private long		m_RenderTime = 1;
 
 		#endregion
 	}

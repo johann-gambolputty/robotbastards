@@ -6,14 +6,20 @@
       <list>
         <object type="Rb.Core.Utils.Clock">
           <parameters>
+            <string value="updateClock"/>
+            <int value="30"/>
+          </parameters>
+        </object>
+        <object type="Rb.Core.Utils.Clock">
+          <parameters>
             <string value="networkClock"/>
-            <int value="1"/>
+            <int value="30"/>
           </parameters>
         </object>
         <object type="Rb.Core.Utils.Clock">
           <parameters>
             <string value="animationClock"/>
-            <int value="1"/>
+            <int value="60"/>
           </parameters>
         </object>
       </list>

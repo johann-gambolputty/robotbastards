@@ -35,6 +35,8 @@
   <ItemGroup>
     <Compile Include="Command.cs" />
     <Compile Include="CommandDescriptionAttribute.cs" />
+    <Compile Include="CommandInputListener.cs" />
+    <Compile Include="CommandInputTemplateMap.cs" />
     <Compile Include="CommandList.cs" />
     <Compile Include="CommandListManager.cs" />
     <Compile Include="CommandMessage.cs" />

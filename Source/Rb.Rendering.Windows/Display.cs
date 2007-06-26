@@ -150,6 +150,7 @@ namespace Rb.Rendering.Windows
 		{
 	        Renderer.Inst.ClearDepth( 1.0f );
 	        Renderer.Inst.ClearVerticalGradient( Color.LightSkyBlue, Color.Black );
+			//Renderer.Inst.ClearColour( Color.LightSkyBlue );
             foreach ( Viewer viewer in Viewers )
             {
                 viewer.Render( );
@@ -181,7 +182,7 @@ namespace Rb.Rendering.Windows
         /// <summary>
         /// Gets the collection of viewers
         /// </summary>
-	    public ICollection< Viewer > Viewers
+	    public IList< Viewer > Viewers
 	    {
 	        get { return m_Viewers; }
 	    }

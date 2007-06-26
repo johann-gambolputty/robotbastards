@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rb cacheable="true">
+
+  <object type="Rb.Interaction.CommandInputTemplateMap" assembly="Rb.Interaction">
+
+    <serialise>
+      <commandList name="TestCommands">
+        <command name="Forward">
+          <input key="Up" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+          <input key="W" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Back">
+          <input key="Down" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+          <input key="S" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows" />
+        </command>
+        <command name="Left">
+          <input key="Left" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+          <input key="A" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows" />
+        </command>
+        <command name="Right">
+          <input key="Right" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+          <input key="D" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows" />
+        </command>
+        <command name="Jump">
+          <input key="Space" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="LookAt">
+          <input type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+      </commandList>
+    </serialise>
+
+  </object>
+</rb>

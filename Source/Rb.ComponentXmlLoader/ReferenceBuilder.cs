@@ -62,7 +62,8 @@ namespace Rb.ComponentXmlLoader
             }
 
             if ( m_Properties == null )
-            {
+			{
+				base.PostCreate( );
                 return;
             }
 

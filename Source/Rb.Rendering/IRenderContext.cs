@@ -6,6 +6,15 @@ namespace Rb.Rendering
     /// </summary>
     public interface IRenderContext
     {
+		/// <summary>
+		/// Time that the render occurred in TinyTime clock ticks
+		/// </summary>
+		long RenderTime
+		{
+			get;
+			set;
+		}
+
         /// <summary>
         /// Sets or gets the global technique
         /// </summary>

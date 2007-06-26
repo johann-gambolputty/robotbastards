@@ -36,24 +36,25 @@ namespace Rb.Core.Components
         /// <summary>
         /// Creates an instance of ObjectType from the IBuilder singleton
         /// </summary>
-        /// <typeparam name="ObjectType">Object type to create</typeparam>
+		/// <typeparam name="ObjectType">Object type to create</typeparam>
+		/// <param name="builder">Builder used to create the instance</param>
         /// <returns>New instance of ObjectType</returns>
-        public static ObjectType CreateInstance< ObjectType >( )
+        public static ObjectType CreateInstance< ObjectType >( IBuilder builder )
         {
-            return ( ObjectType )Instance.CreateInstance( typeof( ObjectType ) );
+			return ( ObjectType )builder.CreateInstance( typeof( ObjectType ) );
         }
         
         /// <summary>
         /// Creates an instance of ObjectType from the IBuilder singleton
         /// </summary>
         /// <typeparam name="ObjectType">Object type to create</typeparam>
+        /// <param name="builder">Builder used to create the instance</param>
         /// <param name="args">ObjectType constructor parameters</param>
         /// <returns>New instance of ObjectType</returns>
-        public static ObjectType CreateInstance< ObjectType >( params object[] args )
+        public static ObjectType CreateInstance< ObjectType >( IBuilder builder, params object[] args )
         {
-            return ( ObjectType )Instance.CreateInstance( typeof( ObjectType ), args );
+			return ( ObjectType )builder.CreateInstance( typeof( ObjectType ), args );
         }
-
         #endregion
 
         #region Builder singleton

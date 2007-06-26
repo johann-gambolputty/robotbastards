@@ -9,7 +9,8 @@ namespace Rb.Core.Components
         /// <summary>
         /// Creates an instance
         /// </summary>
+        /// <param name="builder">Object builder</param>
         /// <returns>New instance</returns>
-        object CreateInstance( );
+        object CreateInstance( IBuilder builder );
     }
 }
