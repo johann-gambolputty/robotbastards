@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Rb.Rendering;
 
-namespace Rb.World
+namespace Rb.World.Rendering
 {
 	/// <summary>
 	/// Simple class that wraps up another IRenderable object, and registers self with the scene rendering list

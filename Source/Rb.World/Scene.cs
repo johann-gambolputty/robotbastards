@@ -12,19 +12,6 @@ namespace Rb.World
 	/// </summary>
     public class Scene : IRenderable
 	{
-		#region Public construction
-
-		/// <summary>
-		/// Construction
-		/// </summary>
-		public Scene( )
-		{
-			m_Viewers		= new SceneViewers( this );
-			m_Controllers	= new SceneControllers( this );
-		}
-
-		#endregion
-
         #region Clocks
 
         /// <summary>
@@ -139,22 +126,6 @@ namespace Rb.World
 
 		#region	Public properties
 
-		/// <summary>
-		/// Gets the scene viewer set
-		/// </summary>
-		public SceneViewers Viewers
-		{
-			get { return m_Viewers; }
-		}
-
-		/// <summary>
-		/// Gets the scene controller set
-		/// </summary>
-		public SceneControllers Controllers
-		{
-			get { return m_Controllers; }
-		}
-
         /// <summary>
         /// Gets the list of renderable objects in the scene
         /// </summary>
@@ -202,12 +173,10 @@ namespace Rb.World
 
 		#region	Private stuff
         
-        private Dictionary< string, Clock >     m_Clocks	= new Dictionary< string, Clock >( );
-		private Dictionary< Type, object >		m_Services	= new Dictionary< Type, object >( );
-		private ObjectMap						m_Objects	= new ObjectMap( );
-		private SceneViewers					m_Viewers;
-		private SceneControllers				m_Controllers;
-        private RenderableList                  m_Renderables = new RenderableList( );
+        private Dictionary< string, Clock >     m_Clocks	    = new Dictionary< string, Clock >( );
+		private Dictionary< Type, object >		m_Services	    = new Dictionary< Type, object >( );
+		private ObjectMap						m_Objects	    = new ObjectMap( );
+        private RenderableList                  m_Renderables   = new RenderableList( );
 
 
         /// <summary>
