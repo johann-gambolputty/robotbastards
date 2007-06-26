@@ -410,7 +410,7 @@ namespace RbEngine.Maths
 
 				if ( ClosestDistance < m_ClosestDistance )
 				{
-					m_ClosestDistance	= m_ClosestDistance;
+					m_ClosestDistance	= ClosestDistance;
 					m_ClosestFraction	= m_S[ BestIndex ];
 				}
 
