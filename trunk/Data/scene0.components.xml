@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <rb>
 
-  <!-- Default scene setup -->
+  <!--Default scene setup-->
   <resource path="defaultSceneSetup.components.xml">
     <parameters>
       <ref objectId="parent" property="Target"/>
     </parameters>
   </resource>
 
-  <!-- Debugging -->
+  <!--Debugging-->
   <ref objectId="this" access="Renderables">
     <object type="Rb.Rendering.FpsDisplay">
       <colour value="Black" property="TextColour"/>
     </object>
   </ref>
 
-  <!--Lighting -->
+  <!--Lighting-->
   <object type="Rb.World.LightSocket">
     <object type="Rb.Rendering.SpotLight" property="Light">
       <point3 x="50" y="30" z="30" property="Position"/>
@@ -24,7 +24,33 @@
     </object>
   </object>
 
-  <!-- Entities -->  
+  <!--Evironment-->
+  <object type="Rb.World.SceneRenderable">
+
+    <object type="Rb.Rendering.EffectRenderedObject">
+
+      <object type="Rb.Rendering.Technique" property="Technique">
+        <object type="Rb.World.LightMeter"/>
+      </object>
+
+      <object type="Rb.Rendering.EffectRenderedObject" property="RenderedObject">
+        <resource path="perPixelUntexturedShadowed.cgfx" property="Effect"/>
+        <string value="WireframeTechnique" property="TechniqueName"/>
+        <resource path="simpleEnvironment.dae" property="RenderedObject">
+        </resource>
+      </object>
+
+    </object>
+  </object>
+
+  <!--Resources-->
+  <resource path="sarge" id="{7B0132C4-DF4C-4df4-8EC5-63B7A7BF079A}">
+    <resource path="perPixelTextured.cgfx" property="Effect"/>
+    <!--<resource path="plainTextured.cgfx" property="Effect"/>-->
+    <string value="NormalTechnique" property="TechniqueName"/>
+  </resource>
+
+  <!--Entities-->
   <object type="Rb.World.Entities.Entity3d" id="{BE726C7E-26EA-433e-974A-B57396EE5FB5}">
 
     <point3 x="20" y="0.5" z="0" property="NextPosition"/>
@@ -35,10 +61,9 @@
         <object type="Rb.World.LightMeter"/>
       </object>
 
-      <resource path="sarge" property="RenderedObject">
-        <resource path="perPixelTextured.cgfx" property="Effect"/>
-        <string value="NormalTechnique" property="TechniqueName"/>
-      </resource>
+      <instance objectId="{7B0132C4-DF4C-4df4-8EC5-63B7A7BF079A}" property="RenderedObject">
+        <ref objectId="{BE726C7E-26EA-433e-974A-B57396EE5FB5}" property="MessageSource"/>
+      </instance>
 
     </object>
 
@@ -49,9 +74,6 @@
         <string value="userInputListener.components.xml"/>
       </parameters>
     </method>
-
-    <object type="Rb.World.Entities.SampleController"/>
-
   </object>
 
 </rb>

@@ -78,11 +78,21 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="TestCommands.cs" />
+    <Compile Include="TestController.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Interaction.Windows\Rb.Interaction.Windows.csproj">
+      <Project>{4ECD7CBC-1D3E-4C87-852E-77488B549711}</Project>
+      <Name>Rb.Interaction.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Interaction\Rb.Interaction.csproj">
+      <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
+      <Name>Rb.Interaction</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rb.Log.Controls.Vs\Rb.Log.Controls.Vs.csproj">
       <Project>{592DDD2E-6E38-4EB1-AD47-800193530D3B}</Project>

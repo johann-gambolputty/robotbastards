@@ -1,11 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <rb>
-  <!--
   <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
     <string value="TestCommands" property="CommandListName"/>
   </object>
-  -->
 
-  <object type="Rb.World.Entities.SampleController" assembly="Rb.World">
+  <object type="Rb.TestApp.TestController" assembly="Rb.TestApp">
   </object>
 </rb>

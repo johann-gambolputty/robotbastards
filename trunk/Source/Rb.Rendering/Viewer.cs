@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Rb.Core.Utils;
 
 namespace Rb.Rendering
 {
@@ -29,17 +30,18 @@ namespace Rb.Rendering
 
         public Viewer( )
         {
-            
         }
 
         public Viewer( Cameras.CameraBase camera, IRenderable renderable )
         {
             m_Camera = camera;
             m_Renderable = renderable;
+			//m_Context.GlobalTechnique = new ShadowBufferTechnique( );
         }
 
         public void Render( )
         {
+			m_Context.RenderTime = TinyTime.CurrentTime;
             m_Camera.Begin( );
             m_Renderable.Render( m_Context );
             m_Camera.End( );

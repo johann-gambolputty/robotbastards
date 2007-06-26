@@ -172,6 +172,17 @@ namespace Rb.Core.Components
                 }
             }
 
+			//  Got to return something...
+			Type returnType = method.ReturnType;
+			if ( returnType == typeof( void ) )
+			{
+				generator.Emit( OpCodes.Ldnull );               //  Load null onto the stack
+			}
+			else if ( returnType.IsValueType )
+			{
+				generator.Emit( OpCodes.Box, returnType );		//	Box value types
+			}
+
             generator.Emit( OpCodes.Ret );                          //  Return instruction
 
             MessageRecipientDelegate recipientDelegate;

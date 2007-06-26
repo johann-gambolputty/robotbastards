@@ -16,7 +16,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 	/// <summary>
 	/// An instance of an MD3-loaded model
 	/// </summary>
-	public class ModelInstance : IRenderable, IAnimationControl, ISceneObject, IChild
+	public class ModelInstance : IRenderable, IAnimationControl, ISceneObject
 	{
 		/// <summary>
 		/// Sets the model that this object was instanced from
@@ -71,13 +71,6 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 		#endregion
 
-		#region	Private stuff
-
-		private Model				m_Source;
-		private AnimationLayer[]	m_Layers;
-
-		#endregion
-
 		/// <summary>
 		/// Updates this model
 		/// </summary>
@@ -118,20 +111,10 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		#region IChildObject Members
 
 		/// <summary>
-		/// Called when this object is added to its parent, or bound to a property in its parent
-		/// </summary>
-		public void AddedToParent( object parentObject )
-		{
-			if ( parentObject is IMessageHub )
-			{
-				( ( IMessageHub )parentObject ).AddRecipient( typeof( Rb.World.Entities.MovementRequest ), new MessageRecipientDelegate( HandleMovementRequest ), ( int )MessageRecipientOrder.Last );
-			}
-		}
-
-		/// <summary>
 		/// Handles a movement request message
 		/// </summary>
-		public MessageRecipientResult HandleMovementRequest( Message msg )
+		[Dispatch]
+		public MessageRecipientResult HandleMovementRequest( MovementRequest msg )
 		{
 			if ( msg is JumpRequest )
 			{
@@ -141,7 +124,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			{
 				if ( m_MovementState != MovementState.Jumping )
 				{
-					if ( ( ( MovementRequest )msg ).Distance > 6.0f )
+					if ( msg.Distance > 6.0f )
 					{
 						m_MovementState = MovementState.Running;
 					}
@@ -165,7 +148,37 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 		private MovementState	m_MovementState		= MovementState.Standing;
 		private MovementState	m_LastMovementState	= MovementState.Standing;
+		private object			m_MessageSource;
 
 		#endregion
+
+		#region Message source
+
+		public object MessageSource
+		{
+			get { return m_MessageSource; }
+			set
+			{
+				if ( m_MessageSource != null )
+				{
+					( ( IMessageHub )m_MessageSource ).RemoveRecipient( typeof( MovementRequest ), this );
+				}
+				m_MessageSource = value;
+				if ( value != null )
+				{
+					MessageHub.AddDispatchRecipient( ( IMessageHub )value, typeof( MovementRequest ), this, ( int )MessageRecipientOrder.Last );
+				}
+			}
+		}
+
+		#endregion
+
+		#region	Private stuff
+
+		private Model m_Source;
+		private AnimationLayer[] m_Layers;
+
+		#endregion
+
 	}
 }

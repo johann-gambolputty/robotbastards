@@ -7,6 +7,7 @@
 	</providers>
 	<loaders>
     <loader type="Rb.ComponentXmlLoader.Loader" assembly="Rb.ComponentXmlLoader"/>
+    <loader type="Rb.ColladaLoader.Loader" assembly="Rb.ColladaLoader"/>
     <loader type="Rb.Rendering.OpenGl.Md3Loader.Loader" assembly="Rb.Rendering.OpenGl.Md3Loader"/>
     <loader type="Rb.Rendering.OpenGl.Cg.CgEffectLoader" assembly="Rb.Rendering.OpenGl"/>
 	</loaders>

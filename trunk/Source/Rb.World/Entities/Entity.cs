@@ -1,6 +1,7 @@
 using System;
 using Rb.Core.Components;
 using Rb.Core.Resources;
+using Rb.Core.Utils;
 using Rb.Rendering;
 
 namespace Rb.World.Entities
@@ -24,12 +25,14 @@ namespace Rb.World.Entities
             {
                 //  Local hosts can't receive commands from remote controllers, so the controller
                 //  must be created locally
-                AddChild( ResourceManager.Instance.Load( controllerPath ) );
+				LoadParameters parameters = new ComponentLoadParameters( this );
+                AddChild( ResourceManager.Instance.Load( controllerPath, parameters ) );
             }
             else if ( host.Id == hostId )
             {
-                //  The scene host is the local controller host - create away
-                AddChild( ResourceManager.Instance.Load( controllerPath ) );
+				//  The scene host is the local controller host - create away
+				LoadParameters parameters = new ComponentLoadParameters( this );
+                AddChild( ResourceManager.Instance.Load( controllerPath, parameters ) );
 
                 //  Also need listeners and so forth
             }
@@ -55,23 +58,38 @@ namespace Rb.World.Entities
 
         #endregion
 
-        #region ISceneObject Members
+		#region Updates
 
-        /// <summary>
+		/// <summary>
+		/// Updates the entity
+		/// </summary>
+		/// <param name="updateClock">Clock causing updates</param>
+		public virtual void Update( Clock updateClock )
+		{
+		}
+
+		#endregion
+
+		#region ISceneObject Members
+
+		/// <summary>
         /// Sets the scene context that this object has been created in
         /// </summary>
-        public void SetSceneContext( Scene scene )
+        public virtual void SetSceneContext( Scene scene )
         {
             m_Scene = scene;
             scene.Renderables.Add( this );
+
+			//	Subscribe to the update clock
+			scene.GetClock( "updateClock" ).Subscribe( new Clock.TickDelegate( Update ) );
         }
 
         #endregion
 
         #region IRenderable Members
 
-        public void Render( IRenderContext context )
-        {
+        public virtual void Render( IRenderContext context )
+		{
             if ( Graphics != null )
             {
                 Graphics.Render( context );
