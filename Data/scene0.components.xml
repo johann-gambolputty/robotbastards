@@ -35,11 +35,10 @@
 
       <object type="Rb.Rendering.EffectRenderedObject" property="RenderedObject">
         <resource path="perPixelUntexturedShadowed.cgfx" property="Effect"/>
-        <string value="WireframeTechnique" property="TechniqueName"/>
+        <string value="NormalTechnique" property="TechniqueName"/>
         <resource path="simpleEnvironment.dae" property="RenderedObject">
         </resource>
       </object>
-
     </object>
   </object>
 

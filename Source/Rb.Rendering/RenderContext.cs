@@ -25,9 +25,28 @@ namespace Rb.Rendering
         /// </summary>
 		public ITechnique GlobalTechnique
 		{
-			get { return m_GlobalTechnique; }
-			set { m_GlobalTechnique = value; }
+            get
+            {
+                return m_GlobalTechniques.Count == 0 ? null : m_GlobalTechniques[ m_GlobalTechniques.Count - 1 ];
+            }
 		}
+
+
+        /// <summary>
+        /// Adds a technique to the global technique stack
+        /// </summary>
+        public void PushGlobalTechnique( ITechnique technique )
+        {
+            m_GlobalTechniques.Add( technique );
+        }
+
+        /// <summary>
+        /// Pops a technique from the global technique stack
+        /// </summary>
+        public void PopGlobalTechnique( )
+        {
+            m_GlobalTechniques.RemoveAt( m_GlobalTechniques.Count - 1 );
+        }
 
 
         /// <summary>
@@ -77,8 +96,8 @@ namespace Rb.Rendering
 
 		#region Private stuff
 
-		private ITechnique	m_GlobalTechnique;
-		private long		m_RenderTime = 1;
+		private long		        m_RenderTime = 1;
+        private List< ITechnique >  m_GlobalTechniques = new List< ITechnique >( );
 
 		#endregion
 	}

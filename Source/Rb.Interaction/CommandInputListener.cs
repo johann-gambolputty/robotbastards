@@ -8,10 +8,39 @@ namespace Rb.Interaction
 	/// and sent to the parent object
 	/// </summary>
 	public class CommandInputListener : IChild
-	{
-		#region	Command list
+    {
+        #region Construction
 
-		/// <summary>
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public CommandInputListener( )
+        {
+        }
+
+        /// <summary>
+        /// Setup constructor
+        /// </summary>
+        public CommandInputListener( object target, string commandListName )
+        {
+            m_Target = target;
+            Commands = CommandListManager.Inst.Get( commandListName );
+        }
+
+        /// <summary>
+        /// Setup constructor
+        /// </summary>
+        public CommandInputListener( object target, CommandList commands )
+        {
+            m_Target = target;
+            Commands = commands;
+        }
+
+        #endregion
+
+        #region	Command list
+
+        /// <summary>
 		/// Sets the command list that this object is associated with
 		/// </summary>
 		public CommandList Commands

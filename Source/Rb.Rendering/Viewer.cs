@@ -16,6 +16,15 @@ namespace Rb.Rendering
             set { m_Context = value; }
         }
 
+        /// <summary>
+        /// The technique used to display the renderable object (can be null)
+        /// </summary>
+        public ITechnique Technique
+        {
+            get { return m_Technique; }
+            set { m_Technique = value; }
+        }
+
 		/// <summary>
 		/// The current camera
 		/// </summary>
@@ -59,12 +68,13 @@ namespace Rb.Rendering
         {
 			m_Context.RenderTime = TinyTime.CurrentTime;
             m_Camera.Begin( );
-            m_Renderable.Render( m_Context );
+            m_Context.ApplyTechnique( m_Technique, m_Renderable );
             m_Camera.End( );
         }
 
         private Cameras.CameraBase  m_Camera;
         private IRenderContext      m_Context = new RenderContext( );
         private IRenderable         m_Renderable;
+        private ITechnique          m_Technique;
     }
 }

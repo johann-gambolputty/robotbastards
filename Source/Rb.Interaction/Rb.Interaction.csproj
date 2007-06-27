@@ -40,6 +40,7 @@
     <Compile Include="CommandList.cs" />
     <Compile Include="CommandListManager.cs" />
     <Compile Include="CommandMessage.cs" />
+    <Compile Include="CursorCommandMessage.cs" />
     <Compile Include="CursorInput.cs" />
     <Compile Include="CursorPickInput.cs" />
     <Compile Include="IInput.cs" />
@@ -49,6 +50,8 @@
     <Compile Include="InteractionLog.cs" />
     <Compile Include="PickCommandMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScalarCommandMessage.cs" />
+    <Compile Include="ScalarInput.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">

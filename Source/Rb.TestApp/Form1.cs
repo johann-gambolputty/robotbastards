@@ -6,6 +6,7 @@ using Rb.Core.Resources;
 using Rb.Core.Components;
 using Rb.Core.Utils;
 using Rb.Rendering;
+using Rb.Rendering.Cameras;
 using Rb.World;
 using Rb.Log;
 using Rb.Interaction;
@@ -31,6 +32,17 @@ namespace Rb.TestApp
             InitializeComponent();
 		}
 
+        private Camera3 CreateSimpleCamera( CommandList cameraCommands )
+        {
+            Camera3 result = new SphereCamera( );
+            
+            SphereCameraController controller = Builder.CreateInstance< SphereCameraController >( Builder.Instance );
+            result.AddChild( controller );
+            result.AddChild( Builder.CreateInstance < CommandInputListener >( Builder.Instance, controller, cameraCommands ) );
+
+            return result;
+        }
+
 		private void Form1_Load( object sender, EventArgs e )
 		{
 			//	Load resource settings
@@ -41,9 +53,10 @@ namespace Rb.TestApp
 			}
 			ResourceManager.Instance.Setup( resourceSetupPath );
 
-			//	Create the test command list (must come before scene creation, because it's referenced
+			//	Create the test and camera command lists (must come before scene creation, because it's referenced
 			//	by the scene setup file)
 			CommandList.BuildFromEnum( typeof( TestCommands ) );
+            CommandList cameraCommands = CommandList.BuildFromEnum(typeof(CameraCommands));
 
 			//	Test load a scene
             Scene scene = new Scene( );
@@ -57,9 +70,9 @@ namespace Rb.TestApp
                 ComponentLoadParameters loadParams = new ComponentLoadParameters( scene.Objects, scene );
                 ResourceManager.Instance.Load( "scene0.components.xml", loadParams );
 
-                Viewer viewer = new Viewer( new Rendering.Cameras.SphereCamera( ), scene );
+                Viewer viewer = new Viewer( CreateSimpleCamera( cameraCommands ), scene );
                 display1.AddViewer( viewer );
-                viewer.Context.GlobalTechnique = Builder.CreateInstance< World.Rendering.SceneShadowBufferTechnique >( Builder.Instance );
+                //viewer.Technique = Builder.CreateInstance< World.Rendering.SceneShadowBufferTechnique >( Builder.Instance );
             }
             catch ( Exception ex )
             {

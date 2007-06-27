@@ -41,6 +41,11 @@ namespace Rb.Core.Components
 			{
 				OnChildAdded( this, obj );
 			}
+		    IChild child = obj as IChild;
+            if ( child != null )
+            {
+                child.AddedToParent( this );
+            }
 		}
 
 		/// <summary>

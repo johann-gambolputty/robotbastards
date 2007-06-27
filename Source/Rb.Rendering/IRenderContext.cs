@@ -25,8 +25,17 @@ namespace Rb.Rendering
         ITechnique GlobalTechnique
         {
             get;
-            set;
         }
+
+        /// <summary>
+        /// Adds a technique to the global technique stack
+        /// </summary>
+        void PushGlobalTechnique( ITechnique technique );
+
+        /// <summary>
+        /// Pops a technique from the global technique stack
+        /// </summary>
+        void PopGlobalTechnique( );
 
         /// <summary>
         /// Renders a renderable object using a given technique
