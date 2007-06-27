@@ -6,7 +6,7 @@ namespace Rb.Rendering.OpenGl
 	/// <summary>
 	/// Summary description for OpenGlRenderState.
 	/// </summary>
-	public class OpenGlRenderState : Rb.Rendering.RenderState
+	public class OpenGlRenderState : RenderState
 	{
 		/// <summary>
 		/// Applies this render state

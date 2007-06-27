@@ -8,6 +8,15 @@ namespace Rb.Interaction.Windows
     /// </summary>
     public class MouseCursorInput : CursorInput
     {
+
+		/// <summary>
+		/// Returns true (otherwise the mouse input will remain active if the user doesn't move the mouse)
+		/// </summary>
+		public override bool DeactivateOnUpdate
+		{
+			get { return true; }
+		} 
+
 		/// <summary>
 		/// Setup constructor. Specifies the button that must be pressed while the mouse is being moved, for the command to fire
 		/// </summary>

@@ -111,11 +111,6 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <Reference Include="Tao.OpenGl">
-      <Name>Tao.OpenGl</Name>
-      <HintPath>..\..\..\Program Files\Tao\bin\Tao.OpenGl.dll</HintPath>
-      <AssemblyFolderKey>hklm\tao</AssemblyFolderKey>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animation\IAnimation.cs">

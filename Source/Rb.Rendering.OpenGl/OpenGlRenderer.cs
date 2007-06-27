@@ -40,7 +40,7 @@ namespace Rb.Rendering.OpenGl
 
 			//	Add a default renderstate
 			//	TODO: AP: Causes display corruption if I do this
-			//Inst.PushRenderState( RenderFactory.Inst.NewRenderState( ) );
+			Inst.PushRenderState( RenderFactory.Inst.NewRenderState( ) );
 		}
 
 		#endregion

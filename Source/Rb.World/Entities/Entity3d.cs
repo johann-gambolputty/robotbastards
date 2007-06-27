@@ -81,6 +81,16 @@ namespace Rb.World.Entities
 			get { return m_YAxis * -1.0f; }
 		}
 
+		/// <summary>
+		/// Sets the left, up and ahead vectors
+		/// </summary>
+		public void SetFrame( Vector3 left, Vector3 up, Vector3 ahead )
+		{
+			m_XAxis = left;
+			m_YAxis = up;
+			m_ZAxis = ahead;
+		}
+
 		#endregion
 
 		#region Updates

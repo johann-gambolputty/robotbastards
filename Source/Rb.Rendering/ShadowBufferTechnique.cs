@@ -34,7 +34,6 @@ namespace Rb.Rendering
 		public LightGroup			ShadowLights
 		{
 			get { return m_ShadowLights; }
-			set { m_ShadowLights = value; }
 		}
 
 		/// <summary>
@@ -97,7 +96,7 @@ namespace Rb.Rendering
 		{
 			//	Make the shadow depth buffers
 			int numBuffers = 0;
-			if ( ( ShadowLights != null ) && ( ShadowLights.NumLights > 0 ) )
+			if ( ShadowLights.NumLights > 0 )
 			{
 				numBuffers = MakeBuffers( renderable, context, ShadowLights );
 			}
@@ -138,7 +137,7 @@ namespace Rb.Rendering
         private static ITechnique               ms_OverrideTechnique;
         private static bool                     ms_DumpLights = true;
 
-        private LightGroup                      m_ShadowLights;
+        private LightGroup                      m_ShadowLights = new LightGroup( );
         private RenderTarget[]                  m_RenderTargets = new RenderTarget[MaxLights];
         private float                           m_NearZ = 1.0f;
         private float                           m_FarZ = 800.0f;

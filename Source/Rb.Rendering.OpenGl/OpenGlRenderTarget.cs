@@ -177,7 +177,7 @@ namespace Rb.Rendering.OpenGl
 			int bufferIndex = 0;
 			for ( int depthIndex = 0; depthIndex < depthPixels.Length; ++depthIndex )
 			{
-				float scaledDepth = ( float )System.Math.Exp( depthPixels[ depthIndex ] );
+				float scaledDepth = ( float )Math.Exp( depthPixels[ depthIndex ] );
 				bufferMem[ bufferIndex++ ] = ( byte )( scaledDepth * 255.0f );
 				bufferMem[ bufferIndex++ ] = ( byte )( scaledDepth * 255.0f );
 				bufferMem[ bufferIndex++ ] = ( byte )( scaledDepth * 255.0f );
@@ -203,6 +203,8 @@ namespace Rb.Rendering.OpenGl
 			{
 				Gl.glBindFramebufferEXT( Gl.GL_FRAMEBUFFER_EXT, m_FboHandle );
 			}
+
+			Gl.glDepthMask( 1 );
 
 			//	Save viewport properties
 			Gl.glPushAttrib( Gl.GL_VIEWPORT_BIT );
