@@ -173,16 +173,8 @@ namespace Rb.Rendering
             int numBuffers = 0;
             for ( int lightIndex = 0; lightIndex < numLights; ++lightIndex )
             {
-                //	The shadow buffer technique can currently only work with spotlights
-                if ( !( lights[ lightIndex ] is SpotLight ) || ( !lights[ lightIndex ].ShadowCaster ) )
-                {
-                    continue;
-                }
-
                 RenderTarget curTarget = m_RenderTargets[ numBuffers++ ];
                 SpotLight curLight = ( SpotLight )lights[ lightIndex ];
-
-                //	Set up the transform for the current light
 
                 //	TODO: Need proper Y axis
                 int width = curTarget.Width;
@@ -197,22 +189,22 @@ namespace Rb.Rendering
                 m_ShadowMatrixBinding.Set( shadowMat );
 
                 //	Set near and far Z plane bindings
-                //	NOTE: This could be done once in setup - kept here for now so I can change them on the fly
+                //	NOTE: AP: This could be done once in setup - kept here for now so I can change them on the fly
                 m_ShadowNearZBinding.Set( m_NearZ );
                 m_ShadowFarZBinding.Set( m_FarZ );
 
                 //	Set up the render target for the light
-                curTarget.Begin();
-                Renderer.Inst.ClearColour( System.Drawing.Color.Black );
+                curTarget.Begin( );
+                Renderer.Inst.ClearColour( System.Drawing.Color.Black );  //  NOTE: AP: Unecessary if depth texture is being used
                 Renderer.Inst.ClearDepth( 1.0f );
 
                 //  Set the global technique to the override technique (this forces all objects to be rendered using the
                 //  override technique, unlesss they support a valid substitute technique), and render away...
-                context.GlobalTechnique = ms_OverrideTechnique;
+                context.PushGlobalTechnique( ms_OverrideTechnique );
 
                 renderable.Render( context );
 
-                context.GlobalTechnique = null;
+                context.PopGlobalTechnique( );  //  TODO: AP: Move push/pop out of loop
 
                 //	Stop using the current render target
                 curTarget.End( );
@@ -230,6 +222,7 @@ namespace Rb.Rendering
                     }
                     ms_DumpLights = false;
                 }
+
             }
 
             Renderer.Inst.PopTransform( Transform.LocalToWorld );
