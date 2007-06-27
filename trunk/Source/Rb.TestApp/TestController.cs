@@ -6,8 +6,14 @@ using Rb.Core.Maths;
 
 namespace Rb.TestApp
 {
+	/// <summary>
+	/// Test controller class
+	/// </summary>
 	public class TestController : Component
 	{
+		/// <summary>
+		/// Called when the controller receives a command message
+		/// </summary>
 		[Dispatch]
 		public MessageRecipientResult OnCommand( CommandMessage msg )
 		{
@@ -22,8 +28,26 @@ namespace Rb.TestApp
 				case TestCommands.Left		: SendMovement( entity, entity.Left * speed ); break;
 				case TestCommands.Right		: SendMovement( entity, entity.Right * speed ); break;
 				case TestCommands.Jump		: entity.HandleMessage( new JumpRequest( null ) ); break;
+				case TestCommands.LookAt	:
+					PickCommandMessage pickMsg = ( PickCommandMessage )msg;
+					if ( pickMsg.Intersection != null )
+					{
+						SendLookAt( entity, pickMsg.Intersection.IntersectionPosition );
+					}
+					break;
 			}
 			return MessageRecipientResult.DeliverToNext;
+		}
+
+		/// <summary>
+		/// Cheats and forces the entity to look at a given point
+		/// </summary>
+		private static void SendLookAt( Entity3d target, Point3 pos )
+		{
+			Vector3 ahead = ( pos - target.NextPosition ).MakeNormal( );
+			Vector3 left = Vector3.Cross( target.Up, target.Ahead ).MakeNormal( );
+
+			target.SetFrame( left, target.Up, ahead );
 		}
 
 		/// <summary>

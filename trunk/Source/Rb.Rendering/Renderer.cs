@@ -160,17 +160,17 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Clears the viewport
 		/// </summary>
-		public abstract void	ClearColour( System.Drawing.Color colour );
+		public abstract void	ClearColour( Color colour );
 
 		/// <summary>
 		/// Clears the viewport using a vertical gradient fill
 		/// </summary>
-		public abstract void	ClearVerticalGradient( System.Drawing.Color topColour, System.Drawing.Color bottomColour );
+		public abstract void	ClearVerticalGradient( Color topColour, Color bottomColour );
 
 		/// <summary>
 		/// Clears the viewport using a radial gradient fill (shit)
 		/// </summary>
-		public abstract void	ClearRadialGradient( System.Drawing.Color centreColour, System.Drawing.Color outerColour );
+		public abstract void	ClearRadialGradient( Color centreColour, Color outerColour );
 
 		/// <summary>
 		/// Clears the depth buffer
@@ -359,17 +359,17 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Creates an Image object from the colour buffer
 		/// </summary>
-		public abstract Image	ColourBufferToImage( );
+		public abstract Image ColourBufferToImage( );
 
 		/// <summary>
 		/// Creates an Image object from the depth buffer
 		/// </summary>
-		public abstract Image	DepthBufferToImage( );
+		public abstract Image DepthBufferToImage( );
 
 		/// <summary>
 		/// Saves the colour buffer to a file
 		/// </summary>
-		public void				SaveColourBuffer( string path, System.Drawing.Imaging.ImageFormat format )
+		public void SaveColourBuffer( string path, System.Drawing.Imaging.ImageFormat format )
 		{
 			ColourBufferToImage( ).Save( path, format );
 		}
@@ -377,7 +377,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Saves the depth buffer to a file
 		/// </summary>
-		public void				SaveDepthBuffer( string path, System.Drawing.Imaging.ImageFormat format )
+		public void SaveDepthBuffer( string path, System.Drawing.Imaging.ImageFormat format )
 		{
 			DepthBufferToImage( ).Save( path, format );
 		}

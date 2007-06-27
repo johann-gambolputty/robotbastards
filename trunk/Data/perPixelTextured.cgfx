@@ -70,6 +70,7 @@ technique NormalTechnique
 {
 	pass
 	{
+		DepthMask				= true;
 		ShadeModel				= Smooth;
 		FrontFace				= CW;
 		DepthFunc				= LEqual;
@@ -85,6 +86,7 @@ technique WireframeTechnique
 {
 	pass
 	{
+		DepthMask				= false;
 		ShadeModel				= Smooth;
 		FrontFace				= CW;
 		DepthFunc				= LEqual;
@@ -96,6 +98,7 @@ technique WireframeTechnique
 	}
 	pass
 	{
+		DepthMask				= false;
 		FrontFace				= CW;
 		DepthTestEnable			= true;
 		CullFaceEnable			= true;

@@ -149,7 +149,7 @@ namespace Rb.Rendering.Windows
 		protected virtual void Draw( )
 		{
 	        Renderer.Inst.ClearDepth( 1.0f );
-	        Renderer.Inst.ClearVerticalGradient( Color.LightSkyBlue, Color.Black );
+	        Renderer.Inst.ClearVerticalGradient( Color.DarkSeaGreen, Color.Black );
 			//Renderer.Inst.ClearColour( Color.LightSkyBlue );
             foreach ( Viewer viewer in Viewers )
             {

@@ -111,30 +111,20 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <Reference Include="Tao.Cg">
-      <Name>Tao.Cg</Name>
-      <HintPath>..\..\..\Program Files\Tao\bin\Tao.Cg.dll</HintPath>
-      <AssemblyFolderKey>hklm\tao</AssemblyFolderKey>
+    <Reference Include="Tao.Cg, Version=1.4.1.0, Culture=neutral, PublicKeyToken=52fa5aba625fe731">
+      <HintPath>..\..\Rb 1.0\bin\3rdParty\Tao 1.0\Tao.Cg.dll</HintPath>
     </Reference>
-    <Reference Include="Tao.OpenGl">
-      <Name>Tao.OpenGl</Name>
-      <HintPath>..\..\..\Program Files\Tao\bin\Tao.OpenGl.dll</HintPath>
-      <AssemblyFolderKey>hklm\tao</AssemblyFolderKey>
+    <Reference Include="Tao.OpenGl, Version=0.0.0.0, Culture=neutral, PublicKeyToken=1ca010269a4501ef">
+      <HintPath>..\..\Rb 1.0\bin\3rdParty\Tao 1.0\Tao.OpenGl.dll</HintPath>
     </Reference>
-    <Reference Include="Tao.OpenGl.ExtensionLoader">
-      <Name>Tao.OpenGl.ExtensionLoader</Name>
-      <HintPath>..\..\..\Program Files\Tao\bin\Tao.OpenGl.ExtensionLoader.dll</HintPath>
-      <AssemblyFolderKey>hklm\tao</AssemblyFolderKey>
+    <Reference Include="Tao.OpenGl.ExtensionLoader, Version=1.5.0.3, Culture=neutral, PublicKeyToken=aaade445f4a3f192">
+      <HintPath>..\..\Rb 1.0\bin\3rdParty\Tao 1.0\Tao.OpenGl.ExtensionLoader.dll</HintPath>
     </Reference>
-    <Reference Include="Tao.OpenGl.Glu">
-      <Name>Tao.OpenGl.Glu</Name>
-      <HintPath>..\..\..\Program Files\Tao\bin\Tao.OpenGl.Glu.dll</HintPath>
-      <AssemblyFolderKey>hklm\tao</AssemblyFolderKey>
+    <Reference Include="Tao.OpenGl.Glu, Version=1.5.0.3, Culture=neutral, PublicKeyToken=3661ea75021374b5">
+      <HintPath>..\..\Rb 1.0\bin\3rdParty\Tao 1.0\Tao.OpenGl.Glu.dll</HintPath>
     </Reference>
-    <Reference Include="Tao.Platform.Windows">
-      <Name>Tao.Platform.Windows</Name>
-      <HintPath>..\..\..\Program Files\Tao\bin\Tao.Platform.Windows.dll</HintPath>
-      <AssemblyFolderKey>hklm\tao</AssemblyFolderKey>
+    <Reference Include="Tao.Platform.Windows, Version=1.0.0.3, Culture=neutral, PublicKeyToken=701104b2da67a104">
+      <HintPath>..\..\Rb 1.0\bin\3rdParty\Tao 1.0\Tao.Platform.Windows.dll</HintPath>
     </Reference>
     <ProjectReference Include="..\RbCollada\RbCollada.csproj">
       <Name>RbCollada</Name>
