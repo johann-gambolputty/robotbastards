@@ -123,6 +123,15 @@ namespace Rb.Interaction
 					break;
 				}
             }
+
+            //  Disable all inputs
+            foreach ( IInput input in m_Inputs )
+            {
+                if ( input.DeactivateOnUpdate )
+                {
+                    input.IsActive = false;
+                }
+            }
         }
 
         #region Private stuff

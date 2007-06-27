@@ -50,6 +50,14 @@ namespace Rb.Interaction
             get { return m_LastY; }
         }
 
+        /// <summary>
+        /// Creates a command message for this input
+        /// </summary>
+        public override CommandMessage CreateCommandMessage( Command cmd )
+        {
+            return new CursorCommandMessage( cmd, LastX, LastY, X, Y );
+        }
+
         #region Protected stuff
 
         protected int m_X;

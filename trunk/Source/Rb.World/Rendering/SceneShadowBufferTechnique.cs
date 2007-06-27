@@ -21,6 +21,7 @@ namespace Rb.World.Rendering
 		/// </summary>
         public override void Apply( IRenderContext context, IRenderable renderable )
 		{
+            //  TODO: AP: ShadowLights should be created on construction - no longer necessary to create on demand
             if ( ShadowLights == null )
             {
                 ShadowLights = new LightGroup( );

@@ -446,10 +446,6 @@ namespace Rb.ComponentXmlLoader
         protected virtual void LinkToParent( IParent parent )
         {
 			parent.AddChild( BuildObject );
-			if ( BuildObject is IChild )
-			{
-				( ( IChild )BuildObject ).AddedToParent( parent );
-			}
         }
 
         /// <summary>

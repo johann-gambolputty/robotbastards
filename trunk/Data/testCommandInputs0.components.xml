@@ -24,8 +24,22 @@
         <command name="Jump">
           <input key="Space" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
         </command>
+        <!--
         <command name="LookAt">
           <input type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        -->
+      </commandList>
+
+      <commandList name="CameraCommands">
+        <command name="Zoom">
+          <input button="None" min="0" max="10000" delta="0.1" initial="50" type="Rb.Interaction.Windows.MouseScrollInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Pan">
+          <input button="Left" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Rotate">
+          <input button="Right" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
         </command>
       </commandList>
     </serialise>

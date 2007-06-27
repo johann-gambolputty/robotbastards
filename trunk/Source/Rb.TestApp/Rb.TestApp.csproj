@@ -37,6 +37,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CameraCommands.cs" />
+    <Compile Include="SphereCameraController.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

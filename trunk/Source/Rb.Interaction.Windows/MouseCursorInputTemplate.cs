@@ -1,11 +1,14 @@
+using System;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace Rb.Interaction.Windows
 {
     /// <summary>
     /// Mouse input template
     /// </summary>
-    public class MouseCursorInputTemplate : InputTemplate
+    public class MouseCursorInputTemplate : InputTemplate, IXmlSerializable
     {
 		/// <summary>
 		/// Default constructor. Bindings to this input will trigger when the mouse moves with no buttons pressed
@@ -33,7 +36,38 @@ namespace Rb.Interaction.Windows
         {
             return new MouseCursorInput( context, m_Button );
         }
+        
+		#region IXmlSerializable Members
 
+		/// <summary>
+		/// No schema supported
+		/// </summary>
+		/// <returns>Returns null</returns>
+		public System.Xml.Schema.XmlSchema GetSchema( )
+		{
+			return null;
+		}
+
+		/// <summary>
+		/// Reads this object from XML
+		/// </summary>
+		/// <param name="reader">Reader</param>
+		public void ReadXml( XmlReader reader )
+		{
+            string button = reader.GetAttribute( "button" );
+			m_Button = button == null ? MouseButtons.None : ( MouseButtons )Enum.Parse( typeof( MouseButtons ), button );
+		}
+
+		/// <summary>
+		/// Writes this object to XML
+		/// </summary>
+		/// <param name="writer">XML writer</param>
+		public void WriteXml( XmlWriter writer )
+		{
+			writer.WriteAttributeString( "button", m_Button.ToString( ) );
+		}
+
+		#endregion
 
 		private MouseButtons m_Button;
     }

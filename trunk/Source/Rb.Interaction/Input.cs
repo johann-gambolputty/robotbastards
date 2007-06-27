@@ -36,6 +36,14 @@ namespace Rb.Interaction
         }
 
         /// <summary>
+        /// Flag that determines if the input should be disabled (IsActive = false) after each update
+        /// </summary>
+        public virtual bool DeactivateOnUpdate
+        {
+            get { return false; }
+        }
+
+        /// <summary>
         /// Creates a new command message
         /// </summary>
         public virtual CommandMessage CreateCommandMessage( Command cmd )

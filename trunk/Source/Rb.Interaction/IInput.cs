@@ -23,6 +23,15 @@ namespace Rb.Interaction
         bool IsActive
         {
             get;
+            set;
+        }
+
+        /// <summary>
+        /// Flag that determines if the input should be disabled (IsActive = false) after each update
+        /// </summary>
+        bool DeactivateOnUpdate
+        {
+            get;
         }
 
         /// <summary>

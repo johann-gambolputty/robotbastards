@@ -37,9 +37,7 @@ namespace Rb.Interaction.Windows
         {
             return new KeyInput( context, m_Key );
         }
-
-		private Keys m_Key;
-
+        
 		#region IXmlSerializable Members
 
 		/// <summary>
@@ -70,5 +68,8 @@ namespace Rb.Interaction.Windows
 		}
 
 		#endregion
+
+		private Keys m_Key;
+
 	}
 }
