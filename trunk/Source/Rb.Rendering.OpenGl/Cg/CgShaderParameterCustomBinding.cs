@@ -121,7 +121,15 @@ namespace Rb.Rendering.OpenGl.Cg
 						for ( int arrayIndex = 0; arrayIndex < m_ArraySize; ++arrayIndex )
 						{
 							IntPtr elementParam = TaoCg.cgGetArrayParameter( param, arrayIndex );
-							CgShaderParameter.cgSetMatrixParameterfc( elementParam, array[ arrayIndex ].Elements );
+
+                            if ( array[ arrayIndex ] != null )
+                            {
+							    CgShaderParameter.cgSetMatrixParameterfc( elementParam, array[ arrayIndex ].Elements );
+                            }
+                            else
+                            {
+							    CgShaderParameter.cgSetMatrixParameterfc( elementParam, Matrix44.Identity.Elements );
+                            }
 						}
 						break;
 					}
@@ -279,6 +287,15 @@ namespace Rb.Rendering.OpenGl.Cg
 			CheckType( ValueType.Vector3 );
 			( ( Vector3[] )m_Value )[ index ] = val;
 		}
+
+        /// <summary>
+        /// Sets the value at the specified index to a matrix
+        /// </summary>
+        public override void SetAt( int index, Matrix44 val )
+        {
+            CheckType( ValueType.Matrix );
+            ( ( Matrix44[] )m_Value )[ index ] = val;   
+        }
 
 		#endregion
 	}

@@ -3,9 +3,9 @@ using System;
 namespace Rb.Core.Maths
 {
 	/// <summary>
-	/// Summary description for Plane3.
+	/// 3d plane
 	/// </summary>
-	public class Plane3
+    public class Plane3 : IRay3Intersector
 	{
 		/// <summary>
 		/// Default constructor. Plane equation is (A=0,B=0,C=0,D=0)
@@ -28,14 +28,8 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public Vector3	Normal
 		{
-			get
-			{
-				return m_Normal;
-			}
-			set
-			{
-				m_Normal = value;
-			}
+			get { return m_Normal; }
+			set { m_Normal = value; }
 		}
 
 		/// <summary>
@@ -43,18 +37,35 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public float	Distance
 		{
-			get
-			{
-				return m_Distance;
-			}
-			set
-			{
-				m_Distance = value;
-			}
-		}
+			get { return m_Distance; }
+			set { m_Distance = value; }
+        }
 
-		private Vector3	m_Normal	= new Vector3( 0, 0, 0 );
-		private float	m_Distance	= 0;
+        #region IRay3Intersector Members
 
-	}
+        /// <summary>
+        /// Returns true if there is an intersection between the specified ray and this plane
+        /// </summary>
+        public bool TestIntersection( Ray3 ray )
+        {
+            return Intersection.TestRayIntersection( ray, this );
+        }
+
+        /// <summary>
+        /// Returns details about the intersection between a specified ray and this plane (returns null if no intersection exists)
+        /// </summary>
+        public Ray3Intersection GetIntersection( Ray3 ray )
+        {
+            return Intersection.GetRayIntersection( ray, this );
+        }
+
+        #endregion
+
+        #region Private stuff
+
+        private Vector3 m_Normal    = new Vector3(0, 0, 0);
+        private float   m_Distance  = 0;
+
+        #endregion
+    }
 }

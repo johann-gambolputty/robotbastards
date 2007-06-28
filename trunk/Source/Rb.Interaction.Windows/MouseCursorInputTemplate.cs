@@ -56,6 +56,16 @@ namespace Rb.Interaction.Windows
 		{
             string button = reader.GetAttribute( "button" );
 			m_Button = button == null ? MouseButtons.None : ( MouseButtons )Enum.Parse( typeof( MouseButtons ), button );
+
+            if ( reader.IsEmptyElement )
+            {
+                reader.Read( );
+            }
+            else
+            {
+                reader.ReadStartElement( );
+                reader.ReadEndElement( );
+            }
 		}
 
 		/// <summary>

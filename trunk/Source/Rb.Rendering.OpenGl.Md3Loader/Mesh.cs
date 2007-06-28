@@ -397,7 +397,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			}
 
 			//	TODO: Make a texture stack per stage?
-			Texture2d oldTexture = Renderer.Inst.GetTexture( 0 );
+			//Texture2d oldTexture = Renderer.Inst.GetTexture( 0 );
+            //Renderer.Inst.UnbindAllTextures( );
 
 			//	Assign texture sampler parameters
 			//	TODO: This should be part of the render technique
@@ -405,7 +406,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			{
 				Surface curSurface = m_Surfaces[ surfaceIndex ];
 
-				Renderer.Inst.BindTexture( 0, curSurface.Texture );
+				Renderer.Inst.BindTexture( curSurface.Texture );
 				if ( m_TextureParameter != null )
 				{
 					m_TextureParameter.Set( curSurface.Texture );
@@ -415,6 +416,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				m_SurfaceRenderer.CurrentFrame		= curSurface.SurfaceFrames[ currentFrame ];
 
 				m_Technique.Apply( context, m_SurfaceRenderer );
+
+                Renderer.Inst.UnbindTexture( curSurface.Texture );
 			}
 
 			if ( m_NestedMesh != null )
@@ -436,10 +439,10 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				}
 			}
 
-			if ( oldTexture != null )
-			{
-				Renderer.Inst.BindTexture( 0, oldTexture );
-			}
+			//if ( oldTexture != null )
+			//{
+			//	Renderer.Inst.BindTexture( oldTexture );
+			//}
 		}
 
 		/// <summary>

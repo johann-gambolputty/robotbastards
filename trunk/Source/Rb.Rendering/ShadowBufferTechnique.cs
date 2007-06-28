@@ -80,7 +80,7 @@ namespace Rb.Rendering
 			}
 
 			//	Create a shader parameter binding to the shadow matrix
-			m_ShadowMatrixBinding	= ShaderParameterBindings.Inst.CreateBinding( "ShadowMatrix", ShaderParameterCustomBinding.ValueType.Matrix );
+			m_ShadowMatrixBinding	= ShaderParameterBindings.Inst.CreateBinding( "ShadowMatrix", ShaderParameterCustomBinding.ValueType.Matrix, MaxLights );
 			m_ShadowNearZBinding	= ShaderParameterBindings.Inst.CreateBinding( "ShadowNearZ", ShaderParameterCustomBinding.ValueType.Float32 );
 			m_ShadowFarZBinding		= ShaderParameterBindings.Inst.CreateBinding( "ShadowFarZ", ShaderParameterCustomBinding.ValueType.Float32 );
 		}
@@ -104,7 +104,7 @@ namespace Rb.Rendering
 			//	Apply all shadow depth buffer textures
 			for ( int bufferIndex = 0; bufferIndex < numBuffers; ++bufferIndex )
 			{
-				Renderer.Inst.BindTexture( bufferIndex, DepthTextureMethod ? m_RenderTargets[ bufferIndex ].DepthTexture : m_RenderTargets[ bufferIndex ].Texture );
+				Renderer.Inst.BindTexture( GetDepthTexture( bufferIndex ) );
 			}
 
 			//	Apply all child techniques
@@ -126,9 +126,17 @@ namespace Rb.Rendering
 			//	Unbind all the shadow depth buffer textures
 			for ( int bufferIndex = 0; bufferIndex < numBuffers; ++bufferIndex )
 			{
-				Renderer.Inst.UnbindTexture( bufferIndex );
+                Renderer.Inst.UnbindTexture( GetDepthTexture( bufferIndex ) );
 			}
 		}
+
+        /// <summary>
+        /// Gets the depth texture associated with a given buffer index
+        /// </summary>
+        private Texture2d GetDepthTexture( int index )
+        {
+            return DepthTextureMethod ? m_RenderTargets[ index ].DepthTexture : m_RenderTargets[ index ].Texture;
+        }
 
 		#endregion
 
@@ -168,6 +176,15 @@ namespace Rb.Rendering
             //		- Naive inside-cone query will return the entire environment. Query needs to be aware of environment subsections (e.g. BSP nodes)
             //
 
+            //  Set the global technique to the override technique (this forces all objects to be rendered using the
+            //  override technique, unlesss they support a valid substitute technique), and render away...
+            context.PushGlobalTechnique( ms_OverrideTechnique );
+            
+            //	Set near and far Z plane bindings
+            //	NOTE: AP: This could be done once in setup - kept here for now so I can change them on the fly
+            m_ShadowNearZBinding.Set( m_NearZ );
+            m_ShadowFarZBinding.Set( m_FarZ );
+
             int numLights = lights.NumLights > MaxLights ? MaxLights : lights.NumLights;
             int numBuffers = 0;
             for ( int lightIndex = 0; lightIndex < numLights; ++lightIndex )
@@ -185,25 +202,15 @@ namespace Rb.Rendering
 
                 //	Set the current MVP matrix as the shadow transform. This is for after, when the scene is rendered properly
                 Matrix44 shadowMat = Renderer.Inst.GetTransform( Transform.ViewToScreen ) * Renderer.Inst.GetTransform( Transform.WorldToView );
-                m_ShadowMatrixBinding.Set( shadowMat );
+                m_ShadowMatrixBinding.SetAt( lightIndex, shadowMat );
 
-                //	Set near and far Z plane bindings
-                //	NOTE: AP: This could be done once in setup - kept here for now so I can change them on the fly
-                m_ShadowNearZBinding.Set( m_NearZ );
-                m_ShadowFarZBinding.Set( m_FarZ );
 
                 //	Set up the render target for the light
                 curTarget.Begin( );
                 Renderer.Inst.ClearColour( System.Drawing.Color.Black );  //  NOTE: AP: Unecessary if depth texture is being used
                 Renderer.Inst.ClearDepth( 1.0f );
 
-                //  Set the global technique to the override technique (this forces all objects to be rendered using the
-                //  override technique, unlesss they support a valid substitute technique), and render away...
-                context.PushGlobalTechnique( ms_OverrideTechnique );
-
                 renderable.Render( context );
-
-                context.PopGlobalTechnique( );  //  TODO: AP: Move push/pop out of loop
 
                 //	Stop using the current render target
                 curTarget.End( );
@@ -219,10 +226,14 @@ namespace Rb.Rendering
                     {
                         curTarget.Texture.Save( string.Format( "ShadowBuffer{0}.png", numBuffers - 1 ) );
                     }
-                    ms_DumpLights = false;
                 }
 
             }
+
+            ms_DumpLights = false;
+
+            context.PopGlobalTechnique( );
+
 
             Renderer.Inst.PopTransform( Transform.LocalToWorld );
             Renderer.Inst.PopTransform( Transform.WorldToView );

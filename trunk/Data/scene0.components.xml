@@ -8,14 +8,31 @@
     </parameters>
   </resource>
 
+  <!--Stinking hack-->
+  <method objectId="this" call="AddServices">
+    <parameters>
+      <list>
+        <object type="Rb.World.RayCaster">
+          <object type="Rb.Core.Maths.Plane3">
+            <vector3 x="0" y="1" z="0" property="Normal"/>
+          </object>
+        </object>
+      </list>
+    </parameters>
+  </method>
+
   <!--Debugging-->
   <ref objectId="this" access="Renderables">
-    <object type="Rb.Rendering.FpsDisplay">
-      <colour value="Black" property="TextColour"/>
-    </object>
   </ref>
 
   <!--Lighting-->
+  <object type="Rb.World.LightSocket">
+    <object type="Rb.Rendering.SpotLight" property="Light">
+      <point3 x="0" y="70" z="30" property="Position"/>
+      <point3 x="0" y="0" z="0" property="LookAt"/>
+      <float value="40" property="ArcDegrees"/>
+    </object>
+  </object>
   <object type="Rb.World.LightSocket">
     <object type="Rb.Rendering.SpotLight" property="Light">
       <point3 x="50" y="30" z="30" property="Position"/>

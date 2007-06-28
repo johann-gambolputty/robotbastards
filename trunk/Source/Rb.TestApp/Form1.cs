@@ -72,6 +72,7 @@ namespace Rb.TestApp
 
                 Viewer viewer = new Viewer( CreateSimpleCamera( cameraCommands ), scene );
                 display1.AddViewer( viewer );
+                viewer.ShowFps = true;
                 viewer.Technique = Builder.CreateInstance< World.Rendering.SceneShadowBufferTechnique >( Builder.Instance );
             }
             catch ( Exception ex )

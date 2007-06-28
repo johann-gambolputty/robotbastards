@@ -341,7 +341,8 @@ namespace Rb.Rendering.OpenGl
 			}
 
 			//	Bind the texture
-			OpenGlRenderer.Inst.BindTexture( 0, this );
+            OpenGlRenderer.Inst.UnbindAllTextures( );
+			OpenGlRenderer.Inst.BindTexture( this );
 
 			//	HACK: Makes lots of assumptions about format...
 
@@ -413,7 +414,7 @@ namespace Rb.Rendering.OpenGl
 			}
 
 			//	Unbind the texture
-			OpenGlRenderer.Inst.UnbindTexture( 0 );
+			OpenGlRenderer.Inst.UnbindTexture( this );
 
 			//	Disable 2D texturing
 			if ( requires2DTexturesEnabled )

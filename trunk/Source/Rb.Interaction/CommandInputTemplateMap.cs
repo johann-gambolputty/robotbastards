@@ -84,6 +84,47 @@ namespace Rb.Interaction
 			throw new ApplicationException( "WriteXml() unsupported" );
 		}
 
+        /// <summary>
+        /// Reads an input template from XML
+        /// </summary>
+        public static InputTemplate ReadInputTemplate( XmlReader reader )
+        {
+            if ( reader.Name != "input" )
+            {
+                throw new ApplicationException("Expected <input> element");
+            }
+
+			string type = reader.GetAttribute( "type" );
+			string assembly = reader.GetAttribute( "assembly" );
+			if ( type == null )
+			{
+				throw new ApplicationException( "Expected \"type\" attribute in <input> element" );
+			}
+			Type inputType;
+			if ( assembly == null )
+			{
+				inputType = AppDomainUtils.FindType( type );
+			}
+			else
+			{
+				inputType = AppDomain.CurrentDomain.Load( assembly ).GetType( type );
+			}
+			if ( inputType == null )
+			{
+				throw new ApplicationException( string.Format( "Failed to find input type \"{0}\"", type ) );
+			}
+			InputTemplate template = ( InputTemplate )Activator.CreateInstance( inputType );
+			IXmlSerializable templateReader = template as IXmlSerializable;
+			if ( templateReader != null )
+			{
+				templateReader.ReadXml( reader );
+            }
+
+
+
+            return template;
+        }
+
 		#endregion
 
 		#region Private stuff
@@ -154,38 +195,7 @@ namespace Rb.Interaction
 					reader.Read( );
 					continue;
 				}
-				if ( reader.Name != "input" )
-				{
-					throw new ApplicationException( "Expected <input> elements only within <command> element" );
-				}
-
-				string type = reader.GetAttribute( "type" );
-				string assembly = reader.GetAttribute( "assembly" );
-				if ( type == null )
-				{
-					throw new ApplicationException( "Expected \"type\" attribute in <input> element" );
-				}
-				Type inputType;
-				if ( assembly == null )
-				{
-					inputType = AppDomainUtils.FindType( type );
-				}
-				else
-				{
-					inputType = AppDomain.CurrentDomain.Load( assembly ).GetType( type );
-				}
-				if ( inputType == null )
-				{
-					throw new ApplicationException( string.Format( "Failed to find input type \"{0}\"", type ) );
-				}
-				InputTemplate template = ( InputTemplate )Activator.CreateInstance( inputType );
-				IXmlSerializable templateReader = template as IXmlSerializable;
-				if ( templateReader != null )
-				{
-					templateReader.ReadXml( reader );
-				}
-				result.Add( template );
-				reader.Read( );
+                result.Add( ReadInputTemplate( reader ) );
 			}
 
 			reader.ReadEndElement( );

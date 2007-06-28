@@ -43,6 +43,15 @@ namespace Rb.Rendering
             set { m_Renderable = value; }
         }
 
+        /// <summary>
+        /// If set to true, the current fps count is shown in the top left corner of the viewer
+        /// </summary>
+        public bool ShowFps
+        {
+            get { return m_ShowFps; }
+            set { m_ShowFps = value; }
+        }
+
 		/// <summary>
 		/// Default constructor
 		/// </summary>
@@ -66,15 +75,25 @@ namespace Rb.Rendering
 		/// </summary>
         public void Render( )
         {
-			m_Context.RenderTime = TinyTime.CurrentTime;
+            m_Context.RenderTime = TinyTime.CurrentTime;
+
+            //	Display the FPS
+            RenderFont font = RenderFonts.GetDefaultFont( DefaultFont.Debug );
+            double fps = 1.0 / TinyTime.ToSeconds( m_Context.RenderTime - m_LastRenderTime );
+            font.DrawText( 0, 0, System.Drawing.Color.Black, "FPS: {0}", fps.ToString( "G4" ) );
+
             m_Camera.Begin( );
             m_Context.ApplyTechnique( m_Technique, m_Renderable );
             m_Camera.End( );
+
+		    m_LastRenderTime = m_Context.RenderTime;
         }
 
+        private long                m_LastRenderTime = TinyTime.CurrentTime;
         private Cameras.CameraBase  m_Camera;
         private IRenderContext      m_Context = new RenderContext( );
         private IRenderable         m_Renderable;
         private ITechnique          m_Technique;
+        private bool                m_ShowFps;
     }
 }
