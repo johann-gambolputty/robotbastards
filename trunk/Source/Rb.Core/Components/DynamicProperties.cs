@@ -110,9 +110,23 @@ namespace Rb.Core.Components
 
         #endregion
 
-        #region Private stuff
+		#region IDynamicProperties Static Helpers
 
-        private Dictionary< string, DynamicProperty > m_Properties = new Dictionary< string, DynamicProperty >( );
+		/// <summary>
+		/// Tries to get a property from properties with a given name. If it doesn't exist, defaultValue
+		/// is returned. If it does exist, the property's value is returned
+		/// </summary>
+		public static T GetProperty< T >( IDynamicProperties properties, string name, T defaultValue )
+		{
+			object val = properties.Get( name );
+			return ( val == null ) ? defaultValue : ( T )val;
+		}
+
+		#endregion
+
+		#region Private stuff
+
+		private Dictionary< string, DynamicProperty > m_Properties = new Dictionary< string, DynamicProperty >( );
 
         #endregion
     }

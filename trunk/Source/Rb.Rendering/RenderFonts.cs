@@ -47,7 +47,7 @@ namespace Rb.Rendering
 			{
 				case DefaultFont.Debug :
 				{
-					return new System.Drawing.Font( "arial", 10 );
+					return new System.Drawing.Font( "arial", 12 );
 				}
 			}
 

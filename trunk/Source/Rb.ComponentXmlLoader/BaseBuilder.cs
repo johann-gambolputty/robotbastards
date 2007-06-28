@@ -1,15 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 using System.Reflection;
 
 using Rb.Core.Maths;
 using Rb.Core.Components;
-using Rb.Core.Utils;
-using Rb.Core;
-using Rb.Log;
 
 namespace Rb.ComponentXmlLoader
 {
@@ -121,7 +117,7 @@ namespace Rb.ComponentXmlLoader
                         {
                             float x = float.Parse( reader.GetAttribute( "x" ) );
 						    float y = float.Parse( reader.GetAttribute( "y" ) );
-						    float z = float.Parse( reader.GetAttribute( "y" ) );
+						    float z = float.Parse( reader.GetAttribute( "z" ) );
 						    result = new ValueBuilder( parameters, errors, reader, parentBuilder, new Point3( x, y, z ) );
 						    break;
                         }
@@ -136,7 +132,7 @@ namespace Rb.ComponentXmlLoader
                         {
 						    float x = float.Parse( reader.GetAttribute( "x" ) );
 						    float y = float.Parse( reader.GetAttribute( "y" ) );
-						    float z = float.Parse( reader.GetAttribute( "y" ) );
+						    float z = float.Parse( reader.GetAttribute( "z" ) );
 						    result = new ValueBuilder( parameters, errors, reader, parentBuilder, new Vector3( x, y, z ) );
 						    break;
                         }

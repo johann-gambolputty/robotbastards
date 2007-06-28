@@ -1,12 +1,12 @@
 using System;
-using System.Collections.Generic;
+using Rb.Core.Components;
 
 namespace Rb.Core.Resources
 {
 	/// <summary>
 	/// Extra parameters that can be passed to ResourceStreamLoader.Load() or ResourceDirectoryLoader.Load()
 	/// </summary>
-	public class LoadParameters
+	public class LoadParameters : ISupportsDynamicProperties
 	{
 		/// <summary>
 		/// Setup constructor
@@ -24,23 +24,6 @@ namespace Rb.Core.Resources
 			m_Target = target;
 		}
 
-        /// <summary>
-        /// Dynamic property indexer
-        /// </summary>
-        /// <param name="name">Property name</param>
-        /// <returns>Property value</returns>
-	    public object this[ string name ]
-	    {
-            get
-            {
-                return m_Properties.ContainsKey( name ) ? m_Properties[ name ] : null;
-            }
-            set
-            {
-                m_Properties[ name ] = value;
-            }
-	    }
-
 		/// <summary>
 		/// Gets the target object
 		/// </summary>
@@ -50,7 +33,24 @@ namespace Rb.Core.Resources
             set { m_Target = value; }
 		}
 
-		private Object	                        m_Target;
-	    private Dictionary< string, object >    m_Properties = new Dictionary< string, object >( );
+		#region ISupportsDynamicProperties Members
+
+		/// <summary>
+		/// Gets loader dynamic properties
+		/// </summary>
+		public IDynamicProperties Properties
+		{
+			get { return m_Properties; }
+		}
+
+		#endregion
+
+
+		#region Private stuff
+
+		private object m_Target;
+		private IDynamicProperties m_Properties = new DynamicProperties( );
+
+		#endregion
 	}
 }

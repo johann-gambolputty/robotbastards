@@ -62,13 +62,24 @@ float4 TestFragmentShader( TestOutput input ) : COLOR
 	float	rcp2W			= 1.0f / ( lightPos.w * 2 );
 	float2	uv				= float2( lightPos.x * rcp2W, lightPos.y * rcp2W ) + float2( 0.5f, 0.5f );	//	TODO: Move scale and translation to transform
 
-	float	storedDepth		= tex2D( Texture0, uv ).r;
+	float	storedDepth0	= tex2D( Texture0, uv ).r;
+	float	storedDepth1	= tex2D( Texture0, uv + float2( 1.f / 512.f, 0 ) ).r;
+	float	storedDepth2	= tex2D( Texture0, uv + float2( 1.f / 512.f, 1.f / 512.f  ) ).r;
+	float	storedDepth3	= tex2D( Texture0, uv + float2( 0, 1.f / 512.f  ) ).r;
+
 	float	lightDepth		= ( 1.f / ShadowNearZ - 1.f / lightPos.z ) / ( 1.f / ShadowNearZ - 1.f / ShadowFarZ );
 	float3	normal			= input.m_ModelNormal;
 	float3	lightVec		= input.m_VecToLight;
 	float3	halfVec			= normalize( lightVec + EyeZAxis );
 
-	float	shadowFactor	= ( storedDepth >= lightDepth ) && ( -dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ) ? 1 : 0.3f;
+	float	coverage		= ( storedDepth0 >= lightDepth ) ? 1.0f : 0.0f;
+	coverage += ( storedDepth1 >= lightDepth ) ? 1.0f : 0.0f;
+	coverage += ( storedDepth2 >= lightDepth ) ? 1.0f : 0.0f;
+	coverage += ( storedDepth3 >= lightDepth ) ? 1.0f : 0.0f;
+	coverage /= 4.0f;
+
+	//float	shadowFactor	= ( storedDepth >= lightDepth ) && ( -dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ) ? 1 : 0.3f;
+	float	shadowFactor	= ( -dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ) ? coverage : 0.3f;
 
 	float	spotDiffuse		= dot( normal, lightVec ) * shadowFactor.xxx;
 	float	specular		= dot( normal, halfVec );

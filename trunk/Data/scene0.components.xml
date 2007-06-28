@@ -15,6 +15,7 @@
         <object type="Rb.World.RayCaster">
           <object type="Rb.Core.Maths.Plane3">
             <vector3 x="0" y="1" z="0" property="Normal"/>
+            <float value="-3" property="Distance"/>
           </object>
         </object>
       </list>
@@ -25,23 +26,24 @@
   <ref objectId="this" access="Renderables">
   </ref>
 
-  <!--Lighting-->
-  <object type="Rb.World.LightSocket">
-    <object type="Rb.Rendering.SpotLight" property="Light">
-      <point3 x="0" y="70" z="30" property="Position"/>
-      <point3 x="0" y="0" z="0" property="LookAt"/>
-      <float value="40" property="ArcDegrees"/>
-    </object>
+  <!--Lighting 
+<object type="Rb.World.LightSocket">
+  <object type="Rb.Rendering.SpotLight" property="Light">
+    <point3 x="50" y="70" z="70" property="Position"/>
+    <point3 x="0" y="0" z="0" property="LookAt"/>
+    <float value="60" property="ArcDegrees"/>
   </object>
+</object>
+-->
   <object type="Rb.World.LightSocket">
     <object type="Rb.Rendering.SpotLight" property="Light">
-      <point3 x="50" y="30" z="30" property="Position"/>
+      <point3 x="30" y="20" z="30" property="Position"/>
       <point3 x="0" y="0" z="0" property="LookAt"/>
-      <float value="40" property="ArcDegrees"/>
+      <float value="50" property="ArcDegrees"/>
     </object>
   </object>
 
-  <!--Evironment-->
+<!--Evironment-->
   <object type="Rb.World.Rendering.SceneRenderable">
 
     <object type="Rb.Rendering.EffectRenderedObject">
@@ -61,6 +63,11 @@
 
   <!--Resources-->
   <resource path="sarge" id="{7B0132C4-DF4C-4df4-8EC5-63B7A7BF079A}">
+    <parameters>
+      <float value="0.2" dynProperty="scaleX"/>
+      <float value="0.2" dynProperty="scaleY"/>
+      <float value="0.2" dynProperty="scaleZ"/>
+    </parameters>
     <resource path="perPixelTextured.cgfx" property="Effect"/>
     <!--<resource path="plainTextured.cgfx" property="Effect"/>-->
     <string value="NormalTechnique" property="TechniqueName"/>
@@ -69,7 +76,7 @@
   <!--Entities-->
   <object type="Rb.World.Entities.Entity3d" id="{BE726C7E-26EA-433e-974A-B57396EE5FB5}">
 
-    <point3 x="20" y="0.5" z="0" property="NextPosition"/>
+    <point3 x="20" y="3" z="0" property="NextPosition"/>
 
     <object type="Rb.Rendering.EffectRenderedObject" property="Graphics">
 

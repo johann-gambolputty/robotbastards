@@ -115,6 +115,22 @@ namespace Rb.Core.Maths
 		}
 
 		/// <summary>
+		/// Scales the point by a scalar
+		/// </summary>
+		public static Point3 operator *( Point3 pt, float val )
+		{
+			return new Point3( pt.X * val, pt.Y * val, pt.Z * val );
+		}
+
+		/// <summary>
+		/// Scales the point by a vector
+		/// </summary>
+		public static Point3	operator * ( Point3 pt, Vector3 vec )
+		{
+			return new Point3( pt.X * vec.X, pt.Y * vec.Y, pt.Z * vec.Z );
+		}
+
+		/// <summary>
 		/// Gets the squared distance from one point to another
 		/// </summary>
 		public float	SqrDistanceTo( Point3 pt )
