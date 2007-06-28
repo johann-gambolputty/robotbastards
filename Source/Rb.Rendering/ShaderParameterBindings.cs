@@ -112,6 +112,41 @@ namespace Rb.Rendering
 		/// </summary>
 		Texture0,
 
+        /// <summary>
+        /// Binds the parameter to the second texture in the renderer. Parameter must be a texture sampler
+        /// </summary>
+        Texture1,
+
+        /// <summary>
+        /// Binds the parameter to the third texture in the renderer. Parameter must be a texture sampler
+        /// </summary>
+        Texture2,
+
+        /// <summary>
+        /// Binds the parameter to the fourth texture in the renderer. Parameter must be a texture sampler
+        /// </summary>
+        Texture3,
+
+        /// <summary>
+        /// Binds the parameter to the fifth texture in the renderer. Parameter must be a texture sampler
+        /// </summary>
+        Texture4,
+
+        /// <summary>
+        /// Binds the parameter to the sixth texture in the renderer. Parameter must be a texture sampler
+        /// </summary>
+        Texture5,
+
+        /// <summary>
+        /// Binds the parameter to the seventh texture in the renderer. Parameter must be a texture sampler
+        /// </summary>
+        Texture6,
+
+        /// <summary>
+        /// Binds the parameter to the eighth texture in the renderer. Parameter must be a texture sampler
+        /// </summary>
+        Texture7,
+
 		/// <summary>
 		/// Total number of default bindings
 		/// </summary>
@@ -264,6 +299,11 @@ namespace Rb.Rendering
 		/// Sets the value at the specified index to a 3d vector
 		/// </summary>
 		public abstract void SetAt( int index, Vector3 val );
+
+        /// <summary>
+        /// Sets the value at the specified index to a matrix
+        /// </summary>
+        public abstract void SetAt( int index, Matrix44 val );
 
 		#endregion
 

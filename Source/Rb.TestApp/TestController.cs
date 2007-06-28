@@ -44,8 +44,16 @@ namespace Rb.TestApp
 		/// </summary>
 		private static void SendLookAt( Entity3d target, Point3 pos )
 		{
-			Vector3 ahead = ( pos - target.NextPosition ).MakeNormal( );
-			Vector3 left = Vector3.Cross( target.Up, target.Ahead ).MakeNormal( );
+			Vector3 ahead = ( pos - target.NextPosition );
+
+		    float aheadLength = ahead.Length;
+            if ( aheadLength < 0.001f )
+            {
+                return;
+            }
+		    ahead /= aheadLength;
+
+			Vector3 left = Vector3.Cross( target.Up, ahead ).MakeNormal( );
 
 			target.SetFrame( left, target.Up, ahead );
 		}

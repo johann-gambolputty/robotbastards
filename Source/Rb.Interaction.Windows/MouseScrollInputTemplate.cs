@@ -72,6 +72,16 @@ namespace Rb.Interaction.Windows
             m_Max       = max == null ? 1.0f : float.Parse( max );
             m_Delta     = delta == null ? 0.1f : float.Parse( delta );
             m_Initial   = initial == null ? 0.0f : float.Parse( initial );
+
+            if ( reader.IsEmptyElement )
+            {
+                reader.Read( );
+            }
+            else
+            {
+                reader.ReadStartElement( );
+                reader.ReadEndElement( );
+            }
 		}
 
 		/// <summary>

@@ -178,7 +178,41 @@ namespace Rb.Rendering.OpenGl.Cg
 					CgShaderParameter.BindTexture( context, param, OpenGlRenderer.Inst.GetTexture( 0 ) );
 					break;
 				}
-
+				case ShaderParameterDefaultBinding.Texture1 :
+				{
+					CgShaderParameter.BindTexture( context, param, OpenGlRenderer.Inst.GetTexture( 1 ) );
+					break;
+				}
+				case ShaderParameterDefaultBinding.Texture2 :
+				{
+					CgShaderParameter.BindTexture( context, param, OpenGlRenderer.Inst.GetTexture( 2 ) );
+					break;
+				}
+				case ShaderParameterDefaultBinding.Texture3 :
+				{
+					CgShaderParameter.BindTexture( context, param, OpenGlRenderer.Inst.GetTexture( 3 ) );
+					break;
+				}
+				case ShaderParameterDefaultBinding.Texture4 :
+				{
+					CgShaderParameter.BindTexture( context, param, OpenGlRenderer.Inst.GetTexture( 4 ) );
+					break;
+				}
+				case ShaderParameterDefaultBinding.Texture5 :
+				{
+					CgShaderParameter.BindTexture( context, param, OpenGlRenderer.Inst.GetTexture( 5 ) );
+					break;
+				}
+				case ShaderParameterDefaultBinding.Texture6 :
+				{
+					CgShaderParameter.BindTexture( context, param, OpenGlRenderer.Inst.GetTexture( 6 ) );
+					break;
+				}
+				case ShaderParameterDefaultBinding.Texture7 :
+				{
+					CgShaderParameter.BindTexture( context, param, OpenGlRenderer.Inst.GetTexture( 7 ) );
+					break;
+				}
 				default :
 				{
 					throw new ApplicationException( string.Format( "Unhandled shader parameter binding \"{0}\"", m_Binding ) );

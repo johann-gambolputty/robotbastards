@@ -6,7 +6,8 @@
     <serialise>
       <commandList name="TestCommands">
         <command name="Forward">
-          <input key="Up" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+          <input key="Up" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows">
+          </input>
           <input key="W" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
         </command>
         <command name="Back">
@@ -22,13 +23,14 @@
           <input key="D" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows" />
         </command>
         <command name="Jump">
-          <input key="Space" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+          <input key="Space" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows">
+          </input>
         </command>
-        <!--
         <command name="LookAt">
-          <input type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
+          <input type="Rb.World.Interaction.CursorScenePickInputTemplate" assembly="Rb.World">
+            <input type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
+          </input>
         </command>
-        -->
       </commandList>
 
       <commandList name="CameraCommands">

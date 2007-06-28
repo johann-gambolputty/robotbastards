@@ -66,10 +66,14 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Draws text using this font, at a given position
 		/// </summary>
+        /// <param name="x">Screen position coordinate</param>
+        /// <param name="y">Screen position coordinate</param>
+        /// <param name="colour">Text colour</param>
 		/// <param name="str">Text to draw</param>
-		public override void		DrawText( int x, int y, System.Drawing.Color colour, string str )
+		public override void DrawText( int x, int y, Color colour, string str )
 		{
 			OpenGlRenderer.Inst.PushRenderState( m_RenderState );
+            OpenGlRenderer.Inst.PushTextures( );
 			m_FontTextureSampler.Begin( );
 
 			OpenGlRenderer.Inst.Push2d( );
@@ -79,8 +83,8 @@ namespace Rb.Rendering.OpenGl
 			Gl.glBegin( Gl.GL_QUADS );
 			int		curX		= x;
 			int		curY		= y;
-			float	rcpWidth	= 1.0f / ( float )m_FontTextureSampler.Texture.Width;
-			float	rcpHeight	= 1.0f / ( float )m_FontTextureSampler.Texture.Height;
+			float	rcpWidth	= 1.0f / m_FontTextureSampler.Texture.Width;
+			float	rcpHeight	= 1.0f / m_FontTextureSampler.Texture.Height;
 			for ( int charIndex = 0; charIndex < str.Length; ++charIndex )
 			{
 				char curCh = str[ charIndex ];
@@ -92,10 +96,10 @@ namespace Rb.Rendering.OpenGl
 
 				CharacterData charData = m_CharacterData[ curCh ];
 
-				float u		= ( float )( charData.U ) * rcpWidth;
-				float v		= ( float )( charData.V ) * rcpHeight;
-				float maxU	= u + ( float )( charData.Width ) * rcpWidth;
-				float maxV	= v + ( float )( charData.Height ) * rcpWidth;
+				float u		= ( charData.U ) * rcpWidth;
+				float v		= ( charData.V ) * rcpHeight;
+				float maxU	= u + ( charData.Width ) * rcpWidth;
+				float maxV	= v + ( charData.Height ) * rcpWidth;
 
 				int maxX = curX + charData.Width;
 				int maxY = curY + charData.Height;
@@ -117,6 +121,7 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glEnd( );
 			m_FontTextureSampler.End( );
+            OpenGlRenderer.Inst.PopTextures( );
 			OpenGlRenderer.Inst.Pop2d( );
 			OpenGlRenderer.Inst.PopRenderState( );
 		}

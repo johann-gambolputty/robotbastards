@@ -56,6 +56,16 @@ namespace Rb.Interaction.Windows
 		public void ReadXml( XmlReader reader )
 		{
 			m_Key = ( Keys )Enum.Parse( typeof( Keys ), reader.GetAttribute( "key" ) );
+            
+            if ( reader.IsEmptyElement )
+            {
+                reader.Read( );
+            }
+            else
+            {
+                reader.ReadStartElement( );
+                reader.ReadEndElement( );
+            }
 		}
 
 		/// <summary>

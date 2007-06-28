@@ -33,13 +33,15 @@ struct SpotLightArray
 
 SpotLightArray	SpotLights;
 
-float4x4	ShadowMatrix;
+float4x4	ShadowMatrix[ 4 ];
 float		ShadowNearZ;
 float		ShadowFarZ;
 float4x4	ModelMatrix;
 float4x4	ModelViewProjectionMatrix;
 float4x4	InverseTransposeModelMatrix;
 float3		EyeZAxis;
+
+const int	SI = 0;
 
 TestOutput TestVertexShader( TestInput input )
 {
@@ -48,7 +50,7 @@ TestOutput TestVertexShader( TestInput input )
 	output.m_Position		= mul( ModelViewProjectionMatrix, input.m_Position );
 	output.m_ModelPos		= mul( ModelMatrix, input.m_Position ).xyz;
 	output.m_ModelNormal	= normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
-	output.m_LightPos		= mul( ShadowMatrix, mul( ModelMatrix, input.m_Position ) );
+	output.m_LightPos		= mul( ShadowMatrix[ SI ], mul( ModelMatrix, input.m_Position ) );
 	output.m_VecToLight		= normalize( SpotLights.m_Positions[ 0 ] - output.m_ModelPos );
 
 	return output;
