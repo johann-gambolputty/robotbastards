@@ -1,5 +1,7 @@
 using Rb.Core.Components;
 using Rb.Interaction;
+using Rb.Rendering;
+using Rb.World;
 using Rb.World.Entities;
 using Rb.Core.Utils;
 using Rb.Core.Maths;
@@ -9,7 +11,7 @@ namespace Rb.TestApp
 	/// <summary>
 	/// Test controller class
 	/// </summary>
-	public class TestController : Component
+	public class TestController : Component, IRenderable, ISceneObject
 	{
 		/// <summary>
 		/// Called when the controller receives a command message
@@ -40,18 +42,73 @@ namespace Rb.TestApp
 		}
 
 		/// <summary>
+		/// Called when this object is added to a parent
+		/// </summary>
+		/// <param name="parent">Parent object</param>
+		public override void AddedToParent( object parent )
+		{
+			base.AddedToParent( parent );
+			MessageHub.AddDispatchRecipient( ( IMessageHub )parent, typeof( CommandMessage ), this, 0 );
+		}
+
+		#region ISceneObject Members
+
+		/// <summary>
+		/// Attaches this object to the scene render list
+		/// </summary>
+		/// <param name="scene">Scene context</param>
+		public void SetSceneContext( Scene scene )
+		{
+			scene.Renderables.Add( this );
+		}
+
+		#endregion
+
+		#region IRenderable Members
+
+		/// <summary>
+		/// Renders this object
+		/// </summary>
+		public void Render( IRenderContext context )
+		{
+			if ( m_RenderState == null )
+			{
+				m_RenderState = RenderFactory.Inst.NewRenderState( );
+				m_RenderState
+					.DisableLighting( )
+					.SetColour( System.Drawing.Color.White )
+				;
+			}
+			m_RenderState.Begin( );
+			ShapeRenderer.Inst.DrawSphere( m_LookAt, 0.5f );
+			m_RenderState.End( );
+		}
+
+		#endregion
+
+
+		#region Private stuff
+
+
+		private Point3		m_LookAt = Point3.Origin;
+		private RenderState	m_RenderState;
+
+		/// <summary>
 		/// Cheats and forces the entity to look at a given point
 		/// </summary>
-		private static void SendLookAt( Entity3d target, Point3 pos )
+		private void SendLookAt( Entity3d target, Point3 pos )
 		{
-			Vector3 ahead = ( pos - target.NextPosition );
+			m_LookAt = pos;
 
-		    float aheadLength = ahead.Length;
-            if ( aheadLength < 0.001f )
-            {
-                return;
-            }
-		    ahead /= aheadLength;
+			Vector3 ahead = ( pos - target.NextPosition );
+			ahead.Y = 0;
+
+			float aheadLength = ahead.Length;
+			if ( aheadLength < 0.001f )
+			{
+				return;
+			}
+			ahead /= aheadLength;
 
 			Vector3 left = Vector3.Cross( target.Up, ahead ).MakeNormal( );
 
@@ -68,15 +125,6 @@ namespace Rb.TestApp
 			target.HandleMessage( new MovementXzRequest( move.X, move.Z ) );
 		}
 
-		/// <summary>
-		/// Called when this object is added to a parent
-		/// </summary>
-		/// <param name="parent">Parent object</param>
-		public override void AddedToParent( object parent )
-		{
-			base.AddedToParent( parent );
-			MessageHub.AddDispatchRecipient( ( IMessageHub )parent, typeof( CommandMessage ), this, 0 );
-		}
-
+		#endregion
 	}
 }

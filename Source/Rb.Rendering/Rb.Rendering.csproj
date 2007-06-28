@@ -40,6 +40,7 @@
     <Compile Include="Cameras\SphereCamera.cs" />
     <Compile Include="DelegateRenderable.cs" />
     <Compile Include="EffectRenderedObject.cs" />
+    <Compile Include="FpsCounter.cs" />
     <Compile Include="FpsDisplay.cs" />
     <Compile Include="IDisplaySetup.cs" />
     <Compile Include="GraphicsLog.cs" />

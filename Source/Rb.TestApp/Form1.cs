@@ -17,7 +17,7 @@ namespace Rb.TestApp
     {
         public Form1()
 		{
-        	LogViewer viewer = new LogViewer( );
+			LogViewer viewer = new LogViewer( );
 			viewer.Show( this );
 
 			AppLog.Info( "Beginning Rb.TestApp at {0}", DateTime.Now );

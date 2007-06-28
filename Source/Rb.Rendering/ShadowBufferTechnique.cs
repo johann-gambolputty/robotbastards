@@ -143,12 +143,12 @@ namespace Rb.Rendering
         #region Private stuff
 
         private static ITechnique               ms_OverrideTechnique;
-        private static bool                     ms_DumpLights = true;
+        private static bool                     ms_DumpLights = false;
 
         private LightGroup                      m_ShadowLights = new LightGroup( );
         private RenderTarget[]                  m_RenderTargets = new RenderTarget[MaxLights];
         private float                           m_NearZ = 1.0f;
-        private float                           m_FarZ = 800.0f;
+        private float                           m_FarZ = 300.0f;
         private ShaderParameterCustomBinding    m_ShadowMatrixBinding;
         private ShaderParameterCustomBinding    m_ShadowNearZBinding;
         private ShaderParameterCustomBinding    m_ShadowFarZBinding;
@@ -233,7 +233,6 @@ namespace Rb.Rendering
             ms_DumpLights = false;
 
             context.PopGlobalTechnique( );
-
 
             Renderer.Inst.PopTransform( Transform.LocalToWorld );
             Renderer.Inst.PopTransform( Transform.WorldToView );

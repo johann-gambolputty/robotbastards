@@ -9,7 +9,7 @@ namespace Rb.Rendering.OpenGl
 	/// <summary>
 	/// OpenGL implementation of RenderFont.
 	/// </summary>
-	public class OpenGlRenderFont : Rb.Rendering.RenderFont
+	public class OpenGlRenderFont : RenderFont
 	{
 
 		/// <summary>
@@ -42,7 +42,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="font">Font to build from</param>
 		/// <param name="characters">Set of characters to build the font texture from</param>
 		/// <returns>Returns this</returns>
-		public override Rb.Rendering.RenderFont Setup( Font font, CharacterSet characters )
+		public override RenderFont Setup( Font font, CharacterSet characters )
 		{
 			Bitmap img = BuildFontImage( font, characters );
 			img.Save( string.Format( "{0}{1}.png", font.Name, font.Size ), ImageFormat.Png );
@@ -51,6 +51,8 @@ namespace Rb.Rendering.OpenGl
 			m_FontTextureSampler.Texture	= OpenGlRenderFactory.Inst.NewTexture2d( );
 			m_FontTextureSampler.Texture.Load( img );
 			m_FontTextureSampler.Mode		= TextureMode.Modulate;
+			m_FontTextureSampler.MinFilter	= TextureFilter.NearestTexel;
+			m_FontTextureSampler.MagFilter	= TextureFilter.NearestTexel;
 
 			return this;
 		}
@@ -58,9 +60,11 @@ namespace Rb.Rendering.OpenGl
 		private RenderState m_RenderState =
 			OpenGlRenderFactory.Inst.NewRenderState( )
 				.DisableCap( RenderStateFlag.DepthTest )
+				.EnableCap( RenderStateFlag.Blend )
 				.SetBlendMode( BlendFactor.SrcAlpha, BlendFactor.OneMinusSrcAlpha )
 				.SetPolygonRenderingMode( PolygonRenderMode.Fill )
 				.EnableCap( RenderStateFlag.Texture2d )
+				.DisableLighting( )
 			;
 
 		/// <summary>
@@ -222,7 +226,7 @@ namespace Rb.Rendering.OpenGl
 				byte* pixel = scanline;
 				for ( int x = 0; x < bmpData.Width; ++x )
 				{
-					pixel[ 3 ] = pixel[ 2 ];
+					pixel[ 3 ] = ( pixel[ 2 ] < 120 ? pixel[ 2 ] : ( byte )255 );
 					pixel += 4;
 				}
 				scanline += bmpData.Stride;

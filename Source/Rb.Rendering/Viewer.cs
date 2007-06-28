@@ -77,19 +77,14 @@ namespace Rb.Rendering
         {
             m_Context.RenderTime = TinyTime.CurrentTime;
 
-            //	Display the FPS
-            RenderFont font = RenderFonts.GetDefaultFont( DefaultFont.Debug );
-            double fps = 1.0 / TinyTime.ToSeconds( m_Context.RenderTime - m_LastRenderTime );
-            font.DrawText( 0, 0, System.Drawing.Color.Black, "FPS: {0}", fps.ToString( "G4" ) );
-
             m_Camera.Begin( );
             m_Context.ApplyTechnique( m_Technique, m_Renderable );
             m_Camera.End( );
 
-		    m_LastRenderTime = m_Context.RenderTime;
+			m_FpsDisplay.Render( m_Context );
         }
 
-        private long                m_LastRenderTime = TinyTime.CurrentTime;
+		private FpsDisplay			m_FpsDisplay = new FpsDisplay( );
         private Cameras.CameraBase  m_Camera;
         private IRenderContext      m_Context = new RenderContext( );
         private IRenderable         m_Renderable;

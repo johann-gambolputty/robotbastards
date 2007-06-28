@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Rb.Rendering;
 
 namespace Rb.World
