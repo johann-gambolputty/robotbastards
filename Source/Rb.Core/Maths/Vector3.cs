@@ -1,10 +1,11 @@
-using System;
+using System.Diagnostics;
 
 namespace Rb.Core.Maths
 {
 	/// <summary>
 	/// 3 element floating point vector
-	/// </summary>
+    /// </summary>
+    [DebuggerDisplay("({X},{Y},{Z})")]
 	public struct Vector3
 	{
 		#region	Vector constants

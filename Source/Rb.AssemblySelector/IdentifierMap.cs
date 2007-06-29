@@ -6,26 +6,45 @@ using System.Text.RegularExpressions;
 
 namespace Rb.AssemblySelector
 {
+    /// <summary>
+    /// Stores information about assemblies
+    /// </summary>
+    /// <remarks>
+    /// Assemblies are categorised by this class using the AssemblyIdentifierAttribute attribute, which is a key/value pair
+    /// describing some aspect of the assembly.
+    /// For example,
+    /// <code>
+    /// [assembly: AssemblyIdentifier( "GraphicsApi", "DirectX" )]
+    /// </code>
+    /// will assign an identifier with key "GraphicsApi" and value "DirectX" to the assembly when read by the identifier map.
+    /// After categorisation (all loaded assemblies and assemblies in the current working directory are categorised on map
+    /// construction), the map can be queried with selection strings.
+    /// A selection string is a semi-colon delimited array of queries, all of which must evaluate to true to select an assembly
+    /// from the map.
+    /// Selection strings can be formed of name substring queries ("name=..."), explicit value queries ("key=value"), or value
+    /// match to existing key queries ("key").
+    /// For example, "name=blah;myKey0;myKey1=pie" will load an assembly with "blah" in its name, has a key "myKey0" with a value
+    /// that matches the existing value of "myKey0" (set by a previously loaded assembly), and has a key "myKey1" with a value
+    /// "pie".
+    /// Assemblies add their key/value identifiers to the map if the identifier attribute property <see cref="AssemblyIdentifierAttribute.AddToMap"/>
+    /// is true.
+    /// A practical example 
+    /// </remarks>
     public class IdentifierMap
     {
+        /// <summary>
+        /// IdentifierMap singleton
+        /// </summary>
         public static IdentifierMap Instance
         {
             get { return ms_Singleton; }
         }
-        private static IdentifierMap ms_Singleton = new IdentifierMap( );
-        
-        private IdentifierMap( )
-        {
-            foreach ( Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                AddAssemblyToMap( assembly );
-            }
 
-            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler( OnAssemblyLoad );
-
-            AddAssemblyIdentifiers( ".", SearchOption.TopDirectoryOnly );
-        }
-
+        /// <summary>
+        /// Loads an assembly based on evidence queried by a selection string
+        /// </summary>
+        /// <param name="selectionString">Selection string</param>
+        /// <returns>Returns the loaded assembly, or null if no assemblies matched the selection string</returns>
         public Assembly Load( string selectionString )
         {
             AssemblySelector selector = BuildSelector( selectionString );
@@ -40,6 +59,11 @@ namespace Rb.AssemblySelector
             return null;
         }
 
+        /// <summary>
+        /// Searches a directory for assemblies, storing information about each in this map
+        /// </summary>
+        /// <param name="directory">Directory to search</param>
+        /// <param name="option">Directory search options</param>
         public void AddAssemblyIdentifiers( string directory, SearchOption option )
         {
             foreach ( string file in System.IO.Directory.GetFiles( directory, "*.dll", option ) )
@@ -49,6 +73,38 @@ namespace Rb.AssemblySelector
 
                 AddAssemblyToMap( curAssembly );
             }
+        }
+        
+        /// <summary>
+        /// Builds an AssemblySelector object from a selection string
+        /// </summary>
+        /// <param name="selectionString">Selection string</param>
+        /// <returns>Returns a new AssemblySelector based on the selection string</returns>
+        public static AssemblySelector BuildSelector( string selectionString )
+        {
+            Match match = SelectRegex.Match( selectionString );
+
+            AssemblySelector curSelector = null;
+            for ( ; match.Success; match = match.NextMatch( ) )
+            {
+                if ( match.Groups[ "Named" ].Success )
+                {
+                    string name = match.Groups[ "Name" ].Value;
+                    curSelector = new NameSelector( name, curSelector );
+                }
+                else if ( match.Groups[ "Exists" ].Success )
+                {
+                    curSelector = new IdExistsSelector( match.Groups[ "Exists" ].Value, curSelector );
+                }
+                else if ( match.Groups[ "Matches" ].Success )
+                {
+                    string id       = match.Groups[ "Id" ].Value;
+                    string value    = match.Groups[ "Value" ].Value;
+
+                    curSelector = new HasIdOfValueSelector( id, value, curSelector );
+                }
+            }
+            return curSelector == null ? new AssemblySelector( null ) : curSelector;
         }
 
         public class AssemblyIdentifiers : Dictionary< string, string >
@@ -67,8 +123,26 @@ namespace Rb.AssemblySelector
         {
         }
 
-        private AssemblyMap m_Map = new AssemblyMap( );
-        private IdMap m_IdMap = new IdMap( );
+        private AssemblyMap             m_Map           = new AssemblyMap( );
+        private IdMap                   m_IdMap         = new IdMap( );
+        private static IdentifierMap    ms_Singleton    = new IdentifierMap( );
+        private static Regex            SelectRegex     = new Regex( @"(?<Named>name=(?<Name>\w+))|(?<Matches>(?<Id>\w+)=(?<Value>\w+))|(?<Exists>\w+)" );
+
+
+        /// <summary>
+        /// Stores information about currently loaded assemblies, and assemblies in the current working directory
+        /// </summary>
+        private IdentifierMap( )
+        {
+            foreach ( Assembly assembly in AppDomain.CurrentDomain.GetAssemblies( ) )
+            {
+                AddAssemblyToMap( assembly );
+            }
+
+            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler( OnAssemblyLoad );
+
+            AddAssemblyIdentifiers( ".", SearchOption.TopDirectoryOnly );
+        }
 
         private static AssemblyIdentifiers CreateAssemblyIdentifiers( Assembly assembly )
         {
@@ -135,82 +209,6 @@ namespace Rb.AssemblySelector
 
             return values.IndexOf( value ) != -1;
         }
-
-        public static AssemblySelector BuildSelector( string selectionString )
-        {
-            Match match = SelectRegex.Match( selectionString );
-
-            AssemblySelector curSelector = null;
-            for ( ; match.Success; match = match.NextMatch( ) )
-            {
-                if ( match.Groups[ "Named" ].Success )
-                {
-                    string name = match.Groups[ "Name" ].Value;
-                    curSelector = new NameSelector( name, curSelector );
-                }
-                else if ( match.Groups[ "Exists" ].Success )
-                {
-                    curSelector = new IdExistsSelector( match.Groups[ "Exists" ].Value, curSelector );
-                }
-                else if ( match.Groups[ "Matches" ].Success )
-                {
-                    string id       = match.Groups[ "Id" ].Value;
-                    string value    = match.Groups[ "Value" ].Value;
-
-                    curSelector = new HasIdOfValueSelector( id, value, curSelector );
-                }
-            }
-            return curSelector == null ? new AssemblySelector( null ) : curSelector;
-        }
-
-        private static Regex SelectRegex = new Regex(@"(?<Named>name=(?<Name>\w+))|(?<Matches>(?<Id>\w+)=(?<Value>\w+))|(?<Exists>\w+)");
-
-        /*
-        public void AddAssembly( Assembly assembly )
-        {
-            object[] idAttributes = assembly.GetCustomAttributes( typeof( AssemblyIdentifierAttribute ), true );
-            foreach ( AssemblyIdentifierAttribute idAttribute in idAttributes )
-            {
-                if ( !idAttribute.AddToIdMap )
-                {
-                    continue;
-                }
-
-                IdList identifiers;
-                if ( !m_Map.TryGetValue( idAttribute.Identifier, out identifiers ) )
-                {
-                    identifiers = new IdList( );
-                    m_Map.Add( idAttribute.Identifier, identifiers );
-                }
-
-                if ( identifiers.IndexOf( idAttribute.Value ) == -1 )
-                {
-                    identifiers.Add( idAttribute.Value );
-                }
-            }
-        }
-
-        public Assembly Load( string searchString, string selectionString, string directory, System.IO.SearchOption option )
-        {
-            AssemblySelector selector = BuildSelector( selectionString );
-
-            foreach ( string file in System.IO.Directory.GetFiles( directory, searchString, option ) )
-            {
-                if ( selector.MatchesFilename( file ) )
-                {
-                    string assembly = System.IO.Path.GetFileNameWithoutExtension( file );
-                    Assembly curAssembly = Assembly.ReflectionOnlyLoad( assembly );
-
-                    if ( selector.MatchesIdentifiers( curAssembly ) )
-                    {
-                        return Assembly.Load( assembly );
-                    }
-                }
-            }
-
-            return null;
-        }
-        */
 
         public class AssemblySelector
         {
