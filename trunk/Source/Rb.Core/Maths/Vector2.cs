@@ -1,10 +1,11 @@
-using System;
+using System.Diagnostics;
 
 namespace Rb.Core.Maths
 {
 	/// <summary>
 	/// Summary description for Vector2.
 	/// </summary>
+	[DebuggerDisplay("({X},{Y})")]
 	public struct Vector2
 	{
 		#region	Vector constants

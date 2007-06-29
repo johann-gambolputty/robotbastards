@@ -13,13 +13,22 @@ namespace Rb.TestApp
 	/// </summary>
 	public class TestController : Component, IRenderable, ISceneObject
 	{
+        /// <summary>
+        /// Entity speed
+        /// </summary>
+	    public float Speed
+	    {
+            get { return m_Speed; }
+            set { m_Speed = value; }
+	    }
+
 		/// <summary>
 		/// Called when the controller receives a command message
 		/// </summary>
 		[Dispatch]
 		public MessageRecipientResult OnCommand( CommandMessage msg )
 		{
-			float speed = 15.0f;
+            float speed = m_Speed;
 
 			//	TODO: AP: Query entity frame instead?
 			Entity3d entity = ( Entity3d )Parent;
@@ -86,12 +95,11 @@ namespace Rb.TestApp
 
 		#endregion
 
-
 		#region Private stuff
-
 
 		private Point3		m_LookAt = Point3.Origin;
 		private RenderState	m_RenderState;
+        private float       m_Speed = 15.0f;
 
 		/// <summary>
 		/// Cheats and forces the entity to look at a given point

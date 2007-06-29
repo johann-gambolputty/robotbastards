@@ -1,4 +1,5 @@
-using System;
+
+using System.Diagnostics;
 
 namespace Rb.Core.Maths
 {
@@ -15,7 +16,8 @@ namespace Rb.Core.Maths
 	/// when using operator -() to get the vector between two points, or DistanceTo() to get the distance between points).
 	/// </note>
 	/// </remarks>
-	/// <seealso href="http://home.comcast.net/~tom_forsyth/blog.wiki.html#%5B%5BA%20matter%20of%20precision%5D%5D">Tom Forsyth's blog</seealso>
+    /// <seealso href="http://home.comcast.net/~tom_forsyth/blog.wiki.html#%5B%5BA%20matter%20of%20precision%5D%5D">Tom Forsyth's blog</seealso>
+    [DebuggerDisplay("({X},{Y},{Z})")]
 	public struct BigPoint3
 	{
 		/// <summary>
