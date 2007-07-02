@@ -69,7 +69,7 @@ namespace Rb.ComponentXmlLoader.Tests
 
                 Assert.Fail( "Expected empty test to fail and throw an ApplicationException" );
             }
-            catch ( System.ApplicationException ex )
+            catch ( ApplicationException )
             {
             }
         }
@@ -85,7 +85,7 @@ namespace Rb.ComponentXmlLoader.Tests
 
                 Assert.Fail("Expected no content test to fail and throw an ApplicationException");
             }
-            catch ( System.ApplicationException ex )
+            catch ( ApplicationException )
             {
                 
             }

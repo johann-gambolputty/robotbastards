@@ -18,7 +18,7 @@
 	<object type="RbEngine.Scene.SceneDb">
 
 		<!-- Scene systems -->
-		<object type="RbEngine.Components.Component" property="Systems">
+		<object type="Rb.Core.Components.Component" property="Systems">
 
 			<object type="RbEngine.Scene.LightingManager"/>
 
@@ -35,8 +35,8 @@
 
 			</object>
 
-			<object type="RbEngine.Network.Runt.UpdateSource"/>
-			<object type="RbEngine.Network.Runt.UpdateTarget"/>
+			<object type="Rb.Network.Runt.UpdateSource"/>
+			<object type="Rb.Network.Runt.UpdateTarget"/>
 
 		</object>
 
@@ -46,7 +46,7 @@
 		<clock name="NetworkClock" ticksPerSecond="60"/>
 
 		<!-- Test scenery :) -->
-		<object type="RbEngine.Components.Simple.GroundPlane"/>
+		<object type="Rb.Core.Components.Simple.GroundPlane"/>
 
 		<!-- Client-controlled entity -->
 		<object type="RbEngine.Entities.Entity3">
@@ -62,11 +62,11 @@
 				<string value="TestCommands" property="CommandListName"/>
 			</object>
 
-			<object type="RbEngine.Network.Runt.ChildUpdateProvider">
+			<object type="Rb.Network.Runt.ChildUpdateProvider">
 				<type value="RbEngine.Interaction.CommandMessage" property="UpdateMessageType"/>
 			</object>
 
-			<object type="RbEngine.Network.Runt.ChildUpdateHandler"/>
+			<object type="Rb.Network.Runt.ChildUpdateHandler"/>
 
 			<object type="RbEngine.Entities.TestUserEntityController"/>
 
@@ -82,7 +82,7 @@
 			<instance modelPath="models/sarge" property="Graphics"/>
 			<object type="RbEngine.Scene.LightingData"/>
 
-			<object type="RbEngine.Network.Runt.ChildUpdateHandler"/>
+			<object type="Rb.Network.Runt.ChildUpdateHandler"/>
 
 			<object type="RbEngine.Entities.TestUserEntityController"/>
 

@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Rb.ComponentXmlLoader.Tests")]
+[assembly: AssemblyTitle("Rb.Core.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Workshare")]
-[assembly: AssemblyProduct("Rb.ComponentXmlLoader.Tests")]
+[assembly: AssemblyProduct("Rb.Core.Tests")]
 [assembly: AssemblyCopyright("Copyright © Workshare 2007")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("88c20c0a-9ecf-4017-b1c5-010e2b4dc841")]
+[assembly: Guid( "49B465F3-0CB4-4177-A510-E2DA77890387" )]
 
 // Version information for an assembly consists of the following four values:
 //

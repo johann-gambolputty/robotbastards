@@ -18,8 +18,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Core", "Source\Rb.Core\R
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.ComponentXmlLoader", "Source\Rb.ComponentXmlLoader\Rb.ComponentXmlLoader.csproj", "{61B562C4-66D5-4048-B482-858A791249A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.ComponentXmlLoader.Tests", "Testing\Rb.ComponentXmlLoader.Tests\Rb.ComponentXmlLoader.Tests.csproj", "{46367F66-7E89-448D-B038-2DA69C2754B6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Rendering", "Source\Rb.Rendering\Rb.Rendering.csproj", "{EC130734-6F0F-402B-8215-9F133F0ADEE4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Log.Controls.Vs", "Source\Rb.Log.Controls.Vs\Rb.Log.Controls.Vs.csproj", "{592DDD2E-6E38-4EB1-AD47-800193530D3B}"
@@ -91,10 +89,6 @@ Global
 		{61B562C4-66D5-4048-B482-858A791249A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61B562C4-66D5-4048-B482-858A791249A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61B562C4-66D5-4048-B482-858A791249A2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{46367F66-7E89-448D-B038-2DA69C2754B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{46367F66-7E89-448D-B038-2DA69C2754B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{46367F66-7E89-448D-B038-2DA69C2754B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{46367F66-7E89-448D-B038-2DA69C2754B6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EC130734-6F0F-402B-8215-9F133F0ADEE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EC130734-6F0F-402B-8215-9F133F0ADEE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC130734-6F0F-402B-8215-9F133F0ADEE4}.Release|Any CPU.ActiveCfg = Release|Any CPU

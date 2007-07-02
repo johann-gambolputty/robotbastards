@@ -143,7 +143,7 @@ namespace Rb.Log
 
 		#endregion
 
-		#region IStaticTag Methods
+		#region IStaticTag Members
 
 		/// <summary>
 		/// Gets the parent tag. Defaults to the Root tag

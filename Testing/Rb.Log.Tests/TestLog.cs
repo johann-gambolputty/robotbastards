@@ -14,9 +14,14 @@ namespace Rb.Log.Tests
 		[Test]
 		public void TestLogging( )
 		{
-			WriteStuff( App.Tag );
+			WriteStuff( AppLog.Tag );
 			WriteStuff( TestTag.Tag );
+		}
 
+
+		[Test]
+		public void TestMultithreadedLogging( )
+		{
 			System.Threading.Thread[] threads = new System.Threading.Thread[]
 			{
 				new System.Threading.Thread( new System.Threading.ThreadStart( TestMessageGenerator ) )
@@ -26,7 +31,7 @@ namespace Rb.Log.Tests
 
 			for ( int i = 0; i < threads.Length; ++i )
 			{
-				threads[ i ].Name = "LogThread " + i.ToString( );
+				threads[ i ].Name = "LogThread " + i;
 				threads[ i ].Start( );
 			}
 
@@ -44,25 +49,26 @@ namespace Rb.Log.Tests
 			}
 		}
 
-		private void TestMessageGenerator( )
+		private static void TestMessageGenerator( )
 		{
 			Random rnd = new Random( );
 			for ( int i = 0; i < 10; ++i )
 			{
 				Severity severity = ( Severity )( rnd.Next( ) % ( int )Severity.Count );
 
-				App.GetSource( severity ).Write( "badgers {0}\r\ntest", i );
+				AppLog.GetSource( severity ).Write( "badgers {0}\r\ntest", i );
 
 				System.Threading.Thread.Sleep( rnd.Next( ) % 100 );
 			}
 		}
 
-		private void WriteStuff( Tag t )
+		private static void WriteStuff( Tag t )
 		{
-			t.Verbose( "blah" );
-			t.Info( "blah" );
-			t.Warning( "blah" );
-			t.Error( "blah" );
+			for ( int i = 0; i < ( int )Severity.Count; ++i )
+			{
+				t.GetSource( ( Severity )i ).Write( "blah" );
+				t.GetDebugSource( ( Severity )i ).Write( "blah" );
+			}
 		}
 
 	}

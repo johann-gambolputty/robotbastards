@@ -100,6 +100,7 @@
     <Compile Include="Utils\Clock.cs" />
     <Compile Include="Utils\DispatchMap.cs" />
     <Compile Include="Utils\ExceptionUtils.cs" />
+    <Compile Include="Utils\PolyList.cs" />
     <Compile Include="Utils\StackTraceInfo.cs" />
     <Compile Include="Utils\TinyTime.cs" />
     <Compile Include="Utils\XmlHelpers.cs" />

@@ -176,10 +176,27 @@ namespace Rb.Log
         public static event OnNewLogEntryDelegate OnNewLogEntry;
 
         #endregion
-   
-        #region Private stuff
 
-        private string          m_Name;
+		#region Output helpers
+
+		/// <summary>
+		/// Writes common environment variables to the log
+		/// </summary>
+		public void WriteEnvironment( )
+		{
+			Write( "Working Directory: {0}", Environment.CurrentDirectory );
+			Write( "Machine name: {0}", Environment.MachineName );
+			Write( "OS Version: {0}", Environment.OSVersion );
+			Write( "Processors: {0}", Environment.ProcessorCount );
+			Write( "Username: {0}", Environment.UserName );
+			Write( "CLR Version: {0}", Environment.Version );
+		}
+
+		#endregion
+
+		#region Private stuff
+
+		private string          m_Name;
         private string          m_FullName;
         private bool            m_Suppress;
         private Severity        m_Severity = Severity.Verbose;

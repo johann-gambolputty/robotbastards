@@ -1,35 +1,32 @@
 using System;
 using System.Net.Sockets;
-using System.Collections;
 using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using Rb.Core.Components;
 
-namespace RbEngine.Network
+namespace Rb.Network
 {
 	/// <summary>
-	/// Summary description for SocketConnection.
+	/// Sockets implementation of IConnection
 	/// </summary>
 	public class SocketConnection : IDisposable, IConnection
 	{
 		/// <summary>
-		/// Creates this connection
+		/// Default constructor
 		/// </summary>
-		public SocketConnection( Scene.SceneDb scene, Socket socket, bool connectionToClient )
+		public SocketConnection( )
+		{	
+		}
+
+		/// <summary>
+		/// Sets up the connection
+		/// </summary>
+		/// <param name="socket">Socket used by the connection</param>
+		/// <param name="name">Connection name</param>
+		public SocketConnection( Socket socket, string name )
 		{
-			m_Socket = socket;
-			m_Client = connectionToClient;
-
-			//	
-			Scene.Clock networkClock = scene.GetNamedClock( "NetworkClock" );
-			if ( networkClock == null )
-			{
-				throw new ApplicationException( "TcpServerToClientConnection requires a clock named \"NetworkClock\" in the scene" );
-			}
-
-			//	TODO: Dispense with thread - only use network clock tick?
-			networkClock.Subscribe( new Scene.Clock.TickDelegate( OnNetworkTick ) );
-
-			//	Listen out for the scene dying - the connection will get closed at that point
-			scene.Disposing += new RbEngine.Scene.SceneDb.DisposingDelegate( Dispose );
+			Setup( socket, name );
 		}
 
 		/// <summary>
@@ -41,44 +38,81 @@ namespace RbEngine.Network
 		}
 
 		/// <summary>
-		/// Closes this connection
+		/// Sets up the connection
 		/// </summary>
-		public void Close( )
+		/// <param name="socket">Socket</param>
+		/// <param name="name">Connection name</param>
+		public void Setup( Socket socket, string name )
 		{
-			if ( m_Socket != null )
+			m_Socket = socket;
+			m_Name = name;
+		}
+
+		#region IDisposable Members
+
+		/// <summary>
+		/// Kills the socket
+		/// </summary>
+		public void Dispose()
+		{
+			Disconnect( );
+		}
+
+		#endregion
+
+		#region IConnection Members
+
+		/// <summary>
+		/// The name of this connection
+		/// </summary>
+		public string Name
+		{
+			get { return m_Name; }
+			set { m_Name = value; }
+		}
+
+		/// <summary>
+		/// Returns true if the connection is connected
+		/// </summary>
+		public bool IsConnected
+		{
+			get
 			{
-				m_Socket.Close( );
-				m_Socket = null;
+				return ( m_Socket != null ) && ( m_Socket.Connected );
 			}
 		}
 
 		/// <summary>
-		/// Called when the network clock ticks
+		/// Event, invoked when the connection receives a message
 		/// </summary>
-		public void OnNetworkTick( Scene.Clock networkClock )
+		public event ConnectionReceivedMessageDelegate ReceivedMessage;
+
+		/// <summary>
+		/// Connection disconnected event
+		/// </summary>
+		public event ConnectionDisconnected Disconnected;
+
+		/// <summary>
+		/// Adds a message to the outgoing message queue. On the next network tick, all queued messages will be sent
+		/// </summary>
+		public void DeliverMessage( Message msg )
 		{
-			try
+			if ( IsConnected )
 			{
-				ReceiveIncomingMessages( );
-			}
-			catch ( System.Net.Sockets.SocketException ex )
-			{
-				Output.WriteLineCall( Output.NetworkError, "Failed to receive messages over socket \"{0}\":\n{1}", m_Socket, ExceptionUtils.ToString( ex ) );
-			}
-			try
-			{
-				DeliverOutgoingMessages( );
-			}
-			catch ( System.Net.Sockets.SocketException ex )
-			{
-				Output.WriteLineCall( Output.NetworkError, "Failed to deliver messages over socket \"{0}\":\n{1}", m_Socket, ExceptionUtils.ToString( ex ) );
+				//	TODO: AP: Use a network stream? Requires stream sockets
+				MemoryStream messageStore = new MemoryStream( );
+				m_Formatter.Serialize( messageStore, msg );
+				messageStore.Close( );
+
+				byte[] messageBytes = messageStore.ToArray( );
+				m_Socket.Send( messageBytes );
 			}
 		}
 
 		/// <summary>
-		/// Reads any messages from the socket
+		/// Updates the connection, checking for any received messages
 		/// </summary>
-		private void ReceiveIncomingMessages( )
+		public void ReceiveMessages( )
 		{
 			if ( ( !IsConnected ) || ( m_Socket.Available == 0 ) )
 			{
@@ -96,113 +130,42 @@ namespace RbEngine.Network
 			}
 
 			//	Setup a stream and a binary stream reader to pick out the messages from the binary data
-			MemoryStream messageStore		= new MemoryStream( messageMem );
-			BinaryReader messageStoreReader	= new BinaryReader( messageStore );
+			MemoryStream messageStore = new MemoryStream( messageMem );
 			while ( messageStore.Position < messageStore.Length )
 			{
-				Components.Message msg = Components.Message.ReadMessage( messageStoreReader );
+				Message msg = ( Message )m_Formatter.Deserialize( messageStore );
 				ReceivedMessage( this, msg );
 			}
 		}
 
 		/// <summary>
-		/// Writes any outgoing messages to the socket
+		/// Closes the connection
 		/// </summary>
-		private void DeliverOutgoingMessages( )
+		public void Disconnect( )
 		{
-			//	Early out if there's no socket, or no outgoing messages
-			if ( ( !IsConnected ) || ( m_OutgoingMessages.Count == 0 ) )
+			if ( m_Socket != null )
 			{
-				return;
+				NetworkLog.Info( "Closing socket connection \"{0}\"", m_Name );
+				m_Socket.Close( );
+				m_Socket = null;
+
+				if ( Disconnected != null )
+				{
+					Disconnected( this );
+				}
 			}
-
-			MemoryStream messageStore		= new MemoryStream( );
-			BinaryWriter messageStoreWriter = new BinaryWriter( messageStore );
-
-			foreach ( Components.Message msg in m_OutgoingMessages )
-			{
-				msg.Write( messageStoreWriter );
-			}
-
-			m_OutgoingMessages.Clear( );
-
-			m_Socket.Send( messageStore.ToArray( ) );
 		}
 
-		#region IDisposable Members
-
-		/// <summary>
-		/// Kills the socket
-		/// </summary>
-		public void Dispose()
-		{
-			Close( );
-		}
+		private IFormatter m_Formatter = new BinaryFormatter( );
 
 		#endregion
 
 		#region	Private stuff
 
-		private Socket		m_Socket;
-		private string		m_Name;
-		private ArrayList	m_OutgoingMessages = new ArrayList( );
-		private bool		m_Client;
+		private Socket m_Socket;
+		private string m_Name;
 
 		#endregion
 
-		#region IConnection Members
-
-		/// <summary>
-		/// The name of this connection
-		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return m_Name;
-			}
-			set
-			{
-				m_Name = value;
-			}
-		}
-
-		/// <summary>
-		/// Returns true if this is a connection to a client
-		/// </summary>
-		public bool ConnectionToClient
-		{
-			get
-			{
-				return m_Client;
-			}
-		}
-
-		/// <summary>
-		/// Returns true if the connection is connected
-		/// </summary>
-		public bool IsConnected
-		{
-			get
-			{
-				return ( m_Socket != null ) && ( m_Socket.Connected );
-			}
-		}
-
-
-		/// <summary>
-		/// Event, invoked when the connection receives a message
-		/// </summary>
-		public event RbEngine.Network.ConnectionReceivedMessageDelegate ReceivedMessage;
-
-		/// <summary>
-		/// Adds a message to the outgoing message queue. On the next network tick, all queued messages will be sent
-		/// </summary>
-		public void DeliverMessage(  Components.Message msg )
-		{
-			m_OutgoingMessages.Add( msg );
-		}
-
-		#endregion
 	}
 }
