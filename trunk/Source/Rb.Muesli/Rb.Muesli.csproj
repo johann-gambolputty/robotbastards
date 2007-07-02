@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{13EA7D55-7792-4F10-81AE-94FE0E3DBB22}</ProjectGuid>
+    <ProjectGuid>{B8CB331A-D8D9-48B6-ACBF-2276EC294427}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rb.Log.Tests</RootNamespace>
-    <AssemblyName>Rb.Log.Tests</AssemblyName>
+    <RootNamespace>Rb.Muesli</RootNamespace>
+    <AssemblyName>Rb.Muesli</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,22 +28,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.4.1.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TestLog.cs" />
+    <Compile Include="BinaryFormatter.cs" />
+    <Compile Include="BinaryInput.cs" />
+    <Compile Include="BinaryOutput.cs" />
+    <Compile Include="BinaryTypeReader.cs" />
+    <Compile Include="BinaryTypeWriter.cs" />
+    <Compile Include="CustomTypeReaderCache.cs" />
+    <Compile Include="CustomTypeWriterCache.cs" />
+    <Compile Include="Formatter.cs" />
+    <Compile Include="IInput.cs" />
+    <Compile Include="IOutput.cs" />
+    <Compile Include="ITypeReader.cs" />
+    <Compile Include="ITypeWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Source\Rb.Log\Rb.Log.csproj">
-      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
-      <Name>Rb.Log</Name>
-    </ProjectReference>
+    <Compile Include="TypeId.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
