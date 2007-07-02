@@ -26,7 +26,7 @@ namespace Rb.AssemblySelector
     /// For example, "name=blah;myKey0;myKey1=pie" will load an assembly with "blah" in its name, has a key "myKey0" with a value
     /// that matches the existing value of "myKey0" (set by a previously loaded assembly), and has a key "myKey1" with a value
     /// "pie".
-    /// Assemblies add their key/value identifiers to the map if the identifier attribute property <see cref="AssemblyIdentifierAttribute.AddToMap"/>
+	/// Assemblies add their key/value identifiers to the map if the identifier attribute property <see cref="AssemblyIdentifierAttribute.AddToIdMap"/>
     /// is true.
     /// A practical example 
     /// </remarks>
@@ -66,12 +66,18 @@ namespace Rb.AssemblySelector
         /// <param name="option">Directory search options</param>
         public void AddAssemblyIdentifiers( string directory, SearchOption option )
         {
-            foreach ( string file in System.IO.Directory.GetFiles( directory, "*.dll", option ) )
+            foreach ( string file in Directory.GetFiles( directory, "*.dll", option ) )
             {
-                string assemblyName = System.IO.Path.GetFileNameWithoutExtension( file );
-                Assembly curAssembly = Assembly.ReflectionOnlyLoad(assemblyName);
+				try
+				{
+					string assemblyName = Path.GetFileNameWithoutExtension( file );
+					Assembly curAssembly = Assembly.ReflectionOnlyLoad( assemblyName );
 
-                AddAssemblyToMap( curAssembly );
+					AddAssemblyToMap( curAssembly );
+				}
+				catch
+				{
+				}
             }
         }
         

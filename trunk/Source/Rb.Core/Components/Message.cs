@@ -5,6 +5,7 @@ namespace Rb.Core.Components
 	/// <summary>
 	/// Base class for messages
 	/// </summary>
+	[Serializable]
 	public abstract class Message
 	{
 		#region	Message recipient chain support
@@ -55,8 +56,13 @@ namespace Rb.Core.Components
 
 		#region	Private stuff
 
+		[NonSerialized]
 		private MessageRecipientChain	m_Recipients;
+
+		[NonSerialized]
 		private int						m_RecipientIndex;
+
+		[NonSerialized]
 		private Object					m_Sender;
 
 		#endregion

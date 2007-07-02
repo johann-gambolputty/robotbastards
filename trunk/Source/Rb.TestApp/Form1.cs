@@ -21,6 +21,7 @@ namespace Rb.TestApp
 			viewer.Show( this );
 
 			AppLog.Info( "Beginning Rb.TestApp at {0}", DateTime.Now );
+			AppLog.GetSource( Severity.Info ).WriteEnvironment( );
 
 			string renderAssembly = ConfigurationManager.AppSettings[ "renderAssembly" ];
 			if ( renderAssembly  == null )

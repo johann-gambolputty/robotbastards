@@ -24,7 +24,7 @@ namespace RbTestApp
 		{
 			//	Test to force initialisation of the typemanager
 			//	TODO: REMOVEME
-			RbEngine.Components.MessageTypeManager.Inst.ToString( );
+			Rb.Core.Components.MessageTypeManager.Inst.ToString( );
 
 			//	Load the rendering implementation assembly
 			string renderAssemblyName = System.Configuration.ConfigurationSettings.AppSettings[ "renderAssembly" ];

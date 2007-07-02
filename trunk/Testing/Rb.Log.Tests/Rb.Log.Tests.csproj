@@ -38,7 +38,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rb.Log\Rb.Log.csproj">
+    <ProjectReference Include="..\..\Source\Rb.Log\Rb.Log.csproj">
       <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
       <Name>Rb.Log</Name>
     </ProjectReference>

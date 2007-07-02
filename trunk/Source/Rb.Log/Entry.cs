@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Rb.Log
@@ -71,7 +70,7 @@ namespace Rb.Log
             m_Source        = source;
             m_Message       = message;
             m_ThreadName    = System.Threading.Thread.CurrentThread.Name;
-            m_Time          = System.DateTime.Now.TimeOfDay;
+            m_Time          = DateTime.Now.TimeOfDay;
             m_Id            = m_MessageId++;
 
             if ( string.IsNullOrEmpty( m_ThreadName ) )
@@ -87,7 +86,7 @@ namespace Rb.Log
         /// <param name="message">Message string</param>
         /// <param name="threadName">Thread source</param>
         /// <param name="time">Time that entry was generated</param>
-        public Entry( Source source, string message, string threadName, System.TimeSpan time )
+        public Entry( Source source, string message, string threadName, TimeSpan time )
         {
             m_Source        = source;
             m_Message       = message;

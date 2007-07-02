@@ -38,7 +38,7 @@
     <Compile Include="TestDispatchMap.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">
+    <ProjectReference Include="..\..\Source\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
     </ProjectReference>
