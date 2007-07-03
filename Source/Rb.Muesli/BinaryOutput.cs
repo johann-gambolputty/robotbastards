@@ -15,25 +15,35 @@ namespace Rb.Muesli
 
         public BinaryOutput( Stream stream )
         {
-            m_Writer = new BinaryWriter( stream );
+            m_Stream        = stream;
+            m_WriterStream  = new MemoryStream( );
+            m_Writer        = new BinaryWriter( m_WriterStream );
         }
 
         public void Finish( )
         {
+            m_TypeWriter.WriteHeader( m_Stream );
+
+            byte[] writerMem = m_WriterStream.ToArray( );
+            m_Stream.Write( writerMem, 0, writerMem.Length );
         }
 
-        public void WriteTypeId( int typeId )
+        public void WriteNull( )
         {
-            while ( typeId > 127 )
+            m_Writer.Write( ( byte )TypeId.Null );
+        }
+
+        public void WriteSerializationInfo( SerializationInfo info )
+        {
+            int memberCount = info.MemberCount;
+            Write( memberCount );
+
+            SerializationInfoEnumerator e = info.GetEnumerator( );
+            while ( e.MoveNext( ) )
             {
-                byte bitsWithFollowOn = ( byte )( 0x80 | ( typeId & ~0x80 ) );
-                Write( bitsWithFollowOn );
-
-                typeId >>= 7;
+                m_Writer.Write( e.Name );
+                m_TypeWriter.Write( e.Value );
             }
-
-            //  No follow-on bits required
-            Write( unchecked( ( byte )( typeId ) ) );
         }
 
         public void Write( byte val )
@@ -103,31 +113,10 @@ namespace Rb.Muesli
 
         public void Write( object obj )
         {
-
-            if ( obj is byte )      { Write( ( byte )obj ); return; }
-            if ( obj is sbyte )     { Write( ( sbyte )obj ); return; }
-            if ( obj is char )      { Write( ( char )obj ); return; }
-            if ( obj is short )     { Write( ( short )obj ); return; }
-            if ( obj is ushort )    { Write( ( ushort )obj ); return; }
-            if ( obj is int )       { Write( ( int )obj ); return; }
-            if ( obj is uint )      { Write( ( uint )obj ); return; }
-            if ( obj is long )      { Write( ( long )obj ); return; }
-            if ( obj is ulong )     { Write( ( long )obj ); return; }
-            if ( obj is float )     { Write( ( float )obj ); return; }
-            if ( obj is double )    { Write( ( double )obj ); return; }
-            if ( obj is string )    { Write( ( string )obj ); return; }
-            if ( obj is ArrayList ) { Write( );}
-
-            IPersistent persistentObject = obj as IPersistent;
-            if ( persistentObject != null )
-            {
-                Write( persistentObject );
-                return;
-            }
-
-            //  TODO: ... serialize obj ...
+            m_TypeWriter.Write( this, obj );
         }
         
+        /*
         #region Writing collections
 
         public void Write( ArrayList val )
@@ -139,50 +128,19 @@ namespace Rb.Muesli
             }
         }
 
-        void Write< T >( T[] val );
+        void Write< T >( T[] val )
+        {
+        }
 
         void Write< T >( ICollection< T > val );
 
         void Write< Key, Val >( IDictionary< Key, Val > dictionary );
 
         #endregion
-        
-        #region Writing special collections
+        */
 
-        void WriteFixedTypeCollection( ArrayList val );
-
-        void WriteFixedTypeCollection( Array val );
-
-        void WriteFixedTypeCollection< T >( T[] val );
-
-        void WriteFixedTypeCollection< T >( ICollection< T > val );
-
-        void WriteFixedTypeCollection< Key, Val >( IDictionary< Key, Val > dictionary );
-
-        #endregion
-
-
-        #region Writing special objects
-
-        void Write( IPersistent persistentObject )
-        {
-            if ( persistentObject == null )
-            {
-                m_Writer.Write( ( byte )0 );
-            }
-            else
-            {
-                m_TypeIo.WriteType( this, persistentObject.GetType( ) );
-                persistentObject.Write( this );
-            }
-        }
-
-        void Write( IAutoPersistent persistentObject );
-
-        void Write( ISerializable serializableObject );
-
-        #endregion
-
+        private Stream          m_Stream;
+        private MemoryStream    m_WriterStream;
         private BinaryWriter    m_Writer;
         private ITypeWriter     m_TypeWriter = new BinaryTypeWriter( );
     }
