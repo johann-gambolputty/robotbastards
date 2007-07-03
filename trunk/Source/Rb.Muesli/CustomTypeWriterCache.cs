@@ -18,24 +18,6 @@ namespace Rb.Muesli
 
         static private CustomTypeWriterCache ms_Instance = new CustomTypeWriterCache( );
 
-        public CustomTypeWriterCache( )
-        {
-            m_WriterMap[ typeof( bool ) ]       = WriteBool;
-            m_WriterMap[ typeof( byte ) ]       = WriteByte;
-            m_WriterMap[ typeof( sbyte ) ]      = WriteSByte;
-            m_WriterMap[ typeof( char ) ]       = WriteChar;
-            m_WriterMap[ typeof( short ) ]      = WriteInt16;
-            m_WriterMap[ typeof( ushort ) ]     = WriteUInt16;
-            m_WriterMap[ typeof( int ) ]        = WriteInt32;
-            m_WriterMap[ typeof( uint ) ]       = WriteUInt32;
-            m_WriterMap[ typeof( long ) ]       = WriteInt64;
-            m_WriterMap[ typeof( ulong ) ]      = WriteUInt64;
-            m_WriterMap[ typeof( float ) ]      = WriteSingle;
-            m_WriterMap[ typeof( double ) ]     = WriteDouble;
-            m_WriterMap[ typeof( decimal ) ]    = WriteDecimal;
-            m_WriterMap[ typeof( string ) ]     = WriteString;
-        }
-
         public CustomWriterDelegate GetWriter( Type type )
         {
             CustomWriterDelegate writer;
@@ -47,18 +29,29 @@ namespace Rb.Muesli
             return writer;
         }
 
+        private static void SerializableWriter( IOutput output, object obj )
+        {
+            ( ( ISerializable )obj ).Serialize( );
+        }
+
         private CustomWriterDelegate CreateWriter( Type type )
         {
             if ( type.IsPrimitive )
             {
                 throw new ArgumentException( string.Format( "No writer available for primitive type \"{0}\"", type ) );
             }
+            if ( type.GetInterface( "ISerializable" ) != null )
+            {
+                return SerializableWriter;
+            }
 
-            DynamicMethod method = new DynamicMethod( "CustomWriter", typeof( void ), new Type[] { typeof( IOutput ), typeof( IObject ) }, type );
+            DynamicMethod method = new DynamicMethod( "CustomWriter", typeof( void ), new Type[] { typeof( IOutput ), typeof( object ) }, type );
+            
             ILGenerator generator = method.GetILGenerator( );
+            generator.DeclareLocal( typeof( ITypeWriter ) );
 
             generator.Emit( OpCodes.Ldarg_0 );                      //  Load the IOutput onto the stack
-            generator.Emit( OpCodes.Call, IOutput_GetTypeWriter);   //  Get the TypeWriter from the IOutput
+            generator.Emit( OpCodes.Call, IOutput_GetTypeWriter );  //  Get the TypeWriter from the IOutput
             generator.Emit( OpCodes.Stloc_0 );                      //  Store it at local variable zero
 
             BuildCustomWriterDelegate( generator, type );
@@ -106,24 +99,5 @@ namespace Rb.Muesli
         }
 
         private Dictionary< Type, CustomWriterDelegate > m_WriterMap = new Dictionary< Type, CustomWriterDelegate >( );
-
-        #region Custom writer methods for pre-defined value types
-
-        private static void WriteBool( IOutput output, object val ) { output.Write( ( bool )val ); }
-        private static void WriteByte( IOutput output, object val ) { output.Write( ( byte )val ); }
-        private static void WriteSByte( IOutput output, object val ) { output.Write( ( sbyte )val ); }
-        private static void WriteChar( IOutput output, object val ) { output.Write( ( char )val ); }
-        private static void WriteInt16( IOutput output, object val ) { output.Write( ( short )val ); }
-        private static void WriteUInt16( IOutput output, object val ) { output.Write( ( ushort )val ); }
-        private static void WriteInt32( IOutput output, object val ) { output.Write( ( int )val ); }
-        private static void WriteUInt32( IOutput output, object val ) { output.Write( ( uint )val ); }
-        private static void WriteInt64( IOutput output, object val ) { output.Write( ( long )val ); }
-        private static void WriteUInt64( IOutput output, object val ) { output.Write( ( ulong )val ); }
-        private static void WriteSingle( IOutput output, object val ) { output.Write( ( float )val ); }
-        private static void WriteDouble( IOutput output, object val ) { output.Write( ( double )val ); }
-        private static void WriteDecimal( IOutput output, object val ) { output.Write( ( decimal )val ); }
-        private static void WriteString( IOutput output, object val ) { output.Write( ( string )val ); }
-
-        #endregion
     }
 }

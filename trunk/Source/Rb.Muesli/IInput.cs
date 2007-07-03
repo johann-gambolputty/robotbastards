@@ -12,6 +12,8 @@ namespace Rb.Muesli
             get;
         }
 
+        SerializationInfo ReadSerializationInfo( );
+
         void Read( out bool val );
 
         void Read( out byte val );
@@ -42,6 +44,7 @@ namespace Rb.Muesli
 
         void Read( out string val );
 
+        /*
         void Read( out ArrayList val );
 
         void Read< T >( out T[] val );
@@ -51,6 +54,7 @@ namespace Rb.Muesli
         void Read< Key, Val >( out IDictionary< Key, Val > dictionary );
 
         void Read( out ISerializable obj );
+        */
 
         void Read( out object obj );
     }

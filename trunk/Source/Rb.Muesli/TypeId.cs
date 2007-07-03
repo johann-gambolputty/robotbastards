@@ -19,7 +19,6 @@ namespace Rb.Muesli
         Single,
         Double,
         Decimal,
-        DateTime,
         String,
         Other
     }
@@ -59,7 +58,6 @@ namespace Rb.Muesli
                 case "Single"   : return TypeId.Single;
                 case "Double"   : return TypeId.Double;
                 case "Decimal"  : return TypeId.Decimal;
-                case "DateTime" : return TypeId.DateTime;
             }
 
             return TypeId.Other;

@@ -14,9 +14,9 @@ namespace Rb.Muesli
 
         #region Writing single values
 
-        void WriteTypeId( int typeId );
-
         void WriteNull( );
+        
+        void WriteSerializationInfo( SerializationInfo info );
 
         void Write( byte val );
 
@@ -48,6 +48,7 @@ namespace Rb.Muesli
 
         #endregion
 
+        /*
         #region Writing collections
 
         void Write( ArrayList val );
@@ -59,24 +60,13 @@ namespace Rb.Muesli
         void Write< Key, Val >( IDictionary< Key, Val > dictionary );
 
         #endregion
-        
-        #region Writing special collections
-
-        void WriteFixedTypeCollection( ArrayList val );
-
-        void WriteFixedTypeCollection< T >( T[] val );
-
-        void WriteFixedTypeCollection< T >( ICollection< T > val );
-
-        void WriteFixedTypeCollection< Key, Val >( IDictionary< Key, Val > dictionary );
-
-        #endregion
 
         #region Writing special objects
 
         void Write( ISerializable persistentObject );
 
         #endregion
+        */
 
         void Finish( );
     }
