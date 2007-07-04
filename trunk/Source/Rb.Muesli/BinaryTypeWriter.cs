@@ -54,7 +54,17 @@ namespace Rb.Muesli
             Type objType = obj.GetType( );
             if ( objType.IsArray )
             {
-                
+				Array array = ( Array )obj;
+
+                output.Write( ( byte )TypeId.Array );
+				//output.Write( objType.);
+				output.Write( array.Length );
+
+				foreach ( object element in array )
+				{
+					Write( output, element );
+				}
+				return;
             }
             switch ( objType.Name )
             {
@@ -62,7 +72,7 @@ namespace Rb.Muesli
                     output.Write( ( byte )TypeId.Bool );
                     output.Write( ( Boolean )obj );
                     return;
-                    
+
                 case "Byte" :
                     output.Write( ( byte )TypeId.Byte );
                     output.Write( ( Byte )obj );
