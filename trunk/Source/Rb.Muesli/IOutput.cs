@@ -40,9 +40,13 @@ namespace Rb.Muesli
 
         void Write( double val );
 
-        void Write( Guid val );
+        void Write( decimal val );
+        
+        void Write( DateTime val);
 
         void Write( string val );
+
+        void Write( Array val );
 
         void Write( object obj );
 

@@ -12,7 +12,7 @@ namespace Rb.Muesli
         {
             BinaryReader reader = new BinaryReader( stream );
             m_OtherOffset = reader.ReadByte( );
-
+            m_Objects = new object[ reader.ReadInt32( ) ];
             ushort numTypes = reader.ReadUInt16( );
             m_TypeTable = new Type[ numTypes ];
             for ( ushort typeIndex = 0; typeIndex < numTypes; ++typeIndex )
@@ -49,24 +49,36 @@ namespace Rb.Muesli
                 case ( int )TypeId.Single   : return Input.ReadSingle( input );
                 case ( int )TypeId.Double   : return Input.ReadDouble( input );
                 case ( int )TypeId.Decimal  : return Input.ReadDecimal( input );
+                case ( int )TypeId.DateTime : return Input.ReadDateTime( input );
                 case ( int )TypeId.String   : return Input.ReadString( input );
+                case ( int )TypeId.Array    :
+                    {
+                        throw new ApplicationException( "unimplemented" ); // TODO: AP: ...
+                    }
+
+                case ( int )TypeId.Existing :
+                    {
+                        return m_Objects[ Input.ReadInt32( input ) ];
+                    }
             }
 
             int typeIndex = typeId - m_OtherOffset;
 
-            //  TODO: AP: Handle serialization
             Type objType = m_TypeTable[ typeIndex ];
-            object obj = Activator.CreateInstance( objType );
 
-            CustomTypeReaderCache.Instance.GetReader(objType)(input);
+            object result = CustomTypeReaderCache.Instance.GetReader( objType )( input );
 
-            return obj;
+            m_Objects[ m_ObjectIndex++ ] = result;
+
+            return result;
         }
 
         #endregion
 
         #region Private stuff
 
+        private object[] m_Objects;
+        private int m_ObjectIndex;
         private byte m_OtherOffset;
 
         private static int ReadTypeId( IInput input )

@@ -20,47 +20,12 @@ namespace Rb.Muesli
         Double,
         Decimal,
         String,
+
+        DateTime,   //< NOTE: AP: Annoyingly, DateTime doesn't have the requisite deserialization constructor, so it must be handled explicitly
+
+        Array,
+        Existing,
+
         Other
-    }
-
-    internal static class TypeIdUtils
-    {
-        public static int ReadId( IInput input )
-        {
-            int shift = 0;
-            int result = 0;
-            byte val;
-
-            do
-            {
-                input.Read( out val );
-                result |= ( val & ~0x80 ) << shift++;
-            } while ( ( val & 0x80 ) != 0 );
-
-            return result;
-        }
-
-        public static TypeId FromType( Type type )
-        {
-            //  TODO: AP: Make sure this uses the string hash code + jump table
-            switch ( type.Name )
-            {
-                case "Boolean"  : return TypeId.Bool;
-                case "Byte"     : return TypeId.Byte;
-                case "SByte"    : return TypeId.SByte;
-                case "Char"     : return TypeId.Char;
-                case "Int16"    : return TypeId.Int16;
-                case "UInt16"   : return TypeId.UInt16;
-                case "Int32"    : return TypeId.Int32;
-                case "UInt32"   : return TypeId.UInt32;
-                case "Int64"    : return TypeId.Int64;
-                case "UInt64"   : return TypeId.UInt64;
-                case "Single"   : return TypeId.Single;
-                case "Double"   : return TypeId.Double;
-                case "Decimal"  : return TypeId.Decimal;
-            }
-
-            return TypeId.Other;
-        }
     }
 }

@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 
@@ -42,7 +40,7 @@ namespace Rb.Muesli
             while ( e.MoveNext( ) )
             {
                 m_Writer.Write( e.Name );
-                m_TypeWriter.Write( e.Value );
+                m_TypeWriter.Write( this, e.Value );
             }
         }
 
@@ -101,6 +99,16 @@ namespace Rb.Muesli
             m_Writer.Write( val );
         }
 
+        public void Write( decimal val )
+        {
+            m_Writer.Write( val );
+        }
+
+        public void Write( DateTime val )
+        {
+            m_Writer.Write( val.ToBinary( ) );
+        }
+
         public void Write( Guid val )
         {
             m_Writer.Write( val.ToByteArray( ) );
@@ -109,6 +117,15 @@ namespace Rb.Muesli
         public void Write( string val )
         {
             m_Writer.Write( val );
+        }
+        
+        public void Write( Array val )
+        {
+            m_Writer.Write( val.Length );
+            foreach ( object element in val )
+            {
+                Write( element );
+            }
         }
 
         public void Write( object obj )

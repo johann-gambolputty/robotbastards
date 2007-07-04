@@ -26,6 +26,7 @@ namespace Rb.Muesli
 
             //  Write the value of the "Other" object ID. This gives some version change protection
             output.Write( ( byte )TypeId.Other );
+            output.Write( m_Objects.Count );
             output.Write( ( ushort )m_Writers.Count );
             foreach ( CustomWriter writer in m_Writers )
             {
@@ -51,6 +52,10 @@ namespace Rb.Muesli
             }
 
             Type objType = obj.GetType( );
+            if ( objType.IsArray )
+            {
+                
+            }
             switch ( objType.Name )
             {
                 case "Boolean" :
@@ -118,23 +123,37 @@ namespace Rb.Muesli
                     output.Write( ( Decimal )obj );
                     return;
 
+                case "DateTime" :
+                    output.Write( ( byte )TypeId.DateTime );
+                    output.Write( ( DateTime )obj );
+                    return;
+
                 case "String" :
                     output.Write( ( byte )TypeId.String );
                     output.Write( ( String )obj );
                     return;
             }
 
-            //  TODO: AP: Check if obj exists. If it does, write a hardcoded type (Existing), followed by object ID
-            //  Write type ID
-            CustomWriter writer = GetCustomWriter( objType );
-            WriteTypeId( output, writer.m_TypeId );
-            writer.m_Writer( output, obj );
+            int objIndex = m_Objects.Find( obj );
+            if ( objIndex == -1 )
+            {
+                m_Objects.Add( obj );
+                CustomWriter writer = GetCustomWriter( objType );
+                WriteTypeId( output, writer.m_TypeId );
+                writer.m_Writer( output, obj );
+            }
+            else
+            {
+                WriteTypeId( output, ( int )TypeId.Existing );
+                output.Write( objIndex );
+            }
         }
 
         #endregion
 
         #region Private stuff
         
+        private ObjectTable                         m_Objects = new ObjectTable( );
         private List< CustomWriter >                m_Writers = new List< CustomWriter >( );
         private Dictionary< Type, CustomWriter >    m_TypeIds = new Dictionary< Type, CustomWriter >( );
 

@@ -52,6 +52,7 @@ namespace Rb.Muesli
         {
             IOutput output = new BinaryOutput( serializationStream );
             output.Write(graph);
+            output.Finish( );
         }
 
         public ISurrogateSelector SurrogateSelector

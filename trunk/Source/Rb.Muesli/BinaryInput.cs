@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
 
 namespace Rb.Muesli
 {
@@ -24,7 +24,8 @@ namespace Rb.Muesli
 
         public SerializationInfo ReadSerializationInfo( )
         {
-            SerializationInfo info = new SerializationInfo( );
+            Type type = null;
+            SerializationInfo info = new SerializationInfo( type, new FormatterConverter( ) );
 
             int memberCount;
             Read( out memberCount );
@@ -32,12 +33,9 @@ namespace Rb.Muesli
             for ( int readCount = 0; readCount < memberCount; ++readCount )
             {
                 string key;
-                object value;
-
                 Read( out key );
-                m_TypeReader.Read( out value );
-
-                info[ key ] = value;
+                object value = m_TypeReader.Read( this );
+                info.AddValue( key, value );
             }
 
             return info;
@@ -106,6 +104,16 @@ namespace Rb.Muesli
         public void Read( out decimal val )
         {
             val = m_Reader.ReadDecimal( );
+        }
+
+        public void Read( out DateTime val )
+        {
+            val = DateTime.FromBinary( m_Reader.ReadInt64( ) );
+        }
+
+        public void Read( out Array val )
+        {
+            throw new ApplicationException( "unimplemented" ); // TODO: AP: ...
         }
 
         public void Read( out Guid val )
