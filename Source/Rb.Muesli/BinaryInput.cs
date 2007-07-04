@@ -111,12 +111,20 @@ namespace Rb.Muesli
             val = DateTime.FromBinary( m_Reader.ReadInt64( ) );
         }
 
-        public void Read( out Array val )
+        public void Read< T >( out T[] val )
         {
-            throw new ApplicationException( "unimplemented" ); // TODO: AP: ...
+			int length = m_Reader.ReadInt32( );
+			val = new T[ length ];
+
+			for ( int index = 0; index < length; ++index )
+			{
+				object value;
+				Read( out value );
+				val[ index ] = ( T )value;
+			}
         }
 
-        public void Read( out Guid val )
+		public void Read( out Guid val )
         {
             val = new Guid( m_Reader.ReadBytes( 16 ) );
         }

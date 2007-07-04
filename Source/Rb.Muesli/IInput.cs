@@ -42,11 +42,11 @@ namespace Rb.Muesli
         
         void Read( out DateTime val );
 
-        void Read< T >( out T[] val );
-
         void Read( out Guid val );
 
         void Read( out string val );
+
+		void Read< T >( out T[] val );
 
         /*
         void Read( out ArrayList val );

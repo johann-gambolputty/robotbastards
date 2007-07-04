@@ -90,7 +90,7 @@ namespace Rb.Muesli.Tests
             Primitives[] outputObject = new Primitives[ 2 ];
             outputObject[ 0 ] = new Primitives( );
             outputObject[ 1 ] = null;
-            output.Write( outputObject );
+            output.Write( ( object )outputObject );
 
             output.Finish( );
 
@@ -122,6 +122,7 @@ namespace Rb.Muesli.Tests
             object inputObject;
             input.Read( out inputObject );
         }
+
         [Test]
         public void TestSimpleObjectIo( )
         {

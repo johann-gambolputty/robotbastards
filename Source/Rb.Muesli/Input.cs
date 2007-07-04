@@ -105,7 +105,7 @@ namespace Rb.Muesli
             return value;
         }
         
-        public static T[] ReadArray< T >(IInput input)
+        public static T[] ReadArray< T >( IInput input )
         {
             T[] value;
             input.Read( out value );

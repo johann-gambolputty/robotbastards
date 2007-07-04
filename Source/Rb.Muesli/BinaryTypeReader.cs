@@ -28,7 +28,6 @@ namespace Rb.Muesli
             return Type.GetType( typeName );
         }
 
-        private Type[] m_TypeTable;
 
         public object Read( IInput input )
         {
@@ -53,7 +52,9 @@ namespace Rb.Muesli
                 case ( int )TypeId.String   : return Input.ReadString( input );
                 case ( int )TypeId.Array    :
                     {
-                        throw new ApplicationException( "unimplemented" ); // TODO: AP: ...
+						//int length = Input.ReadInt32( input );
+						//Array.CreateInstance( );
+						return null;
                     }
 
                 case ( int )TypeId.Existing :
@@ -77,9 +78,10 @@ namespace Rb.Muesli
 
         #region Private stuff
 
-        private object[] m_Objects;
-        private int m_ObjectIndex;
-        private byte m_OtherOffset;
+        private object[]	m_Objects;
+        private int			m_ObjectIndex;
+		private byte		m_OtherOffset;
+		private Type[]		m_TypeTable;
 
         private static int ReadTypeId( IInput input )
         {
