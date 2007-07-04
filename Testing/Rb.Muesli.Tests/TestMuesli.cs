@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
+using System.Text;
 using NUnit.Framework;
 
 namespace Rb.Muesli.Tests
@@ -7,64 +10,55 @@ namespace Rb.Muesli.Tests
     [TestFixture]
     public class TestMuesli
     {
-        [Serializable]
-        public class TestObject : IEquatable< TestObject >
+        private static string BuildRandomString( Random rnd, Dictionary< string, string > uniqueMap )
         {
-            public byte     m_Value0    = 0;
-            public sbyte    m_Value1    = 1;
-            public char     m_Value2    = 'a';
-            public short    m_Value3    = 2;
-            public ushort   m_Value4    = 3;
-            public int      m_Value5    = 4;
-            public uint     m_Value6    = 5;
-            public long     m_Value7    = 6;
-            public ulong    m_Value8    = 7;
-            public float    m_Value9    = 8;
-            public double   m_Value10   = 9;
-            public decimal  m_Value11   = 10;
-            public string   m_Value12   = "jam";
+            int length = rnd.Next( 5, 20 );
 
-            #region IEquatable<TestObject> Members
-
-            public bool Equals( TestObject other )
+            StringBuilder sb = new StringBuilder( length + 1 );
+            string result;
+            do
             {
-                return m_Value0 == other.m_Value0 &&
-                       m_Value1 == other.m_Value1 &&
-                       m_Value2 == other.m_Value2 &&
-                       m_Value3 == other.m_Value3 &&
-                       m_Value4 == other.m_Value4 &&
-                       m_Value5 == other.m_Value5 &&
-                       m_Value6 == other.m_Value6 &&
-                       m_Value7 == other.m_Value7 &&
-                       m_Value8 == other.m_Value8 &&
-                       m_Value9 == other.m_Value9 &&
-                       m_Value10 == other.m_Value10 &&
-                       m_Value11 == other.m_Value11 &&
-                       m_Value12 == other.m_Value12;
-            }
-
-            #endregion
-
-        }
-
-        [Serializable]
-        public class WrapperTest : IEquatable< WrapperTest >
-        {
-            public TestObject m_Object0 = new TestObject( );
-            public DateTime m_Now = DateTime.Now;
-
-            #region IEquatable<WrapperTest> Members
-
-            public bool Equals( WrapperTest other )
-            {
-                return ( m_Now == other.m_Now ) && ( m_Object0.Equals( other.m_Object0 ) );
-            }
-
-            #endregion
+                for ( int index = 0; index < length; ++index )
+                {
+                    sb.Append( ( char )rnd.Next( 'a', 'z' ) );
+                }
+                result = sb.ToString( );
+            } while ( uniqueMap.ContainsKey( result ) );
+            uniqueMap[ result ] = result;
+            return result;
         }
 
         [Test]
-        public void TestSimpleIntegerArrayIo( )
+        public void EnsureSerializationInfoWorksAsExpected( )
+        {
+            //  Muesli assumes that SerializationInfo stores members in order added, not in some crazy map
+
+            Random rnd = new Random( );
+            Dictionary< string, string > uniqueMap = new Dictionary< string, string >( );
+            string[] dummyNames = new string[ 100 ];
+            for ( int nameIndex = 0; nameIndex < dummyNames.Length; ++nameIndex )
+            {
+                dummyNames[ nameIndex ] = BuildRandomString( rnd, uniqueMap );
+            }
+
+            SerializationInfo info = new SerializationInfo( typeof( TestMuesli ), new FormatterConverter( ) );
+            for ( int nameIndex = 0; nameIndex < dummyNames.Length; ++nameIndex )
+            {
+                info.AddValue( dummyNames[ nameIndex ], null );
+            }
+
+            {
+                int nameIndex = 0;
+                SerializationInfoEnumerator e = info.GetEnumerator();
+                while ( e.MoveNext( ) )
+                {
+                    Assert.AreEqual( dummyNames[ nameIndex++ ], e.Name );
+                }
+            }
+         }
+
+        [Test]
+        public void TestSimpleIntegerArrayIo()
         {
             MemoryStream    stream  = new MemoryStream( );
             BinaryOutput    output  = new BinaryOutput( stream );
@@ -86,14 +80,16 @@ namespace Rb.Muesli.Tests
                 Assert.AreEqual( value, i );
             }
         }
-        
+
         [Test]
-        public void TestSimpleObjectIo( )
+        public void Test1dArrayIo( )
         {
             MemoryStream    stream  = new MemoryStream( );
             BinaryOutput    output  = new BinaryOutput( stream );
 
-            TestObject outputObject = new TestObject( );
+            Primitives[] outputObject = new Primitives[ 2 ];
+            outputObject[ 0 ] = new Primitives( );
+            outputObject[ 1 ] = null;
             output.Write( outputObject );
 
             output.Finish( );
@@ -104,7 +100,47 @@ namespace Rb.Muesli.Tests
             object inputObject;
             input.Read( out inputObject );
 
-            Assert.IsTrue( outputObject.Equals( ( TestObject )inputObject ) );
+            Assert.AreEqual( outputObject, inputObject );
+        }
+        
+        [Test]
+        public void TestListIo( )
+        {
+            MemoryStream    stream  = new MemoryStream( );
+            BinaryOutput    output  = new BinaryOutput( stream );
+
+            List< Primitives > outputObject = new List< Primitives >( );
+            outputObject.Add( new Primitives( ) );
+            outputObject.Add( new Primitives( ) );
+            output.Write( outputObject );
+
+            output.Finish( );
+
+            stream.Seek( 0, SeekOrigin.Begin );
+            BinaryInput input = new BinaryInput( stream );
+
+            object inputObject;
+            input.Read( out inputObject );
+        }
+        [Test]
+        public void TestSimpleObjectIo( )
+        {
+            MemoryStream    stream  = new MemoryStream( );
+            BinaryOutput    output  = new BinaryOutput( stream );
+
+            Primitives outputObject = new Primitives( );
+            outputObject.m_Value12 = "badgers";
+            output.Write( outputObject );
+
+            output.Finish( );
+
+            stream.Seek( 0, SeekOrigin.Begin );
+            BinaryInput input = new BinaryInput( stream );
+
+            object inputObject;
+            input.Read( out inputObject );
+
+            Assert.IsTrue( outputObject.Equals( ( Primitives )inputObject ) );
         }
 
 
@@ -114,18 +150,57 @@ namespace Rb.Muesli.Tests
             MemoryStream stream = new MemoryStream( );
             BinaryOutput output = new BinaryOutput( stream );
 
-            WrapperTest outputObject = new WrapperTest( );
-            output.Write( new WrapperTest( ) );
+            Wrapper outputObject = new Wrapper( );
+            output.Write( outputObject );
 
             output.Finish( );
-            
+
             stream.Seek( 0, SeekOrigin.Begin );
             BinaryInput input = new BinaryInput( stream );
 
             object inputObject;
             input.Read( out inputObject );
 
-            Assert.IsTrue( outputObject.Equals( ( WrapperTest )inputObject ) );
+            Assert.IsTrue( outputObject.Equals( ( Wrapper )inputObject ) );
+        }
+
+        [Serializable]
+        private class RingTest
+        {
+            private static int ms_ValueInit = 0;
+            public int m_Value = ms_ValueInit++;
+            public RingTest m_Next;
+        }
+        
+        [Test]
+        public void TestRingIo()
+        {
+            MemoryStream stream = new MemoryStream( );
+            BinaryOutput output = new BinaryOutput( stream );
+
+            RingTest outputObject = new RingTest( );
+            outputObject.m_Next = new RingTest( );
+            outputObject.m_Next.m_Next = outputObject;
+
+            output.Write( outputObject );
+
+            output.Finish( );
+
+            stream.Seek( 0, SeekOrigin.Begin );
+            BinaryInput input = new BinaryInput( stream );
+
+            object inputObject;
+            input.Read( out inputObject );
+
+            RingTest curOutput = outputObject;
+            RingTest curInput = ( RingTest )inputObject;
+
+            do
+            {
+                Assert.AreEqual( curOutput.m_Value, curInput.m_Value );
+                curOutput = curOutput.m_Next;
+                curInput = curInput.m_Next;
+            } while ( curOutput != outputObject );
         }
     }
 }

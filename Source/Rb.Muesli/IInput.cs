@@ -39,6 +39,10 @@ namespace Rb.Muesli
         void Read( out double val );
         
         void Read( out decimal val );
+        
+        void Read( out DateTime val );
+
+        void Read< T >( out T[] val );
 
         void Read( out Guid val );
 

@@ -36,10 +36,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Primitives.cs" />
     <Compile Include="TestMuesli.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestMuesliPerformance.cs" />
+    <Compile Include="Wrapper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Source\Rb.Core\Rb.Core.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Source\Rb.Muesli\Rb.Muesli.csproj">
       <Project>{B8CB331A-D8D9-48B6-ACBF-2276EC294427}</Project>
       <Name>Rb.Muesli</Name>

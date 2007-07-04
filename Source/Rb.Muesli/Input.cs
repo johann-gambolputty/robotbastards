@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Rb.Muesli
 {
@@ -97,6 +95,20 @@ namespace Rb.Muesli
         {
             Decimal value;
             input.Read(out value);
+            return value;
+        }
+
+        public static DateTime ReadDateTime(IInput input)
+        {
+            DateTime value;
+            input.Read( out value );
+            return value;
+        }
+        
+        public static T[] ReadArray< T >(IInput input)
+        {
+            T[] value;
+            input.Read( out value );
             return value;
         }
 
