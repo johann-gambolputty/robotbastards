@@ -24,6 +24,7 @@ namespace Rb.Muesli
         DateTime,   //< NOTE: AP: Annoyingly, DateTime doesn't have the requisite deserialization constructor, so it must be handled explicitly
 
         Array,
+		Type,
         Existing,
 
         Other

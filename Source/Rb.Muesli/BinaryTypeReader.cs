@@ -28,6 +28,12 @@ namespace Rb.Muesli
             return Type.GetType( typeName );
         }
 
+		public Type ReadType( IInput input )
+		{
+			int typeId = ReadTypeId( input );
+			//	TODO: AP: Cope with primitive types
+			return m_TypeTable[ typeId - m_OtherOffset ];
+		}
 
         public object Read( IInput input )
         {
@@ -52,9 +58,14 @@ namespace Rb.Muesli
                 case ( int )TypeId.String   : return Input.ReadString( input );
                 case ( int )TypeId.Array    :
                     {
-						//int length = Input.ReadInt32( input );
-						//Array.CreateInstance( );
-						return null;
+						int length = Input.ReadInt32( input );
+						Type elementType = ReadType( input );
+						Array array = Array.CreateInstance( elementType, length );
+						for ( int i = 0; i < length; ++i  )
+						{
+							array.SetValue( Read( input ), i );
+						}
+						return array;
                     }
 
                 case ( int )TypeId.Existing :

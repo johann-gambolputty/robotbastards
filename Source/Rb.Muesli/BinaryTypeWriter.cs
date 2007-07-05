@@ -39,6 +39,17 @@ namespace Rb.Muesli
             //  TODO: AP: Don't store as string
             writer.Write( type.AssemblyQualifiedName );
         }
+
+		/// <summary>
+		/// Writes a type
+		/// </summary>
+		/// <remarks>
+		/// Does not write the TypeId.Type identifier prefix
+		/// </remarks>
+		public void WriteType( IOutput output, Type type )
+		{
+			WriteTypeId( output, GetCustomWriter( type ).m_TypeId );
+		}
         
         /// <summary>
         /// Writes an object to the specified output
@@ -50,20 +61,19 @@ namespace Rb.Muesli
                 output.WriteNull();
                 return;
             }
+			if ( obj is Type )
+			{
+				//	TODO: AP: Put "Type" case in switch instead
+				output.Write( ( byte )TypeId.Type );
+				WriteType( output, ( Type )obj );
+				return;
+			}
 
             Type objType = obj.GetType( );
             if ( objType.IsArray )
             {
-				Array array = ( Array )obj;
-
                 output.Write( ( byte )TypeId.Array );
-				//output.Write( objType.);
-				output.Write( array.Length );
-
-				foreach ( object element in array )
-				{
-					Write( output, element );
-				}
+				output.Write( ( Array )obj );
 				return;
             }
             switch ( objType.Name )
