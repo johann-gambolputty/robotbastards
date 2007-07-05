@@ -26,10 +26,7 @@ namespace Rb.Network.Runt
 		/// </summary>
 		public UpdateMessage[] Messages
 		{
-			get
-			{
-				return m_Messages;
-			}
+			get { return m_Messages; }
 		}
 
 		/// <summary>

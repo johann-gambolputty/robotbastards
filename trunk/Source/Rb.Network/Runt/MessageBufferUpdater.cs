@@ -4,7 +4,7 @@ using Rb.Core.Maths;
 namespace Rb.Network.Runt
 {
 	/// <summary>
-	/// Handy base class for classes implementing the IClientUpdater or IServerUpdater interfaces
+	/// Handy base class for classes implementing the IUpdateProvider interface
 	/// </summary>
 	public class MessageBufferUpdater
 	{

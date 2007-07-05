@@ -1,42 +1,33 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
+using Rb.Core.Components;
 
 namespace Rb.Network.Runt
 {
 	/// <summary>
 	/// Target for update messages sent by an UpdateSource
 	/// </summary>
-	public class UpdateTarget : Scene.ISceneObject
+	public class UpdateTarget
 	{
-		#region	ISceneObject Members
-
+		#region Public properties
+		
 		/// <summary>
-		/// Invoked when this object is added to a scene by SceneDb.Remove()
+		/// The connections set that this update source is assigned to
 		/// </summary>
-		/// <param name="db">Database that this object was added to</param>
-		public void	AddedToScene( Scene.SceneDb db )
+		public IConnections Connections
 		{
-			//	Get the Connections object from the scene systems
-			Connections connections = ( Connections )db.GetSystem( typeof( Connections ) );
-			if ( connections == null )
+			get { return m_Connections; }
+			set
 			{
-				throw new ApplicationException( "UpdateTarget requires that a Connections object be present in the scene systems" );
+				NetworkLog.RuntLog.Assert( m_Connections == null, "I'm just lazy and not handling re-assignment of Connections. Sorry" );
+				m_Connections = value;
+				foreach ( IConnection connection in m_Connections )
+				{
+					OnConnectionAdded( connection );
+				}
+				m_Connections.ConnectionAdded += OnConnectionAdded;
+				m_Connections.ConnectionRemoved += OnConnectionRemoved;
 			}
-
-			//	Subscribe to the new connection event
-			foreach ( IConnection connection in connections.AllConnections )
-			{
-				OnNewConnection( connection );
-			}
-			connections.NewConnection += new NewConnectionDelegate( OnNewConnection );
-		}
-
-		/// <summary>
-		/// Invoked when this object is removed from a scene by SceneDb.Remove()
-		/// </summary>
-		/// <param name="db">Database that this object was removed from</param>
-		public void	RemovedFromScene( Scene.SceneDb db )
-		{
 		}
 
 		#endregion
@@ -65,22 +56,31 @@ namespace Rb.Network.Runt
 
 		#region	Private stuff
 
-		private ArrayList	m_Handlers		= new ArrayList( );
-		private Hashtable	m_HandlerMap	= new Hashtable( );
-		private uint		m_Sequence;
+		private IConnections						m_Connections;
+		private List< IUpdateHandler >				m_Handlers		= new List< IUpdateHandler >( );
+		private Dictionary< Guid, IUpdateHandler >	m_HandlerMap	= new Dictionary< Guid, IUpdateHandler >( );
+		private uint								m_Sequence;
 
 		/// <summary>
 		/// Adds a new connection
 		/// </summary>
-		private void OnNewConnection( IConnection connection )
+		private void OnConnectionAdded( IConnection connection )
 		{
-			connection.ReceivedMessage += new ConnectionReceivedMessageDelegate( OnReceivedMessage );
+			connection.ReceivedMessage += OnReceivedMessage;
+		}
+		
+		/// <summary>
+		/// Removes a new connection
+		/// </summary>
+		private void OnConnectionRemoved( IConnection connection )
+		{
+			connection.ReceivedMessage -= OnReceivedMessage;
 		}
 
 		/// <summary>
 		/// Handles messages sent over a specified connection
 		/// </summary>
-		private void OnReceivedMessage( IConnection connection, Components.Message msg )
+		private void OnReceivedMessage( IConnection connection, Message msg )
 		{
 			if ( !( msg is UpdateMessageBatch ) )
 			{

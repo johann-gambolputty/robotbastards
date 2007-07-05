@@ -1,13 +1,14 @@
 using System;
+using System.Collections.Generic;
 using Rb.Core.Components;
 
 namespace Rb.Network.Runt
 {
 	/// <summary>
-	/// Listens for messages of a given type being sent to the object's parent. Buffers them and sends them
+	/// Listens for messages of a given type being sent to the object's parent (or another target). Buffers them and sends them
 	/// to an update target
 	/// </summary>
-	public class ChildUpdateProvider : Components.IChildObject, Components.IUnique, IUpdateProvider, Scene.ISceneObject
+	public class ChildUpdateProvider : IChild, IUnique, IUpdateProvider
 	{
 		#region	Public properties
 
@@ -16,14 +17,8 @@ namespace Rb.Network.Runt
 		/// </summary>
 		public bool IgnoreUpdateHandlerMessages
 		{
-			get
-			{
-				return m_IgnoreUpdateHandlerMessages;
-			}
-			set
-			{
-				m_IgnoreUpdateHandlerMessages = value;
-			}
+			get { return m_IgnoreUpdateHandlerMessages; }
+			set { m_IgnoreUpdateHandlerMessages = value; }
 		}
 
 		/// <summary>
@@ -31,14 +26,8 @@ namespace Rb.Network.Runt
 		/// </summary>
 		public bool RemoveBufferedMessages
 		{
-			get
-			{
-				return m_RemoveBufferedMessages;
-			}
-			set
-			{
-				m_RemoveBufferedMessages = value;
-			}
+			get { return m_RemoveBufferedMessages; }
+			set { m_RemoveBufferedMessages = value; }
 		}
 
 		/// <summary>
@@ -46,30 +35,66 @@ namespace Rb.Network.Runt
 		/// </summary>
 		public Type UpdateMessageType
 		{
-			get
-			{
-				return m_UpdateMessageType;
-			}
+			get { return m_UpdateMessageType; }
 			set
 			{
-				RemoveFromParentRecipientChain( );
+				RemoveFromTargetRecipientChain( );
 				m_UpdateMessageType = value;
-				AddToParentRecipientChain( );
+				AddToTargetRecipientChain( );
 			}
+		}
+
+		/// <summary>
+		/// The source of update messages
+		/// </summary>
+		public IMessageHub Source
+		{
+			get { return m_Source; }
+			set
+			{
+				RemoveFromTargetRecipientChain( );
+				m_Source = value;
+				AddToTargetRecipientChain( );
+			}
+		}
+		
+		/// <summary>
+		/// Paradoxically, the UpdateSource (the object that sends out update messages) is the message target
+		/// </summary>
+		public UpdateSource Target
+		{
+			get { return m_Target; }
+			set
+			{
+				if ( m_Target != value )
+				{
+					if ( m_Target != null )
+					{
+						m_Target.RemoveProvider( this );
+					}
+					m_Target = value;
+					if ( m_Target != null )
+					{
+						m_Target.AddProvider( this );
+					}
+				}
+			}
+			
 		}
 
 		#endregion
 
-		#region IChildObject Members
+		#region IChild Members
 
 		/// <summary>
-		/// Called when this object is added to a parent object
+		/// Called when this object is added to a parent object. If the Target hasn't already been set, the parent becomes the target
 		/// </summary>
-		public void AddedToParent( Object parentObject )
+		public void AddedToParent( object parentObject )
 		{
-			RemoveFromParentRecipientChain( );
-			m_Parent = parentObject;
-			AddToParentRecipientChain( );
+			if ( ( m_Source == null ) && ( parentObject is IMessageHub ) )
+			{
+				Source = ( IMessageHub )parentObject;
+			}
 		}
 
 		#endregion
@@ -79,11 +104,15 @@ namespace Rb.Network.Runt
 		/// <summary>
 		/// Gets the ID of this object (steals the parent object's ID)
 		/// </summary>
-		public ObjectId Id
+		public Guid Id
 		{
+			set
+			{
+				throw new ApplicationException( string.Format( "Can't set the GUID of a \"{0}\"", GetType( ).Name ) );
+			}
 			get
 			{
-				return ( ( Components.IUnique )m_Parent ).Id;
+				return ( ( IUnique )m_Source ).Id;
 			}
 		}
 
@@ -110,43 +139,17 @@ namespace Rb.Network.Runt
 		/// <summary>
 		/// Gets a set of update messages for a target at a given sequence point
 		/// </summary>
-		public void GetUpdateMessages( System.Collections.ArrayList messages, uint targetSequence )
+		public void GetUpdateMessages( IList< UpdateMessage > messages, uint targetSequence )
 		{
 			m_Buffer.GetMessages( messages, targetSequence );
 		}
 
 		#endregion
 
-		#region ISceneObject Members
-
-		/// <summary>
-		/// Called when this object is added to a scene
-		/// </summary>
-		public void AddedToScene( Scene.SceneDb db )
-		{
-			UpdateSource source = ( UpdateSource )db.GetSystem( typeof( UpdateSource ) );
-			if ( source == null )
-			{
-				throw new ApplicationException( "ChildUpdateProvider requires that an UpdateSource be present in the scene systems" );
-			}
-			source.AddProvider( this );
-		}
-
-		/// <summary>
-		/// Called when this object is removed from a scene
-		/// </summary>
-		/// <param name="db"></param>
-		public void RemovedFromScene(RbEngine.Scene.SceneDb db)
-		{
-			UpdateSource source = ( UpdateSource )db.GetSystem( typeof( UpdateSource ) );
-			source.RemoveProvider( this );
-		}
-
-		#endregion
-
 		#region	Private stuff
 
-		private object					m_Parent;
+		private UpdateSource			m_Target;
+		private IMessageHub				m_Source;
 		private Type					m_UpdateMessageType;
 		private MessageBufferUpdater	m_Buffer = new MessageBufferUpdater( );
 		private uint					m_Sequence;
@@ -156,22 +159,22 @@ namespace Rb.Network.Runt
 		/// <summary>
 		/// Removes this object from its parent's recipient chain
 		/// </summary>
-		private void RemoveFromParentRecipientChain( )
+		private void RemoveFromTargetRecipientChain( )
 		{
-			if ( ( m_Parent != null ) && ( m_UpdateMessageType != null ) )
+			if ( ( m_Source != null ) && ( m_UpdateMessageType != null ) )
 			{
-				( ( IMessageHub )m_Parent ).RemoveRecipient( m_UpdateMessageType, this );
+				m_Source.RemoveRecipient( m_UpdateMessageType, this );
 			}
 		}
 
 		/// <summary>
 		/// Adds this object to its parnet's recipient chain
 		/// </summary>
-		private void AddToParentRecipientChain( )
+		private void AddToTargetRecipientChain( )
 		{
-			if ( ( m_Parent != null ) && ( m_UpdateMessageType != null ) )
+			if ( ( m_Source != null ) && ( m_UpdateMessageType != null ) )
 			{
-				( ( IMessageHub )m_Parent ).AddRecipient( m_UpdateMessageType, new MessageRecipientDelegate( ReceivedMessage ), ( int )MessageRecipientOrder.First );
+				m_Source.AddRecipient( m_UpdateMessageType, new MessageRecipientDelegate( ReceivedMessage ), ( int )MessageRecipientOrder.First );
 			}
 		}
 

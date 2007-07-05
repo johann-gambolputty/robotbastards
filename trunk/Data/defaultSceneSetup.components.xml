@@ -12,12 +12,6 @@
         </object>
         <object type="Rb.Core.Utils.Clock">
           <parameters>
-            <string value="networkClock"/>
-            <int value="30"/>
-          </parameters>
-        </object>
-        <object type="Rb.Core.Utils.Clock">
-          <parameters>
             <string value="animationClock"/>
             <int value="60"/>
           </parameters>

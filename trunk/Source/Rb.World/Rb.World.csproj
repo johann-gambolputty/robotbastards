@@ -35,9 +35,11 @@
   <ItemGroup>
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\Entity3d.cs" />
+    <Compile Include="Entities\EntityRemoteControl.cs" />
     <Compile Include="Entities\JumpRequest.cs" />
     <Compile Include="Entities\MovementRequest.cs" />
     <Compile Include="Entities\MovementXzRequest.cs" />
+    <Compile Include="Host.cs" />
     <Compile Include="IHost.cs" />
     <Compile Include="ILightingManager.cs" />
     <Compile Include="ILightMeter.cs" />
