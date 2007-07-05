@@ -1,13 +1,37 @@
-using System;
-using System.Collections;
+using System.Collections.Generic;
+using Rb.Core.Components;
 
 namespace Rb.Network.Runt
 {
 	/// <summary>
 	/// Keeps one or more UpdateTarget objects synchronised by sending UpdateMessageBatch messages to them
 	/// </summary>
-	public class UpdateSource : Scene.ISceneObject
+	public class UpdateSource
 	{
+		#region Public properties
+		
+		/// <summary>
+		/// The connections set that this update source is assigned to
+		/// </summary>
+		public IConnections Connections
+		{
+			get { return m_Connections; }
+			set
+			{
+				NetworkLog.RuntLog.Assert( m_Connections == null, "I'm just lazy and not handling re-assignment of Connections. Sorry" );
+				m_Connections = value;
+				foreach ( IConnection connection in m_Connections )
+				{
+					OnConnectionAdded( connection );
+				}
+				m_Connections.ConnectionsUpdated += OnTick;
+				m_Connections.ConnectionAdded += OnConnectionAdded;
+				m_Connections.ConnectionRemoved += OnConnectionRemoved;
+			}
+		}
+
+		#endregion
+
 		#region	Providers
 
 		/// <summary>
@@ -40,10 +64,7 @@ namespace Rb.Network.Runt
 			/// </summary>
 			public IConnection	Connection
 			{
-				get
-				{
-					return m_Connection;
-				}
+				get { return m_Connection; }
 			}
 
 			/// <summary>
@@ -51,14 +72,8 @@ namespace Rb.Network.Runt
 			/// </summary>
 			public uint			Sequence
 			{
-				get
-				{
-					return m_Sequence;
-				}
-				set
-				{
-					m_Sequence = value;
-				}
+				get { return m_Sequence; }
+				set { m_Sequence = value; }
 			}
 
 			/// <summary>
@@ -78,14 +93,15 @@ namespace Rb.Network.Runt
 
 		#region	Private stuff
 
-		private uint		m_Sequence;
-		private ArrayList	m_Providers = new ArrayList( );
-		private ArrayList	m_Targets	= new ArrayList( );
+		private uint						m_Sequence;
+		private List< IUpdateProvider >		m_Providers = new List< IUpdateProvider >( );
+		private List< TargetConnection >	m_Targets	= new List< TargetConnection >( );
+		private IConnections				m_Connections;
 
 		/// <summary>
 		/// Adds a new connection
 		/// </summary>
-		private void OnNewConnection( IConnection connection )
+		private void OnConnectionAdded( IConnection connection )
 		{
 			//	Add information about the connection to the m_Targets list
 			m_Targets.Add( new TargetConnection( connection ) );
@@ -95,9 +111,25 @@ namespace Rb.Network.Runt
 		}
 
 		/// <summary>
+		/// Removes an existing connection
+		/// </summary>
+		private void OnConnectionRemoved( IConnection connection )
+		{
+			for ( int targetIndex = 0; targetIndex < m_Targets.Count; ++targetIndex )
+			{
+				if ( m_Targets[ targetIndex ].Connection == connection )
+				{
+					connection.ReceivedMessage -= OnReceivedMessage;
+					m_Targets.RemoveAt( targetIndex );
+					return;
+				}
+			}
+		}
+
+		/// <summary>
 		/// Called when the specified connection receives a message
 		/// </summary>
-		private void OnReceivedMessage( IConnection connection, Components.Message msg )
+		private void OnReceivedMessage( IConnection connection, Message msg )
 		{
 			if ( msg is TargetSequenceMessage )
 			{
@@ -113,9 +145,9 @@ namespace Rb.Network.Runt
 		}
 
 		/// <summary>
-		/// Network clock tick
+		/// Called when the connections object that this source is attached to updates
 		/// </summary>
-		private void OnTick( Scene.Clock networkClock )
+		private void OnTick( )
 		{
 			if ( m_Targets.Count == 0 )
 			{
@@ -141,7 +173,7 @@ namespace Rb.Network.Runt
 				provider.SetLocalSequence( m_Sequence );
 			}
 
-			ArrayList messages = new ArrayList( );
+			List< UpdateMessage > messages = new List< UpdateMessage >( );
 
 			//	Run through all the target connections
 			foreach ( TargetConnection target in m_Targets )
@@ -154,7 +186,7 @@ namespace Rb.Network.Runt
 
 				//	Always send an UpdateBatchMessage, even if the message array is empty - this will inform the target
 				//	what sequence number we're at
-				UpdateMessageBatch msg = new UpdateMessageBatch( m_Sequence, ( UpdateMessage[] )messages.ToArray( typeof( UpdateMessage ) ) );
+				UpdateMessageBatch msg = new UpdateMessageBatch( m_Sequence, messages.ToArray( ) );
 
 				//	Deliver the message to the client
 				target.Connection.DeliverMessage( msg );
@@ -167,46 +199,5 @@ namespace Rb.Network.Runt
 
 		#endregion
 
-		#region	ISceneObject Members
-		
-		/// <summary>
-		/// Invoked when this object is added to a scene by SceneDb.Remove()
-		/// </summary>
-		/// <param name="db">Database that this object was added to</param>
-		public void	AddedToScene( Scene.SceneDb db )
-		{
-			//	Get the Connections object from the scene systems
-			Connections connections = ( Connections )db.GetSystem( typeof( Connections ) );
-			if ( connections == null )
-			{
-				throw new ApplicationException( "RemoteUpdateManager requires that a Connections object be present in the scene systems" );
-			}
-
-			//	Subscribe to the new connection event
-			foreach ( IConnection connection in connections.AllConnections )
-			{
-				OnNewConnection( connection );
-			}
-			connections.NewConnection += new NewConnectionDelegate( OnNewConnection );
-
-			//	Subscribe to the network clock
-			Scene.Clock networkClock = db.GetNamedClock( "NetworkClock" );
-			if ( networkClock == null )
-			{
-				throw new ApplicationException( "RemoteUpdateManager requires a clock named \"NetworkClock\" to be present in the scene" );
-			}
-
-			networkClock.Subscribe( new Scene.Clock.TickDelegate( OnTick ) );
-		}
-
-		/// <summary>
-		/// Invoked when this object is removed from a scene by SceneDb.Remove()
-		/// </summary>
-		/// <param name="db">Database that this object was removed from</param>
-		public void	RemovedFromScene( Scene.SceneDb db )
-		{
-		}
-
-		#endregion
 	}
 }

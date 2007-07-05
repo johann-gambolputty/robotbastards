@@ -22,13 +22,6 @@ namespace Rb.Network.Runt
 		#endregion
 
 		/// <summary>
-		/// Default constructor for serialisation
-		/// </summary>
-		public TargetSequenceMessage( )
-		{
-		}
-
-		/// <summary>
 		/// Setup constructor
 		/// </summary>
 		public TargetSequenceMessage( uint sequence )

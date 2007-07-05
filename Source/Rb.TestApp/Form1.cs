@@ -62,6 +62,10 @@ namespace Rb.TestApp
 			//	Test load a scene
             Scene scene = new Scene( );
 
+			//	Add a scene host
+			//	TODO: AP: Remove host hard-coding
+			scene.AddService( new Host( HostType.Server ) );
+
             //  Set the global scene builder (erk...)
             Builder.Instance = new SceneBuilder( scene, Builder.Instance );
 

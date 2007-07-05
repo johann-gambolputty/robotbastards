@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Rb.Core.Utils;
 
 namespace Rb.Network
 {
@@ -7,6 +8,20 @@ namespace Rb.Network
     /// </summary>
     public class Connections : IConnections
 	{
+		/// <summary>
+		/// Receives messages from all connections (calling <see cref="IConnection.ReceiveMessages"/>)
+		/// </summary>
+		public void ReceiveMessages( )
+		{
+			lock ( m_Connections )
+			{
+				foreach ( IConnection connection in m_Connections )
+				{
+					connection.ReceiveMessages( );
+				}
+			}
+		}
+
 		#region IConnections Members
 
 		/// <summary>
@@ -18,6 +33,11 @@ namespace Rb.Network
 		/// Event, called when a connection is removed from the connection list
 		/// </summary>
 		public event ConnectionRemovedDelegate ConnectionRemoved;
+
+		/// <summary>
+		/// Event, called when the connections are updated
+		/// </summary>
+		public event ConnectionsUpdatedDelegate ConnectionsUpdated;
 
 		/// <summary>
         /// Adds a connection to the list
@@ -52,20 +72,6 @@ namespace Rb.Network
                 ConnectionRemoved( connection );
             }
         }
-
-		/// <summary>
-		/// Receives messages from all connections (calling <see cref="IConnection.ReceiveMessages"/>)
-		/// </summary>
-		public void ReceiveMessages( )
-		{
-			lock ( m_Connections )
-			{
-				foreach ( IConnection connection in m_Connections )
-				{
-					connection.ReceiveMessages( );
-				}
-			}
-		}
 
 		/// <summary>
 		/// Closes all connections
@@ -106,6 +112,15 @@ namespace Rb.Network
 			}
 		}
 
+		/// <summary>
+		/// Sets the time between read updates
+		/// </summary>
+    	public int ReadUpdateTime
+    	{
+    		get { return m_ReadClock.TickTime; }
+			set { m_ReadClock.TickTime = value; }
+    	}
+
 		#endregion
 
 		#region IEnumerable<IConnection> Members
@@ -134,7 +149,20 @@ namespace Rb.Network
 
 		#region Private stuff
 
-		private IList<IConnection> m_Connections = new List<IConnection>( );
+		private IList<IConnection>	m_Connections	= new List<IConnection>( );
+		private Clock				m_ReadClock		= new Clock( "networkClock", 30 );
+
+		/// <summary>
+		/// Calls <see cref="IConnection.ReceiveMessages"/> for each connection
+		/// </summary>
+		private void Update( Clock readClock )
+		{
+			ReceiveMessages( );
+			if ( ConnectionsUpdated != null )
+			{
+				ConnectionsUpdated( );
+			}
+		}
 
 		#endregion
 	}

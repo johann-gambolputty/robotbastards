@@ -33,7 +33,7 @@ namespace Rb.ComponentXmlLoader
 				throw new ApplicationException( string.Format( "Element \"{0}\" requires a \"type\" attribute", reader.Name ) );
 			}
 
-			Type objectType = null;
+			Type objectType;
 			if ( assemblyName == null )
 			{
 				//  Get the object type from the currently loaded set of assemblies

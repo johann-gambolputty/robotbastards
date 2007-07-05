@@ -10,8 +10,51 @@ namespace Rb.Network.Runt
 	/// The parent object that this handler is added to must support the Components.IUnique 
 	/// and Components.IMessageHandler interfaces
 	/// </remarks>
-	public class ChildUpdateHandler : IChild, IUpdateHandler, Scene.ISceneObject
+	public class ChildUpdateHandler : IChild, IUpdateHandler
 	{
+		#region Public properties
+
+		/// <summary>
+		/// Paradoxically, the UpdateTarget (the object that receives update messages and dispatches them to update handlers like this one)
+		/// is the message source
+		/// </summary>
+		public UpdateTarget Source
+		{
+			get { return m_Source;  }
+			set
+			{
+				if ( m_Source != value )
+				{
+					//	Remove this handler from the existing source
+					if ( m_Source != null )
+					{
+						m_Source.RemoveHandler( this );
+					}
+					m_Source = value;
+					//	Add this handler to the new source
+					if ( m_Source != null )
+					{
+						m_Source.AddHandler( this );
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the target for update messages sent to this object
+		/// </summary>
+		public IMessageHandler Target
+		{
+			get { return m_Target; }
+			set
+			{
+				m_Target = value;
+				NetworkLog.RuntLog.Assert( m_Target is IUnique, "Targets for \"{0}\" must implement the IUnique interface", GetType( ).Name );
+			}
+		}
+
+		#endregion
+
 		#region IChildObject Members
 
 		/// <summary>
@@ -19,7 +62,10 @@ namespace Rb.Network.Runt
 		/// </summary>
 		public void AddedToParent( Object parentObject )
 		{
-			m_Parent = parentObject;
+			if ( ( m_Target == null ) && ( parentObject is IMessageHandler ) )
+			{
+				Target = ( IMessageHandler )parentObject;
+			}
 		}
 
 		#endregion
@@ -31,13 +77,25 @@ namespace Rb.Network.Runt
 		/// </summary>
 		public void Handle( UpdateMessage msg )
 		{
-			Components.Message payload = msg.Payload;
+			if ( m_Target == null )
+			{
+				if ( m_NotifyNullTarget )
+				{
+					NetworkLog.RuntLog.Warning( "{0} somehow received an UpdateMessage without a valid" );
+					m_NotifyNullTarget = false;
+				}
+				
+			}
+			else
+			{
+				Message payload = msg.Payload;
 
-			//	Mark the payload message with this object as the source, so it can be ignored
-			//	when it comes back along the message recipient chain
-			payload.Sender = this;
+				//	Mark the payload message with this object as the source, so it can be ignored
+				//	when it comes back along the message recipient chain
+				payload.Sender = this;
 
-			( ( Components.IMessageHandler )m_Parent ).HandleMessage( payload );
+				m_Target.HandleMessage( payload );
+			}
 		}
 
 		#endregion
@@ -45,47 +103,27 @@ namespace Rb.Network.Runt
 		#region IUnique Members
 
 		/// <summary>
-		/// Gets the ID of this updater (returns the ID of the parent object
+		/// Gets the ID of this updater (returns the ID of the parent object)
 		/// </summary>
-		public Components.ObjectId Id
+		public Guid Id
 		{
+			set
+			{
+				throw new ApplicationException( string.Format( "Can't set the GUID of a \"{0}\"", GetType( ).Name ) );
+			}
 			get
 			{
-				return ( ( Components.IUnique )m_Parent ).Id;
+				return ( m_Target == null ) ? Guid.Empty : ( ( IUnique )m_Target ).Id;
 			}
-		}
-
-		#endregion
-
-		#region ISceneObject Members
-
-		/// <summary>
-		/// Called when this object is added to a scene
-		/// </summary>
-		public void AddedToScene( Scene.SceneDb db )
-		{
-			UpdateTarget target = ( UpdateTarget )db.GetSystem( typeof( UpdateTarget ) );
-			if ( target == null )
-			{
-				throw new ApplicationException( "ChildUpdateHandler requires that an UpdateTarget be present in the scene systems" );
-			}
-			target.AddHandler( this );
-		}
-
-		/// <summary>
-		/// Called when this object is removed from a scene
-		/// </summary>
-		public void RemovedFromScene( Scene.SceneDb db )
-		{
-			UpdateTarget target = ( UpdateTarget )db.GetSystem( typeof( UpdateTarget ) );
-			target.RemoveHandler( this );
 		}
 
 		#endregion
 
 		#region	Private stuff
 
-		private object	m_Parent;
+		private IMessageHandler	m_Target;
+		private bool			m_NotifyNullTarget = true;
+		private UpdateTarget	m_Source;
 
 		#endregion
 	}

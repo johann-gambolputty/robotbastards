@@ -38,6 +38,17 @@
     <Compile Include="IConnections.cs" />
     <Compile Include="NetworkLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Runt\ChildUpdateHandler.cs" />
+    <Compile Include="Runt\ChildUpdateProvider.cs" />
+    <Compile Include="Runt\ISequenceMessage.cs" />
+    <Compile Include="Runt\IUpdateHandler.cs" />
+    <Compile Include="Runt\IUpdateProvider.cs" />
+    <Compile Include="Runt\MessageBufferUpdater.cs" />
+    <Compile Include="Runt\TargetSequenceMessage.cs" />
+    <Compile Include="Runt\UpdateMessage.cs" />
+    <Compile Include="Runt\UpdateMessageBatch.cs" />
+    <Compile Include="Runt\UpdateSource.cs" />
+    <Compile Include="Runt\UpdateTarget.cs" />
     <Compile Include="SocketConnection.cs" />
     <Compile Include="TcpConnectionListener.cs" />
     <Compile Include="TcpSocketConnection.cs" />

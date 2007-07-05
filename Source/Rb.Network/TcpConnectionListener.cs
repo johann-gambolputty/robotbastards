@@ -6,7 +6,7 @@ using System.Net.Sockets;
 namespace Rb.Network
 {
 	/// <summary>
-	/// Listens out for client connection requests, creating new TcpServerToClientConnection objects for each one
+	/// Listens out for client connection requests, creating new <see cref="TcpSocketConnection"/> objects for each one
 	/// </summary>
 	public class TcpConnectionListener : IDisposable
 	{
