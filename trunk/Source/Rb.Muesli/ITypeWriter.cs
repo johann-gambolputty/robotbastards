@@ -1,12 +1,12 @@
 using System;
 using System.IO;
-using System.Runtime.Serialization;
 
 namespace Rb.Muesli
 {
     public interface ITypeWriter
     {
         void WriteHeader( Stream stream );
+		void WriteType( IOutput output, Type type );
         void Write( IOutput output, object obj );
     }
 }

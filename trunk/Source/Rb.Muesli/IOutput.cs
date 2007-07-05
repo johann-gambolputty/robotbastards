@@ -48,6 +48,8 @@ namespace Rb.Muesli
 
         void Write( Array val );
 
+		void Write( Type val );
+
         void Write( object obj );
 
         #endregion

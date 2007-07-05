@@ -122,11 +122,17 @@ namespace Rb.Muesli
         public void Write( Array val )
         {
             m_Writer.Write( val.Length );
+			Write( val.GetType( ).GetElementType( ) );
             foreach ( object element in val )
             {
                 Write( element );
             }
         }
+
+		public void Write( Type type )
+		{
+			m_TypeWriter.WriteType( this, type );
+		}
 
         public void Write( object obj )
         {

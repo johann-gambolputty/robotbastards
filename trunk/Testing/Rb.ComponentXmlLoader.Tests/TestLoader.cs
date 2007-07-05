@@ -140,7 +140,7 @@ namespace Rb.ComponentXmlLoader.Tests
             Assert.IsTrue( parameters.Objects.ContainsKey( id ) );
 
             object obj = parameters.Objects[ id ];
-            Assert.IsInstanceOfType( typeof( Root ), obj );
+            Assert.IsTrue( obj is Root );
         }
 
 		[Test]
@@ -175,7 +175,7 @@ namespace Rb.ComponentXmlLoader.Tests
 			Assert.IsTrue( parameters.Objects.ContainsKey( id ) );
 
 			object obj = parameters.Objects[ id ];
-			Assert.IsInstanceOfType( typeof( Root ), obj );
+			Assert.IsTrue( obj is Root );
 		}
     }
 }

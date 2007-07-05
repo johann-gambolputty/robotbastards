@@ -6,6 +6,7 @@ namespace Rb.Muesli
     public interface ITypeReader
     {
         void ReadHeader( Stream stream );
+		Type ReadType( IInput input );
         object Read( IInput input );
     }
 }

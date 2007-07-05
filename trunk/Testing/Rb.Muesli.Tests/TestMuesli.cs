@@ -87,9 +87,10 @@ namespace Rb.Muesli.Tests
             MemoryStream    stream  = new MemoryStream( );
             BinaryOutput    output  = new BinaryOutput( stream );
 
-            Primitives[] outputObject = new Primitives[ 2 ];
+            Primitives[] outputObject = new Primitives[ 3 ];
             outputObject[ 0 ] = new Primitives( );
-            outputObject[ 1 ] = null;
+			outputObject[ 1 ] = null;
+			outputObject[ 2 ] = new Primitives( );
             output.Write( ( object )outputObject );
 
             output.Finish( );
