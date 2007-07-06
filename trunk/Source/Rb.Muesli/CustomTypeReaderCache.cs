@@ -28,33 +28,83 @@ namespace Rb.Muesli
             return Reader;
         }
 
-        private static MethodInfo IInput_GetTypeReader			= typeof( IInput ).GetProperty( "TypeReader" ).GetGetMethod( );
-		private static MethodInfo IInput_ReadSerializationInfo	= typeof( IInput ).GetMethod( "ReadSerializationInfo" );
-        private static MethodInfo ITypeReader_Read              = typeof( ITypeReader ).GetMethod( "Read" );
-		private static MethodInfo Type_TypeFromHandle			= typeof( Type ).GetMethod( "GetTypeFromHandle" );
-
+        private static MethodInfo IInput_GetTypeReader						= typeof( IInput ).GetProperty( "TypeReader" ).GetGetMethod( );
+		private static MethodInfo IInput_ReadSerializationInfo				= typeof( IInput ).GetMethod( "ReadSerializationInfo" );
+        private static MethodInfo ITypeReader_Read              			= typeof( ITypeReader ).GetMethod( "Read" );
+		private static MethodInfo Type_TypeFromHandle						= typeof( Type ).GetMethod( "GetTypeFromHandle" );
+		private static MethodInfo FormatterServices_GetUninitializedObject	= typeof( FormatterServices ).GetMethod( "GetUninitializedObject" );
+		private static MethodInfo This_LoadGenericField						= typeof( CustomTypeReaderCache ).GetMethod( "LoadGenericField" );
+		
         private static CustomReaderDelegate CreateSerializableReader( Type type )
         {
             ConstructorInfo constructor = type.GetConstructor( BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof( SerializationInfo ), typeof( StreamingContext ) }, null );
             if ( constructor == null )
             {
-                throw new ArgumentException( string.Format( "Type {0} had no serializing constructor", type ) );
+                throw new ArgumentException( string.Format( "Type \"{0}\" had no serializing constructor", type ) );
             }
 
             DynamicMethod method = new DynamicMethod( "CustomSerializableReader", typeof( object ), new Type[] { typeof( IInput ) }, type );
 
             ILGenerator generator = method.GetILGenerator( );
-            
+
+			//	TODO: AP: Test ISerialization read for structure
+
+			//	Create a StreamingContext
+			//	TODO: AP: Make this a property of the IInput object
+			generator.DeclareLocal( typeof( StreamingContext ) );
+			generator.Emit( OpCodes.Ldloca_S, 0 );								//	Load streaming context address
+			generator.Emit( OpCodes.Initobj, typeof( StreamingContext ) );		//	Initialise streaming context
+
             generator.Emit( OpCodes.Ldarg_0 );                                  //  Load the IInput onto the stack
 			generator.Emit( OpCodes.Ldtoken, type );
 			generator.Emit( OpCodes.Call, Type_TypeFromHandle );
-            generator.Emit( OpCodes.Call, IInput_ReadSerializationInfo );		//  Read serialization info
-            generator.Emit( OpCodes.Ldnull );                                   //  Load null (streaming context)
+            generator.Emit( OpCodes.Call, IInput_ReadSerializationInfo );		//  Read serialization info (pushes info onto stack for object constructor)
+
+			generator.Emit(OpCodes.Ldloc_0);									//	Load streaming context
+
             generator.Emit( OpCodes.Newobj, constructor );                      //  Create object by calling serializing constructor
+
+			if ( type.GetInterface( "IDeserializationCallback" ) != null )
+			{
+				generator.DeclareLocal( type );
+				generator.Emit( OpCodes.Stloc_1 );
+				generator.Emit( OpCodes.Ldloc_1 );
+				generator.Emit( OpCodes.Ldnull );
+				generator.Emit( OpCodes.Call, type.GetMethod( "OnDeserialization" ) );
+				generator.Emit( OpCodes.Ldloc_1 );
+			}
+
             generator.Emit( OpCodes.Ret );                                      //  Return the object
 
             return ( CustomReaderDelegate )method.CreateDelegate( typeof( CustomReaderDelegate ) );
         }
+		
+		public static void LoadGenericField( IInput input, object obj, string fieldName )
+		{
+			object value;
+			input.Read( out value );
+
+			FieldInfo fieldInfo = obj.GetType( ).GetField( fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance );
+			fieldInfo.SetValue( obj, value );
+		}
+
+		private static void WriteGenericFieldLoadCode( ILGenerator generator, Type objType, FieldInfo fieldInfo )
+		{
+			//	NOTE: AP: There's a problem accessing fields of generic types, so for the moment, we'll call the reflection
+			//	method to get around it
+			//	see http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=221225
+			generator.Emit( OpCodes.Ldarg_0 );
+			if ( objType.IsValueType )
+			{
+				generator.Emit( OpCodes.Ldloc_1 );
+			}
+			else
+			{
+				generator.Emit( OpCodes.Ldloc_1 );
+			}
+			generator.Emit( OpCodes.Ldstr, fieldInfo.Name );
+			generator.Emit( OpCodes.Call, This_LoadGenericField );
+		}
 
         private CustomReaderDelegate CreateReader( Type type )
         {
@@ -71,24 +121,28 @@ namespace Rb.Muesli
             ILGenerator generator = method.GetILGenerator( );
 
             generator.DeclareLocal( typeof( ITypeReader ) );
-            generator.DeclareLocal( typeof( object ) );
+			generator.DeclareLocal( typeof( object ) );
 
             generator.Emit( OpCodes.Ldarg_0 );                      //  Load the IInput onto the stack
             generator.Emit( OpCodes.Call, IInput_GetTypeReader );   //  Get the ITypeReader from the IInput
             generator.Emit( OpCodes.Stloc_0 );                      //  Store it at local variable zero
 
-            //  TODO: AP: This breaks traditional serialisation... need to able to create the class without calling the constructor
-            ConstructorInfo constructor = type.GetConstructor( BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { }, null );
-            if ( constructor == null )
+            if ( type.IsValueType )
             {
-                generator.Emit( OpCodes.Sizeof, type );
-                generator.Emit( OpCodes.Localloc );                 //  Create a new object of the specified type
+				generator.DeclareLocal( type );
+				generator.Emit( OpCodes.Ldloca_S, 2 );
+				generator.Emit( OpCodes.Initobj, type );
+				generator.Emit( OpCodes.Ldloc_2 );
+				generator.Emit( OpCodes.Box, type );
+				generator.Emit( OpCodes.Stloc_1 );
             }
             else
             {
-                generator.Emit( OpCodes.Newobj, constructor );      //  Create a new object of the specified type
+				generator.Emit( OpCodes.Ldtoken, type );
+				generator.Emit( OpCodes.Call, Type_TypeFromHandle );
+				generator.Emit( OpCodes.Call, FormatterServices_GetUninitializedObject );
+	            generator.Emit( OpCodes.Stloc_1 );					//  Store it in local variable one
             }
-            generator.Emit( OpCodes.Stloc_1 );                      //  Store it in local variable one
 
             BuildCustomReaderDelegate( generator, type );           //  Generate bytecode to 
 
@@ -101,7 +155,7 @@ namespace Rb.Muesli
         private void BuildCustomReaderDelegate( ILGenerator generator, Type objType )
         {
             //  The base type has to be serializable
-            if ( objType.GetCustomAttributes( typeof( SerializableAttribute ), false ).Length == 0 )
+            if ( !objType.IsSerializable )
             {
                 throw new SerializationException( string.Format( "Type \"{0}\" cannot be serialized (no SerializableAttribute)", objType ) );
             }
@@ -110,22 +164,29 @@ namespace Rb.Muesli
             foreach ( FieldInfo field in fields )
             {
                 //  TODO: AP: Handle events, etc.?
-                if ( field.GetCustomAttributes( typeof( NonSerializedAttribute ), false ).Length != 0 )
+                if ( field.IsNotSerialized )
                 {
                     continue;
                 }
+				if ( objType.IsGenericType )
+				{
+					WriteGenericFieldLoadCode( generator, objType, field );
+					continue;
+				}
 
                 //  TODO: AP: Hardcoded primitive type write
-                generator.Emit( OpCodes.Ldloc_1 );                     //  Load the object being serialized
-                generator.Emit( OpCodes.Ldloc_0 );                     //  Load the ITypeReader local variable
-                generator.Emit( OpCodes.Ldarg_0 );                     //  Load the IInput argument
-                generator.Emit( OpCodes.Call, ITypeReader_Read );      //  Write the identifier using the output interface
+				generator.Emit( OpCodes.Ldloc_1 );						//  Load the object being serialized
+				generator.Emit( OpCodes.Ldloc_0 );						//  Load the ITypeReader local variable
+                generator.Emit( OpCodes.Ldarg_0 );						//  Load the IInput argument
+
+                generator.Emit( OpCodes.Call, ITypeReader_Read );		//  Write the identifier using the output interface
 
                 if ( field.FieldType.IsValueType )
-                {
+				{
                     generator.Emit( OpCodes.Unbox_Any, field.FieldType );
-                }
-                generator.Emit( OpCodes.Stfld, field );                //  Store the read object in the current field
+				}
+
+                generator.Emit( OpCodes.Stfld, field );					//  Store the read object in the current field
             }
 
             objType = objType.BaseType;

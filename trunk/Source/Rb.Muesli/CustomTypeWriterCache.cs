@@ -33,6 +33,8 @@ namespace Rb.Muesli
             SerializationInfo info = new SerializationInfo( obj.GetType( ), new FormatterConverter( ) );
             StreamingContext context = new StreamingContext( );
             ( ( ISerializable )obj ).GetObjectData( info, context );
+
+			output.WriteSerializationInfo( info );
         }
 
         private CustomWriterDelegate CreateWriter( Type type )
@@ -64,11 +66,30 @@ namespace Rb.Muesli
 
         private static MethodInfo IOutput_GetTypeWriter = typeof(IOutput).GetProperty( "TypeWriter" ).GetGetMethod( );
         private static MethodInfo ITypeWriter_Write     = typeof( ITypeWriter ).GetMethod( "Write" );
+		private static MethodInfo This_SaveGenericField	= typeof( CustomTypeWriterCache ).GetMethod( "SaveGenericField" );
+
+		public static void SaveGenericField( IOutput output, object obj, string fieldName )
+		{
+			FieldInfo fieldInfo = obj.GetType( ).GetField( fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance );
+			object field = fieldInfo.GetValue( obj  );
+			output.Write( field );
+		}
+
+		private static void WriteGenericFieldSaveCode( ILGenerator generator, Type objType, FieldInfo fieldInfo )
+		{
+			//	NOTE: AP: There's a problem accessing fields of generic types, so for the moment, we'll call the reflection
+			//	method to get around it
+			//	see http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=221225
+			generator.Emit( OpCodes.Ldarg_0 );
+			generator.Emit( OpCodes.Ldarg_1 );
+			generator.Emit( OpCodes.Ldstr, fieldInfo.Name );
+			generator.Emit( OpCodes.Call, This_SaveGenericField );
+		}
 
         private void BuildCustomWriterDelegate( ILGenerator generator, Type objType )
         {
             //  The base type has to be serializable
-            if ( objType.GetCustomAttributes( typeof( SerializableAttribute ), false ).Length == 0 )
+			if ( !objType.IsSerializable )
             {
                 throw new SerializationException( string.Format( "Type \"{0}\" cannot be serialized (no SerializableAttribute)", objType ) );
             }
@@ -77,17 +98,21 @@ namespace Rb.Muesli
             foreach ( FieldInfo field in fields )
             {
                 //  TODO: AP: Handle events, etc.?
-                if ( field.GetCustomAttributes( typeof( NonSerializedAttribute ), false ).Length != 0 )
+                if ( field.IsNotSerialized )
                 {
                     continue;
                 }
+				if ( objType.IsGenericType )
+				{
+					WriteGenericFieldSaveCode( generator, objType, field );
+					continue;
+				}
 
                 //  TODO: AP: Hardcoded primitive type write
-
                 generator.Emit( OpCodes.Ldloc_0 );                      //  Load the ITypeWriter local variable
                 generator.Emit( OpCodes.Ldarg_0 );                      //  Load the IOutput local variable
-                generator.Emit( OpCodes.Ldarg_1 );                      //  Load the object being serialized
-                generator.Emit( OpCodes.Ldfld, field );                 //  Load the current field
+				generator.Emit( OpCodes.Ldarg_1 );                      //  Load the object being serialized
+				generator.Emit( OpCodes.Ldfld, field );					//  Load the current field
 
                 if ( field.FieldType.IsValueType )
                 {

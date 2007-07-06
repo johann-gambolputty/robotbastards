@@ -12,8 +12,6 @@ namespace Rb.Muesli
             m_Reader = new BinaryReader( stream );
         }
 
-
-
         #region IInput Members
 
         public ITypeReader TypeReader

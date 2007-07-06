@@ -124,11 +124,19 @@ namespace Rb.Muesli.Tests
             object inputObject;
             input.Read( out inputObject );
 
-			Assert.AreEqual( inputObject, outputObject );
+			//	TODO: AP: For some reason, Assert.AreEqual() isn't work on lists... I could have sworn it was last night :(
+			//Assert.AreEqual( inputObject, outputObject );
+
+			List< Primitives > inputList = ( List< Primitives > )inputObject;
+			Assert.AreEqual( outputObject.Count, inputList.Count );
+			for ( int i = 0; i < outputObject.Count; ++i )
+			{
+				Assert.AreEqual( inputList[ i ], outputObject[ i ] );
+			}
         }
 
 		[Test]
-		public void TestDictionaryIo( )
+		public void TestDictionaryIo()
 		{
 			MemoryStream stream = new MemoryStream( );
 			BinaryOutput output = new BinaryOutput( stream );
@@ -146,8 +154,48 @@ namespace Rb.Muesli.Tests
 
 			object inputObject;
 			input.Read( out inputObject );
+			Dictionary< string, Primitives > inputDictionary = ( Dictionary< string, Primitives > )inputObject;
 
-			Assert.AreEqual( inputObject, outputObject );
+			//	TODO: AP: Ditto here - Assert.AreEqual() isn't working anymore on the dictionaries :(
+			//Assert.AreEqual( outputObject, inputObject );
+			Assert.AreEqual( inputDictionary.Count, outputObject.Count );
+
+			foreach ( string key in outputObject.Keys )
+			{
+				Assert.AreEqual( inputDictionary[ key ], outputObject[ key ] );
+			}
+		}
+
+		[Serializable]
+		public struct Test< T > where T : IEquatable< T >
+		{
+			private T m_Value;
+			public Test( T val ) { m_Value = val; }
+			public override bool Equals( object obj )
+			{
+				Test<T> rhs = (Test< T > )obj;
+				return m_Value.Equals( rhs.m_Value );
+			}
+		}
+
+		[Test]
+		public void TestGenericIo( )
+		{
+            MemoryStream    stream  = new MemoryStream( );
+            BinaryOutput    output  = new BinaryOutput( stream );
+
+			Test< string > outputObject = new Test< string >( "pie" );
+            output.Write( outputObject );
+
+            output.Finish( );
+
+            stream.Seek( 0, SeekOrigin.Begin );
+            BinaryInput input = new BinaryInput( stream );
+
+            object inputObject;
+            input.Read( out inputObject );
+
+            Assert.AreEqual( outputObject, inputObject );
 		}
 
         [Test]
