@@ -9,6 +9,12 @@ namespace Rb.Muesli.Tests
             public DateTime m_Now = DateTime.Now;
             public Guid m_Guid = Guid.NewGuid( );
 
+			public override bool Equals( object obj )
+			{
+				Wrapper rhs = obj as Wrapper;
+				return ( rhs == null ) ? false : Equals( rhs );
+			}
+
             #region IEquatable<WrapperTest> Members
 
             public bool Equals( Wrapper other )

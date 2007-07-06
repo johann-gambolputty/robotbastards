@@ -22,9 +22,8 @@ namespace Rb.Muesli
         }
 
 
-        public SerializationInfo ReadSerializationInfo( )
+        public SerializationInfo ReadSerializationInfo( Type type )
         {
-            Type type = null;
             SerializationInfo info = new SerializationInfo( type, new FormatterConverter( ) );
 
             int memberCount;

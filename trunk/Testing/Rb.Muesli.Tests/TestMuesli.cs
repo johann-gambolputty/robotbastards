@@ -101,16 +101,17 @@ namespace Rb.Muesli.Tests
             object inputObject;
             input.Read( out inputObject );
 
-            Assert.AreEqual( outputObject, inputObject );
+			Assert.AreEqual( outputObject, inputObject );
         }
-        
-        [Test]
-        public void TestListIo( )
+
+		[Test]
+		public void TestListIo( )
         {
             MemoryStream    stream  = new MemoryStream( );
             BinaryOutput    output  = new BinaryOutput( stream );
 
             List< Primitives > outputObject = new List< Primitives >( );
+
             outputObject.Add( new Primitives( ) );
             outputObject.Add( new Primitives( ) );
             output.Write( outputObject );
@@ -122,7 +123,32 @@ namespace Rb.Muesli.Tests
 
             object inputObject;
             input.Read( out inputObject );
+
+			Assert.AreEqual( inputObject, outputObject );
         }
+
+		[Test]
+		public void TestDictionaryIo( )
+		{
+			MemoryStream stream = new MemoryStream( );
+			BinaryOutput output = new BinaryOutput( stream );
+
+			Dictionary< string, Primitives > outputObject = new Dictionary< string, Primitives >( );
+
+			outputObject[ "jam" ] = new Primitives( );
+			outputObject[ "pie" ] = new Primitives( );
+			output.Write( outputObject );
+
+			output.Finish( );
+
+			stream.Seek( 0, SeekOrigin.Begin );
+			BinaryInput input = new BinaryInput( stream );
+
+			object inputObject;
+			input.Read( out inputObject );
+
+			Assert.AreEqual( inputObject, outputObject );
+		}
 
         [Test]
         public void TestSimpleObjectIo( )
@@ -142,7 +168,7 @@ namespace Rb.Muesli.Tests
             object inputObject;
             input.Read( out inputObject );
 
-            Assert.IsTrue( outputObject.Equals( ( Primitives )inputObject ) );
+            Assert.AreEqual( outputObject, inputObject );
         }
 
 
@@ -163,7 +189,7 @@ namespace Rb.Muesli.Tests
             object inputObject;
             input.Read( out inputObject );
 
-            Assert.IsTrue( outputObject.Equals( ( Wrapper )inputObject ) );
+            Assert.AreEqual( outputObject, inputObject );
         }
 
         [Serializable]
