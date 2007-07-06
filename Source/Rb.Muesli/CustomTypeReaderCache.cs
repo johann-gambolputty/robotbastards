@@ -28,13 +28,14 @@ namespace Rb.Muesli
             return Reader;
         }
 
-        private static MethodInfo IInput_GetTypeReader              = typeof( IInput ).GetProperty( "TypeReader" ).GetGetMethod( );
-        private static MethodInfo ITypeReader_Read                  = typeof( ITypeReader ).GetMethod( "Read" );
-        private static MethodInfo ITypeReader_ReadSerializationInfo = typeof( ITypeReader ).GetMethod( "ReadSerializationInfo" );
+        private static MethodInfo IInput_GetTypeReader			= typeof( IInput ).GetProperty( "TypeReader" ).GetGetMethod( );
+		private static MethodInfo IInput_ReadSerializationInfo	= typeof( IInput ).GetMethod( "ReadSerializationInfo" );
+        private static MethodInfo ITypeReader_Read              = typeof( ITypeReader ).GetMethod( "Read" );
+		private static MethodInfo Type_TypeFromHandle			= typeof( Type ).GetMethod( "GetTypeFromHandle" );
 
         private static CustomReaderDelegate CreateSerializableReader( Type type )
         {
-            ConstructorInfo constructor = type.GetConstructor( BindingFlags.Public | BindingFlags.NonPublic, null, new Type[] { typeof( SerializationInfo ), typeof( StreamingContext ) }, null );
+            ConstructorInfo constructor = type.GetConstructor( BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof( SerializationInfo ), typeof( StreamingContext ) }, null );
             if ( constructor == null )
             {
                 throw new ArgumentException( string.Format( "Type {0} had no serializing constructor", type ) );
@@ -45,14 +46,16 @@ namespace Rb.Muesli
             ILGenerator generator = method.GetILGenerator( );
             
             generator.Emit( OpCodes.Ldarg_0 );                                  //  Load the IInput onto the stack
-            generator.Emit( OpCodes.Call, ITypeReader_ReadSerializationInfo );  //  Read serialization info
+			generator.Emit( OpCodes.Ldtoken, type );
+			generator.Emit( OpCodes.Call, Type_TypeFromHandle );
+            generator.Emit( OpCodes.Call, IInput_ReadSerializationInfo );		//  Read serialization info
             generator.Emit( OpCodes.Ldnull );                                   //  Load null (streaming context)
             generator.Emit( OpCodes.Newobj, constructor );                      //  Create object by calling serializing constructor
             generator.Emit( OpCodes.Ret );                                      //  Return the object
 
             return ( CustomReaderDelegate )method.CreateDelegate( typeof( CustomReaderDelegate ) );
         }
-        
+
         private CustomReaderDelegate CreateReader( Type type )
         {
             if ( type.IsPrimitive )
@@ -75,7 +78,7 @@ namespace Rb.Muesli
             generator.Emit( OpCodes.Stloc_0 );                      //  Store it at local variable zero
 
             //  TODO: AP: This breaks traditional serialisation... need to able to create the class without calling the constructor
-            ConstructorInfo constructor = type.GetConstructor( new Type[] { } );
+            ConstructorInfo constructor = type.GetConstructor( BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { }, null );
             if ( constructor == null )
             {
                 generator.Emit( OpCodes.Sizeof, type );
