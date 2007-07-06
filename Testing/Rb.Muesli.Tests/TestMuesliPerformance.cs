@@ -38,7 +38,7 @@ namespace Rb.Muesli.Tests
         }
 
         [Test]
-        public void TestBf()
+        public void TestBf( )
         {
             List< Primitives > list = new List< Primitives >( );
             list.Add( new Primitives( ) );
@@ -48,13 +48,11 @@ namespace Rb.Muesli.Tests
             MemoryStream stream = new MemoryStream( );
             formatter.Serialize( stream, list );
 
-            byte[] bytes = stream.ToArray( );
-            
+            //byte[] bytes = stream.ToArray( );
         }
 
-        private static Stats ProfileSerialization(IFormatter formatter, Stream stream, object objToStore, int numIterations)
+        private static Stats ProfileSerialization( IFormatter formatter, Stream stream, object objToStore, int numIterations )
         {
-            BinaryOutput output = new BinaryOutput( stream );
 
             long startTime = TinyTime.CurrentTime;
 
