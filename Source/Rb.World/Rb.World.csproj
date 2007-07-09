@@ -74,6 +74,10 @@
       <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
       <Name>Rb.Log</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rb.Network\Rb.Network.csproj">
+      <Project>{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}</Project>
+      <Name>Rb.Network</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rb.Rendering\Rb.Rendering.csproj">
       <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
       <Name>Rb.Rendering</Name>

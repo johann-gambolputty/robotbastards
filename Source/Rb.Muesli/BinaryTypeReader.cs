@@ -23,7 +23,11 @@ namespace Rb.Muesli
 
         public Type ReadType( BinaryReader reader )
         {
-            //  TODO: AP: Don't read as string
+			if ( reader.ReadBoolean( ) )
+			{
+				return SerializationIdMap.Instance.GetType( reader.ReadUInt32( ) );
+			}
+
             string typeName = reader.ReadString( );
             return Type.GetType( typeName );
         }

@@ -10,6 +10,11 @@ namespace Rb.Muesli
             get;
         }
 
+		StreamingContext Context
+		{
+			get;
+		}
+
 		SerializationInfo ReadSerializationInfo( Type type );
 
         void Read( out bool val );
@@ -46,18 +51,8 @@ namespace Rb.Muesli
 
 		void Read< T >( out T[] val );
 
-        /*
-        void Read( out ArrayList val );
-
-        void Read< T >( out T[] val );
-
-        void Read< T >( out ICollection< T > val );
-
-        void Read< Key, Val >( out IDictionary< Key, Val > dictionary );
-
-        void Read( out ISerializable obj );
-        */
-
         void Read( out object obj );
+		
+		void Finish( );
     }
 }

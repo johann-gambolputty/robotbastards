@@ -31,8 +31,7 @@ namespace Rb.Muesli
         private static void SerializableWriter( IOutput output, object obj )
         {
             SerializationInfo info = new SerializationInfo( obj.GetType( ), new FormatterConverter( ) );
-            StreamingContext context = new StreamingContext( );
-            ( ( ISerializable )obj ).GetObjectData( info, context );
+            ( ( ISerializable )obj ).GetObjectData( info, output.Context );
 
 			output.WriteSerializationInfo( info );
         }
@@ -52,21 +51,31 @@ namespace Rb.Muesli
             
             ILGenerator generator = method.GetILGenerator( );
             generator.DeclareLocal( typeof( ITypeWriter ) );
+            generator.DeclareLocal( typeof( StreamingContext ) );
 
-            generator.Emit( OpCodes.Ldarg_0 );                      //  Load the IOutput onto the stack
-            generator.Emit( OpCodes.Call, IOutput_GetTypeWriter );  //  Get the TypeWriter from the IOutput
-            generator.Emit( OpCodes.Stloc_0 );                      //  Store it at local variable zero
+            generator.Emit( OpCodes.Ldarg_0 );                      		//  Load the IOutput onto the stack
+            generator.Emit( OpCodes.Call, IOutput_GetTypeWriter );  		//  Get the TypeWriter from the IOutput
+            generator.Emit( OpCodes.Stloc_0 );                      		//  Store it at local variable zero
+
+            generator.Emit( OpCodes.Ldarg_0 );                      		//  Load the IOutput onto the stack
+            generator.Emit( OpCodes.Call, IOutput_GetStreamingContext );	//  Get the StreamingContext from the IOutput
+            generator.Emit( OpCodes.Stloc_1 );								//  Store it at local variable zero
+
+			TypeIoUtils.CallSerializationEventMethod( generator, OpCodes.Ldarg_1, OpCodes.Ldloc_1, type, typeof( OnSerializingAttribute ) );
 
             BuildCustomWriterDelegate( generator, type );
+
+			TypeIoUtils.CallSerializationEventMethod( generator, OpCodes.Ldarg_1, OpCodes.Ldloc_1, type, typeof( OnSerializedAttribute ) );
 
             generator.Emit( OpCodes.Ret );
 
             return ( CustomWriterDelegate )method.CreateDelegate( typeof( CustomWriterDelegate ) );
         }
 
-        private static MethodInfo IOutput_GetTypeWriter = typeof(IOutput).GetProperty( "TypeWriter" ).GetGetMethod( );
-        private static MethodInfo ITypeWriter_Write     = typeof( ITypeWriter ).GetMethod( "Write" );
-		private static MethodInfo This_SaveGenericField	= typeof( CustomTypeWriterCache ).GetMethod( "SaveGenericField" );
+		private static MethodInfo IOutput_GetStreamingContext	= typeof( IOutput ).GetProperty( "Context" ).GetGetMethod( );
+        private static MethodInfo IOutput_GetTypeWriter 		= typeof( IOutput ).GetProperty( "TypeWriter" ).GetGetMethod( );
+        private static MethodInfo ITypeWriter_Write     		= typeof( ITypeWriter ).GetMethod( "Write" );
+		private static MethodInfo This_SaveGenericField			= typeof( CustomTypeWriterCache ).GetMethod( "SaveGenericField" );
 
 		public static void SaveGenericField( IOutput output, object obj, string fieldName )
 		{

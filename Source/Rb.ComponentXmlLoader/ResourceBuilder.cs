@@ -1,6 +1,7 @@
+using System;
 using System.Xml;
 using System.Collections.Generic;
-
+using Rb.Core;
 using Rb.Core.Resources;
 using Rb.Core.Components;
 
@@ -25,6 +26,15 @@ namespace Rb.ComponentXmlLoader
             string resourcePath = reader.GetAttribute( "path" );
 
             m_PreLoad = ResourceManager.Instance.CreatePreLoadState( resourcePath, null );
+
+			string useCurrentParams = reader.GetAttribute( "useCurrentParameters" );
+			if ( useCurrentParams != null )
+			{
+				if ( bool.Parse( useCurrentParams ) )
+				{
+					m_PreLoad.Parameters = Parameters;
+				}
+			}
         }
 
         /// <summary>
@@ -40,7 +50,15 @@ namespace Rb.ComponentXmlLoader
             {
                 //  Create default load parameters, assign them to BuildObject (cheeky way for parameter
                 //  builders to set load parameters)
-                m_PreLoad.Parameters = m_PreLoad.Loader.CreateDefaultLoadParameters( );
+				if ( ReferenceEquals( m_PreLoad.Parameters, Parameters ) )
+				{
+					//	useCurrentLoadParameters was specified - to avoid modifying the original, clone it
+					m_PreLoad.Parameters = ( LoadParameters )Parameters.Clone( );
+				}
+				else
+				{
+					m_PreLoad.Parameters = m_PreLoad.Loader.CreateDefaultLoadParameters( );
+				}
                 BuildObject = m_PreLoad.Parameters;
 
                 //	Call PostCreate() for all parameter builders
@@ -84,8 +102,8 @@ namespace Rb.ComponentXmlLoader
             }
         }
 
-        private ResourcePreLoadState m_PreLoad;
-        private List< BaseBuilder >	m_ParamBuilders = new List< BaseBuilder >( );
+        private ResourcePreLoadState	m_PreLoad;
+        private List< BaseBuilder >		m_ParamBuilders = new List< BaseBuilder >( );
     }
 
 }

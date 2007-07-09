@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 
@@ -8,6 +9,7 @@ namespace Rb.Muesli
     {
         public BinaryInput( Stream stream )
         {
+			m_Context = new StreamingContext( );
             m_TypeReader.ReadHeader( stream );
             m_Reader = new BinaryReader( stream );
         }
@@ -19,6 +21,10 @@ namespace Rb.Muesli
             get { return m_TypeReader; }
         }
 
+    	public StreamingContext Context
+    	{
+    		get { return m_Context; }
+    	}
 
         public SerializationInfo ReadSerializationInfo( Type type )
         {
@@ -131,44 +137,32 @@ namespace Rb.Muesli
             val = m_Reader.ReadString( );
         }
 
-        /*
-        public void Read( out System.Collections.ArrayList val )
-        {
-            val
-        }
-
-        public void Read<T>(out T[] val)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
-
-        public void Read<T>(out ICollection<T> val)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
-
-        public void Read<Key, Val>(out IDictionary<Key, Val> dictionary)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
-
-        public void Read(out System.Runtime.Serialization.ISerializable obj)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
-        */
-
         public void Read( out object obj )
         {
             obj = m_TypeReader.Read( this );
+        	IDeserializationCallback listener = obj as IDeserializationCallback;
+			if ( listener != null )
+			{
+				m_DeserializationListeners.Add( listener );
+			}
         }
+
+		public void Finish( )
+		{
+			foreach ( IDeserializationCallback listener in m_DeserializationListeners )
+			{
+				listener.OnDeserialization( null );
+			}
+		}
 
         #endregion
         
         #region Private stuff
 
-        private BinaryTypeReader    m_TypeReader = new BinaryTypeReader( );
-        private BinaryReader        m_Reader;
+		private StreamingContext				m_Context;
+        private BinaryTypeReader    			m_TypeReader = new BinaryTypeReader( );
+        private BinaryReader        			m_Reader;
+    	private List<IDeserializationCallback>	m_DeserializationListeners = new List< IDeserializationCallback >( );
 
         #endregion
     }

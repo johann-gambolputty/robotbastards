@@ -45,6 +45,8 @@ namespace Rb.Muesli
             object result;
             input.Read( out result );
 
+			input.Finish( );
+
             return result;
         }
 

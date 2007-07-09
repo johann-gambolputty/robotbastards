@@ -36,9 +36,46 @@ namespace Rb.Muesli
 
         private static void WriteType( BinaryWriter writer, Type type )
         {
-            //  TODO: AP: Don't store as string
-            writer.Write( type.AssemblyQualifiedName );
+        	uint id = SerializationIdAttribute.GetTypeId( type );
+			if( id != SerializationIdAttribute.NoId )
+			{
+				writer.Write( true );
+				writer.Write( id );
+			}
+			else
+			{
+				writer.Write( false );
+				writer.Write( type.AssemblyQualifiedName );
+			}
         }
+
+		private int GetTypeId( Type type )
+		{
+			if ( type.IsArray )
+			{
+				return ( int )TypeId.Array;
+			}
+			switch ( type.Name )
+			{
+				case "Type"		: return ( int )TypeId.Type;
+				case "Boolean"	: return ( int )TypeId.Bool;
+				case "Byte"		: return ( int )TypeId.Byte;
+				case "SByte"	: return ( int )TypeId.SByte;
+				case "Char"		: return ( int )TypeId.Char;
+				case "Int16"	: return ( int )TypeId.Int16;
+				case "UInt16"	: return ( int )TypeId.UInt16;
+				case "Int32"	: return ( int )TypeId.Int32;
+				case "UInt32"	: return ( int )TypeId.UInt32;
+				case "Int64"	: return ( int )TypeId.Int64;
+				case "UInt64"	: return ( int )TypeId.UInt64;
+				case "Single"	: return ( int )TypeId.Single;
+				case "Double"	: return ( int )TypeId.Double;
+				case "Decimal"	: return ( int )TypeId.Decimal;
+				case "DateTime"	: return ( int )TypeId.DateTime;
+				case "String"	: return ( int )TypeId.String;
+			}
+			return GetCustomWriter( type ).m_TypeId;
+		}
 
 		/// <summary>
 		/// Writes a type
@@ -48,7 +85,7 @@ namespace Rb.Muesli
 		/// </remarks>
 		public void WriteType( IOutput output, Type type )
 		{
-			WriteTypeId( output, GetCustomWriter( type ).m_TypeId );
+			WriteTypeId( output, GetTypeId( type ) );
 		}
         
         /// <summary>
@@ -61,13 +98,6 @@ namespace Rb.Muesli
                 output.WriteNull();
                 return;
             }
-			if ( obj is Type )
-			{
-				//	TODO: AP: Put "Type" case in switch instead
-				output.Write( ( byte )TypeId.Type );
-				WriteType( output, ( Type )obj );
-				return;
-			}
 
             Type objType = obj.GetType( );
             if ( objType.IsArray )
@@ -78,6 +108,11 @@ namespace Rb.Muesli
             }
             switch ( objType.Name )
             {
+				case "Type" :
+					output.Write( ( byte )TypeId.Type );
+					WriteType( output, ( Type )obj );
+            		return;
+
                 case "Boolean" :
                     output.Write( ( byte )TypeId.Bool );
                     output.Write( ( Boolean )obj );

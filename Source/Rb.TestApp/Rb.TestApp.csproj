@@ -81,7 +81,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="TestCommands.cs" />
-    <Compile Include="TestController.cs" />
+    <Compile Include="TestCommandHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">
@@ -107,6 +107,10 @@
     <ProjectReference Include="..\Rb.Log\Rb.Log.csproj">
       <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
       <Name>Rb.Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Network\Rb.Network.csproj">
+      <Project>{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}</Project>
+      <Name>Rb.Network</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rb.Rendering.Windows\Rb.Rendering.Windows.csproj">
       <Project>{39A57BC2-BE73-41A7-BBC2-A9D0C28D5A06}</Project>

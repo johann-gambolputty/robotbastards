@@ -9,9 +9,9 @@ using Rb.Core.Maths;
 namespace Rb.TestApp
 {
 	/// <summary>
-	/// Test controller class
+	/// Handles commands from the <see cref="TestCommands"/> enumeration
 	/// </summary>
-	public class TestController : Component, IRenderable, ISceneObject
+	public class TestCommandHandler : Component, IRenderable, ISceneObject
 	{
         /// <summary>
         /// Entity speed

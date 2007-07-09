@@ -28,6 +28,8 @@ namespace Rb.ComponentXmlLoader
 		public override void PostCreate( )
         {
 			base.PostCreate( );
+
+			//	TODO: AP: Also support ICloneable
             BuildObject = ( ( IInstanceBuilder )BuildObject ).CreateInstance( Parameters.Builder );
         }
     }

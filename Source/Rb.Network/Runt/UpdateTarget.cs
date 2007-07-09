@@ -9,8 +9,27 @@ namespace Rb.Network.Runt
 	/// </summary>
 	public class UpdateTarget
 	{
-		#region Public properties
+		#region Construction
+
+		/// <summary>
+		/// Default constructor. Connections must be set before this UpdateSource will function
+		/// </summary>
+		public UpdateTarget( )
+		{
+		}
 		
+		/// <summary>
+		/// Connections setup constructor
+		/// </summary>
+		public UpdateTarget( IConnections connections )
+		{
+			Connections = connections;
+		}
+
+		#endregion
+
+		#region Public properties
+
 		/// <summary>
 		/// The connections set that this update source is assigned to
 		/// </summary>

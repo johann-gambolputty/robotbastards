@@ -2,7 +2,9 @@ using System;
 using Rb.Core.Components;
 using Rb.Core.Resources;
 using Rb.Core.Utils;
+using Rb.Interaction;
 using Rb.Rendering;
+using Rb.Network.Runt;
 
 namespace Rb.World.Entities
 {
@@ -29,17 +31,29 @@ namespace Rb.World.Entities
                 AddChild( ResourceManager.Instance.Load( controllerPath, parameters ) );
             }
             else if ( host.Id == hostId )
-            {
+			{
+				//	The ChildUpdateProvider does stuff...
+				ChildUpdateProvider provider = new ChildUpdateProvider( );
+            	provider.RemoveBufferedMessages = false;
+				provider.UpdateMessageType = typeof( CommandMessage );
+
 				//  The scene host is the local controller host - create away
 				LoadParameters parameters = new ComponentLoadParameters( this );
-                AddChild( ResourceManager.Instance.Load( controllerPath, parameters ) );
-
-                //  Also need listeners and so forth
+				AddChild( ResourceManager.Instance.Load( controllerPath, parameters ) );
             }
             else
-            {
-                //  Also need listeners and so forth
-                throw new ApplicationException( "Unimplemented" );
+			{
+				//	The ChildUpdateHandler listens out for update mesages sent to the scene UpdateTarget, passing them on to this entity
+				ChildUpdateHandler handler = new ChildUpdateHandler( );
+				handler.Source = m_Scene.GetService< UpdateTarget >( );
+				AddChild( handler );
+
+				//	The ChildUpdateProvider does stuff...
+				ChildUpdateProvider provider = new ChildUpdateProvider( );
+				provider.Target = m_Scene.GetService< UpdateSource >( );
+				provider.IgnoreUpdateHandlerMessages = false;
+				provider.RemoveBufferedMessages = false;
+				provider.UpdateMessageType = typeof( CommandMessage );
             }
         }
 

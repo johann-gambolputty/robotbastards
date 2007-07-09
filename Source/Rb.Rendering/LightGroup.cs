@@ -47,6 +47,11 @@ namespace Rb.Rendering
 		/// </summary>
 		public void Begin( )
 		{
+			if ( m_Lights == null )
+			{
+				return;
+			}
+
 			Renderer renderer = Renderer.Inst;
 
 			for ( int lightIndex = 0; lightIndex < m_Lights.Length; ++lightIndex )

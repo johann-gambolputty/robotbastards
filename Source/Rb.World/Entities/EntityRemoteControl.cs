@@ -43,8 +43,7 @@ namespace Rb.World.Entities
             }
             else
             {
-                //  Also need listeners and so forth
-                throw new ApplicationException( "Unimplemented" );
+
             }
 		}
 

@@ -28,6 +28,7 @@ namespace Rb.Muesli
             return Reader;
         }
 
+		private static MethodInfo IInput_GetContext							= typeof( IInput ).GetProperty( "Context" ).GetGetMethod( );
         private static MethodInfo IInput_GetTypeReader						= typeof( IInput ).GetProperty( "TypeReader" ).GetGetMethod( );
 		private static MethodInfo IInput_ReadSerializationInfo				= typeof( IInput ).GetMethod( "ReadSerializationInfo" );
         private static MethodInfo ITypeReader_Read              			= typeof( ITypeReader ).GetMethod( "Read" );
@@ -63,16 +64,6 @@ namespace Rb.Muesli
 			generator.Emit(OpCodes.Ldloc_0);									//	Load streaming context
 
             generator.Emit( OpCodes.Newobj, constructor );                      //  Create object by calling serializing constructor
-
-			if ( type.GetInterface( "IDeserializationCallback" ) != null )
-			{
-				generator.DeclareLocal( type );
-				generator.Emit( OpCodes.Stloc_1 );
-				generator.Emit( OpCodes.Ldloc_1 );
-				generator.Emit( OpCodes.Ldnull );
-				generator.Emit( OpCodes.Call, type.GetMethod( "OnDeserialization" ) );
-				generator.Emit( OpCodes.Ldloc_1 );
-			}
 
             generator.Emit( OpCodes.Ret );                                      //  Return the object
 
@@ -122,17 +113,22 @@ namespace Rb.Muesli
 
             generator.DeclareLocal( typeof( ITypeReader ) );
 			generator.DeclareLocal( typeof( object ) );
+			generator.DeclareLocal( typeof( StreamingContext ) );
 
             generator.Emit( OpCodes.Ldarg_0 );                      //  Load the IInput onto the stack
             generator.Emit( OpCodes.Call, IInput_GetTypeReader );   //  Get the ITypeReader from the IInput
             generator.Emit( OpCodes.Stloc_0 );                      //  Store it at local variable zero
+			
+            generator.Emit( OpCodes.Ldarg_0 );                      //  Load the IInput onto the stack
+            generator.Emit( OpCodes.Call, IInput_GetContext );		//  Get the StreamingContext from the IInput
+            generator.Emit( OpCodes.Stloc_2 );                      //  Store it at local variable zero
 
             if ( type.IsValueType )
             {
 				generator.DeclareLocal( type );
-				generator.Emit( OpCodes.Ldloca_S, 2 );
+				generator.Emit( OpCodes.Ldloca_S, 3 );
 				generator.Emit( OpCodes.Initobj, type );
-				generator.Emit( OpCodes.Ldloc_2 );
+				generator.Emit( OpCodes.Ldloc_3 );
 				generator.Emit( OpCodes.Box, type );
 				generator.Emit( OpCodes.Stloc_1 );
             }
@@ -144,9 +140,13 @@ namespace Rb.Muesli
 	            generator.Emit( OpCodes.Stloc_1 );					//  Store it in local variable one
             }
 
-            BuildCustomReaderDelegate( generator, type );           //  Generate bytecode to 
+			TypeIoUtils.CallSerializationEventMethod( generator, OpCodes.Ldloc_1, OpCodes.Ldloc_2, type, typeof( OnDeserializingAttribute ) );
 
-            generator.Emit( OpCodes.Ldloc_1 );                      //  Load the new object from local variable one
+            BuildCustomReaderDelegate( generator, type );           //  Generate bytecode to 
+			
+			TypeIoUtils.CallSerializationEventMethod( generator, OpCodes.Ldloc_1, OpCodes.Ldloc_2, type, typeof( OnDeserializedAttribute ) );
+
+			generator.Emit( OpCodes.Ldloc_1 );                      //  Load the new object from local variable one
             generator.Emit( OpCodes.Ret );                          //  Return it
 
             return ( CustomReaderDelegate )method.CreateDelegate( typeof( CustomReaderDelegate ) );

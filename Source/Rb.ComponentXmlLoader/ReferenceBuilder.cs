@@ -49,7 +49,11 @@ namespace Rb.ComponentXmlLoader
                     BuildObject = ParentBuilder.ParentBuilder.BuildObject;
                 }
             }
-            else if ( m_ObjectId == "root" )
+			else if ( m_ObjectId == "builder" )
+			{
+				BuildObject = Parameters.Builder;
+			}
+			else if ( m_ObjectId == "root" )
             {
                 BaseBuilder rootBuilder = ParentBuilder;
                 for ( ;!rootBuilder.IsRoot; rootBuilder = rootBuilder.ParentBuilder );

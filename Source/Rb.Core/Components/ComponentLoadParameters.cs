@@ -16,7 +16,7 @@ namespace Rb.Core.Components
         /// </summary>
         public ComponentLoadParameters( )
         {
-            m_Builder   = Rb.Core.Components.Builder.Instance;
+            m_Builder   = new Builder( );
             m_Objects   = new Dictionary< Guid, object >( );
         }
 
@@ -123,9 +123,34 @@ namespace Rb.Core.Components
 
         #endregion
 
-        #region Private stuff
+		#region Cloning
 
-        private IBuilder m_Builder;
+		/// <summary>
+		/// Clones this object
+		/// </summary>
+		/// <returns>Deep copy clone</returns>
+		public override object Clone( )
+		{
+			ComponentLoadParameters clone = new ComponentLoadParameters( );
+			DeepCopy( clone );
+			return clone;
+		}
+
+		/// <summary>
+		/// Copies members from this LoadParameters to parameters
+		/// </summary>
+		protected void DeepCopy( ComponentLoadParameters parameters )
+		{
+			parameters.m_Builder = m_Builder;
+			parameters.m_Objects = m_Objects;
+			base.DeepCopy( parameters );
+		}
+
+		#endregion
+
+		#region Private stuff
+
+		private IBuilder m_Builder;
         private IDictionary< Guid, object > m_Objects;
 
         #endregion
