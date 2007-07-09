@@ -12,11 +12,18 @@ namespace Rb.Muesli
             get;
         }
 
+		StreamingContext Context
+		{
+			get;
+		}
+
         #region Writing single values
 
         void WriteNull( );
         
         void WriteSerializationInfo( SerializationInfo info );
+
+		void Write( bool val );
 
         void Write( byte val );
 

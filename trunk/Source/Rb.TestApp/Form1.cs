@@ -1,10 +1,13 @@
 using System;
 using System.Configuration;
+using System.Drawing;
 using System.Windows.Forms;
 
 using Rb.Core.Resources;
 using Rb.Core.Components;
 using Rb.Core.Utils;
+using Rb.Network;
+using Rb.Network.Runt;
 using Rb.Rendering;
 using Rb.Rendering.Cameras;
 using Rb.World;
@@ -33,13 +36,13 @@ namespace Rb.TestApp
             InitializeComponent();
 		}
 
-        private Camera3 CreateSimpleCamera( CommandList cameraCommands )
+        private Camera3 CreateSimpleCamera( IBuilder builder, CommandList cameraCommands )
         {
             Camera3 result = new SphereCamera( );
-            
-            SphereCameraController controller = Builder.CreateInstance< SphereCameraController >( Builder.Instance );
+
+			SphereCameraController controller = Builder.CreateInstance<SphereCameraController>( builder );
             result.AddChild( controller );
-            result.AddChild( Builder.CreateInstance < CommandInputListener >( Builder.Instance, controller, cameraCommands ) );
+            result.AddChild( Builder.CreateInstance < CommandInputListener >( builder, controller, cameraCommands ) );
 
             return result;
         }
@@ -57,28 +60,40 @@ namespace Rb.TestApp
 			//	Create the test and camera command lists (must come before scene creation, because it's referenced
 			//	by the scene setup file)
 			CommandList.BuildFromEnum( typeof( TestCommands ) );
-            CommandList cameraCommands = CommandList.BuildFromEnum(typeof(CameraCommands));
+            CommandList cameraCommands = CommandList.BuildFromEnum( typeof( CameraCommands ) );
 
 			//	Test load a scene
             Scene scene = new Scene( );
 
 			//	Add a scene host
 			//	TODO: AP: Remove host hard-coding
-			scene.AddService( new Host( HostType.Server ) );
-
-            //  Set the global scene builder (erk...)
-            Builder.Instance = new SceneBuilder( scene, Builder.Instance );
+			HostType hostType = HostType.Server;
+			//Guid hostGuid = Guid.NewGuid( );
+			Guid hostGuid = new Guid( "{8D7200EA-0D49-4384-9A44-2532ECB1FE55}" );
+			scene.AddService( new Host( hostType, hostGuid ) );
+			if ( hostType != HostType.Local )
+			{
+				IConnections connections = new Connections( );
+				scene.AddService( connections );
+				scene.AddService( new UpdateTarget( connections ) );
+				scene.AddService( new UpdateSource( connections ) );
+			}
 
 			//	Create a viewer for the scene
             try
             {
-                ComponentLoadParameters loadParams = new ComponentLoadParameters( scene.Objects, scene );
+				ComponentLoadParameters loadParams = new ComponentLoadParameters( scene.Objects, scene.Builder, scene );
                 ResourceManager.Instance.Load( "scene0.components.xml", loadParams );
 
-                Viewer viewer = new Viewer( CreateSimpleCamera( cameraCommands ), scene );
-                display1.AddViewer( viewer );
+                Viewer viewer = new Viewer( CreateSimpleCamera( scene.Builder, cameraCommands ), scene );
                 viewer.ShowFps = true;
-                viewer.Technique = Builder.CreateInstance< World.Rendering.SceneShadowBufferTechnique >( Builder.Instance );
+				viewer.Technique = Builder.CreateInstance< World.Rendering.SceneShadowBufferTechnique >( scene.Builder );
+                display1.AddViewer( viewer );
+				
+                viewer = new Viewer( CreateSimpleCamera( scene.Builder, cameraCommands ), scene );
+				//viewer.Technique = Builder.CreateInstance< World.Rendering.SceneShadowBufferTechnique >( scene.Builder );
+				viewer.ViewRect = new RectangleF( 0, 0, 0.3f, 0.3f );
+                display1.AddViewer( viewer );
             }
             catch ( Exception ex )
             {

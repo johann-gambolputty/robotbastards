@@ -12,9 +12,41 @@ namespace Rb.World
 	/// </summary>
     public class Scene : IRenderable
 	{
-        #region Clocks
+		#region Construction
 
-        /// <summary>
+		/// <summary>
+		/// Default constructor. Builder returns a SceneBuilder
+		/// </summary>
+		public Scene( )
+		{
+			m_Builder = new SceneBuilder( this );
+		}
+
+		/// <summary>
+		/// Setup constructor. Builder returns a SceneBuilder that decorates the specified builder
+		/// </summary>
+		public Scene( IBuilder builder )
+		{
+			m_Builder = new SceneBuilder( this, builder );
+		}
+
+		#endregion
+
+		#region Builder
+
+		/// <summary>
+		/// Returns the builder associated with this scene
+		/// </summary>
+		public IBuilder Builder
+		{
+			get { return m_Builder; }
+		}
+
+		#endregion
+
+		#region Clocks
+
+		/// <summary>
         /// Gets a named clock. Throws an exception on failure
         /// </summary>
         /// <param name="name">Clock name</param>
@@ -173,6 +205,7 @@ namespace Rb.World
 
 		#region	Private stuff
         
+		private IBuilder						m_Builder;
         private Dictionary< string, Clock >     m_Clocks	    = new Dictionary< string, Clock >( );
 		private Dictionary< Type, object >		m_Services	    = new Dictionary< Type, object >( );
 		private ObjectMap						m_Objects	    = new ObjectMap( );

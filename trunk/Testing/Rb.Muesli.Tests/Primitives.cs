@@ -3,6 +3,7 @@ using System;
 namespace Rb.Muesli.Tests
 {
     [Serializable]
+	[SerializationId(0)]
     public class Primitives : IEquatable< Primitives >
     {
         private byte    m_Value0    = 0;

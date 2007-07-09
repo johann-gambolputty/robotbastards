@@ -59,24 +59,6 @@ namespace Rb.Rendering
         //	TODO: I really don't like this stuff being here - it would be far better to have a RenderContext object that is passed around in ISceneRenderable.Render(),
 		//	but that breaks with the design of the rest of the renderer (an opengl-style state machine with all state encapsulated by the Renderer)
 
-		/*
-		/// <summary>
-		/// The control currently being rendered to
-		/// </summary>
-		/// <seealso cref="ControlRenderContext.BeginPaint()"/>
-		public virtual Control	CurrentControl
-		{
-			set
-			{
-				m_Control = value;
-			}
-			get
-			{
-				return m_Control;
-			}
-		}
-		*/
-
 		/// <summary>
 		/// The current camera
 		/// </summary>
@@ -206,57 +188,65 @@ namespace Rb.Rendering
 		/// Pushes an identity matrix in the projection and model view transforms. The top left hand corner is (X,Y), the bottom right is (W,H) (where
 		/// (W,H) are the viewport dimensions, and (X,Y) is the viewport minimum corner position)
 		/// </summary>
-		public abstract void			Push2d( );
+		public abstract void Push2d( );
 
 		/// <summary>
 		/// Pops the identity matrices pushed by Push2d( )
 		/// </summary>
-		public abstract void			Pop2d( );
+		public abstract void Pop2d( );
 
 		/// <summary>
 		/// Translates the current transform in the specified transform stack
 		/// </summary>
-		public abstract void			Translate( Transform type, float x, float y, float z );
+		public abstract void Translate( Transform type, float x, float y, float z );
 
 		/// <summary>
 		/// Applies the specified transform, multiplied by the current topmost transform, and adds it to the specified transform stack
 		/// </summary>
-		public abstract void			PushTransform( Transform type, Matrix44 matrix );
+		public abstract void PushTransform( Transform type, Matrix44 matrix );
 
 		/// <summary>
 		/// Pushes a copy of the transform currently at the top of the specified transform stack
 		/// </summary>
-		public abstract void			PushTransform( Transform type );
+		public abstract void PushTransform( Transform type );
 
 		/// <summary>
 		/// Sets the current Transform.kLocalToView transform to a look-at matrix
 		/// </summary>
-		public abstract void			SetLookAtTransform( Point3 lookAt, Point3 camPos, Vector3 camYAxis );
+		public abstract void SetLookAtTransform( Point3 lookAt, Point3 camPos, Vector3 camYAxis );
 
 		/// <summary>
 		/// Sets the current Transform.kViewToScreen matrix to a projection matrix with the specified attributes
 		/// </summary>
-		public abstract void			SetPerspectiveProjectionTransform( float fov, float aspectRatio, float zNear, float zFar );
+		public abstract void SetPerspectiveProjectionTransform( float fov, float aspectRatio, float zNear, float zFar );
 
 		/// <summary>
 		/// Applies the specified transform, adds it to the specified transform stack
 		/// </summary>
-		public abstract void			SetTransform( Transform type, Matrix44 matrix );
+		public abstract void SetTransform( Transform type, Matrix44 matrix );
 
 		/// <summary>
 		/// Pops a matrix from the specified transform stack, applies the new topmost matrix
 		/// </summary>
-		public abstract void			PopTransform( Transform type );
+		public abstract void PopTransform( Transform type );
 
 		/// <summary>
 		/// Sets the viewport (in pixels)
 		/// </summary>
-		public abstract void			SetViewport( int x, int y, int width, int height );
+		public abstract void SetViewport( int x, int y, int width, int height );
+
+		/// <summary>
+		/// Gets the current viewport
+		/// </summary>
+		public abstract Rectangle Viewport
+		{
+			get;
+		}
 
 		/// <summary>
 		///	The viewport width
 		/// </summary>
-		public abstract int				ViewportWidth
+		public abstract int ViewportWidth
 		{
 			get;
 		}
@@ -264,7 +254,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// The viewport height
 		/// </summary>
-		public abstract int				ViewportHeight
+		public abstract int ViewportHeight
 		{
 			get;
 		}

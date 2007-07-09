@@ -148,13 +148,18 @@ namespace Rb.Rendering.Windows
 		/// </summary>
 		protected virtual void Draw( )
 		{
-	        Renderer.Inst.ClearDepth( 1.0f );
-	        Renderer.Inst.ClearVerticalGradient( Color.DarkSeaGreen, Color.Black );
-			//Renderer.Inst.ClearColour( Color.LightSkyBlue );
-            foreach ( Viewer viewer in Viewers )
-            {
-                viewer.Render( );
-            }
+			if ( Viewers.Count == 0 )
+			{
+				Renderer.Inst.ClearDepth( 1.0f );
+				Renderer.Inst.ClearVerticalGradient( Color.DarkSeaGreen, Color.Black );
+			}
+			else
+			{
+				foreach ( Viewer viewer in Viewers )
+				{
+					viewer.Render( );
+				}
+			}
 		}
 
 		/// <summary>

@@ -12,7 +12,7 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public override void Begin( )
 		{
-			Rendering.Renderer renderer = Renderer.Inst;
+			Renderer renderer = Renderer.Inst;
 			int width = renderer.ViewportWidth;
 			int height = renderer.ViewportHeight;
 

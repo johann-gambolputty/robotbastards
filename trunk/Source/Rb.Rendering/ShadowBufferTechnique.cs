@@ -143,7 +143,7 @@ namespace Rb.Rendering
         #region Private stuff
 
         private static ITechnique               ms_OverrideTechnique;
-        private static bool                     ms_DumpLights = false;
+        private static bool                     ms_DumpLights = true;
 
         private LightGroup                      m_ShadowLights = new LightGroup( );
         private RenderTarget[]                  m_RenderTargets = new RenderTarget[MaxLights];

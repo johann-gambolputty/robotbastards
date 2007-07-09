@@ -2,11 +2,7 @@
 <rb>
 
   <!--Default scene setup-->
-  <resource path="defaultSceneSetup.components.xml">
-    <parameters>
-      <ref objectId="parent" property="Target"/>
-    </parameters>
-  </resource>
+  <resource path="defaultSceneSetup.components.xml" useCurrentParameters="true"/>
 
   <!--Stinking hack-->
   <method objectId="this" call="AddServices">
@@ -90,20 +86,25 @@
 
     </object>
 
-    <!-- TODO: Replace with proxy object? (this would allow better serialisation)
+    <!-- TODO: Replace with proxy object? (this would allow better serialisation) -->
     <method objectId="this" call="SetupController">
       <parameters>
         <guid value="{8D7200EA-0D49-4384-9A44-2532ECB1FE55}"/>
         <string value="userInputListener.components.xml"/>
       </parameters>
     </method>
-    -->
+
+    <object type="Rb.TestApp.TestCommandHandler" assembly="Rb.TestApp"/>
+
+    <!--
     <object type="Rb.World.Entities.EntityRemoteControl">
       <parameters>
         <guid value="{8D7200EA-0D49-4384-9A44-2532ECB1FE55}"/>
         <string value="userInputListener.components.xml"/>
       </parameters>
     </object>
+    -->
+
   </object>
 
 </rb>

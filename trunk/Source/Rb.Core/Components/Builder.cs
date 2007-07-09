@@ -23,6 +23,7 @@ namespace Rb.Core.Components
         /// Creates an instance of the specified type, with a given set of constructor arguments
         /// </summary>
         /// <param name="type">Instance type</param>
+        /// <param name="constructorArgs">Values pased to type constructor</param>
         /// <returns>New instance of type</returns>
         public object CreateInstance( Type type, object[] constructorArgs )
         {

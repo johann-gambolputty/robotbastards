@@ -11,8 +11,14 @@ namespace Rb.Muesli
             get { return m_TypeWriter;  }
         }
 
+		public StreamingContext Context
+		{
+			get { return m_Context; }
+		}
+
         public BinaryOutput( Stream stream )
         {
+			m_Context		= new StreamingContext( );
             m_Stream        = stream;
             m_WriterStream  = new MemoryStream( );
             m_Writer        = new BinaryWriter( m_WriterStream );
@@ -43,6 +49,11 @@ namespace Rb.Muesli
                 m_TypeWriter.Write( this, e.Value );
             }
         }
+
+		public void Write( bool val )
+		{
+			m_Writer.Write( val );
+		}
 
         public void Write( byte val )
         {
@@ -138,33 +149,11 @@ namespace Rb.Muesli
         {
             m_TypeWriter.Write( this, obj );
         }
-        
-        /*
-        #region Writing collections
 
-        public void Write( ArrayList val )
-        {
-            Write( val.Count );
-            foreach ( object obj in val )
-            {
-                Write( obj );
-            }
-        }
-
-        void Write< T >( T[] val )
-        {
-        }
-
-        void Write< T >( ICollection< T > val );
-
-        void Write< Key, Val >( IDictionary< Key, Val > dictionary );
-
-        #endregion
-        */
-
-        private Stream          m_Stream;
-        private MemoryStream    m_WriterStream;
-        private BinaryWriter    m_Writer;
-        private ITypeWriter     m_TypeWriter = new BinaryTypeWriter( );
+		private StreamingContext	m_Context;
+        private Stream				m_Stream;
+        private MemoryStream		m_WriterStream;
+        private BinaryWriter		m_Writer;
+        private ITypeWriter			m_TypeWriter = new BinaryTypeWriter( );
     }
 }

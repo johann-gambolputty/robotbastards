@@ -33,6 +33,10 @@ namespace Rb.Muesli.Tests
         {
             Primitives objToStore = new Primitives( );
 
+			//	Slight cheat...
+        	SerializationIdMap map = SerializationIdMap.Instance;
+			map.ToString( );
+
             ProfileSerialization( new BinaryFormatter( ), new MemoryStream( ), objToStore, 10000 ).Dump( "Muesli" );
             ProfileSerialization( new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter( ), new MemoryStream( ), objToStore, 10000 ).Dump( "BF" );
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using Rb.Core.Maths;
 using Tao.OpenGl;
@@ -484,13 +485,25 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public override void	SetViewport( int x, int y, int width, int height )
 		{
+			m_X			= x;
+			m_Y			= y;
 			m_Width		= width;
 			m_Height	= height;
 			Gl.glViewport( x, y, width, height );
 		}
 
+		private int m_X;
+		private int m_Y;
 		private int	m_Width;
 		private int m_Height;
+
+		/// <summary>
+		/// Gets the current viewport
+		/// </summary>
+		public override Rectangle Viewport
+		{
+			get { return new Rectangle( m_X, m_Y, m_Width, m_Height );}
+		}
 
 		/// <summary>
 		///	The viewport width

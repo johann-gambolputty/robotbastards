@@ -1,3 +1,4 @@
+using System.Drawing;
 using Rb.Core.Utils;
 
 namespace Rb.Rendering
@@ -52,6 +53,12 @@ namespace Rb.Rendering
             set { m_ShowFps = value; }
         }
 
+		public RectangleF ViewRect
+    	{
+			get { return m_ViewRect; }
+			set { m_ViewRect = value; }
+    	}
+
 		/// <summary>
 		/// Default constructor
 		/// </summary>
@@ -75,13 +82,30 @@ namespace Rb.Rendering
 		/// </summary>
         public void Render( )
         {
+			Renderer renderer = Renderer.Inst;
+			Rectangle oldRect = renderer.Viewport;
+
+			int x = ( int )( m_ViewRect.Left * oldRect.Width );
+			int y = ( int )( m_ViewRect.Top * oldRect.Height );
+			int w = ( int )( m_ViewRect.Width * oldRect.Width );
+			int h = ( int )( m_ViewRect.Height * oldRect.Height );
+			Renderer.Inst.SetViewport( x, y, w, h );
+
+			renderer.ClearDepth(1.0f);
+			renderer.ClearVerticalGradient( Color.DarkSeaGreen, Color.Black );
+
             m_Context.RenderTime = TinyTime.CurrentTime;
 
             m_Camera.Begin( );
             m_Context.ApplyTechnique( m_Technique, m_Renderable );
             m_Camera.End( );
 
-			m_FpsDisplay.Render( m_Context );
+			if ( m_ShowFps )
+			{
+				m_FpsDisplay.Render( m_Context );
+			}
+
+			Renderer.Inst.SetViewport( oldRect.Left, oldRect.Top, oldRect.Width, oldRect.Height );
         }
 
 		private FpsDisplay			m_FpsDisplay = new FpsDisplay( );
@@ -89,6 +113,7 @@ namespace Rb.Rendering
         private IRenderContext      m_Context = new RenderContext( );
         private IRenderable         m_Renderable;
         private ITechnique          m_Technique;
+		private RectangleF			m_ViewRect = new RectangleF( 0, 0, 1, 1 );
         private bool                m_ShowFps;
     }
 }

@@ -154,6 +154,7 @@ namespace Rb.Muesli.Tests
 
 			object inputObject;
 			input.Read( out inputObject );
+			input.Finish( );
 			Dictionary< string, Primitives > inputDictionary = ( Dictionary< string, Primitives > )inputObject;
 
 			//	TODO: AP: Ditto here - Assert.AreEqual() isn't working anymore on the dictionaries :(
@@ -278,5 +279,81 @@ namespace Rb.Muesli.Tests
                 curInput = curInput.m_Next;
             } while ( curOutput != outputObject );
         }
+
+		public enum EventType
+		{
+			Serializing,
+			Serialized,
+			Deserializing,
+			Deserialized,
+			DeserializationCallback,
+			Count
+		}
+
+		[Serializable]
+		public class EventsTest : IDeserializationCallback
+		{
+			private static bool[] m_Called = new bool[ ( int )EventType.Count ];
+
+			public static void CheckCalled( EventType eventType, bool called )
+			{
+				Assert.AreEqual( m_Called[ ( int )eventType ], called );
+			}
+
+			[OnSerializing]
+			public void OnSerializing( StreamingContext context )
+			{
+				CheckCalled( EventType.Serialized, false );
+				m_Called[ ( int )EventType.Serializing ] = true;
+			}
+
+			[OnSerialized]
+			public void OnSerialized( StreamingContext context )
+			{
+				CheckCalled( EventType.Serializing, true );
+				m_Called[ ( int )EventType.Serialized ] = true;
+			}
+
+			[OnDeserializing]
+			public void OnDeserializing( StreamingContext context )
+			{
+				CheckCalled( EventType.Deserialized, false );
+				m_Called[ ( int )EventType.Deserializing ] = true;
+			}
+
+			[OnDeserialized]
+			public void OnDeserialized( StreamingContext context )
+			{
+				CheckCalled( EventType.Deserializing, true );
+				m_Called[ ( int )EventType.Deserialized ] = true;
+			}
+
+			#region IDeserializationCallback Members
+
+			public void OnDeserialization( object sender )
+			{
+				CheckCalled( EventType.Deserializing, true );
+				CheckCalled( EventType.Deserialized, true );
+				m_Called[ ( int )EventType.DeserializationCallback ] = true;
+			}
+
+			#endregion
+		}
+
+		[Test]
+		public void TestSerializationEvents( )
+		{
+			MemoryStream stream = new MemoryStream( );
+			IFormatter formatter = new BinaryFormatter( );
+
+			formatter.Serialize( stream, new EventsTest( ) );
+			stream.Seek( 0, SeekOrigin.Begin );
+			EventsTest test = ( EventsTest )formatter.Deserialize( stream );
+			EventsTest.CheckCalled( EventType.Serializing, true );
+			EventsTest.CheckCalled( EventType.Serialized, true );
+			EventsTest.CheckCalled( EventType.Deserializing, true );
+			EventsTest.CheckCalled( EventType.Deserialized, true );
+			EventsTest.CheckCalled( EventType.DeserializationCallback, true );
+		}
     }
 }
