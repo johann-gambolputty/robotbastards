@@ -158,7 +158,7 @@ namespace Rb.Log.Controls
 			if ( IsHandleCreated )
             {
                 string[] lines = entry.Message.Split( new char[] { '\n' } );
-                lock ( m_Lock )
+                //lock ( m_Lock )
                 {
                     foreach ( string line in lines )
                     {

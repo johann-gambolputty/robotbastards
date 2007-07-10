@@ -8,8 +8,12 @@ namespace Rb.Core.Resources
 	public interface IPathDirectory
 	{
 		/// <summary>
-		/// Adds a base directory from which resources can be located
+		/// The base directory where resources are be located
 		/// </summary>
-		void AddBaseDirectory( string dir );
+		string BaseDirectory
+		{
+			get;
+			set;
+		}
 	}
 }

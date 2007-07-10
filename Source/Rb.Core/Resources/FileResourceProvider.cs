@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-
 namespace Rb.Core.Resources
 {
 	/// <summary>
@@ -8,6 +5,27 @@ namespace Rb.Core.Resources
 	/// </summary>
 	public class FileResourceProvider : ResourceProvider, IPathDirectory
 	{
+		#region	IPathDirectory Methods
+
+		/// <summary>
+		/// Access to the base directory
+		/// </summary>
+		public string BaseDirectory
+		{
+			set
+			{
+				string fullPath = System.IO.Path.GetFullPath( value ) + '\\';
+				ResourcesLog.Info( "Setting base directory \"{0}\"", fullPath );
+				m_BaseDir = fullPath;
+			}
+			get
+			{
+				return m_BaseDir;
+			}
+		}
+
+		#endregion
+
 		#region	ResourceProvider Methods
 
 		/// <summary>
@@ -26,14 +44,11 @@ namespace Rb.Core.Resources
 				return System.IO.File.OpenRead( path );
 			}
 
-			foreach ( string baseDir in m_BaseDirs )
+			string fullDir = BaseDirectory + path;
+			if ( System.IO.File.Exists( fullDir ) )
 			{
-				string fullDir = baseDir + path;
-				if ( System.IO.File.Exists( fullDir ) )
-				{
-					path = fullDir;
-					return System.IO.File.OpenRead( fullDir );
-				}
+				path = fullDir;
+				return System.IO.File.OpenRead( fullDir );
 			}
 
 			return null;
@@ -47,7 +62,7 @@ namespace Rb.Core.Resources
 		{
 			foreach ( System.Xml.XmlElement baseDirNode in element.SelectNodes( "baseDir" ) )
 			{
-				AddBaseDirectory( baseDirNode.Attributes[ "value" ].Value );
+				BaseDirectory = baseDirNode.Attributes[ "value" ].Value;
 			}
 		}
 
@@ -56,14 +71,11 @@ namespace Rb.Core.Resources
 		/// </summary>
 		public override bool DirectoryExists( ref string directory )
 		{
-			foreach ( string baseDir in m_BaseDirs )
+			string fullDir = BaseDirectory + directory;
+			if ( System.IO.Directory.Exists( fullDir ) )
 			{
-				string fullDir = baseDir + directory;
-				if ( System.IO.Directory.Exists( fullDir ) )
-				{
-					directory = fullDir;
-					return true;
-				}
+				directory = fullDir;
+				return true;
 			}
 			return false;
 		}
@@ -78,24 +90,9 @@ namespace Rb.Core.Resources
 
 		#endregion
 
-		#region	IPathDirectory Methods
-
-		/// <summary>
-		/// Adds a base directory from which resources can be located
-		/// </summary>
-		public void AddBaseDirectory( string dir )
-		{
-			string fullPath = System.IO.Path.GetFullPath( dir ) + '\\';
-
-			ResourcesLog.Info( "Adding base directory \"{0}\"", fullPath );
-			m_BaseDirs.Add( fullPath );
-		}
-
-		#endregion
-
 		#region	Private stuff
 
-		private ArrayList m_BaseDirs = new ArrayList( );
+		private string m_BaseDir = "";
 
 		#endregion
 

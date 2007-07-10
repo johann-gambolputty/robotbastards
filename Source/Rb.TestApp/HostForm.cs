@@ -16,27 +16,19 @@ using Rb.Interaction;
 
 namespace Rb.TestApp
 {
-    public partial class Form1 : Form
+    public partial class HostForm : Form
     {
-        public Form1()
+        public HostForm( HostSetup setup )
 		{
-			LogViewer viewer = new LogViewer( );
-			viewer.Show( this );
-
-			AppLog.Info( "Beginning Rb.TestApp at {0}", DateTime.Now );
-			AppLog.GetSource( Severity.Info ).WriteEnvironment( );
-
-			string renderAssembly = ConfigurationManager.AppSettings[ "renderAssembly" ];
-			if ( renderAssembly  == null )
-			{
-				renderAssembly = "Rb.Rendering.OpenGl.Windows";
-			}
-			RenderFactory.Load( renderAssembly );
-
+			m_Setup = setup;
             InitializeComponent();
+
+			Text = string.Format( "{0} - {1}", m_Setup.HostType, m_Setup.HostGuid );
 		}
 
-        private Camera3 CreateSimpleCamera( IBuilder builder, CommandList cameraCommands )
+		private HostSetup m_Setup;
+
+        private static Camera3 CreateSimpleCamera( IBuilder builder, CommandList cameraCommands )
         {
             Camera3 result = new SphereCamera( );
 
@@ -47,16 +39,8 @@ namespace Rb.TestApp
             return result;
         }
 
-		private void Form1_Load( object sender, EventArgs e )
+		private void HostForm_Load( object sender, EventArgs e )
 		{
-			//	Load resource settings
-			string resourceSetupPath = ConfigurationManager.AppSettings[ "resourceSetupPath" ];
-			if ( resourceSetupPath == null )
-			{
-				resourceSetupPath = "../resourceSetup.xml";
-			}
-			ResourceManager.Instance.Setup( resourceSetupPath );
-
 			//	Create the test and camera command lists (must come before scene creation, because it's referenced
 			//	by the scene setup file)
 			CommandList.BuildFromEnum( typeof( TestCommands ) );
@@ -66,24 +50,34 @@ namespace Rb.TestApp
             Scene scene = new Scene( );
 
 			//	Add a scene host
-			//	TODO: AP: Remove host hard-coding
-			HostType hostType = HostType.Server;
-			//Guid hostGuid = Guid.NewGuid( );
-			Guid hostGuid = new Guid( "{8D7200EA-0D49-4384-9A44-2532ECB1FE55}" );
-			scene.AddService( new Host( hostType, hostGuid ) );
-			if ( hostType != HostType.Local )
+			scene.AddService( new Host( m_Setup.HostType, m_Setup.HostGuid ) );
+			if ( m_Setup.HostType != HostType.Local )
 			{
 				IConnections connections = new Connections( );
 				scene.AddService( connections );
 				scene.AddService( new UpdateTarget( connections ) );
 				scene.AddService( new UpdateSource( connections ) );
+
+				RemoteHostAddress server = m_Setup.ServerAddress;
+				if ( m_Setup.HostType == HostType.Client )
+				{
+					TcpSocketConnection connection = new TcpSocketConnection( server.Address, server.Port );
+					connection.OpenConnection( );
+					connections.Add( connection );
+				}
+				else
+				{
+					TcpConnectionListener listener = new TcpConnectionListener( server.Address, server.Port );
+					listener.Listen( connections );
+					scene.AddService( listener );
+				}
 			}
 
 			//	Create a viewer for the scene
             try
             {
 				ComponentLoadParameters loadParams = new ComponentLoadParameters( scene.Objects, scene.Builder, scene );
-                ResourceManager.Instance.Load( "scene0.components.xml", loadParams );
+                ResourceManager.Instance.Load( m_Setup.SceneFile, loadParams );
 
                 Viewer viewer = new Viewer( CreateSimpleCamera( scene.Builder, cameraCommands ), scene );
                 viewer.ShowFps = true;
@@ -103,7 +97,7 @@ namespace Rb.TestApp
 			//	Test load a command list
 			try
 			{
-				CommandInputTemplateMap map = ( CommandInputTemplateMap )ResourceManager.Instance.Load( "testCommandInputs0.components.xml" );
+				CommandInputTemplateMap map = ( CommandInputTemplateMap )ResourceManager.Instance.Load( m_Setup.InputFile );
 				map.CreateInputsForContext( new InputContext( display1.Viewers[ 0 ], display1 ) );
 			}
 			catch ( Exception ex )

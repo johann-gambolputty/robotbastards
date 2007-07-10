@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace Rb.Network
 {
@@ -42,6 +43,7 @@ namespace Rb.Network
 			ConnectionString = connectionString;
 			Port = port;
 		}
+
 
 		/// <summary>
 		/// Runs the connection

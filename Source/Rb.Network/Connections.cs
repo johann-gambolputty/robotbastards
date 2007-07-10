@@ -9,6 +9,14 @@ namespace Rb.Network
     public class Connections : IConnections
 	{
 		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public Connections( )
+		{
+			m_ReadClock.Subscribe( Update );
+		}
+
+		/// <summary>
 		/// Receives messages from all connections (calling <see cref="IConnection.ReceiveMessages"/>)
 		/// </summary>
 		public void ReceiveMessages( )

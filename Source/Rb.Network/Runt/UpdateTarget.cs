@@ -120,7 +120,7 @@ namespace Rb.Network.Runt
 				{
 					if ( updateMsg.Sequence >= m_Sequence )	//	TODO: Should be >. Just ordering issues between update message creation and sequence increment
 					{
-						IUpdateHandler handler = ( IUpdateHandler )m_HandlerMap[ updateMsg.TargetId ];
+						IUpdateHandler handler = m_HandlerMap[ updateMsg.TargetId ];
 						handler.Handle( updateMsg );
 					}
 				}
