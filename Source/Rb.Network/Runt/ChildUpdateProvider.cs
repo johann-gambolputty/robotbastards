@@ -10,6 +10,26 @@ namespace Rb.Network.Runt
 	/// </summary>
 	public class ChildUpdateProvider : IChild, IUnique, IUpdateProvider
 	{
+		#region Construction
+
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public ChildUpdateProvider( )
+		{
+		}
+		
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		public ChildUpdateProvider( IMessageHub source, UpdateSource target )
+		{
+			Source = source;
+			Target = target;
+		}
+
+		#endregion
+
 		#region	Public properties
 
 		/// <summary>
@@ -38,9 +58,9 @@ namespace Rb.Network.Runt
 			get { return m_UpdateMessageType; }
 			set
 			{
-				RemoveFromTargetRecipientChain( );
+				RemoveFromSourceRecipientChain( );
 				m_UpdateMessageType = value;
-				AddToTargetRecipientChain( );
+				AddToSourceRecipientChain( );
 			}
 		}
 
@@ -52,9 +72,9 @@ namespace Rb.Network.Runt
 			get { return m_Source; }
 			set
 			{
-				RemoveFromTargetRecipientChain( );
+				RemoveFromSourceRecipientChain( );
 				m_Source = value;
-				AddToTargetRecipientChain( );
+				AddToSourceRecipientChain( );
 			}
 		}
 		
@@ -79,7 +99,6 @@ namespace Rb.Network.Runt
 					}
 				}
 			}
-			
 		}
 
 		#endregion
@@ -159,7 +178,7 @@ namespace Rb.Network.Runt
 		/// <summary>
 		/// Removes this object from its parent's recipient chain
 		/// </summary>
-		private void RemoveFromTargetRecipientChain( )
+		private void RemoveFromSourceRecipientChain( )
 		{
 			if ( ( m_Source != null ) && ( m_UpdateMessageType != null ) )
 			{
@@ -170,11 +189,11 @@ namespace Rb.Network.Runt
 		/// <summary>
 		/// Adds this object to its parnet's recipient chain
 		/// </summary>
-		private void AddToTargetRecipientChain( )
+		private void AddToSourceRecipientChain( )
 		{
 			if ( ( m_Source != null ) && ( m_UpdateMessageType != null ) )
 			{
-				m_Source.AddRecipient( m_UpdateMessageType, new MessageRecipientDelegate( ReceivedMessage ), ( int )MessageRecipientOrder.First );
+				m_Source.AddRecipient( m_UpdateMessageType, new MessageRecipientDelegate( ReceivedMessage ), MessageRecipientOrder.First );
 			}
 		}
 
@@ -183,9 +202,9 @@ namespace Rb.Network.Runt
 		/// </summary>
 		private MessageRecipientResult ReceivedMessage( Message msg )
 		{
-			//	If the message came from an update handler with the same ID, then just ignore the message. Why? Because
-			//	that means that the handler received a message from the source, which is also the target for this update
-			//	provider's messages, meaning the message will be endlessly circulating
+			//	If the message came from an update handler (should be - with the same host ID), then just ignore the message. Why?
+			//	Because that means that the handler received a message from the update source, which is also the target for this update
+			//	provider's messages, meaning the message will be endlessly circulating if they aren't ignored here
 			if ( ( m_IgnoreUpdateHandlerMessages ) && ( msg.Sender is IUpdateHandler ) )
 			{
 				return MessageRecipientResult.DeliverToNext;

@@ -67,52 +67,12 @@ namespace Rb.Interaction
 
 				InteractionLog.Verbose( "Adding enum command \"{0}\"", name );
 
-				Command newCommand = new Command( name, displayName, description, checked( ( byte )commandValues[ commandIndex ] ) );
+				Command newCommand = new Command( commands, name, displayName, description, checked( ( byte )commandValues[ commandIndex ] ) );
 
 				commands.Add( newCommand );
 			}
 
 			return commands;
-		}
-
-		#endregion
-
-		#region Events
-
-		/// <summary>
-		/// Called when a command in this list is active
-		/// </summary>
-		public CommandEventDelegate CommandActive;
-
-		/// <summary>
-		/// Called when a command in this list becomes active
-		/// </summary>
-		public CommandEventDelegate CommandActivated;
-
-		/// <summary>
-		/// Fires the CommandActive event
-		/// </summary>
-		/// <param name="input">Input that kept the command active</param>
-		/// <param name="message">Command message</param>
-		public void OnCommandActive( IInput input, CommandMessage message )
-		{
-			if ( CommandActive != null )
-			{
-				CommandActive( input, message );
-			}
-		}
-
-		/// <summary>
-		/// Fires the CommandActivated event
-		/// </summary>
-		/// <param name="input">Input that activated command</param>
-		/// <param name="message">Command message</param>
-		public void OnCommandActivated( IInput input, CommandMessage message )
-		{
-			if ( CommandActivated != null )
-			{
-				CommandActivated( input, message );
-			}
 		}
 
 		#endregion
@@ -128,22 +88,6 @@ namespace Rb.Interaction
 		}
 
 		#endregion
-
-		#region Updates
-
-		/// <summary>
-        /// Updates all the commands in the list (calling <see cref="Command.Update"/>)
-        /// </summary>
-        public void Update( )
-        {
-            foreach ( Command curCommand in this )
-            {
-                curCommand.Update( this );
-            }
-		}
-
-		#endregion
-
 
 		#region Private stuff
 

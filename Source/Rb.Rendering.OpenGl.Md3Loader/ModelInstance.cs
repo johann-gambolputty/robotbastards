@@ -166,7 +166,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				m_MessageSource = value;
 				if ( value != null )
 				{
-					MessageHub.AddDispatchRecipient( ( IMessageHub )value, typeof( MovementRequest ), this, ( int )MessageRecipientOrder.Last );
+					MessageHub.AddDispatchRecipient( ( IMessageHub )value, typeof( MovementRequest ), this, MessageRecipientOrder.Last );
 				}
 			}
 		}

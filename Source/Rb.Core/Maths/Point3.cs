@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 
 namespace Rb.Core.Maths
@@ -6,6 +7,7 @@ namespace Rb.Core.Maths
 	/// A Point3 is a point in world space. Units are the same as Vector3
 	/// </summary>
 	[DebuggerDisplay("({X},{Y},{Z})")]
+	[Serializable]
 	public struct Point3
 	{
 		/// <summary>

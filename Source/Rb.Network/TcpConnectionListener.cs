@@ -1,14 +1,14 @@
 using System;
-using System.Threading;
 using System.Net;
 using System.Net.Sockets;
+using Rb.Core.Utils;
 
 namespace Rb.Network
 {
 	/// <summary>
 	/// Listens out for client connection requests, creating new <see cref="TcpSocketConnection"/> objects for each one
 	/// </summary>
-	public class TcpConnectionListener : IDisposable
+	public class TcpConnectionListener
 	{
 		/// <summary>
 		/// Default constructor
@@ -24,14 +24,6 @@ namespace Rb.Network
 		{
 			ConnectionString = connectionString;
 			Port = port;
-		}
-
-		/// <summary>
-		/// Kills the listener thread
-		/// </summary>
-		~TcpConnectionListener( )
-		{
-			Dispose( );
 		}
 
 		/// <summary>
@@ -57,35 +49,44 @@ namespace Rb.Network
 		/// </summary>
 		public void Listen( IConnections connections )
 		{
-			Dispose( );
-			m_Thread = new Thread( ListenThread );
-			m_Thread.Name = "TcpListenerThread";
-			m_Thread.Start( connections );
-		}
+			m_Connections = connections;
+			
+			IPAddress address;
 
-
-		#region IDisposable Members
-
-		/// <summary>
-		/// Kills the listener thread
-		/// </summary>
-		public void Dispose( )
-		{
-			if ( m_Thread != null )
+			//	Try to resolve the connection string
+			try
 			{
-				m_Thread.Abort( );
-				m_Thread.Join( );
-				m_Thread = null;
+				NetworkLog.Info( "Attemping to resolve listener address \"{0}\"", ConnectionString );
+				address = Dns.GetHostEntry( ConnectionString ).AddressList[ 0 ];
 			}
+			catch ( Exception exception )
+			{
+				throw new ApplicationException( string.Format( "Failed to resolve connection string \"{0}\"", ConnectionString ), exception );
+			}
+
+			//	Create a TCP listener at the address
+			try
+			{
+				NetworkLog.Info( "Attempting to listen for clients at \"{0}:{1}\"", address, Port );
+				m_Listener = new TcpListener(address, Port);
+				m_Listener.Start();
+			}
+			catch ( Exception exception )
+			{
+				throw new ApplicationException( string.Format( "Failed to create TCP listener at \"{0}\"", m_Listener.LocalEndpoint ), exception );
+			}
+
+			m_Clock.Subscribe( Update );
 		}
 
-		#endregion
 
 		#region	Private stuff
 
-		private Thread			m_Thread;
 		private string			m_ConnectionString	= "localhost";
 		private int				m_Port				= 11000;
+		private Clock			m_Clock				= new Clock( "tcpListenerClock", 50 );
+		private IConnections	m_Connections;
+		private TcpListener		m_Listener;
 
 
 		/// <summary>
@@ -101,57 +102,11 @@ namespace Rb.Network
 		/// <summary>
 		/// Thread method that listens out for new client connections
 		/// </summary>
-		private void ListenThread( object param )
+		private void Update( Clock clock )
 		{
-			IConnections connections = ( IConnections )param;
-
-			IPAddress address;
-
-			//	Try to resolve the connection string
-			try
+			while ( m_Listener.Pending( ) )
 			{
-				NetworkLog.Info( "Attemping to resolve listener address \"{0}\"", ConnectionString );
-				address = Dns.GetHostEntry( ConnectionString ).AddressList[ 0 ];
-			}
-			catch ( ThreadAbortException )
-			{
-				NetworkLog.Warning( "Listener thread was aborted during address resolution" );
-				return;
-			}
-			catch ( Exception exception )
-			{
-				throw new ApplicationException( string.Format( "Failed to resolve connection string \"{0}\"", ConnectionString ), exception );
-			}
-
-
-			//	Create a TCP listener at the address
-			TcpListener listener = null;
-			try
-			{
-				NetworkLog.Info( "Attempting to listen for clients at \"{0}:{1}\"", address, Port );
-				listener = new TcpListener( address, Port );
-				listener.Start( );
-			}
-			catch ( ThreadAbortException )
-			{
-				NetworkLog.Warning( "Listener thread was aborted during listener setup" );
-				return;
-			}
-			catch ( Exception exception )
-			{
-				throw new ApplicationException( string.Format( "Failed to create TCP listener at \"{0}\"", listener.LocalEndpoint ), exception );
-			}
-
-			//	Loop forever, listening out for new clients
-			while ( true )
-			{
-				if ( listener.Pending( ) )
-				{
-					AddConnection( connections, listener.AcceptSocket( ) );
-				}
-
-				//	Sleep for a bit (listening for connections doesn't have to be a full-time thing)
-				Thread.Sleep( 10 );
+				AddConnection( m_Connections, m_Listener.AcceptSocket( ) );
 			}
 		}
 

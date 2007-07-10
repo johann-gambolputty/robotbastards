@@ -91,7 +91,7 @@ namespace Rb.Rendering
 			int h = ( int )( m_ViewRect.Height * oldRect.Height );
 			Renderer.Inst.SetViewport( x, y, w, h );
 
-			renderer.ClearDepth(1.0f);
+			renderer.ClearDepth( 1.0f );
 			renderer.ClearVerticalGradient( Color.DarkSeaGreen, Color.Black );
 
             m_Context.RenderTime = TinyTime.CurrentTime;

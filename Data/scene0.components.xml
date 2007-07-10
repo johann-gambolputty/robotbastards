@@ -91,6 +91,7 @@
       <parameters>
         <guid value="{8D7200EA-0D49-4384-9A44-2532ECB1FE55}"/>
         <string value="userInputListener.components.xml"/>
+        <ref objectId="parameters"/>
       </parameters>
     </method>
 

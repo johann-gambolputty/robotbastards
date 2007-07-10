@@ -189,7 +189,6 @@ namespace Rb.Network.Runt
 			foreach ( IUpdateProvider provider in m_Providers )
 			{
 				provider.SetOldestTargetSequence( oldestSequence );
-				provider.SetLocalSequence( m_Sequence );
 			}
 
 			List< UpdateMessage > messages = new List< UpdateMessage >( );
@@ -213,7 +212,12 @@ namespace Rb.Network.Runt
 				messages.Clear( );
 			}
 
+			//	Inform all the update providers what the hew local sequence is
 			++m_Sequence;
+			foreach ( IUpdateProvider provider in m_Providers )
+			{
+				provider.SetLocalSequence( m_Sequence );
+			}
 		}
 
 		#endregion

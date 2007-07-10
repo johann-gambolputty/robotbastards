@@ -1,27 +1,28 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Rb.Core.Components
 {
 	/// <summary>
 	/// Message recipient chain ordering
 	/// </summary>
-	public enum MessageRecipientOrder
+	public class MessageRecipientOrder
 	{
 		/// <summary>
 		/// Denotes that the recipient will be the among the first recipients in a recipient chain to process messages
 		/// </summary>
-		First	= 0,
+		public const int First		= 0;
 		
 		/// <summary>
 		/// Denotes that the recipient will be occupy a default position in the recipient chain
 		/// </summary>
-		Default	= 50,
-		
+		public const int Default	= 50;
+
 		/// <summary>
 		/// Denotes that the recipient will be among the last recipients in a recipient chain to process messages
 		/// </summary>
-		Last	= 100
+		public const int Last		= 100;
 	}
 
 	/// <summary>
@@ -76,7 +77,7 @@ namespace Rb.Core.Components
 		}
 	
 		/// <summary>
-		/// Adds a recipient to the recipient list. The recipient will be among the first to receive delivered messages
+		/// Adds a recipient to the recipient list
 		/// </summary>
 		/// <param name="recipient">New message recipient</param>
 		/// <param name="order">Recipient order</param>
@@ -92,7 +93,7 @@ namespace Rb.Core.Components
 		/// <param name="recipient">New message recipient</param>
 		public void AddRecipientToEnd( MessageRecipientDelegate recipient )
 		{
-			m_Recipients.Add( recipient );
+			m_Recipients.Add( new Recipient( recipient,  MessageRecipientOrder.Last ) );
 		}
 
 		/// <summary>
@@ -102,7 +103,7 @@ namespace Rb.Core.Components
 		{
 			for ( int index = 0; index < m_Recipients.Count; ++index )
 			{
-				object curRecipient = ( ( Recipient )m_Recipients[ index ] ).RecipientDelegate.Target;
+				object curRecipient = m_Recipients[ index ].RecipientDelegate.Target;
 				if ( curRecipient == recipient )
 				{
 					m_Recipients.RemoveAt( index );
@@ -122,7 +123,7 @@ namespace Rb.Core.Components
 			if ( m_Recipients.Count > 0 )
 			{
 				msg.AddToRecipientChain( this );
-				switch ( ( ( Recipient )m_Recipients[ 0 ] ).RecipientDelegate( msg ) )
+				switch ( m_Recipients[ 0 ].RecipientDelegate( msg ) )
 				{
 					case MessageRecipientResult.DeliverToNext	: msg.DeliverToNextRecipient( );	break;
 					case MessageRecipientResult.RemoveFromChain	: msg.RemoveFromRecipientChain( );	break;
@@ -138,14 +139,7 @@ namespace Rb.Core.Components
 		/// <param name="msg">Message to deliver</param>
 		public void DeliverToNext( ref int recipientIndex, Message msg )
 		{
-			int numRecipients = m_Recipients.Count;
-			do
-			{
-				++recipientIndex;
-			}
-			while ( ( recipientIndex < numRecipients ) && ( m_Recipients[ recipientIndex ] == null ) );
-
-			if ( recipientIndex >= numRecipients )
+			if ( ++recipientIndex >= m_Recipients.Count )
 			{
 				//	Message reached the end of the chain
 				msg.RemoveFromRecipientChain( );
@@ -153,7 +147,7 @@ namespace Rb.Core.Components
 			else
 			{
 				//	Let the current recipient handle the message
-				switch ( ( ( Recipient )m_Recipients[ recipientIndex ] ).RecipientDelegate( msg ) )
+				switch ( m_Recipients[ recipientIndex ].RecipientDelegate( msg ) )
 				{
 					case MessageRecipientResult.DeliverToNext	: msg.DeliverToNextRecipient( );	break;
 					case MessageRecipientResult.RemoveFromChain	: msg.RemoveFromRecipientChain( );	break;
@@ -193,7 +187,7 @@ namespace Rb.Core.Components
 			#endregion
 		}
 
-	    private Type        m_MessageType;
-		private ArrayList	m_Recipients = new ArrayList( );
+	    private Type				m_MessageType;
+		private List< Recipient >	m_Recipients = new List< Recipient >( );
 	}
 }
