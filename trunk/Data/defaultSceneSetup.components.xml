@@ -16,6 +16,12 @@
             <int value="60"/>
           </parameters>
         </object>
+        <object type="Rb.Core.Utils.Clock">
+          <parameters>
+            <string value="inputClock"/>
+            <int value="30"/>
+          </parameters>
+        </object>
       </list>
     </parameters>
   </method>

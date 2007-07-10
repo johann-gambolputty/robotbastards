@@ -2,5 +2,6 @@
 <rb>
   <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
     <string value="TestCommands" property="CommandListName"/>
+    <ref dynProperty="User" property="User"/>
   </object>
 </rb>

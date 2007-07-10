@@ -41,6 +41,14 @@ namespace Rb.Interaction
 		}
 
 		/// <summary>
+		/// Returns a CommandList for a given enum type (must be created already)
+		/// </summary>
+		public CommandList Get< EnumType >( )
+		{
+			return Get( typeof( EnumType ).Name );
+		}
+
+		/// <summary>
 		/// Stored command lists
 		/// </summary>
 		public IList< CommandList > CommandLists
@@ -48,22 +56,14 @@ namespace Rb.Interaction
 			get { return m_CommandLists; }
 		}
 
+		/// <summary>
+		/// Default constructor
+		/// </summary>
 		private CommandListManager( )
 		{
-			m_UpdateClock.Subscribe( new Clock.TickDelegate( UpdateLists ) );
 		}
 
-		private void UpdateLists( Clock clock )
-		{
-			foreach ( CommandList curList in m_CommandLists )
-			{
-				curList.Update( );
-			}
-		}
-
-		private Clock					    m_UpdateClock	= new Clock( "InputUpdateClock", 1 );
 		private List< CommandList >			m_CommandLists	= new List< CommandList >( );
 		private static CommandListManager	ms_Singleton	= new CommandListManager( );
-
 	}
 }

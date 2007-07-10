@@ -139,8 +139,13 @@ namespace Rb.Core.Components
         /// <param name="order">Recipient order</param>
         public static void AddRecipient( IMessageHub hub, Type messageType, object obj, MethodInfo method, int order )
         {
+			if ( method.ReturnType != typeof( MessageRecipientResult ) )
+			{
+				throw new ArgumentException( string.Format( "Method \"{0}\" cannot be added to a message hub - it does not have a return type of \"MessageRecipientResult\"", method.Name ) );
+			}
+
             //  TODO: AP: Assumes parameter type is correct
-            DynamicMethod recipientMethod = null;
+            DynamicMethod recipientMethod;
             if ( method.IsStatic )
             {
                 recipientMethod = new DynamicMethod( "CallRecipient", typeof( MessageRecipientResult ), new Type[] { typeof( Message ) }, obj.GetType( ), true );
@@ -172,18 +177,7 @@ namespace Rb.Core.Components
                 }
             }
 
-			//  Got to return something...
-			Type returnType = method.ReturnType;
-			if ( returnType == typeof( void ) )
-			{
-				generator.Emit( OpCodes.Ldnull );               //  Load null onto the stack
-			}
-			else if ( returnType.IsValueType )
-			{
-				generator.Emit( OpCodes.Box, returnType );		//	Box value types
-			}
-
-            generator.Emit( OpCodes.Ret );                          //  Return instruction
+            generator.Emit( OpCodes.Ret );							//  Return instruction
 
             MessageRecipientDelegate recipientDelegate;
             if ( method.IsStatic )

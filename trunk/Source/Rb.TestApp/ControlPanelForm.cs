@@ -1,11 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
 using System.Windows.Forms;
 using Rb.Core.Resources;
+using Rb.Interaction;
 using Rb.Log;
 using Rb.Rendering;
 using Rb.World;
+
+using mgt = System.Management;
 
 namespace Rb.TestApp
 {
@@ -30,7 +34,6 @@ namespace Rb.TestApp
 			RenderFactory.Load( renderAssembly );
 
 			//	Load resource settings
-			//	NOTE: AP: May cause problems
 			string resourceSetupPath = ConfigurationManager.AppSettings[ "resourceSetupPath" ];
 			if ( resourceSetupPath == null )
 			{
@@ -38,16 +41,23 @@ namespace Rb.TestApp
 			}
 			ResourceManager.Instance.Setup( resourceSetupPath );
 
+			//	Create the test and camera command lists (must come before scene creation, because it's referenced
+			//	by the scene setup file)
+			CommandList.BuildFromEnum( typeof( TestCommands ) );
+			CommandList.BuildFromEnum( typeof( CameraCommands ) );
+
 			//	Load user settings
 			m_Settings = UserSettings.Load( );
 
 			InitializeComponent( );
 
+			//	Set transparency key in button images
 			Color transparent = Color.FromArgb( 0xff, 0x00, 0xff );
 			( ( Bitmap )editServerIpAddressButton.Image ).MakeTransparent( transparent );
 			( ( Bitmap )browseSceneFileButton.Image ).MakeTransparent( transparent );
 			( ( Bitmap )browseInputFileButton.Image ).MakeTransparent( transparent );
 
+			//	Add resource providers to the resource provider combo
 			foreach ( ResourceProvider provider in ResourceManager.Instance.Providers )
 			{
 				resourceProviderCombo.Items.Add( provider );
@@ -81,7 +91,7 @@ namespace Rb.TestApp
 			//	Create a new host
 			HostSetup setup = CreateSetup( );
 			setup.HostType = HostType.Client;
-			setup.HostGuid = new Guid( "{8D7200EA-0D49-4384-9A44-2532ECB1FE55}" );
+			setup.HostGuid = new Guid( "{9B478B95-97CA-4bf2-8FB9-477367C3A325}" );
 			HostForm host = new HostForm( setup );
 			host.Show( );
 		}
@@ -91,7 +101,7 @@ namespace Rb.TestApp
 			//	Create a new host
 			HostSetup setup = CreateSetup( );
 			setup.HostType = HostType.Server;
-			setup.HostGuid = new Guid( "{8D7200EA-0D49-4384-9A44-2532ECB1FE55}" );
+			setup.HostGuid = new Guid("{8D7200EA-0D49-4384-9A44-2532ECB1FE55}");
 			HostForm host = new HostForm( setup );
 			host.Show( );
 		}

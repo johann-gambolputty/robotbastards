@@ -5,6 +5,7 @@ namespace Rb.Core.Maths
 	/// <summary>
 	/// Details about the intersection of a ray with an object
 	/// </summary>
+	[Serializable] // TODO: AP: Not complete... can't serialize intersected object
 	public class Ray3Intersection
 	{
 		/// <summary>
@@ -12,14 +13,8 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public Object	IntersectedObject
 		{
-			get
-			{
-				return m_Object;
-			}
-			set
-			{
-				m_Object = value;
-			}
+			get { return m_Object; }
+			set { m_Object = value; }
 		}
 
 		/// <summary>
@@ -27,14 +22,8 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public Point3	IntersectionPosition
 		{
-			get
-			{
-				return m_Position;
-			}
-			set
-			{
-				m_Position = value;
-			}
+			get { return m_Position; }
+			set { m_Position = value; }
 		}
 
 		/// <summary>
@@ -42,14 +31,8 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public Vector3	IntersectionNormal
 		{
-			get
-			{
-				return m_Normal;
-			}
-			set
-			{
-				m_Normal = value;
-			}
+			get { return m_Normal; }
+			set { m_Normal = value; }
 		}
 
 		/// <summary>
@@ -60,20 +43,14 @@ namespace Rb.Core.Maths
 		/// </remarks>
 		public float	Distance
 		{
-			get
-			{
-				return m_Distance;
-			}
-			set
-			{
-				m_Distance = value;
-			}
+			get { return m_Distance; }
+			set { m_Distance = value; }
 		}
 
 		/// <summary>
 		/// Default constructor
 		/// </summary>
-		public			Ray3Intersection( )
+		public Ray3Intersection( )
 		{
 		}
 
@@ -83,15 +60,16 @@ namespace Rb.Core.Maths
 		/// <param name="pos"> Ray intersection position </param>
 		/// <param name="normal"> Ray intersection normal </param>
 		/// <param name="distance"> Ray intersection distance </param>
-		public			Ray3Intersection( Point3 pos, Vector3 normal, float distance )
+		public Ray3Intersection( Point3 pos, Vector3 normal, float distance )
 		{
 			m_Position	= pos;
 			m_Normal	= normal;
 			m_Distance	= distance;
 		}
 
-
+		[NonSerialized]
 		private Object	m_Object;
+
 		private Point3	m_Position;
 		private Vector3	m_Normal;
 		private float	m_Distance;

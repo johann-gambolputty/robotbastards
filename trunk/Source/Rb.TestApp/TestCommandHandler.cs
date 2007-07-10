@@ -57,7 +57,7 @@ namespace Rb.TestApp
 		public override void AddedToParent( object parent )
 		{
 			base.AddedToParent( parent );
-			MessageHub.AddDispatchRecipient( ( IMessageHub )parent, typeof( CommandMessage ), this, 0 );
+			MessageHub.AddDispatchRecipient( ( IMessageHub )parent, typeof( CommandMessage ), this, MessageRecipientOrder.Last );
 		}
 
 		#region ISceneObject Members

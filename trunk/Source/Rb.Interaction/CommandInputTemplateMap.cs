@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Xml.Serialization;
 using System.Xml;
 using Rb.Core.Utils;
@@ -12,16 +13,17 @@ namespace Rb.Interaction
 	public class CommandInputTemplateMap : IXmlSerializable
 	{
 		/// <summary>
-		/// Instances all the templates in the map
+		/// Instances all the templates in the map, for the specified context, and adds them to a <see cref="CommandUser"/>
 		/// </summary>
 		/// <param name="context">Input context</param>
-		public void CreateInputsForContext( InputContext context )
+		/// <param name="user">User to bind inputs to commands</param>
+		public void AddContextInputsToUser( InputContext context, CommandUser user )
 		{
 			foreach ( CommandInputTemplates inputTemplates in m_Map )
 			{
 				foreach ( InputTemplate template in inputTemplates )
 				{
-					inputTemplates.Command.Inputs.Add( template.CreateInput( context ) );
+					user.Bind( inputTemplates.Command, template.CreateInput( context ) );
 				}
 			}
 		}
@@ -208,16 +210,32 @@ namespace Rb.Interaction
 		/// </summary>
 		private void ReadCommandList( XmlReader reader )
 		{
+			CommandList commandList;
 			string commandListName = reader.GetAttribute( "name" );
 			if ( commandListName == null )
 			{
-				throw new ApplicationException( "<commandList> requires a \"name\" attribute" );
+				string commandEnumName = reader.GetAttribute( "enum" );
+				if ( commandEnumName == null )
+				{
+					throw new ApplicationException( "<commandList> requires a \"name\" or an \"enum\" attribute" );
+				}
+				string commandEnumAssemblyName = reader.GetAttribute( "assembly" );
+				Type enumType = AppDomain.CurrentDomain.Load( commandEnumAssemblyName ).GetType( commandEnumName );
+				commandList = CommandListManager.Inst.Get( enumType.Name );
+				if ( commandList == null )
+				{
+					commandList = CommandList.BuildFromEnum( enumType );
+				}
 			}
-			CommandList commandList = CommandListManager.Inst.Get( commandListName );
-			if ( commandList == null )
+			else
 			{
-				throw new ApplicationException( string.Format( "Could not find command list named \"{0}\"", commandListName ) );
+				commandList = CommandListManager.Inst.Get( commandListName );
+				if ( commandList == null )
+				{
+					throw new ApplicationException( string.Format( "Could not find command list named \"{0}\"", commandListName ) );
+				}
 			}
+
 			if ( reader.IsEmptyElement )
 			{
 				return;

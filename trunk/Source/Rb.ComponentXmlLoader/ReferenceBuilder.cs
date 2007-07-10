@@ -23,7 +23,11 @@ namespace Rb.ComponentXmlLoader
             m_ObjectId = reader.GetAttribute( "objectId" );
             if ( m_ObjectId == null )
             {
-                throw new ApplicationException( string.Format( "<{0}> element must contain an \"objectId\" attribute", reader.Name ) );
+				m_DynPropertyId = reader.GetAttribute( "dynProperty" );
+				if ( m_DynPropertyId == null )
+				{
+					throw new ApplicationException( string.Format( "<{0}> element must contain an \"objectId\" or \"dynProperty\" attribute", reader.Name ) );
+				}
             }
 
             m_Properties = reader.GetAttribute( "access" );
@@ -34,36 +38,47 @@ namespace Rb.ComponentXmlLoader
         /// </summary>
         public override void PostCreate( )
         {
-            if ( m_ObjectId == "this" )
-            {
-                BuildObject = ParentBuilder.BuildObject;
-            }
-            else if ( m_ObjectId == "parent" )
-            {
-                if ( ParentBuilder.IsRoot )
-                {
-                    Errors.Add( this, "The parent object does not exist" );
-                }
-                else
-                {
-                    BuildObject = ParentBuilder.ParentBuilder.BuildObject;
-                }
-            }
-			else if ( m_ObjectId == "builder" )
+			if ( m_ObjectId != null )
 			{
-				BuildObject = Parameters.Builder;
-			}
-			else if ( m_ObjectId == "root" )
-            {
-                BaseBuilder rootBuilder = ParentBuilder;
-                for ( ;!rootBuilder.IsRoot; rootBuilder = rootBuilder.ParentBuilder );
+				if ( m_ObjectId == "this" )
+				{
+					BuildObject = ParentBuilder.BuildObject;
+				}
+				else if ( m_ObjectId == "parent" )
+				{
+					if ( ParentBuilder.IsRoot )
+					{
+						Errors.Add( this, "The parent object does not exist" );
+					}
+					else
+					{
+						BuildObject = ParentBuilder.ParentBuilder.BuildObject;
+					}
+				}
+				else if ( m_ObjectId == "parameters" )
+				{
+					BuildObject = Parameters;
+				}
+				else if ( m_ObjectId == "builder" )
+				{
+					BuildObject = Parameters.Builder;
+				}
+				else if ( m_ObjectId == "root" )
+				{
+					BaseBuilder rootBuilder = ParentBuilder;
+					for ( ;!rootBuilder.IsRoot; rootBuilder = rootBuilder.ParentBuilder );
 
-                BuildObject = rootBuilder.BuildObject;
-            }
-            else
-            {
-                BuildObject = Parameters.Objects[ new Guid( m_ObjectId ) ];
-            }
+					BuildObject = rootBuilder.BuildObject;
+				}
+				else
+				{
+					BuildObject = Parameters.Objects[ new Guid( m_ObjectId ) ];
+				}
+			}
+			else
+			{
+				BuildObject = Parameters.Properties[ m_DynPropertyId ];
+			}
 
             if ( m_Properties == null )
 			{
@@ -81,6 +96,7 @@ namespace Rb.ComponentXmlLoader
 			base.PostCreate( );
         }
 
+    	private string m_DynPropertyId;
         private string m_ObjectId;
         private string m_Properties;
     }

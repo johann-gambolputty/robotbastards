@@ -4,7 +4,7 @@
   <object type="Rb.Interaction.CommandInputTemplateMap" assembly="Rb.Interaction">
 
     <serialise>
-      <commandList name="TestCommands">
+      <commandList enum="Rb.TestApp.TestCommands" assembly="Rb.TestApp">
         <command name="Forward">
           <input key="Up" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows">
           </input>
@@ -33,7 +33,7 @@
         </command>
       </commandList>
 
-      <commandList name="CameraCommands">
+      <commandList enum="Rb.TestApp.CameraCommands" assembly="Rb.TestApp">
         <command name="Zoom">
           <input button="None" min="0" max="10000" delta="0.1" initial="50" type="Rb.Interaction.Windows.MouseScrollInputTemplate" assembly="Rb.Interaction.Windows"/>
         </command>

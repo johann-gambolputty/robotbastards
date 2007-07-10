@@ -21,62 +21,47 @@ namespace Rb.Interaction
         /// <summary>
         /// Setup constructor
         /// </summary>
-        public CommandInputListener( object target, string commandListName )
+        public CommandInputListener( object target, CommandUser user, CommandList commands )
         {
-            m_Target = target;
-            Commands = CommandListManager.Inst.Get( commandListName );
-        }
-
-        /// <summary>
-        /// Setup constructor
-        /// </summary>
-        public CommandInputListener( object target, CommandList commands )
-        {
-            m_Target = target;
-            Commands = commands;
+			m_Target	= target;
+			m_Commands	= commands;
+			User		= user;
         }
 
         #endregion
 
         #region	Command list
 
-        /// <summary>
-		/// Sets the command list that this object is associated with
-		/// </summary>
-		public CommandList Commands
-		{
-			set
-			{
-				if ( m_Commands != null )
-				{
-					m_Commands.CommandActivated -= new CommandEventDelegate( CommandActivated );
-					m_Commands.CommandActive -= new CommandEventDelegate( CommandActive );
-				}
-				m_Commands = value;
-				if ( m_Commands != null )
-				{
-					m_Commands.CommandActivated += new CommandEventDelegate( CommandActivated );
-					m_Commands.CommandActive += new CommandEventDelegate( CommandActive );
-				}
-			}
-			get
-			{
-				return m_Commands;
-			}
-		}
-
-		/// <summary>
-		/// Sets the command list that this object is associated with, from the name of the list
-		/// </summary>
 		public string CommandListName
 		{
 			set
 			{
-				Commands = CommandListManager.Inst.Get( value );
-				if ( Commands == null )
+				m_Commands = CommandListManager.Inst.Get( value );
+			}
+		}
+
+        /// <summary>
+		/// Sets the command list that this object is associated with
+		/// </summary>
+		public CommandUser User
+		{
+			set
+			{
+				if ( m_User != null )
 				{
-					throw new ApplicationException( string.Format( "Could not find the command list named \"{0}\"", value ) );
+					m_User.RemoveListener( CommandActivated );
+					m_User.RemoveListener( CommandActive );
 				}
+				m_User = value;
+				if ( m_User != null )
+				{
+					m_User.AddActivatedListener( m_Commands, CommandActivated );
+					m_User.AddActiveListener( m_Commands, CommandActive );
+				}
+			}
+			get
+			{
+				return m_User;
 			}
 		}
 
@@ -112,13 +97,15 @@ namespace Rb.Interaction
 
 		#region	Private stuff
 
-		private Object		m_Target;
-		private CommandList	m_Commands;
+		private object		m_Target;
+		private CommandUser	m_User;
+		private CommandList m_Commands;
+
 
 		/// <summary>
 		/// Called when a command is activated
 		/// </summary>
-		private void CommandActivated( IInput input, CommandMessage message )
+		private void CommandActivated( CommandMessage message )
 		{
 			if ( Target != null )
 			{
@@ -129,7 +116,7 @@ namespace Rb.Interaction
 		/// <summary>
 		/// Called when a command is active
 		/// </summary>
-		private void CommandActive( IInput input, CommandMessage message )
+		private void CommandActive( CommandMessage message )
 		{
 			if ( Target != null )
 			{

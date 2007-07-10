@@ -26,25 +26,36 @@ namespace Rb.TestApp
 			Text = string.Format( "{0} - {1}", m_Setup.HostType, m_Setup.HostGuid );
 		}
 
-		private HostSetup m_Setup;
+		private HostSetup	m_Setup;
+		private CommandUser	m_User = new CommandUser( );
 
-        private static Camera3 CreateSimpleCamera( IBuilder builder, CommandList cameraCommands )
+		/// <summary>
+		/// Creates a simple camera with controller
+		/// </summary>
+        private Camera3 CreateSimpleCamera( IBuilder builder, CommandList cameraCommands )
         {
             Camera3 result = new SphereCamera( );
 
-			SphereCameraController controller = Builder.CreateInstance<SphereCameraController>( builder );
+			SphereCameraController controller = Builder.CreateInstance< SphereCameraController >( builder );
             result.AddChild( controller );
-            result.AddChild( Builder.CreateInstance < CommandInputListener >( builder, controller, cameraCommands ) );
+            result.AddChild( Builder.CreateInstance < CommandInputListener >( builder, controller, m_User, cameraCommands ) );
 
             return result;
         }
 
+		/// <summary>
+		/// Updates the user every tick of the inputClock
+		/// </summary>
+		private void UpdateUser( Clock clock )
+		{
+			//	TODO: AP: Kludge
+			m_User.Update( );
+		}
+
 		private void HostForm_Load( object sender, EventArgs e )
 		{
-			//	Create the test and camera command lists (must come before scene creation, because it's referenced
-			//	by the scene setup file)
-			CommandList.BuildFromEnum( typeof( TestCommands ) );
-            CommandList cameraCommands = CommandList.BuildFromEnum( typeof( CameraCommands ) );
+			//	Load input bindings
+			m_User.InitialiseAllCommandListBindings( );
 
 			//	Test load a scene
             Scene scene = new Scene( );
@@ -77,7 +88,10 @@ namespace Rb.TestApp
             try
             {
 				ComponentLoadParameters loadParams = new ComponentLoadParameters( scene.Objects, scene.Builder, scene );
+				loadParams.Properties[ "User" ] = m_User;
                 ResourceManager.Instance.Load( m_Setup.SceneFile, loadParams );
+
+				CommandList cameraCommands = CommandListManager.Inst.Get< CameraCommands >( );
 
                 Viewer viewer = new Viewer( CreateSimpleCamera( scene.Builder, cameraCommands ), scene );
                 viewer.ShowFps = true;
@@ -94,17 +108,19 @@ namespace Rb.TestApp
                 ExceptionUtils.ToLog( AppLog.GetSource( Severity.Error ), ex );
             }
 
+			scene.GetClock( "inputClock" ).Subscribe( UpdateUser );
+
 			//	Test load a command list
 			try
 			{
+				//	TODO: AP: May need to move
 				CommandInputTemplateMap map = ( CommandInputTemplateMap )ResourceManager.Instance.Load( m_Setup.InputFile );
-				map.CreateInputsForContext( new InputContext( display1.Viewers[ 0 ], display1 ) );
+				map.AddContextInputsToUser( new InputContext( display1.Viewers[ 0 ], display1 ), m_User );
 			}
 			catch ( Exception ex )
 			{
 				ExceptionUtils.ToLog( AppLog.GetSource( Severity.Error ), ex );
 			}
-
 		}
     }
 }
