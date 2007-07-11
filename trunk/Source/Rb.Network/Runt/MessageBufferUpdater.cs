@@ -13,6 +13,10 @@ namespace Rb.Network.Runt
 		/// </summary>
 		public void AddMessage( UpdateMessage msg, uint localSequence )
 		{
+			if ( msg == null )
+			{
+				throw new System.ArgumentException( "Can't add null message" );
+			}
 			//	TODO: These messages will not be arriving at the server in sequence - they need to be sorted
 			msg.Sequence = localSequence;
 			m_Messages[ m_CurMessageIndex ] = msg;

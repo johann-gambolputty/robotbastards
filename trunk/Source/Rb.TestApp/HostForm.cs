@@ -95,13 +95,13 @@ namespace Rb.TestApp
 
                 Viewer viewer = new Viewer( CreateSimpleCamera( scene.Builder, cameraCommands ), scene );
                 viewer.ShowFps = true;
-				viewer.Technique = Builder.CreateInstance< World.Rendering.SceneShadowBufferTechnique >( scene.Builder );
+				//viewer.Technique = Builder.CreateInstance< World.Rendering.SceneShadowBufferTechnique >( scene.Builder );
                 display1.AddViewer( viewer );
 				
-                viewer = new Viewer( CreateSimpleCamera( scene.Builder, cameraCommands ), scene );
+                //viewer = new Viewer( CreateSimpleCamera( scene.Builder, cameraCommands ), scene );
 				//viewer.Technique = Builder.CreateInstance< World.Rendering.SceneShadowBufferTechnique >( scene.Builder );
-				viewer.ViewRect = new RectangleF( 0, 0, 0.3f, 0.3f );
-                display1.AddViewer( viewer );
+				//viewer.ViewRect = new RectangleF( 0, 0, 0.3f, 0.3f );
+                //display1.AddViewer( viewer );
             }
             catch ( Exception ex )
             {
