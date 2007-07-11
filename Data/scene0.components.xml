@@ -39,7 +39,7 @@
     </object>
   </object>
 
-<!--Evironment-->
+<!--Environment-->
   <object type="Rb.World.Rendering.SceneRenderable">
 
     <object type="Rb.Rendering.EffectRenderedObject">
@@ -49,8 +49,10 @@
       </object>
 
       <object type="Rb.Rendering.EffectRenderedObject" property="RenderedObject">
-        <resource path="perPixelUntexturedShadowed.cgfx" property="Effect"/>
-        <string value="NormalTechnique" property="TechniqueName"/>
+        <!-- <resource path="perPixelUntexturedShadowed.cgfx" property="Effect"/>
+        <string value="NormalTechnique" property="TechniqueName"/> -->
+        <resource path="ffpTechniques.cgfx" property="Effect"/>
+        <string value="FfpLitUntextured" property="TechniqueName"/>
         <resource path="simpleEnvironment.dae" property="RenderedObject">
         </resource>
       </object>
@@ -64,9 +66,10 @@
       <float value="0.2" dynProperty="scaleY"/>
       <float value="0.2" dynProperty="scaleZ"/>
     </parameters>
-    <resource path="perPixelTextured.cgfx" property="Effect"/>
-    <!--<resource path="plainTextured.cgfx" property="Effect"/>-->
-    <string value="NormalTechnique" property="TechniqueName"/>
+    <!--<resource path="perPixelTextured.cgfx" property="Effect"/>
+    <string value="NormalTechnique" property="TechniqueName"/>-->
+    <resource path="ffpTechniques.cgfx" property="Effect"/>
+    <string value="FfpLitTextured" property="TechniqueName"/>
   </resource>
 
   <!--Entities-->
@@ -89,7 +92,8 @@
     <!-- TODO: Replace with proxy object? (this would allow better serialisation) -->
     <method objectId="this" call="SetupController">
       <parameters>
-        <guid value="{8D7200EA-0D49-4384-9A44-2532ECB1FE55}"/>
+        <!-- <guid value="{8D7200EA-0D49-4384-9A44-2532ECB1FE55}"/> -->
+        <guid value="{9B478B95-97CA-4bf2-8FB9-477367C3A325}"/>
         <string value="userInputListener.components.xml"/>
         <ref objectId="parameters"/>
       </parameters>

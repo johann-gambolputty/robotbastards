@@ -1,0 +1,60 @@
+
+technique FfpLitUntextured
+{
+	pass
+	{
+		PolygonMode		= int2( FrontAndBack, Fill );
+		ShadeModel		= Smooth;
+		BlendEnable		= false;
+	/*
+		Texture2DEnable[0]	= false;
+		Texture2DEnable[1]	= false;
+		Texture2DEnable[2]	= false;
+		Texture2DEnable[3]	= false;
+		Texture2DEnable[4]	= false;
+		Texture2DEnable[5]	= false;
+		Texture2DEnable[6]	= false;
+		Texture2DEnable[7]	= false;
+	*/
+		LightEnable[0]		= true;
+		LightPosition[0]	= float4( 30, 30, 30, 1 );
+		LightAmbient[0]		= float4( 0.1, 0.1, 0.1, 1 );
+		LightDiffuse[0]		= float4( 0.5, 0.2, 0.2, 1 );
+		MaterialAmbient		= float4( 0.1, 0.1, 0.1, 1 );
+		MaterialDiffuse		= float4( 0.5, 0.5, 0.5, 1 );
+		LightingEnable		= true;
+		FrontFace		= CW;
+		DepthTestEnable		= true;
+		CullFaceEnable		= true;
+	}
+}
+
+technique FfpLitTextured
+{
+	pass
+	{
+		PolygonMode		= int2( FrontAndBack, Fill );
+		ShadeModel		= Smooth;
+		BlendEnable		= false;
+	/*
+		Texture2DEnable[0]	= true;
+		Texture2DEnable[1]	= false;
+		Texture2DEnable[2]	= false;
+		Texture2DEnable[3]	= false;
+		Texture2DEnable[4]	= false;
+		Texture2DEnable[5]	= false;
+		Texture2DEnable[6]	= false;
+		Texture2DEnable[7]	= false;
+	*/
+		LightEnable[0]		= true;
+		LightPosition[0]	= float4( 30, 30, 30, 1 );
+		LightAmbient[0]		= float4( 0.1, 0.1, 0.1, 1 );
+		LightDiffuse[0]		= float4( 0.5, 0.2, 0.2, 1 );
+		MaterialAmbient		= float4( 0.1, 0.1, 0.1, 1 );
+		MaterialDiffuse		= float4( 1.0, 1.0, 1.0, 1 );
+		LightingEnable		= true;
+		FrontFace		= CW;
+		DepthTestEnable		= true;
+		CullFaceEnable		= true;
+	}
+}
