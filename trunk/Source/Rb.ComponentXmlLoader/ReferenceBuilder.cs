@@ -23,11 +23,7 @@ namespace Rb.ComponentXmlLoader
             m_ObjectId = reader.GetAttribute( "objectId" );
             if ( m_ObjectId == null )
             {
-				m_DynPropertyId = reader.GetAttribute( "dynProperty" );
-				if ( m_DynPropertyId == null )
-				{
-					throw new ApplicationException( string.Format( "<{0}> element must contain an \"objectId\" or \"dynProperty\" attribute", reader.Name ) );
-				}
+				throw new ApplicationException( string.Format( "<{0}> element must contain an \"objectId\" attribute", reader.Name ) );
             }
 
             m_Properties = reader.GetAttribute( "access" );
@@ -75,10 +71,6 @@ namespace Rb.ComponentXmlLoader
 					BuildObject = Parameters.Objects[ new Guid( m_ObjectId ) ];
 				}
 			}
-			else
-			{
-				BuildObject = Parameters.Properties[ m_DynPropertyId ];
-			}
 
             if ( m_Properties == null )
 			{
@@ -96,7 +88,6 @@ namespace Rb.ComponentXmlLoader
 			base.PostCreate( );
         }
 
-    	private string m_DynPropertyId;
         private string m_ObjectId;
         private string m_Properties;
     }

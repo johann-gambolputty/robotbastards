@@ -17,6 +17,12 @@ namespace Rb.TestApp
 			set { m_Port = value; }
 		}
 
+		public string ViewerFile
+		{
+			get { return m_ViewerFile; }
+			set { m_ViewerFile = value; }
+		}
+
 		public string SceneFile
 		{
 			get { return m_SceneFile; }
@@ -47,5 +53,6 @@ namespace Rb.TestApp
 		private string				m_InputFile;
 		private Guid				m_HostGuid;
 		private HostType			m_HostType;
+		private string				m_ViewerFile;
 	}
 }
