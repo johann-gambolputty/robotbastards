@@ -68,6 +68,10 @@ namespace Rb.ComponentXmlLoader
 					case "method"	: result = new MethodBuilder( parameters, errors, reader, parentBuilder );			break;
                     case "list"     : result = new ListBuilder( parameters, errors, reader, parentBuilder );			break;
                     case "type"     : result = new TypeBuilder( parameters, errors, reader, parentBuilder );			break;
+					case "dynProperty"	:
+						object dynPropertyValue = parameters.Properties[ reader.GetAttribute( "value" ) ];
+						result = new ValueBuilder( parameters, errors, reader, parentBuilder, dynPropertyValue );
+                		break;
 					case "colour":
 						result = new ValueBuilder( parameters, errors, reader, parentBuilder, MakeColour( reader ) );
 						break;
@@ -96,7 +100,7 @@ namespace Rb.ComponentXmlLoader
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, ushort.Parse( reader.GetAttribute( "value" ) ) );
                         break;
                     case "int"      :
-                        result = new ValueBuilder( parameters, errors, reader, parentBuilder, int.Parse( reader.GetAttribute( "value") ) );
+                        result = new ValueBuilder( parameters, errors, reader, parentBuilder, int.Parse( reader.GetAttribute( "value" ) ) );
                         break;
                     case "uint":
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, uint.Parse( reader.GetAttribute( "value" ) ) );

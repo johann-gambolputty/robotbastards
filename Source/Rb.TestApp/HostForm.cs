@@ -91,12 +91,18 @@ namespace Rb.TestApp
 				loadParams.Properties[ "User" ] = m_User;
                 ResourceManager.Instance.Load( m_Setup.SceneFile, loadParams );
 
-				CommandList cameraCommands = CommandListManager.Inst.Get< CameraCommands >( );
+				//CommandList cameraCommands = CommandListManager.Inst.Get< CameraCommands >( );
 
-                Viewer viewer = new Viewer( CreateSimpleCamera( scene.Builder, cameraCommands ), scene );
-                viewer.ShowFps = true;
+                //Viewer viewer = new Viewer( CreateSimpleCamera( scene.Builder, cameraCommands ), scene );
+                //viewer.ShowFps = true;
 				//viewer.Technique = Builder.CreateInstance< World.Rendering.SceneShadowBufferTechnique >( scene.Builder );
-                display1.AddViewer( viewer );
+                //display1.AddViewer( viewer );
+
+				//	Naughty, just reuse loadParams (null out target because we don't want to load -into- the scene)
+            	loadParams.Target = null;
+				loadParams.Properties[ "Subject" ] = scene;
+				Viewer viewer = ( Viewer )ResourceManager.Instance.Load( m_Setup.ViewerFile, loadParams );
+				display1.AddViewer( viewer );
 				
                 //viewer = new Viewer( CreateSimpleCamera( scene.Builder, cameraCommands ), scene );
 				//viewer.Technique = Builder.CreateInstance< World.Rendering.SceneShadowBufferTechnique >( scene.Builder );

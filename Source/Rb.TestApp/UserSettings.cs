@@ -98,6 +98,7 @@ namespace Rb.TestApp
 			settings.ServerIpHistory.Add( new RemoteHostAddress( ) );
 			settings.SceneFileHistory.Add( "scene0.components.xml" );
 			settings.InputFileHistory.Add( "testCommandInputs0.components.xml" );
+			settings.ViewerFileHistory.Add( "viewerSetup0.components.xml" );
 
 			return settings;
 		}
@@ -119,6 +120,12 @@ namespace Rb.TestApp
 			{
 				XmlSerializer serializer = new XmlSerializer( typeof( UserSettings ) );
 				settings = ( UserSettings )serializer.Deserialize( reader );
+
+				//	TODO: AP: argh...
+				if ( settings.ViewerFileHistory.Count == 0 )
+				{
+					settings.ViewerFileHistory.Add( "viewerSetup0.components.xml" );
+				}
 			}
 			finally
 			{
@@ -165,12 +172,23 @@ namespace Rb.TestApp
 			get { return m_InputFileHistory; }
 			set { m_InputFileHistory = value; }
 		}
+		
+		/// <summary>
+		/// List of previously used input files
+		/// </summary>
+		[XmlElement( "viewerFileHistory" )]
+		public List< string > ViewerFileHistory
+		{
+			get { return m_ViewerFileHistory; }
+			set { m_ViewerFileHistory = value; }
+		}
 
 		#region Private stuff
 
-		private List< RemoteHostAddress >	m_ServerIpHistory	= new List< RemoteHostAddress >( );
-		private List< string > 					m_SceneFileHistory 	= new List< string >( );
-		private List< string > 					m_InputFileHistory 	= new List< string >( );
+		private List< RemoteHostAddress >	m_ServerIpHistory		= new List< RemoteHostAddress >( );
+		private List< string > 				m_SceneFileHistory		= new List< string >( );
+		private List< string > 				m_InputFileHistory		= new List< string >( );
+		private List< string > 				m_ViewerFileHistory 	= new List< string >( );
 
 		#endregion
 	}

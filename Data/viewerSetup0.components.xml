@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rb>
+	<object type="Rb.Rendering.Viewer" assembly="Rb.Rendering">
+	
+		<!-- Viewer camera -->
+		<object type="Rb.Rendering.Cameras.SphereCamera" assembly="Rb.Rendering" property="Camera">
+			<object type="Rb.TestApp.SphereCameraController" assembly="Rb.TestApp">
+        <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
+          <string value="CameraCommands" property="CommandListName"/>
+          <dynProperty value="User" property="User"/>
+        </object>
+      </object>
+		</object>
+		
+		<!-- FPS display -->
+		<bool value="true" property="ShowFps"/>
+
+		<!-- Rendering technique -->	
+		<object type="Rb.World.Rendering.SceneShadowBufferTechnique" assembly="Rb.World" property="Technique"/>
+		
+		<!-- Object to render -->
+		<dynProperty value="Subject" property="Renderable"/>
+
+	</object>
+	
+</rb>

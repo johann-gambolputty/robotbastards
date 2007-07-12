@@ -56,6 +56,7 @@ namespace Rb.TestApp
 			( ( Bitmap )editServerIpAddressButton.Image ).MakeTransparent( transparent );
 			( ( Bitmap )browseSceneFileButton.Image ).MakeTransparent( transparent );
 			( ( Bitmap )browseInputFileButton.Image ).MakeTransparent( transparent );
+			( ( Bitmap )browseViewerFileButton.Image ).MakeTransparent( transparent );
 
 			//	Add resource providers to the resource provider combo
 			foreach ( ResourceProvider provider in ResourceManager.Instance.Providers )
@@ -67,11 +68,13 @@ namespace Rb.TestApp
 			//	Populate the control panel with the user settings
 			sceneFileCombo.Items.AddRange( m_Settings.SceneFileHistory.ToArray( ) );
 			inputFileCombo.Items.AddRange( m_Settings.InputFileHistory.ToArray( ) );
+			viewerFileCombo.Items.AddRange( m_Settings.ViewerFileHistory.ToArray( ) );
 			serverIpCombo.Items.AddRange( m_Settings.ServerIpHistory.ToArray( ) );
 
 			sceneFileCombo.SelectedIndex = 0;
 			inputFileCombo.SelectedIndex = 0;
 			serverIpCombo.SelectedIndex = 0;
+			viewerFileCombo.SelectedIndex = 0;
 		}
 
 		private UserSettings m_Settings;
@@ -82,6 +85,7 @@ namespace Rb.TestApp
 			setup.SceneFile 	= sceneFileCombo.Text;
 			setup.InputFile 	= inputFileCombo.Text;
 			setup.ServerAddress	= ( RemoteHostAddress )serverIpCombo.SelectedItem;
+			setup.ViewerFile	= viewerFileCombo.Text;
 
 			return setup;
 		}
@@ -151,36 +155,35 @@ namespace Rb.TestApp
 			return providerUi.GetResourcePath( Properties.Resources.ComponentXmlFilter );
 		}
 
-		private void browseSceneFileButton_Click( object sender, EventArgs e )
+		private void ChooseComponentXmlFile( ComboBox combo, List< string > history )
 		{
 			string path = GetComponentXmlFilename( );
 			if ( path != null )
 			{
-				int index = sceneFileCombo.Items.IndexOf( path );
+				int index = combo.Items.IndexOf( path );
 				if ( index == -1 )
 				{
-					index = sceneFileCombo.Items.Add( path );
-					m_Settings.SceneFileHistory.Add( path );
+					index = combo.Items.Add( path );
+					history.Add( path );
 					m_Settings.Save( );
 				}
-				sceneFileCombo.SelectedIndex = index;
+				combo.SelectedIndex = index;
 			}
+		}
+
+		private void browseSceneFileButton_Click( object sender, EventArgs e )
+		{
+			ChooseComponentXmlFile( sceneFileCombo, m_Settings.SceneFileHistory );
 		}
 
 		private void browseInputFileButton_Click( object sender, EventArgs e )
 		{
-			string path = GetComponentXmlFilename( );
-			if ( path != null )
-			{
-				int index = inputFileCombo.Items.IndexOf( path );
-				if ( index == -1 )
-				{
-					index = inputFileCombo.Items.Add( path );
-					m_Settings.InputFileHistory.Add( path );
-					m_Settings.Save( );
-				}
-				inputFileCombo.SelectedIndex = index;
-			}
+			ChooseComponentXmlFile( inputFileCombo, m_Settings.InputFileHistory );
+		}
+
+		private void browseViewerFileButton_Click(object sender, EventArgs e)
+		{
+			ChooseComponentXmlFile( viewerFileCombo, m_Settings.ViewerFileHistory );
 		}
 	}
 }

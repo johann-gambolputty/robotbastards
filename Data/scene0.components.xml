@@ -49,10 +49,8 @@
       </object>
 
       <object type="Rb.Rendering.EffectRenderedObject" property="RenderedObject">
-        <!-- <resource path="perPixelUntexturedShadowed.cgfx" property="Effect"/>
-        <string value="NormalTechnique" property="TechniqueName"/> -->
-        <resource path="ffpTechniques.cgfx" property="Effect"/>
-        <string value="FfpLitUntextured" property="TechniqueName"/>
+        <resource path="perPixelUntexturedShadowed.cgfx" property="Effect"/>
+        <string value="NormalTechnique" property="TechniqueName"/>
         <resource path="simpleEnvironment.dae" property="RenderedObject">
         </resource>
       </object>
@@ -66,10 +64,8 @@
       <float value="0.2" dynProperty="scaleY"/>
       <float value="0.2" dynProperty="scaleZ"/>
     </parameters>
-    <!--<resource path="perPixelTextured.cgfx" property="Effect"/>
-    <string value="NormalTechnique" property="TechniqueName"/>-->
-    <resource path="ffpTechniques.cgfx" property="Effect"/>
-    <string value="FfpLitTextured" property="TechniqueName"/>
+    <resource path="perPixelTextured.cgfx" property="Effect"/>
+    <string value="NormalTechnique" property="TechniqueName"/>
   </resource>
 
   <!--Entities-->
@@ -99,6 +95,9 @@
       </parameters>
     </method>
 
+    <!-- TODO: TestCommandHandler should have the SetupController proxy object as a child, then it
+    wouldn't have to add itself to the entity message hub and listen for commands - it would just
+    receive them direct from the child controller -->
     <object type="Rb.TestApp.TestCommandHandler" assembly="Rb.TestApp"/>
 
     <!--

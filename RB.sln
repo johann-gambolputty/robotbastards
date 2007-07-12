@@ -38,6 +38,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{962DDAAD-9
 		Data\shadowMapTexture.cgfx = Data\shadowMapTexture.cgfx
 		Data\testCommandInputs0.components.xml = Data\testCommandInputs0.components.xml
 		Data\userInputListener.components.xml = Data\userInputListener.components.xml
+		Data\viewerSetup0.components.xml = Data\viewerSetup0.components.xml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.LogViewer", "Source\Rb.LogViewer\Rb.LogViewer.csproj", "{78507092-001D-4771-B893-687A22AAB924}"
