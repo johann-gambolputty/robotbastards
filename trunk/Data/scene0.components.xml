@@ -17,11 +17,7 @@
       </list>
     </parameters>
   </method>
-
-  <!--Debugging-->
-  <ref objectId="this" access="Renderables">
-  </ref>
-
+  
   <!--Lighting 
 <object type="Rb.World.LightSocket">
   <object type="Rb.Rendering.SpotLight" property="Light">
@@ -31,6 +27,7 @@
   </object>
 </object>
 -->
+
   <object type="Rb.World.LightSocket">
     <object type="Rb.Rendering.SpotLight" property="Light">
       <point3 x="30" y="20" z="30" property="Position"/>
@@ -39,7 +36,7 @@
     </object>
   </object>
 
-<!--Environment-->
+  <!--Environment-->
   <object type="Rb.World.Rendering.SceneRenderable">
 
     <object type="Rb.Rendering.EffectRenderedObject">

@@ -6,16 +6,27 @@ using Rb.Rendering.Cameras;
 
 namespace Rb.TestApp
 {
-    public class SphereCameraController : Component
+	/// <summary>
+	/// Simple sphere camera controller
+	/// </summary>
+	public class SphereCameraController : CameraController
     {
+
+		/// <summary>
+		/// Handles command messages, from the <see cref="CameraCommands"/> enum
+		/// </summary>
         [Dispatch]
         public void HandleCameraCommand( CommandMessage msg )
         {
+			if ( !Enabled )
+			{
+				return;
+			}
             switch ( ( CameraCommands )msg.CommandId )
             {
                 case CameraCommands.Zoom :
                     {
-                        ( ( SphereCamera )Parent ).Zoom = ( ( ScalarCommandMessage )msg ).Value;
+                        ( ( SphereCamera )Camera ).Zoom = ( ( ScalarCommandMessage )msg ).Value;
                         break;
                     }
                 case CameraCommands.Pan :
@@ -24,7 +35,7 @@ namespace Rb.TestApp
                         float deltaX = cursorMsg.X - cursorMsg.LastX;
                         float deltaY = cursorMsg.Y - cursorMsg.LastY;
 
-                        SphereCamera camera = ( ( SphereCamera )Parent );
+                        SphereCamera camera = ( ( SphereCamera )Camera );
 
                         Point3 newLookAt = camera.LookAt;
 
@@ -40,7 +51,7 @@ namespace Rb.TestApp
                         float deltaX = cursorMsg.X - cursorMsg.LastX;
                         float deltaY = cursorMsg.Y - cursorMsg.LastY;
 
-                        SphereCamera camera = ( ( SphereCamera )Parent );
+                        SphereCamera camera = ( ( SphereCamera )Camera );
 
                         camera.S += deltaX * 0.01f;
                         camera.T -= deltaY * 0.01f;
@@ -49,5 +60,6 @@ namespace Rb.TestApp
                     }
             }
         }
-    }
+
+	}
 }

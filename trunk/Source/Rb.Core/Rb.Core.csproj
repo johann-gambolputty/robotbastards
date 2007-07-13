@@ -58,6 +58,7 @@
     <Compile Include="Components\MessageRecipientChain.cs" />
     <Compile Include="Components\Node.cs" />
     <Compile Include="Components\ObjectMap.cs" />
+    <Compile Include="Components\ParentHelpers.cs" />
     <Compile Include="Logs.cs" />
     <Compile Include="Maths\BigPoint3.cs" />
     <Compile Include="Maths\CatmullRomSpline.cs" />

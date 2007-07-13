@@ -44,6 +44,48 @@
           <input button="Right" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
         </command>
       </commandList>
+
+      <commandList enum="Rb.TestApp.TrackCameraCommands" assembly="Rb.TestApp">
+        <command name="Zoom">
+          <input button="None" min="0" max="10000" delta="0.1" initial="50" type="Rb.Interaction.Windows.MouseScrollInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Rotate">
+          <input button="Right" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+      </commandList>
+
+      <commandList enum="Rb.TestApp.MultiCameraCommands" assembly="Rb.TestApp">
+        <command name="Camera0">
+          <input key="D1" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Camera1">
+          <input key="D2" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Camera2">
+          <input key="D3" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Camera3">
+          <input key="D4" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Camera4">
+          <input key="D5" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Camera5">
+          <input key="D6" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Camera6">
+          <input key="D7" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Camera7">
+          <input key="D8" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Camera8">
+          <input key="D9" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Camera9">
+          <input key="D0" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+      </commandList>
     </serialise>
 
   </object>

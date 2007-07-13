@@ -34,7 +34,7 @@ namespace Rb.World.Interaction
             }
 
             //	Create a pick ray using the input binding's cursor position, and camera
-            Ray3 pickRay = ( ( Camera3 )Context.Viewer.Camera ).PickRay( CursorInput.X, CursorInput.Y );
+            Ray3 pickRay = ( ( ICamera3 )Context.Viewer.Camera ).PickRay( CursorInput.X, CursorInput.Y );
             Ray3Intersection pickIntersection = caster.GetFirstIntersection( pickRay, new RayCastOptions( ) );
 
             return new PickCommandMessage( cmd, pickIntersection );

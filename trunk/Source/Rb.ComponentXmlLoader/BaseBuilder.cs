@@ -34,7 +34,7 @@ namespace Rb.ComponentXmlLoader
 
 			if ( rStr == null || bStr == null || gStr == null )
 			{
-				throw new ApplicationException( string.Format( "<{0}> tags need either a value attribute, or \"r\", \"b\" and \"g\" attributes", reader.Name ) );
+				throw new ApplicationException( string.Format( "<{0}> tags need either a value attribute, or \"r\", \"g\" and \"b\" attributes", reader.Name ) );
 			}
 
 			int r	= int.Parse( rStr );
@@ -44,7 +44,7 @@ namespace Rb.ComponentXmlLoader
 
 			return System.Drawing.Color.FromArgb( a, r, g, b );
 		}
-        
+
         /// <summary>
         /// Creates a BaseBuilder-derived object from a name
         /// </summary>
@@ -68,56 +68,59 @@ namespace Rb.ComponentXmlLoader
 					case "method"	: result = new MethodBuilder( parameters, errors, reader, parentBuilder );			break;
                     case "list"     : result = new ListBuilder( parameters, errors, reader, parentBuilder );			break;
                     case "type"     : result = new TypeBuilder( parameters, errors, reader, parentBuilder );			break;
+					case "dictionaryEntry"	:
+						result = new DictionaryEntryBuilder( parameters, errors, reader, parentBuilder );
+                		break;
 					case "dynProperty"	:
 						object dynPropertyValue = parameters.Properties[ reader.GetAttribute( "value" ) ];
 						result = new ValueBuilder( parameters, errors, reader, parentBuilder, dynPropertyValue );
                 		break;
-					case "colour":
+					case "colour"		:
 						result = new ValueBuilder( parameters, errors, reader, parentBuilder, MakeColour( reader ) );
 						break;
-                    case "string"	:
+                    case "string"		:
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, reader.GetAttribute( "value" ) );
                         break;
-                    case "guid"     :
+                    case "guid"			:
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, new Guid( reader.GetAttribute( "value" ) ) );
                         break;
-                    case "bool"     :
+                    case "bool"			:
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, bool.Parse( reader.GetAttribute( "value" ) ) );
                         break;
-                    case "char"     :
+                    case "char"			:
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, char.Parse( reader.GetAttribute( "value" ) ) );
                         break;
-                    case "byte"     :
+                    case "byte"			:
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, byte.Parse( reader.GetAttribute( "value" ) ) );
                         break;
-                    case "sbyte"    :
+                    case "sbyte"		:
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, sbyte.Parse( reader.GetAttribute( "value" ) ) );
                         break;
-                    case "short"    :
+                    case "short"		:
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, short.Parse( reader.GetAttribute( "value" ) ) );
                         break;
-                    case "ushort"   :
+                    case "ushort"		:
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, ushort.Parse( reader.GetAttribute( "value" ) ) );
                         break;
-                    case "int"      :
+                    case "int"			:
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, int.Parse( reader.GetAttribute( "value" ) ) );
                         break;
-                    case "uint":
+                    case "uint"			:
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, uint.Parse( reader.GetAttribute( "value" ) ) );
                         break;
-                    case "long"     :
+                    case "long"			:
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, long.Parse( reader.GetAttribute( "value" ) ) );
                         break;
-                    case "ulong"    :
+                    case "ulong"		:
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, ulong.Parse( reader.GetAttribute( "value" ) ) );
                         break;
-                    case "float"    :
+                    case "float"		:
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, float.Parse( reader.GetAttribute( "value" ) ) );
                         break;
-                    case "double"   :
+                    case "double"		:
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, double.Parse( reader.GetAttribute( "value" ) ) );
                         break;
-                    case "point3"   :
+                    case "point3"		:
                         {
                             float x = float.Parse( reader.GetAttribute( "x" ) );
 						    float y = float.Parse( reader.GetAttribute( "y" ) );
@@ -125,14 +128,22 @@ namespace Rb.ComponentXmlLoader
 						    result = new ValueBuilder( parameters, errors, reader, parentBuilder, new Point3( x, y, z ) );
 						    break;
                         }
-					case "vector2"	:
+					case "bigPoint3"	:
+                		{
+                            long x = long.Parse( reader.GetAttribute( "x" ) );
+						    long y = long.Parse( reader.GetAttribute( "y" ) );
+						    long z = long.Parse( reader.GetAttribute( "z" ) );
+						    result = new ValueBuilder( parameters, errors, reader, parentBuilder, new BigPoint3( x, y, z ) );
+						    break;	
+                		}
+					case "vector2"		:
                         {
 						    float x = float.Parse( reader.GetAttribute( "x" ) );
 						    float y = float.Parse( reader.GetAttribute( "y" ) );
 						    result = new ValueBuilder( parameters, errors, reader, parentBuilder, new Vector2( x, y ) );
 						    break;
                         }
-					case "vector3"	:
+					case "vector3"		:
                         {
 						    float x = float.Parse( reader.GetAttribute( "x" ) );
 						    float y = float.Parse( reader.GetAttribute( "y" ) );
@@ -140,14 +151,14 @@ namespace Rb.ComponentXmlLoader
 						    result = new ValueBuilder( parameters, errors, reader, parentBuilder, new Vector3( x, y, z ) );
 						    break;
                         }
-                    case "point2"   :
-                    case "quat"     :
+                    case "point2"   	:
+                    case "quat"     	:
                         {
                             errors.Add( reader, "Element is not yet supported", reader.Name );
                             reader.Skip( );
                             break;
                         }
-                    default :
+                    default	:
                         {
                             errors.Add( reader, "Element was not recognised", reader.Name);
                             reader.Skip( );
@@ -224,19 +235,19 @@ namespace Rb.ComponentXmlLoader
         /// <summary>
         /// Resolves this builder
         /// </summary>
-        public virtual void Resolve( )
+        public virtual void Resolve( bool linkThisBuilder )
         {
             //  Resolve pre-link objects
-            ResolveChildBuilders( m_PreLinkBuilders );
+            ResolveChildBuilders( m_PreLinkBuilders, true );
 
             //  Link built object to its parent
-            if ( ParentBuilder != null )
+            if ( ( ParentBuilder != null ) && ( linkThisBuilder ) )
             {
                 Link( ParentBuilder.BuildObject );
             }
 
             //  Resolve post-link objects
-            ResolveChildBuilders( m_PostLinkBuilders );
+            ResolveChildBuilders( m_PostLinkBuilders, true );
         }
 
         /// <summary>
@@ -318,11 +329,11 @@ namespace Rb.ComponentXmlLoader
         /// <summary>
         /// Calls BaseBuilder.Resolve() on the specified builder object
         /// </summary>
-        public static void SafeResolve( BaseBuilder builder )
+        public static void SafeResolve( BaseBuilder builder, bool linkBuilder )
         {
             try
             {
-                builder.Resolve( );
+				builder.Resolve( linkBuilder );
             }
             catch ( Exception ex )
             {
@@ -461,6 +472,26 @@ namespace Rb.ComponentXmlLoader
         	}
         }
 
+		/// <summary>
+		/// Adds the BuildObject to an IDictionary parent. The BuildObject must be a DictionaryEntry. Calls <see cref="IChild.OnAddded"/>
+		/// if the DictionaryEntry Value implements IChild, 
+		/// </summary>
+		/// <param name="parent">Parent object</param>
+		protected virtual void LinkToDictionary( IDictionary parent )
+		{
+			if ( !( BuildObject is DictionaryEntry ) )
+			{
+				throw new ApplicationException( "Can only add DictionaryEntry objects to dictionary parents" );
+			}
+			DictionaryEntry entry = ( DictionaryEntry )BuildObject;
+			parent.Add( entry.Key, entry.Value );
+
+			if ( entry.Value is IChild )
+			{
+				( ( IChild )entry.Value ).AddedToParent( parent );
+			}
+		}
+
         /// <summary>
         /// Links the built object to the specified parent
         /// </summary>
@@ -488,7 +519,11 @@ namespace Rb.ComponentXmlLoader
         	//		call IList.Add()
         	//		if the build object is an IChild
         	//			call IChild.OnAddedToParent()
-        	
+        	if ( BuildObject == null )
+        	{
+				//	This isn't necessarily an error - method builders don't have to set their BuildObjects
+        		return;
+        	}
         
             if ( m_Property != null )
             {
@@ -525,7 +560,19 @@ namespace Rb.ComponentXmlLoader
             if ( listParent != null )
             {
             	LinkToList( listParent );
+                return;
             }
+
+        	IDictionary dictionaryParent = parent as IDictionary;
+			if ( dictionaryParent != null )
+			{
+				LinkToDictionary( dictionaryParent );
+				return;
+			}
+
+			//	TODO: AP: There should be some tag to disable linkage - most objects add themselves to scene
+			//	in various other ways, for example
+			//throw new ApplicationException( string.Format( "Can't add object of type \"{0}\" to object of type \"{1}\" (parent does not implement IParent, IList or IDictionary)", BuildObject.GetType( ), parent.GetType( ) ) );
         }
 
 		/// <summary>
@@ -605,7 +652,7 @@ namespace Rb.ComponentXmlLoader
         /// Calls BaseBuilder.PostCreate() for a child list of BaseBuilder objects
         /// </summary>
         /// <param name="builders">Child BaseBuilder list</param>
-        private void PostCreateChildBuilders( List< BaseBuilder > builders )
+        private static void PostCreateChildBuilders( List< BaseBuilder > builders )
         {
             foreach ( BaseBuilder builder in builders )
             {
@@ -617,11 +664,11 @@ namespace Rb.ComponentXmlLoader
         /// Resolves a list of child BaseBuilder objects
         /// </summary>
         /// <param name="builders">Child BaseBuilder list</param>
-        private void ResolveChildBuilders( List< BaseBuilder > builders )
+        private static void ResolveChildBuilders( List< BaseBuilder > builders, bool linkBuilders )
         {
             foreach ( BaseBuilder builder in builders )
             {
-                SafeResolve( builder );
+                SafeResolve( builder, linkBuilders );
             }
         }
 

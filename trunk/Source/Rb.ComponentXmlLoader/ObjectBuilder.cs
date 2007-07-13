@@ -96,7 +96,7 @@ namespace Rb.ComponentXmlLoader
 				foreach ( BaseBuilder builder in m_ParamBuilders )
 				{
 					// TODO: AP: A bit dodgy - doing resolution phase during post create phase...
-					SafeResolve( builder );
+					SafeResolve( builder, false );
 					parameters[ paramIndex ] = builder.BuildObject;
 					++paramIndex;
 				}
