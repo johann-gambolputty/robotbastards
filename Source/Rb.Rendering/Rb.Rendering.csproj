@@ -36,6 +36,9 @@
   <ItemGroup>
     <Compile Include="Cameras\Camera3.cs" />
     <Compile Include="Cameras\CameraBase.cs" />
+    <Compile Include="Cameras\ICamera3.cs" />
+    <Compile Include="Cameras\MultiCamera.cs" />
+    <Compile Include="Cameras\MultiCamera3.cs" />
     <Compile Include="Cameras\ProjectionCamera.cs" />
     <Compile Include="Cameras\SphereCamera.cs" />
     <Compile Include="DelegateRenderable.cs" />

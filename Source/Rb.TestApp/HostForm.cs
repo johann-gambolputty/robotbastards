@@ -55,6 +55,7 @@ namespace Rb.TestApp
 		private void HostForm_Load( object sender, EventArgs e )
 		{
 			//	Load input bindings
+			CommandInputTemplateMap map = ( CommandInputTemplateMap )ResourceManager.Instance.Load( m_Setup.InputFile );
 			m_User.InitialiseAllCommandListBindings( );
 
 			//	Test load a scene
@@ -120,7 +121,6 @@ namespace Rb.TestApp
 			try
 			{
 				//	TODO: AP: May need to move
-				CommandInputTemplateMap map = ( CommandInputTemplateMap )ResourceManager.Instance.Load( m_Setup.InputFile );
 				map.AddContextInputsToUser( new InputContext( display1.Viewers[ 0 ], display1 ), m_User );
 			}
 			catch ( Exception ex )

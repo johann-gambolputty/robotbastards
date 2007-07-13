@@ -6,7 +6,7 @@ namespace Rb.ComponentXmlLoader
 {
 
     /// <summary>
-    /// Extends ReferenceBuilder. Creates an instance from the referenced object
+    /// Extends BaseBuilder. Stores a value
     /// </summary>
     internal class ValueBuilder : BaseBuilder
     {

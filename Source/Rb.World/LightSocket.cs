@@ -2,6 +2,8 @@ using Rb.Rendering;
 
 namespace Rb.World
 {
+	//	TODO: AP: Just used for adding a light to the lighting manager - it can't be used afterwards
+
 	/// <summary>
 	/// A very poorly named class that adds a <see cref="Rb.Rendering.Light"/> into the scene <see cref="LightingManager"/>
 	/// </summary>

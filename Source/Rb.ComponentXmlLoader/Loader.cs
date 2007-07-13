@@ -85,7 +85,7 @@ namespace Rb.ComponentXmlLoader
                 BaseBuilder.SafePostCreate( builder );
                 if ( errors.Count == 0 )
                 {
-                    BaseBuilder.SafeResolve( builder );
+                    BaseBuilder.SafeResolve( builder, true );
                 }
             }
 

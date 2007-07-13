@@ -3,14 +3,36 @@
 	<object type="Rb.Rendering.Viewer" assembly="Rb.Rendering">
 	
 		<!-- Viewer camera -->
-		<object type="Rb.Rendering.Cameras.SphereCamera" assembly="Rb.Rendering" property="Camera">
-			<object type="Rb.TestApp.SphereCameraController" assembly="Rb.TestApp">
+    <object type="Rb.Rendering.Cameras.MultiCamera3" assembly="Rb.Rendering" property="Camera">
+
+
+      <object type="Rb.Rendering.Cameras.SphereCamera" assembly="Rb.Rendering">
+        <object type="Rb.TestApp.SphereCameraController" assembly="Rb.TestApp">
+          <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
+            <string value="CameraCommands" property="CommandListName"/>
+            <dynProperty value="User" property="User"/>
+          </object>
+        </object>
+      </object>
+
+
+      <object type="Rb.Rendering.Cameras.SphereCamera" assembly="Rb.Rendering">
+        <object type="Rb.TestApp.TrackObjectSphereCameraController" assembly="Rb.TestApp">
+          <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
+            <string value="TrackCameraCommands" property="CommandListName"/>
+            <dynProperty value="User" property="User"/>
+          </object>
+        </object>
+      </object>
+
+      <object type="Rb.TestApp.MultiCameraController" assembly="Rb.TestApp">
         <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
-          <string value="CameraCommands" property="CommandListName"/>
+          <string value="MultiCameraCommands" property="CommandListName"/>
           <dynProperty value="User" property="User"/>
         </object>
       </object>
-		</object>
+
+    </object>
 		
 		<!-- FPS display -->
 		<bool value="true" property="ShowFps"/>

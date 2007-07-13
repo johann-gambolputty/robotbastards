@@ -39,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraCommands.cs" />
+    <Compile Include="CameraController.cs" />
     <Compile Include="ControlPanelForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -53,7 +54,9 @@
     <Compile Include="HostAddressForm.Designer.cs">
       <DependentUpon>HostAddressForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ICameraController.cs" />
     <Compile Include="IResourceProviderUi.cs" />
+    <Compile Include="MultiCameraController.cs" />
     <Compile Include="SphereCameraController.cs" />
     <Compile Include="HostForm.cs">
       <SubType>Form</SubType>
@@ -107,6 +110,7 @@
     </Compile>
     <Compile Include="TestCommands.cs" />
     <Compile Include="TestCommandHandler.cs" />
+    <Compile Include="TrackObjectSphereCameraController.cs" />
     <Compile Include="UserSettings.cs" />
   </ItemGroup>
   <ItemGroup>

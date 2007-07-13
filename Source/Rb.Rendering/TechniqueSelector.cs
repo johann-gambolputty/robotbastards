@@ -11,7 +11,11 @@ namespace Rb.Rendering
 		/// </summary>
 		public class Option
 		{
-
+			public Option( string path, string techniqueName )
+			{
+				m_Path = path;
+				m_TechniqueName = techniqueName;
+			}
 
 			private string		m_Path;
 			private string		m_TechniqueName;

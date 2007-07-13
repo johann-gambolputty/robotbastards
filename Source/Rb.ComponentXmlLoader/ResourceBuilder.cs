@@ -1,7 +1,6 @@
 using System;
 using System.Xml;
 using System.Collections.Generic;
-using Rb.Core;
 using Rb.Core.Resources;
 using Rb.Core.Components;
 
@@ -74,7 +73,7 @@ namespace Rb.ComponentXmlLoader
                 foreach ( BaseBuilder builder in m_ParamBuilders )
                 {
                     // TODO: AP: A bit dodgy - doing resolution phase during post create phase...
-                    SafeResolve( builder );
+                    SafeResolve( builder, true );
                     parameters[ paramIndex ] = builder.BuildObject;
                     ++paramIndex;
                 }
