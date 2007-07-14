@@ -41,6 +41,10 @@ float4x4	ModelViewProjectionMatrix;
 float4x4	InverseTransposeModelMatrix;
 float3		EyeZAxis;
 
+
+const float ShadowTexUStep = 1.0 / 1024.0;
+const float ShadowTexVStep = 1.0 / 1024.0;
+
 const int	SI = 0;
 
 TestOutput TestVertexShader( TestInput input )
@@ -55,7 +59,6 @@ TestOutput TestVertexShader( TestInput input )
 
 	return output;
 }
-
 float4 TestFragmentShader( TestOutput input ) : COLOR
 {
 	float4	lightPos		= input.m_LightPos;
@@ -63,9 +66,9 @@ float4 TestFragmentShader( TestOutput input ) : COLOR
 	float2	uv				= float2( lightPos.x * rcp2W, lightPos.y * rcp2W ) + float2( 0.5f, 0.5f );	//	TODO: Move scale and translation to transform
 
 	float	storedDepth0	= tex2D( Texture0, uv ).r;
-	float	storedDepth1	= tex2D( Texture0, uv + float2( 1.f / 512.f, 0 ) ).r;
-	float	storedDepth2	= tex2D( Texture0, uv + float2( 1.f / 512.f, 1.f / 512.f  ) ).r;
-	float	storedDepth3	= tex2D( Texture0, uv + float2( 0, 1.f / 512.f  ) ).r;
+	float	storedDepth1	= tex2D( Texture0, uv + float2( ShadowTexUStep, 0 ) ).r;
+	float	storedDepth2	= tex2D( Texture0, uv + float2( ShadowTexUStep, ShadowTexVStep  ) ).r;
+	float	storedDepth3	= tex2D( Texture0, uv + float2( 0, ShadowTexVStep  ) ).r;
 
 	float	lightDepth		= ( 1.f / ShadowNearZ - 1.f / lightPos.z ) / ( 1.f / ShadowNearZ - 1.f / ShadowFarZ );
 	float3	normal			= input.m_ModelNormal;

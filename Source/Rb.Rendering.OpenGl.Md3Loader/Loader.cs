@@ -115,7 +115,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		private static string MeshFile( string directory, ModelPart part )
 		{
-			return Path.Combine( directory, part.ToString( ) + ".md3" );
+			return Path.Combine( directory, part + ".md3" );
 		}
 
 		/// <summary>
@@ -123,7 +123,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		private static string DefaultSkinFile( string directory, ModelPart part )
 		{
-			return Path.Combine( directory, part.ToString( ) + "_default.skin" );
+			return Path.Combine( directory, part + "_default.skin" );
 		}
 
 		/// <summary>
@@ -135,12 +135,24 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// Also, the textures are usually .tga files, which the texture loader can't currently cope with (TODO: ...) - change the extension to
 		/// .bmp in this case
 		/// </remarks>
-		private string TextureFile( string directory, string path )
+		private string TextureFile( ResourceProvider provider, string directory, string path )
 		{
-			path = path.Replace( ".tga", ".bmp" );
+			//	Remove the extension
+			string filename = Path.GetFileName( path );
+			string pathWithoutExt = Path.Combine( directory, filename.Remove( filename.LastIndexOf( '.' ) ) );
 
-			return Path.Combine( directory, Path.GetFileName( path ) );
+			foreach ( string ext in TextureExtensions )
+			{
+				if ( provider.StreamExists( pathWithoutExt + ext ) )
+				{
+					return pathWithoutExt + ext;
+				}
+			}
+
+			throw new ApplicationException( string.Format( "Could not find texture file beginning with \"{0}\"", pathWithoutExt ) );
 		}
+
+		private static string[] TextureExtensions = new string[] { ".jpg", ".bmp" };
 
 		/// <summary>
 		/// Checks that a file exists
@@ -181,7 +193,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				{
 					//	TODO: Texture loading should be done through the resource manager
 					Texture2d newTexture = RenderFactory.Inst.NewTexture2d( );
-					newTexture.Load( TextureFile( directory, tokens[ 1 ] ) );
+					newTexture.Load( TextureFile( provider, directory, tokens[ 1 ] ) );
 
 					surfaceTextureMap[ tokens[ 0 ] ] = newTexture;
 				}
@@ -223,9 +235,9 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 					//	Line begins with comment - ignore it
 					continue;
 				}
-				if ( tokens[ 0 ] == "sex" )
+				if ( tokens[ 0 ] == "sex" || tokens[ 0 ] == "headoffset" || tokens[ 0 ] == "footsteps" )
 				{
-					//	Model gender - ignore it
+					//	Model gender/head offset/footsteps - ignore it
 					continue;
 				}
 

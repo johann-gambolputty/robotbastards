@@ -10,6 +10,14 @@ namespace Rb.Rendering.Cameras
 	public class MultiCamera : CameraBase
 	{
 		/// <summary>
+		/// Gets the stored cameras
+		/// </summary>
+		public IEnumerable< CameraBase > Cameras
+		{
+			get { return m_Cameras; }
+		}
+
+		/// <summary>
 		/// Returns the number of stored cameras
 		/// </summary>
 		public int CameraCount

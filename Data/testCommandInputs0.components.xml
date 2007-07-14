@@ -16,10 +16,16 @@
         </command>
         <command name="Left">
           <input key="Left" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
-          <input key="A" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows" />
+          <input key="Q" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows" />
         </command>
         <command name="Right">
           <input key="Right" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+          <input key="E" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows" />
+        </command>
+        <command name="RotateLeft">
+          <input key="A" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows" />
+        </command>
+        <command name="RotateRight">
           <input key="D" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows" />
         </command>
         <command name="Jump">

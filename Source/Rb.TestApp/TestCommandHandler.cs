@@ -1,3 +1,4 @@
+using System;
 using Rb.Core.Components;
 using Rb.Interaction;
 using Rb.Rendering;
@@ -29,17 +30,20 @@ namespace Rb.TestApp
 		public MessageRecipientResult OnCommand( CommandMessage msg )
 		{
             float speed = m_Speed;
+			float rotateSpeed = 0.1f;
 
 			//	TODO: AP: Query entity frame instead?
 			Entity3d entity = ( Entity3d )Parent;
 			switch ( ( TestCommands )msg.CommandId )
 			{
-				case TestCommands.Forward	: SendMovement( entity, entity.Ahead * speed ); break;
-				case TestCommands.Back		: SendMovement( entity, entity.Back * speed ); break;
-				case TestCommands.Left		: SendMovement( entity, entity.Left * speed ); break;
-				case TestCommands.Right		: SendMovement( entity, entity.Right * speed ); break;
-				case TestCommands.Jump		: entity.HandleMessage( new JumpRequest( null ) ); break;
-				case TestCommands.LookAt	:
+				case TestCommands.Forward		: SendMovement( entity, entity.Ahead * speed ); break;
+				case TestCommands.Back			: SendMovement( entity, entity.Back * speed ); break;
+				case TestCommands.Left			: SendMovement( entity, entity.Left * speed ); break;
+				case TestCommands.Right			: SendMovement( entity, entity.Right * speed ); break;
+				case TestCommands.RotateRight	: SendRotation( entity, rotateSpeed ); break;
+				case TestCommands.RotateLeft	: SendRotation( entity, -rotateSpeed ); break;
+				case TestCommands.Jump			: entity.HandleMessage( new JumpRequest( null ) ); break;
+				case TestCommands.LookAt		:
 					PickCommandMessage pickMsg = ( PickCommandMessage )msg;
 					if ( pickMsg.Intersection != null )
 					{
@@ -107,6 +111,7 @@ namespace Rb.TestApp
 		private void SendLookAt( Entity3d target, Point3 pos )
 		{
 			m_LookAt = pos;
+			/*
 
 			Vector3 ahead = ( pos - target.NextPosition );
 			ahead.Y = 0;
@@ -121,6 +126,7 @@ namespace Rb.TestApp
 			Vector3 left = Vector3.Cross( target.Up, ahead ).MakeNormal( );
 
 			target.SetFrame( left, target.Up, ahead );
+			*/
 		}
 
 		/// <summary>
@@ -131,6 +137,14 @@ namespace Rb.TestApp
 			//	Turn movement into units per second (irrespective of clock update rate)
 			move *= ( float )TinyTime.ToSeconds( target.CurrentPosition.LastStepInterval );
 			target.HandleMessage( new MovementXzRequest( move.X, move.Z ) );
+		}
+
+		private static void SendRotation( Entity3d target, float delta )
+		{
+			float s = ( float )Math.Atan2( target.Ahead.Z, target.Ahead.X );
+			s = Utils.Wrap( s + delta, 0, ( float )( 2 * Math.PI ) );
+
+			target.HandleMessage( new RotateXzRequest( s ) );
 		}
 
 		#endregion

@@ -18,6 +18,12 @@ namespace Rb.TestApp
 		[Interaction.CommandDescription( "Right", "Moves right" )]
 		Right,
 
+		[Interaction.CommandDescription( "Rotate Left", "Rotates left" )]
+		RotateLeft,
+
+		[Interaction.CommandDescription( "Rotate Right", "Rotates right" )]
+		RotateRight,
+
 		[Interaction.CommandDescription( "Fire", "Fires the current weapon" )]
 		Fire,
 

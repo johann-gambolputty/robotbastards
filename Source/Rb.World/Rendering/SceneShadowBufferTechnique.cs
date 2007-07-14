@@ -15,6 +15,13 @@ namespace Rb.World.Rendering
 	/// </remarks>
 	public class SceneShadowBufferTechnique : ShadowBufferTechnique, ISceneObject
 	{
+		/// <summary>
+		/// Scene shadow buffer
+		/// </summary>
+		public SceneShadowBufferTechnique( int resX, int resY ) :
+			base( resX, resY )
+		{
+		}
 
 		/// <summary>
 		/// Applies this technique
@@ -50,7 +57,6 @@ namespace Rb.World.Rendering
         }
 
         #endregion
-
 
         #region Private stuff
 

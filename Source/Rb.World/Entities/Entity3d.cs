@@ -1,3 +1,4 @@
+using System;
 using Rb.Core.Utils;
 using Rb.Core.Maths;
 using Rb.Rendering;
@@ -145,6 +146,20 @@ namespace Rb.World.Entities
 		public void HandleMovement( MovementXzRequest movement )
 		{
 			NextPosition += new Vector3( movement.DeltaX, 0, movement.DeltaZ );
+		}
+
+		/// <summary>
+		/// Handles rotation request message
+		/// </summary>
+		/// <param name="rotation">Rotation request message</param>
+		[Dispatch]
+		public void HandleRotation( RotateXzRequest rotation )
+		{
+			float x = ( float )Math.Cos( rotation.Rotation );
+			float z = ( float )Math.Sin( rotation.Rotation );
+
+			m_ZAxis = new Vector3( x, 0, z );
+			m_XAxis = Vector3.Cross( m_YAxis, m_ZAxis ).MakeNormal( );
 		}
 
 		#endregion

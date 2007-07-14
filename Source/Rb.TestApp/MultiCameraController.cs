@@ -3,6 +3,7 @@ using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
 using Rb.Interaction;
+using Rb.Log;
 using Rb.Rendering.Cameras;
 
 namespace Rb.TestApp
@@ -54,6 +55,28 @@ namespace Rb.TestApp
 	/// </summary>
 	public class MultiCameraController : CameraController
 	{
+		public override CameraBase Camera
+		{
+			get
+			{
+				return base.Camera;
+			}
+			set
+			{
+				base.Camera = value;
+				MultiCamera multiCam = ( MultiCamera )Camera;
+				foreach ( CameraBase subCamera in multiCam.Cameras )
+				{
+					GetCameraController( subCamera ).Enabled = false;
+				}
+				if ( multiCam.ActiveCamera != null )
+				{
+					GetCameraController( multiCam.ActiveCamera ).Enabled = true;
+				}
+				Camera.OnChildAdded += OnChildAddedToCamera;
+			}
+		}
+
 		/// <summary>
 		/// Handles a camera command message
 		/// </summary>
@@ -66,8 +89,10 @@ namespace Rb.TestApp
 			}
 
 			MultiCamera camera = ( MultiCamera )Camera;
-			
-			GetActiveCameraController( camera ).Enabled = false;
+
+			AppLog.Verbose( "Disabling camera {0}", camera.ActiveCameraIndex );
+
+			GetCameraController( camera.ActiveCamera ).Enabled = false;
 
 			switch ( ( MultiCameraCommands )msg.CommandId )
 			{
@@ -97,15 +122,28 @@ namespace Rb.TestApp
 						break;
 					}
 			}
-			GetActiveCameraController( camera ).Enabled = true;
+
+			AppLog.Verbose( "Enabling camera {0}", camera.ActiveCameraIndex );
+			GetCameraController( camera.ActiveCamera ).Enabled = true;
 		}
 
 		/// <summary>
 		/// Gets an <see cref="ICameraController"/> from the active camera in the specified camera
 		/// </summary>
-		private static ICameraController GetActiveCameraController( IParent camera )
+		private static ICameraController GetCameraController( IParent camera )
 		{
 			return ParentHelpers.GetChildOfType< ICameraController >( camera );
+		}
+
+		/// <summary>
+		/// Called when a child is added to the specified camera
+		/// </summary>
+		private static void OnChildAddedToCamera( object camera, object obj )
+		{
+			if ( obj is ICameraController )
+			{
+				( ( ICameraController )obj ).Enabled = ( ( MultiCamera )camera ).CameraCount == 0;
+			}
 		}
 	}
 }
