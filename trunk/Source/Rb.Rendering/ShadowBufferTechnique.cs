@@ -16,6 +16,24 @@ namespace Rb.Rendering
 		#region	Technique properties
 
 		/// <summary>
+		/// Sets the distance of the near z plane
+		/// </summary>
+		public float NearZ
+		{
+			get { return m_NearZ; }
+			set { m_NearZ = value; }
+		}
+
+		/// <summary>
+		/// Sets the distance of the far z plane
+		/// </summary>
+		public float FarZ
+		{
+			get { return m_FarZ; }
+			set { m_FarZ = value; }
+		}
+
+		/// <summary>
 		/// Maximum number of shadow casting lights
 		/// </summary>
 		public const int			MaxLights = 4;
@@ -49,7 +67,7 @@ namespace Rb.Rendering
 		/// Sets up the builder
 		/// </summary>
 		/// <exception cref="ApplicationException">Thrown if internal render target creation is not successful</exception>
-		public ShadowBufferTechnique( )
+		public ShadowBufferTechnique( int resX, int resY )
 		{
 		    Name = GetType( ).Name;
 
@@ -69,7 +87,7 @@ namespace Rb.Rendering
 					RenderTarget target = RenderFactory.Inst.NewRenderTarget( );
 
 					//	TODO: Remove hardcoded render target format
-					target.Create( 512, 512, DepthTextureMethod ? TextureFormat.Undefined : TextureFormat.R8G8B8, 16, 0, DepthTextureMethod );
+					target.Create( resX, resY, DepthTextureMethod ? TextureFormat.Undefined : TextureFormat.R8G8B8, 16, 0, DepthTextureMethod );
 
 					m_RenderTargets[ lightIndex ] = target;
 				}

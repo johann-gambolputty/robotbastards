@@ -7,19 +7,20 @@
 
 
       <object type="Rb.Rendering.Cameras.SphereCamera" assembly="Rb.Rendering">
-        <object type="Rb.TestApp.SphereCameraController" assembly="Rb.TestApp">
-          <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
-            <string value="CameraCommands" property="CommandListName"/>
-            <dynProperty value="User" property="User"/>
-          </object>
-        </object>
-      </object>
-
-
-      <object type="Rb.Rendering.Cameras.SphereCamera" assembly="Rb.Rendering">
         <object type="Rb.TestApp.TrackObjectSphereCameraController" assembly="Rb.TestApp">
           <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
             <string value="TrackCameraCommands" property="CommandListName"/>
+            <dynProperty value="User" property="User"/>
+          </object>
+
+          <ref objectId="{BE726C7E-26EA-433e-974A-B57396EE5FB5}" property="TrackedObject"/>
+        </object>
+      </object>
+
+      <object type="Rb.Rendering.Cameras.SphereCamera" assembly="Rb.Rendering">
+        <object type="Rb.TestApp.SphereCameraController" assembly="Rb.TestApp">
+          <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
+            <string value="CameraCommands" property="CommandListName"/>
             <dynProperty value="User" property="User"/>
           </object>
         </object>
@@ -37,8 +38,15 @@
 		<!-- FPS display -->
 		<bool value="true" property="ShowFps"/>
 
-		<!-- Rendering technique -->	
-		<object type="Rb.World.Rendering.SceneShadowBufferTechnique" assembly="Rb.World" property="Technique"/>
+		<!-- Rendering technique -->
+    <object type="Rb.World.Rendering.SceneShadowBufferTechnique" assembly="Rb.World" property="Technique">
+      <parameters>
+        <int value="1024"/>
+        <int value="1024"/>
+      </parameters>
+      <float value="0.5" property="NearZ"/>
+      <float value="150" property="FarZ"/>
+    </object>
 		
 		<!-- Object to render -->
 		<dynProperty value="Subject" property="Renderable"/>

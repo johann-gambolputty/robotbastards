@@ -39,6 +39,7 @@
     <Compile Include="Entities\JumpRequest.cs" />
     <Compile Include="Entities\MovementRequest.cs" />
     <Compile Include="Entities\MovementXzRequest.cs" />
+    <Compile Include="Entities\RotateXzRequest.cs" />
     <Compile Include="Host.cs" />
     <Compile Include="IHost.cs" />
     <Compile Include="ILightingManager.cs" />
