@@ -14,7 +14,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\debug\</OutputPath>
+    <OutputPath>..\..\bin\debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -22,7 +22,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\bin\Release\</OutputPath>
+    <OutputPath>..\..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -36,22 +36,23 @@
     <Compile Include="Environment\Collisions.cs" />
     <Compile Include="Environment\Environment.cs" />
     <Compile Include="Environment\Graphics.cs" />
+    <Compile Include="Environment\Navigator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Source\Rb.Core\Rb.Core.csproj">
+    <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Source\Rb.Log\Rb.Log.csproj">
+    <ProjectReference Include="..\..\..\Source\Rb.Log\Rb.Log.csproj">
       <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
       <Name>Rb.Log</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Source\Rb.Rendering\Rb.Rendering.csproj">
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering\Rb.Rendering.csproj">
       <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
       <Name>Rb.Rendering</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Source\Rb.World\Rb.World.csproj">
+    <ProjectReference Include="..\..\..\Source\Rb.World\Rb.World.csproj">
       <Project>{46980366-998B-4178-87B7-B04DD3B21979}</Project>
       <Name>Rb.World</Name>
     </ProjectReference>
