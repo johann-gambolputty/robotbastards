@@ -1,4 +1,3 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Referenced Projects", "Referenced Projects", "{1E052543-8CA9-4AA2-9931-53A046A7754F}"
@@ -35,9 +34,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Rendering.Windows", "..\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.World", "..\Source\Rb.World\Rb.World.csproj", "{46980366-998B-4178-87B7-B04DD3B21979}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc0.Core", "Poc0.Core\Poc0.Core.csproj", "{FBEDE7DA-1ADD-424D-9EBE-48179585DE45}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc0.Core", "Source\Poc0.Core\Poc0.Core.csproj", "{FBEDE7DA-1ADD-424D-9EBE-48179585DE45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc0.LevelEditor", "Poc0.LevelEditor\Poc0.LevelEditor.csproj", "{F224FA4B-D756-425B-BC3E-5CDC4E5A5F8B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc0.LevelEditor", "Source\Poc0.LevelEditor\Poc0.LevelEditor.csproj", "{F224FA4B-D756-425B-BC3E-5CDC4E5A5F8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
