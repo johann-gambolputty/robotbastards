@@ -11,7 +11,7 @@ namespace Rb.Rendering.OpenGl.Windows
 	/// <summary>
 	/// Display setup for OpenGL windows controls
 	/// </summary>
-	public class DisplaySetup : Rb.Rendering.Windows.IWindowsDisplaySetup
+	public class DisplaySetup : Rendering.Windows.IWindowsDisplaySetup
 	{
 		#region IWindowsDisplaySetup Implementation
 
@@ -120,8 +120,6 @@ namespace Rb.Rendering.OpenGl.Windows
 			if ( ms_LastRenderContext == IntPtr.Zero )
 			{
 				ms_LastRenderContext = m_RenderContext;
-
-				//	TODO: This is a horrible bodge, to ensure that opengl extensions get loaded correctly
 
 				//	Make it current
 				Wgl.wglMakeCurrent( m_DeviceContext, m_RenderContext );

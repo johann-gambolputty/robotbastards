@@ -28,44 +28,46 @@ namespace Poc0.LevelEditor
 		/// </summary>
 		private void InitializeComponent( )
 		{
-			this.statusStrip1 = new System.Windows.Forms.StatusStrip( );
+			this.statusStrip = new System.Windows.Forms.StatusStrip( );
 			this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar( );
-			this.menuStrip1 = new System.Windows.Forms.MenuStrip( );
+			this.menuStrip = new System.Windows.Forms.MenuStrip( );
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
-			this.splitContainer1 = new System.Windows.Forms.SplitContainer( );
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
 			this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
-			this.statusStrip1.SuspendLayout( );
-			this.menuStrip1.SuspendLayout( );
+			this.splitContainer1 = new System.Windows.Forms.SplitContainer( );
+			this.display1 = new Rb.Rendering.Windows.Display( );
+			this.statusStrip.SuspendLayout( );
+			this.menuStrip.SuspendLayout( );
+			this.splitContainer1.Panel2.SuspendLayout( );
 			this.splitContainer1.SuspendLayout( );
 			this.SuspendLayout( );
 			// 
-			// statusStrip1
+			// statusStrip
 			// 
-			this.statusStrip1.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
+			this.statusStrip.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar1} );
-			this.statusStrip1.Location = new System.Drawing.Point( 0, 425 );
-			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size( 512, 22 );
-			this.statusStrip1.TabIndex = 0;
-			this.statusStrip1.Text = "statusStrip1";
+			this.statusStrip.Location = new System.Drawing.Point( 0, 434 );
+			this.statusStrip.Name = "statusStrip";
+			this.statusStrip.Size = new System.Drawing.Size( 570, 22 );
+			this.statusStrip.TabIndex = 0;
+			this.statusStrip.Text = "statusStrip1";
 			// 
 			// toolStripProgressBar1
 			// 
 			this.toolStripProgressBar1.Name = "toolStripProgressBar1";
 			this.toolStripProgressBar1.Size = new System.Drawing.Size( 100, 16 );
 			// 
-			// menuStrip1
+			// menuStrip
 			// 
-			this.menuStrip1.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
+			this.menuStrip.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.viewToolStripMenuItem} );
-			this.menuStrip1.Location = new System.Drawing.Point( 0, 0 );
-			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size( 512, 24 );
-			this.menuStrip1.TabIndex = 1;
-			this.menuStrip1.Text = "menuStrip1";
+			this.menuStrip.Location = new System.Drawing.Point( 0, 0 );
+			this.menuStrip.Name = "menuStrip";
+			this.menuStrip.Size = new System.Drawing.Size( 570, 24 );
+			this.menuStrip.TabIndex = 1;
+			this.menuStrip.Text = "menuStrip1";
 			// 
 			// fileToolStripMenuItem
 			// 
@@ -82,15 +84,6 @@ namespace Poc0.LevelEditor
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler( this.exitToolStripMenuItem_Click );
 			// 
-			// splitContainer1
-			// 
-			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.splitContainer1.Location = new System.Drawing.Point( 0, 24 );
-			this.splitContainer1.Name = "splitContainer1";
-			this.splitContainer1.Size = new System.Drawing.Size( 512, 401 );
-			this.splitContainer1.SplitterDistance = 190;
-			this.splitContainer1.TabIndex = 2;
-			// 
 			// viewToolStripMenuItem
 			// 
 			this.viewToolStripMenuItem.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
@@ -102,25 +95,52 @@ namespace Poc0.LevelEditor
 			// logToolStripMenuItem
 			// 
 			this.logToolStripMenuItem.Name = "logToolStripMenuItem";
-			this.logToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+			this.logToolStripMenuItem.Size = new System.Drawing.Size( 102, 22 );
 			this.logToolStripMenuItem.Text = "&Log";
 			this.logToolStripMenuItem.Click += new System.EventHandler( this.logToolStripMenuItem_Click );
+			// 
+			// splitContainer1
+			// 
+			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer1.Location = new System.Drawing.Point( 0, 24 );
+			this.splitContainer1.Name = "splitContainer1";
+			// 
+			// splitContainer1.Panel2
+			// 
+			this.splitContainer1.Panel2.Controls.Add( this.display1 );
+			this.splitContainer1.Size = new System.Drawing.Size( 570, 410 );
+			this.splitContainer1.SplitterDistance = 173;
+			this.splitContainer1.TabIndex = 2;
+			// 
+			// display1
+			// 
+			this.display1.ColourBits = ( ( byte )( 32 ) );
+			this.display1.ContinuousRendering = true;
+			this.display1.DepthBits = ( ( byte )( 24 ) );
+			this.display1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.display1.Location = new System.Drawing.Point( 0, 0 );
+			this.display1.Name = "display1";
+			this.display1.Size = new System.Drawing.Size( 393, 410 );
+			this.display1.StencilBits = ( ( byte )( 0 ) );
+			this.display1.TabIndex = 0;
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size( 512, 447 );
+			this.ClientSize = new System.Drawing.Size( 570, 456 );
 			this.Controls.Add( this.splitContainer1 );
-			this.Controls.Add( this.statusStrip1 );
-			this.Controls.Add( this.menuStrip1 );
-			this.MainMenuStrip = this.menuStrip1;
+			this.Controls.Add( this.statusStrip );
+			this.Controls.Add( this.menuStrip );
+			this.MainMenuStrip = this.menuStrip;
 			this.Name = "MainForm";
 			this.Text = "MainForm";
-			this.statusStrip1.ResumeLayout( false );
-			this.statusStrip1.PerformLayout( );
-			this.menuStrip1.ResumeLayout( false );
-			this.menuStrip1.PerformLayout( );
+			this.Load += new System.EventHandler( this.MainForm_Load );
+			this.statusStrip.ResumeLayout( false );
+			this.statusStrip.PerformLayout( );
+			this.menuStrip.ResumeLayout( false );
+			this.menuStrip.PerformLayout( );
+			this.splitContainer1.Panel2.ResumeLayout( false );
 			this.splitContainer1.ResumeLayout( false );
 			this.ResumeLayout( false );
 			this.PerformLayout( );
@@ -129,13 +149,14 @@ namespace Poc0.LevelEditor
 
 		#endregion
 
-		private System.Windows.Forms.StatusStrip statusStrip1;
-		private System.Windows.Forms.MenuStrip menuStrip1;
+		private System.Windows.Forms.StatusStrip statusStrip;
+		private System.Windows.Forms.MenuStrip menuStrip;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 		private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem logToolStripMenuItem;
+		private Rb.Rendering.Windows.Display display1;
 	}
 }
