@@ -1,6 +1,4 @@
 using System;
-using System.Configuration;
-using System.Drawing;
 using System.Windows.Forms;
 
 using Rb.Core.Resources;
@@ -9,7 +7,6 @@ using Rb.Core.Utils;
 using Rb.Network;
 using Rb.Network.Runt;
 using Rb.Rendering;
-using Rb.Rendering.Cameras;
 using Rb.World;
 using Rb.Log;
 using Rb.Interaction;
@@ -28,20 +25,6 @@ namespace Rb.TestApp
 
 		private HostSetup	m_Setup;
 		private CommandUser	m_User = new CommandUser( );
-
-		/// <summary>
-		/// Creates a simple camera with controller
-		/// </summary>
-        private Camera3 CreateSimpleCamera( IBuilder builder, CommandList cameraCommands )
-        {
-            Camera3 result = new SphereCamera( );
-
-			SphereCameraController controller = Builder.CreateInstance< SphereCameraController >( builder );
-            result.AddChild( controller );
-            result.AddChild( Builder.CreateInstance < CommandInputListener >( builder, controller, m_User, cameraCommands ) );
-
-            return result;
-        }
 
 		/// <summary>
 		/// Updates the user every tick of the inputClock
@@ -92,23 +75,11 @@ namespace Rb.TestApp
 				loadParams.Properties[ "User" ] = m_User;
                 ResourceManager.Instance.Load( m_Setup.SceneFile, loadParams );
 
-				//CommandList cameraCommands = CommandListManager.Inst.Get< CameraCommands >( );
-
-                //Viewer viewer = new Viewer( CreateSimpleCamera( scene.Builder, cameraCommands ), scene );
-                //viewer.ShowFps = true;
-				//viewer.Technique = Builder.CreateInstance< World.Rendering.SceneShadowBufferTechnique >( scene.Builder );
-                //display1.AddViewer( viewer );
-
 				//	Naughty, just reuse loadParams (null out target because we don't want to load -into- the scene)
             	loadParams.Target = null;
 				loadParams.Properties[ "Subject" ] = scene;
 				Viewer viewer = ( Viewer )ResourceManager.Instance.Load( m_Setup.ViewerFile, loadParams );
 				display1.AddViewer( viewer );
-				
-                //viewer = new Viewer( CreateSimpleCamera( scene.Builder, cameraCommands ), scene );
-				//viewer.Technique = Builder.CreateInstance< World.Rendering.SceneShadowBufferTechnique >( scene.Builder );
-				//viewer.ViewRect = new RectangleF( 0, 0, 0.3f, 0.3f );
-                //display1.AddViewer( viewer );
             }
             catch ( Exception ex )
             {
