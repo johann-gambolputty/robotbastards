@@ -55,7 +55,7 @@
   </object>
 
   <!--Resources-->
-  <resource path="major" id="{7B0132C4-DF4C-4df4-8EC5-63B7A7BF079A}">
+  <resource path="sarge" id="{7B0132C4-DF4C-4df4-8EC5-63B7A7BF079A}">
     <parameters>
       <float value="0.2" dynProperty="scaleX"/>
       <float value="0.2" dynProperty="scaleY"/>

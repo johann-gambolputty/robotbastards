@@ -27,6 +27,15 @@ namespace Rb.TestApp
 	public class TrackObjectSphereCameraController : CameraController, ISceneObject
 	{
 		/// <summary>
+		/// Sets the offset applied to the sphere camera S property
+		/// </summary>
+		public float SOffset
+		{
+			get { return m_SOffset; }
+			set { m_SOffset = value; }
+		}
+	
+		/// <summary>
 		/// Access to the object being tracked
 		/// </summary>
 		public object TrackedObject

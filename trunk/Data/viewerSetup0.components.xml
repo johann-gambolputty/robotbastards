@@ -7,11 +7,17 @@
 
 
       <object type="Rb.Rendering.Cameras.SphereCamera" assembly="Rb.Rendering">
+      
+      	<float value="0.7" property="T"/>
+      	<float value="50" property="Zoom"/>
+      
         <object type="Rb.TestApp.TrackObjectSphereCameraController" assembly="Rb.TestApp">
           <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
             <string value="TrackCameraCommands" property="CommandListName"/>
             <dynProperty value="User" property="User"/>
           </object>
+          
+          <float value="3.14" property="SOffset"/>
 
           <ref objectId="{BE726C7E-26EA-433e-974A-B57396EE5FB5}" property="TrackedObject"/>
         </object>

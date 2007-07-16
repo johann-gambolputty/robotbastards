@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resourceManager>
+	<providers>
+		<provider type="Rb.TestApp.FileResourceProviderWithUi">
+			<baseDir value="../../Data"/>
+		</provider>
+	</providers>
+	<loaders>
+    <loader type="Rb.ComponentXmlLoader.Loader" assembly="Rb.ComponentXmlLoader"/>
+    <loader type="Rb.ColladaLoader.Loader" assembly="Rb.ColladaLoader"/>
+    <loader type="Rb.Rendering.OpenGl.Md3Loader.Loader" assembly="Rb.Rendering.OpenGl.Md3Loader"/>
+    <loader type="Rb.Rendering.OpenGl.Cg.CgEffectLoader" assembly="Rb.Rendering.OpenGl"/>
+	</loaders>
+</resourceManager>
+
