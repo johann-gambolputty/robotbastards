@@ -1,6 +1,8 @@
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using Tao.OpenGl;
+using Tao.Platform.Windows;
 using Gdi = Tao.Platform.Windows.Gdi;
 using Wgl = Tao.Platform.Windows.Wgl;
 using User = Tao.Platform.Windows.User;
@@ -63,6 +65,8 @@ namespace Rb.Rendering.OpenGl.Windows
 		/// </summary>
 		public void Create( object display, byte colourBits, byte depthBits, byte stencilBits )
 		{
+			Dispose( );
+
 			Control control = ( Control )display;
 
 			Gdi.PIXELFORMATDESCRIPTOR descriptor = new Gdi.PIXELFORMATDESCRIPTOR( );
@@ -94,7 +98,8 @@ namespace Rb.Rendering.OpenGl.Windows
 			descriptor.dwVisibleMask = 0;
 			descriptor.dwDamageMask = 0;
 
-			m_DeviceContext = User.GetDC( control.Handle );
+			m_WindowHandle = control.Handle;
+			m_DeviceContext = User.GetDC( m_WindowHandle );
 
 			//	Choose a pixel format
 			int pixelFormat = Gdi.ChoosePixelFormat( m_DeviceContext, ref descriptor );
@@ -124,8 +129,11 @@ namespace Rb.Rendering.OpenGl.Windows
 				//	Make it current
 				Wgl.wglMakeCurrent( m_DeviceContext, m_RenderContext );
 
+				// Force A Reset On The Working Set Size
+				//Kernel.SetProcessWorkingSetSize( Process.GetCurrentProcess( ).Handle, -1, -1 );
+
 				//	Load extensions
-				OpenGlRenderer.LoadExtensions( );
+				//OpenGlRenderer.LoadExtensions( );
 			}
 			else
 			{
@@ -165,9 +173,34 @@ namespace Rb.Rendering.OpenGl.Windows
 
 		#region Private stuff
 
-		private IntPtr m_DeviceContext;
-		private IntPtr m_RenderContext;
-		private static IntPtr ms_LastRenderContext;
+		private IntPtr			m_WindowHandle;
+		private IntPtr			m_DeviceContext;
+		private IntPtr			m_RenderContext;
+		private static IntPtr	ms_LastRenderContext;
+
+		#endregion
+
+		#region IDisposable Members
+
+		/// <summary>
+		/// Releases device context and render context
+		/// </summary>
+		public void Dispose( )
+		{
+			if ( m_RenderContext != IntPtr.Zero )
+			{
+				Wgl.wglMakeCurrent( IntPtr.Zero, IntPtr.Zero );
+				Wgl.wglDeleteContext( m_RenderContext );
+				m_RenderContext = IntPtr.Zero;
+			}
+
+			if ( ( m_WindowHandle != IntPtr.Zero ) && ( m_DeviceContext != IntPtr.Zero ) )
+			{
+				User.ReleaseDC( m_WindowHandle, m_DeviceContext );
+				m_WindowHandle = IntPtr.Zero;
+				m_DeviceContext = IntPtr.Zero;
+			}
+		}
 
 		#endregion
 	}
