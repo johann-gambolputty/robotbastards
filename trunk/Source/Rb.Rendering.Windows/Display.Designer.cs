@@ -17,6 +17,10 @@ namespace Rb.Rendering.Windows
 			{
 				components.Dispose( );
 			}
+			if ( m_Setup != null )
+			{
+				m_Setup.Dispose( );
+			}
 			base.Dispose( disposing );
 		}
 

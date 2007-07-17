@@ -57,14 +57,10 @@ namespace Rb.Rendering.Windows
 		/// </summary>
 		public Display( )
 		{
-			if ( RenderFactory.Inst != null )
+			if ( m_Setup != null )
 			{
-				m_Setup = ( IWindowsDisplaySetup )RenderFactory.Inst.CreateDisplaySetup( );
-				if ( m_Setup != null )
-				{
-					SetStyle( m_Setup.AddStyles, true );
-					SetStyle( m_Setup.RemoveStyles, false );
-				}
+				SetStyle( m_Setup.AddStyles, true );
+				SetStyle( m_Setup.RemoveStyles, false );
 			}
 
 			InitializeComponent( );
@@ -75,16 +71,29 @@ namespace Rb.Rendering.Windows
 			{
 				//	TODO: AP: Hacky rendering timer
 				m_RenderingTimer			= new Timer( );
-				m_RenderingTimer.Tick		+= new EventHandler( RenderTick );
+				m_RenderingTimer.Tick		+= RenderTick;
 				m_RenderingTimer.Interval	= ( int )( 100.0f / 30.0f );
 				m_RenderingTimer.Enabled	= true;
 				m_RenderingTimer.Start( );
 			}
 		}
 
+		/// <summary>
+		/// Overrides the control's class style parameters.
+		/// </summary>
+		protected override CreateParams CreateParams
+		{
+			get
+			{
+				CreateParams cp = base.CreateParams;
+				cp.ClassStyle = cp.ClassStyle | m_Setup.ClassStyles;
+				return cp;
+			}
+		}
+
 		private void Display_Load( object sender, System.EventArgs e )
 		{
-			if ( m_Setup != null )
+			if (m_Setup != null)
 			{
 				m_Setup.Create( this, m_ColourBits, m_DepthBits, m_StencilBits );
 			}
@@ -217,7 +226,7 @@ namespace Rb.Rendering.Windows
         private byte 					m_StencilBits			= 0;
 		private byte 					m_DepthBits				= 24;
 		private byte 					m_ColourBits			= 32;
-		private IWindowsDisplaySetup	m_Setup					= null;
+		private IWindowsDisplaySetup	m_Setup					= ( IWindowsDisplaySetup )RenderFactory.Inst.CreateDisplaySetup( );
 		private Image					m_DesignImage			= null;
 		private bool					m_ContinuousRendering	= true;
 		private bool					m_AlreadyInvalidated	= false;

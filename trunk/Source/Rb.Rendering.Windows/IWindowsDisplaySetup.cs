@@ -1,3 +1,4 @@
+using System;
 using System.Windows.Forms;
 
 namespace Rb.Rendering.Windows
@@ -5,7 +6,7 @@ namespace Rb.Rendering.Windows
 	/// <summary>
 	/// Extends the IDisplaySetup interface to include windows-specific setup options
 	/// </summary>
-	public interface IWindowsDisplaySetup : IDisplaySetup
+	public interface IWindowsDisplaySetup : IDisplaySetup, IDisposable
 	{
 		/// <summary>
 		/// Returns the class styles required by the owner window
