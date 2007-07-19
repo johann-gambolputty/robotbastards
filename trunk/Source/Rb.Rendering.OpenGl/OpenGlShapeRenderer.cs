@@ -1,5 +1,7 @@
+using System;
 using Rb.Core.Maths;
 using Tao.OpenGl;
+using System.Drawing;
 
 namespace Rb.Rendering.OpenGl
 {
@@ -8,6 +10,23 @@ namespace Rb.Rendering.OpenGl
 	/// </summary>
 	public class OpenGlShapeRenderer : Rb.Rendering.ShapeRenderer
 	{
+		#region Construction
+
+		public OpenGlShapeRenderer( )
+		{
+			m_DrawImageRenderState = RenderFactory.Instance.NewRenderState( );
+
+			m_DrawImageRenderState
+				.DisableCap( RenderStateFlag.DepthTest )
+				//.EnableCap( RenderStateFlag.Blend )
+				//.SetBlendMode( BlendFactor.SrcAlpha, BlendFactor.OneMinusSrcAlpha )
+				.SetPolygonRenderingMode( PolygonRenderMode.Fill )
+				.EnableCap( RenderStateFlag.Texture2d )
+				.DisableLighting( );
+		}
+
+		#endregion
+
 		#region 2d Rendering
 
 		/// <summary>
@@ -20,6 +39,8 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="colour"> Rectangle colour </param>
 		public override void DrawRectangle( int x, int y, int width, int height, System.Drawing.Color colour )
 		{
+			//	TODO: Push2d()/Pop2d()
+
 			Gl.glColor3ub( colour.R, colour.G, colour.B );
 			Gl.glBegin( Gl.GL_LINE_STRIP );
 
@@ -42,6 +63,59 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="colour"> Line colour </param>
 		public override void DrawLine( int x, int y, int endX, int endY, System.Drawing.Color colour )
 		{
+			//	TODO: Push2d()/Pop2d()
+
+			Gl.glColor3ub( colour.R, colour.G, colour.B );
+			Gl.glBegin( Gl.GL_LINES );
+
+			Gl.glVertex2i( x, y );
+			Gl.glVertex2i( endX, endY );
+
+			Gl.glEnd( );
+		}
+
+		/// <summary>
+		/// Draws a bitmap
+		/// </summary>
+		/// <remarks>
+		/// This is pretty darn slow - better to convert the image into a texture and
+		/// render that instead
+		/// </remarks>
+		/// <param name="x">Screen x position of the image</param>
+		/// <param name="y">Screen y position of the image</param>
+		/// <param name="width">Screen width of the image</param>
+		/// <param name="height">Screen height of the image</param>
+		/// <param name="texture">The image to render</param>
+		public override void DrawImage( int x, int y, int width, int height, Texture2d texture )
+		{
+			Renderer.Instance.Push2d( );
+
+			m_DrawImageRenderState.Begin( );
+
+			m_DrawImageSampler.Texture = ( OpenGlTexture2d )texture;
+			m_DrawImageSampler.Begin( );
+
+			Gl.glBegin( Gl.GL_QUADS );
+
+			Gl.glTexCoord2f( 0, 0 );
+			Gl.glVertex2i( x, y );
+			
+			Gl.glTexCoord2f( 1, 0 );
+			Gl.glVertex2i( x + width, y );
+			
+			Gl.glTexCoord2f( 1, 1 );
+			Gl.glVertex2i( x + width, y + height );
+			
+			Gl.glTexCoord2f( 0, 1 );
+			Gl.glVertex2i( x, y + height );
+
+			Gl.glEnd( );
+
+			m_DrawImageSampler.End( );
+
+			m_DrawImageRenderState.End( );
+
+			Renderer.Instance.Pop2d( );
 		}
 
 		#endregion
@@ -53,7 +127,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		/// <param name="start">Line start</param>
 		/// <param name="end">Line end</param>
-		public override void	DrawLine( Point3 start, Point3 end )
+		public override void DrawLine( Point3 start, Point3 end )
 		{
 			Gl.glBegin( Gl.GL_LINES );
 				Gl.glVertex3f( start.X, start.Y, start.Z );
@@ -68,7 +142,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="end"> End position of the cylinder </param>
 		/// <param name="radius"> Radius of the cylinder </param>
 		/// <param name="numCircumferenceSamples"> Number of subdivisions around the cylinder circumference</param>
-		public override void	DrawCylinder( Point3 start, Point3 end, float radius, int numCircumferenceSamples )
+		public override void DrawCylinder( Point3 start, Point3 end, float radius, int numCircumferenceSamples )
 		{
 			float angleIncrement	= Constants.TwoPi / ( float )numCircumferenceSamples;
 			float angle				= Constants.TwoPi - angleIncrement;
@@ -187,6 +261,13 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glVertex3f( x + centre.X, y + centre.Y, z + centre.Z );
 		}
+
+		#endregion
+
+		#region Private stuff
+
+		private readonly OpenGlTextureSampler2d m_DrawImageSampler = new OpenGlTextureSampler2d( );
+		private readonly RenderState m_DrawImageRenderState;
 
 		#endregion
 

@@ -82,14 +82,14 @@ namespace Rb.Rendering
 		/// </summary>
         public void Render( )
         {
-			Renderer renderer = Renderer.Inst;
+			Renderer renderer = Renderer.Instance;
 			Rectangle oldRect = renderer.Viewport;
 
 			int x = ( int )( m_ViewRect.Left * oldRect.Width );
 			int y = ( int )( m_ViewRect.Top * oldRect.Height );
 			int w = ( int )( m_ViewRect.Width * oldRect.Width );
 			int h = ( int )( m_ViewRect.Height * oldRect.Height );
-			Renderer.Inst.SetViewport( x, y, w, h );
+			Renderer.Instance.SetViewport( x, y, w, h );
 
 			renderer.ClearDepth( 1.0f );
 			renderer.ClearVerticalGradient( Color.DarkSeaGreen, Color.Black );
@@ -105,7 +105,7 @@ namespace Rb.Rendering
 				m_FpsDisplay.Render( m_Context );
 			}
 
-			Renderer.Inst.SetViewport( oldRect.Left, oldRect.Top, oldRect.Width, oldRect.Height );
+			Renderer.Instance.SetViewport( oldRect.Left, oldRect.Top, oldRect.Width, oldRect.Height );
         }
 
 		private FpsDisplay			m_FpsDisplay = new FpsDisplay( );

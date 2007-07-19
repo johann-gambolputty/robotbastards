@@ -11,7 +11,7 @@ namespace Rb.Rendering
 		/// <summary>
 		///	Singleton access
 		/// </summary>
-		public static ShapeRenderer Inst
+		public static ShapeRenderer Instance
 		{
 			get { return ms_Singleton; }
 		}
@@ -36,7 +36,17 @@ namespace Rb.Rendering
 		/// <param name="endX"> Line end x position </param>
 		/// <param name="endY"> Line end y position </param>
 		/// <param name="colour"> Line colour </param>
-		public abstract void	DrawLine( int x, int y, int endX, int endY, System.Drawing.Color colour );
+		public abstract void DrawLine( int x, int y, int endX, int endY, System.Drawing.Color colour );
+
+		/// <summary>
+		/// Draws an image
+		/// </summary>
+		/// <param name="x">Screen x position of the image</param>
+		/// <param name="y">Screen y position of the image</param>
+		/// <param name="width">Screen width of the image</param>
+		/// <param name="height">Screen height of the image</param>
+		/// <param name="texture">Sprite texture</param>
+		public abstract void DrawImage( int x, int y, int width, int height, Texture2d texture );
 
 		#endregion
 
@@ -96,14 +106,14 @@ namespace Rb.Rendering
 			//	HACK: dirty dirty hack
 			if ( m_Font == null )
 			{
-				m_Font = RenderFactory.Inst.NewFont( );
+				m_Font = RenderFactory.Instance.NewFont( );
 				m_Font.Setup( new System.Drawing.Font( "arial", 12 ) );
 			}
 			m_Font.DrawText( x, y, System.Drawing.Color.White, s );
 		}
 
 		/// <summary>
-		/// Protected constructor. Sets the ShapeRenderer.Inst singleton
+		/// Protected constructor. Sets the ShapeRenderer.Instance singleton
 		/// </summary>
 		protected ShapeRenderer( )
 		{

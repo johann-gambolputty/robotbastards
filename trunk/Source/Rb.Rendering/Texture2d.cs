@@ -1,5 +1,6 @@
 using System.Drawing;
 using Rb.Core.Utils;
+using System;
 
 namespace Rb.Rendering
 {
@@ -34,7 +35,7 @@ namespace Rb.Rendering
 	/// To apply a texture, use Renderer.ApplyTexture(), or a TextureSampler2d object
 	/// </remarks>
 	/// <seealso>ApplyTexture2d</seealso>
-	public abstract class Texture2d
+	public abstract class Texture2d : IDisposable
 	{
 		#region	Texture Format
 
@@ -137,7 +138,7 @@ namespace Rb.Rendering
 		/// </summary>
 		public static Texture2d FromManifestResource( string name )
 		{
-			Texture2d texture = RenderFactory.Inst.NewTexture2d( );
+			Texture2d texture = RenderFactory.Instance.NewTexture2d( );
 			texture.LoadManifestResource( name );
 			return texture;
 		}
@@ -169,7 +170,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Loads the texture from bitmap data
 		/// </summary>
-		public abstract void Load( System.Drawing.Bitmap bmp );
+		public abstract void Load( Bitmap bmp );
 
 		#endregion
 
@@ -178,14 +179,14 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Generates an Image from the texture
 		/// </summary>
-		public abstract System.Drawing.Image ToImage( );
+		public abstract Image ToImage( );
 
 		/// <summary>
 		/// Saves this texture to a file
 		/// </summary>
 		public void Save( string path )
 		{
-			System.Drawing.Image img = ToImage( );
+			Image img = ToImage( );
 			if ( img != null )
 			{
 				img.Save( path );
@@ -202,5 +203,16 @@ namespace Rb.Rendering
 
 		#endregion
 
+
+		#region IDisposable Members
+
+		/// <summary>
+		/// Gets rid of this texture
+		/// </summary>
+		public virtual void Dispose()
+		{
+		}
+
+		#endregion
 	}
 }

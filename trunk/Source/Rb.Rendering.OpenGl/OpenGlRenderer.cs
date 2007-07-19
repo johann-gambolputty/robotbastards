@@ -1,13 +1,12 @@
 using System;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using Rb.Core.Maths;
 using Tao.OpenGl;
 
 namespace Rb.Rendering.OpenGl
 {
 	/// <summary>
-	/// Summary description for OpenGlRenderer.
+	/// Renderer implementation using OpenGL
 	/// </summary>
 	public class OpenGlRenderer : Renderer
 	{
@@ -40,8 +39,7 @@ namespace Rb.Rendering.OpenGl
             Gl.glHint( Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST );
 
 			//	Add a default renderstate
-			//	TODO: AP: Causes display corruption if I do this
-			Inst.PushRenderState( RenderFactory.Inst.NewRenderState( ) );
+			Instance.PushRenderState( RenderFactory.Instance.NewRenderState( ) );
 		}
 
 		#endregion

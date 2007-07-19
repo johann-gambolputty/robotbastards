@@ -66,9 +66,14 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="TileGridDisplay.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TileGridDisplay.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="App.config" />
     <None Include="Properties\Settings.settings">
@@ -81,6 +86,13 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="TileGrid.cs" />
+    <Compile Include="TileGrid2dRenderer.cs" />
+    <Compile Include="TileGridDisplay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TileGridDisplay.Designer.cs">
+      <DependentUpon>TileGridDisplay.cs</DependentUpon>
+    </Compile>
     <Compile Include="TileObject.cs" />
     <Compile Include="TileType.cs" />
   </ItemGroup>
@@ -117,6 +129,9 @@
       <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
       <Name>Rb.Rendering</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DefaultTileType.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

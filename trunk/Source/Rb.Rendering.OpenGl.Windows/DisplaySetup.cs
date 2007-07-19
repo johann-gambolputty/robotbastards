@@ -155,7 +155,7 @@ namespace Rb.Rendering.OpenGl.Windows
 			}
 
 			Control control = ( Control )display;
-			OpenGlRenderer.Inst.SetViewport( 0, 0, control.Width, control.Height );
+			OpenGlRenderer.Instance.SetViewport( 0, 0, control.Width, control.Height );
 
 			return true;
 		}

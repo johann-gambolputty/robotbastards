@@ -9,7 +9,7 @@ namespace Rb.Rendering.OpenGl
 	/// <summary>
 	/// OpenGL implementation of Texture2d
 	/// </summary>
-	public class OpenGlTexture2d : Texture2d, IDisposable
+	public class OpenGlTexture2d : Texture2d
 	{
 		/// <summary>
 		/// Returns the internal texture handle
@@ -59,35 +59,53 @@ namespace Rb.Rendering.OpenGl
 		public override void Load( Bitmap bmp )
 		{
 			//	Get the GL format of the bitmap, possibly converting it in the process
-			int glInternalFormat = 0;
-			int glFormat = 0;
-			int glType = 0;
+			int glInternalFormat;
+			int glFormat;
+			int glType;
 			bmp = CheckBmpFormat( bmp, out glInternalFormat, out glFormat, out glType );
 
 			//	Lock the bitmap, and create the texture
 			BitmapData bmpData = bmp.LockBits( new Rectangle( 0, 0, bmp.Width, bmp.Height ), ImageLockMode.ReadOnly, bmp.PixelFormat );
-			Create( bmpData.Width, bmpData.Height, glInternalFormat, glFormat, glType, bmpData.Scan0 );
+
+			//	Argh... we don't quite handle bitmaps with loony strides
+			int expectedStride = bmp.Width * ( Image.GetPixelFormatSize( bmpData.PixelFormat ) / 8 );
+			if ( bmpData.Stride !=  expectedStride )
+			{
+				throw new ArgumentException( string.Format( "Unexpected stride in bitmap (was {0}, expected {1})", bmpData.Stride, expectedStride ) );
+			}
+
+			Create( bmpData.Width, bmpData.Stride, bmpData.Height, glInternalFormat, glFormat, glType, bmpData.Scan0 );
 			bmp.UnlockBits( bmpData );
 
 			m_Format = PixelFormatToTextureFormat( bmp.PixelFormat );
 		}
 
+		/// <summary>
+		/// Destroys the current texture
+		/// </summary>
 		private unsafe void DestroyCurrent( )
 		{
-			if ( m_TextureHandle != InvalidHandle )
+			try
 			{
-				fixed ( int* handleMem = &m_TextureHandle )
+				if ( m_TextureHandle != InvalidHandle )
 				{
-					Gl.glDeleteTextures( 1, ( IntPtr )handleMem );
+					fixed ( int* handleMem = &m_TextureHandle )
+					{
+						Gl.glDeleteTextures( 1, ( IntPtr )handleMem );
+					}
+					m_TextureHandle = InvalidHandle;
 				}
-				m_TextureHandle = InvalidHandle;
+			}
+			catch ( AccessViolationException )
+			{
+				//	TODO: AP: oooh so bad. silently gobbling the exception, because it'll fire if GL has shut down.
 			}
 		}
 
 		/// <summary>
 		/// Creates the texture
 		/// </summary>
-		private unsafe void Create( int width, int height, int glInternalFormat, int glFormat, int glType, IntPtr bytes )
+		private unsafe void Create( int width, int stride, int height, int glInternalFormat, int glFormat, int glType, IntPtr bytes )
 		{
 			DestroyCurrent( );
 
@@ -98,7 +116,26 @@ namespace Rb.Rendering.OpenGl
 			}
 			Gl.glBindTexture( Gl.GL_TEXTURE_2D, m_TextureHandle );
 
-			Gl.glTexImage2D( Gl.GL_TEXTURE_2D, 0, glInternalFormat, width, height, 0, glFormat, glType, bytes );
+			try
+			{
+				Gl.glTexImage2D( Gl.GL_TEXTURE_2D, 0, glInternalFormat, width, height, 0, glFormat, glType, bytes );
+			}
+			catch ( AccessViolationException )
+			{
+				GraphicsLog.Warning( "Access violation occurred during texture creation (was image resource used as input?) - attempting managed buffer transfer");
+
+				int length = stride * height;
+				byte[] init = new byte[length];
+
+				//	Oh dear oh dear...
+				byte* bmpAddress = ( byte* )bytes.ToPointer( );
+				for (int index = 0; index < length; ++index)
+				{
+					init[ index ] = bmpAddress[ index ];
+				}
+				
+				Gl.glTexImage2D( Gl.GL_TEXTURE_2D, 0, glInternalFormat, width, height, 0, glFormat, glType, init );
+			}
 
 			m_InternalGlFormat	= glInternalFormat;
 			m_GlFormat			= glFormat;
@@ -309,7 +346,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Checks the format of a Bitmap. If it's not compatible with any OpenGL formats, it's converted to a format that is
 		/// </summary>
-		private static Bitmap CheckBmpFormat( Bitmap bmp, out int glInternalFormat, out int glFormat, out int glType )
+		public static Bitmap CheckBmpFormat( Bitmap bmp, out int glInternalFormat, out int glFormat, out int glType )
 		{
 			PixelFormat format = CheckPixelFormat( bmp.PixelFormat, out glInternalFormat, out glFormat, out glType );
 			if ( format == bmp.PixelFormat )
@@ -341,8 +378,8 @@ namespace Rb.Rendering.OpenGl
 			}
 
 			//	Bind the texture
-            OpenGlRenderer.Inst.UnbindAllTextures( );
-			OpenGlRenderer.Inst.BindTexture( this );
+            OpenGlRenderer.Instance.UnbindAllTextures( );
+			OpenGlRenderer.Instance.BindTexture(this);
 
 			//	HACK: Makes lots of assumptions about format...
 
@@ -414,7 +451,7 @@ namespace Rb.Rendering.OpenGl
 			}
 
 			//	Unbind the texture
-			OpenGlRenderer.Inst.UnbindTexture( this );
+			OpenGlRenderer.Instance.UnbindTexture( this );
 
 			//	Disable 2D texturing
 			if ( requires2DTexturesEnabled )
@@ -431,14 +468,10 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Deletes the associated texture handle
 		/// </summary>
-		public void Dispose( )
+		public override void Dispose( )
 		{
-			if ( m_TextureHandle != InvalidHandle )
-			{
-				//	TODO: ... can't delete, because the GL context has disappeared
-			//	Gl.glDeleteTextures( 1, ref m_TextureHandle );
-				m_TextureHandle = InvalidHandle;
-			}
+			//	TODO: ... can't delete, because the GL context may have disappeared
+			DestroyCurrent( );
 		}
 
 		#endregion
