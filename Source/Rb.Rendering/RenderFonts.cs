@@ -30,7 +30,7 @@ namespace Rb.Rendering
 		{
 			if ( ms_DefaultFonts[ ( int )font ] == null )
 			{
-				RenderFont newFont = RenderFactory.Inst.NewFont( );
+				RenderFont newFont = RenderFactory.Instance.NewFont( );
 				newFont.Setup( CreateDefaultSystemFont( font ) );
 				ms_DefaultFonts[ ( int )font ] = newFont;
 			}

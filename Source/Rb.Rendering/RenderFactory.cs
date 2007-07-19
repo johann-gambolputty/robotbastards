@@ -22,7 +22,7 @@ namespace Rb.Rendering
 		/// <exception cref="ApplicationException">Thrown if the assembly does not contain a class that implements RenderFactory</exception>
 		/// <remarks>
 		/// Loads the specified assembly, and searches it for a class that implements RenderFactory. If one is found, an instance is
-		/// created of that class. This sets the singletons RenderFactory.Inst, Renderer.Inst and ShapeRenderer.Inst. If no class
+		/// created of that class. This sets the singletons RenderFactory.Instance, Renderer.Instance and ShapeRenderer.Instance. If no class
 		/// is found that implements RenderFactory, an ApplicationException is thrown.
 		/// <note>
 		/// This call also automatically finds any Rendering.Composites.Composite derived classes in the loaded assembly, and adds them
@@ -84,7 +84,7 @@ namespace Rb.Rendering
         /// </summary>
 		private static void OnAssemblyLoad( object sender, AssemblyLoadEventArgs args )
 		{
-			RenderFactory.Inst.AddAssemblyComposites( args.LoadedAssembly );
+			RenderFactory.Instance.AddAssemblyComposites( args.LoadedAssembly );
 		}
 
 		#endregion
@@ -94,7 +94,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Render factory singleton
 		/// </summary>
-		public static RenderFactory			Inst
+		public static RenderFactory Instance
 		{
 			get
 			{
@@ -144,7 +144,7 @@ namespace Rb.Rendering
 		/// </remarks>
 		/// <example>
 		/// <code lang="C#">
-		/// Mesh newMesh = ( Mesh )RenderFactory.Inst.NewComposite( "Mesh" );
+		/// Mesh newMesh = ( Mesh )RenderFactory.Instance.NewComposite( "Mesh" );
 		/// </code>
 		/// </example>
         /// <seealso cref="GetCompositeTypeFromName">GetCompositeTypeFromName</seealso>
@@ -165,7 +165,7 @@ namespace Rb.Rendering
 		/// </remarks>
 		/// <example>
 		/// <code lang="C#">
-		/// Mesh newMesh = ( Mesh )RenderFactory.Inst.NewComposite( typeof( Mesh ) );
+		/// Mesh newMesh = ( Mesh )RenderFactory.Instance.NewComposite( typeof( Mesh ) );
 		/// </code>
 		/// </example>
         /// <seealso cref="GetCompositeTypeFromBaseType">GetCompositeTypeFromBaseType</seealso>

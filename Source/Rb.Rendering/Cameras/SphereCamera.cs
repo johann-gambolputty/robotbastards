@@ -22,7 +22,7 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public override void Begin( )
 		{
-			Renderer.Inst.SetLookAtTransform( m_LookAt, m_Pos, m_YAxis );
+			Renderer.Instance.SetLookAtTransform( m_LookAt, m_Pos, m_YAxis );
 			base.Begin( );
 		}
 

@@ -86,7 +86,7 @@ namespace Rb.Rendering.Windows
 			get
 			{
 				CreateParams cp = base.CreateParams;
-				cp.ClassStyle = cp.ClassStyle | m_Setup.ClassStyles;
+				cp.ClassStyle = cp.ClassStyle | ( m_Setup == null ? 0 : m_Setup.ClassStyles );
 				return cp;
 			}
 		}
@@ -159,8 +159,8 @@ namespace Rb.Rendering.Windows
 		{
 			if ( Viewers.Count == 0 )
 			{
-				Renderer.Inst.ClearDepth( 1.0f );
-				Renderer.Inst.ClearVerticalGradient( Color.DarkSeaGreen, Color.Black );
+				Renderer.Instance.ClearDepth( 1.0f );
+				Renderer.Instance.ClearVerticalGradient( Color.DarkSeaGreen, Color.Black );
 			}
 			else
 			{
@@ -223,15 +223,27 @@ namespace Rb.Rendering.Windows
 
         #region	Private stuff
 
-        private byte 					m_StencilBits			= 0;
-		private byte 					m_DepthBits				= 24;
-		private byte 					m_ColourBits			= 32;
-		private IWindowsDisplaySetup	m_Setup					= ( IWindowsDisplaySetup )RenderFactory.Inst.CreateDisplaySetup( );
-		private Image					m_DesignImage			= null;
-		private bool					m_ContinuousRendering	= true;
-		private bool					m_AlreadyInvalidated	= false;
-		private Timer					m_RenderingTimer;
-        private List< Viewer >          m_Viewers               = new List< Viewer >( );
+        private byte 							m_StencilBits			= 0;
+		private byte 							m_DepthBits				= 24;
+		private byte 							m_ColourBits			= 32;
+		private readonly IWindowsDisplaySetup	m_Setup					= CreateSetupData( );
+		private Image							m_DesignImage			= null;
+		private bool							m_ContinuousRendering	= true;
+		private bool							m_AlreadyInvalidated	= false;
+		private readonly List< Viewer > 		m_Viewers				= new List< Viewer >( );
+		private readonly Timer					m_RenderingTimer;
+
+		/// <summary>
+		/// Creates setup data from the render factory, if it's available
+		/// </summary>
+		private static IWindowsDisplaySetup CreateSetupData( )
+		{
+			if ( RenderFactory.Instance != null )
+			{
+				return ( IWindowsDisplaySetup )RenderFactory.Instance.CreateDisplaySetup( );
+			}
+			return null;
+		}
 
 		#endregion
 

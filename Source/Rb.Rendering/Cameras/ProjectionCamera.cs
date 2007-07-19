@@ -12,12 +12,12 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public override void Begin( )
 		{
-			Renderer renderer = Renderer.Inst;
+			Renderer renderer = Renderer.Instance;
 			int width = renderer.ViewportWidth;
 			int height = renderer.ViewportHeight;
 
 			float aspectRatio = ( height == 0 ) ? 1.0f : ( float )width / ( float )height;
-			Renderer.Inst.SetPerspectiveProjectionTransform( m_PerspectiveFov, aspectRatio, m_PerspectiveZNear, m_PerspectiveZFar );
+			Renderer.Instance.SetPerspectiveProjectionTransform( m_PerspectiveFov, aspectRatio, m_PerspectiveZNear, m_PerspectiveZFar );
 
 			base.Begin( );
 		}

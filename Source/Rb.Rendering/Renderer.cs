@@ -8,7 +8,7 @@ namespace Rb.Rendering
 {
 
 	/// <summary>
-	/// Summary description for Renderer.
+	/// Abstract base class for rendering
 	/// </summary>
 	public abstract class Renderer
 	{
@@ -26,7 +26,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Gets the renderer
 		/// </summary>
-		public static Renderer Inst
+		public static Renderer Instance
 		{
 			get
 			{
@@ -387,7 +387,7 @@ namespace Rb.Rendering
 		{
 			if ( m_RenderStates.Count == 0 )
 			{
-				m_RenderStates.Add( RenderFactory.Inst.NewRenderState( ) );
+				m_RenderStates.Add( RenderFactory.Instance.NewRenderState( ) );
 			}
 			else
 			{
@@ -437,13 +437,13 @@ namespace Rb.Rendering
 
 		#endregion
 
-        #region Protected stuff
+		#region Protected stuff
 
-        #endregion
+		#endregion
 
-        #region	Private stuff
+		#region	Private stuff
 
-        private static Renderer		ms_Singleton;
+		private static Renderer		ms_Singleton;
 		private ArrayList			m_RenderStates	= new ArrayList( );
 		private Cameras.CameraBase	m_Camera;
 		private Light[]				m_Lights = new Light[ MaxActiveLights ];

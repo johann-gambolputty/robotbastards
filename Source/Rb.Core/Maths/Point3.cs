@@ -138,9 +138,9 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public float	SqrDistanceTo( Point3 pt )
 		{
-			float diffX = ( float )( X - pt.X );
-			float diffY = ( float )( Y - pt.Y );
-			float diffZ = ( float )( Z - pt.Z );
+			float diffX = ( X - pt.X );
+			float diffY = ( Y - pt.Y );
+			float diffZ = ( Z - pt.Z );
 
 			return ( diffX * diffX ) + ( diffY * diffY ) + ( diffZ * diffZ );
 		}

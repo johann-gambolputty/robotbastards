@@ -52,7 +52,7 @@ namespace Rb.Rendering
 				return;
 			}
 
-			Renderer renderer = Renderer.Inst;
+			Renderer renderer = Renderer.Instance;
 
 			for ( int lightIndex = 0; lightIndex < m_Lights.Length; ++lightIndex )
 			{
@@ -65,7 +65,7 @@ namespace Rb.Rendering
 		/// </summary>
 		public void End( )
 		{
-			Renderer.Inst.ClearLights( );
+			Renderer.Instance.ClearLights( );
 		}
 
 		#endregion

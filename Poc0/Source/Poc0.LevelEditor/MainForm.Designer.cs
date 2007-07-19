@@ -36,7 +36,7 @@ namespace Poc0.LevelEditor
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
 			this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer( );
-			this.display1 = new Rb.Rendering.Windows.Display( );
+			this.display1 = new TileGridDisplay( );
 			this.statusStrip.SuspendLayout( );
 			this.menuStrip.SuspendLayout( );
 			this.splitContainer1.Panel2.SuspendLayout( );
@@ -157,6 +157,6 @@ namespace Poc0.LevelEditor
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem logToolStripMenuItem;
-		private Rb.Rendering.Windows.Display display1;
+		private TileGridDisplay display1;
 	}
 }

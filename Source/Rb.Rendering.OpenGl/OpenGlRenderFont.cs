@@ -17,10 +17,10 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		private struct CharacterData
 		{
-			public short	U;
-			public short	V;
-			public byte		Width;
-			public byte		Height;
+			public readonly short	U;
+			public readonly short	V;
+			public readonly byte	Width;
+			public readonly byte	Height;
 
 			/// <summary>
 			/// Sets up the character UV rectangle
@@ -47,8 +47,8 @@ namespace Rb.Rendering.OpenGl
 			Bitmap img = BuildFontImage( font, characters );
 			img.Save( string.Format( "{0}{1}.png", font.Name, font.Size ), ImageFormat.Png );
 
-			m_FontTextureSampler			= OpenGlRenderFactory.Inst.NewTextureSampler2d( );
-			m_FontTextureSampler.Texture	= OpenGlRenderFactory.Inst.NewTexture2d( );
+			m_FontTextureSampler			= OpenGlRenderFactory.Instance.NewTextureSampler2d( );
+			m_FontTextureSampler.Texture	= OpenGlRenderFactory.Instance.NewTexture2d( );
 			m_FontTextureSampler.Texture.Load( img );
 			m_FontTextureSampler.Mode		= TextureMode.Modulate;
 			m_FontTextureSampler.MinFilter	= TextureFilter.NearestTexel;
@@ -58,7 +58,7 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		private RenderState m_RenderState =
-			OpenGlRenderFactory.Inst.NewRenderState( )
+			OpenGlRenderFactory.Instance.NewRenderState( )
 				.DisableCap( RenderStateFlag.DepthTest )
 				.EnableCap( RenderStateFlag.Blend )
 				.SetBlendMode( BlendFactor.SrcAlpha, BlendFactor.OneMinusSrcAlpha )
@@ -76,11 +76,11 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="str">Text to draw</param>
 		public override void DrawText( int x, int y, Color colour, string str )
 		{
-			OpenGlRenderer.Inst.PushRenderState( m_RenderState );
-            OpenGlRenderer.Inst.PushTextures( );
+			OpenGlRenderer.Instance.PushRenderState( m_RenderState );
+            OpenGlRenderer.Instance.PushTextures( );
 			m_FontTextureSampler.Begin( );
 
-			OpenGlRenderer.Inst.Push2d( );
+			OpenGlRenderer.Instance.Push2d( );
 
 			Gl.glColor3ub( colour.R, colour.G, colour.B );
 
@@ -125,17 +125,17 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glEnd( );
 			m_FontTextureSampler.End( );
-            OpenGlRenderer.Inst.PopTextures( );
-			OpenGlRenderer.Inst.Pop2d( );
-			OpenGlRenderer.Inst.PopRenderState( );
+            OpenGlRenderer.Instance.PopTextures( );
+			OpenGlRenderer.Instance.Pop2d( );
+			OpenGlRenderer.Instance.PopRenderState( );
 		}
 
-		private TextureSampler2d	m_FontTextureSampler;
+		private TextureSampler2d m_FontTextureSampler;
 
 		/// <summary>
 		/// Measures the dimensions of a string, as required by BuildFontImage()
 		/// </summary>
-		private Size				MeasureString( Graphics graphics, string str, Font font )
+		private Size MeasureString( Graphics graphics, string str, Font font )
 		{
 			Size stringSize = new Size( );
 			for ( int charIndex = 0; charIndex < str.Length; ++charIndex )
@@ -166,7 +166,7 @@ namespace Rb.Rendering.OpenGl
 			for ( ; ( size * size ) < area; size *= 2 );
 
 			//	Set up new image and graphics object to render to it
-			Bitmap img = new Bitmap( size, size, System.Drawing.Imaging.PixelFormat.Format32bppRgb );
+			Bitmap img = new Bitmap( size, size, PixelFormat.Format32bppRgb );
 			graphics = Graphics.FromImage( img );
 			graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
@@ -216,7 +216,7 @@ namespace Rb.Rendering.OpenGl
 			return img;
 		}
 
-		private unsafe void FillBmpAlpha( Bitmap img )
+		private unsafe static void FillBmpAlpha( Bitmap img )
 		{
 			BitmapData bmpData = img.LockBits( new Rectangle( 0, 0, img.Width, img.Height ), ImageLockMode.ReadWrite, img.PixelFormat );
 			byte* pixelMem = ( byte* )bmpData.Scan0.ToPointer( );

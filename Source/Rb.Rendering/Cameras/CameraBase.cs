@@ -14,7 +14,7 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public virtual void Begin( )
 		{
-			Renderer.Inst.Camera = this;
+			Renderer.Instance.Camera = this;
 		}
 
 		/// <summary>
@@ -22,7 +22,7 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public virtual void End( )
 		{
-			Renderer.Inst.Camera = null;
+			Renderer.Instance.Camera = null;
 		}
 	}
 }

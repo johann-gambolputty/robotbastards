@@ -22,7 +22,7 @@ namespace Rb.Rendering.Cameras
         {
             //	TODO: AP: This is a bodge - don't abuse the rendering pipeline like this!
 			Begin( );
-			Point3 result = Renderer.Inst.Unproject( x, y, depth );
+			Point3 result = Renderer.Instance.Unproject( x, y, depth );
 			End( );
 			return result;
 		}
@@ -37,7 +37,7 @@ namespace Rb.Rendering.Cameras
 		{
 			//	TODO: AP: This is a bodge - don't abuse the rendering pipeline like this!
 			Begin( );
-			Ray3 result = new Ray3( Position, ( Renderer.Inst.Unproject( x, y, 1 ) - Position ).MakeNormal( ) );
+			Ray3 result = new Ray3( Position, ( Renderer.Instance.Unproject( x, y, 1 ) - Position ).MakeNormal( ) );
 			End( );
 			return result;
 		}
