@@ -1,5 +1,7 @@
 
 using System.Drawing;
+using Poc0.LevelEditor.Core;
+using Poc0.LevelEditor.Rendering.OpenGl;
 using Rb.Rendering;
 using Rb.Rendering.Windows;
 
@@ -12,6 +14,7 @@ namespace Poc0.LevelEditor
 			InitializeComponent();
 		}
 
+		/*
 		protected override void Draw()
 		{
 			if ( m_Grid == null )
@@ -24,15 +27,10 @@ namespace Poc0.LevelEditor
 				Renderer.Instance.ClearVerticalGradient( Color.DarkSeaGreen, Color.Black );
 
 				m_Renderer.Render( m_Grid );
+				m_Display.Render( null );
 			}
 		}
+		*/
 
-		private TileGrid m_Grid;
-		private ITileGridRenderer m_Renderer = new TileGrid2dRenderer( );
-
-		private void TileGridDisplay_Load(object sender, System.EventArgs e)
-		{
-			m_Grid = new TileGrid( );
-		}
 	}
 }

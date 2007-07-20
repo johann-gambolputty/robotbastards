@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Poc0.LevelEditor
+namespace Poc0.LevelEditor.Core
 {
 	/// <summary>
 	/// Tile grid data
 	/// </summary>
-	internal class TileGrid
+	public class TileGrid
 	{
 		/// <summary>
 		/// The default width of a starting TileGrid
@@ -44,6 +41,14 @@ namespace Poc0.LevelEditor
 		}
 
 		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public TileGrid( )
+		{
+			m_Tiles = NewTileGrid( DefaultWidth, DefaultHeight );
+		}
+
+		/// <summary>
 		/// Sets the dimensions of the tile grid (in tiles)
 		/// </summary>
 		/// <param name="width">Number of tiles making up the width of the grid</param>
@@ -51,6 +56,14 @@ namespace Poc0.LevelEditor
 		public void SetDimensions( int width, int height )
 		{
 			m_Tiles = NewTileGrid( m_Tiles, width, height );
+		}
+
+		/// <summary>
+		/// Gets the tile type set associated with this grid
+		/// </summary>
+		public TileTypeSet Set
+		{
+			get { return m_TileTypes; }
 		}
 
 		#region Private stuff
@@ -62,7 +75,7 @@ namespace Poc0.LevelEditor
 		/// <param name="width">New tile grid width (in tiles)</param>
 		/// <param name="height">New tile grid height (in tiles)</param>
 		/// <returns>Returns the new Tile table</returns>
-		private static Tile[,] NewTileGrid( Tile[,] oldGrid, int width, int height )
+		private Tile[,] NewTileGrid( Tile[,] oldGrid, int width, int height )
 		{
 			if ( oldGrid == null )
 			{
@@ -77,7 +90,7 @@ namespace Poc0.LevelEditor
 			{
 				for ( int y = 0; y < height; ++y )
 				{
-					tiles[ x, y ] = ( x < oldWidth ) && ( y < oldHeight ) ? oldGrid[ x, y ] : new Tile( );
+					tiles[ x, y ] = ( x < oldWidth ) && ( y < oldHeight ) ? oldGrid[ x, y ] : new Tile( Set.DefaultTileType );
 				}
 			}
 			return tiles;
@@ -89,20 +102,21 @@ namespace Poc0.LevelEditor
 		/// <param name="width">New tile grid width (in tiles)</param>
 		/// <param name="height">New tile grid height (in tiles)</param>
 		/// <returns>Returns the new Tile table</returns>
-		private static Tile[,] NewTileGrid( int width, int height )
+		private Tile[,] NewTileGrid( int width, int height )
 		{
 			Tile[,] tiles = new Tile[ width, height ];
 			for ( int x = 0; x < width; ++x )
 			{
 				for ( int y = 0; y < height; ++y )
 				{
-					tiles[ x, y ] = new Tile( );
+					tiles[ x, y ] = new Tile( ( ( x + y ) % 2 == 0 ) ? Set[ 0 ] : Set[ 1 ] );
 				}
 			}
 			return tiles;
 		}
 
-		public Tile[,] m_Tiles = NewTileGrid( DefaultWidth, DefaultHeight );
+		public Tile[,]		m_Tiles;
+		private TileTypeSet	m_TileTypes	= new TileTypeSet( );
 
 		#endregion
 	}

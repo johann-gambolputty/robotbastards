@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Poc0.LevelEditor.Properties {
+namespace Poc0.LevelEditor.Core.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Poc0.LevelEditor.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Poc0.LevelEditor.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Poc0.LevelEditor.Core.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -60,10 +60,10 @@ namespace Poc0.LevelEditor.Properties {
             }
         }
         
-        internal static System.Drawing.Icon AppIcon {
+        internal static System.Drawing.Bitmap DefaultTileType {
             get {
-                object obj = ResourceManager.GetObject("AppIcon", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                object obj = ResourceManager.GetObject("DefaultTileType", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

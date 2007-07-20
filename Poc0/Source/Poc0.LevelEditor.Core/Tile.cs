@@ -1,22 +1,14 @@
 
 using System.Collections.Generic;
 
-namespace Poc0.LevelEditor
+namespace Poc0.LevelEditor.Core
 {
 	/// <summary>
 	/// A tile
 	/// </summary>
-	internal class Tile
+	public class Tile
 	{
 		#region Construction
-
-		/// <summary>
-		/// Tile default constructor
-		/// </summary>
-		public Tile( )
-		{
-			m_TileType = TileType.Default;
-		}
 
 		/// <summary>
 		/// Tile setup constructor

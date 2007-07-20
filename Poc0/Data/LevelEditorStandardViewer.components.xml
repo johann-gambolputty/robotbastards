@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rb>
+
+  <object type="Rb.Rendering.Viewer" assembly="Rb.Rendering">
+
+    <!-- Viewer camera -->
+    <object type="Poc0.LevelEditor.Core.TileCamera2d" assembly="Poc0.LevelEditor.Core" property="Camera">
+
+      <object type="Poc0.LevelEditor.Core.TileCamera2dCommandHandler" assembly="Poc0.LevelEditor.Core">
+
+        <ref objectId="parent" property="Camera"/>
+
+        <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
+          <string value="TileCamera2dCommands" property="CommandListName"/>
+          <dynProperty value="User" property="User"/>
+        </object>
+
+      </object>
+
+    </object>
+
+    <!-- FPS display -->
+    <bool value="true" property="ShowFps"/>
+
+    <colour value="Red" property="FpsDisplay.TextColour"/>
+    
+    <!-- Rendering technique
+    <object type="Rb.World.Rendering.SceneShadowBufferTechnique" assembly="Rb.World" property="Technique">
+      <parameters>
+        <int value="1024"/>
+        <int value="1024"/>
+      </parameters>
+      <float value="0.5" property="NearZ"/>
+      <float value="150" property="FarZ"/>
+    </object>
+
+    <dynProperty value="Subject" property="Renderable"/>
+    -->
+
+  </object>
+
+</rb>

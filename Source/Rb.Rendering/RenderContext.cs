@@ -54,6 +54,11 @@ namespace Rb.Rendering
         /// </summary>
 		public void ApplyTechnique( ITechnique technique, IRenderable renderable )
 		{
+			if ( renderable == null )
+			{
+				return;
+			}
+
 			if ( GlobalTechnique != null )
 			{
                 if ( technique != null )

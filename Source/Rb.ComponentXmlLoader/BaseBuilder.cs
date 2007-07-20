@@ -527,11 +527,23 @@ namespace Rb.ComponentXmlLoader
         
             if ( m_Property != null )
             {
-            	PropertyInfo property = parent.GetType( ).GetProperty( m_Property );
+				string[] properties = m_Property.Split( new char[] { '.' } );
+				for ( int propertyIndex = 0; propertyIndex < properties.Length - 1; ++propertyIndex )
+				{
+					PropertyInfo parentProperty = parent.GetType( ).GetProperty( properties[ propertyIndex ] );
+					if ( parentProperty == null )
+					{
+            			string err = string.Format( "Parent type \"{0}\" does not contain a property \"{1}\"", parent.GetType( ), m_Property );
+            			throw new ApplicationException( err );
+					}
+					parent = parentProperty.GetValue( parent, null );
+				}
+
+				string propertyName = properties[ properties.Length - 1 ];
+            	PropertyInfo property = parent.GetType( ).GetProperty( propertyName );
             	if ( property == null )
             	{
-            		string err = string.Format( "Parent \"{0}\" of type \"{1}\" does not contain a property \"{2}\"",
-            			ComponentHelpers.GetName( BuildObject ), parent.GetType( ), m_Property );
+            		string err = string.Format( "Parent type \"{0}\" does not contain a property \"{1}\"", parent.GetType( ), propertyName );
             		throw new ApplicationException( err );
             	}
             	LinkToProperty( parent, property );
