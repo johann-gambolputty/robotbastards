@@ -6,7 +6,7 @@ namespace Rb.Rendering.OpenGl
 	/// </summary>
 	public abstract class OpenGlRenderFactory : RenderFactory
 	{
-        public OpenGlRenderFactory()
+        public OpenGlRenderFactory( )
         {
         }
 

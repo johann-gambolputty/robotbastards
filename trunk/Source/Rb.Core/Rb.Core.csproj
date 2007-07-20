@@ -72,7 +72,10 @@
     <Compile Include="Maths\Matrix44.cs" />
     <Compile Include="Maths\OffsetCatmullRomSpline.cs" />
     <Compile Include="Maths\Plane3.cs" />
-    <Compile Include="Maths\Point3.cs" />
+    <Compile Include="Maths\Point2.cs" />
+    <Compile Include="Maths\Point3.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Maths\Point3Interpolator.cs" />
     <Compile Include="Maths\Ray3.cs" />
     <Compile Include="Maths\Ray3Intersection.cs" />

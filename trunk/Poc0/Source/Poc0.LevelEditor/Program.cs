@@ -1,7 +1,5 @@
 using System;
-using System.Configuration;
 using System.Windows.Forms;
-using Rb.Rendering;
 
 namespace Poc0.LevelEditor
 {

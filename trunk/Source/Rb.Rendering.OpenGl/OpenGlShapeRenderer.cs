@@ -88,9 +88,8 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="texture">The image to render</param>
 		public override void DrawImage( int x, int y, int width, int height, Texture2d texture )
 		{
-			Renderer.Instance.Push2d( );
-
-			m_DrawImageRenderState.Begin( );
+			//Renderer.Instance.Push2d( );
+			//m_DrawImageRenderState.Begin( );
 
 			m_DrawImageSampler.Texture = ( OpenGlTexture2d )texture;
 			m_DrawImageSampler.Begin( );
@@ -113,9 +112,8 @@ namespace Rb.Rendering.OpenGl
 
 			m_DrawImageSampler.End( );
 
-			m_DrawImageRenderState.End( );
-
-			Renderer.Instance.Pop2d( );
+			//m_DrawImageRenderState.End( );
+			//Renderer.Instance.Pop2d( );
 		}
 
 		#endregion
@@ -144,7 +142,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="numCircumferenceSamples"> Number of subdivisions around the cylinder circumference</param>
 		public override void DrawCylinder( Point3 start, Point3 end, float radius, int numCircumferenceSamples )
 		{
-			float angleIncrement	= Constants.TwoPi / ( float )numCircumferenceSamples;
+			float angleIncrement	= Constants.TwoPi / numCircumferenceSamples;
 			float angle				= Constants.TwoPi - angleIncrement;
 			float nextAngle			= 0.0f;
 
@@ -158,7 +156,7 @@ namespace Rb.Rendering.OpenGl
 
 			Vector3	upVec			= Vector3.YAxis.Dot( cylinderVec ) < 0.99f ? Vector3.YAxis : Vector3.ZAxis;
 			Vector3 rotateVec		= Vector3.Cross( upVec, cylinderVec );
-			float	rotation		= ( float )System.Math.Acos( upVec.Dot( cylinderVec ) ) * Constants.RadiansToDegrees;
+			float	rotation		= ( float )Math.Acos( upVec.Dot( cylinderVec ) ) * Constants.RadiansToDegrees;
 
 			Gl.glTranslatef( start.X, start.Y, start.Z );
 			Gl.glRotatef( rotation, rotateVec.X, rotateVec.Y, rotateVec.Z );
@@ -167,10 +165,10 @@ namespace Rb.Rendering.OpenGl
 
 			for ( int SampleCount = 0; SampleCount < numCircumferenceSamples; ++SampleCount )
 			{
-				float nx		= ( float )System.Math.Sin( angle );
-				float nz		= ( float )System.Math.Cos( angle );
-				float nextNX	= ( float )System.Math.Sin( nextAngle );
-				float nextNZ	= ( float )System.Math.Cos( nextAngle );
+				float nx		= ( float )Math.Sin( angle );
+				float nz		= ( float )Math.Cos( angle );
+				float nextNX	= ( float )Math.Sin( nextAngle );
+				float nextNZ	= ( float )Math.Cos( nextAngle );
 
 				float x 		= nx * radius;
 				float y 		= 0.0f;
@@ -207,8 +205,8 @@ namespace Rb.Rendering.OpenGl
 		public override void DrawSphere( Point3 pt, float radius, int latitudeSamples, int longitudeSamples )
 		{
 			//	Render the sphere as a series of strips
-			float	latitudeAngleIncrement	= Constants.Pi / ( float )latitudeSamples;
-			float	longitudeAngleIncrement	= Constants.TwoPi / ( float )longitudeSamples;
+			float	latitudeAngleIncrement	= Constants.Pi / latitudeSamples;
+			float	longitudeAngleIncrement	= Constants.TwoPi / longitudeSamples;
 
 			float t		= 0.0f;
 			float nextT	= t + latitudeAngleIncrement;
@@ -244,10 +242,10 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		private static void RenderST( float s, float t, float radius, Point3 centre )
 		{
-			float cosS = ( float )System.Math.Cos( s );
-			float sinS = ( float )System.Math.Sin( s );
-			float sinT = ( float )System.Math.Sin( t );
-			float cosT = ( float )System.Math.Cos( t );
+			float cosS = ( float )Math.Cos( s );
+			float sinS = ( float )Math.Sin( s );
+			float sinT = ( float )Math.Sin( t );
+			float cosT = ( float )Math.Cos( t );
 
 			float x = cosS * sinT;
 			float y = sinS * sinT;

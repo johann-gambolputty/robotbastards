@@ -199,6 +199,11 @@ namespace Rb.Rendering
 		/// Translates the current transform in the specified transform stack
 		/// </summary>
 		public abstract void Translate( Transform type, float x, float y, float z );
+		
+		/// <summary>
+		/// Scales the current transform in the specified transform stack
+		/// </summary>
+		public abstract void Scale( Transform type, float scaleX, float scaleY, float scaleZ );
 
 		/// <summary>
 		/// Applies the specified transform, multiplied by the current topmost transform, and adds it to the specified transform stack

@@ -31,7 +31,7 @@ namespace Rb.Rendering.OpenGl
         /// <summary>
 		/// Loads all supported OpenGL extensions
 		/// </summary>
-		public unsafe static void LoadExtensions( )
+		public static void LoadExtensions( )
         {	
             string extensions = Gl.glGetString( Gl.GL_EXTENSIONS );
             GraphicsLog.Info( extensions.Replace( ' ', '\n' ) );
@@ -294,6 +294,34 @@ namespace Rb.Rendering.OpenGl
 				default : throw new ApplicationException( string.Format( "\"{0}\" is not supported in Translate()" ) );
 			}
 		}
+		
+		/// <summary>
+		/// Scales the current transform in the specified transform stack
+		/// </summary>
+		public override void Scale( Transform type, float scaleX, float scaleY, float scaleZ )
+		{
+			switch ( type )
+			{
+				case Transform.LocalToWorld :
+				{
+					CurrentLocalToWorld.Scale( scaleX, scaleY, scaleZ );
+					UpdateModelView( );
+					break;
+				}
+				case Transform.WorldToView :
+				{
+					CurrentWorldToView.Scale( scaleX, scaleY, scaleZ );
+					UpdateModelView( );
+					break;
+				}
+				default :
+				{
+					SetSupportedMatrixMode( type );
+					Gl.glTranslatef( scaleX, scaleY, scaleZ );
+					break;
+				}
+			}
+		}
 
 		/// <summary>
 		/// Translates the current transform in the specified transform stack
@@ -326,7 +354,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Applies the specified transform, multiplied by the current topmost transform, and adds it to the specified transform stack
 		/// </summary>
-		public override void	PushTransform( Transform type, Matrix44 matrix )
+		public override void PushTransform( Transform type, Matrix44 matrix )
 		{
 			switch ( type )
 			{
@@ -534,6 +562,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public override int BindTexture( Texture2d texture )
 		{
+			//	TODO: AP: Don't bind if the texture is invalid
             int unit = base.BindTexture( texture );
             Gl.glActiveTextureARB( Gl.GL_TEXTURE0_ARB + unit );
 			Gl.glBindTexture( Gl.GL_TEXTURE_2D, ( ( OpenGlTexture2d )texture ).TextureHandle );
@@ -545,6 +574,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public override int UnbindTexture( Texture2d texture )
 		{
+			//	TODO: AP: Don't unbind if the texture is invalid
             int unit = base.UnbindTexture( texture );
             Gl.glActiveTextureARB( Gl.GL_TEXTURE0_ARB + unit );
 			Gl.glBindTexture( Gl.GL_TEXTURE_2D, 0 );
@@ -641,7 +671,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Creates an Image object from the colour buffer
 		/// </summary>
-		public override unsafe System.Drawing.Image	ColourBufferToImage( )
+		public override unsafe Image ColourBufferToImage( )
 		{
 			int width			= ViewportWidth;
 			int height			= ViewportHeight;
@@ -652,7 +682,7 @@ namespace Rb.Rendering.OpenGl
 			System.Drawing.Bitmap bmp;
 			fixed ( byte* bufferMemPtr = bufferMem )
 			{
-				bmp = new System.Drawing.Bitmap( width, height, width * bytesPerPixel, System.Drawing.Imaging.PixelFormat.Format32bppArgb, ( IntPtr )bufferMemPtr );
+				bmp = new Bitmap( width, height, width * bytesPerPixel, System.Drawing.Imaging.PixelFormat.Format32bppArgb, ( IntPtr )bufferMemPtr );
 			}
 
 			return bmp;
@@ -661,7 +691,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Creates an Image object from the depth buffer
 		/// </summary>
-		public override unsafe System.Drawing.Image	DepthBufferToImage( )
+		public override unsafe Image DepthBufferToImage( )
 		{
 			int width			= ViewportWidth;
 			int height			= ViewportHeight;
@@ -685,10 +715,10 @@ namespace Rb.Rendering.OpenGl
 				bufferMem[ pixIndex++ ] = ( byte )( depthMem[ depthIndex ] * 255.0f );
 			}
 
-			System.Drawing.Bitmap bmp;
+			Bitmap bmp;
 			fixed ( byte* bufferMemPtr = bufferMem )
 			{
-				bmp = new System.Drawing.Bitmap( width, height, width * bytesPerPixel, System.Drawing.Imaging.PixelFormat.Format24bppRgb, ( IntPtr )bufferMemPtr );
+				bmp = new Bitmap( width, height, width * bytesPerPixel, System.Drawing.Imaging.PixelFormat.Format24bppRgb, ( IntPtr )bufferMemPtr );
 			}
 
 			return bmp;

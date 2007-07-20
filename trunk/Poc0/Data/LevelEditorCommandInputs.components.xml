@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rb cacheable="true">
+
+  <object type="Rb.Interaction.CommandInputTemplateMap" assembly="Rb.Interaction">
+
+    <serialise>
+      <commandList enum="Poc0.LevelEditor.Core.TileCamera2dCommands" assembly="Poc0.LevelEditor.Core">
+        <command name="Pan">
+          <input button="Middle" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Zoom">
+          <input button="None" min="0.1" max="10000" delta="0.003" initial="1" type="Rb.Interaction.Windows.MouseScrollInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+      </commandList>
+    </serialise>
+
+  </object>
+</rb>

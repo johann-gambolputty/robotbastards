@@ -53,6 +53,18 @@ namespace Rb.Rendering
             set { m_ShowFps = value; }
         }
 
+
+		/// <summary>
+		/// Gets the FPS display
+		/// </summary>
+    	public FpsDisplay FpsDisplay
+    	{
+			get { return m_FpsDisplay; }
+    	}
+
+		/// <summary>
+		/// View rectangle
+		/// </summary>
 		public RectangleF ViewRect
     	{
 			get { return m_ViewRect; }

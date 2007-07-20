@@ -35,7 +35,6 @@ namespace Poc0.LevelEditor
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Name = "TileGridDisplay";
-			this.Load += new System.EventHandler(this.TileGridDisplay_Load);
 			this.ResumeLayout(false);
 
 		}

@@ -40,6 +40,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc0.LevelEditor", "Source\
 		{19DCB365-3040-4431-86E9-29183FA34EF7} = {19DCB365-3040-4431-86E9-29183FA34EF7}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc0.LevelEditor.Core", "Source\Poc0.LevelEditor.Core\Poc0.LevelEditor.Core.csproj", "{7FD7B8DD-BBED-4AF7-9339-6F823540727E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc0.LevelEditor.Rendering.OpenGl", "Source\Poc0.LevelEditor.Rendering.OpenGl\Poc0.LevelEditor.Rendering.OpenGl.csproj", "{FD909605-387F-4AFE-871A-A499EF6748ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -118,6 +122,14 @@ Global
 		{F224FA4B-D756-425B-BC3E-5CDC4E5A5F8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F224FA4B-D756-425B-BC3E-5CDC4E5A5F8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F224FA4B-D756-425B-BC3E-5CDC4E5A5F8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FD7B8DD-BBED-4AF7-9339-6F823540727E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FD7B8DD-BBED-4AF7-9339-6F823540727E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FD7B8DD-BBED-4AF7-9339-6F823540727E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FD7B8DD-BBED-4AF7-9339-6F823540727E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD909605-387F-4AFE-871A-A499EF6748ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD909605-387F-4AFE-871A-A499EF6748ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD909605-387F-4AFE-871A-A499EF6748ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD909605-387F-4AFE-871A-A499EF6748ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
