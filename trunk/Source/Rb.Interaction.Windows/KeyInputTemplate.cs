@@ -1,8 +1,7 @@
-using System;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
-
+using Rb.Core.Utils;
 
 namespace Rb.Interaction.Windows
 {
@@ -15,9 +14,11 @@ namespace Rb.Interaction.Windows
 		/// Setup constructor
 		/// </summary>
 		/// <param name="key">Key to check for</param>
-		public KeyInputTemplate( Keys key )
+		/// <param name="state">Key state to detect</param>
+		public KeyInputTemplate( Keys key, KeyState state )
 		{
 			m_Key = key;
+			m_State = state;
 		}
 
 		/// <summary>
@@ -26,6 +27,7 @@ namespace Rb.Interaction.Windows
         public KeyInputTemplate( )
 		{
 			m_Key = Keys.None;
+			m_State = KeyState.Down;
 		}
 
         /// <summary>
@@ -35,7 +37,7 @@ namespace Rb.Interaction.Windows
         /// <returns>New Input object</returns>
         public override IInput CreateInput( InputContext context )
         {
-            return new KeyInput( context, m_Key );
+			return new KeyInput( context, m_Key, m_State );
         }
         
 		#region IXmlSerializable Members
@@ -55,7 +57,8 @@ namespace Rb.Interaction.Windows
 		/// <param name="reader">Reader</param>
 		public void ReadXml( XmlReader reader )
 		{
-			m_Key = ( Keys )Enum.Parse( typeof( Keys ), reader.GetAttribute( "key" ) );
+			m_Key = StringHelpers.StringToEnum( reader.GetAttribute( "key" ), Keys.None );
+			m_State = StringHelpers.StringToEnum( reader.GetAttribute( "state" ), KeyState.Held );
             
             if ( reader.IsEmptyElement )
             {
@@ -80,6 +83,7 @@ namespace Rb.Interaction.Windows
 		#endregion
 
 		private Keys m_Key;
+		private KeyState m_State;
 
 	}
 }

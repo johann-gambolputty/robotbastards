@@ -22,13 +22,45 @@ namespace Rb.Interaction.Windows
 		/// </summary>
         /// <param name="context">Input context</param>
 		/// <param name="button">Button to press</param>
-		public MouseCursorInput( InputContext context, MouseButtons button ) :
+		/// <param name="key">Key to press</param>
+		public MouseCursorInput( InputContext context, MouseButtons button, Keys key ) :
 			base( context )
 		{
 			m_Button = button;
+			m_Key = key;
 
-			( ( Control )context.Control ).MouseMove += new MouseEventHandler( OnMouseMove );
-			( ( Control )context.Control ).MouseLeave += new EventHandler( OnMouseLeave );
+			Control control = ( ( Control )context.Control );
+			if ( m_Key != Keys.None )
+			{
+				control.KeyDown += OnKeyDown;
+				control.KeyUp += OnKeyUp;
+			}
+			else
+			{
+				m_KeyPressed = true;
+			}
+
+			control.MouseMove += new MouseEventHandler( OnMouseMove );
+			control.MouseLeave += new EventHandler( OnMouseLeave );
+		}
+
+		/// <summary>
+		/// Called when a key is pressed
+		/// </summary>
+		private void OnKeyDown( object sender, KeyEventArgs args )
+		{
+			m_KeyPressed = args.KeyCode == m_Key;
+		}
+
+		/// <summary>
+		/// Called when a key is er... unpressed?
+		/// </summary>
+		private void OnKeyUp( object sender, KeyEventArgs args )
+		{
+			if ( args.KeyCode == m_Key )
+			{
+				m_KeyPressed = false;
+			}
 		}
 
 		/// <summary>
@@ -41,11 +73,11 @@ namespace Rb.Interaction.Windows
 
 			if ( m_Button == MouseButtons.None )
 			{
-                IsActive = true;
+				IsActive = m_KeyPressed;
 			}
 			else
 			{
-                IsActive = ( args.Button == m_Button );
+                IsActive = ( m_KeyPressed ) && ( args.Button == m_Button );
 			}
 
 			m_X = args.X;
@@ -57,6 +89,8 @@ namespace Rb.Interaction.Windows
 			IsActive = false;
 		}
 
+		private bool m_KeyPressed;
 		private MouseButtons m_Button;
+		private Keys m_Key;
     }
 }

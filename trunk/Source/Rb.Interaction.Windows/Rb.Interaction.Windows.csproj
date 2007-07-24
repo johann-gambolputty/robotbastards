@@ -36,6 +36,8 @@
   <ItemGroup>
     <Compile Include="KeyInput.cs" />
     <Compile Include="KeyInputTemplate.cs" />
+    <Compile Include="MouseButtonInput.cs" />
+    <Compile Include="MouseButtonInputTemplate.cs" />
     <Compile Include="MouseCursorInput.cs" />
     <Compile Include="MouseCursorInputTemplate.cs" />
     <Compile Include="MouseScrollInput.cs" />

@@ -1,9 +1,8 @@
 using System;
 using System.Configuration;
-using System.Drawing;
 using System.Windows.Forms;
 using Poc0.LevelEditor.Core;
-using Poc0.LevelEditor.Rendering.OpenGl;
+using Poc0.LevelEditor.Rendering.OpenGl;  
 using Rb.Core.Components;
 using Rb.Core.Resources;
 using Rb.Core.Utils;
@@ -40,7 +39,7 @@ namespace Poc0.LevelEditor
 			}
 			ResourceManager.Instance.Setup( resourceSetupPath );
 
-			CommandList.BuildFromEnum( typeof( TileCamera2dCommands ) );
+			CommandList.FromEnum( typeof( TileCamera2dCommands ) );
 
 			InitializeComponent( );
 
@@ -67,7 +66,11 @@ namespace Poc0.LevelEditor
 				m_User.InitialiseAllCommandListBindings( );
 
 				m_Grid = new TileGrid( );
-				m_GridRenderer = new OpenGlTileGrid2dRenderer( m_Grid );
+				m_EditState = new TileGridEditState( );
+				m_EditState.TilePaintType = m_Grid.Set[ 1 ];
+				m_GridRenderer = new OpenGlTileGrid2dRenderer( m_Grid, m_EditState );
+
+				tileTypeSetListView1.TileTypes = m_Grid.Set;
 
 				ComponentLoadParameters loadParams = new ComponentLoadParameters( );
 				loadParams.Properties[ "User" ] = m_User;
@@ -75,10 +78,13 @@ namespace Poc0.LevelEditor
 				Viewer viewer = ( Viewer )ResourceManager.Instance.Load( "LevelEditorStandardViewer.components.xml", loadParams );
 				viewer.Renderable = m_GridRenderer;
 
+				viewer.Camera.AddChild( new TileEditCommandHandler( m_User, m_Grid, m_EditState ) );
+
 				display1.Viewers.Add( viewer );
 
+				//	TODO: AP: naughty (there should be some user service, or something, that does updates)
 				new Clock( "updateClock", 10 ).Subscribe( UpdateUser );
-				
+
 				//	Test load a command list
 				try
 				{
@@ -103,6 +109,18 @@ namespace Poc0.LevelEditor
 
 		private CommandUser m_User = new CommandUser( );
 		private TileGrid m_Grid;
+		private TileGridEditState m_EditState;
 		private TileGridRenderer m_GridRenderer;
+
+		private void tileTypeSetListView1_SelectedIndexChanged( object sender, EventArgs e )
+		{
+			if ( tileTypeSetListView1.SelectedItems.Count == 0 )
+			{
+				return;
+			}
+
+			TileType type = ( TileType )tileTypeSetListView1.SelectedItems[ 0 ].Tag;
+			m_EditState.TilePaintType = type;
+		}
 	}
 }

@@ -165,12 +165,6 @@ namespace Rb.Interaction
 					{
 						CommandMessage message = input.CreateCommandMessage( m_Command );
 
-						//	Always invoke the Active event if the command is active
-						if ( CommandActive != null )
-						{
-							CommandActive( message );
-						}
-
 						//	Invoke the Activated event if the command has only just gone active
 						if ( !wasActive )
 						{
@@ -179,8 +173,23 @@ namespace Rb.Interaction
 								CommandActivated( message );
 							}
 						}
+						else
+						{
+							if ( CommandActive != null )
+							{
+								CommandActive( message );
+							}
+						}
 						m_LastActiveUpdate = m_UpdateCount;
 						break;
+					}
+				}
+
+				foreach ( IInput input in m_Inputs )
+				{
+					if ( input.DeactivateOnUpdate )
+					{
+						input.IsActive = false;
 					}
 				}
 			}

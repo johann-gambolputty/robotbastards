@@ -86,14 +86,14 @@ namespace Rb.TestApp
 		{
 			if ( m_RenderState == null )
 			{
-				m_RenderState = RenderFactory.Inst.NewRenderState( );
+				m_RenderState = RenderFactory.Instance.NewRenderState( );
 				m_RenderState
 					.DisableLighting( )
 					.SetColour( System.Drawing.Color.White )
 				;
 			}
 			m_RenderState.Begin( );
-			ShapeRenderer.Inst.DrawSphere( m_LookAt, 0.5f );
+			ShapeRenderer.Instance.DrawSphere( m_LookAt, 0.5f );
 			m_RenderState.End( );
 		}
 

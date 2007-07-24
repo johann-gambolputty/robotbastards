@@ -1,0 +1,20 @@
+
+namespace Poc0.LevelEditor.Core
+{
+	/// <summary>
+	/// Interface for cameras that view the tile grid, and can convert a mouse cursor
+	/// position into a tile
+	/// </summary>
+	interface ITilePicker
+	{
+		/// <summary>
+		/// Returns the tile under the mouse cursor
+		/// </summary>
+		/// <param name="grid">Grid to select tiles from</param>
+		/// <param name="cursorX">Mouse x position</param>
+		/// <param name="cursorY">Mouse y position</param>
+		/// <returns>Returns the tile in the grid under mouse cursor. Returns null if no tile is under the cursor</returns>
+		Tile PickTile( TileGrid grid, int cursorX, int cursorY );
+
+	}
+}

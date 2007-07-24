@@ -89,6 +89,12 @@
     <Compile Include="TileGridDisplay.Designer.cs">
       <DependentUpon>TileGridDisplay.cs</DependentUpon>
     </Compile>
+    <Compile Include="TileTypeSetListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TileTypeSetListView.Designer.cs">
+      <DependentUpon>TileTypeSetListView.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Source\Rb.ComponentXmlLoader\Rb.ComponentXmlLoader.csproj">

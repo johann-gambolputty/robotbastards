@@ -39,10 +39,23 @@ namespace Rb.Interaction
 		}
 
 		/// <summary>
+		/// Builds or retrieves a command list from a given enum type
+		/// </summary>
+		public static CommandList FromEnum( Type enumType )
+		{
+			CommandList commands = CommandListManager.Inst.Get( enumType.Name );
+			if ( commands == null )
+			{
+				commands = BuildFromEnum( enumType );
+			}
+			return commands;
+		}
+
+		/// <summary>
 		/// Builds a command list from an enum type
 		/// </summary>
 		/// <param name="enumType">enum's Type</param>
-		public static CommandList BuildFromEnum( Type enumType )
+		private static CommandList BuildFromEnum( Type enumType )
 		{
 			InteractionLog.Info( "Creating command list from enum \"{0}\"", enumType.Name );
 

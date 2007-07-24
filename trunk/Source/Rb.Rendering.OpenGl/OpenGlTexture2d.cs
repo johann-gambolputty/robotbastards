@@ -362,7 +362,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Converts this texture to an image
 		/// </summary>
-		public unsafe override Image ToImage( )
+		public unsafe override Bitmap ToBitmap( )
 		{
 			if ( m_TextureHandle == InvalidHandle )
 			{
@@ -379,7 +379,7 @@ namespace Rb.Rendering.OpenGl
 
 			//	Bind the texture
             OpenGlRenderer.Instance.UnbindAllTextures( );
-			OpenGlRenderer.Instance.BindTexture(this);
+			OpenGlRenderer.Instance.BindTexture( this );
 
 			//	HACK: Makes lots of assumptions about format...
 
@@ -401,7 +401,7 @@ namespace Rb.Rendering.OpenGl
 				{
 					for ( int w = 0; w < Width; ++w, ++texIndex )
 					{
-						float depth = ( ( float )textureMemory[ texIndex ] );
+						float depth = ( textureMemory[ texIndex ] );
 					//	byte grey = ( byte )( System.Math.Exp( depth ) * 255.0f);
 						byte grey = ( byte )( depth * 255.0f );
 						bmp.SetPixel( w, h, Color.FromArgb( grey, grey, grey ) );

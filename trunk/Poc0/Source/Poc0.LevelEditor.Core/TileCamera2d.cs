@@ -5,9 +5,9 @@ using Rb.Rendering.Cameras;
 namespace Poc0.LevelEditor.Core
 {
 	/// <summary>
-	/// 2D camera
+	/// 2D camera for displaying tiles
 	/// </summary>
-	public class TileCamera2d : CameraBase
+	public class TileCamera2d : CameraBase, ITilePicker
 	{
 		/// <summary>
 		/// The camera origin
@@ -49,7 +49,34 @@ namespace Poc0.LevelEditor.Core
 			Renderer.Instance.Pop2d( );
 		}
 
+		#region Private stuff
+
 		private Point2	m_Origin	= Point2.Origin;
 		private float	m_Scale		= 1.0f;
+
+		#endregion
+
+		#region ITilePicker Members
+
+		/// Returns the tile under the mouse cursor
+		/// </summary>
+		/// <param name="grid">Grid to select tiles from</param>
+		/// <param name="cursorX">Mouse x position</param>
+		/// <param name="cursorY">Mouse y position</param>
+		/// <returns>Returns the tile in the grid under mouse cursor. Returns null if no tile is under the cursor</returns>
+		public Tile PickTile( TileGrid grid, int cursorX, int cursorY )
+		{
+			int x = ( int )( ( cursorX - m_Origin.X ) / ( 32.0f * m_Scale ) );
+			int y = ( int )( ( cursorY - m_Origin.Y ) / ( 32.0f * m_Scale ) );
+
+			if ( ( x < 0 ) || ( x >= grid.Width ) || ( y < 0 ) || ( y >= grid.Height ) )
+			{
+				return null;
+			}
+
+			return grid[ x, y ];
+		}
+
+		#endregion
 	}
 }

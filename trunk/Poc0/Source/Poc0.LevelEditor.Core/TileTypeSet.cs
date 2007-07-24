@@ -45,7 +45,42 @@ namespace Poc0.LevelEditor.Core
 		public Texture2d DisplayTexture
 		{
 			get { return m_DisplayTexture; }
-			set { m_DisplayTexture = value; }
+			set
+			{
+				m_DisplayTexture = value;
+				m_DisplayTextureImage = null;
+			}
+		}
+
+		/// <summary>
+		/// Gets the display texture, converted to a bitmap
+		/// </summary>
+		public Bitmap DisplayTextureBitmap
+		{
+			get
+			{
+				if ( ( m_DisplayTextureImage == null ) && ( DisplayTexture != null ) )
+				{
+					m_DisplayTextureImage = DisplayTexture.ToBitmap( );
+				}
+				return m_DisplayTextureImage;
+			}
+		}
+
+		/// <summary>
+		/// Gets the number of types
+		/// </summary>
+		public int Count
+		{
+			get { return m_TileTypes.Count; }
+		}
+
+		/// <summary>
+		/// Gets the tile types collection
+		/// </summary>
+		public IEnumerable< TileType > TileTypes
+		{
+			get { return m_TileTypes; }
 		}
 
 		/// <summary>
@@ -76,6 +111,7 @@ namespace Poc0.LevelEditor.Core
 		private readonly List< TileType >	m_TileTypes			= new List< TileType >( );
 		private readonly TileType			m_DefaultType;
 		private Texture2d					m_DisplayTexture	= CreateDefaultDisplayTexture( );
+		private Bitmap						m_DisplayTextureImage;
 
 		private static Texture2d CreateDefaultDisplayTexture( )
 		{

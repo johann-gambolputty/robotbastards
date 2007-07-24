@@ -36,9 +36,11 @@ namespace Poc0.LevelEditor
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
 			this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer( );
-			this.display1 = new TileGridDisplay( );
+			this.tileTypeSetListView1 = new Poc0.LevelEditor.TileTypeSetListView( );
+			this.display1 = new Poc0.LevelEditor.TileGridDisplay( );
 			this.statusStrip.SuspendLayout( );
 			this.menuStrip.SuspendLayout( );
+			this.splitContainer1.Panel1.SuspendLayout( );
 			this.splitContainer1.Panel2.SuspendLayout( );
 			this.splitContainer1.SuspendLayout( );
 			this.SuspendLayout( );
@@ -105,12 +107,29 @@ namespace Poc0.LevelEditor
 			this.splitContainer1.Location = new System.Drawing.Point( 0, 24 );
 			this.splitContainer1.Name = "splitContainer1";
 			// 
+			// splitContainer1.Panel1
+			// 
+			this.splitContainer1.Panel1.Controls.Add( this.tileTypeSetListView1 );
+			// 
 			// splitContainer1.Panel2
 			// 
 			this.splitContainer1.Panel2.Controls.Add( this.display1 );
 			this.splitContainer1.Size = new System.Drawing.Size( 570, 410 );
 			this.splitContainer1.SplitterDistance = 173;
 			this.splitContainer1.TabIndex = 2;
+			// 
+			// tileTypeSetListView1
+			// 
+			this.tileTypeSetListView1.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom )
+						| System.Windows.Forms.AnchorStyles.Left )
+						| System.Windows.Forms.AnchorStyles.Right ) ) );
+			this.tileTypeSetListView1.Location = new System.Drawing.Point( 3, 3 );
+			this.tileTypeSetListView1.Name = "tileTypeSetListView1";
+			this.tileTypeSetListView1.Size = new System.Drawing.Size( 167, 151 );
+			this.tileTypeSetListView1.TabIndex = 0;
+			this.tileTypeSetListView1.TileTypes = null;
+			this.tileTypeSetListView1.UseCompatibleStateImageBehavior = false;
+			this.tileTypeSetListView1.SelectedIndexChanged += new System.EventHandler( this.tileTypeSetListView1_SelectedIndexChanged );
 			// 
 			// display1
 			// 
@@ -140,6 +159,7 @@ namespace Poc0.LevelEditor
 			this.statusStrip.PerformLayout( );
 			this.menuStrip.ResumeLayout( false );
 			this.menuStrip.PerformLayout( );
+			this.splitContainer1.Panel1.ResumeLayout( false );
 			this.splitContainer1.Panel2.ResumeLayout( false );
 			this.splitContainer1.ResumeLayout( false );
 			this.ResumeLayout( false );
@@ -158,5 +178,6 @@ namespace Poc0.LevelEditor
 		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem logToolStripMenuItem;
 		private TileGridDisplay display1;
+		private TileTypeSetListView tileTypeSetListView1;
 	}
 }

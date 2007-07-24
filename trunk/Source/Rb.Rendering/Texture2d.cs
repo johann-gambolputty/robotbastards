@@ -177,16 +177,16 @@ namespace Rb.Rendering
 		#region	Saving and conversion
 
 		/// <summary>
-		/// Generates an Image from the texture
+		/// Generates an image from the texture
 		/// </summary>
-		public abstract Image ToImage( );
+		public abstract Bitmap ToBitmap( );
 
 		/// <summary>
 		/// Saves this texture to a file
 		/// </summary>
 		public void Save( string path )
 		{
-			Image img = ToImage( );
+			Image img = ToBitmap( );
 			if ( img != null )
 			{
 				img.Save( path );
@@ -202,7 +202,6 @@ namespace Rb.Rendering
 		protected TextureFormat	m_Format;
 
 		#endregion
-
 
 		#region IDisposable Members
 
