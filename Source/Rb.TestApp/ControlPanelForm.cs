@@ -43,8 +43,8 @@ namespace Rb.TestApp
 
 			//	Create the test and camera command lists (must come before scene creation, because it's referenced
 			//	by the scene setup file)
-			CommandList.BuildFromEnum( typeof( TestCommands ) );
-			CommandList.BuildFromEnum( typeof( CameraCommands ) );
+			CommandList.FromEnum( typeof( TestCommands ) );
+			CommandList.FromEnum( typeof( CameraCommands ) );
 
 			//	Load user settings
 			m_Settings = UserSettings.Load( );

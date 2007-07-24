@@ -28,15 +28,30 @@ namespace Rb.Interaction
 			User		= user;
         }
 
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		public CommandInputListener( object target, CommandUser user, string commandListName )
+		{
+			m_Target = target;
+			CommandListName = commandListName;
+			User = user;
+		}
+
         #endregion
 
         #region	Command list
 
+		/// <summary>
+		/// Sets the name of the comand list to use
+		/// </summary>
 		public string CommandListName
 		{
 			set
 			{
+				Unlisten( m_User );
 				m_Commands = CommandListManager.Inst.Get( value );
+				Listen( m_User, m_Commands );
 			}
 		}
 
@@ -47,17 +62,9 @@ namespace Rb.Interaction
 		{
 			set
 			{
-				if ( m_User != null )
-				{
-					m_User.RemoveListener( CommandActivated );
-					m_User.RemoveListener( CommandActive );
-				}
+				Unlisten( m_User );
 				m_User = value;
-				if ( m_User != null )
-				{
-					m_User.AddActivatedListener( m_Commands, CommandActivated );
-					m_User.AddActiveListener( m_Commands, CommandActive );
-				}
+				Listen( m_User, m_Commands );
 			}
 			get
 			{
@@ -121,6 +128,30 @@ namespace Rb.Interaction
 			if ( Target != null )
 			{
 				( ( IMessageHandler )Target ).HandleMessage( message );
+			}
+		}
+
+		/// <summary>
+		/// Stops listen for command messages from a given user
+		/// </summary>
+		private void Unlisten( CommandUser user )
+		{
+			if ( user != null )
+			{
+				user.RemoveListener( CommandActivated );
+				user.RemoveListener( CommandActive );
+			}
+		}
+
+		/// <summary>
+		/// Starts listening for command messages (from a specified command list) from a given user
+		/// </summary>
+		private void Listen( CommandUser user, CommandList commands )
+		{
+			if ( ( user != null ) && ( commands != null ) )
+			{
+				user.AddActivatedListener( commands, CommandActivated );
+				user.AddActiveListener( commands, CommandActive );
 			}
 		}
 

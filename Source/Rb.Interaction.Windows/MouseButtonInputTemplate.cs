@@ -1,4 +1,3 @@
-using System;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
@@ -6,37 +5,44 @@ using Rb.Core.Utils;
 
 namespace Rb.Interaction.Windows
 {
-    /// <summary>
-    /// Mouse input template
-    /// </summary>
-    public class MouseCursorInputTemplate : InputTemplate, IXmlSerializable
-    {
+	/// <summary>
+	/// Input tempate for mouse button presses
+	/// </summary>
+	class MouseButtonInputTemplate : InputTemplate, IXmlSerializable
+	{
 		/// <summary>
-		/// Default constructor. Bindings to this input will trigger when the mouse moves with no buttons pressed
+		/// Setup constructor
 		/// </summary>
-		public MouseCursorInputTemplate( )
+		/// <param name="button">Button to check for</param>
+		/// <param name="state">Mouse button state change to detect</param>
+		public MouseButtonInputTemplate( MouseButtons button, MouseButtonState state )
+		{
+			m_Button = button;
+			m_State = state;
+			m_Key = Keys.None;
+		}
+
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		/// <param name="button">Button to check for</param>
+		/// <param name="state">Mouse button state change to detect</param>
+		/// <param name="key">Key to check for</param>
+		public MouseButtonInputTemplate( MouseButtons button, MouseButtonState state, Keys key )
+		{
+			m_Button = button;
+			m_State = state;
+			m_Key = key;
+		}
+
+		/// <summary>
+		/// Default constructor. Assigns no key
+		/// </summary>
+		public MouseButtonInputTemplate( )
 		{
 			m_Button = MouseButtons.None;
-		}
-
-		/// <summary>
-		/// Setup constructor. Bindings to this input will trigger when the mouse moves with a particular button pressed
-		/// </summary>
-		/// <param name="button">Button to check for along with movement</param>
-		public MouseCursorInputTemplate( MouseButtons button )
-		{
-			m_Button = button;
-		}
-
-		/// <summary>
-		/// Setup constructor. Bindings to this input will trigger when the mouse moves with a particular button pressed
-		/// </summary>
-		/// <param name="button">Button to check for along with movement</param>
-		/// <param name="key">Modifier key</param>
-		public MouseCursorInputTemplate( MouseButtons button, Keys key )
-		{
-			m_Button = button;
-			m_Key = key;
+			m_State = MouseButtonState.Down;
+			m_Key = Keys.None;
 		}
 
         /// <summary>
@@ -46,7 +52,7 @@ namespace Rb.Interaction.Windows
         /// <returns>New Input object</returns>
         public override IInput CreateInput( InputContext context )
         {
-            return new MouseCursorInput( context, m_Button, m_Key );
+            return new MouseButtonInput( context, m_Button, m_State, m_Key );
         }
         
 		#region IXmlSerializable Members
@@ -66,7 +72,8 @@ namespace Rb.Interaction.Windows
 		/// <param name="reader">Reader</param>
 		public void ReadXml( XmlReader reader )
 		{
-			m_Button = StringHelpers.StringToEnum( reader.GetAttribute( "button" ), MouseButtons.None );
+			m_Button = StringHelpers.StringToEnum( reader.GetAttribute( "button" ), MouseButtons.Left );
+			m_State = StringHelpers.StringToEnum( reader.GetAttribute( "state" ), MouseButtonState.Down );
 			m_Key = StringHelpers.StringToEnum( reader.GetAttribute( "key" ), Keys.None );
 
             if ( reader.IsEmptyElement )
@@ -87,12 +94,14 @@ namespace Rb.Interaction.Windows
 		public void WriteXml( XmlWriter writer )
 		{
 			writer.WriteAttributeString( "button", m_Button.ToString( ) );
+			writer.WriteAttributeString( "state", m_State.ToString( ) );
 			writer.WriteAttributeString( "key", m_Key.ToString( ) );
 		}
 
 		#endregion
 
-		private Keys m_Key = Keys.None;
 		private MouseButtons m_Button;
-    }
+		private MouseButtonState m_State;
+		private Keys m_Key;
+	}
 }

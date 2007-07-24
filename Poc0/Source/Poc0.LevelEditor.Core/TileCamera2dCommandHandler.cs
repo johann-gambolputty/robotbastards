@@ -6,6 +6,9 @@ using Rb.Interaction;
 
 namespace Poc0.LevelEditor.Core
 {
+	/// <summary>
+	/// 2D tile camera commands
+	/// </summary>
 	public enum TileCamera2dCommands
 	{
         [CommandDescription( "Pan", "Pans the camera" )]
@@ -15,22 +18,29 @@ namespace Poc0.LevelEditor.Core
 		Zoom
 	}
 
+	/// <summary>
+	/// Camera for viewing tiles that are being rendered in 2D
+	/// </summary>
 	public class TileCamera2dCommandHandler : Component
 	{
+		/// <summary>
+		/// Tile camera
+		/// </summary>
 		public TileCamera2d Camera
 		{
 			get { return m_Camera; }
 			set { m_Camera = value; }
 		}
 
+		/// <summary>
+		/// Movement speed of the camera
+		/// </summary>
 		public float MovementSpeed
 		{
 			get { return m_MovementSpeed;  }
 			set { m_MovementSpeed = value; }
 		}
 
-		private TileCamera2d m_Camera;
-		private float m_MovementSpeed = 1.0f;
 
 		/// <summary>
 		/// Called when the handler receives a command message
@@ -63,5 +73,12 @@ namespace Poc0.LevelEditor.Core
 
 			return MessageRecipientResult.DeliverToNext;
 		}
+
+		#region Private members
+
+		private TileCamera2d m_Camera;
+		private float m_MovementSpeed = 1.0f;
+
+		#endregion
 	}
 }

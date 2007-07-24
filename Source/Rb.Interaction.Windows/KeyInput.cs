@@ -2,6 +2,16 @@ using System.Windows.Forms;
 
 namespace Rb.Interaction.Windows
 {
+	/// <summary>
+	/// Possible key states
+	/// </summary>
+	public enum KeyState
+	{
+		Up,
+		Down,
+		Held
+	}
+
     /// <summary>
     /// Keyboard input
     /// </summary>
@@ -12,9 +22,11 @@ namespace Rb.Interaction.Windows
 		/// </summary>
         /// <param name="context">The input context</param>
 		/// <param name="key">Key to check for</param>
-		public KeyInput( InputContext context, Keys key ) :
+		/// <param name="state">Key state to detect</param>
+		public KeyInput( InputContext context, Keys key, KeyState state ) :
 			base( context )
 		{
+			m_State = state;
 			m_Key = key;
 
 			( ( Control )context.Control ).KeyDown += new KeyEventHandler( OnKeyDown );
@@ -28,7 +40,7 @@ namespace Rb.Interaction.Windows
 		{
 			if ( args.KeyCode == m_Key )
 			{
-                IsActive = true;
+				IsActive = ( m_State == KeyState.Down ) || ( m_State == KeyState.Held );
 			}
 		}
 
@@ -39,11 +51,23 @@ namespace Rb.Interaction.Windows
 		{
 			if ( args.KeyCode == m_Key )
 			{
-                IsActive = false;
+                IsActive = ( m_State == KeyState.Up );
+			}
+		}
+
+		/// <summary>
+		/// Returns true if the key state being detected an edge state
+		/// </summary>
+		public override bool DeactivateOnUpdate
+		{
+			get
+			{
+				return m_State == KeyState.Down || m_State == KeyState.Up;
 			}
 		}
 
 		private Keys m_Key;
+		private KeyState m_State;
 
     }
 }

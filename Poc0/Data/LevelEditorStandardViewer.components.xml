@@ -21,9 +21,8 @@
 
     <!-- FPS display -->
     <bool value="true" property="ShowFps"/>
-
     <colour value="Red" property="FpsDisplay.TextColour"/>
-    
+
     <!-- Rendering technique
     <object type="Rb.World.Rendering.SceneShadowBufferTechnique" assembly="Rb.World" property="Technique">
       <parameters>

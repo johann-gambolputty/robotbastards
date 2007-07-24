@@ -1,4 +1,6 @@
 
+using System;
+
 namespace Poc0.LevelEditor.Core
 {
 	/// <summary>
@@ -6,6 +8,8 @@ namespace Poc0.LevelEditor.Core
 	/// </summary>
 	public class TileGrid
 	{
+		#region Public constants
+
 		/// <summary>
 		/// The default width of a starting TileGrid
 		/// </summary>
@@ -15,6 +19,10 @@ namespace Poc0.LevelEditor.Core
 		/// The default height of a starting TileGrid
 		/// </summary>
 		public const int DefaultHeight	= 64;
+
+		#endregion
+
+		#region Public properties
 
 		/// <summary>
 		/// Gets a tile at a given (x,y) position in the gird
@@ -41,11 +49,52 @@ namespace Poc0.LevelEditor.Core
 		}
 
 		/// <summary>
+		/// Gets the tile type set associated with this grid
+		/// </summary>
+		public TileTypeSet Set
+		{
+			get { return m_TileTypes; }
+		}
+
+		#endregion
+
+		#region Public events
+
+		#endregion
+
+		#region Public construction
+
+		/// <summary>
 		/// Default constructor
 		/// </summary>
 		public TileGrid( )
 		{
 			m_Tiles = NewTileGrid( DefaultWidth, DefaultHeight );
+		}
+
+		#endregion
+
+		#region Public events
+
+		/// <summary>
+		/// Invoked when the specified tile has been altered
+		/// </summary>
+		public event Action< Tile > TileChanged;
+
+		#endregion
+
+		#region Public methods
+
+		/// <summary>
+		/// Calls the TileChanged event
+		/// </summary>
+		/// <param name="tile">Tile that was altered</param>
+		public void OnTileChanged( Tile tile )
+		{
+			if ( TileChanged != null )
+			{
+				TileChanged( tile );
+			}
 		}
 
 		/// <summary>
@@ -58,13 +107,7 @@ namespace Poc0.LevelEditor.Core
 			m_Tiles = NewTileGrid( m_Tiles, width, height );
 		}
 
-		/// <summary>
-		/// Gets the tile type set associated with this grid
-		/// </summary>
-		public TileTypeSet Set
-		{
-			get { return m_TileTypes; }
-		}
+		#endregion
 
 		#region Private stuff
 
@@ -90,7 +133,7 @@ namespace Poc0.LevelEditor.Core
 			{
 				for ( int y = 0; y < height; ++y )
 				{
-					tiles[ x, y ] = ( x < oldWidth ) && ( y < oldHeight ) ? oldGrid[ x, y ] : new Tile( Set.DefaultTileType );
+					tiles[ x, y ] = ( x < oldWidth ) && ( y < oldHeight ) ? oldGrid[ x, y ] : new Tile( this, x, y, Set.DefaultTileType );
 				}
 			}
 			return tiles;
@@ -109,7 +152,7 @@ namespace Poc0.LevelEditor.Core
 			{
 				for ( int y = 0; y < height; ++y )
 				{
-					tiles[ x, y ] = new Tile( ( ( x + y ) % 2 == 0 ) ? Set[ 0 ] : Set[ 1 ] );
+					tiles[ x, y ] = new Tile( this, x, y, Set.DefaultTileType );
 				}
 			}
 			return tiles;

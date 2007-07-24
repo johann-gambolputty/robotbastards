@@ -221,11 +221,11 @@ namespace Rb.Interaction
 				}
 				string commandEnumAssemblyName = reader.GetAttribute( "assembly" );
 				Type enumType = AppDomain.CurrentDomain.Load( commandEnumAssemblyName ).GetType( commandEnumName );
-				commandList = CommandListManager.Inst.Get( enumType.Name );
-				if ( commandList == null )
+				if ( enumType == null )
 				{
-					commandList = CommandList.BuildFromEnum( enumType );
+					throw new ApplicationException( string.Format( "Could not find enum type \"{0}\"", commandEnumName ) );
 				}
+				commandList = CommandList.FromEnum( enumType );
 			}
 			else
 			{

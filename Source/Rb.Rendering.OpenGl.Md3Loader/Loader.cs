@@ -192,7 +192,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				if ( !tokens[ 0 ].StartsWith( "tag_" ) )
 				{
 					//	TODO: Texture loading should be done through the resource manager
-					Texture2d newTexture = RenderFactory.Inst.NewTexture2d( );
+					Texture2d newTexture = RenderFactory.Instance.NewTexture2d( );
 					newTexture.Load( TextureFile( provider, directory, tokens[ 1 ] ) );
 
 					surfaceTextureMap[ tokens[ 0 ] ] = newTexture;

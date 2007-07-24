@@ -49,13 +49,8 @@ namespace Rb.Interaction.Windows
 
             if ( IsActive )
             {
-                Value = Utils.Clamp( Value + ( args.Delta  * m_Delta ), m_Min, m_Max );
+                Value = Utils.Clamp( Value + ( args.Delta > 0 ? m_Delta : -m_Delta ), m_Min, m_Max );
             }
-		}
-
-		private void OnMouseLeave( object sender, EventArgs args )
-		{
-			IsActive = false;
 		}
 
         private MouseButtons  m_Button;

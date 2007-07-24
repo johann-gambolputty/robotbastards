@@ -107,6 +107,7 @@
     <Compile Include="Utils\PathHelpers.cs" />
     <Compile Include="Utils\PolyList.cs" />
     <Compile Include="Utils\StackTraceInfo.cs" />
+    <Compile Include="Utils\StringHelpers.cs" />
     <Compile Include="Utils\TinyTime.cs" />
     <Compile Include="Utils\XmlHelpers.cs" />
   </ItemGroup>

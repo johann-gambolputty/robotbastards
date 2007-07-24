@@ -1,5 +1,6 @@
 
 using System.Drawing;
+using System.Drawing.Imaging;
 using Rb.Rendering;
 
 namespace Poc0.LevelEditor.Core
@@ -23,6 +24,13 @@ namespace Poc0.LevelEditor.Core
 			}
 		}
 
+		public TileType( TileTypeSet set, string name, int x, int y, int width, int height )
+		{
+			Name = name;
+
+			Set = set;
+		}
+
 		/// <summary>
 		/// Texture rectangle (area on the tile type set display texture that this type uses)
 		/// </summary>
@@ -39,6 +47,15 @@ namespace Poc0.LevelEditor.Core
 		{
 			get { return m_Name; }
 			set { m_Name = value; }
+		}
+
+		/// <summary>
+		/// Creates a bitmap of the tile type
+		/// </summary>
+		public Bitmap CreateBitmap( PixelFormat format )
+		{
+			Bitmap setBmp = Set.DisplayTextureBitmap;
+			return setBmp.Clone( m_TextureRect, format );
 		}
 
 		private string			m_Name;
