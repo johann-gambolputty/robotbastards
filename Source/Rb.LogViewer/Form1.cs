@@ -1,9 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Rb.LogViewer
@@ -14,5 +9,21 @@ namespace Rb.LogViewer
         {
             InitializeComponent();
         }
+
+		private void openToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog openDialog = new OpenFileDialog( );
+			openDialog.Filter = "Text files (*.txt)|*.txt|All Files (*.*)|*.*";
+			if ( openDialog.ShowDialog( ) != DialogResult.OK )
+			{
+				return;
+			}
+			m_logView.OpenFile( openDialog.FileName, false );
+		}
+
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Close( );
+		}
     }
 }

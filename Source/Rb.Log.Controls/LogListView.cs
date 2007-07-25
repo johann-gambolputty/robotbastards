@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -22,21 +21,21 @@ namespace Rb.Log.Controls
 			DoubleBuffered = true;
 
 			OwnerDraw = true;
-			DrawColumnHeader += new DrawListViewColumnHeaderEventHandler( LogListView_DrawColumnHeader );
-			DrawItem += new DrawListViewItemEventHandler( LogListView_DrawItem );
+			DrawColumnHeader += LogListView_DrawColumnHeader;
+			DrawItem += LogListView_DrawItem;
 
-			Rb.Log.Source.OnNewLogEntry += new OnNewLogEntryDelegate( OnNewLogEntry );
+			Source.OnNewLogEntry += OnNewLogEntry;
 		}
 
 		~LogListView( )
 		{
-			Rb.Log.Source.OnNewLogEntry -= new OnNewLogEntryDelegate( OnNewLogEntry );
+			Source.OnNewLogEntry -= OnNewLogEntry;
 		}
         
 
         static LogListView( )
         {
-            Rb.Log.Source.OnNewLogEntry += new OnNewLogEntryDelegate( AddEntryToCache );
+            Source.OnNewLogEntry += AddEntryToCache;
         }
 
         #endregion
@@ -166,21 +165,21 @@ namespace Rb.Log.Controls
 
                         string[] subItems = new string[ Columns.Count ];
                         
-                        subItems[ m_FileColumn.DisplayIndex ]       = entry.File;
-                        subItems[ m_LineColumn.DisplayIndex ]       = entry.Line.ToString( );
-                        subItems[ m_ColumnColumn.DisplayIndex ]     = entry.Column.ToString( );
-                        subItems[ m_MethodColumn.DisplayIndex ]     = entry.Method;
-                        subItems[ m_SourceColumn.DisplayIndex ]     = entry.Source.ToString( );
-                        subItems[ m_TimeColumn.DisplayIndex ]       = entry.Time.ToString( );
-                        subItems[ m_ThreadColumn.DisplayIndex ]     = entry.Thread;
-                        subItems[ m_MessageColumn.DisplayIndex ]    = line;
+                        subItems[ m_FileColumn.Index ]       = entry.File;
+                        subItems[ m_LineColumn.Index ]       = entry.Line.ToString( );
+                        subItems[ m_ColumnColumn.Index ]     = entry.Column.ToString( );
+                        subItems[ m_MethodColumn.Index ]     = entry.Method;
+                        subItems[ m_SourceColumn.Index ]     = entry.Source.ToString( );
+                        subItems[ m_TimeColumn.Index ]       = entry.Time.ToString( );
+                        subItems[ m_ThreadColumn.Index ]     = entry.Thread;
+                        subItems[ m_MessageColumn.Index ]    = line;
 
                         newItem.SubItems.AddRange( subItems );
 
                         newItem.Tag = entry;
 
 						//	TODO: AP: If the list view is destroyed at the point, this blocks
-                        Invoke( new AddListViewItemDelegate( AddListViewItem ), newItem );   
+                        Invoke( new AddListViewItemDelegate( AddListViewItem ), newItem );
                     }
                 }
             }
@@ -204,19 +203,30 @@ namespace Rb.Log.Controls
             }
         }
 
-        #endregion
+		private static void ClearCache( )
+		{
+			ms_CacheStart = 0;
+			ms_CacheIndex = 0;
 
-        #region Entry filtering
-        
-        private Dictionary< Rb.Log.Source, bool >   m_SourceFilter = new Dictionary< Rb.Log.Source, bool >( );
-        private Dictionary< Rb.Log.Tag, bool >      m_TagFilter = new Dictionary< Rb.Log.Tag, bool >( );
+			for ( int i = 0; i < ms_Cache.Length; ++i )
+			{
+				ms_Cache[ i ] = null;
+			}
+		}
 
-        private bool EntryPassesFilter(Entry entry)
+		#endregion
+
+		#region Entry filtering
+
+		private readonly Dictionary< Source, bool > m_SourceFilter = new Dictionary< Source, bool >( );
+		private readonly Dictionary< Tag, bool > m_TagFilter = new Dictionary< Tag, bool >( );
+
+        private bool EntryPassesFilter( Entry entry )
         {
-            return IsSourceVisible(entry.Source);
+            return IsSourceVisible( entry.Source );
         }
 
-        private bool IsSourceVisible( Rb.Log.Source source )
+        private bool IsSourceVisible( Source source )
         {
             if ( !m_SourceFilter.ContainsKey( source ) )
             {
@@ -227,19 +237,19 @@ namespace Rb.Log.Controls
             return m_SourceFilter[ source ];
         }
 
-        private void SetSourceVisibility(Rb.Log.Source source, bool visible)
+        private void SetSourceVisibility( Source source, bool visible )
         {
-            if (!m_SourceFilter.ContainsKey(source))
+            if ( !m_SourceFilter.ContainsKey( source ) )
             {
-                m_SourceFilter.Add(source, visible);
+                m_SourceFilter.Add( source, visible );
             }
             else
             {
-                m_SourceFilter[source] = visible;
+                m_SourceFilter[ source ] = visible;
             }
         }
 
-        private bool IsTagVisible( Rb.Log.Tag tag )
+        private bool IsTagVisible( Tag tag )
         {
             if ( !m_TagFilter.ContainsKey( tag ) )
             {
@@ -250,7 +260,7 @@ namespace Rb.Log.Controls
             return m_TagFilter[ tag ];
         }
 
-        private void SetTagVisibility( Rb.Log.Tag tag, bool visible )
+        private void SetTagVisibility( Tag tag, bool visible )
         {
             if (!m_TagFilter.ContainsKey(tag))
             {
@@ -261,31 +271,31 @@ namespace Rb.Log.Controls
                 m_TagFilter[ tag ] = visible;
             }
 
-            foreach ( Rb.Log.Source source in tag.Sources )
+            foreach ( Source source in tag.Sources )
             {
                 SetSourceVisibility( source, visible );
             }
 
-            foreach ( Rb.Log.Tag childTag in tag.ChildTags )
+            foreach ( Tag childTag in tag.ChildTags )
             {
                 SetTagVisibility( childTag, visible );
             }
         }
 
-        private void ToggleSourceVisibility(object sender, EventArgs args)
+        private void ToggleSourceVisibility( object sender, EventArgs args )
         {
-            MenuItem item = (MenuItem)sender;
+            MenuItem item = ( MenuItem )sender;
             item.Checked = !item.Checked;
-            SetSourceVisibility((Rb.Log.Source)item.Tag, item.Checked);
-            RefreshView();
+            SetSourceVisibility( ( Source )item.Tag, item.Checked );
+            RefreshView( );
         }
 
-        private void ToggleTagVisibility(object sender, EventArgs args)
+        private void ToggleTagVisibility( object sender, EventArgs args )
         {
-            MenuItem item = (MenuItem)sender;
+            MenuItem item = ( MenuItem )sender;
             item.Checked = !item.Checked;
-            SetTagVisibility((Rb.Log.Tag)item.Tag, item.Checked);
-            RefreshView();
+            SetTagVisibility( ( Tag )item.Tag, item.Checked );
+            RefreshView( );
         }
 
         #endregion
@@ -306,17 +316,17 @@ namespace Rb.Log.Controls
 			}
         }
 
-        private void BuildSourceFilterContextMenu(ContextMenu menu, Rb.Log.Source source, string prefix)
+        private void BuildSourceFilterContextMenu( ContextMenu menu, Source source, string prefix )
         {
             MenuItem item = new MenuItem(prefix + source.Name);
             item.Checked = IsSourceVisible(source);
             item.Tag = source;
             menu.MenuItems.Add(item);
 
-            item.Click += new EventHandler(ToggleSourceVisibility);
+            item.Click += ToggleSourceVisibility;
         }
 
-	    private void BuildTagFilterContextMenu( ContextMenu menu, Rb.Log.Tag tag, string prefix )
+	    private void BuildTagFilterContextMenu( ContextMenu menu, Tag tag, string prefix )
         {
             string childPrefix = prefix + "    ";
 
@@ -328,7 +338,7 @@ namespace Rb.Log.Controls
                 item.Checked = IsTagVisible( tag );
                 menu.MenuItems.Add( item );
 
-                item.Click += new EventHandler( ToggleTagVisibility );
+                item.Click += ToggleTagVisibility;
 
                 foreach ( Source source in tag.Sources )
                 {
@@ -357,18 +367,15 @@ namespace Rb.Log.Controls
                 contextMenu.Show( this, e.Location );
             }
         }
-
-        #endregion
-
+		
         private void LogListView_DragDrop(object sender, DragEventArgs e)
         {
             string[] filenames = ( string[] )e.Data.GetData( "FileName" );
-            Entry[] entries = Entry.CreateEntriesFromLogFile( filenames[ 0 ] );
 
-            foreach ( Entry entry in entries )
-            {
-                OnNewLogEntry( entry );
-            }
+			for ( int index = 0; index < filenames.Length; ++index )
+			{
+				OpenFile( filenames[ index ], index != 0 );
+			}
         }
 
         private void LogListView_DragEnter(object sender, DragEventArgs e)
@@ -378,5 +385,29 @@ namespace Rb.Log.Controls
                 e.Effect = DragDropEffects.Link;
             }
         }
+
+        #endregion
+
+		/// <summary>
+		/// Opens the specified log file, and adds all the log entries to the view
+		/// </summary>
+		/// <param name="file">Path to the log file</param>
+		/// <param name="append">If false, then the cache and list view are cleared. Otherwise, all 
+		/// items in the log file are appended</param>
+		public void OpenFile( string file, bool append )
+		{
+			if ( !append )
+			{
+				ClearCache( );
+				Items.Clear( );
+			}
+
+			Entry[] entries = Entry.CreateEntriesFromLogFile( file );
+			foreach ( Entry entry in entries )
+			{
+				Source.HandleEntry(  entry );
+			}
+		}
+
     }
 }

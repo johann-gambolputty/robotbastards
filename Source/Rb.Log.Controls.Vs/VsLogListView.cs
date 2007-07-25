@@ -1,10 +1,11 @@
 using System;
-using EnvDTE;
 using System.Windows.Forms;
+using EnvDTE80;
+using EnvDTE;
 
 namespace Rb.Log.Controls.Vs
 {
-    public partial class VsLogListView : Rb.Log.Controls.LogListView
+    public partial class VsLogListView : LogListView
     {
         public VsLogListView()
         {
@@ -13,19 +14,26 @@ namespace Rb.Log.Controls.Vs
 
         private void VsLogListView_DoubleClick(object sender, EventArgs e)
         {
-            Rb.Log.Entry entry = ( Rb.Log.Entry )SelectedItems[ 0 ].Tag;
+            Entry entry = ( Entry )SelectedItems[ 0 ].Tag;
+
+			if ( !System.IO.File.Exists( entry.File ) )
+			{
+				string error = string.Format( Properties.Resources.VsLogListView_CouldNotFindFile, entry.File );
+				MessageBox.Show( error );
+				return;
+			}
 
             //  Get an existing vs or create one
-            DTE dte = ( DTE )System.Runtime.InteropServices.Marshal.GetActiveObject( "VisualStudio.DTE.8.0" );
+            DTE2 dte = ( DTE2 )System.Runtime.InteropServices.Marshal.GetActiveObject( "VisualStudio.DTE.8.0" );
             if ( dte == null )
             {
-                dte = ( DTE )Microsoft.VisualBasic.Interaction.CreateObject("VisualStudio.DTE.8.0", "");
+                dte = ( DTE2 )Microsoft.VisualBasic.Interaction.CreateObject("VisualStudio.DTE.8.0", "");
             }
 
             //  Open the file and goto the correct line
             try 
             {
-                Window win = dte.ItemOperations.OpenFile( entry.File, Constants.vsViewKindTextView );
+                Window win = dte.ItemOperations.OpenFile( entry.File, Constants.vsViewKindCode );
                 Document doc = win == null ? null : win.Document;
                 if ( doc != null )
                 {
@@ -34,6 +42,8 @@ namespace Rb.Log.Controls.Vs
                     {
                         textDoc.Selection.GotoLine( entry.Line, false );
                     }
+					dte.MainWindow.SetFocus();
+					dte.MainWindow.Activate();
                 }
             }
             catch ( System.Runtime.InteropServices.COMException ex )

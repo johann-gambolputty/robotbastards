@@ -1,7 +1,6 @@
-
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using Rb.Rendering;
 
 namespace Poc0.LevelEditor.Core
 {
@@ -11,6 +10,22 @@ namespace Poc0.LevelEditor.Core
 	public class TileType
 	{
 		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		/// <param name="set">Tile type set that this type belongs to</param>
+		/// <param name="name">Name of this type</param>
+		/// <param name="x">X coordinate of top left of texture rectangle</param>
+		/// <param name="y">Y coordinate of top left of texture rectangle</param>
+		/// <param name="width">Width of the texture rectangle</param>
+		/// <param name="height">Height of the texture rectangle</param>
+		public TileType( TileTypeSet set, string name, int x, int y, int width, int height )
+		{
+			Name = name;
+			Set = set;
+			m_TextureRect = new Rectangle( x, y, width, height );
+		}
+
+		/// <summary>
 		/// Gets the <see cref="TileTypeSet"/> that this type belongs to
 		/// </summary>
 		public TileTypeSet Set
@@ -18,17 +33,13 @@ namespace Poc0.LevelEditor.Core
 			get { return m_Set; }
 			set
 			{
-				//	TODO: AP: Should remove from existing set, check for value==null also
+				if ( m_Set != null )
+				{
+					throw new ApplicationException( "Can only set a tile type's set once" );
+				}
 				m_Set = value;
 				m_Set.Add( this );
 			}
-		}
-
-		public TileType( TileTypeSet set, string name, int x, int y, int width, int height )
-		{
-			Name = name;
-
-			Set = set;
 		}
 
 		/// <summary>
@@ -58,8 +69,8 @@ namespace Poc0.LevelEditor.Core
 			return setBmp.Clone( m_TextureRect, format );
 		}
 
-		private string			m_Name;
-		private Rectangle		m_TextureRect = new Rectangle( 0, 0, 32, 32 );
-		private TileTypeSet		m_Set;
+		private string		m_Name;
+		private Rectangle	m_TextureRect = new Rectangle( 0, 0, 32, 32 );
+		private TileTypeSet	m_Set;
 	}
 }

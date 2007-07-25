@@ -19,8 +19,10 @@ namespace Rb.Log
         /// <returns>Returns entry array</returns>
         public static Entry[] CreateEntriesFromLogFile( string path )
         {
-            StreamReader reader = System.IO.File.OpenText( path );
-            return CreateEntriesFromLogText( reader );
+            using ( StreamReader reader = System.IO.File.OpenText( path ) )
+			{
+				return CreateEntriesFromLogText( reader );
+			}
         }
 
         /// <summary>
@@ -32,7 +34,11 @@ namespace Rb.Log
         {
             List< Entry > entries = new List< Entry >( );
 
-            foreach ( Match curMatch in LogEntryRegex.Matches( reader.ReadToEnd( ) ) )
+			string text = reader.ReadToEnd( );
+        	MatchCollection matches = LogEntryRegex.Matches( text );
+        	//int numMatches = matches.Count;
+
+            foreach ( Match curMatch in matches )
             {
                 string file     = curMatch.Groups[ "File" ].Value;
                 string line     = curMatch.Groups[ "Line" ].Value;
@@ -53,7 +59,7 @@ namespace Rb.Log
 
         private static Regex LogEntryRegex = new Regex
             (
-                @"(?<File>.*)\((?<Line>\d+),(?<Column>\d+)\)\:\<(?<Source>(?:\w+\.?)+)\>(?<Message>.*)\[(?<Thread>\d+)->(?<Method>.*)\]"
+                @"(?<File>.*)\((?<Line>\d+),(?<Column>\d+)\)\:\<(?<Source>(?:\w+\.?)+)\>(?<Message>[^[]*)\[(?<Thread>\d+)->(?<Method>.*)\]"
             );
 
         #endregion
