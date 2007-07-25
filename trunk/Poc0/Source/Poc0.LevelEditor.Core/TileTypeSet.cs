@@ -10,16 +10,27 @@ namespace Poc0.LevelEditor.Core
 	public class TileTypeSet
 	{
 		/// <summary>
-		/// Default constructor
+		/// Creates a default tile type set
 		/// </summary>
-		public TileTypeSet( )
+		public static TileTypeSet CreateDefaultTileTypeSet( )
 		{
-			m_DefaultType = CreateDefaultTileType( );
+			TileTypeSet set = new TileTypeSet( );
 
-			TileType defaultType2 = new TileType( );
-			defaultType2.Set = this;
-			defaultType2.TextureRectangle = new Rectangle( 33, 0, 32, 32 );
-			defaultType2.Name = "Default2";
+			set.DisplayTexture = CreateDefaultDisplayTexture( );
+
+			int x = 0;
+			int width = 64;
+			int height = 64;
+
+			new TileType( set, "tile0", x, 0, width, height );
+			x += width;
+
+			new TileType( set, "tile1", x, 0, width, height );
+			x += width;
+			
+			new TileType( set, "tile2", x, 0, width, height );
+
+			return set;
 		}
 
 		/// <summary>
@@ -108,11 +119,16 @@ namespace Poc0.LevelEditor.Core
 			}
 		}
 
+		#region Private members
+
 		private readonly List< TileType >	m_TileTypes			= new List< TileType >( );
 		private readonly TileType			m_DefaultType;
-		private Texture2d					m_DisplayTexture	= CreateDefaultDisplayTexture( );
+		private Texture2d					m_DisplayTexture;
 		private Bitmap						m_DisplayTextureImage;
 
+		/// <summary>
+		/// Creates a texture from the default tile texture in the resources
+		/// </summary>
 		private static Texture2d CreateDefaultDisplayTexture( )
 		{
 			Texture2d displayTexture = RenderFactory.Instance.NewTexture2d( );
@@ -120,14 +136,15 @@ namespace Poc0.LevelEditor.Core
 			return displayTexture;
 		}
 
+		/// <summary>
+		/// Creates a new default tile type
+		/// </summary>
 		private TileType CreateDefaultTileType( )
 		{
-			TileType result = new TileType( );
-			result.Set = this;
-			result.Name = "Default";
-
-			return result;
+			return new TileType( this, "Default", 0, 0, 64, 64 );
 		}
+
+		#endregion
 
 	}
 }
