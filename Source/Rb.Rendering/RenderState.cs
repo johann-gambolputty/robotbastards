@@ -45,9 +45,49 @@ namespace Rb.Rendering
 		Texture2d					= 0x40,
 
 		/// <summary>
+		/// 2D texture flag, unit 0 (equivalent to <see cref="Texture2d"/>)
+		/// </summary>
+		Texture2dUnit0 				= 0x40,
+
+		/// <summary>
+		/// 2D texture flag, unit 1
+		/// </summary>
+		Texture2dUnit1 = 0x80,
+
+		/// <summary>
+		/// 2D texture flag, unit 2
+		/// </summary>
+		Texture2dUnit2 				= 0x100,
+
+		/// <summary>
+		/// 2D texture flag, unit 3
+		/// </summary>
+		Texture2dUnit3 				= 0x200,
+
+		/// <summary>
+		/// 2D texture flag, unit 4
+		/// </summary>
+		Texture2dUnit4 				= 0x400,
+
+		/// <summary>
+		/// 2D texture flag, unit 5
+		/// </summary>
+		Texture2dUnit5 				= 0x800,
+
+		/// <summary>
+		/// 2D texture flag, unit 6
+		/// </summary>
+		Texture2dUnit6 				= 0x1000,
+
+		/// <summary>
+		/// 2D texture flag, unit 7
+		/// </summary>
+		Texture2dUnit7 				= 0x2000,
+
+		/// <summary>
 		/// Blending flag
 		/// </summary>
-		Blend						= 0x80
+		Blend						= 0x4000
 	}
 
 	/// <summary>

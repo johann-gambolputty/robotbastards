@@ -16,9 +16,18 @@ namespace Rb.Rendering.OpenGl
 			//	Apply flag caps
 			ApplyFlagCap( RenderStateFlag.Lighting, Gl.GL_LIGHTING );
 			ApplyFlagCap( RenderStateFlag.DepthTest, Gl.GL_DEPTH_TEST );
-			ApplyFlagCap( RenderStateFlag.Texture2d, Gl.GL_TEXTURE_2D );
 			ApplyFlagCap( RenderStateFlag.Blend, Gl.GL_BLEND );
+			ApplyFlagCap( RenderStateFlag.Texture2d, Gl.GL_TEXTURE_2D );
 			Gl.glDepthMask( ( m_CapFlags & RenderStateFlag.DepthWrite ) != 0 ? 1 : 0 );
+
+			EnableTextureUnit( RenderStateFlag.Texture2dUnit1, 1 );
+			EnableTextureUnit( RenderStateFlag.Texture2dUnit2, 2 );
+			EnableTextureUnit( RenderStateFlag.Texture2dUnit3, 3 );
+			EnableTextureUnit( RenderStateFlag.Texture2dUnit4, 4 );
+			EnableTextureUnit( RenderStateFlag.Texture2dUnit5, 5 );
+			EnableTextureUnit( RenderStateFlag.Texture2dUnit6, 6 );
+			EnableTextureUnit( RenderStateFlag.Texture2dUnit7, 7 );
+			Gl.glActiveTextureARB( Gl.GL_TEXTURE0_ARB );
 
 			switch ( m_DepthTest )
 			{
@@ -114,7 +123,20 @@ namespace Rb.Rendering.OpenGl
 		{
 		}
 
-		private int GetBlendFactor( BlendFactor factor )
+		private void EnableTextureUnit( RenderStateFlag flag, int unit )
+		{
+			Gl.glActiveTextureARB( Gl.GL_TEXTURE0_ARB + unit );
+			if ( ( m_CapFlags & flag ) != 0 )
+			{
+				Gl.glEnable( Gl.GL_TEXTURE_2D );
+			}
+			else
+			{
+				Gl.glDisable( Gl.GL_TEXTURE_2D );
+			}
+		}
+
+		private static int GetBlendFactor( BlendFactor factor )
 		{
 			switch ( factor )
 			{

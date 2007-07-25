@@ -116,7 +116,6 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 				.EnableCap( RenderStateFlag.Blend )
 				.SetBlendMode( BlendFactor.SrcAlpha, BlendFactor.OneMinusSrcAlpha )
 				.SetPolygonRenderingMode( PolygonRenderMode.Fill )
-				//.EnableCap( RenderStateFlag.Texture2d )
 				.DisableLighting( );
 		}
 
@@ -126,6 +125,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 
 		private RenderState m_TileRenderState;
 		private OpenGlTextureSampler2d m_TileTextureSampler;
+		private OpenGlTextureSampler2d m_MaskTextureSampler;
 		private TileBlock[,] m_Blocks;
 
 		/// <summary>
@@ -145,16 +145,24 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			m_TileRenderState = RenderFactory.Instance.NewRenderState( );
 			m_TileRenderState
 				.DisableCap( RenderStateFlag.DepthTest )
-				//.EnableCap( RenderStateFlag.Blend )
-				//.SetBlendMode( BlendFactor.SrcAlpha, BlendFactor.OneMinusSrcAlpha )
 				.SetPolygonRenderingMode( PolygonRenderMode.Fill )
-				.EnableCap( RenderStateFlag.Texture2d )
+				.EnableCap( RenderStateFlag.Texture2dUnit0 )
+				.EnableCap( RenderStateFlag.Texture2dUnit1 )
 				.DisableLighting( );
 
 			m_TileTextureSampler = new OpenGlTextureSampler2d( );
 			m_TileTextureSampler.Mode = TextureMode.Modulate;
 			m_TileTextureSampler.MinFilter = TextureFilter.LinearTexel;
 			m_TileTextureSampler.MagFilter = TextureFilter.LinearTexel;
+
+			m_TileTextureSampler.Texture = ( OpenGlTexture2d )Grid.Set.DisplayTexture;
+
+			m_MaskTextureSampler = new OpenGlTextureSampler2d( );
+			m_MaskTextureSampler.Mode = TextureMode.Modulate;
+			m_MaskTextureSampler.MinFilter = TextureFilter.NearestTexel;
+			m_MaskTextureSampler.MagFilter = TextureFilter.NearestTexel;
+
+			m_MaskTextureSampler.Texture = ( OpenGlTexture2d )TileTypeTransitions.TransitionsTexture;
 		}
 
 		/// <summary>
@@ -168,8 +176,21 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			}
 
 			Renderer.Instance.PushRenderState( m_TileRenderState );
-			m_TileTextureSampler.Texture = ( OpenGlTexture2d )Grid.Set.DisplayTexture;
 			m_TileTextureSampler.Begin( );
+			
+			//glTexEnvi( GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_DOT3_RGB );
+			//glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0 );
+			//glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR );
+			//glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR );
+			//glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR );
+
+			//glTexEnvi( GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE );
+			//glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0 );
+			//glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA );
+			//glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR );
+			//glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA );
+
+			m_MaskTextureSampler.Begin( );
 
 			foreach ( TileBlock block in m_Blocks )
 			{
@@ -180,6 +201,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 				block.Render( );
 			}
 
+			m_MaskTextureSampler.End( );
 			m_TileTextureSampler.End( );
 			Renderer.Instance.PopRenderState( );
 		}
@@ -263,16 +285,20 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 							Gl.glColor3ub( 0xff, 0xff, 0xff );
 						}
 
-						Gl.glTexCoord2f( minU, minV );
+						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE0_ARB, minU, minV );
+						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE1_ARB, 0, 0 );
 						Gl.glVertex2i( screenX, screenY );
 
-						Gl.glTexCoord2f( maxU, minV );
+						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE0_ARB, maxU, minV );
+						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE1_ARB, 1, 0 );
 						Gl.glVertex2i( screenX + TileScreenWidth, screenY );
 
-						Gl.glTexCoord2f( maxU, maxV );
+						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE0_ARB, maxU, maxV );
+						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE1_ARB, 1, 1 );
 						Gl.glVertex2i( screenX + TileScreenWidth, screenY + TileScreenHeight );
 
-						Gl.glTexCoord2f( minU, maxV );
+						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE0_ARB, minU, maxV );
+						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE1_ARB, 0, 1 );
 						Gl.glVertex2i( screenX, screenY + TileScreenHeight );
 					}
 				}
@@ -330,7 +356,6 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			int minY = tile.GridY * TileScreenHeight;
 			int maxX = minX + TileScreenWidth;
 			int maxY = minY + TileScreenHeight;
-
 
 			Gl.glBegin( Gl.GL_QUADS );
 
