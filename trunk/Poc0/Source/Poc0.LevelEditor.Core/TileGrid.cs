@@ -65,10 +65,11 @@ namespace Poc0.LevelEditor.Core
 		#region Public construction
 
 		/// <summary>
-		/// Default constructor
+		/// Setup constructor
 		/// </summary>
-		public TileGrid( )
+		public TileGrid( TileTypeSet set )
 		{
+			m_TileTypes = set;
 			m_Tiles = NewTileGrid( DefaultWidth, DefaultHeight );
 		}
 
@@ -128,12 +129,14 @@ namespace Poc0.LevelEditor.Core
 			int oldWidth = oldGrid.GetLength( 0 );
 			int oldHeight = oldGrid.GetLength( 1 );
 
+			TileType newTileType = Set[ 0 ];
+
 			Tile[,] tiles = new Tile[ width, height ];
 			for ( int x = 0; x < width; ++x )
 			{
 				for ( int y = 0; y < height; ++y )
 				{
-					tiles[ x, y ] = ( x < oldWidth ) && ( y < oldHeight ) ? oldGrid[ x, y ] : new Tile( this, x, y, Set.DefaultTileType );
+					tiles[ x, y ] = ( x < oldWidth ) && ( y < oldHeight ) ? oldGrid[ x, y ] : new Tile( this, x, y, newTileType );
 				}
 			}
 			return tiles;
@@ -147,19 +150,21 @@ namespace Poc0.LevelEditor.Core
 		/// <returns>Returns the new Tile table</returns>
 		private Tile[,] NewTileGrid( int width, int height )
 		{
+			TileType tileType = Set[ 0 ];
+
 			Tile[,] tiles = new Tile[ width, height ];
 			for ( int x = 0; x < width; ++x )
 			{
 				for ( int y = 0; y < height; ++y )
 				{
-					tiles[ x, y ] = new Tile( this, x, y, Set.DefaultTileType );
+					tiles[ x, y ] = new Tile( this, x, y, tileType );
 				}
 			}
 			return tiles;
 		}
 
 		public Tile[,]		m_Tiles;
-		private TileTypeSet	m_TileTypes	= new TileTypeSet( );
+		private TileTypeSet	m_TileTypes;
 
 		#endregion
 	}

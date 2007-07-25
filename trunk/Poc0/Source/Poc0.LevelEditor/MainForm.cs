@@ -65,7 +65,7 @@ namespace Poc0.LevelEditor
 				CommandInputTemplateMap map = ( CommandInputTemplateMap )ResourceManager.Instance.Load( "LevelEditorCommandInputs.components.xml" );
 				m_User.InitialiseAllCommandListBindings( );
 
-				m_Grid = new TileGrid( );
+				m_Grid = new TileGrid( TileTypeSet.CreateDefaultTileTypeSet( ) );
 				m_EditState = new TileGridEditState( );
 				m_EditState.TilePaintType = m_Grid.Set[ 1 ];
 				m_GridRenderer = new OpenGlTileGrid2dRenderer( m_Grid, m_EditState );

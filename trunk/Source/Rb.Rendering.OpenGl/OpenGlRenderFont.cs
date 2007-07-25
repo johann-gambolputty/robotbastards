@@ -135,7 +135,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Measures the dimensions of a string, as required by BuildFontImage()
 		/// </summary>
-		private Size MeasureString( Graphics graphics, string str, Font font )
+		private static Size MeasureString( Graphics graphics, string str, Font font )
 		{
 			Size stringSize = new Size( );
 			for ( int charIndex = 0; charIndex < str.Length; ++charIndex )
@@ -183,7 +183,7 @@ namespace Rb.Rendering.OpenGl
 				if ( ( x + charWidth ) >= size )
 				{
 					x = 0;
-					y += ( int )( charSetSize.Height );
+					y += ( charSetSize.Height );
 				}
 
 				if ( chars[ charIndex ] < 256 )
@@ -204,7 +204,7 @@ namespace Rb.Rendering.OpenGl
 				}
 
 			//	graphics.DrawRectangle( System.Drawing.Pens.Red, x, y, charWidth, charSetSize.Height );
-				graphics.DrawString( charStr, font, System.Drawing.Brushes.White, x, y, format );
+				graphics.DrawString( charStr, font, Brushes.White, x, y, format );
 
 				x += charWidth;
 			}

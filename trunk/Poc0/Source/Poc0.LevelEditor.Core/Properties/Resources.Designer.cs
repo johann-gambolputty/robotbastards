@@ -66,5 +66,12 @@ namespace Poc0.LevelEditor.Core.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        internal static System.Drawing.Bitmap TransitionMasks {
+            get {
+                object obj = ResourceManager.GetObject("TransitionMasks", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

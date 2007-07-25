@@ -27,18 +27,10 @@ namespace Poc0.LevelEditor.Core
 
 			new TileType( set, "tile1", x, 0, width, height );
 			x += width;
-			
+
 			new TileType( set, "tile2", x, 0, width, height );
 
 			return set;
-		}
-
-		/// <summary>
-		/// Gets the default tile type
-		/// </summary>
-		public TileType DefaultTileType
-		{
-			get { return m_DefaultType; }
 		}
 
 		/// <summary>
@@ -121,8 +113,7 @@ namespace Poc0.LevelEditor.Core
 
 		#region Private members
 
-		private readonly List< TileType >	m_TileTypes			= new List< TileType >( );
-		private readonly TileType			m_DefaultType;
+		private readonly List< TileType >	m_TileTypes = new List< TileType >( );
 		private Texture2d					m_DisplayTexture;
 		private Bitmap						m_DisplayTextureImage;
 
@@ -134,14 +125,6 @@ namespace Poc0.LevelEditor.Core
 			Texture2d displayTexture = RenderFactory.Instance.NewTexture2d( );
 			displayTexture.Load( Properties.Resources.DefaultTileType );
 			return displayTexture;
-		}
-
-		/// <summary>
-		/// Creates a new default tile type
-		/// </summary>
-		private TileType CreateDefaultTileType( )
-		{
-			return new TileType( this, "Default", 0, 0, 64, 64 );
 		}
 
 		#endregion
