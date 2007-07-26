@@ -1,5 +1,6 @@
 using System;
 using System.Configuration;
+using System.Drawing;
 using System.Windows.Forms;
 using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Rendering.OpenGl;  
@@ -39,7 +40,13 @@ namespace Poc0.LevelEditor
 			}
 			ResourceManager.Instance.Setup( resourceSetupPath );
 
-			CommandList.FromEnum( typeof( TileCamera2dCommands ) );
+			TileTransitionMaskGenerator.Mask[] masks = new TileTransitionMaskGenerator( ).Generate( 32, 32 );
+
+			System.IO.Directory.CreateDirectory( "Masks" );
+			for ( int maskIndex = 0; maskIndex < masks.Length; ++maskIndex )
+			{
+				masks[ maskIndex ].ToBitmap( ).Save( "Masks/Mask" + maskIndex + ".png" );
+			}
 
 			InitializeComponent( );
 
