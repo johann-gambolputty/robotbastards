@@ -8,6 +8,16 @@ namespace Rb.Core.Maths
 	public class Utils
 	{
 		/// <summary>
+		/// Swaps two values
+		/// </summary>
+		public static void Swap( ref float val0, ref float val1 )
+		{
+			float tmp = val0;
+			val0 = val1;
+			val1 = tmp;
+		}
+
+		/// <summary>
 		/// Closeness check
 		/// </summary>
 		/// <param name="val"> Value </param>

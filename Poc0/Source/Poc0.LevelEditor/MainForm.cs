@@ -40,14 +40,6 @@ namespace Poc0.LevelEditor
 			}
 			ResourceManager.Instance.Setup( resourceSetupPath );
 
-			TileTransitionMaskGenerator.Mask[] masks = new TileTransitionMaskGenerator( ).Generate( 32, 32 );
-
-			System.IO.Directory.CreateDirectory( "Masks" );
-			for ( int maskIndex = 0; maskIndex < masks.Length; ++maskIndex )
-			{
-				masks[ maskIndex ].ToBitmap( ).Save( "Masks/Mask" + maskIndex + ".png" );
-			}
-
 			InitializeComponent( );
 
 			Icon = Properties.Resources.AppIcon;
@@ -68,6 +60,9 @@ namespace Poc0.LevelEditor
 		{
 			if ( !DesignMode )
 			{
+				TileTransitionMasks masks = new TileTransitionMaskGenerator( ).Create( 32, 32 );
+				masks.Texture.Save( "Masks.png" );
+
 				//	Load input bindings
 				CommandInputTemplateMap map = ( CommandInputTemplateMap )ResourceManager.Instance.Load( "LevelEditorCommandInputs.components.xml" );
 				m_User.InitialiseAllCommandListBindings( );
@@ -75,7 +70,7 @@ namespace Poc0.LevelEditor
 				m_Grid = new TileGrid( TileTypeSet.CreateDefaultTileTypeSet( ) );
 				m_EditState = new TileGridEditState( );
 				m_EditState.TilePaintType = m_Grid.Set[ 1 ];
-				m_GridRenderer = new OpenGlTileGrid2dRenderer( m_Grid, m_EditState );
+				m_GridRenderer = new OpenGlTileGrid2dRenderer( m_Grid, m_EditState, masks );
 
 				tileTypeSetListView1.TileTypes = m_Grid.Set;
 

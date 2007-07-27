@@ -33,10 +33,19 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public static void LoadExtensions( )
         {	
+			//	Show the extensions
             string extensions = Gl.glGetString( Gl.GL_EXTENSIONS );
             GraphicsLog.Info( extensions.Replace( ' ', '\n' ) );
 
+			//	Write some important caps to the info
+			int[] result = new int[ 1 ];
+			Gl.glGetIntegerv( Gl.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, result );
+			GraphicsLog.Info( "Max texture units: " + result );
+
+			//	Hinty-hinty
             Gl.glHint( Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST );
+
+			//	
 
 			//	Add a default renderstate
 			Instance.PushRenderState( RenderFactory.Instance.NewRenderState( ) );
@@ -427,13 +436,6 @@ namespace Rb.Rendering.OpenGl
 		{
 			CurrentWorldToView.SetLookAt( camPos, lookAt, camYAxis );
 			UpdateModelView( );
-
-		//	Gl.glMatrixMode( Gl.GL_MODELVIEW );
-		//	Gl.glPushMatrix( );
-		//	Gl.glLoadIdentity( );
-		//	Glu.gluLookAt( camPos.X, camPos.Y, camPos.Z, lookAt.X, lookAt.Y, lookAt.Z, camYAxis.X, camYAxis.Y, camYAxis.Z );
-		//	EnsureMvCorrectness( CurrentWorldToView );
-		//	Gl.glPopMatrix( );
 		}
 
 		/// <summary>
@@ -619,7 +621,7 @@ namespace Rb.Rendering.OpenGl
 			Gl.glGetIntegerv( Gl.GL_VIEWPORT, viewport );
 
 			//	Correct windows screen space into openGL screen space
-			double inX	= ( double )x;
+			double inX	= x;
 			double inY	= ( double )viewport[ 3 ] - y;
 			double inZ	= depth;
 

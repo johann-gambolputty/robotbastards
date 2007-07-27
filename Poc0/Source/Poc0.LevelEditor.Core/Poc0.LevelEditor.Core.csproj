@@ -18,6 +18,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -26,6 +27,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -41,6 +43,7 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="TileByteCodes.cs" />
     <Compile Include="TileCamera2dCommandHandler.cs" />
     <Compile Include="TileEditCommandHandler.cs" />
     <Compile Include="TileGridRenderer.cs" />
@@ -51,6 +54,7 @@
     <Compile Include="TileObject.cs" />
     <Compile Include="TileGridEditState.cs" />
     <Compile Include="TileTransitionMaskGenerator.cs" />
+    <Compile Include="TileTransitionMasks.cs" />
     <Compile Include="TileType.cs" />
     <Compile Include="TileTypeSet.cs" />
     <Compile Include="TileTypeTransitions.cs" />
