@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Rb.Core.Maths;
@@ -78,7 +76,7 @@ namespace Poc0.LevelEditor.Core
 		/// </returns>
 		public Mask[] Generate( int maskWidth,int maskHeight )
 		{
-			Mask[] masks = new Mask[ 8 ];
+			Mask[] masks = new Mask[ 256 ];
 
 			for (int cornerCode = 0; cornerCode < masks.Length; ++cornerCode)
 			{
@@ -95,143 +93,224 @@ namespace Poc0.LevelEditor.Core
 			return ( byte )( ( code & ( 1 << offset ) ) == 0 ? 0x00 : 0xff );
 		}
 
+		private static byte SmoothMaskValueX( byte[,] nearestMask, int x, int y )
+		{
+			byte val0 = nearestMask[ x, y ];
+			byte val1 = nearestMask[ x + 1, y ];
+			return ( byte )( ( val0 > 0 && val1 > 0 ) ? 0xff : 0 );
+		}
+
+		private static byte SmoothMaskValueY( byte[ , ] nearestMask, int x, int y )
+		{
+			byte val0 = nearestMask[ x, y ];
+			byte val1 = nearestMask[ x, y + 1 ];
+			return ( byte )( ( val0 > 0 && val1 > 0 ) ? 0xff : 0 );
+		}
+
+		private static byte SmoothMaskValueXY( byte[ , ] nearestMask, int x, int y )
+		{
+			byte val0 = nearestMask[ x, y ];
+			byte val1 = nearestMask[ x + 1, y + 1 ];
+			return ( byte )( ( val0 > 0 && val1 > 0 ) ? 0xff : 0 );
+		}
+
+		private static byte SmoothMaskValueXInvY( byte[ , ] nearestMask, int x, int y )
+		{
+			byte val0 = nearestMask[ x, y ];
+			byte val1 = nearestMask[ x + 1, y - 1 ];
+			return ( byte )( ( val0 > 0 && val1 > 0 ) ? 0xff : 0 );
+		}
+
+		private static byte GetCombinedValue( byte[ , ] smoothMask, int x0, int y0 )
+		{
+			byte val0 = smoothMask[ x0, y0 ];
+			byte val1 = smoothMask[ x0 + 1, y0 + 1 ];
+			byte val2 = smoothMask[ x0 + 1, y0 ];
+			byte val3 = smoothMask[ x0, y0 + 1 ];
+			return ( byte )( ( val0 > 0 && val1 > 0 && ( ( val2 > 0 ) || ( val3 > 0 ) ) ) ? 0xff : 0 );
+		}
+
+		private static byte GetCombinedValueInvX( byte[ , ] smoothMask, int x0, int y0 )
+		{
+			byte val0 = smoothMask[ x0, y0 ];
+			byte val1 = smoothMask[ x0 - 1, y0 + 1 ];
+			byte val2 = smoothMask[ x0 - 1, y0 ];
+			byte val3 = smoothMask[ x0, y0 + 1 ];
+			return ( byte )( ( val0 > 0 && val1 > 0 && ( ( val2 > 0 ) || ( val3 > 0 ) ) ) ? 0xff : 0 );
+		}
+		private static byte GetCombinedValueInvY( byte[ , ] smoothMask, int x0, int y0 )
+		{
+			byte val0 = smoothMask[ x0, y0 ];
+			byte val1 = smoothMask[ x0 + 1, y0 - 1 ];
+			byte val2 = smoothMask[ x0 + 1, y0 ];
+			byte val3 = smoothMask[ x0, y0 - 1 ];
+			return ( byte )( ( val0 > 0 && val1 > 0 && ( ( val2 > 0 ) || ( val3 > 0 ) ) ) ? 0xff : 0 );
+		}
+		private static byte GetCombinedValue( byte[,] smoothMask, int x0, int y0, int x1, int y1 )
+		{
+			byte val0 = smoothMask[ x0, y0 ];
+			byte val1 = smoothMask[ x1, y1 ];
+			return ( byte )( ( val0 > 0 && val1 > 0 ) ? 0xff : 0 );
+		}
+
+		private static byte[,] MakeSmoothMask( byte[,] nearestMask )
+		{
+			byte[,] mask = new byte[ 7, 7 ];
+
+			for ( int y = 0; y < 7; ++y )
+			{
+				int nearY = y / 3;
+				bool gridY = ( y % 3 ) == 0;
+				for ( int x = 0; x < 7; ++x )
+				{
+					int nearX = x / 3;
+					bool gridX = ( x % 3 ) == 0;
+					if ( gridX && gridY )
+					{
+						mask[ x, y ] = nearestMask[ nearX, nearY ];
+					}
+					else if ( gridX )
+					{
+						mask[ x, y ] = SmoothMaskValueY( nearestMask, nearX, nearY );
+					}
+					else if ( gridY )
+					{
+						mask[ x, y ] = SmoothMaskValueX( nearestMask, nearX, nearY );
+					}
+					//else if ( x == y )
+					//{
+					//    mask[ x, y ] = SmoothMaskValueXY( nearestMask, nearX, nearY );
+					//}
+					//else if ( x == ( 6 - y ) )
+					//{
+					//    mask[ x, y ] = SmoothMaskValueXInvY( nearestMask, nearX, nearY + 1 );
+					//}
+				}
+			}
+
+			bool fatMiddle = false;
+
+			if ( fatMiddle )
+			{
+				mask[ 2, 2 ] = mask[ 3, 3 ];
+				mask[ 3, 2 ] = mask[ 3, 3 ];
+				mask[ 4, 2 ] = mask[ 3, 3 ];
+
+				mask[ 2, 3 ] = mask[ 3, 3 ];
+				mask[ 4, 3 ] = mask[ 3, 3 ];
+
+				mask[ 2, 4 ] = mask[ 3, 3 ];
+				mask[ 3, 4 ] = mask[ 3, 3 ];
+				mask[ 4, 4 ] = mask[ 3, 3 ];
+			}
+
+			mask[ 1, 1 ] = GetCombinedValue( nearestMask, 0, 0 );
+			mask[ 1, 5 ] = GetCombinedValueInvY( nearestMask, 0, 2 );
+			mask[ 5, 1 ] = GetCombinedValueInvX( nearestMask, 2, 0 );
+			mask[ 5, 5 ] = GetCombinedValue( nearestMask, 1, 1 );
+
+			if ( !fatMiddle )
+			{
+				mask[ 2, 2 ] = mask[ 1, 1 ];
+				mask[ 2, 4 ] = mask[ 1, 5 ];
+				mask[ 4, 2 ] = mask[ 5, 1 ];
+				mask[ 4, 4 ] = mask[ 5, 5 ];
+			}
+
+
+			mask[ 2, 1 ] = GetCombinedValue( mask, 1, 1, 3, 1 );
+			mask[ 1, 2 ] = GetCombinedValue( mask, 1, 1, 1, 3 );
+
+			mask[ 4, 1 ] = GetCombinedValue( mask, 3, 1, 5, 1 );
+			mask[ 5, 2 ] = GetCombinedValue( mask, 5, 1, 5, 3 );
+
+			mask[ 1, 4 ] = GetCombinedValue( mask, 1, 3, 1, 5 );
+			mask[ 2, 5 ] = GetCombinedValue( mask, 1, 5, 3, 5 );
+
+			mask[ 4, 5 ] = GetCombinedValue( mask, 3, 5, 5, 5 );
+			mask[ 5, 4 ] = GetCombinedValue( mask, 5, 3, 5, 5 );
+
+			return mask;
+		}
+
 		/// <summary>
 		/// Generates a mask for a given corner code
 		/// </summary>
 		private static void GenerateMask( byte cornerCode, int width, int height, byte[,] mask )
 		{
-			int yOffset = 0;
-			int blockWidth = width / 3;
-			int blockHeight = height / 3;
-
-			Blend( 1, 0, 0xff, 0xff, 0x00, 0xff );
-
-			byte[,] tinyMask = new byte[ 3, 3 ]
+			byte[ , ] nearestMask = new byte[ 3, 3 ]
 				{
 					{ CodeColour( cornerCode, 0 ), CodeColour( cornerCode, 1 ), CodeColour( cornerCode, 2 ) },
 					{ CodeColour( cornerCode, 3 ), 0xff, CodeColour( cornerCode, 4 ) },
 					{ CodeColour( cornerCode, 5 ), CodeColour( cornerCode, 6 ), CodeColour( cornerCode, 7 ) }
 				};
 
-			int[] blockWidths = new int[3] { width / 3, ( width * 2 ) / 3, width };
-			int[] blockHeights = new int[3] { height / 3, ( height * 2 ) / 3, height };
+			int[] smoothYEnds = new int[ 6 ]
+			{
+				( int )( height * 1.0f / 6.0f ),
+				( int )( height * 2.0f / 6.0f ),
+				( int )( height * 3.0f / 6.0f ),
+				( int )( height * 4.0f / 6.0f ),
+				( int )( height * 5.0f / 6.0f ),
+				height
+			};
+			int[] smoothXEnds = new int[ 6 ]
+			{
+				( int )( width * 1.0f / 6.0f ),
+				( int )( width * 2.0f / 6.0f ),
+				( int )( width * 3.0f / 6.0f ),
+				( int )( width * 4.0f / 6.0f ),
+				( int )( width * 5.0f / 6.0f ),
+				width
+			};
 
-			float range = 1.0f;
-
-			float fXScale = ( range * 2 ) / ( blockWidth + 1 );
-			float fYScale = ( range * 2 ) / ( blockHeight + 1 );
+			float smoothWidth = width / 6.0f;
+			float smoothHeight = height / 6.0f;
+			int smoothY = 0;
+			int smoothYStart = 0;
+			int smoothYEnd = smoothYEnds[ 0 ];
+			byte[ , ] smoothMask = MakeSmoothMask( nearestMask );
 
 			for ( int y = 0; y < height; ++y )
 			{
-				if ( y >= blockHeights[ yOffset ] )
+				if ( y >= smoothYEnd )
 				{
-					++yOffset;
+					smoothYStart = smoothYEnd;
+					smoothYEnd = smoothYEnds[ ++smoothY ];
 				}
 
-				float fY = ( blockHeights[ yOffset ] - y ) * fYScale;
-				fY -= range;
-				
-				int vOffset = ( blockHeights[ yOffset ] - y ) < blockHeight / 2 ? 1 : -1;
+				float localY = ( y - smoothYStart ) / smoothHeight;
 
-				int xOffset = 0;
-			    for ( int x = 0; x < width; ++x )
-			    {
-					if ( x >= blockWidths[ xOffset ] )
+				int smoothX = 0;
+				int smoothXStart = 0;
+				int smoothXEnd = smoothXEnds[ 0 ];
+				byte tl = smoothMask[ smoothX, smoothY ];
+				byte tr = smoothMask[ smoothX + 1, smoothY ];
+				byte bl = smoothMask[ smoothX, smoothY + 1 ];
+				byte br = smoothMask[ smoothX + 1, smoothY + 1 ];
+
+				for ( int x = 0; x < width; ++x )
+				{
+					if ( x >= smoothXEnd )
 					{
-						++xOffset;
+						smoothXStart = smoothXEnd;
+						smoothXEnd = smoothXEnds[ ++smoothX ];
+
+						tl = tr;
+						tr = smoothMask[ smoothX + 1, smoothY ];
+						bl = br;
+						br = smoothMask[ smoothX + 1, smoothY + 1 ];
 					}
 
-			        //mask[ x, y ] = tinyMask[ xOffset, yOffset ];
+					float localX = ( x - smoothXStart ) / smoothWidth;
 
-					float fX = ( blockWidths[ xOffset ] - x ) * fXScale;
-					fX -= range;
-					
-					int hOffset = ( blockWidths[ xOffset ] - x ) < blockWidth / 2 ? 1 : -1;
+					float val0 = Utils.Lerp( tl, tr, localX );
+					float val1 = Utils.Lerp( bl, br, localX );
+					float val2 = Utils.Lerp( val0, val1, localY );
 
-					byte origin = tinyMask[ xOffset, yOffset ];
-					byte vertical = MapValue( xOffset, yOffset, tinyMask, 0, vOffset );
-					byte horizontal = MapValue( xOffset, yOffset, tinyMask, hOffset, 0 );
-					byte diagonal = MapValue( xOffset, yOffset, tinyMask, hOffset, vOffset );
-
-					//mask[ x, y ] = Blend( fX < 0 ? -fX : fX, fY < 0 ? -fY : fY, origin, vertical, horizontal, diagonal );
-					mask[ x, y ] = Blend2( fX < 0 ? -fX : fX, fY < 0 ? -fY : fY, origin, vertical, horizontal, diagonal );
-			    }
-			}
-		}
-
-		private static byte MapValue( int x, int y, byte[ , ] map, int deltaX, int deltaY )
-		{
-			int newX = x + deltaX;
-			int newY = y + deltaY;
-
-			if ( ( newX < 0 ) || ( newX >= map.GetLength( 0 ) ) || ( newY < 0 ) || ( newY >= map.GetLength( 1 ) ) )
-			{
-				return map[ x, y ];
-			}
-			return map[ newX, newY ];
-		}
-
-		private static float DistanceFactor( float distance, byte origin, byte value )
-		{
-			float top = ( origin > 0 ) && ( value > 0 ) ? 1.5f : 1.0f;
-			float result = top - distance;
-			return result < 0 ? 0 : result > 1 ? 1 : result;
-		}
-
-		private static byte Blend2( float x, float y, byte bOrigin, byte bVertical, byte bHorizontal, byte bDiagonal )
-		{
-			if ( ( bVertical == 0 ) && ( bHorizontal == 0 ) && ( bDiagonal == 0 ) )
-			{
-				if (bOrigin == 0)
-				{
-					return 0;
+					mask[ x, y ] = ( byte )( val2 < 0 ? 0 : val2 > 255 ? 255 : val2);
 				}
-
-				float invDist = 1.0f - ( float )Math.Sqrt( x * x + y * y );
-				return invDist < 0 ? ( byte )0 : ( byte )( invDist * bOrigin );
 			}
-
-			float amt = 0;
-			float avg = 0;
-
-			if ( bVertical != 0 )
-			{
-				amt += ( 1 - x );
-				++avg;
-			}
-			if ( bHorizontal != 0 )
-			{
-				amt += ( 1 - y );
-				++avg;
-			}
-			if ( bDiagonal != 0 )
-			{
-				amt += 1 - Math.Abs( x - y );
-				++avg;
-			}
-
-			return ( byte )( ( amt / avg ) * 255 );
-		}
-
-		private static byte Blend( float x, float y, byte bOrigin, byte bVertical, byte bHorizontal, byte bDiagonal )
-		{
-			float invX = 2.0f - x;
-			float invY = 2.0f - y;
-
-			float scaleOrigin = ( float )Math.Sqrt( x * x + y * y );
-			scaleOrigin = DistanceFactor( scaleOrigin, 0, 0 );
-			
-			float scaleVertical = ( float )Math.Sqrt( x * x + invY * invY );
-			scaleVertical = DistanceFactor( scaleVertical, bOrigin, bVertical );
-
-			float scaleDiagonal = ( float )Math.Sqrt( invX * invX + invY * invY );
-			scaleDiagonal = DistanceFactor( scaleDiagonal, bOrigin, bDiagonal );
-
-			float scaleHorizontal = ( float )Math.Sqrt( invX * invX + y * y );
-			scaleHorizontal = DistanceFactor( scaleHorizontal, bOrigin, bHorizontal );
-
-			float combined = ( bOrigin * scaleOrigin ) + ( bVertical * scaleVertical ) + ( bHorizontal * scaleHorizontal ) + ( bDiagonal * scaleDiagonal );
-			return ( combined > 255 ) ? ( byte )255 : ( byte )combined;
 		}
 	}
 }
