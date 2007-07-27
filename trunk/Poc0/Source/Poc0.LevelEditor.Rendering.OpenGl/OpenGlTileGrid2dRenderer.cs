@@ -1,5 +1,6 @@
 using System.Drawing;
 using Poc0.LevelEditor.Core;
+using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.OpenGl;
 using Tao.OpenGl;
@@ -18,8 +19,10 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		/// </summary>
 		/// <param name="grid">Grid to render</param>
 		/// <param name="editState">Tile grid edit state to render on top of the grid</param>
-		public OpenGlTileGrid2dRenderer( TileGrid grid, TileGridEditState editState )
+		public OpenGlTileGrid2dRenderer( TileGrid grid, TileGridEditState editState, TileTransitionMasks masks )
 		{
+			m_Masks = masks;
+
 			Grid = grid;
 			EditState = editState;
 
@@ -162,7 +165,8 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			m_MaskTextureSampler.MinFilter = TextureFilter.NearestTexel;
 			m_MaskTextureSampler.MagFilter = TextureFilter.NearestTexel;
 
-			m_MaskTextureSampler.Texture = ( OpenGlTexture2d )TileTypeTransitions.TransitionsTexture;
+			//m_MaskTextureSampler.Texture = ( OpenGlTexture2d )TileTypeTransitions.TransitionsTexture;
+			m_MaskTextureSampler.Texture = ( OpenGlTexture2d )m_Masks.Texture;
 		}
 
 		/// <summary>
@@ -177,7 +181,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 
 			Renderer.Instance.PushRenderState( m_TileRenderState );
 			m_TileTextureSampler.Begin( );
-			
+
 			//glTexEnvi( GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_DOT3_RGB );
 			//glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0 );
 			//glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR );
@@ -196,7 +200,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			{
 				if ( !block.Valid )
 				{
-					block.Update( Grid );
+					block.Update( Grid, m_Masks );
 				}
 				block.Render( );
 			}
@@ -243,10 +247,22 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 				}
 			}
 
+			private static byte GetCode( TileGrid grid, int bitPos, int x, int y, int offX, int offY )
+			{
+				TileType type = grid[ x, y ].TileType;
+
+				int checkX = Utils.Clamp( x + offX, 0, grid.Width - 1 );
+				int checkY = Utils.Clamp( y + offY, 0, grid.Height - 1 );
+
+				TileType otherType = grid[ checkX, checkY ].TileType;
+
+				return ( byte )( type == otherType ? ( 1 << bitPos ) : 0 );
+			}
+
 			/// <summary>
 			/// Updates the tile block
 			/// </summary>
-			public void Update( TileGrid grid )
+			public void Update( TileGrid grid, TileTransitionMasks masks )
 			{
 				if ( m_DisplayList != InvalidDisplayList )
 				{
@@ -285,20 +301,32 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 							Gl.glColor3ub( 0xff, 0xff, 0xff );
 						}
 
+						byte code = 0;
+						code |= GetCode( grid, 0, tileX, tileY, -1, -1 );
+						code |= GetCode( grid, 1, tileX, tileY,  0, -1 );
+						code |= GetCode( grid, 2, tileX, tileY,  1, -1 );
+						code |= GetCode( grid, 3, tileX, tileY,  1,  0 );
+						code |= GetCode( grid, 4, tileX, tileY,  1,  1 );
+						code |= GetCode( grid, 5, tileX, tileY,  0,  1 );
+						code |= GetCode( grid, 6, tileX, tileY, -1,  1 );
+						code |= GetCode( grid, 7, tileX, tileY, -1,  0 );
+
+						TileTransitionMasks.TextureRect maskRect = masks.GetTextureCoords( code );
+
 						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE0_ARB, minU, minV );
-						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE1_ARB, 0, 0 );
+						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE1_ARB, maskRect.TopLeft.X, maskRect.TopLeft.Y );
 						Gl.glVertex2i( screenX, screenY );
 
 						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE0_ARB, maxU, minV );
-						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE1_ARB, 1, 0 );
+						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE1_ARB, maskRect.TopRight.X, maskRect.TopRight.Y );
 						Gl.glVertex2i( screenX + TileScreenWidth, screenY );
 
 						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE0_ARB, maxU, maxV );
-						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE1_ARB, 1, 1 );
+						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE1_ARB, maskRect.BottomRight.X, maskRect.BottomRight.Y );
 						Gl.glVertex2i( screenX + TileScreenWidth, screenY + TileScreenHeight );
 
 						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE0_ARB, minU, maxV );
-						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE1_ARB, 0, 1 );
+						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE1_ARB, maskRect.BottomLeft.X, maskRect.BottomLeft.Y );
 						Gl.glVertex2i( screenX, screenY + TileScreenHeight );
 					}
 				}
@@ -332,6 +360,8 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		private const int TileBlockSize		= 8;
 		private const int TileScreenWidth	= 32;
 		private const int TileScreenHeight	= 32;
+
+		private readonly TileTransitionMasks m_Masks;
 
 		/// <summary>
 		/// Renders the specified tile grid
