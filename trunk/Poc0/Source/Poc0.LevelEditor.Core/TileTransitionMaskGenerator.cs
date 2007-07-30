@@ -106,6 +106,12 @@ namespace Poc0.LevelEditor.Core
 			return ( val & ( ( 1 << highest ) - 1 ) ) == 0 ? val : ( 1 << ( highest + 1 ) );
 		}
 
+		/// <summary>
+		/// Creates tile transition masks
+		/// </summary>
+		/// <param name="maskWidth">Width of all masks</param>
+		/// <param name="maskHeight">Height of all masks</param>
+		/// <returns>Returns a new <see cref="TileTransitionMasks"/> containing all 256 transition masks</returns>
 		public unsafe TileTransitionMasks Create( int maskWidth, int maskHeight )
 		{
 			int numMasks		= TileByteCodes.OriginalBitCodes.Length;
