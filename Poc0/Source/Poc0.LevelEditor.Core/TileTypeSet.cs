@@ -22,13 +22,13 @@ namespace Poc0.LevelEditor.Core
 			int width = 64;
 			int height = 64;
 
-			new TileType( set, "tile0", x, 0, width, height );
+			new TileType( set, "tile0", x, 0, width, height, 0 );
 			x += width;
 
-			new TileType( set, "tile1", x, 0, width, height );
+			new TileType( set, "tile1", x, 0, width, height, 1 );
 			x += width;
 
-			new TileType( set, "tile2", x, 0, width, height );
+			new TileType( set, "tile2", x, 0, width, height, 2 );
 
 			return set;
 		}

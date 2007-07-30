@@ -247,16 +247,20 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 				}
 			}
 
-			private static byte GetCode( TileGrid grid, int bitPos, int x, int y, int offX, int offY )
+			private static byte GetCode( TileGrid grid, byte code, TileType centreType, int x, int y )
 			{
-				TileType type = grid[ x, y ].TileType;
+				x = Utils.Clamp( x, 0, grid.Width - 1 );
+				y = Utils.Clamp( y, 0, grid.Height - 1 );
+				
+				TileType otherType = grid[ x, y ].TileType;
 
-				int checkX = Utils.Clamp( x + offX, 0, grid.Width - 1 );
-				int checkY = Utils.Clamp( y + offY, 0, grid.Height - 1 );
+				return ( centreType.Precedence < otherType.Precedence ) ? code : ( byte )0;
+			}
 
-				TileType otherType = grid[ checkX, checkY ].TileType;
-
-				return ( byte )( type == otherType ? ( 1 << bitPos ) : 0 );
+			private static byte CombineCodes( byte code1, byte code2 )
+			{
+				//return ( code1 | code2 );
+				return ( byte )( code1 | code2 );
 			}
 
 			/// <summary>
@@ -301,15 +305,27 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 							Gl.glColor3ub( 0xff, 0xff, 0xff );
 						}
 
+
+						const byte topEdge		= 0x01 | 0x02 | 0x04;
+						const byte rightEdge	= 0x04 | 0x08 | 0x10;
+						const byte bottomEdge	= 0x10 | 0x20 | 0x40;
+						const byte leftEdge		= 0x40 | 0x80 | 0x01;
+
+						//	Edge codes
 						byte code = 0;
-						code |= GetCode( grid, 0, tileX, tileY, -1, -1 );
-						code |= GetCode( grid, 1, tileX, tileY,  0, -1 );
-						code |= GetCode( grid, 2, tileX, tileY,  1, -1 );
-						code |= GetCode( grid, 3, tileX, tileY,  1,  0 );
-						code |= GetCode( grid, 4, tileX, tileY,  1,  1 );
-						code |= GetCode( grid, 5, tileX, tileY,  0,  1 );
-						code |= GetCode( grid, 6, tileX, tileY, -1,  1 );
-						code |= GetCode( grid, 7, tileX, tileY, -1,  0 );
+						TileType centreType = tile.TileType;
+						code = CombineCodes( code, GetCode( grid, topEdge, centreType, tileX, tileY - 1 ) );
+						code = CombineCodes( code, GetCode( grid, rightEdge, centreType, tileX + 1, tileY ) );
+						code = CombineCodes( code, GetCode( grid, bottomEdge, centreType, tileX, tileY + 1 ) );
+						code = CombineCodes( code, GetCode( grid, leftEdge, centreType, tileX - 1, tileY ) );
+
+						//	Corner codes
+						code = CombineCodes( code, GetCode( grid, 0x1, centreType, tileX - 1, tileY - 1 ) );
+						code = CombineCodes( code, GetCode( grid, 0x4, centreType, tileX + 1, tileY - 1 ) );
+						code = CombineCodes( code, GetCode( grid, 0x10, centreType, tileX + 1, tileY + 1 ) );
+						code = CombineCodes( code, GetCode( grid, 0x40, centreType, tileX - 1, tileY + 1 ) );
+
+						code = ( byte )~code;
 
 						TileTransitionMasks.TextureRect maskRect = masks.GetTextureCoords( code );
 

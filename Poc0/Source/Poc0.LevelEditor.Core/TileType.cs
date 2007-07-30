@@ -18,11 +18,13 @@ namespace Poc0.LevelEditor.Core
 		/// <param name="y">Y coordinate of top left of texture rectangle</param>
 		/// <param name="width">Width of the texture rectangle</param>
 		/// <param name="height">Height of the texture rectangle</param>
-		public TileType( TileTypeSet set, string name, int x, int y, int width, int height )
+		/// <param name="precedence">Tile precedence (determines rendering order)</param>
+		public TileType( TileTypeSet set, string name, int x, int y, int width, int height, int precedence )
 		{
 			Name = name;
 			Set = set;
 			m_TextureRect = new Rectangle( x, y, width, height );
+			m_Precedence = precedence;
 		}
 
 		/// <summary>
@@ -61,6 +63,14 @@ namespace Poc0.LevelEditor.Core
 		}
 
 		/// <summary>
+		/// The tile precedence
+		/// </summary>
+		public int Precedence
+		{
+			get { return m_Precedence; }
+		}
+
+		/// <summary>
 		/// Creates a bitmap of the tile type
 		/// </summary>
 		public Bitmap CreateBitmap( PixelFormat format )
@@ -72,5 +82,6 @@ namespace Poc0.LevelEditor.Core
 		private string		m_Name;
 		private Rectangle	m_TextureRect = new Rectangle( 0, 0, 32, 32 );
 		private TileTypeSet	m_Set;
+		private int			m_Precedence;
 	}
 }
