@@ -131,13 +131,46 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		private OpenGlTextureSampler2d m_MaskTextureSampler;
 		private TileBlock[,] m_Blocks;
 
+
+		private int BlocksWidth
+		{
+			get { return m_Blocks.GetLength( 0 ); }
+		}
+
+		private int BlocksHeight
+		{
+			get { return m_Blocks.GetLength( 1 ); }
+		}
+
+		private void DestroyBlock( int x, int y )
+		{
+			int blockX = x / TileBlockSize;
+			int blockY = y / TileBlockSize;
+
+			if ( ( blockX >= 0 ) && ( blockX < BlocksWidth ) && ( blockY >= 0 ) && ( blockY < BlocksHeight ) )
+			{
+				m_Blocks[ blockX, blockY ].Destroy( );
+			}
+		}
+
 		/// <summary>
 		/// Called when a tile in the grid changes
 		/// </summary>
 		private void OnTileChanged( Tile tile )
 		{
 			//	Invalidate grid graphics - they'll get regenerated before the next render
-			m_Blocks[ tile.GridX / TileBlockSize, tile.GridY / TileBlockSize ].Destroy( );
+			int blockX = tile.GridX / TileBlockSize;
+			int blockY = tile.GridY / TileBlockSize;
+
+			DestroyBlock( tile.GridX, tile.GridY );
+			DestroyBlock( tile.GridX - 1, tile.GridY - 1 );
+			DestroyBlock( tile.GridX, tile.GridY - 1 );
+			DestroyBlock( tile.GridX + 1, tile.GridY - 1 );
+			DestroyBlock( tile.GridX - 1, tile.GridY );
+			DestroyBlock( tile.GridX + 1, tile.GridY - 1 );
+			DestroyBlock( tile.GridX - 1, tile.GridY + 1 );
+			DestroyBlock( tile.GridX, tile.GridY + 1 );
+			DestroyBlock( tile.GridX + 1, tile.GridY + 1 );
 		}
 
 		/// <summary>
