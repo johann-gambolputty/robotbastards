@@ -67,6 +67,27 @@ namespace Poc0.LevelEditor.Core.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap tile0 {
+            get {
+                object obj = ResourceManager.GetObject("tile0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap tile1 {
+            get {
+                object obj = ResourceManager.GetObject("tile1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap tile2 {
+            get {
+                object obj = ResourceManager.GetObject("tile2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap TransitionMasks {
             get {
                 object obj = ResourceManager.GetObject("TransitionMasks", resourceCulture);

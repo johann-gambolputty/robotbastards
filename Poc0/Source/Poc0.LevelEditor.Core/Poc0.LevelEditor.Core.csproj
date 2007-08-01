@@ -53,6 +53,7 @@
     <Compile Include="TileGrid.cs" />
     <Compile Include="TileObject.cs" />
     <Compile Include="TileGridEditState.cs" />
+    <Compile Include="TileTexture.cs" />
     <Compile Include="TileTransitionMaskGenerator.cs" />
     <Compile Include="TileTransitionMasks.cs" />
     <Compile Include="TileType.cs" />
@@ -85,6 +86,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\TransitionMasks.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tile2.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tile0.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tile1.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
