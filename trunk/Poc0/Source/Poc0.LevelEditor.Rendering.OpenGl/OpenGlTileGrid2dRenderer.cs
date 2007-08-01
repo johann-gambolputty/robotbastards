@@ -159,9 +159,8 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		private void OnTileChanged( Tile tile )
 		{
 			//	Invalidate grid graphics - they'll get regenerated before the next render
-			int blockX = tile.GridX / TileBlockSize;
-			int blockY = tile.GridY / TileBlockSize;
-
+			//	Note: The blocks associated with adjacent tiles are being destroyed to deal with tile being on a corner, or edge (i.e. changing
+			//	tile will affect the graphics of an adjacent block)
 			DestroyBlock( tile.GridX, tile.GridY );
 			DestroyBlock( tile.GridX - 1, tile.GridY - 1 );
 			DestroyBlock( tile.GridX, tile.GridY - 1 );
@@ -321,7 +320,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 					for ( int tileX = m_X; tileX < m_MaxX; ++tileX, screenX += TileScreenWidth )
 					{
 						Tile tile = grid[ tileX, tileY ];
-						Rectangle rect = tile.TileType.TextureRectangle;
+						Rectangle rect = new Rectangle( 0, 0, 1, 1 );//tile.TileType.GetTextureRectangle( 0 ); // TODO: ...
 
 						//	TODO: AP: Should store normalised texture rectangle in tile type
 						float minU = rect.Left * invTexWidth;
@@ -337,7 +336,6 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 						{
 							Gl.glColor3ub( 0xff, 0xff, 0xff );
 						}
-
 
 						const byte topEdge		= 0x01 | 0x02 | 0x04;
 						const byte rightEdge	= 0x04 | 0x08 | 0x10;

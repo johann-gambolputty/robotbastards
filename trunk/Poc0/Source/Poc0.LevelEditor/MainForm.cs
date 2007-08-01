@@ -63,6 +63,7 @@ namespace Poc0.LevelEditor
 				TileTransitionMasks masks = new TileTransitionMaskGenerator( ).Create( 32, 32 );
 				masks.Texture.Save( "Masks.png" );
 
+
 				//	Load input bindings
 				CommandInputTemplateMap map = ( CommandInputTemplateMap )ResourceManager.Instance.Load( "LevelEditorCommandInputs.components.xml" );
 				m_User.InitialiseAllCommandListBindings( );
@@ -73,6 +74,9 @@ namespace Poc0.LevelEditor
 				m_GridRenderer = new OpenGlTileGrid2dRenderer( m_Grid, m_EditState, masks );
 
 				tileTypeSetListView1.TileTypes = m_Grid.Set;
+
+				m_Grid.Set.DisplayTexture.Save( "Transitions.png" );
+
 
 				ComponentLoadParameters loadParams = new ComponentLoadParameters( );
 				loadParams.Properties[ "User" ] = m_User;

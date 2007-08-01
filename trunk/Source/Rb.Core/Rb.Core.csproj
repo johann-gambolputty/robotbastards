@@ -61,6 +61,7 @@
     <Compile Include="Components\ParentHelpers.cs" />
     <Compile Include="Logs.cs" />
     <Compile Include="Maths\BigPoint3.cs" />
+    <Compile Include="Maths\Box2.cs" />
     <Compile Include="Maths\CatmullRomSpline.cs" />
     <Compile Include="Maths\Constants.cs" />
     <Compile Include="Maths\ControlledSpline.cs" />

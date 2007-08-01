@@ -32,9 +32,7 @@ namespace Poc0.LevelEditor
 				foreach ( TileType tileType in m_TileTypes.TileTypes )
 				{
 					int imageIndex = m_Images.Images.Count;
-					Bitmap typeBmp = tileType.CreateBitmap( PixelFormat.Format24bppRgb );
-
-					typeBmp.Save( string.Format( "TileType{0}.png", imageIndex ) );
+					Bitmap typeBmp = tileType.Image;
 					m_Images.Images.Add( typeBmp );
 
 					Items.Add( tileType.Name, imageIndex ).Tag = tileType;
