@@ -237,7 +237,8 @@ namespace Poc0.LevelEditor.Core
 
 		public static byte IndexToEdgeCode( int index )
 		{
-			return ( byte )( index << 4 );
+			//return ( byte )( index << 4 );
+			return ( byte )( TopEdgeTransition + index );
 		}
 
 		public static int CornerCodeToIndex( byte code )

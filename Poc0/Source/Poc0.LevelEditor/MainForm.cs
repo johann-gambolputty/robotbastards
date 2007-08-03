@@ -70,13 +70,11 @@ namespace Poc0.LevelEditor
 
 				m_Grid = new TileGrid( TileTypeSet.CreateDefaultTileTypeSet( ) );
 				m_EditState = new TileGridEditState( );
-				m_EditState.TilePaintType = m_Grid.Set[ 1 ];
+				m_EditState.TilePaintType = m_Grid.Set[ 0 ];
 				m_GridRenderer = new OpenGlTileGrid2dRenderer( m_Grid, m_EditState, masks );
 
 				tileTypeSetListView1.TileTypes = m_Grid.Set;
-
 				m_Grid.Set.DisplayTexture.Save( "Transitions.png" );
-
 
 				ComponentLoadParameters loadParams = new ComponentLoadParameters( );
 				loadParams.Properties[ "User" ] = m_User;
