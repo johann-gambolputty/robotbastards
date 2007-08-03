@@ -16,17 +16,12 @@ namespace Poc0.LevelEditor.Core
 		{
 			TileTypeSet set = new TileTypeSet( );
 
-			int x = 0;
-			int width = 64;
-			int height = 64;
+			new TileType( set, "tile0", Properties.Resources.tile0, 0 );
 
-			new TileType( set, "tile0", Properties.Resources.tile0, x, 0, width, height, 0 );
-			x += width;
+			//new TileType( set, "tile1", Properties.Resources.tile1, x, 0, width, height, 1 );
+			//x += width;
 
-			new TileType( set, "tile1", Properties.Resources.tile1, x, 0, width, height, 1 );
-			x += width;
-
-			new TileType( set, "tile2", Properties.Resources.tile2, x, 0, width, height, 2 );
+			//new TileType( set, "tile2", Properties.Resources.tile2, x, 0, width, height, 2 );
 
 			return set;
 		}

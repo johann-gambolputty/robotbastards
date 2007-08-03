@@ -15,12 +15,8 @@ namespace Poc0.LevelEditor.Core
 		/// <param name="set">Tile type set that this type belongs to</param>
 		/// <param name="name">Name of this type</param>
 		/// <param name="bmp">Tile type image</param>
-		/// <param name="x">X coordinate of top left of texture rectangle</param>
-		/// <param name="y">Y coordinate of top left of texture rectangle</param>
-		/// <param name="width">Width of the texture rectangle</param>
-		/// <param name="height">Height of the texture rectangle</param>
 		/// <param name="precedence">Tile precedence (determines rendering order)</param>
-		public TileType( TileTypeSet set, string name, Bitmap bmp, int x, int y, int width, int height, int precedence )
+		public TileType( TileTypeSet set, string name, Bitmap bmp, int precedence )
 		{
 			Image = bmp;
 			Name = name;
@@ -34,11 +30,11 @@ namespace Poc0.LevelEditor.Core
 
 			//	TODO: AP: Use mirroring and rotation of texture rectangles to save space on tile set display texture
 
-			for ( int cornerIndex = 0; cornerIndex < 16; ++cornerIndex )
+			for ( int cornerIndex = 1; cornerIndex < 16; ++cornerIndex )
 			{
 				m_CornerRects[ cornerIndex ] = new TileTexture.Rect( texture.Generate( this, TileTexture.IndexToCornerCode( cornerIndex ) ) );
 			}
-			for ( int edgeIndex = 0; edgeIndex < 16; ++edgeIndex )
+			for ( int edgeIndex = 1; edgeIndex < 16; ++edgeIndex )
 			{
 				m_EdgeRects[ edgeIndex ] = new TileTexture.Rect( texture.Generate( this, TileTexture.IndexToEdgeCode( edgeIndex ) ) );
 			}
