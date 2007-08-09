@@ -59,6 +59,7 @@
     <Compile Include="TileType.cs" />
     <Compile Include="TileTypeSet.cs" />
     <Compile Include="TileTypeTransitions.cs" />
+    <Compile Include="TransitionCodes.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\DefaultTileType.bmp" />

@@ -183,6 +183,8 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 				.SetPolygonRenderingMode( PolygonRenderMode.Fill )
 				.EnableCap( RenderStateFlag.Texture2dUnit0 )
 				.EnableCap( RenderStateFlag.Texture2dUnit1 )
+				.EnableCap( RenderStateFlag.Blend )
+				.SetBlendMode( BlendFactor.SrcAlpha, BlendFactor.OneMinusSrcAlpha )
 				.DisableLighting( );
 
 			m_TileTextureSampler = new OpenGlTextureSampler2d( );
@@ -214,19 +216,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			Renderer.Instance.PushRenderState( m_TileRenderState );
 			m_TileTextureSampler.Begin( );
 
-			//glTexEnvi( GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_DOT3_RGB );
-			//glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0 );
-			//glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR );
-			//glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR );
-			//glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR );
-
-			//glTexEnvi( GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE );
-			//glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0 );
-			//glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA );
-			//glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR );
-			//glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA );
-
-			m_MaskTextureSampler.Begin( );
+			//m_MaskTextureSampler.Begin( );
 
 			foreach ( TileBlock block in m_Blocks )
 			{
@@ -237,7 +227,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 				block.Render( );
 			}
 
-			m_MaskTextureSampler.End( );
+			//m_MaskTextureSampler.End( );
 			m_TileTextureSampler.End( );
 			Renderer.Instance.PopRenderState( );
 		}
@@ -245,6 +235,87 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		#endregion
 
 		#region Private types
+
+		private class TileRenderer
+		{
+			public TileRenderer( TileTypeSet set )
+			{
+				m_Set = set;
+				m_Codes = new byte[ set.Count ];
+			}
+
+			public void AddTile( TileGrid grid, int x, int y, byte code )
+			{
+				if ( grid.Contains( x, y ) )
+				{
+					//	TODO: AP: Should use TileType.Index
+					int index = grid[ x, y ].TileType.Precedence;
+					m_Codes[ index ] |= code;
+					if ( code == TransitionCodes.All )
+					{
+						m_CentreIndex = index;
+					}
+				}
+			}
+
+			public void Render( int x, int y, bool selected )
+			{
+				if ( selected )
+				{
+					Gl.glColor3ub( 0xff, 0x00, 0x00 );
+				}
+				else
+				{
+					Gl.glColor3ub( 0xff, 0xff, 0xff );
+				}
+
+				for ( int index = 0; index < m_Codes.Length; ++index )
+				{
+					if ( m_Codes[ index ] == 0 )
+					{
+						continue;
+					}
+
+					if ( index == m_CentreIndex )
+					{
+						RenderType( m_Set[ index ], x, y, TransitionCodes.All );
+					}
+					else
+					{
+						//	TODO: AP: This is lazy
+						RenderType( m_Set[ index ], x, y, ( byte )( m_Codes[ index ] & TransitionCodes.Corners ) );
+						RenderType( m_Set[ index ], x, y, ( byte )( m_Codes[ index ] & TransitionCodes.Edges ) );
+					}
+
+					m_Codes[ index ] = 0;
+				}
+			}
+
+			private static void RenderType( TileType type, int x, int y, byte code )
+			{
+				if ( code == 0 )
+				{
+					return;
+				}
+				TileTexture.Rect rect = type.GetTextureRectangle( code );
+
+				Gl.glMultiTexCoord2f( Gl.GL_TEXTURE0_ARB, rect.MinU, rect.MinV );
+				Gl.glVertex2i( x, y );
+
+				Gl.glMultiTexCoord2f( Gl.GL_TEXTURE0_ARB, rect.MaxU, rect.MinV );
+				Gl.glVertex2i( x + TileScreenWidth, y );
+
+				Gl.glMultiTexCoord2f( Gl.GL_TEXTURE0_ARB, rect.MaxU, rect.MaxV );
+				Gl.glVertex2i( x + TileScreenWidth, y + TileScreenHeight );
+
+				Gl.glMultiTexCoord2f( Gl.GL_TEXTURE0_ARB, rect.MinU, rect.MaxV );
+				Gl.glVertex2i( x, y + TileScreenHeight );	
+			}
+
+			private int m_CentreIndex;
+			private readonly TileTypeSet m_Set;
+			private readonly byte[] m_Codes;
+		}
 
 		private class TileBlock
 		{
@@ -279,22 +350,6 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 				}
 			}
 
-			private static byte GetCode( TileGrid grid, byte code, TileType centreType, int x, int y )
-			{
-				x = Utils.Clamp( x, 0, grid.Width - 1 );
-				y = Utils.Clamp( y, 0, grid.Height - 1 );
-				
-				TileType otherType = grid[ x, y ].TileType;
-
-				return ( centreType.Precedence < otherType.Precedence ) ? code : ( byte )0;
-			}
-
-			private static byte CombineCodes( byte code1, byte code2 )
-			{
-				//return ( code1 | code2 );
-				return ( byte )( code1 | code2 );
-			}
-
 			/// <summary>
 			/// Updates the tile block
 			/// </summary>
@@ -310,71 +365,30 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 
 				Gl.glBegin( Gl.GL_QUADS );
 
-				float invTexWidth = 1.0f / grid.Set.DisplayTexture.Width;
-				float invTexHeight = 1.0f / grid.Set.DisplayTexture.Height;
 				int screenY = m_Y * TileScreenHeight;
 
+				// TODO: AP: Can be created once for all tile blocks in the grid
+				TileRenderer renderer = new TileRenderer( grid.Set );
+
+				Gl.glColor3ub( 0xff, 0xff, 0xff );
 				for ( int tileY = m_Y; tileY < m_MaxY; ++tileY, screenY += TileScreenHeight )
 				{
 					int screenX = m_X * TileScreenWidth;
 					for ( int tileX = m_X; tileX < m_MaxX; ++tileX, screenX += TileScreenWidth )
 					{
-						Tile tile = grid[ tileX, tileY ];
-						Rectangle rect = new Rectangle( 0, 0, 1, 1 );//tile.TileType.GetTextureRectangle( 0 ); // TODO: ...
+						renderer.AddTile( grid, tileX - 1, tileY - 1, TransitionCodes.TopLeftCorner );
+						renderer.AddTile( grid, tileX + 0, tileY - 1, TransitionCodes.TopEdge );
+						renderer.AddTile( grid, tileX + 1, tileY - 1, TransitionCodes.TopRightCorner );
 
-						//	TODO: AP: Should store normalised texture rectangle in tile type
-						float minU = rect.Left * invTexWidth;
-						float maxU = rect.Right * invTexWidth;
-						float minV = rect.Top * invTexHeight;
-						float maxV = rect.Bottom * invTexHeight;
+						renderer.AddTile( grid, tileX - 1, tileY + 0, TransitionCodes.LeftEdge );
+						renderer.AddTile( grid, tileX + 0, tileY + 0, TransitionCodes.All );
+						renderer.AddTile( grid, tileX + 1, tileY + 0, TransitionCodes.RightEdge );
 
-						if ( tile.Selected )
-						{
-							Gl.glColor3ub( 0xff, 0x00, 0x00 );
-						}
-						else
-						{
-							Gl.glColor3ub( 0xff, 0xff, 0xff );
-						}
+						renderer.AddTile( grid, tileX - 1, tileY + 1, TransitionCodes.BottomLeftCorner );
+						renderer.AddTile( grid, tileX + 0, tileY + 1, TransitionCodes.BottomEdge );
+						renderer.AddTile( grid, tileX + 1, tileY + 1, TransitionCodes.BottomRightCorner );
 
-						const byte topEdge		= 0x01 | 0x02 | 0x04;
-						const byte rightEdge	= 0x04 | 0x08 | 0x10;
-						const byte bottomEdge	= 0x10 | 0x20 | 0x40;
-						const byte leftEdge		= 0x40 | 0x80 | 0x01;
-
-						//	Edge codes
-						byte code = 0;
-						TileType centreType = tile.TileType;
-						code = CombineCodes( code, GetCode( grid, topEdge, centreType, tileX, tileY - 1 ) );
-						code = CombineCodes( code, GetCode( grid, rightEdge, centreType, tileX + 1, tileY ) );
-						code = CombineCodes( code, GetCode( grid, bottomEdge, centreType, tileX, tileY + 1 ) );
-						code = CombineCodes( code, GetCode( grid, leftEdge, centreType, tileX - 1, tileY ) );
-
-						//	Corner codes
-						code = CombineCodes( code, GetCode( grid, 0x1, centreType, tileX - 1, tileY - 1 ) );
-						code = CombineCodes( code, GetCode( grid, 0x4, centreType, tileX + 1, tileY - 1 ) );
-						code = CombineCodes( code, GetCode( grid, 0x10, centreType, tileX + 1, tileY + 1 ) );
-						code = CombineCodes( code, GetCode( grid, 0x40, centreType, tileX - 1, tileY + 1 ) );
-
-						code = ( byte )~code;
-
-						TileTransitionMasks.TextureRect maskRect = masks.GetTextureCoords( code );
-
-						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE0_ARB, minU, minV );
-						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE1_ARB, maskRect.TopLeft.X, maskRect.TopLeft.Y );
-						Gl.glVertex2i( screenX, screenY );
-
-						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE0_ARB, maxU, minV );
-						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE1_ARB, maskRect.TopRight.X, maskRect.TopRight.Y );
-						Gl.glVertex2i( screenX + TileScreenWidth, screenY );
-
-						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE0_ARB, maxU, maxV );
-						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE1_ARB, maskRect.BottomRight.X, maskRect.BottomRight.Y );
-						Gl.glVertex2i( screenX + TileScreenWidth, screenY + TileScreenHeight );
-
-						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE0_ARB, minU, maxV );
-						Gl.glMultiTexCoord2f( Gl.GL_TEXTURE1_ARB, maskRect.BottomLeft.X, maskRect.BottomLeft.Y );
-						Gl.glVertex2i( screenX, screenY + TileScreenHeight );
+						renderer.Render( screenX, screenY, grid[ tileX, tileY ].Selected );
 					}
 				}
 				Gl.glEnd( );
@@ -388,10 +402,10 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 				Gl.glCallList( m_DisplayList );
 			}
 
-			private int m_X;
-			private int m_Y;
-			private int m_MaxX;
-			private int m_MaxY;
+			private readonly int m_X;
+			private readonly int m_Y;
+			private readonly int m_MaxX;
+			private readonly int m_MaxY;
 			private int m_DisplayList = InvalidDisplayList;
 		}
 

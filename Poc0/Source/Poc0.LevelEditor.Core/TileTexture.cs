@@ -99,6 +99,26 @@ namespace Poc0.LevelEditor.Core
 				}
 			}
 
+			public float MinU
+			{
+				get { return m_TopLeft.X;  }
+			}
+
+			public float MinV
+			{
+				get { return m_TopLeft.Y; }
+			}
+
+			public float MaxU
+			{
+				get { return m_BottomRight.X; }
+			}
+
+			public float MaxV
+			{
+				get { return m_BottomRight.Y; }
+			}
+
 			/// <summary>
 			/// Gets the top left texture coordinate
 			/// </summary>
@@ -216,20 +236,6 @@ namespace Poc0.LevelEditor.Core
 
 		#region Transition bitmap generation
 
-		public const byte TopLeftCornerTransition		= 0x1;
-		public const byte TopRightCornerTransition		= 0x2;
-		public const byte BottomRightCornerTransition	= 0x4;
-		public const byte BottomLeftCornerTransition	= 0x8;
-		public const byte CornerTransitions				= TopLeftCornerTransition | TopRightCornerTransition | BottomRightCornerTransition | BottomLeftCornerTransition;
-
-		public const byte TopEdgeTransition				= 0x10;
-		public const byte RightEdgeTransition			= 0x20;
-		public const byte BottomEdgeTransition			= 0x40;
-		public const byte LeftEdgeTransition			= 0x80;
-		public const byte EdgeTransitions				= TopEdgeTransition | RightEdgeTransition | BottomEdgeTransition | LeftEdgeTransition;
-
-		public const byte NoTransition					= CornerTransitions | EdgeTransitions;
-
 		public static byte IndexToCornerCode( int index )
 		{
 			return ( byte )index;
@@ -237,18 +243,17 @@ namespace Poc0.LevelEditor.Core
 
 		public static byte IndexToEdgeCode( int index )
 		{
-			//return ( byte )( index << 4 );
-			return ( byte )( TopEdgeTransition + index );
+			return ( byte )( index << 4 );
 		}
 
 		public static int CornerCodeToIndex( byte code )
 		{
-			return ( code & CornerTransitions );
+			return ( code & TransitionCodes.Corners );
 		}
 
 		public static int EdgeCodeToIndex( byte code )
 		{
-			return ( code & EdgeTransitions ) >> 4;
+			return ( code & TransitionCodes.Edges ) >> 4;
 		}
 
 		/// <summary>
@@ -260,12 +265,12 @@ namespace Poc0.LevelEditor.Core
 		/// <returns>Returns a new bitmap, combining an alpha channel with bmp</returns>
 		private static Bitmap GenerateTransitionBitmap( Bitmap bmp, byte code, bool canUseBmpDirectly )
 		{
-			if ( code == NoTransition )
+			if ( code == TransitionCodes.All )
 			{
 				return GenerateNoTransitionBitmap( bmp, canUseBmpDirectly );
 			}
 
-			if ( ( code & CornerTransitions ) != 0 )
+			if ( ( code & TransitionCodes.Corners ) != 0 )
 			{
 				return GenerateCornerTransitionBitmap( bmp, code );
 			}
@@ -335,8 +340,8 @@ namespace Poc0.LevelEditor.Core
 			return CloneBitmapR8G8B8A8( bmp );
 		}
 
-		private const int	BandMin			= 5;
-		private const int	BandSize		= 5;
+		private const int	BandMin			= 2;
+		private const int	BandSize		= 10;
 
 		private const int	BandMax			= BandMin + BandSize;
 		private const float	InvBandSize		= 1.0f / BandSize;
@@ -344,16 +349,35 @@ namespace Poc0.LevelEditor.Core
 		
 		private static float DistanceToAlpha( float distance )
 		{
-			if ( distance < BandMin )
+			if ( distance <= BandMin )
 			{
-				return 1.0f;
+				return 255.0f;
 			}
-			if ( distance > BandMax )
+			if ( distance >= BandMax )
 			{
 				return 0.0f;
 			}
-			return Utils.Clamp( ( distance - BandMin ) * PosToAlpha, 0.0f, 255.0f );
+			return Utils.Clamp( ( BandMax - distance ) * PosToAlpha, 0.0f, 255.0f );
 		}
+
+        private static int GetCornerCode( int x, int y, int width, int height )
+        {
+            if ( x < BandMax )
+            {
+                return y < BandMax ? 1 : ( y + BandMax > height ) ? 4 : 0;
+            }
+            else if ( x + BandMax > width )
+            {
+                return y < BandMax ? 2 : ( y + BandMax > height ) ? 3 : 0;
+            }
+            return 0;
+
+        }
+
+		const int rIndex = 0;
+		const int gIndex = 1;
+		const int bIndex = 2;
+		const int aIndex = 3;
 
 		private unsafe static Bitmap GenerateCornerTransitionBitmap( Bitmap bmp, byte code )
 		{
@@ -371,19 +395,19 @@ namespace Poc0.LevelEditor.Core
 
 			//	TODO: AP: Would be much faster to process corners separately, rather than doing calculations in the inner loop
 
-			Point[] corners = new Point[ 4 ]{ new Point( 0, 0 ), new Point( bmp.Width, 0 ), new Point( 0, bmp.Height ), new Point( bmp.Width, bmp.Height ) };
+			Point[] corners = new Point[ 4 ]{ new Point( 0, 0 ), new Point( bmp.Width, 0 ), new Point( bmp.Width, bmp.Height ), new Point( 0, bmp.Height ) };
 
 			for ( int y = 0; y < bmp.Height; ++y )
 			{
 				byte* srcPixel = srcPixels + ( srcData.Stride * y );
 				byte* dstPixel = dstPixels + ( dstData.Stride * y );
 
-				int cornerCode = ( y < BandMax ) ? 0x0 : ( y + BandMax > bmp.Height ) ? 0x2 : 0x4;
 				for ( int x = 0; x < bmp.Width; ++x )
 				{
-					cornerCode |= ( x < BandMax ) ? 0x0 : ( x + BandMax > bmp.Width ) ? 0x1 : 0x4;
+                    int cornerIndex = GetCornerCode( x, y, bmp.Width, bmp.Height );
+                    byte cornerCode = ( byte )( 1 << ( cornerIndex - 1 ) );
 
-					if ( ( cornerCode & 0x4 ) != 0 )
+					if ( ( cornerIndex == 0 ) || ( ( cornerCode & code ) == 0 ) )
 					{
 						//	Not in any corner
 						dstPixel[ 0 ] = 0x0;
@@ -393,15 +417,15 @@ namespace Poc0.LevelEditor.Core
 					}
 					else
 					{
-						Point corner = corners[ cornerCode & ~0x4 ];
+						Point corner = corners[ cornerIndex - 1 ];
 						int diffX = corner.X - x;
 						int diffY = corner.Y - y;
 						int sqrDistToCorner = ( diffX * diffX ) + ( diffY * diffY );
-					
-						dstPixel[ 0 ] = srcPixel[ 0 ];
-						dstPixel[ 1 ] = srcPixel[ 1 ];
-						dstPixel[ 2 ] = srcPixel[ 2 ];
-						dstPixel[ 3 ] = ( byte )( 255.0f - DistanceToAlpha( ( float )Math.Sqrt( sqrDistToCorner ) ) );
+
+						dstPixel[ rIndex ] = srcPixel[ rIndex ];
+						dstPixel[ gIndex ] = srcPixel[ gIndex ];
+						dstPixel[ bIndex ] = srcPixel[ bIndex ];
+						dstPixel[ aIndex ] = ( byte )( DistanceToAlpha( ( float )Math.Sqrt( sqrDistToCorner ) ) );
 					}
 
 					dstPixel += 4;
@@ -442,44 +466,44 @@ namespace Poc0.LevelEditor.Core
 
 					if ( x < BandMax )
 					{
-						if ( ( code & LeftEdgeTransition ) != 0 )
+						if ( ( code & TransitionCodes.LeftEdge ) != 0 )
 						{
 							alpha += DistanceToAlpha( x );
-							alphaNormalize = 255.0f;
+							alphaNormalize = 1.0f;
 						}
 					}
 					else if ( x + BandMax > bmp.Width )
 					{
-						if ( ( code & RightEdgeTransition ) != 0 )
+						if ( ( code & TransitionCodes.RightEdge ) != 0 )
 						{
 							alpha += DistanceToAlpha( bmp.Width - x );
-							alphaNormalize = 255.0f;
+							alphaNormalize = 1.0f;
 						}
 					}
 					
 					if ( y < BandMax )
 					{
-						if ( ( code & TopEdgeTransition ) != 0 )
+						if ( ( code & TransitionCodes.TopEdge ) != 0 )
 						{
 							alpha += DistanceToAlpha( y );
-							alphaNormalize += 255.0f;
+							alphaNormalize += 1.0f;
 						}
 					}
-					else if ( x + BandMax > bmp.Width )
+					else if ( y + BandMax > bmp.Height )
 					{
-						if ( ( code & BottomEdgeTransition ) != 0 )
+						if ( ( code & TransitionCodes.BottomEdge ) != 0 )
 						{
 							alpha += DistanceToAlpha( bmp.Height - y );
-							alphaNormalize += 255.0f;
+							alphaNormalize += 1.0f;
 						}
 					}
 
 					if ( alphaNormalize > 0 )
 					{
-						dstPixel[ 0 ] = srcPixel[ 0 ];
-						dstPixel[ 1 ] = srcPixel[ 1 ];
-						dstPixel[ 2 ] = srcPixel[ 2 ];
-						dstPixel[ 3 ] = ( byte )( 255.0f - alpha / alphaNormalize );
+						dstPixel[ rIndex ] = srcPixel[ rIndex ];
+						dstPixel[ gIndex ] = srcPixel[ gIndex ];
+						dstPixel[ bIndex ] = srcPixel[ bIndex ];
+						dstPixel[ aIndex ] = ( byte )( alpha / alphaNormalize );
 					}
 					else
 					{

@@ -26,7 +26,7 @@ namespace Poc0.LevelEditor.Core
 
 		public void AddToTileTexture( TileTexture texture )
 		{
-			m_NoTransRect = new TileTexture.Rect( texture.Generate( this, TileTexture.NoTransition ) );
+			m_NoTransRect = new TileTexture.Rect( texture.Generate( this, TransitionCodes.All ) );
 
 			//	TODO: AP: Use mirroring and rotation of texture rectangles to save space on tile set display texture
 
@@ -47,12 +47,12 @@ namespace Poc0.LevelEditor.Core
 		/// <returns>Tile texture area</returns>
 		public TileTexture.Rect GetTextureRectangle(byte code)
 		{
-			if ( code == TileTexture.NoTransition )
+			if ( code == TransitionCodes.All )
 			{
 				return m_NoTransRect;
 			}
 
-			if ( ( code & TileTexture.CornerTransitions ) != 0 )
+			if ( ( code & TransitionCodes.Corners ) != 0 )
 			{
 				return m_CornerRects[ TileTexture.CornerCodeToIndex( code ) ];
 			}
