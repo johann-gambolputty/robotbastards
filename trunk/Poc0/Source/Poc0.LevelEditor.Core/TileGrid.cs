@@ -108,6 +108,11 @@ namespace Poc0.LevelEditor.Core
 			m_Tiles = NewTileGrid( m_Tiles, width, height );
 		}
 
+		public bool Contains( int x, int y )
+		{
+			return ( ( x >= 0 ) && ( x < Width ) && ( y >= 0 ) && ( y < Height ) );
+		}
+
 		#endregion
 
 		#region Private stuff
