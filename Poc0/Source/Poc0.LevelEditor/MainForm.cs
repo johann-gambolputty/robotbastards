@@ -66,11 +66,13 @@ namespace Poc0.LevelEditor
 
 				m_Grid = new TileGrid( TileTypeSet.CreateDefaultTileTypeSet( ) );
 				m_EditState = new TileGridEditState( );
-				m_EditState.TilePaintType = m_Grid.Set[ 0 ];
+				m_EditState.OnPaint = m_Grid.Set[ 0 ].SetTileToType;
 				m_GridRenderer = new OpenGlTileBlock2dRenderer( m_Grid, m_EditState );
 
-				tileTypeSetListView1.TileTypes = m_Grid.Set;
 				m_Grid.Set.DisplayTexture.Save( "Transitions.png" );
+
+				//	Set up controls
+				editorControls1.Setup( m_Grid, m_EditState );
 
 				ComponentLoadParameters loadParams = new ComponentLoadParameters( );
 				loadParams.Properties[ "User" ] = m_User;
@@ -95,21 +97,10 @@ namespace Poc0.LevelEditor
 			}
 		}
 
-		private CommandUser			m_User = new CommandUser( );
-		private TileGrid			m_Grid;
-		private TileGridEditState	m_EditState;
-		private TileGridRenderer	m_GridRenderer;
-		private List< object >		m_Objects;
-
-		private void tileTypeSetListView1_SelectedIndexChanged( object sender, EventArgs e )
-		{
-			if ( tileTypeSetListView1.SelectedItems.Count == 0 )
-			{
-				return;
-			}
-
-			TileType type = ( TileType )tileTypeSetListView1.SelectedItems[ 0 ].Tag;
-			m_EditState.TilePaintType = type;
-		}
+		private readonly CommandUser	m_User = new CommandUser( );
+		private TileGrid				m_Grid;
+		private TileGridEditState		m_EditState;
+		private TileGridRenderer		m_GridRenderer;
+		private List< object >			m_Objects;
 	}
 }

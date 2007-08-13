@@ -1,4 +1,6 @@
 
+using Rb.Core.Maths;
+
 namespace Poc0.LevelEditor.Core
 {
 	/// <summary>
@@ -11,10 +13,18 @@ namespace Poc0.LevelEditor.Core
 		/// Returns the tile under the mouse cursor
 		/// </summary>
 		/// <param name="grid">Grid to select tiles from</param>
-		/// <param name="cursorX">Mouse x position</param>
-		/// <param name="cursorY">Mouse y position</param>
+		/// <param name="cursorX">Cursor x position</param>
+		/// <param name="cursorY">Cursor y position</param>
 		/// <returns>Returns the tile in the grid under mouse cursor. Returns null if no tile is under the cursor</returns>
 		Tile PickTile( TileGrid grid, int cursorX, int cursorY );
+
+		/// <summary>
+		/// Returns the grid point from a cursor position
+		/// </summary>
+		/// <param name="cursorX">Cursor x position</param>
+		/// <param name="cursorY">Cursor y position</param>
+		/// <returns>Grid point</returns>
+		Point2 CursorToGrid( int cursorX, int cursorY );
 
 	}
 }

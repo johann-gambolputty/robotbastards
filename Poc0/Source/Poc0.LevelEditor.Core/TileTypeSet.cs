@@ -12,20 +12,6 @@ namespace Poc0.LevelEditor.Core
 		#region Public properties
 
 		/// <summary>
-		/// Creates a default tile type set
-		/// </summary>
-		public static TileTypeSet CreateDefaultTileTypeSet( )
-		{
-			TileTypeSet set = new TileTypeSet( );
-
-			set.AddTileType( "tile0", Properties.Resources.tile0, 4, 4 );
-			set.AddTileType( "tile1", Properties.Resources.tile1, 3, 4 );
-			set.AddTileType( "tile2", Properties.Resources.tile2, 3, 0 );
-
-			return set;
-		}
-
-		/// <summary>
 		/// Gets an indexed tile type
 		/// </summary>
 		public TileType this[ int index ]
@@ -84,6 +70,20 @@ namespace Poc0.LevelEditor.Core
 		#endregion
 
 		#region Public methods
+		
+		/// <summary>
+		/// Creates a default tile type set
+		/// </summary>
+		public static TileTypeSet CreateDefaultTileTypeSet( )
+		{
+			TileTypeSet set = new TileTypeSet( );
+
+			set.AddTileType( "tile0", Properties.Resources.tile0, 4, 4 );
+			set.AddTileType( "tile1", Properties.Resources.tile1, 8, 6 );
+			set.AddTileType( "tile2", Properties.Resources.tile2, 3, 0 );
+
+			return set;
+		}
 
 		/// <summary>
 		/// Adds a tile type to the set, automatically generating transition textures

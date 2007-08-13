@@ -1,4 +1,3 @@
-using System;
 using Rb.Rendering;
 
 namespace Poc0.LevelEditor.Core
@@ -34,14 +33,14 @@ namespace Poc0.LevelEditor.Core
 			{
 				if ( EditState != null )
 				{
-					EditState.TileSelected -= OnTileChanged;
-					EditState.TileDeselected -= OnTileChanged;
+					EditState.ObjectSelected -= OnObjectSelected;
+					EditState.ObjectDeselected -= OnObjectSelected;
 				}
 				base.EditState = value;
 				if ( EditState != null )
 				{
-					EditState.TileSelected += OnTileChanged;
-					EditState.TileDeselected += OnTileChanged;
+					EditState.ObjectSelected += OnObjectSelected;
+					EditState.ObjectDeselected += OnObjectSelected;
 				}
 			}
 		}
@@ -115,6 +114,18 @@ namespace Poc0.LevelEditor.Core
 		}
 
 		/// <summary>
+		/// Called when an object is added or removed from the current selection
+		/// </summary>
+		private void OnObjectSelected( object obj )
+		{
+			Tile tile = obj as Tile;
+			if ( tile != null )
+			{
+				OnTileChanged( tile );
+			}
+		}
+
+		/// <summary>
 		/// Called when a tile in the grid changes
 		/// </summary>
 		private void OnTileChanged( Tile tile )
@@ -152,6 +163,8 @@ namespace Poc0.LevelEditor.Core
 			m_TileTextureSampler.Mode = TextureMode.Modulate;
 			m_TileTextureSampler.MinFilter = TextureFilter.LinearTexel;
 			m_TileTextureSampler.MagFilter = TextureFilter.LinearTexel;
+			m_TileTextureSampler.WrapS = TextureWrap.Repeat;
+			m_TileTextureSampler.WrapT = TextureWrap.Repeat;
 
 			m_TileTextureSampler.Texture = Grid.Set.DisplayTexture;
 		}
@@ -247,9 +260,9 @@ namespace Poc0.LevelEditor.Core
 					}
 					else
 					{
-						//	TODO: AP: This is lazy
-						RenderType( m_Set[ index ], ( byte )( m_Codes[ index ] & TransitionCodes.Corners ) );
+						//	TODO: AP: Corners covered by edges should not be rendered
 						RenderType( m_Set[ index ], ( byte )( m_Codes[ index ] & TransitionCodes.Edges ) );
+						RenderType( m_Set[ index ], ( byte )( m_Codes[ index ] & TransitionCodes.Corners ) );
 					}
 
 					m_Codes[ index ] = 0;

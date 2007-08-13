@@ -37,6 +37,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EditorControls.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EditorControls.Designer.cs">
+      <DependentUpon>EditorControls.cs</DependentUpon>
+    </Compile>
     <Compile Include="LogForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -51,6 +57,10 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="EditorControls.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>EditorControls.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LogForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>LogForm.cs</DependentUpon>

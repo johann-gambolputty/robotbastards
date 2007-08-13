@@ -86,6 +86,21 @@ namespace Poc0.LevelEditor.Core
 
 			return grid[ x, y ];
 		}
+		
+		/// <summary>
+		/// Returns the grid point from a cursor position
+		/// </summary>
+		/// <param name="cursorX">Cursor x position</param>
+		/// <param name="cursorY">Cursor y position</param>
+		/// <returns>Grid point</returns>
+		public Point2 CursorToGrid( int cursorX, int cursorY )
+		{
+			float x = ( ( cursorX - m_Origin.X ) / ( TileScreenWidth * m_Scale ) );
+			float y = ( ( cursorY - m_Origin.Y ) / ( TileScreenHeight * m_Scale ) );
+
+			return new Point2( x, y );
+			
+		}
 
 		#endregion
 	}

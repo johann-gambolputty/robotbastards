@@ -27,6 +27,14 @@ namespace Poc0.LevelEditor.Core
 		}
 
 		/// <summary>
+		/// Sets a tile's type. Used as a delegate in <see cref="TileGridEditState.OnPaint"/>
+		/// </summary>
+		public void SetTileToType( Tile tile, float x, float y )
+		{
+			tile.TileType = this;
+		}
+
+		/// <summary>
 		/// Gets the tile texture area used by this tile type for a given transition code
 		/// </summary>
 		/// <param name="code">Transition code</param>

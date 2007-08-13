@@ -5,7 +5,7 @@ namespace Poc0.LevelEditor.Core
 	/// <summary>
 	/// A tile
 	/// </summary>
-	public class Tile
+	public class Tile : ISelectable
 	{
 		#region Construction
 
@@ -62,15 +62,6 @@ namespace Poc0.LevelEditor.Core
 		}
 
 		/// <summary>
-		/// Selection state of this tile
-		/// </summary>
-		public bool Selected
-		{
-			get { return m_Selected; }
-			set { m_Selected = value; }
-		}
-
-		/// <summary>
 		/// Type of this tile
 		/// </summary>
 		public TileType TileType
@@ -95,6 +86,32 @@ namespace Poc0.LevelEditor.Core
 			get { return m_Objects; }
 		}
 
+		/// <summary>
+		/// Adds an object to this tile
+		/// </summary>
+		/// <param name="obj">Object to add</param>
+		public void AddTileObject( object obj )
+		{
+			m_Objects.Add( obj );
+			if ( m_Grid != null )
+			{
+				m_Grid.OnTileChanged( this );
+			}
+		}
+
+		#endregion
+		
+		#region ISelectable Members
+
+		/// <summary>
+		/// Selection state of this tile
+		/// </summary>
+		public bool Selected
+		{
+			get { return m_Selected; }
+			set { m_Selected = value; }
+		}
+
 		#endregion
 
 		#region Private members
@@ -109,5 +126,6 @@ namespace Poc0.LevelEditor.Core
 		private TileType m_TileType;
 
 		#endregion
+
 	}
 }
