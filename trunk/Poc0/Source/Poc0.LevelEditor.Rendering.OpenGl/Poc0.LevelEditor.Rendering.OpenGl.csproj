@@ -38,7 +38,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OpenGlTileGrid2dRenderer.cs" />
+    <Compile Include="OpenGlTileBlock2dRenderer.cs" />
+    <Compile Include="OpenGlTileBlock3dRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

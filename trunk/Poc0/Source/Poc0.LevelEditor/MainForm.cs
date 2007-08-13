@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using System.Configuration;
-using System.Drawing;
 using System.Windows.Forms;
 using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Rendering.OpenGl;  
@@ -60,10 +60,6 @@ namespace Poc0.LevelEditor
 		{
 			if ( !DesignMode )
 			{
-				TileTransitionMasks masks = new TileTransitionMaskGenerator( ).Create( 32, 32 );
-				masks.Texture.Save( "Masks.png" );
-
-
 				//	Load input bindings
 				CommandInputTemplateMap map = ( CommandInputTemplateMap )ResourceManager.Instance.Load( "LevelEditorCommandInputs.components.xml" );
 				m_User.InitialiseAllCommandListBindings( );
@@ -71,7 +67,7 @@ namespace Poc0.LevelEditor
 				m_Grid = new TileGrid( TileTypeSet.CreateDefaultTileTypeSet( ) );
 				m_EditState = new TileGridEditState( );
 				m_EditState.TilePaintType = m_Grid.Set[ 0 ];
-				m_GridRenderer = new OpenGlTileGrid2dRenderer( m_Grid, m_EditState, masks );
+				m_GridRenderer = new OpenGlTileBlock2dRenderer( m_Grid, m_EditState );
 
 				tileTypeSetListView1.TileTypes = m_Grid.Set;
 				m_Grid.Set.DisplayTexture.Save( "Transitions.png" );
@@ -86,9 +82,6 @@ namespace Poc0.LevelEditor
 
 				display1.Viewers.Add( viewer );
 
-				//	TODO: AP: naughty (there should be some user service, or something, that does updates)
-				new Clock( "updateClock", 10 ).Subscribe( UpdateUser );
-
 				//	Test load a command list
 				try
 				{
@@ -102,19 +95,11 @@ namespace Poc0.LevelEditor
 			}
 		}
 
-		/// <summary>
-		/// Updates the user every tick of the inputClock
-		/// </summary>
-		private void UpdateUser( Clock clock )
-		{
-			//	TODO: AP: Kludge
-			m_User.Update( );
-		}
-
-		private CommandUser m_User = new CommandUser( );
-		private TileGrid m_Grid;
-		private TileGridEditState m_EditState;
-		private TileGridRenderer m_GridRenderer;
+		private CommandUser			m_User = new CommandUser( );
+		private TileGrid			m_Grid;
+		private TileGridEditState	m_EditState;
+		private TileGridRenderer	m_GridRenderer;
+		private List< object >		m_Objects;
 
 		private void tileTypeSetListView1_SelectedIndexChanged( object sender, EventArgs e )
 		{

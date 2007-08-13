@@ -10,6 +10,16 @@ namespace Poc0.LevelEditor.Core
 	public class TileCamera2d : CameraBase, ITilePicker
 	{
 		/// <summary>
+		/// Width of an on screen tile 
+		/// </summary>
+		public const int TileScreenWidth = 64;
+
+		/// <summary>
+		/// Height of an on screen tile 
+		/// </summary>
+		public const int TileScreenHeight = 64;
+
+		/// <summary>
 		/// The camera origin
 		/// </summary>
 		public Point2 Origin
@@ -66,8 +76,8 @@ namespace Poc0.LevelEditor.Core
 		/// <returns>Returns the tile in the grid under mouse cursor. Returns null if no tile is under the cursor</returns>
 		public Tile PickTile( TileGrid grid, int cursorX, int cursorY )
 		{
-			int x = ( int )( ( cursorX - m_Origin.X ) / ( 32.0f * m_Scale ) );
-			int y = ( int )( ( cursorY - m_Origin.Y ) / ( 32.0f * m_Scale ) );
+			int x = ( int )( ( cursorX - m_Origin.X ) / ( TileScreenWidth * m_Scale ) );
+			int y = ( int )( ( cursorY - m_Origin.Y ) / ( TileScreenHeight * m_Scale ) );
 
 			if ( ( x < 0 ) || ( x >= grid.Width ) || ( y < 0 ) || ( y >= grid.Height ) )
 			{

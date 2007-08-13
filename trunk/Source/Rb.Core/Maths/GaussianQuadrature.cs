@@ -1,4 +1,3 @@
-using System;
 
 namespace Rb.Core.Maths
 {
@@ -10,7 +9,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Calculates the integral of 1d function "function" over the interval [min..max]
 		/// </summary>
-		public static float Integrate( float min, float max, Integral.FunctionDelegate function )
+		public static float Integrate( float min, float max, FunctionDelegate function )
 		{
 			float radius = 0.5f * ( max - min );
 			float centre = 0.5f * ( max + min );
