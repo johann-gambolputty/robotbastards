@@ -141,6 +141,10 @@
       <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
       <Name>Rb.Rendering</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.World\Rb.World.csproj">
+      <Project>{46980366-998B-4178-87B7-B04DD3B21979}</Project>
+      <Name>Rb.World</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Poc0.LevelEditor.Core\Poc0.LevelEditor.Core.csproj">
       <Project>{7FD7B8DD-BBED-4AF7-9339-6F823540727E}</Project>
       <Name>Poc0.LevelEditor.Core</Name>

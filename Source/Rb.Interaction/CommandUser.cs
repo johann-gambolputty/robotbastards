@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Rb.Interaction
 {
     /// <summary>
-	/// Delegate used by <see cref="User"/> events
+	/// Delegate used by <see cref="CommandUser"/> events
     /// </summary>
     /// <param name="msg">Command details</param>
     public delegate void CommandEventDelegate( CommandMessage msg );
@@ -13,8 +12,32 @@ namespace Rb.Interaction
 	/// <summary>
 	/// Stores a set of input to command bindings
 	/// </summary>
-	public class CommandUser
+	public class CommandUser : IDisposable
 	{
+		/// <summary>
+		/// Adds this user to the <see cref="CommandUserManager"/>
+		/// </summary>
+		public CommandUser( )
+		{
+			CommandUserManager.Instance.AddUser( this );
+		}
+
+		/// <summary>
+		/// Removes this user from the <see cref="CommandUserManager"/>
+		/// </summary>
+		~CommandUser( )
+		{
+			Dispose( );
+		}
+
+		/// <summary>
+		/// Removes this user from the <see cref="CommandUserManager"/>
+		/// </summary>
+		public void Dispose( )
+		{
+			CommandUserManager.Instance.RemoveUser( this );
+		}
+
 		#region Listeners
 
 		public void AddActiveListener( Command cmd, CommandEventDelegate listener )

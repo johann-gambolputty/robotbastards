@@ -36,13 +36,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ITileGrid2dRenderer.cs" />
     <Compile Include="ITilePicker.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="TileBlockRenderer.cs" />
     <Compile Include="TileByteCodes.cs" />
     <Compile Include="TileCamera2dCommandHandler.cs" />
     <Compile Include="TileEditCommandHandler.cs" />
@@ -54,8 +54,6 @@
     <Compile Include="TileObject.cs" />
     <Compile Include="TileGridEditState.cs" />
     <Compile Include="TileTexture.cs" />
-    <Compile Include="TileTransitionMaskGenerator.cs" />
-    <Compile Include="TileTransitionMasks.cs" />
     <Compile Include="TileType.cs" />
     <Compile Include="TileTypeSet.cs" />
     <Compile Include="TileTypeTransitions.cs" />

@@ -10,34 +10,20 @@ namespace Poc0.LevelEditor.Core
 	public class TileType
 	{
 		/// <summary>
-		/// Setup constructor
+		/// Setup constructor. Generates transition bitmaps automatically
 		/// </summary>
 		/// <param name="set">Tile type set that this type belongs to</param>
 		/// <param name="name">Name of this type</param>
 		/// <param name="bmp">Tile type image</param>
-		/// <param name="precedence">Tile precedence (determines rendering order)</param>
-		public TileType( TileTypeSet set, string name, Bitmap bmp, int precedence )
+		/// <param name="hardEdgeSize">Size of the hard edge in the automatically generated transition textures</param>
+		/// <param name="softEdgeSize">Size of the soft edge in the automatically generated transition textures</param>
+		public TileType( TileTypeSet set, string name, Bitmap bmp, int hardEdgeSize, int softEdgeSize )
 		{
 			Image = bmp;
 			Name = name;
 			Set = set;
-			m_Precedence = precedence;
-		}
 
-		public void AddToTileTexture( TileTexture texture )
-		{
-			m_NoTransRect = new TileTexture.Rect( texture.Generate( this, TransitionCodes.All ) );
-
-			//	TODO: AP: Use mirroring and rotation of texture rectangles to save space on tile set display texture
-
-			for ( int cornerIndex = 1; cornerIndex < 16; ++cornerIndex )
-			{
-				m_CornerRects[ cornerIndex ] = new TileTexture.Rect( texture.Generate( this, TileTexture.IndexToCornerCode( cornerIndex ) ) );
-			}
-			for ( int edgeIndex = 1; edgeIndex < 16; ++edgeIndex )
-			{
-				m_EdgeRects[ edgeIndex ] = new TileTexture.Rect( texture.Generate( this, TileTexture.IndexToEdgeCode( edgeIndex ) ) );
-			}
+			GenerateTransitions( m_Set.TileTexture, hardEdgeSize, softEdgeSize );
 		}
 
 		/// <summary>
@@ -81,7 +67,7 @@ namespace Poc0.LevelEditor.Core
 					throw new ApplicationException( "Can only set a tile type's set once" );
 				}
 				m_Set = value;
-				m_Set.Add( this );
+				m_Index = m_Set.Add( this );
 			}
 		}
 
@@ -95,20 +81,53 @@ namespace Poc0.LevelEditor.Core
 		}
 
 		/// <summary>
-		/// The tile precedence
+		/// The tile index
 		/// </summary>
-		public int Precedence
+		public int Index
 		{
-			get { return m_Precedence; }
-			set { m_Precedence = value; }
+			get { return m_Index; }
 		}
+
+		/// <summary>
+		/// Tile type base height
+		/// </summary>
+		public float BaseHeight
+		{
+			get { return m_BaseHeight; }
+			set { m_BaseHeight = value; }
+		}
+
+		#region Private members
 
 		private string						m_Name;
 		private TileTypeSet					m_Set;
-		private int							m_Precedence;
+		private int							m_Index;
 		private Bitmap						m_Image;
 		private TileTexture.Rect			m_NoTransRect;
+		private float						m_BaseHeight;
 		private readonly TileTexture.Rect[]	m_CornerRects	= new TileTexture.Rect[ 16 ];
 		private readonly TileTexture.Rect[] m_EdgeRects		= new TileTexture.Rect[ 16 ];
+
+		/// <summary>
+		/// Adds this tile type to a given tile texture, generating transition textures automatically
+		/// </summary>
+		private void GenerateTransitions( TileTexture texture, int hardEdgeSize, int softEdgeSize )
+		{
+			m_NoTransRect = new TileTexture.Rect( texture.Add( Image ) );
+
+			//	TODO: AP: Use mirroring and rotation of texture rectangles to save space on tile set display texture
+
+			for ( int cornerIndex = 1; cornerIndex < 16; ++cornerIndex )
+			{
+				m_CornerRects[ cornerIndex ] = new TileTexture.Rect( texture.Generate( this, TileTexture.IndexToCornerCode( cornerIndex ), hardEdgeSize, softEdgeSize ) );
+			}
+			for ( int edgeIndex = 1; edgeIndex < 16; ++edgeIndex )
+			{
+				m_EdgeRects[ edgeIndex ] = new TileTexture.Rect( texture.Generate( this, TileTexture.IndexToEdgeCode( edgeIndex ), hardEdgeSize, softEdgeSize ) );
+			}
+		}
+
+		#endregion
+
 	}
 }

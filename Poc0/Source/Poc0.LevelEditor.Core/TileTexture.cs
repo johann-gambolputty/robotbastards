@@ -172,7 +172,8 @@ namespace Poc0.LevelEditor.Core
 			}
 			if ( bmp.PixelFormat != m_Combiner.PixelFormat )
 			{
-				throw new ArgumentException( string.Format( "Input bitmap must have pixel format of {0} (was {1})", m_Combiner.PixelFormat, bmp.PixelFormat ) );
+				bmp = CloneBitmapR8G8B8A8( bmp );
+				//throw new ArgumentException( string.Format( "Input bitmap must have pixel format of {0} (was {1})", m_Combiner.PixelFormat, bmp.PixelFormat ) );
 			}
 
 			//	This will force the texture to be re-created, when it's accessed via the Texture property
@@ -228,10 +229,12 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		/// <param name="type">Tile type</param>
 		/// <param name="code">Transition code</param>
+		/// <param name="hardEdgeSize">Size of the hard edge in the automatically generated transition textures</param>
+		/// <param name="softEdgeSize">Size of the soft edge in the automatically generated transition textures</param>
 		/// <returns>Texture coordinates of the generated image on <see cref="Texture"/></returns>
-		public RectangleF Generate( TileType type, byte code )
+		public RectangleF Generate( TileType type, byte code, int hardEdgeSize, int softEdgeSize )
 		{
-			return Add( GenerateTransitionBitmap( type.Image, code, true ) );
+			return Add( GenerateTransitionBitmap( type.Image, code, hardEdgeSize, softEdgeSize, true ) );
 		}
 
 		#region Transition bitmap generation
@@ -256,15 +259,29 @@ namespace Poc0.LevelEditor.Core
 			return ( code & TransitionCodes.Edges ) >> 4;
 		}
 
+		private static int		BandMin;
+		private static int		BandSize;
+		private static int		BandMax;
+		private static float	InvBandSize;
+		private static float	PosToAlpha;
+
 		/// <summary>
 		/// Creates a transition bitmap
 		/// </summary>
 		/// <param name="bmp">Bitmap to generate transition for</param>
 		/// <param name="code">Transition code</param>
+		/// <param name="hardEdgeSize">Size of the hard edge in the automatically generated transition textures</param>
+		/// <param name="softEdgeSize">Size of the soft edge in the automatically generated transition textures</param>
 		/// <param name="canUseBmpDirectly">If true, and bmp is in the correct format, then bmp can be edited in place (and is the returned result)</param>
 		/// <returns>Returns a new bitmap, combining an alpha channel with bmp</returns>
-		private static Bitmap GenerateTransitionBitmap( Bitmap bmp, byte code, bool canUseBmpDirectly )
+		private static Bitmap GenerateTransitionBitmap( Bitmap bmp, byte code, int hardEdgeSize, int softEdgeSize, bool canUseBmpDirectly )
 		{
+			BandMin = hardEdgeSize;
+			BandSize = softEdgeSize;
+			BandMax = BandMin + BandSize;
+			InvBandSize = 1.0f / BandSize;
+			PosToAlpha = InvBandSize * 255.0f;
+
 			if ( code == TransitionCodes.All )
 			{
 				return GenerateNoTransitionBitmap( bmp, canUseBmpDirectly );
@@ -340,13 +357,6 @@ namespace Poc0.LevelEditor.Core
 			return CloneBitmapR8G8B8A8( bmp );
 		}
 
-		private const int	BandMin			= 2;
-		private const int	BandSize		= 10;
-
-		private const int	BandMax			= BandMin + BandSize;
-		private const float	InvBandSize		= 1.0f / BandSize;
-		private const float	PosToAlpha		= InvBandSize * 255.0f;
-		
 		private static float DistanceToAlpha( float distance )
 		{
 			if ( distance <= BandMin )
@@ -374,10 +384,10 @@ namespace Poc0.LevelEditor.Core
 
         }
 
-		const int rIndex = 0;
-		const int gIndex = 1;
-		const int bIndex = 2;
-		const int aIndex = 3;
+		const int RIndex = 0;
+		const int GIndex = 1;
+		const int BIndex = 2;
+		const int AIndex = 3;
 
 		private unsafe static Bitmap GenerateCornerTransitionBitmap( Bitmap bmp, byte code )
 		{
@@ -422,10 +432,10 @@ namespace Poc0.LevelEditor.Core
 						int diffY = corner.Y - y;
 						int sqrDistToCorner = ( diffX * diffX ) + ( diffY * diffY );
 
-						dstPixel[ rIndex ] = srcPixel[ rIndex ];
-						dstPixel[ gIndex ] = srcPixel[ gIndex ];
-						dstPixel[ bIndex ] = srcPixel[ bIndex ];
-						dstPixel[ aIndex ] = ( byte )( DistanceToAlpha( ( float )Math.Sqrt( sqrDistToCorner ) ) );
+						dstPixel[ RIndex ] = srcPixel[ RIndex ];
+						dstPixel[ GIndex ] = srcPixel[ GIndex ];
+						dstPixel[ BIndex ] = srcPixel[ BIndex ];
+						dstPixel[ AIndex ] = ( byte )( DistanceToAlpha( ( float )Math.Sqrt( sqrDistToCorner ) ) );
 					}
 
 					dstPixel += 4;
@@ -500,10 +510,10 @@ namespace Poc0.LevelEditor.Core
 
 					if ( alphaNormalize > 0 )
 					{
-						dstPixel[ rIndex ] = srcPixel[ rIndex ];
-						dstPixel[ gIndex ] = srcPixel[ gIndex ];
-						dstPixel[ bIndex ] = srcPixel[ bIndex ];
-						dstPixel[ aIndex ] = ( byte )( alpha / alphaNormalize );
+						dstPixel[ RIndex ] = srcPixel[ RIndex ];
+						dstPixel[ GIndex ] = srcPixel[ GIndex ];
+						dstPixel[ BIndex ] = srcPixel[ BIndex ];
+						dstPixel[ AIndex ] = ( byte )( alpha / alphaNormalize );
 					}
 					else
 					{

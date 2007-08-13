@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 
 namespace Poc0.LevelEditor.Core
 {
@@ -26,6 +27,23 @@ namespace Poc0.LevelEditor.Core
 		#endregion
 
 		#region Public properties
+
+		/// <summary>
+		/// Gets the offset of this tile from the tile type base height
+		/// </summary>
+		public float HeightOffset
+		{
+			get { return m_HeightOffset; }
+			set { m_HeightOffset = value; }
+		}
+
+		/// <summary>
+		/// Gets the height of the tile (tile type base height + height offset)
+		/// </summary>
+		public float Height
+		{
+			get { return TileType.BaseHeight + HeightOffset; }
+		}
 
 		/// <summary>
 		/// Gets the X position of this tile in the tile grid
@@ -69,15 +87,25 @@ namespace Poc0.LevelEditor.Core
 			}
 		}
 
+		/// <summary>
+		/// Gets the objects associated with this tile
+		/// </summary>
+		public IEnumerable< object > TileObjects
+		{
+			get { return m_Objects; }
+		}
+
 		#endregion
 
 		#region Private members
 
-		private int m_GridX;
-		private int m_GridY;
-		private bool m_Selected;
+		private readonly int m_GridX;
+		private readonly int m_GridY;
 		private readonly TileGrid m_Grid;
-		//private readonly List< TileObject > m_Objects	= new List< TileObject >( );
+		private readonly List< object > m_Objects	= new List< object >( );
+
+		private bool m_Selected;
+		private float m_HeightOffset;
 		private TileType m_TileType;
 
 		#endregion

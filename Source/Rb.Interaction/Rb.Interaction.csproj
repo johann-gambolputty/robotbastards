@@ -40,6 +40,7 @@
     <Compile Include="CommandList.cs" />
     <Compile Include="CommandListManager.cs" />
     <Compile Include="CommandMessage.cs" />
+    <Compile Include="CommandUserManager.cs" />
     <Compile Include="CursorCommandMessage.cs" />
     <Compile Include="CursorInput.cs" />
     <Compile Include="CursorPickInput.cs" />

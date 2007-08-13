@@ -9,6 +9,8 @@ namespace Poc0.LevelEditor.Core
 	/// </summary>
 	public class TileTypeSet
 	{
+		#region Public properties
+
 		/// <summary>
 		/// Creates a default tile type set
 		/// </summary>
@@ -16,11 +18,9 @@ namespace Poc0.LevelEditor.Core
 		{
 			TileTypeSet set = new TileTypeSet( );
 
-			new TileType( set, "tile0", Properties.Resources.tile0, 0 );
-
-			new TileType( set, "tile1", Properties.Resources.tile1, 1 );
-
-			new TileType( set, "tile2", Properties.Resources.tile2, 2 );
+			set.AddTileType( "tile0", Properties.Resources.tile0, 4, 4 );
+			set.AddTileType( "tile1", Properties.Resources.tile1, 3, 4 );
+			set.AddTileType( "tile2", Properties.Resources.tile2, 3, 0 );
 
 			return set;
 		}
@@ -32,6 +32,14 @@ namespace Poc0.LevelEditor.Core
 		{
 			get { return m_TileTypes[ index ]; }
 			set { m_TileTypes[ index ] = value; }
+		}
+
+		/// <summary>
+		/// Gets the tile texture
+		/// </summary>
+		public TileTexture TileTexture
+		{
+			get { return m_DisplayTexture; }
 		}
 
 		/// <summary>
@@ -72,16 +80,35 @@ namespace Poc0.LevelEditor.Core
 		{
 			get { return m_TileTypes; }
 		}
+		
+		#endregion
+
+		#region Public methods
+
+		/// <summary>
+		/// Adds a tile type to the set, automatically generating transition textures
+		/// </summary>
+		/// <param name="name">Name of the tile type</param>
+		/// <param name="bmp">Base tile type image</param>
+		/// <param name="hardEdgeSize">Size of the hard edge, used when generating transition textures</param>
+		/// <param name="softEdgeSize">Size of the soft edge, used when generating transition textures</param>
+		public TileType AddTileType( string name, Bitmap bmp, int hardEdgeSize, int softEdgeSize )
+		{
+			return new TileType( this, name, bmp, hardEdgeSize, softEdgeSize );
+		}
 
 		/// <summary>
 		/// Adds a tile type to the set
 		/// </summary>
-		public void Add( TileType tileType )
+		public int Add( TileType tileType )
 		{
+			int index = m_TileTypes.Count;
 			m_TileTypes.Add( tileType );
-			tileType.AddToTileTexture( m_DisplayTexture );
 			m_DisplayTextureBitmap = null;
+			return index;
 		}
+
+		#endregion
 
 		#region Private members
 
