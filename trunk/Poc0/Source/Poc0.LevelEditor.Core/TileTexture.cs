@@ -472,22 +472,19 @@ namespace Poc0.LevelEditor.Core
 				for ( int x = 0; x < bmp.Width; ++x )
 				{
 					float alpha = 0.0f;
-					float alphaNormalize = 0.0f;
 
 					if ( x < BandMax )
 					{
 						if ( ( code & TransitionCodes.LeftEdge ) != 0 )
 						{
-							alpha += DistanceToAlpha( x );
-							alphaNormalize = 1.0f;
+							alpha = DistanceToAlpha( x );
 						}
 					}
 					else if ( x + BandMax > bmp.Width )
 					{
 						if ( ( code & TransitionCodes.RightEdge ) != 0 )
 						{
-							alpha += DistanceToAlpha( bmp.Width - x );
-							alphaNormalize = 1.0f;
+							alpha = DistanceToAlpha( bmp.Width - x );
 						}
 					}
 					
@@ -495,25 +492,23 @@ namespace Poc0.LevelEditor.Core
 					{
 						if ( ( code & TransitionCodes.TopEdge ) != 0 )
 						{
-							alpha += DistanceToAlpha( y );
-							alphaNormalize += 1.0f;
+							alpha = Utils.Max( DistanceToAlpha( y ), alpha );
 						}
 					}
 					else if ( y + BandMax > bmp.Height )
 					{
 						if ( ( code & TransitionCodes.BottomEdge ) != 0 )
 						{
-							alpha += DistanceToAlpha( bmp.Height - y );
-							alphaNormalize += 1.0f;
+							alpha = Utils.Max( DistanceToAlpha( bmp.Height - y ), alpha );
 						}
 					}
 
-					if ( alphaNormalize > 0 )
+					if ( alpha > 0 )
 					{
 						dstPixel[ RIndex ] = srcPixel[ RIndex ];
 						dstPixel[ GIndex ] = srcPixel[ GIndex ];
 						dstPixel[ BIndex ] = srcPixel[ BIndex ];
-						dstPixel[ AIndex ] = ( byte )( alpha / alphaNormalize );
+						dstPixel[ AIndex ] = ( byte )alpha;
 					}
 					else
 					{

@@ -1,4 +1,5 @@
 using Rb.Core.Components;
+using Rb.Core.Maths;
 using Rb.Core.Utils;
 using Rb.Interaction;
 
@@ -100,12 +101,13 @@ namespace Poc0.LevelEditor.Core
 				case TileEditCommands.Paint:
 					{
 						CursorCommandMessage cursorMsg = ( CursorCommandMessage )msg;
-						if ( EditState.TilePaintType != null )
+						if ( EditState.OnPaint != null )
 						{
 							Tile tile = TilePicker.PickTile( Grid, cursorMsg.X, cursorMsg.Y );
 							if ( tile != null )
 							{
-								tile.TileType = EditState.TilePaintType;
+								Point2 pt = TilePicker.CursorToGrid( cursorMsg.X, cursorMsg.Y );
+								EditState.OnPaint( tile, pt.X, pt.Y );
 							}
 						}
 						break;

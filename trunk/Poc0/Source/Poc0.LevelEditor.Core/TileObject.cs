@@ -1,28 +1,25 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Poc0.LevelEditor.Core
 {
+	/// <summary>
+	/// Wrapper around an object, attached to a given tile
+	/// </summary>
 	public class TileObject
 	{
 		public float X
 		{
 			get { return m_X; }
 		}
+
 		public float Y
 		{
 			get { return m_Y; }
 		}
 
-		public int TileX
+		public Tile Tile
 		{
-			get { return m_TileX; }
-		}
-
-		public int TileY
-		{
-			get { return m_TileY; }
+			get { return m_Tile; }
+			set { m_Tile = value; }
 		}
 
 		public object Object
@@ -31,16 +28,24 @@ namespace Poc0.LevelEditor.Core
 			set { m_Object = value; }
 		}
 
+		public TileObject( Tile tile, float x, float y, object obj )
+		{
+			m_X = x;
+			m_Y = y;
+			m_Tile = tile;
+			m_Object = obj;
+		}
+
 		public void SetPosition( TileGrid grid, float x, float y )
 		{
 			m_X = x;
 			m_Y = y;
+			m_Tile = grid[ ( int )x, ( int )y ];
 		}
 
 		private float	m_X;
 		private float	m_Y;
-		private int		m_TileX;
-		private int		m_TileY;
+		private Tile	m_Tile;
 		private object	m_Object;
 	}
 }

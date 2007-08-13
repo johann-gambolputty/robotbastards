@@ -168,8 +168,8 @@ namespace Poc0.LevelEditor.Core
 			return tiles;
 		}
 
-		public Tile[,]		m_Tiles;
-		private TileTypeSet	m_TileTypes;
+		public Tile[,] m_Tiles;
+		private readonly TileTypeSet m_TileTypes;
 
 		#endregion
 	}
