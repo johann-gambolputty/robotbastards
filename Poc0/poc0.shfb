@@ -1,0 +1,54 @@
+﻿<project schemaVersion="1.4.0.2">
+    <assemblies>
+        <assembly assemblyPath=".\bin\NDoc\Poc0.Core.dll" xmlCommentsPath=".\bin\NDoc\Poc0.Core.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\bin\NDoc\Poc0.LevelEditor.Core.dll" xmlCommentsPath=".\bin\NDoc\Poc0.LevelEditor.Core.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\bin\NDoc\Poc0.LevelEditor.exe" xmlCommentsPath=".\bin\NDoc\Poc0.LevelEditor.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\bin\NDoc\Poc0.LevelEditor.Rendering.OpenGl.dll" xmlCommentsPath=".\bin\NDoc\Poc0.LevelEditor.Rendering.OpenGl.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\bin\NDoc\Rb.AssemblySelector.dll" xmlCommentsPath=".\bin\NDoc\Rb.AssemblySelector.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\bin\NDoc\Rb.ComponentXmlLoader.dll" xmlCommentsPath=".\bin\NDoc\Rb.ComponentXmlLoader.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\bin\NDoc\Rb.Core.dll" xmlCommentsPath=".\bin\NDoc\Rb.Core.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\bin\NDoc\Rb.Interaction.dll" xmlCommentsPath=".\bin\NDoc\Rb.Interaction.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\bin\NDoc\Rb.Interaction.Windows.dll" xmlCommentsPath=".\bin\NDoc\Rb.Interaction.Windows.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\bin\NDoc\Rb.Log.Controls.dll" xmlCommentsPath=".\bin\NDoc\Rb.Log.Controls.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\bin\NDoc\Rb.Log.Controls.Vs.dll" xmlCommentsPath=".\bin\NDoc\Rb.Log.Controls.Vs.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\bin\NDoc\Rb.Log.dll" xmlCommentsPath=".\bin\NDoc\Rb.Log.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\bin\NDoc\Rb.Network.dll" xmlCommentsPath=".\bin\NDoc\Rb.Network.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\bin\NDoc\Rb.Rendering.dll" xmlCommentsPath=".\bin\NDoc\Rb.Rendering.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\bin\NDoc\Rb.Rendering.OpenGl.dll" xmlCommentsPath=".\bin\NDoc\Rb.Rendering.OpenGl.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\bin\NDoc\Rb.Rendering.OpenGl.Windows.dll" xmlCommentsPath=".\bin\NDoc\Rb.Rendering.OpenGl.Windows.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\bin\NDoc\Rb.Rendering.Windows.dll" xmlCommentsPath=".\bin\NDoc\Rb.Rendering.Windows.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\bin\NDoc\Rb.World.dll" xmlCommentsPath=".\bin\NDoc\Rb.World.xml" commentsOnly="False" />
+    </assemblies>
+    <ProjectSummary />
+    <MissingTags>Summary, Parameter, Returns, AutoDocumentCtors, Namespace</MissingTags>
+    <VisibleItems>InheritedMembers, Protected, SealedProtected</VisibleItems>
+    <HtmlHelp1xCompilerPath path="" />
+    <HtmlHelp2xCompilerPath path="" />
+    <OutputPath>.\Help\</OutputPath>
+    <SandcastlePath path="" />
+    <WorkingPath path="" />
+    <CleanIntermediates>True</CleanIntermediates>
+    <HelpFileFormat>HtmlHelp1x</HelpFileFormat>
+    <PurgeDuplicateTopics>True</PurgeDuplicateTopics>
+    <CppCommentsFixup>False</CppCommentsFixup>
+    <FrameworkVersion>2.0.50727</FrameworkVersion>
+    <BinaryTOC>True</BinaryTOC>
+    <IncludeFavorites>False</IncludeFavorites>
+    <Preliminary>False</Preliminary>
+    <RootNamespaceContainer>False</RootNamespaceContainer>
+    <RootNamespaceTitle />
+    <HelpTitle>Poc0</HelpTitle>
+    <HtmlHelpName>Documentation</HtmlHelpName>
+    <Language>en-US</Language>
+    <CopyrightHref />
+    <CopyrightText />
+    <FeedbackEMailAddress />
+    <HeaderText />
+    <FooterText />
+    <ProjectLinkType>Local</ProjectLinkType>
+    <SdkLinkType>Msdn</SdkLinkType>
+    <PresentationStyle>Prototype</PresentationStyle>
+    <NamingMethod>Guid</NamingMethod>
+    <SyntaxFilters>Standard</SyntaxFilters>
+    <ContentPlacement>AboveNamespaces</ContentPlacement>
+</project>
