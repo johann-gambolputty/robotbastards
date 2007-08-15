@@ -24,6 +24,6 @@ namespace Rb.ComponentXmlLoader
             BuildObject = m_BuildObjects;
         }
 
-        private ArrayList m_BuildObjects = new ArrayList( );
+        private readonly ArrayList m_BuildObjects = new ArrayList( );
     }
 }

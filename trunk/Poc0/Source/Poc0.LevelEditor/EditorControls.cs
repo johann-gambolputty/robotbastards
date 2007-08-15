@@ -1,5 +1,7 @@
 using System.Windows.Forms;
 using Poc0.LevelEditor.Core;
+using Rb.Core.Components;
+using Rb.World;
 
 namespace Poc0.LevelEditor
 {
@@ -11,57 +13,24 @@ namespace Poc0.LevelEditor
 		public EditorControls( )
 		{
 			InitializeComponent( );
-
-			//	Populate the object types tree
-			TreeNode allObjects = objectsTreeView.Nodes.Add( "All Objects" );
-			allObjects.Nodes.Add( new PaintObjectItem( "Player Start", CreateObject< object > ) );
 		}
 
-		/// <summary>
-		/// Creates a new object of type T
-		/// </summary>
-		/// <typeparam name="T">Object type to create</typeparam>
-		public static void CreateObject< T >( Tile tile, float x, float y ) where T : new( )
-		{
-			tile.AddTileObject( new TileObject( tile, x, y, new T( ) ) );
-		}
-
-		/// <summary>
-		/// Tree node
-		/// </summary>
-		private class PaintObjectItem : TreeNode
-		{
-			public PaintObjectItem( string name, TileGridEditState.PaintDelegate paintObject ) :
-				base( name )
-			{
-				m_Name = name;
-				m_PaintObject = paintObject;
-			}
-
-			public TileGridEditState.PaintDelegate PaintObject
-			{
-				get { return m_PaintObject; }
-			}
-
-			public override string ToString( )
-			{
-				return m_Name;
-			}
-
-			private readonly string m_Name;
-			private readonly TileGridEditState.PaintDelegate m_PaintObject;
-		}
 
 		/// <summary>
 		/// Sets up the control
 		/// </summary>
+		/// <param name="builder">Builder used to create objects from templates</param>
 		/// <param name="grid">Grid being edited</param>
 		/// <param name="editState">Edit state</param>
-		public void Setup( TileGrid grid, TileGridEditState editState )
+		/// <param name="templates">Object templates</param>
+		public void Setup( IBuilder builder, TileGrid grid, TileGridEditState editState, ObjectTemplates templates )
 		{
 			m_Grid = grid;
 			m_EditState = editState;
+			m_Templates = templates;
 			tileTypeSetView.TileTypes = grid.Set;
+
+			PopulateObjectTemplates( builder );
 		}
 
 		/// <summary>
@@ -79,9 +48,63 @@ namespace Poc0.LevelEditor
 		{
 			get { return m_Grid; }
 		}
+		
+		/// <summary>
+		/// Tree node
+		/// </summary>
+		private class PaintObjectItem : TreeNode
+		{
+			/// <summary>
+			/// Stores the specified template
+			/// </summary>
+			public PaintObjectItem( Scene scene, ObjectTemplate template ) :
+				base( template.Name )
+			{
+				m_Scene = scene;
+				m_Name = template.Name;
+				m_Template = template;
+			}
+
+			/// <summary>
+			/// Creates an instance of the stored object template
+			/// </summary>
+			public void Create( Tile tile, float x, float y )
+			{
+				object result = m_Template.CreateInstance( m_Scene.Builder );
+
+				//	TODO: This is a bit sucky...
+				TileObject tileObj = new TileObject( tile, x, y, result );
+				tileObj.AddChild( new TileObjectRenderer( tileObj ) );
+				tile.AddTileObject( new TileObject( tile, x, y, result ) );
+			}
+
+			/// <summary>
+			/// Gets the name of the stored template
+			/// </summary>
+			public override string ToString( )
+			{
+				return m_Name;
+			}
+
+			private readonly ObjectTemplate m_Template;
+			private readonly string m_Name;
+			private readonly Scene m_Scene;
+		}
 
 		private TileGrid m_Grid;
 		private TileGridEditState m_EditState;
+		private ObjectTemplates m_Templates;
+		
+		private void PopulateObjectTemplates( IBuilder builder )
+		{
+			//	Populate the object types tree
+			TreeNode allObjects = objectsTreeView.Nodes.Add( "All Objects" );
+
+			foreach ( ObjectTemplate template in m_Templates.Templates )
+			{
+				allObjects.Nodes.Add( new PaintObjectItem( builder, template ) );
+			}
+		}
 
 		private void tileTypeSetView_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
@@ -99,7 +122,7 @@ namespace Poc0.LevelEditor
 			PaintObjectItem paintObject = objectsTreeView.SelectedNode as PaintObjectItem;
 			if ( paintObject != null )
 			{
-				m_EditState.OnPaint = paintObject.PaintObject;
+				m_EditState.OnPaint = paintObject.Create;
 			}
 		}
 	}

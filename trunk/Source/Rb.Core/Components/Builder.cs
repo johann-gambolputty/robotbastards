@@ -3,7 +3,7 @@ using System;
 namespace Rb.Core.Components
 {
     /// <summary>
-    /// Implements a standard version of the IBuilder interface
+    /// Implements a standard version of the IBuilder interface. Also, contains some helper functions
     /// </summary>
     public class Builder : IBuilder
     {
@@ -56,6 +56,7 @@ namespace Rb.Core.Components
         {
 			return ( ObjectType )builder.CreateInstance( typeof( ObjectType ), args );
         }
+
         #endregion
 
         #region Builder singleton

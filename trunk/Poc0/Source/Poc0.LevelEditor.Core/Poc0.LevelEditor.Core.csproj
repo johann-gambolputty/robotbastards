@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="ISelectable.cs" />
     <Compile Include="ITilePicker.cs" />
+    <Compile Include="ObjectTemplates.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -69,6 +70,7 @@
     <Compile Include="TileGrid.cs" />
     <Compile Include="TileObject.cs" />
     <Compile Include="TileGridEditState.cs" />
+    <Compile Include="TileObjectRenderer.cs" />
     <Compile Include="TileTexture.cs" />
     <Compile Include="TileType.cs" />
     <Compile Include="TileTypeSet.cs" />
@@ -90,6 +92,10 @@
     <ProjectReference Include="..\..\..\Source\Rb.Rendering\Rb.Rendering.csproj">
       <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
       <Name>Rb.Rendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.World\Rb.World.csproj">
+      <Project>{46980366-998B-4178-87B7-B04DD3B21979}</Project>
+      <Name>Rb.World</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

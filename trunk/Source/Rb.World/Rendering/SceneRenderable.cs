@@ -14,7 +14,7 @@ namespace Rb.World.Rendering
 		/// Renders all IRenderable objects in the base list
 		/// </summary>
 		/// <param name="context">Render context</param>
-		public void Render( IRenderContext context )
+		public virtual void Render( IRenderContext context )
 		{
 			foreach ( IRenderable renderable in this )
 			{

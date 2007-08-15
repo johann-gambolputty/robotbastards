@@ -1,10 +1,11 @@
+using Rb.Core.Components;
 
 namespace Poc0.LevelEditor.Core
 {
 	/// <summary>
 	/// Wrapper around an object, attached to a given tile
 	/// </summary>
-	public class TileObject
+	public class TileObject : Component
 	{
 		public float X
 		{

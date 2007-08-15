@@ -28,6 +28,15 @@ namespace Rb.ComponentXmlLoader
             BuildObject = m_ExternalTarget;
         }
 
+		/// <summary>
+		/// Can only link to the root builder object if it's external (if it's not external, then the
+		/// BuildObject of the root builder is the first child builder's BuildObject
+		/// </summary>
+		public override bool CanLinkChildBuilders
+    	{
+			get { return ( m_ExternalTarget != null ); }
+    	}
+
         /// <summary>
         /// Called prior to Resolve()
         /// </summary>

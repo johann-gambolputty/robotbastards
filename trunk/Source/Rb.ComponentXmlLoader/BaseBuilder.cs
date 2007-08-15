@@ -238,7 +238,7 @@ namespace Rb.ComponentXmlLoader
         public virtual void Resolve( bool linkThisBuilder )
         {
             //  Resolve pre-link objects
-            ResolveChildBuilders( m_PreLinkBuilders, true );
+            ResolveChildBuilders( m_PreLinkBuilders, CanLinkChildBuilders );
 
             //  Link built object to its parent
             if ( ( ParentBuilder != null ) && ( linkThisBuilder ) )
@@ -247,8 +247,16 @@ namespace Rb.ComponentXmlLoader
             }
 
             //  Resolve post-link objects
-            ResolveChildBuilders( m_PostLinkBuilders, true );
+            ResolveChildBuilders( m_PostLinkBuilders, CanLinkChildBuilders );
         }
+
+		/// <summary>
+		/// Returns true if child builders can link to this builder's BuildObject
+		/// </summary>
+		public virtual bool CanLinkChildBuilders
+		{
+			get { return true; }
+		}
 
         /// <summary>
         /// Sets and gets the object created by this builder
