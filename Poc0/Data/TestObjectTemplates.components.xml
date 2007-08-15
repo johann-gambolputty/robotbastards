@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rb>
+  <list>
+
+    <object type="Rb.Core.Components.ObjectTemplate" assembly="Rb.Core">
+      <parameters>
+        <type value="Rb.Core.Components.Component" assembly="Rb.Core"/>
+        <string value="Player Start"/>
+      </parameters>
+    </object>
+
+    <object type="Rb.Core.Components.ObjectTemplate" assembly="Rb.Core">
+      <parameters>
+        <type value="Rb.Core.Components.Component" assembly="Rb.Core"/>
+        <string value="Weapon"/>
+      </parameters>
+    </object>
+
+  </list>
+</rb>
