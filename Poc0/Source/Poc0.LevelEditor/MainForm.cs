@@ -95,7 +95,7 @@ namespace Poc0.LevelEditor
 				m_Templates.Append( "TestObjectTemplates.components.xml" );
 
 				//	Set up controls
-				editorControls1.Setup( m_Scene.Builder, m_Grid, m_EditState, m_Templates );
+				editorControls1.Setup( m_Scene, m_Grid, m_EditState, m_Templates );
 
 				ComponentLoadParameters loadParams = new ComponentLoadParameters( );
 				loadParams.Properties[ "User" ] = m_User;

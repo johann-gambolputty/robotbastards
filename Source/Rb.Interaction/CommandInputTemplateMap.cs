@@ -229,7 +229,7 @@ namespace Rb.Interaction
 			}
 			else
 			{
-				commandList = CommandListManager.Inst.Get( commandListName );
+				commandList = CommandListManager.Instance.Get( commandListName );
 				if ( commandList == null )
 				{
 					throw new ApplicationException( string.Format( "Could not find command list named \"{0}\"", commandListName ) );

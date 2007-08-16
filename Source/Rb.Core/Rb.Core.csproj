@@ -51,6 +51,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\AssetCache.cs" />
+    <Compile Include="Assets\AssetManager.cs" />
+    <Compile Include="Assets\AssetProviders.cs" />
+    <Compile Include="Assets\AsyncAssetLoader.cs" />
+    <Compile Include="Assets\AsyncLoadResult.cs" />
+    <Compile Include="Assets\FileAssetProvider.cs" />
+    <Compile Include="Assets\IAssetCache.cs" />
+    <Compile Include="Assets\IAssetLoader.cs" />
+    <Compile Include="Assets\IAssetProvider.cs" />
+    <Compile Include="Assets\IAsyncAssetLoader.cs" />
+    <Compile Include="Assets\LoadParameters.cs" />
+    <Compile Include="Assets\LoadState.cs" />
+    <Compile Include="Assets\Location.cs" />
     <Compile Include="Components\Builder.cs" />
     <Compile Include="Components\Component.cs" />
     <Compile Include="Components\ComponentHelpers.cs" />
@@ -121,6 +134,7 @@
     <Compile Include="Utils\Clock.cs" />
     <Compile Include="Utils\DispatchMap.cs" />
     <Compile Include="Utils\ExceptionUtils.cs" />
+    <Compile Include="Utils\InvokeQueue.cs" />
     <Compile Include="Utils\PathHelpers.cs" />
     <Compile Include="Utils\PolyList.cs" />
     <Compile Include="Utils\StackTraceInfo.cs" />

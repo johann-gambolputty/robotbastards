@@ -85,7 +85,7 @@ namespace Rb.Interaction
 
 		public void InitialiseAllCommandListBindings( )
 		{
-			foreach ( CommandList commandList in CommandListManager.Inst.CommandLists )
+			foreach ( CommandList commandList in CommandListManager.Instance.CommandLists )
 			{
 				InitialiseCommandListBindings( commandList );
 			}

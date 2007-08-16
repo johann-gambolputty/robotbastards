@@ -128,6 +128,16 @@ namespace Rb.Log
 			System.Diagnostics.Trace.Fail( string.Format( msg, args ) );
 		}
 
+
+		/// <summary>
+		/// Generates a log entry for an exception
+		/// </summary>
+		/// <param name="ex">Exception</param>
+		public void Write( Exception ex )
+		{
+			//	TODO: AP: ...
+		}
+
     	/// <summary>
         /// Generates a log entry
         /// </summary>

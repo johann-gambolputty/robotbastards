@@ -49,9 +49,9 @@ namespace Poc0.LevelEditor
 			// 
 			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar1});
-			this.statusStrip.Location = new System.Drawing.Point(0, 434);
+			this.statusStrip.Location = new System.Drawing.Point(0, 213);
 			this.statusStrip.Name = "statusStrip";
-			this.statusStrip.Size = new System.Drawing.Size(625, 22);
+			this.statusStrip.Size = new System.Drawing.Size(409, 22);
 			this.statusStrip.TabIndex = 0;
 			this.statusStrip.Text = "statusStrip1";
 			// 
@@ -67,7 +67,7 @@ namespace Poc0.LevelEditor
             this.viewToolStripMenuItem});
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
-			this.menuStrip.Size = new System.Drawing.Size(625, 24);
+			this.menuStrip.Size = new System.Drawing.Size(409, 24);
 			this.menuStrip.TabIndex = 1;
 			this.menuStrip.Text = "menuStrip1";
 			// 
@@ -116,8 +116,8 @@ namespace Poc0.LevelEditor
 			// splitContainer1.Panel2
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.display1);
-			this.splitContainer1.Size = new System.Drawing.Size(625, 410);
-			this.splitContainer1.SplitterDistance = 189;
+			this.splitContainer1.Size = new System.Drawing.Size(409, 189);
+			this.splitContainer1.SplitterDistance = 123;
 			this.splitContainer1.TabIndex = 2;
 			// 
 			// editorControls1
@@ -125,7 +125,7 @@ namespace Poc0.LevelEditor
 			this.editorControls1.Dock = System.Windows.Forms.DockStyle.Top;
 			this.editorControls1.Location = new System.Drawing.Point(5, 5);
 			this.editorControls1.Name = "editorControls1";
-			this.editorControls1.Size = new System.Drawing.Size(179, 184);
+			this.editorControls1.Size = new System.Drawing.Size(113, 184);
 			this.editorControls1.TabIndex = 0;
 			// 
 			// display1
@@ -136,7 +136,7 @@ namespace Poc0.LevelEditor
 			this.display1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.display1.Location = new System.Drawing.Point(0, 0);
 			this.display1.Name = "display1";
-			this.display1.Size = new System.Drawing.Size(432, 410);
+			this.display1.Size = new System.Drawing.Size(282, 189);
 			this.display1.StencilBits = ((byte)(0));
 			this.display1.TabIndex = 0;
 			// 
@@ -144,7 +144,7 @@ namespace Poc0.LevelEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(625, 456);
+			this.ClientSize = new System.Drawing.Size(409, 235);
 			this.Controls.Add(this.splitContainer1);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.menuStrip);
