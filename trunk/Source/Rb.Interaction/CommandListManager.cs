@@ -11,7 +11,7 @@ namespace Rb.Interaction
 		/// <summary>
 		/// Gets the singleton instance of CommandListManager
 		/// </summary>
-		public static CommandListManager Inst
+		public static CommandListManager Instance
 		{
 			get { return ms_Singleton; }
 		}
@@ -63,7 +63,7 @@ namespace Rb.Interaction
 		{
 		}
 
-		private List< CommandList >			m_CommandLists	= new List< CommandList >( );
-		private static CommandListManager	ms_Singleton	= new CommandListManager( );
+		private readonly List< CommandList >		m_CommandLists	= new List< CommandList >( );
+		private static readonly CommandListManager	ms_Singleton	= new CommandListManager( );
 	}
 }

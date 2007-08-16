@@ -18,7 +18,7 @@ namespace Rb.Interaction
 		public CommandList( string name )
 		{
 			m_Name = name;
-			CommandListManager.Inst.Add( this );
+			CommandListManager.Instance.Add( this );
 		}
 
 		/// <summary>
@@ -43,7 +43,7 @@ namespace Rb.Interaction
 		/// </summary>
 		public static CommandList FromEnum( Type enumType )
 		{
-			CommandList commands = CommandListManager.Inst.Get( enumType.Name );
+			CommandList commands = CommandListManager.Instance.Get( enumType.Name );
 			if ( commands == null )
 			{
 				commands = BuildFromEnum( enumType );
@@ -104,7 +104,7 @@ namespace Rb.Interaction
 
 		#region Private stuff
 
-		private string m_Name;
+		private readonly string m_Name;
 
 		#endregion
 	}

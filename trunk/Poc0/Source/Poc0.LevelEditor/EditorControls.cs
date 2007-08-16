@@ -19,18 +19,18 @@ namespace Poc0.LevelEditor
 		/// <summary>
 		/// Sets up the control
 		/// </summary>
-		/// <param name="builder">Builder used to create objects from templates</param>
+		/// <param name="scene">Scene that objects are added to</param>
 		/// <param name="grid">Grid being edited</param>
 		/// <param name="editState">Edit state</param>
 		/// <param name="templates">Object templates</param>
-		public void Setup( IBuilder builder, TileGrid grid, TileGridEditState editState, ObjectTemplates templates )
+		public void Setup( Scene scene, TileGrid grid, TileGridEditState editState, ObjectTemplates templates )
 		{
 			m_Grid = grid;
 			m_EditState = editState;
 			m_Templates = templates;
 			tileTypeSetView.TileTypes = grid.Set;
 
-			PopulateObjectTemplates( builder );
+			PopulateObjectTemplates(scene);
 		}
 
 		/// <summary>
@@ -74,7 +74,7 @@ namespace Poc0.LevelEditor
 
 				//	TODO: This is a bit sucky...
 				TileObject tileObj = new TileObject( tile, x, y, result );
-				tileObj.AddChild( new TileObjectRenderer( tileObj ) );
+				tileObj.AddChild( new TileObjectRenderer( m_Scene, tileObj ) );
 				tile.AddTileObject( new TileObject( tile, x, y, result ) );
 			}
 
@@ -95,14 +95,14 @@ namespace Poc0.LevelEditor
 		private TileGridEditState m_EditState;
 		private ObjectTemplates m_Templates;
 		
-		private void PopulateObjectTemplates( IBuilder builder )
+		private void PopulateObjectTemplates( Scene scene )
 		{
 			//	Populate the object types tree
 			TreeNode allObjects = objectsTreeView.Nodes.Add( "All Objects" );
 
 			foreach ( ObjectTemplate template in m_Templates.Templates )
 			{
-				allObjects.Nodes.Add( new PaintObjectItem( builder, template ) );
+				allObjects.Nodes.Add( new PaintObjectItem( scene, template ) );
 			}
 		}
 

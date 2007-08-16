@@ -50,7 +50,7 @@ namespace Rb.Interaction
 			set
 			{
 				Unlisten( m_User );
-				m_Commands = CommandListManager.Inst.Get( value );
+				m_Commands = CommandListManager.Instance.Get( value );
 				Listen( m_User, m_Commands );
 			}
 		}
