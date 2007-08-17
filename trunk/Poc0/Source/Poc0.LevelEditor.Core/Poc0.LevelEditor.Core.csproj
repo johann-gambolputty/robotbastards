@@ -48,6 +48,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -74,7 +75,6 @@
     <Compile Include="TileTexture.cs" />
     <Compile Include="TileType.cs" />
     <Compile Include="TileTypeSet.cs" />
-    <Compile Include="TileTypeTransitions.cs" />
     <Compile Include="TransitionCodes.cs" />
   </ItemGroup>
   <ItemGroup>

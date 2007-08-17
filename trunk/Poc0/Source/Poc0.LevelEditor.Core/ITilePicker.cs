@@ -19,12 +19,12 @@ namespace Poc0.LevelEditor.Core
 		Tile PickTile( TileGrid grid, int cursorX, int cursorY );
 
 		/// <summary>
-		/// Returns the grid point from a cursor position
+		/// Returns the world position from a cursor position
 		/// </summary>
 		/// <param name="cursorX">Cursor x position</param>
 		/// <param name="cursorY">Cursor y position</param>
-		/// <returns>Grid point</returns>
-		Point2 CursorToGrid( int cursorX, int cursorY );
+		/// <returns>World point</returns>
+		Point2 CursorToWorld( int cursorX, int cursorY );
 
 	}
 }

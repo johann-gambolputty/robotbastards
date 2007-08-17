@@ -1,6 +1,5 @@
 using System;
 using System.Xml;
-
 using Rb.Core.Resources;
 using Rb.Core.Components;
 using Rb.Core;
@@ -78,7 +77,7 @@ namespace Rb.ComponentXmlLoader
             string cacheable = reader.GetAttribute( "cacheable" );
             canCache = ( cacheable != null ) && ( ( cacheable == "yes" ) || ( cacheable == "true" ) );
 
-			BaseBuilder builder = BaseBuilder.CreateBuilderFromReader( null, ( ComponentLoadParameters )parameters, errors, reader );
+			RootBuilder builder = ( RootBuilder )BaseBuilder.CreateBuilderFromReader( null, ( ComponentLoadParameters )parameters, errors, reader );
 
             if ( errors.Count == 0 )
             {
@@ -103,7 +102,16 @@ namespace Rb.ComponentXmlLoader
                 throw new ApplicationException( string.Format( "Failed to load component XML resource \"{0}\" (see log for details)", inputSource ) );
             }
 
-		    return builder.BuildObject;
+			//	TODO: AP: bit dubious... if there's more than one object, return a list
+			if ( builder.Children.Count == 0 )
+			{
+				return null;
+			}
+			if ( builder.Children.Count == 1 )
+			{
+				return builder.Children[ 0 ];
+			}
+			return builder.Children;
 		}
 
 		/// <summary>

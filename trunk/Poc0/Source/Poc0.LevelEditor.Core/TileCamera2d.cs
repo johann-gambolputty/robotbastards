@@ -88,15 +88,15 @@ namespace Poc0.LevelEditor.Core
 		}
 		
 		/// <summary>
-		/// Returns the grid point from a cursor position
+		/// Returns the world point from a cursor position
 		/// </summary>
 		/// <param name="cursorX">Cursor x position</param>
 		/// <param name="cursorY">Cursor y position</param>
-		/// <returns>Grid point</returns>
-		public Point2 CursorToGrid( int cursorX, int cursorY )
+		/// <returns>World point</returns>
+		public Point2 CursorToWorld( int cursorX, int cursorY )
 		{
-			float x = ( ( cursorX - m_Origin.X ) / ( TileScreenWidth * m_Scale ) );
-			float y = ( ( cursorY - m_Origin.Y ) / ( TileScreenHeight * m_Scale ) );
+			float x = ( ( cursorX - m_Origin.X ) / m_Scale );
+			float y = ( ( cursorY - m_Origin.Y ) / m_Scale );
 
 			return new Point2( x, y );
 			

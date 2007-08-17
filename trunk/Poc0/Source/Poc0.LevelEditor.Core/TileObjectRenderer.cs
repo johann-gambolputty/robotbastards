@@ -31,7 +31,7 @@ namespace Poc0.LevelEditor.Core
 			int width = 10;
 			int height = 10;
 
-			ShapeRenderer.Instance.DrawRectangle( x * TileCamera2d.TileScreenWidth, y * TileCamera2d.TileScreenHeight, width, height, System.Drawing.Color.White );
+			ShapeRenderer.Instance.DrawRectangle( x, y, width, height, System.Drawing.Color.White );
 		}
 
 		private readonly TileObject m_TileObject;
