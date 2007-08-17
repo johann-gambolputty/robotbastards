@@ -16,10 +16,17 @@ namespace Rb.Core.Assets
 		/// </summary>
 		public AsyncAssetLoader( )
 		{
-			Monitor.Enter( m_Exit );
-			Monitor.Enter( m_QueueNotEmpty );
 			m_LoadThread = new Thread( LoadThread );
+			m_LoadThread.IsBackground = true;
 			m_LoadThread.Start( );
+		}
+
+		/// <summary>
+		/// Kills the loader thread (calls <see cref="Dispose"/>)
+		/// </summary>
+		~AsyncAssetLoader( )
+		{
+			Dispose( );
 		}
 
 		/// <summary>
@@ -34,44 +41,61 @@ namespace Rb.Core.Assets
 			FullAsyncLoadResult result = new FullAsyncLoadResult( location, parameters );
 			lock ( m_Locations )
 			{
+				//	TODO: AP: Handle load priority
 				m_Locations.Add( result );
 			}
+			//	Signal the thread that there's stuff to process
+			m_QueueNotEmpty.Set( );
 			return result;
 		}
 
-		private readonly object m_Exit = new object( );
-		private readonly object m_QueueNotEmpty = new object( );
-		private readonly Thread m_LoadThread;
-		private readonly List< FullAsyncLoadResult > m_Locations = new List< FullAsyncLoadResult >( );
+
+		#region Private stuff
+
+		private readonly AutoResetEvent					m_QueueNotEmpty	= new AutoResetEvent( false );
+		private readonly ManualResetEvent				m_Exit			= new ManualResetEvent( false );
+		private readonly List< FullAsyncLoadResult >	m_Locations		= new List< FullAsyncLoadResult >( );
+		private Thread									m_LoadThread;
 
 		/// <summary>
 		/// Loading thread
 		/// </summary>
 		private void LoadThread( )
 		{
+			WaitHandle[] handles = new WaitHandle[] { m_QueueNotEmpty, m_Exit };
+
 			while ( true )
 			{
+				//	Wait until there's something useful to process
+				int index = WaitHandle.WaitAny( handles );
+				if ( handles[ index ] == m_Exit )
+				{
+					return;
+				}
+
+				//	The queue is not empty
 				FullAsyncLoadResult currentResult = null;
 
+				//	Retrieve the first load result from the queue
 				lock ( m_Locations )
 				{
-					//	TODO: AP: This causes the thread to spin endlessly - it needs to block after loading
-					//	until there are more than 1 items in m_Locations
-					if (m_Locations.Count > 0)
+					if ( m_Locations.Count > 0 )
 					{
 						currentResult = m_Locations[ 0 ];
 						m_Locations.RemoveAt( 0 );
 					}
+					if ( m_Locations.Count == 0 )
+					{
+						//	Reset the queueNotEmpty wait handle, so the next loop iteration will block until there's stuff
+						//	in the queue to load
+						m_QueueNotEmpty.Reset( );
+					}
 				}
 
+				//	Load the current result
 				if ( currentResult != null )
 				{
 					currentResult.Load( );
-				}
-
-				if ( Monitor.TryEnter( m_Exit ) )
-				{
-					return;
 				}
 			}
 		}
@@ -111,13 +135,21 @@ namespace Rb.Core.Assets
 			private readonly LoadState m_LoadState;
 		}
 
+		#endregion
+
 		#region IDisposable Members
 
+		/// <summary>
+		/// Kills the load thread
+		/// </summary>
 		public void Dispose( )
 		{
 			if ( m_LoadThread != null )
 			{
-				Monitor.Exit( m_Exit );
+				//	Signal load thread to exit
+				m_Exit.Set( );
+
+				//	Wait for it to finish
 				m_LoadThread.Join( );
 				m_LoadThread = null;
 			}

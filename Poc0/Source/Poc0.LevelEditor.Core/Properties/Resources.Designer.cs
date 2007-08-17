@@ -60,13 +60,6 @@ namespace Poc0.LevelEditor.Core.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap DefaultTileType {
-            get {
-                object obj = ResourceManager.GetObject("DefaultTileType", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap tile0 {
             get {
                 object obj = ResourceManager.GetObject("tile0", resourceCulture);
@@ -84,13 +77,6 @@ namespace Poc0.LevelEditor.Core.Properties {
         internal static System.Drawing.Bitmap tile2 {
             get {
                 object obj = ResourceManager.GetObject("tile2", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap TransitionMasks {
-            get {
-                object obj = ResourceManager.GetObject("TransitionMasks", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

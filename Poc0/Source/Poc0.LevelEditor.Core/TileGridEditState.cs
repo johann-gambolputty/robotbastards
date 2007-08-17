@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using Rb.Core.Components;
 
 namespace Poc0.LevelEditor.Core
@@ -35,10 +36,6 @@ namespace Poc0.LevelEditor.Core
 			set { m_AddToSelection = value; }
 		}
 
-		#endregion
-
-		#region Public methods
-
 		/// <summary>
 		/// Returns the tile at cursor position
 		/// </summary>
@@ -46,6 +43,29 @@ namespace Poc0.LevelEditor.Core
 		{
 			set { m_CursorTile = value; }
 			get { return m_CursorTile; }
+		}
+
+		#endregion
+
+		#region Public methods
+
+		
+		/// <summary>
+		/// Sets up painting
+		/// </summary>
+		/// <param name="onPaint">Delegate to call to paint onto the grid</param>
+		public void SetupPainting( PaintDelegate onPaint )
+		{
+			m_OnPaint = onPaint;
+			//	Set cursor
+		}
+
+		/// <summary>
+		/// Sets up standard selection as the current paint type
+		/// </summary>
+		public void SetupDefaultPainting( )
+		{
+			//m_OnPaint = onPaint;
 		}
 
 		/// <summary>

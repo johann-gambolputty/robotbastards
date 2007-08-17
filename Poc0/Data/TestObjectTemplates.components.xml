@@ -3,17 +3,21 @@
   <list>
 
     <object type="Rb.Core.Components.ObjectTemplate" assembly="Rb.Core">
+
       <parameters>
-        <type value="Rb.Core.Components.Component" assembly="Rb.Core"/>
+        <type value="Poc0.Core.PlayerStart" assembly="Poc0.Core"/>
         <string value="Player Start"/>
       </parameters>
+
     </object>
 
     <object type="Rb.Core.Components.ObjectTemplate" assembly="Rb.Core">
+
       <parameters>
-        <type value="Rb.Core.Components.Component" assembly="Rb.Core"/>
-        <string value="Weapon"/>
+        <type value="Poc0.Core.Entity" assembly="Poc0.Core"/>
+        <string value="Evil Robot"/>
       </parameters>
+
     </object>
 
   </list>

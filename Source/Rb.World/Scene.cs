@@ -204,13 +204,12 @@ namespace Rb.World
         #endregion
 
 		#region	Private stuff
-        
-		private IBuilder						m_Builder;
-        private Dictionary< string, Clock >     m_Clocks	    = new Dictionary< string, Clock >( );
-		private Dictionary< Type, object >		m_Services	    = new Dictionary< Type, object >( );
-		private ObjectMap						m_Objects	    = new ObjectMap( );
-        private RenderableList                  m_Renderables   = new RenderableList( );
 
+		private readonly IBuilder						m_Builder;
+		private readonly Dictionary< string, Clock >	m_Clocks		= new Dictionary< string, Clock >( );
+		private readonly Dictionary< Type, object >		m_Services	    = new Dictionary< Type, object >( );
+		private readonly ObjectMap						m_Objects	    = new ObjectMap( );
+        private readonly RenderableList                 m_Renderables   = new RenderableList( );
 
         /// <summary>
         /// Associates a service with a key
@@ -231,5 +230,5 @@ namespace Rb.World
 
 		#endregion
 
-    }
+	}
 }

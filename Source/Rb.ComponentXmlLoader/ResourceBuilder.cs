@@ -101,8 +101,8 @@ namespace Rb.ComponentXmlLoader
             }
         }
 
-        private ResourcePreLoadState	m_PreLoad;
-        private List< BaseBuilder >		m_ParamBuilders = new List< BaseBuilder >( );
+        private readonly ResourcePreLoadState	m_PreLoad;
+		private readonly List< BaseBuilder >	m_ParamBuilders = new List< BaseBuilder >( );
     }
 
 }

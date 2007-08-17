@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseBuilder.cs" />
+    <Compile Include="DictionaryBuilder.cs" />
     <Compile Include="DictionaryEntryBuilder.cs" />
     <Compile Include="Errors.cs" />
     <Compile Include="InstanceBuilder.cs" />

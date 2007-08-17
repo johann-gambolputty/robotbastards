@@ -93,7 +93,7 @@ namespace Rb.Core.Components
 			return m_All.TryGetValue( key, out value );
 		}
 
-		public ICollection<object> Values
+		public ICollection< object > Values
 		{
 			get { return m_All.Values; }
 		}

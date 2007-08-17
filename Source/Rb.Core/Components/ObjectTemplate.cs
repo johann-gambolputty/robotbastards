@@ -16,15 +16,27 @@ namespace Rb.Core.Components
 	/// instance builders (added using <see cref="AddChildInstanceBuilder"/>), the child instances are created
 	/// and added using an appropriate method to the created object.
 	/// </remarks>
-	public class ObjectTemplate : IInstanceBuilder
+	public class ObjectTemplate : IInstanceBuilder, INamed
 	{
 		/// <summary>
 		/// Setup constructor. Creates object of given type with no constructor parameters
 		/// </summary>
 		/// <param name="objectType">Object type to create</param>
+		/// <param name="name">Template name</param>
 		public ObjectTemplate( Type objectType, string name )
 		{
 			m_Name = name;
+			m_Type = objectType;
+			m_CanAddChildren = CanAddChildrenToType( m_Type );
+		}
+		
+		/// <summary>
+		/// Setup constructor. Creates object of given type with no constructor parameters. Template is not named
+		/// </summary>
+		/// <param name="objectType">Object type to create</param>
+		public ObjectTemplate( Type objectType )
+		{
+			m_Name = "unnamedTemplate";
 			m_Type = objectType;
 			m_CanAddChildren = CanAddChildrenToType( m_Type );
 		}
@@ -81,6 +93,7 @@ namespace Rb.Core.Components
 		/// </summary>
 		public string Name
 		{
+			set { m_Name = value; }
 			get { return m_Name; }
 		}
 
@@ -147,7 +160,7 @@ namespace Rb.Core.Components
 
 		#region Private members
 
-		private readonly string m_Name;
+		private string m_Name;
 		private readonly Type m_Type;
 		private readonly bool m_CanAddChildren;
 		private readonly object[] m_ConstructorArgs;

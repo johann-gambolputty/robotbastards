@@ -47,10 +47,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entity.cs" />
     <Compile Include="Environment\Collisions.cs" />
     <Compile Include="Environment\Environment.cs" />
     <Compile Include="Environment\Graphics.cs" />
     <Compile Include="Environment\Navigator.cs" />
+    <Compile Include="Frame.cs" />
+    <Compile Include="IHasWorldFrame.cs" />
+    <Compile Include="PlayerStart.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

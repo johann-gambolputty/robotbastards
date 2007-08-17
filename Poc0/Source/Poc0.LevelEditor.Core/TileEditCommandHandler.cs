@@ -106,7 +106,7 @@ namespace Poc0.LevelEditor.Core
 							Tile tile = TilePicker.PickTile( Grid, cursorMsg.X, cursorMsg.Y );
 							if ( tile != null )
 							{
-								Point2 pt = TilePicker.CursorToGrid( cursorMsg.X, cursorMsg.Y );
+								Point2 pt = TilePicker.CursorToWorld( cursorMsg.X, cursorMsg.Y );
 								EditState.OnPaint( tile, pt.X, pt.Y );
 							}
 						}

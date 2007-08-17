@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Xml;
 
 using Rb.Core.Utils;
@@ -24,49 +25,28 @@ namespace Rb.ComponentXmlLoader
             {
                 errors.Add( reader, "Expected root node of component XML document to be named <rb>, not <{0}>", reader.Name );
             }
-            m_ExternalTarget = parameters.Target;
-            BuildObject = m_ExternalTarget;
+			BuildObject = parameters.Target ?? m_ChildObjects;
         }
 
 		/// <summary>
-		/// Can only link to the root builder object if it's external (if it's not external, then the
-		/// BuildObject of the root builder is the first child builder's BuildObject
+		/// Gets the list of child objects
 		/// </summary>
-		public override bool CanLinkChildBuilders
-    	{
-			get { return ( m_ExternalTarget != null ); }
-    	}
+		public ArrayList Children
+		{
+			get { return m_ChildObjects; }
+		}
 
-        /// <summary>
-        /// Called prior to Resolve()
-        /// </summary>
-        public override void PostCreate( )
-        {
-            base.PostCreate( );
-            if ( m_ExternalTarget == null )
-            {
-                GetBuildObject( LinkStep.PreLink );
-                GetBuildObject( LinkStep.PostLink );
-            }
-        }
-
-        /// <summary>
-        /// Gets the BuildObject for this builder.
-        /// </summary>
-        /// <param name="step">Child builder list to check</param>
-        private void GetBuildObject( LinkStep step )
-        {
-            foreach ( BaseBuilder builder in GetBuilders( step ) )
-            {
-                if ( BuildObject != null )
-                {
-                    Errors.Add( builder, "The root <rb> object can only have one child element, if it has no external target" );
-                    return;
-                }
-                BuildObject = builder.BuildObject;
-            }
-        }
-
-        private object m_ExternalTarget;
+		/// <summary>
+		/// Adds child to the child object list, if the current build object is the external target
+		/// </summary>
+		protected override void OnLink( object child )
+		{
+			base.OnLink( child );
+			if ( BuildObject != m_ChildObjects )
+			{
+				m_ChildObjects.Add( child );
+			}
+		}
+		private readonly ArrayList m_ChildObjects = new ArrayList( );
     }
 }

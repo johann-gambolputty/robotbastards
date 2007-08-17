@@ -28,34 +28,23 @@ namespace Rb.ComponentXmlLoader
 			string typeName = reader.GetAttribute( "type" );
 			string assemblyName = reader.GetAttribute( "assembly" );
 
-			if ( typeName == null )
-			{
-				throw new ApplicationException( string.Format( "Element \"{0}\" requires a \"type\" attribute", reader.Name ) );
-			}
-
-			Type objectType;
-			if ( assemblyName == null )
-			{
-				//  Get the object type from the currently loaded set of assemblies
-				objectType = AppDomainUtils.FindType( typeName );
-				if ( objectType == null )
-				{
-					throw new ApplicationException( string.Format( "Failed to find type \"{0}\" in app domain", typeName ) );
-				}
-			}
-			else
-			{
-				//  Get the object type from the specified assembly
-				Assembly assembly = AppDomain.CurrentDomain.Load( assemblyName );
-				objectType = assembly.GetType( typeName );
-				if ( objectType == null )
-				{
-					throw new ApplicationException( string.Format( "Failed to find type \"{0}\" in assembly \"{1}\"", typeName, assemblyName ) );
-				}
-			}
-
-			m_BuildType = objectType;
+			Construct( reader.Name, typeName, assemblyName );
         }
+		
+        /// <summary>
+        /// Setup constructor
+        /// </summary>
+        /// <param name="parameters">Load parameters</param>
+        /// <param name="errors">Error collection</param>
+        /// <param name="reader">XML reader positioned at the element that created this object</param>
+        /// <param name="parentBuilder">Parent builder</param>
+        public ObjectBuilder( ComponentLoadParameters parameters, ErrorCollection errors, XmlReader reader, BaseBuilder parentBuilder, string typeName ) :
+            base( parameters, errors, reader, parentBuilder )
+		{
+			string assemblyName = reader.GetAttribute( "assembly" );
+			Construct( reader.Name, typeName, assemblyName );
+        }
+
 
 		/// <summary>
 		/// Invokes the method to create the build object
@@ -138,7 +127,44 @@ namespace Rb.ComponentXmlLoader
 			}
 		}
 
-		private Type				m_BuildType;
-        private List< BaseBuilder >	m_ParamBuilders = new List< BaseBuilder >( );
+		private Type m_BuildType;
+        private readonly List< BaseBuilder > m_ParamBuilders = new List< BaseBuilder >( );
+		
+		/// <summary>
+		/// Shared construction code
+		/// </summary>
+		/// <param name="elementName">XML element name</param>
+		/// <param name="typeName">Object type name</param>
+		/// <param name="assemblyName">Type assembly</param>
+		private void Construct( string elementName, string typeName, string assemblyName )
+		{
+			if ( typeName == null )
+			{
+				throw new ApplicationException( string.Format( "Element \"{0}\" requires a \"type\" attribute", elementName ) );
+			}
+
+			Type objectType;
+			if ( assemblyName == null )
+			{
+				//  Get the object type from the currently loaded set of assemblies
+				objectType = AppDomainUtils.FindType( typeName );
+				if ( objectType == null )
+				{
+					throw new ApplicationException( string.Format( "Failed to find type \"{0}\" in app domain", typeName ) );
+				}
+			}
+			else
+			{
+				//  Get the object type from the specified assembly
+				Assembly assembly = AppDomain.CurrentDomain.Load( assemblyName );
+				objectType = assembly.GetType( typeName );
+				if ( objectType == null )
+				{
+					throw new ApplicationException( string.Format( "Failed to find type \"{0}\" in assembly \"{1}\"", typeName, assemblyName ) );
+				}
+			}
+
+			m_BuildType = objectType;
+		}
     }
 }

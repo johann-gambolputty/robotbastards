@@ -67,6 +67,7 @@ namespace Rb.ComponentXmlLoader
                     case "instance" : result = new InstanceBuilder( parameters, errors, reader, parentBuilder );		break;
 					case "method"	: result = new MethodBuilder( parameters, errors, reader, parentBuilder );			break;
                     case "list"     : result = new ListBuilder( parameters, errors, reader, parentBuilder );			break;
+					case "table"	: result = new DictionaryBuilder( parameters, errors, reader, parentBuilder );		break;
                     case "type"     : result = new TypeBuilder( parameters, errors, reader, parentBuilder );			break;
 					case "dictionaryEntry"	:
 						result = new DictionaryEntryBuilder( parameters, errors, reader, parentBuilder );
@@ -160,8 +161,9 @@ namespace Rb.ComponentXmlLoader
                         }
                     default	:
                         {
-                            errors.Add( reader, "Element was not recognised", reader.Name);
-                            reader.Skip( );
+							//	Interpret name as object type
+                        	string typeName = reader.Name;
+							result = new ObjectBuilder( parameters, errors, reader, parentBuilder, typeName );
                             break;
                         }
                 }
@@ -238,25 +240,18 @@ namespace Rb.ComponentXmlLoader
         public virtual void Resolve( bool linkThisBuilder )
         {
             //  Resolve pre-link objects
-            ResolveChildBuilders( m_PreLinkBuilders, CanLinkChildBuilders );
+            ResolveChildBuilders( m_PreLinkBuilders, true );
 
             //  Link built object to its parent
-            if ( ( ParentBuilder != null ) && ( linkThisBuilder ) )
+            if ( ( ParentBuilder != null ) && ( linkThisBuilder ) && ( BuildObject != null ) )
             {
-                Link( ParentBuilder.BuildObject );
+				ParentBuilder.OnLink( BuildObject );
+				Link( ParentBuilder.BuildObject );
             }
 
             //  Resolve post-link objects
-            ResolveChildBuilders( m_PostLinkBuilders, CanLinkChildBuilders );
+            ResolveChildBuilders( m_PostLinkBuilders, true );
         }
-
-		/// <summary>
-		/// Returns true if child builders can link to this builder's BuildObject
-		/// </summary>
-		public virtual bool CanLinkChildBuilders
-		{
-			get { return true; }
-		}
 
         /// <summary>
         /// Sets and gets the object created by this builder
@@ -435,7 +430,7 @@ namespace Rb.ComponentXmlLoader
         		object propertyObject = property.GetValue( parent, null );
         		if ( propertyObject is IList )
         		{
-        			LinkToList( ( IList )propertyObject );
+        			LinkToList( ( IList )propertyObject, BuildObject );
         		}
         		else
         		{
@@ -443,6 +438,13 @@ namespace Rb.ComponentXmlLoader
         		}
         	}
         }
+
+		/// <summary>
+		/// Called prior to the specified child object getting added to this builder's object
+		/// </summary>
+		protected virtual void OnLink( object child )
+		{
+		}
 
         /// <summary>
         /// Sets a property of a parent to the BuildObject. Calls IChild.OnAdded() if BuildObject implements that interface
@@ -462,21 +464,24 @@ namespace Rb.ComponentXmlLoader
         /// Adds the BuildObject to an IParent object
         /// </summary>
         /// <param name="parent">Parent object</param>
-        protected virtual void LinkToParent( IParent parent )
+        /// <param name="child">Child object</param>
+        protected static void LinkToParent( IParent parent, object child )
         {
-			parent.AddChild( BuildObject );
+			parent.AddChild( child );
+			//	NOTE: It's the responsibility of IParent.AddChild() to call IChild.AddedToParent()
         }
 
         /// <summary>
         /// Adds the BuildObject to an IList object. Calls IChild.OnAdded() if BuildObject implements that interface
         /// </summary>
-        /// <param name="parent">Parent object</param>
-        protected virtual void LinkToList( IList parent )
+		/// <param name="parent">Parent object</param>
+		/// <param name="child">Child object</param>
+        protected static void LinkToList( IList parent, object child )
         {
-        	parent.Add( BuildObject );
-        	if ( BuildObject is IChild )
+        	parent.Add( child );
+        	if ( child is IChild )
         	{
-        		( ( IChild )BuildObject ).AddedToParent( parent );
+        		( ( IChild )child ).AddedToParent( parent );
         	}
         }
 
@@ -485,19 +490,56 @@ namespace Rb.ComponentXmlLoader
 		/// if the DictionaryEntry Value implements IChild, 
 		/// </summary>
 		/// <param name="parent">Parent object</param>
-		protected virtual void LinkToDictionary( IDictionary parent )
+		/// <param name="child">Child object</param>
+		protected static void LinkToDictionary( IDictionary parent, object child )
 		{
-			if ( !( BuildObject is DictionaryEntry ) )
+			if ( !( child is DictionaryEntry ) )
 			{
 				throw new ApplicationException( "Can only add DictionaryEntry objects to dictionary parents" );
 			}
-			DictionaryEntry entry = ( DictionaryEntry )BuildObject;
+			DictionaryEntry entry = ( DictionaryEntry )child;
 			parent.Add( entry.Key, entry.Value );
 
 			if ( entry.Value is IChild )
 			{
 				( ( IChild )entry.Value ).AddedToParent( parent );
 			}
+		}
+
+		/// <summary>
+		/// Links an object to a parent object
+		/// </summary>
+		/// <param name="parent">Parent object</param>
+		/// <param name="child">Child object</param>
+		protected static void LinkObjectToParent( object parent, object child )
+		{
+            IParent componentParent = parent as IParent;
+            if ( componentParent != null )
+            {
+                LinkToParent( componentParent, child );
+                return;
+            }
+            
+            IList listParent = parent as IList;
+            if ( listParent != null )
+            {
+            	LinkToList( listParent, child );
+                return;
+            }
+
+        	IDictionary dictionaryParent = parent as IDictionary;
+			if ( dictionaryParent != null )
+			{
+				LinkToDictionary( dictionaryParent, child );
+				return;
+			}
+
+			//	TODO: AP: Reinstate throw?
+			//	Removed because scene does not, and cannot, support IParent. This is because objects must be associated with IDs, and
+			//	IParent does not support id/object pairs (could add IUnique objects, but not generic object/id pairs).
+			//	Even if scene.Add(object) throws if the object is not IUnique, then the object is being added to the scene twice
+			//	(once via the the Add() call, once via the loader object ID map (which is the scene object ID map).
+			//throw new ArgumentException( string.Format( "Can't add object of type \"{0}\" to object of type \"{1}\" (parent does not implement IParent, IList or IDictionary)", child.GetType( ), parent.GetType( ) ) );
 		}
 
         /// <summary>
@@ -527,11 +569,6 @@ namespace Rb.ComponentXmlLoader
         	//		call IList.Add()
         	//		if the build object is an IChild
         	//			call IChild.OnAddedToParent()
-        	if ( BuildObject == null )
-        	{
-				//	This isn't necessarily an error - method builders don't have to set their BuildObjects
-        		return;
-        	}
         
             if ( m_Property != null )
             {
@@ -568,31 +605,9 @@ namespace Rb.ComponentXmlLoader
                 dynPropertySupport.Properties[ m_DynProperty ] = BuildObject;
                 return;
             }
-            
-            IParent componentParent = parent as IParent;
-            if ( componentParent != null )
-            {
-                LinkToParent( componentParent );
-                return;
-            }
-            
-            IList listParent = parent as IList;
-            if ( listParent != null )
-            {
-            	LinkToList( listParent );
-                return;
-            }
 
-        	IDictionary dictionaryParent = parent as IDictionary;
-			if ( dictionaryParent != null )
-			{
-				LinkToDictionary( dictionaryParent );
-				return;
-			}
-
-			//	TODO: AP: There should be some tag to disable linkage - most objects add themselves to scene
-			//	in various other ways, for example
-			//throw new ApplicationException( string.Format( "Can't add object of type \"{0}\" to object of type \"{1}\" (parent does not implement IParent, IList or IDictionary)", BuildObject.GetType( ), parent.GetType( ) ) );
+			//	TODO: AP: There should be some element or attribute to disable linkage?
+			LinkObjectToParent( parent, BuildObject );
         }
 
 		/// <summary>
@@ -671,8 +686,7 @@ namespace Rb.ComponentXmlLoader
         /// <summary>
         /// Calls BaseBuilder.PostCreate() for a child list of BaseBuilder objects
         /// </summary>
-        /// <param name="builders">Child BaseBuilder list</param>
-        private static void PostCreateChildBuilders( List< BaseBuilder > builders )
+        private static void PostCreateChildBuilders( IEnumerable< BaseBuilder > builders )
         {
             foreach ( BaseBuilder builder in builders )
             {
@@ -683,8 +697,7 @@ namespace Rb.ComponentXmlLoader
         /// <summary>
         /// Resolves a list of child BaseBuilder objects
         /// </summary>
-        /// <param name="builders">Child BaseBuilder list</param>
-        private static void ResolveChildBuilders( List< BaseBuilder > builders, bool linkBuilders )
+        private static void ResolveChildBuilders( IEnumerable< BaseBuilder > builders, bool linkBuilders )
         {
             foreach ( BaseBuilder builder in builders )
             {
