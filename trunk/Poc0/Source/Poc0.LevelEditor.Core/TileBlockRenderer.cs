@@ -13,9 +13,9 @@ namespace Poc0.LevelEditor.Core
 		/// Sets up the renderer
 		/// </summary>
 		/// <param name="grid">Grid to render</param>
-		/// <param name="editState">Tile grid edit state to render on top of the grid</param>
-		public TileBlockRenderer( TileGrid grid, TileGridEditState editState ) :
-			base( grid, editState )
+		/// <param name="editContext">Edit context to render on top of the grid</param>
+		public TileBlockRenderer( TileGrid grid, EditModes.EditModeContext editContext ) :
+			base( grid, editContext )
 		{
 			SetupGridGraphics( );
 		}
@@ -25,22 +25,22 @@ namespace Poc0.LevelEditor.Core
 		#region Public properties
 
 		/// <summary>
-		/// Access to the tile edit state
+		/// Access to the tile edit context
 		/// </summary>
-		public override TileGridEditState EditState
+		public override EditModes.EditModeContext EditContext
 		{
 			set
 			{
-				if ( EditState != null )
+				if ( EditContext != null )
 				{
-					EditState.ObjectSelected -= OnObjectSelected;
-					EditState.ObjectDeselected -= OnObjectSelected;
+					EditContext.Selection.ObjectSelected -= OnObjectSelected;
+					EditContext.Selection.ObjectDeselected -= OnObjectSelected;
 				}
-				base.EditState = value;
-				if ( EditState != null )
+				base.EditContext = value;
+				if ( EditContext != null )
 				{
-					EditState.ObjectSelected += OnObjectSelected;
-					EditState.ObjectDeselected += OnObjectSelected;
+					EditContext.Selection.ObjectSelected += OnObjectSelected;
+					EditContext.Selection.ObjectDeselected += OnObjectSelected;
 				}
 			}
 		}
@@ -386,10 +386,10 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Sets up the renderer (I don't like the warnings in the constructor D-: )
 		/// </summary>
-		protected void Setup( TileGrid grid, TileGridEditState editState )
+		protected void Setup( TileGrid grid, EditModes.EditModeContext editContext )
 		{
 			Grid = grid;
-			EditState = editState;
+			EditContext = editContext;
 			SetupGridGraphics( );
 		}
 

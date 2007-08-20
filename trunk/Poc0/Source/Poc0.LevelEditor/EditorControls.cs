@@ -1,5 +1,6 @@
 using System.Windows.Forms;
 using Poc0.LevelEditor.Core;
+using Poc0.LevelEditor.Core.EditModes;
 using Rb.Core.Components;
 using Rb.World;
 
@@ -21,12 +22,12 @@ namespace Poc0.LevelEditor
 		/// </summary>
 		/// <param name="scene">Scene that objects are added to</param>
 		/// <param name="grid">Grid being edited</param>
-		/// <param name="editState">Edit state</param>
+		/// <param name="editContext">Editing context</param>
 		/// <param name="templates">Object templates</param>
-		public void Setup( Scene scene, TileGrid grid, TileGridEditState editState, ObjectTemplates templates )
+		public void Setup( Scene scene, TileGrid grid, EditModeContext editContext, ObjectTemplates templates )
 		{
 			m_Grid = grid;
-			m_EditState = editState;
+			m_EditContext = editContext;
 			m_Templates = templates;
 			tileTypeSetView.TileTypes = grid.Set;
 
@@ -36,9 +37,9 @@ namespace Poc0.LevelEditor
 		/// <summary>
 		/// Gets the edit state
 		/// </summary>
-		public TileGridEditState EditState
+		public EditModeContext EditContext
 		{
-			get { return m_EditState; }
+			get { return m_EditContext; }
 		}
 
 		/// <summary>
@@ -92,7 +93,7 @@ namespace Poc0.LevelEditor
 		}
 
 		private TileGrid m_Grid;
-		private TileGridEditState m_EditState;
+		private EditModeContext m_EditContext;
 		private ObjectTemplates m_Templates;
 		
 		private void PopulateObjectTemplates( Scene scene )
@@ -114,7 +115,9 @@ namespace Poc0.LevelEditor
 			}
 
 			TileType type = ( TileType )tileTypeSetView.SelectedItems[ 0 ].Tag;
-			m_EditState.OnPaint = type.SetTileToType;
+
+			m_EditContext.EditMode = new PaintTileEditMode( MouseButtons.Left, type );
+			//m_EditState.OnPaint = type.SetTileToType;
 		}
 
 		private void objectsTreeView_AfterSelect(object sender, TreeViewEventArgs e)
@@ -122,7 +125,8 @@ namespace Poc0.LevelEditor
 			PaintObjectItem paintObject = objectsTreeView.SelectedNode as PaintObjectItem;
 			if ( paintObject != null )
 			{
-				m_EditState.OnPaint = paintObject.Create;
+				//m_EditContext.EditMode = new AddObjectEditMode( control, viewer, m_EditContext, MouseButtons.Left );
+				//m_EditState.OnPaint = paintObject.Create;
 			}
 		}
 	}

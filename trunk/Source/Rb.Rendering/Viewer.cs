@@ -90,6 +90,19 @@ namespace Rb.Rendering
         }
 
 		/// <summary>
+		/// Gets the window rectangle covered by this viewer
+		/// </summary>
+		public Rectangle GetWindowRectangle( Rectangle windowRect )
+		{
+			int x = ( int )( m_ViewRect.Left * windowRect.Width );
+			int y = ( int )( m_ViewRect.Top * windowRect.Height );
+			int w = ( int )( m_ViewRect.Width * windowRect.Width );
+			int h = ( int )( m_ViewRect.Height * windowRect.Height );
+
+			return new Rectangle( x, y, w, h );
+		}
+
+		/// <summary>
 		/// Renders the view
 		/// </summary>
         public void Render( )

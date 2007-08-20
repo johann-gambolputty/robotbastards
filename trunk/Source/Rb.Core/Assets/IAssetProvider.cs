@@ -3,7 +3,7 @@ using System.IO;
 namespace Rb.Core.Assets
 {
 	/// <summary>
-	/// Opens assets and shit
+	/// Opens asset streams and shit
 	/// </summary>
 	public interface IAssetProvider
 	{
@@ -26,6 +26,7 @@ namespace Rb.Core.Assets
 		/// </summary>
 		/// <param name="location">Location of the stream</param>
 		/// <returns>Returns the opened stream</returns>
+		/// <exception cref="AssetNotFoundException">Thrown if no asset exists at the specified location</exception>
 		Stream OpenStream( Location location );
 	}
 }

@@ -1,5 +1,6 @@
 using System.Drawing;
 using Poc0.LevelEditor.Core;
+using Poc0.LevelEditor.Core.EditModes;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.OpenGl;
@@ -18,9 +19,9 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		/// Sets up the renderer
 		/// </summary>
 		/// <param name="grid">Grid to render</param>
-		/// <param name="editState">Tile grid edit state to render on top of the grid</param>
-		public OpenGlTileBlock2dRenderer( TileGrid grid, TileGridEditState editState ) :
-			base( grid, editState )
+		/// <param name="editContext">Tile grid edit state to render on top of the grid</param>
+		public OpenGlTileBlock2dRenderer( TileGrid grid, EditModeContext editContext ) :
+			base( grid, editContext )
 		{
 			SetupEditStateGraphics( );
 		}
@@ -221,11 +222,11 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		/// </summary>
 		private void RenderTileUnderCursor( )
 		{
-			if ( EditState == null || EditState.TileUnderCursor == null )
+			if ( EditContext == null || EditContext.TileUnderCursor == null )
 			{
 				return;
 			}
-			Tile tile = EditState.TileUnderCursor;
+			Tile tile = EditContext.TileUnderCursor;
 
 			Renderer.Instance.PushRenderState( m_EditRenderState );
 

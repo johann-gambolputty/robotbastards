@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Assets\AssetCache.cs" />
     <Compile Include="Assets\AssetManager.cs" />
+    <Compile Include="Assets\AssetNotFoundException.cs" />
     <Compile Include="Assets\AssetProviders.cs" />
     <Compile Include="Assets\AsyncAssetLoader.cs" />
     <Compile Include="Assets\AsyncLoadResult.cs" />
