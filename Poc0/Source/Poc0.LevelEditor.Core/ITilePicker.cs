@@ -7,7 +7,7 @@ namespace Poc0.LevelEditor.Core
 	/// Interface for cameras that view the tile grid, and can convert a mouse cursor
 	/// position into a tile
 	/// </summary>
-	interface ITilePicker
+	public interface ITilePicker
 	{
 		/// <summary>
 		/// Returns the tile under the mouse cursor

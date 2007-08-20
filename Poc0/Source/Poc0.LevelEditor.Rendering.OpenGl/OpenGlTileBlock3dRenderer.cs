@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Poc0.LevelEditor.Core;
+using Poc0.LevelEditor.Core.EditModes;
 
 namespace Poc0.LevelEditor.Rendering.OpenGl
 {
 	public class OpenGlTileBlock3dRenderer : TileBlockRenderer
 	{
-		public OpenGlTileBlock3dRenderer( TileGrid grid, TileGridEditState editState ) :
-			base( grid, editState )
+		public OpenGlTileBlock3dRenderer( TileGrid grid, EditModeContext editContext ) :
+			base( grid, editContext )
 		{
 		}
 

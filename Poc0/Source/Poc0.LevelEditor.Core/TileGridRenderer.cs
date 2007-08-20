@@ -11,11 +11,11 @@ namespace Poc0.LevelEditor.Core
 		/// Setup constructor
 		/// </summary>
 		/// <param name="grid">Grid to render</param>
-		/// <param name="state">Grid edit state</param>
-		public TileGridRenderer( TileGrid grid, TileGridEditState state )
+		/// <param name="editContext">Grid edit state</param>
+		public TileGridRenderer( TileGrid grid, EditModes.EditModeContext editContext )
 		{
 			Grid = grid;
-			EditState = state;
+			EditContext = editContext;
 		}
 
 		/// <summary>
@@ -30,10 +30,10 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Access to the tile selection set that is rendered with the grid
 		/// </summary>
-		public virtual TileGridEditState EditState
+		public virtual EditModes.EditModeContext EditContext
 		{
-			get { return m_EditState;  }
-			set { m_EditState = value; }
+			get { return m_EditContext; }
+			set { m_EditContext = value; }
 		}
 
 		/// <summary>
@@ -42,6 +42,6 @@ namespace Poc0.LevelEditor.Core
 		public abstract void Render( IRenderContext context );
 
 		private TileGrid m_Grid;
-		private TileGridEditState m_EditState;
+		private EditModes.EditModeContext m_EditContext;
 	}
 }

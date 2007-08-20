@@ -12,6 +12,7 @@
           <input button="None" min="0.5" max="4.0" delta="0.1" initial="1" type="Rb.Interaction.Windows.MouseScrollInputTemplate" assembly="Rb.Interaction.Windows"/>
         </command>
       </commandList>
+			<!--
       <commandList enum="Poc0.LevelEditor.Core.TileEditCommands" assembly="Poc0.LevelEditor.Core">
         <command name="Move">
           <input button="None" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
@@ -29,6 +30,7 @@
           <input key="ShiftKey" state="Up" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
         </command>
       </commandList>
+			-->
     </serialise>
 
   </object>

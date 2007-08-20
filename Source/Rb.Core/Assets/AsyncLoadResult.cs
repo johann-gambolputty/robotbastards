@@ -5,7 +5,11 @@ using Rb.Core.Utils;
 
 namespace Rb.Core.Assets
 {
-	public delegate void LoadCompleteDelegate(object asset);
+	/// <summary>
+	/// Asynchronous load complete delegate
+	/// </summary>
+	/// <param name="asset">Loaded asset</param>
+	public delegate void LoadCompleteDelegate( object asset );
 
 	/// <summary>
 	/// Asynchronous load result. Handles notifications when the loading of an asset is completed

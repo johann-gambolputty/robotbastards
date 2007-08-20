@@ -52,6 +52,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EditModes\AddObjectEditMode.cs" />
+    <Compile Include="EditModes\EditMode.cs" />
+    <Compile Include="EditModes\EditModeContext.cs" />
+    <Compile Include="EditModes\IEditMode.cs" />
+    <Compile Include="EditModes\PaintTileEditMode.cs" />
     <Compile Include="ISelectable.cs" />
     <Compile Include="ITilePicker.cs" />
     <Compile Include="ObjectTemplates.cs" />
@@ -60,17 +65,17 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="EditModes\SelectEditMode.cs" />
+    <Compile Include="SelectedObjects.cs" />
     <Compile Include="TileBlockRenderer.cs" />
     <Compile Include="TileByteCodes.cs" />
     <Compile Include="TileCamera2dCommandHandler.cs" />
-    <Compile Include="TileEditCommandHandler.cs" />
     <Compile Include="TileGridRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="TileCamera2d.cs" />
     <Compile Include="TileGrid.cs" />
     <Compile Include="TileObject.cs" />
-    <Compile Include="TileGridEditState.cs" />
     <Compile Include="TileObjectRenderer.cs" />
     <Compile Include="TileTexture.cs" />
     <Compile Include="TileType.cs" />

@@ -64,9 +64,17 @@ namespace Rb.Core.Assets
 		/// </summary>
 		/// <param name="location">Asset location</param>
 		/// <returns>Returns a stream</returns>
+		/// <exception cref="AssetNotFoundException">Thrown if no asset exists at the specified location</exception>
 		public Stream OpenStream( Location location )
 		{
-			return File.OpenRead( location.ToString( ) );
+			try
+			{
+				return File.OpenRead( location.ToString( ) );
+			}
+			catch ( Exception ex )
+			{
+				throw new AssetNotFoundException( location, ex );
+			}
 		}
 
 		#endregion

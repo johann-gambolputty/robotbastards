@@ -50,9 +50,32 @@ namespace Rb.Core.Assets
 		/// <summary>
 		/// Helper method that uses the associated asset provider to create a stream from this location
 		/// </summary>
+		/// <returns>Opened stream</returns>
+		/// <exception cref="InvalidOperationException">Thrown if no provider exists that can open the location</exception>
+		/// <exception cref="AssetNotFoundException">Thrown if no asset exists at the specified location</exception>
 		public Stream OpenStream( )
 		{
-			return ( m_Provider == null ) ? null : m_Provider.OpenStream( this );
+			if ( m_Provider == null )
+			{
+				throw new InvalidOperationException( string.Format( "No provider exists to open stream at {0}", this ) );
+			}
+			return m_Provider.OpenStream( this );
+		}
+
+		/// <summary>
+		/// Helper method, that creates a location relative to this one, and opens a stream from it
+		/// </summary>
+		/// <param name="path">Path relative to this location</param>
+		/// <returns>Returns the opened stream, or null</returns>
+		/// <exception cref="InvalidOperationException">Thrown if no provider exists that can open the location</exception>
+		/// <exception cref="AssetNotFoundException">Thrown if no asset exists at the specified location</exception>
+		public Stream OpenStream( string path )
+		{
+			if ( m_Provider == null )
+			{
+				throw new InvalidOperationException( string.Format( "No provider exists to open stream at {0}", this ) );
+			}
+			return new Location( this, path ).OpenStream( );
 		}
 
 		/// <summary>

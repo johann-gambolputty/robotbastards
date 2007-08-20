@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Windows.Forms;
 using Poc0.LevelEditor.Core;
+using Poc0.LevelEditor.Core.EditModes;
 using Poc0.LevelEditor.Rendering.OpenGl;  
 using Rb.Core.Components;
 using Rb.Core.Resources;
@@ -62,20 +63,22 @@ namespace Poc0.LevelEditor
 		/// </summary>
 		private void CreateNewScene( TileTypeSet tileTypes, int width, int height)
 		{
+			Scene scene = new Scene( );
+
 			//	Create the tile grid
 			TileGrid grid = new TileGrid( tileTypes );
 			grid.SetDimensions( width, height );
 
 			//	Create the tile grid edit state
-			TileGridEditState editState = new TileGridEditState( );
-			editState.OnPaint = tileTypes[ 0 ].SetTileToType;
+			EditModeContext editContext = EditModeContext.CreateNewContext( scene, grid, new SelectedObjects( ) );
+			editContext.AddEditControl( display1 );
+			editContext.EditMode = new PaintTileEditMode( MouseButtons.Left, tileTypes[ 0 ] );
 
 			//	Add a renderer for the tile grid to the scene renderables
-			Scene scene = new Scene( );
-			scene.Renderables.Add( new OpenGlTileBlock2dRenderer( grid, editState ) );
+			scene.Renderables.Add( new OpenGlTileBlock2dRenderer( grid, editContext ) );
 
 			//	Store
-			m_EditState = editState;
+			m_EditContext = editContext;
 			m_Grid = grid;
 			m_Scene = scene;
 		}
@@ -95,7 +98,7 @@ namespace Poc0.LevelEditor
 				m_Templates.Append( "TestObjectTemplates.components.xml" );
 
 				//	Set up controls
-				editorControls1.Setup( m_Scene, m_Grid, m_EditState, m_Templates );
+				editorControls1.Setup( m_Scene, m_Grid, m_EditContext, m_Templates );
 
 				ComponentLoadParameters loadParams = new ComponentLoadParameters( );
 				loadParams.Properties[ "User" ] = m_User;
@@ -105,7 +108,7 @@ namespace Poc0.LevelEditor
 				viewer.Renderable = m_Scene;
 
 				//	Add a controller to the viewer camera
-				viewer.Camera.AddChild( new TileEditCommandHandler( m_User, m_Grid, m_EditState ) );
+				//viewer.Camera.AddChild( new TileEditCommandHandler( m_User, m_Grid, m_EditState ) );
 
 				display1.Viewers.Add( viewer );
 
@@ -126,6 +129,6 @@ namespace Poc0.LevelEditor
 		private readonly ObjectTemplates	m_Templates = new ObjectTemplates( );
 		private Scene						m_Scene;
 		private TileGrid					m_Grid;
-		private TileGridEditState			m_EditState;
+		private EditModeContext				m_EditContext;
 	}
 }
