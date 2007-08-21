@@ -13,6 +13,10 @@ namespace Rb.Core.Components
 		/// </summary>
 		public static T GetChildOfType< T >( IParent parent ) where T : class
 		{
+			if ( parent == null )
+			{
+				return null;
+			}
 			foreach ( object obj in parent.Children )
 			{
 				T objT = obj as T;

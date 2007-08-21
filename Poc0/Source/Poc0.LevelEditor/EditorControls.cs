@@ -49,48 +49,6 @@ namespace Poc0.LevelEditor
 		{
 			get { return m_Grid; }
 		}
-		
-		/// <summary>
-		/// Tree node
-		/// </summary>
-		private class PaintObjectItem : TreeNode
-		{
-			/// <summary>
-			/// Stores the specified template
-			/// </summary>
-			public PaintObjectItem( Scene scene, ObjectTemplate template ) :
-				base( template.Name )
-			{
-				m_Scene = scene;
-				m_Name = template.Name;
-				m_Template = template;
-			}
-
-			/// <summary>
-			/// Creates an instance of the stored object template
-			/// </summary>
-			public void Create( Tile tile, float x, float y )
-			{
-				object result = m_Template.CreateInstance( m_Scene.Builder );
-
-				//	TODO: This is a bit sucky...
-				TileObject tileObj = new TileObject( tile, x, y, result );
-				tileObj.AddChild( new TileObjectRenderer( m_Scene, tileObj ) );
-				tile.AddTileObject( new TileObject( tile, x, y, result ) );
-			}
-
-			/// <summary>
-			/// Gets the name of the stored template
-			/// </summary>
-			public override string ToString( )
-			{
-				return m_Name;
-			}
-
-			private readonly ObjectTemplate m_Template;
-			private readonly string m_Name;
-			private readonly Scene m_Scene;
-		}
 
 		private TileGrid m_Grid;
 		private EditModeContext m_EditContext;
@@ -103,7 +61,10 @@ namespace Poc0.LevelEditor
 
 			foreach ( ObjectTemplate template in m_Templates.Templates )
 			{
-				allObjects.Nodes.Add( new PaintObjectItem( scene, template ) );
+				TreeNode node = new TreeNode( template.Name );
+				node.Tag = template;
+
+				allObjects.Nodes.Add( node );
 			}
 		}
 
@@ -116,17 +77,16 @@ namespace Poc0.LevelEditor
 
 			TileType type = ( TileType )tileTypeSetView.SelectedItems[ 0 ].Tag;
 
-			m_EditContext.EditMode = new PaintTileEditMode( MouseButtons.Left, type );
+			m_EditContext.AddEditMode( new PaintTileEditMode( MouseButtons.Right, type ) );
 			//m_EditState.OnPaint = type.SetTileToType;
 		}
 
 		private void objectsTreeView_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			PaintObjectItem paintObject = objectsTreeView.SelectedNode as PaintObjectItem;
-			if ( paintObject != null )
+			ObjectTemplate template = objectsTreeView.SelectedNode.Tag as ObjectTemplate;
+			if ( template != null )
 			{
-				//m_EditContext.EditMode = new AddObjectEditMode( control, viewer, m_EditContext, MouseButtons.Left );
-				//m_EditState.OnPaint = paintObject.Create;
+				m_EditContext.AddEditMode( new AddObjectEditMode( MouseButtons.Right, template ) );
 			}
 		}
 	}

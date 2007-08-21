@@ -31,6 +31,27 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 		#endregion
 
+		#region Protected members
+
+		/// <summary>
+		/// Gets the tile under the cursor
+		/// </summary>
+		/// <param name="control">Control. Must implement ITilePicker or method will return null</param>
+		/// <param name="x">X position of cursor</param>
+		/// <param name="y">Y position of cursor</param>
+		/// <returns>Tile under cursor. Null if control doesn't implement ITilePicker, or cursor is not over grid</returns>
+		protected static Tile GetTileUnderCursor( object control, int x, int y )
+		{
+			ITilePicker picker = control as ITilePicker;
+			if ( picker == null )
+			{
+				return null;
+			}
+			return picker.PickTile( EditModeContext.Instance.Grid, x, y );
+		}
+
+		#endregion
+
 		#region Private members
 
 		private readonly Control[] m_Controls;

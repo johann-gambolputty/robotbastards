@@ -59,6 +59,7 @@
     <Compile Include="EditModes\PaintTileEditMode.cs" />
     <Compile Include="ISelectable.cs" />
     <Compile Include="ITilePicker.cs" />
+    <Compile Include="ObjectEditState.cs" />
     <Compile Include="ObjectTemplates.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
@@ -76,7 +77,6 @@
     <Compile Include="TileCamera2d.cs" />
     <Compile Include="TileGrid.cs" />
     <Compile Include="TileObject.cs" />
-    <Compile Include="TileObjectRenderer.cs" />
     <Compile Include="TileTexture.cs" />
     <Compile Include="TileType.cs" />
     <Compile Include="TileTypeSet.cs" />
@@ -101,6 +101,10 @@
     <ProjectReference Include="..\..\..\Source\Rb.World\Rb.World.csproj">
       <Project>{46980366-998B-4178-87B7-B04DD3B21979}</Project>
       <Name>Rb.World</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc0.Core\Poc0.Core.csproj">
+      <Project>{FBEDE7DA-1ADD-424D-9EBE-48179585DE45}</Project>
+      <Name>Poc0.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

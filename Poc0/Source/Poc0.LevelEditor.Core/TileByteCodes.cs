@@ -11,9 +11,9 @@ namespace Poc0.LevelEditor.Core
 	///	other values from 0-255
 	///</summary>
 	///<remarks>
-	///	Values from 0-255 represent on/off states at the corners and midpoints of a square (4 corners + 4 midpoints=
-	///	256 possible state combinations). For example, 10000000b represents the top left corner on, and all others off.
-	///	10101010b represents all corners on, and all midpoints off:
+	///	Values from 0-255 represent on/off states at the corners and midpoints of a square (4 corners + 4 midpoints =
+	///	2^8 = 256 possible state combinations). For example, 10000000b represents the top left corner on, and all
+	/// others off. 10101010b represents all corners on, and all midpoints off.
 	///
 	///	0--1--2
 	///	|     |

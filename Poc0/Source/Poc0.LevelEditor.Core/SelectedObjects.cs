@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Rb.Core.Components;
 
 namespace Poc0.LevelEditor.Core
 {
@@ -20,6 +21,8 @@ namespace Poc0.LevelEditor.Core
 	/// </summary>
 	public class SelectedObjects
 	{
+		#region Public properties
+
 		/// <summary>
 		/// Gets the selected objects
 		/// </summary>
@@ -27,6 +30,8 @@ namespace Poc0.LevelEditor.Core
 		{
 			get { return m_Selection; }
 		}
+
+		#endregion
 
 		#region Public events
 
@@ -41,7 +46,6 @@ namespace Poc0.LevelEditor.Core
 		public event ObjectDeselectedDelegate ObjectDeselected;
 
 		#endregion
-
 
 		#region Public methods
 
@@ -125,6 +129,14 @@ namespace Poc0.LevelEditor.Core
 			if ( selectable != null )
 			{
 				selectable.Selected = selected;
+			}
+			else
+			{
+				selectable = ParentHelpers.GetChildOfType< ISelectable >( obj as IParent );
+				if ( selectable != null )
+				{
+					selectable.Selected = selected;
+				}
 			}
 		}
 

@@ -72,7 +72,8 @@ namespace Poc0.LevelEditor
 			//	Create the tile grid edit state
 			EditModeContext editContext = EditModeContext.CreateNewContext( scene, grid, new SelectedObjects( ) );
 			editContext.AddEditControl( display1 );
-			editContext.EditMode = new PaintTileEditMode( MouseButtons.Left, tileTypes[ 0 ] );
+			editContext.AddEditMode( new SelectEditMode( MouseButtons.Left ) );
+			editContext.AddEditMode( new PaintTileEditMode( MouseButtons.Right, tileTypes[ 0 ] ) );
 
 			//	Add a renderer for the tile grid to the scene renderables
 			scene.Renderables.Add( new OpenGlTileBlock2dRenderer( grid, editContext ) );
