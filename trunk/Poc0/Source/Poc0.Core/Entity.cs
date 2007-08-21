@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Rb.Core.Components;
 
 namespace Poc0.Core
 {
 	/// <summary>
 	/// Entity
 	/// </summary>
-	public class Entity : IHasWorldFrame
+	public class Entity : Component, IHasWorldFrame
 	{
 		/// <summary>
 		/// Gets the world frame for this object

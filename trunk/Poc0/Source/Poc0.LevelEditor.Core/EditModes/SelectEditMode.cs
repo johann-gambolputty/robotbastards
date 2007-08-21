@@ -1,14 +1,10 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows.Forms;
-using Rb.Rendering;
+using Poc0.Core;
 using Rb.World;
 
 namespace Poc0.LevelEditor.Core.EditModes
 {
-	/*
 	/// <summary>
 	/// Edit mode that adds and removes objects from a selection
 	/// </summary>
@@ -17,12 +13,8 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// <summary>
 		/// Binds the edit mode to a control and viewer
 		/// </summary>
-		/// <param name="control">Control to listen to events from</param>
-		/// <param name="viewer">Viewer attached to the control</param>
 		/// <param name="actionButton">The mouse button that this edit mode listens out for</param>
-		/// <param name="context">Editing context</param>
-		public SelectEditMode( Control control, Viewer viewer, EditModeContext context, MouseButtons actionButton ) :
-			base( control, viewer, context )
+		public SelectEditMode( MouseButtons actionButton )
 		{
 			m_ActionButton = actionButton;
 		}
@@ -34,9 +26,12 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// </summary>
 		public override void Start( )
 		{
-			Control.MouseClick += OnMouseClick;
-			Control.KeyDown += OnKeyDown;
-			Control.KeyUp += OnKeyUp;
+			foreach ( Control control in Controls )
+			{
+				control.MouseClick += OnMouseClick;
+				control.KeyDown += OnKeyDown;
+				control.KeyUp += OnKeyUp;
+			}
 		}
 
 		/// <summary>
@@ -44,9 +39,12 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// </summary>
 		public override void Stop( )
 		{
-			Control.MouseClick -= OnMouseClick;
-			Control.KeyDown -= OnKeyDown;
-			Control.KeyUp -= OnKeyUp;
+			foreach ( Control control in Controls )
+			{
+				control.MouseClick -= OnMouseClick;
+				control.KeyDown -= OnKeyDown;
+				control.KeyUp -= OnKeyUp;
+			}
 		}
 
 		/// <summary>
@@ -55,6 +53,14 @@ namespace Poc0.LevelEditor.Core.EditModes
 		public override Keys HotKey
 		{
 			get { return Keys.Escape; }
+		}
+
+		/// <summary>
+		/// Returns false (select can co-exist with other edit modes)
+		/// </summary>
+		public override bool Exclusive
+		{
+			get { return false; }
 		}
 
 		#endregion
@@ -84,16 +90,20 @@ namespace Poc0.LevelEditor.Core.EditModes
 				return;
 			}
 
-			//	TODO: AP: Select objects added
-			ITilePicker picker = Viewer.Camera as ITilePicker;
-			if ( picker == null )
+			Scene scene = EditModeContext.Instance.Scene;
+			IEnumerable< IHasWorldFrame > hasFrames = scene.Objects.GetAllOfType< IHasWorldFrame >( );
+			foreach ( IHasWorldFrame hasFrame in hasFrames )
 			{
-				return;
-			}
-			Tile pickedTile = picker.PickTile( EditContext.Grid, args.X, args.Y );
-			if ( pickedTile != null )
-			{
-				EditContext.Selection.ApplySelect( pickedTile, m_AddToSelection );
+				Frame frame = hasFrame.WorldFrame;
+				int minX = ( int )frame.Position.X - 5;
+				int minY = ( int )frame.Position.Z - 5;
+				int maxX = minX + 10;
+				int maxY = minY + 10;
+
+				if ( ( args.X >= minX ) && ( args.X <= maxX ) && ( args.Y >= minY ) && ( args.Y <= maxY ) )
+				{
+					EditModeContext.Instance.Selection.ApplySelect( hasFrame, m_AddToSelection );
+				}
 			}
 		}
 
@@ -106,5 +116,4 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 		#endregion
 	}
-	*/
 }

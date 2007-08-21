@@ -22,6 +22,17 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 		#region Control event handlers
 
+		private void OnMouseDown( object sender, MouseEventArgs args )
+		{
+			Tile pickedTile = GetTileUnderCursor(sender, args.X, args.Y);
+			if (pickedTile != null)
+			{
+				if ((args.Button & m_ActionButton) != 0)
+				{
+					pickedTile.TileType = m_PaintType;
+				}
+			}
+		}
 
 		private void OnMouseMove( object sender, MouseEventArgs args )
 		{
@@ -36,22 +47,13 @@ namespace Poc0.LevelEditor.Core.EditModes
 			}
 		}
 
-		private static Tile GetTileUnderCursor( object control, int x, int y )
-		{
-			ITilePicker picker = control as ITilePicker;
-			if ( picker == null )
-			{
-				return null;
-			}
-			return picker.PickTile( EditModeContext.Instance.Grid, x, y );
-		}
 
 		#endregion
 
 		#region Private members
 
-		private readonly TileType			m_PaintType;
-		private readonly MouseButtons		m_ActionButton;
+		private readonly TileType		m_PaintType;
+		private readonly MouseButtons	m_ActionButton;
 
 		#endregion
 
@@ -64,6 +66,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		{
 			foreach ( Control control in Controls )
 			{
+				control.MouseDown += OnMouseDown;
 				control.MouseMove += OnMouseMove;
 			}
 		}
@@ -75,8 +78,10 @@ namespace Poc0.LevelEditor.Core.EditModes
 		{
 			foreach ( Control control in Controls )
 			{
+				control.MouseDown -= OnMouseDown;
 				control.MouseMove -= OnMouseMove;
 			}
+			EditModeContext.Instance.TileUnderCursor = null;
 		}
 
 		#endregion

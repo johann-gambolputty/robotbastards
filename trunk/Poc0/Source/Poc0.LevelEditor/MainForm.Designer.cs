@@ -36,8 +36,10 @@ namespace Poc0.LevelEditor
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+			this.splitter1 = new System.Windows.Forms.Splitter();
 			this.editorControls1 = new Poc0.LevelEditor.EditorControls();
 			this.display1 = new Poc0.LevelEditor.TileGridDisplay();
+			this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
 			this.statusStrip.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -49,7 +51,7 @@ namespace Poc0.LevelEditor
 			// 
 			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar1});
-			this.statusStrip.Location = new System.Drawing.Point(0, 213);
+			this.statusStrip.Location = new System.Drawing.Point(0, 395);
 			this.statusStrip.Name = "statusStrip";
 			this.statusStrip.Size = new System.Drawing.Size(409, 22);
 			this.statusStrip.TabIndex = 0;
@@ -109,6 +111,8 @@ namespace Poc0.LevelEditor
 			// 
 			// splitContainer1.Panel1
 			// 
+			this.splitContainer1.Panel1.Controls.Add(this.propertyGrid1);
+			this.splitContainer1.Panel1.Controls.Add(this.splitter1);
 			this.splitContainer1.Panel1.Controls.Add(this.editorControls1);
 			this.splitContainer1.Panel1.Margin = new System.Windows.Forms.Padding(4);
 			this.splitContainer1.Panel1.Padding = new System.Windows.Forms.Padding(5);
@@ -116,16 +120,25 @@ namespace Poc0.LevelEditor
 			// splitContainer1.Panel2
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.display1);
-			this.splitContainer1.Size = new System.Drawing.Size(409, 189);
+			this.splitContainer1.Size = new System.Drawing.Size(409, 371);
 			this.splitContainer1.SplitterDistance = 123;
 			this.splitContainer1.TabIndex = 2;
+			// 
+			// splitter1
+			// 
+			this.splitter1.Dock = System.Windows.Forms.DockStyle.Top;
+			this.splitter1.Location = new System.Drawing.Point(5, 171);
+			this.splitter1.Name = "splitter1";
+			this.splitter1.Size = new System.Drawing.Size(113, 3);
+			this.splitter1.TabIndex = 1;
+			this.splitter1.TabStop = false;
 			// 
 			// editorControls1
 			// 
 			this.editorControls1.Dock = System.Windows.Forms.DockStyle.Top;
 			this.editorControls1.Location = new System.Drawing.Point(5, 5);
 			this.editorControls1.Name = "editorControls1";
-			this.editorControls1.Size = new System.Drawing.Size(113, 184);
+			this.editorControls1.Size = new System.Drawing.Size(113, 166);
 			this.editorControls1.TabIndex = 0;
 			// 
 			// display1
@@ -136,15 +149,23 @@ namespace Poc0.LevelEditor
 			this.display1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.display1.Location = new System.Drawing.Point(0, 0);
 			this.display1.Name = "display1";
-			this.display1.Size = new System.Drawing.Size(282, 189);
+			this.display1.Size = new System.Drawing.Size(282, 371);
 			this.display1.StencilBits = ((byte)(0));
 			this.display1.TabIndex = 0;
+			// 
+			// propertyGrid1
+			// 
+			this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.propertyGrid1.Location = new System.Drawing.Point(5, 174);
+			this.propertyGrid1.Name = "propertyGrid1";
+			this.propertyGrid1.Size = new System.Drawing.Size(113, 192);
+			this.propertyGrid1.TabIndex = 2;
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(409, 235);
+			this.ClientSize = new System.Drawing.Size(409, 417);
 			this.Controls.Add(this.splitContainer1);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.menuStrip);
@@ -175,6 +196,8 @@ namespace Poc0.LevelEditor
 		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem logToolStripMenuItem;
 		private TileGridDisplay display1;
+		private System.Windows.Forms.Splitter splitter1;
 		private EditorControls editorControls1;
+		private System.Windows.Forms.PropertyGrid propertyGrid1;
 	}
 }

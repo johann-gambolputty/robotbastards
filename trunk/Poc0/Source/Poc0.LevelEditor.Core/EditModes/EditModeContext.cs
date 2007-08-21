@@ -47,30 +47,6 @@ namespace Poc0.LevelEditor.Core.EditModes
 		}
 
 		/// <summary>
-		/// Gets and sets the current edit mode
-		/// </summary>
-		/// <remarks>
-		/// On set, the current edit mode is stopped (<see cref="IEditMode.Stop"/>) and
-		/// the new edit mode is started (<see cref="IEditMode.Start"/>).
-		/// </remarks>
-		public IEditMode EditMode
-		{
-			get { return m_EditMode; }
-			set
-			{
-				if ( m_EditMode != null )
-				{
-					m_EditMode.Stop( );
-				}
-				m_EditMode = value;
-				if ( m_EditMode != null )
-				{
-					m_EditMode.Start( );
-				}
-			}
-		}
-
-		/// <summary>
 		/// Sets and gets the current tile under the mouse cursor
 		/// </summary>
 		public Tile TileUnderCursor
@@ -108,6 +84,28 @@ namespace Poc0.LevelEditor.Core.EditModes
 		#region Public methods
 
 		/// <summary>
+		/// Adds an edit mode. If the mode is exclusive, then it replaces the current exclusive mode
+		/// </summary>
+		/// <param name="mode">Mode to add</param>
+		public void AddEditMode( IEditMode mode )
+		{
+			if ( mode.Exclusive )
+			{
+				if ( m_ExclusiveMode != null )
+				{
+					m_ExclusiveMode.Stop( );
+				}
+				m_ExclusiveMode = mode;
+				mode.Start( );
+			}
+			else if ( !m_SharedModes.Contains( mode ) )
+			{
+				m_SharedModes.Add(mode);
+				mode.Start( );
+			}
+		}
+
+		/// <summary>
 		/// Adds an edit control
 		/// </summary>
 		public void AddEditControl( Control control )
@@ -130,11 +128,13 @@ namespace Poc0.LevelEditor.Core.EditModes
 		private static	EditModeContext		ms_Singleton;
 
 		public readonly List< Control >		m_Controls = new List< Control >( );
-		private IEditMode					m_EditMode;
 		private Tile						m_TileUnderCursor;
 		private readonly SelectedObjects	m_Selection;
 		private readonly TileGrid			m_Grid;
 		private readonly Scene				m_Scene;
+
+		private IEditMode					m_ExclusiveMode;
+		private readonly List< IEditMode >	m_SharedModes = new List< IEditMode >( );
 
 		/// <summary>
 		/// Sets up the context
