@@ -1,4 +1,5 @@
 using Rb.Core.Components;
+using Rb.Core.Maths;
 
 namespace Poc0.Core
 {
@@ -10,11 +11,11 @@ namespace Poc0.Core
 		/// <summary>
 		/// Gets the world frame for this object
 		/// </summary>
-		public Frame WorldFrame
+		public Matrix44 WorldFrame
 		{
 			get { return m_Frame; }
 		}
 
-		private readonly Frame m_Frame = new Frame( );
+		private readonly Matrix44 m_Frame = new Matrix44( );
 	}
 }

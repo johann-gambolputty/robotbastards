@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using Poc0.Core;
+using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.World;
 
@@ -28,11 +29,11 @@ namespace Poc0.LevelEditor.Core
 		/// <param name="context">Rendering context</param>
 		public void Render( IRenderContext context )
 		{
-			Frame frame = m_Parent.WorldFrame;
+			Matrix44 frame = m_Parent.WorldFrame;
 
 			//	TODO: AP: Render object bounds
-			int x = ( int )frame.Position.X - 5;
-			int y = ( int )frame.Position.Z - 5;
+			int x = ( int )frame.Translation.X - 5;
+			int y = ( int )frame.Translation.Z - 5;
 			int width = 10;
 			int height = 10;
 

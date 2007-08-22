@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Poc0.Core;
+using Rb.Core.Maths;
 using Rb.World;
 
 namespace Poc0.LevelEditor.Core.EditModes
@@ -90,20 +91,36 @@ namespace Poc0.LevelEditor.Core.EditModes
 				return;
 			}
 
+			ITilePicker picker = sender as ITilePicker;
+			if ( picker == null )
+			{
+				return;
+			}
+
+			Point2 pos =  picker.CursorToWorld( args.X, args.Y );
+			int x = ( int )pos.X;
+			int y = ( int )pos.Y;
+
 			Scene scene = EditModeContext.Instance.Scene;
 			IEnumerable< IHasWorldFrame > hasFrames = scene.Objects.GetAllOfType< IHasWorldFrame >( );
 			foreach ( IHasWorldFrame hasFrame in hasFrames )
 			{
-				Frame frame = hasFrame.WorldFrame;
-				int minX = ( int )frame.Position.X - 5;
-				int minY = ( int )frame.Position.Z - 5;
+				Matrix44 frame = hasFrame.WorldFrame;
+				int minX = ( int )frame.Translation.X - 5;
+				int minY = ( int )frame.Translation.Z - 5;
 				int maxX = minX + 10;
 				int maxY = minY + 10;
 
-				if ( ( args.X >= minX ) && ( args.X <= maxX ) && ( args.Y >= minY ) && ( args.Y <= maxY ) )
+				if ( ( x >= minX ) && ( x <= maxX ) && ( y >= minY ) && ( y <= maxY ) )
 				{
 					EditModeContext.Instance.Selection.ApplySelect( hasFrame, m_AddToSelection );
+					return;
 				}
+			}
+
+			if ( !m_AddToSelection )
+			{
+				EditModeContext.Instance.Selection.ClearSelection( );
 			}
 		}
 

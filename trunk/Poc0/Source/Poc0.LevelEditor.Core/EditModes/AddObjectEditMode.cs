@@ -52,7 +52,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 				IHasWorldFrame hasFrame = newObject as IHasWorldFrame;
 				if ( hasFrame != null )
 				{
-					hasFrame.WorldFrame.Position = new Point3( pt.X, 0, pt.Y );
+					hasFrame.WorldFrame.Translation = new Point3( pt.X, 0, pt.Y );
 
 					ObjectEditState editState = new ObjectEditState( scene, newObject );
 					( ( IParent )newObject ).AddChild( editState );

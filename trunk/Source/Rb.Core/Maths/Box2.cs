@@ -7,7 +7,7 @@ namespace Rb.Core.Maths
 	/// <summary>
 	/// Object-aligned box
 	/// </summary>
-	public class Box2
+	public class Box2 : IShape2
 	{
 		/// <summary>
 		/// Default constructor - axis-aligned unit cube at the origin
@@ -109,5 +109,33 @@ namespace Rb.Core.Maths
 		private readonly float[]	m_HalfDims = new float[ 2 ];
 		private readonly Vector2[]	m_Axis = new Vector2[ 2 ];
 		private Point2				m_Origin;
+
+		#region IShape2 Members
+
+		/// <summary>
+		/// Returns true if this shape contains a given point
+		/// </summary>
+		public bool Contains( Point2 pt )
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		/// <summary>
+		/// Gets the distance from this shape to a point
+		/// </summary>
+		public float Distance( Point2 pt )
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		/// <summary>
+		/// Gets the distance from this shape to another shape
+		/// </summary>
+		public float Distance( IShape2 shape )
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		#endregion
 	}
 }

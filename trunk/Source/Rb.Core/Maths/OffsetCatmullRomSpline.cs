@@ -5,7 +5,7 @@ namespace Rb.Core.Maths
 	/// <summary>
 	/// Summary description for OffsetCatmullRomSpline.
 	/// </summary>
-	public class OffsetCatmullRomSpline : Spline
+	public class OffsetCatmullRomSpline : Curve
 	{
 		#region	Construction and setup
 
@@ -18,7 +18,7 @@ namespace Rb.Core.Maths
 		{
 			m_BaseSpline	= baseSpline;
 			m_Offset		= offset;
-			m_BaseSpline.OnChangedEvent += new Spline.ChangedDelegate( OnBaseSplineChanged );
+			m_BaseSpline.OnChangedEvent += new Curve.ChangedDelegate( OnBaseSplineChanged );
 		}
 
 		#endregion
@@ -100,7 +100,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Calculates the tangent, bi-normal, normal, speed and curvature on the spline at fraction t
 		/// </summary>
-		public override SplineFrame	EvaluateFrame( float t )
+		public override CurveFrame	EvaluateFrame( float t )
 		{
 			CatmullRomSpline.Evaluator eval = new CatmullRomSpline.Evaluator( );
 			MakeEvaluator( ref eval, this, t, m_BaseSpline, m_Offset );
@@ -152,7 +152,7 @@ namespace Rb.Core.Maths
 		private CatmullRomSpline	m_BaseSpline;
 		private float				m_Offset;
 
-		private void				OnBaseSplineChanged( Spline baseSpline )
+		private void				OnBaseSplineChanged( Curve baseSpline )
 		{
 			OnChanged( );
 		}

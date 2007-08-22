@@ -52,7 +52,7 @@
     <Compile Include="Environment\Environment.cs" />
     <Compile Include="Environment\Graphics.cs" />
     <Compile Include="Environment\Navigator.cs" />
-    <Compile Include="Frame.cs" />
+    <Compile Include="IHasBounds.cs" />
     <Compile Include="IHasWorldFrame.cs" />
     <Compile Include="PlayerStart.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

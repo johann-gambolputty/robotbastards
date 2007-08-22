@@ -1,6 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel;
 
 namespace Rb.Core.Components
 {
@@ -14,6 +13,7 @@ namespace Rb.Core.Components
 		/// <summary>
 		/// Unique component identifier
 		/// </summary>
+		[ReadOnly(true)]
 		public Guid Id
 		{
 			get { return m_Id;  }

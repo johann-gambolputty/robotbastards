@@ -31,6 +31,14 @@ namespace Poc0.LevelEditor.Core
 			get { return m_Selection; }
 		}
 
+		/// <summary>
+		/// Converts the selected object list to an array
+		/// </summary>
+		public object[] ToArray( )
+		{
+			return m_Selection.ToArray( );
+		}
+
 		#endregion
 
 		#region Public events
@@ -81,12 +89,12 @@ namespace Poc0.LevelEditor.Core
 		{
 			if ( !m_Selection.Contains( obj ) )
 			{
+				m_Selection.Add( obj );
+				SetSelectedFlag( obj, true );
 				if ( ObjectSelected != null )
 				{
 					ObjectSelected( obj );
 				}
-				m_Selection.Add( obj );
-				SetSelectedFlag( obj, true );
 			}
 		}
 
@@ -96,11 +104,11 @@ namespace Poc0.LevelEditor.Core
 		private void Deselect( object obj )
 		{
 			SetSelectedFlag( obj, false );
+			m_Selection.Remove( obj );
 			if ( ObjectDeselected != null )
 			{
 				ObjectDeselected( obj );
 			}
-			m_Selection.Remove( obj );
 		}
 
 		/// <summary>
@@ -108,16 +116,17 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		public void ClearSelection( )
 		{
-			foreach ( object obj in m_Selection )
+			while ( m_Selection.Count > 0 )
 			{
+				object obj = m_Selection[ 0 ];
 				SetSelectedFlag( obj, false );
+				m_Selection.RemoveAt( 0 );
 
 				if ( ObjectDeselected != null )
 				{
 					ObjectDeselected( obj );
 				}
 			}
-			m_Selection.Clear( );
 		}
 		
 		/// <summary>
