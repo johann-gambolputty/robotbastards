@@ -1,6 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+
+using Rb.Core.Maths;
 
 namespace Poc0.Core
 {
@@ -12,7 +11,7 @@ namespace Poc0.Core
 		/// <summary>
 		/// Gets the world frame for this object
 		/// </summary>
-		Frame WorldFrame
+		Matrix44 WorldFrame
 		{
 			get;
 		}

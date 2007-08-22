@@ -1,5 +1,5 @@
-using System;
 using System.Collections;
+using System.ComponentModel;
 
 namespace Rb.Core.Components
 {
@@ -13,6 +13,7 @@ namespace Rb.Core.Components
 		/// <summary>
 		/// Gets the parent object, set by the implementation of IChild.AddedToParent()
 		/// </summary>
+		[Browsable( false )]
 		public object Parent
 		{
 			get { return m_Parent;  }
@@ -25,6 +26,7 @@ namespace Rb.Core.Components
 		/// <summary>
 		/// Returns the child list
 		/// </summary>
+		[ReadOnly( true )]
 		public ICollection Children
 		{
 			get { return m_Children; }
@@ -88,8 +90,8 @@ namespace Rb.Core.Components
 		
 		#region Private stuff
 
-		private ArrayList	m_Children = new ArrayList( );
-		private object		m_Parent;
+		private readonly ArrayList	m_Children = new ArrayList( );
+		private object				m_Parent;
 		
 		#endregion
 	}

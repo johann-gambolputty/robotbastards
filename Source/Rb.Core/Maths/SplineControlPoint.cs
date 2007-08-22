@@ -13,7 +13,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// The position of the control point. If set, then the owner spline is changed (Spline.OnChanged())
 		/// </summary>
-		public Point3		Position
+		public Point3 Position
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// The Frenet frame at the control
 		/// </summary>
-		public SplineFrame	Frame
+		public CurveFrame	Frame
 		{
 			get
 			{
@@ -40,7 +40,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Spline that owns this control point
 		/// </summary>
-		public Spline		Owner
+		public Curve		Owner
 		{
 			get
 			{
@@ -67,28 +67,28 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Sets up this control point
 		/// </summary>
-		public SplineControlPoint( Spline owner, int index )
+		public SplineControlPoint( Curve owner, int index )
 		{
 			m_Owner = owner;
 			m_Index	= index;
 			m_Frame	= m_Owner.EvaluateFrame( ( float )index );
 
-			owner.OnChangedEvent += new Spline.ChangedDelegate( OnOwnerSplineChanged );
+			owner.OnChangedEvent += new Curve.ChangedDelegate( OnOwnerSplineChanged );
 		}
 
 		#endregion
 
 		#region	Private stuff
 
-		private Spline		m_Owner;
+		private Curve		m_Owner;
 		private int			m_Index;
-		private SplineFrame	m_Frame;
+		private CurveFrame	m_Frame;
 
 		/// <summary>
 		/// Delegate, added to the Spline.OnChangedEvent. Re-evaluates the frame of the control point
 		/// </summary>
 		/// <param name="spline"></param>
-		private void		OnOwnerSplineChanged( Spline spline )
+		private void		OnOwnerSplineChanged( Curve spline )
 		{
 			m_Frame = spline.EvaluateFrame( ( float )m_Index );
 		}

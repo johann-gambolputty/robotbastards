@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing;
 using System.Windows.Forms;
 using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.EditModes;
@@ -47,6 +48,44 @@ namespace Poc0.LevelEditor
 			Icon = Properties.Resources.AppIcon;
 		}
 
+		private void OnSelectionChanged( object obj )
+		{
+			object[] selectedObjects = EditModeContext.Instance.Selection.ToArray( );
+
+			niceComboBox1.Items.Clear( );
+			if ( selectedObjects.Length == 0 )
+			{
+				propertyGrid1.SelectedObject = null;
+				return;
+			}
+
+			foreach ( object selectedObj in selectedObjects )
+			{
+				AddObjectToCombo( 0, selectedObj );
+				niceComboBox1.AddSeparator( );
+			}
+			niceComboBox1.SelectedIndex = 0;
+			propertyGrid1.SelectedObject = selectedObjects[ 0 ];
+		}
+
+		private void AddObjectToCombo( int depth, object obj )
+		{
+			string str = obj.GetType( ).ToString( );
+			str = str.Substring( str.LastIndexOf( '.' ) + 1 );
+
+			NiceComboBox.Item item = new NiceComboBox.Item( depth, str, depth == 0 ? FontStyle.Bold : 0, null, null, obj );
+			niceComboBox1.Items.Add( item );
+
+			IParent parent = obj as IParent;
+			if ( parent != null )
+			{
+				foreach ( object childObj in parent.Children )
+				{
+					AddObjectToCombo( depth + 1, childObj );
+				}
+			}
+		}
+
 		private void exitToolStripMenuItem_Click( object sender, EventArgs e )
 		{
 			Close( );
@@ -73,7 +112,9 @@ namespace Poc0.LevelEditor
 			EditModeContext editContext = EditModeContext.CreateNewContext( scene, grid, new SelectedObjects( ) );
 			editContext.AddEditControl( display1 );
 			editContext.AddEditMode( new SelectEditMode( MouseButtons.Left ) );
-			editContext.AddEditMode( new PaintTileEditMode( MouseButtons.Right, tileTypes[ 0 ] ) );
+			editContext.AddEditMode(new PaintTileEditMode(MouseButtons.Right, tileTypes[0]));
+			editContext.Selection.ObjectSelected += OnSelectionChanged;
+			editContext.Selection.ObjectDeselected += OnSelectionChanged;
 
 			//	Add a renderer for the tile grid to the scene renderables
 			scene.Renderables.Add( new OpenGlTileBlock2dRenderer( grid, editContext ) );
@@ -108,9 +149,6 @@ namespace Poc0.LevelEditor
 				Viewer viewer = ( Viewer )ResourceManager.Instance.Load( "LevelEditorStandardViewer.components.xml", loadParams );
 				viewer.Renderable = m_Scene;
 
-				//	Add a controller to the viewer camera
-				//viewer.Camera.AddChild( new TileEditCommandHandler( m_User, m_Grid, m_EditState ) );
-
 				display1.Viewers.Add( viewer );
 
 				//	Test load a command list
@@ -131,5 +169,10 @@ namespace Poc0.LevelEditor
 		private Scene						m_Scene;
 		private TileGrid					m_Grid;
 		private EditModeContext				m_EditContext;
+
+		private void niceComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			propertyGrid1.SelectedObject = niceComboBox1.GetTag( niceComboBox1.SelectedIndex );
+		}
 	}
 }

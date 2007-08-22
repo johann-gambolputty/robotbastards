@@ -10,12 +10,12 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Base of natural logarithm
 		/// </summary>
-		public const float E				= ( float )System.Math.E;
+		public const float E				= ( float )Math.E;
 
 		/// <summary>
 		/// Pi
 		/// </summary>
-		public const float Pi				= ( float )System.Math.PI;
+		public const float Pi				= ( float )Math.PI;
 
 		/// <summary>
 		/// Pi divided by 2
@@ -28,12 +28,12 @@ namespace Rb.Core.Maths
 		public const float TwoPi			= Pi * 2;
 
 		/// <summary>
-		/// Conversion factor for turning a value in degrees into radians
+		/// Conversion factor for turning a value in degrees into radians (deg * DegreesToRadians = rad)
 		/// </summary>
 		public const float DegreesToRadians	= TwoPi / 360.0f;
 
 		/// <summary>
-		/// Conversion factor for turning a value in radians into degrees
+		/// Conversion factor for turning a value in radians into degrees (rad * RadiansToDegrees = deg)
 		/// </summary>
 		public const float RadiansToDegrees	= 360.0f / TwoPi;
 	}

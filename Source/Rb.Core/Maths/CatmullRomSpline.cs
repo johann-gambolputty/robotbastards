@@ -12,7 +12,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Used for evaluating properties on the spline at a given point
 		/// </summary>
-		public struct Evaluator
+		public class Evaluator
 		{
 			/// <summary>
 			/// Control points
@@ -66,7 +66,7 @@ namespace Rb.Core.Maths
 			public Point3		EvaluatePositionWithClampedGlobalT( float newGlobalT )
 			{
 				GlobalT = newGlobalT;
-				LocalT	= GlobalT - ( float )CpIndex; 
+				LocalT	= GlobalT - CpIndex; 
 				return EvaluatePosition( );
 			}
 
@@ -82,7 +82,6 @@ namespace Rb.Core.Maths
 
 				for ( int i = 0; i < 3; ++i )
 				{
-					float term0 = Points[ 1 ][ i ] * 2.0f;
 					float term1 = -Points[ 0 ][ i ] + Points[ 2 ][ i ];
 					float term2 = Points[ 0 ][ i ] * 2.0f - Points[ 1 ][ i ] * 5.0f + Points[ 2 ][ i ] * 4.0f - Points[ 3 ][ i ];
 					float term3 = -Points[ 0 ][ i] + Points[ 1 ][ i ] * 3.0f - Points[ 2 ][ i ] * 3.0f + Points[ 3 ][ i ];
@@ -99,16 +98,14 @@ namespace Rb.Core.Maths
 			/// <returns> Returns the acceleration vector on the spline at the current T value </returns>
 			public Vector3		EvaluateSecondDerivative( )
 			{
-				Vector3	acceleration	= new Vector3( );
+				Vector3	acceleration = new Vector3( );
 
 				float t	= LocalT;
 
 				for ( int i = 0; i < 3; ++i )
 				{
-					float term0 = Points[ 1 ][ i ] * 2.0f;
-					float term1 = -Points[ 0 ][ i ] + Points[ 2 ][ i ];
 					float term2 = Points[ 0 ][ i ] * 2.0f - Points[ 1 ][ i ] * 5.0f + Points[ 2 ][ i ] * 4.0f - Points[ 3 ][ i ];
-					float term3 = -Points[ 0 ][ i] + Points[ 1 ][ i ] * 3.0f - Points[ 2 ][ i ] * 3.0f + Points[ 3 ][ i ];
+					float term3 = -Points[ 0 ][ i ] + Points[ 1 ][ i ] * 3.0f - Points[ 2 ][ i ] * 3.0f + Points[ 3 ][ i ];
 
 					acceleration[ i ]	= 0.5f * ( ( 2.0f * term2 ) + ( 6 * term3 * t ) );
 				}
@@ -120,7 +117,7 @@ namespace Rb.Core.Maths
 			/// Evaluates the full frame on the spline
 			/// </summary>
 			/// <returns> Returns the full Frenet frame on the spline at the current T value </returns>
-			public SplineFrame	EvaluateFrame( )
+			public CurveFrame	EvaluateFrame( )
 			{
 				Point3	position		= new Point3( );
 				Vector3 velocity		= new Vector3( );
@@ -142,14 +139,14 @@ namespace Rb.Core.Maths
 					acceleration[ i ]	= 0.5f * ( ( 2.0f * term2 ) + ( 6.0f * term3 * t ) );
 				}
 
-				return new SplineFrame( position, velocity, acceleration );
+				return new CurveFrame( position, velocity, acceleration );
 			}
 
 			/// <summary>
 			/// Evaluates the curvature on the spline
 			/// </summary>
 			/// <returns> Returns the curvature on the spline at the current T value </returns>
-			public float		EvaluateCurvature( )
+			public float EvaluateCurvature( )
 			{
 				Vector3 velocity		= new Vector3( );
 				Vector3	acceleration	= new Vector3( );
@@ -159,7 +156,6 @@ namespace Rb.Core.Maths
 
 				for ( int i = 0; i < 3; ++i )
 				{
-					float term0 = Points[ 1 ][ i ] * 2.0f;
 					float term1 = -Points[ 0 ][ i ] + Points[ 2 ][ i ];
 					float term2 = Points[ 0 ][ i ] * 2.0f - Points[ 1 ][ i ] * 5.0f + Points[ 2 ][ i ] * 4.0f - Points[ 3 ][ i ];
 					float term3 = -Points[ 0 ][ i] + Points[ 1 ][ i ] * 3.0f - Points[ 2 ][ i ] * 3.0f + Points[ 3 ][ i ];
@@ -186,7 +182,7 @@ namespace Rb.Core.Maths
 			eval.Points		= new Point3[ 4 ];
 			eval.CpIndex	= ( int )t;
 			eval.GlobalT	= t;
-			eval.LocalT		= t - ( float )eval.CpIndex;
+			eval.LocalT		= t - eval.CpIndex;
 
 			SplineControlPoints controlPoints = spline.ControlPoints;
 			if ( eval.CpIndex == 0 )
@@ -226,7 +222,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Calculates the position on the spline at fraction t
 		/// </summary>
-		public override Point3		EvaluatePosition( float t )
+		public override Point3 EvaluatePosition( float t )
 		{
 			Evaluator eval = new Evaluator( );
 			MakeEvaluator( ref eval, this, t );
@@ -237,7 +233,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Calculates the first derivative on the spline at fraction t
 		/// </summary>
-		public override Vector3		EvaluateFirstDerivative( float t )
+		public override Vector3 EvaluateFirstDerivative( float t )
 		{
 			Evaluator eval = new Evaluator( );
 			MakeEvaluator( ref eval, this, t );
@@ -248,7 +244,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Calculates the second derivative on the spline at fraction t
 		/// </summary>
-		public override Vector3		EvaluateSecondDerivative( float t )
+		public override Vector3 EvaluateSecondDerivative( float t )
 		{
 			Evaluator eval = new Evaluator( );
 			MakeEvaluator( ref eval, this, t );
@@ -259,7 +255,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Calculates the tangent, binormal, normal, speed and curvature on the spline at fraction t
 		/// </summary>
-		public override SplineFrame	EvaluateFrame( float t )
+		public override CurveFrame EvaluateFrame( float t )
 		{
 			Evaluator eval = new Evaluator( );
 			MakeEvaluator( ref eval, this, t );
@@ -270,7 +266,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Evaluates the curvature on the spline at fraction t
 		/// </summary>
-		public override float		EvaluateCurvature( float t )
+		public override float EvaluateCurvature( float t )
 		{
 			Evaluator eval = new Evaluator( );
 			MakeEvaluator( ref eval, this, t );
@@ -291,7 +287,7 @@ namespace Rb.Core.Maths
 		///	Want to find some s* that minimises D(s)
 		///	Start with s* estimates s1, s2, s3
 		///	</remarks>
-		public struct DistanceCalculator
+		public class DistanceCalculator
 		{
 			private float[]					m_S;
 			private float[]					m_S2;
@@ -360,12 +356,12 @@ namespace Rb.Core.Maths
 												( (  m_S[ 2 ] -  m_S[ 0 ] ) * m_Distances[ 1 ] ) + 
 												( (  m_S[ 0 ] -  m_S[ 1 ] ) * m_Distances[ 2 ] );
 
-					if ( System.Math.Abs( PolyEstimateDen ) < 0.0001f )
+					if ( Math.Abs( PolyEstimateDen ) < 0.0001f )
 					{
 						break;
 					}
 
-					m_S[ 3 ]			= Maths.Utils.Clamp( 0.5f * ( PolyEstimateNum / PolyEstimateDen ), minT, maxT );
+					m_S[ 3 ]			= Utils.Clamp( 0.5f * ( PolyEstimateNum / PolyEstimateDen ), minT, maxT );
 					m_Points[ 3 ]		= eval.EvaluatePositionWithClampedGlobalT( m_S[ 3 ] );
 					m_Distances[ 3 ]	= m_Distance( m_Points[ 3 ] );
 
@@ -443,7 +439,7 @@ namespace Rb.Core.Maths
 		/// <returns> Returns the time on the spline of the closest point </returns>
 		public override float FindClosestPoint( DistanceToPointDelegate distance, int iterations )
 		{
-			CatmullRomSpline.DistanceCalculator calculator = new DistanceCalculator( distance );
+			DistanceCalculator calculator = new DistanceCalculator( distance );
 
 			float closestFraction = 0;
 			int numControlPoints = ControlPoints.Count;
@@ -452,7 +448,7 @@ namespace Rb.Core.Maths
 
 			for ( int cpIndex = 0; cpIndex < numControlPoints; ++cpIndex )
 			{
-				MakeEvaluator( ref eval, this, ( float )cpIndex );
+				MakeEvaluator( ref eval, this, cpIndex );
 				closestFraction = calculator.GetClosestPointInInterval( eval, 1.0f, iterations );
 			}
 

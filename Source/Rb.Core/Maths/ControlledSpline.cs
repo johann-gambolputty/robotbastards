@@ -5,7 +5,7 @@ namespace Rb.Core.Maths
 	/// <summary>
 	/// Summary description for ControlledSpline.
 	/// </summary>
-	public abstract class ControlledSpline : Spline
+	public abstract class ControlledSpline : Curve
 	{
 		#region	Construction and setup
 

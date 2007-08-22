@@ -14,7 +14,7 @@ namespace Rb.Core.Maths
 		/// Setup constructor
 		/// </summary>
 		/// <param name="owner"> Owner of the control points </param>
-		public SplineControlPoints( Spline owner )
+		public SplineControlPoints( Curve owner )
 		{
 			m_Owner = owner;			
 		}
@@ -63,7 +63,7 @@ namespace Rb.Core.Maths
 		#region	Private stuff
 
 		private ArrayList	m_Points	= new ArrayList( );
-		private Spline		m_Owner		= null;
+		private Curve		m_Owner		= null;
 
 		#endregion
 	}
