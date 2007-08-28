@@ -106,6 +106,7 @@ namespace Rb.Muesli
             FieldInfo[] fields = objType.GetFields( BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public );
             foreach ( FieldInfo field in fields )
             {
+
                 //  TODO: AP: Handle events, etc.?
                 if ( field.IsNotSerialized )
                 {

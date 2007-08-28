@@ -5,6 +5,7 @@ namespace Rb.Core.Utils
 	/// <summary>
 	/// For objects that update on a regular basis, e.g. for physics, rendering, AI, etc.
 	/// </summary>
+	[Serializable]
 	public class Clock : Components.INamed
 	{
 		/// <summary>
@@ -114,7 +115,7 @@ namespace Rb.Core.Utils
 		/// <summary>
 		/// Clock timer (must be forms timer, to keep it in the main thread)
 		/// </summary>
-		private System.Windows.Forms.Timer m_Timer;
+		private readonly System.Windows.Forms.Timer m_Timer;
 
 		/// <summary>
 		/// Timer name

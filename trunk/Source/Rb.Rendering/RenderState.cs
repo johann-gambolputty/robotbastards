@@ -6,7 +6,7 @@ namespace Rb.Rendering
 	/// <summary>
 	/// Flagged rendering capabilities
 	/// </summary>
-	[ Flags ]
+	[Flags]
 	public enum RenderStateFlag
 	{
 		/// <summary>
@@ -238,6 +238,7 @@ namespace Rb.Rendering
 	/// <summary>
 	/// Summary description for RenderState.
 	/// </summary>
+	[Serializable]
 	public abstract class RenderState : IPass
 	{
 		#region	Setup

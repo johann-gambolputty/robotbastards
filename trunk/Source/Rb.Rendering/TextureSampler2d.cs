@@ -86,6 +86,7 @@ namespace Rb.Rendering
 	/// <summary>
 	/// Abstract base class for sampling 2d textures
 	/// </summary>
+	[Serializable]
 	public abstract class TextureSampler2d : IPass
 	{
 		/// <summary>

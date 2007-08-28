@@ -66,5 +66,23 @@ namespace Poc0.LevelEditor.Properties {
                 return ((System.Drawing.Icon)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        internal static string ErrorCaption {
+            get {
+                return ResourceManager.GetString("ErrorCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to open scene file &quot;{0}&quot;.
+        /// </summary>
+        internal static string FailedToOpenScene {
+            get {
+                return ResourceManager.GetString("FailedToOpenScene", resourceCulture);
+            }
+        }
     }
 }

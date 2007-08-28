@@ -10,6 +10,7 @@ namespace Rb.World
 	/// <summary>
 	/// Manages all objects in the scene, and the services that tend to them
 	/// </summary>
+	[Serializable]
     public class Scene : IRenderable
 	{
 		#region Construction
@@ -172,6 +173,7 @@ namespace Rb.World
 		public ObjectMap Objects
 		{
 			get { return m_Objects; }
+			set { m_Objects = value; }
 		}
 
 		#endregion
@@ -208,7 +210,7 @@ namespace Rb.World
 		private readonly IBuilder						m_Builder;
 		private readonly Dictionary< string, Clock >	m_Clocks		= new Dictionary< string, Clock >( );
 		private readonly Dictionary< Type, object >		m_Services	    = new Dictionary< Type, object >( );
-		private readonly ObjectMap						m_Objects	    = new ObjectMap( );
+		private ObjectMap								m_Objects	    = new ObjectMap( );
         private readonly RenderableList                 m_Renderables   = new RenderableList( );
 
         /// <summary>

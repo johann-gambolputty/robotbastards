@@ -1,3 +1,4 @@
+using System;
 using Rb.Rendering;
 
 namespace Poc0.LevelEditor.Core
@@ -5,6 +6,7 @@ namespace Poc0.LevelEditor.Core
 	/// <summary>
 	/// Interface for objects that can render a <see cref="TileGrid"/>
 	/// </summary>
+	[Serializable]
 	public abstract class TileGridRenderer : IRenderable
 	{
 		/// <summary>

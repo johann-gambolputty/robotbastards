@@ -7,6 +7,7 @@ namespace Rb.Core.Components
 	/// <summary>
 	/// Implements the IObjectMap interface using Dictionary objects
 	/// </summary>
+	[Serializable]
 	public class ObjectMap : IObjectMap
 	{
 		#region IObjectMap Members
@@ -40,6 +41,46 @@ namespace Rb.Core.Components
                 }
             }
         }
+
+		/// <summary>
+		/// Gets the first value of a given type
+		/// </summary>
+		public T GetFirstOfType< T >( ) where T : class
+		{
+			Dictionary<Guid, object> objectMap;
+			if ( !m_Types.TryGetValue( typeof( T ), out objectMap ) )
+			{
+				return null;
+			}
+			if ( objectMap.Count == 0 )
+			{
+				return null;
+			}
+			IEnumerator pos = objectMap.Values.GetEnumerator( );
+			pos.MoveNext( );
+			return ( T )pos.Current;
+		}
+
+		/// <summary>
+		/// Gets an array of all objects in the map that are of type T
+		/// </summary>
+		public T[] GetArrayOfType< T >( )
+		{
+			Dictionary< Guid, object > objectMap;
+			if ( !m_Types.TryGetValue( typeof( T ), out objectMap ) )
+			{
+				return new T[ 0 ];
+			}
+			Dictionary<Guid, object>.ValueCollection values = objectMap.Values;
+			T[] objects = new T[ values.Count ];
+
+			int objectIndex = 0;
+			foreach ( T value in values )
+			{
+				objects[ objectIndex++ ] = value;
+			}
+			return objects;
+		}
 
 		#endregion
 

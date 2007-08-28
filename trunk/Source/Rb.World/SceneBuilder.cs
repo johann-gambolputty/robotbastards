@@ -6,6 +6,7 @@ namespace Rb.World
     /// <summary>
     /// Scene builder. Notifies created ISceneObject objects which scene they were created for
     /// </summary>
+    [Serializable]
     public class SceneBuilder : IBuilder
     {
         #region Public constructors
@@ -62,9 +63,9 @@ namespace Rb.World
 
         #region Private stuff
 
-        private Scene       m_Scene;
-        private IBuilder    m_Builder;
-        
+        private readonly Scene		m_Scene;
+		private readonly IBuilder	m_Builder;
+
         /// <summary>
         /// Handles a newly created object. If it implements ISceneObject, ISceneObject.SetSceneContext() is called, with the attached scene
         /// </summary>

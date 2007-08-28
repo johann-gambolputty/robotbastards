@@ -16,6 +16,7 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// UV coordinate rectangle
 		/// </summary>
+		[Serializable]
 		public class Rect
 		{
 			/// <summary>

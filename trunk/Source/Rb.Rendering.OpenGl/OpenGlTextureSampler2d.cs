@@ -1,3 +1,4 @@
+using System;
 using Tao.OpenGl;
 
 namespace Rb.Rendering.OpenGl
@@ -5,6 +6,7 @@ namespace Rb.Rendering.OpenGl
 	/// <summary>
 	/// Summary description for OpenGlApplyTexture2d.
 	/// </summary>
+	[Serializable]
 	public class OpenGlTextureSampler2d : TextureSampler2d
 	{
 		/// <summary>

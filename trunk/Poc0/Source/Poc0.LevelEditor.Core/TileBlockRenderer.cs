@@ -1,3 +1,4 @@
+using System;
 using Rb.Rendering;
 
 namespace Poc0.LevelEditor.Core
@@ -5,6 +6,7 @@ namespace Poc0.LevelEditor.Core
 	/// <summary>
 	/// Renders blocks of tiles
 	/// </summary>
+	[Serializable]
 	public abstract class TileBlockRenderer : TileGridRenderer
 	{
 		#region Public constructor

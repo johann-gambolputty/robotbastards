@@ -7,6 +7,7 @@ namespace Poc0.LevelEditor.Core
 	/// <summary>
 	/// Defines the type of a tile
 	/// </summary>
+	[Serializable]
 	public class TileType
 	{
 		/// <summary>
@@ -24,14 +25,6 @@ namespace Poc0.LevelEditor.Core
 			Set = set;
 
 			GenerateTransitions( m_Set.TileTexture, hardEdgeSize, softEdgeSize );
-		}
-
-		/// <summary>
-		/// Sets a tile's type. Used as a delegate in <see cref="TileGridEditState.OnPaint"/>
-		/// </summary>
-		public void SetTileToType( Tile tile, float x, float y )
-		{
-			tile.TileType = this;
 		}
 
 		/// <summary>

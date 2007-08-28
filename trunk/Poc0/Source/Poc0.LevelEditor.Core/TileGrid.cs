@@ -1,12 +1,14 @@
 
 using System;
+using System.Runtime.Serialization;
 
 namespace Poc0.LevelEditor.Core
 {
 	/// <summary>
 	/// Tile grid data
 	/// </summary>
-	public class TileGrid
+	[Serializable]
+	public class TileGrid : ISerializable
 	{
 		#region Public constants
 
@@ -58,11 +60,16 @@ namespace Poc0.LevelEditor.Core
 
 		#endregion
 
-		#region Public events
-
-		#endregion
-
 		#region Public construction
+
+		/// <summary>
+		/// Serialization constructor
+		/// </summary>
+		public TileGrid( SerializationInfo info, StreamingContext context )
+		{
+			m_TileTypes = ( TileTypeSet )info.GetValue( "types", typeof( TileTypeSet ) );
+			m_Tiles = ( Tile[ , ] )info.GetValue( "tiles", typeof( Tile[ , ] ) );
+		}
 
 		/// <summary>
 		/// Setup constructor
@@ -168,8 +175,18 @@ namespace Poc0.LevelEditor.Core
 			return tiles;
 		}
 
-		public Tile[,] m_Tiles;
+		private Tile[,] m_Tiles;
 		private readonly TileTypeSet m_TileTypes;
+
+		#endregion
+
+		#region ISerializable Members
+
+		public void GetObjectData( SerializationInfo info, StreamingContext context )
+		{
+			info.AddValue( "types", m_TileTypes );
+			info.AddValue( "tiles", m_Tiles );
+		}
 
 		#endregion
 	}

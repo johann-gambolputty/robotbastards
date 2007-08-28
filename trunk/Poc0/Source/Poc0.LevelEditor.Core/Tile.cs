@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Poc0.LevelEditor.Core
@@ -5,6 +6,7 @@ namespace Poc0.LevelEditor.Core
 	/// <summary>
 	/// A tile
 	/// </summary>
+	[Serializable]
 	public class Tile : ISelectable
 	{
 		#region Construction
