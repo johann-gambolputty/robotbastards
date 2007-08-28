@@ -25,12 +25,9 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// <summary>
 		/// Creates the new EditModeContext singleton
 		/// </summary>
-		/// <param name="scene"></param>
-		/// <param name="grid"></param>
-		/// <param name="selection"></param>
-		public static EditModeContext CreateNewContext( Scene scene, TileGrid grid, SelectedObjects selection )
+		public static EditModeContext CreateNewContext( )
 		{
-			ms_Singleton = new EditModeContext( scene, grid, selection );
+			ms_Singleton = new EditModeContext( );
 			return Instance;
 		}
 
@@ -83,6 +80,14 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 		#region Public methods
 
+		public void Setup( Scene scene, TileGrid tileGrid )
+		{
+			m_Scene = scene;
+			m_Grid = tileGrid;
+
+			AddEditMode( new PaintTileEditMode( MouseButtons.Right, tileGrid.Set[ 0 ] ) );
+		}
+
 		/// <summary>
 		/// Adds an edit mode. If the mode is exclusive, then it replaces the current exclusive mode
 		/// </summary>
@@ -129,9 +134,9 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 		public readonly List< Control >		m_Controls = new List< Control >( );
 		private Tile						m_TileUnderCursor;
-		private readonly SelectedObjects	m_Selection;
-		private readonly TileGrid			m_Grid;
-		private readonly Scene				m_Scene;
+		private readonly SelectedObjects	m_Selection = new SelectedObjects( );
+		private TileGrid					m_Grid;
+		private	Scene						m_Scene;
 
 		private IEditMode					m_ExclusiveMode;
 		private readonly List< IEditMode >	m_SharedModes = new List< IEditMode >( );
@@ -139,14 +144,8 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// <summary>
 		/// Sets up the context
 		/// </summary>
-		/// <param name="scene">Scene</param>
-		/// <param name="grid">Tile grid</param>
-		/// <param name="selection">Selected objects</param>
-		private EditModeContext( Scene scene, TileGrid grid, SelectedObjects selection )
+		private EditModeContext( )
 		{
-			m_Scene = scene;
-			m_Grid = grid;
-			m_Selection = selection;
 		}
 
 		#endregion

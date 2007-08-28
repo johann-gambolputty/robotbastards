@@ -78,7 +78,6 @@ namespace Poc0.LevelEditor
 			TileType type = ( TileType )tileTypeSetView.SelectedItems[ 0 ].Tag;
 
 			m_EditContext.AddEditMode( new PaintTileEditMode( MouseButtons.Right, type ) );
-			//m_EditState.OnPaint = type.SetTileToType;
 		}
 
 		private void objectsTreeView_AfterSelect(object sender, TreeViewEventArgs e)

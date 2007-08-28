@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
 using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.EditModes;
@@ -44,6 +47,8 @@ namespace Poc0.LevelEditor
 			ResourceManager.Instance.Setup( resourceSetupPath );
 
 			InitializeComponent( );
+
+			CreateEditContext( );
 
 			Icon = Properties.Resources.AppIcon;
 		}
@@ -97,6 +102,17 @@ namespace Poc0.LevelEditor
 			form.Show( );
 		}
 
+		private void CreateEditContext( )
+		{
+			//	Create the tile grid edit state
+			EditModeContext editContext = EditModeContext.CreateNewContext( );
+			editContext.AddEditControl( display1 );
+			editContext.AddEditMode( new SelectEditMode( MouseButtons.Left ) );
+			editContext.Selection.ObjectSelected += OnSelectionChanged;
+			editContext.Selection.ObjectDeselected += OnSelectionChanged;
+			m_EditContext = editContext;
+		}
+
 		/// <summary>
 		/// Creates a new scene, including tile grid, renderer and edit state
 		/// </summary>
@@ -108,21 +124,11 @@ namespace Poc0.LevelEditor
 			TileGrid grid = new TileGrid( tileTypes );
 			grid.SetDimensions( width, height );
 
-			//	Create the tile grid edit state
-			EditModeContext editContext = EditModeContext.CreateNewContext( scene, grid, new SelectedObjects( ) );
-			editContext.AddEditControl( display1 );
-			editContext.AddEditMode( new SelectEditMode( MouseButtons.Left ) );
-			editContext.AddEditMode(new PaintTileEditMode(MouseButtons.Right, tileTypes[0]));
-			editContext.Selection.ObjectSelected += OnSelectionChanged;
-			editContext.Selection.ObjectDeselected += OnSelectionChanged;
-
 			//	Add a renderer for the tile grid to the scene renderables
-			scene.Renderables.Add( new OpenGlTileBlock2dRenderer( grid, editContext ) );
+			scene.Objects.Add( Guid.NewGuid( ), grid );
+			scene.Renderables.Add( new OpenGlTileBlock2dRenderer( grid, m_EditContext ) );
 
-			//	Store
-			m_EditContext = editContext;
-			m_Grid = grid;
-			m_Scene = scene;
+			Scene = scene;
 		}
 
 		private void MainForm_Load( object sender, EventArgs e )
@@ -133,22 +139,14 @@ namespace Poc0.LevelEditor
 				CommandInputTemplateMap map = ( CommandInputTemplateMap )ResourceManager.Instance.Load( "LevelEditorCommandInputs.components.xml" );
 				m_User.InitialiseAllCommandListBindings( );
 
-				//	Create a new scene
-				CreateNewScene( TileTypeSet.CreateDefaultTileTypeSet( ), 16, 16 );
-
 				//	Load default templates
 				m_Templates.Append( "TestObjectTemplates.components.xml" );
-
-				//	Set up controls
-				editorControls1.Setup( m_Scene, m_Grid, m_EditContext, m_Templates );
 
 				ComponentLoadParameters loadParams = new ComponentLoadParameters( );
 				loadParams.Properties[ "User" ] = m_User;
 
 				//	Load in the scene viewer
 				Viewer viewer = ( Viewer )ResourceManager.Instance.Load( "LevelEditorStandardViewer.components.xml", loadParams );
-				viewer.Renderable = m_Scene;
-
 				display1.Viewers.Add( viewer );
 
 				//	Test load a command list
@@ -161,6 +159,39 @@ namespace Poc0.LevelEditor
 				{
 					ExceptionUtils.ToLog( AppLog.GetSource( Severity.Error ), ex );
 				}
+
+
+				//	Create a new scene
+				CreateNewScene( TileTypeSet.CreateDefaultTileTypeSet( ), 16, 16 );
+			}
+		}
+
+		public Scene Scene
+		{
+			get { return m_Scene; }
+			set
+			{
+				if ( value == null )
+				{
+					throw new ArgumentNullException( "value", "Scene cannot be null" );
+				}
+
+				TileGrid grid = value.Objects.GetFirstOfType< TileGrid >( );
+				if ( grid == null )
+				{
+					throw new ArgumentException( "Scene did not contain a TileGrid object" );
+				}
+
+				m_Scene = value;
+				m_Grid = grid;
+
+				foreach ( Viewer viewer in display1.Viewers )
+				{
+					viewer.Renderable = m_Scene;
+				}
+
+				m_EditContext.Setup( m_Scene, m_Grid );
+				editorControls1.Setup( m_Scene, m_Grid, m_EditContext, m_Templates );
 			}
 		}
 
@@ -169,10 +200,131 @@ namespace Poc0.LevelEditor
 		private Scene						m_Scene;
 		private TileGrid					m_Grid;
 		private EditModeContext				m_EditContext;
+		private string						m_LastSavePath;
 
 		private void niceComboBox1_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			propertyGrid1.SelectedObject = niceComboBox1.GetTag( niceComboBox1.SelectedIndex );
+		}
+
+		private void SaveAs( )
+		{
+			SaveFileDialog saveDialog = new SaveFileDialog( );
+			saveDialog.DefaultExt = "scene";
+			saveDialog.AddExtension = true;
+			if ( saveDialog.ShowDialog( ) != DialogResult.OK )
+			{
+				return;
+			}
+
+			m_LastSavePath = saveDialog.FileName;
+			SaveTo( m_LastSavePath );
+		}
+
+		private void Save( )
+		{
+			if ( m_LastSavePath == null )
+			{
+				SaveAs( );
+			}
+			else
+			{
+				SaveTo( m_LastSavePath );
+			}
+		}
+
+		private void SaveTo( string path )
+		{
+			MemoryStream outStream = new MemoryStream( );
+
+			//	TODO: AP: Muesli formatter doesn't work!
+			//IFormatter formatter = new Rb.Muesli.BinaryFormatter( );
+			IFormatter formatter = CreateFormatter( );
+			formatter.Serialize( outStream, m_Scene );
+
+			using ( Stream fileStream = File.OpenWrite( path ) )
+			{
+				fileStream.Write( outStream.ToArray( ), 0, ( int )outStream.Length );
+			}
+		}
+
+		private static ISurrogateSelector CreateSurrogateSelector( )
+		{
+			SurrogateSelector selector = new SurrogateSelector( );
+			selector.AddSurrogate( typeof( OpenGlTileBlock2dRenderer ), new StreamingContext( ), new GraphicsSurrogate( ) );
+			return selector;
+		}
+
+		private static IFormatter CreateFormatter( )
+		{
+			return new BinaryFormatter( CreateSurrogateSelector( ), new StreamingContext( ) );
+		}
+
+		/// <summary>
+		/// Test class for remapping graphics types
+		/// </summary>
+		private class GraphicsSurrogate : ISerializationSurrogate
+		{
+			#region ISerializationSurrogate Members
+
+			public void GetObjectData( object obj, SerializationInfo info, StreamingContext context )
+			{
+				TileBlockRenderer renderer = ( ( TileBlockRenderer )obj );
+				info.AddValue( "grid", renderer.Grid );
+			}
+
+			public object SetObjectData( object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector )
+			{
+				TileGrid grid = ( TileGrid )info.GetValue( "grid", typeof( TileGrid ) );
+				return new OpenGlTileBlock2dRenderer( grid, EditModeContext.Instance );
+			}
+
+			#endregion
+		}
+
+		private void Open( string path )
+		{
+			Scene scene;
+			try
+			{
+				using ( Stream fileStream = File.OpenRead( path ) )
+				{
+					IFormatter formatter = CreateFormatter( );
+					scene = ( Scene )formatter.Deserialize( fileStream );
+				}
+			}
+			catch ( Exception ex )
+			{
+				string msg = string.Format( Properties.Resources.FailedToOpenScene, path );
+				AppLog.Error( msg );
+				ExceptionUtils.ToLog( AppLog.GetSource( Severity.Error ), ex );
+				MessageBox.Show( msg, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
+				return;
+			}
+
+			Scene = scene;
+		}
+
+		private void saveAsToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			SaveAs( );
+		}
+
+		private void saveToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			Save( );
+		}
+
+		private void openToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			OpenFileDialog openDialog = new OpenFileDialog( );
+			openDialog.Filter = "Scene Files (*.scene)|*.scene|All Files (*.*)|*.*";
+			if ( openDialog.ShowDialog( ) != DialogResult.OK )
+			{
+				return;
+			}
+
+			Open( openDialog.FileName );
 		}
 	}
 }

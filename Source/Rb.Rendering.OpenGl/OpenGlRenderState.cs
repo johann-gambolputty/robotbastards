@@ -6,6 +6,7 @@ namespace Rb.Rendering.OpenGl
 	/// <summary>
 	/// Summary description for OpenGlRenderState.
 	/// </summary>
+	[Serializable]
 	public class OpenGlRenderState : RenderState
 	{
 		/// <summary>

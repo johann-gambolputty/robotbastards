@@ -1,9 +1,7 @@
-using System.Drawing;
+using System;
 using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.EditModes;
-using Rb.Core.Maths;
 using Rb.Rendering;
-using Rb.Rendering.OpenGl;
 using Tao.OpenGl;
 
 namespace Poc0.LevelEditor.Rendering.OpenGl
@@ -11,6 +9,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 	/// <summary>
 	/// Renders a tile grid and tile selection using 2d opengl graphics. BORING.
 	/// </summary>
+	[Serializable]
 	public sealed class OpenGlTileBlock2dRenderer : TileBlockRenderer
 	{
 		#region Public constructor
@@ -41,6 +40,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		/// <summary>
 		/// Helper for rendering individual tiles by layering together contributions from adjacent tiles
 		/// </summary>
+		[Serializable] // TODO: AP: Get rid of this...
 		private class OpenGlTileRenderer : TileRenderer
 		{
 			/// <summary>

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Rb.Rendering
@@ -5,6 +6,7 @@ namespace Rb.Rendering
     /// <summary>
     /// Stores a list of renderable objects
     /// </summary>
+    [Serializable]
     public class RenderableList : List< IRenderable >, IRenderable
     {
         #region IRenderable Members

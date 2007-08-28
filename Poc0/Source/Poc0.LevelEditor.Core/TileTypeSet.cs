@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using Rb.Rendering;
@@ -7,6 +8,7 @@ namespace Poc0.LevelEditor.Core
 	/// <summary>
 	/// Stores a set of TileType objects
 	/// </summary>
+	[Serializable]
 	public class TileTypeSet
 	{
 		#region Public properties
@@ -80,7 +82,7 @@ namespace Poc0.LevelEditor.Core
 
 			set.AddTileType( "tile0", Properties.Resources.tile0, 4, 4 );
 			set.AddTileType( "tile1", Properties.Resources.tile1, 8, 6 );
-			set.AddTileType( "tile2", Properties.Resources.tile2, 3, 0 );
+			//set.AddTileType( "tile2", Properties.Resources.tile2, 3, 0 );
 
 			return set;
 		}
@@ -113,7 +115,12 @@ namespace Poc0.LevelEditor.Core
 		#region Private members
 
 		private readonly List< TileType >	m_TileTypes = new List< TileType >( );
+
+		//	TODO: AP: Enable serialization
+		[NonSerialized]
 		private readonly TileTexture		m_DisplayTexture = new TileTexture( );
+
+		[NonSerialized]
 		private Bitmap						m_DisplayTextureBitmap;
 
 		#endregion

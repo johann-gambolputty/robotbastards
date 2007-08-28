@@ -155,6 +155,10 @@
       <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
       <Name>Rb.Log</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Muesli\Rb.Muesli.csproj">
+      <Project>{B8CB331A-D8D9-48B6-ACBF-2276EC294427}</Project>
+      <Name>Rb.Muesli</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.Rendering.OpenGl.Windows\Rb.Rendering.OpenGl.Windows.csproj">
       <Project>{F2F59120-9F01-4910-BB19-16FA628AE56C}</Project>
       <Name>Rb.Rendering.OpenGl.Windows</Name>
