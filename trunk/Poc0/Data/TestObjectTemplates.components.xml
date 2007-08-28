@@ -18,6 +18,15 @@
         <string value="Evil Robot"/>
       </parameters>
 
+      <object type="Rb.Core.Components.ObjectTemplate" assembly="Rb.Core">
+
+        <parameters>
+          <type value="Poc0.Core.Body" assembly="Poc0.Core"/>
+          <string value="Body"/>
+        </parameters>
+
+      </object>
+
     </object>
 
   </list>

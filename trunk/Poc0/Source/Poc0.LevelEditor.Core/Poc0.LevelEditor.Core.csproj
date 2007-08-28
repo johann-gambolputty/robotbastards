@@ -68,6 +68,10 @@
     </Compile>
     <Compile Include="EditModes\SelectEditMode.cs" />
     <Compile Include="SelectedObjects.cs" />
+    <Compile Include="TileBlock2dRenderer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TileBlock3dRenderer.cs" />
     <Compile Include="TileBlockRenderer.cs" />
     <Compile Include="TileByteCodes.cs" />
     <Compile Include="TileCamera2dCommandHandler.cs" />

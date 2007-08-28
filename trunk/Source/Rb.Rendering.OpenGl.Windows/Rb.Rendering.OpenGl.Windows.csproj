@@ -62,6 +62,10 @@
     <Compile Include="RenderFactory.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rb.Log\Rb.Log.csproj">
       <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
       <Name>Rb.Log</Name>

@@ -1,6 +1,7 @@
 using System.Drawing;
 using Rb.Core.Utils;
 using System;
+using System.Runtime.Serialization;
 
 namespace Rb.Rendering
 {
@@ -35,7 +36,8 @@ namespace Rb.Rendering
 	/// To apply a texture, use Renderer.ApplyTexture(), or a TextureSampler2d object
 	/// </remarks>
 	/// <seealso>ApplyTexture2d</seealso>
-	public abstract class Texture2d : IDisposable
+	[Serializable]
+	public abstract class Texture2d : IDisposable, ISerializable
 	{
 		#region	Texture Format
 
@@ -74,6 +76,14 @@ namespace Rb.Rendering
 		/// </summary>
 		public Texture2d( )
 		{
+		}
+
+		/// <summary>
+		/// Serialization constructor
+		/// </summary>
+		public Texture2d( SerializationInfo info, StreamingContext context )
+		{
+			Load( ( Bitmap )info.GetValue( "img", typeof( Bitmap ) ) );
 		}
 
 		/// <summary>
@@ -210,6 +220,18 @@ namespace Rb.Rendering
 		/// </summary>
 		public virtual void Dispose()
 		{
+		}
+
+		#endregion
+
+		#region ISerializable Members
+
+		/// <summary>
+		/// Saves this texture
+		/// </summary>
+		public virtual void GetObjectData( SerializationInfo info, StreamingContext context )
+		{
+			info.AddValue( "img", ToBitmap( ) );
 		}
 
 		#endregion

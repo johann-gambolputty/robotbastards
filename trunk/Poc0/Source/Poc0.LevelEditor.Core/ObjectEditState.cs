@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 using Poc0.Core;
 using Rb.Core.Maths;
 using Rb.Rendering;
@@ -12,12 +10,13 @@ namespace Poc0.LevelEditor.Core
 	/// <summary>
 	/// State of an object in the editor
 	/// </summary>
+	[Serializable]
 	public class ObjectEditState : ISelectable, IRenderable
 	{
 		/// <summary>
 		/// Sets the tile object to get renderer
 		/// </summary>
-		public ObjectEditState(Scene scene, object parent)
+		public ObjectEditState( Scene scene, object parent )
 		{
 			scene.Renderables.Add( this );
 			m_Parent = ( IHasWorldFrame )parent;
@@ -43,8 +42,10 @@ namespace Poc0.LevelEditor.Core
 		}
 
 		private readonly IHasWorldFrame m_Parent;
+
+		[NonSerialized]
 		private bool m_Selected;
-			
+
 		#region ISelectable Members
 
 		/// <summary>

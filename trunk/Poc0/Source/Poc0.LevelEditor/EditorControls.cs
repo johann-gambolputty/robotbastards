@@ -28,10 +28,9 @@ namespace Poc0.LevelEditor
 		{
 			m_Grid = grid;
 			m_EditContext = editContext;
-			m_Templates = templates;
 			tileTypeSetView.TileTypes = grid.Set;
 
-			PopulateObjectTemplates(scene);
+			PopulateObjectTemplates( templates );
 		}
 
 		/// <summary>
@@ -50,12 +49,16 @@ namespace Poc0.LevelEditor
 			get { return m_Grid; }
 		}
 
-		private TileGrid m_Grid;
-		private EditModeContext m_EditContext;
-		private ObjectTemplates m_Templates;
-		
-		private void PopulateObjectTemplates( Scene scene )
+		private TileGrid		m_Grid;
+		private EditModeContext	m_EditContext;
+		private ObjectTemplates	m_Templates;
+
+		private void PopulateObjectTemplates( ObjectTemplates templates )
 		{
+			m_Templates = templates;
+
+			objectsTreeView.Nodes.Clear( );
+
 			//	Populate the object types tree
 			TreeNode allObjects = objectsTreeView.Nodes.Add( "All Objects" );
 
@@ -70,7 +73,7 @@ namespace Poc0.LevelEditor
 
 		private void tileTypeSetView_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
-			if (tileTypeSetView.SelectedItems.Count == 0)
+			if ( tileTypeSetView.SelectedItems.Count == 0 )
 			{
 				return;
 			}

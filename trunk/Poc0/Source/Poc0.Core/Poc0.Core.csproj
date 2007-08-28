@@ -47,11 +47,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Body.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Environment\Collisions.cs" />
     <Compile Include="Environment\Environment.cs" />
     <Compile Include="Environment\Graphics.cs" />
+    <Compile Include="Environment\INavigator.cs" />
     <Compile Include="Environment\Navigator.cs" />
+    <Compile Include="HealthChange.cs" />
+    <Compile Include="IBody.cs" />
     <Compile Include="IHasWorldFrame.cs" />
     <Compile Include="PlayerStart.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

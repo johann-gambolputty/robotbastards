@@ -5,6 +5,7 @@ namespace Rb.Core.Maths
 	/// <summary>
 	/// 4x4 matrix, used for transformation in R3
 	/// </summary>
+	[Serializable]
 	public class Matrix44
 	{
 		#region	Predefined matrices

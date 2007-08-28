@@ -10,6 +10,7 @@ namespace Rb.Core.Components
 	/// <summary>
 	/// Handy implementation of IMessageHub
 	/// </summary>
+	[Serializable]
 	public class MessageHub : IMessageHub
 	{
 		#region IMessageHub Members
@@ -196,7 +197,7 @@ namespace Rb.Core.Components
 
         #region Private stuff
 
-        private List< MessageRecipientChain > m_Chains = new List< MessageRecipientChain >( );
+        private readonly List< MessageRecipientChain > m_Chains = new List< MessageRecipientChain >( );
 		
 		/// <summary>
 		/// Returns true if 2 classes are equal, or subclass is derived from baseClass

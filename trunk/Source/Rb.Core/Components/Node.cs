@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.ComponentModel;
 
@@ -6,6 +7,7 @@ namespace Rb.Core.Components
 	/// <summary>
 	/// Handy base class that implements IChild and IParent
 	/// </summary>
+	[Serializable]
 	public class Node : IChild, IParent
 	{
 		#region Public properties

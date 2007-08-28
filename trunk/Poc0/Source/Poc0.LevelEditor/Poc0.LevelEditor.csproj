@@ -113,6 +113,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="SceneSerializer.cs" />
     <Compile Include="TileGridDisplay.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -127,6 +128,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\Rb.AssemblySelector\Rb.AssemblySelector.csproj">
+      <Project>{2097B22A-91A5-4CFF-8CCB-846A10523CB9}</Project>
+      <Name>Rb.AssemblySelector</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.ComponentXmlLoader\Rb.ComponentXmlLoader.csproj">
       <Project>{61B562C4-66D5-4048-B482-858A791249A2}</Project>
       <Name>Rb.ComponentXmlLoader</Name>

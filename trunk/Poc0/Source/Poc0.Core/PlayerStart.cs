@@ -1,3 +1,4 @@
+using System;
 using Rb.Core.Components;
 using Rb.Core.Maths;
 
@@ -6,6 +7,7 @@ namespace Poc0.Core
 	/// <summary>
 	/// Player start point
 	/// </summary>
+	[Serializable]
 	public class PlayerStart : Component, IHasWorldFrame
 	{
 		/// <summary>

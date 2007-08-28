@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.Serialization;
 using Tao.OpenGl;
 
 namespace Rb.Rendering.OpenGl
@@ -9,6 +10,7 @@ namespace Rb.Rendering.OpenGl
 	/// <summary>
 	/// OpenGL implementation of Texture2d
 	/// </summary>
+	[Serializable]
 	public class OpenGlTexture2d : Texture2d
 	{
 		/// <summary>
@@ -17,6 +19,21 @@ namespace Rb.Rendering.OpenGl
 		public int	TextureHandle
 		{
 			get { return m_TextureHandle; }
+		}
+
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public OpenGlTexture2d( )
+		{	
+		}
+
+		/// <summary>
+		/// Serialization constructor
+		/// </summary>
+		public OpenGlTexture2d( SerializationInfo info, StreamingContext context ) :
+			base( info, context )
+		{
 		}
 
 		/// <summary>
@@ -475,6 +492,14 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Saves this texture
+		/// </summary>
+		public override void GetObjectData( SerializationInfo info, StreamingContext context )
+		{
+			base.GetObjectData( info, context );
+		}
 
 		private const int InvalidHandle = -1;
 

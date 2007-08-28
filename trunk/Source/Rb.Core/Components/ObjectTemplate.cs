@@ -16,7 +16,7 @@ namespace Rb.Core.Components
 	/// instance builders (added using <see cref="AddChildInstanceBuilder"/>), the child instances are created
 	/// and added using an appropriate method to the created object.
 	/// </remarks>
-	public class ObjectTemplate : IInstanceBuilder, INamed
+	public class ObjectTemplate : IInstanceBuilder, INamed, IParent
 	{
 		/// <summary>
 		/// Setup constructor. Creates object of given type with no constructor parameters
@@ -172,6 +172,29 @@ namespace Rb.Core.Components
 			return	( t.GetInterface( typeof( IParent ).Name ) != null ) ||
 					( t.GetInterface( typeof( IList ).Name ) != null );
 		}
+
+		#endregion
+
+		#region IParent Members
+
+		public ICollection Children
+		{
+			get { return m_ChildBuilders; }
+		}
+
+		public void AddChild( object obj )
+		{
+			m_ChildBuilders.Add( ( IInstanceBuilder )obj );
+		}
+
+		public void RemoveChild( object obj )
+		{
+			m_ChildBuilders.Remove( ( IInstanceBuilder )obj );
+		}
+
+		public event OnChildAddedDelegate OnChildAdded;
+
+		public event OnChildRemovedDelegate OnChildRemoved;
 
 		#endregion
 	}

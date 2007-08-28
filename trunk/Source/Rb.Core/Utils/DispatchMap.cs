@@ -231,7 +231,7 @@ namespace Rb.Core.Utils
             generator.MarkLabel( isNullBranch );                //  Mark the null branch label
         }
 
-        private static Dictionary< Type, DispatchMap > ms_Maps = new Dictionary< Type, DispatchMap >( );
+        private static readonly Dictionary< Type, DispatchMap > ms_Maps = new Dictionary< Type, DispatchMap >( );
 
         #endregion
 

@@ -6,6 +6,7 @@ namespace Rb.Core.Components
 	/// <summary>
 	/// Component is a handy implementation of a bunch of component interfaces
 	/// </summary>
+	[Serializable]
 	public class Component : Node, IUnique, IMessageHandler, IMessageHub, ISupportsDynamicProperties
 	{
 		#region IUnique Members
@@ -106,9 +107,11 @@ namespace Rb.Core.Components
 		#region Private stuff
 
 		private Guid			    m_Id = Guid.Empty;
-		private Utils.DispatchMap	m_MessageMap;
 		private MessageHub		    m_MessageHub;
         private IDynamicProperties  m_DynProperties;
+
+		[NonSerialized]
+		private Utils.DispatchMap	m_MessageMap;
 
 		#endregion
 
