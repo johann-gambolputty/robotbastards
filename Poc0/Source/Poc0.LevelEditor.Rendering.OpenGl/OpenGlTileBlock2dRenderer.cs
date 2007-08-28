@@ -10,7 +10,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 	/// Renders a tile grid and tile selection using 2d opengl graphics. BORING.
 	/// </summary>
 	[Serializable]
-	public sealed class OpenGlTileBlock2dRenderer : TileBlockRenderer
+	public sealed class OpenGlTileBlock2dRenderer : TileBlock2dRenderer
 	{
 		#region Public constructor
 

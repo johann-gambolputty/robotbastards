@@ -127,4 +127,7 @@
   <data name="FailedToOpenScene" xml:space="preserve">
     <value>Failed to open scene file "{0}"</value>
   </data>
+  <data name="FailedToSaveScene" xml:space="preserve">
+    <value>Failed to save scene to file "{0}"</value>
+  </data>
 </root>

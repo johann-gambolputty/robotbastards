@@ -1,14 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
 using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.EditModes;
-using Poc0.LevelEditor.Rendering.OpenGl;  
 using Rb.Core.Components;
 using Rb.Core.Resources;
 using Rb.Core.Utils;
@@ -31,12 +27,12 @@ namespace Poc0.LevelEditor
 			AppLog.GetSource( Severity.Info ).WriteEnvironment( );
 
 			//	Load the rendering assembly
-			string renderAssembly = ConfigurationManager.AppSettings[ "renderAssembly" ];
-			if ( renderAssembly == null )
+			string renderAssemblyName = ConfigurationManager.AppSettings[ "renderAssembly" ];
+			if ( renderAssemblyName == null )
 			{
-				renderAssembly = "Rb.Rendering.OpenGl.Windows";
+				renderAssemblyName = "Rb.Rendering.OpenGl.Windows";
 			}
-			RenderFactory.Load( renderAssembly );
+			RenderFactory.Load( renderAssemblyName );
 			
 			//	Load resource settings
 			string resourceSetupPath = ConfigurationManager.AppSettings[ "resourceSetupPath" ];
@@ -45,6 +41,10 @@ namespace Poc0.LevelEditor
 				resourceSetupPath = "../resourceSetup.xml";
 			}
 			ResourceManager.Instance.Setup( resourceSetupPath );
+
+			//	Load all assemblies that support the chosen graphics API 
+			Rb.AssemblySelector.IdentifierMap.Instance.AddAssemblyIdentifiers( Directory.GetCurrentDirectory( ), SearchOption.TopDirectoryOnly );
+			Rb.AssemblySelector.IdentifierMap.Instance.LoadAll( "GraphicsApi=" + RenderFactory.Instance.ApiName );
 
 			InitializeComponent( );
 
@@ -126,7 +126,7 @@ namespace Poc0.LevelEditor
 
 			//	Add a renderer for the tile grid to the scene renderables
 			scene.Objects.Add( Guid.NewGuid( ), grid );
-			scene.Renderables.Add( new OpenGlTileBlock2dRenderer( grid, m_EditContext ) );
+			scene.Renderables.Add( RenderFactory.Instance.Create< TileBlock2dRenderer >( grid, m_EditContext ) );
 
 			Scene = scene;
 		}
@@ -197,134 +197,33 @@ namespace Poc0.LevelEditor
 
 		private readonly CommandUser		m_User = new CommandUser( );
 		private readonly ObjectTemplates	m_Templates = new ObjectTemplates( );
+		private readonly SceneSerializer	m_Serializer = new SceneSerializer( );
 		private Scene						m_Scene;
 		private TileGrid					m_Grid;
 		private EditModeContext				m_EditContext;
-		private string						m_LastSavePath;
 
 		private void niceComboBox1_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			propertyGrid1.SelectedObject = niceComboBox1.GetTag( niceComboBox1.SelectedIndex );
 		}
 
-		private void SaveAs( )
-		{
-			SaveFileDialog saveDialog = new SaveFileDialog( );
-			saveDialog.DefaultExt = "scene";
-			saveDialog.AddExtension = true;
-			if ( saveDialog.ShowDialog( ) != DialogResult.OK )
-			{
-				return;
-			}
-
-			m_LastSavePath = saveDialog.FileName;
-			SaveTo( m_LastSavePath );
-		}
-
-		private void Save( )
-		{
-			if ( m_LastSavePath == null )
-			{
-				SaveAs( );
-			}
-			else
-			{
-				SaveTo( m_LastSavePath );
-			}
-		}
-
-		private void SaveTo( string path )
-		{
-			MemoryStream outStream = new MemoryStream( );
-
-			//	TODO: AP: Muesli formatter doesn't work!
-			//IFormatter formatter = new Rb.Muesli.BinaryFormatter( );
-			IFormatter formatter = CreateFormatter( );
-			formatter.Serialize( outStream, m_Scene );
-
-			using ( Stream fileStream = File.OpenWrite( path ) )
-			{
-				fileStream.Write( outStream.ToArray( ), 0, ( int )outStream.Length );
-			}
-		}
-
-		private static ISurrogateSelector CreateSurrogateSelector( )
-		{
-			SurrogateSelector selector = new SurrogateSelector( );
-			selector.AddSurrogate( typeof( OpenGlTileBlock2dRenderer ), new StreamingContext( ), new GraphicsSurrogate( ) );
-			return selector;
-		}
-
-		private static IFormatter CreateFormatter( )
-		{
-			return new BinaryFormatter( CreateSurrogateSelector( ), new StreamingContext( ) );
-		}
-
-		/// <summary>
-		/// Test class for remapping graphics types
-		/// </summary>
-		private class GraphicsSurrogate : ISerializationSurrogate
-		{
-			#region ISerializationSurrogate Members
-
-			public void GetObjectData( object obj, SerializationInfo info, StreamingContext context )
-			{
-				TileBlockRenderer renderer = ( ( TileBlockRenderer )obj );
-				info.AddValue( "grid", renderer.Grid );
-			}
-
-			public object SetObjectData( object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector )
-			{
-				TileGrid grid = ( TileGrid )info.GetValue( "grid", typeof( TileGrid ) );
-				return new OpenGlTileBlock2dRenderer( grid, EditModeContext.Instance );
-			}
-
-			#endregion
-		}
-
-		private void Open( string path )
-		{
-			Scene scene;
-			try
-			{
-				using ( Stream fileStream = File.OpenRead( path ) )
-				{
-					IFormatter formatter = CreateFormatter( );
-					scene = ( Scene )formatter.Deserialize( fileStream );
-				}
-			}
-			catch ( Exception ex )
-			{
-				string msg = string.Format( Properties.Resources.FailedToOpenScene, path );
-				AppLog.Error( msg );
-				ExceptionUtils.ToLog( AppLog.GetSource( Severity.Error ), ex );
-				MessageBox.Show( msg, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
-				return;
-			}
-
-			Scene = scene;
-		}
-
 		private void saveAsToolStripMenuItem_Click( object sender, EventArgs e )
 		{
-			SaveAs( );
+			m_Serializer.SaveAs( m_Scene );
 		}
 
 		private void saveToolStripMenuItem_Click( object sender, EventArgs e )
 		{
-			Save( );
+			m_Serializer.Save( m_Scene );
 		}
 
 		private void openToolStripMenuItem_Click( object sender, EventArgs e )
 		{
-			OpenFileDialog openDialog = new OpenFileDialog( );
-			openDialog.Filter = "Scene Files (*.scene)|*.scene|All Files (*.*)|*.*";
-			if ( openDialog.ShowDialog( ) != DialogResult.OK )
+			Scene scene = m_Serializer.Open( );
+			if ( scene != null )
 			{
-				return;
+				Scene = scene;
 			}
-
-			Open( openDialog.FileName );
 		}
 	}
 }

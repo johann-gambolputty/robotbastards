@@ -140,6 +140,7 @@
     <Compile Include="Utils\DispatchMap.cs" />
     <Compile Include="Utils\ExceptionUtils.cs" />
     <Compile Include="Utils\InvokeQueue.cs" />
+    <Compile Include="Utils\LibraryBuilder.cs" />
     <Compile Include="Utils\PathHelpers.cs" />
     <Compile Include="Utils\PolyList.cs" />
     <Compile Include="Utils\StackTraceInfo.cs" />

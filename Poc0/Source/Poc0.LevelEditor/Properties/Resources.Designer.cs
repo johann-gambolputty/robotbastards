@@ -84,5 +84,14 @@ namespace Poc0.LevelEditor.Properties {
                 return ResourceManager.GetString("FailedToOpenScene", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to save scene to file &quot;{0}&quot;.
+        /// </summary>
+        internal static string FailedToSaveScene {
+            get {
+                return ResourceManager.GetString("FailedToSaveScene", resourceCulture);
+            }
+        }
     }
 }

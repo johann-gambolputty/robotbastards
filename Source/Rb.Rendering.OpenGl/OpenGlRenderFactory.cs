@@ -6,9 +6,13 @@ namespace Rb.Rendering.OpenGl
 	/// </summary>
 	public abstract class OpenGlRenderFactory : RenderFactory
 	{
-        public OpenGlRenderFactory( )
-        {
-        }
+		/// <summary>
+		/// Gets the name of the API supported by this render factory
+		/// </summary>
+		public override string ApiName
+		{
+			get { return "OpenGl"; }
+		}
 
 	    /// <summary>
 		/// Creates a new RenderState object

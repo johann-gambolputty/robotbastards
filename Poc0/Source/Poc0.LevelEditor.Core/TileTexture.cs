@@ -1,16 +1,15 @@
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Text;
 using Rb.Core.Maths;
 using Rb.Rendering;
 
 namespace Poc0.LevelEditor.Core
 {
 	/// <summary>
-	/// Stores tile bitmaps in a rendering texture
+	/// Stores tile bitmaps in a render texture
 	/// </summary>
+	[Serializable]
 	public class TileTexture
 	{
 		/// <summary>
@@ -235,7 +234,7 @@ namespace Poc0.LevelEditor.Core
 		/// <returns>Texture coordinates of the generated image on <see cref="Texture"/></returns>
 		public RectangleF Generate( TileType type, byte code, int hardEdgeSize, int softEdgeSize )
 		{
-			return Add( GenerateTransitionBitmap( type.Image, code, hardEdgeSize, softEdgeSize, true ) );
+			return Add( GenerateTransitionBitmap( type.Image, code, hardEdgeSize, softEdgeSize ) );
 		}
 
 		#region Transition bitmap generation
@@ -273,9 +272,8 @@ namespace Poc0.LevelEditor.Core
 		/// <param name="code">Transition code</param>
 		/// <param name="hardEdgeSize">Size of the hard edge in the automatically generated transition textures</param>
 		/// <param name="softEdgeSize">Size of the soft edge in the automatically generated transition textures</param>
-		/// <param name="canUseBmpDirectly">If true, and bmp is in the correct format, then bmp can be edited in place (and is the returned result)</param>
 		/// <returns>Returns a new bitmap, combining an alpha channel with bmp</returns>
-		private static Bitmap GenerateTransitionBitmap( Bitmap bmp, byte code, int hardEdgeSize, int softEdgeSize, bool canUseBmpDirectly )
+		private static Bitmap GenerateTransitionBitmap( Bitmap bmp, byte code, int hardEdgeSize, int softEdgeSize )
 		{
 			BandMin = hardEdgeSize;
 			BandSize = softEdgeSize;
@@ -285,7 +283,7 @@ namespace Poc0.LevelEditor.Core
 
 			if ( code == TransitionCodes.All )
 			{
-				return GenerateNoTransitionBitmap( bmp, canUseBmpDirectly );
+				return GenerateNoTransitionBitmap( bmp );
 			}
 
 			if ( ( code & TransitionCodes.Corners ) != 0 )
@@ -351,9 +349,8 @@ namespace Poc0.LevelEditor.Core
 		/// Generates a bitmap without transitions (basically just ensures that a clone of bmp has the right pixel format, with a solid alpha channel)
 		/// </summary>
 		/// <param name="bmp">Input bitmap</param>
-		/// <param name="canUseBmpDirectly">If true, and bmp is in the correct format, then bmp can be edited in place (and is the returned result)</param>
 		/// <returns>Transition bitmap</returns>
-		private unsafe static Bitmap GenerateNoTransitionBitmap( Bitmap bmp, bool canUseBmpDirectly )
+		private static Bitmap GenerateNoTransitionBitmap( Bitmap bmp )
 		{
 			return CloneBitmapR8G8B8A8( bmp );
 		}
@@ -488,7 +485,7 @@ namespace Poc0.LevelEditor.Core
 							alpha = DistanceToAlpha( bmp.Width - x );
 						}
 					}
-					
+
 					if ( y < BandMax )
 					{
 						if ( ( code & TransitionCodes.TopEdge ) != 0 )
@@ -545,6 +542,8 @@ namespace Poc0.LevelEditor.Core
 		private int 				m_AddY;
 		private int 				m_HighestOnRow;
 		private readonly Bitmap 	m_Combiner = new Bitmap( CombinedWidth, CombinedHeight, CombinedPixelFormat );
+
+		[NonSerialized]
 		private Texture2d			m_Texture;
 
 		#endregion

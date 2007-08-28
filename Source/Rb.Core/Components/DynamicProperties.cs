@@ -8,6 +8,7 @@ namespace Rb.Core.Components
     /// <summary>
     /// Implementation of the IDynamicProperties interface, using a Dictionary of DynamicProperty objects
     /// </summary>
+    [Serializable]
     public class DynamicProperties : IDynamicProperties
     {
         #region IDynamicProperties Members
@@ -126,7 +127,7 @@ namespace Rb.Core.Components
 
 		#region Private stuff
 
-		private Dictionary< string, DynamicProperty > m_Properties = new Dictionary< string, DynamicProperty >( );
+		private readonly Dictionary< string, DynamicProperty > m_Properties = new Dictionary< string, DynamicProperty >( );
 
         #endregion
     }

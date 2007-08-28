@@ -59,6 +59,23 @@ namespace Rb.AssemblySelector
             return null;
         }
 
+		/// <summary>
+		/// Loads all assemblies based on evidence queried by a selection string
+		/// </summary>
+		/// <param name="selectionString">Selection string</param>
+		public void LoadAll( string selectionString )
+		{
+            AssemblySelector selector = BuildSelector( selectionString );
+
+            foreach ( KeyValuePair< string, AssemblyIdentifiers > kvp in m_Map )
+            {
+                if ( ( selector.MatchesFilename( kvp.Key ) ) && ( selector.MatchesIdentifiers( kvp.Value ) ) )
+                {
+                    Assembly.Load( kvp.Key );
+                }
+            }
+		}
+
         /// <summary>
         /// Searches a directory for assemblies, storing information about each in this map
         /// </summary>

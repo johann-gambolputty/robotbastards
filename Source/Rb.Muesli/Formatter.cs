@@ -5,16 +5,36 @@ namespace Rb.Muesli
 {
     public abstract class Formatter : IFormatter
     {
+		public Formatter( )
+		{
+		}
+
+		public Formatter( ISurrogateSelector selector )
+		{
+			m_Selector = selector;
+		}
+
         #region Protected stuff
 
         protected abstract IInput   CreateInput( Stream stream );
         protected abstract IOutput  CreateOutput( Stream stream );
 
+    	protected ISurrogateSelector Selector
+    	{
+    		get { return m_Selector; }
+    	}
+
         #endregion
 
-        #region IFormatter Members
+		#region Private stuff
 
-        public SerializationBinder Binder
+    	private readonly ISurrogateSelector m_Selector;
+
+		#endregion
+
+		#region IFormatter Members
+
+		public SerializationBinder Binder
         {
             get
             {

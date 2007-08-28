@@ -59,7 +59,6 @@
     <Compile Include="FpsDisplay.cs" />
     <Compile Include="IDisplaySetup.cs" />
     <Compile Include="GraphicsLog.cs" />
-    <Compile Include="Composite.cs" />
     <Compile Include="IPass.cs" />
     <Compile Include="IRenderable.cs" />
     <Compile Include="IRenderContext.cs" />
@@ -79,6 +78,7 @@
     <Compile Include="RenderFont.cs" />
     <Compile Include="RenderFonts.cs" />
     <Compile Include="Pass.cs" />
+    <Compile Include="RenderingLibraryTypeAttribute.cs" />
     <Compile Include="RenderState.cs" />
     <Compile Include="RenderTarget.cs" />
     <Compile Include="Effect.cs" />

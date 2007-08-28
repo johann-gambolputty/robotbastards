@@ -42,7 +42,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 				Scene scene = EditModeContext.Instance.Scene;
 				object newObject = m_Template.CreateInstance( scene.Builder );
-				
+
 				Guid id = Guid.NewGuid( );
 				if ( newObject is IUnique )
 				{

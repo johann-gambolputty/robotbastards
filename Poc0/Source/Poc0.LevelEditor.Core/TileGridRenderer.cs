@@ -6,7 +6,7 @@ namespace Poc0.LevelEditor.Core
 	/// <summary>
 	/// Interface for objects that can render a <see cref="TileGrid"/>
 	/// </summary>
-	[Serializable]
+	[Serializable, RenderingLibraryType]
 	public abstract class TileGridRenderer : IRenderable
 	{
 		/// <summary>

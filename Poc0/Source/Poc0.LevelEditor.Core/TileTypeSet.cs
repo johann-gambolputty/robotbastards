@@ -117,7 +117,6 @@ namespace Poc0.LevelEditor.Core
 		private readonly List< TileType >	m_TileTypes = new List< TileType >( );
 
 		//	TODO: AP: Enable serialization
-		[NonSerialized]
 		private readonly TileTexture		m_DisplayTexture = new TileTexture( );
 
 		[NonSerialized]
