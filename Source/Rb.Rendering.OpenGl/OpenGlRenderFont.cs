@@ -218,7 +218,7 @@ namespace Rb.Rendering.OpenGl
 
 		private unsafe static void FillBmpAlpha( Bitmap img )
 		{
-			BitmapData bmpData = img.LockBits( new Rectangle( 0, 0, img.Width, img.Height ), ImageLockMode.ReadWrite, img.PixelFormat );
+			BitmapData bmpData = img.LockBits( new System.Drawing.Rectangle( 0, 0, img.Width, img.Height ), ImageLockMode.ReadWrite, img.PixelFormat );
 			byte* pixelMem = ( byte* )bmpData.Scan0.ToPointer( );
 			byte* scanline = pixelMem;
 			for ( int y = 0; y < bmpData.Height; ++y )

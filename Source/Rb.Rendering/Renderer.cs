@@ -243,7 +243,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Gets the current viewport
 		/// </summary>
-		public abstract Rectangle Viewport
+		public abstract System.Drawing.Rectangle Viewport
 		{
 			get;
 		}
@@ -448,13 +448,13 @@ namespace Rb.Rendering
 
 		#region	Private stuff
 
-		private static Renderer		ms_Singleton;
-		private ArrayList			m_RenderStates	= new ArrayList( );
-		private Cameras.CameraBase	m_Camera;
-		private Light[]				m_Lights = new Light[ MaxActiveLights ];
-		private int					m_NumLights;
-		private Texture2d[]			m_Textures = new Texture2d[ MaxTextures ];
-        private List< Texture2d[] > m_TextureStack = new List< Texture2d[] >( );
+		private static Renderer				ms_Singleton;
+		private readonly ArrayList			m_RenderStates	= new ArrayList( );
+		private Cameras.CameraBase			m_Camera;
+		private readonly Light[]			m_Lights = new Light[ MaxActiveLights ];
+		private int							m_NumLights;
+		private readonly Texture2d[]		m_Textures = new Texture2d[ MaxTextures ];
+		private readonly List<Texture2d[]>	m_TextureStack = new List<Texture2d[]>();
 
 		#endregion
 

@@ -302,7 +302,7 @@ namespace Poc0.LevelEditor.Core
 				return src;
 			}
 
-			Rectangle lockRect = new Rectangle( 0, 0, src.Width, src.Height );
+			System.Drawing.Rectangle lockRect = new System.Drawing.Rectangle( 0, 0, src.Width, src.Height );
 
 			src = src.Clone( lockRect, PixelFormat.Format32bppArgb );
 			if ( src.PixelFormat == PixelFormat.Format32bppArgb )
@@ -389,7 +389,7 @@ namespace Poc0.LevelEditor.Core
 
 		private unsafe static Bitmap GenerateCornerTransitionBitmap( Bitmap bmp, byte code )
 		{
-			Rectangle lockRect = new Rectangle( 0, 0, bmp.Width, bmp.Height );
+			System.Drawing.Rectangle lockRect = new System.Drawing.Rectangle( 0, 0, bmp.Width, bmp.Height );
 
 			bmp = CloneBitmapR8G8B8A8( bmp );
 
@@ -447,7 +447,7 @@ namespace Poc0.LevelEditor.Core
 
 		private unsafe static Bitmap GenerateEdgeTransitionBitmap( Bitmap bmp, byte code )
 		{
-			Rectangle lockRect = new Rectangle( 0, 0, bmp.Width, bmp.Height );
+			System.Drawing.Rectangle lockRect = new System.Drawing.Rectangle( 0, 0, bmp.Width, bmp.Height );
 			if ( bmp.PixelFormat != CombinedPixelFormat )
 			{
 				//	Convert to appropriate pixel format

@@ -50,7 +50,7 @@ namespace Poc0.LevelEditor
 		/// </summary>
 		private Viewer FindViewerUnderCursor( int cursorX, int cursorY )
 		{
-			Rectangle winRect = Bounds;
+			System.Drawing.Rectangle winRect = Bounds;
 			foreach ( Viewer viewer in Viewers )
 			{
 				if ( viewer.GetWindowRectangle( winRect ).Contains( cursorX, cursorY ) )

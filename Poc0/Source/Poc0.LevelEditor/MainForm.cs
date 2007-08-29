@@ -1,9 +1,10 @@
 using System;
 using System.Configuration;
-using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using Crownwood.Magic.Docking;
 using Poc0.LevelEditor.Core;
+using Poc0.LevelEditor.Core.Actions;
 using Poc0.LevelEditor.Core.EditModes;
 using Rb.Core.Components;
 using Rb.Core.Resources;
@@ -12,15 +13,22 @@ using Rb.Interaction;
 using Rb.Log;
 using Rb.Rendering;
 using Rb.World;
+using Crownwood.Magic.Common;
 
 namespace Poc0.LevelEditor
 {
 	public partial class MainForm : Form
 	{
+		private readonly DockingManager m_DockingManager;
+		private readonly Content m_LogDisplayContent;
+		private readonly Content m_ToolBoxContent;
+		private readonly Content m_PropertyEditorContent;
+		private readonly Content m_SelectionContent;
+
+
 		public MainForm( )
 		{
-			LogForm form = new LogForm( );
-			form.Show( );
+			LogForm logDisplay = new LogForm( );
 
 			//	Write greeting
 			AppLog.Info( "Beginning Poc0.LevelEditor at {0}", DateTime.Now );
@@ -50,67 +58,42 @@ namespace Poc0.LevelEditor
 
 			CreateEditContext( );
 
+			//	Create the docking manager
+			m_DockingManager = new DockingManager( this, VisualStyle.IDE );
+			m_DockingManager.InnerControl = tileGrid2dDisplay;
+			m_DockingManager.OuterControl = statusStrip;
+
+			//	Add log, property editor views to the docking manager
+			m_LogDisplayContent = m_DockingManager.Contents.Add( logDisplay, "Log" );
+			m_ToolBoxContent = m_DockingManager.Contents.Add( new EditorControls( ), "Tool Box" );
+			m_PropertyEditorContent = m_DockingManager.Contents.Add( new ObjectPropertyEditor( ), "Property Editor" );
+			m_SelectionContent = m_DockingManager.Contents.Add( new SelectionControl( ), "Selection" );
+
+			m_DockingManager.AddContentWithState( m_LogDisplayContent, State.DockBottom );
+			WindowContent toolBoxWindow = m_DockingManager.AddContentWithState( m_ToolBoxContent, State.DockLeft );
+			m_DockingManager.AddContentToZone( m_PropertyEditorContent, toolBoxWindow.ParentZone, 0 );
+			m_DockingManager.AddContentWithState( m_SelectionContent, State.DockRight );
+
 			Icon = Properties.Resources.AppIcon;
-		}
-
-		private void OnSelectionChanged( object obj )
-		{
-			object[] selectedObjects = EditModeContext.Instance.Selection.ToArray( );
-
-			niceComboBox1.Items.Clear( );
-			if ( selectedObjects.Length == 0 )
-			{
-				propertyGrid1.SelectedObject = null;
-				return;
-			}
-
-			foreach ( object selectedObj in selectedObjects )
-			{
-				AddObjectToCombo( 0, selectedObj );
-				niceComboBox1.AddSeparator( );
-			}
-			niceComboBox1.SelectedIndex = 0;
-			propertyGrid1.SelectedObject = selectedObjects[ 0 ];
-		}
-
-		private void AddObjectToCombo( int depth, object obj )
-		{
-			string str = obj.GetType( ).ToString( );
-			str = str.Substring( str.LastIndexOf( '.' ) + 1 );
-
-			NiceComboBox.Item item = new NiceComboBox.Item( depth, str, depth == 0 ? FontStyle.Bold : 0, null, null, obj );
-			niceComboBox1.Items.Add( item );
-
-			IParent parent = obj as IParent;
-			if ( parent != null )
-			{
-				foreach ( object childObj in parent.Children )
-				{
-					AddObjectToCombo( depth + 1, childObj );
-				}
-			}
-		}
-
-		private void exitToolStripMenuItem_Click( object sender, EventArgs e )
-		{
-			Close( );
-		}
-
-		private void logToolStripMenuItem_Click( object sender, EventArgs e )
-		{
-			LogForm form = new LogForm( );
-			form.Show( );
 		}
 
 		private void CreateEditContext( )
 		{
 			//	Create the tile grid edit state
 			EditModeContext editContext = EditModeContext.CreateNewContext( );
-			editContext.AddEditControl( display1 );
+			editContext.AddEditControl( tileGrid2dDisplay );
 			editContext.AddEditMode( new SelectEditMode( MouseButtons.Left ) );
-			editContext.Selection.ObjectSelected += OnSelectionChanged;
-			editContext.Selection.ObjectDeselected += OnSelectionChanged;
-			m_EditContext = editContext;
+
+			editContext.UndoStack.ActionAdded += UndoStackChanged;
+			editContext.UndoStack.ActionUndone += UndoStackChanged;
+			editContext.UndoStack.ActionRedone += UndoStackChanged;
+
+		}
+
+		private void UndoStackChanged( IAction action )
+		{
+			undoToolStripMenuItem.Enabled = EditModeContext.Instance.UndoStack.CanUndo;
+			redoToolStripMenuItem.Enabled = EditModeContext.Instance.UndoStack.CanRedo;
 		}
 
 		/// <summary>
@@ -126,46 +109,14 @@ namespace Poc0.LevelEditor
 
 			//	Add a renderer for the tile grid to the scene renderables
 			scene.Objects.Add( Guid.NewGuid( ), grid );
-			scene.Renderables.Add( RenderFactory.Instance.Create< TileBlock2dRenderer >( grid, m_EditContext ) );
+			scene.Renderables.Add( RenderFactory.Instance.Create< TileBlock2dRenderer >( grid, EditModeContext.Instance ) );
 
 			Scene = scene;
 		}
 
-		private void MainForm_Load( object sender, EventArgs e )
-		{
-			if ( !DesignMode )
-			{
-				//	Load input bindings
-				CommandInputTemplateMap map = ( CommandInputTemplateMap )ResourceManager.Instance.Load( "LevelEditorCommandInputs.components.xml" );
-				m_User.InitialiseAllCommandListBindings( );
-
-				//	Load default templates
-				m_Templates.Append( "TestObjectTemplates.components.xml" );
-
-				ComponentLoadParameters loadParams = new ComponentLoadParameters( );
-				loadParams.Properties[ "User" ] = m_User;
-
-				//	Load in the scene viewer
-				Viewer viewer = ( Viewer )ResourceManager.Instance.Load( "LevelEditorStandardViewer.components.xml", loadParams );
-				display1.Viewers.Add( viewer );
-
-				//	Test load a command list
-				try
-				{
-					//	TODO: AP: May need to move
-					map.AddContextInputsToUser( new InputContext( display1.Viewers[ 0 ], display1 ), m_User );
-				}
-				catch ( Exception ex )
-				{
-					ExceptionUtils.ToLog( AppLog.GetSource( Severity.Error ), ex );
-				}
-
-
-				//	Create a new scene
-				CreateNewScene( TileTypeSet.CreateDefaultTileTypeSet( ), 16, 16 );
-			}
-		}
-
+		/// <summary>
+		/// Access to the main scene
+		/// </summary>
 		public Scene Scene
 		{
 			get { return m_Scene; }
@@ -176,35 +127,77 @@ namespace Poc0.LevelEditor
 					throw new ArgumentNullException( "value", "Scene cannot be null" );
 				}
 
-				TileGrid grid = value.Objects.GetFirstOfType< TileGrid >( );
-				if ( grid == null )
-				{
-					throw new ArgumentException( "Scene did not contain a TileGrid object" );
-				}
-
 				m_Scene = value;
-				m_Grid = grid;
 
-				foreach ( Viewer viewer in display1.Viewers )
+				//	Force all viewers to show the new scene
+				foreach ( Viewer viewer in tileGrid2dDisplay.Viewers )
 				{
 					viewer.Renderable = m_Scene;
 				}
 
-				m_EditContext.Setup( m_Scene, m_Grid );
-				editorControls1.Setup( m_Scene, m_Grid, m_EditContext, m_Templates );
+				//	Set the scene in the edit context
+				EditModeContext.Instance.Setup( m_Scene );
 			}
 		}
 
 		private readonly CommandUser		m_User = new CommandUser( );
-		private readonly ObjectTemplates	m_Templates = new ObjectTemplates( );
 		private readonly SceneSerializer	m_Serializer = new SceneSerializer( );
 		private Scene						m_Scene;
-		private TileGrid					m_Grid;
-		private EditModeContext				m_EditContext;
-
-		private void niceComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+		
+		private void MainForm_Load( object sender, EventArgs e )
 		{
-			propertyGrid1.SelectedObject = niceComboBox1.GetTag( niceComboBox1.SelectedIndex );
+			if ( !DesignMode )
+			{
+				//	Load input bindings
+				CommandInputTemplateMap map = ( CommandInputTemplateMap )ResourceManager.Instance.Load( "LevelEditorCommandInputs.components.xml" );
+				m_User.InitialiseAllCommandListBindings( );
+
+				ComponentLoadParameters loadParams = new ComponentLoadParameters( );
+				loadParams.Properties[ "User" ] = m_User;
+
+				//	Load in the scene viewer
+				Viewer viewer = ( Viewer )ResourceManager.Instance.Load( "LevelEditorStandardViewer.components.xml", loadParams );
+				tileGrid2dDisplay.Viewers.Add( viewer );
+
+				//	Test load a command list
+				try
+				{
+					//	TODO: AP: May need to move
+					map.AddContextInputsToUser( new InputContext( tileGrid2dDisplay.Viewers[ 0 ], tileGrid2dDisplay ), m_User );
+				}
+				catch ( Exception ex )
+				{
+					ExceptionUtils.ToLog( AppLog.GetSource( Severity.Error ), ex );
+				}
+
+				//	Create a new scene
+				CreateNewScene( TileTypeSet.CreateDefaultTileTypeSet( ), 16, 16 );
+			}
+		}
+
+		private void exitToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			Close( );
+		}
+
+		private void logToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			m_DockingManager.ShowContent( m_LogDisplayContent );
+		}
+
+		private void selectionToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			m_DockingManager.ShowContent( m_SelectionContent );
+		}
+
+		private void toolBoxToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			m_DockingManager.ShowContent( m_ToolBoxContent );
+		}
+
+		private void objectPropertiesToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			m_DockingManager.ShowContent( m_PropertyEditorContent );
 		}
 
 		private void saveAsToolStripMenuItem_Click( object sender, EventArgs e )
@@ -225,5 +218,16 @@ namespace Poc0.LevelEditor
 				Scene = scene;
 			}
 		}
+
+		private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			EditModeContext.Instance.UndoStack.Undo( );
+		}
+
+		private void redoToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			EditModeContext.Instance.UndoStack.Redo( );
+		}
+
 	}
 }

@@ -136,6 +136,15 @@ namespace Rb.Core.Maths
 			throw new Exception("The method or operation is not implemented.");
 		}
 
+		/// <summary>
+		/// Returns true if this shape and another shape overlap
+		/// </summary>
+		public bool Overlaps( IShape2 shape )
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
 		#endregion
+
 	}
 }

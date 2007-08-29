@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Poc0.LevelEditor.Core.Actions;
 using Rb.World;
 using System.Windows.Forms;
 
@@ -76,16 +77,41 @@ namespace Poc0.LevelEditor.Core.EditModes
 			get { return m_Scene; }
 		}
 
+		/// <summary>
+		/// Gets the undo stack
+		/// </summary>
+		public UndoStack UndoStack
+		{
+			get { return m_UndoStack; }
+		}
+
 		#endregion
 
 		#region Public methods
 
-		public void Setup( Scene scene, TileGrid tileGrid )
-		{
-			m_Scene = scene;
-			m_Grid = tileGrid;
+		public event Action< EditModeContext > PostSetup;
 
-			AddEditMode( new PaintTileEditMode( MouseButtons.Right, tileGrid.Set[ 0 ] ) );
+		/// <summary>
+		/// Sets up the edit mode context with a new scene 
+		/// </summary>
+		/// <param name="scene">New scene (must contain a <see cref="TileGrid"/>)</param>
+		public void Setup( Scene scene )
+		{
+			TileGrid grid = scene.Objects.GetFirstOfType< TileGrid >( );
+			if ( grid == null )
+			{
+				throw new ArgumentException( "Scene did not contain a TileGrid object" );
+			}
+
+			m_Scene = scene;
+			m_Grid = grid;
+
+			AddEditMode( new PaintTileEditMode( MouseButtons.Right, grid.Set[ 0 ] ) );
+
+			if ( PostSetup != null )
+			{
+				PostSetup( this );
+			}
 		}
 
 		/// <summary>
@@ -137,6 +163,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		private readonly SelectedObjects	m_Selection = new SelectedObjects( );
 		private TileGrid					m_Grid;
 		private	Scene						m_Scene;
+		private readonly UndoStack			m_UndoStack = new UndoStack( );
 
 		private IEditMode					m_ExclusiveMode;
 		private readonly List< IEditMode >	m_SharedModes = new List< IEditMode >( );

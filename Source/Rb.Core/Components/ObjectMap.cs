@@ -11,6 +11,15 @@ namespace Rb.Core.Components
 	public class ObjectMap : IObjectMap
 	{
 		#region IObjectMap Members
+		
+		/// <summary>
+		/// Adds an IUnique object to the map
+		/// </summary>
+		/// <param name="obj">Unique object</param>
+		public void Add( IUnique obj )
+		{
+			Add( obj.Id, obj );
+		}
 
 		/// <summary>
 		/// Gets an object of a given type, and key, from the map

@@ -52,6 +52,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\ActionList.cs" />
+    <Compile Include="Actions\AddObjectAction.cs" />
+    <Compile Include="Actions\DeleteObjectAction.cs" />
+    <Compile Include="Actions\IAction.cs" />
+    <Compile Include="Actions\MoveObjectsAction.cs" />
+    <Compile Include="Actions\PaintTileAction.cs" />
+    <Compile Include="Actions\SelectAction.cs" />
+    <Compile Include="Actions\UndoStack.cs" />
     <Compile Include="EditModes\AddObjectEditMode.cs" />
     <Compile Include="EditModes\EditMode.cs" />
     <Compile Include="EditModes\EditModeContext.cs" />

@@ -1,6 +1,5 @@
-using System;
 using System.Windows.Forms;
-using Rb.Rendering;
+using Poc0.LevelEditor.Core.Actions;
 
 namespace Poc0.LevelEditor.Core.EditModes
 {
@@ -22,14 +21,27 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 		#region Control event handlers
 
+		private void PaintTile( Tile tile )
+		{
+			if ( tile.TileType != m_PaintType )
+			{
+				if ( m_Action == null )
+				{
+					m_Action = new ActionList( );
+					EditModeContext.Instance.UndoStack.Push( m_Action );
+				}
+				m_Action.Add( new PaintTileAction( tile, m_PaintType ) );
+			}
+		}
+
 		private void OnMouseDown( object sender, MouseEventArgs args )
 		{
-			Tile pickedTile = GetTileUnderCursor(sender, args.X, args.Y);
-			if (pickedTile != null)
+			Tile pickedTile = GetTileUnderCursor( sender, args.X, args.Y );
+			if ( pickedTile != null )
 			{
-				if ((args.Button & m_ActionButton) != 0)
+				if ( ( args.Button & m_ActionButton ) != 0 )
 				{
-					pickedTile.TileType = m_PaintType;
+					PaintTile( pickedTile );
 				}
 			}
 		}
@@ -42,8 +54,16 @@ namespace Poc0.LevelEditor.Core.EditModes
 			{
 				if ( ( args.Button & m_ActionButton ) != 0 )
 				{
-					pickedTile.TileType = m_PaintType;
+					PaintTile( pickedTile );
 				}
+			}
+		}
+		
+		private void OnMouseUp( object sender, MouseEventArgs args )
+		{
+			if ( ( args.Button & m_ActionButton ) != 0 )
+			{
+				m_Action = null;
 			}
 		}
 
@@ -54,6 +74,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 		private readonly TileType		m_PaintType;
 		private readonly MouseButtons	m_ActionButton;
+		private ActionList				m_Action;
 
 		#endregion
 
@@ -68,6 +89,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 			{
 				control.MouseDown += OnMouseDown;
 				control.MouseMove += OnMouseMove;
+				control.MouseUp += OnMouseUp;
 			}
 		}
 
@@ -80,6 +102,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 			{
 				control.MouseDown -= OnMouseDown;
 				control.MouseMove -= OnMouseMove;
+				control.MouseUp -= OnMouseUp;
 			}
 			EditModeContext.Instance.TileUnderCursor = null;
 		}

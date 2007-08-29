@@ -528,15 +528,15 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Gets the current viewport
 		/// </summary>
-		public override Rectangle Viewport
+		public override System.Drawing.Rectangle Viewport
 		{
-			get { return new Rectangle( m_X, m_Y, m_Width, m_Height );}
+			get { return new System.Drawing.Rectangle( m_X, m_Y, m_Width, m_Height );}
 		}
 
 		/// <summary>
 		///	The viewport width
 		/// </summary>
-		public override int				ViewportWidth
+		public override int ViewportWidth
 		{
 			get
 			{
@@ -547,7 +547,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// The viewport height
 		/// </summary>
-		public override int				ViewportHeight
+		public override int ViewportHeight
 		{
 			get
 			{
