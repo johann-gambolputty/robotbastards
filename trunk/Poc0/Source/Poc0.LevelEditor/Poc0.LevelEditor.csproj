@@ -42,6 +42,10 @@
     <DocumentationFile>..\..\bin\NDoc\Poc0.LevelEditor.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MagicLibrary, Version=1.7.0.0, Culture=neutral, PublicKeyToken=3a6eb82f876a49bc">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\bin\ThirdParty\MagicDocking\MagicLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
@@ -75,6 +79,12 @@
     <Compile Include="NiceComboBox.Designer.cs">
       <DependentUpon>NiceComboBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="ObjectPropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ObjectPropertyEditor.Designer.cs">
+      <DependentUpon>ObjectPropertyEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="EditorControls.resx">
@@ -89,10 +99,18 @@
       <SubType>Designer</SubType>
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ObjectPropertyEditor.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ObjectPropertyEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SelectionControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SelectionControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TileGridDisplay.resx">
       <SubType>Designer</SubType>
@@ -114,6 +132,12 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="SceneSerializer.cs" />
+    <Compile Include="SelectionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SelectionControl.Designer.cs">
+      <DependentUpon>SelectionControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="TileGridDisplay.cs">
       <SubType>UserControl</SubType>
     </Compile>

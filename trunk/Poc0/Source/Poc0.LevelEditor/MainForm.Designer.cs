@@ -40,20 +40,15 @@ namespace Poc0.LevelEditor
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.niceComboBox1 = new Poc0.LevelEditor.NiceComboBox();
-			this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
-			this.splitter1 = new System.Windows.Forms.Splitter();
-			this.editorControls1 = new Poc0.LevelEditor.EditorControls();
-			this.display1 = new Poc0.LevelEditor.TileGridDisplay();
-			this.dDisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.selectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.objectPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.tileGrid2dDisplay = new Poc0.LevelEditor.TileGridDisplay();
+			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusStrip.SuspendLayout();
 			this.menuStrip.SuspendLayout();
-			this.splitContainer1.Panel1.SuspendLayout();
-			this.splitContainer1.Panel2.SuspendLayout();
-			this.splitContainer1.SuspendLayout();
-			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// statusStrip
@@ -75,6 +70,7 @@ namespace Poc0.LevelEditor
 			// 
 			this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.editToolStripMenuItem,
             this.viewToolStripMenuItem});
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
@@ -137,7 +133,9 @@ namespace Poc0.LevelEditor
 			// 
 			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.logToolStripMenuItem,
-            this.dDisplayToolStripMenuItem});
+            this.selectionToolStripMenuItem,
+            this.toolBoxToolStripMenuItem,
+            this.objectPropertiesToolStripMenuItem});
 			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
 			this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
 			this.viewToolStripMenuItem.Text = "&View";
@@ -145,105 +143,74 @@ namespace Poc0.LevelEditor
 			// logToolStripMenuItem
 			// 
 			this.logToolStripMenuItem.Name = "logToolStripMenuItem";
-			this.logToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.logToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.logToolStripMenuItem.Text = "&Log";
 			this.logToolStripMenuItem.Click += new System.EventHandler(this.logToolStripMenuItem_Click);
 			// 
-			// splitContainer1
+			// selectionToolStripMenuItem
 			// 
-			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.splitContainer1.Location = new System.Drawing.Point(0, 24);
-			this.splitContainer1.Name = "splitContainer1";
+			this.selectionToolStripMenuItem.Name = "selectionToolStripMenuItem";
+			this.selectionToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.selectionToolStripMenuItem.Text = "&Selection";
+			this.selectionToolStripMenuItem.Click += new System.EventHandler(this.selectionToolStripMenuItem_Click);
 			// 
-			// splitContainer1.Panel1
+			// toolBoxToolStripMenuItem
 			// 
-			this.splitContainer1.Panel1.Controls.Add(this.panel1);
-			this.splitContainer1.Panel1.Controls.Add(this.splitter1);
-			this.splitContainer1.Panel1.Controls.Add(this.editorControls1);
-			this.splitContainer1.Panel1.Margin = new System.Windows.Forms.Padding(4);
-			this.splitContainer1.Panel1.Padding = new System.Windows.Forms.Padding(5);
+			this.toolBoxToolStripMenuItem.Name = "toolBoxToolStripMenuItem";
+			this.toolBoxToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.toolBoxToolStripMenuItem.Text = "&Tool Box";
+			this.toolBoxToolStripMenuItem.Click += new System.EventHandler(this.toolBoxToolStripMenuItem_Click);
 			// 
-			// splitContainer1.Panel2
+			// objectPropertiesToolStripMenuItem
 			// 
-			this.splitContainer1.Panel2.Controls.Add(this.display1);
-			this.splitContainer1.Size = new System.Drawing.Size(524, 374);
-			this.splitContainer1.SplitterDistance = 157;
-			this.splitContainer1.TabIndex = 2;
+			this.objectPropertiesToolStripMenuItem.Name = "objectPropertiesToolStripMenuItem";
+			this.objectPropertiesToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.objectPropertiesToolStripMenuItem.Text = "&Object Properties";
+			this.objectPropertiesToolStripMenuItem.Click += new System.EventHandler(this.objectPropertiesToolStripMenuItem_Click);
 			// 
-			// panel1
+			// tileGrid2dDisplay
 			// 
-			this.panel1.Controls.Add(this.niceComboBox1);
-			this.panel1.Controls.Add(this.propertyGrid1);
-			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel1.Location = new System.Drawing.Point(5, 174);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(147, 195);
-			this.panel1.TabIndex = 2;
+			this.tileGrid2dDisplay.ColourBits = ((byte)(32));
+			this.tileGrid2dDisplay.ContinuousRendering = true;
+			this.tileGrid2dDisplay.DepthBits = ((byte)(24));
+			this.tileGrid2dDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tileGrid2dDisplay.Location = new System.Drawing.Point(0, 24);
+			this.tileGrid2dDisplay.Name = "tileGrid2dDisplay";
+			this.tileGrid2dDisplay.Size = new System.Drawing.Size(524, 374);
+			this.tileGrid2dDisplay.StencilBits = ((byte)(0));
+			this.tileGrid2dDisplay.TabIndex = 2;
 			// 
-			// niceComboBox1
+			// editToolStripMenuItem
 			// 
-			this.niceComboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.niceComboBox1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-			this.niceComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.niceComboBox1.FormattingEnabled = true;
-			this.niceComboBox1.Location = new System.Drawing.Point(0, 3);
-			this.niceComboBox1.Name = "niceComboBox1";
-			this.niceComboBox1.Size = new System.Drawing.Size(150, 21);
-			this.niceComboBox1.TabIndex = 1;
-			this.niceComboBox1.SelectedIndexChanged += new System.EventHandler(this.niceComboBox1_SelectedIndexChanged);
+			this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.undoToolStripMenuItem,
+            this.redoToolStripMenuItem});
+			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+			this.editToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+			this.editToolStripMenuItem.Text = "&Edit";
 			// 
-			// propertyGrid1
+			// undoToolStripMenuItem
 			// 
-			this.propertyGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.propertyGrid1.Location = new System.Drawing.Point(0, 28);
-			this.propertyGrid1.Name = "propertyGrid1";
-			this.propertyGrid1.Size = new System.Drawing.Size(147, 164);
-			this.propertyGrid1.TabIndex = 0;
+			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
+			this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+			this.undoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.undoToolStripMenuItem.Text = "&Undo";
+			this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
 			// 
-			// splitter1
+			// redoToolStripMenuItem
 			// 
-			this.splitter1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.splitter1.Location = new System.Drawing.Point(5, 171);
-			this.splitter1.Name = "splitter1";
-			this.splitter1.Size = new System.Drawing.Size(147, 3);
-			this.splitter1.TabIndex = 1;
-			this.splitter1.TabStop = false;
-			// 
-			// editorControls1
-			// 
-			this.editorControls1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.editorControls1.Location = new System.Drawing.Point(5, 5);
-			this.editorControls1.Name = "editorControls1";
-			this.editorControls1.Size = new System.Drawing.Size(147, 166);
-			this.editorControls1.TabIndex = 0;
-			// 
-			// display1
-			// 
-			this.display1.ColourBits = ((byte)(32));
-			this.display1.ContinuousRendering = true;
-			this.display1.DepthBits = ((byte)(24));
-			this.display1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.display1.Location = new System.Drawing.Point(0, 0);
-			this.display1.Name = "display1";
-			this.display1.Size = new System.Drawing.Size(363, 374);
-			this.display1.StencilBits = ((byte)(0));
-			this.display1.TabIndex = 0;
-			// 
-			// dDisplayToolStripMenuItem
-			// 
-			this.dDisplayToolStripMenuItem.Name = "dDisplayToolStripMenuItem";
-			this.dDisplayToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.dDisplayToolStripMenuItem.Text = "&3D Display";
+			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
+			this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
+			this.redoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.redoToolStripMenuItem.Text = "&Redo";
+			this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(524, 420);
-			this.Controls.Add(this.splitContainer1);
+			this.Controls.Add(this.tileGrid2dDisplay);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.menuStrip);
 			this.MainMenuStrip = this.menuStrip;
@@ -254,10 +221,6 @@ namespace Poc0.LevelEditor
 			this.statusStrip.PerformLayout();
 			this.menuStrip.ResumeLayout(false);
 			this.menuStrip.PerformLayout();
-			this.splitContainer1.Panel1.ResumeLayout(false);
-			this.splitContainer1.Panel2.ResumeLayout(false);
-			this.splitContainer1.ResumeLayout(false);
-			this.panel1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -270,20 +233,19 @@ namespace Poc0.LevelEditor
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 		private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
-		private System.Windows.Forms.SplitContainer splitContainer1;
 		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem logToolStripMenuItem;
-		private TileGridDisplay display1;
-		private System.Windows.Forms.Splitter splitter1;
-		private EditorControls editorControls1;
-		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.PropertyGrid propertyGrid1;
-		private NiceComboBox niceComboBox1;
 		private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-		private System.Windows.Forms.ToolStripMenuItem dDisplayToolStripMenuItem;
+		private TileGridDisplay tileGrid2dDisplay;
+		private System.Windows.Forms.ToolStripMenuItem selectionToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem toolBoxToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem objectPropertiesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
 	}
 }

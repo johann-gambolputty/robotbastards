@@ -41,24 +41,84 @@ namespace Poc0.LevelEditor.Core.EditModes
 				Point2 pt = picker.CursorToWorld( args.X, args.Y );
 
 				Scene scene = EditModeContext.Instance.Scene;
-				object newObject = m_Template.CreateInstance( scene.Builder );
-
 				Guid id = Guid.NewGuid( );
-				if ( newObject is IUnique )
-				{
-					( ( IUnique )newObject ).Id = id;
-				}
 
-				IHasWorldFrame hasFrame = newObject as IHasWorldFrame;
-				if ( hasFrame != null )
-				{
-					hasFrame.WorldFrame.Translation = new Point3( pt.X, 0, pt.Y );
-
-					ObjectEditState editState = new ObjectEditState( scene, newObject );
-					( ( IParent )newObject ).AddChild( editState );
-				}
+				object newObject = CreateObject( scene, pt.X, pt.Y, id );
 				scene.Objects.Add( id, newObject );
 			}
+		}
+
+		/// <summary>
+		/// An instance of an object template
+		/// </summary>
+		[Serializable]
+		private class ObjectHolder : Component, IHasWorldFrame
+		{
+			/// <summary>
+			/// Setup constructor
+			/// </summary>
+			public ObjectHolder( float x, float y, Guid id, ObjectTemplate template )
+			{
+				m_Frame.Translation = new Point3( x, 0, y );
+				Id = id;
+				m_Template = template;
+			}
+
+			/// <summary>
+			/// Gets the associated object template
+			/// </summary>
+			public IInstanceBuilder Builder
+			{
+				get { return m_Template; }
+			}
+			
+			#region IHasWorldFrame Members
+
+			/// <summary>
+			/// Gets the world frame of the object
+			/// </summary>
+			public Matrix44 WorldFrame
+			{
+				get { return m_Frame; }
+			}
+
+			#endregion
+
+			private readonly ObjectTemplate m_Template;
+			private readonly Matrix44 m_Frame = new Matrix44( );
+
+		}
+
+		/// <summary>
+		/// Creates an object from the object template
+		/// </summary>
+		private object CreateObject( Scene scene, float x, float y, Guid id )
+		{
+			/*
+			//  (doesn't actually instance the template; creates an ObjectHolder around it)
+			Component root = new ObjectHolder( x, y, id, m_Template );
+
+			root.AddChild( new ObjectEditState( scene, root ) );
+
+			return root;
+			*/
+			object newObject = m_Template.CreateInstance( scene.Builder );
+
+			if ( newObject is IUnique )
+			{
+				( ( IUnique )newObject ).Id = id;
+			}
+
+			IHasWorldFrame hasFrame = newObject as IHasWorldFrame;
+			if (hasFrame != null)
+			{
+				hasFrame.WorldFrame.Translation = new Point3( x, 0, y );
+
+				ObjectEditState editState = new ObjectEditState( scene, newObject) ;
+				( ( IParent )newObject ).AddChild( editState );
+			}
+
+			return newObject;
 		}
 
 		#endregion

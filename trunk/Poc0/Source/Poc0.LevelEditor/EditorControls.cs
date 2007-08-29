@@ -14,23 +14,25 @@ namespace Poc0.LevelEditor
 		public EditorControls( )
 		{
 			InitializeComponent( );
+
+			m_Templates = new ObjectTemplates( );
+			m_Templates.Append( "TestObjectTemplates.components.xml" );
+
+			PopulateObjectTemplates( m_Templates );
+
+			EditModeContext.Instance.PostSetup += OnContextSetup;
 		}
 
 
 		/// <summary>
 		/// Sets up the control
 		/// </summary>
-		/// <param name="scene">Scene that objects are added to</param>
-		/// <param name="grid">Grid being edited</param>
 		/// <param name="editContext">Editing context</param>
-		/// <param name="templates">Object templates</param>
-		public void Setup( Scene scene, TileGrid grid, EditModeContext editContext, ObjectTemplates templates )
+		public void OnContextSetup( EditModeContext editContext )
 		{
-			m_Grid = grid;
+			m_Grid = editContext.Grid;
 			m_EditContext = editContext;
-			tileTypeSetView.TileTypes = grid.Set;
-
-			PopulateObjectTemplates( templates );
+			tileTypeSetView.TileTypes = editContext.Grid.Set;
 		}
 
 		/// <summary>

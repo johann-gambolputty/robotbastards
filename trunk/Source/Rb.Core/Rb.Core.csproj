@@ -113,6 +113,7 @@
     <Compile Include="Maths\Point3Interpolator.cs" />
     <Compile Include="Maths\Ray3.cs" />
     <Compile Include="Maths\Ray3Intersection.cs" />
+    <Compile Include="Maths\Rectangle.cs" />
     <Compile Include="Maths\Sphere3.cs" />
     <Compile Include="Maths\Curve.cs" />
     <Compile Include="Maths\SplineControlPoint.cs" />

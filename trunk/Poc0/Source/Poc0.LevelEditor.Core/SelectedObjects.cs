@@ -57,6 +57,19 @@ namespace Poc0.LevelEditor.Core
 
 		#region Public methods
 
+		/// <summary>
+		/// Returns true if the specified object is selected
+		/// </summary>
+		public bool IsSelected( object obj )
+		{
+			return m_Selection.Contains( obj );
+		}
+
+		/// <summary>
+		/// Applies selection operation to an object
+		/// </summary>
+		/// <param name="obj">Object to (de)select</param>
+		/// <param name="addToSelection">true if the object should be added to the selection, false to replace the selection</param>
 		public void ApplySelect( object obj, bool addToSelection )
 		{
 			if ( addToSelection )
@@ -82,6 +95,32 @@ namespace Poc0.LevelEditor.Core
 			}
 		}
 
+		public void ApplySelect( object[] objects, bool addToSelection )
+		{
+			if ( !addToSelection )
+			{
+				ClearSelection( );
+			}
+			foreach ( object obj in objects )
+			{
+				if ( addToSelection )
+				{
+					if ( m_Selection.Contains( obj ) )
+					{
+						Deselect( obj );
+					}
+					else
+					{
+						Select( obj );
+					}
+				}
+				else if ( !m_Selection.Contains( obj ) )
+				{
+					Select( obj );
+				}
+			}
+		}
+
 		/// <summary>
 		/// Adds an object to the selection
 		/// </summary>
@@ -101,7 +140,7 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Removes an object from the selection
 		/// </summary>
-		private void Deselect( object obj )
+		public void Deselect( object obj )
 		{
 			SetSelectedFlag( obj, false );
 			m_Selection.Remove( obj );
