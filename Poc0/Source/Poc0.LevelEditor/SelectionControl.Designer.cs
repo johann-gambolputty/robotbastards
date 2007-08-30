@@ -28,23 +28,22 @@ namespace Poc0.LevelEditor
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.selectionListBox = new System.Windows.Forms.ListBox();
+			this.selectionTreeView = new System.Windows.Forms.TreeView();
 			this.SuspendLayout();
 			// 
-			// selectionListBox
+			// selectionTreeView
 			// 
-			this.selectionListBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.selectionListBox.FormattingEnabled = true;
-			this.selectionListBox.Location = new System.Drawing.Point(0, 0);
-			this.selectionListBox.Name = "selectionListBox";
-			this.selectionListBox.Size = new System.Drawing.Size(150, 147);
-			this.selectionListBox.TabIndex = 0;
+			this.selectionTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.selectionTreeView.Location = new System.Drawing.Point(0, 0);
+			this.selectionTreeView.Name = "selectionTreeView";
+			this.selectionTreeView.Size = new System.Drawing.Size(150, 150);
+			this.selectionTreeView.TabIndex = 0;
 			// 
 			// SelectionControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.selectionListBox);
+			this.Controls.Add(this.selectionTreeView);
 			this.Name = "SelectionControl";
 			this.ResumeLayout(false);
 
@@ -52,6 +51,7 @@ namespace Poc0.LevelEditor
 
 		#endregion
 
-		private System.Windows.Forms.ListBox selectionListBox;
+		private System.Windows.Forms.TreeView selectionTreeView;
+
 	}
 }

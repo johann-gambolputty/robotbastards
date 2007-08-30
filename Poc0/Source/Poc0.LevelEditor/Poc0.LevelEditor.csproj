@@ -131,6 +131,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="PropertyBag.cs" />
     <Compile Include="SceneSerializer.cs" />
     <Compile Include="SelectionControl.cs">
       <SubType>UserControl</SubType>

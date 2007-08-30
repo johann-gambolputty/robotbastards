@@ -1,5 +1,10 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
+using System.Reflection;
 using System.Windows.Forms;
 using Poc0.LevelEditor.Core.EditModes;
 using Rb.Core.Components;
@@ -18,6 +23,31 @@ namespace Poc0.LevelEditor
 			EditModeContext.Instance.Selection.ObjectSelected += OnSelectionChanged;
 			EditModeContext.Instance.Selection.ObjectDeselected += OnSelectionChanged;
 		}
+
+		private static void Flatten( object obj, IList objects )
+		{
+			objects.Add( obj );
+
+			IParent parent = obj as IParent;
+			if ( parent == null )
+			{
+				return;
+			}
+
+			foreach ( object childObj in parent.Children )
+			{
+				Flatten( childObj, objects );
+			}
+		}
+
+		private static object[] Flatten(object obj)
+		{
+			ArrayList objects = new ArrayList( );
+
+			Flatten( obj, objects );
+
+			return objects.ToArray( );
+		}
 		
 		/// <summary>
 		/// Called when the current selection changes
@@ -27,48 +57,35 @@ namespace Poc0.LevelEditor
 		{
 			object[] selectedObjects = EditModeContext.Instance.Selection.ToArray( );
 
-			subObjectComboBox.Items.Clear( );
 			if ( selectedObjects.Length == 0 )
 			{
 				objectPropertyGrid.SelectedObject = null;
 				return;
 			}
 
-			foreach ( object selectedObj in selectedObjects )
+			PropertyBag[] bags = new PropertyBag[ selectedObjects.Length ];
+
+			for ( int index = 0; index < selectedObjects.Length; ++index )
 			{
-				AddObjectToCombo( 0, selectedObj );
-				subObjectComboBox.AddSeparator( );
-			}
-			subObjectComboBox.SelectedIndex = 0;
-			objectPropertyGrid.SelectedObject = selectedObjects[ 0 ];
-		}
+				PropertyBag bag = new PropertyBag( );
+				bags[ index ] = bag;
 
-		/// <summary>
-		/// Adds an object to the sub object combo box
-		/// </summary>
-		/// <param name="depth">Current depth</param>
-		/// <param name="obj">Current object</param>
-		private void AddObjectToCombo( int depth, object obj )
-		{
-			string str = obj.GetType( ).ToString( );
-			str = str.Substring( str.LastIndexOf( '.' ) + 1 );
+				object[] objects = Flatten( selectedObjects[ index ] );
 
-			NiceComboBox.Item item = new NiceComboBox.Item( depth, str, depth == 0 ? FontStyle.Bold : 0, null, null, obj );
-			subObjectComboBox.Items.Add( item );
-
-			IParent parent = obj as IParent;
-			if ( parent != null )
-			{
-				foreach ( object childObj in parent.Children )
+				foreach ( object curObj in objects )
 				{
-					AddObjectToCombo( depth + 1, childObj );
+					string category = curObj.GetType( ).Name;
+					category = category.Substring( category.LastIndexOf( '.' ) + 1 );
+					foreach ( PropertyInfo property in curObj.GetType( ).GetProperties( ) )
+					{
+						object currentValue = property.GetValue( curObj, null );
+						bag.Properties.Add( new PropertySpec( property.Name, property.PropertyType, category, "", currentValue ) );
+					}
 				}
 			}
+
+			objectPropertyGrid.SelectedObjects = bags;
 		}
 
-		private void subObjectComboBox_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			objectPropertyGrid.SelectedObject = subObjectComboBox.GetTag( subObjectComboBox.SelectedIndex );
-		}
 	}
 }
