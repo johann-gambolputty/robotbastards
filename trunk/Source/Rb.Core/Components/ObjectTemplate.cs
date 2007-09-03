@@ -185,11 +185,19 @@ namespace Rb.Core.Components
 		public void AddChild( object obj )
 		{
 			m_ChildBuilders.Add( ( IInstanceBuilder )obj );
+			if ( OnChildAdded != null )
+			{
+				OnChildAdded( this, obj );
+			}
 		}
 
 		public void RemoveChild( object obj )
 		{
 			m_ChildBuilders.Remove( ( IInstanceBuilder )obj );
+			if ( OnChildRemoved != null )
+			{
+				OnChildRemoved( this, obj );
+			}
 		}
 
 		public event OnChildAddedDelegate OnChildAdded;

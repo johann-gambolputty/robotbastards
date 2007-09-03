@@ -13,7 +13,7 @@ namespace Rb.Core.Assets
 	/// created). If an asset location is relative, then it's relative to this path. e.g. If the base directory
 	/// is "c:\temp\test", and the location is "..\asset.txt", then the resolved path is "c:\temp\asset.txt"
 	/// </remarks>
-	public class FileAssetProvider : IAssetProvider
+	public class FileLocationManager : ILocationManager
 	{
 		/// <summary>
 		/// Access to the base directory
@@ -32,7 +32,7 @@ namespace Rb.Core.Assets
 			}
 		}
 
-		#region IAssetProvider Members
+		#region ILocationManager Members
 
 		/// <summary>
 		/// Gets the full path of a location

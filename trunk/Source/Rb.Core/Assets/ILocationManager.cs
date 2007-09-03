@@ -5,7 +5,7 @@ namespace Rb.Core.Assets
 	/// <summary>
 	/// Opens asset streams and shit
 	/// </summary>
-	public interface IAssetProvider
+	public interface ILocationManager
 	{
 		/// <summary>
 		/// Gets the full path of a location
@@ -22,7 +22,7 @@ namespace Rb.Core.Assets
 		bool IsPathValid( string path );
 
 		/// <summary>
-		/// Opens a stream
+		/// Opens a stream at a given location
 		/// </summary>
 		/// <param name="location">Location of the stream</param>
 		/// <returns>Returns the opened stream</returns>

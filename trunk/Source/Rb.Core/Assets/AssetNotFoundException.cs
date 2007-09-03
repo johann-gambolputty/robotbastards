@@ -10,18 +10,18 @@ namespace Rb.Core.Assets
 	class AssetNotFoundException : Exception
 	{
 		/// <summary>
-		/// Location setup constructor
+		/// Source setup constructor
 		/// </summary>
-		public AssetNotFoundException( Location location ) :
-			base( string.Format( "No asset found at {0}", location ) )
+		public AssetNotFoundException( ISource source ) :
+			base( string.Format( "No asset found at {0}", source ) )
 		{
 		}
 
 		/// <summary>
 		/// Location and inner exception setup constructor
 		/// </summary>
-		public AssetNotFoundException( Location location, Exception innerException ) :
-			base( string.Format( "No asset found at {0}", location ), innerException )
+		public AssetNotFoundException( ISource source, Exception innerException ) :
+			base( string.Format( "No asset found at {0}", source ), innerException )
 		{
 		}
 

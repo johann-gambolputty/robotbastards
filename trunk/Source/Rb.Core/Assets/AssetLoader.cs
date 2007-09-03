@@ -5,36 +5,45 @@ using System.Text;
 namespace Rb.Core.Assets
 {
 	/// <summary>
-	/// Loads assets
+	/// Simple implementation of the IAssetLoader interface
 	/// </summary>
-	public interface IAssetLoader
+	public abstract class AssetLoader : IAssetLoader
 	{
+		#region IAssetLoader Members
+
 		/// <summary>
 		/// Gets the cache for this loader
 		/// </summary>
-		IAssetCache Cache
+		public IAssetCache Cache
 		{
-			get;
+			get { return m_Cache; }
 		}
 
 		/// <summary>
 		/// Creates default loading parameters
 		/// </summary>
-		LoadParameters CreateDefaultParameters( );
+		public LoadParameters CreateDefaultParameters( )
+		{
+			return new LoadParameters( );
+		}
 
 		/// <summary>
 		/// Loads an asset
 		/// </summary>
-		/// <param name="source">Asset source</param>
+		/// <param name="source">Source of the asset</param>
 		/// <param name="parameters">Load parameters</param>
 		/// <returns>Loaded asset</returns>
-		object Load( ISource source, LoadParameters parameters );
+		public abstract object Load( ISource source, LoadParameters parameters );
 
 		/// <summary>
 		/// Returns true if this loader can load the asset at the specified location
 		/// </summary>
-		/// <param name="source">Asset source</param>
+		/// <param name="source">Source of the asset</param>
 		/// <returns>Returns true if this loader can process the specified source</returns>
-		bool CanLoad( ISource source );
+		public abstract bool CanLoad( ISource source );
+
+		#endregion
+
+		private readonly IAssetCache m_Cache = new AssetCache( );
 	}
 }

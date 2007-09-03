@@ -81,9 +81,9 @@ namespace Rb.ComponentXmlLoader.Tests
             {
                 byte[] contentBytes = System.Text.Encoding.ASCII.GetBytes( @"<?xml version=""1.0"" encoding=""utf-8""?><rb/>" );
                 bool canCache;
-                new Loader().Load( new System.IO.MemoryStream( contentBytes ), new StackFrame( 0, true ).GetFileName( ), out canCache );
+                new Loader( ).Load( new System.IO.MemoryStream( contentBytes ), new StackFrame( 0, true ).GetFileName( ), out canCache );
 
-                Assert.Fail("Expected no content test to fail and throw an ApplicationException");
+                Assert.Fail( "Expected no content test to fail and throw an ApplicationException" );
             }
             catch ( ApplicationException )
             {

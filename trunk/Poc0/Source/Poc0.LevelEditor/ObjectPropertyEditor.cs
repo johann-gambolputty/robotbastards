@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Reflection;
 using System.Windows.Forms;
+using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.EditModes;
 using Rb.Core.Components;
 

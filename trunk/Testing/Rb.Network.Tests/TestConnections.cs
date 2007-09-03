@@ -20,8 +20,6 @@ namespace Rb.Network.Tests
 
 			TcpConnectionListener listener = new TcpConnectionListener( connect, port );
 			listener.Listen( connections );
-
-			listener.Dispose( );
 		}
 
 		[Test]
@@ -41,14 +39,12 @@ namespace Rb.Network.Tests
 			connection.Disconnect( );
 
 			connections.DisconnectAll( );
-
-			listener.Dispose( );
 		}
 
 		[Serializable]
 		private class TestMessageContent
 		{
-			public int  m_Value;
+			public readonly int m_Value;
 
 			public TestMessageContent( int value )
 			{
@@ -59,7 +55,7 @@ namespace Rb.Network.Tests
 		[Serializable]
 		private class TestMessage : Message
 		{
-		    public TestMessageContent m_Content;
+		    public readonly TestMessageContent m_Content;
             
             public TestMessage( int value ) { m_Content = new TestMessageContent( value ); }
 		}
@@ -86,7 +82,7 @@ namespace Rb.Network.Tests
 			connection.DeliverMessage( new TestMessage( 10 ) );
 			connection.DeliverMessage( new TestMessage( 10 ) );
 
-			while ( connections.ConnectionCount == 0 );
+			while ( connections.ConnectionCount == 0 ) { }
 
 			foreach ( IConnection curConnection in connections )
 			{
@@ -94,15 +90,15 @@ namespace Rb.Network.Tests
 				curConnection.ReceiveMessages( );
 			}
 
-			connection.Disconnect( );
-
 			listener.Dispose( );
+
+			connection.Disconnect( );
 		}
 
         [Serializable]
         private class DualRefMessage : Message
         {
-            public TestMessage[] m_Messages = new TestMessage[ 2 ];
+            public readonly TestMessage[] m_Messages = new TestMessage[ 2 ];
 
             public DualRefMessage( TestMessage msg0,  TestMessage msg1 )
             {
@@ -125,11 +121,10 @@ namespace Rb.Network.Tests
 			TcpSocketConnection connection = new TcpSocketConnection( connect, port );
 			connection.OpenConnection( );
 
-			while ( connections.ConnectionCount == 0 );
+			while ( connections.ConnectionCount == 0 ) {}
 
-			listener.Dispose( );
 
-            TestMessage payload0 = new TestMessage( 10 );
+			TestMessage payload0 = new TestMessage( 10 );
             //TestMessage payload1 = new TestMessage( 11 );
 		    TestMessage payload1 = payload0;
             Message msg = new DualRefMessage( payload0, payload1 );
