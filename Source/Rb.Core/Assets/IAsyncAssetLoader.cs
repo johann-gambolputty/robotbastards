@@ -23,10 +23,10 @@ namespace Rb.Core.Assets
 		/// <summary>
 		/// Queues up a load request
 		/// </summary>
-		/// <param name="location">Asset location</param>
+		/// <param name="source">Asset source</param>
 		/// <param name="parameters">Load parameters</param>
 		/// <param name="priority">Load priority</param>
 		/// <returns>Asynchronous result</returns>
-		AsyncLoadResult QueueLoad( Location location, LoadParameters parameters, LoadPriority priority );
+		AsyncLoadResult QueueLoad( ISource source, LoadParameters parameters, LoadPriority priority );
 	}
 }

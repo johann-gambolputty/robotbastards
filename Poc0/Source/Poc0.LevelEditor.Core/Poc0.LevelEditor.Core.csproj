@@ -65,6 +65,7 @@
     <Compile Include="EditModes\EditModeContext.cs" />
     <Compile Include="EditModes\IEditMode.cs" />
     <Compile Include="EditModes\PaintTileEditMode.cs" />
+    <Compile Include="HasWorldFrame.cs" />
     <Compile Include="ISelectable.cs" />
     <Compile Include="ITilePicker.cs" />
     <Compile Include="ObjectEditState.cs" />
@@ -75,7 +76,9 @@
       <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="EditModes\SelectEditMode.cs" />
+    <Compile Include="PropertyBag.cs" />
     <Compile Include="SelectedObjects.cs" />
+    <Compile Include="Template.cs" />
     <Compile Include="TileBlock2dRenderer.cs">
       <SubType>Code</SubType>
     </Compile>

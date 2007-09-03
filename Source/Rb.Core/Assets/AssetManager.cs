@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Xml;
-using System.Xml.XPath;
 using Rb.Core.Utils;
 using Rb.Log;
 
@@ -41,7 +38,7 @@ namespace Rb.Core.Assets
 		/// </summary>
 		public void AddLoadersFromXml( string uri )
 		{
-			XmlReader reader = null;
+			XmlReader reader;
 			try
 			{
 				reader = XmlReader.Create( uri );
@@ -56,11 +53,14 @@ namespace Rb.Core.Assets
 			ReadLoaders( uri, reader );
 		}
 
-		public IAssetLoader FindLoaderForAsset( Location location )
+		/// <summary>
+		/// Finds an <see cref="IAssetLoader"/> that can load a specified source
+		/// </summary>
+		public IAssetLoader FindLoaderForAsset( ISource source )
 		{
 			foreach ( IAssetLoader loader in m_Loaders )
 			{
-				if ( loader.CanLoad( location ) )
+				if ( loader.CanLoad( source ) )
 				{
 					return loader;
 				}
@@ -72,11 +72,17 @@ namespace Rb.Core.Assets
 
 		#region Synchronous asset loading
 
-		public LoadState CreateLoadState( Location location, LoadParameters parameters )
+		/// <summary>
+		/// Creates a load state that can load an asset from a given source
+		/// </summary>
+		/// <param name="source">Asset source</param>
+		/// <param name="parameters">Asset loading parameters</param>
+		/// <returns>Returns a new LoadState that can load the asset at source</returns>
+		public LoadState CreateLoadState( ISource source, LoadParameters parameters )
 		{
-			IAssetLoader loader = FindLoaderForAsset( location );
+			IAssetLoader loader = FindLoaderForAsset( source );
 
-			return new LoadState( loader, location, parameters );
+			return new LoadState( loader, source, parameters );
 		}
 
 		/// <summary>
@@ -101,43 +107,38 @@ namespace Rb.Core.Assets
 		}
 
 		/// <summary>
-		/// Loads an asset at a given location
+		/// Loads an asset from a given source
 		/// </summary>
-		/// <param name="location">Location</param>
+		/// <param name="source">Asset source</param>
 		/// <returns>Returns the loaded asset</returns>
-		public object Load( Location location )
+		public object Load( ISource source )
 		{
-			return Load( location, null );
+			return Load( source, null );
 		}
 		
 		/// <summary>
 		/// Loads an asset at a given location, with specified parameters
 		/// </summary>
-		/// <param name="location">Location path</param>
+		/// <param name="source">Asset source</param>
 		/// <param name="parameters">Loading parameters</param>
 		/// <returns>Returns the loaded asset</returns>
-		public object Load( Location location, LoadParameters parameters )
+		public object Load( ISource source, LoadParameters parameters )
 		{
-			if ( !location.Valid )
+			if ( !source.IsValid )
 			{
-				throw new ArgumentException( string.Format( "Invalid asset location {0}", location ) );
+				throw new ArgumentException( string.Format( "Invalid asset source {0}", source ) );
 			}
 
 			foreach ( IAssetLoader loader in m_Loaders )
 			{
-				if ( loader.CanLoad( location ) )
+				if ( loader.CanLoad( source ) )
 				{
-					if ( parameters == null )
-					{
-						parameters = loader.CreateDefaultParameters( );
-					}
-
-					LoadState loadState = new LoadState( loader, location, parameters );
+					LoadState loadState = new LoadState( loader, source, parameters );
 					return loadState.Load( );
 				}
 			}
 
-			throw new ArgumentException( string.Format( "No loader could load asset {0}", location ) );
+			throw new ArgumentException( string.Format( "No loader could load asset {0}", source ) );
 		}
 
 		#endregion

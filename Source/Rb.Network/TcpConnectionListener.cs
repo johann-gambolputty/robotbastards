@@ -1,14 +1,14 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
-using Rb.Core.Utils;
+using System.Threading;
 
 namespace Rb.Network
 {
 	/// <summary>
 	/// Listens out for client connection requests, creating new <see cref="TcpSocketConnection"/> objects for each one
 	/// </summary>
-	public class TcpConnectionListener
+	public class TcpConnectionListener : IDisposable
 	{
 		/// <summary>
 		/// Default constructor
@@ -27,9 +27,17 @@ namespace Rb.Network
 		}
 
 		/// <summary>
+		/// Kills the listener thread
+		/// </summary>
+		~TcpConnectionListener( )
+		{
+			Dispose( );
+		}
+
+		/// <summary>
 		/// The address to listen at for connection requests
 		/// </summary>
-		public string	ConnectionString
+		public string ConnectionString
 		{
 			get { return m_ConnectionString; }
 			set { m_ConnectionString = value; }
@@ -38,7 +46,7 @@ namespace Rb.Network
 		/// <summary>
 		/// The port to listen at for connection requests
 		/// </summary>
-		public int		Port
+		public int Port
 		{
 			get { return m_Port; }
 			set { m_Port = value; }
@@ -68,46 +76,71 @@ namespace Rb.Network
 			try
 			{
 				NetworkLog.Info( "Attempting to listen for clients at \"{0}:{1}\"", address, Port );
-				m_Listener = new TcpListener(address, Port);
-				m_Listener.Start();
+				m_Listener = new TcpListener( address, Port );
+				m_Listener.Start( );
 			}
 			catch ( Exception exception )
 			{
 				throw new ApplicationException( string.Format( "Failed to create TCP listener at \"{0}\"", m_Listener.LocalEndpoint ), exception );
 			}
 
-			m_Clock.Subscribe( Update );
+			ExitListenerThread( );
+			m_ListenerThread = new Thread( ListenerThread );
+			m_ListenerThread.Start( );
 		}
 
 
 		#region	Private stuff
 
-		private string			m_ConnectionString	= "localhost";
-		private int				m_Port				= 11000;
-		private Clock			m_Clock				= new Clock( "tcpListenerClock", 50 );
-		private IConnections	m_Connections;
-		private TcpListener		m_Listener;
+		private string						m_ConnectionString	= "localhost";
+		private int							m_Port				= 11000;
+		private IConnections				m_Connections;
+		private TcpListener					m_Listener;
+		private readonly ManualResetEvent	m_ExitEvent = new ManualResetEvent( false );
+		private Thread						m_ListenerThread;
 
+		private void ExitListenerThread( )
+		{
+			if ( m_ListenerThread != null )
+			{
+				m_ExitEvent.Set( );
+				m_ListenerThread.Join( );
+				m_ExitEvent.Reset( );
+			}
+		}
+
+		private void ListenerThread( )
+		{
+			//	A bit dubious... wait 10ms for the wait signal, so the thread isn't cycling like crazy
+			while ( !m_ExitEvent.WaitOne( 10, false ) )	
+			{
+				if ( m_Listener.Pending( ) )
+				{
+					Socket socket = m_Listener.AcceptSocket( );
+					AddConnection( socket );
+				}
+			}
+		}
 
 		/// <summary>
 		/// Adds a client socket
 		/// </summary>
-		private static void AddConnection( IConnections connections, Socket clientSocket )
+		private void AddConnection( Socket clientSocket )
 		{
 			NetworkLog.Info( "Accepting connection \"{0}\"", clientSocket.RemoteEndPoint );
-
-			connections.Add( new SocketConnection( clientSocket, clientSocket.RemoteEndPoint.ToString( ) ) );
+			m_Connections.Add( new SocketConnection( clientSocket, clientSocket.RemoteEndPoint.ToString( ) ) );
 		}
 
+		#endregion
+
+		#region IDisposable Members
+
 		/// <summary>
-		/// Thread method that listens out for new client connections
+		/// Quits the listener thread
 		/// </summary>
-		private void Update( Clock clock )
+		public void Dispose( )
 		{
-			while ( m_Listener.Pending( ) )
-			{
-				AddConnection( m_Connections, m_Listener.AcceptSocket( ) );
-			}
+			ExitListenerThread( );
 		}
 
 		#endregion

@@ -28,31 +28,44 @@ namespace Rb.Core.Assets
 		{
 			Dispose( );
 		}
-
+		
 		/// <summary>
-		/// Queues up a load request
+		/// Queues up a load request. Uses the <see cref="AssetManager"/> singleton
 		/// </summary>
-		/// <param name="location">Asset location</param>
+		/// <param name="source">Asset source</param>
 		/// <param name="parameters">Load parameters</param>
 		/// <param name="priority">Load priority</param>
 		/// <returns>Asynchronous result</returns>
-		public AsyncLoadResult QueueLoad( Location location, LoadParameters parameters, LoadPriority priority )
+		public AsyncLoadResult QueueLoad( ISource source, LoadParameters parameters, LoadPriority priority )
 		{
-			FullAsyncLoadResult result = new FullAsyncLoadResult( location, parameters );
+			return QueueLoad( AssetManager.Instance, source, parameters, priority );
+		}
+		
+		/// <summary>
+		/// Queues up a load request
+		/// </summary>
+		/// <param name="manager">Asset manager</param>
+		/// <param name="source">Asset source</param>
+		/// <param name="parameters">Load parameters</param>
+		/// <param name="priority">Load priority</param>
+		/// <returns>Asynchronous result</returns>
+		public AsyncLoadResult QueueLoad( AssetManager manager, ISource source, LoadParameters parameters, LoadPriority priority )
+		{
+			FullAsyncLoadResult result = new FullAsyncLoadResult( manager, source, parameters );
 			lock ( m_Locations )
 			{
 				//	TODO: AP: Handle load priority
 				m_Locations.Add( result );
+
+				//	Signal the thread that there's stuff to process
+				m_QueueNotEmpty.Set( );
 			}
-			//	Signal the thread that there's stuff to process
-			m_QueueNotEmpty.Set( );
 			return result;
 		}
 
-
 		#region Private stuff
 
-		private readonly AutoResetEvent					m_QueueNotEmpty	= new AutoResetEvent( false );
+		private readonly ManualResetEvent				m_QueueNotEmpty	= new ManualResetEvent( false );
 		private readonly ManualResetEvent				m_Exit			= new ManualResetEvent( false );
 		private readonly List< FullAsyncLoadResult >	m_Locations		= new List< FullAsyncLoadResult >( );
 		private Thread									m_LoadThread;
@@ -108,11 +121,12 @@ namespace Rb.Core.Assets
 			/// <summary>
 			/// Constructor
 			/// </summary>
-			/// <param name="location">Asset location</param>
+			/// <param name="manager">Asset manager</param>
+			/// <param name="source">Asset source</param>
 			/// <param name="parameters">Asset load parameters</param>
-			public FullAsyncLoadResult( Location location, LoadParameters parameters )
+			public FullAsyncLoadResult( AssetManager manager, ISource source, LoadParameters parameters )
 			{
-				m_LoadState = AssetManager.Instance.CreateLoadState( location, parameters );
+				m_LoadState = manager.CreateLoadState( source, parameters );
 			}
 
 			/// <summary>
@@ -123,12 +137,13 @@ namespace Rb.Core.Assets
 				try
 				{
 					m_LoadState.Load( );
-					OnComplete( m_LoadState.Asset );
+					OnSuccess( m_LoadState.Asset );
 				}
 				catch ( Exception ex )
 				{
-					AssetsLog.Error( "Failed to async load asset {0}", m_LoadState.Location );
+					AssetsLog.Error( "Failed to async load asset {0}", m_LoadState.Source );
 					ExceptionUtils.ToLog( AssetsLog.GetSource( Severity.Error ), ex );
+					OnFailure( );
 				}
 			}
 

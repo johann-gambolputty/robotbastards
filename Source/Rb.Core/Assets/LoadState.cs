@@ -22,9 +22,9 @@ namespace Rb.Core.Assets
 		/// <summary>
 		/// The location of the asset
 		/// </summary>
-		public Location Location
+		public ISource Source
 		{
-			get { return m_Location; }
+			get { return m_Source; }
 		}
 
 		/// <summary>
@@ -52,13 +52,13 @@ namespace Rb.Core.Assets
 		/// Setup constructor
 		/// </summary>
 		/// <param name="loader">Asset loader</param>
-		/// <param name="location">Asset location</param>
+		/// <param name="source">Asset source</param>
 		/// <param name="parameters">Loading parameters</param>
-		public LoadState( IAssetLoader loader, Location location, LoadParameters parameters )
+		public LoadState( IAssetLoader loader, ISource source, LoadParameters parameters )
 		{
 			m_Loader		= loader;
-			m_Location		= location;
-			m_Parameters	= parameters;
+			m_Source		= source;
+			m_Parameters	= parameters ?? loader.CreateDefaultParameters( );
 		}
 
 		/// <summary>
@@ -66,19 +66,19 @@ namespace Rb.Core.Assets
 		/// </summary>
 		public virtual object Load( )
 		{
-			AssetsLog.Info( "Loading asset {0}", m_Location );
-			m_Asset = m_Loader.Cache.Find( m_Location.Key );
+			AssetsLog.Info( "Loading asset {0}", m_Source );
+			m_Asset = m_Loader.Cache.Find( m_Source.GetHashCode( ) );
 			if ( m_Asset != null )
 			{
-				AssetsLog.Verbose( "Retrieved cached asset {0}", m_Location );
+				AssetsLog.Verbose( "Retrieved cached asset {0}", m_Source );
 			}
 			else
 			{
-				m_Asset = m_Loader.Load( m_Location, m_Parameters );
+				m_Asset = m_Loader.Load( m_Source, m_Parameters );
 				if ( ( m_Asset != null ) && ( m_Parameters.AddToCache ) )
 				{
-					AssetsLog.Verbose( "Caching asset {0}", m_Location );
-					m_Loader.Cache.Add( m_Location.Key, m_Asset );
+					AssetsLog.Verbose( "Caching asset {0}", m_Source );
+					m_Loader.Cache.Add( m_Source.GetHashCode( ), m_Asset );
 				}
 			}
 			return m_Asset;
@@ -89,7 +89,7 @@ namespace Rb.Core.Assets
 		#region Private members
 
 		private readonly IAssetLoader	m_Loader;
-		private readonly Location		m_Location;
+		private readonly ISource		m_Source;
 		private object					m_Asset;
 		private LoadParameters			m_Parameters;
 
