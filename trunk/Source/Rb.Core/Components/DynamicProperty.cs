@@ -6,7 +6,7 @@ namespace Rb.Core.Components
 	/// Dynamic property
 	/// </summary>
 	[Serializable]
-    public class DynamicProperty
+	public class DynamicProperty : IDynamicProperty
     {
 		/// <summary>
 		/// Setup constructor

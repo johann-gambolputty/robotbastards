@@ -99,7 +99,7 @@ namespace Rb.Core.Components
 		{
 			m_All[ key ] = value;
 			ComponentLog.Verbose( "ObjectMap: Adding object, type \"{0}\", key \"{1}\"", value.GetType( ), key );
-			for ( Type baseType = value.GetType( ); baseType != typeof( object ); baseType = baseType.BaseType )
+			for ( Type baseType = value.GetType( ); baseType != null; baseType = baseType.BaseType )
 			{
 				GetTypeMap( baseType )[ key ] = value;
 			}
@@ -128,7 +128,7 @@ namespace Rb.Core.Components
 
 			m_All.Remove( key );
 
-			for ( Type baseType = obj.GetType( ); baseType != typeof( object ); baseType = baseType.BaseType )
+			for ( Type baseType = obj.GetType( ); baseType != null; baseType = baseType.BaseType )
 			{
 				m_Types[ baseType ].Remove( key );
 			}

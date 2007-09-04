@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Poc0.Core;
+using Rb.Core.Components;
 using Rb.Core.Maths;
 
 namespace Poc0.LevelEditor.Core.Actions
@@ -18,12 +19,16 @@ namespace Poc0.LevelEditor.Core.Actions
 		/// <param name="delta">Movement delta</param>
 		public MoveObjectsAction( object[] objects, Vector3 delta )
 		{
-			foreach ( IHasWorldFrame frame in objects )
+			List< IHasWorldFrame > frameObjects = new List< IHasWorldFrame >( );
+
+			foreach ( object obj in objects )
 			{
-				frame.WorldFrame.Translation += delta;
+				frameObjects.Add( ParentHelpers.GetType< IHasWorldFrame >( obj ) );
 			}
-			m_Delta = delta;
-			m_Objects = objects;
+
+			m_Objects = frameObjects.ToArray( );
+
+			ApplyDelta( delta );
 		}
 
 		/// <summary>
@@ -74,7 +79,7 @@ namespace Poc0.LevelEditor.Core.Actions
 		#endregion
 
 		private Vector3 m_Delta;
-		private readonly object[] m_Objects;
+		private readonly IHasWorldFrame[] m_Objects;
 
 	}
 }

@@ -74,7 +74,20 @@ namespace Poc0.LevelEditor
 			m_DockingManager.AddContentToZone( m_ToolBoxContent, selectionWindow.ParentZone, 0 );
 			m_DockingManager.AddContentWithState( m_PropertyEditorContent, State.DockLeft );
 
+			m_Serializer.LastSavePathChanged += SavePathChanged;
+			m_Exporter.LastExportPathChanged += ExportPathChanged;
+
 			Icon = Properties.Resources.AppIcon;
+		}
+
+		private void SavePathChanged( string newPath )
+		{
+			Text = newPath + " => " + m_Exporter.LastExportPath;
+		}
+
+		private void ExportPathChanged( string newPath )
+		{
+			Text = m_Serializer.LastSavePath + " => " + newPath;
 		}
 
 		private void CreateEditContext( )
@@ -142,6 +155,7 @@ namespace Poc0.LevelEditor
 
 		private readonly CommandUser		m_User = new CommandUser( );
 		private readonly SceneSerializer	m_Serializer = new SceneSerializer( );
+		private readonly SceneExporter		m_Exporter = new SceneExporter( );
 		private Scene						m_Scene;
 		
 		private void MainForm_Load( object sender, EventArgs e )
@@ -227,6 +241,16 @@ namespace Poc0.LevelEditor
 		private void redoToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			EditModeContext.Instance.UndoStack.Redo( );
+		}
+
+		private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			m_Exporter.Export( m_Scene );
+		}
+
+		private void eToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			m_Exporter.ExportAs( m_Scene );
 		}
 
 	}

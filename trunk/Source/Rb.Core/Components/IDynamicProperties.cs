@@ -7,7 +7,7 @@ namespace Rb.Core.Components
     /// <summary>
     /// Interface for classes that store sets of DynamicProperty objects
     /// </summary>
-    public interface IDynamicProperties : IEnumerable< DynamicProperty >
+    public interface IDynamicProperties : IEnumerable< IDynamicProperty >
     {
         /// <summary>
         /// Property indexer
