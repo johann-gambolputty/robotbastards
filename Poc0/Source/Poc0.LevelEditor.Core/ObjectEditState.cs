@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using Poc0.Core;
+using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.World;
@@ -19,7 +20,7 @@ namespace Poc0.LevelEditor.Core
 		public ObjectEditState( Scene scene, object parent )
 		{
 			scene.Renderables.Add( this );
-			m_Parent = ( IHasWorldFrame )parent;
+			m_Frame = ParentHelpers.GetType< IHasWorldFrame >( parent );
 		}
 
 		/// <summary>
@@ -28,7 +29,7 @@ namespace Poc0.LevelEditor.Core
 		/// <param name="context">Rendering context</param>
 		public void Render( IRenderContext context )
 		{
-			Matrix44 frame = m_Parent.WorldFrame;
+			Matrix44 frame = m_Frame.WorldFrame;
 
 			//	TODO: AP: Render object bounds
 			int x = ( int )frame.Translation.X - 5;
@@ -41,7 +42,7 @@ namespace Poc0.LevelEditor.Core
 			ShapeRenderer.Instance.DrawRectangle( x, y, width, height, colour );
 		}
 
-		private readonly IHasWorldFrame m_Parent;
+		private readonly IHasWorldFrame m_Frame;
 
 		[NonSerialized]
 		private bool m_Selected;

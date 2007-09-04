@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Poc0.Core;
 using Poc0.LevelEditor.Core.Actions;
+using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.World;
@@ -109,14 +110,10 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 			foreach ( object obj in scene.Objects.GetAllOfType< object >( ) )
 			{
-				IHasWorld
-			}
-			IEnumerable< IHasWorldFrame > hasFrames = scene.Objects.GetAllOfType< IHasWorldFrame >( );
-			foreach ( IHasWorldFrame hasFrame in hasFrames )
-			{
-				if ( GetObjectShape( hasFrame ).Contains( pos ) )
+				IHasWorldFrame frame = ParentHelpers.GetType< IHasWorldFrame >( obj );
+				if ( ( frame != null ) && ( GetObjectShape( frame ).Contains( pos ) ) )
 				{
-					return hasFrame;
+					return obj;
 				}
 			}
 
@@ -128,17 +125,17 @@ namespace Poc0.LevelEditor.Core.EditModes
 			List< object > objects = new List< object >( );
 
 			Scene scene = EditModeContext.Instance.Scene;
-			IEnumerable< IHasWorldFrame > hasFrames = scene.Objects.GetAllOfType< IHasWorldFrame >( );
-			foreach ( IHasWorldFrame hasFrame in hasFrames )
+
+			foreach ( object obj in scene.Objects.GetAllOfType< object >( ) )
 			{
-				if ( GetObjectShape( hasFrame ).Overlaps( rect ) )
+				IHasWorldFrame frame = ParentHelpers.GetType< IHasWorldFrame >( obj );
+				if ( ( frame != null ) && ( GetObjectShape( frame ).Overlaps( rect ) ) )
 				{
-					objects.Add( hasFrame );
+					objects.Add( obj );
 				}
 			}
 
 			return objects.ToArray( );
-			
 		}
 
 		private bool IsMoving

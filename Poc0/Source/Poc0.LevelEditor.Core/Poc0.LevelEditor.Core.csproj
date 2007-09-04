@@ -78,7 +78,8 @@
     <Compile Include="EditModes\SelectEditMode.cs" />
     <Compile Include="PropertyBag.cs" />
     <Compile Include="SelectedObjects.cs" />
-    <Compile Include="Template.cs" />
+    <Compile Include="ObjectPattern.cs">
+    </Compile>
     <Compile Include="TileBlock2dRenderer.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -108,6 +109,10 @@
     <ProjectReference Include="..\..\..\Source\Rb.Interaction\Rb.Interaction.csproj">
       <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
       <Name>Rb.Interaction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Log\Rb.Log.csproj">
+      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
+      <Name>Rb.Log</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.Rendering\Rb.Rendering.csproj">
       <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>

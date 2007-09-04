@@ -1,6 +1,7 @@
 using System;
 using Rb.Core.Components;
 using Rb.Core.Maths;
+using Rb.Rendering;
 
 namespace Poc0.Core
 {
@@ -10,6 +11,14 @@ namespace Poc0.Core
 	[Serializable]
 	public class Entity : Component, IHasWorldFrame, INamed
 	{
+		public IRenderable Graphics
+		{
+			get { return m_Graphics;  }
+			set { m_Graphics = value; }
+		}
+
+		private IRenderable m_Graphics;
+
 		#region IHasWorldFrame Members
 
 		/// <summary>

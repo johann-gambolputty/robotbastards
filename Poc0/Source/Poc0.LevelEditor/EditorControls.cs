@@ -1,7 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.EditModes;
 using Rb.Core.Components;
+using Rb.Core.Resources;
 using Rb.World;
 
 namespace Poc0.LevelEditor
@@ -15,8 +18,11 @@ namespace Poc0.LevelEditor
 		{
 			InitializeComponent( );
 
-			m_Templates = new ObjectTemplates( );
-			m_Templates.Append( "TestObjectTemplates.components.xml" );
+			IList templates = ( IList )ResourceManager.Instance.Load( "TestObjectTemplates.components.xml" );
+			foreach ( ObjectPattern template in templates )
+			{
+				m_Templates.Add( template );
+			}
 
 			PopulateObjectTemplates( m_Templates );
 
@@ -51,22 +57,20 @@ namespace Poc0.LevelEditor
 			get { return m_Grid; }
 		}
 
-		private TileGrid		m_Grid;
-		private EditModeContext	m_EditContext;
-		private ObjectTemplates	m_Templates;
+		private TileGrid					m_Grid;
+		private EditModeContext				m_EditContext;
+		private readonly List< ObjectPattern >	m_Templates = new List< ObjectPattern >( );
 
-		private void PopulateObjectTemplates( ObjectTemplates templates )
+		private void PopulateObjectTemplates( IEnumerable< ObjectPattern > templates )
 		{
-			m_Templates = templates;
-
 			objectsTreeView.Nodes.Clear( );
 
 			//	Populate the object types tree
 			TreeNode allObjects = objectsTreeView.Nodes.Add( "All Objects" );
 
-			foreach ( ObjectTemplate template in m_Templates.Templates )
+			foreach ( ObjectPattern template in templates )
 			{
-				TreeNode node = new TreeNode( template.Name );
+				TreeNode node = new TreeNode( template.TemplateName );
 				node.Tag = template;
 
 				allObjects.Nodes.Add( node );
@@ -87,7 +91,7 @@ namespace Poc0.LevelEditor
 
 		private void objectsTreeView_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			ObjectTemplate template = objectsTreeView.SelectedNode.Tag as ObjectTemplate;
+			ObjectPattern template = objectsTreeView.SelectedNode.Tag as ObjectPattern;
 			if ( template != null )
 			{
 				m_EditContext.AddEditMode( new AddObjectEditMode( MouseButtons.Right, template ) );

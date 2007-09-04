@@ -486,7 +486,7 @@ namespace Rb.ComponentXmlLoader
         }
 
 		/// <summary>
-		/// Adds the BuildObject to an IDictionary parent. The BuildObject must be a DictionaryEntry. Calls <see cref="IChild.OnAddded"/>
+		/// Adds the BuildObject to an IDictionary parent. The BuildObject must be a DictionaryEntry. Calls <see cref="IChild.AddedToParent"/>
 		/// if the DictionaryEntry Value implements IChild, 
 		/// </summary>
 		/// <param name="parent">Parent object</param>
@@ -707,18 +707,18 @@ namespace Rb.ComponentXmlLoader
 
         #endregion
 
-        private BaseBuilder             m_ParentBuilder;
-        private ErrorCollection         m_Errors;
-        private int                     m_Line;
-        private int                     m_Column;
-        private string                  m_Name;
-        private string                  m_Id;
-        private string                  m_Property;
-        private string                  m_DynProperty;
-        private ComponentLoadParameters m_Parameters;
-        private object                  m_Object;
-        private List< BaseBuilder >     m_PreLinkBuilders   = new List< BaseBuilder >( );
-        private List< BaseBuilder >     m_PostLinkBuilders  = new List< BaseBuilder >( );
+        private readonly BaseBuilder             	m_ParentBuilder;
+        private readonly ErrorCollection         	m_Errors;
+        private readonly int                     	m_Line;
+        private readonly int                     	m_Column;
+        private readonly string                  	m_Name;
+        private readonly string                  	m_Id;
+        private readonly string                  	m_Property;
+        private readonly string                  	m_DynProperty;
+        private readonly ComponentLoadParameters 	m_Parameters;
+        private object								m_Object;
+        private readonly List< BaseBuilder >     	m_PreLinkBuilders   = new List< BaseBuilder >( );
+        private readonly List< BaseBuilder >     	m_PostLinkBuilders  = new List< BaseBuilder >( );
 
     }
 }

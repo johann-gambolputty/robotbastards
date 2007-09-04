@@ -2,7 +2,8 @@
 <rb>
   <list>
 
-    <object type="Rb.Core.Components.ObjectTemplate" assembly="Rb.Core">
+    <!-- Player Start pattern -->
+    <object type="Poc0.LevelEditor.Core.ObjectPattern" assembly="Poc0.LevelEditor.Core">
 
       <parameters>
         <type value="Poc0.Core.PlayerStart" assembly="Poc0.Core"/>
@@ -10,20 +11,36 @@
       </parameters>
 
     </object>
-
-    <object type="Rb.Core.Components.ObjectTemplate" assembly="Rb.Core">
+    
+    <!-- Evil Robot pattern -->
+    <object type="Poc0.LevelEditor.Core.ObjectPattern" assembly="Poc0.LevelEditor.Core">
 
       <parameters>
         <type value="Poc0.Core.Entity" assembly="Poc0.Core"/>
         <string value="Evil Robot"/>
       </parameters>
 
-      <object type="Rb.Core.Components.ObjectTemplate" assembly="Rb.Core">
+      <!-- Evil robot body pattern -->
+      <object type="Poc0.LevelEditor.Core.ObjectPattern" assembly="Poc0.LevelEditor.Core">
 
         <parameters>
           <type value="Poc0.Core.Body" assembly="Poc0.Core"/>
           <string value="Body"/>
         </parameters>
+
+        <int value="200" dynProperty="Health"/>
+
+      </object>
+
+      <!-- Evil robot renderer pattern-->
+      <object type="Poc0.LevelEditor.Core.ObjectPattern" assembly="Poc0.LevelEditor.Core" dynProperty="Graphics">
+
+        <parameters>
+          <type value="Rb.Rendering.EffectRenderedObject" assembly="Rb.Rendering"/>
+          <string value="Renderer"/>
+        </parameters>
+
+        <!--Evil robot renderer technique pattern -->
 
       </object>
 

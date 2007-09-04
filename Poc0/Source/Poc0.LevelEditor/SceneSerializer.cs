@@ -18,6 +18,27 @@ namespace Poc0.LevelEditor
 	class SceneSerializer
 	{
 		/// <summary>
+		/// Access to the last save path
+		/// </summary>
+		public string LastSavePath
+		{
+			get { return m_LastSavePath; }
+			set
+			{
+				m_LastSavePath = value;
+				if ( LastSavePathChanged != null )
+				{
+					LastSavePathChanged( m_LastSavePath );
+				}
+			}
+		}
+
+		/// <summary>
+		/// Event, invoked when the last save path changes
+		/// </summary>
+		public event Action< string > LastSavePathChanged;
+
+		/// <summary>
 		/// Saves a scene to a scene file at a user-defined path
 		/// </summary>
 		/// <param name="scene">Scene to serialize</param>
@@ -31,8 +52,8 @@ namespace Poc0.LevelEditor
 				return;
 			}
 
-			m_LastSavePath = saveDialog.FileName;
-			SaveTo( m_LastSavePath, scene );
+			LastSavePath = saveDialog.FileName;
+			SaveTo( LastSavePath, scene );
 		}
 
 		/// <summary>
@@ -41,13 +62,13 @@ namespace Poc0.LevelEditor
 		/// <param name="scene">Scene to serialize</param>
 		public void Save( Scene scene )
 		{
-			if ( m_LastSavePath == null )
+			if ( LastSavePath == null )
 			{
 				SaveAs( scene );
 			}
 			else
 			{
-				SaveTo( m_LastSavePath, scene );
+				SaveTo( LastSavePath, scene );
 			}
 		}
 
@@ -105,7 +126,7 @@ namespace Poc0.LevelEditor
 				return null;
 			}
 
-			m_LastSavePath = path;
+			LastSavePath = path;
 
 			return scene;
 		}

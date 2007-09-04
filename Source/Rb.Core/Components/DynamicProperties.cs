@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Rb.Core.Components
 {
@@ -26,7 +25,7 @@ namespace Rb.Core.Components
             }
             set
             {
-                DynamicProperty property;
+                IDynamicProperty property;
                 if ( m_Properties.TryGetValue( name, out property ) )
                 {
                     property.Value = value;
@@ -39,15 +38,23 @@ namespace Rb.Core.Components
         }
 
         /// <summary>
-        /// Adds a new named property to the set
+        /// Adds a new named property to the set. Uses <see cref="DynamicProperty"/>
         /// </summary>
         /// <param name="name">Property name</param>
         /// <param name="value">New property value</param>
         public void Add( string name, object value )
         {
-            DynamicProperty property = new DynamicProperty( name, value );
-            m_Properties.Add( property.Name, property );
+            Add( new DynamicProperty( name, value ) );
         }
+
+		/// <summary>
+		/// Adds a new property to the set
+		/// </summary>
+		/// <param name="property">Property to add</param>
+		public void Add( IDynamicProperty property )
+		{
+			m_Properties.Add( property.Name, property );
+		}
 
         /// <summary>
         /// Removes an existing property from the set
@@ -65,7 +72,7 @@ namespace Rb.Core.Components
         /// <returns>Property value. Returns null if the property could not be found</returns>
         public object Get( string name )
         {
-            DynamicProperty property;
+            IDynamicProperty property;
             return m_Properties.TryGetValue( name, out property ) ? property.Value : null;
         }
 
@@ -81,14 +88,14 @@ namespace Rb.Core.Components
 
         #endregion
 
-        #region IEnumerable<DynamicProperty> Members
+        #region IEnumerable<IDynamicProperty> Members
 
         /// <summary>
         /// Returns an enumerator that iterates through the set of properties
         /// </summary>
-        public IEnumerator< DynamicProperty > GetEnumerator( )
+        public IEnumerator< IDynamicProperty > GetEnumerator( )
         {
-            foreach ( KeyValuePair< string, DynamicProperty > kvp in m_Properties )
+            foreach ( KeyValuePair< string, IDynamicProperty > kvp in m_Properties )
             {
                 yield return kvp.Value;
             }
@@ -103,7 +110,7 @@ namespace Rb.Core.Components
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator( )
         {
-            foreach ( KeyValuePair< string, DynamicProperty > kvp in m_Properties )
+            foreach ( KeyValuePair< string, IDynamicProperty > kvp in m_Properties )
             {
                 yield return kvp.Value;
             }
@@ -127,7 +134,7 @@ namespace Rb.Core.Components
 
 		#region Private stuff
 
-		private readonly Dictionary< string, DynamicProperty > m_Properties = new Dictionary< string, DynamicProperty >( );
+		private readonly Dictionary< string, IDynamicProperty > m_Properties = new Dictionary< string, IDynamicProperty >( );
 
         #endregion
     }
