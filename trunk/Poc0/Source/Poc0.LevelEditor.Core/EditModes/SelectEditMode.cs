@@ -101,9 +101,16 @@ namespace Poc0.LevelEditor.Core.EditModes
 			return new Rectangle( minX, minY, 10.0f, 10.0f );
 		}
 
+
+
 		private static object FirstObjectUnderCursor( Point2 pos )
 		{
 			Scene scene = EditModeContext.Instance.Scene;
+
+			foreach ( object obj in scene.Objects.GetAllOfType< object >( ) )
+			{
+				IHasWorld
+			}
 			IEnumerable< IHasWorldFrame > hasFrames = scene.Objects.GetAllOfType< IHasWorldFrame >( );
 			foreach ( IHasWorldFrame hasFrame in hasFrames )
 			{

@@ -49,59 +49,22 @@ namespace Poc0.LevelEditor.Core.EditModes
 		}
 
 		/// <summary>
-		/// An instance of an object template
-		/// </summary>
-		[Serializable]
-		private class ObjectHolder : Component, IHasWorldFrame
-		{
-			/// <summary>
-			/// Setup constructor
-			/// </summary>
-			public ObjectHolder( float x, float y, Guid id, ObjectTemplate template )
-			{
-				m_Frame.Translation = new Point3( x, 0, y );
-				Id = id;
-				m_Template = template;
-			}
-
-			/// <summary>
-			/// Gets the associated object template
-			/// </summary>
-			public IInstanceBuilder Builder
-			{
-				get { return m_Template; }
-			}
-			
-			#region IHasWorldFrame Members
-
-			/// <summary>
-			/// Gets the world frame of the object
-			/// </summary>
-			public Matrix44 WorldFrame
-			{
-				get { return m_Frame; }
-			}
-
-			#endregion
-
-			private readonly ObjectTemplate m_Template;
-			private readonly Matrix44 m_Frame = new Matrix44( );
-
-		}
-
-		/// <summary>
 		/// Creates an object from the object template
 		/// </summary>
 		private object CreateObject( Scene scene, float x, float y, Guid id )
 		{
-			/*
+			//*
 			//  (doesn't actually instance the template; creates an ObjectHolder around it)
-			Component root = new ObjectHolder( x, y, id, m_Template );
+			Template root = new Template( m_Template.Type );
 
-			root.AddChild( new ObjectEditState( scene, root ) );
+			IHasWorldFrame frame = ParentHelpers.GetChildOfType< IHasWorldFrame >( root );
+			if ( frame != null )
+			{
+				root.AddChild( new ObjectEditState( scene, frame ) );
+			}
 
 			return root;
-			*/
+			/*/
 			object newObject = m_Template.CreateInstance( scene.Builder );
 
 			if ( newObject is IUnique )
@@ -119,6 +82,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 			}
 
 			return newObject;
+			//*/
 		}
 
 		#endregion
