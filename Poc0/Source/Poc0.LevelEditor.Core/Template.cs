@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Poc0.Core;
 using Rb.Core.Components;
 
 namespace Poc0.LevelEditor.Core
@@ -11,14 +12,30 @@ namespace Poc0.LevelEditor.Core
 	public class Template : Component, ICloneable
 	{
 		/// <summary>
+		/// The template type
+		/// </summary>
+		public Type Type
+		{
+			get { return m_Type; }
+			set
+			{
+				m_Type = value;
+				if ( m_Type.GetInterface( typeof( IHasWorldFrame ).Name ) != null )
+				{
+					AddChild( new HasWorldFrame( ) );
+				}
+			}
+		}
+
+		/// <summary>
 		/// Setup constructor
 		/// </summary>
 		/// <param name="type">The type of object wrapped by this template</param>
 		public Template( Type type )
 		{
-			m_Type = type;
+			Type = type;
 
-			string category = type.Name.Substring( type.Name.LastIndexOf( '.' ) );
+			string category = type.Name.Substring( type.Name.LastIndexOf( '.' ) + 1 );
 
 			PropertyInfo[] srcProperties = type.GetProperties( );
 
@@ -30,23 +47,6 @@ namespace Poc0.LevelEditor.Core
 			}
 
 			m_Properties = dstProperties.ToArray( );
-		}
-
-		private class Property : PropertySpec
-		{
-			public Property( PropertyInfo property, string category ) :
-				base( property.Name, property.PropertyType, category )
-			{
-
-			}
-
-			public object Value
-			{
-				get { return m_Value; }
-				set { m_Value = value; }
-			}
-
-			private object m_Value;
 		}
 
 		/// <summary>
@@ -97,6 +97,22 @@ namespace Poc0.LevelEditor.Core
 			return bag;
 		}
 
+		private class Property : PropertySpec
+		{
+			public Property( PropertyInfo property, string category ) :
+				base( property.Name, property.PropertyType, category )
+			{
+			}
+
+			public object Value
+			{
+				get { return m_Value; }
+				set { m_Value = value; }
+			}
+
+			private object m_Value;
+		}
+
 		private static void GetValue( object sender, PropertySpecEventArgs args )
 		{
 			args.Value = ( ( Property )args.Property ).Value;
@@ -138,8 +154,8 @@ namespace Poc0.LevelEditor.Core
 
 		#endregion
 
+		private Type m_Type;
 		private readonly Property[] m_Properties;
-		private readonly Type m_Type;
 		private readonly List< Template > m_ChildTemplates = new List< Template >( );
 	}
 }

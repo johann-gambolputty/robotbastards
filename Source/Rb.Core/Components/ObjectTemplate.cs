@@ -19,6 +19,14 @@ namespace Rb.Core.Components
 	public class ObjectTemplate : IInstanceBuilder, INamed, IParent
 	{
 		/// <summary>
+		/// Gets the type associated with the object template
+		/// </summary>
+		public Type Type
+		{
+			get { return m_Type; }
+		}
+
+		/// <summary>
 		/// Setup constructor. Creates object of given type with no constructor parameters
 		/// </summary>
 		/// <param name="objectType">Object type to create</param>

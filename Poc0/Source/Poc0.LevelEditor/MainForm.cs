@@ -70,9 +70,9 @@ namespace Poc0.LevelEditor
 			m_SelectionContent = m_DockingManager.Contents.Add( new SelectionControl( ), "Selection" );
 
 			m_DockingManager.AddContentWithState( m_LogDisplayContent, State.DockBottom );
-			WindowContent toolBoxWindow = m_DockingManager.AddContentWithState( m_ToolBoxContent, State.DockLeft );
-			m_DockingManager.AddContentToZone( m_PropertyEditorContent, toolBoxWindow.ParentZone, 0 );
-			m_DockingManager.AddContentWithState( m_SelectionContent, State.DockRight );
+			WindowContent selectionWindow = m_DockingManager.AddContentWithState( m_SelectionContent, State.DockRight );
+			m_DockingManager.AddContentToZone( m_ToolBoxContent, selectionWindow.ParentZone, 0 );
+			m_DockingManager.AddContentWithState( m_PropertyEditorContent, State.DockLeft );
 
 			Icon = Properties.Resources.AppIcon;
 		}
