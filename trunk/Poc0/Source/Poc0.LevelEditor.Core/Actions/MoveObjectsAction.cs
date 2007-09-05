@@ -23,7 +23,7 @@ namespace Poc0.LevelEditor.Core.Actions
 
 			foreach ( object obj in objects )
 			{
-				frameObjects.Add( ParentHelpers.GetType< IHasWorldFrame >( obj ) );
+				frameObjects.Add( Parent.GetType< IHasWorldFrame >( obj ) );
 			}
 
 			m_Objects = frameObjects.ToArray( );

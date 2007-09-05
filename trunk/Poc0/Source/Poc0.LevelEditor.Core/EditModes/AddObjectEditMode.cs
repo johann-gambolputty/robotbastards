@@ -57,7 +57,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 			//  (doesn't actually instance the template; creates an ObjectHolder around it)
 			ObjectPattern root = ( ObjectPattern )m_Template.Clone( );
 
-			IHasWorldFrame frame = ParentHelpers.GetType< IHasWorldFrame >( root );
+			IHasWorldFrame frame = Parent.GetType< IHasWorldFrame >( root );
 			if ( frame != null )
 			{
 				frame.WorldFrame.Translation = new Point3( x, 0, y );

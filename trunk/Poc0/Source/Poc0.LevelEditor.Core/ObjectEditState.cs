@@ -20,7 +20,7 @@ namespace Poc0.LevelEditor.Core
 		public ObjectEditState( Scene scene, object parent )
 		{
 			scene.Renderables.Add( this );
-			m_Frame = ParentHelpers.GetType< IHasWorldFrame >( parent );
+			m_Frame = Parent.GetType< IHasWorldFrame >( parent );
 		}
 
 		/// <summary>

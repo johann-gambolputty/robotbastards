@@ -35,6 +35,7 @@ namespace Poc0.LevelEditor.Core
 	/// <summary>
 	/// Represents a single property in a PropertySpec.
 	/// </summary>
+	[Serializable]
 	public class PropertySpec
 	{
 		private Attribute[] attributes;
