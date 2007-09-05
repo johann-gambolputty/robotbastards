@@ -10,6 +10,7 @@ namespace Poc0.LevelEditor.Core
 	/// <summary>
 	/// A template for building instances of a type
 	/// </summary>
+	[Serializable]
 	public class ObjectPattern : Node, ICloneable, ISupportsDynamicProperties
 	{
 		/// <summary>
@@ -102,11 +103,16 @@ namespace Poc0.LevelEditor.Core
 			return attr;
 		}
 
+		/// <summary>
+		/// Writes this pattern to XML
+		/// </summary>
+		/// <param name="doc">XML document</param>
+		/// <returns>Returns a node representing this pattern</returns>
 		public XmlNode WriteToXml( XmlDocument doc )
 		{
 			XmlNode node = doc.CreateElement( "object" );
 
-			node.Attributes.Append( NewXmlAttribute( doc, "type", m_Type.Name ) );
+			node.Attributes.Append( NewXmlAttribute( doc, "type", m_Type.FullName ) );
 			node.Attributes.Append( NewXmlAttribute( doc, "assembly", m_Type.Assembly.GetName( ).Name ) );
 
 			foreach ( Property property in m_Properties )
@@ -169,6 +175,7 @@ namespace Poc0.LevelEditor.Core
 			return bag;
 		}
 
+		[Serializable]
 		private class Property : PropertySpec, IDynamicProperty
 		{
 			public Property( PropertyInfo property, string category ) :

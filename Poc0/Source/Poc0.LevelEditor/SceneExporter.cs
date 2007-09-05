@@ -1,8 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Windows.Forms;
+using System.Xml;
+using Poc0.LevelEditor.Core;
+using Rb.Core.Utils;
+using Rb.Log;
 using Rb.World;
 
 namespace Poc0.LevelEditor
@@ -38,7 +39,8 @@ namespace Poc0.LevelEditor
 		{
 			SaveFileDialog exportDialog = new SaveFileDialog( );
 			exportDialog.Title = "Export To...";
-			exportDialog.DefaultExt = "runtimeScene";
+			exportDialog.DefaultExt = "components.xml";
+			exportDialog.Filter = "Component XML|*.components.xml|All Files|*.*";
 			exportDialog.AddExtension = true;
 			if ( exportDialog.ShowDialog( ) != DialogResult.OK )
 			{
@@ -72,6 +74,27 @@ namespace Poc0.LevelEditor
 		/// <param name="scene">Scene to serialize</param>
 		public void ExportTo( string path, Scene scene )
 		{
+			try
+			{
+				XmlDocument doc = new XmlDocument( );
+				doc.AppendChild( doc.CreateXmlDeclaration( "1.0", "utf-8", "" ) );
+
+				XmlNode root = doc.AppendChild( doc.CreateElement( "rb" ) );
+				foreach ( ObjectPattern pattern in scene.Objects.GetAllOfType< ObjectPattern >( ) )
+				{
+					root.AppendChild( pattern.WriteToXml( doc ) );
+				}
+
+				doc.Save( path );
+			}
+			catch ( Exception ex )
+			{
+				string msg = string.Format( Properties.Resources.FailedToExportScene, path );
+				AppLog.Error( msg );
+				ExceptionUtils.ToLog( AppLog.GetSource( Severity.Error ), ex );
+				MessageBox.Show( msg, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
+				return;
+			}
 			//try 
 			//{
 			//    MemoryStream outStream = new MemoryStream( );

@@ -180,7 +180,7 @@ namespace Poc0.LevelEditor.Core
 			}
 			else
 			{
-				selectable = ParentHelpers.GetChildOfType< ISelectable >( obj as IParent );
+				selectable = Parent.GetChildOfType< ISelectable >( obj as IParent );
 				if ( selectable != null )
 				{
 					selectable.Selected = selected;

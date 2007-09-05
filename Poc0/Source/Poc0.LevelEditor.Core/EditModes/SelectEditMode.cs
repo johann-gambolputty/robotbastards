@@ -110,7 +110,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 			foreach ( object obj in scene.Objects.GetAllOfType< object >( ) )
 			{
-				IHasWorldFrame frame = ParentHelpers.GetType< IHasWorldFrame >( obj );
+				IHasWorldFrame frame = Parent.GetType< IHasWorldFrame >( obj );
 				if ( ( frame != null ) && ( GetObjectShape( frame ).Contains( pos ) ) )
 				{
 					return obj;
@@ -128,7 +128,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 			foreach ( object obj in scene.Objects.GetAllOfType< object >( ) )
 			{
-				IHasWorldFrame frame = ParentHelpers.GetType< IHasWorldFrame >( obj );
+				IHasWorldFrame frame = Parent.GetType< IHasWorldFrame >( obj );
 				if ( ( frame != null ) && ( GetObjectShape( frame ).Overlaps( rect ) ) )
 				{
 					objects.Add( obj );

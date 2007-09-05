@@ -4,6 +4,7 @@ using Rb.Core.Maths;
 
 namespace Poc0.LevelEditor.Core
 {
+	[Serializable]
 	public class HasWorldFrame : IHasWorldFrame, ICloneable
 	{
 		public HasWorldFrame( )
