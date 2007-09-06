@@ -127,6 +127,43 @@ namespace Rb.ComponentXmlLoader
 			}
 		}
 
+		/// <summary>
+		/// Resolves a type, read from a given XML element
+		/// </summary>
+		/// <param name="elementName">Element name</param>
+		/// <param name="typeName">Type name</param>
+		/// <param name="assemblyName">Assembly name</param>
+		/// <returns>Returns the resolved type</returns>
+		public static Type ResolveType( string elementName, string typeName, string assemblyName )
+		{
+			if ( typeName == null )
+			{
+				throw new ApplicationException( string.Format( "Element \"{0}\" requires a \"type\" attribute", elementName ) );
+			}
+			Type objectType;
+			if (assemblyName == null)
+			{
+				//  Get the object type from the currently loaded set of assemblies
+				objectType = AppDomainUtils.FindType(typeName);
+				if (objectType == null)
+				{
+					throw new ApplicationException(string.Format("Failed to find type \"{0}\" in app domain", typeName));
+				}
+			}
+			else
+			{
+				//  Get the object type from the specified assembly
+				Assembly assembly = AppDomain.CurrentDomain.Load(assemblyName);
+				objectType = assembly.GetType(typeName);
+				if (objectType == null)
+				{
+					throw new ApplicationException(string.Format("Failed to find type \"{0}\" in assembly \"{1}\"", typeName, assemblyName));
+				}
+			}
+
+			return objectType;
+		}
+
 		private Type m_BuildType;
         private readonly List< BaseBuilder > m_ParamBuilders = new List< BaseBuilder >( );
 		
@@ -138,33 +175,7 @@ namespace Rb.ComponentXmlLoader
 		/// <param name="assemblyName">Type assembly</param>
 		private void Construct( string elementName, string typeName, string assemblyName )
 		{
-			if ( typeName == null )
-			{
-				throw new ApplicationException( string.Format( "Element \"{0}\" requires a \"type\" attribute", elementName ) );
-			}
-
-			Type objectType;
-			if ( assemblyName == null )
-			{
-				//  Get the object type from the currently loaded set of assemblies
-				objectType = AppDomainUtils.FindType( typeName );
-				if ( objectType == null )
-				{
-					throw new ApplicationException( string.Format( "Failed to find type \"{0}\" in app domain", typeName ) );
-				}
-			}
-			else
-			{
-				//  Get the object type from the specified assembly
-				Assembly assembly = AppDomain.CurrentDomain.Load( assemblyName );
-				objectType = assembly.GetType( typeName );
-				if ( objectType == null )
-				{
-					throw new ApplicationException( string.Format( "Failed to find type \"{0}\" in assembly \"{1}\"", typeName, assemblyName ) );
-				}
-			}
-
-			m_BuildType = objectType;
+			m_BuildType = ResolveType( elementName, typeName, assemblyName );
 		}
     }
 }

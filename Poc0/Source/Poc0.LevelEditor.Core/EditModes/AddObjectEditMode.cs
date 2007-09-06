@@ -19,7 +19,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// </summary>
 		/// <param name="actionButton">The mouse button that this edit mode listens out for</param>
 		/// <param name="template">Object template used for creating new objects</param>
-		public AddObjectEditMode( MouseButtons actionButton, ObjectPattern template )
+		public AddObjectEditMode( MouseButtons actionButton, ObjectTemplate template )
 		{
 			m_ActionButton = actionButton;
 			m_Template = template;
@@ -55,7 +55,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		private object CreateObject( Scene scene, float x, float y, Guid id )
 		{
 			//  (doesn't actually instance the template; creates an ObjectHolder around it)
-			ObjectPattern root = ( ObjectPattern )m_Template.Clone( );
+			ObjectTemplate root = ( ObjectTemplate )m_Template.Clone( );
 
 			IHasWorldFrame frame = Parent.GetType< IHasWorldFrame >( root );
 			if ( frame != null )
@@ -98,7 +98,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		#region Private members
 
 		private readonly MouseButtons m_ActionButton;
-		private readonly ObjectPattern m_Template;
+		private readonly ObjectTemplate m_Template;
 
 		#endregion
 	}

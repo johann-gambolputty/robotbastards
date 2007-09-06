@@ -69,17 +69,13 @@
     <Compile Include="ISelectable.cs" />
     <Compile Include="ITilePicker.cs" />
     <Compile Include="ObjectEditState.cs" />
-    <Compile Include="ObjectTemplates.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="EditModes\SelectEditMode.cs" />
-    <Compile Include="PropertyBag.cs" />
     <Compile Include="SelectedObjects.cs" />
-    <Compile Include="ObjectPattern.cs">
-    </Compile>
     <Compile Include="TileBlock2dRenderer.cs">
       <SubType>Code</SubType>
     </Compile>

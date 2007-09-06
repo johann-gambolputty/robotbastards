@@ -2,6 +2,7 @@ using System;
 using System.Windows.Forms;
 using System.Xml;
 using Poc0.LevelEditor.Core;
+using Rb.Core.Components;
 using Rb.Core.Utils;
 using Rb.Log;
 using Rb.World;
@@ -80,7 +81,7 @@ namespace Poc0.LevelEditor
 				doc.AppendChild( doc.CreateXmlDeclaration( "1.0", "utf-8", "" ) );
 
 				XmlNode root = doc.AppendChild( doc.CreateElement( "rb" ) );
-				foreach ( ObjectPattern pattern in scene.Objects.GetAllOfType< ObjectPattern >( ) )
+				foreach ( ObjectTemplate pattern in scene.Objects.GetAllOfType< ObjectTemplate >( ) )
 				{
 					root.AppendChild( pattern.WriteToXml( doc ) );
 				}
@@ -95,26 +96,6 @@ namespace Poc0.LevelEditor
 				MessageBox.Show( msg, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
 				return;
 			}
-			//try 
-			//{
-			//    MemoryStream outStream = new MemoryStream( );
-
-			//    IFormatter formatter = CreateFormatter( );
-			//    formatter.Serialize( outStream, scene );
-
-			//    using ( Stream fileStream = File.OpenWrite( path ) )
-			//    {
-			//        fileStream.Write( outStream.ToArray( ), 0, ( int )outStream.Length );
-			//    }
-			//}
-			//catch ( Exception ex )
-			//{
-			//    string msg = string.Format( Properties.Resources.FailedToExportScene, path );
-			//    AppLog.Error( msg );
-			//    ExceptionUtils.ToLog( AppLog.GetSource( Severity.Error ), ex );
-			//    MessageBox.Show( msg, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
-			//    return;
-			//}
 		}
 		private string m_LastExportPath;
 	}
