@@ -69,6 +69,7 @@ namespace Rb.ComponentXmlLoader
                     case "list"     : result = new ListBuilder( parameters, errors, reader, parentBuilder );			break;
 					case "table"	: result = new DictionaryBuilder( parameters, errors, reader, parentBuilder );		break;
                     case "type"     : result = new TypeBuilder( parameters, errors, reader, parentBuilder );			break;
+					case "template"	: result = new TemplateBuilder( parameters, errors, reader, parentBuilder );		break;
 					case "dictionaryEntry"	:
 						result = new DictionaryEntryBuilder( parameters, errors, reader, parentBuilder );
                 		break;
@@ -419,7 +420,7 @@ namespace Rb.ComponentXmlLoader
         /// </summary>
         /// <param name="parent">Parent object</param>
         /// <param name="property">Property information</param>
-        private void LinkToProperty( object parent, PropertyInfo property )
+        protected virtual void LinkToProperty( object parent, PropertyInfo property )
         {
         	if ( !property.CanRead )
         	{

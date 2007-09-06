@@ -13,7 +13,7 @@
  * 
  *  Public types defined in this file:
  *  ----------------------------------
- *  namespace Flobbster.Windows.Forms
+ *  namespace Rb.Core.Components
  *     class PropertySpec
  *     class PropertySpecEventArgs
  *     delegate PropertySpecEventHandler
@@ -30,7 +30,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Drawing.Design;
 
-namespace Poc0.LevelEditor.Core
+namespace Rb.Core.Components
 {
 	/// <summary>
 	/// Represents a single property in a PropertySpec.

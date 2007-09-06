@@ -5,7 +5,6 @@ using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.EditModes;
 using Rb.Core.Components;
 using Rb.Core.Resources;
-using Rb.World;
 
 namespace Poc0.LevelEditor
 {
@@ -19,7 +18,7 @@ namespace Poc0.LevelEditor
 			InitializeComponent( );
 
 			IList templates = ( IList )ResourceManager.Instance.Load( "TestObjectTemplates.components.xml" );
-			foreach ( ObjectPattern template in templates )
+			foreach ( ObjectTemplate template in templates )
 			{
 				m_Templates.Add( template );
 			}
@@ -57,20 +56,20 @@ namespace Poc0.LevelEditor
 			get { return m_Grid; }
 		}
 
-		private TileGrid					m_Grid;
-		private EditModeContext				m_EditContext;
-		private readonly List< ObjectPattern >	m_Templates = new List< ObjectPattern >( );
+		private TileGrid						m_Grid;
+		private EditModeContext					m_EditContext;
+		private readonly List< ObjectTemplate >	m_Templates = new List< ObjectTemplate >( );
 
-		private void PopulateObjectTemplates( IEnumerable< ObjectPattern > templates )
+		private void PopulateObjectTemplates( IEnumerable< ObjectTemplate > templates )
 		{
 			objectsTreeView.Nodes.Clear( );
 
 			//	Populate the object types tree
 			TreeNode allObjects = objectsTreeView.Nodes.Add( "All Objects" );
 
-			foreach ( ObjectPattern template in templates )
+			foreach ( ObjectTemplate template in templates )
 			{
-				TreeNode node = new TreeNode( template.TemplateName );
+				TreeNode node = new TreeNode( template.Name );
 				node.Tag = template;
 
 				allObjects.Nodes.Add( node );
@@ -91,7 +90,7 @@ namespace Poc0.LevelEditor
 
 		private void objectsTreeView_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			ObjectPattern template = objectsTreeView.SelectedNode.Tag as ObjectPattern;
+			ObjectTemplate template = objectsTreeView.SelectedNode.Tag as ObjectTemplate;
 			if ( template != null )
 			{
 				m_EditContext.AddEditMode( new AddObjectEditMode( MouseButtons.Right, template ) );

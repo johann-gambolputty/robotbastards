@@ -10,24 +10,27 @@ namespace Poc0.LevelEditor.Core.Actions
 {
 	class AddObjectAction : IAction
 	{
+		/// <summary>
+		/// Action setup constructor
+		/// </summary>
 		public AddObjectAction( Scene scene, ICloneable builder, float x, float y, Guid id )
 		{
 			m_Id = id;
 			m_Scene = scene;
 			m_Instance = builder.Clone( );
 
-			ObjectPattern pattern = m_Instance as ObjectPattern;
-			if ( pattern != null )
+			ObjectTemplate template = m_Instance as ObjectTemplate;
+			if ( template != null )
 			{
-				ObjectPattern framePattern = pattern.FindPatternImplementingInterface< IHasWorldFrame >( );
-				if ( framePattern != null )
+				ObjectTemplate frameTemplate = template.FindTemplateImplementingInterface< IHasWorldFrame >( );
+				if ( frameTemplate != null )
 				{
-					framePattern.AddChild( new HasWorldFrame( x, y ) );
-					framePattern.AddChild( new ObjectEditState( scene, framePattern ) );
+					frameTemplate.AddChild( new HasWorldFrame( x, y ) );
+					frameTemplate.AddChild( new ObjectEditState( scene, frameTemplate ) );
 				}
 
 				//	TODO: AP: This is RUBBISH
-				pattern[ "Id" ] = id;
+				template[ "Id" ] = id;
 			}
 
 			Redo( );

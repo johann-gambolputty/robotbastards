@@ -8,8 +8,25 @@ namespace Poc0.Core
 	/// Implementation of IBody interface
 	/// </summary>
 	[Serializable]
-	public class Body : Component, IBody
+	public class Body : Component, IBody, ICloneable
 	{
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public Body( )
+		{
+		}
+
+		/// <summary>
+		/// Copy constructor
+		/// </summary>
+		/// <param name="src">Source body</param>
+		public Body( Body src )
+		{
+			m_Health = src.m_Health;
+			m_State = src.m_State;
+		}
+
 		#region IBody Members
 
 		/// <summary>
@@ -71,6 +88,19 @@ namespace Poc0.Core
 
 		private int			m_Health	= 100;
 		private BodyState	m_State		= BodyState.Alive;
+
+		#endregion
+
+		#region ICloneable Members
+
+		/// <summary>
+		/// Creates a copy of this object
+		/// </summary>
+		/// <returns>Copy of this object</returns>
+		public object Clone()
+		{
+			return new Body( this );
+		}
 
 		#endregion
 	}

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 
 namespace Rb.Core.Utils
@@ -11,6 +8,16 @@ namespace Rb.Core.Utils
     /// </summary>
     public static class XmlHelpers
     {
+		/// <summary>
+		/// Creates an XML attribute
+		/// </summary>
+		public static XmlAttribute CreateAttribute( XmlDocument doc, string name, string value )
+		{
+			XmlAttribute attr = doc.CreateAttribute( name );
+			attr.Value = value;
+			return attr;
+		}
+
         /// <summary>
         /// Gets the value of an attribute, returning defaultValue if the attribute does not exist
         /// </summary>

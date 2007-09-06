@@ -3,48 +3,22 @@
   <list>
 
     <!-- Player Start pattern -->
-    <object type="Poc0.LevelEditor.Core.ObjectPattern" assembly="Poc0.LevelEditor.Core">
+    <template type="Poc0.Core.PlayerStart" assembly="Poc0.Core" name="Player Start">
+    </template>
 
-      <parameters>
-        <type value="Poc0.Core.PlayerStart" assembly="Poc0.Core"/>
-        <string value="Player Start"/>
-      </parameters>
-
-    </object>
-    
     <!-- Evil Robot pattern -->
-    <object type="Poc0.LevelEditor.Core.ObjectPattern" assembly="Poc0.LevelEditor.Core">
-
-      <parameters>
-        <type value="Poc0.Core.Entity" assembly="Poc0.Core"/>
-        <string value="Evil Robot"/>
-      </parameters>
+    <template type="Poc0.Core.Entity" assembly="Poc0.Core" name="Evil Robot">
 
       <!-- Evil robot body pattern -->
-      <object type="Poc0.LevelEditor.Core.ObjectPattern" assembly="Poc0.LevelEditor.Core">
-
-        <parameters>
-          <type value="Poc0.Core.Body" assembly="Poc0.Core"/>
-          <string value="Body"/>
-        </parameters>
-
+      <template type="Poc0.Core.Body" assembly="Poc0.Core">
         <int value="200" dynProperty="Health"/>
-
-      </object>
+      </template>
 
       <!-- Evil robot renderer pattern-->
-      <object type="Poc0.LevelEditor.Core.ObjectPattern" assembly="Poc0.LevelEditor.Core" dynProperty="Graphics">
+      <template type="Rb.Rendering.EffectRenderedObject" assembly="Rb.Rendering" dynProperty="Graphics">
+      </template>
 
-        <parameters>
-          <type value="Rb.Rendering.EffectRenderedObject" assembly="Rb.Rendering"/>
-          <string value="Renderer"/>
-        </parameters>
-
-        <!--Evil robot renderer technique pattern -->
-
-      </object>
-
-    </object>
+    </template>
 
   </list>
 </rb>

@@ -1,7 +1,8 @@
+using System.Drawing.Design;
 using System.Reflection;
 using System.Windows.Forms;
-using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.EditModes;
+using Rb.Core.Components;
 
 namespace Poc0.LevelEditor
 {
@@ -36,10 +37,22 @@ namespace Poc0.LevelEditor
 
 			for ( int index = 0; index < selectedObjects.Length; ++index )
 			{
-				bags[ index ] = ( ( ObjectPattern )selectedObjects[ index ] ).CreatePropertyBag( );
+				PropertyBag bag = ( ( ObjectTemplate )selectedObjects[ index ] ).CreatePropertyBag( true );
+				foreach (PropertySpec property in bag.Properties)
+				{
+					if ( property.TypeName == typeof( ObjectTemplate ).FullName )
+					{
+						property.EditorTypeName = typeof ( ObjectTemplateUITypeEditor ).FullName;
+					}
+				}
 			}
 
 			objectPropertyGrid.SelectedObjects = bags;
+		}
+
+		private class ObjectTemplateUITypeEditor : UITypeEditor
+		{
+			
 		}
 
 	}

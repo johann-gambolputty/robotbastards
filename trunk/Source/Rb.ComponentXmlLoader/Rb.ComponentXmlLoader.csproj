@@ -61,6 +61,7 @@
     <Compile Include="ReferenceBuilder.cs" />
     <Compile Include="ResourceBuilder.cs" />
     <Compile Include="RootBuilder.cs" />
+    <Compile Include="TemplateBuilder.cs" />
     <Compile Include="TypeBuilder.cs" />
     <Compile Include="ValueBuilder.cs" />
   </ItemGroup>
