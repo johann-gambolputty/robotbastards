@@ -8,19 +8,48 @@ using Rb.World;
 
 namespace Poc0.LevelEditor.Core
 {
+	public class PositionEditor : IRenderable
+	{
+		public PositionEditor( ObjectEditState parent )
+		{
+			m_Parent = parent;
+		}
+
+		#region IRenderable Members
+
+		public void Render( IRenderContext context )
+		{
+			//	TODO: Render shape correctly
+		}
+
+		#endregion
+
+		private ObjectEditState m_Parent;
+	}
+
 	/// <summary>
 	/// State of an object in the editor
 	/// </summary>
 	[Serializable]
 	public class ObjectEditState : ISelectable, IRenderable
 	{
+
+		private readonly object m_Template;
+
 		/// <summary>
 		/// Sets the tile object to get renderer
 		/// </summary>
-		public ObjectEditState( Scene scene, object parent )
+		public ObjectEditState( Scene scene, object obj )
 		{
 			scene.Renderables.Add( this );
-			m_Frame = Parent.GetType< IHasWorldFrame >( parent );
+			m_Template = obj;
+
+			if ( m_Template is ObjectTemplate )
+			{
+				//( ( ObjectTemplate )m_Template );
+			}
+
+			m_Frame = Rb.Core.Components.Parent.GetType< IHasWorldFrame >( parent );
 		}
 
 		/// <summary>

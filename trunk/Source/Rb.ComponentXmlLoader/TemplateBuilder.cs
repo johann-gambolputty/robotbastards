@@ -1,6 +1,4 @@
-
 using System;
-using System.Reflection;
 using System.Xml;
 using Rb.Core.Components;
 
@@ -36,15 +34,6 @@ namespace Rb.ComponentXmlLoader
 		{
 			BuildObject = new ObjectTemplate( m_Type, "" );
 			base.PostCreate( );
-		}
-		
-        /// <summary>
-        /// Links the BuildObject to the property of a parent
-        /// </summary>
-        /// <param name="parent">Parent object</param>
-        /// <param name="property">Property information</param>
-        protected virtual void LinkToProperty( object parent, PropertyInfo property )
-        {
 		}
 
 		private readonly Type m_Type;
