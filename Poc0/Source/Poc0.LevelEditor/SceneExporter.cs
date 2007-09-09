@@ -81,9 +81,13 @@ namespace Poc0.LevelEditor
 				doc.AppendChild( doc.CreateXmlDeclaration( "1.0", "utf-8", "" ) );
 
 				XmlNode root = doc.AppendChild( doc.CreateElement( "rb" ) );
-				foreach ( ObjectTemplate pattern in scene.Objects.GetAllOfType< ObjectTemplate >( ) )
+				foreach ( ObjectEditState editState in scene.Objects.GetAllOfType< ObjectEditState >( ) )
 				{
-					root.AppendChild( pattern.WriteToXml( doc ) );
+					ObjectTemplate template = editState.Instance as ObjectTemplate;
+					if ( template != null )
+					{
+						root.AppendChild( template.WriteToXml( doc ) );
+					}
 				}
 
 				doc.Save( path );

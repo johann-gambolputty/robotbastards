@@ -8,48 +8,114 @@ using Rb.World;
 
 namespace Poc0.LevelEditor.Core
 {
-	public class PositionEditor : IRenderable
+	/// <summary>
+	/// Edits the position of a world frame object
+	/// </summary>
+	public class PositionEditor : IRenderable, IHasWorldFrame
 	{
-		public PositionEditor( ObjectEditState parent )
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		/// <param name="parent">Parent edit state</param>
+		/// <param name="frame">World frame</param>
+		/// <param name="x">Initial X position</param>
+		/// <param name="y">Initial Y position</param>
+		public PositionEditor( ObjectEditState parent, Matrix44 frame, float x, float y )
 		{
 			m_Parent = parent;
+			m_Frame = frame;
+
+			frame.Translation = new Point3( x, 0, y );
 		}
 
 		#region IRenderable Members
 
+		/// <summary>
+		/// Renders this object
+		/// </summary>
+		/// <param name="context">Rendering context</param>
 		public void Render( IRenderContext context )
 		{
-			//	TODO: Render shape correctly
+			Matrix44 frame = m_Frame;
+
+			//	TODO: AP: Render object bounds
+			int x = ( int )frame.Translation.X - 5;
+			int y = ( int )frame.Translation.Z - 5;
+			int width = 10;
+			int height = 10;
+
+			Color colour = m_Parent.Selected ? Color.Red : Color.White;
+
+			ShapeRenderer.Instance.DrawRectangle( x, y, width, height, colour );
 		}
 
 		#endregion
 
-		private ObjectEditState m_Parent;
+		private readonly ObjectEditState m_Parent;
+		private readonly Matrix44 m_Frame;
+
+		#region IHasWorldFrame Members
+
+		public Matrix44 WorldFrame
+		{
+			get { return m_Frame; }
+		}
+
+		#endregion
 	}
 
 	/// <summary>
 	/// State of an object in the editor
 	/// </summary>
 	[Serializable]
-	public class ObjectEditState : ISelectable, IRenderable
+	public class ObjectEditState : Component, ISelectable, IRenderable
 	{
-
-		private readonly object m_Template;
+		/// <summary>
+		/// Gets the object being edited
+		/// </summary>
+		public object Instance
+		{
+			get { return m_Object; }
+		}
 
 		/// <summary>
 		/// Sets the tile object to get renderer
 		/// </summary>
-		public ObjectEditState( Scene scene, object obj )
+		public ObjectEditState( Scene scene, float x, float y, object obj )
 		{
+			m_Object = obj;
 			scene.Renderables.Add( this );
-			m_Template = obj;
 
-			if ( m_Template is ObjectTemplate )
+			BuildObjectEditors( obj, x, y );
+		}
+
+		private void BuildTemplateEditors( ObjectTemplate template, float x, float y )
+		{
+			ObjectTemplate worldFrameTemplate = template.FindTemplateOfType< IHasWorldFrame >( );
+			if ( worldFrameTemplate != null )
 			{
-				//( ( ObjectTemplate )m_Template );
+				Matrix44 frame = new Matrix44( );
+				worldFrameTemplate[ "WorldFrame" ] = frame;
+				AddChild( new PositionEditor( this, frame, x, y ) );
 			}
+			
+		}
 
-			m_Frame = Rb.Core.Components.Parent.GetType< IHasWorldFrame >( parent );
+		private void BuildObjectEditors( object obj, float x, float y )
+		{
+			if ( obj is ObjectTemplate )
+			{
+				BuildTemplateEditors( ( ObjectTemplate )obj, x, y );
+			}
+			else
+			{
+				IHasWorldFrame frame = Rb.Core.Components.Parent.GetType<IHasWorldFrame>( obj );
+				if ( frame != null )
+				{
+					frame.WorldFrame.Translation = new Point3( x, 0, y );
+					AddChild( new PositionEditor( this, frame.WorldFrame, x, y ) );
+				}
+			}
 		}
 
 		/// <summary>
@@ -58,23 +124,20 @@ namespace Poc0.LevelEditor.Core
 		/// <param name="context">Rendering context</param>
 		public void Render( IRenderContext context )
 		{
-			Matrix44 frame = m_Frame.WorldFrame;
-
-			//	TODO: AP: Render object bounds
-			int x = ( int )frame.Translation.X - 5;
-			int y = ( int )frame.Translation.Z - 5;
-			int width = 10;
-			int height = 10;
-
-			Color colour = Selected ? Color.Red : Color.White;
-
-			ShapeRenderer.Instance.DrawRectangle( x, y, width, height, colour );
+			foreach ( object childObj in Children )
+			{
+				IRenderable childRenderable = childObj as IRenderable;
+				if ( childRenderable != null )
+				{
+					childRenderable.Render( context );
+				}
+			}
 		}
-
-		private readonly IHasWorldFrame m_Frame;
 
 		[NonSerialized]
 		private bool m_Selected;
+
+		private readonly object m_Object;
 
 		#region ISelectable Members
 

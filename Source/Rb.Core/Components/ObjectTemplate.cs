@@ -107,8 +107,12 @@ namespace Rb.Core.Components
 
 			foreach ( Property property in m_Properties )
 			{
-				if ( m_Type.GetProperty( property.Name ) != null )
+				object value = property.Value;
+				if ( value != null )
 				{
+					XmlNode propertyNode = WriteObjectToXml( doc, value );
+					propertyNode.Attributes.Append( XmlHelpers.CreateAttribute( doc, "property", property.Name ) );
+					node.AppendChild( propertyNode );
 				}
 			}
 
@@ -120,22 +124,38 @@ namespace Rb.Core.Components
 			return node;
 		}
 
+		private static XmlNode WriteObjectToXml( XmlDocument doc, object obj )
+		{
+			if ( obj is ObjectTemplate )
+			{
+				return ( ( ObjectTemplate )obj ).WriteToXml( doc );
+			}
+
+			XmlNode node = doc.CreateElement( "object" );
+			node.Attributes.Append( XmlHelpers.CreateAttribute( doc, "type", obj.GetType( ).FullName ) );
+			node.Attributes.Append( XmlHelpers.CreateAttribute( doc, "assembly", obj.GetType( ).Assembly.GetName( ).Name ) );
+
+			return node;
+		}
+
 		#endregion
 
 		#region Child templates
 
 		/// <summary>
-		/// Finds a template whose type supports a given interface
+		/// Finds a template whose type is derived from (or implements) type T
 		/// </summary>
-		public ObjectTemplate FindTemplateImplementingInterface< InterfaceType >( )
+		public ObjectTemplate FindTemplateOfType< T >( )
 		{
-			if ( m_Type.GetInterface( typeof( InterfaceType ).Name ) != null )
+			if ( ( m_Type == typeof( T ) ) ||
+				 ( m_Type.IsSubclassOf( typeof( T ) ) ) ||
+				 ( m_Type.GetInterface( typeof( T ).Name ) != null ) )
 			{
 				return this;
 			}
 			foreach ( ObjectTemplate childTemplate in ChildTemplates )
 			{
-				ObjectTemplate result = childTemplate.FindTemplateImplementingInterface<InterfaceType>();
+				ObjectTemplate result = childTemplate.FindTemplateOfType< T >( );
 				if ( result != null )
 				{
 					return result;
@@ -318,7 +338,16 @@ namespace Rb.Core.Components
 
 			foreach ( Property property in m_Properties )
 			{
-				m_Type.GetProperty( property.Name ).SetValue( result, property.Value, null );
+				object value = property.Value;
+				if ( value != null )
+				{
+					if ( value is ObjectTemplate )
+					{
+						value = ( ( ObjectTemplate )value ).CreateInstance( Builder.Instance );
+					}
+
+					m_Type.GetProperty( property.Name ).SetValue( result, value, null );
+				}
 			}
 
 			if ( m_ChildTemplates.Count == 0 )
@@ -329,7 +358,7 @@ namespace Rb.Core.Components
 			if ( result is IParent )
 			{
 				IParent resultParent = ( IParent )result;
-				foreach ( IInstanceBuilder childBuilder in m_ChildTemplates )
+				foreach ( ObjectTemplate childBuilder in m_ChildTemplates )
 				{
 					resultParent.AddChild( childBuilder.CreateInstance( builder ) );
 				}
@@ -337,7 +366,7 @@ namespace Rb.Core.Components
 			else if ( result is IList )
 			{
 				IList resultList = ( IList )result;
-				foreach ( IInstanceBuilder childBuilder in m_ChildTemplates )
+				foreach ( ObjectTemplate childBuilder in m_ChildTemplates )
 				{
 					resultList.Add( childBuilder.CreateInstance( builder ) );
 				}
