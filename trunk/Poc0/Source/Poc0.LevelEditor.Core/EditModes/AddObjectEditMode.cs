@@ -49,24 +49,6 @@ namespace Poc0.LevelEditor.Core.EditModes
 			}
 		}
 
-		/// <summary>
-		/// Creates an object from the object template
-		/// </summary>
-		private object CreateObject( Scene scene, float x, float y, Guid id )
-		{
-			//  (doesn't actually instance the template; creates an ObjectHolder around it)
-			ObjectTemplate root = ( ObjectTemplate )m_Template.Clone( );
-
-			IHasWorldFrame frame = Parent.GetType< IHasWorldFrame >( root );
-			if ( frame != null )
-			{
-				frame.WorldFrame.Translation = new Point3( x, 0, y );
-				root.AddChild( new ObjectEditState( scene, frame ) );
-			}
-
-			return root;
-		}
-
 		#endregion
 
 		#region Public methods
