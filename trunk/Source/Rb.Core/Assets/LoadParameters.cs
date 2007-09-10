@@ -36,10 +36,10 @@ namespace Rb.Core.Assets
 		/// <summary>
 		/// Flag to determine if the loaded asset should be added to the asset cache
 		/// </summary>
-		public bool AddToCache
+		public bool CanCache
 		{
-			get { return m_AddToCache; }
-			set { m_AddToCache = value; }
+			get { return m_CanCache; }
+			set { m_CanCache = value; }
 		}
 
 		#region ISupportsDynamicProperties Members
@@ -56,7 +56,7 @@ namespace Rb.Core.Assets
 
 		#region Private stuff
 
-		private bool m_AddToCache;
+		private bool m_CanCache;
 		private object m_Target;
 		private IDynamicProperties m_Properties = new DynamicProperties( );
 

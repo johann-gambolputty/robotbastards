@@ -1,4 +1,4 @@
-using System;
+using System.Drawing;
 
 namespace Rb.Rendering
 {
@@ -10,58 +10,58 @@ namespace Rb.Rendering
 		/// <summary>
 		/// The ambient response of the material
 		/// </summary>
-		public System.Drawing.Color		Ambient
+		public Color Ambient
 		{
 			get
 			{
-				return System.Drawing.Color.FromArgb( ( int )( m_Ambient[ 0 ] * 255.0f ), ( int )( m_Ambient[ 1 ] * 255.0f ), ( int )( m_Ambient[ 2 ] * 255.0f ) );
+				return Color.FromArgb( ( int )( m_Ambient[ 0 ] * 255.0f ), ( int )( m_Ambient[ 1 ] * 255.0f ), ( int )( m_Ambient[ 2 ] * 255.0f ) );
 			}
 			set
 			{
-				m_Ambient[ 0 ] = ( float )value.R / 255.0f;
-				m_Ambient[ 1 ] = ( float )value.G / 255.0f;
-				m_Ambient[ 2 ] = ( float )value.B / 255.0f;
+				m_Ambient[ 0 ] = value.R / 255.0f;
+				m_Ambient[ 1 ] = value.G / 255.0f;
+				m_Ambient[ 2 ] = value.B / 255.0f;
 			}
 		}
 
 		/// <summary>
 		/// The diffuse response of the material
 		/// </summary>
-		public System.Drawing.Color		Diffuse
+		public Color Diffuse
 		{
 			get
 			{
-				return System.Drawing.Color.FromArgb( ( int )( m_Diffuse[ 0 ] * 255.0f ), ( int )( m_Diffuse[ 1 ] * 255.0f ), ( int )( m_Diffuse[ 2 ] * 255.0f ) );
+				return Color.FromArgb( ( int )( m_Diffuse[ 0 ] * 255.0f ), ( int )( m_Diffuse[ 1 ] * 255.0f ), ( int )( m_Diffuse[ 2 ] * 255.0f ) );
 			}
 			set
 			{
-				m_Diffuse[ 0 ] = ( float )value.R / 255.0f;
-				m_Diffuse[ 1 ] = ( float )value.G / 255.0f;
-				m_Diffuse[ 2 ] = ( float )value.B / 255.0f;
+				m_Diffuse[ 0 ] = value.R / 255.0f;
+				m_Diffuse[ 1 ] = value.G / 255.0f;
+				m_Diffuse[ 2 ] = value.B / 255.0f;
 			}
 		}
 
 		/// <summary>
 		/// The specular response of the material
 		/// </summary>
-		public System.Drawing.Color		Specular
+		public Color Specular
 		{
 			get
 			{
-				return System.Drawing.Color.FromArgb( ( int )( m_Specular[ 0 ] * 255.0f ), ( int )( m_Specular[ 1 ] * 255.0f ), ( int )( m_Specular[ 2 ] * 255.0f ) );
+				return Color.FromArgb( ( int )( m_Specular[ 0 ] * 255.0f ), ( int )( m_Specular[ 1 ] * 255.0f ), ( int )( m_Specular[ 2 ] * 255.0f ) );
 			}
 			set
 			{
-				m_Specular[ 0 ] = ( float)value.R / 255.0f;
-				m_Specular[ 1 ] = ( float)value.G / 255.0f;
-				m_Specular[ 2 ] = ( float)value.B / 255.0f;
+				m_Specular[ 0 ] = value.R / 255.0f;
+				m_Specular[ 1 ] = value.G / 255.0f;
+				m_Specular[ 2 ] = value.B / 255.0f;
 			}
 		}
 
 		/// <summary>
 		/// Default constructor
 		/// </summary>
-		public							Material( )
+		public Material( )
 		{
 		}
 
@@ -70,7 +70,7 @@ namespace Rb.Rendering
 		/// </summary>
 		/// <param name="ambient"> Material ambient colour </param>
 		/// <param name="diffuse"> Material diffuse colour </param>
-		public							Material( System.Drawing.Color ambient, System.Drawing.Color diffuse )
+		public Material( Color ambient, Color diffuse )
 		{
 			Ambient = ambient;
 			Diffuse = diffuse;
@@ -82,7 +82,7 @@ namespace Rb.Rendering
 		/// <param name="ambient"> Material ambient colour </param>
 		/// <param name="diffuse"> Material diffuse colour </param>
 		/// <returns> Returns this material </returns>
-		public Material					Setup( System.Drawing.Color ambient, System.Drawing.Color diffuse )
+		public Material Setup( Color ambient, Color diffuse )
 		{
 			Ambient = ambient;
 			Diffuse = diffuse;
@@ -93,12 +93,12 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Applies this material
 		/// </summary>
-		public abstract void			Begin( );
+		public abstract void Begin( );
 
 		/// <summary>
 		/// Unapplies this material
 		/// </summary>
-		public abstract void			End( );
+		public abstract void End( );
 
 		#region	Protected stuff
 

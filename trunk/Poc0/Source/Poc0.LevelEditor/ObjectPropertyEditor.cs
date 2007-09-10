@@ -1,3 +1,4 @@
+using System;
 using System.Drawing.Design;
 using System.Reflection;
 using System.Windows.Forms;
@@ -9,6 +10,8 @@ namespace Poc0.LevelEditor
 {
 	public partial class ObjectPropertyEditor : UserControl
 	{
+		private readonly Timer m_Timer;
+
 		/// <summary>
 		/// Default constructor
 		/// </summary>
@@ -16,15 +19,48 @@ namespace Poc0.LevelEditor
 		{
 			InitializeComponent( );
 
-			EditModeContext.Instance.Selection.ObjectSelected += OnSelectionChanged;
-			EditModeContext.Instance.Selection.ObjectDeselected += OnSelectionChanged;
+			m_Timer = new Timer( );
+			m_Timer.Interval = 100;
+			m_Timer.Enabled = true;
+			m_Timer.Tick += RefreshPropertyGridTick;
+
+			EditModeContext.Instance.Selection.ObjectSelected += ObjectSelected;
+			EditModeContext.Instance.Selection.ObjectDeselected += ObjectDeselected;
 		}
 
+		private void ObjectSelected( object obj )
+		{
+			if ( obj is ObjectEditState )
+			{
+				( ( ObjectEditState )obj ).ObjectChanged += OnObjectChanged;
+			}
+			BuildPropertyGrid( );
+		}
+
+		private void ObjectDeselected( object obj )
+		{
+			if ( obj is ObjectEditState )
+			{
+				( ( ObjectEditState )obj ).ObjectChanged -= OnObjectChanged;
+			}
+			BuildPropertyGrid( );
+		}
+
+		private void RefreshPropertyGridTick( object sender, EventArgs args )
+		{
+			if ( m_RefreshValues )
+			{
+				objectPropertyGrid.Refresh( );
+				m_Timer.Stop( );
+				m_RefreshValues = false;
+			}
+		}
+
+
 		/// <summary>
-		/// Called when the current selection changes
+		/// Builds the property grid from the current object selection
 		/// </summary>
-		/// <param name="obj">Added/removed object</param>
-		private void OnSelectionChanged( object obj )
+		private void BuildPropertyGrid( )
 		{
 			object[] selectedObjects = EditModeContext.Instance.Selection.ToArray( );
 
@@ -44,6 +80,14 @@ namespace Poc0.LevelEditor
 			objectPropertyGrid.SelectedObjects = bags;
 		}
 
+		private void OnObjectChanged( )
+		{
+			m_RefreshValues = true;
+			m_Timer.Start( );
+		}
+
+		private bool m_RefreshValues;
+
 		private static PropertyBag CreatePropertyBag( object obj )
 		{
 			if ( obj is ObjectEditState )
@@ -57,10 +101,41 @@ namespace Poc0.LevelEditor
 			}
 
 			PropertyBag bag = new PropertyBag( );
+			bag.GetValue += ExPropertySpec.GetValue;
+			bag.SetValue += ExPropertySpec.SetValue;
 
 			FillPropertyBag( bag, obj );
 
 			return bag;
+		}
+
+		private class ExPropertySpec : PropertySpec
+		{
+			public static void SetValue( object sender, PropertySpecEventArgs args )
+			{
+				( ( ExPropertySpec )args.Property ).Value = args.Value;
+			}
+			
+			public static void GetValue( object sender, PropertySpecEventArgs args )
+			{
+				args.Value = ( ( ExPropertySpec )args.Property ).Value;
+			}
+
+			public ExPropertySpec( PropertyInfo property, object obj, string category ) :
+				base( property.Name, property.PropertyType, category )
+			{
+				m_Object = obj;
+				m_Property = property;
+			}
+
+			public object Value
+			{
+				get { return m_Property.GetValue( m_Object, null ); }
+				set { m_Property.SetValue( m_Object, value, null ); }
+			}
+
+			private readonly object m_Object;
+			private readonly PropertyInfo m_Property;
 		}
 
 		private static void FillPropertyBag( PropertyBag bag, object obj )
@@ -68,7 +143,7 @@ namespace Poc0.LevelEditor
 			string category = ( obj.GetType( ).Name.Substring( obj.GetType( ).Name.LastIndexOf( '.' ) + 1 ) );
 			foreach ( PropertyInfo property in obj.GetType( ).GetProperties( ) )
 			{
-				bag.Properties.Add( new PropertySpec( property.Name, property.PropertyType, category ) );
+				bag.Properties.Add( new ExPropertySpec( property, obj, category ) );
 			}
 
 			IParent parent = obj as IParent;

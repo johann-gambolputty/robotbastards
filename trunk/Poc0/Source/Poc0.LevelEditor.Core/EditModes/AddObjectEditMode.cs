@@ -1,11 +1,8 @@
 using System;
 using System.Windows.Forms;
-using Poc0.Core;
 using Poc0.LevelEditor.Core.Actions;
 using Rb.Core.Components;
 using Rb.Core.Maths;
-using Rb.Log;
-using Rb.World;
 
 namespace Poc0.LevelEditor.Core.EditModes
 {
@@ -42,7 +39,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 			{
 				Point2 pt = picker.CursorToWorld( args.X, args.Y );
 
-				Scene scene = EditModeContext.Instance.Scene;
+				EditorScene scene = EditModeContext.Instance.Scene;
 				Guid id = Guid.NewGuid( );
 
 				EditModeContext.Instance.UndoStack.Push( new AddObjectAction( scene, m_Template, pt.X, pt.Y, id ) );

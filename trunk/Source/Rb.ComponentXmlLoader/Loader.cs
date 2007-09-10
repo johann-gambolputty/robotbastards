@@ -1,6 +1,7 @@
 using System;
+using System.IO;
 using System.Xml;
-using Rb.Core.Resources;
+using Rb.Core.Assets;
 using Rb.Core.Components;
 using Rb.Core;
 using Rb.Log;
@@ -26,56 +27,41 @@ namespace Rb.ComponentXmlLoader
 	/// passed into Load() then the asset would have been added as a child to the target.
     /// 
     /// </remarks>
-    public class Loader : ResourceStreamLoader
+    public class Loader : AssetLoader
     {
 		#region	Stream loading
 
 		/// <summary>
-		/// Loads an asset from a stream
+		/// Loads component XML from a stream
 		/// </summary>
-		/// <param name="input"> Input stream to load the asset from </param>
-		/// <param name="inputSource"> Source of the input stream (e.g. file path) </param>
-		/// <returns> The loaded asset </returns>
-		public override Object Load( System.IO.Stream input, string inputSource, out bool canCache )
+		public object Load( Stream stream, string sourceName, LoadParameters parameters )
 		{
-		    return Load( input, inputSource, out canCache, new ComponentLoadParameters( ) );
-		}
+			parameters.CanCache = false;
 
-		/// <summary>
-		/// Loads into a resource from a stream
-		/// </summary>
-		/// <param name="input"> Input stream to load the resource from </param>
-		/// <param name="inputSource"> Source of the input stream (e.g. file path) </param>
-		/// <param name="parameters">Loading parameters</param>
-		/// <returns>Returns resource</returns>
-		public override Object Load( System.IO.Stream input, string inputSource, out bool canCache, LoadParameters parameters )
-		{
-		    canCache = false;
+			ErrorCollection errors = new ErrorCollection( sourceName );
 
-			ErrorCollection errors = new ErrorCollection( inputSource );
-
-			XmlTextReader reader = new XmlTextReader( input );
+			XmlTextReader reader = new XmlTextReader( stream );
 			reader.WhitespaceHandling = WhitespaceHandling.Significant;
 			try
 			{
 				if ( reader.MoveToContent( ) == XmlNodeType.None )
 				{
-					ResourcesLog.Warning( "XML component asset \"{0}\" was empty - returning null", inputSource );
+					AssetsLog.Warning( "XML component asset \"{0}\" was empty - returning null", sourceName );
 					return null;
 				}
 			}
 			catch ( XmlException ex )
 			{
-				ResourcesLog.Error( "Moving to XML component asset \"{0}\" content threw an exception", inputSource );
+				AssetsLog.Error( "Moving to XML component asset \"{0}\" content threw an exception", sourceName );
 
-				Entry entry = new Entry( ResourcesLog.GetSource( Severity.Error ), ex.Message );
-				Source.HandleEntry( entry.Locate( inputSource, ex.LineNumber, ex.LinePosition, "" ) );
+				Entry entry = new Entry( AssetsLog.GetSource( Severity.Error ), ex.Message );
+				Source.HandleEntry( entry.Locate( sourceName, ex.LineNumber, ex.LinePosition, "" ) );
 
-			    throw new ApplicationException( string.Format( "Failed to load component XML asset \"{0}\" (see log for details)", inputSource ) );
+			    throw new ApplicationException( string.Format( "Failed to load component XML asset \"{0}\" (see log for details)", sourceName ) );
 			}
 
             string cacheable = reader.GetAttribute( "cacheable" );
-            canCache = ( cacheable != null ) && ( ( cacheable == "yes" ) || ( cacheable == "true" ) );
+            parameters.CanCache = ( cacheable != null ) && ( ( cacheable == "yes" ) || ( cacheable == "true" ) );
 
 			RootBuilder builder = ( RootBuilder )BaseBuilder.CreateBuilderFromReader( null, ( ComponentLoadParameters )parameters, errors, reader );
 
@@ -99,13 +85,13 @@ namespace Rb.ComponentXmlLoader
                 {
                     Source.HandleEntry( error );
                 }
-                throw new ApplicationException( string.Format( "Failed to load component XML asset \"{0}\" (see log for details)", inputSource ) );
+                throw new ApplicationException( string.Format( "Failed to load component XML asset \"{0}\" (see log for details)", sourceName ) );
             }
 
 			//	TODO: AP: bit dubious... if there's more than one object, return a list
 			if ( builder.Children.Count == 0 )
 			{
-				throw new ApplicationException( string.Format( "Failed to load component XML asset \"{0}\" - did not contain any components", inputSource ) );
+				throw new ApplicationException( string.Format( "Failed to load component XML asset \"{0}\" - did not contain any components", sourceName ) );
 			}
 			if ( builder.Children.Count == 1 )
 			{
@@ -115,24 +101,31 @@ namespace Rb.ComponentXmlLoader
 		}
 
 		/// <summary>
+		/// Loads an asset
+		/// </summary>
+		/// <param name="source">Data source</param>
+		/// <param name="parameters">Loading parameters</param>
+		/// <returns>Returns loaded object</returns>
+		public override object Load( ISource source, LoadParameters parameters )
+		{
+			using ( Stream stream = source.Open( ) )
+			{
+				return Load( stream, source.ToString( ), parameters );
+			}
+		}
+
+		/// <summary>
 		/// Returns true if this loader can load the specified stream
 		/// </summary>
-		/// <param name="path"> Stream path (contains extension that the loader can check)</param>
-		/// <param name="input"> Input stream (file types can be identified by peeking at header bytes) </param>
-		/// <returns> Returns true if the stream can </returns>
-		/// <remarks>
-		/// path can be null, in which case, the loader must be able to identify the resource type by checking the content in input (e.g. by peeking
-		/// at the header bytes).
-		/// </remarks>
-		public override bool CanLoadStream( string path, System.IO.Stream input )
+		public override bool CanLoad( ISource source )
 		{
-		    return path.EndsWith( ".components.xml", StringComparison.CurrentCultureIgnoreCase );
+		    return source.ToString( ).EndsWith( ".components.xml", StringComparison.CurrentCultureIgnoreCase );
 		}
 
         /// <summary>
         /// Creates a new empty ComponentLoadParameters object
         /// </summary>
-        public override LoadParameters CreateDefaultLoadParameters( )
+        public override LoadParameters CreateDefaultParameters( )
         {
             return new ComponentLoadParameters( );
         }

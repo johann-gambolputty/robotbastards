@@ -38,7 +38,7 @@ namespace Rb.ComponentXmlLoader
 
         public void Add( int line, int column, string format, params object[] args )
         {
-            Entry entry = new Entry( ResourcesLog.GetSource( Severity.Error ), string.Format( format, args ) );
+            Entry entry = new Entry( AssetsLog.GetSource( Severity.Error ), string.Format( format, args ) );
             entry.Locate( m_InputSource, line, column, "" );
             Add( entry );
         }
@@ -72,7 +72,7 @@ namespace Rb.ComponentXmlLoader
         {
             //  Convert the exception into log entries
             List< Entry > entries = new List< Entry >( );
-            ExceptionUtils.ToLogEntries( ResourcesLog.GetSource( Severity.Error ), ex, entries, indent );
+            ExceptionUtils.ToLogEntries( AssetsLog.GetSource( Severity.Error ), ex, entries, indent );
 
             //  Store the log entries in the error collection
             foreach ( Entry curEntry in entries )

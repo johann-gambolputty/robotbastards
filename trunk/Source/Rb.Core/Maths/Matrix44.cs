@@ -270,7 +270,7 @@ namespace Rb.Core.Maths
 		{
 			for ( int index = 0; index < 16; ++index )
 			{
-				if ( System.Math.Abs( this[ index ] - mat[ index ] ) > tol )
+				if ( Math.Abs( this[ index ] - mat[ index ] ) > tol )
 				{
 					return false;
 				}
@@ -283,9 +283,18 @@ namespace Rb.Core.Maths
 		#region	Operations
 
 		/// <summary>
+		/// Converts the matrix into a string representation
+		/// </summary>
+		/// <returns>Returns string</returns>
+		public override string ToString( )
+		{
+			return string.Format( "P:{0} X:{1} Y: {2} Z: {3}", Translation, XAxis, YAxis, ZAxis );
+		}
+
+		/// <summary>
 		/// Translation. Stores the result of this * T, where T is the translation matrix for (x,y,z)
 		/// </summary>
-		public void		Translate( float x, float y, float z )
+		public void	Translate( float x, float y, float z )
 		{
 			//	TODO: This is pretty lazy :)
 			Matrix44 lhs = new Matrix44( this );

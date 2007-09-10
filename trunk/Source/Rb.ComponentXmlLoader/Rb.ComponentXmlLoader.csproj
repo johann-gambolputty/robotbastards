@@ -59,7 +59,7 @@
     <Compile Include="ObjectBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceBuilder.cs" />
-    <Compile Include="ResourceBuilder.cs" />
+    <Compile Include="AssetBuilder.cs" />
     <Compile Include="RootBuilder.cs" />
     <Compile Include="TemplateBuilder.cs" />
     <Compile Include="TypeBuilder.cs" />

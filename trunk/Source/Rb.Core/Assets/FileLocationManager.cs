@@ -1,7 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace Rb.Core.Assets
 {
@@ -13,7 +13,7 @@ namespace Rb.Core.Assets
 	/// created). If an asset location is relative, then it's relative to this path. e.g. If the base directory
 	/// is "c:\temp\test", and the location is "..\asset.txt", then the resolved path is "c:\temp\asset.txt"
 	/// </remarks>
-	public class FileLocationManager : ILocationManager
+	public class FileLocationManager : ILocationManager, IXmlSerializable
 	{
 		/// <summary>
 		/// Access to the base directory
@@ -85,5 +85,37 @@ namespace Rb.Core.Assets
 
 		#endregion
 
+
+		#region IXmlSerializable Members
+
+		/// <summary>
+		/// Returns null (no schema required for this type)
+		/// </summary>
+		public System.Xml.Schema.XmlSchema GetSchema( )
+		{
+			return null;
+		}
+
+		/// <summary>
+		/// Reads this object from XML
+		/// </summary>
+		/// <param name="reader">XML reader</param>
+		public void ReadXml( XmlReader reader )
+		{
+			reader.Read( );
+			BaseDirectory = reader.GetAttribute( "value" );
+			reader.Skip( );
+		}
+
+		/// <summary>
+		/// Writes this object to XML
+		/// </summary>
+		/// <param name="writer">XML writer</param>
+		public void WriteXml( XmlWriter writer )
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		#endregion
 	}
 }

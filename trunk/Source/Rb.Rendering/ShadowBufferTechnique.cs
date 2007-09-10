@@ -1,6 +1,6 @@
 using System;
+using Rb.Core.Assets;
 using Rb.Core.Maths;
-using Rb.Core.Resources;
 
 namespace Rb.Rendering
 {
@@ -75,7 +75,7 @@ namespace Rb.Rendering
 			if ( ms_OverrideTechnique == null )
 			{
 				//	TODO: This should be an embedded resource, directly compiled from a hardcoded string, or something
-				Effect effect = ( Effect )ResourceManager.Instance.Load( DepthTextureMethod ? "shadowMapDepthTexture.cgfx" : "shadowMapTexture.cgfx" );
+				Effect effect = ( Effect )AssetManager.Instance.Load( DepthTextureMethod ? "shadowMapDepthTexture.cgfx" : "shadowMapTexture.cgfx" );
 				ms_OverrideTechnique = effect.FindTechnique( "DefaultTechnique" );
 			}
 
@@ -213,7 +213,7 @@ namespace Rb.Rendering
                 //	TODO: Need proper Y axis
                 int width = curTarget.Width;
                 int height = curTarget.Height;
-                float aspectRatio = (height == 0) ? 1.0f : ( ( float )width / ( float )height );
+                float aspectRatio = ( height == 0 ) ? 1.0f : ( width / ( float )height );
 
                 Renderer.Instance.SetLookAtTransform( curLight.Position + curLight.Direction, curLight.Position, Vector3.YAxis );
                 Renderer.Instance.SetPerspectiveProjectionTransform( curLight.ArcDegrees * 2, aspectRatio, m_NearZ, m_FarZ );

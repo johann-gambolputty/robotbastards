@@ -1,9 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Xml;
-using Rb.Core.Utils;
-using Rb.Log;
 
 namespace Rb.Core.Assets
 {
@@ -31,26 +27,6 @@ namespace Rb.Core.Assets
 		public void AddLoader( IAssetLoader loader )
 		{
 			m_Loaders.Add( loader );
-		}
-
-		/// <summary>
-		/// Adds a bunch of loaders from an XML file
-		/// </summary>
-		public void AddLoadersFromXml( string uri )
-		{
-			XmlReader reader;
-			try
-			{
-				reader = XmlReader.Create( uri );
-			}
-			catch ( Exception ex )
-			{
-				AssetsLog.Error( "Failed to create XML reader" );
-				ExceptionUtils.ToLog( AssetsLog.GetSource( Severity.Error ), ex );
-				return;
-			}
-
-			ReadLoaders( uri, reader );
 		}
 
 		/// <summary>
@@ -147,80 +123,7 @@ namespace Rb.Core.Assets
 
 		private readonly List< IAssetLoader >	m_Loaders		= new List< IAssetLoader >( );
 		private static readonly AssetManager	ms_Singleton	= new AssetManager( );
-
-		/// <summary>
-		/// Reads all loaders from an XML file
-		/// </summary>
-		/// <param name="uri">XML uri</param>
-		/// <param name="reader">XML reader</param>
-		private void ReadLoaders( string uri, XmlReader reader )
-		{
-			try
-			{
-				if ( reader.IsEmptyElement )
-				{
-					return;
-				}
-
-				reader.ReadStartElement( "loaders" );
-				
-				while ( reader.NodeType != XmlNodeType.EndElement )
-				{
-					if ( reader.NodeType != XmlNodeType.Element )
-					{
-						reader.Read( );
-						continue;
-					}
-					
-					if ( reader.Name == "loader" )
-					{
-						ReadLoader( reader );
-					}
-					else
-					{
-						throw new XmlException( string.Format( "Unexpected element <{0}>", reader.Name ) );
-					}
-				}
-
-				reader.ReadEndElement( );
-			}
-			catch ( Exception ex )
-			{
-				string msg = "Failed to read AssetManager loaders";
-				Entry logEntry = new Entry( AssetsLog.GetSource( Severity.Error ), msg );
-				IXmlLineInfo lineInfo = ( IXmlLineInfo )reader;
-				logEntry.Locate( uri, lineInfo.LineNumber, lineInfo.LinePosition, "" );
-
-				Source.HandleEntry( logEntry );
-				ExceptionUtils.ToLog( AssetsLog.GetSource( Severity.Error ), ex );
-				return;
-			}
-			
-		}
 		
-		/// <summary>
-		/// Reads a type from XML, creates an instance of the type, and adds the instance to the loader list
-		/// </summary>
-		private void ReadLoader( XmlReader reader )
-		{
-			string type = reader.GetAttribute( "type" );
-			string assembly = reader.GetAttribute( "assembly" );
-
-			if ( string.IsNullOrEmpty( type ) )
-			{
-				throw new XmlException( "<loader> requires a \"type\" attribute" );
-			}
-			if ( string.IsNullOrEmpty( assembly ) )
-			{
-				throw new XmlException( "<loader> requires an \"assembly\" attribute" );
-			}
-
-			Type loaderType = Assembly.Load( assembly ).GetType( type );
-
-			IAssetLoader loader = ( IAssetLoader )Activator.CreateInstance( loaderType );
-			AddLoader( loader );
-		}
-
 		#endregion
 
 	}

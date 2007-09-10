@@ -303,6 +303,14 @@ namespace Rb.Core.Maths
 		#region	Operations
 
 		/// <summary>
+		/// Converts this point to a string
+		/// </summary>
+		public override string ToString( )
+		{
+			return string.Format( "({0},{1},{2})", X, Y, Z );
+		}
+
+		/// <summary>
 		/// Normalises this vector
 		/// </summary>
 		public void Normalise( )

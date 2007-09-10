@@ -60,13 +60,12 @@
     <Compile Include="Actions\PaintTileAction.cs" />
     <Compile Include="Actions\SelectAction.cs" />
     <Compile Include="Actions\UndoStack.cs" />
-    <Compile Include="ComponentXmlExporter.cs" />
     <Compile Include="EditModes\AddObjectEditMode.cs" />
     <Compile Include="EditModes\EditMode.cs" />
     <Compile Include="EditModes\EditModeContext.cs" />
     <Compile Include="EditModes\IEditMode.cs" />
     <Compile Include="EditModes\PaintTileEditMode.cs" />
-    <Compile Include="HasWorldFrame.cs" />
+    <Compile Include="EditorScene.cs" />
     <Compile Include="ISelectable.cs" />
     <Compile Include="ITilePicker.cs" />
     <Compile Include="ObjectEditState.cs" />

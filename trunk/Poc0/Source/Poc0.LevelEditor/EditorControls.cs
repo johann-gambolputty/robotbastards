@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.EditModes;
+using Rb.Core.Assets;
 using Rb.Core.Components;
-using Rb.Core.Resources;
 
 namespace Poc0.LevelEditor
 {
@@ -17,7 +17,7 @@ namespace Poc0.LevelEditor
 		{
 			InitializeComponent( );
 
-			IList templates = ( IList )ResourceManager.Instance.Load( "TestObjectTemplates.components.xml" );
+			IList templates = ( IList )AssetManager.Instance.Load( "TestObjectTemplates.components.xml" );
 			foreach ( ObjectTemplate template in templates )
 			{
 				m_Templates.Add( template );
