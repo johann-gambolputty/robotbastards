@@ -1,6 +1,6 @@
 using System;
+using Rb.Core.Assets;
 using Rb.Core.Components;
-using Rb.Core.Resources;
 using Rb.Core.Utils;
 using Rb.Interaction;
 using Rb.Rendering;
@@ -30,7 +30,7 @@ namespace Rb.World.Entities
                 //  must be created locally
 				parameters = ( LoadParameters )parameters.Clone( );
 				parameters.Target = this;
-                AddChild( ResourceManager.Instance.Load( controllerPath, parameters ) );
+                AddChild( AssetManager.Instance.Load( controllerPath, parameters ) );
             }
             else if ( host.Id == hostId )
 			{
@@ -45,7 +45,7 @@ namespace Rb.World.Entities
 				//  The scene host is the local controller host - create away
 				parameters = ( LoadParameters )parameters.Clone( );
 				parameters.Target = this;
-				AddChild( ResourceManager.Instance.Load( controllerPath, parameters ) );
+				AddChild( AssetManager.Instance.Load( controllerPath, parameters ) );
             }
             else
 			{
@@ -104,7 +104,7 @@ namespace Rb.World.Entities
             scene.Renderables.Add( this );
 
 			//	Subscribe to the update clock
-			scene.GetClock( "updateClock" ).Subscribe( new Clock.TickDelegate( Update ) );
+			scene.GetClock( "updateClock" ).Subscribe( Update );
         }
 
         #endregion

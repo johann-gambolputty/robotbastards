@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Poc0.LevelEditor.Core.Actions;
 using Rb.World;
 using System.Windows.Forms;
@@ -72,9 +71,17 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// <summary>
 		/// Gets the scene
 		/// </summary>
-		public Scene Scene
+		public EditorScene Scene
 		{
 			get { return m_Scene; }
+		}
+
+		/// <summary>
+		/// Gets the runtime scene
+		/// </summary>
+		public Scene RuntimeScene
+		{
+			get { return m_Scene.RuntimeScene; }
 		}
 
 		/// <summary>
@@ -95,7 +102,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// Sets up the edit mode context with a new scene 
 		/// </summary>
 		/// <param name="scene">New scene (must contain a <see cref="TileGrid"/>)</param>
-		public void Setup( Scene scene )
+		public void Setup( EditorScene scene )
 		{
 			TileGrid grid = scene.Objects.GetFirstOfType< TileGrid >( );
 			if ( grid == null )
@@ -162,7 +169,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		private Tile						m_TileUnderCursor;
 		private readonly SelectedObjects	m_Selection = new SelectedObjects( );
 		private TileGrid					m_Grid;
-		private	Scene						m_Scene;
+		private	EditorScene					m_Scene;
 		private readonly UndoStack			m_UndoStack = new UndoStack( );
 
 		private IEditMode					m_ExclusiveMode;

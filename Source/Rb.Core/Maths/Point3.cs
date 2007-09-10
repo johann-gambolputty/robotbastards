@@ -36,6 +36,14 @@ namespace Rb.Core.Maths
 		}
 
 		/// <summary>
+		/// Converts this point to a string
+		/// </summary>
+		public override string ToString()
+		{
+			return string.Format( "({0},{1},{2})", X, Y, Z );
+		}
+
+		/// <summary>
 		/// Sets the point's components
 		/// </summary>
 		public void Set( float x, float y, float z )

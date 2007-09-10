@@ -1,8 +1,8 @@
 using System;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
-using System.Xml;
-using Poc0.LevelEditor.Core;
-using Rb.Core.Components;
 using Rb.Core.Utils;
 using Rb.Log;
 using Rb.World;
@@ -40,8 +40,8 @@ namespace Poc0.LevelEditor
 		{
 			SaveFileDialog exportDialog = new SaveFileDialog( );
 			exportDialog.Title = "Export To...";
-			exportDialog.DefaultExt = "components.xml";
-			exportDialog.Filter = "Component XML|*.components.xml|All Files|*.*";
+			exportDialog.DefaultExt = "rtscene";
+			exportDialog.Filter = "Runtime Scene File|*.rtscene|All Files|*.*";
 			exportDialog.AddExtension = true;
 			if ( exportDialog.ShowDialog( ) != DialogResult.OK )
 			{
@@ -77,20 +77,15 @@ namespace Poc0.LevelEditor
 		{
 			try
 			{
-				XmlDocument doc = new XmlDocument( );
-				doc.AppendChild( doc.CreateXmlDeclaration( "1.0", "utf-8", "" ) );
+				MemoryStream outStream = new MemoryStream( );
 
-				XmlNode root = doc.AppendChild( doc.CreateElement( "rb" ) );
-				foreach ( ObjectEditState editState in scene.Objects.GetAllOfType< ObjectEditState >( ) )
+				IFormatter formatter = CreateFormatter( );
+				formatter.Serialize( outStream, scene );
+
+				using ( Stream fileStream = File.OpenWrite( path ) )
 				{
-					ObjectTemplate template = editState.Instance as ObjectTemplate;
-					if ( template != null )
-					{
-						root.AppendChild( template.WriteToXml( doc ) );
-					}
+					fileStream.Write( outStream.ToArray( ), 0, ( int )outStream.Length );
 				}
-
-				doc.Save( path );
 			}
 			catch ( Exception ex )
 			{
@@ -101,6 +96,17 @@ namespace Poc0.LevelEditor
 				return;
 			}
 		}
+
+		#region Private stuff
+
 		private string m_LastExportPath;
+
+		private static IFormatter CreateFormatter( )
+		{
+			IFormatter formatter = new BinaryFormatter( null, new StreamingContext( ) );
+			return formatter;
+		}
+
+		#endregion
 	}
 }

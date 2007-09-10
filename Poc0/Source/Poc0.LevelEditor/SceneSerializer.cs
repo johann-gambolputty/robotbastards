@@ -106,15 +106,15 @@ namespace Poc0.LevelEditor
 		/// </summary>
 		/// <param name="path">Path to the scene file</param>
 		/// <returns>Returns the deserialized scene, or null if the open failed</returns>
-		public Scene Open( string path )
+		public EditorScene Open(string path)
 		{
-			Scene scene;
+			EditorScene scene;
 			try
 			{
 				using ( Stream fileStream = File.OpenRead( path ) )
 				{
 					IFormatter formatter = CreateFormatter( );
-					scene = ( Scene )formatter.Deserialize( fileStream );
+					scene = ( EditorScene )formatter.Deserialize( fileStream );
 				}
 			}
 			catch ( Exception ex )
@@ -135,7 +135,7 @@ namespace Poc0.LevelEditor
 		/// Opens a scene file at a user-defined path
 		/// </summary>
 		/// <returns>Returns the deserialized scene, or null if the open failed</returns>
-		public Scene Open( )
+		public EditorScene Open( )
 		{
 			OpenFileDialog openDialog = new OpenFileDialog( );
 			openDialog.Filter = "Scene Files (*.scene)|*.scene|All Files (*.*)|*.*";

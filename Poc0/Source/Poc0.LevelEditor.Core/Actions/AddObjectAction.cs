@@ -1,4 +1,6 @@
 using System;
+using Poc0.LevelEditor.Core.EditModes;
+using Rb.Core.Components;
 using Rb.World;
 
 namespace Poc0.LevelEditor.Core.Actions
@@ -8,35 +10,51 @@ namespace Poc0.LevelEditor.Core.Actions
 		/// <summary>
 		/// Action setup constructor
 		/// </summary>
-		public AddObjectAction( Scene scene, object template, float x, float y, Guid id )
+		public AddObjectAction( EditorScene scene, object template, float x, float y, Guid id )
 		{
 			m_Id = id;
 			m_Scene = scene;
-			//m_Instance = new ObjectEditState( scene, x, y, builder.CreateInstance( Builder.Instance ) );
-			m_Instance = new ObjectEditState( scene, x, y, ( ( ICloneable )template ).Clone( ) );
+			m_Instance = new ObjectEditState( scene, x, y, CreateInstance( template ) );
 
 			Redo( );
 		}
 
 		#region IAction Members
 
+		/// <summary>
+		/// Undoes this action, by removing the object edit state from the level editor scene, and the actual object
+		/// from the runtime scene
+		/// </summary>
 		public void Undo( )
 		{
 			m_Scene.Objects.Remove( m_Id );
+			m_Scene.RuntimeScene.Objects.Remove( m_Id );
 		}
 
+		/// <summary>
+		/// Redoes this action, by adding the object edit state to the level editor scene, and the actual object
+		/// to the runtime scene
+		/// </summary>
 		public void Redo( )
 		{
 			m_Scene.Objects.Add( m_Id, m_Instance );
+			m_Scene.RuntimeScene.Objects.Add( m_Id, m_Instance.Instance );
 		}
 
 		#endregion
 
 		#region Private members
 
-		private readonly Scene m_Scene;
+		private readonly EditorScene m_Scene;
 		private readonly Guid m_Id;
-		private readonly object m_Instance;
+		private readonly ObjectEditState m_Instance;
+		
+		private static object CreateInstance( object template )
+		{
+			//return ( ( ICloneable )template ).Clone( );
+			return ( ( IInstanceBuilder )template ).CreateInstance( EditModeContext.Instance.RuntimeScene.Builder );
+
+		}
 
 		#endregion
 	}

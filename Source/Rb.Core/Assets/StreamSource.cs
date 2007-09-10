@@ -65,7 +65,7 @@ namespace Rb.Core.Assets
 		/// <summary>
 		/// Gets the source extension
 		/// </summary>
-		public bool HasExtension(string ext)
+		public bool HasExtension( string ext )
 		{
 			return m_Name.EndsWith( ext, StringComparison.CurrentCultureIgnoreCase );
 		}
@@ -75,7 +75,7 @@ namespace Rb.Core.Assets
 		/// </summary>
 		/// <param name="path">Relative path</param>
 		/// <returns>New source</returns>
-		public ISource GetSource(string path)
+		public ISource GetSource( string path )
 		{
 			throw new InvalidOperationException( string.Format( "Can't call GetSource(\"{0}\") on StreamSource", path ) );
 		}

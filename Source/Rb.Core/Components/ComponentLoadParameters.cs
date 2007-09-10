@@ -7,7 +7,7 @@ namespace Rb.Core.Components
     /// <summary>
     /// Resource loading parameters required by component resource loaders
     /// </summary>
-    public class ComponentLoadParameters : Resources.LoadParameters
+    public class ComponentLoadParameters : Assets.LoadParameters
     {
         #region Public constructors
         

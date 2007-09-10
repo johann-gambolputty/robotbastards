@@ -11,6 +11,7 @@ namespace Poc0.LevelEditor.Core
 	/// <summary>
 	/// Edits the position of a world frame object
 	/// </summary>
+	[Serializable]
 	public class PositionEditor : IRenderable, IHasWorldFrame
 	{
 		/// <summary>
@@ -79,6 +80,27 @@ namespace Poc0.LevelEditor.Core
 		}
 
 		/// <summary>
+		/// Delegate used by the ObjectChanged event
+		/// </summary>
+		public delegate void ObjectChangedDelegate( );
+
+		/// <summary>
+		/// Event, invoked when <see cref="Instance"/> (or one of its children) is modified
+		/// </summary>
+		public event ObjectChangedDelegate ObjectChanged;
+
+		/// <summary>
+		/// Invokes the <see cref="ObjectChanged"/> event
+		/// </summary>
+		public void OnObjectChanged( )
+		{
+			if ( ObjectChanged != null )
+			{
+				ObjectChanged( );
+			}
+		}
+
+		/// <summary>
 		/// Sets the tile object to get renderer
 		/// </summary>
 		public ObjectEditState( Scene scene, float x, float y, object obj )
@@ -98,7 +120,6 @@ namespace Poc0.LevelEditor.Core
 				worldFrameTemplate[ "WorldFrame" ] = frame;
 				AddChild( new PositionEditor( this, frame, x, y ) );
 			}
-			
 		}
 
 		private void BuildObjectEditors( object obj, float x, float y )

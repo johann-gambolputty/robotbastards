@@ -75,7 +75,7 @@ namespace Rb.Core.Assets
 			else
 			{
 				m_Asset = m_Loader.Load( m_Source, m_Parameters );
-				if ( ( m_Asset != null ) && ( m_Parameters.AddToCache ) )
+				if ( ( m_Asset != null ) && ( m_Parameters.CanCache ) )
 				{
 					AssetsLog.Verbose( "Caching asset {0}", m_Source );
 					m_Loader.Cache.Add( m_Source.GetHashCode( ), m_Asset );

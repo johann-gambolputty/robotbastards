@@ -1,11 +1,13 @@
 using System;
 using System.IO;
+using System.Runtime.Serialization;
 
 namespace Rb.Core.Assets
 {
 	/// <summary>
-	/// The location of an asset. A path with some cached information about it
+	/// The location of an asset. A path with some information about it cached
 	/// </summary>
+	[Serializable]
 	public class Location : ISource
 	{
 		#region Construction
@@ -54,6 +56,20 @@ namespace Rb.Core.Assets
 			m_Provider	= DetermineLocationManager( locationManagers, newPath );
 			m_Path		= ( m_Provider == null ) ? newPath : m_Provider.GetFullPath( newPath );
 			m_Key		= GetLocationKey( m_Path );
+		}
+
+		#endregion
+
+		#region Serialization
+
+		/// <summary>
+		/// Called when this object is deserialized. Resolves the provider from the specified path
+		/// </summary>
+		/// <param name="context">Deserialization context</param>
+		[OnDeserialized]
+		public void OnDeserialized( StreamingContext context )
+		{
+			m_Provider = DetermineLocationManager( m_Path );
 		}
 
 		#endregion
@@ -187,7 +203,9 @@ namespace Rb.Core.Assets
 
 		private readonly string m_Path;
 		private readonly int m_Key;
-		private readonly ILocationManager m_Provider;
+
+		[NonSerialized]
+		private ILocationManager m_Provider;
 
 		#endregion
 	}

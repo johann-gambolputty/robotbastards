@@ -1,4 +1,5 @@
 using System.Windows.Forms;
+using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.EditModes;
 using Rb.Core.Components;
 
@@ -24,9 +25,9 @@ namespace Poc0.LevelEditor
 		{
 			selectionTreeView.Nodes.Clear( );
 
-			foreach ( object obj in EditModeContext.Instance.Selection.Selection )
+			foreach ( ObjectEditState editState in EditModeContext.Instance.Selection.Selection )
 			{
-				selectionTreeView.Nodes.Add( CreateObjectTreeNode( obj ) );
+				selectionTreeView.Nodes.Add( CreateObjectTreeNode( editState.Instance ) );
 			}
 		}
 

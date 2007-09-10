@@ -6,13 +6,12 @@ using Crownwood.Magic.Docking;
 using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.Actions;
 using Poc0.LevelEditor.Core.EditModes;
+using Rb.Core.Assets;
 using Rb.Core.Components;
-using Rb.Core.Resources;
 using Rb.Core.Utils;
 using Rb.Interaction;
 using Rb.Log;
 using Rb.Rendering;
-using Rb.World;
 using Crownwood.Magic.Common;
 
 namespace Poc0.LevelEditor
@@ -43,12 +42,12 @@ namespace Poc0.LevelEditor
 			RenderFactory.Load( renderAssemblyName );
 			
 			//	Load resource settings
-			string resourceSetupPath = ConfigurationManager.AppSettings[ "resourceSetupPath" ];
+			string resourceSetupPath = ConfigurationManager.AppSettings[ "assetSetupPath" ];
 			if ( resourceSetupPath == null )
 			{
-				resourceSetupPath = "../resourceSetup.xml";
+				resourceSetupPath = "../assetSetup.xml";
 			}
-			ResourceManager.Instance.Setup( resourceSetupPath );
+			AssetXmlSetup.Setup( resourceSetupPath, AssetManager.Instance, LocationManagers.Instance );
 
 			//	Load all assemblies that support the chosen graphics API 
 			Rb.AssemblySelector.IdentifierMap.Instance.AddAssemblyIdentifiers( Directory.GetCurrentDirectory( ), SearchOption.TopDirectoryOnly );
@@ -114,7 +113,7 @@ namespace Poc0.LevelEditor
 		/// </summary>
 		private void CreateNewScene( TileTypeSet tileTypes, int width, int height)
 		{
-			Scene scene = new Scene( );
+			EditorScene scene = new EditorScene( );
 
 			//	Create the tile grid
 			TileGrid grid = new TileGrid( tileTypes );
@@ -130,7 +129,7 @@ namespace Poc0.LevelEditor
 		/// <summary>
 		/// Access to the main scene
 		/// </summary>
-		public Scene Scene
+		public EditorScene Scene
 		{
 			get { return m_Scene; }
 			set
@@ -156,21 +155,21 @@ namespace Poc0.LevelEditor
 		private readonly CommandUser		m_User = new CommandUser( );
 		private readonly SceneSerializer	m_Serializer = new SceneSerializer( );
 		private readonly SceneExporter		m_Exporter = new SceneExporter( );
-		private Scene						m_Scene;
+		private EditorScene					m_Scene;
 		
 		private void MainForm_Load( object sender, EventArgs e )
 		{
 			if ( !DesignMode )
 			{
 				//	Load input bindings
-				CommandInputTemplateMap map = ( CommandInputTemplateMap )ResourceManager.Instance.Load( "LevelEditorCommandInputs.components.xml" );
+				CommandInputTemplateMap map = ( CommandInputTemplateMap )AssetManager.Instance.Load( "LevelEditorCommandInputs.components.xml" );
 				m_User.InitialiseAllCommandListBindings( );
 
 				ComponentLoadParameters loadParams = new ComponentLoadParameters( );
 				loadParams.Properties[ "User" ] = m_User;
 
 				//	Load in the scene viewer
-				Viewer viewer = ( Viewer )ResourceManager.Instance.Load( "LevelEditorStandardViewer.components.xml", loadParams );
+				Viewer viewer = ( Viewer )AssetManager.Instance.Load( "LevelEditorStandardViewer.components.xml", loadParams );
 				tileGrid2dDisplay.Viewers.Add( viewer );
 
 				//	Test load a command list
@@ -226,7 +225,7 @@ namespace Poc0.LevelEditor
 
 		private void openToolStripMenuItem_Click( object sender, EventArgs e )
 		{
-			Scene scene = m_Serializer.Open( );
+			EditorScene scene = m_Serializer.Open( );
 			if ( scene != null )
 			{
 				Scene = scene;
@@ -245,12 +244,12 @@ namespace Poc0.LevelEditor
 
 		private void exportToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			m_Exporter.Export( m_Scene );
+			m_Exporter.Export( m_Scene.RuntimeScene );
 		}
 
 		private void eToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			m_Exporter.ExportAs( m_Scene );
+			m_Exporter.ExportAs( m_Scene.RuntimeScene );
 		}
 
 	}

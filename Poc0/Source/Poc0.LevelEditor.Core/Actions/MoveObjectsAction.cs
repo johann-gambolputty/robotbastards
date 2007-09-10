@@ -26,7 +26,8 @@ namespace Poc0.LevelEditor.Core.Actions
 				frameObjects.Add( Parent.GetType< IHasWorldFrame >( obj ) );
 			}
 
-			m_Objects = frameObjects.ToArray( );
+			m_Objects = objects;
+			m_FrameObjects = frameObjects.ToArray( );
 
 			ApplyDelta( delta );
 		}
@@ -45,10 +46,7 @@ namespace Poc0.LevelEditor.Core.Actions
 		/// <param name="delta">Extra movement vector</param>
 		public void ApplyDelta( Vector3 delta )
 		{
-			foreach ( IHasWorldFrame frame in m_Objects )
-			{
-				frame.WorldFrame.Translation += delta;
-			}
+			MoveObjects( delta );
 			m_Delta += delta;
 		}
 
@@ -59,10 +57,7 @@ namespace Poc0.LevelEditor.Core.Actions
 		/// </summary>
 		public void Undo( )
 		{
-			foreach ( IHasWorldFrame frame in m_Objects )
-			{
-				frame.WorldFrame.Translation -= m_Delta;
-			}
+			MoveObjects( m_Delta );
 		}
 
 		/// <summary>
@@ -70,16 +65,25 @@ namespace Poc0.LevelEditor.Core.Actions
 		/// </summary>
 		public void Redo( )
 		{
-			foreach ( IHasWorldFrame frame in m_Objects )
-			{
-				frame.WorldFrame.Translation += m_Delta;
-			}
+			MoveObjects( m_Delta * -1 );
 		}
 
 		#endregion
 
 		private Vector3 m_Delta;
-		private readonly IHasWorldFrame[] m_Objects;
+		private readonly object[] m_Objects;
+		private readonly IHasWorldFrame[] m_FrameObjects;
 
+		private void MoveObjects( Vector3 delta )
+		{
+			foreach ( IHasWorldFrame frame in m_FrameObjects )
+			{
+				frame.WorldFrame.Translation += delta;
+			}
+			foreach ( ObjectEditState editState in m_Objects )
+			{
+			    editState.OnObjectChanged( );
+			}
+		}
 	}
 }

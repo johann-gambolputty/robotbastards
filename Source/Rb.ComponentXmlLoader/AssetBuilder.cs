@@ -1,8 +1,7 @@
-using System;
 using System.Xml;
 using System.Collections.Generic;
-using Rb.Core.Resources;
 using Rb.Core.Components;
+using Rb.Core.Assets;
 
 
 namespace Rb.ComponentXmlLoader
@@ -10,7 +9,7 @@ namespace Rb.ComponentXmlLoader
     /// <summary>
     /// An element that references an existing resource, or loads it
     /// </summary>
-    internal class ResourceBuilder : BaseBuilder
+    internal class AssetBuilder : BaseBuilder
     {
         /// <summary>
         /// Setup constructor
@@ -19,19 +18,19 @@ namespace Rb.ComponentXmlLoader
         /// <param name="errors">Error collection</param>
         /// <param name="reader">XML reader positioned at the element that created this builder</param>
         /// <param name="parentBuilder">Parent builder</param>
-        public ResourceBuilder( ComponentLoadParameters parameters, ErrorCollection errors, XmlReader reader, BaseBuilder parentBuilder ) :
+        public AssetBuilder( ComponentLoadParameters parameters, ErrorCollection errors, XmlReader reader, BaseBuilder parentBuilder ) :
             base( parameters, errors, reader, parentBuilder )
         {
-            string resourcePath = reader.GetAttribute( "path" );
+            string assetPath = reader.GetAttribute( "path" );
 
-            m_PreLoad = ResourceManager.Instance.CreatePreLoadState( resourcePath, null );
+            m_Loader = AssetManager.Instance.CreateLoadState( new Location( assetPath ), null );
 
 			string useCurrentParams = reader.GetAttribute( "useCurrentParameters" );
 			if ( useCurrentParams != null )
 			{
 				if ( bool.Parse( useCurrentParams ) )
 				{
-					m_PreLoad.Parameters = Parameters;
+					m_Loader.Parameters = Parameters;
 				}
 			}
         }
@@ -43,22 +42,22 @@ namespace Rb.ComponentXmlLoader
         {
             if ( m_ParamBuilders.Count == 0 )
             {
-                BuildObject = m_PreLoad.Load( );
+                BuildObject = m_Loader.Load( );
             }
             else
             {
                 //  Create default load parameters, assign them to BuildObject (cheeky way for parameter
                 //  builders to set load parameters)
-				if ( ReferenceEquals( m_PreLoad.Parameters, Parameters ) )
+				if ( ReferenceEquals( m_Loader.Parameters, Parameters ) )
 				{
 					//	useCurrentLoadParameters was specified - to avoid modifying the original, clone it
-					m_PreLoad.Parameters = ( LoadParameters )Parameters.Clone( );
+					m_Loader.Parameters = ( LoadParameters )Parameters.Clone( );
 				}
 				else
 				{
-					m_PreLoad.Parameters = m_PreLoad.Loader.CreateDefaultLoadParameters( );
+					m_Loader.Parameters = m_Loader.Loader.CreateDefaultParameters( );
 				}
-                BuildObject = m_PreLoad.Parameters;
+                BuildObject = m_Loader.Parameters;
 
                 //	Call PostCreate() for all parameter builders
                 foreach ( BaseBuilder builder in m_ParamBuilders )
@@ -78,7 +77,7 @@ namespace Rb.ComponentXmlLoader
                     ++paramIndex;
                 }
 
-				BuildObject = m_PreLoad.Load( );
+				BuildObject = m_Loader.Load( );
             }
 
             base.PostCreate( );
@@ -101,7 +100,7 @@ namespace Rb.ComponentXmlLoader
             }
         }
 
-        private readonly ResourcePreLoadState	m_PreLoad;
+        private readonly LoadState				m_Loader;
 		private readonly List< BaseBuilder >	m_ParamBuilders = new List< BaseBuilder >( );
     }
 

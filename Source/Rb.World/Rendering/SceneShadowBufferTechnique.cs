@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using Rb.Core.Maths;
-using Rb.Core.Resources;
 using Rb.Rendering;
 
 namespace Rb.World.Rendering

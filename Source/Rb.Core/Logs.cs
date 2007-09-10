@@ -7,20 +7,6 @@ using Rb.Log;
 namespace Rb.Core
 {
 	/// <summary>
-	/// Static log class for resources
-	/// </summary>
-	/// <example>
-	/// ResourcesLog.Error( "No tea" );
-	/// </example>
-	public class ResourcesLog : StaticTag< ResourcesLog >
-	{
-		public override string TagName
-		{
-			get { return "Resources"; }
-		}
-	}
-	
-	/// <summary>
 	/// Static log class for assets
 	/// </summary>
 	/// <example>

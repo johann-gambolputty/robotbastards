@@ -57,7 +57,7 @@ namespace Rb.Rendering
 
 		#endregion
 
-		private IRenderable			m_RenderedObject;
-		private TechniqueSelector	m_Technique = new TechniqueSelector( );
+		private IRenderable m_RenderedObject;
+		private readonly TechniqueSelector m_Technique = new TechniqueSelector( );
 	}
 }

@@ -14,10 +14,11 @@
         <int value="200" dynProperty="Health"/>
       </template>
 
-      <!-- Evil robot renderer pattern-->
+      <!-- Evil robot renderer pattern
       <template type="Rb.Rendering.EffectRenderedObject" assembly="Rb.Rendering" dynProperty="Graphics">
       </template>
-
+      -->
+      
     </template>
 
   </list>

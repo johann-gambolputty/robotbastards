@@ -1,6 +1,6 @@
 using System;
+using Rb.Core.Assets;
 using Rb.Core.Components;
-using Rb.Core.Resources;
 
 namespace Rb.World.Entities
 {
@@ -30,14 +30,12 @@ namespace Rb.World.Entities
             {
                 //  Local hosts can't receive commands from remote controllers, so the controller
                 //  must be created locally
-				LoadParameters parameters = new ComponentLoadParameters( this );
-                AddChild( ResourceManager.Instance.Load( m_ControllerPath, parameters ) );
+                LoadController( );
             }
             else if ( host.Id == m_HostId )
             {
 				//  The scene host is the local controller host - create away
-				LoadParameters parameters = new ComponentLoadParameters( this );
-                AddChild( ResourceManager.Instance.Load( m_ControllerPath, parameters ) );
+                LoadController( );
 
                 //  Also need listeners and so forth
             }
@@ -51,8 +49,18 @@ namespace Rb.World.Entities
 
 		#region Private stuff
 
-		private Guid	m_HostId;
-		private string	m_ControllerPath;
+		private readonly Guid	m_HostId;
+		private readonly string	m_ControllerPath;
+
+		private void LoadController( )
+		{
+			Location controllerAssetLocation = new Location( m_ControllerPath );
+
+			LoadState loader = AssetManager.Instance.CreateLoadState( controllerAssetLocation, null );
+			loader.Parameters.Target = this;
+			
+			AddChild( loader.Load( ) );
+		}
 
 		#endregion
 

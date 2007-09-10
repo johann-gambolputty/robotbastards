@@ -22,7 +22,7 @@ namespace Rb.Core.Assets
 		/// <summary>
 		/// Creates default loading parameters
 		/// </summary>
-		public LoadParameters CreateDefaultParameters( )
+		public virtual LoadParameters CreateDefaultParameters( )
 		{
 			return new LoadParameters( );
 		}
