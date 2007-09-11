@@ -3,9 +3,9 @@ using System.Windows.Forms;
 
 namespace Rb.Core.Assets.Windows
 {
-	public partial class FileLocationBrowser : UserControl, ILocationBrowser
+	public partial class LocationTreeBrowser : UserControl, ILocationBrowser
 	{
-		public FileLocationBrowser( )
+		public LocationTreeBrowser( )
 		{
 			InitializeComponent( );
 		}

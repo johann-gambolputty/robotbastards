@@ -20,6 +20,12 @@ namespace Rb.Core.Components
             set;
         }
 
+		/// <summary>
+		/// Adds a new property to the set
+		/// </summary>
+		/// <param name="property">Property object</param>
+		void Add( IDynamicProperty property );
+
         /// <summary>
         /// Adds a new named property to the set
         /// </summary>

@@ -28,6 +28,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -35,15 +36,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileLocationBrowser.cs">
+    <Compile Include="FileLocationTree.cs" />
+    <Compile Include="LocationTreeBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="FileLocationBrowser.Designer.cs">
-      <DependentUpon>FileLocationBrowser.cs</DependentUpon>
+    <Compile Include="LocationTreeBrowser.Designer.cs">
+      <DependentUpon>LocationTreeBrowser.cs</DependentUpon>
     </Compile>
     <Compile Include="FileLocationManagerWithUI.cs" />
     <Compile Include="ILocationBrowser.cs" />
     <Compile Include="ILocationBrowserProvider.cs" />
+    <Compile Include="ILocationTree.cs" />
+    <Compile Include="LocationTreeFolder.cs" />
+    <Compile Include="LocationTreeItem.cs" />
+    <Compile Include="LocationTreeNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -53,9 +59,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="FileLocationBrowser.resx">
+    <EmbeddedResource Include="LocationTreeBrowser.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>FileLocationBrowser.cs</DependentUpon>
+      <DependentUpon>LocationTreeBrowser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
