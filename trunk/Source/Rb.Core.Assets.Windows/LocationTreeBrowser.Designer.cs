@@ -1,6 +1,6 @@
 namespace Rb.Core.Assets.Windows
 {
-	partial class FileLocationBrowser
+	partial class LocationTreeBrowser
 	{
 		/// <summary> 
 		/// Required designer variable.

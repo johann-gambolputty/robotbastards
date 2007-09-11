@@ -12,7 +12,7 @@ namespace Rb.Core.Assets.Windows
 		/// <returns>New <see cref="FileLocationBrowser"/> control</returns>
 		public ILocationBrowser CreateControl( )
 		{
-			return new FileLocationBrowser( );
+			return new LocationTreeBrowser( );
 		}
 	}
 }

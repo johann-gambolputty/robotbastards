@@ -58,6 +58,18 @@ namespace Rb.Core.Assets
 			m_Key		= GetLocationKey( m_Path );
 		}
 
+		/// <summary>
+		/// Sets up the location
+		/// </summary>
+		/// <param name="locationManager">Location manager</param>
+		/// <param name="path">Location path</param>
+		public Location( ILocationManager locationManager, string path )
+		{
+			m_Provider = locationManager;
+			m_Path = path;
+			m_Key = GetLocationKey( m_Path );
+		}
+
 		#endregion
 
 		#region Serialization
