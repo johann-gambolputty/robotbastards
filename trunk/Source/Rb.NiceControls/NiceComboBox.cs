@@ -153,6 +153,7 @@ namespace Rb.NiceControls
 
 			int x = bounds.Left;
 			int y = bounds.Top;
+			bool editItem = ( args.State & DrawItemState.ComboBoxEdit ) != 0;
 
 			Item item = Items[ args.Index ] as Item;
 			if ( item == null )
@@ -175,7 +176,10 @@ namespace Rb.NiceControls
 
 			Image img = ( args.Index == SelectedIndex ) ? ( item.SelectedImage ?? item.Image ) : item.Image;
 
-			x += item.Depth * ( img == null ? 16 : img.Width );
+			if ( !editItem )
+			{
+				x += item.Depth * ( img == null ? 16 : img.Width );
+			}
 
 			if ( img != null )
 			{
@@ -188,7 +192,7 @@ namespace Rb.NiceControls
 			{
 				font = new Font( font.FontFamily, font.Size, font.Style | item.Style, font.Unit, font.GdiCharSet, font.GdiVerticalFont );
 			}
-			args.Graphics.DrawString( item.Text, font, new SolidBrush( args.ForeColor ), x, y );
+			args.Graphics.DrawString( item.Text + args.State + SelectedIndex, font, new SolidBrush( args.ForeColor ), x, y );
 
 			base.OnDrawItem( args );
 		}
