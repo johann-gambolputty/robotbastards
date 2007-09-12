@@ -56,15 +56,18 @@ namespace Rb.Core.Assets.Windows
 		{
 			int addAt = combo.Items.Count;
 
-			combo.Items.Insert( addAt, NewFolderComboItem( --distance, folder ) );
+			combo.Items.Insert( addAt, NewFolderComboItem( distance--, folder ) );
 
 			combo.SelectedIndexChanged -= foldersComboBox_SelectedIndexChanged;
-			combo.SelectedItem = folder;
+			combo.SelectedIndex = addAt;
 			combo.SelectedIndexChanged += foldersComboBox_SelectedIndexChanged;
 
-			for ( folder = folder.Parent; folder.Parent != null; folder = folder.Parent )
+			if ( folder.Parent != null )
 			{
-				combo.Items.Insert( addAt, NewFolderComboItem( --distance, folder ) );
+				for ( folder = folder.Parent; folder != null; folder = folder.Parent )
+				{
+					combo.Items.Insert( addAt, NewFolderComboItem( distance--, folder ) );
+				}
 			}
 		}
 
@@ -98,12 +101,14 @@ namespace Rb.Core.Assets.Windows
 			foldersComboBox.Items.Clear( );
 			foreach ( LocationTreeFolder rootFolder in m_Locations.Roots )
 			{
-				foldersComboBox.Items.Add( NewFolderComboItem( 0, rootFolder ) );
-
 				int distance = rootFolder.GetDistanceTo( currentFolder );
-				if ( distance != -1 )
+				if ( distance >= 0 )
 				{
 					AddPathToRoot( foldersComboBox, currentFolder, distance );
+				}
+				else
+				{
+					foldersComboBox.Items.Add( NewFolderComboItem( 0, rootFolder ) );	
 				}
 			}
 			m_CurrentFolder = currentFolder;
@@ -159,7 +164,7 @@ namespace Rb.Core.Assets.Windows
 
 		private void foldersComboBox_SelectedIndexChanged( object sender, EventArgs e )
 		{
-			LocationTreeFolder folder = ( LocationTreeFolder )foldersComboBox.SelectedItem;
+			LocationTreeFolder folder = ( LocationTreeFolder )( ( NiceComboBox.Item )foldersComboBox.SelectedItem ).Tag;
 			EnterFolder( folder );
 		}
 
