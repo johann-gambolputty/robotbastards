@@ -4,18 +4,29 @@ namespace Rb.Core.Assets.Windows
 {
 	public class LocationTreeNode : ISupportsDynamicProperties
 	{
-		public LocationTreeNode( LocationTreeFolder parent, ISource source ) :
-			this( parent, source, GetSourceName( source ) )
+		public LocationTreeNode( LocationTreeFolder parent, ISource source, int image, int selectedImage ) :
+			this( parent, source, GetSourceName( source ), image, selectedImage )
 		{
 		}
 
-		public LocationTreeNode( LocationTreeFolder parent, ISource source, string name )
+		public LocationTreeNode( LocationTreeFolder parent, ISource source, string name, int image, int selectedImage )
 		{
 			m_Parent = parent;
 			m_Source = source;
 			m_Name = name;
+			m_Image = image;
+			m_SelectedImage = selectedImage;
+		}
 
-			m_Parent.Add( this );
+		public override string ToString( )
+		{
+			return Name;
+		}
+
+		public object Tag
+		{
+			get { return m_Tag; }
+			set { m_Tag = value; }
 		}
 
 		public string Name
@@ -26,6 +37,16 @@ namespace Rb.Core.Assets.Windows
 		public string Path
 		{
 			get { return m_Source.ToString( ); }
+		}
+
+		public int Image
+		{
+			get { return m_Image; }
+		}
+
+		public int SelectedImage
+		{
+			get { return m_SelectedImage; }
 		}
 
 		public LocationTreeFolder Parent
@@ -47,10 +68,13 @@ namespace Rb.Core.Assets.Windows
 
 		#endregion
 
+		private readonly int m_Image;
+		private readonly int m_SelectedImage;
 		private readonly LocationTreeFolder m_Parent;
 		private readonly IDynamicProperties m_Properties = new DynamicProperties( );
 		private readonly ISource m_Source;
 		private readonly string m_Name;
+		private object m_Tag;
 		
 		private static string GetSourceName( ISource source )
 		{
