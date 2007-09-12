@@ -73,12 +73,6 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="NiceComboBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="NiceComboBox.Designer.cs">
-      <DependentUpon>NiceComboBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="ObjectPropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -123,6 +117,10 @@
       <SubType>Designer</SubType>
       <DependentUpon>SelectionControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="TestForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TestForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TileGridDisplay.resx">
       <SubType>Designer</SubType>
       <DependentUpon>TileGridDisplay.cs</DependentUpon>
@@ -150,6 +148,12 @@
     <Compile Include="SelectionControl.Designer.cs">
       <DependentUpon>SelectionControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="TestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestForm.Designer.cs">
+      <DependentUpon>TestForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="TileGridDisplay.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -171,6 +175,10 @@
     <ProjectReference Include="..\..\..\Source\Rb.ComponentXmlLoader\Rb.ComponentXmlLoader.csproj">
       <Project>{61B562C4-66D5-4048-B482-858A791249A2}</Project>
       <Name>Rb.ComponentXmlLoader</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Core.Assets.Windows\Rb.Core.Assets.Windows.csproj">
+      <Project>{4A4B51E0-EE5D-4627-9192-542BA6FA8A7A}</Project>
+      <Name>Rb.Core.Assets.Windows</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
