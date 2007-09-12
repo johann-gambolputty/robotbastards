@@ -1,4 +1,6 @@
 
+using System;
+
 namespace Rb.Core.Assets.Windows
 {
 	/// <summary>
@@ -13,5 +15,11 @@ namespace Rb.Core.Assets.Windows
 		{
 			get;
 		}
+
+		/// <summary>
+		/// Event, invoked when the user has made his selection of assets (e.g. by double clicking on a location, or
+		///  pressing return)
+		/// </summary>
+		event EventHandler SelectionChosen;
 	}
 }
