@@ -9,6 +9,18 @@ namespace Rb.Core.Assets.Windows
 	public interface ILocationBrowser
 	{
 		/// <summary>
+		/// Filter string
+		/// </summary>
+		/// <remarks>
+		/// Equivalent to OpenFileDialog filter string - "Description|Wildcard|Description|Wildcard...", e.g.
+		/// "Text Files|*.txt|All Files|*.*"
+		/// </remarks>
+		string Filter
+		{
+			set;
+		}
+
+		/// <summary>
 		/// Gets the currently selected list of sources
 		/// </summary>
 		ISource[] Sources

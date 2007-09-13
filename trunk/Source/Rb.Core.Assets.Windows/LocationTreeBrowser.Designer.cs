@@ -28,7 +28,7 @@ namespace Rb.Core.Assets.Windows
 		/// </summary>
 		private void InitializeComponent( )
 		{
-			this.assetExtensionComboBox = new System.Windows.Forms.ComboBox();
+			this.typeComboBox = new System.Windows.Forms.ComboBox();
 			this.selectedAssetTextBox = new System.Windows.Forms.TextBox();
 			this.backButton = new System.Windows.Forms.Button();
 			this.upButton = new System.Windows.Forms.Button();
@@ -38,15 +38,17 @@ namespace Rb.Core.Assets.Windows
 			this.foldersComboBox = new Rb.NiceControls.NiceComboBox();
 			this.SuspendLayout();
 			// 
-			// assetExtensionComboBox
+			// typeComboBox
 			// 
-			this.assetExtensionComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+			this.typeComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.assetExtensionComboBox.FormattingEnabled = true;
-			this.assetExtensionComboBox.Location = new System.Drawing.Point(44, 169);
-			this.assetExtensionComboBox.Name = "assetExtensionComboBox";
-			this.assetExtensionComboBox.Size = new System.Drawing.Size(202, 21);
-			this.assetExtensionComboBox.TabIndex = 1;
+			this.typeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.typeComboBox.FormattingEnabled = true;
+			this.typeComboBox.Location = new System.Drawing.Point(44, 169);
+			this.typeComboBox.Name = "typeComboBox";
+			this.typeComboBox.Size = new System.Drawing.Size(202, 21);
+			this.typeComboBox.TabIndex = 1;
+			this.typeComboBox.SelectedIndexChanged += new System.EventHandler(this.typeComboBox_SelectedIndexChanged);
 			// 
 			// selectedAssetTextBox
 			// 
@@ -56,6 +58,7 @@ namespace Rb.Core.Assets.Windows
 			this.selectedAssetTextBox.Name = "selectedAssetTextBox";
 			this.selectedAssetTextBox.Size = new System.Drawing.Size(202, 20);
 			this.selectedAssetTextBox.TabIndex = 2;
+			this.selectedAssetTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.selectedAssetTextBox_KeyDown);
 			// 
 			// backButton
 			// 
@@ -113,6 +116,7 @@ namespace Rb.Core.Assets.Windows
 			this.currentFolderView.UseCompatibleStateImageBehavior = false;
 			this.currentFolderView.View = System.Windows.Forms.View.Details;
 			this.currentFolderView.DoubleClick += new System.EventHandler(this.currentFolderView_DoubleClick);
+			this.currentFolderView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.currentFolderView_ColumnClick);
 			// 
 			// foldersComboBox
 			// 
@@ -137,7 +141,7 @@ namespace Rb.Core.Assets.Windows
 			this.Controls.Add(this.upButton);
 			this.Controls.Add(this.backButton);
 			this.Controls.Add(this.selectedAssetTextBox);
-			this.Controls.Add(this.assetExtensionComboBox);
+			this.Controls.Add(this.typeComboBox);
 			this.Name = "LocationTreeBrowser";
 			this.Size = new System.Drawing.Size(249, 193);
 			this.Load += new System.EventHandler(this.LocationTreeBrowser_Load);
@@ -148,7 +152,7 @@ namespace Rb.Core.Assets.Windows
 
 		#endregion
 
-		private System.Windows.Forms.ComboBox assetExtensionComboBox;
+		private System.Windows.Forms.ComboBox typeComboBox;
 		private System.Windows.Forms.TextBox selectedAssetTextBox;
 		private System.Windows.Forms.Button backButton;
 		private System.Windows.Forms.Button upButton;

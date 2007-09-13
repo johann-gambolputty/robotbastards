@@ -4,7 +4,7 @@ namespace Rb.Core.Assets.Windows
 {
 	public class LocationProperty : IComparer< LocationTreeNode >
 	{
-		public delegate int CompareDelegate( LocationTreeNode x, LocationTreeNode y );
+		public delegate int CompareDelegate( object x, object y );
 
 		public LocationProperty( string name, CompareDelegate compare, int size )
 		{
@@ -31,9 +31,30 @@ namespace Rb.Core.Assets.Windows
 
 		public int Compare( LocationTreeNode x, LocationTreeNode y )
 		{
-			return m_Compare( x, y );
+			bool xIsFolder = x is LocationTreeFolder;
+			bool yIsFolder = y is LocationTreeFolder;
+
+			if ( xIsFolder && !yIsFolder )
+			{
+				return 1;
+			}
+			if ( !xIsFolder && yIsFolder )
+			{
+				return -1;
+			}
+
+			object xValue = x[ this ];
+			object yValue = y[ this ];
+
+			if ( xValue == null )
+			{
+				return ( yValue == null ) ? 0 : -1;
+			}
+
+			return yValue == null ? 1 : m_Compare( xValue, yValue );
 		}
 
 		#endregion
+
 	}
 }

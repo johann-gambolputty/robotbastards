@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using Rb.Core.Components;
 
 namespace Rb.Core.Assets.Windows
 {
-	public class LocationTreeNode : ISupportsDynamicProperties
+	public class LocationTreeNode
 	{
 		public LocationTreeNode( LocationTreeFolder parent, ISource source, int image, int selectedImage ) :
 			this( parent, source, GetSourceName( source ), image, selectedImage )
@@ -59,22 +60,39 @@ namespace Rb.Core.Assets.Windows
 			get { return m_Source; }
 		}
 
-		#region ISupportsDynamicProperties Members
-
-		public IDynamicProperties Properties
+		public bool HasProperty( LocationProperty property )
 		{
-			get { return m_Properties; }
+			return m_Properties.ContainsKey( property );
 		}
 
-		#endregion
+		public object this[ LocationProperty property ]
+		{
+			get
+			{
+				object result;
+				return m_Properties.TryGetValue( property, out result ) ? result : null;
+			}
+			set
+			{
+				if ( !m_Properties.ContainsKey( property ) )
+				{
+					m_Properties.Add( property, value );
+				}
+				else
+				{
+					m_Properties[ property ] = value;
+				}
+			}
+		}
+
 
 		private readonly int m_Image;
 		private readonly int m_SelectedImage;
 		private readonly LocationTreeFolder m_Parent;
-		private readonly IDynamicProperties m_Properties = new DynamicProperties( );
 		private readonly ISource m_Source;
 		private readonly string m_Name;
 		private object m_Tag;
+		private readonly Dictionary< LocationProperty, object > m_Properties = new Dictionary< LocationProperty, object >( );
 		
 		private static string GetSourceName( ISource source )
 		{
