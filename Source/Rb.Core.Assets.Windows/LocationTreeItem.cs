@@ -6,5 +6,6 @@ namespace Rb.Core.Assets.Windows
 			base( parent, source, image, selectedImage )
 		{
 		}
+
 	}
 }

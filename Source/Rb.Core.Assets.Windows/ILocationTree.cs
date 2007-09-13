@@ -40,5 +40,34 @@ namespace Rb.Core.Assets.Windows
 		    get;
 		}
 
+		/// <summary>
+		/// Builds a path from a base path and a new (possibly relative) path
+		/// </summary>
+		/// <param name="basePath">Base path</param>
+		/// <param name="newPath">New path</param>
+		/// <returns>Combined path</returns>
+		string GetFullPath( string basePath, string newPath );
+
+		/// <summary>
+		/// Returns true if the specified path refers to an existing folder
+		/// </summary>
+		/// <param name="path">Path to check</param>
+		/// <returns>true if path refers to an existing folder</returns>
+		bool IsFolder( string path );
+
+		/// <summary>
+		/// Returns true if the specified path refers to an existing item
+		/// </summary>
+		/// <param name="path">Path to check</param>
+		/// <returns>true if path refers to an existing item</returns>
+		bool IsItem( string path );
+
+		/// <summary>
+		/// Opens a folder given a specified path
+		/// </summary>
+		/// <param name="path">Path to folder</param>
+		/// <returns>Folder</returns>
+		LocationTreeFolder OpenFolder( string path );
+
 	}
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assetManager>
   <locationManagers>
-    <locationManager type="Rb.Core.Assets.FileLocationManager" assembly="Rb.Core">
+    <locationManager type="Rb.Core.Assets.Windows.FileLocationManagerWithUI" assembly="Rb.Core.Assets.Windows">
       <baseDir value="../../Data"/>
     </locationManager>
   </locationManagers>

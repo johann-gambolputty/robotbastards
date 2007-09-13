@@ -11,13 +11,13 @@ namespace Poc0.LevelEditor
 		/// Clean up any resources being used.
 		/// </summary>
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose( bool disposing )
+		protected override void Dispose(bool disposing)
 		{
-			if ( disposing && ( components != null ) )
+			if (disposing && (components != null))
 			{
-				components.Dispose( );
+				components.Dispose();
 			}
-			base.Dispose( disposing );
+			base.Dispose(disposing);
 		}
 
 		#region Windows Form Designer generated code
@@ -26,76 +26,81 @@ namespace Poc0.LevelEditor
 		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
 		/// </summary>
-		private void InitializeComponent( )
+		private void InitializeComponent()
 		{
-			this.tabControl1 = new System.Windows.Forms.TabControl();
-			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.sourceTabs = new System.Windows.Forms.TabControl();
+			this.createObjectTabPage = new System.Windows.Forms.TabPage();
+			this.assetTabPage = new System.Windows.Forms.TabPage();
 			this.locationManagerControlPanel = new System.Windows.Forms.Panel();
-			this.locationManagerCombo = new System.Windows.Forms.ComboBox();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.locationManagerComboBox = new System.Windows.Forms.ComboBox();
 			this.okButton = new System.Windows.Forms.Button();
 			this.cancelButton = new System.Windows.Forms.Button();
-			this.tabControl1.SuspendLayout();
-			this.tabPage1.SuspendLayout();
+			this.sourceTabs.SuspendLayout();
+			this.assetTabPage.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// tabControl1
+			// sourceTabs
 			// 
-			this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			this.sourceTabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.tabControl1.Controls.Add(this.tabPage1);
-			this.tabControl1.Controls.Add(this.tabPage2);
-			this.tabControl1.Location = new System.Drawing.Point(0, 2);
-			this.tabControl1.Name = "tabControl1";
-			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(293, 246);
-			this.tabControl1.TabIndex = 0;
+			this.sourceTabs.Controls.Add(this.createObjectTabPage);
+			this.sourceTabs.Controls.Add(this.assetTabPage);
+			this.sourceTabs.Location = new System.Drawing.Point(12, 12);
+			this.sourceTabs.Name = "sourceTabs";
+			this.sourceTabs.SelectedIndex = 0;
+			this.sourceTabs.Size = new System.Drawing.Size(365, 292);
+			this.sourceTabs.TabIndex = 0;
 			// 
-			// tabPage1
+			// createObjectTabPage
 			// 
-			this.tabPage1.Controls.Add(this.locationManagerControlPanel);
-			this.tabPage1.Controls.Add(this.locationManagerCombo);
-			this.tabPage1.Location = new System.Drawing.Point(4, 22);
-			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(285, 220);
-			this.tabPage1.TabIndex = 0;
-			this.tabPage1.Text = "Asset";
-			this.tabPage1.UseVisualStyleBackColor = true;
+			this.createObjectTabPage.Location = new System.Drawing.Point(4, 22);
+			this.createObjectTabPage.Name = "createObjectTabPage";
+			this.createObjectTabPage.Padding = new System.Windows.Forms.Padding(3);
+			this.createObjectTabPage.Size = new System.Drawing.Size(260, 187);
+			this.createObjectTabPage.TabIndex = 0;
+			this.createObjectTabPage.Text = "Create";
+			this.createObjectTabPage.UseVisualStyleBackColor = true;
+			// 
+			// assetTabPage
+			// 
+			this.assetTabPage.Controls.Add(this.locationManagerControlPanel);
+			this.assetTabPage.Controls.Add(this.locationManagerComboBox);
+			this.assetTabPage.Location = new System.Drawing.Point(4, 22);
+			this.assetTabPage.Name = "assetTabPage";
+			this.assetTabPage.Padding = new System.Windows.Forms.Padding(3);
+			this.assetTabPage.Size = new System.Drawing.Size(357, 266);
+			this.assetTabPage.TabIndex = 1;
+			this.assetTabPage.Text = "Load";
+			this.assetTabPage.UseVisualStyleBackColor = true;
 			// 
 			// locationManagerControlPanel
 			// 
 			this.locationManagerControlPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.locationManagerControlPanel.Location = new System.Drawing.Point(4, 6);
+			this.locationManagerControlPanel.Location = new System.Drawing.Point(6, 33);
 			this.locationManagerControlPanel.Name = "locationManagerControlPanel";
-			this.locationManagerControlPanel.Size = new System.Drawing.Size(277, 184);
+			this.locationManagerControlPanel.Size = new System.Drawing.Size(345, 227);
 			this.locationManagerControlPanel.TabIndex = 1;
 			// 
-			// locationManagerCombo
+			// locationManagerComboBox
 			// 
-			this.locationManagerCombo.FormattingEnabled = true;
-			this.locationManagerCombo.Location = new System.Drawing.Point(3, 196);
-			this.locationManagerCombo.Name = "locationManagerCombo";
-			this.locationManagerCombo.Size = new System.Drawing.Size(279, 21);
-			this.locationManagerCombo.TabIndex = 0;
-			// 
-			// tabPage2
-			// 
-			this.tabPage2.Location = new System.Drawing.Point(4, 22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(285, 220);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "Instance";
-			this.tabPage2.UseVisualStyleBackColor = true;
+			this.locationManagerComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.locationManagerComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.locationManagerComboBox.FormattingEnabled = true;
+			this.locationManagerComboBox.Location = new System.Drawing.Point(6, 6);
+			this.locationManagerComboBox.Name = "locationManagerComboBox";
+			this.locationManagerComboBox.Size = new System.Drawing.Size(348, 21);
+			this.locationManagerComboBox.TabIndex = 0;
+			this.locationManagerComboBox.SelectedIndexChanged += new System.EventHandler(this.locationManagerComboBox_SelectedIndexChanged);
 			// 
 			// okButton
 			// 
+			this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.okButton.Location = new System.Drawing.Point(4, 254);
+			this.okButton.Location = new System.Drawing.Point(12, 310);
 			this.okButton.Name = "okButton";
 			this.okButton.Size = new System.Drawing.Size(75, 23);
 			this.okButton.TabIndex = 1;
@@ -104,8 +109,9 @@ namespace Poc0.LevelEditor
 			// 
 			// cancelButton
 			// 
+			this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancelButton.Location = new System.Drawing.Point(214, 254);
+			this.cancelButton.Location = new System.Drawing.Point(302, 310);
 			this.cancelButton.Name = "cancelButton";
 			this.cancelButton.Size = new System.Drawing.Size(75, 23);
 			this.cancelButton.TabIndex = 2;
@@ -114,22 +120,28 @@ namespace Poc0.LevelEditor
 			// 
 			// ObjectUITypeEditorForm
 			// 
-			this.ClientSize = new System.Drawing.Size(305, 265);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.ClientSize = new System.Drawing.Size(389, 345);
+			this.Controls.Add(this.cancelButton);
+			this.Controls.Add(this.okButton);
+			this.Controls.Add(this.sourceTabs);
 			this.Name = "ObjectUITypeEditorForm";
-			this.tabControl1.ResumeLayout(false);
-			this.tabPage1.ResumeLayout(false);
+			this.Text = "New Object";
+			this.sourceTabs.ResumeLayout(false);
+			this.assetTabPage.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.TabControl tabControl1;
-		private System.Windows.Forms.TabPage tabPage1;
-		private System.Windows.Forms.TabPage tabPage2;
+		private System.Windows.Forms.TabControl sourceTabs;
+		private System.Windows.Forms.TabPage createObjectTabPage;
+		private System.Windows.Forms.TabPage assetTabPage;
 		private System.Windows.Forms.Button okButton;
 		private System.Windows.Forms.Button cancelButton;
-		private System.Windows.Forms.ComboBox locationManagerCombo;
+		private System.Windows.Forms.ComboBox locationManagerComboBox;
 		private System.Windows.Forms.Panel locationManagerControlPanel;
 	}
 }

@@ -102,5 +102,14 @@ namespace Poc0.LevelEditor.Properties {
                 return ResourceManager.GetString("FailedToSaveScene", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No asset location managers with UI were available.
+        /// </summary>
+        internal static string NoLocationManagersWithUI {
+            get {
+                return ResourceManager.GetString("NoLocationManagersWithUI", resourceCulture);
+            }
+        }
     }
 }

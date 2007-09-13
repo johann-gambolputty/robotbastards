@@ -174,7 +174,7 @@ namespace Rb.NiceControls
 				return;
 			}
 
-			Image img = ( args.Index == SelectedIndex ) ? ( item.SelectedImage ?? item.Image ) : item.Image;
+			Image img = editItem ? ( item.SelectedImage ?? item.Image ) : item.Image;
 
 			if ( !editItem )
 			{
@@ -192,7 +192,7 @@ namespace Rb.NiceControls
 			{
 				font = new Font( font.FontFamily, font.Size, font.Style | item.Style, font.Unit, font.GdiCharSet, font.GdiVerticalFont );
 			}
-			args.Graphics.DrawString( item.Text + args.State + SelectedIndex, font, new SolidBrush( args.ForeColor ), x, y );
+			args.Graphics.DrawString( item.Text, font, new SolidBrush( args.ForeColor ), x, y );
 
 			base.OnDrawItem( args );
 		}

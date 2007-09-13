@@ -1,4 +1,5 @@
 using System.Drawing.Design;
+using System.Windows.Forms;
 
 namespace Poc0.LevelEditor.Core
 {
@@ -11,7 +12,14 @@ namespace Poc0.LevelEditor.Core
 
 		public override object EditValue( System.ComponentModel.ITypeDescriptorContext context, System.IServiceProvider provider, object value )
 		{
-			return base.EditValue( context, provider, value );
+			ObjectUITypeEditorForm form = new ObjectUITypeEditorForm( );
+
+			if ( form.ShowDialog( ) == DialogResult.Cancel )
+			{
+				return value;
+			}
+
+			return form.NewObject;
 		}
 	}
 }

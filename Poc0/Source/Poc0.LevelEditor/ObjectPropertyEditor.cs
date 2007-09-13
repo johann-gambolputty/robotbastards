@@ -126,6 +126,8 @@ namespace Poc0.LevelEditor
 			{
 				m_Object = obj;
 				m_Property = property;
+
+				EditorTypeName = typeof( ObjectUITypeEditor ).FullName;
 			}
 
 			public object Value

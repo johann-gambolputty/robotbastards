@@ -36,6 +36,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileIconReader.cs" />
     <Compile Include="FileLocationTree.cs" />
     <Compile Include="LocationProperty.cs" />
     <Compile Include="LocationTreeBrowser.cs">
@@ -94,6 +95,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\GoRtl.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\XPfolder_Open.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\XPfolder_closed.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
