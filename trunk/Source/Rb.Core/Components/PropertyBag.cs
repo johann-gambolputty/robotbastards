@@ -122,7 +122,7 @@ namespace Rb.Core.Components
 			this.category = category;
 			this.description = description;
 			this.defaultValue = defaultValue;
-			this.attributes = null;
+			attributes = null;
 		}
 
 		/// <summary>
@@ -382,7 +382,7 @@ namespace Rb.Core.Components
 	/// </summary>
 	public class PropertySpecEventArgs : EventArgs
 	{
-		private PropertySpec property;
+		private readonly PropertySpec property;
 		private object val;
 
 		/// <summary>
@@ -436,7 +436,7 @@ namespace Rb.Core.Components
 		[Serializable]
 		public class PropertySpecCollection : IList
 		{
-			private ArrayList innerArray;
+			private readonly ArrayList innerArray;
 			
 			/// <summary>
 			/// Initializes a new instance of the PropertySpecCollection class.
@@ -711,11 +711,11 @@ namespace Rb.Core.Components
 			{
 				get
 				{
-					return ((PropertySpecCollection)this)[index];
+					return this[index];
 				}
 				set
 				{
-					((PropertySpecCollection)this)[index] = (PropertySpec)value;
+					this[index] = (PropertySpec)value;
 				}
 			}
 
@@ -748,8 +748,8 @@ namespace Rb.Core.Components
 		#region PropertySpecDescriptor class definition
 		private class PropertySpecDescriptor : PropertyDescriptor
 		{
-			private PropertyBag bag;
-			private PropertySpec item;
+			private readonly PropertyBag bag;
+			private readonly PropertySpec item;
 
 			public PropertySpecDescriptor(PropertySpec item, PropertyBag bag, string name, Attribute[] attrs) :
 				base(name, attrs)
@@ -778,7 +778,7 @@ namespace Rb.Core.Components
 				if(item.DefaultValue == null)
 					return false;
 				else
-					return !this.GetValue(component).Equals(item.DefaultValue);
+					return !GetValue(component).Equals(item.DefaultValue);
 			}
 
 			public override object GetValue(object component)
@@ -807,7 +807,7 @@ namespace Rb.Core.Components
 
 			public override bool ShouldSerializeValue(object component)
 			{
-				object val = this.GetValue(component);
+				object val = GetValue(component);
 
 				if(item.DefaultValue == null && val == null)
 					return false;
@@ -818,7 +818,7 @@ namespace Rb.Core.Components
 		#endregion
 
 		private string defaultProperty;
-		private PropertySpecCollection properties;
+		private readonly PropertySpecCollection properties;
 
 		/// <summary>
 		/// Initializes a new instance of the PropertyBag class.
@@ -1008,7 +1008,7 @@ namespace Rb.Core.Components
 	/// </summary>
 	public class PropertyTable : PropertyBag
 	{
-		private Hashtable propValues;
+		private readonly Hashtable propValues;
 
 		/// <summary>
 		/// Initializes a new instance of the PropertyTable class.

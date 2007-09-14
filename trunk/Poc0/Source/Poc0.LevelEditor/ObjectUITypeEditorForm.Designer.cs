@@ -57,7 +57,7 @@ namespace Poc0.LevelEditor
 			this.createObjectTabPage.Location = new System.Drawing.Point(4, 22);
 			this.createObjectTabPage.Name = "createObjectTabPage";
 			this.createObjectTabPage.Padding = new System.Windows.Forms.Padding(3);
-			this.createObjectTabPage.Size = new System.Drawing.Size(260, 187);
+			this.createObjectTabPage.Size = new System.Drawing.Size(357, 266);
 			this.createObjectTabPage.TabIndex = 0;
 			this.createObjectTabPage.Text = "Create";
 			this.createObjectTabPage.UseVisualStyleBackColor = true;
@@ -106,6 +106,7 @@ namespace Poc0.LevelEditor
 			this.okButton.TabIndex = 1;
 			this.okButton.Text = "OK";
 			this.okButton.UseVisualStyleBackColor = true;
+			this.okButton.Click += new System.EventHandler(this.okButton_Click);
 			// 
 			// cancelButton
 			// 

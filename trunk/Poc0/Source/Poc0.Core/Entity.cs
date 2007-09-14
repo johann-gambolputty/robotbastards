@@ -1,7 +1,9 @@
 using System;
+using System.ComponentModel;
 using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Rendering;
+using Component=Rb.Core.Components.Component;
 
 namespace Poc0.Core
 {
@@ -11,13 +13,14 @@ namespace Poc0.Core
 	[Serializable]
 	public class Entity : Component, IHasWorldFrame, INamed
 	{
+		/// <summary>
+		/// Entity graphics
+		/// </summary>
 		public IRenderable Graphics
 		{
 			get { return m_Graphics;  }
 			set { m_Graphics = value; }
 		}
-
-		private IRenderable m_Graphics;
 
 		#region IHasWorldFrame Members
 
@@ -46,6 +49,7 @@ namespace Poc0.Core
 
 		#region Private members
 
+		private IRenderable m_Graphics;
 		private readonly Matrix44 m_Frame = new Matrix44( );
 		private string m_Name = "Bob";
 

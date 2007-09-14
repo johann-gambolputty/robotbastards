@@ -5,6 +5,13 @@ namespace Rb.Core.Assets
 	public class AssetHandle
 	{
 		/// <summary>
+		/// No source - set <see cref="AssetHandle.Source"/> prior to accessing <see cref="AssetHandle.Asset"/>
+		/// </summary>
+		public AssetHandle( )
+		{
+		}
+
+		/// <summary>
 		/// Sets the source of the asset. Does not load the asset until <see cref="Asset"/> is first accessed
 		/// </summary>
 		/// <param name="source">Asset source</param>
@@ -34,6 +41,7 @@ namespace Rb.Core.Assets
 		public ISource Source
 		{
 			get { return m_Source; }
+			set { m_Source = value; }
 		}
 
 		/// <summary>
@@ -59,7 +67,7 @@ namespace Rb.Core.Assets
 
 		#region Private stuff
 
-		private readonly ISource m_Source;
+		private ISource m_Source;
 
 		[NonSerialized]
 		private object m_Asset;

@@ -68,6 +68,15 @@ namespace Poc0.LevelEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can&apos;t load asset into type &quot;{0}&quot;.
+        /// </summary>
+        internal static string CantLoadAssetIntoType {
+            get {
+                return ResourceManager.GetString("CantLoadAssetIntoType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         internal static string ErrorCaption {
