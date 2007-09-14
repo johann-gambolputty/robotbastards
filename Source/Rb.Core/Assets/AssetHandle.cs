@@ -2,12 +2,7 @@ using System;
 
 namespace Rb.Core.Assets
 {
-	/// <summary>
-	/// Handle to an asset
-	/// </summary>
-	/// <typeparam name="T">Asset type</typeparam>
-	[Serializable]
-	public class AssetHandle< T > where T : class
+	public class AssetHandle
 	{
 		/// <summary>
 		/// Sets the source of the asset. Does not load the asset until <see cref="Asset"/> is first accessed
@@ -48,7 +43,7 @@ namespace Rb.Core.Assets
 		/// If the asset is not yet loaded, the first time this property is accessed, the handle will attempt
 		/// to load it.
 		/// </remarks>
-		public T Asset
+		public object Asset
 		{
 			get
 			{
@@ -67,7 +62,7 @@ namespace Rb.Core.Assets
 		private readonly ISource m_Source;
 
 		[NonSerialized]
-		private T m_Asset;
+		private object m_Asset;
 
 		[NonSerialized]
 		private bool m_LoadFailed;
@@ -76,7 +71,7 @@ namespace Rb.Core.Assets
 		{
 			try
 			{
-				m_Asset = ( T )AssetManager.Instance.Load( m_Source );
+				m_Asset = AssetManager.Instance.Load( m_Source );
 				m_LoadFailed = false;
 			}
 			catch ( Exception ex )
@@ -88,4 +83,5 @@ namespace Rb.Core.Assets
 
 		#endregion
 	}
+
 }

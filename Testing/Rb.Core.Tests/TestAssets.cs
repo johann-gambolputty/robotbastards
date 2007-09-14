@@ -16,6 +16,48 @@ namespace Rb.Core.Tests
 			m_LocationManagers.Add( new FileLocationManager( ) );
 		}
 
+		public interface ITest
+		{
+			string Name
+			{
+				set;
+				get;
+			}
+
+			int Call( int input );
+		}
+
+		public class TestImpl : ITest
+		{
+			#region ITest Members
+
+			public string Name
+			{
+				set { m_Name = value; }
+				get { return m_Name; }
+			}
+
+			public int Call( int input )
+			{
+				return input * 10;
+			}
+
+			#endregion
+
+			private string m_Name = "pie";
+		}
+
+		[Test]
+		public void TestAssetProxy( )
+		{
+			ITest proxy = ( ITest )AssetProxy.CreateProxy( typeof( ITest ), new TestImpl( ) );
+
+			proxy.Name = "PIE";
+
+			Assert.AreEqual( proxy.Call( 5 ), 50 );
+			Assert.AreEqual( proxy.Name, "PIE" );
+		}
+
 		/// <summary>
 		/// Tests the <see cref="AssetCache"/>
 		/// </summary>
@@ -34,7 +76,7 @@ namespace Rb.Core.Tests
 
 			//	Collect garbage (will clean up asset)
 			asset = null;
-			System.GC.Collect( );
+			GC.Collect( );
 
 			//	Make sure that the asset is no longer in the cache
 			Assert.AreEqual( cache.Find( key ), asset );
