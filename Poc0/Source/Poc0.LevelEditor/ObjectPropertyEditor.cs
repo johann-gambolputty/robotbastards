@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing.Design;
 using System.Reflection;
 using System.Windows.Forms;
@@ -70,8 +72,12 @@ namespace Poc0.LevelEditor
 				return;
 			}
 
-			PropertyBag[] bags = new PropertyBag[ selectedObjects.Length ];
+			//object obj = ( ( ObjectEditState )selectedObjects[ 0 ] ).Instance;
 
+			//objectPropertyGrid.SelectedObject = Rb.Core.Components.Parent.GetType< Poc0.Core.Entity >( obj );
+			//return;
+
+			PropertyBag[] bags = new PropertyBag[ selectedObjects.Length ];
 			for ( int index = 0; index < selectedObjects.Length; ++index )
 			{
 				bags[ index ] = CreatePropertyBag( selectedObjects[ index ] );
@@ -127,7 +133,20 @@ namespace Poc0.LevelEditor
 				m_Object = obj;
 				m_Property = property;
 
-				EditorTypeName = typeof( ObjectUITypeEditor ).FullName;
+				//EditorTypeName = typeof( ObjectUITypeEditor ).FullName;
+
+				//DefaultValue = new object( );
+
+				List< Attribute > attributes = new List< Attribute >( );
+
+				object[] srcAttributes = property.GetCustomAttributes( typeof( ReadOnlyAttribute ), false );
+				if ( srcAttributes.Length > 0 )
+				{
+					attributes.Add( ( Attribute )srcAttributes[ 0 ] );
+				}
+				attributes.Add( new EditorAttribute( typeof( ObjectUITypeEditor ), typeof( UITypeEditor ) ) );
+
+				Attributes = attributes.ToArray( );
 			}
 
 			public object Value

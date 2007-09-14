@@ -8,11 +8,18 @@ namespace Rb.Rendering
 	/// </summary>
 	/// <typeparam name="T">IRenderable asset type</typeparam>
 	[Serializable]
-	class RenderableAssetHandle< T > : AssetHandle< T >, IRenderable
+	public class RenderableAssetHandle< T > : AssetHandleT< T >, IRenderable
 		where T : class, IRenderable
 	{
 		/// <summary>
-		/// Sets the source of the asset. Does not load the asset until <see cref="AssetHandle{T}.Asset"/> is first accessed
+		/// No source - set <see cref="AssetHandle.Source"/> prior to accessing <see cref="AssetHandle.Asset"/>
+		/// </summary>
+		public RenderableAssetHandle( )
+		{
+		}
+
+		/// <summary>
+		/// Sets the source of the asset. Does not load the asset until <see cref="AssetHandleT{T}.Asset"/> is first accessed
 		/// </summary>
 		/// <param name="source">Asset source</param>
 		public RenderableAssetHandle( ISource source ) :
@@ -25,7 +32,7 @@ namespace Rb.Rendering
 		/// </summary>
 		/// <param name="source">Asset source</param>
 		/// <param name="loadImmediately">If true, the asset is loaded in this constructor. Otherwise, the
-		/// asset is loaded on-demand when <see cref="AssetHandle{T}.Asset"/> is first accessed</param>
+		/// asset is loaded on-demand when <see cref="AssetHandleT{T}.Asset"/> is first accessed</param>
 		public RenderableAssetHandle( ISource source, bool loadImmediately ) :
 			base( source, loadImmediately )
 		{

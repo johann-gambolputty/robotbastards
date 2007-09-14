@@ -11,6 +11,13 @@ namespace Rb.Core.Assets
 		where T : class
 	{
 		/// <summary>
+		/// No source - set <see cref="AssetHandle.Source"/> prior to accessing <see cref="AssetHandle.Asset"/>
+		/// </summary>
+		public AssetHandleT( )
+		{
+		}
+
+		/// <summary>
 		/// Sets the source of the asset. Does not load the asset until <see cref="Asset"/> is first accessed
 		/// </summary>
 		/// <param name="source">Asset source</param>

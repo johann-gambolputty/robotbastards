@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Rb.Rendering
 {
     /// <summary>
     /// An object that can be rendered
-    /// </summary>
+	/// </summary>
     public interface IRenderable
     {
         /// <summary>

@@ -1,7 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 using Rb.Core.Components;
 
 namespace Poc0.LevelEditor.Core
@@ -46,12 +44,20 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Event, invoked when an object is selected
 		/// </summary>
-		public event ObjectSelectedDelegate ObjectSelected;
+		public event ObjectSelectedDelegate ObjectSelected
+		{
+			add { m_ObjectSelected += value; }
+			remove { m_ObjectSelected -= value; }
+		}
 
 		/// <summary>
 		/// Event, invoked when an object is deselected
 		/// </summary>
-		public event ObjectDeselectedDelegate ObjectDeselected;
+		public event ObjectDeselectedDelegate ObjectDeselected
+		{
+			add { m_ObjectDeselected += value; }
+			remove { m_ObjectDeselected -= value; }
+		}
 
 		#endregion
 
@@ -95,6 +101,12 @@ namespace Poc0.LevelEditor.Core
 			}
 		}
 
+		/// <summary>
+		/// Applies selection operation to an array of objects
+		/// </summary>
+		/// <param name="objects">Objects to (de)select</param>
+		/// <param name="addToSelection">If true, then objects are added without clearing the
+		///  existing selection</param>
 		public void ApplySelect( object[] objects, bool addToSelection )
 		{
 			if ( !addToSelection )
@@ -130,9 +142,9 @@ namespace Poc0.LevelEditor.Core
 			{
 				m_Selection.Add( obj );
 				SetSelectedFlag( obj, true );
-				if ( ObjectSelected != null )
+				if ( m_ObjectSelected != null )
 				{
-					ObjectSelected( obj );
+					m_ObjectSelected( obj );
 				}
 			}
 		}
@@ -144,9 +156,9 @@ namespace Poc0.LevelEditor.Core
 		{
 			SetSelectedFlag( obj, false );
 			m_Selection.Remove( obj );
-			if ( ObjectDeselected != null )
+			if ( m_ObjectDeselected != null )
 			{
-				ObjectDeselected( obj );
+				m_ObjectDeselected( obj );
 			}
 		}
 
@@ -161,9 +173,9 @@ namespace Poc0.LevelEditor.Core
 				SetSelectedFlag( obj, false );
 				m_Selection.RemoveAt( 0 );
 
-				if ( ObjectDeselected != null )
+				if ( m_ObjectDeselected != null )
 				{
-					ObjectDeselected( obj );
+					m_ObjectDeselected( obj );
 				}
 			}
 		}
@@ -191,6 +203,12 @@ namespace Poc0.LevelEditor.Core
 		#endregion
 
 		#region Private stuff
+
+		[NonSerialized]
+		private ObjectSelectedDelegate m_ObjectSelected;
+
+		[NonSerialized]
+		private ObjectDeselectedDelegate m_ObjectDeselected;
 
 		private readonly ArrayList m_Selection = new ArrayList( );
 

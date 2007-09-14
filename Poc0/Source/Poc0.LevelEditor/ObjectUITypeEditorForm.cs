@@ -7,9 +7,16 @@ namespace Poc0.LevelEditor
 {
 	public partial class ObjectUITypeEditorForm : Form
 	{
-		public ObjectUITypeEditorForm()
+		public ObjectUITypeEditorForm( Type objectType )
 		{
 			InitializeComponent();
+
+			//	Initialize asset loader tab
+			if ( !CanLoadAsset( objectType ) )
+			{
+				NoAssetLoadingAllowed( string.Format( Properties.Resources.CantLoadAssetIntoType, objectType ) );
+				return;
+			}
 
 			foreach ( ILocationManager locationManager in LocationManagers.Instance )
 			{
@@ -21,8 +28,7 @@ namespace Poc0.LevelEditor
 
 			if ( locationManagerComboBox.Items.Count == 0 )
 			{
-				sourceTabs.TabPages.Remove( assetTabPage );
-				MessageBox.Show( Properties.Resources.NoLocationManagersWithUI, "bad thing", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				NoAssetLoadingAllowed( Properties.Resources.NoLocationManagersWithUI );
 			}
 			else
 			{
@@ -33,6 +39,22 @@ namespace Poc0.LevelEditor
 		public object NewObject
 		{
 			get { return m_NewObject; }
+		}
+
+		private void NoAssetLoadingAllowed( string reason )
+		{
+			Label reasonLabel = new Label( );
+			reasonLabel.Text = reason;
+			reasonLabel.AutoSize = true;
+
+			locationManagerControlPanel.Controls.Add( reasonLabel );
+
+			locationManagerComboBox.Enabled = false;
+		}
+
+		private static bool CanLoadAsset( Type objectType )
+		{
+			return objectType.IsInterface;
 		}
 
 		private object m_NewObject;
@@ -53,6 +75,18 @@ namespace Poc0.LevelEditor
 		void ui_SelectionChosen( object sender, EventArgs e )
 		{
 			m_NewObject = AssetManager.Instance.Load( m_AssetBrowserUi.Sources[ 0 ] );
+			DialogResult = DialogResult.OK;
+			Close( );
+		}
+
+		private void okButton_Click( object sender, EventArgs e )
+		{
+			if ( m_AssetBrowserUi.Sources.Length > 0 )
+			{
+				m_NewObject = AssetManager.Instance.Load( m_AssetBrowserUi.Sources[ 0 ] );
+				DialogResult = DialogResult.OK;
+				Close( );
+			}
 		}
 	}
 }

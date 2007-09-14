@@ -121,6 +121,9 @@
   <data name="AppIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AppIcon.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="CantLoadAssetIntoType" xml:space="preserve">
+    <value>Can't load asset into type "{0}"</value>
+  </data>
   <data name="ErrorCaption" xml:space="preserve">
     <value>Error</value>
   </data>
