@@ -136,7 +136,7 @@ namespace Rb.Muesli.Tests
         }
 
 		[Test]
-		public void TestDictionaryIo()
+		public void TestDictionaryIo( )
 		{
 			MemoryStream stream = new MemoryStream( );
 			BinaryOutput output = new BinaryOutput( stream );
