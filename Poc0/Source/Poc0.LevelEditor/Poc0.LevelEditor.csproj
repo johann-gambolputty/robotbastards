@@ -73,6 +73,12 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewObjectControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NewObjectControl.Designer.cs">
+      <DependentUpon>NewObjectControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="ObjectPropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -99,6 +105,10 @@
     <EmbeddedResource Include="MainForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewObjectControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>NewObjectControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ObjectPropertyEditor.resx">
       <SubType>Designer</SubType>

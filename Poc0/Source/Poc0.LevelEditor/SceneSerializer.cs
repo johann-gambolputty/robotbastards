@@ -106,7 +106,7 @@ namespace Poc0.LevelEditor
 		/// </summary>
 		/// <param name="path">Path to the scene file</param>
 		/// <returns>Returns the deserialized scene, or null if the open failed</returns>
-		public EditorScene Open(string path)
+		public EditorScene Open( string path )
 		{
 			EditorScene scene;
 			try
