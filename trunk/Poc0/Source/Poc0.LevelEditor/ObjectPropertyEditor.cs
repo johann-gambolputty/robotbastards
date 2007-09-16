@@ -115,6 +115,19 @@ namespace Poc0.LevelEditor
 			return bag;
 		}
 
+		public class NullConverter : TypeConverter
+		{
+			public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType )
+			{
+				return false;
+			}
+
+			public override bool CanConvertTo( ITypeDescriptorContext context, Type destinationType )
+			{
+				return false;
+			}
+		}
+
 		private class ExPropertySpec : PropertySpec
 		{
 			public static void SetValue( object sender, PropertySpecEventArgs args )
@@ -139,12 +152,26 @@ namespace Poc0.LevelEditor
 
 				List< Attribute > attributes = new List< Attribute >( );
 
+				if ( TypeDescriptor.GetConverter( property.PropertyType ) is ReferenceConverter )
+				{
+					ConverterTypeName = typeof( NullConverter ).FullName;
+				}
+
 				object[] srcAttributes = property.GetCustomAttributes( typeof( ReadOnlyAttribute ), false );
 				if ( srcAttributes.Length > 0 )
 				{
 					attributes.Add( ( Attribute )srcAttributes[ 0 ] );
 				}
-				attributes.Add( new EditorAttribute( typeof( ObjectUITypeEditor ), typeof( UITypeEditor ) ) );
+				srcAttributes = property.GetCustomAttributes( typeof( BrowsableAttribute ), false );
+				if ( srcAttributes.Length > 0 )
+				{
+					attributes.Add( ( Attribute )srcAttributes[ 0 ] );
+				}
+
+				if ( ObjectUITypeEditor.HandlesType( property.PropertyType ) )
+				{
+					attributes.Add( new EditorAttribute( typeof( ObjectUITypeEditor ), typeof( UITypeEditor ) ) );
+				}
 
 				Attributes = attributes.ToArray( );
 			}

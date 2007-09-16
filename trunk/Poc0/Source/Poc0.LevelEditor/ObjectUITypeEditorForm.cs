@@ -9,7 +9,10 @@ namespace Poc0.LevelEditor
 	{
 		public ObjectUITypeEditorForm( Type objectType )
 		{
-			InitializeComponent();
+			InitializeComponent( );
+
+			newObjectControl.BaseType = objectType;
+			newObjectControl.SelectionMade += newObjectControl_SelectionMade;
 
 			//	Initialize asset loader tab
 			if ( !CanLoadAsset( objectType ) )
@@ -36,8 +39,19 @@ namespace Poc0.LevelEditor
 			}
 		}
 
+		void newObjectControl_SelectionMade( Type type )
+		{
+			NewObject = Activator.CreateInstance( type );
+		}
+
 		public object NewObject
 		{
+			set
+			{
+				m_NewObject = value;
+				Close( );
+				DialogResult = DialogResult.OK;
+			}
 			get { return m_NewObject; }
 		}
 
@@ -74,18 +88,24 @@ namespace Poc0.LevelEditor
 
 		void ui_SelectionChosen( object sender, EventArgs e )
 		{
-			m_NewObject = AssetManager.Instance.Load( m_AssetBrowserUi.Sources[ 0 ] );
-			DialogResult = DialogResult.OK;
-			Close( );
+			NewObject = AssetManager.Instance.Load( m_AssetBrowserUi.Sources[ 0 ] );
 		}
 
 		private void okButton_Click( object sender, EventArgs e )
 		{
-			if ( m_AssetBrowserUi.Sources.Length > 0 )
+			if ( createObjectTabPage.Visible )
 			{
-				m_NewObject = AssetManager.Instance.Load( m_AssetBrowserUi.Sources[ 0 ] );
-				DialogResult = DialogResult.OK;
-				Close( );
+				if ( newObjectControl.NewObjectType != null )
+				{
+					NewObject = Activator.CreateInstance( newObjectControl.NewObjectType );
+				}
+			}
+			else
+			{
+				if ( m_AssetBrowserUi.Sources.Length > 0 )
+				{
+					NewObject = AssetManager.Instance.Load( m_AssetBrowserUi.Sources[ 0 ] );
+				}
 			}
 		}
 	}

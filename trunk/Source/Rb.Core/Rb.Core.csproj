@@ -59,6 +59,7 @@
     <Compile Include="Assets\AssetManager.cs" />
     <Compile Include="Assets\AssetNotFoundException.cs" />
     <Compile Include="Assets\AssetProxy.cs" />
+    <Compile Include="Assets\AssetSerializationSurrogate.cs" />
     <Compile Include="Assets\LocationManagers.cs" />
     <Compile Include="Assets\AsyncAssetLoader.cs" />
     <Compile Include="Assets\AsyncLoadResult.cs" />
