@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.Serialization;
 
@@ -39,7 +40,8 @@ namespace Rb.Core.Assets
 		public Location( LocationManagers locationManagers, string path )
 		{
 			m_Provider	= DetermineLocationManager( locationManagers, path );
-			m_Path		= ( m_Provider == null ) ? path : m_Provider.GetFullPath( path );
+			m_FullPath	= ( m_Provider == null ) ? path : m_Provider.GetFullPath( path );
+			m_Path		= path;
 			m_Key		= GetLocationKey( m_Path );
 		}
 
@@ -54,7 +56,8 @@ namespace Rb.Core.Assets
 			string newPath = folder + path;
 
 			m_Provider	= DetermineLocationManager( locationManagers, newPath );
-			m_Path		= ( m_Provider == null ) ? newPath : m_Provider.GetFullPath( newPath );
+			m_FullPath	= ( m_Provider == null ) ? path : m_Provider.GetFullPath( path );
+			m_Path		= path;
 			m_Key		= GetLocationKey( m_Path );
 		}
 
@@ -66,6 +69,7 @@ namespace Rb.Core.Assets
 		public Location( ILocationManager locationManager, string path )
 		{
 			m_Provider = locationManager;
+			m_FullPath = locationManager.GetFullPath( path );
 			m_Path = path;
 			m_Key = GetLocationKey( m_Path );
 		}
@@ -82,6 +86,7 @@ namespace Rb.Core.Assets
 		public void OnDeserialized( StreamingContext context )
 		{
 			m_Provider = DetermineLocationManager( m_Path );
+			m_FullPath = m_Provider == null ? m_Path : m_Provider.GetFullPath( m_Path );
 		}
 
 		#endregion
@@ -91,7 +96,8 @@ namespace Rb.Core.Assets
 		/// <summary>
 		/// Returns true if the source is valid
 		/// </summary>
-		public bool IsValid
+		[Browsable(false)]
+		public bool Exists
 		{
 			get { return m_Provider != null; }
 		}
@@ -209,12 +215,31 @@ namespace Rb.Core.Assets
 			get { return m_Provider; }
 		}
 
+		/// <summary>
+		/// Gets the location path
+		/// </summary>
+		public string Path
+		{
+			get { return m_Path; }
+		}
+
+		/// <summary>
+		/// Gets the full location path
+		/// </summary>
+		public string FullPath
+		{
+			get { return m_FullPath; }
+		}
+
 		#endregion
 
 		#region Private stuff
 
 		private readonly string m_Path;
 		private readonly int m_Key;
+
+		[NonSerialized]
+		private string m_FullPath;
 
 		[NonSerialized]
 		private ILocationManager m_Provider;

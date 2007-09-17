@@ -21,6 +21,14 @@ namespace Rb.Core.Assets
 		#region Loaders
 
 		/// <summary>
+		/// Gets the currently available loaders
+		/// </summary>
+		public IEnumerable< IAssetLoader > Loaders
+		{
+			get { return m_Loaders; }
+		}
+
+		/// <summary>
 		/// Adds an asset loader
 		/// </summary>
 		/// <param name="loader">Loader to add</param>
@@ -100,7 +108,7 @@ namespace Rb.Core.Assets
 		/// <returns>Returns the loaded asset</returns>
 		public object Load( ISource source, LoadParameters parameters )
 		{
-			if ( !source.IsValid )
+			if ( !source.Exists )
 			{
 				throw new ArgumentException( string.Format( "Invalid asset source {0}", source ) );
 			}

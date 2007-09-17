@@ -28,7 +28,23 @@ namespace Rb.ComponentXmlLoader
     /// 
     /// </remarks>
     public class Loader : AssetLoader
-    {
+	{
+		/// <summary>
+		/// Gets the asset name
+		/// </summary>
+		public override string Name
+		{
+			get { return "Component XML"; }
+		}
+
+		/// <summary>
+		/// Gets the asset extension
+		/// </summary>
+		public override string Extension
+		{
+			get { return "components.xml"; }
+		}
+
 		#region	Stream loading
 
 		/// <summary>
@@ -112,14 +128,6 @@ namespace Rb.ComponentXmlLoader
 			{
 				return Load( stream, source.ToString( ), parameters );
 			}
-		}
-
-		/// <summary>
-		/// Returns true if this loader can load the specified stream
-		/// </summary>
-		public override bool CanLoad( ISource source )
-		{
-		    return source.ToString( ).EndsWith( ".components.xml", StringComparison.CurrentCultureIgnoreCase );
 		}
 
         /// <summary>

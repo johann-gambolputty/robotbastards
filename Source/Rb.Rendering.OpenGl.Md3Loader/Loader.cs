@@ -2,10 +2,10 @@ using System;
 using System.IO;
 using System.Collections;
 using Rb.Core;
+using Rb.Core.Assets;
 using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Rendering;
-using Rb.Core.Resources;
 using Rb.Rendering.OpenGl;
 using Tao.OpenGl;
 
@@ -14,16 +14,32 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 	/// <summary>
 	/// Loads Quake3 MD3 files, generating OpenGL meshes
 	/// </summary>
-	public class Loader : ResourceDirectoryLoader
+	public class Loader : AssetLoader
 	{
-		#region	ResourceDirectoryLoader Members
+		#region	AssetLoader Members
+
+		/// <summary>
+		/// Gets the asset name
+		/// </summary>
+		public override string Name
+		{
+			get { return "MD3"; }
+		}
+
+		/// <summary>
+		/// Gets the asset extension
+		/// </summary>
+		public override string Extension
+		{
+			get { return "md3"; }
+		}
 
 		/// <summary>
 		/// Loads... stuff
 		/// </summary>
-		public override object Load( ResourceProvider provider, string directory, out bool canCache, LoadParameters parameters )
+		public override object Load( ISource source, LoadParameters parameters )
 		{
-			canCache = true;
+			parameters.CanCache = true;
 
 			Vector3 scale = new Vector3
 				(
@@ -36,7 +52,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			Model model = new Model( );
 
 			//	Load animations
-			model.Animations = LoadAnimations( provider, AnimationFile( directory ) );
+			model.Animations = LoadAnimations( AnimationFile( source ) );
 
 			//	Run through all the parts
 			for ( int partIndex = 0; partIndex < ( int )ModelPart.NumParts; ++partIndex )
@@ -44,10 +60,10 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				ModelPart curPart = ( ModelPart )partIndex;
 
 				//	Load the skin file for the current part
-				Hashtable surfaceTextureTable = LoadSkin( provider, directory, DefaultSkinFile( directory, curPart ) );
+				Hashtable surfaceTextureTable = LoadSkin( source, DefaultSkinFile( source, curPart ) );
 
 				//	Load the MD3 associated with the current part
-				Mesh partMesh = LoadMd3( provider, curPart, scale, MeshFile( directory, curPart ), surfaceTextureTable );
+				Mesh partMesh = LoadMd3( curPart, scale, MeshFile( source, curPart ), surfaceTextureTable );
 				model.SetPartMesh( curPart, partMesh );
 
 				//	Nest the current mesh in the previous mesh
@@ -66,35 +82,11 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		}
 
 		/// <summary>
-		/// Loads the MD3 resources in the specified directory
+		/// Returns true if the specified source can be loaded
 		/// </summary>
-		public override object Load( ResourceProvider provider, string directory, out bool canCache )
+		public override bool CanLoad( ISource source )
 		{
-			return Load( provider, directory, out canCache, new LoadParameters( ) );
-		}
-
-		/// <summary>
-		/// Checks that the specified directory contains all the md3, skin and cfg files required to build the model
-		/// </summary>
-        public override bool CanLoadDirectory( ResourceProvider provider, string directory)
-		{
-			//	Does the head mesh exist in the directory?
-			if ( !provider.StreamExists( MeshFile( directory, ModelPart.Head ) ) )
-			{
-				return false;
-			}
-
-			//	Yep - check all the other parts exist
-			for ( int partIndex = 0; partIndex < ( int )ModelPart.NumParts; ++partIndex )
-			{
-				if ( !CheckFileExists( provider, directory, MeshFile( directory, ( ModelPart )partIndex ) ) ||
-					 !CheckFileExists( provider, directory, DefaultSkinFile( directory, ( ModelPart )partIndex ) ) )
-				{
-					return false;
-				}
-			}
-
-			return CheckFileExists( provider, directory, AnimationFile( directory ) );
+			return MeshFile( source, ModelPart.Head ).Exists;
 		}
 
 		#endregion
@@ -104,26 +96,26 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Builds the name of the animation file
 		/// </summary>
-		private string AnimationFile( string directory )
+		private static ISource AnimationFile( ISource source )
 		{
-			return Path.Combine( directory, "animation.cfg" );
+			return source.GetSource( "animation.cfg" );
 		}
 
 
 		/// <summary>
 		/// Returns the mesh filename for a part
 		/// </summary>
-		private static string MeshFile( string directory, ModelPart part )
+		private static ISource MeshFile( ISource source, ModelPart part )
 		{
-			return Path.Combine( directory, part + ".md3" );
+			return source.GetSource( part + ".md3" );
 		}
 
 		/// <summary>
 		/// Returns the default skin filename for a part
 		/// </summary>
-		private static string DefaultSkinFile( string directory, ModelPart part )
+		private static ISource DefaultSkinFile( ISource source, ModelPart part )
 		{
-			return Path.Combine( directory, part + "_default.skin" );
+			return source.GetSource( part + "_default.skin" );
 		}
 
 		/// <summary>
@@ -135,39 +127,23 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// Also, the textures are usually .tga files, which the texture loader can't currently cope with (TODO: ...) - change the extension to
 		/// .bmp in this case
 		/// </remarks>
-		private string TextureFile( ResourceProvider provider, string directory, string path )
+		private ISource TextureFile( ISource source, string path )
 		{
 			//	Remove the extension
-			string filename = Path.GetFileName( path );
-			string pathWithoutExt = Path.Combine( directory, filename.Remove( filename.LastIndexOf( '.' ) ) );
-
+			string name = Path.GetFileNameWithoutExtension( path );
 			foreach ( string ext in TextureExtensions )
 			{
-				if ( provider.StreamExists( pathWithoutExt + ext ) )
+				ISource textureSource = source.GetSource( name + ext );
+				if ( textureSource.Exists )
 				{
-					return pathWithoutExt + ext;
+					return textureSource;
 				}
 			}
 
-			throw new ApplicationException( string.Format( "Could not find texture file beginning with \"{0}\"", pathWithoutExt ) );
+			throw new ApplicationException( string.Format( "Could not find texture file beginning with \"{0}\"", name ) );
 		}
 
-		private static string[] TextureExtensions = new string[] { ".jpg", ".bmp" };
-
-		/// <summary>
-		/// Checks that a file exists
-		/// </summary>
-		private static bool CheckFileExists( ResourceProvider provider, string directory, string path )
-		{
-			if ( provider.StreamExists( path ) )
-			{
-				return true;
-			}
-
-            ResourcesLog.Warning( "\"{0}\" looked like an MD3 resource directory, but it was missing \"{1}\"", directory, path );
-
-			return false;
-		}
+		private static readonly string[] TextureExtensions = new string[] { ".jpg", ".bmp" };
 
 		#endregion
 
@@ -176,32 +152,35 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Loads a skin file
 		/// </summary>
-		private Hashtable LoadSkin( ResourceProvider provider, string directory, string inputSource )
+		private Hashtable LoadSkin( ISource source, ISource skinSource )
 		{
-			Stream		inputStream			= provider.Open( inputSource );
-			TextReader	reader				= new StreamReader( inputStream );
-
-			Hashtable	surfaceTextureMap	= new Hashtable( );
-
-			char[]		tokenSplit			= new char[ ] { ',' };
-
-			for ( string curLine = reader.ReadLine( ); curLine != null; curLine = reader.ReadLine( ) )
+			using ( Stream inputStream = skinSource.Open( ) )
 			{
-				string[] tokens = curLine.Split( tokenSplit );
+				TextReader	reader				= new StreamReader( inputStream );
+				Hashtable	surfaceTextureMap	= new Hashtable( );
 
-				if ( !tokens[ 0 ].StartsWith( "tag_" ) )
+				char[]		tokenSplit			= new char[ ] { ',' };
+
+				for ( string curLine = reader.ReadLine( ); curLine != null; curLine = reader.ReadLine( ) )
 				{
-					//	TODO: Texture loading should be done through the resource manager
-					Texture2d newTexture = RenderFactory.Instance.NewTexture2d( );
-					newTexture.Load( TextureFile( provider, directory, tokens[ 1 ] ) );
+					string[] tokens = curLine.Split( tokenSplit );
 
-					surfaceTextureMap[ tokens[ 0 ] ] = newTexture;
+					if ( !tokens[ 0 ].StartsWith( "tag_" ) )
+					{
+						//	TODO: AP: Texture loading should be done through the asset manager
+						Texture2d newTexture = RenderFactory.Instance.NewTexture2d( );
+
+						using ( Stream textureStream = TextureFile( source, tokens[ 1 ] ).Open( ) )
+						{
+							newTexture.Load( textureStream );
+						}
+
+						surfaceTextureMap[ tokens[ 0 ] ] = newTexture;
+					}
 				}
+
+				return surfaceTextureMap;
 			}
-
-			inputStream.Close( );
-
-			return surfaceTextureMap;
 		}
 
 		#endregion
@@ -211,61 +190,60 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Loads in model animations
 		/// </summary>
-		public AnimationSet LoadAnimations( ResourceProvider provider, string inputSource )
+		public AnimationSet LoadAnimations( ISource source )
 		{
-			Stream			inputStream	= provider.Open( inputSource );
-			TextReader		reader		= new StreamReader( inputStream );
-
-			char[]			tokenSplit	= new char[ ] { ' ', '\t' };
-			AnimationSet	animations	= new AnimationSet( );
-
-			//	Run through all the lines in the file
-			int animIndex = 0;
-			for ( string curLine = reader.ReadLine( ); curLine != null; curLine = reader.ReadLine( ) )
+			using ( Stream inputStream = source.Open( ) )
 			{
-				string[] tokens = curLine.Split( tokenSplit );
+				TextReader		reader		= new StreamReader( inputStream );
+				char[]			tokenSplit	= new char[ ] { ' ', '\t' };
+				AnimationSet	animations	= new AnimationSet( );
 
-				if ( ( tokens.Length == 0 ) || ( tokens[ 0 ] == string.Empty ) )
+				//	Run through all the lines in the file
+				int animIndex = 0;
+				for ( string curLine = reader.ReadLine( ); curLine != null; curLine = reader.ReadLine( ) )
 				{
-					//	Empty line - ignore it
-					continue;
-				}
-				if ( tokens[ 0 ] == "//" )
-				{
-					//	Line begins with comment - ignore it
-					continue;
-				}
-				if ( tokens[ 0 ] == "sex" || tokens[ 0 ] == "headoffset" || tokens[ 0 ] == "footsteps" )
-				{
-					//	Model gender/head offset/footsteps - ignore it
-					continue;
+					string[] tokens = curLine.Split( tokenSplit );
+
+					if ( ( tokens.Length == 0 ) || ( tokens[ 0 ] == string.Empty ) )
+					{
+						//	Empty line - ignore it
+						continue;
+					}
+					if ( tokens[ 0 ] == "//" )
+					{
+						//	Line begins with comment - ignore it
+						continue;
+					}
+					if ( tokens[ 0 ] == "sex" || tokens[ 0 ] == "headoffset" || tokens[ 0 ] == "footsteps" )
+					{
+						//	Model gender/head offset/footsteps - ignore it
+						continue;
+					}
+
+					//	Line must be an animation specification, which is 4 whitespace separated integers, A B C D
+					//	where A is the first frame of the anim, B is the number of frames, C is the number of looping frames, and D
+					//	is the number of frames per second
+					int firstFrame		= int.Parse( tokens[ 0 ] );
+					int numFrames		= int.Parse( tokens[ 1 ] );
+					int loopingFrames	= int.Parse( tokens[ 2 ] );
+					int framesPerSecond	= int.Parse( tokens[ 3 ] );
+
+					Animation curAnim = new Animation( ( AnimationType )animIndex, firstFrame, numFrames, loopingFrames, framesPerSecond );
+					
+					animations.Animations[ animIndex++ ] = curAnim;
 				}
 
-				//	Line must be an animation specification, which is 4 whitespace separated integers, A B C D
-				//	where A is the first frame of the anim, B is the number of frames, C is the number of looping frames, and D
-				//	is the number of frames per second
-				int firstFrame		= int.Parse( tokens[ 0 ] );
-				int numFrames		= int.Parse( tokens[ 1 ] );
-				int loopingFrames	= int.Parse( tokens[ 2 ] );
-				int framesPerSecond	= int.Parse( tokens[ 3 ] );
+				//	Correct leg animation frames
+				int firstLegFrame	= animations.Animations[ ( int )AnimationType.FirstLegAnim ].FirstFrame;
+				int firstTorsoFrame	= animations.Animations[ ( int )AnimationType.FirstTorsoAnim ].FirstFrame;
+				int legCorrection	= firstLegFrame - firstTorsoFrame;
+				for ( animIndex = ( int )AnimationType.FirstLegAnim; animIndex < ( int )AnimationType.NumAnimations; ++animIndex )
+				{
+					animations.Animations[ animIndex ].FirstFrame -= legCorrection;
+				}
 
-				Animation curAnim = new Animation( ( AnimationType )animIndex, firstFrame, numFrames, loopingFrames, framesPerSecond );
-				
-				animations.Animations[ animIndex++ ] = curAnim;
+				return animations;
 			}
-
-			//	Correct leg animation frames
-			int firstLegFrame	= animations.Animations[ ( int )AnimationType.FirstLegAnim ].FirstFrame;
-			int firstTorsoFrame	= animations.Animations[ ( int )AnimationType.FirstTorsoAnim ].FirstFrame;
-			int legCorrection	= firstLegFrame - firstTorsoFrame;
-			for ( animIndex = ( int )AnimationType.FirstLegAnim; animIndex < ( int )AnimationType.NumAnimations; ++animIndex )
-			{
-				animations.Animations[ animIndex ].FirstFrame -= legCorrection;
-			}
-
-			inputStream.Close( );
-
-			return animations;
 		}
 
 		#endregion
@@ -275,62 +253,59 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Loads an MD3 mesh resource from a stream
 		/// </summary>
-		private Mesh LoadMd3( ResourceProvider provider, ModelPart part, Vector3 scale, string inputSource, Hashtable surfaceTextureTable )
+		private Mesh LoadMd3( ModelPart part, Vector3 scale, ISource md3Source, Hashtable surfaceTextureTable )
 		{
-			Stream			inputStream	= provider.Open( inputSource );
-			BinaryReader	reader		= new BinaryReader( inputStream );
-
-			//	http://icculus.org/homepages/phaethon/q3a/formats/md3format.html
-
-			//	Get the input source directory (not using System.IO.Path.GetDirectory() because that strips of the final slash)
-			int		inputFilePos	= inputSource.LastIndexOfAny( new char[] { '/', '\\' } );
-			string	inputDir		= inputFilePos == -1 ? string.Empty : inputSource.Substring( 0, inputFilePos + 1 );
-
-			//	Make sure of the MD3 identity
-			byte[] ident		= reader.ReadBytes( 4 );
-			if ( ( ident[ 0 ] != 'I' ) || ( ident[ 1 ] != 'D' ) || ( ident[ 2 ] != 'P' ) || ( ident[ 3 ] != '3' ) )
+			using ( Stream inputStream = md3Source.Open( ) )
 			{
-				throw new ApplicationException( "Failed to load MD3 resource - stream did not start with 'IDP3' MD3 identifier" );
+				BinaryReader reader = new BinaryReader( inputStream );
+
+				//	http://icculus.org/homepages/phaethon/q3a/formats/md3format.html
+
+				//	Make sure of the MD3 identity
+				byte[] ident		= reader.ReadBytes( 4 );
+				if ( ( ident[ 0 ] != 'I' ) || ( ident[ 1 ] != 'D' ) || ( ident[ 2 ] != 'P' ) || ( ident[ 3 ] != '3' ) )
+				{
+					throw new ApplicationException( "Failed to load MD3 resource - stream did not start with 'IDP3' MD3 identifier" );
+				}
+
+				//	Read in header
+				int version			= reader.ReadInt32( );
+				string name			= ReadString( reader, MaxPathLength );
+				int flags			= reader.ReadInt32( );
+				int numFrames		= reader.ReadInt32( );
+				int numTags			= reader.ReadInt32( );
+				int numSurfaces		= reader.ReadInt32( );
+				int numSkins		= reader.ReadInt32( );
+				int framesOffset	= reader.ReadInt32( );
+				int tagsOffset		= reader.ReadInt32( );
+				int surfacesOffset	= reader.ReadInt32( );
+				int eofOffset		= reader.ReadInt32( );
+
+				//	TODO: Can load directly into mesh frame, tag and surface structures - don't do this intermediate step
+				Mesh mesh = new Mesh( part );
+
+				ReadFrames( reader, framesOffset, numFrames, mesh, scale );
+				ReadTags( reader, tagsOffset, numTags, numFrames, mesh, scale );
+				ReadSurfaces( reader, surfacesOffset, numSurfaces, numFrames, mesh, surfaceTextureTable, scale );
+
+
+				//	TODO: REMOVE. test frames
+				string md3Name = md3Source.ToString( );
+				if ( md3Name.IndexOf( "Upper" ) != -1 )
+				{
+					mesh.DefaultFrame = 151;
+				}
+				else if ( md3Name.IndexOf( "Head" ) != -1 )
+				{
+					mesh.DefaultFrame = 0;
+				}
+				else
+				{
+					mesh.DefaultFrame = 100;
+				}
+
+				return mesh;
 			}
-
-			//	Read in header
-			int version			= reader.ReadInt32( );
-			string name			= ReadString( reader, MaxPathLength );
-			int flags			= reader.ReadInt32( );
-			int numFrames		= reader.ReadInt32( );
-			int numTags			= reader.ReadInt32( );
-			int numSurfaces		= reader.ReadInt32( );
-			int numSkins		= reader.ReadInt32( );
-			int framesOffset	= reader.ReadInt32( );
-			int tagsOffset		= reader.ReadInt32( );
-			int surfacesOffset	= reader.ReadInt32( );
-			int eofOffset		= reader.ReadInt32( );
-
-			//	TODO: Can load directly into mesh frame, tag and surface structures - don't do this intermediate step
-			Mesh mesh = new Mesh( part );
-
-			ReadFrames( reader, framesOffset, numFrames, mesh, scale );
-			ReadTags( reader, tagsOffset, numTags, numFrames, mesh, scale );
-			ReadSurfaces( reader, surfacesOffset, numSurfaces, numFrames, mesh, surfaceTextureTable, scale );
-
-
-			//	TODO: REMOVE. test frames
-			if ( inputSource.IndexOf( "Upper" ) != -1 )
-			{
-				mesh.DefaultFrame = 151;
-			}
-			else if ( inputSource.IndexOf( "Head" ) != -1 )
-			{
-				mesh.DefaultFrame = 0;
-			}
-			else
-			{
-				mesh.DefaultFrame = 100;
-			}
-
-			inputStream.Close( );
-
-			return mesh;
 		}
 
 		#endregion
@@ -349,7 +324,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Reads and returns a Point3 from a BinaryReader
 		/// </summary>
-		private Point3	ReadPoint( BinaryReader reader )
+		private static Point3 ReadPoint( BinaryReader reader )
 		{
 			float z = reader.ReadSingle( );
 			float x = reader.ReadSingle( );
@@ -361,7 +336,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Reads and returns a Vector3 from a BinaryReader
 		/// </summary>
-		private Vector3	ReadVector( BinaryReader reader )
+		private static Vector3 ReadVector( BinaryReader reader )
 		{
 			float x = reader.ReadSingle( );
 			float y = reader.ReadSingle( );
@@ -373,7 +348,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Reads a string
 		/// </summary>
-		private string	ReadString( BinaryReader reader, int maxLength )
+		private static string ReadString( BinaryReader reader, int maxLength )
 		{
 			byte[] strBytes = reader.ReadBytes( maxLength );
 			char[] strChars = new char[ maxLength ];
@@ -402,7 +377,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Reads frame information
 		/// </summary>
-		private void	ReadFrames( BinaryReader reader, long offset, int numFrames, Mesh mesh , Vector3 scale )
+		private static void ReadFrames( BinaryReader reader, long offset, int numFrames, Mesh mesh , Vector3 scale )
 		{
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 
@@ -427,7 +402,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Reads tag information
 		/// </summary>
-		private void	ReadTags( BinaryReader reader, long offset, int numTags, int numFrames, Mesh mesh, Vector3 scale )
+		private static void ReadTags( BinaryReader reader, long offset, int numTags, int numFrames, Mesh mesh, Vector3 scale )
 		{
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 
@@ -460,7 +435,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Reads surface information
 		/// </summary>
-		private void	ReadSurfaces( BinaryReader reader, long offset, int numSurfaces, int numFrames, Mesh mesh, Hashtable surfaceTextureTable, Vector3 scale )
+		private static void ReadSurfaces( BinaryReader reader, long offset, int numSurfaces, int numFrames, Mesh mesh, IDictionary surfaceTextureTable, Vector3 scale )
 		{
 			//	Move to the start of the first surface
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
@@ -512,21 +487,21 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Reads surface shaders
 		/// </summary>
-		private void	ReadShaders( BinaryReader reader, long offset, int numShaders )
+		private static void ReadShaders(BinaryReader reader, long offset, int numShaders)
 		{
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 
 			for ( int shaderCount = 0; shaderCount < numShaders; ++shaderCount )
 			{
-				string	shaderName	 = ReadString( reader, MaxPathLength );
-				int		index		= reader.ReadInt32( );
+				string shaderName  = ReadString( reader, MaxPathLength );
+				int index = reader.ReadInt32( );
 			}
 		}
 
 		/// <summary>
 		/// Reads surface triangles
 		/// </summary>
-		private OpenGlIndexedGroup	ReadTriangles( BinaryReader reader, long offset, int numTriangles )
+		private static OpenGlIndexedGroup ReadTriangles( BinaryReader reader, long offset, int numTriangles )
 		{
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 
@@ -546,7 +521,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Reads surface texture coordinates
 		/// </summary>
-		private OpenGlVertexBuffer	ReadTextureUVs( BinaryReader reader, long offset, int numCoordinates )
+		private static OpenGlVertexBuffer ReadTextureUVs(BinaryReader reader, long offset, int numCoordinates)
 		{
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 			
@@ -565,7 +540,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Reads surface vertices (positions and normals)
 		/// </summary>
-		private void	ReadVertices( BinaryReader reader, long offset, int numVertices, int numFrames, Mesh.Surface surface, Vector3 scale )
+		private static void ReadVertices(BinaryReader reader, long offset, int numVertices, int numFrames, Mesh.Surface surface, Vector3 scale)
 		{
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 

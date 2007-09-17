@@ -28,7 +28,7 @@ namespace Rb.Core.Components
 		/// <summary>
 		/// Returns the child list
 		/// </summary>
-		[Browsable( false )]
+		[ReadOnly( true )]
 		public ICollection Children
 		{
 			get { return m_Children; }

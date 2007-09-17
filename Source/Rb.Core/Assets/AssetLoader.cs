@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Rb.Core.Assets
 {
@@ -10,6 +8,22 @@ namespace Rb.Core.Assets
 	public abstract class AssetLoader : IAssetLoader
 	{
 		#region IAssetLoader Members
+
+		/// <summary>
+		/// Gets the asset name
+		/// </summary>
+		public abstract string Name
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Gets the asset extension
+		/// </summary>
+		public abstract string Extension
+		{
+			get;
+		}
 
 		/// <summary>
 		/// Gets the cache for this loader
@@ -40,7 +54,10 @@ namespace Rb.Core.Assets
 		/// </summary>
 		/// <param name="source">Source of the asset</param>
 		/// <returns>Returns true if this loader can process the specified source</returns>
-		public abstract bool CanLoad( ISource source );
+		public virtual bool CanLoad( ISource source )
+		{
+			return source.ToString( ).EndsWith( Extension, StringComparison.CurrentCultureIgnoreCase );
+		}
 
 		#endregion
 

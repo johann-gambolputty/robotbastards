@@ -1,4 +1,6 @@
 
+using System;
+
 namespace Rb.Rendering
 {
     //  TODO: AP: Removed IChild interface, so light group no longer adds itself to parent ISceneRenderable pre-render list. Need to
@@ -7,6 +9,7 @@ namespace Rb.Rendering
 	/// <summary>
 	/// A bunch of lights
 	/// </summary>
+	[Serializable]
     public class LightGroup : IPass
 	{
 		#region	Light list management
@@ -25,7 +28,7 @@ namespace Rb.Rendering
 		/// </summary>
 		public int NumLights
 		{
-			get { return m_Lights.Length; }
+			get { return ( m_Lights == null ) ? 0 : m_Lights.Length; }
 		}
 
 		/// <summary>

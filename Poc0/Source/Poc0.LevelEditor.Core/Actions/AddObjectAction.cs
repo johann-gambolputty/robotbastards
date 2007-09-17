@@ -51,9 +51,17 @@ namespace Poc0.LevelEditor.Core.Actions
 		
 		private static object CreateInstance( object template )
 		{
-			//return ( ( ICloneable )template ).Clone( );
-			return ( ( IInstanceBuilder )template ).CreateInstance( EditModeContext.Instance.RuntimeScene.Builder );
+			if ( template is IInstanceBuilder )
+			{
+				return ( ( IInstanceBuilder )template ).CreateInstance( EditModeContext.Instance.RuntimeScene.Builder );
+			}
 
+			if ( template is ICloneable )
+			{
+				return ( ( ICloneable )template ).Clone( );
+			}
+
+			throw new ArgumentException( "Template must implement ICloneable or IInstanceBuilder", "template" );
 		}
 
 		#endregion

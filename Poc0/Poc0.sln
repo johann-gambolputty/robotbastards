@@ -37,7 +37,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc0.LevelEditor", "Source\Poc0.LevelEditor\Poc0.LevelEditor.csproj", "{F224FA4B-D756-425B-BC3E-5CDC4E5A5F8B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F2F59120-9F01-4910-BB19-16FA628AE56C} = {F2F59120-9F01-4910-BB19-16FA628AE56C}
+		{0BC4E246-A4E1-431C-AC93-395AE22188E1} = {0BC4E246-A4E1-431C-AC93-395AE22188E1}
 		{19DCB365-3040-4431-86E9-29183FA34EF7} = {19DCB365-3040-4431-86E9-29183FA34EF7}
+		{0DF278D5-B9D4-4BA0-90DC-E89F04FFC783} = {0DF278D5-B9D4-4BA0-90DC-E89F04FFC783}
+		{A4E5C0BF-B76D-425D-8439-B07EB6B29444} = {A4E5C0BF-B76D-425D-8439-B07EB6B29444}
+		{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0} = {A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc0.LevelEditor.Core", "Source\Poc0.LevelEditor.Core\Poc0.LevelEditor.Core.csproj", "{7FD7B8DD-BBED-4AF7-9339-6F823540727E}"
@@ -47,6 +51,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Core.Assets.Windows", "..\Source\Rb.Core.Assets.Windows\Rb.Core.Assets.Windows.csproj", "{4A4B51E0-EE5D-4627-9192-542BA6FA8A7A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.NiceControls", "..\Source\Rb.NiceControls\Rb.NiceControls.csproj", "{A4E5C0BF-B76D-425D-8439-B07EB6B29444}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Rendering.OpenGl.Md3Loader", "..\Source\Rb.Rendering.OpenGl.Md3Loader\Rb.Rendering.OpenGl.Md3Loader.csproj", "{0DF278D5-B9D4-4BA0-90DC-E89F04FFC783}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -187,6 +193,12 @@ Global
 		{A4E5C0BF-B76D-425D-8439-B07EB6B29444}.NDoc|Any CPU.Build.0 = Release|Any CPU
 		{A4E5C0BF-B76D-425D-8439-B07EB6B29444}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4E5C0BF-B76D-425D-8439-B07EB6B29444}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DF278D5-B9D4-4BA0-90DC-E89F04FFC783}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DF278D5-B9D4-4BA0-90DC-E89F04FFC783}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DF278D5-B9D4-4BA0-90DC-E89F04FFC783}.NDoc|Any CPU.ActiveCfg = Release|Any CPU
+		{0DF278D5-B9D4-4BA0-90DC-E89F04FFC783}.NDoc|Any CPU.Build.0 = Release|Any CPU
+		{0DF278D5-B9D4-4BA0-90DC-E89F04FFC783}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DF278D5-B9D4-4BA0-90DC-E89F04FFC783}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

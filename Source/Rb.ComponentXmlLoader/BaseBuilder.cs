@@ -6,6 +6,7 @@ using System.Reflection;
 
 using Rb.Core.Maths;
 using Rb.Core.Components;
+using Rb.Core.Assets;
 
 namespace Rb.ComponentXmlLoader
 {
@@ -70,6 +71,10 @@ namespace Rb.ComponentXmlLoader
 					case "table"	: result = new DictionaryBuilder( parameters, errors, reader, parentBuilder );		break;
                     case "type"     : result = new TypeBuilder( parameters, errors, reader, parentBuilder );			break;
 					case "template"	: result = new TemplateBuilder( parameters, errors, reader, parentBuilder );		break;
+					case "location" :
+						string loc = reader.GetAttribute( "value" );
+						result = new ValueBuilder( parameters, errors,reader, parentBuilder, new Location( loc ) );
+                		break;
 					case "dictionaryEntry"	:
 						result = new DictionaryEntryBuilder( parameters, errors, reader, parentBuilder );
                 		break;

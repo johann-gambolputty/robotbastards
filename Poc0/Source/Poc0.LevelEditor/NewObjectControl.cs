@@ -9,37 +9,169 @@ namespace Poc0.LevelEditor
 {
 	public partial class NewObjectControl : UserControl
 	{
-		public event Action< Type > SelectionMade;
+		#region Construction
 
-		public NewObjectControl( )
+		/// <summary>
+		/// Initialises the control
+		/// </summary>
+		public NewObjectControl()
 		{
-			InitializeComponent( );
+			InitializeComponent();
 
 			typeView.DrawMode = DrawMode.OwnerDrawFixed;
 		}
 
+		#endregion
+
+		#region Public events
+
+		/// <summary>
+		/// Event, raised when the user makes his selection (by double clicking on a type item)
+		/// </summary>
+		public event Action< Type > SelectionMade;
+
+		#endregion
+
+		#region Public properties
+
+		/// <summary>
+		/// The base type of the control (can only create new objects derived from/implementing this type)
+		/// </summary>
 		public Type BaseType
 		{
 			get { return m_BaseType; }
 			set { m_BaseType = value; }
 		}
 
-		private Type m_BaseType;
-		private Font m_GroupFont;
-
-		private void NewObjectControl_Load( object sender, EventArgs e )
+		/// <summary>
+		/// Gets the new object's type
+		/// </summary>
+		public Type NewObjectType
 		{
-			if ( !DesignMode )
+			get
 			{
-				foreach ( Assembly assembly in AppDomain.CurrentDomain.GetAssemblies( ) )
+				if ( typeView.SelectedItems.Count == 0 )
 				{
-					AddAssembly( assembly );
+					return null;
 				}
-
-				m_GroupFont = new Font( Font.FontFamily, Font.Size, Font.Style | FontStyle.Bold, Font.Unit );
+				TypeItem item = typeView.SelectedItems[ 0 ] as TypeItem;
+				return ( item == null ) ? null : item.Type;
 			}
 		}
 
+		#endregion
+
+		#region Private types
+
+		/// <summary>
+		/// Single type in a type group
+		/// </summary>
+		private class TypeItem
+		{
+			/// <summary>
+			/// Type setup
+			/// </summary>
+			/// <param name="type">Stored type</param>
+			public TypeItem( Type type )
+			{
+				m_Type = type;
+			}
+
+			/// <summary>
+			/// Gets the stored type
+			/// </summary>
+			public Type Type
+			{
+				get { return m_Type; }
+			}
+			
+			/// <summary>
+			/// String conversion
+			/// </summary>
+			public override string ToString( )
+			{
+				return m_Type.Name;
+			}
+
+			private readonly Type m_Type;
+		}
+
+		/// <summary>
+		/// A group of types (e.g. from an assembly)
+		/// </summary>
+		private class TypeGroup
+		{
+			/// <summary>
+			/// Group setup
+			/// </summary>
+			/// <param name="groupName">Name of the group</param>
+			/// <param name="types">Types making up the group</param>
+			public TypeGroup( string groupName, Type[] types )
+			{
+				m_Name = groupName;
+				m_TypeItems = new TypeItem[ types.Length ];
+
+				for ( int typeIndex = 0; typeIndex < types.Length; ++typeIndex )
+				{
+					m_TypeItems[ typeIndex ] = new TypeItem( types[ typeIndex ] );
+				}
+			}
+
+			/// <summary>
+			/// Returns true if this type group is expanded in the control
+			/// </summary>
+			public bool IsExpanded
+			{
+				get { return m_Expanded; }
+			}
+
+			/// <summary>
+			/// Expands or shrinks the group
+			/// </summary>
+			public void Expand( ListBox view )
+			{
+				if ( !m_Expanded )
+				{
+					for ( int typeIndex = 0; typeIndex < m_TypeItems.Length; ++typeIndex )
+					{
+						view.Items.Insert( view.Items.IndexOf( this ) + 1, m_TypeItems[ typeIndex ] );
+					}
+				}
+				else
+				{
+					foreach ( TypeItem typeItem in m_TypeItems )
+					{
+						view.Items.Remove( typeItem );
+					}
+				}
+				m_Expanded = !m_Expanded;
+			}
+
+			/// <summary>
+			/// String conversion
+			/// </summary>
+			public override string ToString( )
+			{
+				return m_Name;
+			}
+
+			private bool m_Expanded;
+			private readonly string m_Name;
+			private readonly TypeItem[] m_TypeItems;
+		}
+
+
+		#endregion
+
+		#region Private members
+
+		private Type m_BaseType;
+		private Font m_GroupFont;
+		private Brush m_BackBrush;
+		
+		/// <summary>
+		/// Adds an assembly, as a type group
+		/// </summary>
 		private void AddAssembly( Assembly assembly )
 		{
 			List< Type > types = new List< Type >( );
@@ -71,83 +203,20 @@ namespace Poc0.LevelEditor
 			}
 		}
 
-		private class TypeItem
+		#endregion
+
+		#region Private events
+
+		private void NewObjectControl_Load( object sender, EventArgs e )
 		{
-			public TypeItem( Type type )
+			if ( !DesignMode )
 			{
-				m_Type = type;
-			}
-
-			public Type Type
-			{
-				get { return m_Type; }
-			}
-
-			public override string ToString( )
-			{
-				return m_Type.Name;
-			}
-
-			private readonly Type m_Type;
-		}
-
-		private class TypeGroup
-		{
-			public TypeGroup( string groupName, Type[] types )
-			{
-				m_Name = groupName;
-				m_TypeItems = new TypeItem[ types.Length ];
-
-				for ( int typeIndex = 0; typeIndex < types.Length; ++typeIndex )
+				foreach ( Assembly assembly in AppDomain.CurrentDomain.GetAssemblies( ) )
 				{
-					m_TypeItems[ typeIndex ] = new TypeItem( types[ typeIndex ] );
+					AddAssembly( assembly );
 				}
-			}
 
-			public bool IsExpanded
-			{
-				get { return m_Expanded; }
-			}
-
-			public void Expand( ListBox view )
-			{
-				if ( !m_Expanded )
-				{
-					for ( int typeIndex = 0; typeIndex < m_TypeItems.Length; ++typeIndex )
-					{
-						view.Items.Insert( view.Items.IndexOf( this ) + 1, m_TypeItems[ typeIndex ] );
-					}
-				}
-				else
-				{
-					foreach ( TypeItem typeItem in m_TypeItems )
-					{
-						view.Items.Remove( typeItem );
-					}
-				}
-				m_Expanded = !m_Expanded;
-			}
-
-			public override string ToString( )
-			{
-				return m_Name;
-			}
-
-			private bool m_Expanded;
-			private readonly string m_Name;
-			private readonly TypeItem[] m_TypeItems;
-		}
-
-		public Type NewObjectType
-		{
-			get
-			{
-				if ( typeView.SelectedItems.Count == 0 )
-				{
-					return null;
-				}
-				TypeItem item = typeView.SelectedItems[ 0 ] as TypeItem;
-				return ( item == null ) ? null : item.Type;
+				m_GroupFont = new Font( Font.FontFamily, Font.Size, Font.Style | FontStyle.Bold, Font.Unit );
 			}
 		}
 
@@ -166,7 +235,6 @@ namespace Poc0.LevelEditor
 			}
 		}
 
-		private Brush m_BackBrush;
 
 		private void typeView_DrawItem( object sender, DrawItemEventArgs e )
 		{
@@ -214,5 +282,7 @@ namespace Poc0.LevelEditor
 				e.Graphics.DrawString( text, Font, Brushes.Black, bounds.X + 16, bounds.Y );
 			}
 		}
+
+		#endregion
 	}
 }
