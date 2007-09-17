@@ -56,7 +56,8 @@ namespace Rb.Core.Assets
 		/// <returns></returns>
 		public bool IsPathValid( string path )
 		{
-			return File.Exists( GetFullPath( path ) );
+			string fullPath = GetFullPath( path );
+			return File.Exists( fullPath ) || Directory.Exists( fullPath );
 		}
 
 		/// <summary>
@@ -69,7 +70,7 @@ namespace Rb.Core.Assets
 		{
 			try
 			{
-				return File.OpenRead( location.ToString( ) );
+				return File.OpenRead( location.FullPath );
 			}
 			catch ( Exception ex )
 			{
@@ -84,7 +85,6 @@ namespace Rb.Core.Assets
 		private string m_BaseDir = Directory.GetCurrentDirectory( );
 
 		#endregion
-
 
 		#region IXmlSerializable Members
 

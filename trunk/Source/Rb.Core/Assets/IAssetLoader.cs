@@ -18,6 +18,22 @@ namespace Rb.Core.Assets
 		}
 
 		/// <summary>
+		/// Gets the asset name
+		/// </summary>
+		string Name
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Gets the asset extension
+		/// </summary>
+		string Extension
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Creates default loading parameters
 		/// </summary>
 		LoadParameters CreateDefaultParameters( );

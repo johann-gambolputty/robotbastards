@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Body.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="EntityGraphics.cs" />
     <Compile Include="Environment\Collisions.cs" />
     <Compile Include="Environment\Environment.cs" />
     <Compile Include="Environment\Graphics.cs" />

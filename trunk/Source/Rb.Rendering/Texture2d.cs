@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.IO;
 using Rb.Core.Utils;
 using System;
 using System.Runtime.Serialization;
@@ -151,6 +152,18 @@ namespace Rb.Rendering
 			Texture2d texture = RenderFactory.Instance.NewTexture2d( );
 			texture.LoadManifestResource( name );
 			return texture;
+		}
+
+		public void Load( Stream stream )
+		{
+			Image img = Image.FromStream( stream );
+			Bitmap bmp = new Bitmap( img );
+
+			//	Dispose() img immediately - while it remains active, Image objects lock their source files
+			img.Dispose( );
+
+			//	Load the bitmap
+			Load( bmp );
 		}
 
 		/// <summary>

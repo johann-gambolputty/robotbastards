@@ -38,6 +38,7 @@ namespace Rb.ComponentXmlLoader
         /// <param name="errors">Error collection</param>
         /// <param name="reader">XML reader positioned at the element that created this object</param>
         /// <param name="parentBuilder">Parent builder</param>
+        /// <param name="typeName">Name of the type to create</param>
         public ObjectBuilder( ComponentLoadParameters parameters, ErrorCollection errors, XmlReader reader, BaseBuilder parentBuilder, string typeName ) :
             base( parameters, errors, reader, parentBuilder )
 		{
@@ -140,24 +141,25 @@ namespace Rb.ComponentXmlLoader
 			{
 				throw new ApplicationException( string.Format( "Element \"{0}\" requires a \"type\" attribute", elementName ) );
 			}
+
 			Type objectType;
-			if (assemblyName == null)
+			if ( assemblyName == null )
 			{
 				//  Get the object type from the currently loaded set of assemblies
-				objectType = AppDomainUtils.FindType(typeName);
-				if (objectType == null)
+				objectType = AppDomainUtils.FindType( typeName );
+				if ( objectType == null )
 				{
-					throw new ApplicationException(string.Format("Failed to find type \"{0}\" in app domain", typeName));
+					throw new ApplicationException(string.Format("Failed to find type \"{0}\" in app domain", typeName ) );
 				}
 			}
 			else
 			{
 				//  Get the object type from the specified assembly
-				Assembly assembly = AppDomain.CurrentDomain.Load(assemblyName);
-				objectType = assembly.GetType(typeName);
-				if (objectType == null)
+				Assembly assembly = AppDomain.CurrentDomain.Load( assemblyName );
+				objectType = assembly.GetType( typeName );
+				if ( objectType == null )
 				{
-					throw new ApplicationException(string.Format("Failed to find type \"{0}\" in assembly \"{1}\"", typeName, assemblyName));
+					throw new ApplicationException( string.Format( "Failed to find type \"{0}\" in assembly \"{1}\"", typeName, assemblyName ) );
 				}
 			}
 

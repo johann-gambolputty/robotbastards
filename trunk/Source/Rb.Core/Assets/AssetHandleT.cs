@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 
 namespace Rb.Core.Assets
 {
@@ -44,6 +45,7 @@ namespace Rb.Core.Assets
 		/// If the asset is not yet loaded, the first time this property is accessed, the handle will attempt
 		/// to load it.
 		/// </remarks>
+		[ Browsable( false ) ]
 		public new T Asset
 		{
 			get { return ( T )base.Asset; }

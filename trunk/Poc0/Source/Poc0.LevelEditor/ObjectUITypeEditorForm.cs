@@ -68,7 +68,8 @@ namespace Poc0.LevelEditor
 
 		private static bool CanLoadAsset( Type objectType )
 		{
-			return objectType.IsInterface;
+			//return objectType.IsInterface || objectType.IsSubclassOf( typeof( AssetHandle ) );
+			return ( objectType == typeof( ISource ) ) || ( objectType.GetInterface( typeof( ISource ).FullName ) != null );
 		}
 
 		private object m_NewObject;
@@ -88,7 +89,8 @@ namespace Poc0.LevelEditor
 
 		void ui_SelectionChosen( object sender, EventArgs e )
 		{
-			NewObject = AssetManager.Instance.Load( m_AssetBrowserUi.Sources[ 0 ] );
+			//NewObject = AssetManager.Instance.Load( m_AssetBrowserUi.Sources[ 0 ] );
+			NewObject = m_AssetBrowserUi.Sources[ 0 ];
 		}
 
 		private void okButton_Click( object sender, EventArgs e )
@@ -104,7 +106,8 @@ namespace Poc0.LevelEditor
 			{
 				if ( m_AssetBrowserUi.Sources.Length > 0 )
 				{
-					NewObject = AssetManager.Instance.Load( m_AssetBrowserUi.Sources[ 0 ] );
+					//NewObject = AssetManager.Instance.Load( m_AssetBrowserUi.Sources[ 0 ] );
+					NewObject = m_AssetBrowserUi.Sources[ 0 ];
 				}
 			}
 		}

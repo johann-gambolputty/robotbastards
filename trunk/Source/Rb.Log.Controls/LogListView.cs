@@ -18,7 +18,7 @@ namespace Rb.Log.Controls
 
 			InitializeComponent( );
 
-			DoubleBuffered = true;
+			base.DoubleBuffered = true;
 
 			OwnerDraw = true;
 			DrawColumnHeader += LogListView_DrawColumnHeader;
@@ -31,7 +31,6 @@ namespace Rb.Log.Controls
 		{
 			Source.OnNewLogEntry -= OnNewLogEntry;
 		}
-        
 
         static LogListView( )
         {
@@ -67,7 +66,7 @@ namespace Rb.Log.Controls
 
         #region Private source colours
 
-        private Color[] m_SourceColours = new Color[ ( int )Severity.Count ];
+        private readonly Color[] m_SourceColours = new Color[ ( int )Severity.Count ];
 
         private Color GetSourceColour( Severity s )
         {
@@ -83,7 +82,7 @@ namespace Rb.Log.Controls
 
         #region View rendering
         
-        private void RefreshView( )
+        public void RefreshView( )
         {
             Items.Clear( );
 
@@ -97,9 +96,9 @@ namespace Rb.Log.Controls
         {
             Entry entry = ( Entry )e.Item.Tag;
             bool oddItem = (e.ItemIndex % 2) != 0;
-            System.Drawing.Color backCol = m_SourceColours[ ( int )entry.Severity ];
+            Color backCol = m_SourceColours[ ( int )entry.Severity ];
 
-            float factor = 1.0f;
+            float factor;
             if ( e.Item.Selected )
             {
                 factor = oddItem ? 0.6f : 0.75f;
@@ -128,24 +127,56 @@ namespace Rb.Log.Controls
 
         #region Entry handling
 
-        private bool    m_TrackingLastItem  = true;
-        private object  m_Lock              = new object();
+        private bool m_TrackingLastItem = true;
+        private delegate void AddEntryDelegate( Entry entry );
 
-        private delegate void AddListViewItemDelegate( ListViewItem item );
-
-        private void AddListViewItem( ListViewItem item )
+        private void AddEntry( Entry entry )
         {
             if ( IsHandleCreated )
             {
-                Items.Add( item );
+				foreach ( ListViewItem item in CreateEntryItems( entry ) )
+				{
+					Items.Add( item );
 
-                if ( m_TrackingLastItem )
-                {
-                    item.Selected = true;
-                    item.EnsureVisible( );
-                }
+					if ( m_TrackingLastItem )
+					{
+						item.Selected = true;
+						item.EnsureVisible( );
+					}
+				}
             }
         }
+
+		private ListViewItem[] CreateEntryItems( Entry entry )
+		{
+            string[] lines = entry.Message.Split( new char[] { '\n' } );
+
+			ListViewItem[] items = new ListViewItem[ lines.Length ];
+
+			for ( int lineIndex = 0; lineIndex < lines.Length; ++lineIndex )
+			{
+				ListViewItem newItem = new ListViewItem( entry.Id.ToString( ) );
+
+				string[] subItems = new string[ Columns.Count ];
+	            
+				subItems[ m_FileColumn.Index ]       = entry.File;
+				subItems[ m_LineColumn.Index ]       = entry.Line.ToString( );
+				subItems[ m_ColumnColumn.Index ]     = entry.Column.ToString( );
+				subItems[ m_MethodColumn.Index ]     = entry.Method;
+				subItems[ m_SourceColumn.Index ]     = entry.Source.ToString( );
+				subItems[ m_TimeColumn.Index ]       = entry.Time.ToString( );
+				subItems[ m_ThreadColumn.Index ]     = entry.Thread;
+				subItems[ m_MessageColumn.Index ]    = lines[ lineIndex ];
+
+				newItem.SubItems.AddRange( subItems );
+
+				newItem.Tag = entry;
+
+				items[ lineIndex ] = newItem;
+			}
+
+			return items;
+		}
 
         private void OnNewLogEntry( Entry entry )
         {
@@ -155,33 +186,9 @@ namespace Rb.Log.Controls
             }
 
 			if ( IsHandleCreated )
-            {
-                string[] lines = entry.Message.Split( new char[] { '\n' } );
-                //lock ( m_Lock )
-                {
-                    foreach ( string line in lines )
-                    {
-                        ListViewItem newItem = new ListViewItem( entry.Id.ToString( ) );
-
-                        string[] subItems = new string[ Columns.Count ];
-                        
-                        subItems[ m_FileColumn.Index ]       = entry.File;
-                        subItems[ m_LineColumn.Index ]       = entry.Line.ToString( );
-                        subItems[ m_ColumnColumn.Index ]     = entry.Column.ToString( );
-                        subItems[ m_MethodColumn.Index ]     = entry.Method;
-                        subItems[ m_SourceColumn.Index ]     = entry.Source.ToString( );
-                        subItems[ m_TimeColumn.Index ]       = entry.Time.ToString( );
-                        subItems[ m_ThreadColumn.Index ]     = entry.Thread;
-                        subItems[ m_MessageColumn.Index ]    = line;
-
-                        newItem.SubItems.AddRange( subItems );
-
-                        newItem.Tag = entry;
-
-						//	TODO: AP: If the list view is destroyed at the point, this blocks
-                        Invoke( new AddListViewItemDelegate( AddListViewItem ), newItem );
-                    }
-                }
+			{
+				//	TODO: AP: If the list view is destroyed at the point, this blocks
+				Invoke( new AddEntryDelegate( AddEntry ), entry );
             }
         }
 
@@ -189,9 +196,9 @@ namespace Rb.Log.Controls
 
         #region Entry caching
 
-        private static Entry[]  ms_Cache        = new Entry[ 1000 ];
-        private static int      ms_CacheStart   = 0;
-        private static int      ms_CacheIndex   = 0;
+        private static readonly Entry[] ms_Cache = new Entry[ 1000 ];
+        private static int ms_CacheStart = 0;
+        private static int ms_CacheIndex = 0;
 
         private static void AddEntryToCache( Entry entry )
         {
@@ -316,7 +323,7 @@ namespace Rb.Log.Controls
 			}
         }
 
-        private void BuildSourceFilterContextMenu( ContextMenu menu, Source source, string prefix )
+        private void BuildSourceFilterContextMenu( Menu menu, Source source, string prefix )
         {
             MenuItem item = new MenuItem(prefix + source.Name);
             item.Checked = IsSourceVisible(source);

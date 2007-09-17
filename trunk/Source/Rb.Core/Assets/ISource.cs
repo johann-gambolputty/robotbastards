@@ -8,15 +8,15 @@ namespace Rb.Core.Assets
 	public interface ISource
 	{
 		/// <summary>
-		/// Returns true if the source is valid
+		/// Returns true if the source exists
 		/// </summary>
-		bool IsValid
+		bool Exists
 		{
 			get;
 		}
 
 		/// <summary>
-		/// Gets the source extension
+		/// Checks if this source has the specified extension
 		/// </summary>
 		bool HasExtension( string ext );
 

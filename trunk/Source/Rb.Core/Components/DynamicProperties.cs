@@ -64,6 +64,16 @@ namespace Rb.Core.Components
         {
             m_Properties.Remove( name );
         }
+		
+		/// <summary>
+		/// Returns true if the set contains a property with the specified name
+		/// </summary>
+		/// <param name="name">Property name</param>
+		/// <returns>true if set contains named property</returns>
+		public bool Contains( string name )
+		{
+			return m_Properties.ContainsKey( name );
+		}
 
         /// <summary>
         /// Gets the value of an existing property

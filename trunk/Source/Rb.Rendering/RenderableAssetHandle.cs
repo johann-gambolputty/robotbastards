@@ -54,4 +54,35 @@ namespace Rb.Rendering
 
 		#endregion
 	}
+	
+	public class RenderableAssetHandle : RenderableAssetHandle< IRenderable >
+	{
+		/// <summary>
+		/// No source - set <see cref="AssetHandle.Source"/> prior to accessing <see cref="AssetHandle.Asset"/>
+		/// </summary>
+		public RenderableAssetHandle( )
+		{
+		}
+
+		/// <summary>
+		/// Sets the source of the asset. Does not load the asset until <see cref="AssetHandleT{T}.Asset"/> is first accessed
+		/// </summary>
+		/// <param name="source">Asset source</param>
+		public RenderableAssetHandle( ISource source ) :
+			base( source )
+		{
+		}
+
+		/// <summary>
+		/// Sets the source of the asset
+		/// </summary>
+		/// <param name="source">Asset source</param>
+		/// <param name="loadImmediately">If true, the asset is loaded in this constructor. Otherwise, the
+		/// asset is loaded on-demand when <see cref="AssetHandleT{T}.Asset"/> is first accessed</param>
+		public RenderableAssetHandle( ISource source, bool loadImmediately ) :
+			base( source, loadImmediately )
+		{
+		}
+
+	}
 }

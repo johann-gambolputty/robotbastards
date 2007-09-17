@@ -1,7 +1,18 @@
 using System;
+using System.ComponentModel;
 
 namespace Rb.Core.Assets
 {
+	/// <summary>
+	/// A handle to an asset
+	/// </summary>
+	/// <remarks>
+	/// Useful for serialization (the asset location is serialized, the asset itself is not), and making asset
+	/// change management transparent (so long as the asset is accessed through <see cref="Asset"/>, the handle
+	/// can track changes to the location and update the asset accordingly).
+	/// Use <see cref="AssetProxy"/> to create decorator pattern asset handles that derive from AssetHandle, and
+	/// implement asset interfaces.
+	/// </remarks>
 	public class AssetHandle
 	{
 		/// <summary>
@@ -51,6 +62,7 @@ namespace Rb.Core.Assets
 		/// If the asset is not yet loaded, the first time this property is accessed, the handle will attempt
 		/// to load it.
 		/// </remarks>
+		[ ReadOnly( true ) ]
 		public object Asset
 		{
 			get
@@ -64,7 +76,6 @@ namespace Rb.Core.Assets
 			}
 		}
 
-
 		#region Private stuff
 
 		private ISource m_Source;
@@ -75,6 +86,9 @@ namespace Rb.Core.Assets
 		[NonSerialized]
 		private bool m_LoadFailed;
 
+		/// <summary>
+		/// Loads the asset
+		/// </summary>
 		private void LoadAsset( )
 		{
 			try

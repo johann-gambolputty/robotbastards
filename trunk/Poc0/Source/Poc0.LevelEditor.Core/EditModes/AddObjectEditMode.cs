@@ -1,7 +1,6 @@
 using System;
 using System.Windows.Forms;
 using Poc0.LevelEditor.Core.Actions;
-using Rb.Core.Components;
 using Rb.Core.Maths;
 
 namespace Poc0.LevelEditor.Core.EditModes
@@ -15,8 +14,8 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// Binds the edit mode to a control and viewer
 		/// </summary>
 		/// <param name="actionButton">The mouse button that this edit mode listens out for</param>
-		/// <param name="template">Object template used for creating new objects</param>
-		public AddObjectEditMode( MouseButtons actionButton, ObjectTemplate template )
+		/// <param name="template">Object template used for creating new objects. Must be ICloneable or IInstanceBuilder</param>
+		public AddObjectEditMode( MouseButtons actionButton, object template )
 		{
 			m_ActionButton = actionButton;
 			m_Template = template;
@@ -77,7 +76,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		#region Private members
 
 		private readonly MouseButtons m_ActionButton;
-		private readonly ObjectTemplate m_Template;
+		private readonly object m_Template;
 
 		#endregion
 	}

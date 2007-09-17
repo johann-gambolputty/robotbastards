@@ -218,6 +218,10 @@
       <Project>{B8CB331A-D8D9-48B6-ACBF-2276EC294427}</Project>
       <Name>Rb.Muesli</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering.OpenGl.Md3Loader\Rb.Rendering.OpenGl.Md3Loader.csproj">
+      <Project>{0DF278D5-B9D4-4BA0-90DC-E89F04FFC783}</Project>
+      <Name>Rb.Rendering.OpenGl.Md3Loader</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.Rendering.OpenGl.Windows\Rb.Rendering.OpenGl.Windows.csproj">
       <Project>{F2F59120-9F01-4910-BB19-16FA628AE56C}</Project>
       <Name>Rb.Rendering.OpenGl.Windows</Name>

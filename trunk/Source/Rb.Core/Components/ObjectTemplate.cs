@@ -66,6 +66,10 @@ namespace Rb.Core.Components
 			PropertyInfo[] srcProperties = type.GetProperties( );
 			foreach ( PropertyInfo srcProperty in srcProperties )
 			{
+				if ( !m_Properties.Contains( srcProperty.Name ) )
+				{
+					continue;
+				}
 				m_Properties.Add( new Property( srcProperty, category ) );
 			}
 		}
@@ -92,6 +96,15 @@ namespace Rb.Core.Components
 		#endregion
 
 		#region Public methods
+
+		/// <summary>
+		/// Gets the name of this template
+		/// </summary>
+		/// <returns>Template name</returns>
+		public override string ToString( )
+		{
+			return Name;
+		}
 
 		/// <summary>
 		/// Writes this template to XML
@@ -209,15 +222,26 @@ namespace Rb.Core.Components
 			public Property( PropertyInfo property, string category ) :
 				base( property.Name, property.PropertyType, category )
 			{
+				m_Property = property;
 			}
 
 			public Property( Property src ) :
 				base( src.Name, src.TypeName, src.Category, src.Description, src.DefaultValue, src.EditorTypeName, src.ConverterTypeName )
 			{
+				m_Property = src.m_Property;
 				m_Value = src.m_Value;
 			}
 
+			public bool CanAddToPropertyBag
+			{
+				get
+				{
+					return ( m_Property.CanRead ) && ( m_Property.GetIndexParameters( ).Length == 0 );
+				}
+			}
+
 			private object m_Value;
+			private readonly PropertyInfo m_Property;
 
 			#region IDynamicProperty Members
 
@@ -252,7 +276,10 @@ namespace Rb.Core.Components
 		{
 			foreach ( Property property in m_Properties )
 			{
-				bag.Properties.Add( property );
+				if ( property.CanAddToPropertyBag )
+				{
+					bag.Properties.Add( property );
+				}
 			}
 
 			if ( addChildTemplates )
@@ -336,7 +363,7 @@ namespace Rb.Core.Components
 		{
 			object result = builder.CreateInstance( m_Type );
 
-			foreach ( Property property in m_Properties )
+			foreach ( IDynamicProperty property in m_Properties )
 			{
 				object value = property.Value;
 				if ( value != null )

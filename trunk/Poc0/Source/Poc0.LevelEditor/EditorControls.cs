@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.EditModes;
@@ -56,20 +55,20 @@ namespace Poc0.LevelEditor
 			get { return m_Grid; }
 		}
 
-		private TileGrid						m_Grid;
-		private EditModeContext					m_EditContext;
-		private readonly List< ObjectTemplate >	m_Templates = new List< ObjectTemplate >( );
+		private TileGrid			m_Grid;
+		private EditModeContext		m_EditContext;
+		private readonly ArrayList	m_Templates = new ArrayList( );
 
-		private void PopulateObjectTemplates( IEnumerable< ObjectTemplate > templates )
+		private void PopulateObjectTemplates( IEnumerable templates )
 		{
 			objectsTreeView.Nodes.Clear( );
 
 			//	Populate the object types tree
 			TreeNode allObjects = objectsTreeView.Nodes.Add( "All Objects" );
 
-			foreach ( ObjectTemplate template in templates )
+			foreach ( object template in templates )
 			{
-				TreeNode node = new TreeNode( template.Name );
+				TreeNode node = new TreeNode( template.ToString( ) );
 				node.Tag = template;
 
 				allObjects.Nodes.Add( node );
@@ -90,7 +89,7 @@ namespace Poc0.LevelEditor
 
 		private void objectsTreeView_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			ObjectTemplate template = objectsTreeView.SelectedNode.Tag as ObjectTemplate;
+			object template = objectsTreeView.SelectedNode.Tag;
 			if ( template != null )
 			{
 				m_EditContext.AddEditMode( new AddObjectEditMode( MouseButtons.Right, template ) );

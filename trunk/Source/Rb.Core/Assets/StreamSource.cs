@@ -57,7 +57,7 @@ namespace Rb.Core.Assets
 		/// <summary>
 		/// Returns true if the source is valid
 		/// </summary>
-		public bool IsValid
+		public bool Exists
 		{
 			get { return true; }
 		}

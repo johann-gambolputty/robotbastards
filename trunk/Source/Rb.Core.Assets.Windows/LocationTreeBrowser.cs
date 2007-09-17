@@ -205,7 +205,16 @@ namespace Rb.Core.Assets.Windows
 			}
 
 			m_CurrentFolder = m_Locations.DefaultFolder;
-			Filter = ""; // This forces a refresh of the current view
+
+			string filter = "";
+			foreach ( IAssetLoader loader in AssetManager.Instance.Loaders )
+			{
+				filter += string.Format( "{0} (*.{1})|*.{1}|",loader.Name, loader.Extension );
+			}
+
+			filter += "All Files (*.*)|*.*";
+
+			Filter = filter;
 		}
 
 		private void backButton_Click( object sender, EventArgs e )

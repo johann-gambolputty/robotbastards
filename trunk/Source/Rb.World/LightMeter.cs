@@ -1,3 +1,4 @@
+using System;
 using Rb.Rendering;
 
 namespace Rb.World
@@ -5,6 +6,7 @@ namespace Rb.World
 	/// <summary>
 	/// Light meters are used to determine the lights will be used to illuminate a given object
 	/// </summary>
+	[Serializable]
 	public class LightMeter : LightGroup, ILightMeter, ISceneObject
 	{
 		#region ISceneObject Members

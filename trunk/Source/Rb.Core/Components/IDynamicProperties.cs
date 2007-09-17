@@ -39,6 +39,13 @@ namespace Rb.Core.Components
         /// <param name="name">Name of the property to remove</param>
         void Remove( string name );
 
+		/// <summary>
+		/// Returns true if the set contains a property with the specified name
+		/// </summary>
+		/// <param name="name">Property name</param>
+		/// <returns>true if set contains named property</returns>
+		bool Contains( string name );
+
         /// <summary>
         /// Gets the value of an existing property
         /// </summary>
