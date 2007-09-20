@@ -47,14 +47,14 @@ namespace Rb.Rendering
 			{
 				case DefaultFont.Debug :
 				{
-					return new System.Drawing.Font( "arial", 12 );
+					return new System.Drawing.Font( "arial", 10 );
 				}
 			}
 
-			throw new ApplicationException( string.Format( "Unhandled default font \"{0}\"", font.ToString( ) ) );
+			throw new ApplicationException( string.Format( "Unhandled default font \"{0}\"", font ) );
 		}
 
-		private static RenderFont[]	ms_DefaultFonts = new RenderFont[ ( int )DefaultFont.Count ];
+		private static readonly RenderFont[] ms_DefaultFonts = new RenderFont[ ( int )DefaultFont.Count ];
 
 	}
 }

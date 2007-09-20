@@ -19,11 +19,11 @@ namespace Poc0.LevelEditor.Core.Actions
 		/// <param name="delta">Movement delta</param>
 		public MoveObjectsAction( object[] objects, Vector3 delta )
 		{
-			List< IHasWorldFrame > frameObjects = new List< IHasWorldFrame >( );
+			List< IHasPosition > frameObjects = new List< IHasPosition >( );
 
 			foreach ( object obj in objects )
 			{
-				frameObjects.Add( Parent.GetType< IHasWorldFrame >( obj ) );
+				frameObjects.Add( Parent.GetType< IHasPosition >( obj ) );
 			}
 
 			m_Objects = objects;
@@ -72,13 +72,13 @@ namespace Poc0.LevelEditor.Core.Actions
 
 		private Vector3 m_Delta;
 		private readonly object[] m_Objects;
-		private readonly IHasWorldFrame[] m_FrameObjects;
+		private readonly IHasPosition[] m_FrameObjects;
 
 		private void MoveObjects( Vector3 delta )
 		{
-			foreach ( IHasWorldFrame frame in m_FrameObjects )
+			foreach ( IHasPosition frame in m_FrameObjects )
 			{
-				frame.WorldFrame.Translation += delta;
+				frame.Position += delta;
 			}
 			foreach ( ObjectEditState editState in m_Objects )
 			{

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 
 namespace Rb.Interaction
 {
@@ -74,11 +73,11 @@ namespace Rb.Interaction
 
         #region Private stuff
 
-        private string          m_Name;
-		private string			m_DisplayName;
-        private string          m_Description;
-        private byte            m_Id;
-		private CommandList		m_Commands;
+        private readonly string			m_Name;
+		private readonly string			m_DisplayName;
+		private readonly string			m_Description;
+		private readonly byte			m_Id;
+		private readonly CommandList	m_Commands;
 
         #endregion
     }

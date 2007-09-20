@@ -2,7 +2,6 @@ using System;
 using System.ComponentModel;
 using Rb.Core.Components;
 using Rb.Core.Maths;
-using Rb.Rendering;
 using Component=Rb.Core.Components.Component;
 
 namespace Poc0.Core
@@ -13,16 +12,33 @@ namespace Poc0.Core
 	[Serializable]
 	public class Entity : Component, IHasWorldFrame, INamed
 	{
-		/// <summary>
-		/// Entity graphics
-		/// </summary>
-		public IRenderable Graphics
-		{
-			get { return m_Graphics;  }
-			set { m_Graphics = value; }
-		}
-
 		#region IHasWorldFrame Members
+
+		/// <summary>
+		/// Event, raised when Position is changed
+		/// </summary>
+		public event PositionChangedDelegate PositionChanged;
+
+		/// <summary>
+		/// Object's position
+		/// </summary>
+		public Point3 Position
+		{
+			get { return m_Frame.Translation; }
+			set
+			{
+				if ( PositionChanged == null )
+				{
+					m_Frame.Translation = value;
+				}
+				else
+				{
+					Point3 oldPos = m_Frame.Translation;
+					m_Frame.Translation = value;
+					PositionChanged( this, oldPos, m_Frame.Translation );
+				}
+			}
+		}
 
 		/// <summary>
 		/// Gets the world frame for this object
@@ -49,7 +65,6 @@ namespace Poc0.Core
 
 		#region Private members
 
-		private IRenderable m_Graphics;
 		private readonly Matrix44 m_Frame = new Matrix44( );
 		private string m_Name = "Bob";
 

@@ -23,7 +23,7 @@ namespace Poc0.LevelEditor
 		/// </summary>
 		public override UITypeEditorEditStyle GetEditStyle( ITypeDescriptorContext context )
 		{
-		    return UITypeEditorEditStyle.Modal;
+			return context.PropertyDescriptor.IsReadOnly ? UITypeEditorEditStyle.None : UITypeEditorEditStyle.Modal;
 		}
 
 		/// <summary>

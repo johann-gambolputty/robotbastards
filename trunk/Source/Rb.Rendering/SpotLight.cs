@@ -1,4 +1,3 @@
-using System;
 using Rb.Core.Maths;
 
 namespace Rb.Rendering

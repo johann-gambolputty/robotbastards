@@ -69,14 +69,8 @@ namespace Rb.Rendering
 		/// </remarks>
 		public Cameras.CameraBase Camera
 		{
-			set
-			{
-				m_Camera = value;
-			}
-			get
-			{
-				return m_Camera;
-			}
+			set { m_Camera = value; }
+			get { return m_Camera; }
 		}
 
 

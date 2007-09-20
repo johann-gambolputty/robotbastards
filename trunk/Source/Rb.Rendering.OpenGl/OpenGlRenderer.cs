@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using Rb.Core.Maths;
 using Tao.OpenGl;
 
@@ -73,9 +74,9 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public override void AddLight( Light light )
 		{
-			//	TODO: AP: Lights should work for non-effect rendered objects
-			int lightId = NumActiveLights;
-			Gl.glEnable( Gl.GL_LIGHT0 + lightId );
+			//	TODO: AP: Lights should work for non-effect rendered objects. Need to set up lighting properties
+			int lightId = Gl.GL_LIGHT0 + NumActiveLights;
+			Gl.glEnable( lightId );
 			base.AddLight( light );
 		}
 
@@ -98,7 +99,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Clears the viewport
 		/// </summary>
-		public override void	ClearColour( System.Drawing.Color colour )
+		public override void ClearColour( Color colour )
 		{
 			Gl.glClearColor( colour.R / 255.0f, colour.G / 255.0f, colour.B / 255.0f, 1.0f );
 			Gl.glClear( Gl.GL_COLOR_BUFFER_BIT );
@@ -107,7 +108,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Clears the viewport using a vertical gradient fill
 		/// </summary>
-		public override void ClearVerticalGradient( System.Drawing.Color topColour, System.Drawing.Color bottomColour )
+		public override void ClearVerticalGradient( Color topColour, Color bottomColour )
 		{
 			Gl.glMatrixMode( Gl.GL_PROJECTION );
 			Gl.glPushMatrix( );
@@ -132,7 +133,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Clears the viewport using a radial gradient fill (shit)
 		/// </summary>
-		public override void ClearRadialGradient( System.Drawing.Color centreColour, System.Drawing.Color outerColour )
+		public override void ClearRadialGradient( Color centreColour, Color outerColour )
 		{
 			Gl.glMatrixMode( Gl.GL_PROJECTION );
 			Gl.glPushMatrix( );
@@ -169,7 +170,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Sets the specified colour as the current colour in the renderer (OpenGL specific)
 		/// </summary>
-		public void ApplyColour( System.Drawing.Color colour )
+		public void ApplyColour( Color colour )
 		{
 			Gl.glColor3ub( colour.R, colour.G, colour.B );
 		}
@@ -177,7 +178,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Draws a 2d quad. Used by ClearVerticalGradient(), ClearRadialGradient()
 		/// </summary>
-		private void Draw2dQuad( float x, float y, float width, float height, System.Drawing.Color tlColour, System.Drawing.Color trColour, System.Drawing.Color blColour, System.Drawing.Color brColour )
+		private void Draw2dQuad( float x, float y, float width, float height, Color tlColour, Color trColour, Color blColour, Color brColour )
 		{
 			float maxX = x + width;
 			float maxY = y + height;
@@ -203,7 +204,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Helper to convert a Matrix44 to a GL-friendly float array
 		/// </summary>
-		private float[] GetGlMatrix( Matrix44 matrix )
+		private static float[] GetGlMatrix( Matrix44 matrix )
 		{
 			return matrix.Elements;
 		}
@@ -283,7 +284,7 @@ namespace Rb.Rendering.OpenGl
 		/// Sets up an OpenGL matrix mode that has a direct correspondence with a Transform value
 		/// </summary>
 		/// <param name="type"></param>
-		private void SetSupportedMatrixMode( Transform type )
+		private static void SetSupportedMatrixMode( Transform type )
 		{
 			switch ( type )
 			{
@@ -300,7 +301,7 @@ namespace Rb.Rendering.OpenGl
 				//	TODO: HMMmmmm I'm not really sure how to handle texture transforms, because that implies setting the active texture stage to 1-7, 
 				//	with no nice way of resetting it after... I suppose RB could use the transform state model that OpenGL uses, because that would
 				//	map easily to DirectX (but the reverse isn't easy)
-				default : throw new ApplicationException( string.Format( "\"{0}\" is not supported in Translate()" ) );
+				default : throw new ApplicationException( string.Format( "\"{0}\" is not supported in Translate()", type ) );
 			}
 		}
 		
@@ -649,7 +650,7 @@ namespace Rb.Rendering.OpenGl
 			Gl.glGetIntegerv( Gl.GL_VIEWPORT, viewport );
 
 			//	Correct windows screen space into openGL screen space
-			double inX = ( double )x;
+			double inX = x;
 			double inY = ( double )viewport[ 3 ] - y;
 
 			//	TODO:This isn't right - the pick ray origin should be the camera origin
@@ -681,10 +682,10 @@ namespace Rb.Rendering.OpenGl
 			byte[] bufferMem = new byte[ width * height * bytesPerPixel ];
 			Gl.glReadPixels( 0, 0, width, height, Gl.GL_RGBA, Gl.GL_UNSIGNED_BYTE, bufferMem );
 
-			System.Drawing.Bitmap bmp;
+			Bitmap bmp;
 			fixed ( byte* bufferMemPtr = bufferMem )
 			{
-				bmp = new Bitmap( width, height, width * bytesPerPixel, System.Drawing.Imaging.PixelFormat.Format32bppArgb, ( IntPtr )bufferMemPtr );
+				bmp = new Bitmap( width, height, width * bytesPerPixel, PixelFormat.Format32bppArgb, ( IntPtr )bufferMemPtr );
 			}
 
 			return bmp;
@@ -720,7 +721,7 @@ namespace Rb.Rendering.OpenGl
 			Bitmap bmp;
 			fixed ( byte* bufferMemPtr = bufferMem )
 			{
-				bmp = new Bitmap( width, height, width * bytesPerPixel, System.Drawing.Imaging.PixelFormat.Format24bppRgb, ( IntPtr )bufferMemPtr );
+				bmp = new Bitmap( width, height, width * bytesPerPixel, PixelFormat.Format24bppRgb, ( IntPtr )bufferMemPtr );
 			}
 
 			return bmp;
@@ -733,7 +734,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Gets the current local to world transform
 		/// </summary>
-		private Matrix44	CurrentLocalToWorld
+		private Matrix44 CurrentLocalToWorld
 		{
 			get
 			{
@@ -742,8 +743,8 @@ namespace Rb.Rendering.OpenGl
 		}
 		
 
-		private Matrix44[]	m_LocalToWorldStack			= new Matrix44[ 8 ];
-		private int			m_TopOfLocalToWorldStack	= 0;
+		private readonly Matrix44[] m_LocalToWorldStack = new Matrix44[ 8 ];
+		private int m_TopOfLocalToWorldStack	= 0;
 
 		#endregion
 
@@ -752,7 +753,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Gets the current world to view transform
 		/// </summary>
-		private Matrix44	CurrentWorldToView
+		private Matrix44 CurrentWorldToView
 		{
 			get
 			{
@@ -760,8 +761,8 @@ namespace Rb.Rendering.OpenGl
 			}
 		}
 
-		private Matrix44[]	m_WorldToViewStack			= new Matrix44[ 4 ];
-		private int			m_TopOfWorldToViewStack		= 0;
+		private readonly Matrix44[] m_WorldToViewStack = new Matrix44[ 4 ];
+		private int m_TopOfWorldToViewStack = 0;
 
 		#endregion
 

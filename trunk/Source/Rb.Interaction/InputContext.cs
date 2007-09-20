@@ -20,21 +20,18 @@ namespace Rb.Interaction
         /// </summary>
         public object Control
         {
-            get { return m_Control; }
+            get { return m_Viewer.Control; }
         }
 
         /// <summary>
         /// Input context setup constructor
         /// </summary>
         /// <param name="viewer">Graphical context</param>
-        /// <param name="control">Control control</param>
-        public InputContext( Viewer viewer, object control )
+        public InputContext( Viewer viewer )
         {
             m_Viewer = viewer;
-            m_Control = control;
         }
 
-        private Viewer m_Viewer;
-        private object m_Control;
+        private readonly Viewer m_Viewer;
     }
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rb cacheable="true">
+	<asset path="sarge">
+        	<asset path="perPixelTextured.cgfx" property="Effect"/>
+        	<string value="NormalTechnique" property="TechniqueName"/>
+	</asset>
+</rb>

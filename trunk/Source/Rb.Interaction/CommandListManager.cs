@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Rb.Core.Utils;
 
@@ -39,13 +40,34 @@ namespace Rb.Interaction
 			}
 			return null;
 		}
+		
+		/// <summary>
+		/// Returns a CommandList for a given enum type (must be created already)
+		/// </summary>
+		public CommandList Get( Type enumType )
+		{
+			return Get( enumType.Name );
+		}
 
 		/// <summary>
 		/// Returns a CommandList for a given enum type (must be created already)
 		/// </summary>
 		public CommandList Get< EnumType >( )
 		{
-			return Get( typeof( EnumType ).Name );
+			return Get( typeof( EnumType ) );
+		}
+
+		/// <summary>
+		/// Finds a command list for a given command list enum. If there isn't one, a new list is created
+		/// </summary>
+		public CommandList FindOrCreateFromEnum( Type enumType )
+		{
+			CommandList result = Get( enumType );
+			if ( result == null )
+			{
+				result = CommandList.FromEnum( enumType );
+			}
+			return result;
 		}
 
 		/// <summary>

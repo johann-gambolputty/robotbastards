@@ -94,10 +94,10 @@ namespace Poc0.LevelEditor.Core.EditModes
 			m_AddToSelection = false;
 		}
 
-		private static IShape2 GetObjectShape( IHasWorldFrame obj )
+		private static IShape2 GetObjectShape( IHasPosition obj )
 		{
-			float minX = obj.WorldFrame.Translation.X - 5;
-			float minY = obj.WorldFrame.Translation.Z - 5;
+			float minX = obj.Position.X - 5;
+			float minY = obj.Position.Z - 5;
 
 			return new Rectangle( minX, minY, 10.0f, 10.0f );
 		}
@@ -110,7 +110,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 			foreach ( object obj in scene.Objects.GetAllOfType< object >( ) )
 			{
-				IHasWorldFrame frame = Parent.GetType< IHasWorldFrame >( obj );
+				IHasPosition frame = Parent.GetType< IHasPosition >( obj );
 				if ( ( frame != null ) && ( GetObjectShape( frame ).Contains( pos ) ) )
 				{
 					return obj;
@@ -128,7 +128,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 			foreach ( object obj in scene.Objects.GetAllOfType< object >( ) )
 			{
-				IHasWorldFrame frame = Parent.GetType< IHasWorldFrame >( obj );
+				IHasPosition frame = Parent.GetType< IHasPosition >( obj );
 				if ( ( frame != null ) && ( GetObjectShape( frame ).Overlaps( rect ) ) )
 				{
 					objects.Add( obj );

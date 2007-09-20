@@ -47,14 +47,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public AnimationSet Animations
 		{
-			set
-			{
-				m_Animations = value;
-			}
-			get
-			{
-				return m_Animations;
-			}
+			set { m_Animations = value; }
+			get { return m_Animations; }
 		}
 
 		#endregion
@@ -86,14 +80,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public string Name
 		{
-			get
-			{
-				return m_Name;
-			}
-			set
-			{
-				m_Name = value;
-			}
+			get { return m_Name; }
+			set { m_Name = value; }
 		}
 
 		#endregion
@@ -130,6 +118,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 		#endregion
 
+		#region Rendering
+
 		/// <summary>
 		/// Renders the model with a particular set of animation layers
 		/// </summary>
@@ -137,6 +127,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		{
 			m_PartMeshes[ 0 ].Render( context, layers );
 		}
+
+		#endregion
 
 		#region IRenderable Members
 
@@ -151,8 +143,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		#endregion
 
 		private AnimationSet	m_Animations;
-		private Mesh[]			m_PartMeshes = new Mesh[ ( int )ModelPart.NumParts ];
+		private readonly Mesh[]	m_PartMeshes = new Mesh[ ( int )ModelPart.NumParts ];
 		private string			m_Name;
-
 	}
 }

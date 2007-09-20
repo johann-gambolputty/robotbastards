@@ -64,7 +64,7 @@ namespace Rb.ComponentXmlLoader
                     case "rb"       : result = new RootBuilder( parameters, errors, reader );							break;
                     case "object"   : result = new ObjectBuilder( parameters, errors, reader, parentBuilder );			break;
                     case "ref"      : result = new ReferenceBuilder( parameters, errors, reader, parentBuilder );		break;
-                    case "resource" : result = new AssetBuilder( parameters, errors, reader, parentBuilder );		break;
+                    case "asset"	: result = new AssetBuilder( parameters, errors, reader, parentBuilder );		break;
                     case "instance" : result = new InstanceBuilder( parameters, errors, reader, parentBuilder );		break;
 					case "method"	: result = new MethodBuilder( parameters, errors, reader, parentBuilder );			break;
                     case "list"     : result = new ListBuilder( parameters, errors, reader, parentBuilder );			break;

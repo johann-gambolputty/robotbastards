@@ -76,6 +76,7 @@
     </Compile>
     <Compile Include="EditModes\SelectEditMode.cs" />
     <Compile Include="SelectedObjects.cs" />
+    <Compile Include="SphereCameraController.cs" />
     <Compile Include="TileBlock2dRenderer.cs">
       <SubType>Code</SubType>
     </Compile>

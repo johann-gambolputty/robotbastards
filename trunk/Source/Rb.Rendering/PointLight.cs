@@ -10,7 +10,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Light position
 		/// </summary>
-		public Point3	Position
+		public Point3 Position
 		{
 			get { return m_Position; }
 			set { m_Position = value; }
@@ -19,7 +19,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Light inner radius
 		/// </summary>
-		public float	InnerRadius
+		public float InnerRadius
 		{
 			get { return m_InnerRadius; }
 			set { m_InnerRadius = value; }
@@ -28,7 +28,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Light outer radius
 		/// </summary>
-		public float	OuterRadius
+		public float OuterRadius
 		{
 			get { return m_OuterRadius; }
 			set { m_OuterRadius = value; }
@@ -37,7 +37,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Light attenuation
 		/// </summary>
-		public float	Attenuation
+		public float Attenuation
 		{
 			get { return m_Attenuation; }
 			set { m_Attenuation = value; }

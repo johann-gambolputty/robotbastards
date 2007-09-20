@@ -15,10 +15,17 @@
       </template>
 
       <!-- Evil robot renderer pattern -->
-      <template type="Poc0.Core.EntityGraphics" dynProperty="Graphics">
-        <location value="sarge" dynProperty="GraphicsLocation"/>
+      <template type="Poc0.Core.EntityGraphics">
+        <location value="TestGraphics.components.xml" dynProperty="GraphicsLocation"/>
       </template>
 
+    </template>
+    
+    
+    <!-- Light pattern -->
+    <template type="Poc0.Core.PointLightFrame" assembly="Poc0.Core" name="Point Light">
+      <template type="Rb.Rendering.PointLight" assembly="Rb.Rendering" dynProperty="Light">
+      </template>
     </template>
 
   </list>

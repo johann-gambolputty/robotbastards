@@ -17,6 +17,19 @@ namespace Poc0.LevelEditor.Core
 			get { return m_RuntimeScene; }
 		}
 
-		private readonly Scene m_RuntimeScene = new Scene( );
+		private readonly Scene m_RuntimeScene = CreateRuntimeScene( );
+
+		/// <summary>
+		/// Creates the runtime scene
+		/// </summary>
+		private static Scene CreateRuntimeScene( )
+		{
+			Scene newScene = new Scene( );
+
+			//	TODO: AP: Bodge - load default scene from component file
+			newScene.AddService( newScene.Builder.CreateInstance( typeof( LightingManager ) ) );
+
+			return newScene;
+		}
 	}
 }

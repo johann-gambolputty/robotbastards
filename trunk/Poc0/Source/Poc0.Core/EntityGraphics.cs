@@ -1,7 +1,9 @@
 using System;
 using Rb.Core.Assets;
+using Rb.Core.Components;
 using Rb.Rendering;
 using Rb.World;
+using Component=Rb.Core.Components.Component;
 
 namespace Poc0.Core
 {
@@ -12,15 +14,15 @@ namespace Poc0.Core
 	/// A handy wrapper that makes it much easier to edit entity graphics in the editor
 	/// </remarks>
 	[Serializable]
-	public class EntityGraphics : IRenderable
+	public class EntityGraphics : Component, IRenderable, ISceneObject
 	{
 		/// <summary>
 		/// Location of the graphics asset used to display the entity
 		/// </summary>
 		public ISource GraphicsLocation
 		{
-			get { return m_Asset.Source; }
-			set { m_Asset.Source = value; }
+			get { return m_GraphicsAsset.Source; }
+			set { m_GraphicsAsset.Source = value; }
 		}
 
 		#region IRenderable Members
@@ -31,16 +33,64 @@ namespace Poc0.Core
 		/// <param name="context">Rendering context</param>
 		public void Render( IRenderContext context )
 		{
+			IHasWorldFrame hasFrame = Parent as IHasWorldFrame;
+			if ( hasFrame != null )
+			{
+				Renderer.Instance.PushTransform( Transform.LocalToWorld, hasFrame.WorldFrame );
+			}
+
 			m_Lights.Begin( );
 
-			m_Asset.Asset.Render( context );
+			//	Resolve graphics references, then render
+			Resolve( );
+			m_Graphics.Render( context );
 
 			m_Lights.End( );
+			
+			if ( hasFrame != null )
+			{
+				Renderer.Instance.PopTransform( Transform.LocalToWorld );
+			}
 		}
 
 		#endregion
 
+		#region ISceneObject Members
+
+		/// <summary>
+		/// Sets the scene context of this object
+		/// </summary>
+		/// <param name="scene">Scene context</param>
+		public void SetSceneContext( Scene scene )
+		{
+			scene.Renderables.Add( this );
+			m_Lights.SetSceneContext( scene );
+		}
+
+		#endregion
+
+		private void Resolve( )
+		{
+			if ( m_Graphics != null )
+			{
+				return;
+			}
+
+			IInstanceBuilder builder = m_GraphicsAsset.Asset as IInstanceBuilder;
+			if ( builder != null )
+			{
+				m_Graphics = ( IRenderable )builder.CreateInstance( Builder.Instance );
+			}
+			else
+			{
+				m_Graphics = ( IRenderable )m_GraphicsAsset;
+			}
+		}
+
+		[NonSerialized]
+		private IRenderable m_Graphics;
 		private readonly LightMeter m_Lights = new LightMeter( );
-		private readonly RenderableAssetHandle m_Asset = new RenderableAssetHandle( );
+		private readonly AssetHandle m_GraphicsAsset = new AssetHandle( );
+
 	}
 }

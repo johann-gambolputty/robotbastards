@@ -61,6 +61,12 @@
     <Compile Include="EditorControls.Designer.cs">
       <DependentUpon>EditorControls.cs</DependentUpon>
     </Compile>
+    <Compile Include="GameViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GameViewControl.Designer.cs">
+      <DependentUpon>GameViewControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="LogForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,6 +103,10 @@
     <EmbeddedResource Include="EditorControls.resx">
       <SubType>Designer</SubType>
       <DependentUpon>EditorControls.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameViewControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>GameViewControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LogForm.resx">
       <SubType>Designer</SubType>
@@ -178,6 +188,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\Rb.AppCore\Rb.AppCore.csproj">
+      <Project>{51095D19-F325-49A4-89C1-18FA270515FD}</Project>
+      <Name>Rb.AppCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.AssemblySelector\Rb.AssemblySelector.csproj">
       <Project>{2097B22A-91A5-4CFF-8CCB-846A10523CB9}</Project>
       <Name>Rb.AssemblySelector</Name>

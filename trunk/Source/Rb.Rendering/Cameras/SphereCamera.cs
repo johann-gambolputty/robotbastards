@@ -22,8 +22,18 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public override void Begin( )
 		{
+			Renderer.Instance.PushTransform( Transform.WorldToView );
 			Renderer.Instance.SetLookAtTransform( m_LookAt, m_Pos, m_YAxis );
 			base.Begin( );
+		}
+
+		/// <summary>
+		/// Pops camera transforms
+		/// </summary>
+		public override void End( )
+		{
+			Renderer.Instance.PopTransform( Transform.WorldToView );
+			base.End( );
 		}
 
 		#region IUpdater Members

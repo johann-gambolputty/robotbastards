@@ -12,21 +12,17 @@ namespace Poc0.LevelEditor.Core
 	/// Edits the position of a world frame object
 	/// </summary>
 	[Serializable]
-	public class PositionEditor : IRenderable, IHasWorldFrame
+	public class PositionEditor : IRenderable, IHasPosition
 	{
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
 		/// <param name="parent">Parent edit state</param>
-		/// <param name="frame">World frame</param>
-		/// <param name="x">Initial X position</param>
-		/// <param name="y">Initial Y position</param>
-		public PositionEditor( ObjectEditState parent, Matrix44 frame, float x, float y )
+		/// <param name="hasPosition">Positionable object</param>
+		public PositionEditor( ObjectEditState parent, IHasPosition hasPosition )
 		{
 			m_Parent = parent;
-			m_Frame = frame;
-
-			frame.Translation = new Point3( x, 0, y );
+			m_HasPosition = hasPosition;
 		}
 
 		#region IRenderable Members
@@ -37,11 +33,9 @@ namespace Poc0.LevelEditor.Core
 		/// <param name="context">Rendering context</param>
 		public void Render( IRenderContext context )
 		{
-			Matrix44 frame = m_Frame;
-
 			//	TODO: AP: Render object bounds
-			int x = ( int )frame.Translation.X - 5;
-			int y = ( int )frame.Translation.Z - 5;
+			int x = ( int )m_HasPosition.Position.X - 5;
+			int y = ( int )m_HasPosition.Position.Z - 5;
 			int width = 10;
 			int height = 10;
 
@@ -53,13 +47,26 @@ namespace Poc0.LevelEditor.Core
 		#endregion
 
 		private readonly ObjectEditState m_Parent;
-		private readonly Matrix44 m_Frame;
+		private readonly IHasPosition m_HasPosition;
 
 		#region IHasWorldFrame Members
-
-		public Matrix44 WorldFrame
+		
+		/// <summary>
+		/// Event, raised when Position is changed
+		/// </summary>
+		public event PositionChangedDelegate PositionChanged
 		{
-			get { return m_Frame; }
+			add { throw new NotSupportedException( ); }
+			remove { throw new NotSupportedException( ); }
+		}
+
+		/// <summary>
+		/// Object's position
+		/// </summary>
+		public Point3 Position
+		{
+			get { return m_HasPosition.Position; }
+			set { m_HasPosition.Position = value; }
 		}
 
 		#endregion
@@ -87,16 +94,20 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Event, invoked when <see cref="Instance"/> (or one of its children) is modified
 		/// </summary>
-		public event ObjectChangedDelegate ObjectChanged;
+		public event ObjectChangedDelegate ObjectChanged
+		{
+			add { m_ObjectChanged += value; }
+			remove { m_ObjectChanged -= value; }
+		}
 
 		/// <summary>
 		/// Invokes the <see cref="ObjectChanged"/> event
 		/// </summary>
 		public void OnObjectChanged( )
 		{
-			if ( ObjectChanged != null )
+			if ( m_ObjectChanged != null )
 			{
-				ObjectChanged( );
+				m_ObjectChanged( );
 			}
 		}
 
@@ -111,31 +122,13 @@ namespace Poc0.LevelEditor.Core
 			BuildObjectEditors( obj, x, y );
 		}
 
-		private void BuildTemplateEditors( ObjectTemplate template, float x, float y )
-		{
-			ObjectTemplate worldFrameTemplate = template.FindTemplateOfType< IHasWorldFrame >( );
-			if ( worldFrameTemplate != null )
-			{
-				Matrix44 frame = new Matrix44( );
-				worldFrameTemplate[ "WorldFrame" ] = frame;
-				AddChild( new PositionEditor( this, frame, x, y ) );
-			}
-		}
-
 		private void BuildObjectEditors( object obj, float x, float y )
 		{
-			if ( obj is ObjectTemplate )
+			IHasPosition hasPosition = Rb.Core.Components.Parent.GetType< IHasPosition >( obj );
+			if ( hasPosition != null )
 			{
-				BuildTemplateEditors( ( ObjectTemplate )obj, x, y );
-			}
-			else
-			{
-				IHasWorldFrame frame = Rb.Core.Components.Parent.GetType<IHasWorldFrame>( obj );
-				if ( frame != null )
-				{
-					frame.WorldFrame.Translation = new Point3( x, 0, y );
-					AddChild( new PositionEditor( this, frame.WorldFrame, x, y ) );
-				}
+				hasPosition.Position = new Point3( x, 0, y );
+				AddChild( new PositionEditor( this, hasPosition ) );
 			}
 		}
 
@@ -157,6 +150,9 @@ namespace Poc0.LevelEditor.Core
 
 		[NonSerialized]
 		private bool m_Selected;
+
+		[NonSerialized]
+		private ObjectChangedDelegate m_ObjectChanged;
 
 		private readonly object m_Object;
 

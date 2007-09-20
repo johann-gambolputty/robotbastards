@@ -16,10 +16,21 @@ namespace Rb.Rendering.Cameras
 			int width = renderer.ViewportWidth;
 			int height = renderer.ViewportHeight;
 
-			float aspectRatio = ( height == 0 ) ? 1.0f : ( float )width / ( float )height;
+			float aspectRatio = ( height == 0 ) ? 1.0f : width / ( float )height;
+
+			Renderer.Instance.PushTransform( Transform.ViewToScreen );
 			Renderer.Instance.SetPerspectiveProjectionTransform( m_PerspectiveFov, aspectRatio, m_PerspectiveZNear, m_PerspectiveZFar );
 
 			base.Begin( );
+		}
+
+		/// <summary>
+		/// Pops camera transforms
+		/// </summary>
+		public override void End( )
+		{
+			Renderer.Instance.PopTransform( Transform.ViewToScreen );
+			base.End( );
 		}
 
 		#region	Public properties

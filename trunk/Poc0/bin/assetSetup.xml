@@ -8,6 +8,7 @@
   <loaders>
     <loader type="Rb.ComponentXmlLoader.Loader" assembly="Rb.ComponentXmlLoader"/>
     <loader type="Rb.Rendering.OpenGl.Md3Loader.Loader" assembly="Rb.Rendering.OpenGl.Md3Loader"/>
+    <loader type="Rb.Rendering.OpenGl.Cg.CgEffectLoader" assembly="Rb.Rendering.OpenGl"/>
   </loaders>
 </assetManager>
 

@@ -9,6 +9,15 @@ namespace Rb.Rendering
     public class Viewer
     {
 		/// <summary>
+		/// The underlying control
+		/// </summary>
+    	public object Control
+    	{
+			get { return m_Control; }
+			set { m_Control = value; }
+    	}
+
+		/// <summary>
 		/// The rendering context for the viewer
 		/// </summary>
         public IRenderContext Context
@@ -81,10 +90,9 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Viewer setup
 		/// </summary>
-		/// <param name="camera"></param>
-		/// <param name="renderable"></param>
-        public Viewer( Cameras.CameraBase camera, IRenderable renderable )
+        public Viewer( object control, Cameras.CameraBase camera, IRenderable renderable )
         {
+			m_Control = control;
             m_Camera = camera;
             m_Renderable = renderable;
         }
@@ -121,9 +129,16 @@ namespace Rb.Rendering
 
             m_Context.RenderTime = TinyTime.CurrentTime;
 
-            m_Camera.Begin( );
+			if ( m_Camera != null )
+			{
+				m_Camera.Begin( );
+			}
             m_Context.ApplyTechnique( m_Technique, m_Renderable );
-            m_Camera.End( );
+
+			if ( m_Camera != null )
+			{
+				m_Camera.End( );
+			}
 
 			if ( m_ShowFps )
 			{
@@ -133,7 +148,8 @@ namespace Rb.Rendering
 			Renderer.Instance.SetViewport( oldRect.Left, oldRect.Top, oldRect.Width, oldRect.Height );
         }
 
-		private FpsDisplay			m_FpsDisplay = new FpsDisplay( );
+		private object				m_Control;
+		private readonly FpsDisplay	m_FpsDisplay = new FpsDisplay( );
         private Cameras.CameraBase  m_Camera;
         private IRenderContext      m_Context = new RenderContext( );
         private IRenderable         m_Renderable;

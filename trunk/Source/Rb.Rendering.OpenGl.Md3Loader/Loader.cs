@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Collections;
-using Rb.Core;
 using Rb.Core.Assets;
 using Rb.Core.Components;
 using Rb.Core.Maths;
@@ -127,7 +126,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// Also, the textures are usually .tga files, which the texture loader can't currently cope with (TODO: ...) - change the extension to
 		/// .bmp in this case
 		/// </remarks>
-		private ISource TextureFile( ISource source, string path )
+		private static ISource TextureFile( ISource source, string path )
 		{
 			//	Remove the extension
 			string name = Path.GetFileNameWithoutExtension( path );
@@ -152,7 +151,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Loads a skin file
 		/// </summary>
-		private Hashtable LoadSkin( ISource source, ISource skinSource )
+		private static Hashtable LoadSkin( ISource source, ISource skinSource )
 		{
 			using ( Stream inputStream = skinSource.Open( ) )
 			{
@@ -253,7 +252,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Loads an MD3 mesh resource from a stream
 		/// </summary>
-		private Mesh LoadMd3( ModelPart part, Vector3 scale, ISource md3Source, Hashtable surfaceTextureTable )
+		private static Mesh LoadMd3( ModelPart part, Vector3 scale, ISource md3Source, IDictionary surfaceTextureTable )
 		{
 			using ( Stream inputStream = md3Source.Open( ) )
 			{
@@ -269,17 +268,22 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				}
 
 				//	Read in header
-				int version			= reader.ReadInt32( );
-				string name			= ReadString( reader, MaxPathLength );
-				int flags			= reader.ReadInt32( );
+				//int version			=
+				reader.ReadInt32( );
+				//string name			=
+				ReadString( reader, MaxPathLength );
+				//int flags			=
+				reader.ReadInt32( );
 				int numFrames		= reader.ReadInt32( );
 				int numTags			= reader.ReadInt32( );
 				int numSurfaces		= reader.ReadInt32( );
-				int numSkins		= reader.ReadInt32( );
+				//int numSkins		=
+				reader.ReadInt32( );
 				int framesOffset	= reader.ReadInt32( );
 				int tagsOffset		= reader.ReadInt32( );
 				int surfacesOffset	= reader.ReadInt32( );
-				int eofOffset		= reader.ReadInt32( );
+				//int eofOffset		=
+				reader.ReadInt32( );
 
 				//	TODO: Can load directly into mesh frame, tag and surface structures - don't do this intermediate step
 				Mesh mesh = new Mesh( part );
@@ -448,15 +452,20 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				//	Create a new surface
 				Mesh.Surface curSurface		= new Mesh.Surface( );
 
-				int		ident				= reader.ReadInt32( );
+				//int		ident				=
+				reader.ReadInt32( );
 				string	name				= ReadString ( reader, MaxPathLength );
-				int		flags				= reader.ReadInt32( );
-				int		surfaceNumFrames	= reader.ReadInt32( );
-				int		numShaders			= reader.ReadInt32( );
+				//int		flags				= 
+				reader.ReadInt32( );
+				//int		surfaceNumFrames	= 
+				reader.ReadInt32( );
+				//int		numShaders			= 
+				reader.ReadInt32( );
 				int		numVertices			= reader.ReadInt32( );
 				int		numTriangles		= reader.ReadInt32( );
 				int		trianglesOffset		= reader.ReadInt32( );
-				int		shadersOffset		= reader.ReadInt32( );
+				//int		shadersOffset		= 
+				reader.ReadInt32( );
 				int		texturesOffset		= reader.ReadInt32( );
 				int		verticesOffset		= reader.ReadInt32( );
 				int		endOffset			= reader.ReadInt32( );
@@ -487,16 +496,16 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Reads surface shaders
 		/// </summary>
-		private static void ReadShaders(BinaryReader reader, long offset, int numShaders)
-		{
-			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
+		//private static void ReadShaders(BinaryReader reader, long offset, int numShaders)
+		//{
+		//    reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 
-			for ( int shaderCount = 0; shaderCount < numShaders; ++shaderCount )
-			{
-				string shaderName  = ReadString( reader, MaxPathLength );
-				int index = reader.ReadInt32( );
-			}
-		}
+		//    for ( int shaderCount = 0; shaderCount < numShaders; ++shaderCount )
+		//    {
+		//        string shaderName  = ReadString( reader, MaxPathLength );
+		//        int index = reader.ReadInt32( );
+		//    }
+		//}
 
 		/// <summary>
 		/// Reads surface triangles

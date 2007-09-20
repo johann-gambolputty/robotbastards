@@ -65,15 +65,15 @@ namespace Rb.World
 		/// <param name="scene">Scene context</param>
 		public void SetSceneContext( Scene scene )
 		{
-			scene.PreRender += new Scene.RenderEventDelegate( OnPreRender );
+			scene.PreRender += OnPreRender;
 		}
 
 		#endregion
 		
 		#region Private stuff
 
-		private List< ILightMeter > m_Meters	= new List< ILightMeter >( );
-		private List< Light >		m_Lights	= new List< Light >( );
+		private readonly List< ILightMeter > m_Meters = new List< ILightMeter >( );
+		private readonly List< Light > m_Lights = new List< Light >( );
 
 		/// <summary>
 		/// Called before the scene gets rendered

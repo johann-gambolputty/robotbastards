@@ -13,6 +13,7 @@ namespace Rb.Core.Assets
 	/// Use <see cref="AssetProxy"/> to create decorator pattern asset handles that derive from AssetHandle, and
 	/// implement asset interfaces.
 	/// </remarks>
+	[Serializable]
 	public class AssetHandle
 	{
 		/// <summary>

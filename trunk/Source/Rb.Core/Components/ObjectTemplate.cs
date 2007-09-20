@@ -370,7 +370,7 @@ namespace Rb.Core.Components
 				{
 					if ( value is ObjectTemplate )
 					{
-						value = ( ( ObjectTemplate )value ).CreateInstance( Builder.Instance );
+						value = ( ( ObjectTemplate )value ).CreateInstance( builder );
 					}
 
 					m_Type.GetProperty( property.Name ).SetValue( result, value, null );

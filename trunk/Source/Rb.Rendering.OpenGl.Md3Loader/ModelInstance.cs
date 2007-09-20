@@ -66,7 +66,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
         /// <param name="scene">Scene that this object was added to</param>
 		public void	SetSceneContext( Scene scene )
 		{
-            scene.GetClock( "animationClock" ).Subscribe( new Clock.TickDelegate( Update ) );
+            scene.GetClock( "animationClock" ).Subscribe( Update );
 		}
 
 		#endregion
@@ -175,8 +175,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 		#region	Private stuff
 
-		private Model m_Source;
-		private AnimationLayer[] m_Layers;
+		private readonly Model m_Source;
+		private readonly AnimationLayer[] m_Layers;
 
 		#endregion
 
