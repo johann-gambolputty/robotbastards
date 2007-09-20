@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Xml.Serialization;
 using System.Xml;
 using Rb.Core.Utils;
@@ -13,11 +12,25 @@ namespace Rb.Interaction
 	public class CommandInputTemplateMap : IXmlSerializable
 	{
 		/// <summary>
+		/// Runs through all the commands that have been mapped to inputs
+		/// </summary>
+		public IEnumerable< Command > Commands
+		{
+			get
+			{
+				foreach ( CommandInputTemplates inputTemplates in m_Map )
+				{
+					yield return inputTemplates.Command;
+				}
+			}
+		}
+
+		/// <summary>
 		/// Instances all the templates in the map, for the specified context, and adds them to a <see cref="CommandUser"/>
 		/// </summary>
 		/// <param name="context">Input context</param>
 		/// <param name="user">User to bind inputs to commands</param>
-		public void AddContextInputsToUser( InputContext context, CommandUser user )
+		public void BindToInput( InputContext context, CommandUser user )
 		{
 			foreach ( CommandInputTemplates inputTemplates in m_Map )
 			{
@@ -131,7 +144,7 @@ namespace Rb.Interaction
 
 		#region Private stuff
 
-		private List< CommandInputTemplates > m_Map = new List< CommandInputTemplates >( );
+		private readonly List< CommandInputTemplates > m_Map = new List< CommandInputTemplates >( );
 
 		/// <summary>
 		/// Associates a command with some input templates
@@ -155,7 +168,7 @@ namespace Rb.Interaction
 				get { return m_Command;  }
 			}
 
-			private Command m_Command;
+			private readonly Command m_Command;
 		}
 
 		#endregion

@@ -87,7 +87,7 @@ namespace Rb.ComponentXmlLoader
             }
         }
 
-        private string m_InputSource;
+        private readonly string m_InputSource;
 
     }
 }

@@ -52,9 +52,23 @@ namespace Rb.ComponentXmlLoader
 		/// </summary>
 		public object Load( Stream stream, string sourceName, LoadParameters parameters )
 		{
+			if ( !( parameters is ComponentLoadParameters ) )
+			{
+				ComponentLoadParameters newParameters = new ComponentLoadParameters( parameters.Target );
+
+				foreach ( IDynamicProperty property in parameters.Properties )
+				{
+					newParameters.Properties.Add( property );
+				}
+
+				parameters = newParameters;
+			}
+
 			parameters.CanCache = false;
 
-			ErrorCollection errors = new ErrorCollection( sourceName );
+			ErrorCollection errors = new ErrorCollection( string.Copy( sourceName ) );
+
+			sourceName = Path.GetFileName( sourceName );
 
 			XmlTextReader reader = new XmlTextReader( stream );
 			reader.WhitespaceHandling = WhitespaceHandling.Significant;
@@ -126,7 +140,7 @@ namespace Rb.ComponentXmlLoader
 		{
 			using ( Stream stream = source.Open( ) )
 			{
-				return Load( stream, source.ToString( ), parameters );
+				return Load( stream, source.Path, parameters );
 			}
 		}
 

@@ -5,8 +5,6 @@ using Rb.Rendering.OpenGl;
 
 namespace Rb.Rendering.OpenGl.Md3Loader
 {
-
-
 	/// <summary>
 	/// OpenGL mesh with support for MD3 animation
 	/// </summary>
@@ -25,10 +23,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public ModelPart Part
 		{
-			get
-			{
-				return m_Part;
-			}
+			get { return m_Part; }
 		}
 
 		#region	Mesh tags
@@ -47,22 +42,16 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Access to the tag name array
 		/// </summary>
-		public string[]		TagNames
+		public string[] TagNames
 		{
-			get
-			{
-				return m_TagNames;
-			}
-			set
-			{
-				m_TagNames = value;
-			}
+			get { return m_TagNames; }
+			set { m_TagNames = value; }
 		}
 
 		/// <summary>
 		/// Finds the index of a named tag
 		/// </summary>
-		public int		GetTagIndex( string name )
+		public int GetTagIndex( string name )
 		{
 			for ( int tagNameIndex = 0; tagNameIndex < m_TagNames.Length; ++tagNameIndex )
 			{
@@ -81,32 +70,19 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Access to the tag that specifies the coordinate frame for the nested mesh
 		/// </summary>
-		public int		TransformTagIndex
+		public int TransformTagIndex
 		{
-			set
-			{
-				m_TransformTagIndex = value;
-			}
-			get
-			{
-				return m_TransformTagIndex;
-			}
+			set { m_TransformTagIndex = value; }
+			get { return m_TransformTagIndex; }
 		}
-
 
 		/// <summary>
 		/// Access to the mesh attached to this one by the transform tag
 		/// </summary>
 		public Mesh	NestedMesh
 		{
-			get
-			{
-				return m_NestedMesh;
-			}
-			set
-			{
-				m_NestedMesh = value;
-			}
+			get { return m_NestedMesh; }
+			set { m_NestedMesh = value; }
 
 		}
 
@@ -132,14 +108,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public int	DefaultFrame
 		{
-			get
-			{
-				return m_Frame;
-			}
-			set
-			{
-				m_Frame = value;
-			}
+			get { return m_Frame; }
+			set { m_Frame = value; }
 		}
 
 		/// <summary>
@@ -147,14 +117,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public FrameInfo[]	FrameInfoList
 		{
-			get
-			{
-				return m_FrameInfo;
-			}
-			set
-			{
-				m_FrameInfo = value;
-			}
+			get { return m_FrameInfo; }
+			set { m_FrameInfo = value; }
 		}
 
 		#endregion
@@ -171,14 +135,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			/// </summary>
 			public OpenGlVertexBuffer[] VertexBuffers
 			{
-				get
-				{
-					return m_VertexBuffers;
-				}
-				set
-				{
-					m_VertexBuffers = value;
-				}
+				get { return m_VertexBuffers; }
+				set { m_VertexBuffers = value; }
 			}
 
 			private OpenGlVertexBuffer[]	m_VertexBuffers;
@@ -192,61 +150,37 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			/// <summary>
 			/// Surface texture
 			/// </summary>
-			public Texture2d			Texture
+			public Texture2d Texture
 			{
-				set
-				{
-					m_Texture = value;
-				}
-				get
-				{
-					return m_Texture;
-				}
+				set { m_Texture = value; }
+				get { return m_Texture; }
 			}
 
 			/// <summary>
 			/// Access to the surface's frame list (vertex buffers for each animation frame)
 			/// </summary>
-			public SurfaceFrame[]		SurfaceFrames
+			public SurfaceFrame[] SurfaceFrames
 			{
-				get
-				{
-					return m_Frames;
-				}
-				set
-				{
-					m_Frames = value;
-				}
+				get { return m_Frames; }
+				set { m_Frames = value; }
 			}
 
 			/// <summary>
 			/// Access to the surface's indexed group
 			/// </summary>
-			public OpenGlIndexedGroup	Group
+			public OpenGlIndexedGroup Group
 			{
-				get
-				{
-					return m_Group;
-				}
-				set
-				{
-					m_Group = value;
-				}
+				get { return m_Group; }
+				set { m_Group = value; }
 			}
 
 			/// <summary>
 			/// Access to texture coordinates used by this surface
 			/// </summary>
-			public OpenGlVertexBuffer	TextureUVs
+			public OpenGlVertexBuffer TextureUVs
 			{
-				get
-				{
-					return m_TextureUVs;
-				}
-				set
-				{
-					m_TextureUVs = value;
-				}
+				get { return m_TextureUVs; }
+				set { m_TextureUVs = value; }
 			}
 
 			private SurfaceFrame[]		m_Frames;
@@ -462,31 +396,25 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public string Name
 		{
-			get
-			{
-				return m_Name;
-			}
-			set
-			{
-				m_Name = value;
-			}
+			get { return m_Name; }
+			set { m_Name = value; }
 		}
 
 		#endregion	
 
 		#region	Private stuff
-
-		private string					m_Name;
-		private ModelPart				m_Part;
-		private TechniqueSelector      	m_Technique = new TechniqueSelector( );
-		private string[]				m_TagNames;
-		private FrameInfo[]				m_FrameInfo;
-		private int						m_TransformTagIndex = -1;
-		private Mesh					m_NestedMesh;
-		private int						m_Frame;
-		private Surface[]				m_Surfaces;
-		private SurfaceRenderer			m_SurfaceRenderer = new SurfaceRenderer( );
-		private ShaderParameter			m_TextureParameter;
+		
+		private readonly ModelPart			m_Part;
+		private readonly TechniqueSelector	m_Technique = new TechniqueSelector( );
+		private readonly SurfaceRenderer	m_SurfaceRenderer = new SurfaceRenderer( );
+		private string						m_Name;
+		private string[]					m_TagNames;
+		private FrameInfo[]					m_FrameInfo;
+		private int							m_TransformTagIndex = -1;
+		private Mesh						m_NestedMesh;
+		private int							m_Frame;
+		private Surface[]					m_Surfaces;
+		private ShaderParameter				m_TextureParameter;
 
 		#endregion
 	}

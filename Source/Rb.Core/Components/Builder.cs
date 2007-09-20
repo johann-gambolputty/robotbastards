@@ -16,7 +16,7 @@ namespace Rb.Core.Components
         /// <returns>Type instance</returns>
         public object CreateInstance( Type type )
         {
-            return System.Activator.CreateInstance( type );
+            return Activator.CreateInstance( type );
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Rb.Core.Components
         /// <returns>New instance of type</returns>
         public object CreateInstance( Type type, object[] constructorArgs )
         {
-            return System.Activator.CreateInstance( type, constructorArgs );
+            return Activator.CreateInstance( type, constructorArgs );
         }
 
         #endregion

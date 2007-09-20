@@ -42,33 +42,27 @@ namespace Rb.Interaction
 
 		public void AddActiveListener( Command cmd, CommandEventDelegate listener )
 		{
-			FindBindingForCommand( cmd ).CommandActive += listener;
+			InitialiseCommandBinding( cmd ).CommandActive += listener;
 		}
 
 		public void AddActivatedListener( Command cmd, CommandEventDelegate listener )
 		{
-			FindBindingForCommand( cmd ).CommandActivated += listener;
+			InitialiseCommandBinding( cmd ).CommandActivated += listener;
 		}
 		
 		public void AddActiveListener( CommandList commands, CommandEventDelegate listener )
 		{
-			foreach ( Binding binding in m_Bindings )
+			foreach ( Command cmd in commands )
 			{
-				if ( binding.Command.Commands == commands )
-				{
-					binding.CommandActive += listener;
-				}
+				AddActiveListener( cmd, listener );;
 			}
 		}
 
 		public void AddActivatedListener( CommandList commands, CommandEventDelegate listener )
 		{
-			foreach ( Binding binding in m_Bindings )
+			foreach ( Command cmd in commands )
 			{
-				if ( binding.Command.Commands == commands )
-				{
-					binding.CommandActivated += listener;
-				}
+				AddActivatedListener( cmd, listener );
 			}
 		}
 		
@@ -83,28 +77,19 @@ namespace Rb.Interaction
 
 		#endregion
 
-		public void InitialiseAllCommandListBindings( )
+		/// <summary>
+		/// Creates a binding for a given command
+		/// </summary>
+		private Binding InitialiseCommandBinding( Command command )
 		{
-			foreach ( CommandList commandList in CommandListManager.Instance.CommandLists )
+			Binding binding = FindBindingForCommand( command );
+			if ( binding == null )
 			{
-				InitialiseCommandListBindings( commandList );
+				binding = new Binding( command );
+				m_Bindings.Add( binding );
 			}
-		}
 
-		public void InitialiseCommandListBindings( CommandList commands )
-		{
-			foreach ( Command command in commands )
-			{
-				InitialiseCommandBinding( command );
-			}
-		}
-
-		public void InitialiseCommandBinding( Command command )
-		{
-			if ( FindBindingForCommand( command ) == null )
-			{
-				m_Bindings.Add( new Binding( command ) );
-			}
+			return binding;
 		}
 
 		/// <summary>
@@ -217,13 +202,13 @@ namespace Rb.Interaction
 				}
 			}
 
-			private Command			m_Command;
-			private uint			m_UpdateCount;
-			private uint			m_LastActiveUpdate;
-			private List< IInput >	m_Inputs = new List< IInput >( );
+			private readonly Command		m_Command;
+			private uint					m_UpdateCount;
+			private uint					m_LastActiveUpdate;
+			private readonly List< IInput >	m_Inputs = new List< IInput >( );
 		}
 
-		private List< Binding > m_Bindings = new List< Binding >( );
+		private readonly List< Binding > m_Bindings = new List< Binding >( );
 
 		/// <summary>
 		/// Returns an existing Binding object for a given command, or null

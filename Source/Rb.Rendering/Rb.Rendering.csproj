@@ -64,6 +64,7 @@
     <Compile Include="IRenderContext.cs" />
     <Compile Include="IEffect.cs" />
     <Compile Include="ITechnique.cs" />
+    <Compile Include="ITechniqueSelector.cs" />
     <Compile Include="Light.cs" />
     <Compile Include="LightGroup.cs" />
     <Compile Include="Material.cs" />

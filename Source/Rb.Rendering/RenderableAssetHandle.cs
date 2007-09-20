@@ -54,7 +54,11 @@ namespace Rb.Rendering
 
 		#endregion
 	}
-	
+
+	/// <summary>
+	/// Non-generic version of <see cref="RenderableAssetHandle{T}"/> 
+	/// </summary>
+	[Serializable]
 	public class RenderableAssetHandle : RenderableAssetHandle< IRenderable >
 	{
 		/// <summary>

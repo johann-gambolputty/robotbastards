@@ -43,11 +43,35 @@ namespace Rb.Rendering.Windows
 		/// <summary>
 		/// Sets continuous rendering. If ContinuousRendering is true, the control will be invalidated repeatedly by a rendering timer at 30fps
 		/// </summary>
-		[ Category( "Rendering properties" ), Description( "Sets control to always invalidate itself" ) ]
+		[ Category( "Rendering properties" ), Description( "Sets control to invalidate itself after RenderInterval milliseconds" ) ]
 		public bool ContinuousRendering
 		{
 			get { return m_ContinuousRendering; }
-			set { m_ContinuousRendering = value; }
+			set
+			{
+				m_ContinuousRendering = value;
+				if ( !DesignMode )
+				{
+					if ( m_ContinuousRendering )
+					{
+						m_RenderingTimer.Start( );
+					}
+					else
+					{
+						m_RenderingTimer.Stop( );
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Continuous rendering interval
+		/// </summary>
+		[ Category( "Rendering properties" ), Description("Milliseconds between frame renders, if ContinuousRendering is true" ) ]
+		public int RenderInterval
+		{
+			get { return m_RenderingTimer.Interval; }
+			set { m_RenderingTimer.Interval = value; }
 		}
 
 		#endregion
@@ -64,15 +88,12 @@ namespace Rb.Rendering.Windows
 			}
 
 			InitializeComponent( );
-			
-			// TODO: Add any initialization after the InitComponent call
 
+			m_RenderingTimer = new Timer( );
+			m_RenderingTimer.Interval = 1;
 			if ( ( m_ContinuousRendering ) && ( !DesignMode ) )
 			{
-				//	TODO: AP: Hacky rendering timer
-				m_RenderingTimer			= new Timer( );
 				m_RenderingTimer.Tick		+= RenderTick;
-				m_RenderingTimer.Interval	= ( int )( 100.0f / 30.0f );
 				m_RenderingTimer.Enabled	= true;
 				m_RenderingTimer.Start( );
 			}
@@ -91,7 +112,7 @@ namespace Rb.Rendering.Windows
 			}
 		}
 
-		private void Display_Load( object sender, System.EventArgs e )
+		private void Display_Load( object sender, EventArgs e )
 		{
 			if (m_Setup != null)
 			{
@@ -157,7 +178,7 @@ namespace Rb.Rendering.Windows
 		/// </summary>
 		protected virtual void Draw( )
 		{
-			if ( Viewers.Count == 0 )
+			if ( m_Viewers.Count == 0 )
 			{
 				Renderer.Instance.ClearDepth( 1.0f );
 				Renderer.Instance.ClearVerticalGradient( Color.DarkSeaGreen, Color.Black );
@@ -196,7 +217,7 @@ namespace Rb.Rendering.Windows
         /// <summary>
         /// Gets the collection of viewers
         /// </summary>
-	    public IList< Viewer > Viewers
+	    public IEnumerable< Viewer > Viewers
 	    {
 	        get { return m_Viewers; }
 	    }
@@ -208,6 +229,7 @@ namespace Rb.Rendering.Windows
         public void AddViewer( Viewer viewer )
         {
             m_Viewers.Add( viewer );
+        	viewer.Control = this;
         }
 
         /// <summary>
@@ -217,6 +239,7 @@ namespace Rb.Rendering.Windows
         public void RemoveViewer( Viewer viewer )
         {
             m_Viewers.Remove( viewer );
+        	viewer.Control = null;
         }
 
         #endregion

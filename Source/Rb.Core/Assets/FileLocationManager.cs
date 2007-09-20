@@ -70,7 +70,7 @@ namespace Rb.Core.Assets
 		{
 			try
 			{
-				return File.OpenRead( location.FullPath );
+				return File.OpenRead( location.Path );
 			}
 			catch ( Exception ex )
 			{

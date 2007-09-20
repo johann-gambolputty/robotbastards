@@ -2,7 +2,7 @@
 namespace Rb.Rendering
 {
 	/// <summary>
-	/// Abstract base class for lights
+	/// Base class for lights
 	/// </summary>
 	public class Light
 	{

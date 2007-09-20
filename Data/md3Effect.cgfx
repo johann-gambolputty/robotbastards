@@ -60,8 +60,8 @@ OutputVertex SimpleTransformVertexShader( InputVertex input )
 
 float4	SimpleTextureFragmentShader( OutputVertex input ) : COLOR
 {
-//	return tex2D( Sampler, input.m_Tex0 ) * input.m_Colour;
-	return input.m_Colour;
+	return tex2D( Sampler, input.m_Tex0 ) * input.m_Colour;
+//	return input.m_Colour;
 }
 
 technique MainTechnique

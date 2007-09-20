@@ -1,6 +1,5 @@
-using System;
-using System.Collections;
 using System.Drawing;
+using System.Collections.Generic;
 
 namespace Rb.Rendering
 {
@@ -60,24 +59,20 @@ namespace Rb.Rendering
 			/// <summary>
 			/// Returns the character set array
 			/// </summary>
-			public char[]		Chars
+			public char[] Chars
 			{
-				get
-				{
-					return ( char[] )m_Chars.ToArray( typeof( char ) );
-				}
+				get { return m_Chars.ToArray( ); }
 			}
 
-			private ArrayList	m_Chars = new ArrayList( );
+			private readonly List< char > m_Chars = new List< char >( );
 		}
 
 		/// <summary>
 		/// Builds this font from a System.Drawing.Font object
 		/// </summary>
 		/// <param name="font">Font to build from</param>
-		/// <param name="characters">Set of characters to build the font texture from</param>
 		/// <returns>Returns this</returns>
-		public RenderFont				Setup( Font font )
+		public RenderFont Setup( Font font )
 		{
 			CharacterSet chars = new CharacterSet( );
 			chars.Add( 'a', 'z' );
@@ -92,13 +87,14 @@ namespace Rb.Rendering
 		/// Builds this font from a System.Drawing.Font object
 		/// </summary>
 		/// <param name="font">Font to build from</param>
+		/// <param name="characters">Characters in built font</param>
 		/// <returns>Returns this</returns>
-		public abstract RenderFont		Setup( Font font, CharacterSet characters );
+		public abstract RenderFont Setup( Font font, CharacterSet characters );
 
 		/// <summary>
 		/// Draws formatted text using this font, at a given position
 		/// </summary>
-		public void						DrawText( int x, int y, System.Drawing.Color colour, string str, params object[] formatArgs )
+		public void DrawText( int x, int y, Color colour, string str, params object[] formatArgs )
 		{
 			DrawText( x, y, colour, string.Format( str, formatArgs ) );
 		}
@@ -106,7 +102,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Draws text using this font, at a given position
 		/// </summary>
-		public abstract void			DrawText( int x, int y, System.Drawing.Color colour, string str );
+		public abstract void DrawText( int x, int y, Color colour, string str );
 
 	}
 }

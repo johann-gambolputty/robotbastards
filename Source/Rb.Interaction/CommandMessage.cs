@@ -14,7 +14,7 @@ namespace Rb.Interaction
 		/// </summary>
 		public CommandMessage( Command cmd )
 		{
-			m_CommandId = checked( ( byte )cmd.Id );
+			m_CommandId = cmd.Id;
 		}
 
 		/// <summary>
@@ -25,6 +25,6 @@ namespace Rb.Interaction
 			get { return m_CommandId; }
 		}
 
-		private byte m_CommandId;
+		private readonly byte m_CommandId;
     }
 }

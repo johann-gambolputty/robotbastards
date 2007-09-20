@@ -5,7 +5,6 @@ namespace Rb.Rendering.Cameras
 	/// <summary>
 	/// 3d camera base class
 	/// </summary>
-	// TODO: Probably a bit of a redundant class...
 	public abstract class Camera3 : CameraBase, ICamera3
 	{
 

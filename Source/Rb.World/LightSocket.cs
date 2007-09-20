@@ -1,3 +1,5 @@
+using System;
+using Rb.Core.Components;
 using Rb.Rendering;
 
 namespace Rb.World
@@ -7,7 +9,7 @@ namespace Rb.World
 	/// <summary>
 	/// A very poorly named class that adds a <see cref="Rb.Rendering.Light"/> into the scene <see cref="LightingManager"/>
 	/// </summary>
-	public class LightSocket : ISceneObject
+	public class LightSocket : Component, ISceneObject
 	{
 		/// <summary>
 		/// The attached light
@@ -21,6 +23,10 @@ namespace Rb.World
 			set
 			{
 				ILightingManager manager = m_Scene.GetService< ILightingManager >( );
+				if ( manager == null )
+				{
+					throw new InvalidOperationException( "LightSocket requires that an ILightingManager service be present in the scene" );
+				}
 				if ( m_Light != null )
 				{
 					manager.RemoveLight( m_Light );

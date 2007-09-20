@@ -172,6 +172,12 @@ namespace Poc0.LevelEditor
 				}
 			}
 
+			private static bool UseNullConverter( Type type )
+			{
+				TypeConverter converter = TypeDescriptor.GetConverter( type );
+				return ( converter is ReferenceConverter ) || ( converter.GetType( ) == typeof( TypeConverter ) );
+			}
+
 			public ExPropertySpec( PropertyInfo property, object obj, string category ) :
 				base( property.Name, property.PropertyType, category )
 			{
@@ -181,7 +187,7 @@ namespace Poc0.LevelEditor
 				List< Attribute > attributes = new List< Attribute >( );
 
 				//	ReferenceConverter is rubbish, because it doesn't expand object instances
-				if ( TypeDescriptor.GetConverter( property.PropertyType ) is ReferenceConverter )
+				if ( UseNullConverter( property.PropertyType ) )
 				{
 					ConverterTypeName = typeof( NullConverter ).FullName;
 				}
@@ -194,7 +200,7 @@ namespace Poc0.LevelEditor
 				}
 				else if ( !property.CanWrite )
 				{
-					attributes.Add( new ReadOnlyAttribute( true ) );
+					//attributes.Add( new ReadOnlyAttribute( true ) );
 				}
 
 				//	Add browsable attributes
@@ -204,10 +210,10 @@ namespace Poc0.LevelEditor
 					attributes.Add( ( Attribute )srcAttributes[ 0 ] );
 				}
 
-				//	Set the editor attribute to ObjectUITypeEditor, if the property's type doesn't have a nice
-				//	default editor of its own
 				if ( ObjectUITypeEditor.HandlesType( property.PropertyType ) )
 				{
+					//	Set the editor attribute to ObjectUITypeEditor, if the property's type doesn't have a nice
+					//	default editor of its own
 					attributes.Add( new EditorAttribute( typeof( ObjectUITypeEditor ), typeof( UITypeEditor ) ) );
 				}
 

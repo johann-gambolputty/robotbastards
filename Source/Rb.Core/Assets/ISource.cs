@@ -16,6 +16,22 @@ namespace Rb.Core.Assets
 		}
 
 		/// <summary>
+		/// Gets the name of the source (e.g. filename)
+		/// </summary>
+		string Name
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Gets the full path of the source (e.g. rooted file path)
+		/// </summary>
+		string Path
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Checks if this source has the specified extension
 		/// </summary>
 		bool HasExtension( string ext );

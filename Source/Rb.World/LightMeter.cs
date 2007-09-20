@@ -17,7 +17,13 @@ namespace Rb.World
 		/// <param name="scene">Scene context</param>
 		public void SetSceneContext( Scene scene )
 		{
-			scene.GetService< ILightingManager >( ).AddLightMeter( this );
+			ILightingManager lighting = scene.GetService< ILightingManager >( );
+			if ( lighting == null )
+			{
+				throw new InvalidOperationException( "LightMeter requires that an ILightingManager service be present in the scene" );
+			}
+
+			lighting.AddLightMeter( this );
 		}
 
 		#endregion
@@ -33,6 +39,5 @@ namespace Rb.World
 		}
 
 		#endregion
-
 	}
 }

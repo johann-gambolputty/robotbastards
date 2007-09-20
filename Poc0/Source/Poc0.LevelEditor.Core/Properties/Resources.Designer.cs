@@ -60,6 +60,24 @@ namespace Poc0.LevelEditor.Core.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to bad thing.
+        /// </summary>
+        internal static string ErrorCaption {
+            get {
+                return ResourceManager.GetString("ErrorCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error occurred while adding object.
+        /// </summary>
+        internal static string FailedToAddObject {
+            get {
+                return ResourceManager.GetString("FailedToAddObject", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap tile0 {
             get {
                 object obj = ResourceManager.GetObject("tile0", resourceCulture);

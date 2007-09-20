@@ -40,8 +40,8 @@ namespace Rb.Interaction.Windows
 				m_KeyPressed = true;
 			}
 
-			control.MouseMove += new MouseEventHandler( OnMouseMove );
-			control.MouseLeave += new EventHandler( OnMouseLeave );
+			control.MouseMove += OnMouseMove;
+			control.MouseLeave += OnMouseLeave;
 		}
 
 		/// <summary>
@@ -90,7 +90,7 @@ namespace Rb.Interaction.Windows
 		}
 
 		private bool m_KeyPressed;
-		private MouseButtons m_Button;
-		private Keys m_Key;
+		private readonly MouseButtons m_Button;
+		private readonly Keys m_Key;
     }
 }

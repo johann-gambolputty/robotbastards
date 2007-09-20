@@ -1,28 +1,13 @@
 
+using System;
+
 namespace Rb.Rendering
 {
 	/// <summary>
-	/// Selects a technique from one or more effects
+	/// Selects a technique from one or more effects. Standard implementation of <see cref="ITechniqueSelector"/>
 	/// </summary>
-    public class TechniqueSelector
+	public class TechniqueSelector : ITechniqueSelector, ITechnique
     {
-		/// <summary>
-		/// A possible technique to select
-		/// </summary>
-		public class Option
-		{
-			public Option( string path, string techniqueName )
-			{
-				m_Path = path;
-				m_TechniqueName = techniqueName;
-			}
-
-			private string		m_Path;
-			private string		m_TechniqueName;
-			private IEffect		m_Effect;
-			private ITechnique	m_Technique;
-		}
-
 		/// <summary>
 		/// Default constructor
 		/// </summary>
@@ -101,7 +86,28 @@ namespace Rb.Rendering
             }
         }
 
+		/// <summary>
+		/// Returns true if this technique is a reasonable substitute for the specified technique
+		/// </summary>
+		/// <param name="technique">Technique to substitute</param>
+		/// <returns>true if this technique can substitute the specified technique</returns>
+		public bool IsSubstituteFor( ITechnique technique )
+		{
+			return ( Technique != null ) && ( Technique.Name == technique.Name );
+		}
+
         private IEffect		m_Effect;
         private ITechnique	m_Technique;
-    }
+
+		#region INamed Members
+
+		//	TODO: AP: Probably get rid of INamed support in ITechnique
+		public string Name
+		{
+			get { throw new NotSupportedException( ); }
+			set { throw new NotSupportedException( ); }
+		}
+
+		#endregion
+	}
 }

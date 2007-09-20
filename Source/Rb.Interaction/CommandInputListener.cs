@@ -1,5 +1,6 @@
 using System;
 using Rb.Core.Components;
+using Rb.Rendering;
 
 namespace Rb.Interaction
 {
@@ -51,6 +52,19 @@ namespace Rb.Interaction
 			{
 				Unlisten( m_User );
 				m_Commands = CommandListManager.Instance.Get( value );
+				Listen( m_User, m_Commands );
+			}
+		}
+
+		/// <summary>
+		/// Sets the enum type of the comand list to use
+		/// </summary>
+		public Type CommandListEnumType
+		{
+			set
+			{
+				Unlisten( m_User );
+				m_Commands = CommandListManager.Instance.FindOrCreateFromEnum( value );
 				Listen( m_User, m_Commands );
 			}
 		}

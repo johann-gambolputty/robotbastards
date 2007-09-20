@@ -19,10 +19,12 @@ namespace Poc0.LevelEditor
 	public partial class MainForm : Form
 	{
 		private readonly DockingManager m_DockingManager;
+
 		private readonly Content m_LogDisplayContent;
 		private readonly Content m_ToolBoxContent;
 		private readonly Content m_PropertyEditorContent;
 		private readonly Content m_SelectionContent;
+		private readonly Content m_GameViewContent;
 
 
 		public MainForm( )
@@ -67,10 +69,13 @@ namespace Poc0.LevelEditor
 			m_ToolBoxContent = m_DockingManager.Contents.Add( new EditorControls( ), "Tool Box" );
 			m_PropertyEditorContent = m_DockingManager.Contents.Add( new ObjectPropertyEditor( ), "Property Editor" );
 			m_SelectionContent = m_DockingManager.Contents.Add( new SelectionControl( ), "Selection" );
+			m_GameViewContent = m_DockingManager.Contents.Add( new GameViewControl( ), "Game View" );
 
-			m_DockingManager.AddContentWithState( m_LogDisplayContent, State.DockBottom );
+			m_DockingManager.AddContentWithState( m_GameViewContent, State.Floating );
+			WindowContent logWindow = m_DockingManager.AddContentWithState( m_LogDisplayContent, State.DockBottom );
 			WindowContent selectionWindow = m_DockingManager.AddContentWithState( m_SelectionContent, State.DockRight );
 			m_DockingManager.AddContentToZone( m_ToolBoxContent, selectionWindow.ParentZone, 0 );
+			m_DockingManager.AddContentToZone( m_GameViewContent, logWindow.ParentZone, 0 );
 			m_DockingManager.AddContentWithState( m_PropertyEditorContent, State.DockLeft );
 
 			m_Serializer.LastSavePathChanged += SavePathChanged;
@@ -161,22 +166,21 @@ namespace Poc0.LevelEditor
 		{
 			if ( !DesignMode )
 			{
-				//	Load input bindings
-				CommandInputTemplateMap map = ( CommandInputTemplateMap )AssetManager.Instance.Load( "LevelEditorCommandInputs.components.xml" );
-				m_User.InitialiseAllCommandListBindings( );
+				CommandInputTemplateMap editorMap = ( CommandInputTemplateMap )AssetManager.Instance.Load( "LevelEditorCommandInputs.components.xml" );
 
+				//	Load input bindings
 				ComponentLoadParameters loadParams = new ComponentLoadParameters( );
 				loadParams.Properties[ "User" ] = m_User;
 
 				//	Load in the scene viewer
 				Viewer viewer = ( Viewer )AssetManager.Instance.Load( "LevelEditorStandardViewer.components.xml", loadParams );
-				tileGrid2dDisplay.Viewers.Add( viewer );
+				viewer.Control = tileGrid2dDisplay;
+				tileGrid2dDisplay.AddViewer( viewer );
 
 				//	Test load a command list
 				try
 				{
-					//	TODO: AP: May need to move
-					map.AddContextInputsToUser( new InputContext( tileGrid2dDisplay.Viewers[ 0 ], tileGrid2dDisplay ), m_User );
+					editorMap.BindToInput( new InputContext( viewer ), m_User );
 				}
 				catch ( Exception ex )
 				{
@@ -185,6 +189,8 @@ namespace Poc0.LevelEditor
 
 				//	Create a new scene
 				CreateNewScene( TileTypeSet.CreateDefaultTileTypeSet( ), 16, 16 );
+
+				( ( GameViewControl )m_GameViewContent.Control ).Setup( m_Scene.RuntimeScene, m_User );
 			}
 		}
 

@@ -13,10 +13,11 @@ namespace Rb.Core.Assets
 		/// Setup constructor
 		/// </summary>
 		/// <param name="stream">Stream source</param>
-		/// <param name="name">Name of the stream (should include extension)</param>
-		public StreamSource( Stream stream, string name )
+		/// <param name="path">Path of the stream (should include extension)</param>
+		public StreamSource( Stream stream, string path )
 		{
-			m_Name = name;
+			m_Name = System.IO.Path.GetFileName( path );
+			m_Path = path;
 			m_Stream = stream;
 		}
 
@@ -24,10 +25,11 @@ namespace Rb.Core.Assets
 		/// Setup constructor. Creates stored stream from a string
 		/// </summary>
 		/// <param name="streamContents">Stream source string</param>
-		/// <param name="name">Name of the stream (should include extension)</param>
-		public StreamSource( string streamContents, string name )
+		/// <param name="path">Name of the stream (should include extension)</param>
+		public StreamSource( string streamContents, string path )
 		{
-			m_Name = name;
+			m_Name = System.IO.Path.GetFileName( path );
+			m_Path = path;
 			m_Stream = new MemoryStream( Encoding.ASCII.GetBytes( streamContents ) );
 		}
 
@@ -35,10 +37,11 @@ namespace Rb.Core.Assets
 		/// Setup constructor. Creates stored stream from a byte array
 		/// </summary>
 		/// <param name="bytes">Stream source bytes</param>
-		/// <param name="name">Name of the stream (should include extension)</param>
-		public StreamSource( byte[] bytes, string name )
+		/// <param name="path">Name of the stream (should include extension)</param>
+		public StreamSource( byte[] bytes, string path )
 		{
-			m_Name = name;
+			m_Name = System.IO.Path.GetFileName( path );
+			m_Name = path;
 			m_Stream = new MemoryStream( bytes );
 		}
 
@@ -60,6 +63,22 @@ namespace Rb.Core.Assets
 		public bool Exists
 		{
 			get { return true; }
+		}
+
+		/// <summary>
+		/// Gets the name of the source
+		/// </summary>
+		public string Name
+		{
+			get { return m_Name; }
+		}
+
+		/// <summary>
+		/// Gets the path of the source
+		/// </summary>
+		public string Path
+		{
+			get { return m_Path; }
 		}
 
 		/// <summary>
@@ -92,6 +111,8 @@ namespace Rb.Core.Assets
 		#endregion
 
 		private readonly string m_Name;
+		private readonly string m_Path;
 		private readonly Stream m_Stream;
+
 	}
 }

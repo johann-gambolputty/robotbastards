@@ -1,4 +1,3 @@
-using System;
 using System.Windows.Forms;
 using Rb.Core.Maths;
 
@@ -30,7 +29,7 @@ namespace Rb.Interaction.Windows
 		    m_Max       = max;
 		    m_Delta     = deltaPerDetent;
 
-			( ( Control )context.Control ).MouseWheel += new MouseEventHandler( OnMouseWheel );
+			( ( Control )context.Control ).MouseWheel += OnMouseWheel;
 		}
 
 		/// <summary>
@@ -53,9 +52,9 @@ namespace Rb.Interaction.Windows
             }
 		}
 
-        private MouseButtons  m_Button;
-        private float         m_Min;
-        private float         m_Max;
-        private float         m_Delta;
+        private readonly MouseButtons m_Button;
+		private readonly float m_Min;
+		private readonly float m_Max;
+		private readonly float m_Delta;
     }
 }
