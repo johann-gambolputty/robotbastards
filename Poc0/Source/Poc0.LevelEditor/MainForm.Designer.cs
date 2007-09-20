@@ -170,7 +170,7 @@ namespace Poc0.LevelEditor
 			this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
 			this.undoToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
 			this.undoToolStripMenuItem.Text = "&Undo";
-			this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
+			this.undoToolStripMenuItem.Click += new System.EventHandler(undoToolStripMenuItem_Click);
 			// 
 			// redoToolStripMenuItem
 			// 
@@ -178,7 +178,7 @@ namespace Poc0.LevelEditor
 			this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
 			this.redoToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
 			this.redoToolStripMenuItem.Text = "&Redo";
-			this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoToolStripMenuItem_Click);
+			this.redoToolStripMenuItem.Click += new System.EventHandler(redoToolStripMenuItem_Click);
 			// 
 			// viewToolStripMenuItem
 			// 

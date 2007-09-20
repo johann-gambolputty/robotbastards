@@ -16,7 +16,7 @@ namespace Poc0.LevelEditor
 		{
 			InitializeComponent( );
 
-			IList templates = ( IList )AssetManager.Instance.Load( "TestObjectTemplates.components.xml" );
+			IList templates = ( IList )AssetManager.Instance.Load( "Editor/EntityTemplates.components.xml" );
 			foreach ( ObjectTemplate template in templates )
 			{
 				m_Templates.Add( template );

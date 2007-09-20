@@ -13,33 +13,17 @@ namespace Poc0.LevelEditor
 			InitializeComponent( );
 		}
 
-		public void Setup( Scene gameScene, CommandUser user )
+		public Scene GameScene
 		{
-			m_User = user;
-			
-			CommandInputTemplateMap gameMap = ( CommandInputTemplateMap )AssetManager.Instance.Load( "LevelEditorGameCommandInputs.components.xml" );
-
-			//	Load in the game viewer
-			LoadParameters loadArgs = new LoadParameters( );
-			loadArgs.Properties.Add( "User", m_User );
-			m_Viewer = ( Viewer )AssetManager.Instance.Load( "LevelEditorGameViewer.components.xml", loadArgs );
-			gameDisplay.AddViewer( m_Viewer );
-
-			//	Bind the input map to the viewer
-			gameMap.BindToInput( new InputContext( m_Viewer ), m_User );
-			
-			//	Get the viewer to render the scene
-			m_Viewer.Renderable = gameScene;
-
-			//	Get game commands invalidating the view
-			foreach ( Command command in gameMap.Commands )
+			set
 			{
-				m_User.AddActiveListener( command, OnGameCommand );
+				m_Viewer.Renderable = value;
 			}
 		}
 
 		private Viewer m_Viewer;
-		private CommandUser m_User;
+		private readonly CommandUser m_User = new CommandUser( );
+
 		
 		/// <summary>
 		/// Invalidates the game display when game command messages received
@@ -47,6 +31,24 @@ namespace Poc0.LevelEditor
 		private void OnGameCommand( CommandMessage msg )
 		{
 			gameDisplay.Invalidate( );
+		}
+
+		private void GameViewControl_Load( object sender, System.EventArgs e )
+		{
+			//	Load in the game viewer
+			LoadParameters loadArgs = new LoadParameters( );
+			loadArgs.Properties.Add( "User", m_User );
+			m_Viewer = ( Viewer )AssetManager.Instance.Load( "LevelEditorGameViewer.components.xml", loadArgs );
+			gameDisplay.AddViewer( m_Viewer );
+
+			CommandInputTemplateMap gameInputs = ( CommandInputTemplateMap )AssetManager.Instance.Load( "LevelEditorGameCommandInputs.components.xml" );
+			gameInputs.BindToInput( new InputContext( m_Viewer ), m_User );
+
+			//	Get game commands invalidating the view
+			foreach ( Command command in gameInputs.Commands )
+			{
+				m_User.AddActiveListener( command, OnGameCommand );
+			}
 		}
 
 	}
