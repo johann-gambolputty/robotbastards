@@ -6,7 +6,10 @@
     <serialise>
       <commandList enum="Rb.AppCore.Cameras.LookAtCameraController+Commands" assembly="Rb.AppCore">
         <command name ="Pan">
-          <input button="Middle" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
+          <input button="Left" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name ="Rotate">
+          <input button="Right" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
         </command>
         <command name="Zoom">
           <input button="None" min="0.5" max="100.0" delta="0.5" initial="50" type="Rb.Interaction.Windows.MouseScrollInputTemplate" assembly="Rb.Interaction.Windows"/>

@@ -167,14 +167,14 @@ namespace Poc0.LevelEditor
 		{
 			if ( !DesignMode )
 			{
-				CommandInputTemplateMap editorMap = ( CommandInputTemplateMap )AssetManager.Instance.Load( "LevelEditorCommandInputs.components.xml" );
+				CommandInputTemplateMap editorMap = ( CommandInputTemplateMap )AssetManager.Instance.Load( "Editor/LevelEditorCommandInputs.components.xml" );
 
 				//	Load input bindings
 				ComponentLoadParameters loadParams = new ComponentLoadParameters( );
 				loadParams.Properties[ "User" ] = m_User;
 
 				//	Load in the scene viewer
-				Viewer viewer = ( Viewer )AssetManager.Instance.Load( "LevelEditorStandardViewer.components.xml", loadParams );
+				Viewer viewer = ( Viewer )AssetManager.Instance.Load( "Editor/LevelEditorStandardViewer.components.xml", loadParams );
 				viewer.Control = tileGrid2dDisplay;
 				tileGrid2dDisplay.AddViewer( viewer );
 
