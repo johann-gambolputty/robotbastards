@@ -44,12 +44,12 @@ namespace Poc0.LevelEditor
 			RenderFactory.Load( renderAssemblyName );
 			
 			//	Load resource settings
-			string resourceSetupPath = ConfigurationManager.AppSettings[ "assetSetupPath" ];
-			if ( resourceSetupPath == null )
+			string assetSetupPath = ConfigurationManager.AppSettings[ "assetSetupPath" ];
+			if ( assetSetupPath == null )
 			{
-				resourceSetupPath = "../assetSetup.xml";
+				assetSetupPath = "../assetSetup.xml";
 			}
-			AssetXmlSetup.Setup( resourceSetupPath, AssetManager.Instance, LocationManagers.Instance );
+			AssetXmlSetup.Setup( assetSetupPath, AssetManager.Instance, LocationManagers.Instance );
 
 			//	Load all assemblies that support the chosen graphics API 
 			Rb.AssemblySelector.IdentifierMap.Instance.AddAssemblyIdentifiers( Directory.GetCurrentDirectory( ), SearchOption.TopDirectoryOnly );
@@ -151,6 +151,7 @@ namespace Poc0.LevelEditor
 				{
 					viewer.Renderable = m_Scene;
 				}
+				( ( GameViewControl )m_GameViewContent.Control ).GameScene = m_Scene.RuntimeScene;
 
 				//	Set the scene in the edit context
 				EditModeContext.Instance.Setup( m_Scene );
@@ -190,7 +191,7 @@ namespace Poc0.LevelEditor
 				//	Create a new scene
 				CreateNewScene( TileTypeSet.CreateDefaultTileTypeSet( ), 16, 16 );
 
-				( ( GameViewControl )m_GameViewContent.Control ).Setup( m_Scene.RuntimeScene, m_User );
+				( ( GameViewControl )m_GameViewContent.Control ).GameScene = m_Scene.RuntimeScene;
 			}
 		}
 
@@ -238,12 +239,12 @@ namespace Poc0.LevelEditor
 			}
 		}
 
-		private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+		private static void undoToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			EditModeContext.Instance.UndoStack.Undo( );
 		}
 
-		private void redoToolStripMenuItem_Click(object sender, EventArgs e)
+		private static void redoToolStripMenuItem_Click( object sender, EventArgs e )
 		{
 			EditModeContext.Instance.UndoStack.Redo( );
 		}

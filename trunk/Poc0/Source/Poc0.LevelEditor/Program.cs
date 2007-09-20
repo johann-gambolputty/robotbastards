@@ -11,6 +11,7 @@ namespace Poc0.LevelEditor
 		[STAThread]
 		static void Main()
 		{
+			AppDomain.CurrentDomain.Load( "MagicLibrary" );
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new MainForm());

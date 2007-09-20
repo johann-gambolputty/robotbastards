@@ -1,9 +1,12 @@
 
+using System;
+
 namespace Rb.Rendering
 {
 	/// <summary>
 	/// Base class for lights
 	/// </summary>
+	[Serializable]
 	public class Light
 	{
 		/// <summary>

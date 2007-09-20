@@ -7,6 +7,7 @@ namespace Rb.World
 	/// <summary>
 	/// Manages lighting in a scene
 	/// </summary>
+	[Serializable]
 	public class LightingManager : ILightingManager, ISceneObject
 	{
 		#region ILightingManager Members

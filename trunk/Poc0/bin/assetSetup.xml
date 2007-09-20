@@ -2,7 +2,7 @@
 <assetManager>
   <locationManagers>
     <locationManager type="Rb.Core.Assets.Windows.FileLocationManagerWithUI" assembly="Rb.Core.Assets.Windows">
-      <baseDir value="../../Data"/>
+      <baseDir value="../../Data/Design"/>
     </locationManager>
   </locationManagers>
   <loaders>

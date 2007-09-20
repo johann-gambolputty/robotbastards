@@ -58,7 +58,6 @@
     <Compile Include="HealthChange.cs" />
     <Compile Include="IBody.cs" />
     <Compile Include="IHasWorldFrame.cs" />
-    <Compile Include="PointLightFrame.cs" />
     <Compile Include="PlayerStart.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

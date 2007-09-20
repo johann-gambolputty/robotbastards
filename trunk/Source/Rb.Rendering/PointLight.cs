@@ -1,3 +1,4 @@
+using System;
 using Rb.Core.Maths;
 
 namespace Rb.Rendering
@@ -5,6 +6,7 @@ namespace Rb.Rendering
 	/// <summary>
 	/// A point light
 	/// </summary>
+	[Serializable]
 	public class PointLight : Light
 	{
 		/// <summary>
