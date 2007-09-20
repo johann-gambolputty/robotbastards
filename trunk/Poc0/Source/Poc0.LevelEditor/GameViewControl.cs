@@ -38,10 +38,10 @@ namespace Poc0.LevelEditor
 			//	Load in the game viewer
 			LoadParameters loadArgs = new LoadParameters( );
 			loadArgs.Properties.Add( "User", m_User );
-			m_Viewer = ( Viewer )AssetManager.Instance.Load( "LevelEditorGameViewer.components.xml", loadArgs );
+			m_Viewer = ( Viewer )AssetManager.Instance.Load( "Editor/LevelEditorGameViewer.components.xml", loadArgs );
 			gameDisplay.AddViewer( m_Viewer );
 
-			CommandInputTemplateMap gameInputs = ( CommandInputTemplateMap )AssetManager.Instance.Load( "LevelEditorGameCommandInputs.components.xml" );
+			CommandInputTemplateMap gameInputs = ( CommandInputTemplateMap )AssetManager.Instance.Load( "Editor/LevelEditorGameCommandInputs.components.xml" );
 			gameInputs.BindToInput( new InputContext( m_Viewer ), m_User );
 
 			//	Get game commands invalidating the view

@@ -65,6 +65,10 @@ namespace Rb.Core.Assets
 		public LoadState CreateLoadState( ISource source, LoadParameters parameters )
 		{
 			IAssetLoader loader = FindLoaderForAsset( source );
+			if ( loader == null )
+			{
+				throw new ArgumentException( string.Format( "No loader could load asset {0}", source ) );
+			}
 
 			return new LoadState( loader, source, parameters );
 		}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rb cacheable="true">
-	<asset path="Design\Graphics\Entities\TestPlayer0\Md3">
-        	<asset path="Design\Graphics\Effects\perPixelTextured.cgfx" property="Effect"/>
+	<asset path="Graphics\Entities\TestPlayer0\Md3">
+        	<asset path="Graphics\Effects\perPixelTextured.cgfx" property="Effect"/>
         	<string value="NormalTechnique" property="TechniqueName"/>
 	</asset>
 </rb>
