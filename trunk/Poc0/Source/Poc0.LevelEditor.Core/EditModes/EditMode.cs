@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using Rb.Core.Maths;
 using Rb.Rendering;
 
 namespace Poc0.LevelEditor.Core.EditModes
@@ -49,7 +51,6 @@ namespace Poc0.LevelEditor.Core.EditModes
 			}
 			return picker.PickTile( EditModeContext.Instance.Grid, x, y );
 		}
-
 		#endregion
 
 		#region Private members

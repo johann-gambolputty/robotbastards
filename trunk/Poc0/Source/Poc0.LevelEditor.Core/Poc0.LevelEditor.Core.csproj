@@ -61,6 +61,7 @@
     <Compile Include="Actions\SelectAction.cs" />
     <Compile Include="Actions\UndoStack.cs" />
     <Compile Include="EditModes\AddObjectEditMode.cs" />
+    <Compile Include="EditModes\DefinePolygonEditMode.cs" />
     <Compile Include="EditModes\EditMode.cs" />
     <Compile Include="EditModes\EditModeContext.cs" />
     <Compile Include="EditModes\IEditMode.cs" />
