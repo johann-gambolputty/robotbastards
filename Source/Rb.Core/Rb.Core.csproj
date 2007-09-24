@@ -108,15 +108,18 @@
     <Compile Include="Maths\ControlledSpline.cs" />
     <Compile Include="Maths\GaussianQuadrature.cs" />
     <Compile Include="Maths\Integral.cs" />
-    <Compile Include="Maths\Intersection.cs" />
+    <Compile Include="Maths\Intersections2.cs" />
+    <Compile Include="Maths\Intersections3.cs" />
     <Compile Include="Maths\IRay3Intersector.cs" />
     <Compile Include="Maths\IShape2.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Maths\IShape3.cs" />
-    <Compile Include="Maths\Line3.cs" />
+    <Compile Include="Maths\Line2Intersection.cs" />
+    <Compile Include="Maths\LineSegment3.cs" />
     <Compile Include="Maths\Matrix44.cs" />
     <Compile Include="Maths\OffsetCatmullRomSpline.cs" />
+    <Compile Include="Maths\Plane2.cs" />
     <Compile Include="Maths\Plane3.cs" />
     <Compile Include="Maths\Point2.cs" />
     <Compile Include="Maths\Point3.cs">
@@ -124,7 +127,7 @@
     </Compile>
     <Compile Include="Maths\Point3Interpolator.cs" />
     <Compile Include="Maths\Ray3.cs" />
-    <Compile Include="Maths\Ray3Intersection.cs" />
+    <Compile Include="Maths\Line3Intersection.cs" />
     <Compile Include="Maths\Rectangle.cs" />
     <Compile Include="Maths\Sphere3.cs" />
     <Compile Include="Maths\Curve.cs" />

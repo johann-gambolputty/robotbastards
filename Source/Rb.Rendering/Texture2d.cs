@@ -149,7 +149,7 @@ namespace Rb.Rendering
 		/// </summary>
 		public static Texture2d FromManifestResource( string name )
 		{
-			Texture2d texture = RenderFactory.Instance.NewTexture2d( );
+			Texture2d texture = Graphics.Factory.NewTexture2d( );
 			texture.LoadManifestResource( name );
 			return texture;
 		}

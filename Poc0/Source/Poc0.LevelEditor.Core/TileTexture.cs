@@ -200,7 +200,7 @@ namespace Poc0.LevelEditor.Core
 			}
 
 			//	Render the bitmap into the combiner bitmap
-			Graphics bmpGraphics = Graphics.FromImage( m_Combiner );
+			System.Drawing.Graphics bmpGraphics = System.Drawing.Graphics.FromImage( m_Combiner );
 			bmpGraphics.DrawImage( bmp, x, y );
 			bmpGraphics.Dispose( );
 
@@ -217,7 +217,7 @@ namespace Poc0.LevelEditor.Core
 			{
 				if ( m_Texture == null )
 				{
-					m_Texture = RenderFactory.Instance.NewTexture2d( );
+					m_Texture = Rb.Rendering.Graphics.Factory.NewTexture2d( );
 					m_Texture.Load( m_Combiner );
 				}
 				return m_Texture;

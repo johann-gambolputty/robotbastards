@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using Rb.Core.Maths;
@@ -12,42 +11,6 @@ namespace Rb.Rendering
 	/// </summary>
 	public abstract class Renderer
 	{
-		#region	Construction and singleton access
-
-		/// <summary>
-		/// Protected constructor - use Get() accessor
-		/// </summary>
-		protected Renderer( )
-		{
-			System.Diagnostics.Trace.Assert( ms_Singleton == null, "Only one Renderer object is allowed" );
-			ms_Singleton = this;
-		}
-
-		/// <summary>
-		/// Gets the renderer
-		/// </summary>
-		public static Renderer Instance
-		{
-			get
-			{
-			//	System.Diagnostics.Trace.Assert( ms_Singleton != null, "Renderer singleton was not yet initialised" );
-				return ms_Singleton;
-			}
-		}
-
-		/// <summary>
-		/// true if the renderer singleton, accessible via Inst, exists
-		/// </summary>
-		public static bool	Exists
-		{
-			get
-			{
-				return ms_Singleton != null;
-			}
-		}
-
-		#endregion
-
         #region Setup
 
         //  TODO: Add first setup all to push first render state
@@ -386,11 +349,11 @@ namespace Rb.Rendering
 		{
 			if ( m_RenderStates.Count == 0 )
 			{
-				m_RenderStates.Add( RenderFactory.Instance.NewRenderState( ) );
+				m_RenderStates.Add( Graphics.Factory.NewRenderState( ) );
 			}
 			else
 			{
-				m_RenderStates.Add( ( RenderState )m_RenderStates[ m_RenderStates.Count - 1 ] );
+				m_RenderStates.Add( m_RenderStates[ m_RenderStates.Count - 1 ] );
 			}
 		}
 
@@ -400,7 +363,7 @@ namespace Rb.Rendering
 		public void PopRenderState( )
 		{
 			int lastIndex = m_RenderStates.Count - 1;
-			( ( RenderState )m_RenderStates[ lastIndex ] ).End( );
+			m_RenderStates[ lastIndex ].End( );
 			m_RenderStates.RemoveAt( lastIndex );
 		}
 
@@ -442,13 +405,12 @@ namespace Rb.Rendering
 
 		#region	Private stuff
 
-		private static Renderer				ms_Singleton;
-		private readonly ArrayList			m_RenderStates	= new ArrayList( );
-		private Cameras.CameraBase			m_Camera;
-		private readonly Light[]			m_Lights = new Light[ MaxActiveLights ];
-		private int							m_NumLights;
-		private readonly Texture2d[]		m_Textures = new Texture2d[ MaxTextures ];
-		private readonly List<Texture2d[]>	m_TextureStack = new List<Texture2d[]>();
+		private readonly List< RenderState >	m_RenderStates	= new List< RenderState >( );
+		private Cameras.CameraBase				m_Camera;
+		private readonly Light[]				m_Lights = new Light[ MaxActiveLights ];
+		private int								m_NumLights;
+		private readonly Texture2d[]			m_Textures = new Texture2d[ MaxTextures ];
+		private readonly List<Texture2d[]>		m_TextureStack = new List<Texture2d[]>( );
 
 		#endregion
 

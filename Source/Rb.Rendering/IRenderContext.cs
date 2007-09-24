@@ -15,7 +15,7 @@ namespace Rb.Rendering
 			set;
 		}
 
-        /// <summary>
+		/// <summary>
         /// Sets or gets the global technique
         /// </summary>
         /// <remarks>

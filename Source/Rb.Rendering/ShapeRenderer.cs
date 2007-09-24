@@ -1,4 +1,3 @@
-using System;
 using Rb.Core.Maths;
 
 namespace Rb.Rendering
@@ -8,13 +7,6 @@ namespace Rb.Rendering
 	/// </summary>
 	public abstract class ShapeRenderer
 	{
-		/// <summary>
-		///	Singleton access
-		/// </summary>
-		public static ShapeRenderer Instance
-		{
-			get { return ms_Singleton; }
-		}
 
 		#region 2d Rendering
 
@@ -106,24 +98,15 @@ namespace Rb.Rendering
 			//	HACK: dirty dirty hack
 			if ( m_Font == null )
 			{
-				m_Font = RenderFactory.Instance.NewFont( );
+				m_Font = Graphics.Factory.NewFont( );
 				m_Font.Setup( new System.Drawing.Font( "arial", 12 ) );
 			}
 			m_Font.DrawText( x, y, System.Drawing.Color.White, s );
 		}
 
-		/// <summary>
-		/// Protected constructor. Sets the ShapeRenderer.Instance singleton
-		/// </summary>
-		protected ShapeRenderer( )
-		{
-			ms_Singleton = this;
-		}
-
 		#region	Private stuff
 
-		private RenderFont				m_Font;
-		private static ShapeRenderer	ms_Singleton;
+		private RenderFont m_Font;
 
 		#endregion
 	}

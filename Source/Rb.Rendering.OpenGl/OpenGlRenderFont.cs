@@ -47,8 +47,8 @@ namespace Rb.Rendering.OpenGl
 			Bitmap img = BuildFontImage( font, characters );
 			img.Save( string.Format( "{0}{1}.png", font.Name, font.Size ), ImageFormat.Png );
 
-			m_FontTextureSampler			= OpenGlRenderFactory.Instance.NewTextureSampler2d( );
-			m_FontTextureSampler.Texture	= OpenGlRenderFactory.Instance.NewTexture2d( );
+			m_FontTextureSampler			= Graphics.Factory.NewTextureSampler2d( );
+			m_FontTextureSampler.Texture	= Graphics.Factory.NewTexture2d( );
 			m_FontTextureSampler.Texture.Load( img );
 			m_FontTextureSampler.Mode		= TextureMode.Modulate;
 			m_FontTextureSampler.MinFilter	= TextureFilter.NearestTexel;
@@ -57,8 +57,8 @@ namespace Rb.Rendering.OpenGl
 			return this;
 		}
 
-		private RenderState m_RenderState =
-			OpenGlRenderFactory.Instance.NewRenderState( )
+		private readonly RenderState m_RenderState =
+			Graphics.Factory.NewRenderState( )
 				.DisableCap( RenderStateFlag.DepthTest )
 				.EnableCap( RenderStateFlag.Blend )
 				.SetBlendMode( BlendFactor.SrcAlpha, BlendFactor.OneMinusSrcAlpha )
@@ -76,11 +76,11 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="str">Text to draw</param>
 		public override void DrawText( int x, int y, Color colour, string str )
 		{
-			OpenGlRenderer.Instance.PushRenderState( m_RenderState );
-            OpenGlRenderer.Instance.PushTextures( );
+			Graphics.Renderer.PushRenderState( m_RenderState );
+            Graphics.Renderer.PushTextures( );
 			m_FontTextureSampler.Begin( );
 
-			OpenGlRenderer.Instance.Push2d( );
+			Graphics.Renderer.Push2d( );
 
 			Gl.glColor3ub( colour.R, colour.G, colour.B );
 
@@ -125,9 +125,9 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glEnd( );
 			m_FontTextureSampler.End( );
-            OpenGlRenderer.Instance.PopTextures( );
-			OpenGlRenderer.Instance.Pop2d( );
-			OpenGlRenderer.Instance.PopRenderState( );
+            Graphics.Renderer.PopTextures( );
+			Graphics.Renderer.Pop2d( );
+			Graphics.Renderer.PopRenderState( );
 		}
 
 		private TextureSampler2d m_FontTextureSampler;
@@ -135,7 +135,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Measures the dimensions of a string, as required by BuildFontImage()
 		/// </summary>
-		private static Size MeasureString( Graphics graphics, string str, Font font )
+		private static Size MeasureString( System.Drawing.Graphics graphics, string str, Font font )
 		{
 			Size stringSize = new Size( );
 			for ( int charIndex = 0; charIndex < str.Length; ++charIndex )
@@ -153,21 +153,21 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Builds an image from this font
 		/// </summary>
-		private Bitmap				BuildFontImage( Font font, CharacterSet characterSet )
+		private Bitmap BuildFontImage( Font font, CharacterSet characterSet )
 		{
-			string		chars		= new string( characterSet.Chars );
-			Graphics	graphics	= Graphics.FromImage( new Bitmap( 1, 1 ) );
-			Size		charSetSize	= MeasureString( graphics, chars, font );
+			string chars = new string( characterSet.Chars );
+			System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(new Bitmap(1, 1));
+			Size charSetSize = MeasureString( graphics, chars, font );
 			graphics.Dispose( );
 
 			//	HACK: Add a fair bit of padding to width and height when calculating required area
 			int area		= ( charSetSize.Width + 1 ) * ( charSetSize.Height + 1 );
 			int size		= 128;
-			for ( ; ( size * size ) < area; size *= 2 );
+			for ( ; ( size * size ) < area; size *= 2 ) { }
 
 			//	Set up new image and graphics object to render to it
 			Bitmap img = new Bitmap( size, size, PixelFormat.Format32bppRgb );
-			graphics = Graphics.FromImage( img );
+			graphics = System.Drawing.Graphics.FromImage( img );
 			graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
 			StringFormat format = new StringFormat( StringFormatFlags.FitBlackBox );

@@ -322,25 +322,14 @@ namespace Rb.Rendering
 	public abstract class ShaderParameterBindings
 	{
 		/// <summary>
-		/// Singleton
-		/// </summary>
-		public static ShaderParameterBindings			Inst
-		{
-			get
-			{
-				return ms_Singleton;
-			}
-		}
-
-		/// <summary>
 		/// Delegate type used by AddNewBindingListener
 		/// </summary>
-		public delegate void							NewBindingDelegate( ShaderParameterBinding binding );
+		public delegate void NewBindingDelegate( ShaderParameterBinding binding );
 
 		/// <summary>
 		/// Event, called whenever a new binding is added to the set
 		/// </summary>
-		public event NewBindingDelegate					OnNewBinding;
+		public event NewBindingDelegate OnNewBinding;
 
 		/// <summary>
 		/// Invokes the OnNewBinding event
@@ -354,40 +343,22 @@ namespace Rb.Rendering
 		/// Creates a binding
 		/// </summary>
 		/// <returns></returns>
-		public abstract ShaderParameterCustomBinding	CreateBinding( string name, ShaderParameterCustomBinding.ValueType type );
+		public abstract ShaderParameterCustomBinding CreateBinding( string name, ShaderParameterCustomBinding.ValueType type );
 
 		/// <summary>
 		/// Creates a binding to an array
 		/// </summary>
-		public abstract ShaderParameterCustomBinding	CreateBinding( string name, ShaderParameterCustomBinding.ValueType type, int arraySize );
+		public abstract ShaderParameterCustomBinding CreateBinding( string name, ShaderParameterCustomBinding.ValueType type, int arraySize );
 
 		/// <summary>
 		/// Gets a default binding
 		/// </summary>
-		public abstract ShaderParameterBinding			GetBinding( ShaderParameterDefaultBinding binding );
+		public abstract ShaderParameterBinding GetBinding( ShaderParameterDefaultBinding binding );
 
 		/// <summary>
 		///	Finds a binding by its name
 		/// </summary>
-		public abstract ShaderParameterBinding			GetBinding( string name );
-
-
-		#region	Singleton setup
-
-		/// <summary>
-		/// Sets up the singleton
-		/// </summary>
-		protected ShaderParameterBindings( )
-		{
-			ms_Singleton = this;
-		}
-
-		/// <summary>
-		/// Singleton instance
-		/// </summary>
-		private static ShaderParameterBindings			ms_Singleton;
-
-		#endregion
+		public abstract ShaderParameterBinding GetBinding( string name );
 
 	}
 }

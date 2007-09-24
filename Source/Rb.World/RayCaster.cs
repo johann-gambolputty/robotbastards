@@ -22,12 +22,12 @@ namespace Rb.World
             Remove( intersector );
         }
 
-        public Ray3Intersection GetFirstIntersection( Ray3 ray, RayCastOptions options )
+        public Line3Intersection GetFirstIntersection( Ray3 ray, RayCastOptions options )
         {
-            Ray3Intersection closestIntersection = null;
+            Line3Intersection closestIntersection = null;
             foreach ( IRay3Intersector intersector in this )
             {
-                Ray3Intersection intersection = intersector.GetIntersection( ray );
+                Line3Intersection intersection = intersector.GetIntersection( ray );
                 if ( intersection != null )
                 {
                     if ( ( closestIntersection == null ) || ( closestIntersection.Distance > intersection.Distance ) )

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
 using Poc0.Core;
 using Poc0.LevelEditor.Core.Actions;
@@ -97,7 +96,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		private static IShape2 GetObjectShape( IHasPosition obj )
 		{
 			float minX = obj.Position.X - 5;
-			float minY = obj.Position.Z - 5;
+			float minY = obj.Position.Y - 5;
 
 			return new Rectangle( minX, minY, 10.0f, 10.0f );
 		}
@@ -181,9 +180,9 @@ namespace Poc0.LevelEditor.Core.EditModes
 			}
 
 			ITilePicker picker = ( ITilePicker )sender;
-			Point2 pos = picker.CursorToWorld(args.X, args.Y);
+			Point2 pos = picker.CursorToWorld( args.X, args.Y );
 			Vector2 vec = pos - m_LastCursorPos;
-			m_MoveAction.ApplyDelta( new Vector3( vec.X, 0, vec.Y ) );
+			m_MoveAction.ApplyDelta( new Vector3( vec.X, vec.Y, 0 ) );
 
 			m_LastCursorPos = pos;
 		}

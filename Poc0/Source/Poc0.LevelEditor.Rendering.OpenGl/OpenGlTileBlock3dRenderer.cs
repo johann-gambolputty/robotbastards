@@ -226,7 +226,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			}
 			Tile tile = EditContext.TileUnderCursor;
 
-			Renderer.Instance.PushRenderState( m_EditRenderState );
+			Graphics.Renderer.PushRenderState( m_EditRenderState );
 
 			int minX = tile.GridX * TileScreenWidth;
 			int minY = tile.GridY * TileScreenHeight;
@@ -244,7 +244,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 
 			Gl.glEnd( );
 
-			Renderer.Instance.PopRenderState( );
+			Graphics.Renderer.PopRenderState( );
 		}
 
 		#endregion
@@ -258,7 +258,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		/// </summary>
 		private void SetupEditStateGraphics( )
 		{
-			m_EditRenderState = RenderFactory.Instance.NewRenderState( );
+			m_EditRenderState = Graphics.Factory.NewRenderState( );
 
 			m_EditRenderState
 				.DisableCap( RenderStateFlag.DepthTest )

@@ -151,7 +151,7 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		private void SetupGridGraphics( )
 		{
-			m_TileRenderState = RenderFactory.Instance.NewRenderState( );
+			m_TileRenderState = Graphics.Factory.NewRenderState( );
 			m_TileRenderState
 				.DisableCap( RenderStateFlag.DepthTest )
 				.SetPolygonRenderingMode( PolygonRenderMode.Fill )
@@ -161,7 +161,7 @@ namespace Poc0.LevelEditor.Core
 				.SetBlendMode( BlendFactor.SrcAlpha, BlendFactor.OneMinusSrcAlpha )
 				.DisableLighting( );
 
-			m_TileTextureSampler = RenderFactory.Instance.NewTextureSampler2d( );
+			m_TileTextureSampler = Graphics.Factory.NewTextureSampler2d( );
 			m_TileTextureSampler.Mode = TextureMode.Modulate;
 			m_TileTextureSampler.MinFilter = TextureFilter.LinearTexel;
 			m_TileTextureSampler.MagFilter = TextureFilter.LinearTexel;
@@ -185,7 +185,7 @@ namespace Poc0.LevelEditor.Core
 				m_TileRenderer = NewTileRenderer( Grid.Set );
 			}
 
-			Renderer.Instance.PushRenderState( m_TileRenderState );
+			Graphics.Renderer.PushRenderState( m_TileRenderState );
 			m_TileTextureSampler.Begin( );
 
 			foreach ( TileBlock block in m_Blocks )
@@ -198,7 +198,7 @@ namespace Poc0.LevelEditor.Core
 			}
 
 			m_TileTextureSampler.End( );
-			Renderer.Instance.PopRenderState( );
+			Graphics.Renderer.PopRenderState( );
 		}
 
 		#endregion

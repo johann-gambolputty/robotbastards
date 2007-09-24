@@ -14,7 +14,7 @@ namespace Rb.Rendering.OpenGl
 
 		public OpenGlShapeRenderer( )
 		{
-			m_DrawImageRenderState = RenderFactory.Instance.NewRenderState( );
+			m_DrawImageRenderState = Graphics.Factory.NewRenderState( );
 
 			m_DrawImageRenderState
 				.DisableCap( RenderStateFlag.DepthTest )
@@ -88,7 +88,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="texture">The image to render</param>
 		public override void DrawImage( int x, int y, int width, int height, Texture2d texture )
 		{
-			//Renderer.Instance.Push2d( );
+			//Graphics.Renderer.Push2d( );
 			//m_DrawImageRenderState.Begin( );
 
 			m_DrawImageSampler.Texture = ( OpenGlTexture2d )texture;
@@ -113,7 +113,7 @@ namespace Rb.Rendering.OpenGl
 			m_DrawImageSampler.End( );
 
 			//m_DrawImageRenderState.End( );
-			//Renderer.Instance.Pop2d( );
+			//Graphics.Renderer.Pop2d( );
 		}
 
 		#endregion

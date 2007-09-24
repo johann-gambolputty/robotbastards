@@ -167,7 +167,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 					if ( !tokens[ 0 ].StartsWith( "tag_" ) )
 					{
 						//	TODO: AP: Texture loading should be done through the asset manager
-						Texture2d newTexture = RenderFactory.Instance.NewTexture2d( );
+						Texture2d newTexture = Graphics.Factory.NewTexture2d( );
 
 						using ( Stream textureStream = TextureFile( source, tokens[ 1 ] ).Open( ) )
 						{

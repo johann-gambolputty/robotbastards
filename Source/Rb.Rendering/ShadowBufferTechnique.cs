@@ -84,7 +84,7 @@ namespace Rb.Rendering
 			{
 				for ( int lightIndex = 0; lightIndex < MaxLights; ++lightIndex )
 				{
-					RenderTarget target = RenderFactory.Instance.NewRenderTarget( );
+					RenderTarget target = Graphics.Factory.NewRenderTarget( );
 
 					//	TODO: Remove hardcoded render target format
 					target.Create( resX, resY, DepthTextureMethod ? TextureFormat.Undefined : TextureFormat.R8G8B8, 16, 0, DepthTextureMethod );
@@ -98,9 +98,9 @@ namespace Rb.Rendering
 			}
 
 			//	Create a shader parameter binding to the shadow matrix
-			m_ShadowMatrixBinding	= ShaderParameterBindings.Inst.CreateBinding( "ShadowMatrix", ShaderParameterCustomBinding.ValueType.Matrix, MaxLights );
-			m_ShadowNearZBinding	= ShaderParameterBindings.Inst.CreateBinding( "ShadowNearZ", ShaderParameterCustomBinding.ValueType.Float32 );
-			m_ShadowFarZBinding		= ShaderParameterBindings.Inst.CreateBinding( "ShadowFarZ", ShaderParameterCustomBinding.ValueType.Float32 );
+			m_ShadowMatrixBinding	= Graphics.ShaderParameterBindings.CreateBinding( "ShadowMatrix", ShaderParameterCustomBinding.ValueType.Matrix, MaxLights );
+			m_ShadowNearZBinding	= Graphics.ShaderParameterBindings.CreateBinding( "ShadowNearZ", ShaderParameterCustomBinding.ValueType.Float32 );
+			m_ShadowFarZBinding		= Graphics.ShaderParameterBindings.CreateBinding( "ShadowFarZ", ShaderParameterCustomBinding.ValueType.Float32 );
 		}
 
 		#endregion
@@ -122,7 +122,7 @@ namespace Rb.Rendering
 			//	Apply all shadow depth buffer textures
 			for ( int bufferIndex = 0; bufferIndex < numBuffers; ++bufferIndex )
 			{
-				Renderer.Instance.BindTexture( GetDepthTexture( bufferIndex ) );
+				Graphics.Renderer.BindTexture( GetDepthTexture( bufferIndex ) );
 			}
 
 			//	Apply all child techniques
@@ -144,7 +144,7 @@ namespace Rb.Rendering
 			//	Unbind all the shadow depth buffer textures
 			for ( int bufferIndex = 0; bufferIndex < numBuffers; ++bufferIndex )
 			{
-                Renderer.Instance.UnbindTexture( GetDepthTexture( bufferIndex ) );
+                Graphics.Renderer.UnbindTexture( GetDepthTexture( bufferIndex ) );
 			}
 		}
 
@@ -176,11 +176,11 @@ namespace Rb.Rendering
         /// </summary>
         private int MakeBuffers( IRenderable renderable, IRenderContext context, LightGroup lights )
         {
-            Renderer.Instance.PushTransform( Transform.LocalToWorld );
-            Renderer.Instance.PushTransform( Transform.WorldToView );
-            Renderer.Instance.PushTransform( Transform.ViewToScreen );
+            Graphics.Renderer.PushTransform( Transform.LocalToWorld );
+            Graphics.Renderer.PushTransform( Transform.WorldToView );
+            Graphics.Renderer.PushTransform( Transform.ViewToScreen );
 
-            Renderer.Instance.SetTransform( Transform.LocalToWorld, Matrix44.Identity );
+            Graphics.Renderer.SetTransform( Transform.LocalToWorld, Matrix44.Identity );
 
             //
             //	Ideal:
@@ -215,18 +215,18 @@ namespace Rb.Rendering
                 int height = curTarget.Height;
                 float aspectRatio = ( height == 0 ) ? 1.0f : ( width / ( float )height );
 
-                Renderer.Instance.SetLookAtTransform( curLight.Position + curLight.Direction, curLight.Position, Vector3.YAxis );
-                Renderer.Instance.SetPerspectiveProjectionTransform( curLight.ArcDegrees * 2, aspectRatio, m_NearZ, m_FarZ );
+                Graphics.Renderer.SetLookAtTransform( curLight.Position + curLight.Direction, curLight.Position, Vector3.YAxis );
+                Graphics.Renderer.SetPerspectiveProjectionTransform( curLight.ArcDegrees * 2, aspectRatio, m_NearZ, m_FarZ );
 
                 //	Set the current MVP matrix as the shadow transform. This is for after, when the scene is rendered properly
-                Matrix44 shadowMat = Renderer.Instance.GetTransform( Transform.ViewToScreen ) * Renderer.Instance.GetTransform( Transform.WorldToView );
+                Matrix44 shadowMat = Graphics.Renderer.GetTransform( Transform.ViewToScreen ) * Graphics.Renderer.GetTransform( Transform.WorldToView );
                 m_ShadowMatrixBinding.SetAt( lightIndex, shadowMat );
 
 
                 //	Set up the render target for the light
                 curTarget.Begin( );
-                Renderer.Instance.ClearColour( System.Drawing.Color.Black );  //  NOTE: AP: Unecessary if depth texture is being used
-                Renderer.Instance.ClearDepth( 1.0f );
+                Graphics.Renderer.ClearColour( System.Drawing.Color.Black );  //  NOTE: AP: Unecessary if depth texture is being used
+                Graphics.Renderer.ClearDepth( 1.0f );
 
                 renderable.Render( context );
 
@@ -252,9 +252,9 @@ namespace Rb.Rendering
 
             context.PopGlobalTechnique( );
 
-            Renderer.Instance.PopTransform( Transform.LocalToWorld );
-            Renderer.Instance.PopTransform( Transform.WorldToView );
-            Renderer.Instance.PopTransform( Transform.ViewToScreen );
+            Graphics.Renderer.PopTransform( Transform.LocalToWorld );
+            Graphics.Renderer.PopTransform( Transform.WorldToView );
+            Graphics.Renderer.PopTransform( Transform.ViewToScreen );
 
             return numBuffers;
         }

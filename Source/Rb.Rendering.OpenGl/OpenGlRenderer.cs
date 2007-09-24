@@ -49,7 +49,7 @@ namespace Rb.Rendering.OpenGl
 			//	
 
 			//	Add a default renderstate
-			Instance.PushRenderState( RenderFactory.Instance.NewRenderState( ) );
+			Graphics.Renderer.PushRenderState( Graphics.Factory.NewRenderState( ) );
 		}
 
 		#endregion

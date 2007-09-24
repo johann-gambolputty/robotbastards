@@ -156,7 +156,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Helper - returns the closest point on this curve to a line
 		/// </summary>
-		public float FindClosestPoint( Line3 line, int iterations )
+		public float FindClosestPoint( LineSegment3 line, int iterations )
 		{
 			return FindClosestPoint( new DistanceToPointDelegate( line.GetSqrDistanceToPoint ), iterations );
 		}

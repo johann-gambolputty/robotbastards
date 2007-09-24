@@ -36,7 +36,7 @@ namespace Poc0.Core
 			IHasWorldFrame hasFrame = Parent as IHasWorldFrame;
 			if ( hasFrame != null )
 			{
-				Renderer.Instance.PushTransform( Transform.LocalToWorld, hasFrame.WorldFrame );
+				Graphics.Renderer.PushTransform( Transform.LocalToWorld, hasFrame.WorldFrame );
 			}
 
 			m_Lights.Begin( );
@@ -49,7 +49,7 @@ namespace Poc0.Core
 			
 			if ( hasFrame != null )
 			{
-				Renderer.Instance.PopTransform( Transform.LocalToWorld );
+				Graphics.Renderer.PopTransform( Transform.LocalToWorld );
 			}
 		}
 

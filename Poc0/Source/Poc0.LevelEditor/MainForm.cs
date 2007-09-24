@@ -53,7 +53,7 @@ namespace Poc0.LevelEditor
 
 			//	Load all assemblies that support the chosen graphics API 
 			Rb.AssemblySelector.IdentifierMap.Instance.AddAssemblyIdentifiers( Directory.GetCurrentDirectory( ), SearchOption.TopDirectoryOnly );
-			Rb.AssemblySelector.IdentifierMap.Instance.LoadAll( "GraphicsApi=" + RenderFactory.Instance.ApiName );
+			Rb.AssemblySelector.IdentifierMap.Instance.LoadAll( "GraphicsApi=" + Graphics.Factory.ApiName );
 
 			InitializeComponent( );
 
@@ -126,7 +126,7 @@ namespace Poc0.LevelEditor
 
 			//	Add a renderer for the tile grid to the scene renderables
 			scene.Objects.Add( Guid.NewGuid( ), grid );
-			scene.Renderables.Add( RenderFactory.Instance.Create< TileBlock2dRenderer >( grid, EditModeContext.Instance ) );
+			scene.Renderables.Add( Graphics.Factory.Create< TileBlock2dRenderer >( grid, EditModeContext.Instance ) );
 
 			Scene = scene;
 		}

@@ -50,6 +50,10 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="Tao.OpenGl, Version=2.1.0.4, Culture=neutral, PublicKeyToken=1ca010269a4501ef, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\bin\ThirdParty\Tao 2.0\bin\Tao.OpenGl.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\ActionList.cs" />
@@ -60,7 +64,9 @@
     <Compile Include="Actions\PaintTileAction.cs" />
     <Compile Include="Actions\SelectAction.cs" />
     <Compile Include="Actions\UndoStack.cs" />
+    <Compile Include="GeometryBrush.cs" />
     <Compile Include="EditModes\AddObjectEditMode.cs" />
+    <Compile Include="EditModes\UserBrushEditMode.cs" />
     <Compile Include="EditModes\DefinePolygonEditMode.cs" />
     <Compile Include="EditModes\EditMode.cs" />
     <Compile Include="EditModes\EditModeContext.cs" />
@@ -69,6 +75,7 @@
     <Compile Include="EditorScene.cs" />
     <Compile Include="ISelectable.cs" />
     <Compile Include="ITilePicker.cs" />
+    <Compile Include="LevelGeometry.cs" />
     <Compile Include="ObjectEditState.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>

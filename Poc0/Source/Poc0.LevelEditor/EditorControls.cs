@@ -87,13 +87,18 @@ namespace Poc0.LevelEditor
 			m_EditContext.AddEditMode( new PaintTileEditMode( MouseButtons.Right, type ) );
 		}
 
-		private void objectsTreeView_AfterSelect(object sender, TreeViewEventArgs e)
+		private void objectsTreeView_AfterSelect( object sender, TreeViewEventArgs e )
 		{
 			object template = objectsTreeView.SelectedNode.Tag;
 			if ( template != null )
 			{
 				m_EditContext.AddEditMode( new AddObjectEditMode( MouseButtons.Right, template ) );
 			}
+		}
+
+		private void userBrushRadioButton_CheckedChanged( object sender, System.EventArgs e )
+		{
+			m_EditContext.AddEditMode( new UserBrushEditMode( LevelGeometry.Csg.Union ) );
 		}
 	}
 }

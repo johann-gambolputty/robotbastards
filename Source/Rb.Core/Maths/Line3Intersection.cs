@@ -6,12 +6,12 @@ namespace Rb.Core.Maths
 	/// Details about the intersection of a ray with an object
 	/// </summary>
 	[Serializable] // TODO: AP: Not complete... can't serialize intersected object
-	public class Ray3Intersection
+	public class Line3Intersection
 	{
 		/// <summary>
 		/// The object that the ray intersected. Can be null even if intersection was successful
 		/// </summary>
-		public Object	IntersectedObject
+		public object IntersectedObject
 		{
 			get { return m_Object; }
 			set { m_Object = value; }
@@ -20,7 +20,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// The point that the ray intersected the object. Always valid
 		/// </summary>
-		public Point3	IntersectionPosition
+		public Point3 IntersectionPosition
 		{
 			get { return m_Position; }
 			set { m_Position = value; }
@@ -29,7 +29,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// The normal on the object surface at the point that the ray intersected. Always valid
 		/// </summary>
-		public Vector3	IntersectionNormal
+		public Vector3 IntersectionNormal
 		{
 			get { return m_Normal; }
 			set { m_Normal = value; }
@@ -41,7 +41,7 @@ namespace Rb.Core.Maths
 		/// <remarks>
 		/// The IntersectionPosition can also be determined by calling Ray3.GetPointOnRay( Distance )
 		/// </remarks>
-		public float	Distance
+		public float Distance
 		{
 			get { return m_Distance; }
 			set { m_Distance = value; }
@@ -50,7 +50,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Default constructor
 		/// </summary>
-		public Ray3Intersection( )
+		public Line3Intersection( )
 		{
 		}
 
@@ -60,7 +60,7 @@ namespace Rb.Core.Maths
 		/// <param name="pos"> Ray intersection position </param>
 		/// <param name="normal"> Ray intersection normal </param>
 		/// <param name="distance"> Ray intersection distance </param>
-		public Ray3Intersection( Point3 pos, Vector3 normal, float distance )
+		public Line3Intersection( Point3 pos, Vector3 normal, float distance )
 		{
 			m_Position	= pos;
 			m_Normal	= normal;
@@ -68,7 +68,7 @@ namespace Rb.Core.Maths
 		}
 
 		[NonSerialized]
-		private Object	m_Object;
+		private object	m_Object;
 
 		private Point3	m_Position;
 		private Vector3	m_Normal;
