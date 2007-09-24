@@ -33,15 +33,20 @@ namespace Poc0.LevelEditor
 			this.tileTypeSetView = new Poc0.LevelEditor.TileTypeSetListView();
 			this.objectsTabPage = new System.Windows.Forms.TabPage();
 			this.objectsTreeView = new System.Windows.Forms.TreeView();
+			this.brushPage = new System.Windows.Forms.TabPage();
+			this.circleBrushRadioButton = new System.Windows.Forms.RadioButton();
+			this.userBrushRadioButton = new System.Windows.Forms.RadioButton();
 			this.tabControl1.SuspendLayout();
 			this.tilesTabPage.SuspendLayout();
 			this.objectsTabPage.SuspendLayout();
+			this.brushPage.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tabControl1
 			// 
 			this.tabControl1.Controls.Add(this.tilesTabPage);
 			this.tabControl1.Controls.Add(this.objectsTabPage);
+			this.tabControl1.Controls.Add(this.brushPage);
 			this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tabControl1.Location = new System.Drawing.Point(0, 0);
 			this.tabControl1.Name = "tabControl1";
@@ -91,6 +96,43 @@ namespace Poc0.LevelEditor
 			this.objectsTreeView.TabIndex = 0;
 			this.objectsTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.objectsTreeView_AfterSelect);
 			// 
+			// brushPage
+			// 
+			this.brushPage.Controls.Add(this.circleBrushRadioButton);
+			this.brushPage.Controls.Add(this.userBrushRadioButton);
+			this.brushPage.Location = new System.Drawing.Point(4, 22);
+			this.brushPage.Name = "brushPage";
+			this.brushPage.Padding = new System.Windows.Forms.Padding(3);
+			this.brushPage.Size = new System.Drawing.Size(181, 140);
+			this.brushPage.TabIndex = 2;
+			this.brushPage.Text = "Brushes";
+			this.brushPage.UseVisualStyleBackColor = true;
+			// 
+			// circleBrushRadioButton
+			// 
+			this.circleBrushRadioButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.circleBrushRadioButton.AutoSize = true;
+			this.circleBrushRadioButton.Location = new System.Drawing.Point(50, 73);
+			this.circleBrushRadioButton.Name = "circleBrushRadioButton";
+			this.circleBrushRadioButton.Size = new System.Drawing.Size(81, 17);
+			this.circleBrushRadioButton.TabIndex = 1;
+			this.circleBrushRadioButton.Text = "Circle Brush";
+			this.circleBrushRadioButton.UseVisualStyleBackColor = true;
+			// 
+			// userBrushRadioButton
+			// 
+			this.userBrushRadioButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.userBrushRadioButton.AutoSize = true;
+			this.userBrushRadioButton.Checked = true;
+			this.userBrushRadioButton.Location = new System.Drawing.Point(50, 50);
+			this.userBrushRadioButton.Name = "userBrushRadioButton";
+			this.userBrushRadioButton.Size = new System.Drawing.Size(77, 17);
+			this.userBrushRadioButton.TabIndex = 0;
+			this.userBrushRadioButton.TabStop = true;
+			this.userBrushRadioButton.Text = "User Brush";
+			this.userBrushRadioButton.UseVisualStyleBackColor = true;
+			this.userBrushRadioButton.CheckedChanged += new System.EventHandler(this.userBrushRadioButton_CheckedChanged);
+			// 
 			// EditorControls
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -101,6 +143,8 @@ namespace Poc0.LevelEditor
 			this.tabControl1.ResumeLayout(false);
 			this.tilesTabPage.ResumeLayout(false);
 			this.objectsTabPage.ResumeLayout(false);
+			this.brushPage.ResumeLayout(false);
+			this.brushPage.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -112,6 +156,9 @@ namespace Poc0.LevelEditor
 		private System.Windows.Forms.TabPage objectsTabPage;
 		private TileTypeSetListView tileTypeSetView;
 		private System.Windows.Forms.TreeView objectsTreeView;
+		private System.Windows.Forms.TabPage brushPage;
+		private System.Windows.Forms.RadioButton userBrushRadioButton;
+		private System.Windows.Forms.RadioButton circleBrushRadioButton;
 
 	}
 }

@@ -22,8 +22,8 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public override void Begin( )
 		{
-			Renderer.Instance.PushTransform( Transform.WorldToView );
-			Renderer.Instance.SetLookAtTransform( m_LookAt, m_Pos, m_YAxis );
+			Graphics.Renderer.PushTransform( Transform.WorldToView );
+			Graphics.Renderer.SetLookAtTransform( m_LookAt, m_Pos, m_YAxis );
 			base.Begin( );
 		}
 
@@ -32,7 +32,7 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public override void End( )
 		{
-			Renderer.Instance.PopTransform( Transform.WorldToView );
+			Graphics.Renderer.PopTransform( Transform.WorldToView );
 			base.End( );
 		}
 

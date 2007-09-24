@@ -64,7 +64,7 @@ namespace Rb.Rendering.OpenGl
 					Gl.glEnable( Gl.GL_TEXTURE_2D );
 
 					//	Create the depth texture
-					OpenGlTexture2d texture = ( OpenGlTexture2d )OpenGlRenderFactory.Instance.NewTexture2d( );
+					OpenGlTexture2d texture = ( OpenGlTexture2d )Graphics.Factory.NewTexture2d( );
 					switch ( depthBits )
 					{
 						case 16 :	texture.Create( width, height, TextureFormat.Depth16 );	break;
@@ -104,7 +104,7 @@ namespace Rb.Rendering.OpenGl
 			if ( colourFormat != TextureFormat.Undefined )
 			{
 				//	Create a texture
-				OpenGlTexture2d texture = ( OpenGlTexture2d )OpenGlRenderFactory.Instance.NewTexture2d( );
+				OpenGlTexture2d texture = ( OpenGlTexture2d )Graphics.Factory.NewTexture2d( );
 				texture.Create( width, height, colourFormat );
 
 				//	Add texture parameters (barfs otherwise - incomplete attachements)

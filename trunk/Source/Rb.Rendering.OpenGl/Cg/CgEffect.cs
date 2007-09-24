@@ -140,10 +140,10 @@ namespace Rb.Rendering.OpenGl.Cg
 				CgShaderParameter newParam = new CgShaderParameter( m_Context, this, curParam );
 				m_Parameters.Add( newParam );
 
-				newParam.Binding = ShaderParameterBindings.Inst.GetBinding( newParam.Name );
+				newParam.Binding = Graphics.ShaderParameterBindings.GetBinding( newParam.Name );
 			}
 			//	Add a listener to the shader binding collection (this initialis
-			ShaderParameterBindings.Inst.OnNewBinding += new ShaderParameterBindings.NewBindingDelegate( OnNewBinding );
+			Graphics.ShaderParameterBindings.OnNewBinding += OnNewBinding;
 
 			return true;
 		}

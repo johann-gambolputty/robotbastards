@@ -66,6 +66,7 @@
     <Compile Include="Cg\CgShaderParameterBindings.cs" />
     <Compile Include="Cg\CgShaderParameterCustomBinding.cs" />
     <Compile Include="Cg\CgShaderParameterDefaultBinding.cs" />
+    <Compile Include="OpenGlDraw.cs" />
     <Compile Include="OpenGlIndexedGroup.cs" />
     <Compile Include="OpenGlMaterial.cs" />
     <Compile Include="OpenGlMesh.cs" />

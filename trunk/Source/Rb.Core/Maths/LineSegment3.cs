@@ -5,14 +5,14 @@ namespace Rb.Core.Maths
 	/// <summary>
 	/// Summary description for Line3.
 	/// </summary>
-	public class Line3
+	public class LineSegment3
 	{
 		#region	Construction and setup
 
 		/// <summary>
 		/// Zero length line at the origin
 		/// </summary>
-		public Line3( )
+		public LineSegment3( )
 		{
 			m_Start	= new Point3( );
 			m_End	= new Point3( );
@@ -21,7 +21,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Sets the start and end points of the line
 		/// </summary>
-		public Line3( Point3 start, Point3 end )
+		public LineSegment3( Point3 start, Point3 end )
 		{
 			Set( start, end );
 		}
@@ -44,7 +44,7 @@ namespace Rb.Core.Maths
 		/// </summary>
 		/// <param name="pt"> Point to test </param>
 		/// <returns> Squared distance to pt </returns>
-		public float	GetSqrDistanceToPoint( Point3 pt )
+		public float GetSqrDistanceToPoint( Point3 pt )
 		{
 			Vector3	lineVec		= End - Start;
 			float	sqrLength	= lineVec.SqrLength;
@@ -64,9 +64,9 @@ namespace Rb.Core.Maths
 		/// </summary>
 		/// <param name="pt"> Point to test </param>
 		/// <returns> Distance to pt </returns>
-		public float	GetDistanceToPoint( Point3 pt )
+		public float GetDistanceToPoint( Point3 pt )
 		{
-			return ( float )System.Math.Sqrt( GetSqrDistanceToPoint( pt ) );
+			return ( float )Math.Sqrt( GetSqrDistanceToPoint( pt ) );
 		}
 
 		#endregion

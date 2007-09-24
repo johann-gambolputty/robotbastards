@@ -46,21 +46,21 @@ namespace Rb.Rendering.OpenGl.Cg
 			{
 				case ShaderParameterDefaultBinding.ModelMatrix :
 				{
-					Matrix44 modelMatrix = OpenGlRenderer.Instance.GetTransform( Transform.LocalToWorld );
+					Matrix44 modelMatrix = Graphics.Renderer.GetTransform( Transform.LocalToWorld );
 					CgShaderParameter.cgSetMatrixParameterfc( param, modelMatrix.Elements );
 					break;
 				}
 
 				case ShaderParameterDefaultBinding.ViewMatrix	:
 				{
-					Matrix44 viewMatrix = OpenGlRenderer.Instance.GetTransform( Transform.WorldToView );
+					Matrix44 viewMatrix = Graphics.Renderer.GetTransform( Transform.WorldToView );
 					CgShaderParameter.cgSetMatrixParameterfc( param, viewMatrix.Elements );
 					break;
 				}
 
 				case ShaderParameterDefaultBinding.InverseTransposeModelMatrix :
 				{
-					Matrix44 itModelMatrix	= OpenGlRenderer.Instance.GetTransform( Transform.LocalToWorld );
+					Matrix44 itModelMatrix	= Graphics.Renderer.GetTransform( Transform.LocalToWorld );
 					itModelMatrix.Translation = Point3.Origin;
 					itModelMatrix.Transpose( );
 					itModelMatrix.Invert( );
@@ -107,7 +107,7 @@ namespace Rb.Rendering.OpenGl.Cg
 
 				case ShaderParameterDefaultBinding.EyePosition :
 				{
-					Cameras.Camera3 curCam = ( ( Cameras.Camera3 )OpenGlRenderer.Instance.Camera );
+					Cameras.Camera3 curCam = ( ( Cameras.Camera3 )Graphics.Renderer.Camera );
 					if ( curCam != null )
 					{
 						Point3 eyePos = curCam.Position;
@@ -118,7 +118,7 @@ namespace Rb.Rendering.OpenGl.Cg
 
 				case ShaderParameterDefaultBinding.EyeZAxis :
 				{
-					Cameras.Camera3 curCam = ( ( Cameras.Camera3 )OpenGlRenderer.Instance.Camera );
+					Cameras.Camera3 curCam = ( ( Cameras.Camera3 )Graphics.Renderer.Camera );
 					if ( curCam != null )
 					{
 						Vector3 eyeVec = curCam.ZAxis;
@@ -130,11 +130,11 @@ namespace Rb.Rendering.OpenGl.Cg
 				case ShaderParameterDefaultBinding.PointLights :
 				{
 					//	TODO: This is REALLY SHIT. Need to refactor this mess
-					int numActiveLights = OpenGlRenderer.Instance.NumActiveLights;
+					int numActiveLights = Graphics.Renderer.NumActiveLights;
 					int numPointLights	= 0;
 					for ( int lightIndex = 0; lightIndex < numActiveLights; ++lightIndex )
 					{
-						PointLight curLight = OpenGlRenderer.Instance.GetLight( lightIndex ) as PointLight;
+						PointLight curLight = Graphics.Renderer.GetLight( lightIndex ) as PointLight;
 						if ( curLight != null )
 						{
 							IntPtr positionParam = TaoCg.cgGetArrayParameter( TaoCg.cgGetNamedStructParameter( param, "m_Positions" ), numPointLights );
@@ -151,11 +151,11 @@ namespace Rb.Rendering.OpenGl.Cg
 				case ShaderParameterDefaultBinding.SpotLights :
 				{
 					//	TODO: This is REALLY SHIT. Need to refactor this mess
-					int numActiveLights = OpenGlRenderer.Instance.NumActiveLights;
+					int numActiveLights = Graphics.Renderer.NumActiveLights;
 					int numSpotLights	= 0;
 					for ( int lightIndex = 0; lightIndex < numActiveLights; ++lightIndex )
 					{
-						SpotLight curLight = OpenGlRenderer.Instance.GetLight( lightIndex ) as SpotLight;
+						SpotLight curLight = Graphics.Renderer.GetLight( lightIndex ) as SpotLight;
 						if ( curLight != null )
 						{
 							IntPtr positionParam = TaoCg.cgGetArrayParameter( TaoCg.cgGetNamedStructParameter( param, "m_Positions" ), numSpotLights );
@@ -175,42 +175,42 @@ namespace Rb.Rendering.OpenGl.Cg
 
 				case ShaderParameterDefaultBinding.Texture0 :
 				{
-					CgShaderParameter.BindTexture( context, param, OpenGlRenderer.Instance.GetTexture( 0 ) );
+					CgShaderParameter.BindTexture( context, param, Graphics.Renderer.GetTexture( 0 ) );
 					break;
 				}
 				case ShaderParameterDefaultBinding.Texture1 :
 				{
-					CgShaderParameter.BindTexture( context, param, OpenGlRenderer.Instance.GetTexture( 1 ) );
+					CgShaderParameter.BindTexture( context, param, Graphics.Renderer.GetTexture( 1 ) );
 					break;
 				}
 				case ShaderParameterDefaultBinding.Texture2 :
 				{
-					CgShaderParameter.BindTexture( context, param, OpenGlRenderer.Instance.GetTexture( 2 ) );
+					CgShaderParameter.BindTexture( context, param, Graphics.Renderer.GetTexture( 2 ) );
 					break;
 				}
 				case ShaderParameterDefaultBinding.Texture3 :
 				{
-					CgShaderParameter.BindTexture( context, param, OpenGlRenderer.Instance.GetTexture( 3 ) );
+					CgShaderParameter.BindTexture( context, param, Graphics.Renderer.GetTexture( 3 ) );
 					break;
 				}
 				case ShaderParameterDefaultBinding.Texture4 :
 				{
-					CgShaderParameter.BindTexture( context, param, OpenGlRenderer.Instance.GetTexture( 4 ) );
+					CgShaderParameter.BindTexture( context, param, Graphics.Renderer.GetTexture( 4 ) );
 					break;
 				}
 				case ShaderParameterDefaultBinding.Texture5 :
 				{
-					CgShaderParameter.BindTexture( context, param, OpenGlRenderer.Instance.GetTexture( 5 ) );
+					CgShaderParameter.BindTexture( context, param, Graphics.Renderer.GetTexture( 5 ) );
 					break;
 				}
 				case ShaderParameterDefaultBinding.Texture6 :
 				{
-					CgShaderParameter.BindTexture( context, param, OpenGlRenderer.Instance.GetTexture( 6 ) );
+					CgShaderParameter.BindTexture( context, param, Graphics.Renderer.GetTexture( 6 ) );
 					break;
 				}
 				case ShaderParameterDefaultBinding.Texture7 :
 				{
-					CgShaderParameter.BindTexture( context, param, OpenGlRenderer.Instance.GetTexture( 7 ) );
+					CgShaderParameter.BindTexture( context, param, Graphics.Renderer.GetTexture( 7 ) );
 					break;
 				}
 				default :

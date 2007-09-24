@@ -1,4 +1,3 @@
-using System;
 
 namespace Rb.Core.Maths
 {
@@ -29,7 +28,7 @@ namespace Rb.Core.Maths
 		/// </remarks>
 		public override void				OnChanged( )
 		{
-			SetRange( 0, ( float )ControlPoints.Count );
+			SetRange( 0, ControlPoints.Count );
 			base.OnChanged( );
 		}
 

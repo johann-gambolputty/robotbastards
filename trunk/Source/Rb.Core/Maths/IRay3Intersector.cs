@@ -20,6 +20,6 @@ namespace Rb.Core.Maths
 		/// </summary>
 		/// <param name="ray">Ray to check</param>
 		/// <returns>Intersection information. If no intersection takes place, this method returns null</returns>
-		Ray3Intersection GetIntersection( Ray3 ray );
+		Line3Intersection GetIntersection( Ray3 ray );
 	}
 }

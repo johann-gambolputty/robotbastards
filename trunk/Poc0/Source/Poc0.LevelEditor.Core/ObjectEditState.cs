@@ -5,6 +5,7 @@ using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.World;
+using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc0.LevelEditor.Core
 {
@@ -33,21 +34,18 @@ namespace Poc0.LevelEditor.Core
 		/// <param name="context">Rendering context</param>
 		public void Render( IRenderContext context )
 		{
-			//	TODO: AP: Render object bounds
-			int x = ( int )m_HasPosition.Position.X - 5;
-			int y = ( int )m_HasPosition.Position.Z - 5;
-			int width = 10;
-			int height = 10;
+			Draw.IPen draw = m_Parent.Selected ? ms_DrawSelected : ms_DrawUnselected;
+			Point pos = new Point( ( int )m_HasPosition.Position.X, ( int )m_HasPosition.Position.Y );
 
-			Color colour = m_Parent.Selected ? Color.Red : Color.White;
-
-			ShapeRenderer.Instance.DrawRectangle( x, y, width, height, colour );
+			Graphics.Draw.Circle( draw, pos, 10 );
 		}
 
 		#endregion
 
 		private readonly ObjectEditState m_Parent;
 		private readonly IHasPosition m_HasPosition;
+		private static readonly Draw.IPen ms_DrawSelected = Graphics.Draw.NewPen( Color.Red );
+		private static readonly Draw.IPen ms_DrawUnselected = Graphics.Draw.NewPen( Color.WhiteSmoke );
 
 		#region IHasWorldFrame Members
 		
@@ -127,7 +125,7 @@ namespace Poc0.LevelEditor.Core
 			IHasPosition hasPosition = Rb.Core.Components.Parent.GetType< IHasPosition >( obj );
 			if ( hasPosition != null )
 			{
-				hasPosition.Position = new Point3( x, 0, y );
+				hasPosition.Position = new Point3( x, y, 0 );
 				AddChild( new PositionEditor( this, hasPosition ) );
 			}
 		}

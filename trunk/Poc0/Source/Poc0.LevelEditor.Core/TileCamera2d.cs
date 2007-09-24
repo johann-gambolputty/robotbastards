@@ -42,10 +42,10 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		public override void Begin( )
 		{
-			Renderer.Instance.Push2d( );
-			Renderer.Instance.PushTransform( Transform.LocalToWorld, Matrix44.Identity );
-			Renderer.Instance.Translate( Transform.LocalToWorld, m_Origin.X, m_Origin.Y, 0 );
-			Renderer.Instance.Scale( Transform.LocalToWorld, m_Scale, m_Scale, 1 );
+			Graphics.Renderer.Push2d( );
+			Graphics.Renderer.PushTransform( Transform.LocalToWorld, Matrix44.Identity );
+			Graphics.Renderer.Translate( Transform.LocalToWorld, m_Origin.X, m_Origin.Y, 0 );
+			Graphics.Renderer.Scale( Transform.LocalToWorld, m_Scale, m_Scale, 1 );
 			base.Begin( );
 		}
 
@@ -55,8 +55,8 @@ namespace Poc0.LevelEditor.Core
 		public override void End( )
 		{
 			base.End( );
-			Renderer.Instance.PopTransform( Transform.LocalToWorld );
-			Renderer.Instance.Pop2d( );
+			Graphics.Renderer.PopTransform( Transform.LocalToWorld );
+			Graphics.Renderer.Pop2d( );
 		}
 
 		#region Private stuff

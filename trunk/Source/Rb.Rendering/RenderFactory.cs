@@ -24,7 +24,7 @@ namespace Rb.Rendering
 		/// <exception cref="ArgumentException">Thrown if the assembly does not contain a class that implements RenderFactory</exception>
 		/// <remarks>
 		/// Loads the specified assembly, and searches it for a class that implements RenderFactory. If one is found, an instance is
-		/// created of that class. This sets the singletons RenderFactory.Instance, Renderer.Instance and ShapeRenderer.Instance. If no class
+		/// created of that class. This sets the singletons Graphics.Factory, Graphics.Renderer and ShapeGraphics.Renderer. If no class
 		/// is found that implements RenderFactory, an ArgumentException is thrown.
 		/// </remarks>
 		public static Assembly Load( string renderAssemblyName )
@@ -36,6 +36,9 @@ namespace Rb.Rendering
 				if ( curType.IsSubclassOf( typeof( RenderFactory ) ) )
 				{
 					RenderFactory factory = ( RenderFactory )Activator.CreateInstance( curType );
+
+					//	Set up the graphics singleons from the factory
+					Graphics.Initialise( factory );
 
 					factory.ScanAssembly( renderAssembly );
 					factory.AutoAssemblyScan = true;
@@ -64,18 +67,6 @@ namespace Rb.Rendering
 		public abstract string ApiName
 		{
 			get;
-		}
-
-		#endregion
-
-		#region	Singleton
-
-		/// <summary>
-		/// Render factory singleton
-		/// </summary>
-		public static RenderFactory Instance
-		{
-			get { return ms_Singleton; }
 		}
 
 		#endregion
@@ -125,44 +116,25 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Creates a new Renderer object
 		/// </summary>
-		protected abstract Renderer NewRenderer( );
+		protected internal abstract Renderer NewRenderer( );
 
 		/// <summary>
 		/// Creates a new ShapeRenderer object
 		/// </summary>
-		protected abstract ShapeRenderer NewShapeRenderer( );
+		protected internal abstract ShapeRenderer NewShapeRenderer( );
 
 		/// <summary>
 		/// Creates a new ShaderParamterBindings object
 		/// </summary>
-		protected abstract ShaderParameterBindings NewShaderParameterBindings( );
-
-		#endregion
-
-		#region Protected stuff
+		protected internal abstract ShaderParameterBindings NewShaderParameterBindings( );
 
 		/// <summary>
-		/// Protected constructor. Sets up the Renderer and ShapeRenderer 
+		/// Creates a new 
 		/// </summary>
-		protected RenderFactory( )
-		{
-			ms_Singleton = this;
-			InitialiseSingletons( );
-		}
+		/// <returns></returns>
+		protected internal abstract Draw NewDraw( );
 
 		#endregion
 
-		#region Private stuff
-
-		private static RenderFactory ms_Singleton;
-
-		private void InitialiseSingletons( )
-		{
-			NewRenderer( );					//	Renderer constructor sets the Renderer singleton
-			NewShapeRenderer( );			//	ShapeRenderer constructor sets the ShapeRenderer singleton
-			NewShaderParameterBindings( );	//	ShaderParameterBindings constructor sets the ShaderParameterBindings singleton
-		}
-
-		#endregion
 	}
 }

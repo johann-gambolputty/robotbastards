@@ -86,5 +86,13 @@ namespace Rb.Rendering.OpenGl
 		{
 			return new Cg.CgShaderParameterBindings( );
 		}
+
+		/// <summary>
+		/// Creates a new Draw object
+		/// </summary>
+		protected override Draw NewDraw( )
+		{
+			return new OpenGlDraw( );
+		}
 	}
 }

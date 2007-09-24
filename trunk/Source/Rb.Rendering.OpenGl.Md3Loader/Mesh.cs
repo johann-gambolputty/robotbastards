@@ -340,7 +340,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			{
 				Surface curSurface = m_Surfaces[ surfaceIndex ];
 
-				Renderer.Instance.BindTexture( curSurface.Texture );
+				Graphics.Renderer.BindTexture( curSurface.Texture );
 				if ( m_TextureParameter != null )
 				{
 					m_TextureParameter.Set( curSurface.Texture );
@@ -351,7 +351,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 				m_Technique.Apply( context, m_SurfaceRenderer );
 
-				Renderer.Instance.UnbindTexture( curSurface.Texture );
+				Graphics.Renderer.UnbindTexture( curSurface.Texture );
 			}
 
 			if ( m_NestedMesh != null )
@@ -362,14 +362,14 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 					Tag			transformTag	= curFrame.Tags[ TransformTagIndex ];
 
 					Matrix44 transform = new Matrix44( transformTag.Origin, transformTag.XAxis, transformTag.YAxis, transformTag.ZAxis );
-					Renderer.Instance.PushTransform( Transform.LocalToWorld, transform );
+					Graphics.Renderer.PushTransform( Transform.LocalToWorld, transform );
 				}
 
 				m_NestedMesh.Render( context );
 
 				if ( m_TransformTagIndex != -1 )
 				{
-					Renderer.Instance.PopTransform( Transform.LocalToWorld );
+					Graphics.Renderer.PopTransform( Transform.LocalToWorld );
 				}
 			}
 

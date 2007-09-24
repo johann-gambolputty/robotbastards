@@ -116,7 +116,7 @@ namespace Rb.World.Entities
 		public override void Render( IRenderContext context )
 		{
 			//	Get the interpolated position of the entity
-			float t = ( float )( context.RenderTime - m_Position.LastStepTime ) / ( float )m_Position.LastStepInterval;
+			float t = ( float )( context.RenderTime - m_Position.LastStepTime ) / m_Position.LastStepInterval;
 			Point3 curPos = m_Position.Get( t );
 
 			//	TODO: Get the interpolated rotation of the entity
@@ -124,12 +124,12 @@ namespace Rb.World.Entities
 			//	Push the entity transform
 			Matrix44 mat = new Matrix44( curPos, Left, Up, Ahead );
 
-			Renderer.Instance.PushTransform( Transform.LocalToWorld, mat );
+			Rb.Rendering.Graphics.Renderer.PushTransform( Transform.LocalToWorld, mat );
 
 			base.Render( context );
 
 			//	Pop the entity transform
-			Renderer.Instance.PopTransform( Transform.LocalToWorld );
+			Rb.Rendering.Graphics.Renderer.PopTransform(Transform.LocalToWorld);
 		}
 
 		#endregion

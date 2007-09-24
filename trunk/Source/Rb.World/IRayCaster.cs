@@ -23,6 +23,6 @@ namespace Rb.World
         /// <param name="ray">Ray to cast</param>
         /// <param name="options">Options for determining which layers to check, objects to exclude, maximum ray length (!) etc.</param>
         /// <returns>Returns null if no intersection occurred, or details about the intersection</returns>
-        Ray3Intersection GetFirstIntersection( Ray3 ray, RayCastOptions options );
+        Line3Intersection GetFirstIntersection( Ray3 ray, RayCastOptions options );
     }
 }

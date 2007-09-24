@@ -55,7 +55,7 @@ namespace Rb.Interaction
 
             //	Create a pick ray using the input binding's cursor position, and camera
             Ray3 pickRay = ( ( Camera3 )Context.Viewer.Camera ).PickRay( m_Cursor.X, m_Cursor.Y );
-            Ray3Intersection pickIntersection = intersector.GetIntersection( pickRay );
+            Line3Intersection pickIntersection = intersector.GetIntersection( pickRay );
 
             return new PickCommandMessage( cmd, pickIntersection );
         }

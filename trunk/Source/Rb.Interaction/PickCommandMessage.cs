@@ -12,7 +12,7 @@ namespace Rb.Interaction
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		public PickCommandMessage( Command cmd, Ray3Intersection intersection ) :
+		public PickCommandMessage( Command cmd, Line3Intersection intersection ) :
 			base( cmd )
 		{
 			m_Intersection = intersection;
@@ -21,11 +21,11 @@ namespace Rb.Interaction
 		/// <summary>
 		/// Gets the pick intersection
 		/// </summary>
-		public Ray3Intersection Intersection
+		public Line3Intersection Intersection
 		{
 			get { return m_Intersection; }
 		}
 
-		private Ray3Intersection m_Intersection;
+		private Line3Intersection m_Intersection;
     }
 }

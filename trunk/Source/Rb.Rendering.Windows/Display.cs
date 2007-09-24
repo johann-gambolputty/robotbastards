@@ -180,8 +180,8 @@ namespace Rb.Rendering.Windows
 		{
 			if ( m_Viewers.Count == 0 )
 			{
-				Renderer.Instance.ClearDepth( 1.0f );
-				Renderer.Instance.ClearVerticalGradient( Color.DarkSeaGreen, Color.Black );
+				Graphics.Renderer.ClearDepth( 1.0f );
+				Graphics.Renderer.ClearVerticalGradient( Color.DarkSeaGreen, Color.Black );
 			}
 			else
 			{
@@ -261,9 +261,9 @@ namespace Rb.Rendering.Windows
 		/// </summary>
 		private static IWindowsDisplaySetup CreateSetupData( )
 		{
-			if ( RenderFactory.Instance != null )
+			if ( Graphics.Factory != null )
 			{
-				return ( IWindowsDisplaySetup )RenderFactory.Instance.CreateDisplaySetup( );
+				return ( IWindowsDisplaySetup )Graphics.Factory.CreateDisplaySetup( );
 			}
 			return null;
 		}

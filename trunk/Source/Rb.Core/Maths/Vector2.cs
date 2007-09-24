@@ -135,11 +135,11 @@ namespace Rb.Core.Maths
 		{
 			get
 			{
-				return ( float )System.Math.Sqrt( SqrLength );
+				return ( float )Math.Sqrt( SqrLength );
 			}
 			set
 			{
-				IpMultiplyByValue( value / ( float )System.Math.Sqrt( SqrLength ) );
+				IpMultiplyByValue( value / ( float )Math.Sqrt( SqrLength ) );
 			}
 		}
 
@@ -276,6 +276,25 @@ namespace Rb.Core.Maths
 		}
 
 		/// <summary>
+		/// Creates a normalised, perpendicular copy of this vector
+		/// </summary>
+		public Vector2 MakePerpNormal( )
+		{
+			float length = Length;
+			return new Vector2( m_Y / length, m_X / -length );
+		}
+
+		/// <summary>
+		/// Makes this vector perpendicular to itself
+		/// </summary>
+		public void Perp( )
+		{
+			float tmp = m_X;
+			m_X = m_Y;
+			m_Y = -tmp;
+		}
+
+		/// <summary>
 		/// Returns the square of the distance from this point to another
 		/// </summary>
 		public float SqrDistanceTo( Vector2 pt )
@@ -289,11 +308,17 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Returns the dot product of this vector with another
 		/// </summary>
-		/// <param name="vec"></param>
-		/// <returns></returns>
 		public float Dot( Vector2 vec )
 		{
 			return ( X * vec.X + Y * vec.Y );
+		}
+
+		/// <summary>
+		/// Returns the dot product of this vector with another
+		/// </summary>
+		public float Dot( Point2 pt )
+		{
+			return ( X * pt.X + Y * pt.Y );
 		}
 
 		/// <summary>
@@ -301,7 +326,7 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public float DistanceTo( Vector2 pt )
 		{
-			return ( float )System.Math.Sqrt( SqrDistanceTo( pt ) );
+			return ( float )Math.Sqrt( SqrDistanceTo( pt ) );
 		}
 
 		#endregion

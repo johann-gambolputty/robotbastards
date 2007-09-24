@@ -1,16 +1,15 @@
-using System;
 
 namespace Rb.Core.Maths
 {
 	/// <summary>
 	/// Summary description for Intersection.
 	/// </summary>
-	public class Intersection
+	public static class Intersections3
 	{
 		/// <summary>
 		/// Intersects a ray with a triangle
 		/// </summary>
-		public static Ray3Intersection GetRayTriangleIntersection( Ray3 ray, Point3 pt0, Point3 pt1, Point3 pt2 )
+		public static Line3Intersection GetRayTriangleIntersection( Ray3 ray, Point3 pt0, Point3 pt1, Point3 pt2 )
 		{
 			return GetRayTriangleIntersection( ray, pt0, pt1, pt2, float.MaxValue );
 		}
@@ -19,7 +18,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Intersects a ray with a triangle. If the intersection point is beyond a given distance from the ray origin, the intersection is rejected
 		/// </summary>
-		public static Ray3Intersection GetRayTriangleIntersection( Ray3 ray, Point3 pt0, Point3 pt1, Point3 pt2, float maxDistance )
+		public static Line3Intersection GetRayTriangleIntersection( Ray3 ray, Point3 pt0, Point3 pt1, Point3 pt2, float maxDistance )
 		{
 			Vector3 uVec			= ( pt1 - pt0 );
 			Vector3 vVec			= ( pt2 - pt0 );
@@ -69,13 +68,13 @@ namespace Rb.Core.Maths
 			}
 
 			nVec /= ( float )System.Math.Sqrt( nVecSqrLength );
-			return new Ray3Intersection( pt, nVec, r );
+			return new Line3Intersection( pt, nVec, r );
 		}
 
 		/// <summary>
 		/// Tests for an intersection between a ray and a sphere
 		/// </summary>
-		public static Ray3Intersection GetRayIntersection( Ray3 ray, Sphere3 sphere )
+		public static Line3Intersection GetRayIntersection( Ray3 ray, Sphere3 sphere )
 		{
 			Vector3	originToCentre			= ray.Origin - sphere.Centre;
 
@@ -91,7 +90,7 @@ namespace Rb.Core.Maths
 				float t = -a1 + ( float )System.Math.Sqrt( discriminant );
 
 				intersectionPt = ray.GetPointOnRay( t );
-				return new Ray3Intersection(  intersectionPt, ( intersectionPt - sphere.Centre ).MakeNormal( ), t );
+				return new Line3Intersection(  intersectionPt, ( intersectionPt - sphere.Centre ).MakeNormal( ), t );
 			}
 			if ( a1 >= 0 )
 			{
@@ -111,7 +110,7 @@ namespace Rb.Core.Maths
 				//	1 intersection: Discriminant is close to zero - there's only root to the ray/sphere equation
 				float t = -a1;
 				intersectionPt = ray.GetPointOnRay( t );
-				return new Ray3Intersection(  intersectionPt, ( intersectionPt - sphere.Centre ).MakeNormal( ), t );
+				return new Line3Intersection(  intersectionPt, ( intersectionPt - sphere.Centre ).MakeNormal( ), t );
 			}
 
 			//	2 intersections: 2 roots to the ray/sphere equation. Choose the closest
@@ -122,7 +121,7 @@ namespace Rb.Core.Maths
 			float closestT = ( t0 < t1 ) ? t0 : t1;
 
 			intersectionPt = ray.GetPointOnRay( closestT );
-			return new Ray3Intersection(  intersectionPt, ( intersectionPt - sphere.Centre ).MakeNormal( ), closestT );
+			return new Line3Intersection(  intersectionPt, ( intersectionPt - sphere.Centre ).MakeNormal( ), closestT );
 		}
 
 		/// <summary>
@@ -145,7 +144,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Returns information about an intersection between a ray and a plane
 		/// </summary>
-		public static Ray3Intersection GetRayIntersection( Ray3 ray, Plane3 plane )
+		public static Line3Intersection GetRayIntersection( Ray3 ray, Plane3 plane )
 		{
 			float	startDot	= plane.Normal.Dot( ray.Origin );
 			float	diffDot		= plane.Normal.Dot( ray.Direction );
@@ -156,7 +155,7 @@ namespace Rb.Core.Maths
 
 				if ( t >= 0 )
 				{
-					Ray3Intersection result = new Ray3Intersection( );
+					Line3Intersection result = new Line3Intersection( );
 					result.IntersectionPosition = ray.Origin + ( ray.Direction * t );
 					result.IntersectionNormal	= plane.Normal;
 					result.Distance				= t;

@@ -23,7 +23,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public override void Begin( )
 		{
-			OpenGlRenderer.Instance.BindTexture( Texture );
+			Graphics.Renderer.BindTexture( Texture );
 
 			ApplyTextureFilter( Gl.GL_TEXTURE_MIN_FILTER, MinFilter );
 			ApplyTextureFilter( Gl.GL_TEXTURE_MAG_FILTER, MagFilter );
@@ -45,7 +45,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public override void End( )
 		{
-			OpenGlRenderer.Instance.UnbindTexture( Texture );
+			Graphics.Renderer.UnbindTexture( Texture );
 		}
 
 		private static void ApplyTextureWrap( int dir, TextureWrap wrap )

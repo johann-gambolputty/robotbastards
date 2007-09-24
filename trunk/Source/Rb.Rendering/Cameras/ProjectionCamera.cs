@@ -12,14 +12,14 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public override void Begin( )
 		{
-			Renderer renderer = Renderer.Instance;
+			Renderer renderer = Graphics.Renderer;
 			int width = renderer.ViewportWidth;
 			int height = renderer.ViewportHeight;
 
 			float aspectRatio = ( height == 0 ) ? 1.0f : width / ( float )height;
 
-			Renderer.Instance.PushTransform( Transform.ViewToScreen );
-			Renderer.Instance.SetPerspectiveProjectionTransform( m_PerspectiveFov, aspectRatio, m_PerspectiveZNear, m_PerspectiveZFar );
+			Graphics.Renderer.PushTransform( Transform.ViewToScreen );
+			Graphics.Renderer.SetPerspectiveProjectionTransform( m_PerspectiveFov, aspectRatio, m_PerspectiveZNear, m_PerspectiveZFar );
 
 			base.Begin( );
 		}
@@ -29,7 +29,7 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public override void End( )
 		{
-			Renderer.Instance.PopTransform( Transform.ViewToScreen );
+			Graphics.Renderer.PopTransform( Transform.ViewToScreen );
 			base.End( );
 		}
 
