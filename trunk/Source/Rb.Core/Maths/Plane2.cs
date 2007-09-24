@@ -2,6 +2,13 @@ using System;
 
 namespace Rb.Core.Maths
 {
+	public enum PlaneClassification
+	{
+		Behind,
+		On,
+		InFront
+	}
+
 	/// <summary>
 	/// 2d plane
 	/// </summary>
@@ -74,6 +81,18 @@ namespace Rb.Core.Maths
 		public float GetSignedDistanceTo( Point2 pt )
 		{
 			return ( pt.X * m_Normal.X ) + ( pt.Y * m_Normal.Y ) + m_Distance;
+		}
+
+		/// <summary>
+		/// Classifies a point
+		/// </summary>
+		/// <param name="pt">Point to classify</param>
+		/// <param name="tolerance">"On" plane tolerance</param>
+		/// <returns>Returns the classification of the specified point with respect to this plane</returns>
+		public PlaneClassification ClassifyPoint( Point2 pt, float tolerance )
+		{
+			float signedDist = GetSignedDistanceTo( pt );
+			return signedDist < -tolerance ? PlaneClassification.Behind : ( signedDist > tolerance ? PlaneClassification.InFront : PlaneClassification.On );
 		}
 
 		private Vector2 m_Normal;

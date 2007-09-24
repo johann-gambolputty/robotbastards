@@ -89,7 +89,52 @@ namespace Poc0.LevelEditor.Core
 
 		private static BspNode Combine( Csg csg, BspNode set0, BspNode set1 )
 		{
-			return set0;
+			IList< Edge > set0Edges = Flatten( set0 );
+			IList< Edge > set1Edges = Flatten( set1 );
+			IList< Edge > allEdges = new List< Edge >( );
+			Clip( csg == Csg.Intersection || csg == Csg.Complement, set0, set1Edges, allEdges );
+			Clip( csg == Csg.Intersection, set1, set0Edges, allEdges );
+
+			return Build( allEdges );
+		}
+
+		private static IList< Edge > Flatten( BspNode root )
+		{
+			List< Edge > edges = new List< Edge >( );
+			Flatten( root, edges );
+			return edges;
+		}
+
+		private static void Flatten( BspNode root, IList< Edge > edges )
+		{
+			edges.Add( root.Edge );
+			if ( root.Behind != null )
+			{
+				Flatten( root.Behind, edges );
+			}
+			if ( root.InFront != null )
+			{
+				Flatten( root.InFront, edges );
+			}
+		}
+
+		private static void Clip( bool keepInsideEdges, BspNode node, IList< Edge > edges, IList< Edge > outputEdges )
+		{
+			IList< Edge > leftEdges = ( node.Behind != null ) ? new List< Edge >( ) : ( keepInsideEdges ? null : outputEdges );
+			IList< Edge > rightEdges = ( node.InFront != null ) ? new List< Edge >( ) : ( keepInsideEdges ? outputEdges : null );
+
+			foreach ( Edge edge in edges )
+			{
+				ClassifyEdge( node.Plane, edge, leftEdges, rightEdges );
+			}
+			if ( node.Behind != null )
+			{
+				Clip( keepInsideEdges, node.Behind, leftEdges, outputEdges );
+			}
+			if ( node.InFront != null )
+			{
+				Clip( keepInsideEdges, node.InFront, rightEdges, outputEdges );
+			}
 		}
 
 		/// <summary>
@@ -101,6 +146,11 @@ namespace Poc0.LevelEditor.Core
 			public BspNode( Edge edge )
 			{
 				m_Edge = edge;
+			}
+
+			public Plane2 Plane
+			{
+				get { return Edge.Plane; }
 			}
 
 			public BspNode Behind
@@ -155,9 +205,9 @@ namespace Poc0.LevelEditor.Core
 			private readonly Plane2 m_Plane;
 		}
 
-		private BspNode Build( IList< Edge > edges )
+		private static BspNode Build( IList< Edge > edges )
 		{
-			Edge splitter = edges[ 0 ]; // TODO: AP: Choose better spliiter
+			Edge splitter = edges[ 0 ]; // TODO: AP: Choose better splitter
 			BspNode splitNode = new BspNode( splitter );
 			if ( edges.Count == 1 )
 			{
@@ -184,18 +234,45 @@ namespace Poc0.LevelEditor.Core
 			return splitNode;
 		}
 
+		private const float OnPlaneTolerance = 0.001f;
+
+		private static bool GetEdgeClassification( PlaneClassification p0Class, PlaneClassification p1Class, out PlaneClassification edgeClass )
+		{
+			if ( p0Class == p1Class )
+			{
+				edgeClass = p0Class;
+				return true;
+			}
+			if ( p0Class == PlaneClassification.On )
+			{
+				edgeClass = p1Class;
+				return true;
+			}
+			if ( p1Class == PlaneClassification.On )
+			{
+				edgeClass = p0Class;
+				return true;
+			}
+			edgeClass = PlaneClassification.On;
+			return false;
+		}
+
 		private static void ClassifyEdge( Plane2 splitter, Edge edge, ICollection< Edge > leftEdges, ICollection< Edge > rightEdges )
 		{
-			bool p0Behind = splitter.GetSignedDistanceTo( edge.P0 ) < -0.01f;
-			bool p1Behind = splitter.GetSignedDistanceTo( edge.P1 ) < -0.01f;
+			PlaneClassification p0Class = splitter.ClassifyPoint( edge.P0, OnPlaneTolerance );
+			PlaneClassification p1Class = splitter.ClassifyPoint( edge.P1, OnPlaneTolerance );
+			PlaneClassification edgeClass;
 
-			if ( p0Behind == p1Behind )
+			if ( GetEdgeClassification( p0Class, p1Class, out edgeClass ) )
 			{
-				if ( p0Behind )
+				if ( edgeClass == PlaneClassification.Behind )
 				{
-					leftEdges.Add( edge );
+					if ( leftEdges != null )
+					{
+						leftEdges.Add( edge );
+					}
 				}
-				else
+				else if ( rightEdges != null )
 				{
 					rightEdges.Add( edge );
 				}
@@ -203,12 +280,23 @@ namespace Poc0.LevelEditor.Core
 			else
 			{
 				Line2Intersection intersection = Intersections2.GetLinePlaneIntersection( edge.P0, edge.P1, splitter );
-				leftEdges.Add( new Edge( edge.P0, intersection.IntersectionPosition ) );
-				leftEdges.Add( new Edge( intersection.IntersectionPosition, edge.P1 ) );
+				
+				if ( p0Class != PlaneClassification.Behind )
+				{
+					Utils.Swap( ref leftEdges, ref rightEdges );
+				}
+				if ( leftEdges != null )
+				{
+					leftEdges.Add( new Edge( edge.P0, intersection.IntersectionPosition ) );	
+				}
+				if ( rightEdges != null )
+				{
+					rightEdges.Add( new Edge( intersection.IntersectionPosition, edge.P1 ) );	
+				}
 			}
 		}
 
-		private BspNode Build( GeometryBrush brush )
+		private static BspNode Build( GeometryBrush brush )
 		{
 			Point2[] points = brush.Points;
 

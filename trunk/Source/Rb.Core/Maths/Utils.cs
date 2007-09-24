@@ -1,4 +1,3 @@
-using System;
 
 namespace Rb.Core.Maths
 {
@@ -7,6 +6,16 @@ namespace Rb.Core.Maths
 	/// </summary>
 	public class Utils
 	{
+		/// <summary>
+		/// Swaps two values
+		/// </summary>
+		public static void Swap< T >( ref T val0, ref T val1 )
+		{
+			T tmp = val0;
+			val0 = val1;
+			val1 = tmp;
+		}
+
 		/// <summary>
 		/// Swaps two values
 		/// </summary>
