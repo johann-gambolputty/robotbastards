@@ -200,6 +200,76 @@ namespace Rb.Rendering.OpenGl
 
 		#endregion
 
+		#region Caching
+
+		private class DrawCache : IRenderable, IDisposable
+		{
+			public DrawCache( )
+			{
+				m_DisplayList = Gl.glGenLists( 1 );
+				Gl.glNewList( m_DisplayList, Gl.GL_COMPILE );
+			}
+
+			public void Finish( )
+			{
+				Gl.glEndList( );
+			}
+			
+			#region IRenderable Members
+
+			public void Render( IRenderContext context )
+			{
+				Gl.glCallList( m_DisplayList );
+			}
+
+			#endregion
+			
+			#region IDisposable Members
+
+			public void Dispose( )
+			{
+				Gl.glDeleteLists( m_DisplayList, 1 );
+			}
+
+			#endregion
+
+			private readonly int m_DisplayList;
+		}
+
+		private DrawCache m_CurCache;
+
+		/// <summary>
+		/// Starts caching draw calls
+		/// </summary>
+		public override void StartCache( )
+		{
+			if ( m_CurCache != null )
+			{
+				throw new InvalidOperationException( "Made 2 StartCache() in a row - call StopCache() first" );
+			}
+			m_CurCache = new DrawCache( );
+		}
+
+		/// <summary>
+		/// Stops caching draw calls
+		/// </summary>
+		/// <returns>Returns a renderable object, containing all draw operations since StartCachingOperations() was called</returns>
+		public override IRenderable StopCache( )
+		{
+			if ( m_CurCache == null )
+			{
+				throw new InvalidOperationException( "Call StartCache() before calling StopCache()");
+			}
+
+			IRenderable result = m_CurCache;
+			m_CurCache.Finish( );
+			m_CurCache = null;
+
+			return result;
+		}
+
+		#endregion
+
 		#region 2D
 
 		#region Lines

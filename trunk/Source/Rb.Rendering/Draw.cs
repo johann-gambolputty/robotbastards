@@ -135,6 +135,21 @@ namespace Rb.Rendering
 
 		#endregion
 
+		#region Caching
+
+		/// <summary>
+		/// Starts caching draw calls
+		/// </summary>
+		public abstract void StartCache( );
+
+		/// <summary>
+		/// Stops caching draw calls
+		/// </summary>
+		/// <returns>Returns a renderable object, containing all draw operations since StartCachingOperations() was called</returns>
+		public abstract IRenderable StopCache( );
+
+		#endregion
+
 		#region 2D
 
 		#region Lines
