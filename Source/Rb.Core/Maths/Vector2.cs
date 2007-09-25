@@ -289,20 +289,17 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public void Perp( )
 		{
-			float tmp = m_X;
+			float x = m_X;
 			m_X = m_Y;
-			m_Y = -tmp;
+			m_Y = -x;
 		}
 
 		/// <summary>
-		/// Returns the square of the distance from this point to another
+		/// Makes a vector perpendicular to this one
 		/// </summary>
-		public float SqrDistanceTo( Vector2 pt )
+		public Vector2 MakePerp( )
 		{
-			float diffX = X - pt.X;
-			float diffY = Y - pt.Y;
-
-			return ( diffX * diffX + diffY * diffY );
+			return new Vector2( m_Y, -m_X );
 		}
 
 		/// <summary>
@@ -321,13 +318,6 @@ namespace Rb.Core.Maths
 			return ( X * pt.X + Y * pt.Y );
 		}
 
-		/// <summary>
-		/// Returns the distance from this point to another
-		/// </summary>
-		public float DistanceTo( Vector2 pt )
-		{
-			return ( float )Math.Sqrt( SqrDistanceTo( pt ) );
-		}
 
 		#endregion
 

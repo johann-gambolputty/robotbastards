@@ -64,7 +64,8 @@
     <Compile Include="Actions\PaintTileAction.cs" />
     <Compile Include="Actions\SelectAction.cs" />
     <Compile Include="Actions\UndoStack.cs" />
-    <Compile Include="GeometryBrush.cs" />
+    <Compile Include="Csg.cs" />
+    <Compile Include="CsgBrush.cs" />
     <Compile Include="EditModes\AddObjectEditMode.cs" />
     <Compile Include="EditModes\UserBrushEditMode.cs" />
     <Compile Include="EditModes\DefinePolygonEditMode.cs" />

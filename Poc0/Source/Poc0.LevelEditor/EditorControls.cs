@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Windows.Forms;
 using Poc0.LevelEditor.Core;
@@ -15,6 +16,12 @@ namespace Poc0.LevelEditor
 		public EditorControls( )
 		{
 			InitializeComponent( );
+
+			foreach ( object csgOp in Enum.GetValues( typeof( Csg.Operation ) ) )
+			{
+				csgComboBox.Items.Add( csgOp );
+			}
+			csgComboBox.SelectedIndex = 0;
 
 			IList templates = ( IList )AssetManager.Instance.Load( "Editor/EntityTemplates.components.xml" );
 			foreach ( ObjectTemplate template in templates )
@@ -75,7 +82,7 @@ namespace Poc0.LevelEditor
 			}
 		}
 
-		private void tileTypeSetView_SelectedIndexChanged(object sender, System.EventArgs e)
+		private void tileTypeSetView_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if ( tileTypeSetView.SelectedItems.Count == 0 )
 			{
@@ -96,9 +103,17 @@ namespace Poc0.LevelEditor
 			}
 		}
 
-		private void userBrushRadioButton_CheckedChanged( object sender, System.EventArgs e )
+		private void userBrushRadioButton_CheckedChanged( object sender, EventArgs e )
 		{
-			m_EditContext.AddEditMode( new UserBrushEditMode( LevelGeometry.Csg.Union ) );
+			Csg.Operation csg = ( Csg.Operation )csgComboBox.SelectedItem;
+
+			m_EditContext.AddEditMode( new UserBrushEditMode( csg ) );
+		}
+
+		private void brushPage_Enter( object sender, EventArgs e )
+		{
+			Csg.Operation csg = ( Csg.Operation )csgComboBox.SelectedItem;
+			m_EditContext.AddEditMode( new UserBrushEditMode( csg ) );
 		}
 	}
 }

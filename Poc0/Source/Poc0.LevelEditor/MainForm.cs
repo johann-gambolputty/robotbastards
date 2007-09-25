@@ -126,7 +126,9 @@ namespace Poc0.LevelEditor
 
 			//	Add a renderer for the tile grid to the scene renderables
 			scene.Objects.Add( Guid.NewGuid( ), grid );
-			scene.Renderables.Add( Graphics.Factory.Create< TileBlock2dRenderer >( grid, EditModeContext.Instance ) );
+
+			//	TODO: AP: Bodged insert into renderable list, so level geometry will be rendered last
+			scene.Renderables.Insert( 0, Graphics.Factory.Create< TileBlock2dRenderer >( grid, EditModeContext.Instance ) );
 
 			Scene = scene;
 		}

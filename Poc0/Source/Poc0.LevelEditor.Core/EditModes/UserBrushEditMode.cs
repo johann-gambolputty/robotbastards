@@ -13,7 +13,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// Setup constructor
 		/// </summary>
 		/// <param name="operation">CSG operation to perform with the brush</param>
-		public UserBrushEditMode( LevelGeometry.Csg operation )
+		public UserBrushEditMode( Csg.Operation operation )
 		{
 			m_Operation = operation;
 		}
@@ -24,10 +24,10 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// <param name="points">Polygon points</param>
 		protected override void OnPolygonClosed( Point2[] points )
 		{
-			GeometryBrush brush = new GeometryBrush( "", points );
-			EditModeContext.Instance.Scene.LevelGeometry.Combine( m_Operation, brush );
+			CsgBrush brush = new CsgBrush( "", points );
+			EditModeContext.Instance.Scene.LevelGeometry.Csg.Combine( m_Operation, brush );
 		}
 
-		private readonly LevelGeometry.Csg m_Operation;
+		private readonly Csg.Operation m_Operation;
 	}
 }
