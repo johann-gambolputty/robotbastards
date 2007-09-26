@@ -56,6 +56,37 @@ namespace Rb.Core.Maths
 		}
 
 		/// <summary>
+		/// Creates a plane from a plane equation
+		/// </summary>
+		/// <param name="a">Plane equation A value</param>
+		/// <param name="b">Plane equation B value</param>
+		/// <param name="c">Plane equation C value</param>
+		public Plane2( float a, float b, float c )
+		{
+			m_Normal = new Vector2( a, b );
+			m_Distance = c;
+		}
+
+		/// <summary>
+		/// Inverts this plane
+		/// </summary>
+		public void Invert( )
+		{
+			m_Normal.X = -m_Normal.X;
+			m_Normal.Y = -m_Normal.Y;
+			m_Distance = -m_Distance;
+		}
+
+		/// <summary>
+		/// Creates a plane that is coplanar with this plane, but pointing in the opposite direction
+		/// </summary>
+		/// <returns>Inverse plane</returns>
+		public Plane2 MakeInversePlane( )
+		{
+			return new Plane2( -m_Normal.X, -m_Normal.Y, -m_Distance );
+		}
+
+		/// <summary>
 		/// Sets/gets the plane normal
 		/// </summary>
 		public Vector2 Normal

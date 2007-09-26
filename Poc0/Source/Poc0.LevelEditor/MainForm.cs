@@ -31,6 +31,8 @@ namespace Poc0.LevelEditor
 		{
 			LogForm logDisplay = new LogForm( );
 
+			Rb.Core.Maths.Intersections2.TestPlanePlaneIntersection( );
+
 			//	Write greeting
 			AppLog.Info( "Beginning Poc0.LevelEditor at {0}", DateTime.Now );
 			AppLog.GetSource( Severity.Info ).WriteEnvironment( );

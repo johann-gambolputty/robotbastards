@@ -91,7 +91,7 @@ namespace Poc0.LevelEditor.Core
 
 			if ( m_DrawVertex == null )
 			{
-				m_DrawVertex = Graphics.Draw.NewBrush( Color.Wheat );
+				m_DrawVertex = Graphics.Draw.NewBrush( Color.Wheat, Color.Black );
 			}
 
 			Graphics.Draw.StartCache( );
@@ -146,6 +146,11 @@ namespace Poc0.LevelEditor.Core
 		private void Render( Csg.BspNode node )
 		{
 			DrawEdge( node.Edge );
+
+			if ( node.ConvexRegion != null )
+			{
+				Graphics.Draw.Polygon( m_DrawVertex, node.ConvexRegion );
+			}
 
 			if ( node.Behind != null )
 			{

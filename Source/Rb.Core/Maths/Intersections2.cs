@@ -7,6 +7,54 @@ namespace Rb.Core.Maths
 	public static class Intersections2
 	{
 		/// <summary>
+		/// Determines the intersection point between two planes
+		/// </summary>
+		/// <param name="plane0">First plane</param>
+		/// <param name="plane1">Second plane</param>
+		/// <returns>Returns the intersection point, or null if there is no intersection point</returns>
+		public static Point2? GetPlanePlaneIntersection( Plane2 plane0, Plane2 plane1 )
+		{
+			float den = plane0.Normal.X * plane1.Normal.Y - plane0.Normal.Y * plane1.Normal.X;
+			if ( Utils.CloseToZero( den ) )
+			{
+				return null;
+			}
+
+			float x = ( plane0.Normal.Y * plane1.Distance - plane1.Normal.Y * plane0.Distance ) / den;
+			float y = ( plane1.Normal.X * plane0.Distance - plane0.Normal.X * plane1.Distance ) / den;
+
+			return new Point2( x, y );
+		}
+
+		public static Point2 RandomPoint( System.Random rand )
+		{
+			return new Point2( ( float )rand.NextDouble( ), ( float )rand.NextDouble( ) );
+		}
+
+		public static void TestPlanePlaneIntersection( )
+		{
+			System.Random rand = new System.Random( );
+
+			for ( int i = 0; i < 100; ++i )
+			{
+				Point2 p0 = RandomPoint( rand );
+				Point2 p1 = RandomPoint( rand );
+				Point2 p2 = RandomPoint( rand );
+
+				Plane2 plane0 = new Plane2( p0, p1 );
+				Plane2 plane1 = new Plane2( p1, p2 );
+
+				Point2? intersection = GetPlanePlaneIntersection( plane0, plane1 );
+
+				if ( intersection != null )
+				{
+					System.Diagnostics.Debug.Assert( intersection.Value.DistanceTo( p1 ) < 0.001f );
+				}
+			}
+			
+		}
+
+		/// <summary>
 		/// Determines the intersection between a 2d line and a plane
 		/// </summary>
 		/// <param name="start">Line start</param>
