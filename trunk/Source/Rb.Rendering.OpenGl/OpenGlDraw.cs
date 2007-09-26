@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using Rb.Core.Maths;
 using Tao.OpenGl;
@@ -121,6 +122,17 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		private class GlBrush : GlDrawState, IBrush
 		{
+		
+			/// <summary>
+			/// Outline pen. If not null, then an outline is drawn around the rendered shape
+			/// </summary>
+			public IPen OutlinePen
+			{
+				get { return m_OutlinePen; }
+				set { m_OutlinePen = value; }
+			}
+			
+			private IPen m_OutlinePen;
 		}
 
 		/// <summary>
@@ -350,24 +362,28 @@ namespace Rb.Rendering.OpenGl
 			float angleInc = Constants.TwoPi / samples;
 
 			brush.Begin( );
-
+			
 			Gl.glBegin( Gl.GL_TRIANGLE_FAN );
-
+			
 			Gl.glVertex2f( x, y );
-
+			
 			for ( int sampleCount = 0; sampleCount <= samples; ++sampleCount )
 			{
 				float sinAR = radius * ( float )Math.Sin( angle );
 				float cosAR = radius * ( float )Math.Cos( angle );
-
+			
 				Gl.glVertex2f( x + sinAR, y + cosAR );
-
+			
 				angle += angleInc;
 			}
-
+			
 			Gl.glEnd( );
-
 			brush.End( );
+			
+			if ( brush.OutlinePen != null )
+			{
+				Circle( brush.OutlinePen, x, y, radius, samples );
+			}
 		}
 
 		#endregion
@@ -403,13 +419,90 @@ namespace Rb.Rendering.OpenGl
 
 		#region Filled rectangles
 
+		/// <summary>
+		/// Draws a rectangle
+		/// </summary>
+		/// <param name="brush">Drawing properties</param>
+		/// <param name="x">The rectangle top left corner X coordinate</param>
+		/// <param name="y">The rectangle top left corner Y coordinate</param>
+		/// <param name="width">The rectangle width</param>
+		/// <param name="height">The rectangle height</param>
+		public override void Rectangle( IBrush brush, float x, float y, float width, float height )
+		{
+			brush.Begin( );
+
+			Gl.glBegin( Gl.GL_QUADS );
+
+			Gl.glVertex2f( x, y );
+			Gl.glVertex2f( x + width, y );
+			Gl.glVertex2f( x + width, y + height );
+			Gl.glVertex2f( x, y + height );
+
+			Gl.glEnd( );
+
+			brush.End( );
+			
+			if ( brush.OutlinePen != null )
+			{
+				Rectangle( brush.OutlinePen, x, y, width, height );
+			}
+		}
+
 		#endregion
 
 		#region Polygons
 
+		/// <summary>
+		/// Draws a polygon
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="points">Polygon points</param>
+		public override void Polygon( IPen pen, IEnumerable< Point2 > points )
+		{
+			pen.Begin( );
+			
+			Gl.glBegin( Gl.GL_POLYGON );
+			
+			IEnumerator< Point2 > pointPos = points.GetEnumerator( );
+			while ( pointPos.MoveNext( ) )
+			{
+				Gl.glVertex2f( pointPos.Current.X, pointPos.Current.Y );
+			}
+			
+			Gl.glEnd( );
+			
+			pen.End( );
+		}
+
 		#endregion
 
 		#region Filled polygons
+
+		/// <summary>
+		/// Draws a filled polygon
+		/// </summary>
+		/// <param name="brush">Drawing properties</param>
+		/// <param name="points">Polygon points</param>
+		public override void Polygon( IBrush brush, IEnumerable< Point2 > points )
+		{
+			brush.Begin( );
+			
+			Gl.glBegin( Gl.GL_POLYGON );
+			
+			IEnumerator< Point2 > pointPos = points.GetEnumerator( );
+			while ( pointPos.MoveNext( ) )
+			{
+				Gl.glVertex2f( pointPos.Current.X, pointPos.Current.Y );
+			}
+			
+			Gl.glEnd( );
+
+			brush.End( );
+			if ( brush.OutlinePen != null )
+			{
+				Polygon( brush.OutlinePen, points );
+			}
+		} 
 
 		#endregion
 
