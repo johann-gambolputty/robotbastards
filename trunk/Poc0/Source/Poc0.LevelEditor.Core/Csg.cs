@@ -7,6 +7,7 @@ namespace Poc0.LevelEditor.Core
 	/// <summary>
 	/// Handles CSG operations
 	/// </summary>
+	[Serializable]
 	public class Csg
 	{
 		#region Public members
@@ -64,6 +65,7 @@ namespace Poc0.LevelEditor.Core
 			{
 				m_Root = Combine( op, m_Root, brushBsp );
 			}
+			BuildConvexRegions( m_Root );
 			if ( GeometryChanged != null )
 			{
 				GeometryChanged( this, null );
@@ -99,6 +101,7 @@ namespace Poc0.LevelEditor.Core
 			/// <summary>
 			/// Sets up the node
 			/// </summary>
+			/// <param name="parent">Node parent</param>
 			/// <param name="edge">Node edge</param>
 			public BspNode( BspNode parent, Edge edge )
 			{
@@ -141,6 +144,15 @@ namespace Poc0.LevelEditor.Core
 			}
 
 			/// <summary>
+			/// Gets the convex region associated with this node
+			/// </summary>
+			public Point2[] ConvexRegion
+			{
+				get { return m_Region; }
+				set { m_Region = value; }
+			}
+
+			/// <summary>
 			/// Gets the parent node
 			/// </summary>
 			public BspNode Parent
@@ -152,6 +164,7 @@ namespace Poc0.LevelEditor.Core
 			private BspNode m_Behind;
 			private BspNode m_InFront;
 			private readonly Edge m_Edge;
+			private Point2[] m_Region;
 		}
 		
 		/// <summary>
@@ -200,6 +213,7 @@ namespace Poc0.LevelEditor.Core
 			public Point2 P0
 			{
 				get { return m_P0; }
+				set { m_P0 = value; }
 			}
 
 			/// <summary>
@@ -237,7 +251,7 @@ namespace Poc0.LevelEditor.Core
 
 			private Edge m_Prev;
 			private Edge m_Next;
-			private readonly Point2 m_P0;
+			private Point2 m_P0;
 			private Point2 m_P1;
 			private readonly Plane2 m_Plane;
 		}
@@ -287,6 +301,13 @@ namespace Poc0.LevelEditor.Core
 
 				case Operation.Complement :
 					Clip( true, set0, set1Edges, allEdges );
+					foreach ( Edge edge in allEdges )
+					{
+						Point2 oldP0 = new Point2( edge.P0 );
+						edge.P0 = edge.P1;
+						edge.P1 = oldP0;
+						edge.Plane.Invert( );
+					}
 					Clip( false, set1, set0Edges, allEdges );
 					break;
 			}
@@ -419,10 +440,9 @@ namespace Poc0.LevelEditor.Core
 			List< Edge > edges = new List< Edge >( points.Length );
 
 			//	Create edges
-			int lastPtIndex = points.Length - 1;
-			for ( int ptIndex = 0; ptIndex < points.Length; lastPtIndex = ptIndex++ )
+			for ( int ptIndex = 0; ptIndex < points.Length; ++ptIndex )
 			{
-				edges.Add( new Edge( points[ lastPtIndex ], points[ ptIndex ] ) );
+				edges.Add( new Edge( points[ ptIndex ], points[ ( ptIndex + 1 ) % points.Length ] ) );
 			}
 
 			//	Set up edge links
@@ -440,25 +460,67 @@ namespace Poc0.LevelEditor.Core
 			return Build( null, edges );
 		}
 
-		private class ConvexHullBuildPlane
+		private static void BuildConvexRegions( BspNode node )
 		{
-			public ConvexHullBuildPlane( BspNode node )
-			{
-				m_Node = node;
-				m_Min = float.PositiveInfinity;
-				m_Max = float.NegativeInfinity;
+			List< Plane2 > planes = new List< Plane2 >( );
+			BuildConvexRegions( node, planes );
+		}
 
-				Intersect( new ConvexHullBuildPlane( node.Parent ) );
+		private static void BuildConvexRegions( BspNode node, List< Plane2 > planes )
+		{
+			if ( node.Behind != null )
+			{
+				List< Plane2 > behindPlanes = new List< Plane2 >( planes );
+				behindPlanes.Add( node.Plane.MakeInversePlane( ) );
+				BuildConvexRegions( node.Behind, behindPlanes );
+			}
+			planes.Add( node.Plane );
+			if ( node.InFront != null )
+			{
+				BuildConvexRegions( node.InFront, planes );
+			}
+			else
+			{
+				node.ConvexRegion = BuildConvexRegion( planes );
+			}
+		}
+
+		private static Point2[] BuildConvexRegion( IList< Plane2 > allPlanes )
+		{
+			List< Point2 > points = new List< Point2 >( );
+			IList< Plane2 > planes = new List< Plane2 >( allPlanes );
+			Plane2 curPlane = allPlanes[ allPlanes.Count - 1 ];
+			while ( planes.Remove( curPlane ) )
+			{
+				Vector2 vec = curPlane.Normal.MakePerp( );
+				Plane2 nextPlane = null;
+				Point2 nextPt = Point2.Origin;
+				for ( int planeIndex = 0; planeIndex < allPlanes.Count; ++planeIndex )
+				{
+					Plane2 testPlane = allPlanes[ planeIndex ];
+					if ( vec.Dot( testPlane.Normal ) > -0.01f )
+					{
+						continue;
+					}
+					Point2 intersection = Intersections2.GetPlanePlaneIntersection( curPlane, testPlane ).Value;
+					if ( ( nextPlane == null ) || ( nextPlane.ClassifyPoint( intersection, 0.0001f ) == PlaneClassification.InFront ) )
+					{
+						nextPlane = testPlane;
+						nextPt = intersection;
+					}
+				}
+				points.Add( nextPt );
+				curPlane = nextPlane;
+
+#if DEBUG
+				if ( curPlane == null )
+				{
+					throw new InvalidOperationException( "Current plane should never be null" );
+				}
+#endif
 			}
 
-			public void Intersect( ConvexHullBuildPlane buildPlane )
-			{
-				
-			}
-
-			private readonly BspNode m_Node;
-			private float m_Min;
-			private float m_Max;
+			return points.ToArray( );
 		}
 
 		/// <summary>
@@ -476,7 +538,7 @@ namespace Poc0.LevelEditor.Core
 			if ( edges.Count == 1 )
 			{
 				//	Leaf node in the tree. Path from leaf to root is a convex hull
-				
+				//splitNode.ConvexRegion = BuildConvexRegion( splitNode );
 
 				return splitNode;
 			}

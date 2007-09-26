@@ -19,6 +19,15 @@ namespace Poc0.LevelEditor.Core.EditModes
 		}
 
 		/// <summary>
+		/// Sets/gets the current CSG operation that will be applied when the defined polygon is closed
+		/// </summary>
+		public Csg.Operation Operation
+		{
+			get { return m_Operation; }
+			set { m_Operation = value; }
+		}
+
+		/// <summary>
 		/// Called when the base edit mode finishes defining a polygon
 		/// </summary>
 		/// <param name="points">Polygon points</param>
@@ -28,6 +37,6 @@ namespace Poc0.LevelEditor.Core.EditModes
 			EditModeContext.Instance.Scene.LevelGeometry.Csg.Combine( m_Operation, brush );
 		}
 
-		private readonly Csg.Operation m_Operation;
+		private Csg.Operation m_Operation;
 	}
 }

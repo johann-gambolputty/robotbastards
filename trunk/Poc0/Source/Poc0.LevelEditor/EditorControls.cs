@@ -107,13 +107,27 @@ namespace Poc0.LevelEditor
 		{
 			Csg.Operation csg = ( Csg.Operation )csgComboBox.SelectedItem;
 
-			m_EditContext.AddEditMode( new UserBrushEditMode( csg ) );
+			m_CurrentEditMode = new UserBrushEditMode( csg );
+			m_EditContext.AddEditMode( m_CurrentEditMode );
 		}
 
 		private void brushPage_Enter( object sender, EventArgs e )
 		{
 			Csg.Operation csg = ( Csg.Operation )csgComboBox.SelectedItem;
-			m_EditContext.AddEditMode( new UserBrushEditMode( csg ) );
+
+			m_CurrentEditMode = new UserBrushEditMode( csg );
+			m_EditContext.AddEditMode( m_CurrentEditMode );
+		}
+
+		private UserBrushEditMode m_CurrentEditMode;
+
+		private void csgComboBox_SelectedIndexChanged( object sender, EventArgs e )
+		{
+			if ( m_CurrentEditMode != null )
+			{
+				Csg.Operation csg = ( Csg.Operation )csgComboBox.SelectedItem;
+				m_CurrentEditMode.Operation = csg;
+			}
 		}
 	}
 }

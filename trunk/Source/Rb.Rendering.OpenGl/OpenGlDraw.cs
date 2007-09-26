@@ -159,6 +159,20 @@ namespace Rb.Rendering.OpenGl
 			return newBrush;
 		}
 
+		/// <summary>
+		/// Creates a new brush that fills with one colour and outlines with another
+		/// </summary>
+		/// <param name="colour">Fill colour</param>
+		/// <param name="outlineColour">Outline colour</param>
+		/// <returns>Returns the new brush</returns>
+		public override IBrush NewBrush( Color colour, Color outlineColour )
+		{
+			GlBrush newBrush = new GlBrush( );
+			newBrush.Colour = colour;
+			newBrush.OutlinePen = NewPen( outlineColour );
+			return newBrush;
+		}
+
 		#endregion
 
 		#region Moulds
