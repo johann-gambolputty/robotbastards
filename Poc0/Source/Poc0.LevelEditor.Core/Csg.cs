@@ -100,8 +100,9 @@ namespace Poc0.LevelEditor.Core
 			/// Sets up the node
 			/// </summary>
 			/// <param name="edge">Node edge</param>
-			public BspNode( Edge edge )
+			public BspNode( BspNode parent, Edge edge )
 			{
+				m_Parent = parent;
 				m_Edge = edge;
 			}
 
@@ -139,6 +140,15 @@ namespace Poc0.LevelEditor.Core
 				get { return m_Edge; }
 			}
 
+			/// <summary>
+			/// Gets the parent node
+			/// </summary>
+			public BspNode Parent
+			{
+				get { return m_Parent; }
+			}
+
+			private readonly BspNode m_Parent;
 			private BspNode m_Behind;
 			private BspNode m_InFront;
 			private readonly Edge m_Edge;
@@ -252,7 +262,7 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Combines two BSP trees using a specified CSG operation
 		/// </summary>
-		private BspNode Combine( Operation op, BspNode set0, BspNode set1 )
+		private static BspNode Combine( Operation op, BspNode set0, BspNode set1 )
 		{
 			IList< Edge > set0Edges = Flatten( set0 );
 			IList< Edge > set1Edges = Flatten( set1 );
@@ -281,10 +291,9 @@ namespace Poc0.LevelEditor.Core
 					break;
 			}
 
-			m_Contours = BuildContours( allEdges );
-			//MergeSplitEdges( allEdges );
+			//m_Contours = BuildContours( allEdges );
 
-			return Build( allEdges );
+			return Build( null, allEdges );
 		}
 
 		/// <summary>
@@ -294,11 +303,6 @@ namespace Poc0.LevelEditor.Core
 		{
 			return edge1.Plane.Normal.Dot( edge2.Plane.Normal ) > ( 1.0f - CoincidentEdgeTolerance );
 		}
-
-		//private static IList< Edge > MergeSplitEdges( ICollection< Edge > edges )
-		//{
-		//	List< Edge > allEdges = new List< Edge >( );
-		//}
 
 		/// <summary>
 		/// Builds a list of contours from an edge list, and also combines an colinear edges
@@ -433,13 +437,34 @@ namespace Poc0.LevelEditor.Core
 				nextEdgeIndex = ( nextEdgeIndex + 1 ) % edges.Count;
 			}
 
-			return Build( edges );
+			return Build( null, edges );
+		}
+
+		private class ConvexHullBuildPlane
+		{
+			public ConvexHullBuildPlane( BspNode node )
+			{
+				m_Node = node;
+				m_Min = float.PositiveInfinity;
+				m_Max = float.NegativeInfinity;
+
+				Intersect( new ConvexHullBuildPlane( node.Parent ) );
+			}
+
+			public void Intersect( ConvexHullBuildPlane buildPlane )
+			{
+				
+			}
+
+			private readonly BspNode m_Node;
+			private float m_Min;
+			private float m_Max;
 		}
 
 		/// <summary>
 		/// Builds a BSP node from a list of edges
 		/// </summary>
-		private static BspNode Build( IList< Edge > edges )
+		private static BspNode Build( BspNode parentNode, IList< Edge > edges )
 		{
 			if ( edges.Count == 0 )
 			{
@@ -447,9 +472,12 @@ namespace Poc0.LevelEditor.Core
 			}
 
 			Edge splitter = edges[ 0 ]; // TODO: AP: Choose better splitter
-			BspNode splitNode = new BspNode( splitter );
+			BspNode splitNode = new BspNode( parentNode, splitter );
 			if ( edges.Count == 1 )
 			{
+				//	Leaf node in the tree. Path from leaf to root is a convex hull
+				
+
 				return splitNode;
 			}
 
@@ -464,12 +492,12 @@ namespace Poc0.LevelEditor.Core
 			//	Build BSP subtrees from left and right edges
 			if ( leftEdges.Count > 0 )
 			{
-				splitNode.Behind = Build( leftEdges );
+				splitNode.Behind = Build( splitNode, leftEdges );
 			}
 
 			if ( rightEdges.Count > 0 )
 			{
-				splitNode.InFront = Build( rightEdges );
+				splitNode.InFront = Build( splitNode, rightEdges );
 			}
 
 			return splitNode;

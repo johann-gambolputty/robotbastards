@@ -76,6 +76,14 @@ namespace Rb.Rendering
 			{
 				get; set;
 			}
+
+			/// <summary>
+			/// Outline pen. If not null, then an outline is drawn around the rendered shape
+			/// </summary>
+			IPen OutlinePen
+			{
+				get; set;
+			}
 		}
 
 		/// <summary>
@@ -91,6 +99,14 @@ namespace Rb.Rendering
 		/// <param name="colour">Brush colour</param>
 		/// <returns>New IBrush</returns>
 		public abstract IBrush NewBrush( Color colour );
+
+		/// <summary>
+		/// Creates a new colour IBrush
+		/// </summary>
+		/// <param name="colour">Brush colour</param>
+		/// <param name="outlineColour">Brush outline colour</param>
+		/// <returns>New IBrush</returns>
+		public abstract IBrush NewBrush( Color colour, Color outlineColour );
 
 		#endregion
 
@@ -303,14 +319,38 @@ namespace Rb.Rendering
 		#endregion
 
 		#region Filled rectangles
+		
+		/// <summary>
+		/// Draws a filled rectangle
+		/// </summary>
+		/// <param name="brush">Drawing properties</param>
+		/// <param name="x">The rectangle top left corner X coordinate</param>
+		/// <param name="y">The rectangle top left corner Y coordinate</param>
+		/// <param name="width">The rectangle width</param>
+		/// <param name="height">The rectangle height</param>
+		public abstract void Rectangle( IBrush brush, float x, float y, float width, float height );
 
 		#endregion
 
 		#region Polygons
-
+		
+		/// <summary>
+		/// Draws a polygon
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="points">Polygon points</param>
+		public abstract void Polygon( IPen pen, IEnumerable< Point2 > points );
+		
 		#endregion
 
 		#region Filled polygons
+
+		/// <summary>
+		/// Draws a filled polygon
+		/// </summary>
+		/// <param name="brush">Drawing properties</param>
+		/// <param name="points">Polygon points</param>
+		public abstract void Polygon( IBrush brush, IEnumerable< Point2 > points );
 
 		#endregion
 
