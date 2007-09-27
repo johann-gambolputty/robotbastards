@@ -473,19 +473,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="points">Polygon points</param>
 		public override void Polygon( IPen pen, IEnumerable< Point2 > points )
 		{
-			pen.Begin( );
-			
-			Gl.glBegin( Gl.GL_POLYGON );
-			
-			IEnumerator< Point2 > pointPos = points.GetEnumerator( );
-			while ( pointPos.MoveNext( ) )
-			{
-				Gl.glVertex2f( pointPos.Current.X, pointPos.Current.Y );
-			}
-			
-			Gl.glEnd( );
-			
-			pen.End( );
+			Lines( pen, points, true );
 		}
 
 		#endregion

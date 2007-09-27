@@ -36,7 +36,7 @@ namespace Rb.Core.Utils
 		}
 
 		/// <summary>
-		/// Scans an assembly for library types
+		/// Scans an assembly for library types (types that pass the <see cref="IsLibraryType"/> predicate)
 		/// </summary>
 		public void ScanAssembly( Assembly assembly )
 		{
@@ -49,6 +49,13 @@ namespace Rb.Core.Utils
 			}
 		}
 
+		/// <summary>
+		/// Sets auto assembly scanning
+		/// </summary>
+		/// <remarks>
+		/// If auto-assembly scanning is true, then whenever an assembly loads, this object will scan it 
+		/// for any types that pass the <see cref="IsLibraryType"/> predicate.
+		/// </remarks>
 		public bool AutoAssemblyScan
 		{
 			set
@@ -130,7 +137,7 @@ namespace Rb.Core.Utils
 		///	<exception cref="ArgumentException">Thrown if baseType is not associated with any library type</exception>
 		public BaseType Create< BaseType >( IBuilder builder )
 		{
-			return ( BaseType )Create( typeof( BaseType ) );
+			return ( BaseType )Create( builder, typeof( BaseType ) );
 		}
 
 		/// <summary>
@@ -139,11 +146,10 @@ namespace Rb.Core.Utils
 		///	<exception cref="ArgumentException">Thrown if baseType is not associated with any library type</exception>
 		public BaseType Create< BaseType >( IBuilder builder, params object[] constructorArgs )
 		{
-			return ( BaseType )Create( typeof( BaseType ), constructorArgs );
+			return ( BaseType )Create( builder, typeof( BaseType ), constructorArgs );
 		}
 
 		#endregion
-
 
 		#region Protected members
 

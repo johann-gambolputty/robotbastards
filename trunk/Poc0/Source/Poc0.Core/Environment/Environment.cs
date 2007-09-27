@@ -1,25 +1,47 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using Rb.Core.Components;
+using Rb.Rendering;
 using Rb.World;
 
 namespace Poc0.Core.Environment
 {
-	class Environment : ISceneObject
+	/// <summary>
+	/// Scene environment
+	/// </summary>
+	[Serializable]
+	public class Environment : ISceneObject
 	{
-		#region Private stuff
+		#region Public members
 
-		private Collisions	m_Collisions;
-		private Graphics	m_Graphics;
+		/// <summary>
+		/// Sets the root wall node
+		/// </summary>
+		public WallNode Walls
+		{
+			set
+			{
+				m_Graphics.Walls = value;
+			}
+		}
 
 		#endregion
 
 		#region ISceneObject Members
 
+		/// <summary>
+		/// Called when this object is added to a scene
+		/// </summary>
+		/// <param name="scene">Scene</param>
 		public void SetSceneContext( Scene scene )
 		{
-			scene.Renderables.Add( m_Graphics );
+			m_Graphics = Graphics.Factory.Create< EnvironmentGraphics >( scene.Builder );
 		}
+
+		#endregion
+
+		#region Private stuff
+
+		private EnvironmentGraphics m_Graphics;
 
 		#endregion
 	}

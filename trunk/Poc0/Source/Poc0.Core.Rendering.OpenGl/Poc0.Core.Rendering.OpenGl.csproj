@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{FBEDE7DA-1ADD-424D-9EBE-48179585DE45}</ProjectGuid>
+    <ProjectGuid>{283867CD-C9C1-4953-8AD7-F7704C8D5913}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Poc0.Core</RootNamespace>
-    <AssemblyName>Poc0.Core</AssemblyName>
+    <RootNamespace>Poc0.Core.Rendering.OpenGl</RootNamespace>
+    <AssemblyName>Poc0.Core.Rendering.OpenGl</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -18,8 +18,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,41 +27,25 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'NDoc|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\bin\NDoc\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisRuleAssemblies>C:\Program Files\Microsoft Visual Studio 8\Team Tools\Static Analysis Tools\FxCop\\rules</CodeAnalysisRuleAssemblies>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <DocumentationFile>..\..\bin\NDoc\Poc0.Core.XML</DocumentationFile>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
+    <Reference Include="Tao.OpenGl, Version=2.1.0.4, Culture=neutral, PublicKeyToken=1ca010269a4501ef, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\bin\ThirdParty\Tao 2.0\bin\Tao.OpenGl.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Body.cs" />
-    <Compile Include="Entity.cs" />
-    <Compile Include="EntityGraphics.cs" />
-    <Compile Include="Environment\Collisions.cs" />
-    <Compile Include="Environment\Environment.cs" />
-    <Compile Include="Environment\Floor.cs" />
-    <Compile Include="Environment\EnvironmentGraphics.cs" />
-    <Compile Include="Environment\INavigator.cs" />
-    <Compile Include="Environment\Navigator.cs" />
-    <Compile Include="Environment\WallNode.cs" />
-    <Compile Include="HealthChange.cs" />
-    <Compile Include="IBody.cs" />
-    <Compile Include="IHasWorldFrame.cs" />
-    <Compile Include="PlayerStart.cs" />
+    <Compile Include="OpenGlEnvironmentGraphics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\Rb.AssemblySelector\Rb.AssemblySelector.csproj">
+      <Project>{2097B22A-91A5-4CFF-8CCB-846A10523CB9}</Project>
+      <Name>Rb.AssemblySelector</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
@@ -72,6 +54,10 @@
       <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
       <Name>Rb.Log</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering.OpenGl\Rb.Rendering.OpenGl.csproj">
+      <Project>{19DCB365-3040-4431-86E9-29183FA34EF7}</Project>
+      <Name>Rb.Rendering.OpenGl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.Rendering\Rb.Rendering.csproj">
       <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
       <Name>Rb.Rendering</Name>
@@ -79,6 +65,10 @@
     <ProjectReference Include="..\..\..\Source\Rb.World\Rb.World.csproj">
       <Project>{46980366-998B-4178-87B7-B04DD3B21979}</Project>
       <Name>Rb.World</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc0.Core\Poc0.Core.csproj">
+      <Project>{FBEDE7DA-1ADD-424D-9EBE-48179585DE45}</Project>
+      <Name>Poc0.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
