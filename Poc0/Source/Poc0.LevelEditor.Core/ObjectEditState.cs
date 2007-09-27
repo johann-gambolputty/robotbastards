@@ -35,7 +35,7 @@ namespace Poc0.LevelEditor.Core
 		public void Render( IRenderContext context )
 		{
 			Draw.IPen draw = m_Parent.Selected ? ms_DrawSelected : ms_DrawUnselected;
-			Point pos = new Point( ( int )m_HasPosition.Position.X, ( int )m_HasPosition.Position.Y );
+			Point pos = new Point( ( int )m_HasPosition.Position.X, ( int )m_HasPosition.Position.Z );
 
 			Graphics.Draw.Circle( draw, pos, 10 );
 		}

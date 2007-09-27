@@ -93,55 +93,6 @@ namespace Poc0.LevelEditor.Core.EditModes
 			m_AddToSelection = false;
 		}
 
-		private static IShape2 GetObjectShape( IHasPosition obj )
-		{
-			float minX = obj.Position.X - 5;
-			float minY = obj.Position.Y - 5;
-
-			return new Rectangle( minX, minY, 10.0f, 10.0f );
-		}
-
-
-
-		private static object FirstObjectUnderCursor( Point2 pos )
-		{
-			Scene scene = EditModeContext.Instance.Scene;
-
-			foreach ( object obj in scene.Objects.GetAllOfType< object >( ) )
-			{
-				IHasPosition frame = Parent.GetType< IHasPosition >( obj );
-				if ( ( frame != null ) && ( GetObjectShape( frame ).Contains( pos ) ) )
-				{
-					return obj;
-				}
-			}
-
-			return null;
-		}
-
-		private static object[] ObjectsInBox( IShape2 rect )
-		{
-			List< object > objects = new List< object >( );
-
-			Scene scene = EditModeContext.Instance.Scene;
-
-			foreach ( object obj in scene.Objects.GetAllOfType< object >( ) )
-			{
-				IHasPosition frame = Parent.GetType< IHasPosition >( obj );
-				if ( ( frame != null ) && ( GetObjectShape( frame ).Overlaps( rect ) ) )
-				{
-					objects.Add( obj );
-				}
-			}
-
-			return objects.ToArray( );
-		}
-
-		private bool IsMoving
-		{
-			get { return m_MoveAction != null; }
-		}
-
 		private void OnMouseDown( object sender, MouseEventArgs args )
 		{
 			if ( ( args.Button & m_ActionButton ) == 0 )
@@ -241,6 +192,71 @@ namespace Poc0.LevelEditor.Core.EditModes
 		private Point2					m_LastCursorPos;
 		private MoveObjectsAction		m_MoveAction;
 		private bool					m_DeselectOnNoMove;
+
+		/// <summary>
+		/// Gets the shape of a given object
+		/// </summary>
+		/// <param name="obj">Object to retrieve shape from</param>
+		/// <returns>Returns a 2D shape representation of the object</returns>
+		private static IShape2 GetObjectShape( IHasPosition obj )
+		{
+			float minX = obj.Position.X - 5;
+			float minY = obj.Position.Y - 5;
+
+			return new Rectangle( minX, minY, 10.0f, 10.0f );
+		}
+
+		/// <summary>
+		/// Gets the first object under the cursor
+		/// </summary>
+		/// <param name="pos">Cursor position</param>
+		/// <returns>Returns null if there's nothing under the cursor. Otherwise, returns the first object under it</returns>
+		private static object FirstObjectUnderCursor( Point2 pos )
+		{
+			Scene scene = EditModeContext.Instance.Scene;
+
+			foreach ( object obj in scene.Objects.GetAllOfType< object >( ) )
+			{
+				IHasPosition frame = Parent.GetType< IHasPosition >( obj );
+				if ( ( frame != null ) && ( GetObjectShape( frame ).Contains( pos ) ) )
+				{
+					return obj;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Gets an array of objects whose bounding areas intersect a given rectangle
+		/// </summary>
+		/// <param name="rect">Selection rectangle</param>
+		/// <returns>Returns all objects that lie (at least partly) inside rect</returns>
+		private static object[] ObjectsInBox( IShape2 rect )
+		{
+			List< object > objects = new List< object >( );
+
+			Scene scene = EditModeContext.Instance.Scene;
+
+			foreach ( object obj in scene.Objects.GetAllOfType< object >( ) )
+			{
+				IHasPosition frame = Parent.GetType< IHasPosition >( obj );
+				if ( ( frame != null ) && ( GetObjectShape( frame ).Overlaps( rect ) ) )
+				{
+					objects.Add( obj );
+				}
+			}
+
+			return objects.ToArray( );
+		}
+
+		/// <summary>
+		/// True if the edit mode is moving about a selection of objects
+		/// </summary>
+		private bool IsMoving
+		{
+			get { return m_MoveAction != null; }
+		}
 
 		#endregion
 

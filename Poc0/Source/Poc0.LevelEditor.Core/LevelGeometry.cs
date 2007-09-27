@@ -1,8 +1,12 @@
 using System;
 using System.Drawing;
+using Poc0.Core.Environment;
+using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Rendering;
+using Rb.World;
 using Graphics=Rb.Rendering.Graphics;
+using Environment=Poc0.Core.Environment.Environment;
 
 namespace Poc0.LevelEditor.Core
 {
@@ -17,8 +21,11 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Default constructor
 		/// </summary>
-		public LevelGeometry( )
+		public LevelGeometry( EditorScene scene )
 		{
+			Scene runtimeScene = scene.RuntimeScene;
+			m_Environment = Builder.CreateInstance< Environment >( runtimeScene.Builder );
+
 			m_Csg.GeometryChanged += OnGeometryChanged;
 		}
 
@@ -28,19 +35,6 @@ namespace Poc0.LevelEditor.Core
 		public Csg Csg
 		{
 			get { return m_Csg; }
-		}
-
-		/// <summary>
-		/// Flag to enable/disable contour rendering
-		/// </summary>
-		public bool RenderContours
-		{
-			get { return m_RenderContours; }
-			set
-			{
-				m_RenderContours = value;
-				DestroyRenderable( );
-			}
 		}
 
 		/// <summary>
@@ -60,18 +54,28 @@ namespace Poc0.LevelEditor.Core
 
 		#region Private members
 
+		private readonly Environment m_Environment;
 		private readonly Csg m_Csg = new Csg( );
 
-		private bool m_RenderContours = false;
-
+		[NonSerialized]
 		private IRenderable m_Renderable;
 
 		[NonSerialized]
 		private Draw.IPen m_DrawEdge;
 
 		[NonSerialized]
-		private Draw.IBrush m_DrawVertex;
+		private Draw.IBrush m_FillVertex;
 
+		[NonSerialized]
+		private Draw.IBrush m_FillPolygon;
+
+		[NonSerialized]
+		private Draw.IPen m_DrawPolygon;
+
+
+		/// <summary>
+		/// Destroys the current renderable representation of the level geometry
+		/// </summary>
 		private void DestroyRenderable( )
 		{
 			IDisposable dispose = m_Renderable as IDisposable;
@@ -82,6 +86,9 @@ namespace Poc0.LevelEditor.Core
 			m_Renderable = null;
 		}
 
+		/// <summary>
+		/// Builds a renderable representation of the level geometry
+		/// </summary>
 		private void BuildRenderable( )
 		{
 			if ( m_DrawEdge == null )
@@ -89,37 +96,26 @@ namespace Poc0.LevelEditor.Core
 				m_DrawEdge = Graphics.Draw.NewPen( Color.Red, 2.0f );
 			}
 
-			if ( m_DrawVertex == null )
+			if ( m_FillVertex == null )
 			{
-				m_DrawVertex = Graphics.Draw.NewBrush( Color.Wheat, Color.Black );
+				m_FillVertex = Graphics.Draw.NewBrush( Color.Wheat, Color.Black );
+			}
+
+			if ( m_FillPolygon == null )
+			{
+				m_FillPolygon = Graphics.Draw.NewBrush( Color.DeepSkyBlue );
+			}
+
+			if ( m_DrawPolygon == null )
+			{
+				m_DrawPolygon = Graphics.Draw.NewPen( Color.Wheat );
 			}
 
 			Graphics.Draw.StartCache( );
 
-			if ( !m_RenderContours )
+			if ( m_Csg.Root != null )
 			{
-				if ( m_Csg.Root != null )
-				{
-					Render( m_Csg.Root );
-				}
-			}
-			else
-			{
-				if ( m_Csg.Contours != null )
-				{
-					Color[] contourColours = new Color[] { Color.Red, Color.Green, Color.Blue, Color.OrangeRed };
-					for ( int contour = 0; contour < m_Csg.Contours.Length; ++contour )
-					{
-						Csg.Edge firstEdge = m_Csg.Contours[ contour ];
-						Csg.Edge edge = firstEdge;
-						do
-						{
-							m_DrawEdge.Colour = contourColours[ contour % contourColours.Length ];
-							DrawEdge( edge );
-							edge = edge.NextEdge;
-						} while ( ( edge != null ) && ( edge != firstEdge ) );
-					}
-				}
+				Render( m_Csg.Root );
 			}
 
 			m_Renderable = Graphics.Draw.StopCache( );
@@ -136,8 +132,8 @@ namespace Poc0.LevelEditor.Core
 			Point2 mid = edge.P0 + vec / 2;
 			Graphics.Draw.Line( m_DrawEdge, mid, mid + vec.MakePerpNormal( ) * 4.0f );
 			
-			Graphics.Draw.Circle( m_DrawVertex, edge.P0.X, edge.P0.Y, 2.0f );
-			Graphics.Draw.Circle( m_DrawVertex, edge.P1.X, edge.P1.Y, 2.0f );
+			Graphics.Draw.Circle( m_FillVertex, edge.P0.X, edge.P0.Y, 2.0f );
+			Graphics.Draw.Circle( m_FillVertex, edge.P1.X, edge.P1.Y, 2.0f );
 		}
 
 		/// <summary>
@@ -149,7 +145,7 @@ namespace Poc0.LevelEditor.Core
 
 			if ( node.ConvexRegion != null )
 			{
-				Graphics.Draw.Polygon( m_DrawVertex, node.ConvexRegion );
+				Graphics.Draw.Polygon( m_FillPolygon, node.ConvexRegion );
 			}
 
 			if ( node.Behind != null )
@@ -160,6 +156,11 @@ namespace Poc0.LevelEditor.Core
 			{
 				Render( node.InFront );
 			}
+
+			if ( node.ConvexRegion != null )
+			{
+				Graphics.Draw.Polygon( m_DrawPolygon, node.ConvexRegion );
+			}
 		}
 
 		/// <summary>
@@ -167,7 +168,36 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		private void OnGeometryChanged( object sender, EventArgs args )
 		{
+			//	Rubbish renderable representation - (next) Render() recreates renderable representation
 			DestroyRenderable( );
+
+			//	Update environment
+			m_Environment.Walls = BuildWalls( m_Csg.Root );
+		}
+
+		/// <summary>
+		/// Recursively creates the main game environment representation (BSP tree representing walls)
+		/// </summary>
+		/// <param name="srcNode">Level geometry CSG BSP node</param>
+		/// <returns>Returns a game wall node built from the CSG source node</returns>
+		private WallNode BuildWalls( Csg.BspNode srcNode )
+		{
+			Floor floor = null;
+			if ( srcNode.ConvexRegion != null )
+			{
+				floor = new Floor( srcNode.ConvexRegion, 0.0f );
+			}
+
+			WallNode newNode = new WallNode( srcNode.Edge.P0, srcNode.Edge.P1, 10.0f, floor );
+			if ( srcNode.InFront != null )
+			{
+				newNode.InFront = BuildWalls( srcNode.InFront );
+			}
+			if ( srcNode.Behind != null )
+			{
+				newNode.Behind = BuildWalls( srcNode.Behind );
+			}
+			return newNode;
 		}
 
 		#endregion

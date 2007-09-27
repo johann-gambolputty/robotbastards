@@ -56,6 +56,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Rendering.OpenGl.Md3Load
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.AppCore", "..\Source\Rb.AppCore\Rb.AppCore.csproj", "{51095D19-F325-49A4-89C1-18FA270515FD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc0.Core.Rendering.OpenGl", "Source\Poc0.Core.Rendering.OpenGl\Poc0.Core.Rendering.OpenGl.csproj", "{283867CD-C9C1-4953-8AD7-F7704C8D5913}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -207,6 +209,12 @@ Global
 		{51095D19-F325-49A4-89C1-18FA270515FD}.NDoc|Any CPU.Build.0 = Release|Any CPU
 		{51095D19-F325-49A4-89C1-18FA270515FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51095D19-F325-49A4-89C1-18FA270515FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{283867CD-C9C1-4953-8AD7-F7704C8D5913}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{283867CD-C9C1-4953-8AD7-F7704C8D5913}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{283867CD-C9C1-4953-8AD7-F7704C8D5913}.NDoc|Any CPU.ActiveCfg = Release|Any CPU
+		{283867CD-C9C1-4953-8AD7-F7704C8D5913}.NDoc|Any CPU.Build.0 = Release|Any CPU
+		{283867CD-C9C1-4953-8AD7-F7704C8D5913}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{283867CD-C9C1-4953-8AD7-F7704C8D5913}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

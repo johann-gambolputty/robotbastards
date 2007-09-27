@@ -10,15 +10,24 @@ namespace Poc0.LevelEditor.Core
 	public class EditorScene : Scene
 	{
 		/// <summary>
-		/// Scene builder
+		/// Sets/gets level geometry
 		/// </summary>
-		public EditorScene( )
-		{
-			Renderables.Add( m_LevelGeometry );
-		}
-
 		public LevelGeometry LevelGeometry
 		{
+			set
+			{
+				if ( m_LevelGeometry != null )
+				{
+					Renderables.Remove( m_LevelGeometry );
+				}
+
+				m_LevelGeometry = value;
+
+				if ( m_LevelGeometry != null )
+				{
+					Renderables.Add( m_LevelGeometry );
+				}
+			}
 			get { return m_LevelGeometry; }
 		}
 
@@ -30,7 +39,7 @@ namespace Poc0.LevelEditor.Core
 			get { return m_RuntimeScene; }
 		}
 
-		private readonly LevelGeometry m_LevelGeometry = new LevelGeometry( );
+		private LevelGeometry m_LevelGeometry;
 		private readonly Scene m_RuntimeScene = CreateRuntimeScene( );
 
 		/// <summary>

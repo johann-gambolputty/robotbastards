@@ -57,7 +57,6 @@ namespace Poc0.LevelEditor.Core
 			{
 				if ( op == Operation.Union || op == Operation.EdgeUnion )
 				{
-					m_Contours = new Edge[] { brushBsp.Edge };
 					m_Root = brushBsp;
 				}
 			}
@@ -78,14 +77,6 @@ namespace Poc0.LevelEditor.Core
 		public BspNode Root
 		{
 			get { return m_Root; }
-		}
-
-		/// <summary>
-		/// Gets the contours
-		/// </summary>
-		public Edge[] Contours
-		{
-			get { return m_Contours; }
 		}
 
 		#endregion
@@ -190,24 +181,6 @@ namespace Poc0.LevelEditor.Core
 			}
 
 			/// <summary>
-			/// The previous edge in the contour
-			/// </summary>
-			public Edge PreviousEdge
-			{
-				get { return m_Prev; }
-				set { m_Prev = value; }
-			}
-
-			/// <summary>
-			/// The next edge in the contour
-			/// </summary>
-			public Edge NextEdge
-			{
-				get { return m_Next; }
-				set { m_Next = value; }
-			}
-
-			/// <summary>
 			/// Start of the edge
 			/// </summary>
 			public Point2 P0
@@ -233,24 +206,6 @@ namespace Poc0.LevelEditor.Core
 				get { return m_Plane; }
 			}
 
-			/// <summary>
-			/// Unlinks this edge from its next and previous edges
-			/// </summary>
-			public void Unlink( )
-			{
-				if ( m_Prev != null )
-				{
-					m_Prev.NextEdge = null;
-				}
-				if ( m_Next != null )
-				{
-					m_Next.PreviousEdge = null;
-				}
-			}
-
-
-			private Edge m_Prev;
-			private Edge m_Next;
 			private Point2 m_P0;
 			private Point2 m_P1;
 			private readonly Plane2 m_Plane;
@@ -261,17 +216,11 @@ namespace Poc0.LevelEditor.Core
 		#region BSP building
 
 		private BspNode m_Root;
-		private Edge[] m_Contours;
 
 		/// <summary>
 		/// A point is considered to be on the plane (PlaneClassification.On) if it's within this distance of the plane
 		/// </summary>
 		private const float OnPlaneTolerance = 0.001f;
-
-		/// <summary>
-		/// Edges are considered coincident if the dot of their plane normals are less than this tolerance
-		/// </summary>
-		private const float CoincidentEdgeTolerance = 0.2f;
 
 		/// <summary>
 		/// Combines two BSP trees using a specified CSG operation
@@ -312,72 +261,7 @@ namespace Poc0.LevelEditor.Core
 					break;
 			}
 
-			//m_Contours = BuildContours( allEdges );
-
 			return Build( null, allEdges );
-		}
-
-		/// <summary>
-		/// Returns true if two edges are colinear
-		/// </summary>
-		private static bool AreEdgesColinear( Edge edge1, Edge edge2 )
-		{
-			return edge1.Plane.Normal.Dot( edge2.Plane.Normal ) > ( 1.0f - CoincidentEdgeTolerance );
-		}
-
-		/// <summary>
-		/// Builds a list of contours from an edge list, and also combines an colinear edges
-		/// </summary>
-		private static Edge[] BuildContours( ICollection< Edge > edges )
-		{
-			List< Edge > processSet = new List< Edge >( edges );
-			List< Edge > contours = new List< Edge >( );
-
-			edges.Clear( );
-
-			while ( processSet.Count > 0 )
-			{
-				Edge firstEdge = processSet[ 0 ];
-				Edge curEdge = firstEdge;
-				Edge addEdge = firstEdge;
-				do
-				{
-					if ( AreEdgesColinear( addEdge, curEdge ) )
-					{
-					    addEdge.P1 = curEdge.P1;
-					}
-					else
-					{
-						curEdge.PreviousEdge = addEdge;
-						addEdge.NextEdge = curEdge;
-
-					    edges.Add( addEdge );
-					    addEdge = curEdge;
-					}
-
-					processSet.Remove(curEdge);
-					curEdge = curEdge.NextEdge;
-
-				} while ( ( curEdge != null ) && ( curEdge != firstEdge ) );
-
-				if ( addEdge != curEdge )
-				{
-					if ( curEdge != null )
-					{
-						curEdge.PreviousEdge = addEdge;
-						addEdge.NextEdge = curEdge.NextEdge;
-					}
-					else
-					{
-						addEdge.NextEdge = null;
-					}
-				    edges.Add( addEdge );
-				}
-
-				contours.Add( firstEdge );
-			}
-
-			return contours.ToArray( );
 		}
 		
 		/// <summary>
@@ -443,18 +327,6 @@ namespace Poc0.LevelEditor.Core
 			for ( int ptIndex = 0; ptIndex < points.Length; ++ptIndex )
 			{
 				edges.Add( new Edge( points[ ptIndex ], points[ ( ptIndex + 1 ) % points.Length ] ) );
-			}
-
-			//	Set up edge links
-			int lastEdgeIndex = edges.Count - 1;
-			int nextEdgeIndex = 1;
-			for ( int edgeIndex = 0; edgeIndex < edges.Count; ++edgeIndex )
-			{
-				edges[ edgeIndex ].PreviousEdge = edges[ lastEdgeIndex ];
-				edges[ edgeIndex ].NextEdge = edges[ nextEdgeIndex ];
-
-				lastEdgeIndex = edgeIndex;
-				nextEdgeIndex = ( nextEdgeIndex + 1 ) % edges.Count;
 			}
 
 			return Build( null, edges );
@@ -608,22 +480,12 @@ namespace Poc0.LevelEditor.Core
 					{
 						leftEdges.Add( edge );
 					}
-					else
-					{
-						//	Edge is being removed - unlink from other edges
-						edge.Unlink( );
-					}
 				}
 				else
 				{
 					if ( rightEdges != null )
 					{
 						rightEdges.Add( edge );
-					}
-					else
-					{
-						//	Edge is being removed - unlink from other edges
-						edge.Unlink( );
 					}
 				}
 			}
@@ -643,31 +505,11 @@ namespace Poc0.LevelEditor.Core
 				if ( leftEdges != null )
 				{
 					leftEdges.Add( startToMidEdge );
-					if ( edge.PreviousEdge != null )
-					{
-						edge.PreviousEdge.NextEdge = startToMidEdge;
-					}
-					startToMidEdge.PreviousEdge = edge.PreviousEdge;
-					midToEndEdge.PreviousEdge = startToMidEdge;
-				}
-				else if ( edge.PreviousEdge != null )
-				{
-					edge.PreviousEdge.NextEdge = null;
 				}
 
 				if ( rightEdges != null )
 				{
 					rightEdges.Add( midToEndEdge );
-					if ( edge.NextEdge != null )
-					{
-						edge.NextEdge.PreviousEdge = midToEndEdge;
-					}
-					midToEndEdge.NextEdge = edge.NextEdge;
-					startToMidEdge.NextEdge = midToEndEdge;
-				}
-				else if ( edge.NextEdge != null )
-				{
-					edge.NextEdge.PreviousEdge = null;
 				}
 			}
 		}

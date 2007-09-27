@@ -114,7 +114,7 @@ namespace Rb.Rendering.Windows
 
 		private void Display_Load( object sender, EventArgs e )
 		{
-			if (m_Setup != null)
+			if ( m_Setup != null )
 			{
 				m_Setup.Create( this, m_ColourBits, m_DepthBits, m_StencilBits );
 			}

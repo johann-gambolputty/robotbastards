@@ -256,6 +256,10 @@
       <Project>{46980366-998B-4178-87B7-B04DD3B21979}</Project>
       <Name>Rb.World</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Poc0.Core.Rendering.OpenGl\Poc0.Core.Rendering.OpenGl.csproj">
+      <Project>{283867CD-C9C1-4953-8AD7-F7704C8D5913}</Project>
+      <Name>Poc0.Core.Rendering.OpenGl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Poc0.Core\Poc0.Core.csproj">
       <Project>{FBEDE7DA-1ADD-424D-9EBE-48179585DE45}</Project>
       <Name>Poc0.Core</Name>

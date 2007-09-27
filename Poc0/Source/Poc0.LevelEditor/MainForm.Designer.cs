@@ -29,7 +29,7 @@ namespace Poc0.LevelEditor
 		private void InitializeComponent( )
 		{
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
-			this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
+			this.posStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.menuStrip = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,26 +49,26 @@ namespace Poc0.LevelEditor
 			this.selectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.objectPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.tileGrid2dDisplay = new Poc0.LevelEditor.TileGridDisplay();
 			this.gameViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.tileGrid2dDisplay = new Poc0.LevelEditor.TileGridDisplay();
 			this.statusStrip.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// statusStrip
 			// 
-			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripProgressBar1});
+			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {this.posStatusLabel});
 			this.statusStrip.Location = new System.Drawing.Point(0, 398);
 			this.statusStrip.Name = "statusStrip";
 			this.statusStrip.Size = new System.Drawing.Size(524, 22);
 			this.statusStrip.TabIndex = 0;
 			this.statusStrip.Text = "statusStrip1";
 			// 
-			// toolStripProgressBar1
+			// posStatusLabel
 			// 
-			this.toolStripProgressBar1.Name = "toolStripProgressBar1";
-			this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
+			this.posStatusLabel.Name = "posStatusLabel";
+			this.posStatusLabel.Size = new System.Drawing.Size(109, 17);
+			this.posStatusLabel.Text = "";
 			// 
 			// menuStrip
 			// 
@@ -168,17 +168,17 @@ namespace Poc0.LevelEditor
 			// 
 			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
 			this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-			this.undoToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.undoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.undoToolStripMenuItem.Text = "&Undo";
-			this.undoToolStripMenuItem.Click += new System.EventHandler(undoToolStripMenuItem_Click);
+			this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
 			// 
 			// redoToolStripMenuItem
 			// 
 			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
 			this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-			this.redoToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.redoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.redoToolStripMenuItem.Text = "&Redo";
-			this.redoToolStripMenuItem.Click += new System.EventHandler(redoToolStripMenuItem_Click);
+			this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoToolStripMenuItem_Click);
 			// 
 			// viewToolStripMenuItem
 			// 
@@ -220,6 +220,12 @@ namespace Poc0.LevelEditor
 			this.objectPropertiesToolStripMenuItem.Text = "&Object Properties";
 			this.objectPropertiesToolStripMenuItem.Click += new System.EventHandler(this.objectPropertiesToolStripMenuItem_Click);
 			// 
+			// gameViewToolStripMenuItem
+			// 
+			this.gameViewToolStripMenuItem.Name = "gameViewToolStripMenuItem";
+			this.gameViewToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.gameViewToolStripMenuItem.Text = "&Game View";
+			// 
 			// tileGrid2dDisplay
 			// 
 			this.tileGrid2dDisplay.ColourBits = ((byte)(32));
@@ -228,15 +234,11 @@ namespace Poc0.LevelEditor
 			this.tileGrid2dDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tileGrid2dDisplay.Location = new System.Drawing.Point(0, 24);
 			this.tileGrid2dDisplay.Name = "tileGrid2dDisplay";
+			this.tileGrid2dDisplay.RenderInterval = 1;
 			this.tileGrid2dDisplay.Size = new System.Drawing.Size(524, 374);
 			this.tileGrid2dDisplay.StencilBits = ((byte)(0));
 			this.tileGrid2dDisplay.TabIndex = 2;
-			// 
-			// gameViewToolStripMenuItem
-			// 
-			this.gameViewToolStripMenuItem.Name = "gameViewToolStripMenuItem";
-			this.gameViewToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-			this.gameViewToolStripMenuItem.Text = "&Game View";
+			this.tileGrid2dDisplay.MouseMove += new System.Windows.Forms.MouseEventHandler(this.tileGrid2dDisplay_MouseMove);
 			// 
 			// MainForm
 			// 
@@ -265,7 +267,6 @@ namespace Poc0.LevelEditor
 		private System.Windows.Forms.MenuStrip menuStrip;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-		private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
 		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem logToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
@@ -284,5 +285,6 @@ namespace Poc0.LevelEditor
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripMenuItem eToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem gameViewToolStripMenuItem;
+		private System.Windows.Forms.ToolStripStatusLabel posStatusLabel;
 	}
 }

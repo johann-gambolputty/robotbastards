@@ -8,11 +8,14 @@ using Poc0.LevelEditor.Core.Actions;
 using Poc0.LevelEditor.Core.EditModes;
 using Rb.Core.Assets;
 using Rb.Core.Components;
+using Rb.Core.Maths;
 using Rb.Core.Utils;
 using Rb.Interaction;
 using Rb.Log;
 using Rb.Rendering;
 using Crownwood.Magic.Common;
+using Graphics=Rb.Rendering.Graphics;
+using Rectangle=System.Drawing.Rectangle;
 
 namespace Poc0.LevelEditor
 {
@@ -30,8 +33,6 @@ namespace Poc0.LevelEditor
 		public MainForm( )
 		{
 			LogForm logDisplay = new LogForm( );
-
-			Rb.Core.Maths.Intersections2.TestPlanePlaneIntersection( );
 
 			//	Write greeting
 			AppLog.Info( "Beginning Poc0.LevelEditor at {0}", DateTime.Now );
@@ -53,7 +54,7 @@ namespace Poc0.LevelEditor
 			}
 			AssetXmlSetup.Setup( assetSetupPath, AssetManager.Instance, LocationManagers.Instance );
 
-			//	Load all assemblies that support the chosen graphics API 
+			//	Load all assemblies that support the chosen graphics API
 			Rb.AssemblySelector.IdentifierMap.Instance.AddAssemblyIdentifiers( Directory.GetCurrentDirectory( ), SearchOption.TopDirectoryOnly );
 			Rb.AssemblySelector.IdentifierMap.Instance.LoadAll( "GraphicsApi=" + Graphics.Factory.ApiName );
 
@@ -129,8 +130,9 @@ namespace Poc0.LevelEditor
 			//	Add a renderer for the tile grid to the scene renderables
 			scene.Objects.Add( Guid.NewGuid( ), grid );
 
-			//	TODO: AP: Bodged insert into renderable list, so level geometry will be rendered last
-			scene.Renderables.Insert( 0, Graphics.Factory.Create< TileBlock2dRenderer >( grid, EditModeContext.Instance ) );
+			scene.Renderables.Add( Graphics.Factory.Create< TileBlock2dRenderer >( grid, EditModeContext.Instance ) );
+
+			scene.LevelGeometry = new LevelGeometry( scene );
 
 			Scene = scene;
 		}
@@ -243,12 +245,12 @@ namespace Poc0.LevelEditor
 			}
 		}
 
-		private static void undoToolStripMenuItem_Click(object sender, EventArgs e)
+		private void undoToolStripMenuItem_Click( object sender, EventArgs e )
 		{
 			EditModeContext.Instance.UndoStack.Undo( );
 		}
 
-		private static void redoToolStripMenuItem_Click( object sender, EventArgs e )
+		private void redoToolStripMenuItem_Click( object sender, EventArgs e )
 		{
 			EditModeContext.Instance.UndoStack.Redo( );
 		}
@@ -261,6 +263,32 @@ namespace Poc0.LevelEditor
 		private void eToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			m_Exporter.ExportAs( m_Scene.RuntimeScene );
+		}
+
+		private void tileGrid2dDisplay_MouseMove( object sender, MouseEventArgs e )
+		{
+			//	Display the world position that the cursor is at in the status bar
+			foreach ( Viewer viewer in tileGrid2dDisplay.Viewers )
+			{
+				Rectangle winRect = viewer.GetWindowRectangle( tileGrid2dDisplay.Bounds );
+				if ( winRect.Contains( e.Location ) )
+				{
+					ITilePicker picker = viewer.Camera as ITilePicker;
+					if ( picker == null )
+					{
+						continue;
+					}
+					Point2 pt = picker.CursorToWorld( e.Location.X, e.Location.Y );
+					
+					string ptString = string.Format( "X: {0}, Z: {1}", pt.X, pt.Y );
+
+					posStatusLabel.Text = ptString;
+
+					return;
+				}
+			}
+			//	No valid viewer found
+			posStatusLabel.Text = "";
 		}
 
 	}
