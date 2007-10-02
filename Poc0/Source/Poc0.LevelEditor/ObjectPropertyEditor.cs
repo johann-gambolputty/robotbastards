@@ -73,12 +73,7 @@ namespace Poc0.LevelEditor
 				return;
 			}
 
-			//object obj = ( ( ObjectEditState )selectedObjects[ 0 ] ).Instance;
-
-			//objectPropertyGrid.SelectedObject = Rb.Core.Components.Parent.GetType< Poc0.Core.Entity >( obj );
-			//return;
-
-			PropertyBag[] bags = new ExPropertyBag[selectedObjects.Length];
+			PropertyBag[] bags = new ExPropertyBag[ selectedObjects.Length ];
 			for ( int index = 0; index < selectedObjects.Length; ++index )
 			{
 				bags[ index ] = CreatePropertyBag( selectedObjects[ index ] );

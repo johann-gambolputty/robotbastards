@@ -10,19 +10,24 @@ namespace Poc0.Core.Rendering.OpenGl
 		private readonly RenderState m_WallState;
 		private readonly RenderState m_FloorState;
 
+		/// <summary>
+		/// Sets up render states
+		/// </summary>
 		public OpenGlEnvironmentGraphics( )
 		{
 			m_WallState = Graphics.Factory.NewRenderState( );
 			m_WallState.DisableLighting( );
-			m_WallState.SetDepthTest( DepthTestPass.Always );
 			m_WallState.SetColour( System.Drawing.Color.DarkOrange );
 
 			m_FloorState = Graphics.Factory.NewRenderState( );
 			m_FloorState.DisableLighting( );
-			m_FloorState.SetDepthTest( DepthTestPass.Always );
 			m_FloorState.SetColour( System.Drawing.Color.Blue );
 		}
 
+		/// <summary>
+		/// Renders the environment
+		/// </summary>
+		/// <param name="context">Rendering context</param>
 		public override void Render( IRenderContext context )
 		{
 			if ( Walls == null )
@@ -30,16 +35,16 @@ namespace Poc0.Core.Rendering.OpenGl
 				return;
 			}
 
+			//	Render walls
 			Graphics.Renderer.PushRenderState( m_WallState );
 
 			Gl.glBegin( Gl.GL_QUADS );
-
 			RenderWall( context, Walls );
-
 			Gl.glEnd( );
 			
 			Graphics.Renderer.PopRenderState( );
 			
+			//	Render floors
 			Graphics.Renderer.PushRenderState( m_FloorState );
 
 			Gl.glBegin( Gl.GL_TRIANGLES );

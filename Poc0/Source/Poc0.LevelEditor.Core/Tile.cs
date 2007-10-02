@@ -114,6 +114,15 @@ namespace Poc0.LevelEditor.Core
 			set { m_Selected = value; }
 		}
 
+		/// <summary>
+		/// Highlight state of this tile
+		/// </summary>
+		public bool Highlight
+		{
+			get { return m_Highlight; }
+			set { m_Highlight = value; }
+		}
+
 		#endregion
 
 		#region Private members
@@ -124,6 +133,7 @@ namespace Poc0.LevelEditor.Core
 		private readonly List< object > m_Objects	= new List< object >( );
 
 		private bool m_Selected;
+		private bool m_Highlight;
 		private float m_HeightOffset;
 		private TileType m_TileType;
 

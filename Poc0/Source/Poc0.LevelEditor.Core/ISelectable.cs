@@ -11,8 +11,15 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		bool Selected
 		{
-			get;
-			set;
+			get; set;
+		}
+
+		/// <summary>
+		/// Highlight flag
+		/// </summary>
+		bool Highlight
+		{
+			get; set;
 		}
 	}
 }

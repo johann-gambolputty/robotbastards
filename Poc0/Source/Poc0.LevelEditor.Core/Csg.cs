@@ -234,22 +234,22 @@ namespace Poc0.LevelEditor.Core
 			switch ( op )
 			{
 				case Operation.Union :
-					Clip( false, set0, set1Edges, allEdges );
-					Clip( false, set1, set0Edges, allEdges );
+					Clip( false, true, set0, set1Edges, allEdges );
+					Clip( false, true, set1, set0Edges, allEdges );
 					break;
 
 				case Operation.EdgeUnion :
-					Clip( true, set0, set1Edges, allEdges );
+					Clip( false, true, set0, set1Edges, allEdges );
 					allEdges.AddRange( set0Edges );
 					break;
 
 				case Operation.Intersection :
-					Clip( true, set0, set1Edges, allEdges );
-					Clip( true, set1, set0Edges, allEdges );
+					Clip( true, false, set0, set1Edges, allEdges );
+					Clip( true, false, set1, set0Edges, allEdges );
 					break;
 
 				case Operation.Complement :
-					Clip( true, set0, set1Edges, allEdges );
+					Clip( true, false, set0, set1Edges, allEdges );
 					foreach ( Edge edge in allEdges )
 					{
 						Point2 oldP0 = new Point2( edge.P0 );
@@ -257,7 +257,7 @@ namespace Poc0.LevelEditor.Core
 						edge.P1 = oldP0;
 						edge.Plane.Invert( );
 					}
-					Clip( false, set1, set0Edges, allEdges );
+					Clip( false, true, set1, set0Edges, allEdges );
 					break;
 			}
 
@@ -293,22 +293,22 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Clips a set of edges against a BSP tree
 		/// </summary>
-		private static void Clip( bool keepInsideEdges, BspNode node, IEnumerable< Edge > edges, IList< Edge > outputEdges )
+		private static void Clip( bool keepLeftEdges, bool keepRightEdges, BspNode node, IEnumerable< Edge > edges, IList< Edge > outputEdges )
 		{
-			IList< Edge > leftEdges = ( node.Behind != null ) ? new List< Edge >( ) : ( keepInsideEdges ? null : outputEdges );
-			IList< Edge > rightEdges = ( node.InFront != null ) ? new List< Edge >( ) : ( keepInsideEdges ? outputEdges : null );
+			IList< Edge > leftEdges = ( node.Behind != null ) ? new List< Edge >( ) : ( keepLeftEdges ? outputEdges : null );
+			IList< Edge > rightEdges = ( node.InFront != null ) ? new List< Edge >( ) : ( keepRightEdges ? outputEdges : null );
 
 			foreach ( Edge edge in edges )
 			{
-				ClassifyEdge( node.Plane, edge, leftEdges, rightEdges );
+				ClassifyEdge( node.Edge, edge, leftEdges, rightEdges );
 			}
 			if ( node.Behind != null )
 			{
-				Clip( keepInsideEdges, node.Behind, leftEdges, outputEdges );
+				Clip( keepLeftEdges, keepRightEdges, node.Behind, leftEdges, outputEdges );
 			}
 			if ( node.InFront != null )
 			{
-				Clip( keepInsideEdges, node.InFront, rightEdges, outputEdges );
+				Clip( keepLeftEdges, keepRightEdges, node.InFront, rightEdges, outputEdges );
 			}
 		}
 		
@@ -332,17 +332,27 @@ namespace Poc0.LevelEditor.Core
 			return Build( null, edges );
 		}
 
+		/// <summary>
+		/// Builds convex regions from a given root node
+		/// </summary>
+		/// <param name="node">Root node</param>
 		private static void BuildConvexRegions( BspNode node )
 		{
 			List< Plane2 > planes = new List< Plane2 >( );
 			BuildConvexRegions( node, planes );
 		}
-
+		
+		/// <summary>
+		/// Builds convex regions from a given node
+		/// </summary>
+		/// <param name="node">Current node</param>
+		/// <param name="planes">Current plane set</param>
 		private static void BuildConvexRegions( BspNode node, List< Plane2 > planes )
 		{
 			if ( node.Behind != null )
 			{
 				List< Plane2 > behindPlanes = new List< Plane2 >( planes );
+
 				behindPlanes.Add( node.Plane.MakeInversePlane( ) );
 				BuildConvexRegions( node.Behind, behindPlanes );
 			}
@@ -357,6 +367,11 @@ namespace Poc0.LevelEditor.Core
 			}
 		}
 
+		/// <summary>
+		/// Builds a convex region from a set of planes
+		/// </summary>
+		/// <param name="allPlanes">Plane set</param>
+		/// <returns>Returns the points of the convex polygon made up from the intersection of the planes in allPlanes</returns>
 		private static Point2[] BuildConvexRegion( IList< Plane2 > allPlanes )
 		{
 			List< Point2 > points = new List< Point2 >( );
@@ -409,9 +424,6 @@ namespace Poc0.LevelEditor.Core
 			BspNode splitNode = new BspNode( parentNode, splitter );
 			if ( edges.Count == 1 )
 			{
-				//	Leaf node in the tree. Path from leaf to root is a convex hull
-				//splitNode.ConvexRegion = BuildConvexRegion( splitNode );
-
 				return splitNode;
 			}
 
@@ -420,7 +432,7 @@ namespace Poc0.LevelEditor.Core
 			List< Edge > rightEdges = new List< Edge >( );
 			for ( int edgeIndex = 1; edgeIndex < edges.Count; ++edgeIndex )
 			{
-				ClassifyEdge( splitter.Plane, edges[ edgeIndex ], leftEdges, rightEdges );
+				ClassifyEdge( splitter, edges[ edgeIndex ], leftEdges, rightEdges );
 			}
 
 			//	Build BSP subtrees from left and right edges
@@ -428,7 +440,6 @@ namespace Poc0.LevelEditor.Core
 			{
 				splitNode.Behind = Build( splitNode, leftEdges );
 			}
-
 			if ( rightEdges.Count > 0 )
 			{
 				splitNode.InFront = Build( splitNode, rightEdges );
@@ -466,15 +477,18 @@ namespace Poc0.LevelEditor.Core
 		/// infront of the plane, it's added to rightEdges. Otherwise, the edge is split on the edge/plane intersection, and the
 		/// 2 resulting lines are added to leftEdges and rightEdges
 		/// </summary>
-		private static void ClassifyEdge( Plane2 splitter, Edge edge, ICollection< Edge > leftEdges, ICollection< Edge > rightEdges )
+		private static void ClassifyEdge( Edge splitterEdge, Edge edge, ICollection< Edge > leftEdges, ICollection< Edge > rightEdges )
 		{
+			Plane2 splitter = splitterEdge.Plane;
+
 			PlaneClassification p0Class = splitter.ClassifyPoint( edge.P0, OnPlaneTolerance );
 			PlaneClassification p1Class = splitter.ClassifyPoint( edge.P1, OnPlaneTolerance );
+
 			PlaneClassification edgeClass;
 
 			if ( GetEdgeClassification( p0Class, p1Class, out edgeClass ) )
 			{
-				if ( edgeClass == PlaneClassification.Behind )
+				if ( edgeClass != PlaneClassification.InFront )
 				{
 					if ( leftEdges != null )
 					{

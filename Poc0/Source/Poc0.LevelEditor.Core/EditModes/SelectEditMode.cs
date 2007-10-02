@@ -125,18 +125,29 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 		private void OnMouseMove( object sender, MouseEventArgs args )
 		{
-			if ( ( ( args.Button & m_ActionButton ) == 0 ) || ( !IsMoving ) )
-			{
-				return;
-			}
-
 			ITilePicker picker = ( ITilePicker )sender;
 			Point2 pos = picker.CursorToWorld( args.X, args.Y );
-			Vector2 vec = pos - m_LastCursorPos;
-			m_MoveAction.ApplyDelta( new Vector3( vec.X, vec.Y, 0 ) );
-
 			m_LastCursorPos = pos;
+
+			if ( ( ( args.Button & m_ActionButton ) == 0 ) || ( !IsMoving ) )
+			{
+				if ( m_LastHighlit != null )
+				{
+					m_LastHighlit.Highlight = false;
+				}
+				m_LastHighlit = FirstObjectUnderCursor( pos ) as ObjectEditState;
+				if ( m_LastHighlit != null )
+				{
+					m_LastHighlit.Highlight = true;
+				}
+			}
+			else
+			{
+				Vector2 vec = pos - m_LastCursorPos;
+				m_MoveAction.ApplyDelta( new Vector3( vec.X, vec.Y, 0 ) );
+			}
 		}
+
 		
 		private void OnMouseUp( object sender, MouseEventArgs args )
 		{
@@ -149,7 +160,10 @@ namespace Poc0.LevelEditor.Core.EditModes
 				if ( ( m_MoveAction.MovementDistance == 0 ) && ( m_DeselectOnNoMove ) )
 				{
 					object obj = FirstObjectUnderCursor( m_LastCursorPos );
-					EditModeContext.Instance.Selection.ApplySelect( obj, m_AddToSelection );
+					if ( obj != null )
+					{
+						EditModeContext.Instance.Selection.ApplySelect( obj, m_AddToSelection );
+					}
 				}
 				else
 				{
@@ -192,6 +206,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		private Point2					m_LastCursorPos;
 		private MoveObjectsAction		m_MoveAction;
 		private bool					m_DeselectOnNoMove;
+		private ISelectable				m_LastHighlit;
 
 		/// <summary>
 		/// Gets the shape of a given object
