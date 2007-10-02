@@ -81,7 +81,7 @@ namespace Poc0.LevelEditor.Core
 			TileTypeSet set = new TileTypeSet( );
 
 			set.AddTileType( "tile0", Properties.Resources.tile0, 4, 4 );
-			set.AddTileType( "tile1", Properties.Resources.tile1, 8, 6 );
+			//set.AddTileType( "tile1", Properties.Resources.tile1, 8, 6 );
 			//set.AddTileType( "tile2", Properties.Resources.tile2, 3, 0 );
 
 			return set;

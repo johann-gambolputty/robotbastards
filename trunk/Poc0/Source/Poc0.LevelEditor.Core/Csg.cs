@@ -64,7 +64,10 @@ namespace Poc0.LevelEditor.Core
 			{
 				m_Root = Combine( op, m_Root, brushBsp );
 			}
-			BuildConvexRegions( m_Root );
+			if ( m_Root != null )
+			{
+				BuildConvexRegions( m_Root );
+			}
 			if ( GeometryChanged != null )
 			{
 				GeometryChanged( this, null );
@@ -165,8 +168,19 @@ namespace Poc0.LevelEditor.Core
 		public class Edge
 		{
 			// Helper stuff for debugging
-			//private readonly int m_Index = EdgeCounter++;
-			//private static int EdgeCounter = 0;
+			private readonly int m_Index = EdgeCounter++;
+			private static int EdgeCounter = 0;
+
+			public int EdgeIndex
+			{
+				get { return m_Index; }
+			}
+
+			public Edge MakeFlippedEdge( )
+			{
+				Edge edge = new Edge( new Point2( P1 ), new Point2( P0 ) );
+				return edge;
+			}
 
 			/// <summary>
 			/// Setup constructor
@@ -178,6 +192,15 @@ namespace Poc0.LevelEditor.Core
 				m_P0 = p0;
 				m_P1 = p1;
 				m_Plane = new Plane2( p0, p1 );
+			}
+
+			/// <summary>
+			/// Gets/sets the double sided flag
+			/// </summary>
+			public bool DoubleSided
+			{
+				get { return m_DoubleSided; }
+				set { m_DoubleSided = value; }
 			}
 
 			/// <summary>
@@ -206,6 +229,7 @@ namespace Poc0.LevelEditor.Core
 				get { return m_Plane; }
 			}
 
+			private bool m_DoubleSided;
 			private Point2 m_P0;
 			private Point2 m_P1;
 			private readonly Plane2 m_Plane;
@@ -234,22 +258,27 @@ namespace Poc0.LevelEditor.Core
 			switch ( op )
 			{
 				case Operation.Union :
-					Clip( false, true, set0, set1Edges, allEdges );
-					Clip( false, true, set1, set0Edges, allEdges );
-					break;
-
-				case Operation.EdgeUnion :
-					Clip( false, true, set0, set1Edges, allEdges );
-					allEdges.AddRange( set0Edges );
-					break;
-
-				case Operation.Intersection :
 					Clip( true, false, set0, set1Edges, allEdges );
 					Clip( true, false, set1, set0Edges, allEdges );
 					break;
 
+				case Operation.EdgeUnion :
+					Clip( false, true, set0, set1Edges, allEdges );
+
+					foreach ( Edge edge in allEdges )
+					{
+						edge.DoubleSided = true;
+					}
+					allEdges.AddRange( set0Edges );
+					break;
+
+				case Operation.Intersection :
+					Clip( false, true, set0, set1Edges, allEdges );
+					Clip( false, true, set1, set0Edges, allEdges );
+					break;
+
 				case Operation.Complement :
-					Clip( true, false, set0, set1Edges, allEdges );
+					Clip( false, true, set0, set1Edges, allEdges );
 					foreach ( Edge edge in allEdges )
 					{
 						Point2 oldP0 = new Point2( edge.P0 );
@@ -257,7 +286,7 @@ namespace Poc0.LevelEditor.Core
 						edge.P1 = oldP0;
 						edge.Plane.Invert( );
 					}
-					Clip( false, true, set1, set0Edges, allEdges );
+					Clip( true, false, set1, set0Edges, allEdges );
 					break;
 			}
 
@@ -363,7 +392,13 @@ namespace Poc0.LevelEditor.Core
 			}
 			else
 			{
-				node.ConvexRegion = BuildConvexRegion( planes );
+				try
+				{
+					node.ConvexRegion = BuildConvexRegion( planes );
+				}
+				catch
+				{
+				}
 			}
 		}
 
@@ -435,6 +470,11 @@ namespace Poc0.LevelEditor.Core
 				ClassifyEdge( splitter, edges[ edgeIndex ], leftEdges, rightEdges );
 			}
 
+			if ( splitter.DoubleSided )
+			{
+				leftEdges.Add( splitter.MakeFlippedEdge( ) );
+			}
+
 			//	Build BSP subtrees from left and right edges
 			if ( leftEdges.Count > 0 )
 			{
@@ -488,7 +528,7 @@ namespace Poc0.LevelEditor.Core
 
 			if ( GetEdgeClassification( p0Class, p1Class, out edgeClass ) )
 			{
-				if ( edgeClass != PlaneClassification.InFront )
+				if ( edgeClass == PlaneClassification.Behind )
 				{
 					if ( leftEdges != null )
 					{
@@ -519,11 +559,13 @@ namespace Poc0.LevelEditor.Core
 				if ( leftEdges != null )
 				{
 					leftEdges.Add( startToMidEdge );
+					startToMidEdge.DoubleSided = edge.DoubleSided;
 				}
 
 				if ( rightEdges != null )
 				{
 					rightEdges.Add( midToEndEdge );
+					midToEndEdge.DoubleSided = edge.DoubleSided;
 				}
 			}
 		}
