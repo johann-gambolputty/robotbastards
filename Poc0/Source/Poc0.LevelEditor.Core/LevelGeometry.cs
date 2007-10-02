@@ -113,10 +113,7 @@ namespace Poc0.LevelEditor.Core
 
 			Graphics.Draw.StartCache( );
 
-			if ( m_Csg.Root != null )
-			{
-				Render( m_Csg.Root );
-			}
+			Render( m_Csg.Root );
 
 			m_Renderable = Graphics.Draw.StopCache( );
 		}
@@ -127,10 +124,13 @@ namespace Poc0.LevelEditor.Core
 		private void DrawEdge( Csg.Edge edge )
 		{
 			Graphics.Draw.Line( m_DrawEdge, edge.P0, edge.P1 );
-			
-			Vector2 vec = ( edge.P1 - edge.P0 );
-			Point2 mid = edge.P0 + vec / 2;
-			Graphics.Draw.Line( m_DrawEdge, mid, mid + vec.MakePerpNormal( ) * 4.0f );
+
+			if ( !edge.DoubleSided )
+			{
+				Vector2 vec = ( edge.P1 - edge.P0 );
+				Point2 mid = edge.P0 + vec / 2;
+				Graphics.Draw.Line( m_DrawEdge, mid, mid + vec.MakePerpNormal( ) * 4.0f );
+			}
 			
 			Graphics.Draw.Circle( m_FillVertex, edge.P0.X, edge.P0.Y, 2.0f );
 			Graphics.Draw.Circle( m_FillVertex, edge.P1.X, edge.P1.Y, 2.0f );
@@ -141,26 +141,26 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		private void Render( Csg.BspNode node )
 		{
-			DrawEdge( node.Edge );
+			if ( node == null )
+			{
+				return;
+			}
 
 			if ( node.ConvexRegion != null )
 			{
 				Graphics.Draw.Polygon( m_FillPolygon, node.ConvexRegion );
 			}
 
-			if ( node.Behind != null )
-			{
-				Render( node.Behind );
-			}
-			if ( node.InFront != null )
-			{
-				Render( node.InFront );
-			}
+			Render( node.Behind );
+			Render( node.InFront );
 
 			if ( node.ConvexRegion != null )
 			{
 				Graphics.Draw.Polygon( m_DrawPolygon, node.ConvexRegion );
 			}
+
+			DrawEdge( node.Edge );
+
 		}
 
 		/// <summary>
@@ -182,6 +182,11 @@ namespace Poc0.LevelEditor.Core
 		/// <returns>Returns a game wall node built from the CSG source node</returns>
 		private WallNode BuildWalls( Csg.BspNode srcNode )
 		{
+			if ( srcNode == null )
+			{
+				return null;
+			}
+
 			Floor floor = null;
 			if ( srcNode.ConvexRegion != null )
 			{

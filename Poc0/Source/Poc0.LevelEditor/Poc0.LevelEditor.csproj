@@ -55,6 +55,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CsgExplorer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CsgExplorer.Designer.cs">
+      <DependentUpon>CsgExplorer.cs</DependentUpon>
+    </Compile>
     <Compile Include="EditorControls.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -100,6 +106,10 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="CsgExplorer.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>CsgExplorer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EditorControls.resx">
       <SubType>Designer</SubType>
       <DependentUpon>EditorControls.cs</DependentUpon>
