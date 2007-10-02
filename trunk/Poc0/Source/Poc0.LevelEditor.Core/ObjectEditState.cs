@@ -34,7 +34,16 @@ namespace Poc0.LevelEditor.Core
 		/// <param name="context">Rendering context</param>
 		public void Render( IRenderContext context )
 		{
-			Draw.IPen draw = m_Parent.Selected ? ms_DrawSelected : ms_DrawUnselected;
+			Draw.IPen draw = ms_DrawUnselected;
+			if ( m_Parent.Selected )
+			{
+				draw = ms_DrawSelected;
+			}
+			else if ( m_Parent.Highlight )
+			{
+				draw = ms_DrawHighlighted;
+			}
+
 			Point pos = new Point( ( int )m_HasPosition.Position.X, ( int )m_HasPosition.Position.Z );
 
 			Graphics.Draw.Circle( draw, pos, 10 );
@@ -46,6 +55,7 @@ namespace Poc0.LevelEditor.Core
 		private readonly IHasPosition m_HasPosition;
 		private static readonly Draw.IPen ms_DrawSelected = Graphics.Draw.NewPen( Color.Red );
 		private static readonly Draw.IPen ms_DrawUnselected = Graphics.Draw.NewPen( Color.WhiteSmoke );
+		private static readonly Draw.IPen ms_DrawHighlighted = Graphics.Draw.NewPen( Color.DarkSalmon );
 
 		#region IHasWorldFrame Members
 		
@@ -150,6 +160,9 @@ namespace Poc0.LevelEditor.Core
 		private bool m_Selected;
 
 		[NonSerialized]
+		private bool m_Highlight;
+
+		[NonSerialized]
 		private ObjectChangedDelegate m_ObjectChanged;
 
 		private readonly object m_Object;
@@ -163,6 +176,15 @@ namespace Poc0.LevelEditor.Core
 		{
 			get { return m_Selected; }
 			set { m_Selected = value; }
+		}
+
+		/// <summary>
+		/// Highlight flag
+		/// </summary>
+		public bool Highlight
+		{
+			get { return m_Highlight; }
+			set { m_Highlight = value; }
 		}
 
 		#endregion
