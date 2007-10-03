@@ -1,20 +1,18 @@
 using System;
-using Poc0.LevelEditor.Core.EditModes;
 using Rb.Core.Components;
-using Rb.World;
+using Rb.Tools.LevelEditor.Core.Selection;
 
-namespace Poc0.LevelEditor.Core.Actions
+namespace Rb.Tools.LevelEditor.Core.Actions
 {
 	class AddObjectAction : IAction
 	{
 		/// <summary>
 		/// Action setup constructor
 		/// </summary>
-		public AddObjectAction( EditorScene scene, object template, float x, float z, Guid id )
+		public AddObjectAction( object template, PickInfoCursor pick, Guid id )
 		{
 			m_Id = id;
-			m_Scene = scene;
-			m_Instance = new ObjectEditState( scene, x, z, CreateInstance( template ) );
+			m_Instance = EditorState.Instance.ObjectEditorBuilder.Create( pick, CreateInstance( template ) );
 
 			Redo( );
 		}
@@ -27,8 +25,8 @@ namespace Poc0.LevelEditor.Core.Actions
 		/// </summary>
 		public void Undo( )
 		{
-			m_Scene.Objects.Remove( m_Id );
-			m_Scene.RuntimeScene.Objects.Remove( m_Id );
+			EditorState.Instance.CurrentScene.Objects.Remove( m_Id );
+			EditorState.Instance.CurrentRuntimeScene.Objects.Remove( m_Id );
 		}
 
 		/// <summary>
@@ -37,23 +35,22 @@ namespace Poc0.LevelEditor.Core.Actions
 		/// </summary>
 		public void Redo( )
 		{
-			m_Scene.Objects.Add( m_Id, m_Instance );
-			m_Scene.RuntimeScene.Objects.Add( m_Id, m_Instance.Instance );
+			EditorState.Instance.CurrentScene.Objects.Add( m_Id, m_Instance );
+			EditorState.Instance.CurrentRuntimeScene.Objects.Add( m_Id, m_Instance.Instance );
 		}
 
 		#endregion
 
 		#region Private members
 
-		private readonly EditorScene m_Scene;
 		private readonly Guid m_Id;
-		private readonly ObjectEditState m_Instance;
+		private readonly IObjectEditor m_Instance;
 		
 		private static object CreateInstance( object template )
 		{
 			if ( template is IInstanceBuilder )
 			{
-				return ( ( IInstanceBuilder )template ).CreateInstance( EditModeContext.Instance.RuntimeScene.Builder );
+				return ( ( IInstanceBuilder )template ).CreateInstance( EditorState.Instance.CurrentRuntimeScene.Builder );
 			}
 
 			if ( template is ICloneable )

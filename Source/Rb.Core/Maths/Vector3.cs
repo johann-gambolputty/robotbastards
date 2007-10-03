@@ -259,6 +259,16 @@ namespace Rb.Core.Maths
 		#region	Overloaded arithmetic operators
 
 		/// <summary>
+		/// Unary minus operator
+		/// </summary>
+		/// <param name="src">Source vector</param>
+		/// <returns>Reversed vector</returns>
+		public static Vector3 operator - ( Vector3 src )
+		{
+			return new Vector3( -src.X, -src.Y, -src.Z );
+		}
+
+		/// <summary>
 		/// Adds lhs to rhs and returns the result
 		/// </summary>
 		public static Vector3 operator + ( Vector3 lhs, Vector3 rhs )

@@ -122,20 +122,20 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Sets the tile object to get renderer
 		/// </summary>
-		public ObjectEditState( Scene scene, float x, float y, object obj )
+		public ObjectEditState( Scene scene, float x, float z, object obj )
 		{
 			m_Object = obj;
 			scene.Renderables.Add( this );
 
-			BuildObjectEditors( obj, x, y );
+			BuildObjectEditors( obj, x, z );
 		}
 
-		private void BuildObjectEditors( object obj, float x, float y )
+		private void BuildObjectEditors( object obj, float x, float z )
 		{
 			IHasPosition hasPosition = Rb.Core.Components.Parent.GetType< IHasPosition >( obj );
 			if ( hasPosition != null )
 			{
-				hasPosition.Position = new Point3( x, y, 0 );
+				hasPosition.Position = new Point3( x, 0, z );
 				AddChild( new PositionEditor( this, hasPosition ) );
 			}
 		}

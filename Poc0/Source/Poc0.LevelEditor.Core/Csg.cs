@@ -32,7 +32,6 @@ namespace Poc0.LevelEditor.Core
 			/// </summary>
 			EdgeUnion,
 
-
 			/// <summary>
 			/// The set of set A edges inside set B, and set B edges inside set A
 			/// </summary>
@@ -50,23 +49,27 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		/// <param name="op">CSG operation</param>
 		/// <param name="brush">Brush to add to the level geometry</param>
+		/// <exception cref="InvalidOperationException">Thrown by convex region builder if BSP tree is internally invalid</exception>
 		public void Combine( Operation op, CsgBrush brush )
 		{
 			BspNode brushBsp = Build( brush );
+			BspNode newRoot = null;
 			if ( m_Root == null )
 			{
 				if ( op == Operation.Union || op == Operation.EdgeUnion )
 				{
-					m_Root = brushBsp;
+					newRoot = brushBsp;
 				}
 			}
 			else
 			{
-				m_Root = Combine( op, m_Root, brushBsp );
+				newRoot = Combine( op, m_Root, brushBsp );
 			}
-			if ( m_Root != null )
+			if ( newRoot != null )
 			{
-				BuildConvexRegions( m_Root );
+				FixUpDoubleSidedNodes( newRoot );
+				BuildConvexRegions( newRoot );
+				m_Root = newRoot;
 			}
 			if ( GeometryChanged != null )
 			{
@@ -176,9 +179,21 @@ namespace Poc0.LevelEditor.Core
 				get { return m_Index; }
 			}
 
-			public Edge MakeFlippedEdge( )
+			private bool m_Temporary;
+
+			public bool Temporary
+			{
+				get { return m_Temporary; }
+			}
+
+			/// <summary>
+			/// Creates a flipped version of this edge, with its temporary flag set to true
+			/// </summary>
+			/// <returns></returns>
+			public Edge MakeTemporaryFlippedEdge( )
 			{
 				Edge edge = new Edge( new Point2( P1 ), new Point2( P0 ) );
+				edge.m_Temporary = true;
 				return edge;
 			}
 
@@ -193,6 +208,7 @@ namespace Poc0.LevelEditor.Core
 				m_P1 = p1;
 				m_Plane = new Plane2( p0, p1 );
 			}
+
 
 			/// <summary>
 			/// Gets/sets the double sided flag
@@ -244,7 +260,7 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// A point is considered to be on the plane (PlaneClassification.On) if it's within this distance of the plane
 		/// </summary>
-		private const float OnPlaneTolerance = 0.001f;
+		private const float OnPlaneTolerance = 0.01f;
 
 		/// <summary>
 		/// Combines two BSP trees using a specified CSG operation
@@ -308,7 +324,10 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		private static void Flatten( BspNode root, IList< Edge > edges )
 		{
-			edges.Add( root.Edge );
+			if (!root.Edge.Temporary)
+			{
+				edges.Add( root.Edge );
+			}
 			if ( root.Behind != null )
 			{
 				Flatten( root.Behind, edges );
@@ -361,6 +380,21 @@ namespace Poc0.LevelEditor.Core
 			return Build( null, edges );
 		}
 
+		private void FixUpDoubleSidedNodes( BspNode node )
+		{
+			if ( node == null )
+			{
+				return;
+			}
+			FixUpDoubleSidedNodes( node.Behind );
+			FixUpDoubleSidedNodes( node.InFront );
+
+			if ( ( node.Edge.DoubleSided ) && ( node.Behind == null ) )
+			{
+				node.Behind = new BspNode( node, node.Edge.MakeTemporaryFlippedEdge( ) );
+			}
+		}
+
 		/// <summary>
 		/// Builds convex regions from a given root node
 		/// </summary>
@@ -392,13 +426,7 @@ namespace Poc0.LevelEditor.Core
 			}
 			else
 			{
-				try
-				{
-					node.ConvexRegion = BuildConvexRegion( planes );
-				}
-				catch
-				{
-				}
+				node.ConvexRegion = BuildConvexRegion( planes );
 			}
 		}
 
@@ -468,11 +496,6 @@ namespace Poc0.LevelEditor.Core
 			for ( int edgeIndex = 1; edgeIndex < edges.Count; ++edgeIndex )
 			{
 				ClassifyEdge( splitter, edges[ edgeIndex ], leftEdges, rightEdges );
-			}
-
-			if ( splitter.DoubleSided )
-			{
-				leftEdges.Add( splitter.MakeFlippedEdge( ) );
 			}
 
 			//	Build BSP subtrees from left and right edges

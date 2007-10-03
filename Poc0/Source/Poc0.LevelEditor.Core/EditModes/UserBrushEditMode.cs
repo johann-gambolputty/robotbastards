@@ -1,6 +1,8 @@
-
-
+using System;
+using System.Windows.Forms;
 using Rb.Core.Maths;
+using Rb.Core.Utils;
+using Rb.Log;
 
 namespace Poc0.LevelEditor.Core.EditModes
 {
@@ -33,8 +35,18 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// <param name="points">Polygon points</param>
 		protected override void OnPolygonClosed( Point2[] points )
 		{
-			CsgBrush brush = new CsgBrush( "", points );
-			EditModeContext.Instance.Scene.LevelGeometry.Csg.Combine( m_Operation, brush );
+			try
+			{
+				CsgBrush brush = new CsgBrush( "", points );
+				EditModeContext.Instance.Scene.LevelGeometry.Csg.Combine( m_Operation, brush );
+			}
+			catch ( Exception ex )
+			{
+				AppLog.Error( "Failed to combine brush with current level geometry" );
+				ExceptionUtils.ToLog( AppLog.GetSource( Severity.Error ), ex );
+
+				MessageBox.Show( Properties.Resources.FailedToCombineCsgBrush, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
 		}
 
 		private Csg.Operation m_Operation;

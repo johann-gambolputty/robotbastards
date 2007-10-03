@@ -4,7 +4,6 @@ using Poc0.Core;
 using Poc0.LevelEditor.Core.Actions;
 using Rb.Core.Components;
 using Rb.Core.Maths;
-using Rb.Rendering;
 using Rb.World;
 using Rectangle=Rb.Core.Maths.Rectangle;
 
@@ -13,7 +12,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 	/// <summary>
 	/// Edit mode that adds and removes objects from a selection
 	/// </summary>
-	public class SelectEditMode : EditMode, IRenderable
+	public class SelectEditMode : EditMode
 	{
 		/// <summary>
 		/// Binds the edit mode to a control and viewer
@@ -39,8 +38,6 @@ namespace Poc0.LevelEditor.Core.EditModes
 				control.KeyDown += OnKeyDown;
 				control.KeyUp += OnKeyUp;
 			}
-
-			//EditModeContext.Instance.Scene.Renderables.Add( this );
 		}
 
 		/// <summary>
@@ -56,8 +53,6 @@ namespace Poc0.LevelEditor.Core.EditModes
 				control.KeyDown -= OnKeyDown;
 				control.KeyUp -= OnKeyUp;
 			}
-
-			//EditModeContext.Instance.Scene.Renderables.Remove( this );
 		}
 
 		/// <summary>
@@ -127,7 +122,6 @@ namespace Poc0.LevelEditor.Core.EditModes
 		{
 			ITilePicker picker = ( ITilePicker )sender;
 			Point2 pos = picker.CursorToWorld( args.X, args.Y );
-			m_LastCursorPos = pos;
 
 			if ( ( ( args.Button & m_ActionButton ) == 0 ) || ( !IsMoving ) )
 			{
@@ -135,7 +129,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 				{
 					m_LastHighlit.Highlight = false;
 				}
-				m_LastHighlit = FirstObjectUnderCursor( pos ) as ObjectEditState;
+				m_LastHighlit = FirstObjectUnderCursor( pos ) as ISelectable;
 				if ( m_LastHighlit != null )
 				{
 					m_LastHighlit.Highlight = true;
@@ -144,8 +138,13 @@ namespace Poc0.LevelEditor.Core.EditModes
 			else
 			{
 				Vector2 vec = pos - m_LastCursorPos;
-				m_MoveAction.ApplyDelta( new Vector3( vec.X, vec.Y, 0 ) );
+				if ( vec.Length > 0 )
+				{
+					m_MoveAction.ApplyDelta( new Vector3( vec.X, 0, vec.Y ) );
+				}
 			}
+
+			m_LastCursorPos = pos;
 		}
 
 		
@@ -216,7 +215,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		private static IShape2 GetObjectShape( IHasPosition obj )
 		{
 			float minX = obj.Position.X - 5;
-			float minY = obj.Position.Y - 5;
+			float minY = obj.Position.Z - 5;
 
 			return new Rectangle( minX, minY, 10.0f, 10.0f );
 		}
@@ -275,13 +274,5 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 		#endregion
 
-		#region IRenderable Members
-
-		public void Render( IRenderContext context )
-		{
-			//	TODO: AP: ...
-		}
-
-		#endregion
 	}
 }
