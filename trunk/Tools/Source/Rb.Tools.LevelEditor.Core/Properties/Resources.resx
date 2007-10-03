@@ -117,23 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CantLoadAssetIntoType" xml:space="preserve">
+    <value>Can't load asset into type "{0}"</value>
+  </data>
   <data name="ErrorCaption" xml:space="preserve">
-    <value>bad thing</value>
+    <value>Error</value>
   </data>
-  <data name="FailedToAddObject" xml:space="preserve">
-    <value>Error occurred while adding object</value>
+  <data name="FailedToExportScene" xml:space="preserve">
+    <value>Failed to export scene to file "{0}"</value>
   </data>
-  <data name="FailedToCombineCsgBrush" xml:space="preserve">
-    <value>Error occurred while combining brush and level geometry</value>
+  <data name="FailedToOpenScene" xml:space="preserve">
+    <value>Failed to open scene file "{0}"</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="tile0" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\tile0.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="FailedToSaveScene" xml:space="preserve">
+    <value>Failed to save scene to file "{0}"</value>
   </data>
-  <data name="tile1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\tile1.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="tile2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\tile2.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="NoLocationManagersWithUI" xml:space="preserve">
+    <value>No asset location managers with UI were available</value>
   </data>
 </root>

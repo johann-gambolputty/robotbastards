@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Poc0.LevelEditor.Core.Properties {
+namespace Rb.Tools.LevelEditor.Core.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Poc0.LevelEditor.Core.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Poc0.LevelEditor.Core.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rb.Tools.LevelEditor.Core.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,16 @@ namespace Poc0.LevelEditor.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to bad thing.
+        ///   Looks up a localized string similar to Can&apos;t load asset into type &quot;{0}&quot;.
+        /// </summary>
+        internal static string CantLoadAssetIntoType {
+            get {
+                return ResourceManager.GetString("CantLoadAssetIntoType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
         /// </summary>
         internal static string ErrorCaption {
             get {
@@ -70,41 +79,38 @@ namespace Poc0.LevelEditor.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error occurred while adding object.
+        ///   Looks up a localized string similar to Failed to export scene to file &quot;{0}&quot;.
         /// </summary>
-        internal static string FailedToAddObject {
+        internal static string FailedToExportScene {
             get {
-                return ResourceManager.GetString("FailedToAddObject", resourceCulture);
+                return ResourceManager.GetString("FailedToExportScene", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error occurred while combining brush and level geometry.
+        ///   Looks up a localized string similar to Failed to open scene file &quot;{0}&quot;.
         /// </summary>
-        internal static string FailedToCombineCsgBrush {
+        internal static string FailedToOpenScene {
             get {
-                return ResourceManager.GetString("FailedToCombineCsgBrush", resourceCulture);
+                return ResourceManager.GetString("FailedToOpenScene", resourceCulture);
             }
         }
         
-        internal static System.Drawing.Bitmap tile0 {
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to save scene to file &quot;{0}&quot;.
+        /// </summary>
+        internal static string FailedToSaveScene {
             get {
-                object obj = ResourceManager.GetObject("tile0", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ResourceManager.GetString("FailedToSaveScene", resourceCulture);
             }
         }
         
-        internal static System.Drawing.Bitmap tile1 {
+        /// <summary>
+        ///   Looks up a localized string similar to No asset location managers with UI were available.
+        /// </summary>
+        internal static string NoLocationManagersWithUI {
             get {
-                object obj = ResourceManager.GetObject("tile1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap tile2 {
-            get {
-                object obj = ResourceManager.GetObject("tile2", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ResourceManager.GetString("NoLocationManagersWithUI", resourceCulture);
             }
         }
     }
