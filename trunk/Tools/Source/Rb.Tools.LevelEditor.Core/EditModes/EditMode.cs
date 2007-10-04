@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace Rb.Tools.LevelEditor.Core.EditModes
@@ -7,27 +9,20 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 	/// </summary>
 	public class EditMode : IEditMode
 	{
-		/// <summary>
-		/// Setup constructor
-		/// </summary>
-		public EditMode( )
-		{
-			m_Controls = EditorState.Instance.CurrentSceneEditState.EditModeControls.ToArray( );
-		}
-
-		#region Public properties
-
-		/// <summary>
-		/// Gets the associated controls
-		/// </summary>
-		public Control[] Controls
-		{
-			get { return m_Controls; }
-		}
-
-		#endregion
-
 		#region IEditMode Members
+
+		/// <summary>
+		/// Raised by Stop()
+		/// </summary>
+		public event EventHandler Stopped;
+
+		/// <summary>
+		/// Returns true if the mode has started
+		/// </summary>
+		public bool IsRunning
+		{
+			get { return m_Started; }
+		}
 
 		/// <summary>
 		/// Returns <see cref="Keys.None"/> (no hotkey activates this edit mode)
@@ -35,6 +30,14 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 		public virtual Keys HotKey
 		{
 			get { return Keys.None; }
+		}
+
+		/// <summary>
+		/// Gets the mouse buttons used by this edit mode
+		/// </summary>
+		public virtual MouseButtons Buttons
+		{
+			get { return MouseButtons.None; }
 		}
 
 		/// <summary>
@@ -50,10 +53,12 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 		/// </summary>
 		public virtual void Start( )
 		{
-			foreach ( Control control in m_Controls )
+			foreach ( Control control in EditorState.Instance.EditModeControls )
 			{
-				BindToControl( control );
+				NewControl( control );
 			}
+			EditorState.Instance.ControlAdded += NewControl;
+			m_Started = true;
 		}
 
 		/// <summary>
@@ -61,9 +66,18 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 		/// </summary>
 		public virtual void Stop( )
 		{
+			m_Started = false;
 			foreach ( Control control in m_Controls )
 			{
 				UnbindFromControl( control );
+			}
+			m_Controls.Clear( );
+
+			EditorState.Instance.ControlAdded -= NewControl;
+
+			if ( Stopped != null )
+			{
+				Stopped( this, null );
 			}
 		}
 
@@ -91,7 +105,18 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 
 		#region Private members
 
-		private readonly Control[] m_Controls;
+		private readonly List< Control > m_Controls = new List< Control >( );
+		private bool m_Started;
+		
+		/// <summary>
+		/// Called to bind to a new control 
+		/// </summary>
+		/// <param name="control">New control</param>
+		private void NewControl( Control control )
+		{
+			m_Controls.Add( control );
+			BindToControl( control );
+		}
 
 		#endregion
 

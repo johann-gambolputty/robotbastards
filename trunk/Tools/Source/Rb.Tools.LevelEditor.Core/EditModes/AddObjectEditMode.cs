@@ -1,11 +1,11 @@
 using System;
 using System.Windows.Forms;
-using Poc0.LevelEditor.Core.Actions;
-using Rb.Core.Maths;
 using Rb.Core.Utils;
 using Rb.Log;
+using Rb.Tools.LevelEditor.Core.Actions;
+using Rb.Tools.LevelEditor.Core.Selection;
 
-namespace Poc0.LevelEditor.Core.EditModes
+namespace Rb.Tools.LevelEditor.Core.EditModes
 {
 	/// <summary>
 	/// Edit mode for adding objects
@@ -23,6 +23,14 @@ namespace Poc0.LevelEditor.Core.EditModes
 			m_Template = template;
 		}
 
+		/// <summary>
+		/// Gets the mouse buttons used by this edit mode
+		/// </summary>
+		public override MouseButtons Buttons
+		{
+			get { return m_ActionButton; }
+		}
+
 		#region Control event handlers
 
 		/// <summary>
@@ -34,18 +42,17 @@ namespace Poc0.LevelEditor.Core.EditModes
 			{
 				return;
 			}
-			ITilePicker picker = ( ITilePicker )sender;
-			Tile tile = picker.PickTile( EditModeContext.Instance.Grid, args.X, args.Y );
-			if ( tile != null )
-			{
-				Point2 pt = picker.CursorToWorld( args.X, args.Y );
+			IPicker picker = ( IPicker )sender;
 
-				EditorScene scene = EditModeContext.Instance.Scene;
+			PickInfoCursor pick = picker.CreateCursorPickInfo( args.X, args.Y );
+			if ( pick != null )
+			{
 				Guid id = Guid.NewGuid( );
 
 				try
 				{
-					EditModeContext.Instance.UndoStack.Push( new AddObjectAction( scene, m_Template, pt.X, pt.Y, id ) );
+					IAction addAction = new AddObjectAction( m_Template, pick, id );
+					EditorState.Instance.CurrentUndoStack.Push( addAction );
 				}
 				catch ( Exception ex )
 				{
@@ -61,25 +68,21 @@ namespace Poc0.LevelEditor.Core.EditModes
 		#region Public methods
 
 		/// <summary>
-		/// Called when the edit mode is activated
+		/// Binds to the specified control
 		/// </summary>
-		public override void Start( )
+		/// <param name="control">Control to bind to</param>
+		protected override void BindToControl( Control control )
 		{
-			foreach ( Control control in Controls )
-			{
-				control.MouseClick += OnMouseClick;
-			}
+			control.MouseClick += OnMouseClick;
 		}
 
 		/// <summary>
-		/// Called when the edit mode is deactivated
+		/// Unbinds to the specified control
 		/// </summary>
-		public override void Stop( )
+		/// <param name="control">Control to unbind from</param>
+		protected override void UnbindFromControl( Control control )
 		{
-			foreach ( Control control in Controls )
-			{
-				control.MouseClick -= OnMouseClick;
-			}
+			control.MouseClick -= OnMouseClick;
 		}
 
 		#endregion

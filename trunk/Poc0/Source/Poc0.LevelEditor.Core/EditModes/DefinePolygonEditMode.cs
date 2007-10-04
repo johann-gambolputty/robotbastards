@@ -4,6 +4,9 @@ using System.Drawing;
 using System.Windows.Forms;
 using Rb.Core.Maths;
 using Rb.Rendering;
+using Rb.Tools.LevelEditor.Core;
+using Rb.Tools.LevelEditor.Core.EditModes;
+using Rb.Tools.LevelEditor.Core.Selection;
 using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc0.LevelEditor.Core.EditModes
@@ -16,12 +19,12 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// <summary>
 		/// Raised when a polygon is closed
 		/// </summary>
-		public event Action< Point2[] > PolygonClosed;
+		public event Action< Point3[] > PolygonClosed;
 
 		/// <summary>
-		/// Starts the edit mode
+		/// Initialises this object
 		/// </summary>
-		public override void Start( )
+		public DefinePolygonEditMode( )
 		{
 			if ( m_EdgePen == null )
 			{
@@ -31,14 +34,45 @@ namespace Poc0.LevelEditor.Core.EditModes
 			{
 				m_VertexMould = Graphics.Draw.NewMould( Color.Red );
 			}
+		}
 
-			foreach ( Control control in Controls )
-			{
-				control.MouseMove += OnMouseMove;
-				control.MouseClick += OnMouseClick;
-				control.KeyDown += OnKeyDown;
-			}
-			EditModeContext.Instance.Scene.Renderables.Add( this );
+		/// <summary>
+		/// Gets the mouse buttons used by this edit mode
+		/// </summary>
+		public override MouseButtons Buttons
+		{
+			get { return MouseButtons.Left | MouseButtons.Right; }
+		}
+
+		/// <summary>
+		/// Binds to the specified control
+		/// </summary>
+		/// <param name="control">Control to bind to</param>
+		protected override void BindToControl( Control control )
+		{
+			control.MouseMove += OnMouseMove;
+			control.MouseClick += OnMouseClick;
+			control.KeyDown += OnKeyDown;
+		}
+
+		/// <summary>
+		/// Unbinds to the specified control
+		/// </summary>
+		/// <param name="control">Control to unbind from</param>
+		protected override void UnbindFromControl( Control control )
+		{
+			control.MouseMove -= OnMouseMove;
+			control.MouseClick -= OnMouseClick;
+			control.KeyDown -= OnKeyDown;
+		}
+
+		/// <summary>
+		/// Starts the edit mode
+		/// </summary>
+		public override void Start( )
+		{
+			EditorState.Instance.CurrentScene.Renderables.Add( this );
+			base.Start( );
 		}
 
 		/// <summary>
@@ -46,13 +80,8 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// </summary>
 		public override void Stop( )
 		{
-			foreach ( Control control in Controls )
-			{
-				control.MouseMove -= OnMouseMove;
-				control.MouseClick -= OnMouseClick;
-				control.KeyDown -= OnKeyDown;
-			}
-			EditModeContext.Instance.Scene.Renderables.Remove( this );
+			EditorState.Instance.CurrentScene.Renderables.Remove( this );
+			base.Stop( );
 		}
 
 		#region IRenderable Implementation
@@ -105,7 +134,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// Called when a polygon is closed
 		/// </summary>
 		/// <param name="polygon">Polygon points</param>
-		protected virtual void OnPolygonClosed( Point2[] polygon )
+		protected virtual void OnPolygonClosed( Point3[] polygon )
 		{
 		}
 
@@ -113,19 +142,27 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 		#region Private members
 
-		private Draw.IPen m_EdgePen;
-		private Draw.IMould m_VertexMould;
-		private const float CloseTolerance = 0.2f;	
-		private readonly List< Point2 > m_Points = new List< Point2 >( );
-		private Point2 m_CursorPoint = new Point2( );
+		private readonly Draw.IPen		m_EdgePen;
+		private readonly Draw.IMould	m_VertexMould;
+		private readonly List< Point3 >	m_Points = new List< Point3 >( );
+		private Point3					m_CursorPoint;
+
+		/// <summary>
+		/// Point distance tolerance - the polygon is closed when the user adds a vertex this close to the first vertex
+		/// </summary>
+		private const float				CloseTolerance = 0.2f;
 
 		/// <summary>
 		/// Returns true if a point is close to the first point in the polygon
 		/// </summary>
 		/// <param name="pt">Point to test</param>
 		/// <returns>Returns true if pt is over the first point in the defined polygon</returns>
-		private bool IsOverFirstPoint( Point2 pt )
+		private bool IsOverFirstPoint( Point3 pt )
 		{
+			if ( m_Points.Count == 0 )
+			{
+				return false;
+			}
 			return ( m_Points.Count > 0 ) && ( m_Points[ 0 ].DistanceTo( pt ) < CloseTolerance );
 		}
 		
@@ -134,7 +171,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// </summary>
 		private void ClosePolygon( )
 		{
-			Point2[] points = m_Points.ToArray( );
+			Point3[] points = m_Points.ToArray( );
 			OnPolygonClosed( points );
 			if ( PolygonClosed != null )
 			{
@@ -159,11 +196,21 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// </summary>
 		private void OnMouseMove( object sender, MouseEventArgs args )
 		{
-			ITilePicker picker = ( ITilePicker )sender;
-			Point2 worldPt = picker.CursorToWorld( args.X, args.Y );
-
-			m_CursorPoint.X = worldPt.X;
-			m_CursorPoint.Y = worldPt.Y;
+			IPicker picker = ( IPicker )sender;
+			PickInfoCursor pick = picker.CreateCursorPickInfo( args.X, args.Y );
+			if ( pick is IPickInfo3 )
+			{
+				m_CursorPoint = ( ( IPickInfo3 )pick ).PickPoint;
+			}
+			else if ( pick is IPickInfo2 )
+			{
+				Point2 pt = ( ( IPickInfo2 )pick ).PickPoint;
+				m_CursorPoint = new Point3( pt.X, pt.Y, 0 );
+			}
+			else
+			{
+				throw new NotImplementedException( );
+			}
 		}
 
 		/// <summary>
@@ -179,7 +226,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 				}
 				else
 				{
-					m_Points.Add( new Point2( m_CursorPoint ) );
+					m_Points.Add( new Point3( m_CursorPoint ) );
 				}
 			}
 			else if ( args.Button == MouseButtons.Right )

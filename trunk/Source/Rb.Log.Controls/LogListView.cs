@@ -25,6 +25,8 @@ namespace Rb.Log.Controls
 			DrawItem += LogListView_DrawItem;
 
 			Source.OnNewLogEntry += OnNewLogEntry;
+
+        	HandleCreated += OnHandleCreated;
 		}
 
 		~LogListView( )
@@ -36,6 +38,11 @@ namespace Rb.Log.Controls
         {
             Source.OnNewLogEntry += AddEntryToCache;
         }
+
+		public void OnHandleCreated( object sender, EventArgs args )
+		{
+			RefreshView( );
+		}
 
         #endregion
 

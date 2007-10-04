@@ -1,4 +1,4 @@
-
+using System;
 using System.Windows.Forms;
 
 namespace Rb.Tools.LevelEditor.Core.EditModes
@@ -8,6 +8,11 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 	/// </summary>
 	public interface IEditMode
 	{
+		/// <summary>
+		/// Raised by Stop()
+		/// </summary>
+		event EventHandler Stopped;
+
 		/// <summary>
 		/// Called when the edit mode is activated
 		/// </summary>
@@ -19,9 +24,25 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 		void Stop( );
 
 		/// <summary>
+		/// Returns true if the mode has started
+		/// </summary>
+		bool IsRunning
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Gets the key that switches to this edit mode
 		/// </summary>
 		Keys HotKey
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Gets the mouse buttons used by this edit mode
+		/// </summary>
+		MouseButtons Buttons
 		{
 			get;
 		}

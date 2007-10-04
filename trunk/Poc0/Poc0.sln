@@ -46,8 +46,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc0.LevelEditor", "Source\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc0.LevelEditor.Core", "Source\Poc0.LevelEditor.Core\Poc0.LevelEditor.Core.csproj", "{7FD7B8DD-BBED-4AF7-9339-6F823540727E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc0.LevelEditor.Rendering.OpenGl", "Source\Poc0.LevelEditor.Rendering.OpenGl\Poc0.LevelEditor.Rendering.OpenGl.csproj", "{FD909605-387F-4AFE-871A-A499EF6748ED}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Core.Assets.Windows", "..\Source\Rb.Core.Assets.Windows\Rb.Core.Assets.Windows.csproj", "{4A4B51E0-EE5D-4627-9192-542BA6FA8A7A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.NiceControls", "..\Source\Rb.NiceControls\Rb.NiceControls.csproj", "{A4E5C0BF-B76D-425D-8439-B07EB6B29444}"
@@ -181,12 +179,6 @@ Global
 		{7FD7B8DD-BBED-4AF7-9339-6F823540727E}.NDoc|Any CPU.Build.0 = NDoc|Any CPU
 		{7FD7B8DD-BBED-4AF7-9339-6F823540727E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FD7B8DD-BBED-4AF7-9339-6F823540727E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FD909605-387F-4AFE-871A-A499EF6748ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FD909605-387F-4AFE-871A-A499EF6748ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FD909605-387F-4AFE-871A-A499EF6748ED}.NDoc|Any CPU.ActiveCfg = NDoc|Any CPU
-		{FD909605-387F-4AFE-871A-A499EF6748ED}.NDoc|Any CPU.Build.0 = NDoc|Any CPU
-		{FD909605-387F-4AFE-871A-A499EF6748ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FD909605-387F-4AFE-871A-A499EF6748ED}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4A4B51E0-EE5D-4627-9192-542BA6FA8A7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4A4B51E0-EE5D-4627-9192-542BA6FA8A7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A4B51E0-EE5D-4627-9192-542BA6FA8A7A}.NDoc|Any CPU.ActiveCfg = Release|Any CPU

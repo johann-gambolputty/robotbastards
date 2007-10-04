@@ -4,6 +4,7 @@ using Poc0.Core.Environment;
 using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Rendering;
+using Rb.Tools.LevelEditor.Core;
 using Rb.World;
 using Graphics=Rb.Rendering.Graphics;
 using Environment=Poc0.Core.Environment.Environment;
@@ -23,6 +24,8 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		public LevelGeometry( EditorScene scene )
 		{
+			scene.Renderables.Add( this );
+
 			Scene runtimeScene = scene.RuntimeScene;
 			m_Environment = Builder.CreateInstance< Environment >( runtimeScene.Builder );
 
@@ -37,6 +40,14 @@ namespace Poc0.LevelEditor.Core
 			get { return m_Csg; }
 		}
 
+		private readonly Matrix44 m_YZSwap = new Matrix44
+			(
+				1, 0, 0, 0,
+				0, 0, 1, 0,
+				0, 1, 0, 0,
+				0, 0, 0, 1
+			);
+
 		/// <summary>
 		/// Renders the level geometry
 		/// </summary>
@@ -47,7 +58,13 @@ namespace Poc0.LevelEditor.Core
 			{
 				BuildRenderable( );
 			}
+
+			//	The graphics are all 2D, but we're watching it in 3D, so flip the Y and Z axis before we render
+			Graphics.Renderer.PushTransform( Transform.LocalToWorld, m_YZSwap );
+
 			m_Renderable.Render( context );
+
+			Graphics.Renderer.PopTransform( Transform.LocalToWorld );
 		}
 
 		#endregion
@@ -129,11 +146,11 @@ namespace Poc0.LevelEditor.Core
 			{
 				Vector2 vec = ( edge.P1 - edge.P0 );
 				Point2 mid = edge.P0 + vec / 2;
-				Graphics.Draw.Line( m_DrawEdge, mid, mid + vec.MakePerpNormal( ) * 4.0f );
+				Graphics.Draw.Line( m_DrawEdge, mid, mid + vec.MakePerpNormal( ) );
 			}
-			
-			Graphics.Draw.Circle( m_FillVertex, edge.P0.X, edge.P0.Y, 2.0f );
-			Graphics.Draw.Circle( m_FillVertex, edge.P1.X, edge.P1.Y, 2.0f );
+
+			Graphics.Draw.Circle( m_FillVertex, edge.P0.X, edge.P0.Y, 0.3f );
+			Graphics.Draw.Circle( m_FillVertex, edge.P1.X, edge.P1.Y, 0.3f );
 		}
 
 		/// <summary>

@@ -5,6 +5,8 @@ using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.EditModes;
 using Rb.Core.Assets;
 using Rb.Core.Components;
+using Rb.Tools.LevelEditor.Core;
+using Rb.Tools.LevelEditor.Core.EditModes;
 
 namespace Poc0.LevelEditor
 {
@@ -30,41 +32,10 @@ namespace Poc0.LevelEditor
 			}
 
 			PopulateObjectTemplates( m_Templates );
-
-			EditModeContext.Instance.PostSetup += OnContextSetup;
 		}
 
-
-		/// <summary>
-		/// Sets up the control
-		/// </summary>
-		/// <param name="editContext">Editing context</param>
-		public void OnContextSetup( EditModeContext editContext )
-		{
-			m_Grid = editContext.Grid;
-			m_EditContext = editContext;
-			tileTypeSetView.TileTypes = editContext.Grid.Set;
-		}
-
-		/// <summary>
-		/// Gets the edit state
-		/// </summary>
-		public EditModeContext EditContext
-		{
-			get { return m_EditContext; }
-		}
-
-		/// <summary>
-		/// Gets the tile grid
-		/// </summary>
-		public TileGrid Grid
-		{
-			get { return m_Grid; }
-		}
-
-		private TileGrid			m_Grid;
-		private EditModeContext		m_EditContext;
-		private readonly ArrayList	m_Templates = new ArrayList( );
+		private UserBrushEditMode m_CurrentEditMode;
+		private readonly ArrayList m_Templates = new ArrayList( );
 
 		private void PopulateObjectTemplates( IEnumerable templates )
 		{
@@ -82,24 +53,12 @@ namespace Poc0.LevelEditor
 			}
 		}
 
-		private void tileTypeSetView_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if ( tileTypeSetView.SelectedItems.Count == 0 )
-			{
-				return;
-			}
-
-			TileType type = ( TileType )tileTypeSetView.SelectedItems[ 0 ].Tag;
-
-			m_EditContext.AddEditMode( new PaintTileEditMode( MouseButtons.Right, type ) );
-		}
-
 		private void objectsTreeView_AfterSelect( object sender, TreeViewEventArgs e )
 		{
 			object template = objectsTreeView.SelectedNode.Tag;
 			if ( template != null )
 			{
-				m_EditContext.AddEditMode( new AddObjectEditMode( MouseButtons.Right, template ) );
+				EditorState.Instance.AddEditMode( new AddObjectEditMode( MouseButtons.Right, template ) );
 			}
 		}
 
@@ -108,7 +67,7 @@ namespace Poc0.LevelEditor
 			Csg.Operation csg = ( Csg.Operation )csgComboBox.SelectedItem;
 
 			m_CurrentEditMode = new UserBrushEditMode( csg );
-			m_EditContext.AddEditMode( m_CurrentEditMode );
+			EditorState.Instance.AddEditMode( m_CurrentEditMode );
 		}
 
 		private void brushPage_Enter( object sender, EventArgs e )
@@ -116,10 +75,9 @@ namespace Poc0.LevelEditor
 			Csg.Operation csg = ( Csg.Operation )csgComboBox.SelectedItem;
 
 			m_CurrentEditMode = new UserBrushEditMode( csg );
-			m_EditContext.AddEditMode( m_CurrentEditMode );
+			EditorState.Instance.AddEditMode( m_CurrentEditMode );
 		}
 
-		private UserBrushEditMode m_CurrentEditMode;
 
 		private void csgComboBox_SelectedIndexChanged( object sender, EventArgs e )
 		{

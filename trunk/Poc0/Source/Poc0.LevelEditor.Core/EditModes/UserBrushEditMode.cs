@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
 using Rb.Log;
+using Rb.Tools.LevelEditor.Core;
 
 namespace Poc0.LevelEditor.Core.EditModes
 {
@@ -17,6 +18,11 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// <param name="operation">CSG operation to perform with the brush</param>
 		public UserBrushEditMode( Csg.Operation operation )
 		{
+			m_LevelGeometry = EditorState.Instance.CurrentScene.Objects.GetFirstOfType< LevelGeometry >( );
+			if ( m_LevelGeometry == null )
+			{
+				throw new InvalidOperationException( "Expected a LevelGeometry object to be present in the scene" );
+			}
 			m_Operation = operation;
 		}
 
@@ -33,12 +39,18 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// Called when the base edit mode finishes defining a polygon
 		/// </summary>
 		/// <param name="points">Polygon points</param>
-		protected override void OnPolygonClosed( Point2[] points )
+		protected override void OnPolygonClosed( Point3[] points )
 		{
 			try
 			{
-				CsgBrush brush = new CsgBrush( "", points );
-				EditModeContext.Instance.Scene.LevelGeometry.Csg.Combine( m_Operation, brush );
+				Point2[] points2 = new Point2[ points.Length ];
+				for ( int ptIndex = 0; ptIndex < points.Length; ++ptIndex )
+				{
+					points2[ ptIndex ] = new Point2( points[ ptIndex ].X, points[ ptIndex ].Z );
+				}
+
+				CsgBrush brush = new CsgBrush( "", points2 );
+				m_LevelGeometry.Csg.Combine( m_Operation, brush );
 			}
 			catch ( Exception ex )
 			{
@@ -49,6 +61,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 			}
 		}
 
+		private readonly LevelGeometry m_LevelGeometry;
 		private Csg.Operation m_Operation;
 	}
 }

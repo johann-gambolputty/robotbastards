@@ -1,4 +1,6 @@
 
+using Rb.Core.Maths;
+
 namespace Rb.Tools.LevelEditor.Core.Selection
 {
 	/// <summary>
@@ -9,9 +11,9 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 		/// <summary>
 		/// Builds this box
 		/// </summary>
-		/// <param name="topLeft">Box top left corner</param>
-		/// <param name="bottomRight">Box bottom right corner</param>
-		public PickInfoBox3( PickInfoRay3 topLeft, PickInfoRay3 bottomRight )
+		/// <param name="topLeftBack">Minimum coordinate corner</param>
+		/// <param name="bottomRightFront">Maximum coordinate corner</param>
+		public PickInfoBox3( Point3 topLeftBack, Point3 bottomRightFront )
 		{
 		}
 	}

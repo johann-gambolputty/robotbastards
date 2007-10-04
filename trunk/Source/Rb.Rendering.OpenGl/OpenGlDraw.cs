@@ -518,20 +518,42 @@ namespace Rb.Rendering.OpenGl
 		/// Draws a line between two points
 		/// </summary>
 		/// <param name="pen">Drawing properties</param>
-		/// <param name="start">Line start</param>
-		/// <param name="end">Line end</param>
-		public override void Line( IPen pen, Point3 start, Point3 end )
+		/// <param name="x">Line start X coordinate</param>
+		/// <param name="y">Line start Y coordinate</param>
+		/// <param name="z">Line start Z coordinate</param>
+		/// <param name="endX">Line end X coordinate</param>
+		/// <param name="endY">Line end Y coordinate</param>
+		/// <param name="endZ">Line end Z coordinate</param>
+		public override void Line( IPen pen, float x, float y, float z, float endX, float endY, float endZ )
 		{
 			pen.Begin( );
 			
 			Gl.glBegin( Gl.GL_LINES );
 
-			Gl.glVertex3f( start.X, start.Y, start.Z );
-			Gl.glVertex3f( end.X, end.Y, end.Z );
+			Gl.glVertex3f( x, y, z );
+			Gl.glVertex3f( endX, endY, endZ );
 
 			Gl.glEnd( );
 
 			pen.End( );
+		}
+
+		#endregion
+
+		#region Filled circles
+
+		/// <summary>
+		/// Fills a circle
+		/// </summary>
+		/// <param name="brush">Drawing properties</param>
+		/// <param name="x">Circle centre X coordinate</param>
+		/// <param name="y">Circle centre Y coordinate</param>
+		/// <param name="z">Circle centre Z coordinate</param>
+		/// <param name="radius">Circle radius</param>
+		/// <param name="samples">Number of subdivisions around the circumference</param>
+		public override void Circle( IBrush brush, float x, float y, float z, float radius, int samples )
+		{
+			//	TODO: AP: ...
 		}
 
 		#endregion

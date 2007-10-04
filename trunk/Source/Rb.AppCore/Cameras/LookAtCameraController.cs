@@ -10,7 +10,7 @@ namespace Rb.AppCore.Cameras
 	/// <summary>
 	/// Simple sphere camera controller
 	/// </summary>
-	class LookAtCameraController : CameraController
+	public class LookAtCameraController : CameraController
 	{
 		/// <summary>
 		/// Camera commands

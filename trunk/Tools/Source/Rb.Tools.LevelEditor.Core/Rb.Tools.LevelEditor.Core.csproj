@@ -28,7 +28,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MagicLibrary, Version=1.7.0.0, Culture=neutral, PublicKeyToken=3a6eb82f876a49bc">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\bin\ThirdParty\MagicDocking\MagicLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -42,11 +47,11 @@
     <Compile Include="Actions\IPickAction.cs" />
     <Compile Include="Actions\MoveAction.cs" />
     <Compile Include="Actions\UndoStack.cs" />
-    <Compile Include="Controls\Forms\LogForm.cs">
+    <Compile Include="Controls\Forms\EditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls\Forms\LogForm.Designer.cs">
-      <DependentUpon>LogForm.cs</DependentUpon>
+    <Compile Include="Controls\Forms\EditorForm.designer.cs">
+      <DependentUpon>EditorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Forms\NewObjectControl.cs">
       <SubType>UserControl</SubType>
@@ -67,12 +72,16 @@
     <Compile Include="Controls\Forms\ObjectUITypeEditorForm.Designer.cs">
       <DependentUpon>ObjectUITypeEditorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Forms\PickDisplay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\Forms\SelectionControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\Forms\SelectionControl.designer.cs">
       <DependentUpon>SelectionControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="EditModes\AddObjectEditMode.cs" />
     <Compile Include="EditModes\EditMode.cs" />
     <Compile Include="EditModes\IEditMode.cs" />
     <Compile Include="EditModes\SelectEditMode.cs" />
@@ -90,7 +99,10 @@
     <Compile Include="Selection\IPickable.cs" />
     <Compile Include="Selection\IPicker.cs" />
     <Compile Include="Selection\IPickInfo.cs" />
+    <Compile Include="Selection\IPickInfo2.cs" />
+    <Compile Include="Selection\IPickInfo3.cs" />
     <Compile Include="Selection\ISelectable.cs" />
+    <Compile Include="Selection\PickInfoBox2.cs" />
     <Compile Include="Selection\PickInfoCursor.cs" />
     <Compile Include="Selection\PickInfoRay3.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -102,6 +114,10 @@
     <Compile Include="Selection\SelectionSet.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\Rb.AssemblySelector\Rb.AssemblySelector.csproj">
+      <Project>{2097B22A-91A5-4CFF-8CCB-846A10523CB9}</Project>
+      <Name>Rb.AssemblySelector</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.Core.Assets.Windows\Rb.Core.Assets.Windows.csproj">
       <Project>{4A4B51E0-EE5D-4627-9192-542BA6FA8A7A}</Project>
       <Name>Rb.Core.Assets.Windows</Name>
@@ -109,6 +125,10 @@
     <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Interaction\Rb.Interaction.csproj">
+      <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
+      <Name>Rb.Interaction</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.Log.Controls.Vs\Rb.Log.Controls.Vs.csproj">
       <Project>{592DDD2E-6E38-4EB1-AD47-800193530D3B}</Project>
@@ -136,8 +156,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Controls\Forms\LogForm.resx">
-      <DependentUpon>LogForm.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\Forms\EditorForm.resx">
+      <DependentUpon>EditorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Forms\NewObjectControl.resx">

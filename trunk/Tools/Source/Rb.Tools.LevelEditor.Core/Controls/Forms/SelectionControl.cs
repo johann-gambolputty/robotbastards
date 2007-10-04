@@ -14,8 +14,33 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		{
 			InitializeComponent( );
 
-			EditorState.Instance.CurrentSelection.ObjectSelected += SelectionChanged;
-			EditorState.Instance.CurrentSelection.ObjectDeselected += SelectionChanged;
+			if ( EditorState.Instance.CurrentSelection != null )
+			{
+				EditorState.Instance.CurrentSelection.ObjectSelected += SelectionChanged;
+				EditorState.Instance.CurrentSelection.ObjectSelected += SelectionChanged;
+			}
+			EditorState.Instance.SceneOpened += OnSceneOpened;
+			EditorState.Instance.SceneOpened += OnSceneClosed;
+		}
+
+		/// <summary>
+		/// Called when a new scene is opened
+		/// </summary>
+		/// <param name="state">Opened scene's edit state</param>
+		private void OnSceneOpened( SceneEditState state )
+		{
+			state.SelectedObjects.ObjectSelected += SelectionChanged;
+			state.SelectedObjects.ObjectSelected += SelectionChanged;
+		}
+
+		/// <summary>
+		/// Called when a scene is about to be closed
+		/// </summary>
+		/// <param name="state">Closing scene's edit state</param>
+		private void OnSceneClosed( SceneEditState state )
+		{
+			state.SelectedObjects.ObjectSelected -= SelectionChanged;
+			state.SelectedObjects.ObjectSelected -= SelectionChanged;
 		}
 
 		/// <summary>

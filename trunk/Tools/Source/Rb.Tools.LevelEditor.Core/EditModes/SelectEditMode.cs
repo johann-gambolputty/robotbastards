@@ -20,6 +20,13 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 
 		#region Public members
 
+		/// <summary>
+		/// Gets the mouse buttons used by this edit mode
+		/// </summary>
+		public override MouseButtons Buttons
+		{
+			get { return m_ActionButton; }
+		}
 
 		/// <summary>
 		/// Gets the key that switches to this edit mode
@@ -165,12 +172,23 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 			}
 			else
 			{
-				m_SelectionEnd = ( ( IPicker )sender ).CreateCursorPickInfo( args.X, args.Y );
+				object[] objects = null;
+				if ( ( m_SelectionStart.CursorX == args.X ) && ( m_SelectionStart.CursorY == args.Y ) )
+				{
+					objects = EditorState.Instance.CurrentScene.PickObjects( m_SelectionStart );
+				}
+				else
+				{
+					PickInfoCursor selectionEnd = ( ( IPicker )sender ).CreateCursorPickInfo( args.X, args.Y );
 
-				IPickInfo selectionBox = ( ( IPicker )sender ).CreatePickBox( m_SelectionStart, m_SelectionEnd );
-				object[] objects = EditorState.Instance.CurrentScene.PickObjects( selectionBox );
-
-				if ( objects.Length > 0 )
+					if ( ( m_SelectionStart != null ) && ( selectionEnd != null ) )
+					{
+						IPickInfo selectionBox = ( ( IPicker )sender ).CreatePickBox( m_SelectionStart, selectionEnd );
+						objects = EditorState.Instance.CurrentScene.PickObjects( selectionBox );
+					}
+				}
+				
+				if ( ( objects != null ) && ( objects.Length > 0 ) )
 				{
 					EditorState.Instance.CurrentSelection.ApplySelect( objects, m_AddToSelection );
 				}
@@ -178,6 +196,7 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 				{
 					EditorState.Instance.CurrentSelection.ClearSelection( );
 				}
+				m_SelectionStart = null;
 			}
 		}
 
@@ -187,9 +206,8 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 
 		private bool					m_AddToSelection;
 		private readonly MouseButtons	m_ActionButton;
-		private PickInfoCursor				m_SelectionStart;
-		private PickInfoCursor				m_SelectionEnd;
-		private PickInfoCursor				m_LastCursorPick;
+		private PickInfoCursor			m_SelectionStart;
+		private PickInfoCursor			m_LastCursorPick;
 		private IPickAction				m_PickAction;
 		private bool					m_DeselectOnNoMove;
 		private ISelectable				m_LastHighlit;

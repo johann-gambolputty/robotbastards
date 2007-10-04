@@ -79,6 +79,15 @@ namespace Rb.Tools.LevelEditor.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error adding new object to scene.
+        /// </summary>
+        internal static string FailedToAddObject {
+            get {
+                return ResourceManager.GetString("FailedToAddObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to export scene to file &quot;{0}&quot;.
         /// </summary>
         internal static string FailedToExportScene {

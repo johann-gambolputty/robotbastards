@@ -26,8 +26,33 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			m_Timer.Enabled = true;
 			m_Timer.Tick += RefreshPropertyGridTick;
 
-			EditorState.Instance.CurrentSelection.ObjectSelected += ObjectSelected;
-			EditorState.Instance.CurrentSelection.ObjectSelected += ObjectDeselected;
+			if ( EditorState.Instance.CurrentSelection != null )
+			{
+				EditorState.Instance.CurrentSelection.ObjectSelected += ObjectSelected;
+				EditorState.Instance.CurrentSelection.ObjectSelected += ObjectDeselected;
+			}
+			EditorState.Instance.SceneOpened += OnSceneOpened;
+			EditorState.Instance.SceneOpened += OnSceneClosed;
+		}
+
+		/// <summary>
+		/// Called when a new scene is opened
+		/// </summary>
+		/// <param name="state">Opened scene's edit state</param>
+		private void OnSceneOpened( SceneEditState state )
+		{
+			state.SelectedObjects.ObjectSelected += ObjectSelected;
+			state.SelectedObjects.ObjectSelected += ObjectDeselected;
+		}
+
+		/// <summary>
+		/// Called when a scene is about to be closed
+		/// </summary>
+		/// <param name="state">Closing scene's edit state</param>
+		private void OnSceneClosed( SceneEditState state )
+		{
+			state.SelectedObjects.ObjectSelected -= ObjectSelected;
+			state.SelectedObjects.ObjectSelected -= ObjectDeselected;
 		}
 
 		private void ObjectSelected( object obj )
