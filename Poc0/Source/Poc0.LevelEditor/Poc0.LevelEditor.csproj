@@ -55,12 +55,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CsgExplorer.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="CsgExplorer.Designer.cs">
-      <DependentUpon>CsgExplorer.cs</DependentUpon>
-    </Compile>
     <Compile Include="EditorControls.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -73,43 +67,11 @@
     <Compile Include="GameViewControl.Designer.cs">
       <DependentUpon>GameViewControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="LogForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LogForm.Designer.cs">
-      <DependentUpon>LogForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="NewObjectControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="NewObjectControl.Designer.cs">
-      <DependentUpon>NewObjectControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ObjectPropertyEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ObjectPropertyEditor.Designer.cs">
-      <DependentUpon>ObjectPropertyEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ObjectUITypeEditor.cs" />
-    <Compile Include="ObjectUITypeEditorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ObjectUITypeEditorForm.Designer.cs">
-      <DependentUpon>ObjectUITypeEditorForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="CsgExplorer.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>CsgExplorer.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="EditorControls.resx">
       <SubType>Designer</SubType>
       <DependentUpon>EditorControls.cs</DependentUpon>
@@ -118,38 +80,10 @@
       <SubType>Designer</SubType>
       <DependentUpon>GameViewControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LogForm.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>LogForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="NewObjectControl.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>NewObjectControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ObjectPropertyEditor.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>ObjectPropertyEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ObjectUITypeEditorForm.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>ObjectUITypeEditorForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SelectionControl.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>SelectionControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TileGridDisplay.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>TileGridDisplay.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -165,26 +99,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <Compile Include="SceneExporter.cs" />
-    <Compile Include="SceneSerializer.cs" />
-    <Compile Include="SelectionControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="SelectionControl.Designer.cs">
-      <DependentUpon>SelectionControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TileGridDisplay.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TileGridDisplay.Designer.cs">
-      <DependentUpon>TileGridDisplay.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TileTypeSetListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="TileTypeSetListView.Designer.cs">
-      <DependentUpon>TileTypeSetListView.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -256,6 +170,10 @@
       <Project>{46980366-998B-4178-87B7-B04DD3B21979}</Project>
       <Name>Rb.World</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Tools\Source\Rb.Tools.LevelEditor.Core\Rb.Tools.LevelEditor.Core.csproj">
+      <Project>{CC99B187-FFD0-43C3-904C-7EA8CBCA9CF3}</Project>
+      <Name>Rb.Tools.LevelEditor.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Poc0.Core.Rendering.OpenGl\Poc0.Core.Rendering.OpenGl.csproj">
       <Project>{283867CD-C9C1-4953-8AD7-F7704C8D5913}</Project>
       <Name>Poc0.Core.Rendering.OpenGl</Name>
@@ -267,10 +185,6 @@
     <ProjectReference Include="..\Poc0.LevelEditor.Core\Poc0.LevelEditor.Core.csproj">
       <Project>{7FD7B8DD-BBED-4AF7-9339-6F823540727E}</Project>
       <Name>Poc0.LevelEditor.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Poc0.LevelEditor.Rendering.OpenGl\Poc0.LevelEditor.Rendering.OpenGl.csproj">
-      <Project>{FD909605-387F-4AFE-871A-A499EF6748ED}</Project>
-      <Name>Poc0.LevelEditor.Rendering.OpenGl</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

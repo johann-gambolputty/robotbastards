@@ -77,6 +77,15 @@ namespace Poc0.LevelEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Editor Toolbox.
+        /// </summary>
+        internal static string EditorToolbox {
+            get {
+                return ResourceManager.GetString("EditorToolbox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         internal static string ErrorCaption {

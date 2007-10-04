@@ -110,6 +110,7 @@ namespace Rb.Core.Assets
 		/// <param name="source">Asset source</param>
 		/// <param name="parameters">Loading parameters</param>
 		/// <returns>Returns the loaded asset</returns>
+		/// <exception cref="ArgumentException">If source is invalid, or referenced an asset that failed to load</exception>
 		public object Load( ISource source, LoadParameters parameters )
 		{
 			if ( !source.Exists )

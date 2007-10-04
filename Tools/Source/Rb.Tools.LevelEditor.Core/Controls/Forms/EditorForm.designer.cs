@@ -1,6 +1,7 @@
-namespace Poc0.LevelEditor
+
+namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 {
-	partial class MainForm
+	partial class EditorForm
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -34,7 +35,7 @@ namespace Poc0.LevelEditor
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-			this.eToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.exportAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,10 +48,9 @@ namespace Poc0.LevelEditor
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.selectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.objectPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.gameViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.tileGrid2dDisplay = new Poc0.LevelEditor.TileGridDisplay();
+			this.display = new PickDisplay();
 			this.statusStrip.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -87,7 +87,7 @@ namespace Poc0.LevelEditor
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem,
             this.toolStripSeparator3,
-            this.eToolStripMenuItem,
+            this.exportAsToolStripMenuItem,
             this.exportToolStripMenuItem,
             this.toolStripSeparator1,
             this.saveAsToolStripMenuItem,
@@ -110,12 +110,12 @@ namespace Poc0.LevelEditor
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
 			this.toolStripSeparator3.Size = new System.Drawing.Size(141, 6);
 			// 
-			// eToolStripMenuItem
+			// exportAsToolStripMenuItem
 			// 
-			this.eToolStripMenuItem.Name = "eToolStripMenuItem";
-			this.eToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
-			this.eToolStripMenuItem.Text = "Ex&port As...";
-			this.eToolStripMenuItem.Click += new System.EventHandler(this.eToolStripMenuItem_Click);
+			this.exportAsToolStripMenuItem.Name = "exportAsToolStripMenuItem";
+			this.exportAsToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.exportAsToolStripMenuItem.Text = "Ex&port As...";
+			this.exportAsToolStripMenuItem.Click += new System.EventHandler(this.exportAsToolStripMenuItem_Click);
 			// 
 			// exportToolStripMenuItem
 			// 
@@ -185,7 +185,6 @@ namespace Poc0.LevelEditor
 			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.logToolStripMenuItem,
             this.selectionToolStripMenuItem,
-            this.toolBoxToolStripMenuItem,
             this.objectPropertiesToolStripMenuItem,
             this.gameViewToolStripMenuItem});
 			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
@@ -206,13 +205,6 @@ namespace Poc0.LevelEditor
 			this.selectionToolStripMenuItem.Text = "&Selection";
 			this.selectionToolStripMenuItem.Click += new System.EventHandler(this.selectionToolStripMenuItem_Click);
 			// 
-			// toolBoxToolStripMenuItem
-			// 
-			this.toolBoxToolStripMenuItem.Name = "toolBoxToolStripMenuItem";
-			this.toolBoxToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-			this.toolBoxToolStripMenuItem.Text = "&Tool Box";
-			this.toolBoxToolStripMenuItem.Click += new System.EventHandler(this.toolBoxToolStripMenuItem_Click);
-			// 
 			// objectPropertiesToolStripMenuItem
 			// 
 			this.objectPropertiesToolStripMenuItem.Name = "objectPropertiesToolStripMenuItem";
@@ -226,26 +218,26 @@ namespace Poc0.LevelEditor
 			this.gameViewToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.gameViewToolStripMenuItem.Text = "&Game View";
 			// 
-			// tileGrid2dDisplay
+			// display
 			// 
-			this.tileGrid2dDisplay.ColourBits = ((byte)(32));
-			this.tileGrid2dDisplay.ContinuousRendering = true;
-			this.tileGrid2dDisplay.DepthBits = ((byte)(24));
-			this.tileGrid2dDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tileGrid2dDisplay.Location = new System.Drawing.Point(0, 24);
-			this.tileGrid2dDisplay.Name = "tileGrid2dDisplay";
-			this.tileGrid2dDisplay.RenderInterval = 1;
-			this.tileGrid2dDisplay.Size = new System.Drawing.Size(524, 374);
-			this.tileGrid2dDisplay.StencilBits = ((byte)(0));
-			this.tileGrid2dDisplay.TabIndex = 2;
-			this.tileGrid2dDisplay.MouseMove += new System.Windows.Forms.MouseEventHandler(this.tileGrid2dDisplay_MouseMove);
+			this.display.ColourBits = ((byte)(32));
+			this.display.ContinuousRendering = true;
+			this.display.DepthBits = ((byte)(24));
+			this.display.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.display.Location = new System.Drawing.Point(0, 24);
+			this.display.Name = "display";
+			this.display.RenderInterval = 1;
+			this.display.Size = new System.Drawing.Size(524, 374);
+			this.display.StencilBits = ((byte)(0));
+			this.display.TabIndex = 2;
+			this.display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.display_MouseMove);
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(524, 420);
-			this.Controls.Add(this.tileGrid2dDisplay);
+			this.Controls.Add(this.display);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.menuStrip);
 			this.MainMenuStrip = this.menuStrip;
@@ -274,16 +266,15 @@ namespace Poc0.LevelEditor
 		private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-		private TileGridDisplay tileGrid2dDisplay;
+		private PickDisplay display;
 		private System.Windows.Forms.ToolStripMenuItem selectionToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem toolBoxToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem objectPropertiesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-		private System.Windows.Forms.ToolStripMenuItem eToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem exportAsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem gameViewToolStripMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel posStatusLabel;
 	}

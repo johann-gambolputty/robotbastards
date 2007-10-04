@@ -27,7 +27,7 @@ namespace Rb.Log.Controls.Vs
             DTE2 dte = ( DTE2 )System.Runtime.InteropServices.Marshal.GetActiveObject( "VisualStudio.DTE.8.0" );
             if ( dte == null )
             {
-                dte = ( DTE2 )Microsoft.VisualBasic.Interaction.CreateObject("VisualStudio.DTE.8.0", "");
+                dte = ( DTE2 )Microsoft.VisualBasic.Interaction.CreateObject( "VisualStudio.DTE.8.0", "" );
             }
 
             //  Open the file and goto the correct line
@@ -42,8 +42,8 @@ namespace Rb.Log.Controls.Vs
                     {
                         textDoc.Selection.GotoLine( entry.Line, false );
                     }
-					dte.MainWindow.SetFocus();
-					dte.MainWindow.Activate();
+					dte.MainWindow.SetFocus( );
+					dte.MainWindow.Activate( );
                 }
             }
             catch ( System.Runtime.InteropServices.COMException ex )

@@ -364,9 +364,24 @@ namespace Rb.Rendering
 		/// Draws a line between two points
 		/// </summary>
 		/// <param name="pen">Drawing properties</param>
+		/// <param name="x">Line start X coordinate</param>
+		/// <param name="y">Line start Y coordinate</param>
+		/// <param name="z">Line start Z coordinate</param>
+		/// <param name="endX">Line end X coordinate</param>
+		/// <param name="endY">Line end Y coordinate</param>
+		/// <param name="endZ">Line end Z coordinate</param>
+		public abstract void Line( IPen pen, float x, float y, float z, float endX, float endY, float endZ );
+
+		/// <summary>
+		/// Draws a line between two points
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
 		/// <param name="start">Line start</param>
 		/// <param name="end">Line end</param>
-		public abstract void Line( IPen pen, Point3 start, Point3 end );
+		public void Line( IPen pen, Point3 start, Point3 end )
+		{
+			Line( pen, start.X, start.Y, start.Z, end.X, end.Y, end.Z );
+		}
 
 		/// <summary>
 		/// Draws a series of lines connecting a list of points
@@ -407,6 +422,45 @@ namespace Rb.Rendering
 				Line( pen, lastPoint, firstPoint );
 			}
 		}
+
+		#endregion
+		
+		#region Filled circles
+
+		/// <summary>
+		/// Fills a circle
+		/// </summary>
+		/// <param name="brush">Drawing properties</param>
+		/// <param name="centre">Circle centre</param>
+		/// <param name="radius">Circle radius</param>
+		public void Circle( IBrush brush, Point3 centre, float radius )
+		{
+			Circle( brush, centre.X, centre.Y, centre.Z, radius, 10 );
+		}
+		
+		/// <summary>
+		/// Fills a circle
+		/// </summary>
+		/// <param name="brush">Drawing properties</param>
+		/// <param name="x">Circle centre X coordinate</param>
+		/// <param name="y">Circle centre Y coordinate</param>
+		/// <param name="z">Circle centre Z coordinate</param>
+		/// <param name="radius">Circle radius</param>
+		public void Circle( IBrush brush, float x, float y, float z, float radius )
+		{
+			Circle( brush, x, y, radius, 10 );
+		}
+
+		/// <summary>
+		/// Fills a circle
+		/// </summary>
+		/// <param name="brush">Drawing properties</param>
+		/// <param name="x">Circle centre X coordinate</param>
+		/// <param name="y">Circle centre Y coordinate</param>
+		/// <param name="z">Circle centre Z coordinate</param>
+		/// <param name="radius">Circle radius</param>
+		/// <param name="samples">Number of subdivisions around the circumference</param>
+		public abstract void Circle( IBrush brush, float x, float y, float z, float radius, int samples );
 
 		#endregion
 

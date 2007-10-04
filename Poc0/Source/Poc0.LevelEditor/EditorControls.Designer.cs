@@ -29,8 +29,6 @@ namespace Poc0.LevelEditor
 		private void InitializeComponent()
 		{
 			this.tabControl1 = new System.Windows.Forms.TabControl( );
-			this.tilesTabPage = new System.Windows.Forms.TabPage( );
-			this.tileTypeSetView = new Poc0.LevelEditor.TileTypeSetListView( );
 			this.objectsTabPage = new System.Windows.Forms.TabPage( );
 			this.objectsTreeView = new System.Windows.Forms.TreeView( );
 			this.brushPage = new System.Windows.Forms.TabPage( );
@@ -39,14 +37,12 @@ namespace Poc0.LevelEditor
 			this.circleBrushRadioButton = new System.Windows.Forms.RadioButton( );
 			this.userBrushRadioButton = new System.Windows.Forms.RadioButton( );
 			this.tabControl1.SuspendLayout( );
-			this.tilesTabPage.SuspendLayout( );
 			this.objectsTabPage.SuspendLayout( );
 			this.brushPage.SuspendLayout( );
 			this.SuspendLayout( );
 			// 
 			// tabControl1
 			// 
-			this.tabControl1.Controls.Add( this.tilesTabPage );
 			this.tabControl1.Controls.Add( this.objectsTabPage );
 			this.tabControl1.Controls.Add( this.brushPage );
 			this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -55,28 +51,6 @@ namespace Poc0.LevelEditor
 			this.tabControl1.SelectedIndex = 0;
 			this.tabControl1.Size = new System.Drawing.Size( 189, 166 );
 			this.tabControl1.TabIndex = 0;
-			// 
-			// tilesTabPage
-			// 
-			this.tilesTabPage.Controls.Add( this.tileTypeSetView );
-			this.tilesTabPage.Location = new System.Drawing.Point( 4, 22 );
-			this.tilesTabPage.Name = "tilesTabPage";
-			this.tilesTabPage.Padding = new System.Windows.Forms.Padding( 3 );
-			this.tilesTabPage.Size = new System.Drawing.Size( 181, 140 );
-			this.tilesTabPage.TabIndex = 0;
-			this.tilesTabPage.Text = "Tiles";
-			this.tilesTabPage.UseVisualStyleBackColor = true;
-			// 
-			// tileTypeSetView
-			// 
-			this.tileTypeSetView.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tileTypeSetView.Location = new System.Drawing.Point( 3, 3 );
-			this.tileTypeSetView.Name = "tileTypeSetView";
-			this.tileTypeSetView.Size = new System.Drawing.Size( 175, 134 );
-			this.tileTypeSetView.TabIndex = 0;
-			this.tileTypeSetView.TileTypes = null;
-			this.tileTypeSetView.UseCompatibleStateImageBehavior = false;
-			this.tileTypeSetView.SelectedIndexChanged += new System.EventHandler( this.tileTypeSetView_SelectedIndexChanged );
 			// 
 			// objectsTabPage
 			// 
@@ -167,7 +141,6 @@ namespace Poc0.LevelEditor
 			this.Name = "EditorControls";
 			this.Size = new System.Drawing.Size( 189, 166 );
 			this.tabControl1.ResumeLayout( false );
-			this.tilesTabPage.ResumeLayout( false );
 			this.objectsTabPage.ResumeLayout( false );
 			this.brushPage.ResumeLayout( false );
 			this.brushPage.PerformLayout( );
@@ -178,9 +151,7 @@ namespace Poc0.LevelEditor
 		#endregion
 
 		private System.Windows.Forms.TabControl tabControl1;
-		private System.Windows.Forms.TabPage tilesTabPage;
 		private System.Windows.Forms.TabPage objectsTabPage;
-		private TileTypeSetListView tileTypeSetView;
 		private System.Windows.Forms.TreeView objectsTreeView;
 		private System.Windows.Forms.TabPage brushPage;
 		private System.Windows.Forms.RadioButton userBrushRadioButton;

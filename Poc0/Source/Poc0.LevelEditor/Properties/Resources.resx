@@ -124,6 +124,9 @@
   <data name="CantLoadAssetIntoType" xml:space="preserve">
     <value>Can't load asset into type "{0}"</value>
   </data>
+  <data name="EditorToolbox" xml:space="preserve">
+    <value>Editor Toolbox</value>
+  </data>
   <data name="ErrorCaption" xml:space="preserve">
     <value>Error</value>
   </data>

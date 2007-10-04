@@ -4,7 +4,7 @@
   <object type="Rb.Interaction.CommandInputTemplateMap" assembly="Rb.Interaction">
 
     <serialise>
-      <commandList enum="Poc0.LevelEditor.Core.TileCamera2dCommands" assembly="Poc0.LevelEditor.Core">
+      <commandList enum="Rb.AppCore.Cameras.LookAtCameraController+Commands" assembly="Rb.AppCore">
         <command name="Pan">
           <input button="Middle" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
         </command>
@@ -15,25 +15,6 @@
           <input button="None" min="0.5" max="4.0" delta="0.1" initial="1" type="Rb.Interaction.Windows.MouseScrollInputTemplate" assembly="Rb.Interaction.Windows"/>
         </command>
       </commandList>
-			<!--
-      <commandList enum="Poc0.LevelEditor.Core.TileEditCommands" assembly="Poc0.LevelEditor.Core">
-        <command name="Move">
-          <input button="None" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
-        </command>
-        <command name="Paint">
-          <input button="Left" state="Held" type="Rb.Interaction.Windows.MouseButtonInputTemplate" assembly="Rb.Interaction.Windows"/>
-        </command>
-        <command name="Select">
-          <input button="Right" state="Down" type="Rb.Interaction.Windows.MouseButtonInputTemplate" assembly="Rb.Interaction.Windows"/>
-        </command>
-        <command name="AddToSelection">
-          <input key="ShiftKey" state="Down" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
-        </command>
-        <command name="ReplaceSelection">
-          <input key="ShiftKey" state="Up" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
-        </command>
-      </commandList>
-			-->
     </serialise>
 
   </object>
