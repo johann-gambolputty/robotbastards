@@ -14,6 +14,14 @@ namespace Rb.Rendering.OpenGl
 		private class GlDrawState
 		{
 			/// <summary>
+			/// Initialises the render state
+			/// </summary>
+			public GlDrawState( )
+			{
+				m_State.DisableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
+			}
+
+			/// <summary>
 			/// Pushes the render state
 			/// </summary>
 			public void Begin( )
@@ -540,6 +548,44 @@ namespace Rb.Rendering.OpenGl
 
 		#endregion
 
+		#region Circles
+
+		/// <summary>
+		/// Draws a circle
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="x">Circle centre X coordinate</param>
+		/// <param name="y">Circle centre Y coordinate</param>
+		/// <param name="z">Circle centre Z coordinate</param>
+		/// <param name="radius">Circle radius</param>
+		/// <param name="samples">Number of subdivisions around the circumference</param>
+		public override void Circle( IPen pen, float x, float y, float z, float radius, int samples )
+		{
+
+			//	TODO: AP: Always camera facing?
+			float angle = 0;
+			float angleInc = Constants.TwoPi / samples;
+
+			pen.Begin( );
+
+			Gl.glBegin( Gl.GL_LINE_STRIP );
+
+			for ( int sampleCount = 0; sampleCount <= samples; ++sampleCount )
+			{
+				float sinAR = radius * ( float )Math.Sin( angle );
+				float cosAR = radius * ( float )Math.Cos( angle );
+
+				Gl.glVertex3f( x + sinAR, y, z + cosAR );
+
+				angle += angleInc;
+			}
+
+			Gl.glEnd( );
+			pen.End( );
+		}
+
+		#endregion
+
 		#region Filled circles
 
 		/// <summary>
@@ -553,7 +599,33 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="samples">Number of subdivisions around the circumference</param>
 		public override void Circle( IBrush brush, float x, float y, float z, float radius, int samples )
 		{
-			//	TODO: AP: ...
+			//	TODO: AP: Always camera facing?
+			float angle = 0;
+			float angleInc = Constants.TwoPi / samples;
+
+			brush.Begin( );
+
+			Gl.glBegin( Gl.GL_TRIANGLE_FAN );
+
+			Gl.glVertex3f( x, y, z );
+
+			for ( int sampleCount = 0; sampleCount <= samples; ++sampleCount )
+			{
+				float sinAR = radius * ( float )Math.Sin( angle );
+				float cosAR = radius * ( float )Math.Cos( angle );
+
+				Gl.glVertex3f( x + sinAR, y, z + cosAR );
+
+				angle += angleInc;
+			}
+
+			Gl.glEnd( );
+			brush.End( );
+
+			if ( brush.OutlinePen != null )
+			{
+				Circle( brush.OutlinePen, x, y, z, radius, samples );
+			}
 		}
 
 		#endregion

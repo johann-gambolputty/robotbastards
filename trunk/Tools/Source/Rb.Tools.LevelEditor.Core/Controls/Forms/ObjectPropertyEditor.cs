@@ -32,7 +32,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 				EditorState.Instance.CurrentSelection.ObjectSelected += ObjectDeselected;
 			}
 			EditorState.Instance.SceneOpened += OnSceneOpened;
-			EditorState.Instance.SceneOpened += OnSceneClosed;
+			EditorState.Instance.SceneClosed += OnSceneClosed;
 		}
 
 		/// <summary>

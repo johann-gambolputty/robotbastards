@@ -198,6 +198,10 @@ namespace Poc0.LevelEditor.Core.EditModes
 		{
 			IPicker picker = ( IPicker )sender;
 			PickInfoCursor pick = picker.CreateCursorPickInfo( args.X, args.Y );
+			if ( pick == null )
+			{
+				return;
+			}
 			if ( pick is IPickInfo3 )
 			{
 				m_CursorPoint = ( ( IPickInfo3 )pick ).PickPoint;

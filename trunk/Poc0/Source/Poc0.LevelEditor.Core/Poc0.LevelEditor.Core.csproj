@@ -61,6 +61,8 @@
     <Compile Include="EditModes\UserBrushEditMode.cs" />
     <Compile Include="EditModes\DefinePolygonEditMode.cs" />
     <Compile Include="LevelGeometry.cs" />
+    <Compile Include="GameObjectEditorBuilder.cs" />
+    <Compile Include="PositionEditor.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>

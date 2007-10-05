@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Rb.Tools.LevelEditor.Core.Actions;
 
 namespace Rb.Tools.LevelEditor.Core.Selection
