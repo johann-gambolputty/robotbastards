@@ -19,10 +19,10 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		/// <param name="hasPosition">Positioning interface of the game object</param>
 		/// <param name="pick">Position to place the new object at</param>
-		public PositionEditor( IHasPosition hasPosition, PickInfoCursor pick )
+		public PositionEditor( IHasPosition hasPosition, ILineIntersection pick )
 		{
 			m_HasPosition = hasPosition;
-			m_HasPosition.Position = ( ( IPickInfo3 )pick ).PickPoint;
+			m_HasPosition.Position = ( ( Line3Intersection )pick ).IntersectionPosition;
 		}
 
 		#region IPickable Members

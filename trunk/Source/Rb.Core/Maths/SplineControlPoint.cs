@@ -1,5 +1,3 @@
-using System;
-
 namespace Rb.Core.Maths
 {
 	/// <summary>
@@ -29,34 +27,25 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// The Frenet frame at the control
 		/// </summary>
-		public CurveFrame	Frame
+		public CurveFrame Frame
 		{
-			get
-			{
-				return m_Frame;
-			}
+			get { return m_Frame; }
 		}
 
 		/// <summary>
 		/// Spline that owns this control point
 		/// </summary>
-		public Curve		Owner
+		public Curve Owner
 		{
-			get
-			{
-				return m_Owner;
-			}
+			get { return m_Owner; }
 		}
 
 		/// <summary>
 		/// Fraction along the spline that this control point is defined at (always a whole number)
 		/// </summary>
-		public float		T
+		public float T
 		{
-			get
-			{
-				return ( float )m_Index;
-			}
+			get { return m_Index; }
 		}
 
 
@@ -71,26 +60,26 @@ namespace Rb.Core.Maths
 		{
 			m_Owner = owner;
 			m_Index	= index;
-			m_Frame	= m_Owner.EvaluateFrame( ( float )index );
+			m_Frame	= m_Owner.EvaluateFrame( index );
 
-			owner.OnChangedEvent += new Curve.ChangedDelegate( OnOwnerSplineChanged );
+			owner.OnChangedEvent += OnOwnerSplineChanged;
 		}
 
 		#endregion
 
 		#region	Private stuff
 
-		private Curve		m_Owner;
-		private int			m_Index;
-		private CurveFrame	m_Frame;
+		private readonly Curve	m_Owner;
+		private readonly int	m_Index;
+		private CurveFrame		m_Frame;
 
 		/// <summary>
 		/// Delegate, added to the Spline.OnChangedEvent. Re-evaluates the frame of the control point
 		/// </summary>
-		/// <param name="spline"></param>
-		private void		OnOwnerSplineChanged( Curve spline )
+		/// <param name="spline">Spline that changed</param>
+		private void OnOwnerSplineChanged( Curve spline )
 		{
-			m_Frame = spline.EvaluateFrame( ( float )m_Index );
+			m_Frame = spline.EvaluateFrame( m_Index );
 		}
 
 

@@ -109,9 +109,9 @@ namespace Rb.Core.Maths
 		/// <remarks>
 		/// Because BigPoint3 has so much more precision than a float can offer, be careful about using this function
 		/// </remarks>
-		public static Vector3	operator - ( BigPoint3 pt1, BigPoint3 pt2 )
+		public static Vector3 operator - ( BigPoint3 pt1, BigPoint3 pt2 )
 		{
-			return new Vector3( ( float )( pt1.X - pt2.X ), ( float )( pt1.Y - pt2.Y ), ( float )( pt1.Z - pt2.Z ) );
+			return new Vector3( pt1.X - pt2.X, pt1.Y - pt2.Y, pt1.Z - pt2.Z );
 		}
 
 		/// <summary>
@@ -148,9 +148,9 @@ namespace Rb.Core.Maths
 		/// <remarks>
 		/// Because BigPoint3 has so much more precision than a float can offer, be careful about using this function
 		/// </remarks>
-		public float	DistanceTo( BigPoint3 pt )
+		public float DistanceTo( BigPoint3 pt )
 		{
-			return ( float )System.Math.Sqrt( ( double )SqrDistanceTo( pt ) );
+			return ( float )System.Math.Sqrt( SqrDistanceTo( pt ) );
 		}
 
 		private long	m_X;

@@ -214,6 +214,26 @@ namespace Rb.Rendering.Windows
 
         #region Viewers
 
+		/// <summary>
+		/// Gets the first viewer under the specified cursor position
+		/// </summary>
+		/// <param name="x">Cursor x position</param>
+		/// <param name="y">Cursor y position</param>
+		/// <returns>Returns the first viewer that contains (x,y), or null</returns>
+		public Viewer GetViewerUnderCursor( int x, int y )
+		{
+			float fX = x / ( float )Width;
+			float fY = y / ( float )Height;
+			foreach ( Viewer viewer in m_Viewers )
+			{
+				if ( viewer.ViewRect.Contains( fX, fY ) )
+				{
+					return viewer;
+				}
+			}
+			return null;
+		}
+
         /// <summary>
         /// Gets the collection of viewers
         /// </summary>
