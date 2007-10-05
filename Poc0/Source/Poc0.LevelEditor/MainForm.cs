@@ -2,6 +2,7 @@ using System;
 using Crownwood.Magic.Docking;
 using Poc0.LevelEditor.Core;
 using Rb.Core.Assets;
+using Rb.Core.Maths;
 using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.Controls.Forms;
 using Rb.World;
@@ -57,10 +58,17 @@ namespace Poc0.LevelEditor
 			//	Populate runtime scene
 			scene.RuntimeScene.AddService( new LightingManager( ) );
 
-
 			//	Populate editor scene
 			scene.Objects.Add( Guid.NewGuid( ), new LevelGeometry( scene ) );
+
+			IRayCaster rayCaster = new RayCaster( );
+			scene.AddService( rayCaster );
+			rayCaster.AddIntersector( GridLayer, new Plane3( new Vector3( 0, 1, 0 ), 0 ) );
 		}
+
+		public const ulong GridLayer = 0x1;
+		public const ulong StaticGeometryLayer = 0x2;
+		public const ulong EntityLayer = 0x2;
 
 		private readonly Content m_EditorControlsContent;
 		private readonly Content m_GameViewContent;

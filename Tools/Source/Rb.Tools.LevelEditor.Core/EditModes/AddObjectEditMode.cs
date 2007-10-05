@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using Rb.Core.Maths;
 using Rb.Core.Utils;
 using Rb.Log;
 using Rb.Tools.LevelEditor.Core.Actions;
@@ -44,7 +45,7 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 			}
 			IPicker picker = ( IPicker )sender;
 
-			PickInfoCursor pick = picker.CreateCursorPickInfo( args.X, args.Y );
+			ILineIntersection pick = picker.FirstPick( args.X, args.Y );
 			if ( pick != null )
 			{
 				Guid id = Guid.NewGuid( );

@@ -1,10 +1,15 @@
+using System;
+
 namespace Rb.Core.Maths
 {
 	/// <summary>
 	/// 2D line intersection
 	/// </summary>
-	public class Line2Intersection
+	[Serializable]
+	public class Line2Intersection : ILineIntersection
 	{
+		#region Public properties
+
 		/// <summary>
 		/// The point that the line intersected the object. Always valid
 		/// </summary>
@@ -23,6 +28,19 @@ namespace Rb.Core.Maths
 			set { m_Normal = value; }
 		}
 
+		#endregion
+
+		#region ILineIntersection members
+
+		/// <summary>
+		/// Gets the object that was intersected
+		/// </summary>
+		public object IntersectedObject
+		{
+			get { return m_Object; }
+			set { m_Object = value;}
+		}
+
 		/// <summary>
 		/// Fraction along the line at which the intersection occurred
 		/// </summary>
@@ -32,8 +50,54 @@ namespace Rb.Core.Maths
 			set { m_Distance = value; }
 		}
 
+		#endregion
+
+		#region Construction
+
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public Line2Intersection( )
+		{
+		}
+
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		/// <param name="pos"> Ray intersection position </param>
+		/// <param name="normal"> Ray intersection normal </param>
+		/// <param name="distance"> Ray intersection distance </param>
+		public Line2Intersection( Point2 pos, Vector2 normal, float distance )
+		{
+			m_Position	= pos;
+			m_Normal	= normal;
+			m_Distance	= distance;
+		}
+		
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		/// <param name="pos"> Ray intersection position </param>
+		/// <param name="normal"> Ray intersection normal </param>
+		/// <param name="distance"> Ray intersection distance </param>
+		/// <param name="obj">Intersected object</param>
+		public Line2Intersection( Point2 pos, Vector2 normal, float distance, object obj )
+		{
+			m_Position	= pos;
+			m_Normal	= normal;
+			m_Distance	= distance;
+			m_Object	= obj;
+		}
+
+		#endregion
+
+		#region Private members
+
+		private object m_Object;
 		private Point2 m_Position;
 		private Vector2 m_Normal;
 		private float m_Distance;
+
+		#endregion
 	}
 }

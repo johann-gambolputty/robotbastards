@@ -1,9 +1,7 @@
-using System;
-
 namespace Rb.Core.Maths
 {
 	/// <summary>
-	/// Summary description for Ray3.
+	/// 3D ray
 	/// </summary>
 	public class Ray3
 	{
@@ -32,7 +30,7 @@ namespace Rb.Core.Maths
 		/// </summary>
 		/// <param name="t"> Distance from ray origin </param>
 		/// <returns> Position at specified distance along ray direction, from ray origin</returns>
-		public Point3		GetPointOnRay( float t )
+		public Point3 GetPointOnRay( float t )
 		{
 			return m_Origin + m_Direction * t;
 		}
@@ -40,31 +38,19 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Ray origin
 		/// </summary>
-		public Point3		Origin
+		public Point3 Origin
 		{
-			get
-			{
-				return m_Origin;
-			}
-			set
-			{
-				m_Origin = value;
-			}
+			get { return m_Origin; }
+			set { m_Origin = value; }
 		}
 
 		/// <summary>
 		/// Ray direction
 		/// </summary>
-		public Vector3		Direction
+		public Vector3 Direction
 		{
-			get
-			{
-				return m_Direction;
-			}
-			set
-			{
-				m_Direction = value;
-			}
+			get { return m_Direction; }
+			set { m_Direction = value; }
 		}
 
 		private Point3		m_Origin;

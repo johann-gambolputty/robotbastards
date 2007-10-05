@@ -153,7 +153,7 @@ namespace Rb.Core.Maths
 		/// </summary>
 		/// <example>
 		/// int degrees = 361;
-		/// Wrap( degrees, 0, 360 );  // Returns 1.0f
+		/// Wrap( degrees, 0, 360 );  // Returns 1
 		/// </example>
 		public static int Wrap( int val, int min, int max )
 		{

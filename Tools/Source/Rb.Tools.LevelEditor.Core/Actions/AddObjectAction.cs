@@ -1,5 +1,6 @@
 using System;
 using Rb.Core.Components;
+using Rb.Core.Maths;
 using Rb.Tools.LevelEditor.Core.Selection;
 
 namespace Rb.Tools.LevelEditor.Core.Actions
@@ -9,7 +10,7 @@ namespace Rb.Tools.LevelEditor.Core.Actions
 		/// <summary>
 		/// Action setup constructor
 		/// </summary>
-		public AddObjectAction( object template, PickInfoCursor pick, Guid id )
+		public AddObjectAction( object template, ILineIntersection pick, Guid id )
 		{
 			m_Id = id;
 			m_Instance = EditorState.Instance.ObjectEditorBuilder.Create( pick, CreateInstance( template ) );

@@ -1,5 +1,6 @@
 using Poc0.Core;
 using Rb.Core.Components;
+using Rb.Core.Maths;
 using Rb.Tools.LevelEditor.Core.Selection;
 
 namespace Poc0.LevelEditor.Core
@@ -15,7 +16,7 @@ namespace Poc0.LevelEditor.Core
 		/// <param name="pick">Position to place the object at</param>
 		/// <param name="instance">Runtime game object</param>
 		/// <returns>Selectable instance</returns>
-		public override IObjectEditor Create( PickInfoCursor pick, object instance )
+		public override IObjectEditor Create( ILineIntersection pick, object instance )
 		{
 			ObjectEditor result = new ObjectEditor( instance );
 

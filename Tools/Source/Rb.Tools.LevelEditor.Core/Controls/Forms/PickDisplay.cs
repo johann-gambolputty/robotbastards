@@ -5,7 +5,6 @@ using Rb.Rendering.Cameras;
 using Rb.Rendering.Windows;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
-using Rectangle=System.Drawing.Rectangle;
 
 namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 {
@@ -26,6 +25,58 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		#region IPicker Members
 
 		/// <summary>
+		/// Gets the pick raycast options
+		/// </summary>
+		public RayCastOptions PickOptions
+		{
+			get { return m_PickOptions; }
+		}
+
+		/// <summary>
+		/// Creates a pick ray, and returns the first intersection in the scene
+		/// </summary>
+		public ILineIntersection FirstPick( int cursorX, int cursorY )
+		{
+			Viewer viewer = GetViewerUnderCursor( cursorX, cursorY );
+			if ( ( viewer == null ) || ( viewer.Camera == null ) )
+			{
+				return null;
+			}
+			if ( viewer.Camera is ICamera3 )
+			{
+				Ray3 ray = ( ( ICamera3 )viewer.Camera ).PickRay( cursorX, cursorY );
+				Line3Intersection intersection = m_Raycaster.GetFirstIntersection( ray, PickOptions );
+				return intersection;
+			}
+
+			return null;
+		}
+		
+		/// <summary>
+		/// Gets the objects whose shapes overlap a box (frustum in 3d)
+		/// </summary>
+		/// <param name="left">Top left corner X coordinate</param>
+		/// <param name="top">Top left corner Y coordinate</param>
+		/// <param name="right">Bottom right corner X coordinate</param>
+		/// <param name="bottom">Bottom right corner Y coordinate</param>
+		/// <returns>Returns a list of objects in the box</returns>
+		public object[] GetObjectsInBox( int left, int top, int right, int bottom )
+		{
+			Viewer viewer = GetViewerUnderCursor( left, top );
+			if ( ( viewer == null ) || ( viewer.Camera == null ) )
+			{
+				return new object[] {};
+			}
+
+			if ( viewer.Camera is ICamera3 )
+			{
+				//	TODO: AP: Create a frustum. Run through all objects with shapes. If shape intersects frustum, add to list
+			}
+
+			return new object[] {};
+		}
+
+		/// <summary>
 		/// Creates cursor pick information
 		/// </summary>
 		/// <param name="cursorX">Cursor X position</param>
@@ -33,31 +84,16 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		/// <returns>Returns pick information</returns>
 		public PickInfoCursor CreateCursorPickInfo( int cursorX, int cursorY )
 		{
-			Rectangle rect = Bounds;
-			foreach ( Viewer viewer in Viewers )
+			Viewer viewer = GetViewerUnderCursor( cursorX, cursorY );
+			if ( ( viewer == null ) || ( viewer.Camera == null ) )
 			{
-				if ( viewer.Camera == null )
-				{
-					continue;
-				}
-				if ( viewer.GetWindowRectangle( rect ).Contains( cursorX, cursorY ) )
-				{
-					if ( viewer.Camera is ICamera3 )
-					{
-						Ray3 ray = ( ( ICamera3 )viewer.Camera ).PickRay( cursorX, cursorY );
-						Line3Intersection intersection = m_Raycaster.GetFirstIntersection( ray, null );
-						if ( intersection == null )
-						{
-							return null;
-						}
-
-						return new PickInfoRay3( cursorX, cursorY, ray, intersection );
-					}
-					else
-					{
-						throw new NotImplementedException( "2D cameras not supported yet" );
-					}
-				}
+				return null;
+			}
+			if ( viewer.Camera is ICamera3 )
+			{
+				Ray3 ray = ( ( ICamera3 )viewer.Camera ).PickRay( cursorX, cursorY );
+				Line3Intersection intersection = m_Raycaster.GetFirstIntersection( ray, null );
+				return intersection == null ? null : new PickInfoRay3( cursorX, cursorY, ray, intersection );
 			}
 
 			return null;
@@ -85,5 +121,6 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		#endregion
 
 		private readonly IRayCaster m_Raycaster;
+		private readonly RayCastOptions m_PickOptions = new RayCastOptions( );
 	}
 }

@@ -12,35 +12,23 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public Point3	Centre
 		{
-			get
-			{
-				return m_Centre;
-			}
-			set
-			{
-				m_Centre = value;
-			}
+			get { return m_Centre; }
+			set { m_Centre = value; }
 		}
 
 		/// <summary>
 		/// Gets or sets the radius of the sphere
 		/// </summary>
-		public float	Radius
+		public float Radius
 		{
-			get
-			{
-				return m_Radius;
-			}
-			set
-			{
-				m_Radius = value;
-			}
+			get { return m_Radius; }
+			set { m_Radius = value; }
 		}
 
 		/// <summary>
 		/// Gets or sets the squared radius of the sphere
 		/// </summary>
-		public float	SqrRadius
+		public float SqrRadius
 		{
 			get
 			{
@@ -48,7 +36,7 @@ namespace Rb.Core.Maths
 			}
 			set
 			{
-				m_Radius = ( float )System.Math.Sqrt( value );
+				m_Radius = ( float )Math.Sqrt( value );
 			}
 		}
 

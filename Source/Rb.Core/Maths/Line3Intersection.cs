@@ -5,17 +5,10 @@ namespace Rb.Core.Maths
 	/// <summary>
 	/// Details about the intersection of a ray with an object
 	/// </summary>
-	[Serializable] // TODO: AP: Not complete... can't serialize intersected object
-	public class Line3Intersection
+	[Serializable]
+	public class Line3Intersection : ILineIntersection
 	{
-		/// <summary>
-		/// The object that the ray intersected. Can be null even if intersection was successful
-		/// </summary>
-		public object IntersectedObject
-		{
-			get { return m_Object; }
-			set { m_Object = value; }
-		}
+		#region Public properties
 
 		/// <summary>
 		/// The point that the ray intersected the object. Always valid
@@ -35,6 +28,19 @@ namespace Rb.Core.Maths
 			set { m_Normal = value; }
 		}
 
+		#endregion
+
+		#region ILineIntersection members
+
+		/// <summary>
+		/// The object that the ray intersected. Can be null even if intersection was successful
+		/// </summary>
+		public object IntersectedObject
+		{
+			get { return m_Object; }
+			set { m_Object = value; }
+		}
+
 		/// <summary>
 		/// Distance along the ray at which the intersection occurred
 		/// </summary>
@@ -46,6 +52,10 @@ namespace Rb.Core.Maths
 			get { return m_Distance; }
 			set { m_Distance = value; }
 		}
+
+		#endregion
+
+		#region Construction
 
 		/// <summary>
 		/// Default constructor
@@ -67,11 +77,30 @@ namespace Rb.Core.Maths
 			m_Distance	= distance;
 		}
 
-		[NonSerialized]
-		private object	m_Object;
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		/// <param name="pos"> Ray intersection position </param>
+		/// <param name="normal"> Ray intersection normal </param>
+		/// <param name="distance"> Ray intersection distance </param>
+		/// <param name="obj">Intersected object</param>
+		public Line3Intersection( Point3 pos, Vector3 normal, float distance, object obj )
+		{
+			m_Position = pos;
+			m_Normal = normal;
+			m_Distance = distance;
+			m_Object = obj;
+		}
 
+		#endregion
+
+		#region Private members
+
+		private object	m_Object;
 		private Point3	m_Position;
 		private Vector3	m_Normal;
 		private float	m_Distance;
+
+		#endregion
 	}
 }

@@ -1,4 +1,3 @@
-using System;
 
 namespace Rb.Core.Maths
 {
@@ -18,18 +17,18 @@ namespace Rb.Core.Maths
 		{
 			m_BaseSpline	= baseSpline;
 			m_Offset		= offset;
-			m_BaseSpline.OnChangedEvent += new Curve.ChangedDelegate( OnBaseSplineChanged );
+			m_BaseSpline.OnChangedEvent += OnBaseSplineChanged;
 		}
 
 		#endregion
 
 		#region	Point evaluation
 
-		private void MakeEvaluator( ref CatmullRomSpline.Evaluator eval, OffsetCatmullRomSpline spline, float t, CatmullRomSpline baseSpline, float offset )
+		private static void MakeEvaluator( ref CatmullRomSpline.Evaluator eval, float t, ControlledSpline baseSpline, float offset )
 		{
 			eval.Points	= new Point3[ 4 ];
 			eval.CpIndex = ( int )t;
-			eval.LocalT	= t - ( float )eval.CpIndex;
+			eval.LocalT	= t - eval.CpIndex;
 
 			SplineControlPoints controlPoints = baseSpline.ControlPoints;
 			if ( eval.CpIndex == 0 )
@@ -70,50 +69,50 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Calculates the position on the spline at fraction t
 		/// </summary>
-		public override Point3	EvaluatePosition( float t )
+		public override Point3 EvaluatePosition( float t )
 		{
 			CatmullRomSpline.Evaluator eval = new CatmullRomSpline.Evaluator( );
-			MakeEvaluator( ref eval, this, t, m_BaseSpline, m_Offset );
+			MakeEvaluator( ref eval, t, m_BaseSpline, m_Offset );
 			return eval.EvaluatePosition( );
 		}
 
 		/// <summary>
 		/// Calculates the first derivative on the spline at fraction t
 		/// </summary>
-		public override Vector3		EvaluateFirstDerivative( float t )
+		public override Vector3 EvaluateFirstDerivative( float t )
 		{
 			CatmullRomSpline.Evaluator eval = new CatmullRomSpline.Evaluator( );
-			MakeEvaluator( ref eval, this, t, m_BaseSpline, m_Offset );
+			MakeEvaluator( ref eval,  t, m_BaseSpline, m_Offset );
 			return eval.EvaluateFirstDerivative( );
 		}
 
 		/// <summary>
 		/// Calculates the second derivative on the spline at fraction t
 		/// </summary>
-		public override Vector3		EvaluateSecondDerivative( float t )
+		public override Vector3 EvaluateSecondDerivative( float t )
 		{
 			CatmullRomSpline.Evaluator eval = new CatmullRomSpline.Evaluator( );
-			MakeEvaluator( ref eval, this, t, m_BaseSpline, m_Offset );
+			MakeEvaluator( ref eval, t, m_BaseSpline, m_Offset );
 			return eval.EvaluateSecondDerivative( );
 		}
 
 		/// <summary>
 		/// Calculates the tangent, bi-normal, normal, speed and curvature on the spline at fraction t
 		/// </summary>
-		public override CurveFrame	EvaluateFrame( float t )
+		public override CurveFrame EvaluateFrame( float t )
 		{
 			CatmullRomSpline.Evaluator eval = new CatmullRomSpline.Evaluator( );
-			MakeEvaluator( ref eval, this, t, m_BaseSpline, m_Offset );
+			MakeEvaluator( ref eval, t, m_BaseSpline, m_Offset );
 			return eval.EvaluateFrame( );
 		}
 
 		/// <summary>
 		/// Evaluates the curvature on the spline at fraction t
 		/// </summary>
-		public override float		EvaluateCurvature( float t )
+		public override float EvaluateCurvature( float t )
 		{
 			CatmullRomSpline.Evaluator eval = new CatmullRomSpline.Evaluator( );
-			MakeEvaluator( ref eval, this, t, m_BaseSpline, m_Offset );
+			MakeEvaluator( ref eval, t, m_BaseSpline, m_Offset );
 			return eval.EvaluateCurvature( );
 		}
 
@@ -138,7 +137,7 @@ namespace Rb.Core.Maths
 
 			for ( int cpIndex = 0; cpIndex < numControlPoints; ++cpIndex )
 			{
-				MakeEvaluator( ref eval, this, ( float )cpIndex, m_BaseSpline, m_Offset );
+				MakeEvaluator( ref eval, cpIndex, m_BaseSpline, m_Offset );
 				closestFraction = calculator.GetClosestPointInInterval( eval, 1.0f, iterations );
 			}
 
@@ -147,12 +146,12 @@ namespace Rb.Core.Maths
 
 		#endregion
 
-		#region						Private stuff
+		#region Private stuff
 
-		private CatmullRomSpline	m_BaseSpline;
-		private float				m_Offset;
+		private readonly CatmullRomSpline m_BaseSpline;
+		private readonly float m_Offset;
 
-		private void				OnBaseSplineChanged( Curve baseSpline )
+		private void OnBaseSplineChanged( Curve baseSpline )
 		{
 			OnChanged( );
 		}

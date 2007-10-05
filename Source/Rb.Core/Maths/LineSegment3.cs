@@ -40,6 +40,16 @@ namespace Rb.Core.Maths
 		#region	Operations
 
 		/// <summary>
+		/// Gets a point on the line
+		/// </summary>
+		/// <param name="t">Fraction along the line (0==start, 1==end)</param>
+		/// <returns>Returns the evaluated point on the line</returns>
+		public Point3 GetPointOnLine( float t )
+		{
+			return m_Start + ( m_End - m_Start ) * t;
+		}
+
+		/// <summary>
 		/// Returns the squared distance from this line to a point
 		/// </summary>
 		/// <param name="pt"> Point to test </param>
@@ -76,37 +86,25 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Start position on the line
 		/// </summary>
-		public Point3	Start
+		public Point3 Start
 		{
-			get
-			{
-				return m_Start;
-			}
-			set
-			{
-				m_Start = value;
-			}
+			get { return m_Start; }
+			set { m_Start = value; }
 		}
 
 		/// <summary>
 		/// End position on the line
 		/// </summary>
-		public Point3	End
+		public Point3 End
 		{
-			get
-			{
-				return m_End;
-			}
-			set
-			{
-				m_End = value;
-			}
+			get { return m_End; }
+			set { m_End = value; }
 		}
 
 		/// <summary>
 		/// Length of the line
 		/// </summary>
-		public float	Length
+		public float Length
 		{
 			get
 			{
@@ -118,8 +116,8 @@ namespace Rb.Core.Maths
 
 		#region	Private stuff
 
-		Point3	m_Start;
-		Point3	m_End;
+		private Point3 m_Start;
+		private Point3 m_End;
 
 		#endregion
 	}

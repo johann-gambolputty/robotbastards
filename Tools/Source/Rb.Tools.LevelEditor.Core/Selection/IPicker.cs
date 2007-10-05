@@ -1,3 +1,6 @@
+using Rb.Core.Maths;
+using Rb.World;
+
 namespace Rb.Tools.LevelEditor.Core.Selection
 {
 	/// <summary>
@@ -8,6 +11,29 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 	/// </remarks>
 	public interface IPicker
 	{
+		/// <summary>
+		/// Gets the pick raycast options
+		/// </summary>
+		RayCastOptions PickOptions
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Creates a pick ray, and returns the first intersection in the scene
+		/// </summary>
+		ILineIntersection FirstPick( int cursorX, int cursorY );
+
+		/// <summary>
+		/// Gets the objects whose shapes overlap a box (frustum in 3d)
+		/// </summary>
+		/// <param name="left">Top left corner X coordinate</param>
+		/// <param name="top">Top left corner Y coordinate</param>
+		/// <param name="right">Bottom right corner X coordinate</param>
+		/// <param name="bottom">Bottom right corner Y coordinate</param>
+		/// <returns>Returns a list of objects in the box</returns>
+		object[] GetObjectsInBox( int left, int top, int right, int bottom );
+
 		/// <summary>
 		/// Creates cursor pick information
 		/// </summary>

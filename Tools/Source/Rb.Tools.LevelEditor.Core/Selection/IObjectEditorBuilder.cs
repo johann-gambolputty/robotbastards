@@ -1,4 +1,6 @@
 
+using Rb.Core.Maths;
+
 namespace Rb.Tools.LevelEditor.Core.Selection
 {
 	/// <summary>
@@ -12,6 +14,6 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 		/// <param name="pick">Position to place the object at</param>
 		/// <param name="instance">Runtime game object</param>
 		/// <returns>Selectable instance</returns>
-		IObjectEditor Create( PickInfoCursor pick, object instance );
+		IObjectEditor Create( ILineIntersection pick, object instance );
 	}
 }

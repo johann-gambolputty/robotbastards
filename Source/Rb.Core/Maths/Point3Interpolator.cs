@@ -1,4 +1,3 @@
-using System;
 
 namespace Rb.Core.Maths
 {
@@ -52,7 +51,7 @@ namespace Rb.Core.Maths
 		/// <returns>Returns Previous, if t is 0, Next if t is 1, and an intermediate position if t is inbetween 0 and 1</returns>
 		public Point3	Get( long time )
 		{
-			return Get( ( float )( time - m_LastStepTime ) / ( float )m_LastStepInterval );
+			return Get( ( time - m_LastStepTime ) / ( float )m_LastStepInterval );
 		}
 
 		#endregion

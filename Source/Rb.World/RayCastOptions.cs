@@ -36,6 +36,21 @@ namespace Rb.World
 
         #endregion
 
+		/// <summary>
+		/// Returns true if the specified object is not excluded, and is on an appropriate layer
+		/// </summary>
+		/// <param name="obj">Object to test</param>
+		/// <returns>True if obj is not excluded, and (if obj is an IRayLayerIntersector), is on an appropriate layer</returns>
+		public bool TestObject( object obj )
+		{
+			IRayLayerIntersector layerIntersector = obj as IRayLayerIntersector;
+			if ( ( layerIntersector != null ) && ( !IsLayerIncluded( layerIntersector.Layers ) ) )
+			{
+				return false;
+			}
+			return !IsExcluded( obj );
+		}
+
         #region	Ray length
 
         /// <summary>
@@ -118,7 +133,7 @@ namespace Rb.World
         /// <summary>
         /// Returns true if the specified layer is included in the layers stored in this object
         /// </summary>
-        public bool IsLayerIncluded(ulong layer)
+        public bool IsLayerIncluded( ulong layer )
         {
             return ( layer == 0 ) || ( ( layer & m_Layers ) != 0 );
         }
@@ -186,24 +201,12 @@ namespace Rb.World
 
         #endregion
 
-        /// <summary>
-        /// Gets a static default constructed RayCastOptions object
-        /// </summary>
-        public static RayCastOptions Default
-        {
-            get
-            {
-                return ms_Default;
-            }
-        }
 
         #region	Private stuff
 
-        private ArrayList               m_Exclusions    = new ArrayList( );
-        private ulong                   m_Layers        = ulong.MaxValue;
-        private float                   m_MaxLength     = float.MaxValue;
-
-        private static RayCastOptions   ms_Default      = new RayCastOptions( );
+        private readonly ArrayList		m_Exclusions    = new ArrayList( );
+        private ulong					m_Layers        = ulong.MaxValue;
+        private float					m_MaxLength     = float.MaxValue;
 
         #endregion
     }
