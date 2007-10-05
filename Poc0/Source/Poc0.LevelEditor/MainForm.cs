@@ -4,6 +4,7 @@ using Poc0.LevelEditor.Core;
 using Rb.Core.Assets;
 using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.Controls.Forms;
+using Rb.World;
 
 namespace Poc0.LevelEditor
 {
@@ -14,6 +15,8 @@ namespace Poc0.LevelEditor
 		/// </summary>
 		public MainForm( )
 		{
+			EditorState.Instance.ObjectEditorBuilder = new GameObjectEditorBuilder( );
+
 			m_EditorControlsContent = DockingManager.Contents.Add( new EditorControls( ), Properties.Resources.EditorToolbox );
 			m_GameViewContent = DockingManager.Contents.Add( new GameViewControl( ), Properties.Resources.EditorToolbox );
 
@@ -50,6 +53,12 @@ namespace Poc0.LevelEditor
 		protected override void PopulateNewScene( EditorScene scene )
 		{
 			base.PopulateNewScene( scene );
+
+			//	Populate runtime scene
+			scene.RuntimeScene.AddService( new LightingManager( ) );
+
+
+			//	Populate editor scene
 			scene.Objects.Add( Guid.NewGuid( ), new LevelGeometry( scene ) );
 		}
 

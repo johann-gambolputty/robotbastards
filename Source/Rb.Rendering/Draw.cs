@@ -424,7 +424,46 @@ namespace Rb.Rendering
 		}
 
 		#endregion
-		
+
+		#region Circles
+
+		/// <summary>
+		/// Draws a circle
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="centre">Circle centre</param>
+		/// <param name="radius">Circle radius</param>
+		public void Circle( IPen pen, Point3 centre, float radius )
+		{
+			Circle( pen, centre.X, centre.Y, centre.Z, radius, 10 );
+		}
+
+		/// <summary>
+		/// Draws a circle
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="x">Circle centre X coordinate</param>
+		/// <param name="y">Circle centre Y coordinate</param>
+		/// <param name="z">Circle centre Z coordinate</param>
+		/// <param name="radius">Circle radius</param>
+		public void Circle( IPen pen, float x, float y, float z, float radius )
+		{
+			Circle( pen, x, y, radius, 10 );
+		}
+
+		/// <summary>
+		/// Draws a circle
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="x">Circle centre X coordinate</param>
+		/// <param name="y">Circle centre Y coordinate</param>
+		/// <param name="z">Circle centre Z coordinate</param>
+		/// <param name="radius">Circle radius</param>
+		/// <param name="samples">Number of subdivisions around the circumference</param>
+		public abstract void Circle( IPen pen, float x, float y, float z, float radius, int samples );
+
+		#endregion
+
 		#region Filled circles
 
 		/// <summary>
@@ -448,7 +487,7 @@ namespace Rb.Rendering
 		/// <param name="radius">Circle radius</param>
 		public void Circle( IBrush brush, float x, float y, float z, float radius )
 		{
-			Circle( brush, x, y, radius, 10 );
+			Circle( brush, x, y, z, radius, 10 );
 		}
 
 		/// <summary>

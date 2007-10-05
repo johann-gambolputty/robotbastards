@@ -16,7 +16,7 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 		/// <returns>Selectable instance</returns>
 		public virtual IObjectEditor Create( PickInfoCursor pick, object instance )
 		{
-			return new ObjectEditor( pick, instance );
+			return new ObjectEditor( instance );
 		}
 
 		#endregion

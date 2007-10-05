@@ -213,7 +213,14 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			{
 				foreach ( Assembly assembly in AppDomain.CurrentDomain.GetAssemblies( ) )
 				{
-					AddAssembly( assembly );
+					try
+					{
+						AddAssembly( assembly );
+					}
+					catch
+					{
+						//	This sometimes happens with assemblies that can be loaded for reflection
+					}
 				}
 
 				m_GroupFont = new Font( Font.FontFamily, Font.Size, Font.Style | FontStyle.Bold, Font.Unit );

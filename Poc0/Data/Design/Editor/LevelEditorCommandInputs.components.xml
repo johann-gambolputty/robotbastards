@@ -12,7 +12,10 @@
           <input button="None" key="ControlKey" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
         </command>
         <command name="Zoom">
-          <input button="None" min="0.5" max="4.0" delta="0.1" initial="1" type="Rb.Interaction.Windows.MouseScrollInputTemplate" assembly="Rb.Interaction.Windows"/>
+          <input button="None" min="0.5" max="100.0" delta="1.0" initial="50" type="Rb.Interaction.Windows.MouseScrollInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Rotate">
+          <input button="None" key="ShiftKey" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
         </command>
       </commandList>
     </serialise>

@@ -156,7 +156,7 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 			}
 			if ( UsingPickAction )
 			{
-				if ( ( m_PickAction.HasModifiedObjects ) && ( m_DeselectOnNoMove ) )
+				if ( ( !m_PickAction.HasModifiedObjects ) && ( m_DeselectOnNoMove ) )
 				{
 					object obj = EditorState.Instance.CurrentScene.PickObject( m_LastCursorPick );
 					if ( obj != null )
