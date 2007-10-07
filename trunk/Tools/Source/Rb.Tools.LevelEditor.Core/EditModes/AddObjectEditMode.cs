@@ -5,6 +5,7 @@ using Rb.Core.Utils;
 using Rb.Log;
 using Rb.Tools.LevelEditor.Core.Actions;
 using Rb.Tools.LevelEditor.Core.Selection;
+using Rb.World;
 
 namespace Rb.Tools.LevelEditor.Core.EditModes
 {
@@ -18,10 +19,12 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 		/// </summary>
 		/// <param name="actionButton">The mouse button that this edit mode listens out for</param>
 		/// <param name="template">Object template used for creating new objects. Must be ICloneable or IInstanceBuilder</param>
-		public AddObjectEditMode( MouseButtons actionButton, object template )
+		/// <param name="pickOptions">Parameters for intersections used to find the position of new objects</param>
+		public AddObjectEditMode( MouseButtons actionButton, object template, RayCastOptions pickOptions )
 		{
 			m_ActionButton = actionButton;
 			m_Template = template;
+			m_PickOptions = pickOptions;
 		}
 
 		/// <summary>
@@ -45,7 +48,7 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 			}
 			IPicker picker = ( IPicker )sender;
 
-			ILineIntersection pick = picker.FirstPick( args.X, args.Y );
+			ILineIntersection pick = picker.FirstPick( args.X, args.Y, m_PickOptions );
 			if ( pick != null )
 			{
 				Guid id = Guid.NewGuid( );
@@ -92,6 +95,7 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 
 		private readonly MouseButtons m_ActionButton;
 		private readonly object m_Template;
+		private readonly RayCastOptions m_PickOptions;
 
 		#endregion
 	}

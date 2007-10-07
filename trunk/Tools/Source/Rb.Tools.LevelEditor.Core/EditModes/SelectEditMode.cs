@@ -1,6 +1,8 @@
 using System.Windows.Forms;
+using Rb.Core.Maths;
 using Rb.Tools.LevelEditor.Core.Actions;
 using Rb.Tools.LevelEditor.Core.Selection;
+using Rb.World;
 
 namespace Rb.Tools.LevelEditor.Core.EditModes
 {
@@ -125,7 +127,13 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 		private void OnMouseMove( object sender, MouseEventArgs args )
 		{
 			IPicker picker = ( IPicker )sender;
-			PickInfoCursor pick = picker.CreateCursorPickInfo( args.X, args.Y );
+			ILineIntersection pick = picker.FirstPick( args.X, args.Y, new RayCastOptions( ) );
+			if ( pick == null )
+			{
+				return;
+			}
+
+			PickInfoCursor tmpPick = picker.CreateCursorPickInfo( args.X, args.Y );
 
 			if ( ( ( args.Button & m_ActionButton ) == 0 ) || ( !UsingPickAction ) )
 			{
@@ -133,7 +141,7 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 				{
 					m_LastHighlit.Highlighted = false;
 				}
-				m_LastHighlit = EditorState.Instance.CurrentScene.PickObject( pick ) as ISelectable;
+				m_LastHighlit = pick.IntersectedObject as ISelectable;
 				if ( m_LastHighlit != null )
 				{
 					m_LastHighlit.Highlighted = true;
@@ -141,10 +149,10 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 			}
 			else
 			{
-				m_PickAction.PickChanged( m_LastCursorPick, pick );
+				m_PickAction.PickChanged( m_LastCursorPick, tmpPick );
 			}
 
-			m_LastCursorPick = pick;
+			m_LastCursorPick = tmpPick;
 		}
 
 		

@@ -7,6 +7,7 @@ using Rb.Core.Assets;
 using Rb.Core.Components;
 using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.EditModes;
+using Rb.World;
 
 namespace Poc0.LevelEditor
 {
@@ -36,6 +37,8 @@ namespace Poc0.LevelEditor
 
 		private UserBrushEditMode m_CurrentEditMode;
 		private readonly ArrayList m_Templates = new ArrayList( );
+		private static readonly RayCastOptions ms_PickOptions = new RayCastOptions( RayCastLayers.Grid | RayCastLayers.StaticGeometry );
+
 
 		private void PopulateObjectTemplates( IEnumerable templates )
 		{
@@ -58,7 +61,7 @@ namespace Poc0.LevelEditor
 			object template = objectsTreeView.SelectedNode.Tag;
 			if ( template != null )
 			{
-				EditorState.Instance.AddEditMode( new AddObjectEditMode( MouseButtons.Right, template ) );
+				EditorState.Instance.AddEditMode( new AddObjectEditMode( MouseButtons.Right, template, ms_PickOptions ) );
 			}
 		}
 

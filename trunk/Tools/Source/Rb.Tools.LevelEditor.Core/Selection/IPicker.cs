@@ -12,17 +12,9 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 	public interface IPicker
 	{
 		/// <summary>
-		/// Gets the pick raycast options
-		/// </summary>
-		RayCastOptions PickOptions
-		{
-			get;
-		}
-
-		/// <summary>
 		/// Creates a pick ray, and returns the first intersection in the scene
 		/// </summary>
-		ILineIntersection FirstPick( int cursorX, int cursorY );
+		ILineIntersection FirstPick( int cursorX, int cursorY, RayCastOptions options );
 
 		/// <summary>
 		/// Gets the objects whose shapes overlap a box (frustum in 3d)
