@@ -2,9 +2,11 @@ using System;
 using System.Drawing;
 using Poc0.Core;
 using Rb.Core.Maths;
+using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.Actions;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.Rendering;
+using Rb.World;
 using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc0.LevelEditor.Core
@@ -12,7 +14,7 @@ namespace Poc0.LevelEditor.Core
 	/// <summary>
 	/// For changing the position of a game object
 	/// </summary>
-	public class PositionEditor : IObjectEditor, IPickable, IMoveable3, IRenderable, ISelectable
+	public class PositionEditor : IRay3Intersector, IObjectEditor, IPickable, IMoveable3, IRenderable, ISelectable
 	{
 		/// <summary>
 		/// Sets up this editor
@@ -23,6 +25,9 @@ namespace Poc0.LevelEditor.Core
 		{
 			m_HasPosition = hasPosition;
 			m_HasPosition.Position = ( ( Line3Intersection )pick ).IntersectionPosition;
+
+			IRayCaster rayCaster = EditorState.Instance.CurrentScene.GetService<IRayCaster>( );
+			rayCaster.AddIntersector( RayCastLayers.Entity, this );
 		}
 
 		#region IPickable Members
@@ -146,6 +151,20 @@ namespace Poc0.LevelEditor.Core
 		{
 			get { return m_Selected; }
 			set { m_Selected = value; }
+		}
+
+		#endregion
+
+		#region IRay3Intersector Members
+
+		public bool TestIntersection( Ray3 ray )
+		{
+			throw new Exception( "The method or operation is not implemented." );
+		}
+
+		public Line3Intersection GetIntersection( Ray3 ray )
+		{
+			throw new Exception( "The method or operation is not implemented." );
 		}
 
 		#endregion

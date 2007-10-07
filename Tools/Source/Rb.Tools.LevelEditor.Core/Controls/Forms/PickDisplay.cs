@@ -25,17 +25,9 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		#region IPicker Members
 
 		/// <summary>
-		/// Gets the pick raycast options
-		/// </summary>
-		public RayCastOptions PickOptions
-		{
-			get { return m_PickOptions; }
-		}
-
-		/// <summary>
 		/// Creates a pick ray, and returns the first intersection in the scene
 		/// </summary>
-		public ILineIntersection FirstPick( int cursorX, int cursorY )
+		public ILineIntersection FirstPick( int cursorX, int cursorY, RayCastOptions options )
 		{
 			Viewer viewer = GetViewerUnderCursor( cursorX, cursorY );
 			if ( ( viewer == null ) || ( viewer.Camera == null ) )
@@ -45,7 +37,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			if ( viewer.Camera is ICamera3 )
 			{
 				Ray3 ray = ( ( ICamera3 )viewer.Camera ).PickRay( cursorX, cursorY );
-				Line3Intersection intersection = m_Raycaster.GetFirstIntersection( ray, PickOptions );
+				Line3Intersection intersection = m_Raycaster.GetFirstIntersection( ray, options );
 				return intersection;
 			}
 
@@ -121,6 +113,5 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		#endregion
 
 		private readonly IRayCaster m_Raycaster;
-		private readonly RayCastOptions m_PickOptions = new RayCastOptions( );
 	}
 }

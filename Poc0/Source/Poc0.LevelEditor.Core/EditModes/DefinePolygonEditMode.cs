@@ -7,6 +7,7 @@ using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.EditModes;
 using Rb.Tools.LevelEditor.Core.Selection;
+using Rb.World;
 using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc0.LevelEditor.Core.EditModes
@@ -147,6 +148,8 @@ namespace Poc0.LevelEditor.Core.EditModes
 		private readonly List< Point3 >	m_Points = new List< Point3 >( );
 		private Point3					m_CursorPoint;
 
+		private static readonly RayCastOptions ms_PickOptions = new RayCastOptions( RayCastLayers.Grid );
+
 		/// <summary>
 		/// Point distance tolerance - the polygon is closed when the user adds a vertex this close to the first vertex
 		/// </summary>
@@ -197,24 +200,12 @@ namespace Poc0.LevelEditor.Core.EditModes
 		private void OnMouseMove( object sender, MouseEventArgs args )
 		{
 			IPicker picker = ( IPicker )sender;
-			PickInfoCursor pick = picker.CreateCursorPickInfo( args.X, args.Y );
+			ILineIntersection pick = picker.FirstPick( args.X, args.Y, ms_PickOptions );
 			if ( pick == null )
 			{
 				return;
 			}
-			if ( pick is IPickInfo3 )
-			{
-				m_CursorPoint = ( ( IPickInfo3 )pick ).PickPoint;
-			}
-			else if ( pick is IPickInfo2 )
-			{
-				Point2 pt = ( ( IPickInfo2 )pick ).PickPoint;
-				m_CursorPoint = new Point3( pt.X, pt.Y, 0 );
-			}
-			else
-			{
-				throw new NotImplementedException( );
-			}
+			m_CursorPoint = ( ( Line3Intersection )pick ).IntersectionPosition;
 		}
 
 		/// <summary>
@@ -230,7 +221,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 				}
 				else
 				{
-					m_Points.Add( new Point3( m_CursorPoint ) );
+					m_Points.Add( m_CursorPoint );
 				}
 			}
 			else if ( args.Button == MouseButtons.Right )

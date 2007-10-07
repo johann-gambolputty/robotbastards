@@ -63,12 +63,8 @@ namespace Poc0.LevelEditor
 
 			IRayCaster rayCaster = new RayCaster( );
 			scene.AddService( rayCaster );
-			rayCaster.AddIntersector( GridLayer, new Plane3( new Vector3( 0, 1, 0 ), 0 ) );
+			rayCaster.AddIntersector( RayCastLayers.Grid, new Plane3( new Vector3( 0, 1, 0 ), 0 ) );
 		}
-
-		public const ulong GridLayer = 0x1;
-		public const ulong StaticGeometryLayer = 0x2;
-		public const ulong EntityLayer = 0x2;
 
 		private readonly Content m_EditorControlsContent;
 		private readonly Content m_GameViewContent;

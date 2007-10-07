@@ -7,6 +7,7 @@ using Crownwood.Magic.Docking;
 using Crownwood.Magic.Common;
 using Rb.Core.Assets;
 using Rb.Core.Components;
+using Rb.Core.Maths;
 using Rb.Core.Utils;
 using Rb.Interaction;
 using Rb.Log;
@@ -325,10 +326,11 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		private readonly Content 			m_PropertyEditorContent;
 		private readonly Content 			m_SelectionContent;
 
+		private static readonly RayCastOptions ms_PickOptions = new RayCastOptions( );
+
 		#endregion
 
 		#region Form event handlers
-
 
 		private void MainForm_Load( object sender, EventArgs e )
 		{
@@ -393,12 +395,12 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			}
 		}
 
-		private void undoToolStripMenuItem_Click( object sender, EventArgs e )
+		private static void undoToolStripMenuItem_Click( object sender, EventArgs e )
 		{
 			EditorState.Instance.CurrentUndoStack.Undo( );
 		}
 
-		private void redoToolStripMenuItem_Click( object sender, EventArgs e )
+		private static void redoToolStripMenuItem_Click( object sender, EventArgs e )
 		{
 			EditorState.Instance.CurrentUndoStack.Redo( );
 		}
@@ -416,32 +418,15 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		private void display_MouseMove( object sender, MouseEventArgs e )
 		{
 			//	Display the world position that the cursor is at in the status bar
-			foreach ( Viewer viewer in display.Viewers )
+			ILineIntersection pick = display.FirstPick( e.X, e.Y, ms_PickOptions );
+			if ( pick != null )
 			{
-				Rectangle winRect = viewer.GetWindowRectangle( display.Bounds );
-				if ( winRect.Contains( e.Location ) )
-				{
-					IPicker picker = viewer.Camera as IPicker;
-					if ( picker == null )
-					{
-						continue;
-					}
-
-					PickInfoCursor pick = picker.CreateCursorPickInfo( e.X, e.Y );
-					if ( pick != null )
-					{
-						posStatusLabel.Text = pick.ToString( );
-					}
-					else
-					{
-						posStatusLabel.Text = "";
-					}
-
-					return;
-				}
+				posStatusLabel.Text = pick.ToString( );
 			}
-			//	No valid viewer found
-			posStatusLabel.Text = "";
+			else
+			{
+				posStatusLabel.Text = "";
+			}
 		}
 
 		#endregion

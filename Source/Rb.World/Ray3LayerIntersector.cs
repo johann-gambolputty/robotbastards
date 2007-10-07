@@ -48,7 +48,15 @@ namespace Rb.World
 		public ulong Layers
 		{
 			get { return m_Layers; }
-			set { m_Layers = value; }
+			set
+			{
+				ulong oldLayers = m_Layers;
+				m_Layers = value;
+				if ( LayersChanged != null )
+				{
+					LayersChanged( this, oldLayers, m_Layers );
+				}
+			}
 		}
 
 		#endregion

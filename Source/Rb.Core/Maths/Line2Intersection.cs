@@ -91,6 +91,19 @@ namespace Rb.Core.Maths
 
 		#endregion
 
+		#region Public methods
+
+		/// <summary>
+		/// Converts this object to a string
+		/// </summary>
+		/// <returns>String representation</returns>
+		public override string ToString( )
+		{
+			return string.Format( "X: {0} Y: {1}", m_Position.X, m_Position.Y );
+		}
+
+		#endregion
+
 		#region Private members
 
 		private object m_Object;
