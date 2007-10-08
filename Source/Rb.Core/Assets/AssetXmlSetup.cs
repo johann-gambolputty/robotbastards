@@ -2,7 +2,6 @@ using System;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
-using Rb.Core.Utils;
 using Rb.Log;
 
 namespace Rb.Core.Assets
@@ -27,8 +26,7 @@ namespace Rb.Core.Assets
 			}
 			catch ( Exception ex )
 			{
-				AssetsLog.Error( "Failed to create XML reader" );
-				ExceptionUtils.ToLog( AssetsLog.GetSource( Severity.Error ), ex );
+				AssetsLog.Exception( ex, "Failed to create XML reader" );
 				return;
 			}
 

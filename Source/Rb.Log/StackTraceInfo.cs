@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Rb.Core.Utils
+namespace Rb.Log
 {
     /// <summary>
     /// Breaks up a stack trace string (from Exception.StackTrace or Environment.StackTrace) into component parts

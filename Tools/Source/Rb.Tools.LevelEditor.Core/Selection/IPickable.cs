@@ -1,3 +1,4 @@
+using Rb.Core.Maths;
 using Rb.Tools.LevelEditor.Core.Actions;
 
 namespace Rb.Tools.LevelEditor.Core.Selection
@@ -19,7 +20,7 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 		/// </summary>
 		/// <param name="pick">Pick information</param>
 		/// <returns>Returns the pick action</returns>
-		IPickAction CreatePickAction( IPickInfo pick );
+		IPickAction CreatePickAction( ILineIntersection pick );
 
 		/// <summary>
 		/// Returns true if the specified pick action is supported

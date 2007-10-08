@@ -25,8 +25,9 @@ namespace Poc0.LevelEditor.Core
 		{
 			m_HasPosition = hasPosition;
 			m_HasPosition.Position = ( ( Line3Intersection )pick ).IntersectionPosition;
+			m_Plane = new Plane3( m_HasPosition.Position, Vector3.YAxis );
 
-			IRayCaster rayCaster = EditorState.Instance.CurrentScene.GetService<IRayCaster>( );
+			IRayCaster rayCaster = EditorState.Instance.CurrentScene.GetService< IRayCaster >( );
 			rayCaster.AddIntersector( RayCastLayers.Entity, this );
 		}
 
@@ -51,9 +52,9 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		/// <param name="pick">Pick information</param>
 		/// <returns>Returns a move action</returns>
-		public IPickAction CreatePickAction( IPickInfo pick )
+		public IPickAction CreatePickAction( ILineIntersection pick )
 		{
-			return new MoveAction( );
+			return new MoveAction( new RayCastOptions( RayCastLayers.StaticGeometry ) );
 		}
 
 		/// <summary>
@@ -79,6 +80,7 @@ namespace Poc0.LevelEditor.Core
 		public void Move( Vector3 delta )
 		{
 			m_HasPosition.Position += delta;
+			m_Plane = new Plane3( m_HasPosition.Position, Vector3.YAxis );
 			if ( ObjectChanged != null )
 			{
 				ObjectChanged( this, null );
@@ -121,9 +123,10 @@ namespace Poc0.LevelEditor.Core
 			{
 				pen = m_DrawHighlight;
 			}
-			Graphics.Draw.Circle( pen, m_HasPosition.Position.X, m_HasPosition.Position.Y, m_HasPosition.Position.Z, 1.0f, 12 );
+			Graphics.Draw.Circle( pen, m_HasPosition.Position.X, m_HasPosition.Position.Y, m_HasPosition.Position.Z, Radius, 12 );
 		}
 
+		private const float Radius = 1.0f;
 		private readonly Draw.IBrush m_DrawUnselected = Graphics.Draw.NewBrush( Color.Black, Color.PaleGoldenrod );
 		private readonly Draw.IBrush m_DrawHighlight = Graphics.Draw.NewBrush( Color.DarkSalmon, Color.Goldenrod );
 		private readonly Draw.IBrush m_DrawSelected = Graphics.Draw.NewBrush( Color.Red, Color.Orange );
@@ -155,16 +158,35 @@ namespace Poc0.LevelEditor.Core
 
 		#endregion
 
+		private Plane3 m_Plane;
+
 		#region IRay3Intersector Members
 
+		/// <summary>
+		/// Checks if a ray intersects this object
+		/// </summary>
+		/// <param name="ray">Ray to check</param>
+		/// <returns>true if the ray intersects this object</returns>
 		public bool TestIntersection( Ray3 ray )
 		{
-			throw new Exception( "The method or operation is not implemented." );
+			Line3Intersection pick = m_Plane.GetIntersection( ray );
+			return pick == null ? false : pick.IntersectionPosition.DistanceTo( m_HasPosition.Position ) > Radius;
 		}
 
+		/// <summary>
+		/// Checks if a ray intersects this object, returning information about the intersection if it does
+		/// </summary>
+		/// <param name="ray">Ray to check</param>
+		/// <returns>Intersection information. If no intersection takes place, this method returns null</returns>
 		public Line3Intersection GetIntersection( Ray3 ray )
 		{
-			throw new Exception( "The method or operation is not implemented." );
+			Line3Intersection pick = m_Plane.GetIntersection( ray );
+			if ( ( pick == null ) || ( pick.IntersectionPosition.DistanceTo( m_HasPosition.Position ) > Radius ) )
+			{
+				return null;
+			}
+			pick.IntersectedObject = this;
+			return pick;
 		}
 
 		#endregion

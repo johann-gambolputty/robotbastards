@@ -5,6 +5,7 @@ using Rb.Core.Assets;
 using Rb.Core.Maths;
 using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.Controls.Forms;
+using Rb.Tools.LevelEditor.Core.EditModes;
 using Rb.World;
 
 namespace Poc0.LevelEditor
@@ -16,6 +17,7 @@ namespace Poc0.LevelEditor
 		/// </summary>
 		public MainForm( )
 		{
+			EditorState.Instance.AddEditMode( new SelectEditMode( System.Windows.Forms.MouseButtons.Left, new RayCastOptions( RayCastLayers.Entity ) ) );
 			EditorState.Instance.ObjectEditorBuilder = new GameObjectEditorBuilder( );
 
 			m_EditorControlsContent = DockingManager.Contents.Add( new EditorControls( ), Properties.Resources.EditorToolbox );

@@ -102,12 +102,8 @@
     <Compile Include="Selection\IPickInfo2.cs" />
     <Compile Include="Selection\IPickInfo3.cs" />
     <Compile Include="Selection\ISelectable.cs" />
-    <Compile Include="Selection\PickInfoBox2.cs" />
-    <Compile Include="Selection\PickInfoCursor.cs" />
-    <Compile Include="Selection\PickInfoRay3.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SceneEditState.cs" />
-    <Compile Include="Selection\PickInfoBox3.cs" />
     <Compile Include="Selection\ObjectEditor.cs" />
     <Compile Include="Selection\IObjectEditorBuilder.cs" />
     <Compile Include="Selection\ObjectEditorBuilder.cs" />

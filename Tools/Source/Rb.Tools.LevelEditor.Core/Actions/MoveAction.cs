@@ -3,12 +3,30 @@ using System.Collections;
 using System.Collections.Generic;
 using Rb.Core.Maths;
 using Rb.Tools.LevelEditor.Core.Selection;
+using Rb.World;
 
 namespace Rb.Tools.LevelEditor.Core.Actions
 {
 	public class MoveAction : IPickAction
 	{
+		/// <summary>
+		/// Sets up this action
+		/// </summary>
+		/// <param name="options">Pick raycast options</param>
+		public MoveAction( RayCastOptions options )
+		{
+			m_PickOptions = options;
+		}
+
 		#region IPickAction Members
+
+		/// <summary>
+		/// Gets this action's pick raycast options
+		/// </summary>
+		public RayCastOptions PickOptions
+		{
+			get { return m_PickOptions; }
+		}
 
 		/// <summary>
 		/// Adds objects to this action
@@ -30,14 +48,14 @@ namespace Rb.Tools.LevelEditor.Core.Actions
 		/// </summary>
 		/// <param name="lastPick">Last pick information</param>
 		/// <param name="curPick">Current pick information</param>
-		public void PickChanged( PickInfoCursor lastPick,  PickInfoCursor curPick )
+		public void PickChanged( ILineIntersection lastPick,  ILineIntersection curPick )
 		{
-			if ( lastPick is PickInfoRay3 )
+			if ( lastPick is Line3Intersection )
 			{
-				PickInfoRay3 lastPick3 = ( PickInfoRay3 )lastPick;
-				PickInfoRay3 curPick3 = ( PickInfoRay3 )curPick;
+				Line3Intersection lastPick3 = ( Line3Intersection )lastPick;
+				Line3Intersection curPick3 = ( Line3Intersection )curPick;
 
-				Vector3 delta = curPick3.Intersection.IntersectionPosition - lastPick3.Intersection.IntersectionPosition;
+				Vector3 delta = curPick3.IntersectionPosition - lastPick3.IntersectionPosition;
 				if ( delta.SqrLength > 0 )
 				{
 					m_Delta += delta;
@@ -82,6 +100,7 @@ namespace Rb.Tools.LevelEditor.Core.Actions
 
 		#region Private members
 
+		private readonly RayCastOptions m_PickOptions;
 		private Vector3 m_Delta;
 		private readonly List< IMoveable3 > m_Movers = new List< IMoveable3 >( );
 		private bool m_Modified;

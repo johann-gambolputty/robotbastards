@@ -76,7 +76,7 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public static Line3Intersection GetRayIntersection( Ray3 ray, Sphere3 sphere )
 		{
-			Vector3	originToCentre			= ray.Origin - sphere.Centre;
+			Vector3	originToCentre = ray.Origin - sphere.Centre;
 
 			float	a0	= originToCentre.SqrLength - ( sphere.SqrRadius );
 			float	a1	= ray.Direction.Dot( originToCentre );
@@ -156,6 +156,7 @@ namespace Rb.Core.Maths
 				if ( t >= 0 )
 				{
 					Line3Intersection result = new Line3Intersection( );
+					result.IntersectedObject	= plane;
 					result.IntersectionPosition = ray.Origin + ( ray.Direction * t );
 					result.IntersectionNormal	= plane.Normal;
 					result.Distance				= t;

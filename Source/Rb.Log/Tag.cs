@@ -101,6 +101,18 @@ namespace Rb.Log
 		#region Source output helpers
 
 		/// <summary>
+		/// Writes an exception to the error source
+		/// </summary>
+		/// <param name="ex">Exception to log</param>
+		/// <param name="msg">Message format</param>
+		/// <param name="args">Format arguments</param>
+		public void Exception( System.Exception ex, string msg, params object[] args )
+		{
+			Error( msg, args );
+			GetSource( Severity.Error ).Write( ex );
+		}
+
+		/// <summary>
 		/// Writes to the Source for the Severity.Verbose level
 		/// </summary>
 		/// <param name="msg">Message string</param>

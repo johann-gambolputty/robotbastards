@@ -1,7 +1,6 @@
 using System;
 using System.Windows.Forms;
 using Rb.Core.Maths;
-using Rb.Core.Utils;
 using Rb.Log;
 using Rb.Tools.LevelEditor.Core.Actions;
 using Rb.Tools.LevelEditor.Core.Selection;
@@ -60,8 +59,7 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 				}
 				catch ( Exception ex )
 				{
-					AppLog.Error( "Failed to add new object" );
-					ExceptionUtils.ToLog( AppLog.GetSource( Severity.Error ), ex );
+					AppLog.Exception( ex, "Failed to add new object" );
 					MessageBox.Show( Properties.Resources.FailedToAddObject, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 			}

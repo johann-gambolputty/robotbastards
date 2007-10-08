@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Diagnostics;
 
 namespace Rb.Log
@@ -19,7 +17,7 @@ namespace Rb.Log
 	/// </summary>
 	/// <typeparam name="DerivedType">The derived type</typeparam>
 	/// <example>
-	/// class MyTag : StaticTag< MyTag >
+	/// class MyTag : StaticTag{ MyTag }
 	/// {
 	///		public Tag ParentTag { return Tag.Root; }
 	///		public string TagName { return "MyTag"; }
@@ -99,6 +97,18 @@ namespace Rb.Log
 		public static void Fail( string msg, params object[] args )
 		{
 			GetSource( Severity.Error ).Fail( msg, args );
+		}
+		
+		/// <summary>
+		/// Writes an exception to the error source
+		/// </summary>
+		/// <param name="ex">Exception to log</param>
+		/// <param name="msg">Message format</param>
+		/// <param name="args">Format arguments</param>
+		public static void Exception( Exception ex, string msg, params object[] args )
+		{
+			Error( msg, args );
+			GetSource( Severity.Error ).Write( ex );
 		}
 
 		/// <summary>

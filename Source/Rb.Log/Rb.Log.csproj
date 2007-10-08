@@ -48,10 +48,12 @@
     <Compile Include="AppLog.cs" />
     <Compile Include="DebugSource.cs" />
     <Compile Include="Entry.cs" />
+    <Compile Include="ExceptionUtils.cs" />
     <Compile Include="FileLogger.cs" />
     <Compile Include="Severity.cs" />
     <Compile Include="Source.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StackTraceInfo.cs" />
     <Compile Include="StaticTag.cs" />
     <Compile Include="Tag.cs" />
   </ItemGroup>

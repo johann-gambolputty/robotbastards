@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 
 namespace Rb.Log
@@ -23,12 +24,22 @@ namespace Rb.Log
 
         #region Output
 
+		/// <summary>
+		/// Generates a log entry for an exception
+		/// </summary>
+		/// <param name="ex">Exception</param>
+		[ConditionalAttribute( "DEBUG" )]
+		public new void Write( Exception ex )
+		{
+			base.Write( ex );
+		}
+
         /// <summary>
         /// Generates a log entry
         /// </summary>
         /// <param name="msg">Message string</param>
         /// <param name="args">Format arguments</param>
-        [ ConditionalAttribute( "DEBUG" )]
+        [ConditionalAttribute( "DEBUG" )]
         public new void Write( string msg, params object[] args )
         {
             base.Write( 2, msg, args );
