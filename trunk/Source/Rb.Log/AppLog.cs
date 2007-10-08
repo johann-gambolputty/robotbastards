@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Rb.Log
 {
@@ -8,13 +5,14 @@ namespace Rb.Log
     /// Contains handy generic log sources
     /// </summary>
     /// <example>
-    /// Rb.Log.App.DebugVerbose( "useless information, removed in non-DEBUG builds" );
-	/// Rb.Log.App.DebugInfo( "useful information, removed in non-DEBUG builds" );
-    /// 
-    /// Rb.Log.App.Verbose( "useless information" );
-    /// Rb.Log.App.Info( "useful information" );
-    /// Rb.Log.App.Warning( "warnings" );
-    /// Rb.Log.App.Error( "errors" );
+	/// AppLog.DebugVerbose( "useless information, removed in non-DEBUG builds" );
+	/// AppLog.DebugInfo( "useful information, removed in non-DEBUG builds" );
+	/// 
+	/// AppLog.Exception( ex, "exception information, written to error source" );
+	/// AppLog.Verbose( "useless information" );
+	/// AppLog.Info( "useful information" );
+	/// AppLog.Warning( "warnings" );
+	/// AppLog.Error( "errors" );
     /// </example>
     public class AppLog : StaticTag< AppLog >
     {

@@ -3,7 +3,6 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
-using Rb.Core.Utils;
 using Rb.Log;
 using Rb.World;
 
@@ -91,8 +90,7 @@ namespace Rb.Tools.LevelEditor.Core
 			catch ( Exception ex )
 			{
 				string msg = string.Format( Properties.Resources.FailedToSaveScene, path );
-				AppLog.Error( msg );
-				ExceptionUtils.ToLog( AppLog.GetSource( Severity.Error ), ex );
+				AppLog.Exception( ex, msg );
 				MessageBox.Show( msg, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
 				return;
 			}
@@ -117,8 +115,7 @@ namespace Rb.Tools.LevelEditor.Core
 			catch ( Exception ex )
 			{
 				string msg = string.Format( Properties.Resources.FailedToOpenScene, path );
-				AppLog.Error( msg );
-				ExceptionUtils.ToLog( AppLog.GetSource( Severity.Error ), ex );
+				AppLog.Exception( ex, msg );
 				MessageBox.Show( msg, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
 				return null;
 			}

@@ -47,6 +47,17 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 					DynamicProperties.GetProperty( parameters.Properties, "scaleZ", 1.0f )
 				);
 
+			Point3 offset = new Point3
+				(
+					DynamicProperties.GetProperty( parameters.Properties, "offsetX", 0.0f ),
+					DynamicProperties.GetProperty( parameters.Properties, "offsetY", 0.0f ),
+					DynamicProperties.GetProperty( parameters.Properties, "offsetZ", 0.0f )
+				);
+
+			Matrix44 transform = new Matrix44( );
+			transform.Scale( scale.X, scale.Y, scale.Z );
+			transform.Translate( offset.X, offset.Y, offset.Z );
+
 			//	create the model
 			Model model = new Model( );
 
@@ -62,7 +73,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				Hashtable surfaceTextureTable = LoadSkin( source, DefaultSkinFile( source, curPart ) );
 
 				//	Load the MD3 associated with the current part
-				Mesh partMesh = LoadMd3( curPart, scale, MeshFile( source, curPart ), surfaceTextureTable );
+				Mesh partMesh = LoadMd3( curPart, transform, MeshFile( source, curPart ), surfaceTextureTable );
 				model.SetPartMesh( curPart, partMesh );
 
 				//	Nest the current mesh in the previous mesh
@@ -252,7 +263,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Loads an MD3 mesh resource from a stream
 		/// </summary>
-		private static Mesh LoadMd3( ModelPart part, Vector3 scale, ISource md3Source, IDictionary surfaceTextureTable )
+		private static Mesh LoadMd3( ModelPart part, Matrix44 transform, ISource md3Source, IDictionary surfaceTextureTable )
 		{
 			using ( Stream inputStream = md3Source.Open( ) )
 			{
@@ -288,9 +299,9 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				//	TODO: Can load directly into mesh frame, tag and surface structures - don't do this intermediate step
 				Mesh mesh = new Mesh( part );
 
-				ReadFrames( reader, framesOffset, numFrames, mesh, scale );
-				ReadTags( reader, tagsOffset, numTags, numFrames, mesh, scale );
-				ReadSurfaces( reader, surfacesOffset, numSurfaces, numFrames, mesh, surfaceTextureTable, scale );
+				ReadFrames( reader, framesOffset, numFrames, mesh, transform );
+				ReadTags( reader, tagsOffset, numTags, numFrames, mesh, transform );
+				ReadSurfaces( reader, surfacesOffset, numSurfaces, numFrames, mesh, surfaceTextureTable, transform );
 
 
 				//	TODO: REMOVE. test frames
@@ -381,21 +392,21 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Reads frame information
 		/// </summary>
-		private static void ReadFrames( BinaryReader reader, long offset, int numFrames, Mesh mesh , Vector3 scale )
+		private static void ReadFrames( BinaryReader reader, long offset, int numFrames, Mesh mesh, Matrix44 transform )
 		{
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 
 			Mesh.FrameInfo[] frames = new Mesh.FrameInfo[ numFrames ];
 
-			float scaleLength = scale.Length;
+			float scaleLength = ( transform * new Vector3( 1, 1, 1 ) ).Length;
 
 			for ( int frameCount = 0; frameCount < numFrames; ++frameCount )
 			{
 				frames[ frameCount]		= new Mesh.FrameInfo( );
 				Mesh.FrameInfo curFrame	= frames[ frameCount ];
-				curFrame.MinBounds		= ReadPoint( reader ) * scale;
-				curFrame.MaxBounds		= ReadPoint( reader ) * scale;
-				curFrame.Origin			= ReadPoint( reader ) * scale;
+				curFrame.MinBounds		= transform * ReadPoint( reader );
+				curFrame.MaxBounds		= transform * ReadPoint( reader );
+				curFrame.Origin			= transform * ReadPoint( reader );
 				curFrame.Radius			= reader.ReadSingle( ) * scaleLength;
 				curFrame.Name			= ReadString( reader, FrameNameLength );
 			}
@@ -406,7 +417,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Reads tag information
 		/// </summary>
-		private static void ReadTags( BinaryReader reader, long offset, int numTags, int numFrames, Mesh mesh, Vector3 scale )
+		private static void ReadTags( BinaryReader reader, long offset, int numTags, int numFrames, Mesh mesh, Matrix44 transform )
 		{
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 
@@ -425,7 +436,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 					}
 
 					Mesh.Tag curTag		= new Mesh.Tag( );
-					curTag.Origin		= ReadPoint( reader ) * scale;
+					curTag.Origin		= transform * ReadPoint( reader );
 					curTag.XAxis		= ReadVector( reader );
 					curTag.YAxis		= ReadVector( reader );
 					curTag.ZAxis		= ReadVector( reader );
@@ -439,7 +450,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Reads surface information
 		/// </summary>
-		private static void ReadSurfaces( BinaryReader reader, long offset, int numSurfaces, int numFrames, Mesh mesh, IDictionary surfaceTextureTable, Vector3 scale )
+		private static void ReadSurfaces( BinaryReader reader, long offset, int numSurfaces, int numFrames, Mesh mesh, IDictionary surfaceTextureTable, Matrix44 transform )
 		{
 			//	Move to the start of the first surface
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
@@ -482,7 +493,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 				//	Read in surface vertices
 			//	curSurface.NumVertices		= numVertices;
-				ReadVertices( reader, offset + verticesOffset, numVertices, numFrames, curSurface, scale );
+				ReadVertices( reader, offset + verticesOffset, numVertices, numFrames, curSurface, transform );
 
 				//	Assign the new surface to the mesh
 				mesh.Surfaces[ surfaceCount ] = curSurface;
@@ -549,7 +560,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Reads surface vertices (positions and normals)
 		/// </summary>
-		private static void ReadVertices(BinaryReader reader, long offset, int numVertices, int numFrames, Mesh.Surface surface, Vector3 scale)
+		private static void ReadVertices( BinaryReader reader, long offset, int numVertices, int numFrames, Mesh.Surface surface, Matrix44 transform )
 		{
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 
@@ -560,9 +571,6 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			float[] positions	= new float[ numVertices * 3 ];
 			float[] normals		= new float[ numVertices * 3 ];
 
-			float xScale = XyzScale * scale.X;
-			float yScale = XyzScale * scale.Y;
-			float zScale = XyzScale * scale.Z;
 
 			//	Run through all frames
 			for ( int frameIndex = 0; frameIndex < numFrames; ++frameIndex )
@@ -577,13 +585,20 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				for ( int vertexCount = 0; vertexCount < numVertices; ++vertexCount )
 				{
 					//	NOTE: Re-order coordinates. I use +ve Y as up, +ve X as right, +ve Z as into, MD3 default is +ve X as into, +ve Y as right, +ve Z as up
-					positions[ positionIndex + 2 ] = reader.ReadInt16( ) * zScale;
-					positions[ positionIndex + 0 ] = reader.ReadInt16( ) * xScale;
-					positions[ positionIndex + 1 ] = reader.ReadInt16( ) * yScale;
+					Point3 pt = new Point3( );
+					pt.Z = reader.ReadInt16( ) * XyzScale;
+					pt.X = reader.ReadInt16( ) * XyzScale;
+					pt.Y = reader.ReadInt16( ) * XyzScale;
+
+					pt = transform * pt;
+
+					positions[ positionIndex + 0 ] = pt.X;
+					positions[ positionIndex + 1 ] = pt.Y;
+					positions[ positionIndex + 2 ] = pt.Z;
 					positionIndex += 3;
 
-					float s		= reader.ReadByte( ) * ByteToAngle;
-					float t		= reader.ReadByte( ) * ByteToAngle;
+					float s = reader.ReadByte( ) * ByteToAngle;
+					float t = reader.ReadByte( ) * ByteToAngle;
 
 					normals[ normalIndex + 2 ] = ( float )( Math.Cos( s ) * Math.Sin( t ) );
 					normals[ normalIndex + 0 ] = ( float )( Math.Sin( s ) * Math.Sin( t ) );

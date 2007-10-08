@@ -1,5 +1,6 @@
 using System.Collections;
-using Rb.Tools.LevelEditor.Core.Selection;
+using Rb.Core.Maths;
+using Rb.World;
 
 namespace Rb.Tools.LevelEditor.Core.Actions
 {
@@ -8,6 +9,14 @@ namespace Rb.Tools.LevelEditor.Core.Actions
 	/// </summary>
 	public interface IPickAction : IAction
 	{
+		/// <summary>
+		/// Gets pick ray cast options associated with this action
+		/// </summary>
+		RayCastOptions PickOptions
+		{
+			get;
+		}
+
 		/// <summary>
 		/// Adds objects to this action
 		/// </summary>
@@ -19,7 +28,7 @@ namespace Rb.Tools.LevelEditor.Core.Actions
 		/// </summary>
 		/// <param name="lastPick">Last pick information</param>
 		/// <param name="curPick">Current pick information</param>
-		void PickChanged( PickInfoCursor lastPick, PickInfoCursor curPick );
+		void PickChanged( ILineIntersection lastPick, ILineIntersection curPick );
 
 		/// <summary>
 		/// Returns true if PickChanged() was called with arguments that altered the states of the attached objects

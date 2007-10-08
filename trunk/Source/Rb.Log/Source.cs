@@ -135,7 +135,7 @@ namespace Rb.Log
 		/// <param name="ex">Exception</param>
 		public void Write( Exception ex )
 		{
-			//	TODO: AP: ...
+			ExceptionUtils.ToLog( this, ex );
 		}
 
     	/// <summary>

@@ -1,4 +1,3 @@
-using System;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Cameras;
@@ -13,15 +12,6 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 	/// </summary>
 	public class PickDisplay : Display, IPicker
 	{
-		/// <summary>
-		/// Initialises the display
-		/// </summary>
-		public PickDisplay( )
-		{
-			m_Raycaster = new RayCaster( );
-			m_Raycaster.AddIntersector( new Plane3( new Vector3( 0, 1, 0 ), 0 ) );
-		}
-
 		#region IPicker Members
 
 		/// <summary>
@@ -36,8 +26,10 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			}
 			if ( viewer.Camera is ICamera3 )
 			{
+				IRayCaster rayCaster = EditorState.Instance.CurrentScene.GetService< IRayCaster >( );
+
 				Ray3 ray = ( ( ICamera3 )viewer.Camera ).PickRay( cursorX, cursorY );
-				Line3Intersection intersection = m_Raycaster.GetFirstIntersection( ray, options );
+				Line3Intersection intersection = rayCaster.GetFirstIntersection( ray, options );
 				return intersection;
 			}
 
@@ -68,50 +60,6 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			return new object[] {};
 		}
 
-		/// <summary>
-		/// Creates cursor pick information
-		/// </summary>
-		/// <param name="cursorX">Cursor X position</param>
-		/// <param name="cursorY">Cursor Y position</param>
-		/// <returns>Returns pick information</returns>
-		public PickInfoCursor CreateCursorPickInfo( int cursorX, int cursorY )
-		{
-			Viewer viewer = GetViewerUnderCursor( cursorX, cursorY );
-			if ( ( viewer == null ) || ( viewer.Camera == null ) )
-			{
-				return null;
-			}
-			if ( viewer.Camera is ICamera3 )
-			{
-				Ray3 ray = ( ( ICamera3 )viewer.Camera ).PickRay( cursorX, cursorY );
-				Line3Intersection intersection = m_Raycaster.GetFirstIntersection( ray, null );
-				return intersection == null ? null : new PickInfoRay3( cursorX, cursorY, ray, intersection );
-			}
-
-			return null;
-		}
-
-		/// <summary>
-		/// Creates a pick box
-		/// </summary>
-		/// <param name="topLeft">Box top left corner</param>
-		/// <param name="bottomRight">Box bottom right corner</param>
-		/// <returns>Returns the created pick box</returns>
-		public IPickInfo CreatePickBox( PickInfoCursor topLeft, PickInfoCursor bottomRight )
-		{
-			if ( topLeft is IPickInfo2 )
-			{
-				Point2 tl = ( ( IPickInfo2 )topLeft ).PickPoint;
-				Point2 br = ( ( IPickInfo2 )bottomRight ).PickPoint;
-				return new PickInfoBox2( tl, br );
-			}
-
-			//	TODO: AP: Two pick rays should form a frustum
-			throw new NotImplementedException( "The method or operation is not implemented." );
-		}
-
 		#endregion
-
-		private readonly IRayCaster m_Raycaster;
 	}
 }

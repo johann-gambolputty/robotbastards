@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using Rb.Core.Utils;
-using Rb.Log;
 
 
 namespace Rb.Core.Assets.Windows
 {
-
 	public class FileLocationTree : ILocationTree
 	{
 		public LocationProperty NameProperty
@@ -99,8 +96,7 @@ namespace Rb.Core.Assets.Windows
 			}
 			catch ( Exception ex )
 			{
-				AssetsLog.Error( "Failed to open default folder \"{0}\"", defaultPath );
-				ExceptionUtils.ToLog( AssetsLog.GetSource( Severity.Error ), ex );
+				AssetsLog.Exception( ex, "Failed to open default folder \"{0}\"", defaultPath );
 			}
 
 		}

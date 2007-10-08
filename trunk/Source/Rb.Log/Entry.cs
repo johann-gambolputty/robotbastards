@@ -49,18 +49,13 @@ namespace Rb.Log
                 string method   = curMatch.Groups[ "Method" ].Value;
 
                 //  TODO: AP: Time not written/read
-                Entry newEntry = new Entry( Log.Source.BuildFromString( source ), message, thread, System.DateTime.Now.TimeOfDay );
+                Entry newEntry = new Entry( Log.Source.BuildFromString( source ), message, thread, DateTime.Now.TimeOfDay );
                 newEntry.Locate( file, int.Parse( line ), int.Parse( column ), method );
                 entries.Add( newEntry );
             }
 
             return entries.ToArray( );
         }
-
-        private static Regex LogEntryRegex = new Regex
-            (
-                @"(?<File>.*)\((?<Line>\d+),(?<Column>\d+)\)\:\<(?<Source>(?:\w+\.?)+)\>(?<Message>[^[]*)\[(?<Thread>\d+)->(?<Method>.*)\]"
-            );
 
         #endregion
 
@@ -249,17 +244,22 @@ namespace Rb.Log
         
         #region Private stuff
 
-        private Source                  m_Source;
-        private string                  m_Message;
-        private string                  m_ThreadName;
-        private TimeSpan                m_Time;
-        private uint                    m_Id;
+        private readonly Source         m_Source;
+		private readonly string			m_Message;
+		private readonly string			m_ThreadName;
+		private readonly TimeSpan		m_Time;
+		private readonly uint			m_Id;
         private string                  m_File;
         private int                     m_Line;
         private int                     m_Column;
         private string                  m_Method;
         private string                  m_CachedString;
         private static volatile uint    m_MessageId;
+
+		private readonly static Regex LogEntryRegex = new Regex
+			(
+				@"(?<File>.*)\((?<Line>\d+),(?<Column>\d+)\)\:\<(?<Source>(?:\w+\.?)+)\>(?<Message>[^[]*)\[(?<Thread>\d+)->(?<Method>.*)\]"
+			);
 
         #endregion
     }

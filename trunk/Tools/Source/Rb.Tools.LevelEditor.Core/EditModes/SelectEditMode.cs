@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Windows.Forms;
 using Rb.Core.Maths;
 using Rb.Tools.LevelEditor.Core.Actions;
@@ -15,9 +16,11 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 		/// Binds the edit mode to a control and viewer
 		/// </summary>
 		/// <param name="actionButton">The mouse button that this edit mode listens out for</param>
-		public SelectEditMode( MouseButtons actionButton )
+		/// <param name="pickOptions">Pick raycast options</param>
+		public SelectEditMode( MouseButtons actionButton, RayCastOptions pickOptions )
 		{
 			m_ActionButton = actionButton;
+			m_PickOptions = pickOptions;
 		}
 
 		#region Public members
@@ -76,6 +79,26 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 
 		#endregion 
 
+		#region Private members
+
+		/// <summary>
+		/// Raycast options for standard selection pick
+		/// </summary>
+		private RayCastOptions SelectionPickOptions
+		{
+			get { return m_PickOptions; }
+		}
+
+		/// <summary>
+		/// Raycast options for standard selection pick, or the current pick action, if it is active
+		/// </summary>
+		private RayCastOptions CurrentPickOptions
+		{
+			get { return UsingPickAction ? m_PickAction.PickOptions : SelectionPickOptions; }
+		}
+
+		#endregion
+
 		#region Control event handlers
 
 		private void OnKeyDown( object sender, KeyEventArgs args )
@@ -98,61 +121,65 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 				return;
 			}
 
-			PickInfoCursor pick = ( ( IPicker )sender ).CreateCursorPickInfo( args.X, args.Y );
-			IPickable obj = EditorState.Instance.CurrentScene.PickObject( pick ) as IPickable;
-			if ( obj == null )
+			if ( m_CursorPick == null )
 			{
-				m_SelectionStart = pick;
+				m_SelectionStart = args.Location;
 				m_PickAction = null;
 			}
 			else
 			{
-				SelectionSet selection = EditorState.Instance.CurrentSelection;
-				if ( selection.IsSelected( obj ) )
+				IPickable pickable = m_CursorPick.IntersectedObject as IPickable;
+				if ( pickable != null )
 				{
-					selection.ApplySelect( obj, m_AddToSelection );
-					m_DeselectOnNoMove = false;
-				}
-				else
-				{
-					m_DeselectOnNoMove = true;
-				}
+					SelectionSet selection = EditorState.Instance.CurrentSelection;
+					if ( selection.IsSelected( pickable ) )
+					{
+						selection.ApplySelect( pickable, m_AddToSelection );
+						m_DeselectOnNoMove = false;
+					}
+					else
+					{
+						m_DeselectOnNoMove = true;
+					}
 
-				m_LastCursorPick = pick;
-				m_PickAction = obj.CreatePickAction( pick );
-				m_PickAction.AddObjects( selection.Selection );
+					m_PickAction = pickable.CreatePickAction( m_CursorPick );
+					m_PickAction.AddObjects( selection.Selection );
+
+					if ( !selection.IsSelected( pickable ) )
+					{
+						m_PickAction.AddObjects( new object[] { pickable } );
+					}
+				}
 			}
 		}
 
 		private void OnMouseMove( object sender, MouseEventArgs args )
 		{
 			IPicker picker = ( IPicker )sender;
-			ILineIntersection pick = picker.FirstPick( args.X, args.Y, new RayCastOptions( ) );
-			if ( pick == null )
+			ILineIntersection pick = picker.FirstPick( args.X, args.Y, CurrentPickOptions );
+			
+			if ( pick != null )
 			{
-				return;
-			}
-
-			PickInfoCursor tmpPick = picker.CreateCursorPickInfo( args.X, args.Y );
-
-			if ( ( ( args.Button & m_ActionButton ) == 0 ) || ( !UsingPickAction ) )
-			{
-				if ( m_LastHighlit != null )
+				if ( ( ( args.Button & m_ActionButton ) == 0 ) || ( !UsingPickAction ) )
 				{
-					m_LastHighlit.Highlighted = false;
+					if ( m_LastHighlit != null )
+					{
+						m_LastHighlit.Highlighted = false;
+					}
+					m_LastHighlit = pick.IntersectedObject as ISelectable;
+					if ( m_LastHighlit != null )
+					{
+						m_LastHighlit.Highlighted = true;
+					}
 				}
-				m_LastHighlit = pick.IntersectedObject as ISelectable;
-				if ( m_LastHighlit != null )
+				else
 				{
-					m_LastHighlit.Highlighted = true;
+					m_PickAction.PickChanged( m_LastCursorPick, pick );
 				}
-			}
-			else
-			{
-				m_PickAction.PickChanged( m_LastCursorPick, tmpPick );
 			}
 
-			m_LastCursorPick = tmpPick;
+			m_LastCursorPick = m_CursorPick;
+			m_CursorPick = pick;
 		}
 
 		
@@ -166,7 +193,7 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 			{
 				if ( ( !m_PickAction.HasModifiedObjects ) && ( m_DeselectOnNoMove ) )
 				{
-					object obj = EditorState.Instance.CurrentScene.PickObject( m_LastCursorPick );
+					object obj = m_LastCursorPick == null ? null : m_LastCursorPick.IntersectedObject;
 					if ( obj != null )
 					{
 						EditorState.Instance.CurrentSelection.ApplySelect( obj, m_AddToSelection );
@@ -181,19 +208,17 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 			else
 			{
 				object[] objects = null;
-				if ( ( m_SelectionStart.CursorX == args.X ) && ( m_SelectionStart.CursorY == args.Y ) )
+				if ( ( m_SelectionStart.X == args.X ) && ( m_SelectionStart.Y == args.Y ) )
 				{
-					objects = EditorState.Instance.CurrentScene.PickObjects( m_SelectionStart );
+					ILineIntersection pick = ( ( IPicker )sender ).FirstPick( args.X, args.Y, SelectionPickOptions );
+					if ( pick != null )
+					{
+						objects = new object[] { pick.IntersectedObject };
+					}
 				}
 				else
 				{
-					PickInfoCursor selectionEnd = ( ( IPicker )sender ).CreateCursorPickInfo( args.X, args.Y );
-
-					if ( ( m_SelectionStart != null ) && ( selectionEnd != null ) )
-					{
-						IPickInfo selectionBox = ( ( IPicker )sender ).CreatePickBox( m_SelectionStart, selectionEnd );
-						objects = EditorState.Instance.CurrentScene.PickObjects( selectionBox );
-					}
+					objects = ( ( IPicker )sender ).GetObjectsInBox( m_SelectionStart.X, m_SelectionStart.Y, args.X, args.Y );
 				}
 				
 				if ( ( objects != null ) && ( objects.Length > 0 ) )
@@ -204,7 +229,6 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 				{
 					EditorState.Instance.CurrentSelection.ClearSelection( );
 				}
-				m_SelectionStart = null;
 			}
 		}
 
@@ -214,8 +238,10 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 
 		private bool					m_AddToSelection;
 		private readonly MouseButtons	m_ActionButton;
-		private PickInfoCursor			m_SelectionStart;
-		private PickInfoCursor			m_LastCursorPick;
+		private readonly RayCastOptions	m_PickOptions;
+		private Point					m_SelectionStart;
+		private ILineIntersection		m_LastCursorPick;
+		private ILineIntersection		m_CursorPick;
 		private IPickAction				m_PickAction;
 		private bool					m_DeselectOnNoMove;
 		private ISelectable				m_LastHighlit;

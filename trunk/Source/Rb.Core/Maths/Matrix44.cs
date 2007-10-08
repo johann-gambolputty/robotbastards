@@ -439,11 +439,11 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Multiplies a vector by this matrix, returning a new vector that stores the result
 		/// </summary>
-		public Vector3	Multiply( Vector3 In )
+		public Vector3 Multiply( Vector3 In )
 		{
-			float x = ( In.X * Elements[ 0 ] ) + ( In.Y * Elements[ 4 ] ) + ( In.Z * Elements[ 8  ] ) + ( Elements[ 12 ] );
-			float y = ( In.X * Elements[ 1 ] ) + ( In.Y * Elements[ 5 ] ) + ( In.Z * Elements[ 9  ] ) + ( Elements[ 13 ] );
-			float z = ( In.X * Elements[ 2 ] ) + ( In.Y * Elements[ 6 ] ) + ( In.Z * Elements[ 10 ] ) + ( Elements[ 14 ] );
+			float x = ( In.X * Elements[ 0 ] ) + ( In.Y * Elements[ 4 ] ) + ( In.Z * Elements[ 8  ] );
+			float y = ( In.X * Elements[ 1 ] ) + ( In.Y * Elements[ 5 ] ) + ( In.Z * Elements[ 9  ] );
+			float z = ( In.X * Elements[ 2 ] ) + ( In.Y * Elements[ 6 ] ) + ( In.Z * Elements[ 10 ] );
 
 			return new Vector3( x, y, z );
 		}
@@ -451,7 +451,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Multiplies a point by this matrix, returning a new point that stores the result
 		/// </summary>
-		public Point3	Multiply( Point3 In )
+		public Point3 Multiply( Point3 In )
 		{
 			float x = ( In.X * Elements[ 0 ] ) + ( In.Y * Elements[ 4 ] ) + ( In.Z * Elements[ 8  ] ) + ( Elements[ 12 ] );
 			float y = ( In.X * Elements[ 1 ] ) + ( In.Y * Elements[ 5 ] ) + ( In.Z * Elements[ 9  ] ) + ( Elements[ 13 ] );
@@ -509,5 +509,30 @@ namespace Rb.Core.Maths
 
 		#endregion
 
+		#region Operators
+
+		/// <summary>
+		/// Transforms a point by a matrix
+		/// </summary>
+		/// <param name="mat">Transformation matrix</param>
+		/// <param name="pt">Source point</param>
+		/// <returns>Transformed point</returns>
+		public static Point3 operator * ( Matrix44 mat, Point3 pt )
+		{
+			return mat.Multiply( pt );
+		}
+
+		/// <summary>
+		/// Transforms a vector by a matrix
+		/// </summary>
+		/// <param name="mat">Transformation matrix</param>
+		/// <param name="vec">Source vector</param>
+		/// <returns>Transformed vector</returns>
+		public static Vector3 operator * ( Matrix44 mat, Vector3 vec )
+		{
+			return mat.Multiply( vec );
+		}
+
+		#endregion
 	}
 }

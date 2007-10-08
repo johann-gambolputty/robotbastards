@@ -1,7 +1,6 @@
 using System;
 using System.Windows.Forms;
 using Rb.Core.Maths;
-using Rb.Core.Utils;
 using Rb.Log;
 using Rb.Tools.LevelEditor.Core;
 
@@ -54,8 +53,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 			}
 			catch ( Exception ex )
 			{
-				AppLog.Error( "Failed to combine brush with current level geometry" );
-				ExceptionUtils.ToLog( AppLog.GetSource( Severity.Error ), ex );
+				AppLog.Exception( ex, "Failed to combine brush with current level geometry" );
 
 				MessageBox.Show( Properties.Resources.FailedToCombineCsgBrush, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}

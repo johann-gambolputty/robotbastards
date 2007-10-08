@@ -1,10 +1,9 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using Rb.Log;
 
-namespace Rb.Core.Utils
+namespace Rb.Log
 {
 	/// <summary>
 	/// Exception utilities.
@@ -12,36 +11,13 @@ namespace Rb.Core.Utils
 	public class ExceptionUtils
 	{
 		/// <summary>
-		/// Unhandled exception handler for threads (form apps)
-		/// </summary>
-		public static void UnhandledThreadExceptionHandler( object sender, System.Threading.ThreadExceptionEventArgs args )
-		{
-			try
-			{
-				string exceptionString = ToString( args.Exception );
-				AppLog.Error( exceptionString );
-
-				switch ( MessageBox.Show( exceptionString, "Unhandled Exception", MessageBoxButtons.AbortRetryIgnore ) )
-				{
-					case DialogResult.Abort		:	Application.Exit( );	break;
-					case DialogResult.Retry		:
-					case DialogResult.Ignore	:	break;
-				}
-			}
-			catch
-			{
-				Application.Exit( );
-			}
-		}
-
-		/// <summary>
 		/// Converts an exception to a string
 		/// </summary>
 		/// <remarks>
 		/// This is analogous to e.ToString(), except that the stack trace is written as output-window clickable items (i.e. in the format
 		/// file.cs(line) : message), and the inner exceptions are tabbed
 		/// </remarks>
-		public static string ToString( System.Exception e )
+		public static string ToString( Exception e )
 		{
 			return ToString( e, 0 );
 		}
@@ -142,7 +118,7 @@ namespace Rb.Core.Utils
 				builder.Append( kNewLine );
 			}
 
-			return builder.ToString( ) + ToString( e.InnerException, tabs + 1 );
+			return builder + ToString( e.InnerException, tabs + 1 );
 		}
 
 	}

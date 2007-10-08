@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core.Actions;
 
@@ -112,7 +113,7 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 		/// <summary>
 		/// Throws an exception - objects of this type should never be queried directly for a pick action
 		/// </summary>
-		public IPickAction CreatePickAction( IPickInfo pick )
+		public IPickAction CreatePickAction( ILineIntersection pick )
 		{
 			throw new NotImplementedException( );
 		}

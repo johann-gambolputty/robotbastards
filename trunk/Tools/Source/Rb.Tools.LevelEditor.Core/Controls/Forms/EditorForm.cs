@@ -8,16 +8,12 @@ using Crownwood.Magic.Common;
 using Rb.Core.Assets;
 using Rb.Core.Components;
 using Rb.Core.Maths;
-using Rb.Core.Utils;
 using Rb.Interaction;
 using Rb.Log;
 using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core.Actions;
-using Rb.Tools.LevelEditor.Core.EditModes;
-using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
 using Graphics=Rb.Rendering.Graphics;
-using Rectangle=System.Drawing.Rectangle;
 
 namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 {
@@ -28,7 +24,6 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		/// </summary>
 		public EditorForm( )
 		{
-			EditorState.Instance.AddEditMode( new SelectEditMode( MouseButtons.Left ) );
 			EditorState.Instance.SceneOpened += OnSceneOpened;
 			EditorState.Instance.SceneClosed += OnSceneClosed;
 
@@ -278,8 +273,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 				}
 				catch ( Exception ex )
 				{
-					AppLog.Error( "Failed to load viewer from \"{0}\"", viewerSource );
-					ExceptionUtils.ToLog( AppLog.GetSource( Severity.Error ), ex );
+					AppLog.Exception( ex, "Failed to load viewer from \"{0}\"", viewerSource );
 				}
 			}
 			if ( viewer == null )
@@ -307,8 +301,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			}
 			catch ( Exception ex )
 			{
-				AppLog.Error( "Failed to load editor control inputs from \"{0}\"", editorMapSource );
-				ExceptionUtils.ToLog( AppLog.GetSource( Severity.Error ), ex );
+				AppLog.Exception( ex, "Failed to load editor control inputs from \"{0}\"", editorMapSource );
 			}
 			return editorMap;
 		}

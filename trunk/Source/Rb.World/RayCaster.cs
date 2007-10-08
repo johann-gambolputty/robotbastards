@@ -80,7 +80,7 @@ namespace Rb.World
                 Line3Intersection intersection = intersector.GetIntersection( ray );
                 if ( intersection != null )
                 {
-                    if ( ( closestIntersection == null ) || ( closestIntersection.Distance > intersection.Distance ) )
+                    if ( ( closestIntersection == null ) || ( closestIntersection.Distance >= intersection.Distance ) )
                     {
                         closestIntersection = intersection;
                     }
