@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Rb.Rendering;
+using Rb.World.Services;
 
 namespace Rb.World.Rendering
 {
@@ -26,10 +27,10 @@ namespace Rb.World.Rendering
         public override void Apply( IRenderContext context, IRenderable renderable )
 		{
             //  TODO: AP: Shouldn't have to do this each frame
-            ILightingManager manager = m_Scene.GetService< ILightingManager >( );
+            ILightingService service = m_Scene.GetService< ILightingService >( );
             List< Light > lights = new List< Light >( );
 
-            foreach ( Light light in manager.Lights )
+            foreach ( Light light in service.Lights )
             {
                 //  TODO: AP: Proper volume/coverage determination
                 if ( ( light.ShadowCaster ) && ( light is SpotLight ) )
@@ -44,14 +45,22 @@ namespace Rb.World.Rendering
 
 	    #region ISceneObject Members
 
-        /// <summary>
-        /// Sets the scene context
-        /// </summary>
-        /// <param name="scene">Scene context</param>
-        public void SetSceneContext( Scene scene )
+		/// <summary>
+		/// Called when this object is added to the specified scene
+		/// </summary>
+		/// <param name="scene">Scene object</param>
+        public void AddedToScene( Scene scene )
         {
             m_Scene = scene;
         }
+		
+		/// <summary>
+		/// Called when this object is removed from the specified scene
+		/// </summary>
+		/// <param name="scene">Scene object</param>
+		public void RemovedFromScene( Scene scene )
+		{
+		}
 
         #endregion
 

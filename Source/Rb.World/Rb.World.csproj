@@ -54,26 +54,28 @@
     <Compile Include="Entities\RotateXzRequest.cs" />
     <Compile Include="Host.cs" />
     <Compile Include="IHost.cs" />
-    <Compile Include="ILightingManager.cs" />
+    <Compile Include="Services\ILightingService.cs" />
     <Compile Include="ILightMeter.cs" />
     <Compile Include="Interaction\CursorScenePickInput.cs" />
     <Compile Include="Interaction\CursorScenePickInputTemplate.cs" />
-    <Compile Include="IRayCaster.cs" />
+    <Compile Include="Services\IRayCastService.cs" />
     <Compile Include="IRayLayerIntersector.cs" />
     <Compile Include="ISceneController.cs" />
     <Compile Include="ISceneObject.cs" />
     <Compile Include="ISceneViewer.cs" />
-    <Compile Include="LightingManager.cs" />
+    <Compile Include="Services\LightingService.cs" />
     <Compile Include="LightMeter.cs" />
     <Compile Include="LightSocket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ray3LayerIntersector.cs" />
-    <Compile Include="RayCaster.cs" />
-    <Compile Include="RayCastOptions.cs" />
+    <Compile Include="Services\RayCastService.cs" />
+    <Compile Include="Services\RayCastOptions.cs" />
     <Compile Include="Rendering\SceneShadowBufferTechnique.cs" />
     <Compile Include="Scene.cs" />
-    <Compile Include="SceneBuilder.cs" />
     <Compile Include="Rendering\SceneRenderable.cs" />
+    <Compile Include="Services\IUpdateService.cs" />
+    <Compile Include="Services\UpdateService.cs" />
+    <Compile Include="UpdateService.cs" />
     <Compile Include="WorldLog.cs" />
   </ItemGroup>
   <ItemGroup>

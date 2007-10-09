@@ -629,6 +629,71 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		#endregion
+		
+		#region Axis aligned boxes
+
+		/// <summary>
+		/// Draws an axis aligned box
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="minX">Top left back x coordinate</param>
+		/// <param name="minY">Top left back y coordinate</param>
+		/// <param name="minZ">Top left back z coordinate</param>
+		/// <param name="maxX">Bottom right front x coordinate</param>
+		/// <param name="maxY">Bottom right front y coordinate</param>
+		/// <param name="maxZ">Bottom right front z coordinate</param>
+		public override void AlignedBox( IPen pen, float minX, float minY, float minZ, float maxX, float maxY, float maxZ )
+		{
+			pen.Begin( );
+
+			Gl.glBegin( Gl.GL_LINE_STRIP );
+
+				//	-ve Z
+				Gl.glVertex3f( minX, minY, minZ );
+				Gl.glVertex3f( maxX, minY, minZ );
+				Gl.glVertex3f( maxX, maxY, minZ );
+				Gl.glVertex3f( minX, maxY, minZ );
+				Gl.glVertex3f( minX, minY, minZ );
+			
+			Gl.glEnd( );
+			
+			Gl.glBegin( Gl.GL_LINE_STRIP );
+
+				//	+ve Z
+				Gl.glVertex3f( minX, minY, maxZ );
+				Gl.glVertex3f( maxX, minY, maxZ );
+				Gl.glVertex3f( maxX, maxY, maxZ );
+				Gl.glVertex3f( minX, maxY, maxZ );
+				Gl.glVertex3f( minX, minY, maxZ );
+			
+			Gl.glEnd( );
+
+			Gl.glBegin( Gl.GL_LINE_STRIP );
+
+				//	-ve X
+				Gl.glVertex3f( minX, minY, minZ );
+				Gl.glVertex3f( minX, minY, maxZ );
+				Gl.glVertex3f( minX, maxY, maxZ );
+				Gl.glVertex3f( minX, maxY, minZ );
+				Gl.glVertex3f( minX, maxY, minZ );
+
+			Gl.glEnd( );
+			
+			Gl.glBegin( Gl.GL_LINE_STRIP );
+
+				//	+ve X
+				Gl.glVertex3f( maxX, minY, minZ );
+				Gl.glVertex3f( maxX, minY, maxZ );
+				Gl.glVertex3f( maxX, maxY, maxZ );
+				Gl.glVertex3f( maxX, maxY, minZ );
+				Gl.glVertex3f( maxX, maxY, minZ );
+
+			Gl.glEnd( );
+
+			pen.End( );
+		}
+
+		#endregion
 
 		#region Spheres
 

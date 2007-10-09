@@ -16,6 +16,12 @@ namespace Rb.Core.Components
     	void Add( IUnique obj );
 
 		/// <summary>
+		/// Removes an IUnique object from the map
+		/// </summary>
+		/// <param name="obj">Unique object</param>
+		void Remove( IUnique obj );
+
+		/// <summary>
 		/// Gets an object of a given type, and key, from the map
 		/// </summary>
 		object Get( Type objectType, Guid key );

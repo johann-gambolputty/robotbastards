@@ -4,6 +4,7 @@ using Rb.Rendering.Cameras;
 using Rb.Rendering.Windows;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
+using Rb.World.Services;
 
 namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 {
@@ -26,7 +27,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			}
 			if ( viewer.Camera is ICamera3 )
 			{
-				IRayCaster rayCaster = EditorState.Instance.CurrentScene.GetService< IRayCaster >( );
+				IRayCastService rayCaster = EditorState.Instance.CurrentScene.GetService< IRayCastService >( );
 
 				Ray3 ray = ( ( ICamera3 )viewer.Camera ).PickRay( cursorX, cursorY );
 				Line3Intersection intersection = rayCaster.GetFirstIntersection( ray, options );

@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using Rb.Rendering;
 
-namespace Rb.World
+namespace Rb.World.Services
 {
 	/// <summary>
 	/// Service for filling LightGroup objects
 	/// </summary>
-	public interface ILightingManager
+	public interface ILightingService
 	{
 		#region Light meters
 

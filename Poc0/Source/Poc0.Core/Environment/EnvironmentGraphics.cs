@@ -36,9 +36,18 @@ namespace Poc0.Core.Environment
 		/// Called when this object is added to a scene
 		/// </summary>
 		/// <param name="scene">Scene</param>
-		public void SetSceneContext( Scene scene )
+		public void AddedToScene( Scene scene )
 		{
 			scene.Renderables.Add( this );
+		}
+
+		/// <summary>
+		/// Called when this object is removed from a scene
+		/// </summary>
+		/// <param name="scene">Scene</param>
+		public void RemovedFromScene( Scene scene )
+		{
+			scene.Renderables.Remove( this );
 		}
 
 		#endregion

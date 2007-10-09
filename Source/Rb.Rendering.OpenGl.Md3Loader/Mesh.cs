@@ -1,3 +1,4 @@
+using System.Drawing;
 using Rb.Rendering;
 using Rb.Core.Maths;
 using Rb.Core.Components;
@@ -318,21 +319,39 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
             #endregion
         }
+		
+		/// <summary>
+		/// Debug routing for drawing the bounds of this mesh
+		/// </summary>
+		/// <param name="layers">Animation layer set</param>
+		public void DrawMeshBounds( AnimationLayer[] layers )
+		{
+			FrameInfo frame = GetAnimationFrame( layers );
+			Graphics.Draw.AlignedBox( m_BoundsDraw, frame.MinBounds, frame.MaxBounds );
+		}
+
+		/// <summary>
+		/// Gets information about the current animation frame 
+		/// </summary>
+		/// <param name="layers">Animation layers</param>
+		/// <returns>Returns frame information for the current animation frame</returns>
+		public FrameInfo GetAnimationFrame( AnimationLayer[] layers )
+		{
+			int index = ( layers == null ) ? DefaultFrame : layers[ ( int )Part ].CurrentAnimationFrame;
+			return FrameInfoList[ index ];
+		}
 
 		/// <summary>
 		/// Renders this mesh using the given context and animation setup
 		/// </summary>
 		public void Render( IRenderContext context, AnimationLayer[] layers )
 		{
+			//	Determine the current animation frame
 			int currentFrame = DefaultFrame;
 			if ( layers != null )
 			{
 				currentFrame = ( layers[ ( int )Part ].CurrentAnimationFrame );
 			}
-
-			//	TODO: Make a texture stack per stage?
-			//Texture2d oldTexture = Renderer.Inst.GetTexture( 0 );
-            //Renderer.Inst.UnbindAllTextures( );
 
 			//	Assign texture sampler parameters
 			//	TODO: This should be part of the render technique
@@ -372,11 +391,6 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 					Graphics.Renderer.PopTransform( Transform.LocalToWorld );
 				}
 			}
-
-			//if ( oldTexture != null )
-			//{
-			//	Renderer.Inst.BindTexture( oldTexture );
-			//}
 		}
 
 		/// <summary>
@@ -415,6 +429,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		private int							m_Frame;
 		private Surface[]					m_Surfaces;
 		private ShaderParameter				m_TextureParameter;
+		
+		private readonly static Draw.IPen	m_BoundsDraw = Graphics.Draw.NewPen( Color.Red, 1.5f );
 
 		#endregion
 	}

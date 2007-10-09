@@ -1,11 +1,11 @@
 using Rb.Core.Maths;
 
-namespace Rb.World
+namespace Rb.World.Services
 {
     /// <summary>
     /// Interface for objects that can cast rays through sets of geometry
     /// </summary>
-    public interface IRayCaster
+    public interface IRayCastService
 	{
 		#region Intersectors
 

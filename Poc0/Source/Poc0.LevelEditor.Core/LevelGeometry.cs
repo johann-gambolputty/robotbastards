@@ -4,7 +4,6 @@ using Poc0.Core.Environment;
 using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Rendering;
-using Rb.Tools.LevelEditor.Core;
 using Rb.World;
 using Graphics=Rb.Rendering.Graphics;
 using Environment=Poc0.Core.Environment.Environment;
@@ -22,12 +21,11 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Default constructor
 		/// </summary>
-		public LevelGeometry( EditorScene scene )
+		public LevelGeometry( Scene scene )
 		{
 			scene.Renderables.Add( this );
 
-			Scene runtimeScene = scene.RuntimeScene;
-			m_Environment = Builder.CreateInstance< Environment >( runtimeScene.Builder );
+			m_Environment = Builder.CreateInstance< Environment >( );
 
 			m_Csg.GeometryChanged += OnGeometryChanged;
 		}

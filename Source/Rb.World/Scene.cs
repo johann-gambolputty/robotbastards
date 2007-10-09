@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Rb.Core.Utils;
 using Rb.Core.Components;
 using Rb.Rendering;
 
@@ -16,74 +15,14 @@ namespace Rb.World
 		#region Construction
 
 		/// <summary>
-		/// Default constructor. Builder returns a SceneBuilder
+		/// Default constructor
 		/// </summary>
 		public Scene( )
 		{
-			m_Builder = new SceneBuilder( this );
-		}
-
-		/// <summary>
-		/// Setup constructor. Builder returns a SceneBuilder that decorates the specified builder
-		/// </summary>
-		public Scene( IBuilder builder )
-		{
-			m_Builder = new SceneBuilder( this, builder );
+			m_Objects = new SceneObjectMap( this );
 		}
 
 		#endregion
-
-		#region Builder
-
-		/// <summary>
-		/// Returns the builder associated with this scene
-		/// </summary>
-		public IBuilder Builder
-		{
-			get { return m_Builder; }
-		}
-
-		#endregion
-
-		#region Clocks
-
-		/// <summary>
-        /// Gets a named clock. Throws an exception on failure
-        /// </summary>
-        /// <param name="name">Clock name</param>
-        /// <returns>Returns clock</returns>
-        public Clock GetClock( string name )
-        {
-            return m_Clocks[ name ];
-        }
-
-        /// <summary>
-        /// Adds a single clock to the scene
-        /// </summary>
-        /// <param name="clock">Clock to add</param>
-        public void AddClock( Clock clock )
-        {
-            if ( m_Clocks.ContainsKey( clock.Name ) )
-            {
-                WorldLog.Warning( string.Format( "Clock with name \"{0}\" already exists in the scene - overwriting...", clock.Name ) );
-            }
-			WorldLog.Info( "Adding clock \"{0}\" (tick interval {1}ms)", clock.Name, clock.TickTime );
-            m_Clocks[ clock.Name ] = clock;
-        }
-
-        /// <summary>
-        /// Adds a set of clocks to the scene
-        /// </summary>
-        /// <param name="clocks">Clocks to add</param>
-        public void AddClocks( IEnumerable clocks )
-        {
-            foreach ( Clock curClock in clocks )
-            {
-                AddClock( curClock );
-            }
-        }
-
-        #endregion
 
         #region	Services
 
@@ -173,7 +112,6 @@ namespace Rb.World
 		public ObjectMap Objects
 		{
 			get { return m_Objects; }
-			set { m_Objects = value; }
 		}
 
 		#endregion
@@ -207,11 +145,9 @@ namespace Rb.World
 
 		#region	Private stuff
 
-		private readonly IBuilder						m_Builder;
-		private readonly Dictionary< string, Clock >	m_Clocks		= new Dictionary< string, Clock >( );
-		private readonly Dictionary< Type, object >		m_Services	    = new Dictionary< Type, object >( );
-		private ObjectMap								m_Objects	    = new ObjectMap( );
-        private readonly RenderableList                 m_Renderables   = new RenderableList( );
+		private readonly Dictionary< Type, object >	m_Services	    = new Dictionary< Type, object >( );
+		private readonly ObjectMap					m_Objects;
+        private readonly RenderableList             m_Renderables   = new RenderableList( );
 
         /// <summary>
         /// Associates a service with a key
@@ -232,5 +168,113 @@ namespace Rb.World
 
 		#endregion
 
+		#region SceneObjectMap class
+
+		/// <summary>
+		/// Extends <see cref="ObjectMap"/>. Calls into the <see cref="ISceneObject"/> interface when adding/removing objects
+		/// </summary>
+		private class SceneObjectMap : ObjectMap
+		{
+			/// <summary>
+			/// Setup constructor
+			/// </summary>
+			/// <param name="scene">Associated scene</param>
+			public SceneObjectMap( Scene scene )
+			{
+				m_Scene = scene;
+			}
+
+			/// <summary>
+			/// Adds an object
+			/// </summary>
+			/// <param name="key">Object key</param>
+			/// <param name="value">Object value</param>
+			public override void Add( Guid key, object value )
+			{
+				AddSceneObject( value );
+				base.Add( key, value );
+			}
+
+			/// <summary>
+			/// Removes an object
+			/// </summary>
+			/// <param name="key">Object key</param>
+			/// <returns>true if object existed in map</returns>
+			public override bool Remove( Guid key )
+			{
+				object obj;
+				if ( TryGetValue( key, out obj ) )
+				{
+					RemoveSceneObject( obj );
+					Remove( key );
+					return true;
+				}
+				return false;
+			}
+
+			private readonly Scene m_Scene;
+			
+			/// <summary>
+			/// Adds an object, calling <see cref="ISceneObject.AddedToScene"/> if appropriate. Recurses into child objects
+			/// </summary>
+			private void AddSceneObject( object obj )
+			{
+				ISceneObject sceneObject = obj as ISceneObject;
+				if ( sceneObject != null )
+				{
+					sceneObject.AddedToScene( m_Scene );
+				}
+				IParent parent = obj as IParent;
+				if ( parent != null )
+				{
+					parent.OnChildAdded += ChildAdded;
+					parent.OnChildRemoved += ChildRemoved;
+					foreach ( object childObj in parent.Children )
+					{
+						AddSceneObject( childObj );
+					}
+				}
+			}
+
+			/// <summary>
+			/// Removes an object, calling <see cref="ISceneObject.RemovedFromScene"/> if appropriate. Recurses into child objects
+			/// </summary>
+			private void RemoveSceneObject( object obj )
+			{
+				ISceneObject sceneObject = obj as ISceneObject;
+				if ( sceneObject != null )
+				{
+					sceneObject.RemovedFromScene( m_Scene );
+				}
+				IParent parent = obj as IParent;
+				if ( parent != null )
+				{
+					parent.OnChildAdded -= ChildAdded;
+					parent.OnChildRemoved -= ChildRemoved;
+					foreach ( object childObj in parent.Children )
+					{
+						RemoveSceneObject( childObj );
+					}
+				}
+			}
+
+			/// <summary>
+			/// Called when an object is added as a child to an object in the scene graph
+			/// </summary>
+			private void ChildAdded( object parent, object child )
+			{
+				AddSceneObject( child );
+			}
+
+			/// <summary>
+			/// Called when a child object is removed from an object in the scene graph
+			/// </summary>
+			private void ChildRemoved( object parent, object child )
+			{
+				RemoveSceneObject( child );
+			}
+		}
+
+		#endregion
 	}
 }

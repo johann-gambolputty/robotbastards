@@ -7,6 +7,7 @@ using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.Controls.Forms;
 using Rb.Tools.LevelEditor.Core.EditModes;
 using Rb.World;
+using Rb.World.Services;
 
 namespace Poc0.LevelEditor
 {
@@ -58,12 +59,12 @@ namespace Poc0.LevelEditor
 			base.PopulateNewScene( scene );
 
 			//	Populate runtime scene
-			scene.RuntimeScene.AddService( new LightingManager( ) );
+			scene.RuntimeScene.AddService( new LightingService( ) );
 
 			//	Populate editor scene
 			scene.Objects.Add( Guid.NewGuid( ), new LevelGeometry( scene ) );
 
-			IRayCaster rayCaster = new RayCaster( );
+			IRayCastService rayCaster = new RayCastService( );
 			scene.AddService( rayCaster );
 			rayCaster.AddIntersector( RayCastLayers.Grid, new Plane3( new Vector3( 0, 1, 0 ), 0 ) );
 		}

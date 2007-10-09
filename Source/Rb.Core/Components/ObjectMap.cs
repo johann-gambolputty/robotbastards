@@ -20,6 +20,15 @@ namespace Rb.Core.Components
 		{
 			Add( obj.Id, obj );
 		}
+		
+		/// <summary>
+		/// Removes an IUnique object from the map
+		/// </summary>
+		/// <param name="obj">Unique object</param>
+		public void Remove( IUnique obj )
+		{
+			Remove( obj.Id );
+		}
 
 		/// <summary>
 		/// Gets an object of a given type, and key, from the map
@@ -95,7 +104,7 @@ namespace Rb.Core.Components
 
 		#region IDictionary<Guid,object> Members
 
-		public void Add( Guid key, object value )
+		public virtual void Add( Guid key, object value )
 		{
 			m_All[ key ] = value;
 			ComponentLog.Verbose( "ObjectMap: Adding object, type \"{0}\", key \"{1}\"", value.GetType( ), key );
@@ -117,7 +126,7 @@ namespace Rb.Core.Components
 			get { return m_All.Keys;  }
 		}
 
-		public bool Remove( Guid key )
+		public virtual bool Remove( Guid key )
 		{
 			ComponentLog.Verbose( "ObjectMap: Removing object \"{0}\"", key );
 			object obj;
@@ -133,7 +142,7 @@ namespace Rb.Core.Components
 				m_Types[ baseType ].Remove( key );
 			}
 
-			RemoveInterfaces( key, obj, obj.GetType( ) );
+			RemoveInterfaces( key, obj.GetType( ) );
 
 			return true;
 		}
@@ -169,7 +178,7 @@ namespace Rb.Core.Components
 			Add( item.Key, item.Value );
 		}
 
-		public void Clear( )
+		public virtual void Clear( )
 		{
 			m_All.Clear( );
 			m_Types.Clear( );
@@ -233,7 +242,7 @@ namespace Rb.Core.Components
 			}
 		}
 
-		private void RemoveInterfaces( Guid key, object obj, Type type )
+		private void RemoveInterfaces( Guid key, Type type )
 		{
 			foreach ( Type interfaceType in type.GetInterfaces( ) )
 			{
@@ -241,7 +250,7 @@ namespace Rb.Core.Components
 			}
 		}
 
-		private Dictionary<Guid, object> GetTypeMap( Type type )
+		private Dictionary< Guid, object > GetTypeMap( Type type )
 		{
 			Dictionary<Guid, object> mapForType;
 			if ( !m_Types.TryGetValue( type, out mapForType ) )

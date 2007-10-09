@@ -5,6 +5,7 @@ using Rb.Core.Utils;
 using Rb.Interaction;
 using Rb.Rendering;
 using Rb.Network.Runt;
+using Rb.World.Services;
 
 namespace Rb.World.Entities
 {
@@ -96,16 +97,30 @@ namespace Rb.World.Entities
 		#region ISceneObject Members
 
 		/// <summary>
-        /// Sets the scene context that this object has been created in
-        /// </summary>
-        public virtual void SetSceneContext( Scene scene )
+		/// Called when this object is added to the specified scene
+		/// </summary>
+		/// <param name="scene">Scene object</param>
+        public virtual void AddedToScene( Scene scene )
         {
             m_Scene = scene;
             scene.Renderables.Add( this );
 
 			//	Subscribe to the update clock
-			scene.GetClock( "updateClock" ).Subscribe( Update );
+			scene.GetService< IUpdateService >( )[ "updateClock" ].Subscribe( Update );
         }
+
+		/// <summary>
+		/// Called when this object is removed from the specified scene
+		/// </summary>
+		/// <param name="scene">Scene object</param>
+		public virtual void RemovedFromScene( Scene scene )
+		{
+			//	Remove from renderable list
+			scene.Renderables.Remove( this );
+
+			//	Unsubscribe from the update clock
+			scene.GetService< IUpdateService >( )[ "updateClock" ].Unsubscribe( Update );
+		}
 
         #endregion
 

@@ -2,7 +2,7 @@
 namespace Rb.Core.Maths
 {
 	/// <summary>
-	/// Summary description for ControlledSpline.
+	/// Base class for splines defined by a series of control points (<see cref="SplineControlPoints"/>)
 	/// </summary>
 	public abstract class ControlledSpline : Curve
 	{
@@ -26,7 +26,7 @@ namespace Rb.Core.Maths
 		/// <remarks>
 		/// Resets the time range to [0,C], where C is the number of control points
 		/// </remarks>
-		public override void				OnChanged( )
+		public override void OnChanged( )
 		{
 			SetRange( 0, ControlPoints.Count );
 			base.OnChanged( );
@@ -39,7 +39,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Returns the control points defining this spline
 		/// </summary>
-		public SplineControlPoints	ControlPoints
+		public SplineControlPoints ControlPoints
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Rb.Core.Maths
 
 		#region	Fields
 
-		private SplineControlPoints	m_ControlPoints;
+		private readonly SplineControlPoints m_ControlPoints;
 
 		#endregion
 	}
