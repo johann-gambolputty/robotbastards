@@ -21,9 +21,9 @@ namespace Rb.World.Entities
 		#region ISceneObject Members
 
 		/// <summary>
-		/// Sets the scene context
+		/// Called when this object is added to the scene
 		/// </summary>
-		public void SetSceneContext( Scene scene )
+		public void AddedToScene( Scene scene )
 		{
             IHost host = scene.GetService< IHost >( );
             if ( ( host == null ) || ( host.HostType == HostType.Local ) )
@@ -41,8 +41,14 @@ namespace Rb.World.Entities
             }
             else
             {
-
             }
+		}
+
+		/// <summary>
+		/// Called when this object is removed from the scene
+		/// </summary>
+		public void RemovedFromScene( Scene scene )
+		{
 		}
 
 		#endregion

@@ -388,12 +388,12 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			}
 		}
 
-		private static void undoToolStripMenuItem_Click( object sender, EventArgs e )
+		private void undoToolStripMenuItem_Click( object sender, EventArgs e )
 		{
 			EditorState.Instance.CurrentUndoStack.Undo( );
 		}
 
-		private static void redoToolStripMenuItem_Click( object sender, EventArgs e )
+		private void redoToolStripMenuItem_Click( object sender, EventArgs e )
 		{
 			EditorState.Instance.CurrentUndoStack.Redo( );
 		}
@@ -420,6 +420,10 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			{
 				posStatusLabel.Text = "";
 			}
+		}
+
+		private void runGameToolStripMenuItem_Click( object sender, EventArgs e )
+		{
 		}
 
 		#endregion

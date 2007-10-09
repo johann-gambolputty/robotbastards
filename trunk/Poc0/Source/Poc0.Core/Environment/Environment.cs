@@ -32,9 +32,18 @@ namespace Poc0.Core.Environment
 		/// Called when this object is added to a scene
 		/// </summary>
 		/// <param name="scene">Scene</param>
-		public void SetSceneContext( Scene scene )
+		public void AddedToScene( Scene scene )
 		{
-			m_Graphics = Graphics.Factory.Create< EnvironmentGraphics >( scene.Builder );
+			//	TODO: AP: Can this be done during construction?
+			m_Graphics = Graphics.Factory.Create< EnvironmentGraphics >( );
+		}
+
+		/// <summary>
+		/// Called when this object is removed from a scene
+		/// </summary>
+		/// <param name="scene">Scene</param>
+		public void RemovedFromScene( Scene scene )
+		{
 		}
 
 		#endregion

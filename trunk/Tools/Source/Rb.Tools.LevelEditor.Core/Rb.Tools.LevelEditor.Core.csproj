@@ -53,6 +53,12 @@
     <Compile Include="Controls\Forms\EditorForm.designer.cs">
       <DependentUpon>EditorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Forms\GameDisplayForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\Forms\GameDisplayForm.Designer.cs">
+      <DependentUpon>GameDisplayForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Forms\NewObjectControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -155,6 +161,10 @@
     <EmbeddedResource Include="Controls\Forms\EditorForm.resx">
       <DependentUpon>EditorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Forms\GameDisplayForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>GameDisplayForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Forms\NewObjectControl.resx">
       <DependentUpon>NewObjectControl.cs</DependentUpon>

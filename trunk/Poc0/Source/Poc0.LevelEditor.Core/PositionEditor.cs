@@ -7,6 +7,7 @@ using Rb.Tools.LevelEditor.Core.Actions;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.Rendering;
 using Rb.World;
+using Rb.World.Services;
 using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc0.LevelEditor.Core
@@ -27,7 +28,7 @@ namespace Poc0.LevelEditor.Core
 			m_HasPosition.Position = ( ( Line3Intersection )pick ).IntersectionPosition;
 			m_Plane = new Plane3( m_HasPosition.Position, Vector3.YAxis );
 
-			IRayCaster rayCaster = EditorState.Instance.CurrentScene.GetService< IRayCaster >( );
+			IRayCastService rayCaster = EditorState.Instance.CurrentScene.GetService< IRayCastService >( );
 			rayCaster.AddIntersector( RayCastLayers.Entity, this );
 		}
 

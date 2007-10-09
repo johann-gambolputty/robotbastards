@@ -10,9 +10,15 @@ namespace Rb.World
     public interface ISceneObject
     {
         /// <summary>
-        /// Sets the scene that this object was created for
+        /// Called when this object is added to the specified scene
         /// </summary>
-        /// <param name="scene">Scene</param>
-        void SetSceneContext( Scene scene );
+        /// <param name="scene">Scene object</param>
+        void AddedToScene( Scene scene );
+
+		/// <summary>
+		/// Called when this object is removed from the specified scene
+		/// </summary>
+		/// <param name="scene">Scene object</param>
+		void RemovedFromScene( Scene scene );
     }
 }

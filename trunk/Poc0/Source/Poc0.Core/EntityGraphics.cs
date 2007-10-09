@@ -58,13 +58,23 @@ namespace Poc0.Core
 		#region ISceneObject Members
 
 		/// <summary>
-		/// Sets the scene context of this object
+		/// Called when this object is added to a scene
 		/// </summary>
 		/// <param name="scene">Scene context</param>
-		public void SetSceneContext( Scene scene )
+		public void AddedToScene( Scene scene )
 		{
 			scene.Renderables.Add( this );
-			m_Lights.SetSceneContext( scene );
+			m_Lights.AddedToScene( scene );
+		}
+
+		/// <summary>
+		/// Called when this object is removed from a scene
+		/// </summary>
+		/// <param name="scene">Scene context</param>
+		public void RemovedFromScene( Scene scene )
+		{
+			scene.Renderables.Remove( this );
+			m_Lights.RemovedFromScene( scene );
 		}
 
 		#endregion

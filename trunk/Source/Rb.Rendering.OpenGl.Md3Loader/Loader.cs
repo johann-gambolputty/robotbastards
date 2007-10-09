@@ -56,7 +56,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 			Matrix44 transform = new Matrix44( );
 			transform.Scale( scale.X, scale.Y, scale.Z );
-			transform.Translate( offset.X, offset.Y, offset.Z );
+			//transform.Translate( offset.X, offset.Y, offset.Z );
 
 			//	create the model
 			Model model = new Model( );
@@ -84,7 +84,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			}
 
 			//	Set the transform tags
-			//	TODO: Should be data driver
+			//	TODO: Should be data driven
 			model.GetPartMesh( ModelPart.Lower ).TransformTagIndex = model.GetPartMesh( ModelPart.Lower ).GetTagIndex( "tag_torso" );
 			model.GetPartMesh( ModelPart.Upper ).TransformTagIndex = model.GetPartMesh( ModelPart.Upper ).GetTagIndex( "tag_head" );
 
@@ -302,7 +302,6 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				ReadFrames( reader, framesOffset, numFrames, mesh, transform );
 				ReadTags( reader, tagsOffset, numTags, numFrames, mesh, transform );
 				ReadSurfaces( reader, surfacesOffset, numSurfaces, numFrames, mesh, surfaceTextureTable, transform );
-
 
 				//	TODO: REMOVE. test frames
 				string md3Name = md3Source.ToString( );
@@ -556,7 +555,6 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			return new OpenGlVertexBuffer( numCoordinates, 0, Gl.GL_TEXTURE_COORD_ARRAY, 0, 2, Gl.GL_STATIC_DRAW, texCoords );
 		}
 
-
 		/// <summary>
 		/// Reads surface vertices (positions and normals)
 		/// </summary>
@@ -570,7 +568,6 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			//	Allocate temporary arrays for storing position and normal data
 			float[] positions	= new float[ numVertices * 3 ];
 			float[] normals		= new float[ numVertices * 3 ];
-
 
 			//	Run through all frames
 			for ( int frameIndex = 0; frameIndex < numFrames; ++frameIndex )

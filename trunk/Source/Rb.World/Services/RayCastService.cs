@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using Rb.Core.Maths;
 
-namespace Rb.World
+namespace Rb.World.Services
 {
     /// <summary>
     /// Maintains a list of IRay3Intersector objects to intersect with
     /// </summary>
-    public class RayCaster : IRayCaster
+    public class RayCastService : IRayCastService
     {
         #region IRayCaster Members
 

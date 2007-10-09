@@ -51,7 +51,7 @@ namespace Rb.Tools.LevelEditor.Core.Actions
 		{
 			if ( template is IInstanceBuilder )
 			{
-				return ( ( IInstanceBuilder )template ).CreateInstance( EditorState.Instance.CurrentRuntimeScene.Builder );
+				return ( ( IInstanceBuilder )template ).CreateInstance( Builder.Instance );
 			}
 
 			if ( template is ICloneable )

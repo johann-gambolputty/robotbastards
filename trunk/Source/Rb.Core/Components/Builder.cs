@@ -34,8 +34,19 @@ namespace Rb.Core.Components
 
         #region Instance creation generic helpers
 
+		/// <summary>
+		/// Creates an instance of ObjectType from the IBuilder singleton
+		/// </summary>
+		/// <typeparam name="ObjectType">Object type to create</typeparam>
+		/// <returns>New instance of ObjectType</returns>
+		public static ObjectType CreateInstance< ObjectType >( )
+		{
+			return CreateInstance< ObjectType >( Instance );
+		}
+        
+
         /// <summary>
-        /// Creates an instance of ObjectType from the IBuilder singleton
+        /// Creates an instance of ObjectType from the specified IBuilder
         /// </summary>
 		/// <typeparam name="ObjectType">Object type to create</typeparam>
 		/// <param name="builder">Builder used to create the instance</param>

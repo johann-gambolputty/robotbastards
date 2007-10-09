@@ -1,5 +1,6 @@
 using System;
 using Rb.Rendering;
+using Rb.World.Services;
 
 namespace Rb.World
 {
@@ -12,18 +13,27 @@ namespace Rb.World
 		#region ISceneObject Members
 
 		/// <summary>
-		/// Sets the scene context
+		/// Called when this object is added to the specified scene
 		/// </summary>
-		/// <param name="scene">Scene context</param>
-		public void SetSceneContext( Scene scene )
+		/// <param name="scene">Scene object</param>
+		public virtual void AddedToScene( Scene scene )
 		{
-			ILightingManager lighting = scene.GetService< ILightingManager >( );
+			ILightingService lighting = scene.GetService< ILightingService >( );
 			if ( lighting == null )
 			{
-				throw new InvalidOperationException( "LightMeter requires that an ILightingManager service be present in the scene" );
+				throw new InvalidOperationException( "LightMeter requires that an ILightingService be present in the scene" );
 			}
 
 			lighting.AddLightMeter( this );
+		}
+		
+		/// <summary>
+		/// Called when this object is removed from the specified scene
+		/// </summary>
+		/// <param name="scene">Scene object</param>
+		public virtual void RemovedFromScene( Scene scene )
+		{
+			scene.GetService< ILightingService >( ).RemoveLightMeter( this );
 		}
 
 		#endregion

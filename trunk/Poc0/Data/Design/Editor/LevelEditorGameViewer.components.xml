@@ -24,8 +24,11 @@
 
     </object>
 
+    <!--
     <bool value="true" property="ShowFps"/>
     <colour value="White" property="FpsDisplay.TextColour"/>
+    -->
+
   </object>
 
 </rb>

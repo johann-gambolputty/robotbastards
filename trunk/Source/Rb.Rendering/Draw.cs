@@ -503,6 +503,33 @@ namespace Rb.Rendering
 
 		#endregion
 
+		#region Axis aligned boxes
+
+		/// <summary>
+		/// Draws an axis aligned box
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="min">Top left back position</param>
+		/// <param name="max">Bottom right front position</param>
+		public void AlignedBox( IPen pen, Point3 min, Point3 max )
+		{
+			AlignedBox( pen, min.X, min.Y, min.Z, max.X, max.Y, max.Z );
+		}
+
+		/// <summary>
+		/// Draws an axis aligned box
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="minX">Top left back x coordinate</param>
+		/// <param name="minY">Top left back y coordinate</param>
+		/// <param name="minZ">Top left back z coordinate</param>
+		/// <param name="maxX">Bottom right front x coordinate</param>
+		/// <param name="maxY">Bottom right front y coordinate</param>
+		/// <param name="maxZ">Bottom right front z coordinate</param>
+		public abstract void AlignedBox( IPen pen, float minX, float minY, float minZ, float maxX, float maxY, float maxZ );
+
+		#endregion
+
 		#region Spheres
 
 		/// <summary>

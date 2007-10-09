@@ -5,6 +5,7 @@ using Rb.Rendering;
 using Rb.Animation;
 using Rb.World;
 using Rb.World.Entities;
+using Rb.World.Services;
 
 
 namespace Rb.Rendering.OpenGl.Md3Loader
@@ -61,12 +62,21 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		#region	ISceneObject Members
 
 		/// <summary>
-		/// Invoked when this object is created for a given scene
+		/// Called when this object is added to a scene
 		/// </summary>
         /// <param name="scene">Scene that this object was added to</param>
-		public void	SetSceneContext( Scene scene )
+		public void	AddedToScene( Scene scene )
 		{
-            scene.GetClock( "animationClock" ).Subscribe( Update );
+            scene.GetService< IUpdateService >( )[ "animationClock" ].Subscribe( Update );
+		}
+		
+		/// <summary>
+		/// Called when this object is removed from a scene
+		/// </summary>
+        /// <param name="scene">Scene that this object was added to</param>
+		public void	RemovedFromScene( Scene scene )
+		{
+            scene.GetService< IUpdateService >( )[ "animationClock" ].Unsubscribe( Update );
 		}
 
 		#endregion

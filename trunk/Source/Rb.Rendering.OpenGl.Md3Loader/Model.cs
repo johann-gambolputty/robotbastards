@@ -125,6 +125,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public void Render( IRenderContext context, AnimationLayer[] layers )
 		{
+			Mesh.FrameInfo frame = m_PartMeshes[ 0 ].GetAnimationFrame( layers );
+			Graphics.Renderer.Translate( Transform.LocalToWorld, 0, ( frame.MaxBounds - frame.MinBounds ).Y / 2, 0 );
 			m_PartMeshes[ 0 ].Render( context, layers );
 		}
 

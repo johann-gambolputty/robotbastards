@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using Rb.Rendering;
 
-namespace Rb.World
+namespace Rb.World.Services
 {
 	/// <summary>
 	/// Manages lighting in a scene
 	/// </summary>
 	[Serializable]
-	public class LightingManager : ILightingManager, ISceneObject
+	public class LightingService : ILightingService, ISceneObject
 	{
-		#region ILightingManager Members
+		#region ILightingService Members
 
 		/// <summary>
 		/// Adds a light meter to the lighting manager
@@ -61,12 +61,21 @@ namespace Rb.World
 		#region ISceneObject Members
 
 		/// <summary>
-		/// Sets the scene context
+		/// Called when this object is added to the scene
 		/// </summary>
 		/// <param name="scene">Scene context</param>
-		public void SetSceneContext( Scene scene )
+		public void AddedToScene( Scene scene )
 		{
 			scene.PreRender += OnPreRender;
+		}
+
+		/// <summary>
+		/// Called when this object is removed from the scene
+		/// </summary>
+		/// <param name="scene">Scene object</param>
+		public void RemovedFromScene( Scene scene )
+		{
+			scene.PreRender -= OnPreRender;
 		}
 
 		#endregion

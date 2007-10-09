@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Rb.Interaction;
 using Rb.Rendering.Cameras;
 using Rb.Core.Maths;
+using Rb.World.Services;
 
 namespace Rb.World.Interaction
 {
@@ -27,7 +25,7 @@ namespace Rb.World.Interaction
         {
             //  TODO: AP: Cast Renderable to Scene, then query for ray intersector system (otherwise, Scene must
             //  implement IRay3Intersector, which implies dimensionality)
-            IRayCaster caster = ( ( Scene )Context.Viewer.Renderable ).GetService< IRayCaster >( );
+            IRayCastService caster = ( ( Scene )Context.Viewer.Renderable ).GetService< IRayCastService >( );
             if ( caster == null )
             {
                 return new PickCommandMessage( cmd, null );
