@@ -59,6 +59,29 @@ namespace Rb.Tools.LevelEditor.Core
 		#endregion
 
 		#region Edit modes
+
+		/// <summary>
+		/// Raised after an edit mode is added
+		/// </summary>
+		public event EventHandler EditModeAdded;
+
+		/// <summary>
+		/// Returns an enumerator to the current set edit modes
+		/// </summary>
+		public IEnumerable< IEditMode > EditModes
+		{
+			get
+			{
+				foreach ( IEditMode sharedMode in m_SharedModes )
+				{
+					yield return sharedMode;
+				}
+				if ( m_ExclusiveMode != null )
+				{
+					yield return m_ExclusiveMode;
+				}
+			}
+		}
 		
 		/// <summary>
 		/// Adds an edit mode. If the mode is exclusive, then it replaces the current exclusive mode
@@ -92,6 +115,11 @@ namespace Rb.Tools.LevelEditor.Core
 			{
 				m_SharedModes.Add( mode );
 				mode.Start( );
+			}
+
+			if ( EditModeAdded != null )
+			{
+				EditModeAdded( this, null );
 			}
 		}
 

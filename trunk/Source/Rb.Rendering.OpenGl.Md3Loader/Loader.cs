@@ -182,7 +182,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 						using ( Stream textureStream = TextureFile( source, tokens[ 1 ] ).Open( ) )
 						{
-							newTexture.Load( textureStream );
+							newTexture.Load( textureStream, true );
 						}
 
 						surfaceTextureMap[ tokens[ 0 ] ] = newTexture;

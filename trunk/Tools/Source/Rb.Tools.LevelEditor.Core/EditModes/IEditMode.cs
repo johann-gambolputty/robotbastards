@@ -48,6 +48,14 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 		}
 
 		/// <summary>
+		/// Returns a description of the edit mode inputs
+		/// </summary>
+		string InputDescription
+		{
+			get;
+		}
+
+		/// <summary>
 		/// There can be only one exclusive edit mode active at any one time
 		/// </summary>
 		bool Exclusive

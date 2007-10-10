@@ -31,6 +31,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		{
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.posStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.inputsStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.menuStrip = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -40,6 +41,8 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.runGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,8 +54,6 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			this.objectPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.gameViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.display = new Rb.Tools.LevelEditor.Core.Controls.Forms.PickDisplay();
-			this.runGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.statusStrip.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -60,7 +61,8 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			// statusStrip
 			// 
 			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.posStatusLabel});
+            this.posStatusLabel,
+            this.inputsStatusLabel});
 			this.statusStrip.Location = new System.Drawing.Point(0, 398);
 			this.statusStrip.Name = "statusStrip";
 			this.statusStrip.Size = new System.Drawing.Size(524, 22);
@@ -71,6 +73,11 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			// 
 			this.posStatusLabel.Name = "posStatusLabel";
 			this.posStatusLabel.Size = new System.Drawing.Size(0, 17);
+			// 
+			// inputsStatusLabel
+			// 
+			this.inputsStatusLabel.Name = "inputsStatusLabel";
+			this.inputsStatusLabel.Size = new System.Drawing.Size(0, 17);
 			// 
 			// menuStrip
 			// 
@@ -105,57 +112,69 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			// openToolStripMenuItem
 			// 
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.openToolStripMenuItem.Text = "&Open";
 			this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(143, 6);
 			// 
 			// exportAsToolStripMenuItem
 			// 
 			this.exportAsToolStripMenuItem.Name = "exportAsToolStripMenuItem";
-			this.exportAsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.exportAsToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.exportAsToolStripMenuItem.Text = "Ex&port As...";
 			this.exportAsToolStripMenuItem.Click += new System.EventHandler(this.exportAsToolStripMenuItem_Click);
 			// 
 			// exportToolStripMenuItem
 			// 
 			this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-			this.exportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.exportToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.exportToolStripMenuItem.Text = "&Export";
 			this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(143, 6);
 			// 
 			// saveAsToolStripMenuItem
 			// 
 			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.saveAsToolStripMenuItem.Text = "S&ave As...";
 			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
 			// 
 			// saveToolStripMenuItem
 			// 
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.saveToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.saveToolStripMenuItem.Text = "&Save";
 			this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(143, 6);
+			// 
+			// runGameToolStripMenuItem
+			// 
+			this.runGameToolStripMenuItem.Name = "runGameToolStripMenuItem";
+			this.runGameToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+			this.runGameToolStripMenuItem.Text = "&Run Game...";
+			this.runGameToolStripMenuItem.Click += new System.EventHandler(this.runGameToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(143, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -236,18 +255,6 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			this.display.TabIndex = 2;
 			this.display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.display_MouseMove);
 			// 
-			// runGameToolStripMenuItem
-			// 
-			this.runGameToolStripMenuItem.Name = "runGameToolStripMenuItem";
-			this.runGameToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.runGameToolStripMenuItem.Text = "&Run Game...";
-			this.runGameToolStripMenuItem.Click += new System.EventHandler(this.runGameToolStripMenuItem_Click);
-			// 
-			// toolStripSeparator4
-			// 
-			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
-			// 
 			// EditorForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -295,5 +302,6 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		private System.Windows.Forms.ToolStripStatusLabel posStatusLabel;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripMenuItem runGameToolStripMenuItem;
+		private System.Windows.Forms.ToolStripStatusLabel inputsStatusLabel;
 	}
 }

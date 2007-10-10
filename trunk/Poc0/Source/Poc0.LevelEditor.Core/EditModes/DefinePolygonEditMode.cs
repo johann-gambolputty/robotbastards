@@ -27,14 +27,8 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// </summary>
 		public DefinePolygonEditMode( )
 		{
-			if ( m_EdgePen == null )
-			{
-				m_EdgePen = Graphics.Draw.NewPen( Color.Black, 4.0f );
-			}
-			if ( m_VertexMould == null )
-			{
-				m_VertexMould = Graphics.Draw.NewMould( Color.Red );
-			}
+			m_DrawEdge = Graphics.Draw.NewPen( Color.White, 2.0f );
+			m_DrawVertex = Graphics.Draw.NewBrush( Color.Red, Color.DarkRed );
 		}
 
 		/// <summary>
@@ -42,7 +36,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// </summary>
 		public override MouseButtons Buttons
 		{
-			get { return MouseButtons.Left | MouseButtons.Right; }
+			get { return MouseButtons.Right; }
 		}
 
 		/// <summary>
@@ -94,22 +88,21 @@ namespace Poc0.LevelEditor.Core.EditModes
 		public void Render( IRenderContext context )
 		{
 			//	Render lines
-			Graphics.Draw.Lines( m_EdgePen, m_Points );
+			Graphics.Draw.Lines( m_DrawEdge, m_Points );
 
 			if ( m_Points.Count > 0 )
 			{
-				Graphics.Draw.Line( m_EdgePen, m_Points[ m_Points.Count - 1 ], m_CursorPoint );
+				Graphics.Draw.Line( m_DrawEdge, m_Points[ m_Points.Count - 1 ], m_CursorPoint );
 			}
 			
-			RenderFont font = RenderFonts.GetDefaultFont( DefaultFont.Debug );
-			font.DrawText( 0, 0, Color.Black, "X: {0:F2} Y: {1:F2} Z: {2:F2}", m_CursorPoint.X, m_CursorPoint.Y, m_CursorPoint.Z );
-
-			//	TODO: AP: reinstate (render as 3d camera facing circles, though)
 			//	Render vertices
-			//foreach ( Point2 point in m_Points )
-			//{
-			//	Graphics.Draw.Sphere( m_VertexMould, point, 3.0f, 5, 5 );
-			//}
+			foreach ( Point3 point in m_Points )
+			{
+				Graphics.Draw.Circle( m_DrawVertex, point, 0.5f );
+			}
+
+			//RenderFont font = RenderFonts.GetDefaultFont( DefaultFont.Debug );
+			//font.DrawText( 0, 0, Color.Black, "X: {0:F2} Y: {1:F2} Z: {2:F2}", m_CursorPoint.X, m_CursorPoint.Y, m_CursorPoint.Z );
 		}
 
 		#endregion
@@ -121,8 +114,8 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// </summary>
 		protected Color EdgeColour
 		{
-			get { return m_EdgePen.Colour; }
-			set { m_EdgePen.Colour = value; }
+			get { return m_DrawEdge.Colour; }
+			set { m_DrawEdge.Colour = value; }
 		}
 
 		/// <summary>
@@ -130,8 +123,8 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// </summary>
 		protected Color VertexColour
 		{
-			get { return m_VertexMould.Colour; }
-			set { m_VertexMould.Colour = value; }
+			get { return m_DrawVertex.Colour; }
+			set { m_DrawVertex.Colour = value; }
 		}
 
 		/// <summary>
@@ -146,8 +139,8 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 		#region Private members
 
-		private readonly Draw.IPen		m_EdgePen;
-		private readonly Draw.IMould	m_VertexMould;
+		private readonly Draw.IPen		m_DrawEdge;
+		private readonly Draw.IBrush	m_DrawVertex;
 		private readonly List< Point3 >	m_Points = new List< Point3 >( );
 		private Point3					m_CursorPoint;
 
@@ -195,6 +188,10 @@ namespace Poc0.LevelEditor.Core.EditModes
 			{
 				m_Points.Clear( );
 			}
+			else if ( args.KeyCode == Keys.Return )
+			{
+				ClosePolygon( );
+			}
 		}
 
 		/// <summary>
@@ -216,7 +213,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// </summary>
 		private void OnMouseClick( object sender, MouseEventArgs args )
 		{
-			if ( args.Button == MouseButtons.Left )
+			if ( args.Button == MouseButtons.Right )
 			{
 				if ( IsOverFirstPoint( m_CursorPoint ) )
 				{
@@ -226,10 +223,6 @@ namespace Poc0.LevelEditor.Core.EditModes
 				{
 					m_Points.Add( m_CursorPoint );
 				}
-			}
-			else if ( args.Button == MouseButtons.Right )
-			{
-				ClosePolygon( );
 			}
 		}
 

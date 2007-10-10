@@ -6,6 +6,32 @@ namespace Rb.Core.Maths
 	/// </summary>
 	public static class Intersections3
 	{
+		#region Ray-Quad intersections
+
+		/// <summary>
+		/// Intersects a ray with a quad
+		/// </summary>
+		/// <param name="ray">Ray </param>
+		/// <param name="pt0">Quad corner position</param>
+		/// <param name="pt1">Quad corner position</param>
+		/// <param name="pt2">Quad corner position</param>
+		/// <param name="pt3">Quad corner position</param>
+		/// <returns>Returns intersection details, or null if there was no intersection</returns>
+		public static Line3Intersection GetRayQuadIntersection( Ray3 ray, Point3 pt0, Point3 pt1, Point3 pt2, Point3 pt3 )
+		{
+			//	TODO: AP: This is very lazy...
+			Line3Intersection intersection = GetRayTriangleIntersection( ray, pt0, pt1, pt2 );
+			if ( intersection == null )
+			{
+				intersection = GetRayTriangleIntersection( ray, pt2, pt3, pt1 );
+			}
+			return intersection;
+		}
+
+		#endregion
+
+		#region Ray-Tri intersections
+
 		/// <summary>
 		/// Intersects a ray with a triangle
 		/// </summary>
@@ -14,7 +40,7 @@ namespace Rb.Core.Maths
 			return GetRayTriangleIntersection( ray, pt0, pt1, pt2, float.MaxValue );
 		}
 
-		
+
 		/// <summary>
 		/// Intersects a ray with a triangle. If the intersection point is beyond a given distance from the ray origin, the intersection is rejected
 		/// </summary>
@@ -71,6 +97,10 @@ namespace Rb.Core.Maths
 			return new Line3Intersection( pt, nVec, r );
 		}
 
+		#endregion
+
+		#region Ray-Sphere intersections
+
 		/// <summary>
 		/// Tests for an intersection between a ray and a sphere
 		/// </summary>
@@ -124,6 +154,10 @@ namespace Rb.Core.Maths
 			return new Line3Intersection(  intersectionPt, ( intersectionPt - sphere.Centre ).MakeNormal( ), closestT );
 		}
 
+		#endregion
+
+		#region Ray-Plane intersections
+
 		/// <summary>
 		/// Tests for an intersection between a ray and a plane
 		/// </summary>
@@ -166,5 +200,7 @@ namespace Rb.Core.Maths
 
 			return null;
 		}
+
+		#endregion
 	}
 }

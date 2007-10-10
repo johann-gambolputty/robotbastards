@@ -49,7 +49,7 @@ namespace Rb.Rendering.OpenGl
 
 			m_FontTextureSampler			= Graphics.Factory.NewTextureSampler2d( );
 			m_FontTextureSampler.Texture	= Graphics.Factory.NewTexture2d( );
-			m_FontTextureSampler.Texture.Load( img );
+			m_FontTextureSampler.Texture.Load( img, false );
 			m_FontTextureSampler.Mode		= TextureMode.Modulate;
 			m_FontTextureSampler.MinFilter	= TextureFilter.NearestTexel;
 			m_FontTextureSampler.MagFilter	= TextureFilter.NearestTexel;

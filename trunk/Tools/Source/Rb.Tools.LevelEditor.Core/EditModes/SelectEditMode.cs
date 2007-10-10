@@ -42,6 +42,17 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 		}
 
 		/// <summary>
+		/// Returns a description of the edit mode inputs
+		/// </summary>
+		public override string InputDescription
+		{
+			get
+			{
+				return string.Format( Properties.Resources.SelectInputs, ResourceHelper.MouseButtonName( Buttons ) );
+			}
+		}
+
+		/// <summary>
 		/// Returns false (select can co-exist with other edit modes)
 		/// </summary>
 		public override bool Exclusive

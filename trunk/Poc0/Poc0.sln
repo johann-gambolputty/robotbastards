@@ -60,6 +60,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Tools.LevelEditor.Core",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Tools.GameTester", "..\Tools\Source\Rb.Tools.GameTester\Rb.Tools.GameTester.csproj", "{EFE9E510-A2FE-4F53-8ED3-45C08F639D22}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc0.LevelEditor.Rendering.OpenGl", "Source\Poc0.LevelEditor.Rendering.OpenGl\Poc0.LevelEditor.Rendering.OpenGl.csproj", "{CF7F44B9-4EC5-4FA5-ADFE-BAEDE2C0860E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -223,6 +225,12 @@ Global
 		{EFE9E510-A2FE-4F53-8ED3-45C08F639D22}.NDoc|Any CPU.Build.0 = Release|Any CPU
 		{EFE9E510-A2FE-4F53-8ED3-45C08F639D22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFE9E510-A2FE-4F53-8ED3-45C08F639D22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF7F44B9-4EC5-4FA5-ADFE-BAEDE2C0860E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF7F44B9-4EC5-4FA5-ADFE-BAEDE2C0860E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF7F44B9-4EC5-4FA5-ADFE-BAEDE2C0860E}.NDoc|Any CPU.ActiveCfg = Release|Any CPU
+		{CF7F44B9-4EC5-4FA5-ADFE-BAEDE2C0860E}.NDoc|Any CPU.Build.0 = Release|Any CPU
+		{CF7F44B9-4EC5-4FA5-ADFE-BAEDE2C0860E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF7F44B9-4EC5-4FA5-ADFE-BAEDE2C0860E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

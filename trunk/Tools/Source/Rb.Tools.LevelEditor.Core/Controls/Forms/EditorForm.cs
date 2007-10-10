@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
 using Crownwood.Magic.Docking;
 using Crownwood.Magic.Common;
@@ -12,6 +14,7 @@ using Rb.Interaction;
 using Rb.Log;
 using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core.Actions;
+using Rb.Tools.LevelEditor.Core.EditModes;
 using Rb.World;
 using Graphics=Rb.Rendering.Graphics;
 
@@ -72,6 +75,9 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 
 			m_Serializer.LastSavePathChanged += SavePathChanged;
 			m_Exporter.LastExportPathChanged += ExportPathChanged;
+
+			UpdateInputsStatusLabel( );
+			EditorState.Instance.EditModeAdded += EditModeAdded;
 		}
 
 		#region Properties
@@ -151,6 +157,35 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		#endregion
 
 		#region Event handlers
+
+		/// <summary>
+		/// Updates the text displayed in the inputs status label
+		/// </summary>
+		private void UpdateInputsStatusLabel( )
+		{
+			StringBuilder sb = new StringBuilder( );
+
+			IEnumerator< IEditMode > modePos = EditorState.Instance.EditModes.GetEnumerator( );
+			if ( modePos.MoveNext( ) )
+			{
+				sb.Append( modePos.Current.InputDescription );
+				while ( modePos.MoveNext( ) )
+				{
+					sb.Append( ", " );
+					sb.Append( modePos.Current.InputDescription );
+				}
+			}
+
+			inputsStatusLabel.Text = sb.ToString( );
+		}
+
+		/// <summary>
+		/// Called when an edit mode is added
+		/// </summary>
+		protected virtual void EditModeAdded( object sender, EventArgs args )
+		{
+			UpdateInputsStatusLabel( );
+		}
 
 		/// <summary>
 		/// Called when the save path of the current scene has changed
@@ -415,10 +450,6 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			if ( pick != null )
 			{
 				posStatusLabel.Text = pick.ToString( );
-			}
-			else
-			{
-				posStatusLabel.Text = "";
 			}
 		}
 
