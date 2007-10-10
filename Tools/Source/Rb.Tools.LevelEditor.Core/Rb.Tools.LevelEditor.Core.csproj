@@ -98,6 +98,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ResourceHelper.cs" />
     <Compile Include="SceneExporter.cs" />
     <Compile Include="SceneSerializer.cs" />
     <Compile Include="Selection\IMoveable3.cs" />

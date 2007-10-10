@@ -84,15 +84,16 @@ namespace Rb.Rendering
 		/// </summary>
 		public Texture2d( SerializationInfo info, StreamingContext context )
 		{
-			Load( ( Bitmap )info.GetValue( "img", typeof( Bitmap ) ) );
+			bool mipMapped = ( bool )info.GetValue( "mm", typeof( bool ) );
+			Load( ( Bitmap )info.GetValue( "img", typeof( Bitmap ) ), mipMapped );
 		}
 
 		/// <summary>
 		/// Loads the texture from a bitmap file
 		/// </summary>
-		public Texture2d( string path )
+		public Texture2d( string path, bool generateMipMaps )
 		{
-			Load( path );
+			Load( path, generateMipMaps );
 		}
 
 		/// <summary>
@@ -147,14 +148,14 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Creates a texture from a resource, using the manifest resource stream
 		/// </summary>
-		public static Texture2d FromManifestResource( string name )
+		public static Texture2d FromManifestResource( string name, bool generateMipMaps )
 		{
 			Texture2d texture = Graphics.Factory.NewTexture2d( );
-			texture.LoadManifestResource( name );
+			texture.LoadManifestResource( name, generateMipMaps );
 			return texture;
 		}
 
-		public void Load( Stream stream )
+		public void Load( Stream stream, bool generateMipMaps )
 		{
 			Image img = Image.FromStream( stream );
 			Bitmap bmp = new Bitmap( img );
@@ -163,13 +164,13 @@ namespace Rb.Rendering
 			img.Dispose( );
 
 			//	Load the bitmap
-			Load( bmp );
+			Load( bmp, generateMipMaps );
 		}
 
 		/// <summary>
 		/// Loads the texture from a bitmap file
 		/// </summary>
-		public void Load( string path )
+		public void Load( string path, bool generateMipMaps )
 		{
 			Image img = Image.FromFile( path, true );
 			Bitmap bmp = new Bitmap( img );
@@ -178,22 +179,22 @@ namespace Rb.Rendering
 			img.Dispose( );
 
 			//	Load the bitmap
-			Load( bmp );
+			Load( bmp, generateMipMaps );
 		}
 
 		/// <summary>
 		/// Loads the texture from a resource in this assembly's manifest resources
 		/// </summary>
-		public void LoadManifestResource( string name )
+		public void LoadManifestResource( string name, bool generateMipMaps )
 		{
-			System.IO.Stream stream = AppDomainUtils.FindManifestResource( name );
-			Load( new Bitmap( Image.FromStream( stream ) ) );
+			Stream stream = AppDomainUtils.FindManifestResource( name );
+			Load( new Bitmap( Image.FromStream( stream ) ), generateMipMaps );
 		}
 
 		/// <summary>
 		/// Loads the texture from bitmap data
 		/// </summary>
-		public abstract void Load( Bitmap bmp );
+		public abstract void Load( Bitmap bmp, bool generateMipMaps );
 
 		#endregion
 
@@ -223,6 +224,7 @@ namespace Rb.Rendering
 		protected int			m_Width;
 		protected int			m_Height;
 		protected TextureFormat	m_Format;
+		protected bool			m_MipMapped;
 
 		#endregion
 
@@ -245,6 +247,7 @@ namespace Rb.Rendering
 		public virtual void GetObjectData( SerializationInfo info, StreamingContext context )
 		{
 			info.AddValue( "img", ToBitmap( ) );
+			info.AddValue( "mm", m_MipMapped );
 		}
 
 		#endregion

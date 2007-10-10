@@ -61,6 +61,15 @@ namespace Rb.Tools.LevelEditor.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}: Creates object.
+        /// </summary>
+        internal static string AddObjectInputs {
+            get {
+                return ResourceManager.GetString("AddObjectInputs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can&apos;t load asset into type &quot;{0}&quot;.
         /// </summary>
         internal static string CantLoadAssetIntoType {
@@ -115,11 +124,56 @@ namespace Rb.Tools.LevelEditor.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Left.
+        /// </summary>
+        internal static string LeftMouseButton {
+            get {
+                return ResourceManager.GetString("LeftMouseButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Middle.
+        /// </summary>
+        internal static string MiddleMouseButton {
+            get {
+                return ResourceManager.GetString("MiddleMouseButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: Moves selected objects.
+        /// </summary>
+        internal static string MoveInputs {
+            get {
+                return ResourceManager.GetString("MoveInputs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No asset location managers with UI were available.
         /// </summary>
         internal static string NoLocationManagersWithUI {
             get {
                 return ResourceManager.GetString("NoLocationManagersWithUI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Right.
+        /// </summary>
+        internal static string RightMouseButton {
+            get {
+                return ResourceManager.GetString("RightMouseButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: Selects object.
+        /// </summary>
+        internal static string SelectInputs {
+            get {
+                return ResourceManager.GetString("SelectInputs", resourceCulture);
             }
         }
     }

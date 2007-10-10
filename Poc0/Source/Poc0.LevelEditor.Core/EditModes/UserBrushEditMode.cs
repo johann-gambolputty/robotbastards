@@ -26,6 +26,21 @@ namespace Poc0.LevelEditor.Core.EditModes
 		}
 
 		/// <summary>
+		/// Returns the input description of this edit mode
+		/// </summary>
+		public override string InputDescription
+		{
+			get
+			{
+				string addPoint = ResourceHelper.MouseButtonName( Buttons );
+				string closePoly = Keys.Return.ToString( );
+				string clearPoly = Keys.Escape.ToString( );
+
+				return string.Format( Properties.Resources.UserBrushInputs, addPoint, closePoly, clearPoly );
+			}
+		}
+
+		/// <summary>
 		/// Sets/gets the current CSG operation that will be applied when the defined polygon is closed
 		/// </summary>
 		public Csg.Operation Operation

@@ -52,7 +52,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// 2D texture flag, unit 1
 		/// </summary>
-		Texture2dUnit1 = 0x80,
+		Texture2dUnit1				= 0x80,
 
 		/// <summary>
 		/// 2D texture flag, unit 2

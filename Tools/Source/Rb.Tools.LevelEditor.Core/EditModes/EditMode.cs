@@ -41,6 +41,14 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 		}
 
 		/// <summary>
+		/// Returns a description of the edit mode inputs
+		/// </summary>
+		public virtual string InputDescription
+		{
+			get { return ""; }
+		}
+
+		/// <summary>
 		/// Returns true
 		/// </summary>
 		public virtual bool Exclusive

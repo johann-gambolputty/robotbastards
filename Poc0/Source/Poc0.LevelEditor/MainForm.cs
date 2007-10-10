@@ -1,8 +1,10 @@
 using System;
 using Crownwood.Magic.Docking;
 using Poc0.LevelEditor.Core;
+using Poc0.LevelEditor.Core.Rendering;
 using Rb.Core.Assets;
 using Rb.Core.Maths;
+using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.Controls.Forms;
 using Rb.Tools.LevelEditor.Core.EditModes;
@@ -62,11 +64,13 @@ namespace Poc0.LevelEditor
 			scene.RuntimeScene.AddService( new LightingService( ) );
 
 			//	Populate editor scene
-			scene.Objects.Add( Guid.NewGuid( ), new LevelGeometry( scene ) );
-
 			IRayCastService rayCaster = new RayCastService( );
 			scene.AddService( rayCaster );
 			rayCaster.AddIntersector( RayCastLayers.Grid, new Plane3( new Vector3( 0, 1, 0 ), 0 ) );
+
+			//	TODO: AP: Fix Z order rendering cheat
+			scene.Objects.Add( Guid.NewGuid( ), Graphics.Factory.Create< GroundPlaneGrid >( ) );
+			scene.Objects.Add( Guid.NewGuid( ), Graphics.Factory.Create< LevelGeometry >( scene ) );
 		}
 
 		private readonly Content m_EditorControlsContent;

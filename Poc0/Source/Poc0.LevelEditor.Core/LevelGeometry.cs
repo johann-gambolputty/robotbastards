@@ -4,6 +4,7 @@ using Poc0.Core.Environment;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core;
+using Rb.World.Services;
 using Graphics=Rb.Rendering.Graphics;
 using Environment=Poc0.Core.Environment.Environment;
 
@@ -12,13 +13,13 @@ namespace Poc0.LevelEditor.Core
 	/// <summary>
 	/// Level geometry. Combines brushes to create the walkable geometry of a level
 	/// </summary>
-	[Serializable]
-	public class LevelGeometry : IRenderable
+	[Serializable, RenderingLibraryType]
+	public abstract class LevelGeometry : IRenderable, IRay3Intersector
 	{
 		#region Public members
 
 		/// <summary>
-		/// Default constructor
+		/// Setup constructor
 		/// </summary>
 		public LevelGeometry( EditorScene scene )
 		{
@@ -28,6 +29,17 @@ namespace Poc0.LevelEditor.Core
 			scene.RuntimeScene.Objects.Add( m_Environment );
 
 			m_Csg.GeometryChanged += OnGeometryChanged;
+
+			scene.GetService< IRayCastService >( ).AddIntersector( RayCastLayers.StaticGeometry, this );
+		}
+
+		/// <summary>
+		/// Gets/sets the show flat flag
+		/// </summary>
+		public bool ShowFlat
+		{
+			get { return m_ShowFlat; }
+			set { m_ShowFlat = value; }
 		}
 
 		/// <summary>
@@ -38,32 +50,43 @@ namespace Poc0.LevelEditor.Core
 			get { return m_Csg; }
 		}
 
-		private readonly Matrix44 m_YZSwap = new Matrix44
-			(
-				1, 0, 0, 0,
-				0, 0, 1, 0,
-				0, 1, 0, 0,
-				0, 0, 0, 1
-			);
-
 		/// <summary>
 		/// Renders the level geometry
 		/// </summary>
 		/// <param name="context">Rendering context</param>
 		public void Render( IRenderContext context )
 		{
-			if ( m_Renderable == null )
+			if ( ShowFlat )
 			{
-				BuildRenderable( );
+				if ( m_FlatRenderer == null )
+				{
+					BuildFlatRenderer( );
+				}
+
+				//	The graphics are all 2D, but we're watching it in 3D, so flip the Y and Z axis before we render
+				Graphics.Renderer.PushTransform( Transform.LocalToWorld, m_YZSwap );
+
+				m_FlatRenderer.Render( context );
+
+				Graphics.Renderer.PopTransform( Transform.LocalToWorld );
 			}
-
-			//	The graphics are all 2D, but we're watching it in 3D, so flip the Y and Z axis before we render
-			Graphics.Renderer.PushTransform( Transform.LocalToWorld, m_YZSwap );
-
-			m_Renderable.Render( context );
-
-			Graphics.Renderer.PopTransform( Transform.LocalToWorld );
+			else
+			{
+				Render3d( context, m_Csg );
+			}
 		}
+
+		#endregion
+
+
+		#region Protected members
+
+		/// <summary>
+		/// Renders the level geometry in 3D
+		/// </summary>
+		/// <param name="context">Rendering context</param>
+		/// <param name="csg">Level geometry CSG object</param>
+		protected abstract void Render3d( IRenderContext context, Csg csg );
 
 		#endregion
 
@@ -72,8 +95,19 @@ namespace Poc0.LevelEditor.Core
 		private readonly Environment m_Environment;
 		private readonly Csg m_Csg = new Csg( );
 
+		private readonly static Matrix44 m_YZSwap = new Matrix44
+			(
+				1, 0, 0, 0,
+				0, 0, 1, 0,
+				0, 1, 0, 0,
+				0, 0, 0, 1
+			);
+
 		[NonSerialized]
-		private IRenderable m_Renderable;
+		private bool m_ShowFlat = true;
+
+		[NonSerialized]
+		private IRenderable m_FlatRenderer;
 
 		[NonSerialized]
 		private Draw.IPen m_DrawEdge;
@@ -93,18 +127,18 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		private void DestroyRenderable( )
 		{
-			IDisposable dispose = m_Renderable as IDisposable;
+			IDisposable dispose = m_FlatRenderer as IDisposable;
 			if ( dispose != null )
 			{
 				dispose.Dispose( );
 			}
-			m_Renderable = null;
+			m_FlatRenderer = null;
 		}
 
 		/// <summary>
 		/// Builds a renderable representation of the level geometry
 		/// </summary>
-		private void BuildRenderable( )
+		private void BuildFlatRenderer( )
 		{
 			if ( m_DrawEdge == null )
 			{
@@ -128,9 +162,9 @@ namespace Poc0.LevelEditor.Core
 
 			Graphics.Draw.StartCache( );
 
-			Render( m_Csg.Root );
+			RenderFlat( m_Csg.Root );
 
-			m_Renderable = Graphics.Draw.StopCache( );
+			m_FlatRenderer = Graphics.Draw.StopCache( );
 		}
 
 		/// <summary>
@@ -154,7 +188,7 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Renders the specified BSP node
 		/// </summary>
-		private void Render( Csg.BspNode node )
+		private void RenderFlat( Csg.BspNode node )
 		{
 			if ( node == null )
 			{
@@ -166,8 +200,8 @@ namespace Poc0.LevelEditor.Core
 				Graphics.Draw.Polygon( m_FillPolygon, node.ConvexRegion );
 			}
 
-			Render( node.Behind );
-			Render( node.InFront );
+			RenderFlat( node.Behind );
+			RenderFlat( node.InFront );
 
 			if ( node.ConvexRegion != null )
 			{
@@ -222,5 +256,68 @@ namespace Poc0.LevelEditor.Core
 
 		#endregion
 
+
+		#region IRay3Intersector Members
+
+		/// <summary>
+		/// Checks if a ray intersects this object
+		/// </summary>
+		/// <param name="ray">Ray to check</param>
+		/// <returns>true if the ray intersects this object</returns>
+		public bool TestIntersection( Ray3 ray )
+		{
+			return ( m_Csg == null ) ? false : TestIntersection( ray, m_Csg.Root );
+		}
+
+		/// <summary>
+		/// Checks if a ray intersects this object, returning information about the intersection if it does
+		/// </summary>
+		/// <param name="ray">Ray to check</param>
+		/// <returns>Intersection information. If no intersection takes place, this method returns null</returns>
+		public Line3Intersection GetIntersection( Ray3 ray )
+		{
+			return ( m_Csg == null ) ? null : GetIntersection( ray, m_Csg.Root );
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Tests the intersection between a ray and a csg node
+		/// </summary>
+		/// <param name="ray">Ray to test</param>
+		/// <param name="node">CSG node</param>
+		/// <returns>true if there is an intersection between ray and node, or a subnode</returns>
+		private static bool TestIntersection( Ray3 ray, Csg.BspNode node )
+		{
+			return GetIntersection( ray, node ) != null;
+		}
+
+		/// <summary>
+		/// Gets the intersection between a ray and a csg node
+		/// </summary>
+		/// <param name="ray">Ray to test</param>
+		/// <param name="node">CSG node</param>
+		/// <returns>Intersection detail if there is an intersection between ray and node, or a subnode</returns>
+		private static Line3Intersection GetIntersection( Ray3 ray, Csg.BspNode node )
+		{
+			if ( node == null )
+			{
+				return null;
+			}
+			
+			Point3 pt0 = new Point3( node.Edge.P0.X, 0, node.Edge.P0.Y );
+			Point3 pt1 = new Point3( node.Edge.P1.X, 0, node.Edge.P1.Y );
+			Point3 pt2 = new Point3( node.Edge.P1.X, 10.0f, node.Edge.P1.Y );
+			Point3 pt3 = new Point3( node.Edge.P0.X, 10.0f, node.Edge.P0.Y );
+
+			Line3Intersection intersection = Intersections3.GetRayQuadIntersection( ray, pt0, pt1, pt2, pt3 );
+			if ( intersection != null )
+			{
+				return intersection;
+			}
+
+			//	TODO: AP: Use BSP properties... this is lazy
+			return GetIntersection( ray, node.InFront ) ?? GetIntersection( ray, node.Behind );
+		}
 	}
 }

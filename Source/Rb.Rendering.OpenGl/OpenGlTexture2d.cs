@@ -58,6 +58,7 @@ namespace Rb.Rendering.OpenGl
 			m_Format	= CheckTextureFormat( format, out m_InternalGlFormat, out m_GlFormat, out m_GlType );
 			m_Width		= width;
 			m_Height	= height;
+			m_MipMapped = false;
 
 			//	Generate a texture name
 			fixed ( int* handleMem = &m_TextureHandle )
@@ -73,7 +74,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Loads the texture from bitmap data
 		/// </summary>
-		public override void Load( Bitmap bmp )
+		public override void Load( Bitmap bmp, bool generateMipMaps )
 		{
 			//	Get the GL format of the bitmap, possibly converting it in the process
 			int glInternalFormat;
@@ -91,7 +92,7 @@ namespace Rb.Rendering.OpenGl
 				throw new ArgumentException( string.Format( "Unexpected stride in bitmap (was {0}, expected {1})", bmpData.Stride, expectedStride ) );
 			}
 
-			Create( bmpData.Width, bmpData.Stride, bmpData.Height, glInternalFormat, glFormat, glType, bmpData.Scan0 );
+			Create( bmpData.Width, bmpData.Stride, bmpData.Height, glInternalFormat, glFormat, glType, generateMipMaps, bmpData.Scan0 );
 			bmp.UnlockBits( bmpData );
 
 			m_Format = PixelFormatToTextureFormat( bmp.PixelFormat );
@@ -122,7 +123,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Creates the texture
 		/// </summary>
-		private unsafe void Create( int width, int stride, int height, int glInternalFormat, int glFormat, int glType, IntPtr bytes )
+		private unsafe void Create( int width, int stride, int height, int glInternalFormat, int glFormat, int glType, bool generateMipMaps, IntPtr bytes )
 		{
 			DestroyCurrent( );
 
@@ -135,7 +136,14 @@ namespace Rb.Rendering.OpenGl
 
 			try
 			{
-				Gl.glTexImage2D( Gl.GL_TEXTURE_2D, 0, glInternalFormat, width, height, 0, glFormat, glType, bytes );
+				if ( generateMipMaps )
+				{
+					Glu.gluBuild2DMipmaps( Gl.GL_TEXTURE_2D, glInternalFormat, width, height, glFormat, glType, bytes );
+				}
+				else
+				{
+					Gl.glTexImage2D( Gl.GL_TEXTURE_2D, 0, glInternalFormat, width, height, 0, glFormat, glType, bytes );
+				}
 			}
 			catch ( AccessViolationException )
 			{
@@ -159,6 +167,7 @@ namespace Rb.Rendering.OpenGl
 			m_GlType			= glType;
 			m_Width				= width;
 			m_Height			= height;
+			m_MipMapped			= generateMipMaps;
 		}
 
 		/// <summary>
@@ -492,14 +501,6 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		#endregion
-
-		/// <summary>
-		/// Saves this texture
-		/// </summary>
-		public override void GetObjectData( SerializationInfo info, StreamingContext context )
-		{
-			base.GetObjectData( info, context );
-		}
 
 		private const int InvalidHandle = -1;
 

@@ -102,7 +102,7 @@ namespace Rb.Core.Maths
 		/// <returns>String representation</returns>
 		public override string ToString( )
 		{
-			return string.Format( "X: {0} Y: {1} Z: {2}", m_Position.X, m_Position.Y, m_Position.Z );
+			return string.Format( "X: {0:F2} Y: {1:F2} Z: {2:F2}", m_Position.X, m_Position.Y, m_Position.Z );
 		}
 
 		#endregion

@@ -34,6 +34,17 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 			get { return m_ActionButton; }
 		}
 
+		/// <summary>
+		/// Returns a description of the edit mode inputs
+		/// </summary>
+		public override string InputDescription
+		{
+			get
+			{
+				return string.Format( Properties.Resources.AddObjectInputs, ResourceHelper.MouseButtonName( Buttons ) );
+			}
+		}
+
 		#region Control event handlers
 
 		/// <summary>

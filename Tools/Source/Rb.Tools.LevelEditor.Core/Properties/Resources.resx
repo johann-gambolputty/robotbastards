@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddObjectInputs" xml:space="preserve">
+    <value>{0}: Creates object</value>
+  </data>
   <data name="CantLoadAssetIntoType" xml:space="preserve">
     <value>Can't load asset into type "{0}"</value>
   </data>
@@ -135,7 +138,22 @@
   <data name="FailedToSaveScene" xml:space="preserve">
     <value>Failed to save scene to file "{0}"</value>
   </data>
+  <data name="LeftMouseButton" xml:space="preserve">
+    <value>Left</value>
+  </data>
+  <data name="MiddleMouseButton" xml:space="preserve">
+    <value>Middle</value>
+  </data>
+  <data name="MoveInputs" xml:space="preserve">
+    <value>{0}: Moves selected objects</value>
+  </data>
   <data name="NoLocationManagersWithUI" xml:space="preserve">
     <value>No asset location managers with UI were available</value>
+  </data>
+  <data name="RightMouseButton" xml:space="preserve">
+    <value>Right</value>
+  </data>
+  <data name="SelectInputs" xml:space="preserve">
+    <value>{0}: Selects object</value>
   </data>
 </root>

@@ -186,6 +186,10 @@
       <Project>{7FD7B8DD-BBED-4AF7-9339-6F823540727E}</Project>
       <Name>Poc0.LevelEditor.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Poc0.LevelEditor.Rendering.OpenGl\Poc0.LevelEditor.Rendering.OpenGl.csproj">
+      <Project>{CF7F44B9-4EC5-4FA5-ADFE-BAEDE2C0860E}</Project>
+      <Name>Poc0.LevelEditor.Rendering.OpenGl</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AppIcon.ico" />

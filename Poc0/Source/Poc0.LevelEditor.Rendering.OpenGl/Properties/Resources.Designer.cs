@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Poc0.LevelEditor.Core.Properties {
+namespace Poc0.LevelEditor.Rendering.OpenGl.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Poc0.LevelEditor.Core.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Poc0.LevelEditor.Core.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Poc0.LevelEditor.Rendering.OpenGl.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -60,39 +60,10 @@ namespace Poc0.LevelEditor.Core.Properties {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to bad thing.
-        /// </summary>
-        internal static string ErrorCaption {
+        internal static System.Drawing.Bitmap GridSquare {
             get {
-                return ResourceManager.GetString("ErrorCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error occurred while adding object.
-        /// </summary>
-        internal static string FailedToAddObject {
-            get {
-                return ResourceManager.GetString("FailedToAddObject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error occurred while combining brush and level geometry.
-        /// </summary>
-        internal static string FailedToCombineCsgBrush {
-            get {
-                return ResourceManager.GetString("FailedToCombineCsgBrush", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0}: Adds point, {1}: Closes polygon, {2}: Clears polygon.
-        /// </summary>
-        internal static string UserBrushInputs {
-            get {
-                return ResourceManager.GetString("UserBrushInputs", resourceCulture);
+                object obj = ResourceManager.GetObject("GridSquare", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }
