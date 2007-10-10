@@ -26,6 +26,12 @@ namespace Rb.Muesli.Tests
 			return ( rhs == null )? false : Equals( rhs );
 		}
 
+		public override int GetHashCode( )
+		{
+			object tmp = this;
+			return tmp.GetHashCode( );
+		}
+
         #region IEquatable<TestObject> Members
 
         public bool Equals( Primitives other )

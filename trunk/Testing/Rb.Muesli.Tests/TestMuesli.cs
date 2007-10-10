@@ -177,6 +177,11 @@ namespace Rb.Muesli.Tests
 				Test<T> rhs = (Test< T > )obj;
 				return m_Value.Equals( rhs.m_Value );
 			}
+			public override int GetHashCode( )
+			{
+				object tmp = this;
+				return tmp.GetHashCode( );
+			}
 		}
 
 		[Test]

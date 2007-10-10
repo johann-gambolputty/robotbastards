@@ -50,6 +50,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 				CsgBrush brush = new CsgBrush( "", points2 );
 				m_LevelGeometry.Csg.Combine( m_Operation, brush );
+				AppLog.Info( "Combined brush with current level geometry" );
 			}
 			catch ( Exception ex )
 			{

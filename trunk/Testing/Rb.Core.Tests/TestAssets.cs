@@ -122,6 +122,22 @@ namespace Rb.Core.Tests
 			}
 
 			/// <summary>
+			/// Gets the asset extension
+			/// </summary>
+			public override string Extension
+			{
+				get { return "xml"; }
+			}
+
+			/// <summary>
+			/// Gets the name of this loader
+			/// </summary>
+			public override string Name
+			{
+				get { return "Xml Asset Loader"; }
+			}
+
+			/// <summary>
 			/// Loads an asset
 			/// </summary>
 			/// <param name="source">Source of the asset</param>

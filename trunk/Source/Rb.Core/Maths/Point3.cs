@@ -102,11 +102,19 @@ namespace Rb.Core.Maths
 		}
 
 		/// <summary>
+		/// Returns the negative of this point
+		/// </summary>
+		public static Point3 operator - ( Point3 pt )
+		{
+			return new Point3( -pt.X, -pt.Y, -pt.Z );
+		}
+
+		/// <summary>
 		/// Subtracts two points to create a vector
 		/// </summary>
 		public static Vector3	operator - ( Point3 pt1, Point3 pt2 )
 		{
-			return new Vector3( ( float )( pt1.X - pt2.X ), ( float )( pt1.Y - pt2.Y ), ( float )( pt1.Z - pt2.Z ) );
+			return new Vector3( ( pt1.X - pt2.X ), ( pt1.Y - pt2.Y ), ( pt1.Z - pt2.Z ) );
 		}
 
 		/// <summary>
@@ -114,7 +122,7 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public static Point3	operator - ( Point3 pt, Vector3 vec )
 		{
-			return new Point3( ( float )( pt.X - vec.X ), ( float )( pt.Y - vec.Y ), ( float )( pt.Z - vec.Z ) );
+			return new Point3( ( pt.X - vec.X ), ( pt.Y - vec.Y ), ( pt.Z - vec.Z ) );
 		}
 
 		/// <summary>
@@ -158,7 +166,7 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public float	DistanceTo( Point3 pt )
 		{
-			return ( float )System.Math.Sqrt( SqrDistanceTo( pt ) );
+			return ( float )Math.Sqrt( SqrDistanceTo( pt ) );
 		}
 
 

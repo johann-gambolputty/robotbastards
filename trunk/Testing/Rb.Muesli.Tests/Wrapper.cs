@@ -15,6 +15,11 @@ namespace Rb.Muesli.Tests
 				return ( rhs == null ) ? false : Equals( rhs );
 			}
 
+			public override int GetHashCode( )
+			{
+				return m_Guid.GetHashCode( );
+			}
+
             #region IEquatable<WrapperTest> Members
 
             public bool Equals( Wrapper other )

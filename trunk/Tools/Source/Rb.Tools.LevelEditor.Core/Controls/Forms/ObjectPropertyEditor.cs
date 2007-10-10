@@ -42,7 +42,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		private void OnSceneOpened( SceneEditState state )
 		{
 			state.SelectedObjects.ObjectSelected += ObjectSelected;
-			state.SelectedObjects.ObjectSelected += ObjectDeselected;
+			state.SelectedObjects.ObjectDeselected += ObjectDeselected;
 		}
 
 		/// <summary>
@@ -52,23 +52,23 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		private void OnSceneClosed( SceneEditState state )
 		{
 			state.SelectedObjects.ObjectSelected -= ObjectSelected;
-			state.SelectedObjects.ObjectSelected -= ObjectDeselected;
+			state.SelectedObjects.ObjectDeselected -= ObjectDeselected;
 		}
 
 		private void ObjectSelected( object obj )
 		{
-			if ( obj is ObjectEditor )
+			if ( obj is IObjectEditor )
 			{
-				( ( ObjectEditor )obj ).ObjectChanged += OnObjectChanged;
+				( ( IObjectEditor )obj ).ObjectChanged += OnObjectChanged;
 			}
 			BuildPropertyGrid( );
 		}
 
 		private void ObjectDeselected( object obj )
 		{
-			if ( obj is ObjectEditor )
+			if ( obj is IObjectEditor )
 			{
-				( ( ObjectEditor )obj ).ObjectChanged -= OnObjectChanged;
+				( ( IObjectEditor )obj ).ObjectChanged -= OnObjectChanged;
 			}
 			BuildPropertyGrid( );
 		}

@@ -23,7 +23,9 @@ namespace Rb.Rendering.Cameras
 		public override void Begin( )
 		{
 			Graphics.Renderer.PushTransform( Transform.WorldToView );
-			Graphics.Renderer.SetLookAtTransform( m_LookAt, m_Pos, m_YAxis );
+			Graphics.Renderer.SetLookAtTransform( m_LookAt, m_Position, m_YAxis );
+			m_ViewMatrix = Graphics.Renderer.GetTransform( Transform.WorldToView );
+			//	TODO: AP: View matrix should be calculated by SetFrame()
 			base.Begin( );
 		}
 
@@ -52,7 +54,7 @@ namespace Rb.Rendering.Cameras
 		/// <summary>
 		/// Access to the camera S spherical coordinate
 		/// </summary>
-		public float	S
+		public float S
 		{
 			get
 			{
@@ -68,7 +70,7 @@ namespace Rb.Rendering.Cameras
 		/// <summary>
 		/// Access to the camera T spherical coordinate
 		/// </summary>
-		public float	T
+		public float T
 		{
 			get
 			{
@@ -85,7 +87,7 @@ namespace Rb.Rendering.Cameras
 		/// Access to the camera look at point. If this is set to null, the camera becomes a 'free look' camera. Otherwise, the 
 		/// camera will rotate around the look at point, keeping it in the centre of the viewport
 		/// </summary>
-		public Point3	LookAt
+		public Point3 LookAt
 		{
 			get
 			{
@@ -101,7 +103,7 @@ namespace Rb.Rendering.Cameras
 		/// <summary>
 		/// Access to the zoom factor. This determines the distance around the look at point that the camera maintains when moving
 		/// </summary>
-		public float	Zoom
+		public float Zoom
 		{
 			get
 			{
@@ -128,16 +130,29 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		private void	UpdateCameraFrame( )
 		{
-			m_ZAxis.X	= ( float )( Math.Cos( m_S ) * Math.Sin( m_T ) );
-			m_ZAxis.Y	= ( float )( Math.Cos( m_T ) );
-			m_ZAxis.Z	= ( float )( Math.Sin( m_S ) * Math.Sin( m_T ) );
+			Vector3 zAxis = new Vector3
+			    (
+			        ( float )( Math.Cos( m_S ) * Math.Sin( m_T ) ),
+			        ( float )( Math.Cos( m_T ) ),
+			        ( float )( Math.Sin( m_S ) * Math.Sin( m_T ) )
+			    );
 
-			m_YAxis.X	= ( float )-(  Math.Cos( m_S ) * Math.Cos( m_T ) );
-			m_YAxis.Y	= ( float )-( -Math.Sin( m_T ) );
-			m_YAxis.Z	= ( float )-(  Math.Sin( m_S ) * Math.Cos( m_T ) );
+			Vector3 yAxis = new Vector3
+			    (
+			        ( float )-( Math.Cos( m_S ) * Math.Cos( m_T ) ),
+			        ( float )-( -Math.Sin( m_T ) ),
+			        ( float )-(  Math.Sin( m_S ) * Math.Cos( m_T ) )
+			    );
 
-			m_XAxis		= Vector3.Cross( m_ZAxis, m_YAxis );
-			m_Pos		= m_LookAt + ( m_ZAxis * m_Zoom );
+			Vector3 xAxis = Vector3.Cross( zAxis, yAxis );
+			Point3 pt = m_LookAt + ( zAxis * m_Zoom );
+
+			m_Position = pt;
+			m_XAxis = xAxis;
+			m_YAxis = yAxis;
+			m_ZAxis = zAxis;
+
+			SetFrame( pt, xAxis, yAxis, zAxis );
 		}
 
 		#endregion

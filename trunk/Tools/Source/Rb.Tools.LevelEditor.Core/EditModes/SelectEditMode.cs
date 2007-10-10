@@ -132,15 +132,6 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 				if ( pickable != null )
 				{
 					SelectionSet selection = EditorState.Instance.CurrentSelection;
-					if ( selection.IsSelected( pickable ) )
-					{
-						selection.ApplySelect( pickable, m_AddToSelection );
-						m_DeselectOnNoMove = false;
-					}
-					else
-					{
-						m_DeselectOnNoMove = true;
-					}
 
 					m_PickAction = pickable.CreatePickAction( m_CursorPick );
 					m_PickAction.AddObjects( selection.Selection );
@@ -174,7 +165,7 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 				}
 				else
 				{
-					m_PickAction.PickChanged( m_LastCursorPick, pick );
+					m_PickAction.PickChanged( m_CursorPick, pick );
 				}
 			}
 
@@ -191,7 +182,7 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 			}
 			if ( UsingPickAction )
 			{
-				if ( ( !m_PickAction.HasModifiedObjects ) && ( m_DeselectOnNoMove ) )
+				if ( !m_PickAction.HasModifiedObjects )
 				{
 					object obj = m_LastCursorPick == null ? null : m_LastCursorPick.IntersectedObject;
 					if ( obj != null )
@@ -243,7 +234,6 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 		private ILineIntersection		m_LastCursorPick;
 		private ILineIntersection		m_CursorPick;
 		private IPickAction				m_PickAction;
-		private bool					m_DeselectOnNoMove;
 		private ISelectable				m_LastHighlit;
 
 		/// <summary>

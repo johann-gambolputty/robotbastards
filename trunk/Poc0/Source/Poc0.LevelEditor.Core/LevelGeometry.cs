@@ -1,10 +1,9 @@
 using System;
 using System.Drawing;
 using Poc0.Core.Environment;
-using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Rendering;
-using Rb.World;
+using Rb.Tools.LevelEditor.Core;
 using Graphics=Rb.Rendering.Graphics;
 using Environment=Poc0.Core.Environment.Environment;
 
@@ -21,11 +20,12 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Default constructor
 		/// </summary>
-		public LevelGeometry( Scene scene )
+		public LevelGeometry( EditorScene scene )
 		{
 			scene.Renderables.Add( this );
 
-			m_Environment = Builder.CreateInstance< Environment >( );
+			m_Environment = new Environment( );
+			scene.RuntimeScene.Objects.Add( m_Environment );
 
 			m_Csg.GeometryChanged += OnGeometryChanged;
 		}
