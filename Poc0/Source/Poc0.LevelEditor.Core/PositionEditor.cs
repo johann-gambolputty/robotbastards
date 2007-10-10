@@ -35,20 +35,6 @@ namespace Poc0.LevelEditor.Core
 		#region IPickable Members
 
 		/// <summary>
-		/// Checks if a pick test is within this object
-		/// </summary>
-		/// <param name="pick">Pick information</param>
-		/// <returns>Returns a pickable object (this) if pick test passes, otherwise, null</returns>
-		public IPickable TestPick( IPickInfo pick )
-		{
-			if ( ( ( IPickInfo3 )pick ).PickPoint.DistanceTo( m_HasPosition.Position ) < 1.0f )
-			{
-				return this;
-			}
-			return null;
-		}
-
-		/// <summary>
 		/// Creates the action appropriate for this object
 		/// </summary>
 		/// <param name="pick">Pick information</param>

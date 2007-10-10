@@ -7,6 +7,24 @@ namespace Rb.Rendering.Cameras
 	/// </summary>
 	public abstract class Camera3 : CameraBase, ICamera3
 	{
+		/// <summary>
+		/// Calculates the inverse of the project.view matrix, for unprojection operations
+		/// </summary>
+		public override void Begin( )
+		{
+			m_InvProjView = new Matrix44( m_ProjectionMatrix );
+			m_InvProjView.StoreMultiply( m_ViewMatrix );
+			m_InvProjView.Invert( );
+			base.Begin( );
+		}
+
+		/// <summary>
+		/// Returns the inverse of the camera's view.projection matrices
+		/// </summary>
+		public Matrix44 InverseCameraMatrix
+		{
+			get { return m_InvProjView; }
+		}
 
 		#region	Unprojection
 
@@ -34,10 +52,16 @@ namespace Rb.Rendering.Cameras
 		/// <returns>Returns world ray</returns>
 		public Ray3 PickRay( int x, int y )
 		{
-			//	TODO: AP: This is a bodge - don't abuse the rendering pipeline like this!
-			Begin( );
-			Ray3 result = new Ray3( Position, ( Graphics.Renderer.Unproject( x, y, 1 ) - Position ).MakeNormal( ) );
-			End( );
+			Matrix44 matrix = new Matrix44( m_ProjectionMatrix );
+			matrix.StoreMultiply( m_ViewMatrix );
+			matrix.Invert( );
+
+			float width = Graphics.Renderer.Viewport.Width;
+			float height = Graphics.Renderer.Viewport.Height;
+			Point3 pt = new Point3( ( 2 * x / width ) - 1, ( 2 * ( height - y ) / height ) - 1, 1.0f );
+			Point3 invPt = matrix.NormalizedMultiple( pt );
+			Ray3 result = new Ray3( m_Position, ( invPt - m_Position ).MakeNormal( ) );
+
 			return result;
 		}
 
@@ -72,37 +96,31 @@ namespace Rb.Rendering.Cameras
 		/// <summary>
 		///	Gets the camera's position
 		/// </summary>
-		public Point3	Position
+		public Point3 Position
 		{
-			get
-			{
-				return m_Pos;
-			}
+			get { return m_Position; }
 		}
 
 		#endregion
 
 		#region	Protected stuff
-		
-		/// <summary>
-		/// Camera X axis
-		/// </summary>
-		protected Vector3	m_XAxis		= new Vector3( 1, 0, 0 );
-		
-		/// <summary>
-		/// Camera Y axis
-		/// </summary>
-		protected Vector3	m_YAxis		= new Vector3( 0, 1, 0 );
-		
-		/// <summary>
-		/// Camera Z axis
-		/// </summary>
-		protected Vector3	m_ZAxis		= new Vector3( 0, 0, 1 );
-		
-		/// <summary>
-		/// Camera position
-		/// </summary>
-		protected Point3	m_Pos		= new Point3( );
+
+		protected Point3	m_Position			= Point3.Origin;
+		protected Vector3	m_XAxis				= Vector3.XAxis;
+		protected Vector3 	m_YAxis 			= Vector3.YAxis;
+		protected Vector3 	m_ZAxis 			= Vector3.ZAxis;
+
+		protected Matrix44	m_ViewMatrix		= Matrix44.Identity;
+		protected Matrix44	m_ProjectionMatrix	= Matrix44.Identity;
+		private Matrix44	m_InvProjView		= Matrix44.Identity;
+
+		protected void SetFrame( Point3 pt, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
+		{
+			m_Position = pt;
+			m_XAxis = xAxis;
+			m_YAxis = yAxis;
+			m_ZAxis = zAxis;
+		}
 
 		#endregion
 	}

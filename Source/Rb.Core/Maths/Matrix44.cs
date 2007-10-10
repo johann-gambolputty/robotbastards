@@ -159,6 +159,7 @@ namespace Rb.Core.Maths
 			Elements[ 8 ]  = zAxis.X; 	Elements[ 9 ]  = zAxis.Y; 	Elements[ 10 ] = zAxis.Z; 	Elements[ 11 ] = 0;
 			Elements[ 12 ] = pos.X;		Elements[ 13 ] = pos.Y;		Elements[ 14 ] = pos.Z;		Elements[ 15 ] = 1;
 		}
+
 		/// <summary>
 		/// Sets up all the matrices' elements
 		/// </summary>
@@ -191,6 +192,31 @@ namespace Rb.Core.Maths
 		public void SetPosition( Vector3 Pos )
 		{
 			SetPosition( Pos.X, Pos.Y, Pos.Z );
+		}
+
+		/// <summary>
+		/// Sets up all the matrices' elements
+		/// </summary>
+		public void Set( Point3 pos, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
+		{
+			Elements[ 0 ] = xAxis.X; Elements[ 1 ] = xAxis.Y; Elements[ 2 ] = xAxis.Z; Elements[ 3 ] = 0;
+			Elements[ 4 ] = yAxis.X; Elements[ 5 ] = yAxis.Y; Elements[ 6 ] = yAxis.Z; Elements[ 7 ] = 0;
+			Elements[ 8 ] = zAxis.X; Elements[ 9 ] = zAxis.Y; Elements[ 10 ] = zAxis.Z; Elements[ 11 ] = 0;
+			Elements[ 12 ] = pos.X; Elements[ 13 ] = pos.Y; Elements[ 14 ] = pos.Z; Elements[ 15 ] = 1;
+		}
+
+		/// <summary>
+		/// Sets up all the matrices' elements
+		/// </summary>
+		public void Set( float M00, float M10, float M20, float M30,
+						 float M01, float M11, float M21, float M31,
+						 float M02, float M12, float M22, float M32,
+						 float M03, float M13, float M23, float M33 )
+		{
+			Elements[ 0 ] = M00; Elements[ 1 ] = M10; Elements[ 2 ] = M20; Elements[ 3 ] = M30;
+			Elements[ 4 ] = M01; Elements[ 5 ] = M11; Elements[ 6 ] = M21; Elements[ 7 ] = M31;
+			Elements[ 8 ] = M02; Elements[ 9 ] = M12; Elements[ 10 ] = M22; Elements[ 11 ] = M32;
+			Elements[ 12 ] = M03; Elements[ 13 ] = M13; Elements[ 14 ] = M23; Elements[ 15 ] = M33;
 		}
 
 		/// <summary>
@@ -451,13 +477,27 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Multiplies a point by this matrix, returning a new point that stores the result
 		/// </summary>
-		public Point3 Multiply( Point3 In )
+		public Point3 Multiply( Point3 pt )
 		{
-			float x = ( In.X * Elements[ 0 ] ) + ( In.Y * Elements[ 4 ] ) + ( In.Z * Elements[ 8  ] ) + ( Elements[ 12 ] );
-			float y = ( In.X * Elements[ 1 ] ) + ( In.Y * Elements[ 5 ] ) + ( In.Z * Elements[ 9  ] ) + ( Elements[ 13 ] );
-			float z = ( In.X * Elements[ 2 ] ) + ( In.Y * Elements[ 6 ] ) + ( In.Z * Elements[ 10 ] ) + ( Elements[ 14 ] );
+			float x = ( pt.X * Elements[ 0 ] ) + ( pt.Y * Elements[ 4 ] ) + ( pt.Z * Elements[ 8  ] ) + ( Elements[ 12 ] );
+			float y = ( pt.X * Elements[ 1 ] ) + ( pt.Y * Elements[ 5 ] ) + ( pt.Z * Elements[ 9  ] ) + ( Elements[ 13 ] );
+			float z = ( pt.X * Elements[ 2 ] ) + ( pt.Y * Elements[ 6 ] ) + ( pt.Z * Elements[ 10 ] ) + ( Elements[ 14 ] );
 
 			return new Point3( x, y, z );
+		}
+
+		/// <summary>
+		/// Multiplies a homogeneous coordinate by this matrix
+		/// </summary>
+		public Point3 NormalizedMultiple( Point3 pt )
+		{
+			float x = ( pt.X * Elements[ 0 ] ) + ( pt.Y * Elements[ 4 ] ) + ( pt.Z * Elements[ 8 ] ) + ( Elements[ 12 ] );
+			float y = ( pt.X * Elements[ 1 ] ) + ( pt.Y * Elements[ 5 ] ) + ( pt.Z * Elements[ 9 ] ) + ( Elements[ 13 ] );
+			float z = ( pt.X * Elements[ 2 ] ) + ( pt.Y * Elements[ 6 ] ) + ( pt.Z * Elements[ 10 ] ) + ( Elements[ 14 ] );
+			float w = ( pt.X * Elements[ 3 ] ) + ( pt.Y * Elements[ 7 ] ) + ( pt.Z * Elements[ 11 ] ) + ( Elements[ 15 ] );
+			w = 1.0f / w;
+
+			return new Point3( x * w, y * w, z * w );
 		}
 
 		/// <summary>

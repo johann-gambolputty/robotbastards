@@ -607,7 +607,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Unprojects a point from screen space into world space
 		/// </summary>
-		public override Point3	Unproject( int x, int y, float depth )
+		public override Point3 Unproject( int x, int y, float depth )
 		{
 			double[]	modelMatrix			= new double[ 16 ];
 			double[]	projectionMatrix	= new double[ 16 ];

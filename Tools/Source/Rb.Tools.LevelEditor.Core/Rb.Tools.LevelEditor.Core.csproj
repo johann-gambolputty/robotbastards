@@ -104,9 +104,6 @@
     <Compile Include="Selection\IObjectEditor.cs" />
     <Compile Include="Selection\IPickable.cs" />
     <Compile Include="Selection\IPicker.cs" />
-    <Compile Include="Selection\IPickInfo.cs" />
-    <Compile Include="Selection\IPickInfo2.cs" />
-    <Compile Include="Selection\IPickInfo3.cs" />
     <Compile Include="Selection\ISelectable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SceneEditState.cs" />

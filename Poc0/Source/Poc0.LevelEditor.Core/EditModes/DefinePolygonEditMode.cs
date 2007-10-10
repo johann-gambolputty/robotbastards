@@ -100,6 +100,9 @@ namespace Poc0.LevelEditor.Core.EditModes
 			{
 				Graphics.Draw.Line( m_EdgePen, m_Points[ m_Points.Count - 1 ], m_CursorPoint );
 			}
+			
+			RenderFont font = RenderFonts.GetDefaultFont( DefaultFont.Debug );
+			font.DrawText( 0, 0, Color.Black, "X: {0:F2} Y: {1:F2} Z: {2:F2}", m_CursorPoint.X, m_CursorPoint.Y, m_CursorPoint.Z );
 
 			//	TODO: AP: reinstate (render as 3d camera facing circles, though)
 			//	Render vertices

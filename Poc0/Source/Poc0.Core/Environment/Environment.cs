@@ -1,7 +1,6 @@
 using System;
 using Rb.Core.Components;
 using Rb.Rendering;
-using Rb.World;
 
 namespace Poc0.Core.Environment
 {
@@ -9,8 +8,16 @@ namespace Poc0.Core.Environment
 	/// Scene environment
 	/// </summary>
 	[Serializable]
-	public class Environment : ISceneObject
+	public class Environment : Component
 	{
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public Environment( )
+		{
+			InitialiseComponents( );
+		}
+
 		#region Public members
 
 		/// <summary>
@@ -26,31 +33,15 @@ namespace Poc0.Core.Environment
 
 		#endregion
 
-		#region ISceneObject Members
-
-		/// <summary>
-		/// Called when this object is added to a scene
-		/// </summary>
-		/// <param name="scene">Scene</param>
-		public void AddedToScene( Scene scene )
-		{
-			//	TODO: AP: Can this be done during construction?
-			m_Graphics = Graphics.Factory.Create< EnvironmentGraphics >( );
-		}
-
-		/// <summary>
-		/// Called when this object is removed from a scene
-		/// </summary>
-		/// <param name="scene">Scene</param>
-		public void RemovedFromScene( Scene scene )
-		{
-		}
-
-		#endregion
-
 		#region Private stuff
 
 		private EnvironmentGraphics m_Graphics;
+
+		private void InitialiseComponents( )
+		{
+			m_Graphics = Graphics.Factory.Create<EnvironmentGraphics>( );
+			AddChild( m_Graphics );
+		}
 
 		#endregion
 	}

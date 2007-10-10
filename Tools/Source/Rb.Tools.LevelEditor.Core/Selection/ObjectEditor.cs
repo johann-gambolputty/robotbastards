@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Rb.Core.Maths;
 using Rb.Rendering;
-using Rb.Tools.LevelEditor.Core.Actions;
 
 namespace Rb.Tools.LevelEditor.Core.Selection
 {
@@ -10,7 +8,7 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 	/// An object used for editing an in-game object
 	/// </summary>
 	[Serializable]
-	public class ObjectEditor : IObjectEditor, IRenderable, IPickable,  ISelectable
+	public class ObjectEditor : IObjectEditor, IRenderable, ISelectable
 	{
 		/// <summary>
 		/// Sets the tile object to get renderer
@@ -82,50 +80,6 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 		{
 			get { return m_Highlighted; }
 			set { m_Highlighted = value; }
-		}
-
-		#endregion
-
-		#region IPickable members
-
-		/// <summary>
-		/// Checks to see if this object is picked
-		/// </summary>
-		/// <param name="pick">Pick information</param>
-		/// <returns>Returns true if picked</returns>
-		public IPickable TestPick( IPickInfo pick )
-		{
-			foreach ( IObjectEditor editor in m_Children )
-			{
-				IPickable pickable = editor as IPickable;
-				if ( pickable != null )
-				{
-					pickable = pickable.TestPick( pick );
-					if ( pickable != null )
-					{
-						return pickable;
-					}
-				}
-			}
-			return null;
-		}
-
-		/// <summary>
-		/// Throws an exception - objects of this type should never be queried directly for a pick action
-		/// </summary>
-		public IPickAction CreatePickAction( ILineIntersection pick )
-		{
-			throw new NotImplementedException( );
-		}
-
-		/// <summary>
-		/// Always returns false
-		/// </summary>
-		/// <param name="action"></param>
-		/// <returns></returns>
-		public bool SupportsPickAction( IPickAction action )
-		{
-			return false;
 		}
 
 		#endregion

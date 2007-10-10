@@ -9,13 +9,6 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 	public interface IPickable
 	{
 		/// <summary>
-		/// Tests if this object is picked by the specified picker
-		/// </summary>
-		/// <param name="pick">Pick information</param>
-		/// <returns>Returns an ISelectable if this object is hit by the specified picker</returns>
-		IPickable TestPick( IPickInfo pick );
-
-		/// <summary>
 		/// Creates an action in response being picked
 		/// </summary>
 		/// <param name="pick">Pick information</param>

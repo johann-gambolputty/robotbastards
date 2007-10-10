@@ -21,43 +21,6 @@ namespace Rb.Tools.LevelEditor.Core
 		}
 
 		/// <summary>
-		/// Picks an object from the scene
-		/// </summary>
-		/// <param name="pick">Pick information</param>
-		/// <returns>Returns picked object</returns>
-		public object PickObject( IPickInfo pick )
-		{
-			foreach ( IPickable pickable in Objects.GetAllOfType< IPickable >( ) )
-			{
-				IPickable testResult = pickable.TestPick( pick );
-				if ( testResult != null )
-				{
-					return testResult;
-				}
-			}
-			return null;
-		}
-		
-		/// <summary>
-		/// Picks objects from the scene
-		/// </summary>
-		/// <param name="pick">Pick information</param>
-		/// <returns>Returns picked objects</returns>
-		public object[] PickObjects( IPickInfo pick )
-		{
-			List< object > objects = new List< object >( );
-			foreach ( IPickable pickable in Objects.GetAllOfType< IPickable >( ) )
-			{
-				IPickable testResult = pickable.TestPick( pick );
-				if ( testResult != null )
-				{
-					objects.Add( testResult );
-				}
-			}
-			return objects.ToArray( );
-		}
-
-		/// <summary>
 		/// Runtime scene
 		/// </summary>
 		public Scene RuntimeScene
