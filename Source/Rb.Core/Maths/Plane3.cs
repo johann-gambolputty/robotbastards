@@ -1,9 +1,12 @@
 
+using System;
+
 namespace Rb.Core.Maths
 {
 	/// <summary>
 	/// 3d plane
 	/// </summary>
+	[Serializable]
     public class Plane3 : IRay3Intersector
 	{
 		/// <summary>
@@ -39,7 +42,7 @@ namespace Rb.Core.Maths
 		public Plane3( Point3 pointOnPlane, Vector3 normal )
 		{
 			m_Normal = normal;
-			m_Distance = normal.Dot( pointOnPlane );
+			m_Distance = -normal.Dot( pointOnPlane );
 
 			//	TODO: AP: Remove checks
 			System.Diagnostics.Debug.Assert( ClassifyPoint( pointOnPlane, 0.001f ) == PlaneClassification.On );

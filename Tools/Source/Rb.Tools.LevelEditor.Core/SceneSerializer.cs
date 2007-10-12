@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
 using Rb.Log;
+using Rb.Tools.LevelEditor.Core.EditModes;
 using Rb.World;
 
 namespace Rb.Tools.LevelEditor.Core
@@ -77,6 +78,13 @@ namespace Rb.Tools.LevelEditor.Core
 		{
 			try 
 			{
+				//	Stop all the current edit modes - they sometimes attach themselves to the
+				//	scene to be rendered
+				foreach ( IEditMode mode in EditorState.Instance.EditModes )
+				{
+					mode.Stop( );
+				}
+
 				MemoryStream outStream = new MemoryStream( );
 
 				IFormatter formatter = CreateFormatter( );
@@ -85,6 +93,12 @@ namespace Rb.Tools.LevelEditor.Core
 				using ( Stream fileStream = File.OpenWrite( path ) )
 				{
 					fileStream.Write( outStream.ToArray( ), 0, ( int )outStream.Length );
+				}
+
+				//	Restart all edit modes
+				foreach ( IEditMode mode in EditorState.Instance.EditModes )
+				{
+					mode.Start( );
 				}
 			}
 			catch ( Exception ex )

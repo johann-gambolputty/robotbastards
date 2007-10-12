@@ -1,3 +1,4 @@
+using System;
 using Poc0.Core.Environment;
 using Rb.Core.Maths;
 using Rb.Rendering;
@@ -5,6 +6,7 @@ using Tao.OpenGl;
 
 namespace Poc0.Core.Rendering.OpenGl
 {
+	[Serializable]
 	public class OpenGlEnvironmentGraphics : EnvironmentGraphics
 	{
 		private readonly RenderState m_WallState;

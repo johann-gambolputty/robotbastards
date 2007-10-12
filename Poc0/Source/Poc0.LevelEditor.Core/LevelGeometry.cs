@@ -215,7 +215,7 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Called when level geometry has changed
 		/// </summary>
-		private void OnGeometryChanged( object sender, EventArgs args )
+		protected virtual void OnGeometryChanged( object sender, EventArgs args )
 		{
 			//	Rubbish renderable representation - (next) Render() recreates renderable representation
 			DestroyRenderable( );

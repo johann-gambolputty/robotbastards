@@ -26,6 +26,24 @@ namespace Poc0.LevelEditor.Core.EditModes
 		}
 
 		/// <summary>
+		/// Starts this edit mode
+		/// </summary>
+		public override void Start( )
+		{
+			m_LevelGeometry.ShowFlat = true;
+			base.Start( );
+		}
+
+		/// <summary>
+		/// Stops this edit mode
+		/// </summary>
+		public override void Stop( )
+		{
+			m_LevelGeometry.ShowFlat = false;
+			base.Stop( );
+		}
+
+		/// <summary>
 		/// Returns the input description of this edit mode
 		/// </summary>
 		public override string InputDescription

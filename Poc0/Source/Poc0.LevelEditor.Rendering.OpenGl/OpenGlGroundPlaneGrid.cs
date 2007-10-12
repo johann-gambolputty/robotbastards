@@ -1,3 +1,4 @@
+using System;
 using Poc0.LevelEditor.Core.Rendering;
 using Rb.Rendering;
 using Tao.OpenGl;
@@ -7,6 +8,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 	/// <summary>
 	/// OpenGL implementation of GroundPlaneGrid
 	/// </summary>
+	[Serializable]
 	public class OpenGlGroundPlaneGrid : GroundPlaneGrid
 	{
 		/// <summary>
