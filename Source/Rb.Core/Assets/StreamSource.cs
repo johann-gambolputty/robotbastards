@@ -9,6 +9,8 @@ namespace Rb.Core.Assets
 	/// </summary>
 	public class StreamSource : ISource
 	{
+		#region Construction
+
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
@@ -45,15 +47,28 @@ namespace Rb.Core.Assets
 			m_Stream = new MemoryStream( bytes );
 		}
 
+		#endregion
+
+		#region Public methods
+
+		/// <summary>
+		/// Gets the hash code of this source
+		/// </summary>
+		/// <returns>Returns the hash code of the source name</returns>
 		public override int GetHashCode( )
 		{
 			return m_Name.GetHashCode( );
 		}
 
+		/// <summary>
+		/// Returns the name of this source
+		/// </summary>
 		public override string ToString( )
 		{
 			return m_Name;
 		}
+
+		#endregion
 
 		#region ISource Members
 
@@ -110,9 +125,12 @@ namespace Rb.Core.Assets
 
 		#endregion
 
+		#region Private members
+
 		private readonly string m_Name;
 		private readonly string m_Path;
 		private readonly Stream m_Stream;
 
+		#endregion
 	}
 }

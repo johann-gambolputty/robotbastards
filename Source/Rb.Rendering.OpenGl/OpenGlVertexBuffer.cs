@@ -11,7 +11,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Access to the opengl vertex buffer handle
 		/// </summary>
-		public int					Handle
+		public int Handle
 		{
 			get
 			{
@@ -22,7 +22,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Access to the opengl client state
 		/// </summary>
-		public int					ClientState
+		public int ClientState
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Access to the opengl element type (gl symbolic value for the base type of data in this buffer)
 		/// </summary>
-		public int					ElementType
+		public int ElementType
 		{
 			get
 			{
@@ -44,7 +44,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Stride between vertices
 		/// </summary>
-		public short				Stride
+		public short Stride
 		{
 			get
 			{
@@ -55,7 +55,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Number of elements in a vertex (of type ElementType)
 		/// </summary>
-		public short				NumElements
+		public short NumElements
 		{
 			get
 			{
@@ -74,7 +74,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="numElements">Number of floats per vertex</param>
 		/// <param name="usage">Buffer usage (e.g. GL_STATIC_BUFFER_ARB)</param>
 		/// <param name="buffer">Buffer data</param>
-		public unsafe OpenGlVertexBuffer( int numVertices, int offset, int clientState, short stride, short numElements, int usage, float[] buffer )
+		public OpenGlVertexBuffer( int numVertices, int offset, int clientState, short stride, short numElements, int usage, float[] buffer )
 		{
             SetupAndBindBuffer( clientState, stride, numElements, Gl.GL_FLOAT );
 
@@ -101,7 +101,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="numElements">Number of integers per vertex</param>
 		/// <param name="usage">Buffer usage (e.g. GL_STATIC_BUFFER_ARB)</param>
 		/// <param name="buffer">Buffer data</param>
-		public unsafe OpenGlVertexBuffer( int numVertices, int offset, int clientState, short stride, short numElements, int usage, int[] buffer )
+		public OpenGlVertexBuffer( int numVertices, int offset, int clientState, short stride, short numElements, int usage, int[] buffer )
 		{
             SetupAndBindBuffer( clientState, stride, numElements, Gl.GL_INT );
 
@@ -127,7 +127,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="numElements">Number of integers per vertex</param>
 		/// <param name="usage">Buffer usage (e.g. GL_STATIC_BUFFER_ARB)</param>
 		/// <param name="buffer">Buffer data</param>
-		public unsafe OpenGlVertexBuffer( int numVertices, int offset, int clientState, short stride, short numElements, int usage, byte[] buffer )
+		public OpenGlVertexBuffer( int numVertices, int offset, int clientState, short stride, short numElements, int usage, byte[] buffer )
 		{
             SetupAndBindBuffer( clientState, stride, numElements, Gl.GL_UNSIGNED_BYTE );
 
@@ -146,7 +146,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Applies this vertex buffer
 		/// </summary>
-		public void		Begin( )
+		public void Begin( )
 		{
 			Gl.glEnableClientState( ClientState );
 			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );

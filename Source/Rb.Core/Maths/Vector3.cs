@@ -158,11 +158,11 @@ namespace Rb.Core.Maths
 		{
 			get
 			{
-				return ( float )System.Math.Sqrt( SqrLength );
+				return ( float )Math.Sqrt( SqrLength );
 			}
 			set
 			{
-				IpMultiplyByValue( value / ( float )System.Math.Sqrt( SqrLength ) );
+				IpMultiplyByValue( value / ( float )Math.Sqrt( SqrLength ) );
 			}
 		}
 
@@ -368,7 +368,7 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public float DistanceTo( Vector3 pt )
 		{
-			return ( float )System.Math.Sqrt( SqrDistanceTo( pt ) );
+			return ( float )Math.Sqrt( SqrDistanceTo( pt ) );
 		}
 
 		/// <summary>

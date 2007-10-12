@@ -125,7 +125,7 @@ namespace Rb.Core.Maths
 
 		#region Private members
 
-		private Plane3[] m_Planes = new Plane3[ 6 ];
+		private readonly Plane3[] m_Planes = new Plane3[ 6 ];
 
 		#endregion
 	}

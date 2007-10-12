@@ -1,4 +1,3 @@
-using System;
 using Rb.Core.Components;
 
 namespace Rb.Rendering
@@ -31,7 +30,7 @@ namespace Rb.Rendering
 		/// </summary>
 		/// <param name="name">Name of this technique</param>
 		/// <param name="passes">Parameter array of passes to Add() to the technique</param>
-		public Technique( string name, params Pass[] passes )
+		public Technique( string name, params IPass[] passes )
 		{
 			m_Name = name;
 
@@ -45,7 +44,7 @@ namespace Rb.Rendering
 		/// Adds a new render pass to this technique
 		/// </summary>
 		/// <param name="pass"> The pass to add </param>
-		public void Add( Pass pass )
+		public void Add( IPass pass )
 		{
 			AddChild( pass );
 		}
@@ -96,6 +95,34 @@ namespace Rb.Rendering
 			else
 			{
                 renderable.Render( context );
+			}
+
+			End( );
+		}
+		
+		/// <summary>
+		/// Applies this technique. Applies a pass, then invokes the render delegate to render stuff, for each pass
+        /// </summary>
+        /// <param name="context">Rendering context</param>
+		/// <param name="render">Rendering delegate</param>
+		public virtual void Apply( IRenderContext context, RenderDelegate render )
+		{
+			Begin( );
+
+			if ( Children.Count > 0 )
+			{
+				foreach ( IPass pass in Children )
+				{
+					pass.Begin( );
+
+					render( context );
+
+					pass.End( );
+				}
+			}
+			else
+			{
+                render( context );
 			}
 
 			End( );

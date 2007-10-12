@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using Rb.Rendering;
 using Rb.World;
 
@@ -36,6 +37,18 @@ namespace Poc0.LevelEditor.Core.Rendering
 		public void RemovedFromScene(Scene scene)
 		{
 			scene.Renderables.Remove( this );
+		}
+
+		#endregion
+
+		#region Protected members
+
+		/// <summary>
+		/// Gets the bitmap used for rendering a grid square
+		/// </summary>
+		protected static Bitmap GridSquareBitmap
+		{
+			get { return Properties.Resources.GridSquare; }
 		}
 
 		#endregion

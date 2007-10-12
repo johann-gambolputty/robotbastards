@@ -22,13 +22,13 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			m_State.EnableCap( RenderStateFlag.Texture2dUnit0 );
 
 			Texture2d texture = Graphics.Factory.NewTexture2d( );
-			texture.Load( Properties.Resources.GridSquare, true );
+			texture.Load( GridSquareBitmap, true );
 
 			m_Sampler = Graphics.Factory.NewTextureSampler2d( );
 			m_Sampler.Texture = texture;
 			m_Sampler.Mode = TextureMode.Replace;
-			m_Sampler.MinFilter = TextureFilter.LinearTexelNearestMipMap;
-			m_Sampler.MagFilter = TextureFilter.LinearTexelNearestMipMap;
+			m_Sampler.MinFilter = TextureFilter.NearestTexelLinearMipMap;
+			m_Sampler.MagFilter = TextureFilter.NearestTexelLinearMipMap;
 			m_Sampler.WrapS = TextureWrap.Repeat;
 			m_Sampler.WrapT = TextureWrap.Repeat;
 		}

@@ -87,6 +87,13 @@ namespace Poc0.LevelEditor.Core.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap GridSquare {
+            get {
+                object obj = ResourceManager.GetObject("GridSquare", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to {0}: Adds point, {1}: Closes polygon, {2}: Clears polygon.
         /// </summary>

@@ -38,6 +38,6 @@ namespace Rb.Rendering
 
         #endregion
 
-        private RenderDelegate m_Render;
+        private readonly RenderDelegate m_Render;
     }
 }

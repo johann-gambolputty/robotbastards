@@ -35,6 +35,7 @@ namespace Rb.Rendering
 		/// Selects a named technique from the current effect
 		/// </summary>
 		/// <param name="name">Technique name</param>
+		/// <exception cref="ArgumentException">Thrown if name does not correspond to a technique in the current effect</exception>
         public void Select( string name )
         {
             Technique = Effect.GetTechnique( name );
@@ -70,7 +71,7 @@ namespace Rb.Rendering
         }
 
 		/// <summary>
-		/// Applies the selected technique (<see cref="ITechnique.Apply"/>) to render the specified object
+		/// Applies the selected technique (<see cref="ITechnique.Apply(IRenderContext, IRenderable)"/>) to render the specified object
 		/// </summary>
 		/// <param name="context">Rendering context</param>
 		/// <param name="renderable">Object to render</param>
@@ -83,6 +84,23 @@ namespace Rb.Rendering
             else
             {
                 renderable.Render( context );
+            }
+        }
+		
+		/// <summary>
+		/// Applies the selected technique (<see cref="ITechnique.Apply(IRenderContext, RenderDelegate)"/>) to render the specified object
+		/// </summary>
+		/// <param name="context">Rendering context</param>
+		/// <param name="render">Render delegate</param>
+        public void Apply( IRenderContext context, RenderDelegate render )
+        {
+            if ( m_Technique != null )
+            {
+                m_Technique.Apply( context, render );
+            }
+            else
+            {
+                render( context );
             }
         }
 

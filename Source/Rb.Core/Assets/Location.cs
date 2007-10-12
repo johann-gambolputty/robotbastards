@@ -27,7 +27,7 @@ namespace Rb.Core.Assets
 		/// </summary>
 		/// <param name="folder">Folder location</param>
 		/// <param name="path">Relative path</param>
-		public Location( Location folder, string path ) :
+		public Location( ISource folder, string path ) :
 			this( LocationManagers.Instance, folder, path )
 		{
 		}
@@ -51,9 +51,9 @@ namespace Rb.Core.Assets
 		/// <param name="locationManagers">Location managers</param>
 		/// <param name="folder">Folder location</param>
 		/// <param name="path">Relative path</param>
-		public Location( LocationManagers locationManagers, Location folder, string path )
+		public Location( LocationManagers locationManagers, ISource folder, string path )
 		{
-			//	TODO: AP: Maybe add ILocationManager.Combine()?
+			//	TODO: AP: Maybe add ILocationManager.Combine(), or ISource.Combine()?
 			string newPath = System.IO.Path.Combine( folder.Path, path );
 
 			m_Provider	= DetermineLocationManager( locationManagers, newPath );
