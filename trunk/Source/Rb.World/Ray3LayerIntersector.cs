@@ -6,6 +6,7 @@ namespace Rb.World
 	/// <summary>
 	/// Adds layer information to a plain IRay3Intersector object
 	/// </summary>
+	[Serializable]
 	public class Ray3LayerIntersector : IRayLayerIntersector, IRay3Intersector
 	{
 		#region Construction

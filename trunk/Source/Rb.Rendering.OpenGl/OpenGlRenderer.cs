@@ -163,6 +163,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public override void ClearDepth( float depth )
 		{
+			Gl.glDepthMask( 1 );
 			Gl.glClearDepth( depth );
 			Gl.glClear( Gl.GL_DEPTH_BUFFER_BIT );
 		}

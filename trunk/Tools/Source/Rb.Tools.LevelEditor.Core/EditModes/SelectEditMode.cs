@@ -158,16 +158,17 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 		private void OnMouseMove( object sender, MouseEventArgs args )
 		{
 			IPicker picker = ( IPicker )sender;
-			ILineIntersection pick = picker.FirstPick( args.X, args.Y, CurrentPickOptions );
-			
-			if ( pick != null )
+			ILineIntersection pick = picker.FirstPick( args.X, args.Y, null );
+
+			if ( m_LastHighlit != null )
+			{
+				m_LastHighlit.Highlighted = false;
+				m_LastHighlit = null;
+			}
+			if ( ( pick != null ) && ( CurrentPickOptions.TestObject( pick ) ) )
 			{
 				if ( ( ( args.Button & m_ActionButton ) == 0 ) || ( !UsingPickAction ) )
 				{
-					if ( m_LastHighlit != null )
-					{
-						m_LastHighlit.Highlighted = false;
-					}
 					m_LastHighlit = pick.IntersectedObject as ISelectable;
 					if ( m_LastHighlit != null )
 					{

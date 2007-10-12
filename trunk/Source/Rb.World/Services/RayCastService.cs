@@ -7,6 +7,7 @@ namespace Rb.World.Services
     /// <summary>
     /// Maintains a list of IRay3Intersector objects to intersect with
     /// </summary>
+    [Serializable]
     public class RayCastService : IRayCastService
     {
         #region IRayCaster Members
@@ -73,10 +74,15 @@ namespace Rb.World.Services
 		/// <param name="options">Ray cast options</param>
 		/// <returns>Intersection result (null if no intersection occurred)</returns>
         public Line3Intersection GetFirstIntersection( Ray3 ray, RayCastOptions options )
-        {
+		{
+			options = options ?? ms_DefaultOptions;
             Line3Intersection closestIntersection = null;
             foreach ( IRay3Intersector intersector in m_Intersectors )
-            {
+			{
+				if ( !options.TestObject( intersector ) )
+				{
+					continue;
+				}
                 Line3Intersection intersection = intersector.GetIntersection( ray );
                 if ( intersection != null )
                 {
@@ -98,6 +104,7 @@ namespace Rb.World.Services
 		/// <returns>Returns an array of all intersections</returns>
 		public Line3Intersection[] GetIntersections( Ray3 ray, RayCastOptions options )
 		{
+			options = options ?? ms_DefaultOptions;
 			List< Line3Intersection > intersections = new List< Line3Intersection >( 4 );
 			
             foreach ( IRay3Intersector intersector in m_Intersectors )
@@ -120,6 +127,7 @@ namespace Rb.World.Services
 
 		#region Private members
 
+		private readonly static RayCastOptions ms_DefaultOptions = new RayCastOptions( );
 		private readonly List< IRay3Intersector > m_Intersectors = new List< IRay3Intersector >( );
 		
 		/// <summary>

@@ -1,4 +1,4 @@
-
+using System;
 using Rb.Rendering;
 using Rb.World;
 
@@ -7,7 +7,7 @@ namespace Poc0.LevelEditor.Core.Rendering
 	/// <summary>
 	/// Renders a grid on the xz ground plane
 	/// </summary>
-	[RenderingLibraryType]
+	[Serializable, RenderingLibraryType]
 	public abstract class GroundPlaneGrid : IRenderable, ISceneObject
 	{
 		#region IRenderable Members

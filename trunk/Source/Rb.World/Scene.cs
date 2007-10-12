@@ -173,6 +173,7 @@ namespace Rb.World
 		/// <summary>
 		/// Extends <see cref="ObjectMap"/>. Calls into the <see cref="ISceneObject"/> interface when adding/removing objects
 		/// </summary>
+		[Serializable]
 		private class SceneObjectMap : ObjectMap
 		{
 			/// <summary>

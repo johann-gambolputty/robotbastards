@@ -15,6 +15,7 @@ namespace Poc0.LevelEditor.Core
 	/// <summary>
 	/// For changing the position of a game object
 	/// </summary>
+	[Serializable]
 	public class PositionEditor : IRay3Intersector, IObjectEditor, IPickable, IMoveable3, IRenderable, ISelectable
 	{
 		/// <summary>
@@ -26,7 +27,7 @@ namespace Poc0.LevelEditor.Core
 		{
 			m_HasPosition = hasPosition;
 			m_HasPosition.Position = ( ( Line3Intersection )pick ).IntersectionPosition;
-			m_Plane = new Plane3( m_HasPosition.Position, Vector3.YAxis );
+			m_Plane = new Plane3( m_HasPosition.Position + new Vector3( 0, 0.1f, 0 ), Vector3.YAxis );
 
 			IRayCastService rayCaster = EditorState.Instance.CurrentScene.GetService< IRayCastService >( );
 			rayCaster.AddIntersector( RayCastLayers.Entity, this );
@@ -67,7 +68,7 @@ namespace Poc0.LevelEditor.Core
 		public void Move( Vector3 delta )
 		{
 			m_HasPosition.Position += delta;
-			m_Plane = new Plane3( m_HasPosition.Position, Vector3.YAxis );
+			m_Plane = new Plane3( m_HasPosition.Position + new Vector3( 0, 0.1f, 0 ), Vector3.YAxis );
 			if ( ObjectChanged != null )
 			{
 				ObjectChanged( this, null );
@@ -114,9 +115,9 @@ namespace Poc0.LevelEditor.Core
 		}
 
 		private const float Radius = 1.0f;
-		private readonly Draw.IBrush m_DrawUnselected = Graphics.Draw.NewBrush( Color.Black, Color.PaleGoldenrod );
-		private readonly Draw.IBrush m_DrawHighlight = Graphics.Draw.NewBrush( Color.DarkSalmon, Color.Goldenrod );
-		private readonly Draw.IBrush m_DrawSelected = Graphics.Draw.NewBrush( Color.Red, Color.Orange );
+		private static readonly Draw.IBrush m_DrawUnselected = Graphics.Draw.NewBrush( Color.Black, Color.PaleGoldenrod );
+		private static readonly Draw.IBrush m_DrawHighlight = Graphics.Draw.NewBrush( Color.DarkSalmon, Color.Goldenrod );
+		private static readonly Draw.IBrush m_DrawSelected = Graphics.Draw.NewBrush( Color.Red, Color.Orange );
 		private bool m_Highlight;
 		private bool m_Selected;
 
