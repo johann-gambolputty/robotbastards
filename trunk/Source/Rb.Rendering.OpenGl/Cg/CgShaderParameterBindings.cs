@@ -1,5 +1,4 @@
 using System.Collections;
-using Tao.Cg;
 
 namespace Rb.Rendering.OpenGl.Cg
 {
@@ -13,7 +12,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// Creates a binding
 		/// </summary>
 		/// <returns></returns>
-		public override ShaderParameterCustomBinding	CreateBinding( string name, ShaderParameterCustomBinding.ValueType type )
+		public override ShaderParameterCustomBinding CreateBinding( string name, ShaderParameterCustomBinding.ValueType type )
 		{
 			CgShaderParameterCustomBinding newBinding = new CgShaderParameterCustomBinding( name, type, 0 );
 			m_CustomBindings.Add( newBinding );
@@ -26,7 +25,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// <summary>
 		/// Creates a binding to an array
 		/// </summary>
-		public override ShaderParameterCustomBinding	CreateBinding( string name, ShaderParameterCustomBinding.ValueType type, int arraySize )
+		public override ShaderParameterCustomBinding CreateBinding( string name, ShaderParameterCustomBinding.ValueType type, int arraySize )
 		{
 			CgShaderParameterCustomBinding newBinding = new CgShaderParameterCustomBinding( name, type, arraySize );
 			AddNewBinding( newBinding );
@@ -37,7 +36,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// <summary>
 		/// Gets a default binding
 		/// </summary>
-		public override ShaderParameterBinding			GetBinding( ShaderParameterDefaultBinding binding )
+		public override ShaderParameterBinding GetBinding( ShaderParameterDefaultBinding binding )
 		{
 			return m_DefaultBindings[ ( int )binding ];
 		}
@@ -45,7 +44,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// <summary>
 		///	Finds a binding by its name
 		/// </summary>
-		public override ShaderParameterBinding			GetBinding( string name )
+		public override ShaderParameterBinding GetBinding( string name )
 		{
 			for ( int defaultIndex = 0; defaultIndex < ( int )ShaderParameterDefaultBinding.NumDefaults; ++defaultIndex )
 			{
@@ -77,8 +76,8 @@ namespace Rb.Rendering.OpenGl.Cg
 			}
 		}
 		
-		private ArrayList							m_CustomBindings	= new ArrayList( );
-		private CgShaderParameterDefaultBinding[]	m_DefaultBindings	= new CgShaderParameterDefaultBinding[ ( int )ShaderParameterDefaultBinding.NumDefaults ];
+		private readonly ArrayList							m_CustomBindings	= new ArrayList( );
+		private readonly CgShaderParameterDefaultBinding[] m_DefaultBindings	= new CgShaderParameterDefaultBinding[(int)ShaderParameterDefaultBinding.NumDefaults];
 
 	}
 }

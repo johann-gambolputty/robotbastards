@@ -59,12 +59,5 @@ namespace Poc0.LevelEditor.Rendering.OpenGl.Properties {
                 resourceCulture = value;
             }
         }
-        
-        internal static System.Drawing.Bitmap GridSquare {
-            get {
-                object obj = ResourceManager.GetObject("GridSquare", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
     }
 }

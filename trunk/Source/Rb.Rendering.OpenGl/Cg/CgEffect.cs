@@ -9,6 +9,8 @@ namespace Rb.Rendering.OpenGl.Cg
 	/// </summary>
 	public class CgEffect : Effect
 	{
+		#region Construction
+
 		/// <summary>
 		/// Creates the effect
 		/// </summary>
@@ -40,6 +42,8 @@ namespace Rb.Rendering.OpenGl.Cg
 			m_Context = context;
 			Load( input, inputSource );
 		}
+
+		#endregion
 
 		#region	Effect application
 
@@ -188,8 +192,8 @@ namespace Rb.Rendering.OpenGl.Cg
 
 		#endregion
 
-		private IntPtr				m_Context;
+		private readonly IntPtr		m_Context;
 		private IntPtr				m_EffectHandle;
-		private ArrayList			m_Parameters = new ArrayList( );
+		private readonly ArrayList	m_Parameters = new ArrayList( );
 	}
 }

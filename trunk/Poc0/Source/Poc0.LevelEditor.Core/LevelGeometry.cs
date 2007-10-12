@@ -78,7 +78,6 @@ namespace Poc0.LevelEditor.Core
 
 		#endregion
 
-
 		#region Protected members
 
 		/// <summary>
@@ -87,6 +86,22 @@ namespace Poc0.LevelEditor.Core
 		/// <param name="context">Rendering context</param>
 		/// <param name="csg">Level geometry CSG object</param>
 		protected abstract void Render3d( IRenderContext context, Csg csg );
+		
+		/// <summary>
+		/// The default bitmap used for wall textures
+		/// </summary>
+		protected static Bitmap DefaultWallBitmap
+		{
+			get { return Properties.Resources.GridSquare; }
+		}
+
+		/// <summary>
+		/// The default bitmap used for floor textures
+		/// </summary>
+		protected static Bitmap DefaultFloorBitmap
+		{
+			get { return Properties.Resources.GridSquare; }
+		}
 
 		#endregion
 
@@ -242,7 +257,7 @@ namespace Poc0.LevelEditor.Core
 				floor = new Floor( srcNode.ConvexRegion, 0.0f );
 			}
 
-			WallNode newNode = new WallNode( srcNode.Edge.P0, srcNode.Edge.P1, 10.0f, floor );
+			WallNode newNode = new WallNode( srcNode.Edge.P0, srcNode.Edge.P1, 5, floor );
 			if ( srcNode.InFront != null )
 			{
 				newNode.InFront = BuildWalls( srcNode.InFront );
@@ -255,7 +270,6 @@ namespace Poc0.LevelEditor.Core
 		}
 
 		#endregion
-
 
 		#region IRay3Intersector Members
 

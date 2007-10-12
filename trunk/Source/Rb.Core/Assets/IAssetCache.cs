@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Rb.Core.Assets
 {
@@ -26,7 +24,6 @@ namespace Rb.Core.Assets
 		/// <param name="asset">Loaded asset</param>
 		/// <exception cref="ArgumentException">Thrown if the key already exists in the cache</exception>
 		/// <seealso cref="AssetCache.Add(IAssetCache,string,object)"/>
-		/// <seealso cref="AssetCache.LocationKey"/>
 		void Add( int key, object asset );
 
 		/// <summary>
@@ -35,7 +32,6 @@ namespace Rb.Core.Assets
 		/// <param name="key">Asset key (asset location hash code)</param>
 		/// <returns>Returns the asset that was loaded from the location, or null if it's not in the cache</returns>
 		/// <seealso cref="AssetCache.Find(IAssetCache,string)"/>
-		/// <seealso cref="AssetCache.LocationKey"/>
 		object Find( int key );
 
 		/// <summary>

@@ -1,4 +1,3 @@
-using System;
 using Rb.Core.Maths;
 
 namespace Rb.Rendering
@@ -191,12 +190,12 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Sets the name of this binding
 		/// </summary>
-		protected				ShaderParameterBinding( string name )
+		protected ShaderParameterBinding( string name )
 		{
 			m_Name = name;
 		}
 
-		private string			m_Name;
+		private readonly string m_Name;
 	}
 
 	/// <summary>

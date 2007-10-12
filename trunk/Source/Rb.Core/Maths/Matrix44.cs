@@ -463,7 +463,7 @@ namespace Rb.Core.Maths
 		}
 
 		/// <summary>
-		/// Multiplies a vector by this matrix, returning a new vector that stores the result
+		/// Multiplies a vector by this matrix, returning a new vector that stores the result (does not apply translation)
 		/// </summary>
 		public Vector3 Multiply( Vector3 In )
 		{

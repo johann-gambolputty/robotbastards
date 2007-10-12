@@ -1,0 +1,58 @@
+sampler2D Texture0 = sampler_state
+{
+	minFilter	= Linear;
+	magFilter	= Linear;	
+};
+
+struct VInput
+{
+	float4	m_Position : POSITION;
+	float4	m_Normal : NORMAL;
+	float2 m_Tex0 : TEXCOORD0;
+};
+
+struct VOutput
+{
+	float4	m_Position : POSITION;
+	float4	m_Colour : COLOR;
+	float2	m_Tex0 : TEXCOORD0;
+};
+
+float4x4 ModelViewProjectionMatrix;
+float3 LightDir = float3( 0.7, 0.7, 0.7 );
+
+VOutput FloorVertexShader( VInput input )
+{
+	VOutput output;
+
+	output.m_Position = mul( ModelViewProjectionMatrix, input.m_Position );
+	output.m_Tex0 = input.m_Tex0;
+
+	float shade = ( dot( LightDir, input.m_Normal.xyz ) + 2 ) / 3;
+
+	output.m_Colour = float4( shade, shade, shade, 1 );
+
+	return output;
+}
+
+float4 FloorFragmentShader( VOutput input ) : COLOR
+{
+	return tex2D( Texture0, input.m_Tex0 ) * input.m_Colour;
+}
+
+technique MainTechnique
+{
+	pass
+	{
+		LightingEnable			= false;
+		DepthMask				= true;
+		ShadeModel				= Smooth;
+		FrontFace				= CW;
+		DepthFunc				= LEqual;
+		DepthTestEnable			= true;
+		CullFaceEnable			= false;
+		PolygonMode				= int2( Front, Fill );
+		VertexProgram			= compile arbvp1 FloorVertexShader( );
+		FragmentProgram			= compile arbfp1 FloorFragmentShader( );
+	}
+}

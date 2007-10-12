@@ -14,7 +14,10 @@ namespace Rb.Rendering
 
         /// <summary>
         /// Gets a technique from its name
-        /// </summary>
+		/// </summary>
+		/// <param name="name">Name of the technique</param>
+		/// <returns>Returns the named technique</returns>
+		/// <exception cref="System.ArgumentException">Thrown if name does not correspond to a technique in the current effect</exception>
         ITechnique GetTechnique( string name );
 
 		/// <summary>

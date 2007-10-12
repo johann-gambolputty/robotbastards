@@ -116,10 +116,18 @@ namespace Rb.Rendering
 
         /// <summary>
         /// Gets a technique from its name
-        /// </summary>
+		/// </summary>
+		/// <param name="name">Name of the technique</param>
+		/// <returns>Returns the named technique</returns>
+		/// <exception cref="System.ArgumentException">Thrown if name does not correspond to a technique in the current effect</exception>
         public virtual ITechnique GetTechnique( string name )
         {
-            return FindTechnique( name );
+            ITechnique result = FindTechnique( name );
+			if ( result == null )
+			{
+				throw new ArgumentException( string.Format( "Could not find technique \"{0}\" in effect", name ) );
+			}
+        	return result;
         }
 
 

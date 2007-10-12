@@ -22,14 +22,14 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// <summary>
 		/// Adds a parameter to this binding
 		/// </summary>
-		public override void	Bind( ShaderParameter parameter )
+		public override void Bind( ShaderParameter parameter )
 		{
 		}
 
 		/// <summary>
 		/// Removes a parameter from this binding
 		/// </summary>
-		public override void	Unbind( ShaderParameter parameter )
+		public override void Unbind( ShaderParameter parameter )
 		{
 		}
 
@@ -37,7 +37,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// <summary>
 		/// Applies this binding to a particular shader parameter
 		/// </summary>
-		public override void	ApplyTo( ShaderParameter parameter )
+		public override void ApplyTo( ShaderParameter parameter )
 		{
 			CgShaderParameter cgParam = ( ( CgShaderParameter )parameter );
 			IntPtr param = cgParam.Parameter;
@@ -163,7 +163,7 @@ namespace Rb.Rendering.OpenGl.Cg
 							IntPtr arcParam = TaoCg.cgGetArrayParameter( TaoCg.cgGetNamedStructParameter( param, "m_CosArc" ), numSpotLights );
 							TaoCg.cgSetParameter3f( positionParam, curLight.Position.X, curLight.Position.Y, curLight.Position.Z );
 							TaoCg.cgSetParameter3f( directionParam, curLight.Direction.X, curLight.Direction.Y, curLight.Direction.Z );
-							TaoCg.cgSetParameter1f( arcParam, ( float )System.Math.Cos( curLight.ArcDegrees * Constants.DegreesToRadians ) );
+							TaoCg.cgSetParameter1f( arcParam, ( float )Math.Cos( curLight.ArcDegrees * Constants.DegreesToRadians ) );
 							++numSpotLights;
 						}
 					}
@@ -220,6 +220,6 @@ namespace Rb.Rendering.OpenGl.Cg
 			}
 		}
 
-		private ShaderParameterDefaultBinding m_Binding;
+		private readonly ShaderParameterDefaultBinding m_Binding;
 	}
 }

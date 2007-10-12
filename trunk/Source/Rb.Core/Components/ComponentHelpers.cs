@@ -1,5 +1,4 @@
 
-
 namespace Rb.Core.Components
 {
 
@@ -20,4 +19,4 @@ namespace Rb.Core.Components
 		}
 	}
 
-};
+}
