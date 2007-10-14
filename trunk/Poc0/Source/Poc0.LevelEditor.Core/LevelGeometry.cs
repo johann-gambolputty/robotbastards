@@ -318,20 +318,33 @@ namespace Poc0.LevelEditor.Core
 			{
 				return null;
 			}
+
+			//	TODO: AP: Use BSP properties... this is lazy
+			Line3Intersection childIntersection = GetIntersection( ray, node.InFront ) ?? GetIntersection( ray, node.Behind );
 			
 			Point3 pt0 = new Point3( node.Edge.P0.X, 0, node.Edge.P0.Y );
 			Point3 pt1 = new Point3( node.Edge.P1.X, 0, node.Edge.P1.Y );
-			Point3 pt2 = new Point3( node.Edge.P1.X, 10.0f, node.Edge.P1.Y );
-			Point3 pt3 = new Point3( node.Edge.P0.X, 10.0f, node.Edge.P0.Y );
+			Point3 pt2 = new Point3( node.Edge.P1.X, 5, node.Edge.P1.Y );
+			Point3 pt3 = new Point3( node.Edge.P0.X, 5, node.Edge.P0.Y );
 
 			Line3Intersection intersection = Intersections3.GetRayQuadIntersection( ray, pt0, pt1, pt2, pt3 );
 			if ( intersection != null )
 			{
-				return intersection;
+				if ( childIntersection == null )
+				{
+					intersection.IntersectedObject = node;
+				}
+				else if ( childIntersection.Distance < intersection.Distance )
+				{
+					intersection = childIntersection;
+				}
+			}
+			else
+			{
+				intersection = childIntersection;
 			}
 
-			//	TODO: AP: Use BSP properties... this is lazy
-			return GetIntersection( ray, node.InFront ) ?? GetIntersection( ray, node.Behind );
+			return intersection;
 		}
 	}
 }

@@ -132,9 +132,9 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 				return;
 			}
 
+			m_SelectionStart = args.Location;
 			if ( m_CursorPick == null )
 			{
-				m_SelectionStart = args.Location;
 				m_PickAction = null;
 			}
 			else

@@ -629,7 +629,135 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		#endregion
-		
+
+		#region Rectangles
+
+		/// <summary>
+		/// Draws a rectangle, facing up the yaxis
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="x">Rectangle centre X coordinate</param>
+		/// <param name="y">Rectangle centre Y coordinate</param>
+		/// <param name="z">Rectangle centre Z coordinate</param>
+		/// <param name="width">Rectangle width</param>
+		/// <param name="height">Rectangle height</param>
+		public override void Rectangle( IPen pen, float x, float y, float z, float width, float height )
+		{
+			float hWidth = width / 2;
+			float hHeight = height / 2;
+
+			pen.Begin( );
+
+			Gl.glBegin( Gl.GL_LINE_STRIP );
+
+			Gl.glVertex3f( x - hWidth, y, z - hHeight );
+			Gl.glVertex3f( x + hWidth, y, z - hHeight );
+			Gl.glVertex3f( x + hWidth, y, z + hHeight );
+			Gl.glVertex3f( x - hWidth, y, z + hHeight );
+			Gl.glVertex3f( x - hWidth, y, z - hHeight );
+
+			Gl.glEnd( );
+
+			pen.End( );
+		}
+
+		#endregion
+
+		#region Filled Rectangles
+
+		/// <summary>
+		/// Draws a rectangle, facing up the yaxis
+		/// </summary>
+		/// <param name="brush">Drawing properties</param>
+		/// <param name="x">Rectangle centre X coordinate</param>
+		/// <param name="y">Rectangle centre Y coordinate</param>
+		/// <param name="z">Rectangle centre Z coordinate</param>
+		/// <param name="width">Rectangle width</param>
+		/// <param name="height">Rectangle height</param>
+		public override void Rectangle( IBrush brush, float x, float y, float z, float width, float height )
+		{
+			float hWidth = width / 2;
+			float hHeight = height / 2;
+
+			brush.Begin( );
+
+			Gl.glBegin( Gl.GL_QUADS );
+
+			Gl.glVertex3f( x - hWidth, y, z - hHeight );
+			Gl.glVertex3f( x + hWidth, y, z - hHeight );
+			Gl.glVertex3f( x + hWidth, y, z + hHeight );
+			Gl.glVertex3f( x - hWidth, y, z + hHeight );
+
+			Gl.glEnd( );
+
+			brush.End( );
+
+			if ( brush.OutlinePen != null )
+			{
+				Rectangle( brush.OutlinePen, x, y, z, width, height );
+			}
+		}
+
+		#endregion
+
+		#region Polygons
+
+		/// <summary>
+		/// Draws a polygon
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="points">Polygon points</param>
+		public override void Polygon( IPen pen, IEnumerable< Point3 > points )
+		{
+			pen.Begin( );
+
+			Gl.glBegin( Gl.GL_POLYGON );
+
+			IEnumerator< Point3 > pointPos = points.GetEnumerator( );
+			while ( pointPos.MoveNext( ) )
+			{
+				Gl.glVertex3f( pointPos.Current.X, pointPos.Current.Y, pointPos.Current.Z );
+			}
+
+			Gl.glEnd( );
+
+			pen.End( );
+		}
+
+		#endregion
+
+		#region Filled Polygons
+
+		/// <summary>
+		/// Draws a polygon
+		/// </summary>
+		/// <param name="brush">Drawing properties</param>
+		/// <param name="points">Polygon points</param>
+		public override void Polygon( IBrush brush, IEnumerable<Point3> points )
+		{
+			brush.Begin( );
+
+			Gl.glBegin( Gl.GL_POLYGON );
+
+			IEnumerator< Point3 > pointPos = points.GetEnumerator( );
+			while ( pointPos.MoveNext( ) )
+			{
+				Gl.glVertex3f( pointPos.Current.X, pointPos.Current.Y, pointPos.Current.Z );
+			}
+
+			Gl.glEnd( );
+
+
+			brush.End( );
+			if ( brush.OutlinePen != null )
+			{
+				Polygon( brush.OutlinePen, points );
+			}
+		}
+
+
+		#endregion
+
 		#region Axis aligned boxes
 
 		/// <summary>
