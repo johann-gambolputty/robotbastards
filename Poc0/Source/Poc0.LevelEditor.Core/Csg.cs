@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Rb.Core.Maths;
+using Rb.Tools.LevelEditor.Core.Selection;
 
 namespace Poc0.LevelEditor.Core
 {
@@ -93,7 +94,7 @@ namespace Poc0.LevelEditor.Core
 		/// Currently using a BSP tree for our CSG needs
 		/// </summary>
 		[Serializable]
-		public class BspNode
+		public class BspNode : ISelectable
 		{
 			/// <summary>
 			/// Sets up the node
@@ -162,6 +163,30 @@ namespace Poc0.LevelEditor.Core
 			private BspNode m_InFront;
 			private readonly Edge m_Edge;
 			private Point2[] m_Region;
+			private bool m_Highlight;
+			private bool m_Selected;
+
+			#region ISelectable Members
+
+			/// <summary>
+			/// Highlight flag
+			/// </summary>
+			public bool Highlighted
+			{
+				get { return m_Highlight; }
+				set { m_Highlight = value; }
+			}
+
+			/// <summary>
+			/// Selection flag
+			/// </summary>
+			public bool Selected
+			{
+				get { return m_Selected; }
+				set { m_Selected = value; }
+			}
+
+			#endregion
 		}
 		
 		/// <summary>

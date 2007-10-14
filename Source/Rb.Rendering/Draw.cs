@@ -503,6 +503,83 @@ namespace Rb.Rendering
 
 		#endregion
 
+		#region Rectangles
+
+		/// <summary>
+		/// Draws a rectangle, facing up the y axis
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="centre">Rectangle centre</param>
+		/// <param name="width">Rectangle width</param>
+		/// <param name="height">Rectangle height</param>
+		public void Rectangle( IPen pen, Point3 centre, float width, float height )
+		{
+			Rectangle( pen, centre.X, centre.Y, centre.Z, width, height );
+		}
+
+		/// <summary>
+		/// Draws a rectangle, facing up the yaxis
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="x">Rectangle centre X coordinate</param>
+		/// <param name="y">Rectangle centre Y coordinate</param>
+		/// <param name="z">Rectangle centre Z coordinate</param>
+		/// <param name="width">Rectangle width</param>
+		/// <param name="height">Rectangle height</param>
+		public abstract void Rectangle( IPen pen, float x, float y, float z, float width, float height );
+
+		#endregion
+
+		#region Filled Rectangles
+
+		/// <summary>
+		/// Draws a rectangle, facing up the y axis
+		/// </summary>
+		/// <param name="brush">Drawing properties</param>
+		/// <param name="centre">Rectangle centre</param>
+		/// <param name="width">Rectangle width</param>
+		/// <param name="height">Rectangle height</param>
+		public void Rectangle( IBrush brush, Point3 centre, float width, float height )
+		{
+			Rectangle( brush, centre.X, centre.Y, centre.Z, width, height );
+		}
+
+		/// <summary>
+		/// Draws a rectangle, facing up the yaxis
+		/// </summary>
+		/// <param name="brush">Drawing properties</param>
+		/// <param name="x">Rectangle centre X coordinate</param>
+		/// <param name="y">Rectangle centre Y coordinate</param>
+		/// <param name="z">Rectangle centre Z coordinate</param>
+		/// <param name="width">Rectangle width</param>
+		/// <param name="height">Rectangle height</param>
+		public abstract void Rectangle( IBrush brush, float x, float y, float z, float width, float height );
+
+		#endregion
+
+		#region Polygons
+
+		/// <summary>
+		/// Draws a polygon
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="points">Polygon points</param>
+		public abstract void Polygon( IPen pen, IEnumerable< Point3 > points );
+
+		#endregion
+
+		#region Filled Polygons
+
+		/// <summary>
+		/// Draws a polygon
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="points">Polygon points</param>
+		public abstract void Polygon( IBrush pen, IEnumerable< Point3 > points );
+
+		#endregion
+
+
 		#region Axis aligned boxes
 
 		/// <summary>

@@ -26,12 +26,30 @@ namespace Poc0.LevelEditor.Core
 		public PositionEditor( IHasPosition hasPosition, ILineIntersection pick )
 		{
 			m_HasPosition = hasPosition;
-			m_HasPosition.Position = ( ( Line3Intersection )pick ).IntersectionPosition;
-			m_Plane = new Plane3( m_HasPosition.Position + new Vector3( 0, 0.1f, 0 ), Vector3.YAxis );
+
+			Position = ( ( Line3Intersection )pick ).IntersectionPosition;
 
 			IRayCastService rayCaster = EditorState.Instance.CurrentScene.GetService< IRayCastService >( );
 			rayCaster.AddIntersector( RayCastLayers.Entity, this );
 		}
+
+		/// <summary>
+		/// Gets the position of the game object
+		/// </summary>
+		public Point3 Position
+		{
+			get { return m_HasPosition.Position; }
+			set
+			{
+				m_HasPosition.Position = value;
+				m_Plane = new Plane3( m_HasPosition.Position + new Vector3( 0, 0.1f, 0 ), Vector3.YAxis );
+				if ( ObjectChanged != null )
+				{
+					ObjectChanged( this, null );
+				}
+			}
+		}
+
 
 		#region IPickable Members
 
@@ -67,12 +85,7 @@ namespace Poc0.LevelEditor.Core
 		/// <param name="delta">Movement delta</param>
 		public void Move( Vector3 delta )
 		{
-			m_HasPosition.Position += delta;
-			m_Plane = new Plane3( m_HasPosition.Position + new Vector3( 0, 0.1f, 0 ), Vector3.YAxis );
-			if ( ObjectChanged != null )
-			{
-				ObjectChanged( this, null );
-			}
+			Position += delta;
 		}
 
 		#endregion
@@ -102,16 +115,16 @@ namespace Poc0.LevelEditor.Core
 		/// <param name="context">Rendering context</param>
 		public void Render( IRenderContext context )
 		{
-			Draw.IBrush pen = m_DrawUnselected;
+			Draw.IBrush drawProps = m_DrawUnselected;
 			if ( Selected )
 			{
-				pen = m_DrawSelected;
+				drawProps = m_DrawSelected;
 			}
 			else if ( Highlighted )
 			{
-				pen = m_DrawHighlight;
+				drawProps = m_DrawHighlight;
 			}
-			Graphics.Draw.Circle( pen, m_HasPosition.Position.X, m_HasPosition.Position.Y, m_HasPosition.Position.Z, Radius, 12 );
+			Graphics.Draw.Circle( drawProps, m_HasPosition.Position.X, m_HasPosition.Position.Y, m_HasPosition.Position.Z, Radius, 12 );
 		}
 
 		private const float Radius = 1.0f;
@@ -171,7 +184,7 @@ namespace Poc0.LevelEditor.Core
 			Line3Intersection pick = m_Plane.GetIntersection( ray );
 			if ( ( pick == null ) || ( pick.IntersectionPosition.DistanceTo( m_HasPosition.Position ) > Radius ) )
 			{
-				return null;
+			    return null;
 			}
 			pick.IntersectedObject = this;
 			return pick;

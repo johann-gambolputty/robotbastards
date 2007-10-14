@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Runtime.Serialization;
 using Poc0.LevelEditor.Core;
 using Rb.Core.Assets;
@@ -6,6 +7,7 @@ using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core;
 using Tao.OpenGl;
 using Rb.Core.Maths;
+using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc0.LevelEditor.Rendering.OpenGl
 {
@@ -34,7 +36,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 				//	Failed to load wall rendering effect - create a simple default
 				RenderState wallState = Graphics.Factory.NewRenderState( );
 				wallState.DisableLighting( );
-				wallState.SetColour( System.Drawing.Color.DarkOrange );
+				wallState.SetColour( Color.DarkOrange );
 				//wallState.EnableCap( RenderStateFlag.Texture2d | RenderStateFlag.Texture2dUnit0 );
 				m_WallTechnique = new Technique( "FallbackWallTechnique", wallState );
 			}
@@ -53,7 +55,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 				RenderState floorState = Graphics.Factory.NewRenderState( );
 				floorState.DisableLighting( );
 				//floorState.EnableCap( RenderStateFlag.Texture2d | RenderStateFlag.Texture2dUnit0 );
-				floorState.SetColour( System.Drawing.Color.Blue );
+				floorState.SetColour( Color.Blue );
 
 				m_FloorTechnique = new Technique( "FallbackFloorTechnique", floorState );
 			}
@@ -114,7 +116,46 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			Graphics.Renderer.BindTexture( m_FloorTextures );
 			m_FloorTechnique.Apply( context, Render3dFloors );
 			Graphics.Renderer.UnbindTexture( m_FloorTextures );
+
+			//	Render selected walls
+			Graphics.Renderer.PushRenderState( m_SelState );
+
+			Gl.glBegin( Gl.GL_QUADS );
+			RenderSelectedWalls( csg.Root );
+			Gl.glEnd( );
+			Graphics.Renderer.PopRenderState( );
+
 		}
+
+		private void RenderSelectedWalls( Csg.BspNode node )
+		{
+			if ( node == null )
+			{
+				return;
+			}
+			if ( node.Highlighted )
+			{
+				Csg.Edge edge = node.Edge;
+				Gl.glVertex3f( edge.P0.X, 0, edge.P0.Y );
+				Gl.glVertex3f( edge.P1.X, 0, edge.P1.Y );
+				Gl.glVertex3f( edge.P1.X, 5, edge.P1.Y );
+				Gl.glVertex3f( edge.P0.X, 5, edge.P0.Y );	
+			}
+			RenderSelectedWalls( node.InFront );
+			RenderSelectedWalls( node.Behind );
+		}
+
+		private static RenderState SelectionState( )
+		{
+			RenderState state = Graphics.Factory.NewRenderState( );
+			state.SetBlendMode( BlendFactor.SrcAlpha, BlendFactor.One );
+			//state.DisableCap( RenderStateFlag.DepthTest );
+			state.SetColour( Color.FromArgb( 128, 255, 0, 0 ) );
+			state.SetDepthOffset( -1.0f );
+			return state;
+		}
+
+		private readonly RenderState m_SelState = SelectionState( );
 
 		/// <summary>
 		/// Called when level geometry has changed
