@@ -3,8 +3,18 @@ using System.IO;
 namespace Rb.Core.Assets
 {
 	/// <summary>
-	/// Source interface
+	/// Asset source interface
 	/// </summary>
+	/// <remarks>
+	/// An ISource is a data source containing serialized objects. The most commonly used 
+	/// implementation of ISource is <see cref="Location"/>, which represents the location of a
+	/// file. <see cref="StreamSource"/> wraps up existing streams (e.g. memory streams).
+	/// Sources are loaded by a specific <see cref="IAssetLoader"/> object in the
+	/// <see cref="AssetManager"/>, by calling <see cref="AssetManager.Load(ISource)"/> or some
+	/// overload.
+	/// It's also possible to directly access the stream, using <see cref="Open()"/> (remember
+	/// to Dispose the resulting stream).
+	/// </remarks>
 	public interface ISource
 	{
 		/// <summary>
@@ -41,7 +51,7 @@ namespace Rb.Core.Assets
 		/// </summary>
 		/// <param name="path">Relative path</param>
 		/// <returns>New source</returns>
-		ISource GetSource( string path );
+		ISource GetRelativeSource( string path );
 
 		/// <summary>
 		/// Opens this source as a stream

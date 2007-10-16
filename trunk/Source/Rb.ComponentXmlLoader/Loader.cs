@@ -40,9 +40,9 @@ namespace Rb.ComponentXmlLoader
 		/// <summary>
 		/// Gets the asset extension
 		/// </summary>
-		public override string Extension
+		public override string[] Extensions
 		{
-			get { return "components.xml"; }
+			get { return new string[] { "components.xml" }; }
 		}
 
 		#region	Stream loading

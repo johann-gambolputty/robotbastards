@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\TextureLoader.cs" />
     <Compile Include="Cameras\Camera3.cs" />
     <Compile Include="Cameras\CameraBase.cs" />
     <Compile Include="Cameras\ICamera3.cs" />

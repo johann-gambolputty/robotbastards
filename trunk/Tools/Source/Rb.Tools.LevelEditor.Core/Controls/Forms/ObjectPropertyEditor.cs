@@ -26,6 +26,8 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			m_Timer.Enabled = true;
 			m_Timer.Tick += RefreshPropertyGridTick;
 
+			objectPropertyGrid.SelectedObject = new A( );
+
 			if ( EditorState.Instance.CurrentSelection != null )
 			{
 				EditorState.Instance.CurrentSelection.ObjectSelected += ObjectSelected;
@@ -34,6 +36,37 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			EditorState.Instance.SceneOpened += OnSceneOpened;
 			EditorState.Instance.SceneClosed += OnSceneClosed;
 		}
+
+		[TypeConverter(typeof(ExpandableObjectConverter))]
+		private struct B
+		{
+			[NotifyParentProperty(true)]
+			public float X
+			{
+				get { return x; }
+				set { x = value; }
+			}
+
+			[NotifyParentProperty(true)]
+			public float Y
+			{
+				get { return y; }
+				set { y = value; }
+			}
+			private float x, y;
+		}
+
+		private class A
+		{
+			public B B
+			{
+				get { return b; }
+				set { b = value; }
+			}
+			private B b = new B( );
+		}
+
+		private bool m_RefreshValues;
 
 		/// <summary>
 		/// Called when a new scene is opened
@@ -55,8 +88,12 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			state.SelectedObjects.ObjectDeselected -= ObjectDeselected;
 		}
 
+		/// <summary>
+		/// Called when an object is selected. Rebuilds the property grid
+		/// </summary>
 		private void ObjectSelected( object obj )
 		{
+			//	We want to be notified if the object changes, so the property grid can be updated
 			if ( obj is IObjectEditor )
 			{
 				( ( IObjectEditor )obj ).ObjectChanged += OnObjectChanged;
@@ -64,8 +101,12 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			BuildPropertyGrid( );
 		}
 
+		/// <summary>
+		/// Called when an object is deselected. Rebuilds the property grid
+		/// </summary>
 		private void ObjectDeselected( object obj )
 		{
+			//	Remove change notification
 			if ( obj is IObjectEditor )
 			{
 				( ( IObjectEditor )obj ).ObjectChanged -= OnObjectChanged;
@@ -73,6 +114,9 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			BuildPropertyGrid( );
 		}
 
+		/// <summary>
+		/// Called every 1/10th of a second to update the property grid if one of the selected objects has changed
+		/// </summary>
 		private void RefreshPropertyGridTick( object sender, EventArgs args )
 		{
 			if ( m_RefreshValues )
@@ -82,7 +126,15 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 				m_RefreshValues = false;
 			}
 		}
-
+		
+		/// <summary>
+		/// Called when a selected objects properties change
+		/// </summary>
+		private void OnObjectChanged( object sender, EventArgs args )
+		{
+			m_RefreshValues = true;
+			m_Timer.Start( );
+		}
 
 		/// <summary>
 		/// Builds the property grid from the current object selection
@@ -106,14 +158,9 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			objectPropertyGrid.SelectedObjects = bags;
 		}
 
-		private void OnObjectChanged( object sender, EventArgs args )
-		{
-			m_RefreshValues = true;
-			m_Timer.Start( );
-		}
-
-		private bool m_RefreshValues;
-
+		/// <summary>
+		/// Creates a property bag for a given object
+		/// </summary>
 		private static PropertyBag CreatePropertyBag( object obj )
 		{
 			if ( obj == null )
@@ -126,58 +173,94 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 				return CreatePropertyBag( ( ( IObjectEditor )obj ).Instance );
 			}
 
-			if ( obj is ObjectTemplate )
-			{
-				return CreatePropertyBag( ( ObjectTemplate )obj );
-			}
-
-			PropertyBag bag = new ExPropertyBag( obj.GetType( ).Name );
-			bag.GetValue += ExPropertySpec.GetValue;
-			bag.SetValue += ExPropertySpec.SetValue;
-
-			FillPropertyBag( bag, obj );
-
+			ExPropertyBag bag = new ExPropertyBag( null, obj );
 			return bag;
 		}
 
-		public class NullConverter : ExpandableObjectConverter
-		{
-			public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType )
-			{
-				return false;
-			}
 
-			public override bool CanConvertTo( ITypeDescriptorContext context, Type destinationType )
-			{
-				return false;
-			}
-		}
-
-		[TypeConverter(typeof(ExpandableObjectConverter))]
+		/// <summary>
+		/// Extended property bag
+		/// </summary>
+		[TypeConverter( typeof( ExpandableObjectConverter ) )]
 		private class ExPropertyBag : PropertyBag
 		{
-			public ExPropertyBag( string name )
+			/// <summary>
+			/// Sets up this bag
+			/// </summary>
+			/// <param name="property">Property that this bag is being built for</param>
+			/// <param name="obj">The object that this bag represents</param>
+			public ExPropertyBag( ExPropertySpec property, object obj )
 			{
-				m_Name = name;
+				m_Name = obj.ToString( );
+
+				GetValue += ExPropertySpec.GetValue;
+				SetValue += ExPropertySpec.SetValue;
+				BuildBag( property, obj );
 			}
 
+			/// <summary>
+			/// Returns the name of this bag
+			/// </summary>
 			public override string ToString( )
 			{
 				return m_Name;
 			}
 
 			private readonly string m_Name;
-		}
 
+			/// <summary>
+			/// Builds this bag
+			/// </summary>
+			/// <param name="ownerProperty">Property that this bag is being built for</param>
+			/// <param name="obj">The object that this bag represents</param>
+			private void BuildBag( ExPropertySpec ownerProperty, object obj )
+			{			
+				string category = ( obj.GetType( ).Name.Substring( obj.GetType( ).Name.LastIndexOf( '.' ) + 1 ) );
+				foreach ( PropertyInfo property in obj.GetType( ).GetProperties( ) )
+				{
+					if ( property.CanRead && property.GetIndexParameters( ).Length == 0 )
+					{
+						ExPropertySpec propertySpec = new ExPropertySpec( ownerProperty, obj, property, category );
+
+						//propertySpec.OwnerChanged += delegate( object sender, EventArgs args )
+						//    {
+						//        property.SetValue( obj, sender, null );
+						//    };
+
+						Properties.Add( propertySpec );
+					}
+				}
+
+				IParent parent = obj as IParent;
+				if ( parent == null )
+				{
+					return;
+				}
+
+				foreach ( object childObj in parent.Children )
+				{
+					BuildBag( null, childObj );
+				}
+			}
+		}
+		
+		/// <summary>
+		/// Extended property specifier
+		/// </summary>
 		private class ExPropertySpec : PropertySpec
 		{
+			/// <summary>
+			/// Sets the value of an extended property
+			/// </summary>
 			public static void SetValue( object sender, PropertySpecEventArgs args )
 			{
 				ExPropertySpec exProperty = ( ( ExPropertySpec )args.Property );
 				exProperty.Value = args.Value;
-				exProperty.PropertyBag = null;
 			}
-			
+
+			/// <summary>
+			/// Gets the value of an extended property
+			/// </summary>
 			public static void GetValue( object sender, PropertySpecEventArgs args )
 			{
 				ExPropertySpec exProperty = ( ExPropertySpec )args.Property;
@@ -191,18 +274,82 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 				}
 			}
 
+			/// <summary>
+			/// Builds this extended property
+			/// </summary>
+			/// <param name="ownerProperty">Parent property bag that contains this property</param>
+			/// <param name="property">Object property being represented</param>
+			/// <param name="owner">Object containing the property</param>
+			/// <param name="category">Category that the property should be displayed in</param>
+			public ExPropertySpec( ExPropertySpec ownerProperty, object owner, PropertyInfo property, string category ) :
+				base( property.Name, property.PropertyType, category )
+			{
+				//m_OwnerProperty = ownerProperty;
+				m_Owner = owner;
+				m_Property = property;
+
+				DetermineAttributes( property );
+			}
+
+			/// <summary>
+			/// Updates the underlying property bag, if this property needs one
+			/// </summary>
+			public void UpdateBag( )
+			{
+				if ( ObjectUITypeEditor.HandlesType( m_Property.PropertyType ) && ( Value != null ) )
+				{
+					m_Bag = new ExPropertyBag( this, Value );
+				}
+			}
+
+			/// <summary>
+			/// Gets/sets the property bag for this property
+			/// </summary>
+			public PropertyBag PropertyBag
+			{
+				get
+				{
+					UpdateBag( );
+					return m_Bag;
+				}
+			}
+
+			/// <summary>
+			/// Gets/sets the values of the property
+			/// </summary>
+			public object Value
+			{
+				get { return m_Property.GetValue( m_Owner, null ); }
+				set
+				{
+					m_Property.SetValue( m_Owner, value, null );
+					UpdateBag( );
+					if ( m_OwnerProperty != null )
+					{
+						m_OwnerProperty.Value = m_Owner;
+					}
+				}
+			}
+
+			private readonly ExPropertySpec m_OwnerProperty;
+			private readonly object m_Owner;
+			private readonly PropertyInfo m_Property;
+			private PropertyBag m_Bag;
+			
+			/// <summary>
+			/// Returns true if a given type should use the null converter
+			/// </summary>
 			private static bool UseNullConverter( Type type )
 			{
 				TypeConverter converter = TypeDescriptor.GetConverter( type );
 				return ( converter is ReferenceConverter ) || ( converter.GetType( ) == typeof( TypeConverter ) );
 			}
-
-			public ExPropertySpec( PropertyInfo property, object obj, string category ) :
-				base( property.Name, property.PropertyType, category )
+			
+			/// <summary>
+			/// Determines the attributes that this property should have
+			/// </summary>
+			private void DetermineAttributes( PropertyInfo property )
 			{
-				m_Object = obj;
-				m_Property = property;
-
 				List< Attribute > attributes = new List< Attribute >( );
 
 				//	ReferenceConverter is rubbish, because it doesn't expand object instances
@@ -239,83 +386,22 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 				Attributes = attributes.ToArray( );
 			}
 
-			/// <summary>
-			/// Gets a property bag for this 
-			/// </summary>
-			/// <returns></returns>
-			public PropertyBag PropertyBag
-			{
-				get
-				{
-					if ( m_Bag != null )
-					{
-						return m_Bag;
-					}
-
-					if ( !ObjectUITypeEditor.HandlesType( m_Property.PropertyType ) )
-					{
-						return null;
-					}
-
-					m_Bag = CreatePropertyBag( Value );
-					return m_Bag;
-				}
-				set
-				{
-					m_Bag = value;
-				}
-			}
-
-			public object Value
-			{
-				get { return m_Property.GetValue( m_Object, null ); }
-				set { m_Property.SetValue( m_Object, value, null ); }
-			}
-
-			private PropertyBag m_Bag;
-			private readonly object m_Object;
-			private readonly PropertyInfo m_Property;
 		}
 
-		private static void FillPropertyBag( PropertyBag bag, object obj )
+		/// <summary>
+		/// Null object converter
+		/// </summary>
+		public class NullConverter : ExpandableObjectConverter
 		{
-			string category = ( obj.GetType( ).Name.Substring( obj.GetType( ).Name.LastIndexOf( '.' ) + 1 ) );
-			foreach ( PropertyInfo property in obj.GetType( ).GetProperties( ) )
+			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 			{
-				if ( property.CanRead && property.GetIndexParameters( ).Length == 0 )
-				{
-					bag.Properties.Add( new ExPropertySpec( property, obj, category ) );
-				}
+				return false;
 			}
 
-			IParent parent = obj as IParent;
-			if ( parent == null )
+			public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
 			{
-				return;
+				return false;
 			}
-
-			foreach ( object childObj in parent.Children )
-			{
-				FillPropertyBag( bag, childObj );
-			}
-			
-		}
-
-		private static PropertyBag CreatePropertyBag( ObjectTemplate template )
-		{
-			PropertyBag bag = template.CreatePropertyBag( true );
-			foreach ( PropertySpec property in bag.Properties )
-			{
-				if ( property.TypeName == typeof( ObjectTemplate ).FullName )
-				{
-					property.EditorTypeName = typeof( ObjectTemplateUITypeEditor ).FullName;
-				}
-			}
-			return bag;
-		}
-
-		private class ObjectTemplateUITypeEditor : UITypeEditor
-		{			
 		}
 	}
 }

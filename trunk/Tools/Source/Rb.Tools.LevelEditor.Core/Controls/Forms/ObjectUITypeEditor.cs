@@ -15,7 +15,8 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		/// </summary>
 		public static bool HandlesType( Type type )
 		{
-			return TypeDescriptor.GetConverter( type ) is ReferenceConverter;
+		//	return ( TypeDescriptor.GetConverter( type ) is ReferenceConverter ) || ( type.IsValueType );
+			return !type.IsPrimitive && type != typeof( string ) && !type.IsEnum;
 		}
 
 		/// <summary>

@@ -33,6 +33,18 @@ namespace Rb.Tools.LevelEditor.Core
 		/// Event, invoked when the last export path changes
 		/// </summary>
 		public event Action< string > LastExportPathChanged;
+
+		/// <summary>
+		/// Opens an exported scene from a given stream
+		/// </summary>
+		/// <param name="stream">Stream containing serialized Scene object</param>
+		/// <returns>Returns the loaded scene object</returns>
+		public static Scene Open( Stream stream )
+		{
+			IFormatter formatter = CreateFormatter( );
+			object result = formatter.Deserialize( stream );
+			return ( Scene )result;
+		}
 		
 		/// <summary>
 		/// Exports a scene to a scene file at a user-defined path

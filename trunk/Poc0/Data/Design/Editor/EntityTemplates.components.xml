@@ -3,19 +3,19 @@
   <list>
 
     <!-- Player Start pattern -->
-    <template type="Poc0.Core.PlayerStart" assembly="Poc0.Core" name="Player Start">
+    <template type="Poc0.Core.Objects.PlayerStart" assembly="Poc0.Core" name="Player Start">
     </template>
 
     <!-- Evil Robot pattern -->
-    <template type="Poc0.Core.Entity" assembly="Poc0.Core" name="Evil Robot">
+    <template type="Poc0.Core.Objects.Entity" assembly="Poc0.Core" name="Evil Robot">
 
       <!-- Evil robot body pattern -->
-      <template type="Poc0.Core.Body" assembly="Poc0.Core">
+      <template type="Poc0.Core.Objects.Body" assembly="Poc0.Core">
         <int value="200" dynProperty="Health"/>
       </template>
 
       <!-- Evil robot renderer pattern -->
-      <template type="Poc0.Core.EntityGraphics">
+      <template type="Poc0.Core.Objects.EntityGraphics">
         <location value="Graphics\Entities\TestPlayer0\Full.components.xml" dynProperty="GraphicsLocation"/>
       </template>
 
@@ -23,7 +23,7 @@
     
     
     <!-- Light pattern
-    <template type="Poc0.Core.PointLightFrame" assembly="Poc0.Core" name="Point Light">
+    <template type="Poc0.Core.Objects.PointLightFrame" assembly="Poc0.Core" name="Point Light">
       <template type="Rb.Rendering.PointLight" assembly="Rb.Rendering" dynProperty="Light">
       </template>
     </template>

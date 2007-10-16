@@ -31,9 +31,9 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// <summary>
 		/// Gets the asset extension
 		/// </summary>
-		public override string Extension
+		public override string[] Extensions
 		{
-			get { return "cgfx"; }
+			get { return new string[] { "cgfx" }; }
 		}
 
 		/// <summary>

@@ -18,9 +18,9 @@ namespace Rb.Core.Assets
 		}
 
 		/// <summary>
-		/// Gets the asset extension
+		/// Gets the asset extensions
 		/// </summary>
-		public abstract string Extension
+		public abstract string[] Extensions
 		{
 			get;
 		}
@@ -56,7 +56,15 @@ namespace Rb.Core.Assets
 		/// <returns>Returns true if this loader can process the specified source</returns>
 		public virtual bool CanLoad( ISource source )
 		{
-			return source.ToString( ).EndsWith( Extension, StringComparison.CurrentCultureIgnoreCase );
+			string sourceStr = source.ToString( );
+			foreach ( string ext in Extensions )
+			{
+				if ( sourceStr.EndsWith( ext, StringComparison.CurrentCultureIgnoreCase ) )
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 
 		#endregion

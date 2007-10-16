@@ -1,6 +1,6 @@
 using System;
 using System.Drawing;
-using Poc0.Core;
+using Poc0.Core.Objects;
 using Rb.Core.Maths;
 using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.Actions;
@@ -18,6 +18,8 @@ namespace Poc0.LevelEditor.Core
 	[Serializable]
 	public class PositionEditor : IRay3Intersector, IObjectEditor, IPickable, IMoveable3, IRenderable, ISelectable
 	{
+		#region Public methods
+
 		/// <summary>
 		/// Sets up this editor
 		/// </summary>
@@ -50,6 +52,7 @@ namespace Poc0.LevelEditor.Core
 			}
 		}
 
+		#endregion
 
 		#region IPickable Members
 
@@ -74,8 +77,6 @@ namespace Poc0.LevelEditor.Core
 		}
 
 		#endregion
-
-		private readonly IHasPosition m_HasPosition;
 
 		#region IMoveable3 Members
 
@@ -124,16 +125,8 @@ namespace Poc0.LevelEditor.Core
 			{
 				drawProps = m_DrawHighlight;
 			}
-			Graphics.Draw.Circle( drawProps, m_HasPosition.Position.X, m_HasPosition.Position.Y, m_HasPosition.Position.Z, Radius, 12 );
+			Graphics.Draw.Circle( drawProps, m_HasPosition.Position.X, m_HasPosition.Position.Y + 0.1f, m_HasPosition.Position.Z, Radius, 12 );
 		}
-
-		private const float Radius = 1.0f;
-		private static readonly Draw.IBrush m_DrawUnselected = Graphics.Draw.NewBrush( Color.Black, Color.PaleGoldenrod );
-		private static readonly Draw.IBrush m_DrawHighlight = Graphics.Draw.NewBrush( Color.DarkSalmon, Color.Goldenrod );
-		private static readonly Draw.IBrush m_DrawSelected = Graphics.Draw.NewBrush( Color.Red, Color.Orange );
-		private bool m_Highlight;
-		private bool m_Selected;
-
 
 		#endregion
 
@@ -158,8 +151,6 @@ namespace Poc0.LevelEditor.Core
 		}
 
 		#endregion
-
-		private Plane3 m_Plane;
 
 		#region IRay3Intersector Members
 
@@ -188,6 +179,35 @@ namespace Poc0.LevelEditor.Core
 			}
 			pick.IntersectedObject = this;
 			return pick;
+		}
+
+		#endregion
+
+		#region Private members
+
+		private readonly IHasPosition m_HasPosition;
+		private Plane3 m_Plane;
+		private const float Radius = 1.0f;
+		private static readonly Draw.IBrush m_DrawUnselected;
+		private static readonly Draw.IBrush m_DrawHighlight;
+		private static readonly Draw.IBrush m_DrawSelected;
+		private bool m_Highlight;
+		private bool m_Selected;
+		
+		static PositionEditor( )
+		{
+			m_DrawUnselected = Graphics.Draw.NewBrush( Color.Black, Color.PaleGoldenrod );
+			m_DrawHighlight = Graphics.Draw.NewBrush( Color.DarkSalmon, Color.Goldenrod );
+			m_DrawSelected = Graphics.Draw.NewBrush( Color.Red, Color.Orange );
+
+			m_DrawUnselected.State.EnableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
+			m_DrawUnselected.OutlinePen.State.EnableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
+			
+			m_DrawHighlight.State.EnableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
+			m_DrawHighlight.OutlinePen.State.EnableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
+			
+			m_DrawSelected.State.EnableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
+			m_DrawSelected.OutlinePen.State.EnableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
 		}
 
 		#endregion

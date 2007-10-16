@@ -10,7 +10,7 @@ namespace Rb.World
 	/// Manages all objects in the scene, and the services that tend to them
 	/// </summary>
 	[Serializable]
-    public class Scene : IRenderable
+    public class Scene : IRenderable, IDisposable
 	{
 		#region Construction
 
@@ -24,9 +24,33 @@ namespace Rb.World
 
 		#endregion
 
-        #region	Services
+		#region IDisposable members
 
-        /// <summary>
+		/// <summary>
+		/// Event, raised by <see cref="Dispose()"/>
+		/// </summary>
+		public EventHandler Disposing;
+
+		/// <summary>
+		/// Disposes of the scene, raises the <see cref="Disposing"/> event
+		/// </summary>
+		public void Dispose( )
+		{
+			if ( !m_Disposed )
+			{
+				if ( Disposing != null )
+				{
+					Disposing( this, null );
+				}
+				m_Disposed = true;
+			}
+		}
+
+		#endregion
+
+		#region	Services
+
+		/// <summary>
 		/// Gets a typed service
 		/// </summary>
 		/// <param name="serviceType">Service type</param>
@@ -148,6 +172,9 @@ namespace Rb.World
 		private readonly Dictionary< Type, object >	m_Services	    = new Dictionary< Type, object >( );
 		private readonly ObjectMap					m_Objects;
         private readonly RenderableList             m_Renderables   = new RenderableList( );
+
+		[NonSerialized]
+		private bool m_Disposed = false;
 
         /// <summary>
         /// Associates a service with a key

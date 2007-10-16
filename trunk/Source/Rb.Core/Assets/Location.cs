@@ -118,7 +118,7 @@ namespace Rb.Core.Assets
 		/// </summary>
 		/// <param name="path">Relative path</param>
 		/// <returns>New source</returns>
-		public ISource GetSource( string path )
+		public ISource GetRelativeSource( string path )
 		{
 			return new Location( this, path );
 		}

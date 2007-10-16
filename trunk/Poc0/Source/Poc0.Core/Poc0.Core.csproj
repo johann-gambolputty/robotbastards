@@ -47,9 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Body.cs" />
-    <Compile Include="Entity.cs" />
-    <Compile Include="EntityGraphics.cs" />
+    <Compile Include="Objects\Body.cs" />
+    <Compile Include="Objects\Entity.cs" />
+    <Compile Include="Objects\EntityGraphics.cs" />
     <Compile Include="Environment\Collisions.cs" />
     <Compile Include="Environment\Environment.cs" />
     <Compile Include="Environment\Floor.cs" />
@@ -57,10 +57,10 @@
     <Compile Include="Environment\INavigator.cs" />
     <Compile Include="Environment\Navigator.cs" />
     <Compile Include="Environment\WallNode.cs" />
-    <Compile Include="HealthChange.cs" />
-    <Compile Include="IBody.cs" />
-    <Compile Include="IHasWorldFrame.cs" />
-    <Compile Include="PlayerStart.cs" />
+    <Compile Include="Objects\HealthChange.cs" />
+    <Compile Include="Objects\IBody.cs" />
+    <Compile Include="Objects\IHasWorldFrame.cs" />
+    <Compile Include="Objects\PlayerStart.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

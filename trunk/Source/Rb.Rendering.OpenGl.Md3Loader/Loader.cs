@@ -28,9 +28,9 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Gets the asset extension
 		/// </summary>
-		public override string Extension
+		public override string[] Extensions
 		{
-			get { return "md3"; }
+			get { return new string[] { "md3" }; }
 		}
 
 		/// <summary>
@@ -108,7 +108,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		private static ISource AnimationFile( ISource source )
 		{
-			return source.GetSource( "animation.cfg" );
+			return source.GetRelativeSource( "animation.cfg" );
 		}
 
 
@@ -117,7 +117,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		private static ISource MeshFile( ISource source, ModelPart part )
 		{
-			return source.GetSource( part + ".md3" );
+			return source.GetRelativeSource( part + ".md3" );
 		}
 
 		/// <summary>
@@ -125,7 +125,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		private static ISource DefaultSkinFile( ISource source, ModelPart part )
 		{
-			return source.GetSource( part + "_default.skin" );
+			return source.GetRelativeSource( part + "_default.skin" );
 		}
 
 		/// <summary>
@@ -143,7 +143,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			string name = Path.GetFileNameWithoutExtension( path );
 			foreach ( string ext in TextureExtensions )
 			{
-				ISource textureSource = source.GetSource( name + ext );
+				ISource textureSource = source.GetRelativeSource( name + ext );
 				if ( textureSource.Exists )
 				{
 					return textureSource;

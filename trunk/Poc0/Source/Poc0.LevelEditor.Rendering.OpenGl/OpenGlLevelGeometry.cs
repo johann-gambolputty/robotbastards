@@ -106,7 +106,6 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 				RebuildFloorDisplayList( );
 			}
 
-
 			//	Render walls
 			Graphics.Renderer.BindTexture( m_WallTextures );
 			m_WallTechnique.Apply( context, Render3dWalls );
@@ -118,7 +117,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			Graphics.Renderer.UnbindTexture( m_FloorTextures );
 
 			//	Render selected walls
-			Graphics.Renderer.PushRenderState( m_SelState );
+			Graphics.Renderer.PushRenderState( ms_SelState );
 
 			Gl.glBegin( Gl.GL_QUADS );
 			RenderSelectedWalls( csg.Root );
@@ -127,35 +126,35 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 
 		}
 
+		/// <summary>
+		/// Renders semi-transparent coloured quads over selected/highlit walls
+		/// </summary>
 		private void RenderSelectedWalls( Csg.BspNode node )
 		{
 			if ( node == null )
 			{
 				return;
 			}
-			if ( node.Highlighted )
+			if ( node.Highlighted || node.Selected )
 			{
-				Csg.Edge edge = node.Edge;
-				Gl.glVertex3f( edge.P0.X, 0, edge.P0.Y );
-				Gl.glVertex3f( edge.P1.X, 0, edge.P1.Y );
-				Gl.glVertex3f( edge.P1.X, 5, edge.P1.Y );
-				Gl.glVertex3f( edge.P0.X, 5, edge.P0.Y );	
+				if ( node.Selected )
+				{
+					Gl.glColor4f( 1.0f, 0.0f, 0.0f, 0.5f );
+				}
+				else
+				{
+					Gl.glColor4f( 0.0f, 0.2f, 0.0f, 0.5f );
+				}
+
+				Point3[] pts = node.Quad;
+				Gl.glVertex3f( pts[ 0 ].X, pts[ 0 ].Y, pts[ 0 ].Z );
+				Gl.glVertex3f( pts[ 1 ].X, pts[ 1 ].Y, pts[ 1 ].Z );
+				Gl.glVertex3f( pts[ 2 ].X, pts[ 2 ].Y, pts[ 2 ].Z );
+				Gl.glVertex3f( pts[ 3 ].X, pts[ 3 ].Y, pts[ 3 ].Z );
 			}
 			RenderSelectedWalls( node.InFront );
 			RenderSelectedWalls( node.Behind );
 		}
-
-		private static RenderState SelectionState( )
-		{
-			RenderState state = Graphics.Factory.NewRenderState( );
-			state.SetBlendMode( BlendFactor.SrcAlpha, BlendFactor.One );
-			//state.DisableCap( RenderStateFlag.DepthTest );
-			state.SetColour( Color.FromArgb( 128, 255, 0, 0 ) );
-			state.SetDepthOffset( -1.0f );
-			return state;
-		}
-
-		private readonly RenderState m_SelState = SelectionState( );
 
 		/// <summary>
 		/// Called when level geometry has changed
@@ -167,7 +166,6 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			base.OnGeometryChanged( sender, args );
 		}
 
-
 		#endregion
 
 		#region Private members
@@ -175,18 +173,32 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		private const string WallEffectPath = @"Editor\Effects\Walls.cgfx";
 		private const string FloorEffectPath = @"Editor\Effects\Floors.cgfx";
 
+		private readonly static RenderState ms_SelState = SelectionState( );
+
 		[NonSerialized]
 		private int m_WallDisplayList = -1;
 
 		[NonSerialized]
 		private int m_FloorDisplayList = -1;
 
+		//	TODO: AP: Update serialization of these fields
 		private readonly Texture2d m_WallTextures;
 		private readonly Texture2d m_FloorTextures;
-
 		private readonly ITechnique m_WallTechnique;
 		private readonly ITechnique m_FloorTechnique;
-		
+
+		/// <summary>
+		/// Creates the render state used for rendering selected walls
+		/// </summary>
+		private static RenderState SelectionState( )
+		{
+			RenderState state = Graphics.Factory.NewRenderState( );
+			state.SetBlendMode( BlendFactor.SrcAlpha, BlendFactor.One );
+			state.DisableCap( RenderStateFlag.DepthTest );
+			state.SetDepthOffset( -1.0f );
+			return state;
+		}
+
 		/// <summary>
 		/// Renders 3D wall geometry
 		/// </summary>
@@ -221,31 +233,32 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			{
 				return;
 			}
-			Point2 start = node.Edge.P0;
-			Point2 end = node.Edge.P1;
+
+			Point3 pt0 = node.Quad[ 0 ];
+			Point3 pt1 = node.Quad[ 1 ];
+			Point3 pt2 = node.Quad[ 2 ];
+			Point3 pt3 = node.Quad[ 3 ];
 
 			float minU = 0;
 			float maxU = 4;
 			float minV = 0;
 			float maxV = 4;
 
-			float height = 5;
-
 			Gl.glNormal3f( node.Plane.Normal.X, 0, node.Plane.Normal.Y );
 			Gl.glTexCoord2f( minU, minV );
-			Gl.glVertex3f( start.X, 0, start.Y );
+			Gl.glVertex3f( pt0.X, pt0.Y, pt0.Z );
 			Gl.glTexCoord2f( maxU, minV );
-			Gl.glVertex3f( end.X, 0, end.Y );
+			Gl.glVertex3f( pt1.X, pt1.Y, pt1.Z );
 			Gl.glTexCoord2f( maxU, maxV );
-			Gl.glVertex3f( end.X, height, end.Y );
+			Gl.glVertex3f( pt2.X, pt2.Y, pt2.Z );
 
 			Gl.glNormal3f( node.Plane.Normal.X, 0, node.Plane.Normal.Y );
 			Gl.glTexCoord2f( maxU, maxV );
-			Gl.glVertex3f( end.X, height, end.Y );
+			Gl.glVertex3f( pt2.X, pt2.Y, pt2.Z );
 			Gl.glTexCoord2f( minU, maxV );
-			Gl.glVertex3f( start.X, height, start.Y );
+			Gl.glVertex3f( pt3.X, pt3.Y, pt3.Z );
 			Gl.glTexCoord2f( minU, minV );
-			Gl.glVertex3f( start.X, 0, start.Y );
+			Gl.glVertex3f( pt0.X, pt0.Y, pt0.Z );
 
 			RenderWall( node.InFront );
 			RenderWall( node.Behind );
