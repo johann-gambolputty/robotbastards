@@ -23,7 +23,7 @@ namespace Rb.Core.Maths
 			Line3Intersection intersection = GetRayTriangleIntersection( ray, pt0, pt1, pt2 );
 			if ( intersection == null )
 			{
-				intersection = GetRayTriangleIntersection( ray, pt2, pt3, pt1 );
+				intersection = GetRayTriangleIntersection( ray, pt2, pt3, pt0 );
 			}
 			return intersection;
 		}

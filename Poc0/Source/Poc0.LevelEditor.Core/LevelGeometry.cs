@@ -322,10 +322,10 @@ namespace Poc0.LevelEditor.Core
 			//	TODO: AP: Use BSP properties... this is lazy
 			Line3Intersection childIntersection = GetIntersection( ray, node.InFront ) ?? GetIntersection( ray, node.Behind );
 			
-			Point3 pt0 = new Point3( node.Edge.P0.X, 0, node.Edge.P0.Y );
-			Point3 pt1 = new Point3( node.Edge.P1.X, 0, node.Edge.P1.Y );
-			Point3 pt2 = new Point3( node.Edge.P1.X, 5, node.Edge.P1.Y );
-			Point3 pt3 = new Point3( node.Edge.P0.X, 5, node.Edge.P0.Y );
+			Point3 pt0 = node.Quad[ 0 ];
+			Point3 pt1 = node.Quad[ 1 ];
+			Point3 pt2 = node.Quad[ 2 ];
+			Point3 pt3 = node.Quad[ 3 ];
 
 			Line3Intersection intersection = Intersections3.GetRayQuadIntersection( ray, pt0, pt1, pt2, pt3 );
 			if ( intersection != null )

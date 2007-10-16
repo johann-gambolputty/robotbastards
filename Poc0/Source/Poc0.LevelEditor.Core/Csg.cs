@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Rb.Core.Maths;
 using Rb.Tools.LevelEditor.Core.Selection;
 
@@ -105,11 +106,17 @@ namespace Poc0.LevelEditor.Core
 			{
 				m_Parent = parent;
 				m_Edge = edge;
+
+				m_Quad[ 0 ] = new Point3( edge.P0.X, 0, edge.P0.Y );
+				m_Quad[ 1 ] = new Point3( edge.P1.X, 0, edge.P1.Y );
+				m_Quad[ 2 ] = new Point3( edge.P1.X, 5, edge.P1.Y );
+				m_Quad[ 3 ] = new Point3( edge.P0.X, 5, edge.P0.Y );
 			}
 
 			/// <summary>
 			/// The node plane
 			/// </summary>
+			[Browsable(false)]
 			public Plane2 Plane
 			{
 				get { return Edge.Plane; }
@@ -118,6 +125,7 @@ namespace Poc0.LevelEditor.Core
 			/// <summary>
 			/// The subtree of nodes behind this node's plane
 			/// </summary>
+			[Browsable(false)]
 			public BspNode Behind
 			{
 				get { return m_Behind; }
@@ -125,8 +133,9 @@ namespace Poc0.LevelEditor.Core
 			}
 
 			/// <summary>
-			/// THe subtree of nodes in front of this node's plane
+			/// The subtree of nodes in front of this node's plane
 			/// </summary>
+			[Browsable(false)]
 			public BspNode InFront
 			{
 				get { return m_InFront; }
@@ -144,6 +153,7 @@ namespace Poc0.LevelEditor.Core
 			/// <summary>
 			/// Gets the convex region associated with this node
 			/// </summary>
+			[ReadOnly(true)]
 			public Point2[] ConvexRegion
 			{
 				get { return m_Region; }
@@ -153,24 +163,27 @@ namespace Poc0.LevelEditor.Core
 			/// <summary>
 			/// Gets the parent node
 			/// </summary>
+			[Browsable(false)]
 			public BspNode Parent
 			{
 				get { return m_Parent; }
 			}
 
-			private readonly BspNode m_Parent;
-			private BspNode m_Behind;
-			private BspNode m_InFront;
-			private readonly Edge m_Edge;
-			private Point2[] m_Region;
-			private bool m_Highlight;
-			private bool m_Selected;
-
+			/// <summary>
+			/// Returns this node's wall quad
+			/// </summary>
+			[Browsable(false)]
+			public Point3[] Quad
+			{
+				get { return m_Quad; }
+			}
+			
 			#region ISelectable Members
 
 			/// <summary>
 			/// Highlight flag
 			/// </summary>
+			[Browsable(false)]
 			public bool Highlighted
 			{
 				get { return m_Highlight; }
@@ -180,6 +193,7 @@ namespace Poc0.LevelEditor.Core
 			/// <summary>
 			/// Selection flag
 			/// </summary>
+			[Browsable(false)]
 			public bool Selected
 			{
 				get { return m_Selected; }
@@ -187,6 +201,20 @@ namespace Poc0.LevelEditor.Core
 			}
 
 			#endregion
+
+			#region Private stuff
+
+			private readonly Point3[] m_Quad = new Point3[ 4 ];
+			private readonly BspNode m_Parent;
+			private BspNode m_Behind;
+			private BspNode m_InFront;
+			private readonly Edge m_Edge;
+			private Point2[] m_Region;
+			private bool m_Highlight;
+			private bool m_Selected;
+
+			#endregion
+
 		}
 		
 		/// <summary>
@@ -233,7 +261,6 @@ namespace Poc0.LevelEditor.Core
 				m_P1 = p1;
 				m_Plane = new Plane2( p0, p1 );
 			}
-
 
 			/// <summary>
 			/// Gets/sets the double sided flag
@@ -331,7 +358,67 @@ namespace Poc0.LevelEditor.Core
 					break;
 			}
 
+			allEdges = MergeEdges( allEdges );
+
 			return Build( null, allEdges );
+		}
+
+		private static bool Equivalent( Point2 p0, Point2 p1 )
+		{
+			return p0.SqrDistanceTo( p1 ) <= 0.1f ;
+		}
+
+		private static List< Edge > MergeEdges( IList< Edge > srcEdges )
+		{
+			List< Edge > mergedEdges = new List< Edge >( );
+
+			while ( srcEdges.Count > 0 )
+			{
+				Edge srcEdge = srcEdges[ 0 ];
+				srcEdges.RemoveAt( 0 );
+				
+				for ( int mergeIndex = 0; mergeIndex < srcEdges.Count; )
+				{
+					Edge mergeEdge = srcEdges[ mergeIndex ];
+					if ( ( mergeEdge.Plane.Normal.Dot( srcEdge.Plane.Normal ) >= 0.9f ) &&
+					     ( Utils.CloseToZero( mergeEdge.Plane.Distance - srcEdge.Plane.Distance, 0.1f ) ) )
+					{
+						//	Edges are colinear - do they share a common vertex?
+						if ( Equivalent( mergeEdge.P0, srcEdge.P0 ) )
+						{
+							srcEdge.P0 = mergeEdge.P1;
+							srcEdges.RemoveAt( mergeIndex );
+						}
+						else if ( Equivalent( mergeEdge.P1, srcEdge.P0 ) )
+						{
+							srcEdge.P0 = mergeEdge.P0;
+							srcEdges.RemoveAt( mergeIndex );
+						}
+						else if ( Equivalent( mergeEdge.P0, srcEdge.P1 ) )
+						{
+							srcEdge.P1 = mergeEdge.P1;
+							srcEdges.RemoveAt( mergeIndex );
+						}
+						else if ( Equivalent( mergeEdge.P1, srcEdge.P1 ) )
+						{
+							srcEdge.P1 = mergeEdge.P0;
+							srcEdges.RemoveAt( mergeIndex );
+						}
+						else
+						{
+							++mergeIndex;
+						}
+					}
+					else
+					{
+						++mergeIndex;
+					}
+				}
+
+				mergedEdges.Add( srcEdge );
+			}
+
+			return mergedEdges;
 		}
 		
 		/// <summary>

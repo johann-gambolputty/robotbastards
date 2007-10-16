@@ -1,4 +1,4 @@
-using Poc0.Core;
+using Poc0.Core.Objects;
 using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Tools.LevelEditor.Core.Selection;

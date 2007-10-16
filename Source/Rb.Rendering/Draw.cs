@@ -36,6 +36,14 @@ namespace Rb.Rendering
 				get;
 				set;
 			}
+
+			/// <summary>
+			/// Gets the underlying render state
+			/// </summary>
+			RenderState State
+			{
+				get;
+			}
 		}
 
 		/// <summary>
@@ -84,6 +92,14 @@ namespace Rb.Rendering
 			{
 				get; set;
 			}
+
+			/// <summary>
+			/// Gets the underlying render state
+			/// </summary>
+			RenderState State
+			{
+				get;
+			}
 		}
 
 		/// <summary>
@@ -131,6 +147,14 @@ namespace Rb.Rendering
 			bool Wireframe
 			{
 				get; set;
+			}
+
+			/// <summary>
+			/// Gets the underlying render state
+			/// </summary>
+			RenderState State
+			{
+				get;
 			}
 		}
 

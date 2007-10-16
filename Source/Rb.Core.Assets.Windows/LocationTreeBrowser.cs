@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Text;
 using System.Windows.Forms;
 using Rb.NiceControls;
 
@@ -42,7 +43,7 @@ namespace Rb.Core.Assets.Windows
 
 				if ( filterParts.Length == 1 )
 				{
-					typeComboBox.Items.Add( new LocationFilter( "All Files (*.*)", "*.*" ) );
+					typeComboBox.Items.Add( new LocationFilter( "All Files (*.*)" ) );
 				}
 				else
 				{
@@ -206,15 +207,28 @@ namespace Rb.Core.Assets.Windows
 
 			m_CurrentFolder = m_Locations.DefaultFolder;
 
-			string filter = "";
+			StringBuilder filter = new StringBuilder( );
 			foreach ( IAssetLoader loader in AssetManager.Instance.Loaders )
 			{
-				filter += string.Format( "{0} (*.{1})|*.{1}|",loader.Name, loader.Extension );
+				filter.Append( loader.Name );
+				filter.Append( ' ' );
+
+				StringBuilder extensions = new StringBuilder( );
+				foreach ( string extension in loader.Extensions )
+				{
+					if ( extensions.Length > 0 )
+					{
+						extensions.Append( ';' );
+					}
+					extensions.Append( "*." );
+					extensions.Append( extension );
+				}
+				filter.AppendFormat( "({0})|{0}|", extensions );
 			}
 
-			filter += "All Files (*.*)|*.*";
+			filter.Append( "All Files (*.*)|*.*" );
 
-			Filter = filter;
+			Filter = filter.ToString( );
 		}
 
 		private void backButton_Click( object sender, EventArgs e )
@@ -260,11 +274,23 @@ namespace Rb.Core.Assets.Windows
 		
 		private class LocationFilter
 		{
+			public LocationFilter( string description )
+			{
+				m_Description = description;
+				m_AllFiles = true;
+			}
+
 			public LocationFilter( string description, string wildcard )
 			{
 				m_Description = description;
-				m_Extension = wildcard.Substring( 2 );
-				m_AllFiles = m_Extension[ 0 ] == '*';
+				m_AllFiles = false;
+
+				string[] extensions = wildcard.Split( new char[] { ';' } );
+				m_Extensions = new string[ extensions.Length ];
+				for ( int extIndex = 0; extIndex < extensions.Length; ++extIndex )
+				{
+					m_Extensions[ extIndex ] = extensions[ extIndex ].Substring( 2 );
+				}
 			}
 
 			public override string ToString( )
@@ -279,10 +305,18 @@ namespace Rb.Core.Assets.Windows
 					return true;
 				}
 
-				return item.Name.EndsWith( m_Extension, StringComparison.CurrentCultureIgnoreCase );
+				foreach ( string extension in m_Extensions )
+				{
+					if ( item.Name.EndsWith( extension, StringComparison.CurrentCultureIgnoreCase ) )
+					{
+						return true;
+					}
+				}
+
+				return false;
 			}
 
-			private readonly string m_Extension;
+			private readonly string[] m_Extensions;
 			private readonly string m_Description;
 			private readonly bool m_AllFiles;
 		}

@@ -40,7 +40,7 @@ namespace Rb.Rendering.OpenGl
 			/// <summary>
 			/// Gets the underlying render state
 			/// </summary>
-			public OpenGlRenderState State
+			public RenderState State
 			{
 				get { return m_State; }
 			}

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Rb.Core.Assets
 {
 	/// <summary>
@@ -26,9 +22,9 @@ namespace Rb.Core.Assets
 		}
 
 		/// <summary>
-		/// Gets the asset extension
+		/// Gets the asset extensions
 		/// </summary>
-		string Extension
+		string[] Extensions
 		{
 			get;
 		}

@@ -106,7 +106,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// Creates this effect from an existing CGeffect handle
 		/// </summary>
 		/// <param name="effectHandle"> Handle to the CG effect. If this is null, nothing happens </param>
-		private bool	CreateFromHandle( IntPtr effectHandle )
+		private bool CreateFromHandle( IntPtr effectHandle )
 		{
 			if ( effectHandle == IntPtr.Zero )
 			{
