@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Rb.Core.Maths;
+using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core.Selection;
 
 namespace Poc0.LevelEditor.Core
@@ -116,7 +117,7 @@ namespace Poc0.LevelEditor.Core
 			/// <summary>
 			/// The node plane
 			/// </summary>
-			[Browsable(false)]
+			[Browsable( false )]
 			public Plane2 Plane
 			{
 				get { return Edge.Plane; }
@@ -125,7 +126,7 @@ namespace Poc0.LevelEditor.Core
 			/// <summary>
 			/// The subtree of nodes behind this node's plane
 			/// </summary>
-			[Browsable(false)]
+			[Browsable( false )]
 			public BspNode Behind
 			{
 				get { return m_Behind; }
@@ -135,7 +136,7 @@ namespace Poc0.LevelEditor.Core
 			/// <summary>
 			/// The subtree of nodes in front of this node's plane
 			/// </summary>
-			[Browsable(false)]
+			[Browsable( false )]
 			public BspNode InFront
 			{
 				get { return m_InFront; }
@@ -368,8 +369,12 @@ namespace Poc0.LevelEditor.Core
 			return p0.SqrDistanceTo( p1 ) <= 0.1f ;
 		}
 
+		/// <summary>
+		/// Merges colinear edges that share points
+		/// </summary>
 		private static List< Edge > MergeEdges( IList< Edge > srcEdges )
 		{
+			int initialEdgeCount = srcEdges.Count;
 			List< Edge > mergedEdges = new List< Edge >( );
 
 			while ( srcEdges.Count > 0 )
@@ -417,6 +422,8 @@ namespace Poc0.LevelEditor.Core
 
 				mergedEdges.Add( srcEdge );
 			}
+
+			GraphicsLog.Verbose( "Removed {0} edges (was {1}, is {2})", initialEdgeCount - mergedEdges.Count, initialEdgeCount, mergedEdges.Count );
 
 			return mergedEdges;
 		}

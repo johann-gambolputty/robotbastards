@@ -75,7 +75,7 @@ namespace Poc0.LevelEditor
 
 				//	Load the player's character
 				object character = AssetManager.Instance.Load( player.CharacterSource );
-				scene.Objects.Add( ( IUnique )character );
+				scene.Objects.Add( Guid.NewGuid( ), character );
 
 				//	Load game inputs
 				m_Users[ playerIndex ] = new CommandUser( );

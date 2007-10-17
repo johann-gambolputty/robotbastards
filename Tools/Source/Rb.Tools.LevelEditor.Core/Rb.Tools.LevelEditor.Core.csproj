@@ -47,6 +47,7 @@
     <Compile Include="Actions\IPickAction.cs" />
     <Compile Include="Actions\MoveAction.cs" />
     <Compile Include="Actions\UndoStack.cs" />
+    <Compile Include="Controls\Forms\EditorApp.cs" />
     <Compile Include="Controls\Forms\EditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
