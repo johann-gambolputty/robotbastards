@@ -138,6 +138,10 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 		/// </summary>
 		public void Select( object obj )
 		{
+			if ( obj == null )
+			{
+				return;
+			}
 			if ( !m_Selection.Contains( obj ) )
 			{
 				m_Selection.Add( obj );
@@ -154,6 +158,10 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 		/// </summary>
 		public void Deselect( object obj )
 		{
+			if ( obj == null )
+			{
+				return;
+			}
 			SetSelectedFlag( obj, false );
 			m_Selection.Remove( obj );
 			if ( m_ObjectDeselected != null )

@@ -28,6 +28,7 @@ namespace Poc0.LevelEditor.Core
 		public PositionEditor( IHasPosition hasPosition, ILineIntersection pick )
 		{
 			m_HasPosition = hasPosition;
+			m_HasPosition.PositionChanged += OnPositionChanged;
 
 			Position = ( ( Line3Intersection )pick ).IntersectionPosition;
 
@@ -44,7 +45,6 @@ namespace Poc0.LevelEditor.Core
 			set
 			{
 				m_HasPosition.Position = value;
-				m_Plane = new Plane3( m_HasPosition.Position + new Vector3( 0, 0.1f, 0 ), Vector3.YAxis );
 				if ( ObjectChanged != null )
 				{
 					ObjectChanged( this, null );
@@ -208,6 +208,14 @@ namespace Poc0.LevelEditor.Core
 			
 			m_DrawSelected.State.EnableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
 			m_DrawSelected.OutlinePen.State.EnableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
+		}
+
+		/// <summary>
+		/// Called when the position of the game object changes
+		/// </summary>
+		private void OnPositionChanged( object obj, Point3 oldPos, Point3 newPos )
+		{
+			m_Plane = new Plane3( m_HasPosition.Position + new Vector3( 0, 0.1f, 0 ), Vector3.YAxis );
 		}
 
 		#endregion
