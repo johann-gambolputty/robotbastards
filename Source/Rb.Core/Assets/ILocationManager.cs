@@ -28,5 +28,12 @@ namespace Rb.Core.Assets
 		/// <returns>Returns the opened stream</returns>
 		/// <exception cref="AssetNotFoundException">Thrown if no asset exists at the specified location</exception>
 		Stream OpenStream( Location location );
+
+		/// <summary>
+		/// Gets a list of sources at a given directory
+		/// </summary>
+		/// <param name="directory">Directory path</param>
+		/// <returns>Returns an array of sources in the specified directory</returns>
+		ISource[] GetSourcesInDirectory( string directory );
 	}
 }

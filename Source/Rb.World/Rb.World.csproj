@@ -51,7 +51,7 @@
     <Compile Include="Entities\JumpRequest.cs" />
     <Compile Include="Entities\MovementRequest.cs" />
     <Compile Include="Entities\MovementXzRequest.cs" />
-    <Compile Include="Entities\RotateXzRequest.cs" />
+    <Compile Include="Entities\TurnRequest.cs" />
     <Compile Include="Host.cs" />
     <Compile Include="IHost.cs" />
     <Compile Include="Services\ILightingService.cs" />
@@ -75,7 +75,6 @@
     <Compile Include="Rendering\SceneRenderable.cs" />
     <Compile Include="Services\IUpdateService.cs" />
     <Compile Include="Services\UpdateService.cs" />
-    <Compile Include="UpdateService.cs" />
     <Compile Include="WorldLog.cs" />
   </ItemGroup>
   <ItemGroup>

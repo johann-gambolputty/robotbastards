@@ -1,0 +1,17 @@
+<rb>
+  
+  <!-- Default player character setup -->
+  <!-- Note: Controller added in code -->
+  <object type="Poc0.Core.Objects.Entity" assembly="Poc0.Core" name="Default Player">
+
+    <object type="Poc0.Core.Objects.Body" assembly="Poc0.Core">
+      <int value="200" dynProperty="Health"/>
+    </object>
+
+    <object type="Poc0.Core.Objects.EntityGraphics">
+      <location value="Graphics\Entities\TestPlayer0\Full.components.xml" property="GraphicsLocation"/>
+    </object>
+
+  </object>
+
+</rb>

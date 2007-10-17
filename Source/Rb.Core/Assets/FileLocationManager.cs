@@ -78,6 +78,23 @@ namespace Rb.Core.Assets
 			}
 		}
 
+		/// <summary>
+		/// Gets a list of sources at a given directory
+		/// </summary>
+		/// <param name="directory">Directory path</param>
+		/// <returns>Returns an array of sources in the specified directory</returns>
+		public ISource[] GetSourcesInDirectory( string directory )
+		{
+			string[] files = Directory.GetFiles( GetFullPath( directory ) );
+			ISource[] sources = new ISource[ files.Length ];
+
+			for ( int sourceIndex = 0; sourceIndex < sources.Length; ++sourceIndex )
+			{
+				sources[ sourceIndex ] = new Location( this, files[ sourceIndex ] );
+			}
+			return sources;
+		}
+
 		#endregion
 		
 		#region Private stuff

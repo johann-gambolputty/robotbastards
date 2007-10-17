@@ -84,6 +84,12 @@ namespace Rb.World
             {
                 AddService( interfaceType, service );
             }
+
+			ISceneObject sceneService = service as ISceneObject;
+			if ( sceneService != null )
+			{
+				sceneService.AddedToScene( this );
+			}
 		}
 
         /// <summary>
@@ -114,6 +120,12 @@ namespace Rb.World
 				else
 				{
 					m_Services.Remove( key );
+
+					ISceneObject sceneService = service as ISceneObject;
+					if ( sceneService != null )
+					{
+						sceneService.RemovedFromScene( this );
+					}
 				}
 			}
 		}

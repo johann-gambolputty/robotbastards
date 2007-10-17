@@ -95,11 +95,11 @@ namespace Poc0.LevelEditor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You must export the scene before running the game.
+        ///   Looks up a localized string similar to Scene not exported - can&apos;t run game.
         /// </summary>
-        internal static string ExportSceneBeforeRunningGame {
+        internal static string ExportFailedCantRunGame {
             get {
-                return ResourceManager.GetString("ExportSceneBeforeRunningGame", resourceCulture);
+                return ResourceManager.GetString("ExportFailedCantRunGame", resourceCulture);
             }
         }
         

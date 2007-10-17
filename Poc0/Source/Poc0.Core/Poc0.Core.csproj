@@ -47,6 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cameras\FollowCamera.cs" />
+    <Compile Include="Controllers\EntityCommandHandler.cs" />
+    <Compile Include="Controllers\EntityCommands.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Objects\Body.cs" />
     <Compile Include="Objects\Entity.cs" />
     <Compile Include="Objects\EntityGraphics.cs" />
@@ -59,7 +63,10 @@
     <Compile Include="Environment\WallNode.cs" />
     <Compile Include="Objects\HealthChange.cs" />
     <Compile Include="Objects\IBody.cs" />
-    <Compile Include="Objects\IHasWorldFrame.cs" />
+    <Compile Include="Objects\IOriented.cs" />
+    <Compile Include="Objects\IPlaceable.cs" />
+    <Compile Include="Objects\IMoveable.cs" />
+    <Compile Include="Objects\ITurnable.cs" />
     <Compile Include="Objects\PlayerStart.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -67,6 +74,10 @@
     <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Interaction\Rb.Interaction.csproj">
+      <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
+      <Name>Rb.Interaction</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.Log\Rb.Log.csproj">
       <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>

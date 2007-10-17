@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rb cacheable="true">
+
+  <object type="Rb.Interaction.CommandInputTemplateMap" assembly="Rb.Interaction">
+
+    <serialise>
+      <commandList enum="Poc0.Core.Controllers.EntityCommands" assembly="Poc0.Core">
+        <command name="MoveForward">
+          <input button="Left" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
+          <input key="W" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="MoveBackward">
+          <input key="S" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="StrafeLeft">
+          <input key="A" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="StrafeRight">
+          <input key="D" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="TurnLeft">
+          <input key="Q" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="TurnLeft">
+          <input key="E" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+      </commandList>
+    </serialise>
+
+  </object>
+</rb>

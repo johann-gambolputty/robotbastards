@@ -1,5 +1,4 @@
 using System.Xml;
-
 using Rb.Core.Components;
 
 namespace Rb.ComponentXmlLoader

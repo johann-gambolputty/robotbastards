@@ -1,6 +1,7 @@
 using System;
 using Rb.Core.Assets;
 using Rb.Core.Components;
+using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.World;
 using Component=Rb.Core.Components.Component;
@@ -27,17 +28,41 @@ namespace Poc0.Core.Objects
 
 		#region IRenderable Members
 
+		private readonly Matrix44 m_LocalToWorld = new Matrix44( );
+
 		/// <summary>
 		/// Renders entity graphics
 		/// </summary>
 		/// <param name="context">Rendering context</param>
 		public void Render( IRenderContext context )
 		{
-			IHasWorldFrame hasFrame = Parent as IHasWorldFrame;
-			if ( hasFrame != null )
+			IMoveable moveable = Parent as IMoveable;
+			if ( moveable != null )
 			{
-				Graphics.Renderer.PushTransform( Transform.LocalToWorld, hasFrame.WorldFrame );
+				moveable.Travel.UpdateCurrent( context.RenderTime );
 			}
+			IPlaceable placeable = Parent as IPlaceable;
+			if ( placeable != null )
+			{
+				Point3 pos = placeable.Position;
+				m_LocalToWorld.Translation = pos;
+			}
+			ITurnable turnable = Parent as ITurnable;
+			if ( turnable != null )
+			{
+				turnable.Turn.UpdateCurrent( context.RenderTime );
+			}
+			IOriented oriented = Parent as IOriented;
+			if ( oriented != null )
+			{
+				//oriented.Angle;
+				float sinA = ( float )Math.Sin( oriented.Angle );
+				float cosA = ( float )Math.Cos( oriented.Angle );
+				m_LocalToWorld.ZAxis = new Vector3( cosA, 0, sinA );
+				m_LocalToWorld.XAxis = new Vector3( -sinA, 0, cosA );
+			}
+
+			Graphics.Renderer.PushTransform( Transform.LocalToWorld, m_LocalToWorld );
 
 			m_Lights.Begin( );
 
@@ -47,10 +72,7 @@ namespace Poc0.Core.Objects
 
 			m_Lights.End( );
 			
-			if ( hasFrame != null )
-			{
-				Graphics.Renderer.PopTransform( Transform.LocalToWorld );
-			}
+			Graphics.Renderer.PopTransform( Transform.LocalToWorld );
 		}
 
 		#endregion
@@ -79,6 +101,9 @@ namespace Poc0.Core.Objects
 
 		#endregion
 
+		/// <summary>
+		/// Resolves the graphics
+		/// </summary>
 		private void Resolve( )
 		{
 			if ( m_Graphics != null )

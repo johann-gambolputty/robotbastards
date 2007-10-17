@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rb>
+    <!-- Player Start pattern -->
+    <template type="Poc0.Core.Objects.PlayerStart" assembly="Poc0.Core" name="Player Start">
+    </template>
+</rb>

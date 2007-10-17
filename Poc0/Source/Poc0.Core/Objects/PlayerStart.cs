@@ -1,6 +1,7 @@
 using System;
-using Rb.Core.Components;
+using System.ComponentModel;
 using Rb.Core.Maths;
+using Component=Rb.Core.Components.Component;
 
 namespace Poc0.Core.Objects
 {
@@ -8,7 +9,7 @@ namespace Poc0.Core.Objects
 	/// Player start point
 	/// </summary>
 	[Serializable]
-	public class PlayerStart : Component, IHasWorldFrame
+	public class PlayerStart : Component, IPlaceable
 	{
 		/// <summary>
 		/// Event, raised when Position is changed
@@ -35,6 +36,19 @@ namespace Poc0.Core.Objects
 				}
 			}
 		}
+
+		/// <summary>
+		/// Object's position over time
+		/// </summary>
+		[Browsable( false )]
+		public Point3Interpolator Travel
+		{
+			get
+			{
+				throw new InvalidOperationException( "Should not be accessing the travel property of the player start object" );
+			}
+		}
+
 		/// <summary>
 		/// Gets the world frame for this object
 		/// </summary>

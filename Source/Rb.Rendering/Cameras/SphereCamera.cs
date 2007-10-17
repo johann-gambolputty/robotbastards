@@ -38,17 +38,6 @@ namespace Rb.Rendering.Cameras
 			base.End( );
 		}
 
-		#region IUpdater Members
-
-		/// <summary>
-		/// Updates this object
-		/// </summary>
-		public void Update( )
-		{
-		}
-
-		#endregion
-
 		#region	Public properties
 
 		/// <summary>
