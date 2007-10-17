@@ -30,6 +30,33 @@ namespace Poc0.Core.Objects
 		#region IBody Members
 
 		/// <summary>
+		/// Gets/sets the walking speed
+		/// </summary>
+		public float WalkSpeed
+		{
+			get { return m_WalkSpeed; }
+			set { m_WalkSpeed = value; }
+		}
+
+		/// <summary>
+		/// Gets/sets the running speed
+		/// </summary>
+		public float RunSpeed
+		{
+			get { return m_RunSpeed; }
+			set { m_RunSpeed = value; }
+		}
+
+		/// <summary>
+		/// Gets/sets the turn speed, in degrees per second
+		/// </summary>
+		public float TurnSpeed
+		{
+			get { return m_TurnSpeed; }
+			set { m_TurnSpeed = value; }
+		}
+
+		/// <summary>
 		/// Current health
 		/// </summary>
 		public int Health
@@ -88,6 +115,9 @@ namespace Poc0.Core.Objects
 
 		private int			m_Health	= 100;
 		private BodyState	m_State		= BodyState.Alive;
+		private float		m_WalkSpeed	= 3.0f;
+		private float		m_RunSpeed	= 5.0f;
+		private float		m_TurnSpeed	= 90;
 
 		#endregion
 

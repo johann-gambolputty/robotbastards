@@ -26,8 +26,8 @@ namespace Rb.World.Entities
 		/// </summary>
         public Point3 NextPosition
         {
-            get { return m_Position.Next; }
-            set { m_Position.Next = value; }
+            get { return m_Position.End; }
+            set { m_Position.End = value; }
         }
 
         #endregion
@@ -117,7 +117,7 @@ namespace Rb.World.Entities
 		{
 			//	Get the interpolated position of the entity
 			float t = ( float )( context.RenderTime - m_Position.LastStepTime ) / m_Position.LastStepInterval;
-			Point3 curPos = m_Position.Get( t );
+			Point3 curPos = m_Position.UpdateCurrent( t );
 
 			//	TODO: Get the interpolated rotation of the entity
 
@@ -153,7 +153,7 @@ namespace Rb.World.Entities
 		/// </summary>
 		/// <param name="rotation">Rotation request message</param>
 		[Dispatch]
-		public void HandleRotation( RotateXzRequest rotation )
+		public void HandleRotation( TurnRequest rotation )
 		{
 			float x = ( float )Math.Cos( rotation.Rotation );
 			float z = ( float )Math.Sin( rotation.Rotation );

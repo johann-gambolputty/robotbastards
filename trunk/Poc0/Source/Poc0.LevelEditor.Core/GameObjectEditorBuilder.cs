@@ -20,7 +20,7 @@ namespace Poc0.LevelEditor.Core
 		{
 			ObjectEditor result = new ObjectEditor( instance );
 
-			IHasPosition hasPosition = Parent.GetType< IHasPosition >( instance );
+			IPlaceable hasPosition = Parent.GetType< IPlaceable >( instance );
 			if ( hasPosition != null )
 			{
 				result.Add( new PositionEditor( hasPosition, pick ) );

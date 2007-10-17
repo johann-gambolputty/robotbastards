@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.IO;
 using System.Windows.Forms;
 using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.EditModes;
@@ -26,10 +27,26 @@ namespace Poc0.LevelEditor
 			}
 			csgComboBox.SelectedIndex = 0;
 
-			IList templates = ( IList )AssetManager.Instance.Load( "Editor/EntityTemplates.components.xml" );
-			foreach ( ObjectTemplate template in templates )
+			//	TODO: AP: Make directory traversal part of the location manager
+			ILocationManager locations = Rb.Core.Assets.Location.DetermineLocationManager( "Editor/Templates" );
+			foreach ( ISource source in locations.GetSourcesInDirectory( "Editor/Templates" ) )
 			{
-				m_Templates.Add( template );
+				object loadResult = AssetManager.Instance.Load( source );
+				if ( loadResult is ObjectTemplate )
+				{
+					m_Templates.Add( loadResult );
+				}
+				else if ( loadResult is IList )
+				{
+					foreach ( ObjectTemplate template in ( IList )loadResult )
+					{
+						m_Templates.Add( template );
+					}
+				}
+				else
+				{
+					throw new ApplicationException( string.Format( "Editor/Templates directory contained file that did not contain a template ({0})", source.Name ) );
+				}
 			}
 
 			PopulateObjectTemplates( m_Templates );

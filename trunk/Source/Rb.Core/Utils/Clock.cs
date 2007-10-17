@@ -1,24 +1,43 @@
 using System;
+using System.Runtime.Serialization;
 
 namespace Rb.Core.Utils
 {
+
+	//	TODO: AP: Relies on windows forms timer... bad
+
 	/// <summary>
 	/// For objects that update on a regular basis, e.g. for physics, rendering, AI, etc.
 	/// </summary>
 	[Serializable]
-	public class Clock : Components.INamed
+	public class Clock : Components.INamed, ISerializable
 	{
 		/// <summary>
 		/// Sets up the clock
 		/// </summary>
+		/// <param name="name">Name of the clock</param>
 		/// <param name="tickTime">Time in milliseconds between clock updates</param>
-		public Clock( string name, int tickTime )
+		/// <param name="initiallyPaused">If true, the clock is not enabled</param>
+		public Clock( string name, int tickTime, bool initiallyPaused )
 		{
 			m_Name				= name;
 			m_Timer				= new System.Windows.Forms.Timer( );
 			m_Timer.Interval	= tickTime;
-			m_Timer.Tick		+= new EventHandler( Update );
-			m_Timer.Enabled		= true;
+			m_Timer.Tick		+= Update;
+			m_Timer.Enabled		= !initiallyPaused;
+		}
+
+		/// <summary>
+		/// Serialization constructor
+		/// </summary>
+		public Clock( SerializationInfo info, StreamingContext context )
+		{
+			m_Name = info.GetString( "name" );
+			
+			m_Timer = new System.Windows.Forms.Timer( );
+			m_Timer.Interval = info.GetInt32( "tickTime" );
+			m_Timer.Tick += Update;
+			m_Timer.Enabled = info.GetBoolean( "pause" );
 		}
 
 		/// <summary>
@@ -32,7 +51,7 @@ namespace Rb.Core.Utils
 		/// <summary>
 		/// Pauses or unpauses the clock
 		/// </summary>
-		public bool		Pause
+		public bool Pause
 		{
 			get { return m_Timer.Enabled; }
 			set { m_Timer.Enabled = !value; }
@@ -41,7 +60,7 @@ namespace Rb.Core.Utils
 		/// <summary>
 		/// Accessor for the time between ticks (in milliseconds)
 		/// </summary>
-		public int		TickTime
+		public int TickTime
 		{
 			get { return m_Timer.Interval; }
 			set { m_Timer.Interval = value; }
@@ -50,17 +69,31 @@ namespace Rb.Core.Utils
 		/// <summary>
 		/// Returns the actual interval time between the last update and the current update
 		/// </summary>
-		public int		LastInterval
+		public int LastInterval
 		{
 			get { return m_Interval;  }
 		}
+
+		#region ISerializable Members
+
+		/// <summary>
+		/// Gets serialization data for this object
+		/// </summary>
+		public void GetObjectData( SerializationInfo info, StreamingContext context )
+		{
+			info.AddValue( "name", Name );
+			info.AddValue( "tickTime", TickTime );
+			info.AddValue( "pause", Pause );
+		}
+
+		#endregion
 
 		#region INamed implementation
 
 		/// <summary>
 		/// The clock name
 		/// </summary>
-		public string	Name
+		public string Name
 		{
 			get { return m_Name; }
 			set { m_Name = value; }
@@ -130,6 +163,5 @@ namespace Rb.Core.Utils
 		private int m_Interval;
 
         #endregion
-
 	}
 }

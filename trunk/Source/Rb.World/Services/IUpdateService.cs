@@ -9,11 +9,20 @@ namespace Rb.World.Services
 	public interface IUpdateService
 	{
 		/// <summary>
-		/// Adds a named clock to the service
-		/// </summary>
-		/// <param name="name">Clock name</param>
+		/// Adds a clock to the service
+		/// </summary> 
 		/// <param name="clock">Clock object</param>
-		void AddClock( string name, Clock clock );
+		void AddClock( Clock clock );
+
+		/// <summary>
+		/// Starts all clocks in the service
+		/// </summary>
+		void Start( );
+
+		/// <summary>
+		/// Stops all clocks in the service
+		/// </summary>
+		void Stop( );
 
 		/// <summary>
 		/// Gets a named clock

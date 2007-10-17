@@ -1,4 +1,3 @@
-using System;
 
 namespace Rb.Core.Components
 {

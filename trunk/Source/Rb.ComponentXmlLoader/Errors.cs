@@ -12,6 +12,17 @@ namespace Rb.ComponentXmlLoader
     internal class ErrorCollection : List< Entry >
     {
 		/// <summary>
+		/// Dodgy method for writing a warning
+		/// </summary>
+		public void Warning( BaseBuilder builder, string format, params object[] args )
+		{
+			string msg = string.Format( format, args );
+			Entry entry = new Entry( AssetsLog.GetSource( Severity.Warning ), msg );
+			entry.Locate( m_InputSource, builder.Line, builder.Column, "" );
+			Source.HandleEntry( entry );
+		}
+
+		/// <summary>
 		/// Sets up this error collection
 		/// </summary>
 		/// <param name="inputSource">Path to the input (displayed in error logs)</param>

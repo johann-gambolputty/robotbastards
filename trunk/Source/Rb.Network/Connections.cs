@@ -158,7 +158,7 @@ namespace Rb.Network
 		#region Private stuff
 
 		private IList<IConnection>	m_Connections	= new List<IConnection>( );
-		private Clock				m_ReadClock		= new Clock( "networkClock", 30 );
+		private Clock				m_ReadClock		= new Clock( "networkClock", 30, true );
 
 		/// <summary>
 		/// Calls <see cref="IConnection.ReceiveMessages"/> for each connection

@@ -28,6 +28,30 @@ namespace Poc0.Core.Objects
 		#region State
 
 		/// <summary>
+		/// Gets/sets the walking speed. This is measured in metres per second
+		/// </summary>
+		float WalkSpeed
+		{
+			get; set;
+		}
+
+		/// <summary>
+		/// Gets/sets the running speed. This is measured in metres per second
+		/// </summary>
+		float RunSpeed
+		{
+			get; set;
+		}
+
+		/// <summary>
+		/// Gets/sets the turn speed, in degrees per second
+		/// </summary>
+		float TurnSpeed
+		{
+			get; set;
+		}
+
+		/// <summary>
 		/// Current health
 		/// </summary>
 		int Health

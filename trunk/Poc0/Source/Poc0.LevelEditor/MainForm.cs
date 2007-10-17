@@ -5,6 +5,7 @@ using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.Rendering;
 using Rb.Core.Assets;
 using Rb.Core.Maths;
+using Rb.Core.Utils;
 using Rb.Log;
 using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core;
@@ -69,11 +70,15 @@ namespace Poc0.LevelEditor
 
 			//	Populate runtime scene
 			scene.RuntimeScene.AddService( new LightingService( ) );
+			IUpdateService updater = new UpdateService( );
+			updater.AddClock( new Clock( "updateClock", 10, true ) );
+			scene.RuntimeScene.AddService( updater );
 
 			//	Populate editor scene
 			IRayCastService rayCaster = new RayCastService( );
-			scene.AddService( rayCaster );
 			rayCaster.AddIntersector( RayCastLayers.Grid, new Plane3( new Vector3( 0, 1, 0 ), 0 ) );
+			scene.AddService( rayCaster );
+
 
 			//	TODO: AP: Fix Z order rendering cheat
 			scene.Objects.Add( Guid.NewGuid( ), Graphics.Factory.Create< GroundPlaneGrid >( ) );
@@ -89,7 +94,11 @@ namespace Poc0.LevelEditor
 
 		private void OnGameClicked( object sender, EventArgs args )
 		{
-			Exporter.Export( EditorState.Instance.CurrentRuntimeScene );
+			if ( !Exporter.Export( EditorState.Instance.CurrentRuntimeScene ) )
+			{
+				MessageBox.Show( Properties.Resources.ExportFailedCantRunGame, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
+				return;
+			}
 
 			ISource sceneSource = new Location( Exporter.LastExportPath );
 			ISource viewerSource = new Location( "Editor/LevelEditorGameViewer.components.xml" );
@@ -98,9 +107,9 @@ namespace Poc0.LevelEditor
 				{
 					new PlayerSetup
 					(
-						"test",
-						new Location( "Editor/LevelEditorGameCommandInputs.components.xml" ),
-						new Location( "Graphics/Entities/TestPlayer0/Full.components.xml" )
+						"Test Player",
+						new Location( "Input/DefaultGameInputs.components.xml" ),
+						new Location( "Objects/DefaultPC.components.xml" )
 					) 	
 				};
 

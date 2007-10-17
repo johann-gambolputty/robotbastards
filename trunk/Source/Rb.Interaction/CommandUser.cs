@@ -40,24 +40,36 @@ namespace Rb.Interaction
 
 		#region Listeners
 
+		/// <summary>
+		/// Adds a listener that gets invoked when a given command is active
+		/// </summary>
 		public void AddActiveListener( Command cmd, CommandEventDelegate listener )
 		{
 			InitialiseCommandBinding( cmd ).CommandActive += listener;
 		}
 
+		/// <summary>
+		/// Adds a listener that gets invoked when a given command is activated
+		/// </summary>
 		public void AddActivatedListener( Command cmd, CommandEventDelegate listener )
 		{
 			InitialiseCommandBinding( cmd ).CommandActivated += listener;
 		}
-		
+
+		/// <summary>
+		/// Adds a listener that gets invoked when any command in a given command list is active
+		/// </summary>
 		public void AddActiveListener( CommandList commands, CommandEventDelegate listener )
 		{
 			foreach ( Command cmd in commands )
 			{
-				AddActiveListener( cmd, listener );;
+				AddActiveListener( cmd, listener );
 			}
 		}
 
+		/// <summary>
+		/// Adds a listener that gets invoked when any command in a given command list is activated
+		/// </summary>
 		public void AddActivatedListener( CommandList commands, CommandEventDelegate listener )
 		{
 			foreach ( Command cmd in commands )
@@ -65,7 +77,10 @@ namespace Rb.Interaction
 				AddActivatedListener( cmd, listener );
 			}
 		}
-		
+
+		/// <summary>
+		/// Removes a listener from any command it is bound to
+		/// </summary>
 		public void RemoveListener( CommandEventDelegate listener )
 		{
 			foreach ( Binding binding in m_Bindings )

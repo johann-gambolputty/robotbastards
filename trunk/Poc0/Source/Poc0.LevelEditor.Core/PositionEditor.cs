@@ -25,7 +25,7 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		/// <param name="hasPosition">Positioning interface of the game object</param>
 		/// <param name="pick">Position to place the new object at</param>
-		public PositionEditor( IHasPosition hasPosition, ILineIntersection pick )
+		public PositionEditor( IPlaceable hasPosition, ILineIntersection pick )
 		{
 			m_HasPosition = hasPosition;
 			m_HasPosition.PositionChanged += OnPositionChanged;
@@ -185,7 +185,7 @@ namespace Poc0.LevelEditor.Core
 
 		#region Private members
 
-		private readonly IHasPosition m_HasPosition;
+		private readonly IPlaceable m_HasPosition;
 		private Plane3 m_Plane;
 		private const float Radius = 1.0f;
 		private static readonly Draw.IBrush m_DrawUnselected;

@@ -2,9 +2,9 @@
 <rb cacheable="true">
 	<asset path="Graphics\Entities\TestPlayer0\Md3">
 		<parameters>
-			<float value="0.2" dynProperty="scaleX"/>
-			<float value="0.2" dynProperty="scaleY"/>
-			<float value="0.2" dynProperty="scaleZ"/>
+			<float value="0.1" dynProperty="scaleX"/>
+			<float value="0.1" dynProperty="scaleY"/>
+			<float value="0.1" dynProperty="scaleZ"/>
 			<float value="0.0" dynProperty="offsetX"/>
 			<float value="0.0" dynProperty="offsetY"/>
 			<float value="0.0" dynProperty="offsetZ"/>

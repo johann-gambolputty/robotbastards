@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rb>
-  <list>
-
-    <!-- Player Start pattern -->
-    <template type="Poc0.Core.Objects.PlayerStart" assembly="Poc0.Core" name="Player Start">
-    </template>
-
     <!-- Evil Robot pattern -->
     <template type="Poc0.Core.Objects.Entity" assembly="Poc0.Core" name="Evil Robot">
 
@@ -20,13 +14,4 @@
       </template>
 
     </template>
-    
-    
-    <!-- Light pattern
-    <template type="Poc0.Core.Objects.PointLightFrame" assembly="Poc0.Core" name="Point Light">
-      <template type="Rb.Rendering.PointLight" assembly="Rb.Rendering" dynProperty="Light">
-      </template>
-    </template>
-    -->
-  </list>
 </rb>

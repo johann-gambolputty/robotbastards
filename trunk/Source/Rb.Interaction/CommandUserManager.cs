@@ -23,7 +23,7 @@ namespace Rb.Interaction
 		/// </summary>
 		public CommandUserManager( )
 		{
-			m_Clock = new Clock( "UpdateClock", 20 );
+			m_Clock = new Clock( "UpdateClock", 20, false );
 			m_Clock.Subscribe( OnUpdate );
 		}
 

@@ -64,8 +64,7 @@ namespace Rb.Tools.LevelEditor.Core
 			}
 
 			LastExportPath = exportDialog.FileName;
-			ExportTo( LastExportPath, scene );
-			return true;
+			return ExportTo( LastExportPath, scene );
 		}
 
 		/// <summary>

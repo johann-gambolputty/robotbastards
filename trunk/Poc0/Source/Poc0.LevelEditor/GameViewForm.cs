@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Poc0.Core.Controllers;
 using Poc0.Core.Objects;
 using Rb.Core.Assets;
 using Rb.Core.Components;
@@ -8,6 +9,7 @@ using Rb.Interaction;
 using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core;
 using Rb.World;
+using Rb.World.Services;
 
 namespace Poc0.LevelEditor
 {
@@ -40,7 +42,7 @@ namespace Poc0.LevelEditor
 		private void GameViewForm_Load( object sender, EventArgs e )
 		{
 			//	Load the scene
-			Scene scene = DeserializeScene( m_Setup.SceneSource );
+			m_Scene = DeserializeScene( m_Setup.SceneSource );
 
 			//	Load in the game viewer
 			LoadParameters loadArgs = new LoadParameters( );
@@ -49,7 +51,7 @@ namespace Poc0.LevelEditor
 			gameDisplay.AddViewer( m_Viewer );
 
 			//	Get start points
-			IEnumerable< PlayerStart > startPoints = scene.Objects.GetAllOfType<PlayerStart>( );
+			IEnumerable< PlayerStart > startPoints = m_Scene.Objects.GetAllOfType<PlayerStart>( );
 
 			//	Setup players
 			InputContext inputContext = new InputContext( m_Viewer );
@@ -73,19 +75,37 @@ namespace Poc0.LevelEditor
 					throw new InvalidOperationException( "No player start available for player " + playerIndex );
 				}
 
-				//	Load the player's character
-				object character = AssetManager.Instance.Load( player.CharacterSource );
-				scene.Objects.Add( Guid.NewGuid( ), character );
-
 				//	Load game inputs
 				m_Users[ playerIndex ] = new CommandUser( );
 				CommandInputTemplateMap gameInputs = ( CommandInputTemplateMap )AssetManager.Instance.Load( player.CommandSource );
 				gameInputs.BindToInput( inputContext, m_Users[ playerIndex ] );
+				
+				//	Load the player's character
+				object character = AssetManager.Instance.Load( player.CharacterSource );
+				m_Scene.Objects.Add( ( IUnique )character );
+
+				( ( IParent )character ).AddChild( new UserController( m_Users[ playerIndex ], ( IMessageHandler )character ) );
+
 			}
 
 			//	Start rendering the scene
-			m_Viewer.Renderable = scene;
+			m_Viewer.Renderable = m_Scene;
+
+			//	Kick off the update service... (TODO: AP: Not a very good hack)
+			IUpdateService updater = m_Scene.GetService< IUpdateService >( );
+			if ( updater != null )
+			{
+				updater.Start( );
+			}
 		}
+
+		private void GameViewForm_FormClosing( object sender, FormClosingEventArgs e )
+		{
+			m_Scene.Dispose( );
+			m_Scene = null;
+		}
+
+		private Scene m_Scene;
 	}
 
 	/// <summary>
