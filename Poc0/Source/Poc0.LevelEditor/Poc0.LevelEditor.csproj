@@ -61,11 +61,11 @@
     <Compile Include="EditorControls.Designer.cs">
       <DependentUpon>EditorControls.cs</DependentUpon>
     </Compile>
-    <Compile Include="GameViewControl.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="GameViewForm.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GameViewControl.Designer.cs">
-      <DependentUpon>GameViewControl.cs</DependentUpon>
+    <Compile Include="GameViewForm.Designer.cs">
+      <DependentUpon>GameViewForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -76,9 +76,9 @@
       <SubType>Designer</SubType>
       <DependentUpon>EditorControls.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GameViewControl.resx">
+    <EmbeddedResource Include="GameViewForm.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>GameViewControl.cs</DependentUpon>
+      <DependentUpon>GameViewForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

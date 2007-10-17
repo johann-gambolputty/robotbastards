@@ -330,7 +330,7 @@ namespace Poc0.LevelEditor.Core
 			Line3Intersection intersection = Intersections3.GetRayQuadIntersection( ray, pt0, pt1, pt2, pt3 );
 			if ( intersection != null )
 			{
-				if ( childIntersection == null )
+				if ( ( childIntersection == null ) || ( intersection.Distance < childIntersection.Distance ) )
 				{
 					intersection.IntersectedObject = node;
 				}

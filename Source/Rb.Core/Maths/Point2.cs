@@ -6,7 +6,8 @@ namespace Rb.Core.Maths
 	/// <summary>
 	/// A Point2 is a point in world space. Units are the same as Vector2
 	/// </summary>
-	[DebuggerDisplay("({X},{Y})"), Serializable]
+	[DebuggerDisplay("({X},{Y})")]
+	[Serializable]
 	public struct Point2
 	{
 		/// <summary>
