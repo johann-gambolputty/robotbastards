@@ -50,7 +50,8 @@ namespace Rb.Tools.LevelEditor.Core
 		/// Exports a scene to a scene file at a user-defined path
 		/// </summary>
 		/// <param name="scene">Scene to serialize</param>
-		public void ExportAs( Scene scene )
+		/// <returns>Returns true if the scene was exported, false if the user cancelled</returns>
+		public bool ExportAs( Scene scene )
 		{
 			SaveFileDialog exportDialog = new SaveFileDialog( );
 			exportDialog.Title = "Export To...";
@@ -59,27 +60,26 @@ namespace Rb.Tools.LevelEditor.Core
 			exportDialog.AddExtension = true;
 			if ( exportDialog.ShowDialog( ) != DialogResult.OK )
 			{
-				return;
+				return false;
 			}
 
 			LastExportPath = exportDialog.FileName;
 			ExportTo( LastExportPath, scene );
+			return true;
 		}
 
 		/// <summary>
 		/// Exports a scene. Uses the last Export/open path, or (if it's empty), a user-defined path
 		/// </summary>
 		/// <param name="scene">Scene to serialize</param>
-		public void Export( Scene scene )
+		public bool Export( Scene scene )
 		{
 			if ( LastExportPath == null )
 			{
-				ExportAs( scene );
+				return ExportAs( scene );
 			}
-			else
-			{
-				ExportTo( LastExportPath, scene );
-			}
+
+			return ExportTo( LastExportPath, scene );
 		}
 
 		/// <summary>
@@ -87,7 +87,8 @@ namespace Rb.Tools.LevelEditor.Core
 		/// </summary>
 		/// <param name="path">Scene file path</param>
 		/// <param name="scene">Scene to serialize</param>
-		public void ExportTo( string path, Scene scene )
+		/// <returns>Returns true if the scene was succesfully exported</returns>
+		public bool ExportTo( string path, Scene scene )
 		{
 			try
 			{
@@ -100,13 +101,14 @@ namespace Rb.Tools.LevelEditor.Core
 				{
 					fileStream.Write( outStream.ToArray( ), 0, ( int )outStream.Length );
 				}
+				return true;
 			}
 			catch ( Exception ex )
 			{
 				string msg = string.Format( Properties.Resources.FailedToExportScene, path );
 				AppLog.Exception( ex, msg );
 				MessageBox.Show( msg, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
-				return;
+				return false;
 			}
 		}
 

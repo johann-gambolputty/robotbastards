@@ -10,10 +10,12 @@
 
       <object type="Rb.AppCore.Cameras.LookAtCameraController" assembly="Rb.AppCore">
 
+        <!--
         <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
           <type value="Rb.AppCore.Cameras.LookAtCameraController+Commands" assembly="Rb.AppCore" property="CommandListEnumType"/>
           <dynProperty value="User" property="User"/>
         </object>
+        -->
 
         <!--
         <float value="3.14" property="SOffset"/>

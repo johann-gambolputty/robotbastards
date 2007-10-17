@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
@@ -16,7 +14,7 @@ using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core.Actions;
 using Rb.Tools.LevelEditor.Core.EditModes;
 using Rb.World;
-using Graphics=Rb.Rendering.Graphics;
+
 
 namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 {
@@ -27,57 +25,44 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		/// </summary>
 		public EditorForm( )
 		{
-			EditorState.Instance.SceneOpened += OnSceneOpened;
-			EditorState.Instance.SceneClosed += OnSceneClosed;
 
 			//	Create the log display - it will start caching log entries immediately
-			Control logDisplay = new Log.Controls.Vs.VsLogListView( );
+			m_LogDisplay = new Log.Controls.Vs.VsLogListView( );
 
 			//	Write greeting
 			AppLog.Info( "Beginning {0} at {1}", Assembly.GetCallingAssembly( ), DateTime.Now );
 			AppLog.GetSource( Severity.Info ).WriteEnvironment( );
 
-			//	Load the rendering assembly
-			string renderAssemblyName = ConfigurationManager.AppSettings[ "renderAssembly" ];
-			if ( renderAssemblyName == null )
-			{
-				renderAssemblyName = "Rb.Rendering.OpenGl.Windows";
-			}
-			RenderFactory.Load( renderAssemblyName );
-			
-			//	Load asset setup
-			string assetSetupPath = ConfigurationManager.AppSettings[ "assetSetupPath" ];
-			if ( assetSetupPath == null )
-			{
-				assetSetupPath = "../assetSetup.xml";
-			}
-			AssetXmlSetup.Setup( assetSetupPath, AssetManager.Instance, LocationManagers.Instance );
-
-			//	Load all assemblies that support the chosen graphics API
-			Rb.AssemblySelector.IdentifierMap.Instance.AddAssemblyIdentifiers( Directory.GetCurrentDirectory( ), SearchOption.TopDirectoryOnly );
-			Rb.AssemblySelector.IdentifierMap.Instance.LoadAll( "GraphicsApi=" + Graphics.Factory.ApiName );
-
 			InitializeComponent( );
 
-			//	Create the docking manager
-			m_DockingManager = new DockingManager( this, VisualStyle.IDE );
-			m_DockingManager.InnerControl = display;
-			m_DockingManager.OuterControl = statusStrip;
-
-			//	Add log, property editor views to the docking manager
-			m_LogDisplayContent = m_DockingManager.Contents.Add( logDisplay, "Log" );
-			m_PropertyEditorContent = m_DockingManager.Contents.Add( new ObjectPropertyEditor( ), "Property Editor" );
-			m_SelectionContent = m_DockingManager.Contents.Add( new SelectionControl( ), "Selection" );
-
-			m_DockingManager.AddContentWithState( m_LogDisplayContent, State.DockBottom );
-			m_DockingManager.AddContentWithState( m_SelectionContent, State.DockRight );
-			m_DockingManager.AddContentWithState( m_PropertyEditorContent, State.DockLeft );
+			EditorState.Instance.SceneOpened += OnSceneOpened;
+			EditorState.Instance.SceneClosed += OnSceneClosed;
 
 			m_Serializer.LastSavePathChanged += SavePathChanged;
 			m_Exporter.LastExportPathChanged += ExportPathChanged;
 
 			UpdateInputsStatusLabel( );
 			EditorState.Instance.EditModeAdded += EditModeAdded;
+		}
+
+		private readonly Control m_LogDisplay;
+
+		protected virtual void InitializeDockingControls( )
+		{
+			//	Create the docking manager
+			m_DockingManager = new DockingManager( this, VisualStyle.IDE );
+			m_DockingManager.InnerControl = display;
+			m_DockingManager.OuterControl = statusStrip;
+
+			//	Add log, property editor views to the docking manager
+			m_LogDisplayContent = m_DockingManager.Contents.Add( m_LogDisplay, "Log" );
+			m_PropertyEditorContent = m_DockingManager.Contents.Add( new ObjectPropertyEditor( ), "Property Editor" );
+			m_SelectionContent = m_DockingManager.Contents.Add( new SelectionControl( ), "Selection" );
+
+			m_DockingManager.AddContentWithState( m_LogDisplayContent, State.DockBottom );
+			m_DockingManager.AddContentWithState( m_SelectionContent, State.DockRight );
+			m_DockingManager.AddContentWithState( m_PropertyEditorContent, State.DockLeft );
+	
 		}
 
 		#region Properties
@@ -348,11 +333,11 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		private readonly CommandUser		m_User = new CommandUser( );
 		private readonly SceneSerializer	m_Serializer = new SceneSerializer( );
 		private readonly SceneExporter		m_Exporter = new SceneExporter( );
-		private readonly DockingManager		m_DockingManager;
 
-		private readonly Content 			m_LogDisplayContent;
-		private readonly Content 			m_PropertyEditorContent;
-		private readonly Content 			m_SelectionContent;
+		private DockingManager				m_DockingManager;
+		private Content						m_LogDisplayContent;
+		private Content						m_PropertyEditorContent;
+		private Content						m_SelectionContent;
 
 		private static readonly RayCastOptions ms_PickOptions = new RayCastOptions( );
 
@@ -362,26 +347,30 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 
 		private void MainForm_Load( object sender, EventArgs e )
 		{
-			if ( !DesignMode )
+			if ( DesignMode )
 			{
-				EditorState.Instance.AddEditModeControl( display );
-
-				Viewer viewer = CreateMainViewer( );
-
-				if ( viewer != null )
-				{
-					display.AddViewer( viewer );
-
-					CommandInputTemplateMap editorMap = CreateMainViewerControls( );
-					if ( editorMap != null )
-					{
-						editorMap.BindToInput( new InputContext( viewer ), m_User );
-					}
-				}
-
-				//	Create a new scene
-				NewScene( );
+				return;
 			}
+
+			InitializeDockingControls( );
+
+			EditorState.Instance.AddEditModeControl( display );
+
+			Viewer viewer = CreateMainViewer( );
+
+			if ( viewer != null )
+			{
+				display.AddViewer( viewer );
+
+				CommandInputTemplateMap editorMap = CreateMainViewerControls( );
+				if ( editorMap != null )
+				{
+					editorMap.BindToInput( new InputContext( viewer ), m_User );
+				}
+			}
+
+			//	Create a new scene
+			NewScene( );
 		}
 
 		private void exitToolStripMenuItem_Click( object sender, EventArgs e )
