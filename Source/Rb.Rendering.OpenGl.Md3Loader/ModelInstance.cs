@@ -17,7 +17,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 	/// <summary>
 	/// An instance of an MD3-loaded model
 	/// </summary>
-	public class ModelInstance : IRenderable, IAnimationControl, ISceneObject
+	public class ModelInstance : IRenderable, IAnimationControl, ISceneObject, IChild
 	{
 		/// <summary>
 		/// Sets the model that this object was instanced from
@@ -164,6 +164,9 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 		#region Message source
 
+		/// <summary>
+		/// The source of comman messages used by the animation control
+		/// </summary>
 		public object MessageSource
 		{
 			get { return m_MessageSource; }
@@ -190,5 +193,21 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 		#endregion
 
+
+		#region IChild Members
+
+		/// <summary>
+		/// Called when this object has been added as a child
+		/// </summary>
+		public void AddedToParent( object parent )
+		{
+			//	Use the parent as a message source, if one hasn't been set already
+			if ( MessageSource == null && parent is IMessageHub )
+			{
+				MessageSource = parent;
+			}
+		}
+
+		#endregion
 	}
 }

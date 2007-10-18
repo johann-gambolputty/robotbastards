@@ -17,6 +17,36 @@ namespace Poc0.Core.Objects
 	[Serializable]
 	public class EntityGraphics : Component, IRenderable, ISceneObject
 	{
+		#region Construction
+
+		/// <summary>
+		/// Default constructor - nothing will be rendered until <see cref="Graphics"/> or <see cref="GraphicsLocation"/>
+		/// is set
+		/// </summary>
+		public EntityGraphics( )
+		{
+		}
+
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		/// <param name="source">Graphics asset source</param>
+		public EntityGraphics( ISource source )
+		{
+			GraphicsLocation = source;
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Sets/gets the rendered graphics object
+		/// </summary>
+		public IRenderable Graphics
+		{
+			get { return m_Graphics; }
+			set { m_Graphics = value; }
+		}
+
 		/// <summary>
 		/// Location of the graphics asset used to display the entity
 		/// </summary>
@@ -27,8 +57,6 @@ namespace Poc0.Core.Objects
 		}
 
 		#region IRenderable Members
-
-		private readonly Matrix44 m_LocalToWorld = new Matrix44( );
 
 		/// <summary>
 		/// Renders entity graphics
@@ -41,38 +69,36 @@ namespace Poc0.Core.Objects
 			{
 				moveable.Travel.UpdateCurrent( context.RenderTime );
 			}
+
+			Matrix44 localToWorld = Matrix44.Identity;
 			IPlaceable placeable = Parent as IPlaceable;
 			if ( placeable != null )
 			{
+				localToWorld = placeable.Frame;
+
 				Point3 pos = placeable.Position;
-				m_LocalToWorld.Translation = pos;
-			}
-			ITurnable turnable = Parent as ITurnable;
-			if ( turnable != null )
-			{
-				turnable.Turn.UpdateCurrent( context.RenderTime );
-			}
-			IOriented oriented = Parent as IOriented;
-			if ( oriented != null )
-			{
-				//oriented.Angle;
-				float sinA = ( float )Math.Sin( oriented.Angle );
-				float cosA = ( float )Math.Cos( oriented.Angle );
-				m_LocalToWorld.ZAxis = new Vector3( cosA, 0, sinA );
-				m_LocalToWorld.XAxis = new Vector3( -sinA, 0, cosA );
+				localToWorld.Translation = pos;
+
+				float angle = placeable.Angle;
+				float sinA = ( float )Math.Sin( angle );
+				float cosA = ( float )Math.Cos( angle );
+				localToWorld.ZAxis = new Vector3( cosA, 0, sinA );
+				localToWorld.XAxis = new Vector3( -sinA, 0, cosA );
 			}
 
-			Graphics.Renderer.PushTransform( Transform.LocalToWorld, m_LocalToWorld );
+			Rb.Rendering.Graphics.Renderer.PushTransform( Transform.LocalToWorld, localToWorld );
 
 			m_Lights.Begin( );
 
 			//	Resolve graphics references, then render
-			Resolve( );
-			m_Graphics.Render( context );
+			if ( Resolve( ) )
+			{
+				m_Graphics.Render( context );
+			}
 
 			m_Lights.End( );
-			
-			Graphics.Renderer.PopTransform( Transform.LocalToWorld );
+
+			Rb.Rendering.Graphics.Renderer.PopTransform( Transform.LocalToWorld );
 		}
 
 		#endregion
@@ -104,11 +130,15 @@ namespace Poc0.Core.Objects
 		/// <summary>
 		/// Resolves the graphics
 		/// </summary>
-		private void Resolve( )
+		private bool Resolve( )
 		{
 			if ( m_Graphics != null )
 			{
-				return;
+				return true;
+			}
+			if ( m_GraphicsAsset == null )
+			{
+				return false;
 			}
 
 			IInstanceBuilder builder = m_GraphicsAsset.Asset as IInstanceBuilder;
@@ -120,12 +150,36 @@ namespace Poc0.Core.Objects
 			{
 				m_Graphics = ( IRenderable )m_GraphicsAsset;
 			}
+
+			//	Add the graphics object as a child. Although this relationship isn't strictly necessary, it does
+			//	mean that m_Graphics will get scene add/remove notifications, if it's an ISceneObject
+			if ( Parent != null )
+			{
+				//	TODO: AP: Dubious hack
+				//	We know that the parent object is (probably) the entity itself, which generates command
+				//	messages. The graphics object may need to consume these messages (e.g. for animation).
+				//	Currently, there's no way for the graphics object to discover where the entity is, and
+				//	subscribe to the command messages, beyond making it an immediate child of the entity...
+				//
+				//	Another option is to add the entity as a dynamic property in the graphics asset load
+				//	parameters, but that means that the asset is effectively uncacheable.
+				//
+				//	The ideal option is for some sort of component message type discovery, but that's going
+				//	to be tricky (broadcast is not an option, because the message processing must be
+				//	sequential, so it has to go through the entity message hub).
+				//
+				( ( IParent )Parent ).AddChild( m_Graphics );
+			}
+			else
+			{
+				AddChild( m_Graphics );
+			}
+			return true;
 		}
 
 		[NonSerialized]
 		private IRenderable m_Graphics;
 		private readonly LightMeter m_Lights = new LightMeter( );
 		private readonly AssetHandle m_GraphicsAsset = new AssetHandle( );
-
 	}
 }

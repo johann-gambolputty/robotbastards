@@ -3,33 +3,15 @@
 
   <object type="Rb.Rendering.Viewer" assembly="Rb.Rendering">
 
-    <object type="Rb.Rendering.Cameras.SphereCamera" assembly="Rb.Rendering" property="Camera">
+    <object type="Poc0.Core.Cameras.FollowCamera" assembly="Poc0.Core" property="Camera">
 
       <float value="0.7" property="T"/>
       <float value="50" property="Zoom"/>
 
-      <object type="Rb.AppCore.Cameras.LookAtCameraController" assembly="Rb.AppCore">
-
-        <!--
-        <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
-          <type value="Rb.AppCore.Cameras.LookAtCameraController+Commands" assembly="Rb.AppCore" property="CommandListEnumType"/>
-          <dynProperty value="User" property="User"/>
-        </object>
-        -->
-
-        <!--
-        <float value="3.14" property="SOffset"/>
-
-        <ref objectId="{BE726C7E-26EA-433e-974A-B57396EE5FB5}" property="TrackedObject"/>
-        -->
-      </object>
-
     </object>
 
-    <!--
     <bool value="true" property="ShowFps"/>
-    <colour value="White" property="FpsDisplay.TextColour"/>
-    -->
+    <colour value="Black" property="FpsDisplay.TextColour"/>
 
   </object>
 

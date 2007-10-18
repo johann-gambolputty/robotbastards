@@ -1,4 +1,5 @@
 using System;
+using Rb.Core.Assets;
 using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
@@ -13,9 +14,27 @@ namespace Poc0.Core.Objects
 	/// Entity
 	/// </summary>
 	[Serializable]
-	public class Entity : Component, IMoveable, ITurnable, INamed, ISceneObject
+	public class Entity : Component, IMoveable, INamed, ISceneObject
 	{
-		#region IHasPosition Members
+		#region Construction
+
+		/// <summary>
+		/// Creates a standard entity object. Add it to the scene to get it to render and stuff
+		/// </summary>
+		public static Entity Create( string name, Point3 pos, float facing, ISource graphicsSource )
+		{
+			Entity entity = new Entity( );
+			entity.Name = name;
+			entity.Position = pos;
+			entity.Angle = facing;
+			entity.AddChild( new EntityGraphics( graphicsSource ) );
+			entity.AddChild( new Body( ) );
+			return entity;
+		}
+
+		#endregion
+
+		#region IPlaceable Members
 
 		/// <summary>
 		/// Event, raised when Position is changed
@@ -27,7 +46,7 @@ namespace Poc0.Core.Objects
 		/// </summary>
 		public Point3 Position
 		{
-			get { return m_Travel.Current; }
+			get { return m_Travel.CurrentPosition; }
 			set
 			{
 				if ( PositionChanged == null )
@@ -36,11 +55,19 @@ namespace Poc0.Core.Objects
 				}
 				else
 				{
-					Point3 oldPos = m_Travel.Current;
+					Point3 oldPos = m_Travel.CurrentPosition;
 					m_Travel.Set( value );
-					PositionChanged( this, oldPos, m_Travel.Start );
+					PositionChanged( this, oldPos, m_Travel.StartPosition );
 				}
 			}
+		}
+
+		/// <summary>
+		/// Gets the 
+		/// </summary>
+		public Matrix44 Frame
+		{
+			get { return m_Frame; }
 		}
 
 		#endregion
@@ -48,9 +75,9 @@ namespace Poc0.Core.Objects
 		#region IMoveable members
 
 		/// <summary>
-		/// Object's position over time
+		/// Object's position and orientation over time
 		/// </summary>
-		public Point3Interpolator Travel
+		public Frame3Interpolator Travel
 		{
 			get { return m_Travel; }
 		}
@@ -109,7 +136,7 @@ namespace Poc0.Core.Objects
 		[Dispatch]
 		public void HandleMovementRequest( MovementXzRequest request )
 		{
-			Travel.End += new Vector3( request.DeltaX, 0, request.DeltaZ );
+			Travel.EndPosition += new Vector3( request.DeltaX, 0, request.DeltaZ );
 		}
 
 		/// <summary>
@@ -117,9 +144,9 @@ namespace Poc0.Core.Objects
 		/// </summary>
 		/// <param name="request">Turn request</param>
 		[Dispatch]
-		public void HandleMovementRequest( TurnRequest request )
+		public void HandleTurnRequest( TurnRequest request )
 		{
-			Turn.End = Utils.Wrap( Turn.End + request.Rotation, 0, Constants.TwoPi );
+			Travel.EndAngle = Utils.Wrap( Travel.EndAngle + request.Rotation, 0, Constants.TwoPi );
 		}
 
 		#endregion
@@ -132,7 +159,6 @@ namespace Poc0.Core.Objects
 		protected virtual void Update( Clock updateClock )
 		{
 			m_Travel.Step( updateClock.CurrentTickTime );
-			m_Turn.Step( updateClock.CurrentTickTime );
 		}
 
 		#endregion
@@ -144,61 +170,16 @@ namespace Poc0.Core.Objects
 		/// </summary>
 		public float Angle
 		{
-			get { return m_Turn.Current; }
-			set { m_Turn.Set( value ); }
-		}
-
-		/// <summary>
-		/// Forward vector
-		/// </summary>
-		public Vector3 Forward
-		{
-			get
-			{
-				return Vector3.ZAxis;
-			}
-		}
-
-		/// <summary>
-		/// Right vector
-		/// </summary>
-		public Vector3 Right
-		{
-			get
-			{
-				return Vector3.XAxis;
-			}
-		}
-
-		/// <summary>
-		/// Up vector
-		/// </summary>
-		public Vector3 Up
-		{
-			get
-			{
-				return Vector3.YAxis;
-			}
-		}
-
-		#endregion
-
-		#region ITurnable Members
-
-		/// <summary>
-		/// Gets the orientation interpolator
-		/// </summary>
-		public FloatInterpolator Turn
-		{
-			get { return m_Turn; }
+			get { return m_Travel.CurrentAngle; }
+			set { m_Travel.Set( value ); }
 		}
 
 		#endregion
 
 		#region Private members
 
-		private readonly FloatInterpolator m_Turn = new FloatInterpolator( );
-		private readonly Point3Interpolator m_Travel = new Point3Interpolator( );
+		private readonly Matrix44 m_Frame = new Matrix44( );
+		private readonly Frame3Interpolator m_Travel = new Frame3Interpolator( );
 		private string m_Name = "Bob";
 
 		#endregion

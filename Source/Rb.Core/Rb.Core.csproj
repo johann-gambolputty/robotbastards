@@ -106,6 +106,7 @@
     <Compile Include="Maths\Constants.cs" />
     <Compile Include="Maths\ControlledSpline.cs" />
     <Compile Include="Maths\FloatInterpolator.cs" />
+    <Compile Include="Maths\Frame3Interpolator.cs" />
     <Compile Include="Maths\Frustum.cs" />
     <Compile Include="Maths\GaussianQuadrature.cs" />
     <Compile Include="Maths\ILineIntersection.cs" />

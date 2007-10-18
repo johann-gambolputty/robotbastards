@@ -6,7 +6,6 @@ using Poc0.LevelEditor.Core.Rendering;
 using Rb.Core.Assets;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
-using Rb.Log;
 using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.Controls.Forms;
@@ -71,7 +70,8 @@ namespace Poc0.LevelEditor
 			//	Populate runtime scene
 			scene.RuntimeScene.AddService( new LightingService( ) );
 			IUpdateService updater = new UpdateService( );
-			updater.AddClock( new Clock( "updateClock", 10, true ) );
+			updater.AddClock( new Clock( "updateClock", 30, true ) );
+			updater.AddClock( new Clock( "animationClock", 60, true ) );
 			scene.RuntimeScene.AddService( updater );
 
 			//	Populate editor scene

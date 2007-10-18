@@ -16,61 +16,67 @@ namespace Rb.ComponentXmlLoader
         /// <param name="parameters">Load parameters</param>
         /// <param name="errors">Error collection</param>
         /// <param name="reader">XML reader positioned at the element that created this builder</param>
+        /// <param name="parentBuilder">Parent builder object</param>
         public ReferenceBuilder( ComponentLoadParameters parameters, ErrorCollection errors, XmlReader reader, BaseBuilder parentBuilder ) :
             base( parameters, errors, reader, parentBuilder )
         {
-            //  TODO: AP: Handle modelPath
             m_ObjectId = reader.GetAttribute( "objectId" );
-            if ( m_ObjectId == null )
-            {
-				throw new ApplicationException( string.Format( "<{0}> element must contain an \"objectId\" attribute", reader.Name ) );
-            }
-
             m_Properties = reader.GetAttribute( "access" );
         }
+
+		/// <summary>
+		/// Resolves the reference in the objectId attribute
+		/// </summary>
+		protected virtual object ResolveReference( string id )
+		{
+			//	Empty IDs not allowed
+			if ( string.IsNullOrEmpty( id ) )
+			{
+				throw new ArgumentException( string.Format( "<ref> element must contain an \"objectId\" attribute" ) );
+			}
+
+			if ( id == "this" )
+			{
+				return ParentBuilder.BuildObject;
+			}
+
+			if ( id == "parent" )
+			{
+				if ( ParentBuilder.IsRoot )
+				{
+					Errors.Add( this, "The parent object does not exist" );
+					return null;
+				}
+				return ParentBuilder.ParentBuilder.BuildObject;
+			}
+
+			if ( id == "parameters" )
+			{
+				return Parameters;
+			}
+
+			if ( id == "builder" )
+			{
+				return Parameters.Builder;
+			}
+
+			if ( id == "root" )
+			{
+				BaseBuilder rootBuilder = ParentBuilder;
+				for ( ;!rootBuilder.IsRoot; rootBuilder = rootBuilder.ParentBuilder ) {}
+
+				return rootBuilder.BuildObject;
+			}
+			
+			return Parameters.Objects[ new Guid( id ) ];
+		}
 
         /// <summary>
         /// Resolves the reference
         /// </summary>
         public override void PostCreate( )
         {
-			if ( m_ObjectId != null )
-			{
-				if ( m_ObjectId == "this" )
-				{
-					BuildObject = ParentBuilder.BuildObject;
-				}
-				else if ( m_ObjectId == "parent" )
-				{
-					if ( ParentBuilder.IsRoot )
-					{
-						Errors.Add( this, "The parent object does not exist" );
-					}
-					else
-					{
-						BuildObject = ParentBuilder.ParentBuilder.BuildObject;
-					}
-				}
-				else if ( m_ObjectId == "parameters" )
-				{
-					BuildObject = Parameters;
-				}
-				else if ( m_ObjectId == "builder" )
-				{
-					BuildObject = Parameters.Builder;
-				}
-				else if ( m_ObjectId == "root" )
-				{
-					BaseBuilder rootBuilder = ParentBuilder;
-					for ( ;!rootBuilder.IsRoot; rootBuilder = rootBuilder.ParentBuilder );
-
-					BuildObject = rootBuilder.BuildObject;
-				}
-				else
-				{
-					BuildObject = Parameters.Objects[ new Guid( m_ObjectId ) ];
-				}
-			}
+			BuildObject = ResolveReference( m_ObjectId );
 
             if ( m_Properties == null )
 			{
@@ -88,8 +94,8 @@ namespace Rb.ComponentXmlLoader
 			base.PostCreate( );
         }
 
-        private string m_ObjectId;
-        private string m_Properties;
+        private readonly string m_ObjectId;
+		private readonly string m_Properties;
     }
 
 }
