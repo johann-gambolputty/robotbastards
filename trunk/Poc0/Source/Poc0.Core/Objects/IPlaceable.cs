@@ -3,7 +3,7 @@ using Rb.Core.Maths;
 namespace Poc0.Core.Objects
 {
 	/// <summary>
-	/// Delegate, used by <see cref="IHasPosition.PositionChanged"/>
+	/// Delegate, used by <see cref="IPlaceable.PositionChanged"/>
 	/// </summary>
 	/// <param name="obj">Positioned object</param>
 	/// <param name="lastPos">Objects position prior to change</param>
@@ -11,10 +11,10 @@ namespace Poc0.Core.Objects
 	public delegate void PositionChangedDelegate( object obj, Point3 lastPos, Point3 newPos );
 
 	/// <summary>
-	/// Placeable objects can be positioned
+	/// Placeable objects can be positioned and oriented
 	/// </summary>
 	/// <remarks>
-	/// For objects that move smoothly between positions, use <see cref="IMoveable"/>
+	/// For objects that move smoothly between positions and orientations, use <see cref="IMoveable"/>
 	/// </remarks>
 	public interface IPlaceable
 	{
@@ -24,11 +24,27 @@ namespace Poc0.Core.Objects
 		event PositionChangedDelegate PositionChanged;
 
 		/// <summary>
-		/// Objects current position
+		/// Current position
 		/// </summary>
 		Point3 Position
 		{
 			get; set;
+		}
+
+		/// <summary>
+		/// Current facing angle
+		/// </summary>
+		float Angle
+		{
+			get; set;
+		}
+
+		/// <summary>
+		/// Current local to world transformation matrix
+		/// </summary>
+		Matrix44 Frame
+		{
+			get;
 		}
 	}
 }

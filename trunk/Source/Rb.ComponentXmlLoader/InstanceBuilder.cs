@@ -1,3 +1,4 @@
+using System;
 using System.Xml;
 using Rb.Core.Components;
 
@@ -31,5 +32,22 @@ namespace Rb.ComponentXmlLoader
 			//	TODO: AP: Also support ICloneable
             BuildObject = ( ( IInstanceBuilder )BuildObject ).CreateInstance( Parameters.Builder );
         }
+
+		/// <summary>
+		/// Resolves the reference in the objectId attribute
+		/// </summary>
+		protected override object ResolveReference( string id )
+		{
+			if ( string.IsNullOrEmpty( id ) )
+			{
+				//	Just a reference to the first child
+				if ( GetBuilders( LinkStep.Default ).Count == 0 )
+				{
+					throw new ArgumentException( "An <instance> element without an objectId attribute instances the first child element - no children exist" );
+				}
+				return GetBuilders( LinkStep.Default )[ 0 ].BuildObject;
+			}
+			return base.ResolveReference( id );
+		}
     }
 }

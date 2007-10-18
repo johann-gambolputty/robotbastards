@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Poc0.Core.Cameras;
 using Poc0.Core.Controllers;
 using Poc0.Core.Objects;
 using Rb.Core.Assets;
 using Rb.Core.Components;
+using Rb.Core.Maths;
 using Rb.Interaction;
 using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core;
@@ -84,8 +86,21 @@ namespace Poc0.LevelEditor
 				object character = AssetManager.Instance.Load( player.CharacterSource );
 				m_Scene.Objects.Add( ( IUnique )character );
 
+				//	Bit of a hack... if the viewer camera is a follow camera, force it to look at the player
+				if ( ( playerIndex == 0 ) && m_Viewer.Camera is FollowCamera )
+				{
+					( ( FollowCamera )m_Viewer.Camera ).Target = ( IPlaceable )character;
+				}
+
 				( ( IParent )character ).AddChild( new UserController( m_Users[ playerIndex ], ( IMessageHandler )character ) );
 
+			}
+
+			//	TEST: How hard is it to set up an entity programmatically?
+			{
+				Entity enemy = Entity.Create( "ninjaRobot0", new Point3( 10, 0, 20 ), 0, new Location( @"Graphics\Entities\TestPlayer0\Full.components.xml" ) );
+				m_Scene.Objects.Add( enemy );
+				//	RESULT: Pretty frickin' easy (Entity.Create() is pretty simple also
 			}
 
 			//	Start rendering the scene
