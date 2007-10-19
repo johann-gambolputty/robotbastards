@@ -41,7 +41,7 @@ namespace Poc0.LevelEditor
 			this.gameDisplay.Location = new System.Drawing.Point(0, 0);
 			this.gameDisplay.Name = "gameDisplay";
 			this.gameDisplay.RenderInterval = 1;
-			this.gameDisplay.Size = new System.Drawing.Size(297, 265);
+			this.gameDisplay.Size = new System.Drawing.Size(377, 289);
 			this.gameDisplay.StencilBits = ((byte)(0));
 			this.gameDisplay.TabIndex = 0;
 			// 
@@ -49,7 +49,7 @@ namespace Poc0.LevelEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(297, 265);
+			this.ClientSize = new System.Drawing.Size(377, 289);
 			this.Controls.Add(this.gameDisplay);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "GameViewForm";
@@ -65,5 +65,6 @@ namespace Poc0.LevelEditor
 		#endregion
 
 		private Rb.Rendering.Windows.Display gameDisplay;
+
 	}
 }

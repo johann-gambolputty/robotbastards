@@ -13,7 +13,6 @@ namespace Rb.Rendering
 	/// </remarks>
 	public abstract class RenderFactory : LibraryBuilder
 	{
-
 		#region	Assembly loaders
 
 		/// <summary>
@@ -134,6 +133,5 @@ namespace Rb.Rendering
 		protected internal abstract Draw NewDraw( );
 
 		#endregion
-
 	}
 }

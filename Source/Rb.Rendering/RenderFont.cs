@@ -8,8 +8,23 @@ namespace Rb.Rendering
 	/// </summary>
 	public abstract class RenderFont
 	{
-		//	TODO: Duplicates must be removed from CharacterSet
+		/// <summary>
+		/// Specifies alignment values - where text is rendered relative to the supplied point
+		/// </summary>
+		public enum Alignment
+		{
+			TopLeft,
+			TopCentre,
+			TopRight,
+			MiddleLeft,
+			MiddleCentre,
+			MiddleRight,
+			BottomLeft,
+			BottomCentre,
+			BottomRight
+		}
 
+		//	TODO: AP: Duplicates must be removed from CharacterSet
 		/// <summary>
 		/// Stores a list of characters that BuildFontImage() uses to generate its font... image... thing
 		/// </summary>
@@ -92,17 +107,60 @@ namespace Rb.Rendering
 		public abstract RenderFont Setup( Font font, CharacterSet characters );
 
 		/// <summary>
+		/// Gets the height of the largest letter in the font
+		/// </summary>
+		public abstract int MaxHeight
+		{
+			get;
+		}
+		
+		/// <summary>
+		/// Measures the dimensions of a given string
+		/// </summary>
+		/// <param name="str">String to measure</param>
+		/// <returns>Size of the string in pixels</returns>
+		public abstract Size MeasureString( string str );
+
+		/// <summary>
 		/// Draws formatted text using this font, at a given position
 		/// </summary>
 		public void DrawText( int x, int y, Color colour, string str, params object[] formatArgs )
 		{
-			DrawText( x, y, colour, string.Format( str, formatArgs ) );
+			DrawText( Alignment.TopLeft, x, y, colour, string.Format( str, formatArgs ) );
+		}
+		
+		/// <summary>
+		/// Draws formatted text using this font, at a given position
+		/// </summary>
+		public void DrawText( Alignment align, int x, int y, Color colour, string str, params object[] formatArgs )
+		{
+			DrawText( align, x, y, colour, string.Format( str, formatArgs ) );
+		}
+
+		/// <summary>
+		/// Draws formatted text using this font, at a given position
+		/// </summary>
+		public void DrawText( float x, float y, float z, Color colour, string str, params object[] formatArgs )
+		{
+			DrawText( Alignment.TopLeft, x, y, z, colour, string.Format( str, formatArgs ) );
+		}
+		
+		/// <summary>
+		/// Draws formatted text using this font, at a given position
+		/// </summary>
+		public void DrawText( Alignment align, float x, float y, float z, Color colour, string str, params object[] formatArgs )
+		{
+			DrawText( align, x, y, z, colour, string.Format( str, formatArgs ) );
 		}
 
 		/// <summary>
 		/// Draws text using this font, at a given position
 		/// </summary>
-		public abstract void DrawText( int x, int y, Color colour, string str );
+		public abstract void DrawText( Alignment align, int x, int y, Color colour, string str);
 
+		/// <summary>
+		/// Draws text using this font, at a given position
+		/// </summary>
+		public abstract void DrawText( Alignment align, float x, float y, float z, Color colour, string str );
 	}
 }

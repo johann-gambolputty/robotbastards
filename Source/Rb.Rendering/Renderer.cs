@@ -86,7 +86,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Should be called at the beginning of each frame
 		/// </summary>
-		public virtual void		Begin( )
+		public virtual void Begin( )
 		{
 			ClearLights( );
 		}
@@ -94,29 +94,29 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Should be called at the end of each frame
 		/// </summary>
-		public virtual void		End( )
+		public virtual void End( )
 		{
 		}
 
 		/// <summary>
 		/// Clears the viewport
 		/// </summary>
-		public abstract void	ClearColour( Color colour );
+		public abstract void ClearColour( Color colour );
 
 		/// <summary>
 		/// Clears the viewport using a vertical gradient fill
 		/// </summary>
-		public abstract void	ClearVerticalGradient( Color topColour, Color bottomColour );
+		public abstract void ClearVerticalGradient( Color topColour, Color bottomColour );
 
 		/// <summary>
 		/// Clears the viewport using a radial gradient fill (shit)
 		/// </summary>
-		public abstract void	ClearRadialGradient( Color centreColour, Color outerColour );
+		public abstract void ClearRadialGradient( Color centreColour, Color outerColour );
 
 		/// <summary>
 		/// Clears the depth buffer
 		/// </summary>
-		public abstract void	ClearDepth( float depth );
+		public abstract void ClearDepth( float depth );
 
 		#endregion
 
@@ -135,6 +135,14 @@ namespace Rb.Rendering
 			Transform result = ( Transform )( ( int )Transform.Texture0 + textureUnit );
 			return result;
 		}
+
+
+		/// <summary>
+		/// Transforms a local point into screen space
+		/// </summary>
+		/// <param name="pt">Local point</param>
+		/// <returns>Screen space point</returns>
+		public abstract Point3 Project( Point3 pt );
 
 		/// <summary>
 		/// Sets an identity matrix in the projection and model view transforms

@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using Rb.Core.Assets;
 using Rb.Core.Components;
 using Rb.Core.Maths;
@@ -12,7 +13,8 @@ namespace Poc0.Core.Objects
 	/// Class encapsulating graphics required by standard entity
 	/// </summary>
 	/// <remarks>
-	/// A handy wrapper that makes it much easier to edit entity graphics in the editor
+	/// A handy wrapper that makes it much easier to edit entity graphics in the editor.
+	/// NOTE: Assumes a couple of times that the entity is the immediate parent object
 	/// </remarks>
 	[Serializable]
 	public class EntityGraphics : Component, IRenderable, ISceneObject
@@ -95,6 +97,12 @@ namespace Poc0.Core.Objects
 			{
 				m_Graphics.Render( context );
 			}
+			
+			if ( DebugInfo.ShowEntityNames )
+			{
+				string name = ( ( INamed )Parent ).Name;
+				RenderFonts.GetDefaultFont( DefaultFont.Debug ).DrawText( RenderFont.Alignment.BottomCentre, 0, 5.0f, 0, Color.White, name );
+			}
 
 			m_Lights.End( );
 
@@ -162,11 +170,13 @@ namespace Poc0.Core.Objects
 				//	subscribe to the command messages, beyond making it an immediate child of the entity...
 				//
 				//	Another option is to add the entity as a dynamic property in the graphics asset load
-				//	parameters, but that means that the asset is effectively uncacheable.
+				//	parameters, but that means that the asset is effectively uncacheable (it also implies that
+				//	this object understands more about the relationship between graphics object and the entity).
 				//
 				//	The ideal option is for some sort of component message type discovery, but that's going
 				//	to be tricky (broadcast is not an option, because the message processing must be
-				//	sequential, so it has to go through the entity message hub).
+				//	sequential, so it has to go through the entity message hub, rather than get chucked all over
+				//	the place).
 				//
 				( ( IParent )Parent ).AddChild( m_Graphics );
 			}

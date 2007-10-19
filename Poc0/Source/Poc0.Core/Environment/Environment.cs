@@ -39,7 +39,7 @@ namespace Poc0.Core.Environment
 
 		private void InitialiseComponents( )
 		{
-			m_Graphics = Graphics.Factory.Create<EnvironmentGraphics>( );
+			m_Graphics = Graphics.Factory.Create< EnvironmentGraphics >( );
 			AddChild( m_Graphics );
 		}
 

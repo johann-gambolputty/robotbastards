@@ -44,13 +44,14 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cameras\FollowCamera.cs" />
-    <Compile Include="Controllers\EntityCommandHandler.cs" />
     <Compile Include="Controllers\EntityCommands.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="DebugInfo.cs" />
     <Compile Include="Objects\Body.cs" />
     <Compile Include="Objects\Entity.cs" />
     <Compile Include="Objects\EntityGraphics.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Objects\IMoveable.cs" />
     <Compile Include="Objects\PlayerStart.cs" />
     <Compile Include="Objects\Signpost.cs" />
+    <Compile Include="PerformanceDisplay.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

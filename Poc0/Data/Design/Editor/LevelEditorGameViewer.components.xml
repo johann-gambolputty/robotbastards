@@ -10,9 +10,6 @@
 
     </object>
 
-    <bool value="true" property="ShowFps"/>
-    <colour value="Black" property="FpsDisplay.TextColour"/>
-
   </object>
 
 </rb>

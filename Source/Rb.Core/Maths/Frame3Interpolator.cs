@@ -1,9 +1,11 @@
+using System;
 
 namespace Rb.Core.Maths
 {
 	/// <summary>
-	/// Interpolator for position+orientation
+	/// Interpolator for position + orientation
 	/// </summary>
+	[Serializable]
 	public class Frame3Interpolator
 	{
 		#region Position
@@ -122,6 +124,11 @@ namespace Rb.Core.Maths
 		/// <param name="time">Update time</param>
 		public void UpdateCurrent( long time )
 		{
+			if ( m_LastStepTime == 0 )
+			{
+				m_LastStepInterval = 1;
+				m_LastStepTime = time;
+			}
 			UpdateCurrent( ( time - m_LastStepTime ) / ( float )m_LastStepInterval );
 		}
 		

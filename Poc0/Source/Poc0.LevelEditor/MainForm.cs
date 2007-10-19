@@ -94,13 +94,13 @@ namespace Poc0.LevelEditor
 
 		private void OnGameClicked( object sender, EventArgs args )
 		{
-			if ( !Exporter.Export( EditorState.Instance.CurrentRuntimeScene ) )
+			if ( !SceneExporter.Instance.Export( EditorState.Instance.CurrentRuntimeScene ) )
 			{
 				MessageBox.Show( Properties.Resources.ExportFailedCantRunGame, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
 				return;
 			}
 
-			ISource sceneSource = new Location( Exporter.LastExportPath );
+			ISource sceneSource = new Location( SceneExporter.Instance.LastExportPath );
 			ISource viewerSource = new Location( "Editor/LevelEditorGameViewer.components.xml" );
 
 			PlayerSetup[] players = new PlayerSetup[]

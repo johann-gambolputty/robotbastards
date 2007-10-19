@@ -1,12 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Rb.Rendering
 {
 	/// <summary>
-	/// Platform independent interface for setting up displays
+	/// Platform independent interface for setting up displays (e.g. Rb.Rendering.Windows.Display)
 	/// </summary>
+	/// <seealso cref="RenderFactory.CreateDisplaySetup"/>
 	public interface IDisplaySetup
 	{
 		/// <summary>

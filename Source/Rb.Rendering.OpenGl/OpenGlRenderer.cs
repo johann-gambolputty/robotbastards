@@ -239,6 +239,30 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
+		/// Transforms a local point into screen space
+		/// </summary>
+		/// <param name="pt">Local point</param>
+		/// <returns>Screen space point</returns>
+		public override Point3 Project( Point3 pt )
+		{
+			double[]	modelMatrix			= new double[ 16 ];
+			double[]	projectionMatrix	= new double[ 16 ];
+			int[]		viewport			= new int[ 4 ];
+
+			double winX, winY, winZ;
+
+			Gl.glGetDoublev( Gl.GL_MODELVIEW_MATRIX, modelMatrix );
+			Gl.glGetDoublev( Gl.GL_PROJECTION_MATRIX, projectionMatrix );
+			Gl.glGetIntegerv( Gl.GL_VIEWPORT, viewport );
+
+			Glu.gluProject( pt.X, pt.Y, pt.Z, modelMatrix, projectionMatrix, viewport, out winX, out winY, out winZ );
+
+			winY = viewport[ 3 ] - winY;
+
+			return new Point3( ( float )winX, ( float )winY, ( float )winZ );
+		}
+
+		/// <summary>
 		/// Sets an identity matrix in the projection and model view transforms
 		/// </summary>
 		public override void Set2d( )
@@ -513,7 +537,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Sets the viewport (in pixels)
 		/// </summary>
-		public override void	SetViewport( int x, int y, int width, int height )
+		public override void SetViewport( int x, int y, int width, int height )
 		{
 			m_X			= x;
 			m_Y			= y;

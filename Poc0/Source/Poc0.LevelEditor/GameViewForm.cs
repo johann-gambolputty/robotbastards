@@ -1,6 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reflection;
 using System.Windows.Forms;
+using Crownwood.Magic.Common;
+using Crownwood.Magic.Docking;
+using Poc0.Core;
 using Poc0.Core.Cameras;
 using Poc0.Core.Controllers;
 using Poc0.Core.Objects;
@@ -24,8 +29,108 @@ namespace Poc0.LevelEditor
 		{
 			InitializeComponent( );
 			m_Setup = setup;
+
+			//	Create a property editor for the DebugInfo class
+
+			//	Can't just bung the a DebugInfo object into a property grid - it's all static properties
+			//	Create a property bag containing those properties instead
+			PropertyBag debugInfo = new PropertyBag( );
+
+			foreach ( PropertyInfo property in typeof( DebugInfo ).GetProperties( BindingFlags.Static | BindingFlags.Public ) )
+			{
+				debugInfo.Properties.Add( new ExPropertySpec( property ) );
+			}
+			debugInfo.SetValue += ExPropertySpec.SetValue;
+			debugInfo.GetValue += ExPropertySpec.GetValue;
+
+			PropertyGrid debugInfoProperties = new PropertyGrid( );
+			debugInfoProperties.SelectedObject = debugInfo;
+
+			//	Set up a docking manager
+			m_DockingManager = new DockingManager( this, VisualStyle.IDE );
+			m_DockingManager.InnerControl = gameDisplay;
+
+			//	Add the property grid to the docking manager
+			m_DebugInfoContent = m_DockingManager.Contents.Add( debugInfoProperties, "Debug Info" );
+			m_DockingManager.AddContentWithState( m_DebugInfoContent, State.DockLeft );
 		}
 
+		#region Private ExPropertySpec class
+
+		//	TODO: AP: Make a shared base class (there's an ExPropertySpec that does similar things in ObjectPropertyEditor)
+
+		/// <summary>
+		/// Extended property specifier for property bags
+		/// </summary>
+		private class ExPropertySpec : PropertySpec
+		{
+			/// <summary>
+			/// Creates this property specifier
+			/// </summary>
+			/// <param name="property">Underlying object property</param>
+			public ExPropertySpec( PropertyInfo property ) :
+				base( property.Name, property.PropertyType, GetPropertyCategory( property ), GetPropertyDescription( property )  )
+			{
+				m_Property = property;
+			}
+
+			#region Access
+
+			/// <summary>
+			/// Sets the value of an extended property
+			/// </summary>
+			public static void SetValue( object sender, PropertySpecEventArgs e )
+			{
+				( ( ExPropertySpec )e.Property ).Property.SetValue( null, e.Value, null );
+			}
+
+			/// <summary>
+			/// Gets the value of an extended property
+			/// </summary>
+			public static void GetValue( object sender, PropertySpecEventArgs e )
+			{
+				e.Value = ( ( ExPropertySpec )e.Property ).Property.GetValue( e, null );
+			}
+
+			#endregion
+
+			#region Private members
+
+			/// <summary>
+			/// The underlying object property
+			/// </summary>
+			private PropertyInfo Property
+			{
+				get { return m_Property; }
+			}
+
+			private readonly PropertyInfo m_Property;
+			
+			/// <summary>
+			/// Gets the category that a property belongs to
+			/// </summary>
+			private static string GetPropertyCategory( ICustomAttributeProvider property )
+			{
+				CategoryAttribute[] categoryAttrs = ( CategoryAttribute[] )property.GetCustomAttributes( typeof( CategoryAttribute ), false );
+				return categoryAttrs.Length > 0 ? categoryAttrs[ 0 ].Category : "";
+			}
+
+			/// <summary>
+			/// Gets the description of a property
+			/// </summary>
+			private static string GetPropertyDescription( PropertyInfo property )
+			{
+				DescriptionAttribute[] descriptionAttrs = ( DescriptionAttribute[] )property.GetCustomAttributes( typeof( DescriptionAttribute ), false );
+				return descriptionAttrs.Length > 0 ? descriptionAttrs[ 0 ].Description : property.PropertyType.Name;
+			}
+
+			#endregion
+		}
+
+		#endregion
+
+		private readonly Content m_DebugInfoContent;
+		private readonly DockingManager m_DockingManager;
 		private readonly GameSetup m_Setup;
 		private CommandUser[] m_Users;
 		private Viewer m_Viewer;
@@ -45,6 +150,12 @@ namespace Poc0.LevelEditor
 		{
 			//	Load the scene
 			m_Scene = DeserializeScene( m_Setup.SceneSource );
+
+			//	Add a performance display
+			m_Scene.Objects.Add( new PerformanceDisplay( ) );
+			DebugInfo.ShowFps = true;
+			DebugInfo.ShowMemoryWorkingSet = true;
+			DebugInfo.ShowMemoryPeakWorkingSet = true;
 
 			//	Load in the game viewer
 			LoadParameters loadArgs = new LoadParameters( );
