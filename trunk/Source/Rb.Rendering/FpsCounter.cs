@@ -47,10 +47,10 @@ namespace Rb.Rendering
 			m_LastRenderTime = curTime;
 		}
 
-		private float	m_LastFps;
-		private float	m_AvgFps;
-		private float[]	m_Fps = new float[ 32 ];
-		private int		m_FpsIndex = 0;
-		private long	m_LastRenderTime = TinyTime.CurrentTime;
+		private float				m_LastFps;
+		private float				m_AvgFps;
+		private readonly float[]	m_Fps = new float[ 32 ];
+		private int					m_FpsIndex = 0;
+		private long				m_LastRenderTime = TinyTime.CurrentTime;
 	}
 }

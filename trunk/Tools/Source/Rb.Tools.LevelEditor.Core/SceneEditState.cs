@@ -1,9 +1,13 @@
+using System;
 using Rb.Tools.LevelEditor.Core.Actions;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
 
 namespace Rb.Tools.LevelEditor.Core
 {
+	/// <summary>
+	/// The edit state of the current scene
+	/// </summary>
 	public class SceneEditState
 	{
 		/// <summary>
@@ -46,7 +50,6 @@ namespace Rb.Tools.LevelEditor.Core
 		{
 			get { return m_UndoStack; }
 		}
-
 
 		#region Private members
 

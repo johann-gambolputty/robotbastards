@@ -95,6 +95,7 @@
     <Compile Include="Technique.cs" />
     <Compile Include="TechniqueSelector.cs" />
     <Compile Include="Texture2d.cs" />
+    <Compile Include="TexturePacker.cs" />
     <Compile Include="TextureSampler2d.cs" />
     <Compile Include="Transform.cs" />
     <Compile Include="Viewer.cs" />

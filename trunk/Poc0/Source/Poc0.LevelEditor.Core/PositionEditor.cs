@@ -23,12 +23,15 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Sets up this editor
 		/// </summary>
-		/// <param name="hasPosition">Positioning interface of the game object</param>
+		/// <param name="placeable">Positioning interface of the game object</param>
 		/// <param name="pick">Position to place the new object at</param>
-		public PositionEditor( IPlaceable hasPosition, ILineIntersection pick )
+		public PositionEditor( IPlaceable placeable, ILineIntersection pick )
 		{
-			m_HasPosition = hasPosition;
-			m_HasPosition.PositionChanged += OnPositionChanged;
+			m_Placeable = placeable;
+			m_Placeable.PositionChanged += OnPositionChanged;
+
+			SceneExporter.Instance.PreExport += OnPreExport;
+			SceneExporter.Instance.PostExport += OnPostExport;
 
 			Position = ( ( Line3Intersection )pick ).IntersectionPosition;
 
@@ -41,10 +44,10 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		public Point3 Position
 		{
-			get { return m_HasPosition.Position; }
+			get { return m_Placeable.Position; }
 			set
 			{
-				m_HasPosition.Position = value;
+				m_Placeable.Position = value;
 				if ( ObjectChanged != null )
 				{
 					ObjectChanged( this, null );
@@ -103,7 +106,7 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		public object Instance
 		{
-			get { return m_HasPosition; }
+			get { return m_Placeable; }
 		}
 
 		#endregion
@@ -125,7 +128,7 @@ namespace Poc0.LevelEditor.Core
 			{
 				drawProps = m_DrawHighlight;
 			}
-			Graphics.Draw.Circle( drawProps, m_HasPosition.Position.X, m_HasPosition.Position.Y + 0.1f, m_HasPosition.Position.Z, Radius, 12 );
+			Graphics.Draw.Circle( drawProps, m_Placeable.Position.X, m_Placeable.Position.Y + 0.1f, m_Placeable.Position.Z, Radius, 12 );
 		}
 
 		#endregion
@@ -162,7 +165,7 @@ namespace Poc0.LevelEditor.Core
 		public bool TestIntersection( Ray3 ray )
 		{
 			Line3Intersection pick = m_Plane.GetIntersection( ray );
-			return pick == null ? false : pick.IntersectionPosition.DistanceTo( m_HasPosition.Position ) > Radius;
+			return pick == null ? false : pick.IntersectionPosition.DistanceTo( m_Placeable.Position ) > Radius;
 		}
 
 		/// <summary>
@@ -173,7 +176,7 @@ namespace Poc0.LevelEditor.Core
 		public Line3Intersection GetIntersection( Ray3 ray )
 		{
 			Line3Intersection pick = m_Plane.GetIntersection( ray );
-			if ( ( pick == null ) || ( pick.IntersectionPosition.DistanceTo( m_HasPosition.Position ) > Radius ) )
+			if ( ( pick == null ) || ( pick.IntersectionPosition.DistanceTo( m_Placeable.Position ) > Radius ) )
 			{
 			    return null;
 			}
@@ -185,7 +188,7 @@ namespace Poc0.LevelEditor.Core
 
 		#region Private members
 
-		private readonly IPlaceable m_HasPosition;
+		private readonly IPlaceable m_Placeable;
 		private Plane3 m_Plane;
 		private const float Radius = 1.0f;
 		private static readonly Draw.IBrush m_DrawUnselected;
@@ -194,6 +197,23 @@ namespace Poc0.LevelEditor.Core
 		private bool m_Highlight;
 		private bool m_Selected;
 		
+		/// <summary>
+		/// Pre-export event handler. Stops listening for position changes in the runtime object (or this
+		/// and connected objects will be serialized also)
+		/// </summary>
+		private void OnPreExport( object sender, EventArgs args )
+		{
+			m_Placeable.PositionChanged -= OnPositionChanged;
+		}
+
+		/// <summary>
+		/// Post-export event handler
+		/// </summary>
+		private void OnPostExport( object sender, EventArgs args )
+		{
+			m_Placeable.PositionChanged += OnPositionChanged;
+		}
+
 		static PositionEditor( )
 		{
 			m_DrawUnselected = Graphics.Draw.NewBrush( Color.Black, Color.PaleGoldenrod );
@@ -215,7 +235,7 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		private void OnPositionChanged( object obj, Point3 oldPos, Point3 newPos )
 		{
-			m_Plane = new Plane3( m_HasPosition.Position + new Vector3( 0, 0.1f, 0 ), Vector3.YAxis );
+			m_Plane = new Plane3( m_Placeable.Position + new Vector3( 0, 0.1f, 0 ), Vector3.YAxis );
 		}
 
 		#endregion

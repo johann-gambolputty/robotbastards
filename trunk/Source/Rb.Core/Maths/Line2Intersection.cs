@@ -11,6 +11,15 @@ namespace Rb.Core.Maths
 		#region Public properties
 
 		/// <summary>
+		/// Gets/sets flag indicating whether or not the start point of the line was inside or outside the intersected object
+		/// </summary>
+		public bool StartInside
+		{
+			get { return m_StartInside; }
+			set { m_StartInside = value; }
+		}
+
+		/// <summary>
 		/// The point that the line intersected the object. Always valid
 		/// </summary>
 		public Point2 IntersectionPosition
@@ -110,6 +119,7 @@ namespace Rb.Core.Maths
 		private Point2 m_Position;
 		private Vector2 m_Normal;
 		private float m_Distance;
+		private bool m_StartInside;
 
 		#endregion
 	}

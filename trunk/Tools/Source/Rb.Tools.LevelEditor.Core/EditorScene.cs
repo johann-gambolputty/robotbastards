@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
 
 namespace Rb.Tools.LevelEditor.Core

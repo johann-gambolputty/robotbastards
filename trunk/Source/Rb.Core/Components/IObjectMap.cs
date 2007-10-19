@@ -8,6 +8,13 @@ namespace Rb.Core.Components
     /// </summary>
     public interface IObjectMap : IDictionary< Guid, object >
 	{
+		/// <summary>
+		/// Adds any object to the map, assigning a new ID
+		/// </summary>
+		/// <param name="obj">Unique object</param>
+		/// <returns>Returns the ID of the added object</returns>
+		Guid Add( object obj );
+
     	/// <summary>
     	/// Adds an IUnique object to the map
     	/// </summary>

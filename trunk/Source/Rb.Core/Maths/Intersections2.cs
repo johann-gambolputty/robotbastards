@@ -79,11 +79,26 @@ namespace Rb.Core.Maths
 					result.IntersectionPosition = start + ( vec * t );
 					result.IntersectionNormal = plane.Normal;
 					result.Distance = t;
+					result.StartInside = ( startDot + plane.Distance ) < 0;
 					return result;
 				}
 			}
 
 			return null;
+		}
+
+		/// <summary>
+		/// Determines the intersection between a 2d line and a plane
+		/// </summary>
+		/// <param name="x">Line start x coordinate</param>
+		/// <param name="y">Line start y coordinate</param>
+		/// <param name="endX">Line end x coordinate</param>
+		/// <param name="endY">Line end y coordinate</param>
+		/// <param name="plane">Plane</param>
+		/// <returns>Returns intersection details, or null if there was no intersection.</returns>
+		public static Line2Intersection GetLinePlaneIntersection( float x, float y, float endX, float endY, Plane2 plane)
+		{
+			return GetLinePlaneIntersection( new Point2( x, y ), new Point2( endX, endY ), plane );
 		}
 	}
 }

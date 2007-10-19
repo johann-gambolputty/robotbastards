@@ -16,6 +16,14 @@ namespace Rb.Core.Maths
 			m_Height = height;
 		}
 
+		public Rectangle( Point2 min, Point2 max )
+		{
+			m_X = min.X;
+			m_Y = min.Y;
+			m_Width = max.X - min.X;
+			m_Height = max.Y - min.Y;
+		}
+
 		public float X
 		{
 			get { return m_X; }
@@ -26,6 +34,16 @@ namespace Rb.Core.Maths
 		{
 			get { return m_Y; }
 			set { m_Y = value; }
+		}
+
+		public float MaxX
+		{
+			get { return m_X + m_Width; }
+		}
+
+		public float MaxY
+		{
+			get { return m_Y + m_Height; }
 		}
 
 		public float Width

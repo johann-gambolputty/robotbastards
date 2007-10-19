@@ -14,6 +14,24 @@ namespace Rb.Tools.LevelEditor.Core
 	public class SceneExporter
 	{
 		/// <summary>
+		/// Called prior to the runtime scene being exported
+		/// </summary>
+		public event EventHandler PreExport;
+
+		/// <summary>
+		/// Called after the runtime scene has been exported
+		/// </summary>
+		public event EventHandler PostExport;
+
+		/// <summary>
+		/// Gets the scene exporter singleton
+		/// </summary>
+		public static SceneExporter Instance
+		{
+			get { return ms_Singleton; }
+		}
+
+		/// <summary>
 		/// Access to the last export path
 		/// </summary>
 		public string LastExportPath
@@ -91,6 +109,11 @@ namespace Rb.Tools.LevelEditor.Core
 		{
 			try
 			{
+				if ( PreExport != null )
+				{
+					PreExport( this, null );
+				}
+
 				MemoryStream outStream = new MemoryStream( );
 
 				IFormatter formatter = CreateFormatter( );
@@ -100,6 +123,12 @@ namespace Rb.Tools.LevelEditor.Core
 				{
 					fileStream.Write( outStream.ToArray( ), 0, ( int )outStream.Length );
 				}
+
+				if ( PostExport != null )
+				{
+					PostExport( this, null );
+				}
+
 				return true;
 			}
 			catch ( Exception ex )
@@ -113,12 +142,20 @@ namespace Rb.Tools.LevelEditor.Core
 
 		#region Private stuff
 
+		private readonly static SceneExporter ms_Singleton = new SceneExporter( );
 		private string m_LastExportPath;
 
 		private static IFormatter CreateFormatter( )
 		{
 			IFormatter formatter = new BinaryFormatter( null, new StreamingContext( ) );
 			return formatter;
+		}
+
+		/// <summary>
+		/// Private constructor forces singleton use only
+		/// </summary>
+		private SceneExporter( )
+		{
 		}
 
 		#endregion

@@ -38,8 +38,8 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			EditorState.Instance.SceneOpened += OnSceneOpened;
 			EditorState.Instance.SceneClosed += OnSceneClosed;
 
-			m_Serializer.LastSavePathChanged += SavePathChanged;
-			m_Exporter.LastExportPathChanged += ExportPathChanged;
+			SceneSerializer.Instance.LastSavePathChanged += SavePathChanged;
+			SceneExporter.Instance.LastExportPathChanged += ExportPathChanged;
 
 			UpdateInputsStatusLabel( );
 			EditorState.Instance.EditModeAdded += EditModeAdded;
@@ -123,22 +123,6 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			get { return m_DockingManager; }
 		}
 
-		/// <summary>
-		/// Gets the current scene serializer
-		/// </summary>
-		public SceneSerializer Serializer
-		{
-			get { return m_Serializer; }
-		}
-
-		/// <summary>
-		/// Gets the current scene exporter
-		/// </summary>
-		public SceneExporter Exporter
-		{
-			get { return m_Exporter; }
-		}
-
 		#endregion
 
 		#region Event handlers
@@ -178,7 +162,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		/// <param name="newPath">The new save path</param>
 		protected virtual void SavePathChanged( string newPath )
 		{
-			Text = newPath + " => " + m_Exporter.LastExportPath;
+			Text = newPath + " => " + SceneExporter.Instance.LastExportPath;
 		}
 
 		/// <summary>
@@ -187,7 +171,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		/// <param name="newPath">The new export path</param>
 		protected virtual void ExportPathChanged( string newPath )
 		{
-			Text = m_Serializer.LastSavePath + " => " + newPath;
+			Text = SceneSerializer.Instance.LastSavePath + " => " + newPath;
 		}
 
 		/// <summary>
@@ -331,8 +315,6 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		#region Private fields
 
 		private readonly CommandUser		m_User = new CommandUser( );
-		private readonly SceneSerializer	m_Serializer = new SceneSerializer( );
-		private readonly SceneExporter		m_Exporter = new SceneExporter( );
 
 		private DockingManager				m_DockingManager;
 		private Content						m_LogDisplayContent;
@@ -395,17 +377,17 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 
 		private void saveAsToolStripMenuItem_Click( object sender, EventArgs e )
 		{
-			m_Serializer.SaveAs( EditorState.Instance.CurrentScene );
+			SceneSerializer.Instance.SaveAs( EditorState.Instance.CurrentScene );
 		}
 
 		private void saveToolStripMenuItem_Click( object sender, EventArgs e )
 		{
-			m_Serializer.Save( EditorState.Instance.CurrentScene );
+			SceneSerializer.Instance.Save( EditorState.Instance.CurrentScene );
 		}
 
 		private void openToolStripMenuItem_Click( object sender, EventArgs e )
 		{
-			EditorScene scene = m_Serializer.Open( );
+			EditorScene scene = SceneSerializer.Instance.Open( );
 			if ( scene != null )
 			{
 				EditorState.Instance.OpenScene( scene );
@@ -424,12 +406,12 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 
 		private void exportToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			m_Exporter.Export( EditorState.Instance.CurrentRuntimeScene );
+			SceneExporter.Instance.Export( EditorState.Instance.CurrentRuntimeScene );
 		}
 
 		private void exportAsToolStripMenuItem_Click( object sender, EventArgs e )
 		{
-			m_Exporter.ExportAs( EditorState.Instance.CurrentRuntimeScene );
+			SceneExporter.Instance.ExportAs( EditorState.Instance.CurrentRuntimeScene );
 		}
 
 		private void display_MouseMove( object sender, MouseEventArgs e )

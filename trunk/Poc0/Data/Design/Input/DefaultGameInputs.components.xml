@@ -21,7 +21,7 @@
         <command name="TurnLeft">
           <input key="Q" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
         </command>
-        <command name="TurnLeft">
+        <command name="TurnRight">
           <input key="E" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
         </command>
       </commandList>

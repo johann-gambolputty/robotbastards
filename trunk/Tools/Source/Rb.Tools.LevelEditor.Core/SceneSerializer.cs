@@ -15,6 +15,14 @@ namespace Rb.Tools.LevelEditor.Core
 	public class SceneSerializer
 	{
 		/// <summary>
+		/// Gets the scene serializer singleton
+		/// </summary>
+		public static SceneSerializer Instance
+		{
+			get { return ms_Singleton; }
+		}
+
+		/// <summary>
 		/// Access to the last save path
 		/// </summary>
 		public string LastSavePath
@@ -170,7 +178,15 @@ namespace Rb.Tools.LevelEditor.Core
 
 		#region Private stuff
 
+		private readonly static SceneSerializer ms_Singleton = new SceneSerializer( );
 		private string m_LastSavePath;
+
+		/// <summary>
+		/// Private constructor forces singleton use only
+		/// </summary>
+		private SceneSerializer( )
+		{
+		}
 
 		#endregion
 	}

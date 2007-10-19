@@ -66,6 +66,11 @@ namespace Rb.Core.Maths
 		/// <returns>Returns Previous, if t is 0, Next if t is 1, and an intermediate position if t is inbetween 0 and 1</returns>
 		public Point3 UpdateCurrent( long time )
 		{
+			if ( m_LastStepTime == 0 )
+			{
+				m_LastStepInterval = 1;
+				m_LastStepTime = time;
+			}
 			return UpdateCurrent( ( time - m_LastStepTime ) / ( float )m_LastStepInterval );
 		}
 
