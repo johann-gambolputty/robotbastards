@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Poc0.Core.Environment;
 using Rb.Core.Maths;
+using Rb.Rendering;
 
 namespace Poc0.LevelEditor.Core
 {
@@ -25,12 +26,74 @@ namespace Poc0.LevelEditor.Core
 			m_ChopSize = chopSize;
 		}
 
+		private class Vertex
+		{
+			[VertexField( VertexField.Position )]
+			public Point3 m_Point;
+			
+			[VertexField( VertexField.Normal )]
+			public Vector3 m_Normal;
+
+			public Vertex( Point3 pt, Vector3 normal )
+			{
+				m_Point = pt;
+				m_Normal = normal;
+			}
+		}
+
+		private static void CreateGroup( Csg.BspNode node, ICollection< Vertex > vertices )
+		{
+			if ( node == null )
+			{
+				return;
+			}
+
+			Vector3 planeNormal = new Vector3( node.Plane.Normal.X, 0, node.Plane.Normal.Y );
+
+			vertices.Add( new Vertex( node.Quad[ 0 ], planeNormal ) );
+			vertices.Add( new Vertex( node.Quad[ 1 ], planeNormal ) );
+			vertices.Add( new Vertex( node.Quad[ 2 ], planeNormal ) );
+			
+			vertices.Add( new Vertex( node.Quad[ 2 ], planeNormal ) );
+			vertices.Add( new Vertex( node.Quad[ 3 ], planeNormal ) );
+			vertices.Add( new Vertex( node.Quad[ 0 ], planeNormal ) );
+
+			CreateGroup( node.Behind, vertices );
+			CreateGroup( node.InFront, vertices );
+		}
+
+		private static EnvironmentGraphicsData.CellGeometryGroup CreateGroup( Csg.BspNode node )
+		{
+			List< Vertex > vertices = new List< Vertex >( );
+			CreateGroup( node, vertices );
+
+			VertexBufferData vertexData = new VertexBufferData( vertices.Count );
+			//vertexData.FromVertexCollection( vertices );
+			float[] positions = vertexData.Add< float >( VertexField.Position, 3 );
+			float[] normals = vertexData.Add< float >( VertexField.Normal, 3 );
+
+			int positionIndex = 0;
+			int normalIndex = 0;
+			for ( int vertexIndex = 0; vertexIndex < vertices.Count; ++vertexIndex )
+			{
+				positions[ positionIndex++ ] = vertices[ vertexIndex ].m_Point.X;
+				positions[ positionIndex++ ] = vertices[ vertexIndex ].m_Point.Y;
+				positions[ positionIndex++ ] = vertices[ vertexIndex ].m_Point.Z;
+				
+				normals[ normalIndex++ ] = vertices[ vertexIndex ].m_Normal.X;
+				normals[ normalIndex++ ] = vertices[ vertexIndex ].m_Normal.Y;
+				normals[ normalIndex++ ] = vertices[ vertexIndex ].m_Normal.Z;
+			}
+
+			return new EnvironmentGraphicsData.CellGeometryGroup( vertexData, null );
+		}
+
 		/// <summary>
 		/// Builds runtime environment graphics from level geometry
 		/// </summary>
 		/// <param name="geometry">Level geometry</param>
 		/// <returns>Returns a new EnvironmentGraphics object</returns>
-		public EnvironmentGraphics Build( LevelGeometry geometry )
+		public IRenderable Build(LevelGeometry geometry)
 		{
 			//	Check that there is some geometry to process
 			if ( ( geometry.Csg == null ) || ( geometry.Csg.Root == null ) )
@@ -38,6 +101,20 @@ namespace Poc0.LevelEditor.Core
 				return null;
 			}
 
+			EnvironmentGraphicsData envGraphicsData = new EnvironmentGraphicsData( 1, 1 );
+
+			EnvironmentGraphicsData.GridCell levelCell = new EnvironmentGraphicsData.GridCell( );
+
+			EnvironmentGraphicsData.CellGeometryGroup group = CreateGroup( geometry.Csg.Root );
+			levelCell.Groups.Add( group );
+
+			envGraphicsData[ 0, 0 ] = levelCell;
+			
+			IEnvironmentGraphics envGraphics = Graphics.Factory.Create< IEnvironmentGraphics >( );
+			envGraphics.Build( envGraphicsData );
+			return envGraphics;
+
+			/*
 			//	Determine x/z bounds of the geometry
 			Rectangle levelBounds = GetLevelBounds( geometry.Csg.Root );
 
@@ -58,6 +135,7 @@ namespace Poc0.LevelEditor.Core
 			}
 
 			return null;
+			*/
 		}
 
 		private class TriBuilder
@@ -164,6 +242,10 @@ namespace Poc0.LevelEditor.Core
 			}
 		}
 
+
+		/// <summary>
+		/// Clips a quad against 4 planes, defined by a rectangle on the x-z plane
+		/// </summary>
 		private static void ClipQuad( bool left, Point3[] quad, byte outcode, float x, float y, float mX, float mY )
 		{
 			//	x = x0 + 1/slope * (y - y0)

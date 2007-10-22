@@ -4,203 +4,176 @@ using Tao.OpenGl;
 namespace Rb.Rendering.OpenGl
 {
 	/// <summary>
-	/// Summary description for OpenGlVertexBuffer.
+	/// Vertex buffer object
 	/// </summary>
-	public class OpenGlVertexBuffer
+	public class OpenGlVertexBuffer : IVertexBuffer
 	{
 		/// <summary>
-		/// Access to the opengl vertex buffer handle
+		/// Creates this vertex buffer
 		/// </summary>
-		public int Handle
+		/// <param name="data">Vertex buffer creation data</param>
+		public unsafe OpenGlVertexBuffer( VertexBufferData data )
 		{
-			get
+            int[] bufferHandles = new int[ 1 ] { 0 };
+            Gl.glGenBuffersARB( 1, bufferHandles );
+            m_Handle = bufferHandles[ 0 ];
+			
+			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );
+
+			int numSupportedFields = data.NumSupportedFields;
+			m_Fields = new FieldInfo[ numSupportedFields ];
+
+			byte[] mem = new byte[ data.VertexSize * data.NumVertices ];
+			fixed( byte* vertexBytes = mem )
 			{
-				return m_Handle;
+				int offset = 0;
+				int fieldIndex = 0;
+				foreach ( VertexBufferData.FieldValues field in data.SupportedFieldValues )
+				{
+					FieldInfo info = new FieldInfo( );
+
+					field.Interleave( vertexBytes, offset, data.VertexSize, data.NumVertices );
+					switch ( field.ElementTypeId )
+					{
+						case VertexBufferData.ElementTypeId.Byte :
+						{
+							info.m_Type = Gl.GL_BYTE;
+							break;
+						}
+						case VertexBufferData.ElementTypeId.Float32 :
+						{
+							info.m_Type = Gl.GL_FLOAT;
+							break;
+						}
+						case VertexBufferData.ElementTypeId.UInt32 :
+						{
+							info.m_Type = Gl.GL_INT;
+							break;
+						}
+						default :
+						{
+							throw new InvalidOperationException( string.Format( "No mapping for interleave type \"{0}\" to opengl type", field.ElementTypeId ) );
+						}
+					}
+					switch( field.Field )
+					{
+						case VertexField.Position :
+						{
+							info.m_State = Gl.GL_VERTEX_ARRAY;
+							break;
+						}
+						case VertexField.Normal :
+						{
+							info.m_State = Gl.GL_NORMAL_ARRAY;
+							break;
+						}
+						case VertexField.Diffuse :
+						case VertexField.Specular :
+						{
+							info.m_State = Gl.GL_COLOR_ARRAY;
+							break;
+						}
+						case VertexField.Blend0 :
+						case VertexField.Blend1 :
+						case VertexField.Blend2 :
+						case VertexField.Blend3 :
+						{
+							info.m_State = Gl.GL_WEIGHT_ARRAY_ARB;
+							break;
+						}
+						case VertexField.Texture0 :
+						case VertexField.Texture1 :
+						case VertexField.Texture2 :
+						case VertexField.Texture3 :
+						case VertexField.Texture4 :
+						case VertexField.Texture5 :
+						case VertexField.Texture6 :
+						case VertexField.Texture7 :
+						{
+							info.m_State = Gl.GL_TEXTURE_COORD_ARRAY;
+							break;
+						}
+						default :
+						{
+							throw new InvalidOperationException( string.Format( "No mapping for field \"{0}\" to opengl client state ", field.Field ) );
+						}
+					}
+					info.m_NumElements = field.NumElements;
+					info.m_Offset = offset;
+					m_Fields[ fieldIndex++ ] = info;
+					offset += field.ElementSize;
+				}
 			}
+			
+			IntPtr size = new IntPtr( data.VertexSize * data.NumVertices );
+			Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, size, mem, data.Static ? Gl.GL_STATIC_DRAW_ARB : Gl.GL_DYNAMIC_DRAW_ARB );
 		}
 
-		/// <summary>
-		/// Access to the opengl client state
-		/// </summary>
-		public int ClientState
-		{
-			get
-			{
-				return m_ClientState;
-			}
-		}
-
-		/// <summary>
-		/// Access to the opengl element type (gl symbolic value for the base type of data in this buffer)
-		/// </summary>
-		public int ElementType
-		{
-			get
-			{
-				return m_ElementType;
-			}
-		}
-
-		/// <summary>
-		/// Stride between vertices
-		/// </summary>
-		public short Stride
-		{
-			get
-			{
-				return m_Stride;
-			}
-		}
-
-		/// <summary>
-		/// Number of elements in a vertex (of type ElementType)
-		/// </summary>
-		public short NumElements
-		{
-			get
-			{
-				return m_NumElements;
-			}
-		}
-        
-
-		/// <summary>
-		/// Sets up this vertex buffer
-		/// </summary>
-		/// <param name="numVertices">Number of vertices in the buffer</param>
-		/// <param name="offset">Offset from the start of buffer to the usable vertices (measured in vertices, not elements)</param>
-		/// <param name="clientState">OpenGL client state (e.g. GL_VERTEX_ARRAY)</param>
-		/// <param name="stride">Stride between vertices</param>
-		/// <param name="numElements">Number of floats per vertex</param>
-		/// <param name="usage">Buffer usage (e.g. GL_STATIC_BUFFER_ARB)</param>
-		/// <param name="buffer">Buffer data</param>
-		public OpenGlVertexBuffer( int numVertices, int offset, int clientState, short stride, short numElements, int usage, float[] buffer )
-		{
-            SetupAndBindBuffer( clientState, stride, numElements, Gl.GL_FLOAT );
-
-			//	Bind and fill the VBO
-			if ( offset == 0 )
-			{
-				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( ( 4 * numElements ) * numVertices ), buffer, usage );
-			}
-			else
-			{
-				float[] subBuffer = new float[ numVertices * numElements ];
-				Array.Copy( buffer, offset * numElements, subBuffer, 0, numVertices * numElements );
-				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( ( 4 * numElements ) * numVertices ), subBuffer, usage );
-			}
-		}
-
-		/// <summary>
-		/// Sets up this vertex buffer
-		/// </summary>
-		/// <param name="numVertices">Number of vertices in the buffer</param>
-		/// <param name="offset">Offset from the start of buffer to the usable vertices (measured in vertices, not elements)</param>
-		/// <param name="clientState">OpenGL client state (e.g. GL_VERTEX_ARRAY)</param>
-		/// <param name="stride">Stride between vertices</param>
-		/// <param name="numElements">Number of integers per vertex</param>
-		/// <param name="usage">Buffer usage (e.g. GL_STATIC_BUFFER_ARB)</param>
-		/// <param name="buffer">Buffer data</param>
-		public OpenGlVertexBuffer( int numVertices, int offset, int clientState, short stride, short numElements, int usage, int[] buffer )
-		{
-            SetupAndBindBuffer( clientState, stride, numElements, Gl.GL_INT );
-
-			if ( offset == 0 )
-			{
-				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( ( 4 * numElements ) * numVertices ), buffer, usage );
-			}
-			else
-			{
-				int[] subBuffer = new int[ numVertices * numElements ];
-				Array.Copy( buffer, offset * numElements, subBuffer, 0, numVertices * numElements );
-				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( ( 4 * numElements ) * numVertices ), subBuffer, usage );
-			}
-		}
-
-		/// <summary>
-		/// Sets up this vertex buffer
-		/// </summary>
-		/// <param name="numVertices">Number of vertices in the buffer</param>
-		/// <param name="offset">Offset from the start of buffer to the usable vertices (measured in vertices, not elements)</param>
-		/// <param name="clientState">OpenGL client state (e.g. GL_VERTEX_ARRAY)</param>
-		/// <param name="stride">Stride between vertices</param>
-		/// <param name="numElements">Number of integers per vertex</param>
-		/// <param name="usage">Buffer usage (e.g. GL_STATIC_BUFFER_ARB)</param>
-		/// <param name="buffer">Buffer data</param>
-		public OpenGlVertexBuffer( int numVertices, int offset, int clientState, short stride, short numElements, int usage, byte[] buffer )
-		{
-            SetupAndBindBuffer( clientState, stride, numElements, Gl.GL_UNSIGNED_BYTE );
-
-			if ( offset == 0 )
-			{
-				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( ( 1 * numElements ) * numVertices ), buffer, usage );
-			}
-			else
-			{
-				byte[] subBuffer = new byte[ numVertices * numElements ];
-				Array.Copy( buffer, offset * numElements, subBuffer, 0, numVertices * numElements );
-				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( ( 4 * numElements ) * numVertices ), subBuffer, usage );
-			}
-		}
+		#region IPass Members
 
 		/// <summary>
 		/// Applies this vertex buffer
 		/// </summary>
 		public void Begin( )
 		{
-			Gl.glEnableClientState( ClientState );
 			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );
-
 			float[] nullArray = null;
-			switch ( ClientState )
+			for ( int fieldIndex = 0; fieldIndex < m_Fields.Length; ++fieldIndex )
 			{
-				case Gl.GL_VERTEX_ARRAY :
-					Gl.glVertexPointer( NumElements, ElementType, 0, nullArray );
-					break;
-
-				case Gl.GL_NORMAL_ARRAY :
-					Gl.glNormalPointer( ElementType, 0, nullArray );
-					break;
-
-				case Gl.GL_COLOR_ARRAY :
-					Gl.glColorPointer( NumElements, ElementType, 0, nullArray );
-					break;
-
-				case Gl.GL_TEXTURE_COORD_ARRAY :
-					Gl.glTexCoordPointer( NumElements, ElementType, 0, nullArray );
-					break;
+				FieldInfo field = m_Fields[ fieldIndex ];
+				Gl.glEnableClientState( field.m_State );
+				switch ( field.m_State )
+				{
+					case Gl.GL_VERTEX_ARRAY :
+					{
+						Gl.glVertexPointer( field.m_NumElements, field.m_Type, field.m_Offset, nullArray );
+						break;
+					}
+					case Gl.GL_NORMAL_ARRAY :
+					{
+						Gl.glNormalPointer( field.m_Type, field.m_Offset, nullArray );
+						break;
+					}
+					case Gl.GL_COLOR_ARRAY :
+					{
+						Gl.glColorPointer( field.m_NumElements, field.m_Type, field.m_Offset, nullArray );
+						break;
+					}
+					case Gl.GL_TEXTURE_COORD_ARRAY:
+					{
+						Gl.glTexCoordPointer( field.m_NumElements, field.m_Type, field.m_Offset, nullArray );
+						break;
+					}
+				}
 			}
 		}
 
 		/// <summary>
-		/// Disables the client state that was enabled by Begin()
+		/// Un-applies this vertex buffer
 		/// </summary>
 		public void End( )
 		{
-			Gl.glDisableClientState( ClientState );
+			for ( int fieldIndex = 0; fieldIndex < m_Fields.Length; ++fieldIndex )
+			{
+				Gl.glDisableClientState( m_Fields[ fieldIndex ].m_State );
+			}
 		}
 
-		private	int		m_Handle;
-		private int		m_ClientState;
-		private int		m_ElementType;
-		private short	m_Stride;
-		private short	m_NumElements;
+		#endregion
 
-        /// <summary>
-        /// Sets up buffer parameters, creates the buffer, and binds it
-        /// </summary>
-        private void SetupAndBindBuffer( int clientState, short stride, short numElements, int elementType )
-        {
-            m_ClientState   = clientState;
-            m_Stride        = stride;
-            m_NumElements   = numElements;
-            m_ElementType   = elementType;
+		#region Private stuff
 
-            int[] buffer = new int[ 1 ] { 0 };
-            Gl.glGenBuffersARB( 1, buffer );
-            m_Handle = buffer[ 0 ];
+		private struct FieldInfo
+		{
+			public int m_State;
+			public int m_Offset;
+			public int m_Type;
+			public int m_NumElements;
+		}
 
-            Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );
-        }
+		private readonly int m_Handle;
+		private readonly FieldInfo[] m_Fields;
+
+		#endregion
 	}
 }

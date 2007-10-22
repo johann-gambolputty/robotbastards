@@ -64,6 +64,15 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
+		/// Creates a new IVertexBuffer object
+		/// </summary>
+		public override IVertexBuffer NewVertexBuffer( VertexBufferData bufferData )
+		{
+			return new OpenGlVertexBuffer( bufferData );
+		}
+
+
+		/// <summary>
 		/// Creates a new Renderer object
 		/// </summary>
 		protected override Renderer NewRenderer( )

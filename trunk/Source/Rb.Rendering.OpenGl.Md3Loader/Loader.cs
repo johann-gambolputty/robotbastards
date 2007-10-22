@@ -540,7 +540,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Reads surface texture coordinates
 		/// </summary>
-		private static OpenGlVertexBuffer ReadTextureUVs(BinaryReader reader, long offset, int numCoordinates)
+		private static OpenGlVertexArray ReadTextureUVs(BinaryReader reader, long offset, int numCoordinates)
 		{
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
 			
@@ -552,7 +552,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				texCoords[ coordinateIndex++ ] = reader.ReadSingle( );
 			}
 
-			return new OpenGlVertexBuffer( numCoordinates, 0, Gl.GL_TEXTURE_COORD_ARRAY, 0, 2, Gl.GL_STATIC_DRAW, texCoords );
+			return new OpenGlVertexArray( numCoordinates, 0, Gl.GL_TEXTURE_COORD_ARRAY, 0, 2, Gl.GL_STATIC_DRAW, texCoords );
 		}
 
 		/// <summary>
@@ -604,10 +604,10 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				}
 
 				//	Convert position and normal data into vertex buffer objects
-				frame.VertexBuffers = new OpenGlVertexBuffer[ 2 ];
+				frame.VertexBuffers = new OpenGlVertexArray[ 2 ];
 
-				frame.VertexBuffers[ 0 ] = new OpenGlVertexBuffer( numVertices, 0, Gl.GL_VERTEX_ARRAY, 0, 3, Gl.GL_STATIC_DRAW_ARB, positions );
-				frame.VertexBuffers[ 1 ] = new OpenGlVertexBuffer( numVertices, 0, Gl.GL_NORMAL_ARRAY, 0, 3, Gl.GL_STATIC_DRAW_ARB, normals );
+				frame.VertexBuffers[ 0 ] = new OpenGlVertexArray( numVertices, 0, Gl.GL_VERTEX_ARRAY, 0, 3, Gl.GL_STATIC_DRAW_ARB, positions );
+				frame.VertexBuffers[ 1 ] = new OpenGlVertexArray( numVertices, 0, Gl.GL_NORMAL_ARRAY, 0, 3, Gl.GL_STATIC_DRAW_ARB, normals );
 
 				//	Assign the frame to the surface
 				surface.SurfaceFrames[ frameIndex ] = frame;

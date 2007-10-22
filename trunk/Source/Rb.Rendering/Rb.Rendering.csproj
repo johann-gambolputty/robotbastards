@@ -18,6 +18,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -26,6 +27,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'NDoc|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -68,6 +70,7 @@
     <Compile Include="IEffect.cs" />
     <Compile Include="ITechnique.cs" />
     <Compile Include="ITechniqueSelector.cs" />
+    <Compile Include="IVertexBuffer.cs" />
     <Compile Include="Light.cs" />
     <Compile Include="LightGroup.cs" />
     <Compile Include="Material.cs" />
@@ -98,6 +101,7 @@
     <Compile Include="TexturePacker.cs" />
     <Compile Include="TextureSampler2d.cs" />
     <Compile Include="Transform.cs" />
+    <Compile Include="VertexBufferData.cs" />
     <Compile Include="Viewer.cs" />
   </ItemGroup>
   <ItemGroup>

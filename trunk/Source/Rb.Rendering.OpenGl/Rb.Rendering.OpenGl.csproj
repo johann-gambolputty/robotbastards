@@ -78,6 +78,7 @@
     <Compile Include="OpenGlShapeRenderer.cs" />
     <Compile Include="OpenGlTexture2d.cs" />
     <Compile Include="OpenGlTextureSampler2d.cs" />
+    <Compile Include="OpenGlVertexArray.cs" />
     <Compile Include="OpenGlVertexBuffer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

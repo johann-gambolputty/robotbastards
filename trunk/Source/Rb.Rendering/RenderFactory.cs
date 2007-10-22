@@ -112,6 +112,12 @@ namespace Rb.Rendering
 		public abstract RenderTarget NewRenderTarget( );
 
 		/// <summary>
+		/// Creates a new IVertexBuffer object
+		/// </summary>
+		/// <param name="bufferData">Vertex buffer initialisation data</param>
+		public abstract IVertexBuffer NewVertexBuffer( VertexBufferData bufferData );
+
+		/// <summary>
 		/// Creates a new Renderer object
 		/// </summary>
 		protected internal abstract Renderer NewRenderer( );

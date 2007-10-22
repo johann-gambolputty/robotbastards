@@ -44,13 +44,13 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="size"></param>
 		public void			CreateVertexBuffers( int size )
 		{
-			m_VertexBuffers = new OpenGlVertexBuffer[ size ];
+			m_VertexBuffers = new OpenGlVertexArray[ size ];
 		}
 
 		/// <summary>
 		/// Sets a vertex buffer
 		/// </summary>
-		public void			SetVertexBuffer( int index, OpenGlVertexBuffer vertexBuffer )
+		public void			SetVertexBuffer( int index, OpenGlVertexArray vertexBuffer )
 		{
 			m_VertexBuffers[ index ] = vertexBuffer;
 		}
@@ -166,7 +166,7 @@ namespace Rb.Rendering.OpenGl
 
         private DelegateRenderable          m_RenderMesh;
 		private OpenGlIndexedGroup[]		m_Groups;
-		private OpenGlVertexBuffer[]		m_VertexBuffers;
+		private OpenGlVertexArray[]		m_VertexBuffers;
 		private string						m_Name;
         private TechniqueSelector           m_Technique = new TechniqueSelector( );
 		private OpenGlTextureSampler2d[]	m_Textures = new OpenGlTextureSampler2d[ 8 ];

@@ -1,4 +1,3 @@
-using System;
 using Tao.OpenGl;
 
 namespace Rb.Rendering.OpenGl
@@ -20,12 +19,12 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Draws elements in this group
 		/// </summary>
-		public void		Draw( )
+		public void Draw( )
 		{
 			Gl.glDrawElements( m_PrimitiveType, m_Indices.Length, Gl.GL_UNSIGNED_INT, m_Indices );
 		}
 
-		private int		m_PrimitiveType;
-		private int[]	m_Indices;
+		private readonly int	m_PrimitiveType;
+		private readonly int[]	m_Indices;
 	}
 }
