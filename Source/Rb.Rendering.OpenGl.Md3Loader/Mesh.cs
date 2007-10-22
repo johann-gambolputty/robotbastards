@@ -134,13 +134,13 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			/// <summary>
 			/// Access to the frame's vertex buffers
 			/// </summary>
-			public OpenGlVertexBuffer[] VertexBuffers
+			public OpenGlVertexArray[] VertexBuffers
 			{
 				get { return m_VertexBuffers; }
 				set { m_VertexBuffers = value; }
 			}
 
-			private OpenGlVertexBuffer[]	m_VertexBuffers;
+			private OpenGlVertexArray[]	m_VertexBuffers;
 		}
 
 		/// <summary>
@@ -178,7 +178,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			/// <summary>
 			/// Access to texture coordinates used by this surface
 			/// </summary>
-			public OpenGlVertexBuffer TextureUVs
+			public OpenGlVertexArray TextureUVs
 			{
 				get { return m_TextureUVs; }
 				set { m_TextureUVs = value; }
@@ -186,7 +186,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 			private SurfaceFrame[]		m_Frames;
 			private OpenGlIndexedGroup	m_Group;
-			private OpenGlVertexBuffer	m_TextureUVs;
+			private OpenGlVertexArray	m_TextureUVs;
 			private Texture2d			m_Texture;
 		}
 
@@ -213,7 +213,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// The mesh render effect
 		/// </summary>
-		public IEffect	Effect
+		public IEffect Effect
 		{
 			get
 			{
