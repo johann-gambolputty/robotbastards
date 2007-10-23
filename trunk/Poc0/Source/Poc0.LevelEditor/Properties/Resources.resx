@@ -142,6 +142,9 @@
   <data name="FailedToSaveScene" xml:space="preserve">
     <value>Failed to save scene to file "{0}"</value>
   </data>
+  <data name="GameUnhandledException" xml:space="preserve">
+    <value>Game threw an exception</value>
+  </data>
   <data name="NoLocationManagersWithUI" xml:space="preserve">
     <value>No asset location managers with UI were available</value>
   </data>

@@ -235,8 +235,10 @@ namespace Poc0.LevelEditor.Core
 			//	Rubbish renderable representation - (next) Render() recreates renderable representation
 			DestroyRenderable( );
 
+			//	TODO: AP: REMOVE (test)
+			
 			//	Update environment
-			m_Environment.Walls = BuildWalls( m_Csg.Root );
+			m_Environment.Graphics = new EnvironmentGraphicsBuilder( 100.0f ).Build( this );
 		}
 
 		/// <summary>

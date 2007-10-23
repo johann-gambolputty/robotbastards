@@ -59,7 +59,6 @@
     <Compile Include="Environment\Collisions.cs" />
     <Compile Include="Environment\Environment.cs" />
     <Compile Include="Environment\Floor.cs" />
-    <Compile Include="Environment\EnvironmentGraphics.cs" />
     <Compile Include="Environment\INavigator.cs" />
     <Compile Include="Environment\Navigator.cs" />
     <Compile Include="Environment\WallNode.cs" />

@@ -6,6 +6,7 @@ using Poc0.LevelEditor.Core.Rendering;
 using Rb.Core.Assets;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
+using Rb.Log;
 using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.Controls.Forms;
@@ -115,8 +116,16 @@ namespace Poc0.LevelEditor
 
 			GameSetup setup = new GameSetup( sceneSource, players, viewerSource );
 
-			GameViewForm gameForm = new GameViewForm( setup );
-			gameForm.Show( this );
+			try
+			{
+				GameViewForm gameForm = new GameViewForm(setup);
+				gameForm.Show(this);
+			}
+			catch ( Exception ex )
+			{
+				AppLog.Exception( ex, "Game threw an exception" );
+				MessageBox.Show( Properties.Resources.GameUnhandledException, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
 		}
 	}
 }

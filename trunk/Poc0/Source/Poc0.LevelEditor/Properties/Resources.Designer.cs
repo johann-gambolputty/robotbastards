@@ -131,6 +131,15 @@ namespace Poc0.LevelEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Game threw an exception.
+        /// </summary>
+        internal static string GameUnhandledException {
+            get {
+                return ResourceManager.GetString("GameUnhandledException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No asset location managers with UI were available.
         /// </summary>
         internal static string NoLocationManagersWithUI {

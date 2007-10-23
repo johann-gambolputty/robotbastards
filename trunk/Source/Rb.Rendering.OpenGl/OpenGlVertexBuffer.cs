@@ -26,8 +26,8 @@ namespace Rb.Rendering.OpenGl
 			byte[] mem = new byte[ data.VertexSize * data.NumVertices ];
 			fixed( byte* vertexBytes = mem )
 			{
-				int offset = 0;
 				int fieldIndex = 0;
+				int offset = 0;
 				foreach ( VertexBufferData.FieldValues field in data.SupportedFieldValues )
 				{
 					FieldInfo info = new FieldInfo( );
@@ -98,12 +98,17 @@ namespace Rb.Rendering.OpenGl
 							throw new InvalidOperationException( string.Format( "No mapping for field \"{0}\" to opengl client state ", field.Field ) );
 						}
 					}
-					info.m_NumElements = field.NumElements;
-					info.m_Offset = offset;
+
+					short fieldSize = ( short )( field.ElementSize * field.NumElements );
+
+					info.m_NumElements = ( short )field.NumElements;
+					info.m_Size = fieldSize;
 					m_Fields[ fieldIndex++ ] = info;
-					offset += field.ElementSize;
+					offset += fieldSize;
 				}
 			}
+
+			m_Stride = data.VertexSize;
 			
 			IntPtr size = new IntPtr( data.VertexSize * data.NumVertices );
 			Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, size, mem, data.Static ? Gl.GL_STATIC_DRAW_ARB : Gl.GL_DYNAMIC_DRAW_ARB );
@@ -117,7 +122,8 @@ namespace Rb.Rendering.OpenGl
 		public void Begin( )
 		{
 			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );
-			float[] nullArray = null;
+
+			int offset = 0;
 			for ( int fieldIndex = 0; fieldIndex < m_Fields.Length; ++fieldIndex )
 			{
 				FieldInfo field = m_Fields[ fieldIndex ];
@@ -126,25 +132,27 @@ namespace Rb.Rendering.OpenGl
 				{
 					case Gl.GL_VERTEX_ARRAY :
 					{
-						Gl.glVertexPointer( field.m_NumElements, field.m_Type, field.m_Offset, nullArray );
+						Gl.glVertexPointer( field.m_NumElements, field.m_Type, m_Stride, new IntPtr( offset ) );
 						break;
 					}
 					case Gl.GL_NORMAL_ARRAY :
 					{
-						Gl.glNormalPointer( field.m_Type, field.m_Offset, nullArray );
+						Gl.glNormalPointer( field.m_Type, m_Stride, new IntPtr( offset ) );
 						break;
 					}
 					case Gl.GL_COLOR_ARRAY :
 					{
-						Gl.glColorPointer( field.m_NumElements, field.m_Type, field.m_Offset, nullArray );
+						Gl.glColorPointer( field.m_NumElements, field.m_Type, m_Stride, new IntPtr( offset ) );
 						break;
 					}
 					case Gl.GL_TEXTURE_COORD_ARRAY:
 					{
-						Gl.glTexCoordPointer( field.m_NumElements, field.m_Type, field.m_Offset, nullArray );
+						Gl.glTexCoordPointer( field.m_NumElements, field.m_Type, m_Stride, new IntPtr( offset ) );
 						break;
 					}
 				}
+
+				offset += field.m_Size;
 			}
 		}
 
@@ -166,11 +174,12 @@ namespace Rb.Rendering.OpenGl
 		private struct FieldInfo
 		{
 			public int m_State;
-			public int m_Offset;
 			public int m_Type;
-			public int m_NumElements;
+			public short m_NumElements;
+			public short m_Size;
 		}
 
+		private readonly int m_Stride;
 		private readonly int m_Handle;
 		private readonly FieldInfo[] m_Fields;
 
