@@ -1,13 +1,14 @@
 using System;
+using System.Runtime.Serialization;
 using Poc0.Core.Environment;
-using Rb.Core.Maths;
 using Rb.Rendering;
+using Rb.World;
 using Tao.OpenGl;
 
 namespace Poc0.Core.Rendering.OpenGl
 {
-	[Serializable]
-	public class OpenGlEnvironmentGraphics : EnvironmentGraphics
+	[Serializable, RenderingLibraryType]
+	public class OpenGlEnvironmentGraphics : IEnvironmentGraphics, ISceneObject
 	{
 		private readonly RenderState m_WallState;
 		private readonly RenderState m_FloorState;
@@ -30,77 +31,102 @@ namespace Poc0.Core.Rendering.OpenGl
 		/// Renders the environment
 		/// </summary>
 		/// <param name="context">Rendering context</param>
-		public override void Render( IRenderContext context )
+		public void Render( IRenderContext context )
 		{
-			if ( Walls == null )
-			{
-				return;
-			}
-
 			//	Render walls
 			Graphics.Renderer.PushRenderState( m_WallState );
 
-			Gl.glBegin( Gl.GL_QUADS );
-			RenderWall( context, Walls );
-			Gl.glEnd( );
+			foreach ( Cell cell in m_Grid )
+			{
+				cell.Render( context );
+			}
 			
-			Graphics.Renderer.PopRenderState( );
-			
-			//	Render floors
-			Graphics.Renderer.PushRenderState( m_FloorState );
-
-			Gl.glBegin( Gl.GL_TRIANGLES );
-			RenderFloors( context, Walls );
-			Gl.glEnd( );
-
 			Graphics.Renderer.PopRenderState( );
 		}
 
 		#region Private members
 
-		private static void RenderFloors( IRenderContext context, WallNode wall )
+		[NonSerialized]
+		private Cell[,] m_Grid;
+
+		private class GeometryGroup
 		{
-			if ( wall.Floor != null )
+			public GeometryGroup( EnvironmentGraphicsData.CellGeometryGroup src )
 			{
-				Point2[] points = wall.Floor.Points;
-				Point2 basePos = points[ 0 ];
-				float height = wall.Floor.Height;
-				for ( int vertexIndex = 1; vertexIndex < points.Length - 1; ++vertexIndex )
+				m_NumTris = src.Vertices.NumVertices / 3;
+				m_Vertices = Graphics.Factory.NewVertexBuffer( src.Vertices );
+			}
+
+			public void Render( IRenderContext context )
+			{
+				m_Vertices.Begin( );
+				Gl.glDrawArrays( Gl.GL_TRIANGLES, 0, m_NumTris * 3 );
+				m_Vertices.End( );
+			}
+
+			private readonly int m_NumTris;
+			private readonly IVertexBuffer m_Vertices;
+		}
+
+		private class Cell
+		{
+			public Cell( EnvironmentGraphicsData.GridCell src )
+			{
+				m_Groups = new GeometryGroup[ src.Groups.Count ];
+				for ( int groupIndex = 0; groupIndex < m_Groups.Length; ++groupIndex )
 				{
-					Gl.glVertex3f( basePos.X, height, basePos.Y );
-					Gl.glVertex3f( points[ vertexIndex ].X, height, points[ vertexIndex ].Y );
-					Gl.glVertex3f( points[ vertexIndex + 1 ].X, height, points[ vertexIndex + 1 ].Y );
+					m_Groups[ groupIndex ] = new GeometryGroup( src.Groups[ groupIndex ] );
 				}
 			}
-			if ( wall.InFront != null )
+
+			public void Render( IRenderContext context )
 			{
-				RenderFloors( context, wall.InFront );
+				foreach ( GeometryGroup group in m_Groups )
+				{
+					group.Render( context );
+				}
 			}
-			if ( wall.Behind != null )
+
+			private readonly GeometryGroup[] m_Groups;
+		}
+
+		private EnvironmentGraphicsData m_Data;
+
+		[OnDeserialized]
+		public void OnDeserialized( StreamingContext context )
+		{
+			Build( m_Data );
+		}
+
+		#endregion
+
+		#region IEnvironmentGraphics Members
+
+		public void Build( EnvironmentGraphicsData data )
+		{
+			m_Data = data;
+			m_Grid = new Cell[ data.Width, data.Height ];
+			for ( int y = 0; y < data.Height; ++y )
 			{
-				RenderFloors( context, wall.Behind );
+				for ( int x = 0; x < data.Width; ++x )
+				{
+					m_Grid[ x, y ] = new Cell( data[ x, y ] );
+				}
 			}
 		}
 
-		private static void RenderWall( IRenderContext context, WallNode wall )
-		{
-			Gl.glVertex3f( wall.Start.X, 0, wall.Start.Y );
-			Gl.glVertex3f( wall.End.X, 0, wall.End.Y );
-			Gl.glVertex3f( wall.End.X, wall.Height, wall.End.Y );
-			Gl.glVertex3f( wall.Start.X, wall.Height, wall.Start.Y );
+		#endregion
 
-			if ( wall.Floor != null )
-			{
-				//	TODO: AP: ... Render floor ...
-			}
-			if ( wall.InFront != null )
-			{
-				RenderWall( context, wall.InFront );
-			}
-			if ( wall.Behind != null )
-			{
-				RenderWall( context, wall.Behind );
-			}
+		#region ISceneObject Members
+
+		public void AddedToScene( Scene scene )
+		{
+			scene.Renderables.Add( this );
+		}
+
+		public void RemovedFromScene( Scene scene )
+		{
+			scene.Renderables.Remove( this );
 		}
 
 		#endregion

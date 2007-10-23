@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Reflection;
 using Rb.Core.Maths;
 
@@ -69,6 +70,72 @@ namespace Rb.Rendering
 			UInt32,
 		}
 
+		#region Buffer creation from vertex objects
+		
+		/// <summary>
+		/// Creates vertex data from an array of vertex objects
+		/// </summary>
+		/// <typeparam name="T">Vertex type</typeparam>
+		/// <param name="vertices">Vertex array</param>
+		public static VertexBufferData FromVertexCollection< T >( ICollection< T > vertices )
+		{
+			List<FieldInfo> fields = new List<FieldInfo>( );
+			List<ElementTypeConverter> converters = new List<ElementTypeConverter>( );
+			List<FieldValues> valueArrays = new List<FieldValues>( );
+
+			VertexBufferData buffer = new VertexBufferData( vertices.Count );
+
+			//	Run through all the fields in type T
+			foreach ( FieldInfo field in typeof( T ).GetFields( BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic ) )
+			{
+				//	Check if the current field has a VertexField attribute
+				VertexFieldAttribute[] attributes = ( VertexFieldAttribute[] )field.GetCustomAttributes( typeof( VertexFieldAttribute ), false );
+				if ( attributes.Length > 0 )
+				{
+					//	It does - add it to the fields list
+					fields.Add( field );
+
+					//	Add an element type converter (for transfering the field's type into a float/uint/byte array)
+					ElementTypeConverter converter = GetDefaultConverter( field.FieldType );
+					converters.Add( converter );
+
+					//	Create the FieldValues object
+					Array values = Array.CreateInstance( GetElementType( converter.ElementTypeId ), converter.NumElements * vertices.Count );
+					FieldValues fieldValues = new FieldValues( attributes[ 0 ].VertexField, converter.ElementTypeId, converter.NumElements, values );
+					valueArrays.Add( fieldValues );
+					buffer.m_FieldArrays[ ( int )attributes[ 0 ].VertexField ] = fieldValues;
+
+					buffer.m_VertexSize += GetElementTypeSize( converter.ElementTypeId ) * converter.NumElements;
+				}
+			}
+			
+			//	For each vertex in the source collection
+			int[] fieldIndexes = new int[ fields.Count ];
+			foreach ( T vertex in vertices )
+			{
+				//	Transfer the current vertex's marked fields into the FieldValues arrays
+				for ( int fieldIndex = 0; fieldIndex < fields.Count; ++fieldIndex )
+				{
+					object value = fields[ fieldIndex ].GetValue( vertex );
+					fieldIndexes[ fieldIndex ] = converters[ fieldIndex ].ToArray( value, valueArrays[fieldIndex].Values, fieldIndexes[ fieldIndex ] );
+				}
+			}
+
+			return buffer;
+		}
+		
+		/// <summary>
+		/// Gets an element type converter for a given type
+		/// </summary>
+		/// <param name="type">Source type</param>
+		/// <returns>Converter for source type</returns>
+		public static ElementTypeConverter GetDefaultConverter( Type type )
+		{
+			return ms_DefaultConverters[ type ];
+		}
+		
+		#endregion
+
 		#region Construction
 
 		/// <summary>
@@ -80,82 +147,71 @@ namespace Rb.Rendering
 			m_NumVertices = numVertices;
 			m_FieldArrays = new FieldValues[ Enum.GetValues( typeof( VertexField ) ).Length ];
 		}
-
-		/// <summary>
-		/// Creates vertex data from an array of vertex objects
-		/// </summary>
-		/// <typeparam name="T">Vertex type</typeparam>
-		/// <param name="vertices">Vertex array</param>
-		public void FromVertexCollection< T >( ICollection< T > vertices )
-		{
-			List<FieldInfo> fields = new List<FieldInfo>( );
-			List<VertexField> vertexFields = new List<VertexField>( );
-			List<ElementTypeConverter> converters = new List<ElementTypeConverter>( );
-			List<FieldValues> valueArrays = new List<FieldValues>( );
-			foreach ( FieldInfo field in typeof( T ).GetFields( BindingFlags.NonPublic ) )
-			{
-				VertexFieldAttribute[] attributes = ( VertexFieldAttribute[] )field.GetCustomAttributes( typeof( VertexFieldAttribute ), false );
-				if ( attributes.Length > 0 )
-				{
-					fields.Add( field );
-					vertexFields.Add( attributes[ 0 ].VertexField );
-
-					ElementTypeConverter converter = GetDefaultConverter( field.FieldType );
-					converters.Add( converter );
-
-					Array values = Array.CreateInstance( GetElementType( converter.ElementTypeId ), converter.NumElements * vertices.Count );
-					valueArrays.Add( new FieldValues( attributes[ 0 ].VertexField, converter.ElementTypeId, converter.NumElements, values) );
-				}
-			}
-
-			int index = 0;
-			foreach ( T vertex in vertices )
-			{
-				for ( int fieldIndex = 0; fieldIndex < fields.Count; ++fieldIndex )
-				{
-					object value = fields[ fieldIndex ].GetValue( vertex );
-					index = converters[ fieldIndex ].ToArray( value, valueArrays[ fieldIndex ].Values, index );
-				}
-			}
-		}
-
-		public static ElementTypeConverter GetDefaultConverter( Type type )
-		{
-			return ms_DefaultConverters[ type ];
-		}
 		
-		private readonly static Dictionary< Type, ElementTypeConverter > ms_DefaultConverters;
-
-		static VertexBufferData( )
+		private static int Point2ToFloat32( Point2 src, float[] values, int index )
 		{
-			ms_DefaultConverters = new Dictionary<Type, ElementTypeConverter>( );
-			ms_DefaultConverters.Add( typeof( Point3 ), new ElementTypeConverter( typeof( Point3 ), 3, ElementTypeId.Float32, Point3To3xFloat32 ) );
+			values[ index++ ]	= src.X;
+			values[ index++ ]	= src.Y;
+			return index;
+		}
+		private static int Point3ToFloat32( Point3 src, float[] values, int index )
+		{
+			values[ index++ ]	= src.X;
+			values[ index++ ]	= src.Y;
+			values[ index++ ]	= src.Z;
+			return index;
 		}
 
-		public static int Point3To3xFloat32( object src, Array values, int index )
+		private static int Vector2ToFloat32(Vector2 src, float[] values, int index)
 		{
-			( ( float[] )values )[ index ]		= ( ( Point3 )src ).X;
-			( ( float[] )values )[ index + 1 ]	= ( ( Point3 )src ).Y;
-			( ( float[] )values )[ index + 2 ]	= ( ( Point3 )src ).Z;
-			return index + 3;
+			values[ index++ ]	= src.X;
+			values[ index++ ]	= src.Y;
+			return index;
+		}
+		private static int Vector3ToFloat32( Vector3 src, float[] values, int index )
+		{
+			values[ index++ ]	= src.X;
+			values[ index++ ]	= src.Y;
+			values[ index++ ]	= src.Z;
+			return index;
+		}
+		private static int ColourToByte( Color src, byte[] values, int index)
+		{
+			values[ index++ ] = src.R;
+			values[ index++ ] = src.G;
+			values[ index++ ] = src.B;
+			values[ index++ ] = src.A;
+			return index;
 		}
 
-		public delegate int ElementArrayWriterDelegate( object src, Array values, int index );
+		public delegate int ElementArrayWriterDelegate< SrcType, ElementType >( SrcType src, ElementType[] values, int index );
 
-		public class ElementTypeConverter
+		public class ElementTypeConverter< SrcType, ElementType > : ElementTypeConverter
 		{
-			public ElementTypeConverter( Type sourceType, int numElements, ElementTypeId elementTypeId, ElementArrayWriterDelegate writer )
+			public ElementTypeConverter( int numElements, ElementTypeId elementTypeId, ElementArrayWriterDelegate< SrcType, ElementType > writer ) :
+				base( numElements, elementTypeId )
 			{
-				m_SourceType = sourceType;
-				m_NumElements = numElements;
-				m_ElementTypeId = elementTypeId;
 				m_Writer = writer;
 			}
 
-			public int ToArray( object src, Array values, int index )
+			public override int ToArray( object src, Array values, int index )
 			{
-				return m_Writer( src, values, index );
+				return m_Writer( ( SrcType )src, ( ElementType[] )values, index );
 			}
+
+			private readonly ElementArrayWriterDelegate<SrcType, ElementType> m_Writer;
+
+		}
+
+		public abstract class ElementTypeConverter
+		{
+			public ElementTypeConverter( int numElements, ElementTypeId elementTypeId )
+			{
+				m_NumElements = numElements;
+				m_ElementTypeId = elementTypeId;
+			}
+
+			public abstract int ToArray( object src, Array values, int index );
 
 			public int NumElements
 			{
@@ -167,10 +223,8 @@ namespace Rb.Rendering
 				get { return m_ElementTypeId; }
 			}
 
-			private readonly Type m_SourceType;
 			private readonly int m_NumElements;
 			private readonly ElementTypeId m_ElementTypeId;
-			private readonly ElementArrayWriterDelegate m_Writer;
 		}
 
 		#endregion
@@ -512,6 +566,8 @@ namespace Rb.Rendering
 
 		#region Private stuff
 
+		private readonly static Dictionary<Type, ElementTypeConverter> ms_DefaultConverters;
+
 		private readonly FieldValues[] m_FieldArrays;
 		private readonly int m_NumVertices;
 		private bool m_Static;
@@ -522,13 +578,29 @@ namespace Rb.Rendering
 		{
 			switch ( type )
 			{
-				case ElementTypeId.Byte	: return 1;
+				case ElementTypeId.Byte		: return 1;
 				case ElementTypeId.UInt32	: return 4;
-				case ElementTypeId.Float32: return 4;
+				case ElementTypeId.Float32	: return 4;
 			}
 			throw new ArgumentException( string.Format( "Unknown element type \"{0}\"", "type" ) );
 		}
+
+		private static void AddConverter< SrcType, ElementType >( int numElements, ElementTypeId typeId, ElementArrayWriterDelegate< SrcType, ElementType > writer )
+		{
+			ms_DefaultConverters.Add( typeof( SrcType ), new ElementTypeConverter< SrcType, ElementType >( numElements, typeId, writer ) );
+		}
 		
+		static VertexBufferData( )
+		{
+			ms_DefaultConverters = new Dictionary<Type, ElementTypeConverter>( );
+			
+			AddConverter< Point2, float >( 2, ElementTypeId.Float32, Point2ToFloat32 );
+			AddConverter< Point3, float >( 3, ElementTypeId.Float32, Point3ToFloat32 );
+			AddConverter< Vector2, float >( 2, ElementTypeId.Float32, Vector2ToFloat32 );
+			AddConverter< Vector3, float >( 3, ElementTypeId.Float32, Vector3ToFloat32 );
+			AddConverter< Color, byte >( 4, ElementTypeId.Byte, ColourToByte );
+		}
+
 
 		#endregion
 	}

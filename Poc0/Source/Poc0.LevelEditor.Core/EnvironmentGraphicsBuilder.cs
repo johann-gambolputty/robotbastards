@@ -41,7 +41,73 @@ namespace Poc0.LevelEditor.Core
 			}
 		}
 
-		private static void CreateGroup( Csg.BspNode node, ICollection< Vertex > vertices )
+		private class GroupListBuilder
+		{
+			public GroupBuilder GetGroup( ITechnique technique )
+			{
+				foreach ( GroupBuilder group in m_Groups )
+				{
+					if ( ( !group.Retired ) && ( group.Technique == technique ) )
+					{
+						return group;
+					}
+				}
+				GroupBuilder newGroup = new GroupBuilder( technique );
+				m_Groups.Add( newGroup );
+				return newGroup;
+			}
+
+			public IList<GroupBuilder> Groups
+			{
+				get { return m_Groups; }
+			}
+
+			private readonly List<GroupBuilder> m_Groups = new List<GroupBuilder>( );
+		}
+		private class GroupBuilder
+		{
+
+			public GroupBuilder( ITechnique technique )
+			{
+				m_Technique = technique;
+			}
+
+			public bool Retired
+			{
+				get { return m_Retired; }
+				set { m_Retired = value; }
+			}
+
+			public ITechnique Technique
+			{
+				get { return m_Technique; }
+			}
+
+			public ICollection<Vertex> Vertices
+			{
+				get { return m_Vertices; }
+			}
+
+			public TexturePacker Textures
+			{
+				get { return m_Textures; }
+			}
+
+			public EnvironmentGraphicsData.CellGeometryGroup Create( )
+			{
+				VertexBufferData buffer = VertexBufferData.FromVertexCollection( m_Vertices );
+
+				EnvironmentGraphicsData.CellGeometryGroup group = new EnvironmentGraphicsData.CellGeometryGroup( buffer, m_Technique, null );
+				return group;
+			}
+
+			private bool m_Retired;
+			private readonly ITechnique m_Technique;
+			private readonly List<Vertex> m_Vertices = new List<Vertex>( );
+			private readonly TexturePacker m_Textures = new TexturePacker( 512, 512, TextureFormat.R8G8B8A8 );
+		}
+
+		private static void CreateGroup( Csg.BspNode node, GroupListBuilder builder )
 		{
 			if ( node == null )
 			{
@@ -49,6 +115,9 @@ namespace Poc0.LevelEditor.Core
 			}
 
 			Vector3 planeNormal = new Vector3( node.Plane.Normal.X, 0, node.Plane.Normal.Y );
+
+			GroupBuilder group = builder.GetGroup( null );
+			ICollection<Vertex> vertices = group.Vertices;
 
 			vertices.Add( new Vertex( node.Quad[ 0 ], planeNormal ) );
 			vertices.Add( new Vertex( node.Quad[ 1 ], planeNormal ) );
@@ -58,34 +127,24 @@ namespace Poc0.LevelEditor.Core
 			vertices.Add( new Vertex( node.Quad[ 3 ], planeNormal ) );
 			vertices.Add( new Vertex( node.Quad[ 0 ], planeNormal ) );
 
-			CreateGroup( node.Behind, vertices );
-			CreateGroup( node.InFront, vertices );
+			CreateGroup( node.Behind, builder );
+			CreateGroup( node.InFront, builder );
 		}
 
-		private static EnvironmentGraphicsData.CellGeometryGroup CreateGroup( Csg.BspNode node )
+		private static EnvironmentGraphicsData.CellGeometryGroup[] CreateGroups( Csg.BspNode node )
 		{
-			List< Vertex > vertices = new List< Vertex >( );
-			CreateGroup( node, vertices );
+			GroupListBuilder builder = new GroupListBuilder( );
+			CreateGroup( node, builder );
 
-			VertexBufferData vertexData = new VertexBufferData( vertices.Count );
-			//vertexData.FromVertexCollection( vertices );
-			float[] positions = vertexData.Add< float >( VertexField.Position, 3 );
-			float[] normals = vertexData.Add< float >( VertexField.Normal, 3 );
 
-			int positionIndex = 0;
-			int normalIndex = 0;
-			for ( int vertexIndex = 0; vertexIndex < vertices.Count; ++vertexIndex )
+			EnvironmentGraphicsData.CellGeometryGroup[] groups = new EnvironmentGraphicsData.CellGeometryGroup[ builder.Groups.Count ];
+
+			for ( int groupIndex = 0; groupIndex < groups.Length; ++groupIndex )
 			{
-				positions[ positionIndex++ ] = vertices[ vertexIndex ].m_Point.X;
-				positions[ positionIndex++ ] = vertices[ vertexIndex ].m_Point.Y;
-				positions[ positionIndex++ ] = vertices[ vertexIndex ].m_Point.Z;
-				
-				normals[ normalIndex++ ] = vertices[ vertexIndex ].m_Normal.X;
-				normals[ normalIndex++ ] = vertices[ vertexIndex ].m_Normal.Y;
-				normals[ normalIndex++ ] = vertices[ vertexIndex ].m_Normal.Z;
+				groups[ groupIndex ] = builder.Groups[ groupIndex ].Create( );
 			}
 
-			return new EnvironmentGraphicsData.CellGeometryGroup( vertexData, null );
+			return groups;
 		}
 
 		/// <summary>
@@ -93,7 +152,7 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		/// <param name="geometry">Level geometry</param>
 		/// <returns>Returns a new EnvironmentGraphics object</returns>
-		public IRenderable Build(LevelGeometry geometry)
+		public IEnvironmentGraphics Build( LevelGeometry geometry )
 		{
 			//	Check that there is some geometry to process
 			if ( ( geometry.Csg == null ) || ( geometry.Csg.Root == null ) )
@@ -105,8 +164,8 @@ namespace Poc0.LevelEditor.Core
 
 			EnvironmentGraphicsData.GridCell levelCell = new EnvironmentGraphicsData.GridCell( );
 
-			EnvironmentGraphicsData.CellGeometryGroup group = CreateGroup( geometry.Csg.Root );
-			levelCell.Groups.Add( group );
+			EnvironmentGraphicsData.CellGeometryGroup[] groups = CreateGroups( geometry.Csg.Root );
+			levelCell.Groups.AddRange( groups );
 
 			envGraphicsData[ 0, 0 ] = levelCell;
 			

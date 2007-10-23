@@ -10,24 +10,22 @@ namespace Poc0.Core.Environment
 	[Serializable]
 	public class Environment : Component
 	{
-		/// <summary>
-		/// Default constructor
-		/// </summary>
-		public Environment( )
-		{
-			InitialiseComponents( );
-		}
-
 		#region Public members
 
-		/// <summary>
-		/// Sets the root wall node
-		/// </summary>
-		public WallNode Walls
+		public IEnvironmentGraphics Graphics
 		{
+			get { return m_Graphics; }
 			set
 			{
-				m_Graphics.Walls = value;
+				if ( m_Graphics != null )
+				{
+					RemoveChild( m_Graphics );
+				}
+				m_Graphics = value;
+				if ( m_Graphics != null )
+				{
+					AddChild( m_Graphics );
+				}
 			}
 		}
 
@@ -35,13 +33,7 @@ namespace Poc0.Core.Environment
 
 		#region Private stuff
 
-		private EnvironmentGraphics m_Graphics;
-
-		private void InitialiseComponents( )
-		{
-			m_Graphics = Graphics.Factory.Create< EnvironmentGraphics >( );
-			AddChild( m_Graphics );
-		}
+		private IEnvironmentGraphics m_Graphics;
 
 		#endregion
 	}

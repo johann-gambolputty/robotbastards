@@ -10,7 +10,19 @@ namespace Poc0.Core.Environment
 	{
 		public EnvironmentGraphicsData( int width, int height )
 		{
+			m_Width = width;
+			m_Height = height;
 			m_Grid = new GridCell[ width, height ];
+		}
+
+		public int Width
+		{
+			get { return m_Width; }
+		}
+
+		public int Height
+		{
+			get { return m_Height; }
 		}
 
 		public GridCell this[ int x, int y ]
@@ -19,11 +31,14 @@ namespace Poc0.Core.Environment
 			set { m_Grid[ x, y ] = value; }
 		}
 
+		private readonly int m_Width;
+		private readonly int m_Height;
 		private readonly GridCell[,] m_Grid;
 
+		[Serializable]
 		public class CellGeometryGroup
 		{
-			public CellGeometryGroup( VertexBufferData vertices, AssetHandle[] textures )
+			public CellGeometryGroup( VertexBufferData vertices, ITechnique technique, AssetHandle[] textures )
 			{
 				m_Vertices = vertices;
 				m_Textures = textures;
@@ -39,10 +54,12 @@ namespace Poc0.Core.Environment
 				get { return m_Textures; }
 			}
 
+			private readonly ITechnique m_Technique;
 			private readonly VertexBufferData m_Vertices;
 			private readonly AssetHandle[] m_Textures;
 		}
 
+		[Serializable]
 		public class GridCell
 		{
 			public List<CellGeometryGroup> Groups
