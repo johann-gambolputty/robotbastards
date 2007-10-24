@@ -21,6 +21,7 @@ namespace Poc0.Core.Rendering.OpenGl
 			m_WallState = Graphics.Factory.NewRenderState( );
 			m_WallState.DisableLighting( );
 			m_WallState.SetColour( System.Drawing.Color.DarkOrange );
+			m_WallState.EnableCap( RenderStateFlag.Texture2d | RenderStateFlag.Texture2dUnit0 );
 
 			m_FloorState = Graphics.Factory.NewRenderState( );
 			m_FloorState.DisableLighting( );
@@ -53,17 +54,29 @@ namespace Poc0.Core.Rendering.OpenGl
 		{
 			public GeometryGroup( EnvironmentGraphicsData.CellGeometryGroup src )
 			{
+				m_Textures = src.Textures;
 				m_NumTris = src.Vertices.NumVertices / 3;
 				m_Vertices = Graphics.Factory.NewVertexBuffer( src.Vertices );
 			}
 
 			public void Render( IRenderContext context )
 			{
+				foreach ( Texture2d texture in m_Textures )
+				{
+					Graphics.Renderer.BindTexture( texture );
+				}
+
 				m_Vertices.Begin( );
 				Gl.glDrawArrays( Gl.GL_TRIANGLES, 0, m_NumTris * 3 );
 				m_Vertices.End( );
+
+				foreach ( Texture2d texture in m_Textures )
+				{
+					Graphics.Renderer.UnbindTexture( texture );
+				}
 			}
 
+			private readonly Texture2d[] m_Textures;
 			private readonly int m_NumTris;
 			private readonly IVertexBuffer m_Vertices;
 		}

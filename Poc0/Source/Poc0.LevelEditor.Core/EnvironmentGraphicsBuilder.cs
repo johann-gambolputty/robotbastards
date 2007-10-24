@@ -1,7 +1,12 @@
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using Poc0.Core.Environment;
+using Rb.Core.Assets;
 using Rb.Core.Maths;
 using Rb.Rendering;
+using Graphics=Rb.Rendering.Graphics;
+using Rectangle=Rb.Core.Maths.Rectangle;
 
 namespace Poc0.LevelEditor.Core
 {
@@ -14,6 +19,7 @@ namespace Poc0.LevelEditor.Core
 	/// no tunnels or bridges), and the camera looks down on the player at all times.
 	/// If the camera was first person, then a portal-based approach might be better.
 	/// (http://www.gamedev.net/reference/articles/article1891.asp)
+	/// Note: at the moment, just creates a giant vertex buffer :-/
 	/// </remarks>
 	internal class EnvironmentGraphicsBuilder
 	{
@@ -26,37 +32,95 @@ namespace Poc0.LevelEditor.Core
 			m_ChopSize = chopSize;
 		}
 
+		/// <summary>
+		/// Static geometry vertex
+		/// </summary>
 		private class Vertex
 		{
+			/// <summary>
+			/// Vertex position
+			/// </summary>
 			[VertexField( VertexField.Position )]
 			public Point3 m_Point;
 			
+			/// <summary>
+			/// Vertex normal
+			/// </summary>
 			[VertexField( VertexField.Normal )]
 			public Vector3 m_Normal;
 
-			public Vertex( Point3 pt, Vector3 normal )
+			/// <summary>
+			/// Texture 0 coordinate
+			/// </summary>
+			[VertexField( VertexField.Texture0 )]
+			public Point2 m_Texture0;
+
+			/// <summary>
+			/// Setup constructor
+			/// </summary>
+			/// <param name="pt">Vertex position</param>
+			/// <param name="normal">Vertex normal</param>
+			/// <param name="texture0">Vertex texture unit 0 coordinate</param>
+			public Vertex( Point3 pt, Vector3 normal, Point2 texture0 )
 			{
 				m_Point = pt;
 				m_Normal = normal;
+				m_Texture0 = texture0;
 			}
 		}
 
+		/// <summary>
+		/// Builds a list of <see cref="GroupBuilder"/> objects
+		/// </summary>
 		private class GroupListBuilder
 		{
-			public GroupBuilder GetGroup( ITechnique technique )
+			/// <summary>
+			/// Gets a group for a given technique
+			/// </summary>
+			/// <param name="techniqueSource">Source of the group technique</param>
+			/// <returns>Returns an existing unretired group that matches the specified technique, or a new group</returns>
+			public GroupBuilder GetGroup( ISource techniqueSource )
 			{
 				foreach ( GroupBuilder group in m_Groups )
 				{
-					if ( ( !group.Retired ) && ( group.Technique == technique ) )
+					if ( group.Technique == techniqueSource )
 					{
 						return group;
 					}
 				}
-				GroupBuilder newGroup = new GroupBuilder( technique );
+				GroupBuilder newGroup = new GroupBuilder( techniqueSource );
 				m_Groups.Add( newGroup );
 				return newGroup;
 			}
 
+			/// <summary>
+			/// Gets a group for a given technique, adding the given texture to it
+			/// </summary>
+			/// <param name="techniqueSource">Group technique source</param>
+			/// <param name="textureSource">Texture</param>
+			/// <returns>Returns an existing unretired group that matches the specified technique, or a new group</returns>
+			public GroupBuilder GetGroup( ISource techniqueSource, ISource textureSource, out Rectangle rect )
+			{
+				foreach ( GroupBuilder group in m_Groups )
+				{
+					if ( group.Technique == techniqueSource )
+					{
+						rect = group.AddTexture( textureSource );
+						if ( rect != null )
+						{
+							return group;
+						}
+					}
+				}
+				GroupBuilder newGroup = new GroupBuilder( techniqueSource );
+				m_Groups.Add( newGroup );
+				rect = newGroup.AddTexture( textureSource );
+				return newGroup;
+			}
+
+			/// <summary>
+			/// Gets the list of groups
+			/// </summary>
 			public IList<GroupBuilder> Groups
 			{
 				get { return m_Groups; }
@@ -64,49 +128,93 @@ namespace Poc0.LevelEditor.Core
 
 			private readonly List<GroupBuilder> m_Groups = new List<GroupBuilder>( );
 		}
+
+		/// <summary>
+		/// Builds <see cref="EnvironmentGraphicsData.CellGeometryGroup"/> objects
+		/// </summary>
 		private class GroupBuilder
 		{
-
-			public GroupBuilder( ITechnique technique )
+			/// <summary>
+			/// Setup constructor
+			/// </summary>
+			/// <param name="techniqueSource">Source of the technique used by all geometry in the group</param>
+			public GroupBuilder( ISource techniqueSource )
 			{
-				m_Technique = technique;
+				m_Technique = techniqueSource;
 			}
 
-			public bool Retired
-			{
-				get { return m_Retired; }
-				set { m_Retired = value; }
-			}
-
-			public ITechnique Technique
+			/// <summary>
+			/// Gets the source of the group technique
+			/// </summary>
+			public ISource Technique
 			{
 				get { return m_Technique; }
 			}
 
+			/// <summary>
+			/// Gets the group vertices
+			/// </summary>
 			public ICollection<Vertex> Vertices
 			{
 				get { return m_Vertices; }
 			}
 
+			/// <summary>
+			/// Gets the group textures
+			/// </summary>
 			public TexturePacker Textures
 			{
 				get { return m_Textures; }
 			}
 
+			/// <summary>
+			/// Adds a handle to a texture asset to the texture packer
+			/// </summary>
+			/// <param name="source">Texture asset source</param>
+			/// <returns>Returns the UV rectangle of the texture if successfully added, otherwise null</returns>
+			public Rectangle AddTexture( ISource source )
+			{
+				Rectangle rect;
+				if ( m_TextureAssets.TryGetValue( source, out rect ) )
+				{
+					return rect;
+				}
+				using ( System.IO.Stream stream = source.Open( ) )
+				{
+					Bitmap bmp = new Bitmap( stream );
+					rect = m_Textures.Add( bmp );
+
+					m_TextureAssets.Add( source, rect );
+					return rect;
+				}
+			}
+
+			/// <summary>
+			/// Creates a cell geometry group
+			/// </summary>
+			/// <returns>New cell geometry group</returns>
 			public EnvironmentGraphicsData.CellGeometryGroup Create( )
 			{
 				VertexBufferData buffer = VertexBufferData.FromVertexCollection( m_Vertices );
 
-				EnvironmentGraphicsData.CellGeometryGroup group = new EnvironmentGraphicsData.CellGeometryGroup( buffer, m_Technique, null );
+				Texture2d[] textures = new Texture2d[] { m_Textures.Texture };
+				ITechnique technique = null;
+
+				EnvironmentGraphicsData.CellGeometryGroup group = new EnvironmentGraphicsData.CellGeometryGroup( buffer, technique, textures );
 				return group;
 			}
 
-			private bool m_Retired;
-			private readonly ITechnique m_Technique;
+			private readonly Dictionary<ISource, Rectangle> m_TextureAssets = new Dictionary<ISource, Rectangle>( );
+			private readonly ISource m_Technique;
 			private readonly List<Vertex> m_Vertices = new List<Vertex>( );
-			private readonly TexturePacker m_Textures = new TexturePacker( 512, 512, TextureFormat.R8G8B8A8 );
+			private readonly TexturePacker m_Textures = new TexturePacker( 512, 512 );
 		}
 
+		/// <summary>
+		/// Creates a list of group builders from a CSG node and its children
+		/// </summary>
+		/// <param name="node">CSG node</param>
+		/// <param name="builder">Group builder</param>
 		private static void CreateGroup( Csg.BspNode node, GroupListBuilder builder )
 		{
 			if ( node == null )
@@ -116,31 +224,62 @@ namespace Poc0.LevelEditor.Core
 
 			Vector3 planeNormal = new Vector3( node.Plane.Normal.X, 0, node.Plane.Normal.Y );
 
-			GroupBuilder group = builder.GetGroup( null );
-			ICollection<Vertex> vertices = group.Vertices;
+			//	Get the texture source for the wall
+			ISource textureSource = node.Edge.Wall.TextureSource;
+			if ( textureSource == null )
+			{
+				textureSource = WallData.DefaultTextureSource;
+			}
 
-			vertices.Add( new Vertex( node.Quad[ 0 ], planeNormal ) );
-			vertices.Add( new Vertex( node.Quad[ 1 ], planeNormal ) );
-			vertices.Add( new Vertex( node.Quad[ 2 ], planeNormal ) );
-			
-			vertices.Add( new Vertex( node.Quad[ 2 ], planeNormal ) );
-			vertices.Add( new Vertex( node.Quad[ 3 ], planeNormal ) );
-			vertices.Add( new Vertex( node.Quad[ 0 ], planeNormal ) );
+			ISource techniqueSource = node.Edge.Wall.TechniqueSource;
+			if ( techniqueSource == null )
+			{
+				techniqueSource = WallData.DefaultTechniqueSource;
+			}
+			Rectangle textureRect;
+			GroupBuilder group = builder.GetGroup( techniqueSource, textureSource, out textureRect );
+
+			//	TODO: AP: Split quad up into grid depending on texture size
+			//	OR: Give groups a single technique + texture, remove the texture packer, repeat the UVs
+			Point2 uvBl = new Point2( textureRect.X, textureRect.Y );
+			Point2 uvBr = new Point2( textureRect.MaxX, textureRect.Y );
+			Point2 uvTr = new Point2( textureRect.MaxX, textureRect.MaxY );
+			Point2 uvTl = new Point2( textureRect.X, textureRect.MaxY );
+
+			ICollection<Vertex> vertices = group.Vertices;
+			vertices.Add( new Vertex( node.Quad[ 0 ], planeNormal, uvBl ) );
+			vertices.Add( new Vertex( node.Quad[ 1 ], planeNormal, uvBr ) );
+			vertices.Add( new Vertex( node.Quad[ 2 ], planeNormal, uvTr ) );
+
+			vertices.Add( new Vertex( node.Quad[ 2 ], planeNormal, uvTr ) );
+			vertices.Add( new Vertex( node.Quad[ 3 ], planeNormal, uvTl ) );
+			vertices.Add( new Vertex( node.Quad[ 0 ], planeNormal, uvBl ) );
 
 			CreateGroup( node.Behind, builder );
 			CreateGroup( node.InFront, builder );
 		}
 
+		/// <summary>
+		/// Creates cell geometry groups from a CSG tree
+		/// </summary>
+		/// <param name="node">Root CSG node</param>
+		/// <returns>Returns a list of cell geometry groups</returns>
 		private static EnvironmentGraphicsData.CellGeometryGroup[] CreateGroups( Csg.BspNode node )
 		{
 			GroupListBuilder builder = new GroupListBuilder( );
 			CreateGroup( node, builder );
 
-
 			EnvironmentGraphicsData.CellGeometryGroup[] groups = new EnvironmentGraphicsData.CellGeometryGroup[ builder.Groups.Count ];
 
 			for ( int groupIndex = 0; groupIndex < groups.Length; ++groupIndex )
 			{
+				builder.Groups[ groupIndex ].Textures.Finish( true );
+
+				//	TODO: AP: REMOVEME
+				//	Let's see what the texture packer has done...
+				string texFilename = string.Format( "groupTexture{0}.jpg", groupIndex );
+				builder.Groups[ groupIndex ].Textures.Texture.Save( texFilename, ImageFormat.Jpeg );
+
 				groups[ groupIndex ] = builder.Groups[ groupIndex ].Create( );
 			}
 
@@ -151,7 +290,7 @@ namespace Poc0.LevelEditor.Core
 		/// Builds runtime environment graphics from level geometry
 		/// </summary>
 		/// <param name="geometry">Level geometry</param>
-		/// <returns>Returns a new EnvironmentGraphics object</returns>
+		/// <returns>Returns a new <see cref="IEnvironmentGraphics"/> object</returns>
 		public IEnvironmentGraphics Build( LevelGeometry geometry )
 		{
 			//	Check that there is some geometry to process

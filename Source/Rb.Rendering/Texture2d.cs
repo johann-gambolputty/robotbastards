@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using Rb.Core.Utils;
 using System;
@@ -214,6 +215,18 @@ namespace Rb.Rendering
 			if ( img != null )
 			{
 				img.Save( path );
+			}
+		}
+
+		/// <summary>
+		/// Saves this texture to a file
+		/// </summary>
+		public void Save( string path, ImageFormat format )
+		{
+			Image img = ToBitmap( );
+			if ( img != null )
+			{
+				img.Save( path, format );
 			}
 		}
 

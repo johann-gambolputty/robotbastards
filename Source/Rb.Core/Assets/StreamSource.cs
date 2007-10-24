@@ -20,7 +20,8 @@ namespace Rb.Core.Assets
 		{
 			m_Name = System.IO.Path.GetFileName( path );
 			m_Path = path;
-			m_Stream = stream;
+			m_Stream = new UndyingMemoryStream( stream );
+			stream.Close( );
 		}
 
 		/// <summary>
@@ -32,7 +33,7 @@ namespace Rb.Core.Assets
 		{
 			m_Name = System.IO.Path.GetFileName( path );
 			m_Path = path;
-			m_Stream = new MemoryStream( Encoding.ASCII.GetBytes( streamContents ) );
+			m_Stream = new UndyingMemoryStream( Encoding.ASCII.GetBytes( streamContents ) );
 		}
 
 		/// <summary>
@@ -44,7 +45,7 @@ namespace Rb.Core.Assets
 		{
 			m_Name = System.IO.Path.GetFileName( path );
 			m_Name = path;
-			m_Stream = new MemoryStream( bytes );
+			m_Stream = new UndyingMemoryStream( bytes );
 		}
 
 		#endregion
@@ -130,6 +131,33 @@ namespace Rb.Core.Assets
 		private readonly string m_Name;
 		private readonly string m_Path;
 		private readonly Stream m_Stream;
+
+		private class UndyingMemoryStream : MemoryStream
+		{
+			public UndyingMemoryStream( Stream src ) :
+				base( ReadStreamBytes( src ) )
+			{
+				
+			}
+
+			public UndyingMemoryStream( byte[] bytes ) :
+				base( bytes )
+			{
+			}
+
+			public override void Close( )
+			{
+				Seek( 0, SeekOrigin.Begin );
+			}
+
+			private static byte[] ReadStreamBytes( Stream src )
+			{
+				src.Position = 0;
+				byte[] bytes = new byte[ src.Length ];
+				src.Read( bytes, 0, bytes.Length ); // TODO: AP: should read long count of bytes
+				return bytes;
+			}
+		}
 
 		#endregion
 	}
