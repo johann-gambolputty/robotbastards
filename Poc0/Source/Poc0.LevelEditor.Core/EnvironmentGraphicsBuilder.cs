@@ -225,13 +225,13 @@ namespace Poc0.LevelEditor.Core
 			Vector3 planeNormal = new Vector3( node.Plane.Normal.X, 0, node.Plane.Normal.Y );
 
 			//	Get the texture source for the wall
-			ISource textureSource = node.Edge.Wall.TextureSource;
+			ISource textureSource = node.Edge.Wall.Texture.Source;
 			if ( textureSource == null )
 			{
 				textureSource = WallData.DefaultTextureSource;
 			}
 
-			ISource techniqueSource = node.Edge.Wall.TechniqueSource;
+			ISource techniqueSource = node.Edge.Wall.Technique.Source;
 			if ( techniqueSource == null )
 			{
 				techniqueSource = WallData.DefaultTechniqueSource;

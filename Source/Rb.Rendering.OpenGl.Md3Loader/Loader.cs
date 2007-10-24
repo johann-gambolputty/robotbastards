@@ -96,6 +96,10 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public override bool CanLoad( ISource source )
 		{
+			if ( !source.Directory )
+			{
+				return false;
+			}
 			return MeshFile( source, ModelPart.Head ).Exists;
 		}
 

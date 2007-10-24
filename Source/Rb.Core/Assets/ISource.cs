@@ -42,6 +42,14 @@ namespace Rb.Core.Assets
 		}
 
 		/// <summary>
+		/// Returns true if this source is a directory
+		/// </summary>
+		bool Directory
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Checks if this source has the specified extension
 		/// </summary>
 		bool HasExtension( string ext );

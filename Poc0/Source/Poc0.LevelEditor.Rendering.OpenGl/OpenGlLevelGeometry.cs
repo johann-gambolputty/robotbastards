@@ -123,7 +123,6 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			RenderSelectedWalls( csg.Root );
 			Gl.glEnd( );
 			Graphics.Renderer.PopRenderState( );
-
 		}
 
 		/// <summary>
@@ -259,6 +258,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			Gl.glVertex3f( pt3.X, pt3.Y, pt3.Z );
 			Gl.glTexCoord2f( minU, minV );
 			Gl.glVertex3f( pt0.X, pt0.Y, pt0.Z );
+
 
 			RenderWall( node.InFront );
 			RenderWall( node.Behind );
