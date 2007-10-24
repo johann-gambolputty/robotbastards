@@ -1,6 +1,7 @@
 using System.Drawing.Imaging;
 using System.IO;
 using Rb.Core.Assets;
+using Rb.Rendering;
 
 namespace Poc0.LevelEditor.Core
 {
@@ -30,33 +31,33 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Gets/sets the texture source for this node
 		/// </summary>
-		public ISource TextureSource
+		public AssetHandleT<Texture2d> Texture
 		{
-			get { return m_TextureSource; }
-			set { m_TextureSource = value; }
+			get { return m_Texture; }
+			set { m_Texture = value; }
 		}
 
 		/// <summary>
 		/// Gets/sets the technque source for this node
 		/// </summary>
-		public ISource TechniqueSource
+		public AssetHandle Technique
 		{
-			get { return m_TechniqueSource; }
-			set { m_TechniqueSource = value; }
+			get { return m_Technique; }
+			set { m_Technique = value; }
 		}
 
 		static WallData( )
 		{
 			MemoryStream stream = new MemoryStream( );
 			Properties.Resources.DefaultWallTexture.Save( stream, ImageFormat.Jpeg );
-			ms_DefaultTextureSource = new StreamSource( stream, "DefaultWallTexture" );
+			ms_DefaultTextureSource = new StreamSource( stream, "DefaultWallTexture.jpeg" );
 
 			//	TODO: AP: Argh argh bad :(
 			ms_DefaultTechniqueSource = new Location( @"Graphics\Effects\perPixelTextured.cgfx" );
 		}
 
-		private ISource m_TextureSource = ms_DefaultTextureSource;
-		private ISource m_TechniqueSource = ms_DefaultTechniqueSource;
+		private AssetHandleT<Texture2d> m_Texture = new AssetHandleT<Texture2d>( ms_DefaultTextureSource );
+		private AssetHandle m_Technique = new AssetHandle( ms_DefaultTechniqueSource );
 
 		private static ISource ms_DefaultTextureSource;
 		private static ISource ms_DefaultTechniqueSource;

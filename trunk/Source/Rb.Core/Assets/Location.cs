@@ -232,6 +232,17 @@ namespace Rb.Core.Assets
 			get { return m_Path; }
 		}
 
+		/// <summary>
+		/// Returns true if this source is a directory
+		/// </summary>
+		public bool Directory
+		{
+			get
+			{
+				return m_Provider == null ? false : m_Provider.IsDirectoryPath( m_Path );
+			}
+		}
+
 		#endregion
 
 		#region Private stuff

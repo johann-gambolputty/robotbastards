@@ -61,6 +61,16 @@ namespace Rb.Core.Assets
 		}
 
 		/// <summary>
+		/// Returns true if a specified path refers to a directory rather than a file
+		/// </summary>
+		/// <param name="path">Path</param>
+		/// <returns>true if path refers to a directory</returns>
+		public bool IsDirectoryPath( string path )
+		{
+			return Directory.Exists( GetFullPath( path ) );
+		}
+
+		/// <summary>
 		/// Opens a stream at a given location
 		/// </summary>
 		/// <param name="location">Asset location</param>

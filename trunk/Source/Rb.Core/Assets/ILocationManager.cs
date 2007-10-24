@@ -22,6 +22,13 @@ namespace Rb.Core.Assets
 		bool IsPathValid( string path );
 
 		/// <summary>
+		/// Returns true if a specified path refers to a directory rather than a file
+		/// </summary>
+		/// <param name="path">Path</param>
+		/// <returns>true if path refers to a directory</returns>
+		bool IsDirectoryPath( string path );
+
+		/// <summary>
 		/// Opens a stream at a given location
 		/// </summary>
 		/// <param name="location">Location of the stream</param>
