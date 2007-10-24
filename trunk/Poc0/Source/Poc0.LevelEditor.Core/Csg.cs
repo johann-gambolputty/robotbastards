@@ -91,7 +91,7 @@ namespace Poc0.LevelEditor.Core
 		#endregion
 
 		#region BSP types
-		
+
 		/// <summary>
 		/// Currently using a BSP tree for our CSG needs
 		/// </summary>
@@ -142,6 +142,7 @@ namespace Poc0.LevelEditor.Core
 				get { return m_InFront; }
 				set { m_InFront = value; }
 			}
+
 
 			/// <summary>
 			/// This node's edge
@@ -213,7 +214,6 @@ namespace Poc0.LevelEditor.Core
 			private Point2[] m_Region;
 			private bool m_Highlight;
 			private bool m_Selected;
-
 			#endregion
 
 		}
@@ -224,17 +224,19 @@ namespace Poc0.LevelEditor.Core
 		[Serializable]
 		public class Edge
 		{
-			// Helper stuff for debugging
-			private readonly int m_Index = EdgeCounter++;
-			private static int EdgeCounter = 0;
 
-			public int EdgeIndex
+			/// <summary>
+			/// Gets data associated with the wall at the BSP node
+			/// </summary>
+			public WallData Wall
 			{
-				get { return m_Index; }
+				get { return m_WallData; }
+				set { m_WallData = value; }
 			}
 
-			private bool m_Temporary;
-
+			/// <summary>
+			/// Gets the temporary flag - temporary edges are created to allow double-sided edges
+			/// </summary>
 			public bool Temporary
 			{
 				get { return m_Temporary; }
@@ -248,6 +250,7 @@ namespace Poc0.LevelEditor.Core
 			{
 				Edge edge = new Edge( new Point2( P1 ), new Point2( P0 ) );
 				edge.m_Temporary = true;
+				edge.m_WallData = m_WallData;
 				return edge;
 			}
 
@@ -298,10 +301,13 @@ namespace Poc0.LevelEditor.Core
 				get { return m_Plane; }
 			}
 
+			private bool m_Temporary;
 			private bool m_DoubleSided;
 			private Point2 m_P0;
 			private Point2 m_P1;
 			private readonly Plane2 m_Plane;
+			private WallData m_WallData = new WallData( );
+
 		}
 
 		#endregion
@@ -692,6 +698,10 @@ namespace Poc0.LevelEditor.Core
 				//	Create subdivided edges
 				Edge startToMidEdge = new Edge( edge.P0, intersection.IntersectionPosition );
 				Edge midToEndEdge = new Edge( intersection.IntersectionPosition, edge.P1 );
+
+				//	Make sure both halves get the same wall data
+				startToMidEdge.Wall = edge.Wall;
+				midToEndEdge.Wall = edge.Wall;
 
 				//	Add new edges to the appropriate edge lists
 				if ( p0Class != PlaneClassification.Behind )

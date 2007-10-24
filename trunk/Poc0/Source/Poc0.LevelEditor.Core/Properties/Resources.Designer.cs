@@ -60,6 +60,20 @@ namespace Poc0.LevelEditor.Core.Properties {
             }
         }
         
+        internal static byte[] DefaultWallEffect {
+            get {
+                object obj = ResourceManager.GetObject("DefaultWallEffect", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap DefaultWallTexture {
+            get {
+                object obj = ResourceManager.GetObject("DefaultWallTexture", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to bad thing.
         /// </summary>

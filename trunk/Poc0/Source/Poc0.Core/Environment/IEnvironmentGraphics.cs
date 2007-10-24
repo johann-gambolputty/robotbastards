@@ -38,7 +38,7 @@ namespace Poc0.Core.Environment
 		[Serializable]
 		public class CellGeometryGroup
 		{
-			public CellGeometryGroup( VertexBufferData vertices, ITechnique technique, AssetHandle[] textures )
+			public CellGeometryGroup( VertexBufferData vertices, ITechnique technique, Texture2d[] textures )
 			{
 				m_Vertices = vertices;
 				m_Textures = textures;
@@ -49,14 +49,14 @@ namespace Poc0.Core.Environment
 				get { return m_Vertices; }
 			}
 
-			public AssetHandle[] Textures
+			public Texture2d[] Textures
 			{
 				get { return m_Textures; }
 			}
 
 			private readonly ITechnique m_Technique;
 			private readonly VertexBufferData m_Vertices;
-			private readonly AssetHandle[] m_Textures;
+			private readonly Texture2d[] m_Textures;
 		}
 
 		[Serializable]

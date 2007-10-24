@@ -72,6 +72,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RayCastLayers.cs" />
+    <Compile Include="WallData.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.csproj">
@@ -111,7 +112,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\DefaultWallEffect.cgfx" />
     <None Include="Resources\GridSquare.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\DefaultWallTexture.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Actions\" />
