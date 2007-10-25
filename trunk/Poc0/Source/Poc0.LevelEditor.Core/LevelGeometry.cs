@@ -1,6 +1,5 @@
 using System;
 using System.Drawing;
-using Poc0.Core.Environment;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core;
@@ -86,22 +85,6 @@ namespace Poc0.LevelEditor.Core
 		/// <param name="context">Rendering context</param>
 		/// <param name="csg">Level geometry CSG object</param>
 		protected abstract void Render3d( IRenderContext context, Csg csg );
-		
-		/// <summary>
-		/// The default bitmap used for wall textures
-		/// </summary>
-		protected static Bitmap DefaultWallBitmap
-		{
-			get { return Properties.Resources.GridSquare; }
-		}
-
-		/// <summary>
-		/// The default bitmap used for floor textures
-		/// </summary>
-		protected static Bitmap DefaultFloorBitmap
-		{
-			get { return Properties.Resources.GridSquare; }
-		}
 
 		#endregion
 
@@ -239,36 +222,6 @@ namespace Poc0.LevelEditor.Core
 			
 			//	Update environment
 			m_Environment.Graphics = new EnvironmentGraphicsBuilder( 100.0f ).Build( this );
-		}
-
-		/// <summary>
-		/// Recursively creates the main game environment representation (BSP tree representing walls)
-		/// </summary>
-		/// <param name="srcNode">Level geometry CSG BSP node</param>
-		/// <returns>Returns a game wall node built from the CSG source node</returns>
-		private WallNode BuildWalls( Csg.BspNode srcNode )
-		{
-			if ( srcNode == null )
-			{
-				return null;
-			}
-
-			Floor floor = null;
-			if ( srcNode.ConvexRegion != null )
-			{
-				floor = new Floor( srcNode.ConvexRegion, 0.0f );
-			}
-
-			WallNode newNode = new WallNode( srcNode.Edge.P0, srcNode.Edge.P1, 5, floor );
-			if ( srcNode.InFront != null )
-			{
-				newNode.InFront = BuildWalls( srcNode.InFront );
-			}
-			if ( srcNode.Behind != null )
-			{
-				newNode.Behind = BuildWalls( srcNode.Behind );
-			}
-			return newNode;
 		}
 
 		#endregion

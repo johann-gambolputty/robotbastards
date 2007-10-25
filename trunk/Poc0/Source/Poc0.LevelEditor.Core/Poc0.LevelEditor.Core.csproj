@@ -61,6 +61,7 @@
     <Compile Include="EditModes\UserBrushEditMode.cs" />
     <Compile Include="EditModes\DefinePolygonEditMode.cs" />
     <Compile Include="EnvironmentGraphicsBuilder.cs" />
+    <Compile Include="FloorData.cs" />
     <Compile Include="Rendering\GroundPlaneGrid.cs" />
     <Compile Include="LevelGeometry.cs" />
     <Compile Include="GameObjectEditorBuilder.cs" />
@@ -116,6 +117,7 @@
     <None Include="Resources\GridSquare.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\DefaultFloorTexture.bmp" />
     <Content Include="Resources\DefaultWallTexture.bmp" />
   </ItemGroup>
   <ItemGroup>

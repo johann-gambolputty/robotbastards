@@ -57,6 +57,15 @@ namespace Rb.Core.Assets
 		}
 
 		/// <summary>
+		/// Gets/sets load parameters
+		/// </summary>
+		public LoadParameters LoadParameters
+		{
+			get { return m_Params; }
+			set { m_Params = value; }
+		}
+
+		/// <summary>
 		/// Asset object
 		/// </summary>
 		/// <remarks>
@@ -79,6 +88,7 @@ namespace Rb.Core.Assets
 
 		#region Private stuff
 
+		private LoadParameters m_Params;
 		private ISource m_Source;
 
 		[NonSerialized]
@@ -94,7 +104,7 @@ namespace Rb.Core.Assets
 		{
 			try
 			{
-				m_Asset = AssetManager.Instance.Load( m_Source );
+				m_Asset = AssetManager.Instance.Load( m_Source, m_Params );
 				m_LoadFailed = false;
 			}
 			catch ( Exception ex )

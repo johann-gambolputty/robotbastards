@@ -61,7 +61,6 @@
     <Compile Include="Environment\Floor.cs" />
     <Compile Include="Environment\INavigator.cs" />
     <Compile Include="Environment\Navigator.cs" />
-    <Compile Include="Environment\WallNode.cs" />
     <Compile Include="Objects\HealthChange.cs" />
     <Compile Include="Objects\IBody.cs" />
     <Compile Include="Objects\IPlaceable.cs" />
