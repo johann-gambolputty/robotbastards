@@ -1,3 +1,4 @@
+using System;
 using System.Drawing.Imaging;
 using System.IO;
 using Rb.Core.Assets;
@@ -10,6 +11,8 @@ namespace Poc0.LevelEditor.Core
 	/// </summary>
 	public class WallData
 	{
+		#region Default wall data settings
+
 		/// <summary>
 		/// Gets/sets the default texture source for walls
 		/// </summary>
@@ -28,13 +31,29 @@ namespace Poc0.LevelEditor.Core
 			set { ms_DefaultTechniqueSource = value; }
 		}
 
+		#endregion
+
+		#region Public members
+
+		/// <summary>
+		/// Event, invoked when wall data is altered
+		/// </summary>
+		public event EventHandler WallDataChanged;
+
 		/// <summary>
 		/// Gets/sets the texture source for this node
 		/// </summary>
 		public AssetHandleT<Texture2d> Texture
 		{
 			get { return m_Texture; }
-			set { m_Texture = value; }
+			set
+			{
+				m_Texture = value;
+				if ( WallDataChanged != null )
+				{
+					WallDataChanged( this, null );
+				}
+			}
 		}
 
 		/// <summary>
@@ -43,8 +62,19 @@ namespace Poc0.LevelEditor.Core
 		public AssetHandle Technique
 		{
 			get { return m_Technique; }
-			set { m_Technique = value; }
+			set
+			{
+				m_Technique = value;
+				if ( WallDataChanged != null )
+				{
+					WallDataChanged( this, null );
+				}
+			}
 		}
+
+		#endregion
+
+		#region Private members
 
 		static WallData( )
 		{
@@ -55,11 +85,26 @@ namespace Poc0.LevelEditor.Core
 			//	TODO: AP: Argh argh bad :(
 			ms_DefaultTechniqueSource = new Location( @"Graphics\Effects\perPixelTextured.cgfx" );
 		}
+		
+		/// <summary>
+		/// Creates a texture asset handle from the default texture source
+		/// </summary>
+		private static AssetHandleT<Texture2d> CreateDefaultTextureHandle( )
+		{
+			AssetHandleT<Texture2d> handle = new AssetHandleT<Texture2d>( ms_DefaultTextureSource );
+			handle.LoadParameters = new LoadParameters( );
 
-		private AssetHandleT<Texture2d> m_Texture = new AssetHandleT<Texture2d>( ms_DefaultTextureSource );
+			//	Mip maps yes please thank you
+			handle.LoadParameters.Properties.Add( "generateMipMaps", true );
+			return handle;
+		}
+
+		private AssetHandleT<Texture2d> m_Texture = CreateDefaultTextureHandle( );
 		private AssetHandle m_Technique = new AssetHandle( ms_DefaultTechniqueSource );
 
 		private static ISource ms_DefaultTextureSource;
 		private static ISource ms_DefaultTechniqueSource;
+
+		#endregion
 	}
 }

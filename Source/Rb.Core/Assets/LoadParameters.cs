@@ -6,6 +6,7 @@ namespace Rb.Core.Assets
 	/// <summary>
 	/// Parameters, passed to <see cref="IAssetLoader.Load"/>
 	/// </summary>
+	[Serializable]
 	public class LoadParameters : ISupportsDynamicProperties, ICloneable
 	{
 		/// <summary>

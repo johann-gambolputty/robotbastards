@@ -163,6 +163,15 @@ namespace Poc0.LevelEditor.Core
 			}
 
 			/// <summary>
+			/// Gets/sets floor data at this node
+			/// </summary>
+			public FloorData FloorData
+			{
+				get { return m_FloorData; }
+				set { m_FloorData = value; }
+			}
+
+			/// <summary>
 			/// Gets the parent node
 			/// </summary>
 			[Browsable(false)]
@@ -179,7 +188,7 @@ namespace Poc0.LevelEditor.Core
 			{
 				get { return m_Quad; }
 			}
-			
+
 			#region ISelectable Members
 
 			/// <summary>
@@ -206,6 +215,7 @@ namespace Poc0.LevelEditor.Core
 
 			#region Private stuff
 
+			private FloorData m_FloorData = new FloorData( );
 			private readonly Point3[] m_Quad = new Point3[ 4 ];
 			private readonly BspNode m_Parent;
 			private BspNode m_Behind;
@@ -214,6 +224,7 @@ namespace Poc0.LevelEditor.Core
 			private Point2[] m_Region;
 			private bool m_Highlight;
 			private bool m_Selected;
+
 			#endregion
 
 		}

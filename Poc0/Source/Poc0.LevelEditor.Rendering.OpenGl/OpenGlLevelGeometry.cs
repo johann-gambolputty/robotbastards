@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using Poc0.LevelEditor.Core;
 using Rb.Core.Assets;
 using Rb.Rendering;
+using Rb.Rendering.OpenGl;
 using Rb.Tools.LevelEditor.Core;
 using Tao.OpenGl;
 using Rb.Core.Maths;
@@ -59,13 +60,6 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 
 				m_FloorTechnique = new Technique( "FallbackFloorTechnique", floorState );
 			}
-
-			//	Load up wall and floor textures
-			m_WallTextures = Graphics.Factory.NewTexture2d( );
-			m_WallTextures.Load( DefaultWallBitmap, true );
-
-			m_FloorTextures = Graphics.Factory.NewTexture2d( );
-			m_FloorTextures.Load( DefaultFloorBitmap, true );
 		}
 
 		#region Serialization
@@ -107,14 +101,10 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			}
 
 			//	Render walls
-			Graphics.Renderer.BindTexture( m_WallTextures );
 			m_WallTechnique.Apply( context, Render3dWalls );
-			Graphics.Renderer.UnbindTexture( m_WallTextures );
 
 			//	Render floors
-			Graphics.Renderer.BindTexture( m_FloorTextures );
 			m_FloorTechnique.Apply( context, Render3dFloors );
-			Graphics.Renderer.UnbindTexture( m_FloorTextures );
 
 			//	Render selected walls
 			Graphics.Renderer.PushRenderState( ms_SelState );
@@ -181,8 +171,6 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		private int m_FloorDisplayList = -1;
 
 		//	TODO: AP: Update serialization of these fields
-		private readonly Texture2d m_WallTextures;
-		private readonly Texture2d m_FloorTextures;
 		private readonly ITechnique m_WallTechnique;
 		private readonly ITechnique m_FloorTechnique;
 
@@ -239,9 +227,20 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			Point3 pt3 = node.Quad[ 3 ];
 
 			float minU = 0;
-			float maxU = 4;
+			float maxU = node.Quad[ 0 ].DistanceTo( node.Quad[ 1 ] ) / 5.0f;
 			float minV = 0;
-			float maxV = 4;
+			float maxV = node.Quad[ 0 ].DistanceTo( node.Quad[ 3 ] ) / 5.0f;
+
+			Gl.glEnable( Gl.GL_TEXTURE_2D );
+			OpenGlTexture2d texture = ( OpenGlTexture2d )( node.Edge.Wall.Texture.Asset );
+			Gl.glBindTexture( Gl.GL_TEXTURE_2D, texture.TextureHandle );
+			Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_REPEAT );
+			Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_REPEAT );
+			Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_REPLACE );
+			Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST );
+			Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST );
+
+			Gl.glBegin( Gl.GL_TRIANGLES );
 
 			Gl.glNormal3f( node.Plane.Normal.X, 0, node.Plane.Normal.Y );
 			Gl.glTexCoord2f( minU, minV );
@@ -259,6 +258,9 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			Gl.glTexCoord2f( minU, minV );
 			Gl.glVertex3f( pt0.X, pt0.Y, pt0.Z );
 
+			Gl.glEnd( );
+
+			//Graphics.Renderer.UnbindTexture( node.Edge.Wall.Texture.Asset );
 
 			RenderWall( node.InFront );
 			RenderWall( node.Behind );
@@ -277,11 +279,22 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 
 			if ( node.ConvexRegion != null )
 			{
+				Gl.glEnable( Gl.GL_TEXTURE_2D );
+				OpenGlTexture2d texture = ( OpenGlTexture2d )( node.FloorData.Texture.Asset );
+				Gl.glBindTexture( Gl.GL_TEXTURE_2D, texture.TextureHandle );
+				Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_REPEAT );
+				Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_REPEAT );
+				Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_REPLACE );
+				Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST );
+				Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST );
+
 				Point2[] points = node.ConvexRegion;
 				Point2 basePos = points[ 0 ];
 				float height = 0;
-				float uScale = 0.5f;
-				float vScale = 0.5f;
+				float uScale = 0.1f;
+				float vScale = 0.1f;
+				
+				Gl.glBegin( Gl.GL_TRIANGLES );
 				for ( int vertexIndex = 1; vertexIndex < points.Length - 1; ++vertexIndex )
 				{
 					Gl.glNormal3f( 0, 1, 0 );
@@ -297,6 +310,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 					Gl.glTexCoord2f( pt.X * uScale, pt.Y * vScale );
 					Gl.glVertex3f( pt.X, height, pt.Y );
 				}
+				Gl.glEnd( );
 			}
 
 
@@ -316,9 +330,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 				m_WallDisplayList = Gl.glGenLists( 1 );
 				Gl.glNewList( m_WallDisplayList, Gl.GL_COMPILE );
 
-				Gl.glBegin( Gl.GL_TRIANGLES );
 				RenderWall( Csg.Root );
-				Gl.glEnd( );
 
 				Gl.glEndList( );
 			}
@@ -336,9 +348,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 				m_FloorDisplayList = Gl.glGenLists( 1 );
 				Gl.glNewList( m_FloorDisplayList, Gl.GL_COMPILE );
 
-				Gl.glBegin( Gl.GL_TRIANGLES );
 				RenderFloor( Csg.Root );
-				Gl.glEnd( );
 
 				Gl.glEndList( );
 			}
