@@ -151,7 +151,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			/// <summary>
 			/// Surface texture
 			/// </summary>
-			public Texture2d Texture
+			public ITexture2d Texture
 			{
 				set { m_Texture = value; }
 				get { return m_Texture; }
@@ -187,13 +187,13 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			private SurfaceFrame[]		m_Frames;
 			private OpenGlIndexedGroup	m_Group;
 			private OpenGlVertexArray	m_TextureUVs;
-			private Texture2d			m_Texture;
+			private ITexture2d			m_Texture;
 		}
 
 		/// <summary>
 		/// Surface collection
 		/// </summary>
-		public Surface[]	Surfaces
+		public Surface[] Surfaces
 		{
 			get
 			{

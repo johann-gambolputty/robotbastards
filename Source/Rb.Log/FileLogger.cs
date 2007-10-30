@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Rb.Log
 {
@@ -29,14 +27,14 @@ namespace Rb.Log
 
 			do
 			{
-				outputFilePath = directory + "/" + basePath + ( outputFileCount++ ).ToString( ) + extension;
+				outputFilePath = directory + "/" + basePath + ( outputFileCount++ ) + extension;
 			} while ( System.IO.File.Exists( outputFilePath ) );
 
 			//	Open a stream writer to stomp all over the existing file
 			Writer = new System.IO.StreamWriter( outputFilePath, false );
 
 			//	Write a nice introductory message
-			Writer.WriteLine( "Running \"{0}\" at {1}", System.Reflection.Assembly.GetExecutingAssembly( ).FullName, System.DateTime.Now.ToString( ) );
+			Writer.WriteLine( "Running \"{0}\" at {1}", System.Reflection.Assembly.GetExecutingAssembly( ).FullName, DateTime.Now );
 		}
 	}
 }

@@ -65,6 +65,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// Setup constructor
 		/// </summary>
 		/// <param name="context">CG context</param>
+		/// <param name="source">Parent effect</param>
 		/// <param name="parameterHandle"> CGparameter handle </param>
 		public CgShaderParameter( IntPtr context, IEffect source, IntPtr parameterHandle ) :
 			base( source )
@@ -77,7 +78,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// <summary>
 		/// Binds a texture to a sampler parameter (shared with CgRenderEffect)
 		/// </summary>
-		public static void		BindTexture( IntPtr context, IntPtr parameter, Texture2d tex )
+		public static void BindTexture( IntPtr context, IntPtr parameter, ITexture2d tex )
 		{
 			if ( tex != null )
 			{
@@ -96,7 +97,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// Assumes that this parameter is a texture sampler of some description. Texture must already be bound to the
 		/// renderer
 		/// </remarks>
-		public override void	Set( Texture2d val )
+		public override void Set( ITexture2d val )
 		{
 			BindTexture( m_Context, m_Parameter, val );
 		}
@@ -105,7 +106,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// Sets the shader parameter to a single float value
 		/// </summary>
 		/// <param name="val"> New parameter value </param>
-		public override void	Set( float val )
+		public override void Set( float val )
 		{
 			TaoCg.cgSetParameter1f( m_Parameter, val );
 		}

@@ -94,7 +94,7 @@ namespace Rb.Rendering
 		/// Creates a new Texture2d object
 		/// </summary>
 		/// <returns></returns>
-		public abstract Texture2d NewTexture2d( );
+		public abstract ITexture2d NewTexture2d( );
 
 		/// <summary>
 		/// Creates a new TextureSampler2d object

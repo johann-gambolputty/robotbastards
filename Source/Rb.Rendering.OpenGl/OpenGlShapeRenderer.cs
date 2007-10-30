@@ -86,7 +86,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="width">Screen width of the image</param>
 		/// <param name="height">Screen height of the image</param>
 		/// <param name="texture">The image to render</param>
-		public override void DrawImage( int x, int y, int width, int height, Texture2d texture )
+		public override void DrawImage( int x, int y, int width, int height, ITexture2d texture )
 		{
 			//Graphics.Renderer.Push2d( );
 			//m_DrawImageRenderState.Begin( );

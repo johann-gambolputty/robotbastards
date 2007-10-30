@@ -38,7 +38,7 @@ namespace Rb.Rendering
 		/// <param name="width">Screen width of the image</param>
 		/// <param name="height">Screen height of the image</param>
 		/// <param name="texture">Sprite texture</param>
-		public abstract void DrawImage( int x, int y, int width, int height, Texture2d texture );
+		public abstract void DrawImage( int x, int y, int width, int height, ITexture2d texture );
 
 		#endregion
 

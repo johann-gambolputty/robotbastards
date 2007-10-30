@@ -29,7 +29,7 @@ namespace Rb.Rendering
 		/// <remarks>
 		/// Until <see cref="Finish"/> has been called, this property will return null.
 		/// </remarks>
-		public Texture2d Texture
+		public ITexture2d Texture
 		{
 			get { return m_Texture; }
 		}
@@ -64,7 +64,7 @@ namespace Rb.Rendering
 		/// </summary>
 		/// <param name="texture">Texture to add</param>
 		/// <returns>Returns the rectangle in the pack texture where texture is placed. Returns null if no space could be found for texture</returns>
-		public Rectangle Add( Texture2d texture )
+		public Rectangle Add( ITexture2d texture )
 		{
 			return Add( texture.ToBitmap( ) );
 		}
@@ -84,7 +84,7 @@ namespace Rb.Rendering
 		private readonly Bitmap m_TextureImage;
 		private readonly System.Drawing.Graphics m_Graphics;
 
-		private Texture2d m_Texture;
+		private ITexture2d m_Texture;
 		private readonly Node m_Root;
 
 		/// <summary>

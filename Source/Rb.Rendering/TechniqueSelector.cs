@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 
 namespace Rb.Rendering
 {
@@ -22,6 +23,15 @@ namespace Rb.Rendering
         {
             Effect = effect;
         }
+
+		/// <summary>
+		/// Sets the effect, from which a technique can be selected
+		/// </summary>
+		public TechniqueSelector( IEffect effect, string name )
+		{
+			Effect = effect;
+			Select( name );
+		}
 
 		/// <summary>
 		/// Sets the selected technique
@@ -50,7 +60,15 @@ namespace Rb.Rendering
             set
             {
                 m_Effect = value;
-                m_Technique = null;
+				if ( m_Effect == null )
+				{
+					m_Technique = null;
+				}
+				else
+				{
+					IEnumerator<ITechnique> techEnum = m_Effect.Techniques.GetEnumerator( );
+					m_Technique = techEnum.MoveNext( ) ? techEnum.Current : null;
+				}
             }
         }
 

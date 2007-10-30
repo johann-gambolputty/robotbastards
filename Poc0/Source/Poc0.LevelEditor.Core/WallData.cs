@@ -25,10 +25,10 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Gets/sets the default technique source for walls
 		/// </summary>
-		public static ISource DefaultTechniqueSource
+		public static ISource DefaultEffectSource
 		{
-			get { return ms_DefaultTechniqueSource; }
-			set { ms_DefaultTechniqueSource = value; }
+			get { return ms_DefaultEffectSource; }
+			set { ms_DefaultEffectSource = value; }
 		}
 
 		#endregion
@@ -43,7 +43,7 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Gets/sets the texture source for this node
 		/// </summary>
-		public AssetHandleT<Texture2d> Texture
+		public ITexture2d Texture
 		{
 			get { return m_Texture; }
 			set
@@ -59,7 +59,7 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Gets/sets the technque source for this node
 		/// </summary>
-		public AssetHandle Technique
+		public ITechnique Technique
 		{
 			get { return m_Technique; }
 			set
@@ -83,15 +83,15 @@ namespace Poc0.LevelEditor.Core
 			ms_DefaultTextureSource = new StreamSource( stream, "DefaultWallTexture.jpeg" );
 
 			//	TODO: AP: Argh argh bad :(
-			ms_DefaultTechniqueSource = new Location( @"Graphics\Effects\perPixelTextured.cgfx" );
+			ms_DefaultEffectSource = new Location( @"Graphics\Effects\perPixelTextured.cgfx" );
 		}
 		
 		/// <summary>
 		/// Creates a texture asset handle from the default texture source
 		/// </summary>
-		private static AssetHandleT<Texture2d> CreateDefaultTextureHandle( )
+		private static ITexture2d CreateDefaultTexture( )
 		{
-			AssetHandleT<Texture2d> handle = new AssetHandleT<Texture2d>( ms_DefaultTextureSource );
+			Texture2dAssetHandle handle = new Texture2dAssetHandle( ms_DefaultTextureSource );
 			handle.LoadParameters = new LoadParameters( );
 
 			//	Mip maps yes please thank you
@@ -99,11 +99,20 @@ namespace Poc0.LevelEditor.Core
 			return handle;
 		}
 
-		private AssetHandleT<Texture2d> m_Texture = CreateDefaultTextureHandle( );
-		private AssetHandle m_Technique = new AssetHandle( ms_DefaultTechniqueSource );
+		/// <summary>
+		/// Creates an effect asset handle from the default effect source
+		/// </summary>
+		private static ITechnique CreateDefaultTechnique( )
+		{
+			EffectAssetHandle handle = new EffectAssetHandle( ms_DefaultEffectSource );
+			return new TechniqueSelector( handle );
+		}
+
+		private ITexture2d m_Texture = CreateDefaultTexture( );
+		private ITechnique m_Technique = CreateDefaultTechnique( );
 
 		private static ISource ms_DefaultTextureSource;
-		private static ISource ms_DefaultTechniqueSource;
+		private static ISource ms_DefaultEffectSource;
 
 		#endregion
 	}

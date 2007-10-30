@@ -171,6 +171,26 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
+		/// Binds this texture
+		/// </summary>
+		/// <param name="unit">Texture unit to bind this texture to</param>
+		public override void Bind( int unit )
+		{
+            Gl.glActiveTextureARB( Gl.GL_TEXTURE0_ARB + unit );
+			Gl.glBindTexture( Gl.GL_TEXTURE_2D, TextureHandle );
+		}
+		
+		/// <summary>
+		/// Unbinds this texture
+		/// </summary>
+		/// <param name="unit">Texture unit that this texture is bound to</param>
+		public override void Unbind(int unit)
+		{
+            Gl.glActiveTextureARB( Gl.GL_TEXTURE0_ARB + unit );
+			Gl.glBindTexture( Gl.GL_TEXTURE_2D, 0 );
+		}
+
+		/// <summary>
 		/// Converts a PixelFormat value into a TextureFormat
 		/// </summary>
 		private static TextureFormat PixelFormatToTextureFormat( PixelFormat pixFormat )
@@ -462,7 +482,7 @@ namespace Rb.Rendering.OpenGl
 				//	Handle colour textures
 
 				//	Get texture memory
-				int bytesPerPixel = GetTextureFormatSize( Format ) / 8;
+				int bytesPerPixel = TextureFormatInfo.GetBitSize( Format ) / 8;
 				byte[] textureMemory = new byte[ Width * Height * bytesPerPixel ];
 				Gl.glGetTexImage( Gl.GL_TEXTURE_2D, 0, m_GlFormat, m_GlType, textureMemory );
 
@@ -504,9 +524,9 @@ namespace Rb.Rendering.OpenGl
 
 		private const int InvalidHandle = -1;
 
-		private int		m_TextureHandle = InvalidHandle;
-		private int		m_InternalGlFormat;
-		private int		m_GlFormat;
-		private int		m_GlType;
+		private int	m_TextureHandle = InvalidHandle;
+		private int	m_InternalGlFormat;
+		private int	m_GlFormat;
+		private int	m_GlType;
 	}
 }

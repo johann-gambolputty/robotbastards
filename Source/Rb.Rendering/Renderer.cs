@@ -243,7 +243,7 @@ namespace Rb.Rendering
         /// </summary>
         public void PushTextures( )
         {
-            m_TextureStack.Add( ( Texture2d[] )m_Textures.Clone( ) );
+            m_TextureStack.Add( ( ITexture2d[] )m_Textures.Clone( ) );
             UnbindAllTextures( );
         }
 
@@ -253,7 +253,7 @@ namespace Rb.Rendering
         public void PopTextures( )
         {
             UnbindAllTextures( );
-            Texture2d[] oldTextures = m_TextureStack[ m_TextureStack.Count - 1 ];
+            ITexture2d[] oldTextures = m_TextureStack[ m_TextureStack.Count - 1 ];
             for ( int textureIndex = 0; textureIndex < oldTextures.Length; ++textureIndex )
             {
                 if ( oldTextures[ textureIndex ] != null )
@@ -267,13 +267,14 @@ namespace Rb.Rendering
 		/// <summary>
         /// Binds a texture. Returns the unit that the texture occupies
 		/// </summary>
-		public virtual int BindTexture( Texture2d texture )
+		public virtual int BindTexture( ITexture2d texture )
 		{
             for ( int unit = 0; unit < m_Textures.Length; ++unit )
             {
                 if ( m_Textures[ unit ] == null )
                 {
                     m_Textures[ unit ] = texture;
+					texture.Bind( unit );
                     return unit;
                 }
             }
@@ -283,12 +284,13 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Unbinds a texture from the indexed texture stage. Returns the unit that the texture was bound to
 		/// </summary>
-		public virtual int UnbindTexture( Texture2d texture )
+		public virtual int UnbindTexture( ITexture2d texture )
 		{
             for ( int unit = 0; unit < m_Textures.Length; ++unit )
             {
                 if ( m_Textures[ unit ] == texture )
                 {
+					m_Textures[ unit ].Unbind( unit );
                     m_Textures[ unit ] = null;
                     return unit;
                 }
@@ -303,6 +305,7 @@ namespace Rb.Rendering
         {
             for ( int unit = 0; unit < m_Textures.Length; ++unit )
             {
+				m_Textures[ unit ].Unbind( unit );
                 m_Textures[ unit ] = null;
             }
         }
@@ -310,7 +313,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Gets a 2D texture, indexed by stage
 		/// </summary>
-		public Texture2d GetTexture( int index )
+		public ITexture2d GetTexture( int index )
 		{
 			return m_Textures[ index ];
 		}
@@ -318,7 +321,7 @@ namespace Rb.Rendering
         /// <summary>
         /// Gets the texture array
         /// </summary>
-	    public Texture2d[] Textures
+	    public ITexture2d[] Textures
 	    {
 	        get { return m_Textures; }
 	    }
@@ -417,8 +420,8 @@ namespace Rb.Rendering
 		private Cameras.CameraBase				m_Camera;
 		private readonly Light[]				m_Lights = new Light[ MaxActiveLights ];
 		private int								m_NumLights;
-		private readonly Texture2d[]			m_Textures = new Texture2d[ MaxTextures ];
-		private readonly List<Texture2d[]>		m_TextureStack = new List<Texture2d[]>( );
+		private readonly ITexture2d[]			m_Textures = new ITexture2d[ MaxTextures ];
+		private readonly List<ITexture2d[]>		m_TextureStack = new List<ITexture2d[]>( );
 
 		#endregion
 

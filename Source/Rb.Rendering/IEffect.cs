@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Rb.Rendering
 {
 	/// <summary>
@@ -5,6 +7,14 @@ namespace Rb.Rendering
 	/// </summary>
 	public interface IEffect : IPass
 	{
+		/// <summary>
+		/// Gets the techniques making up this effect
+		/// </summary>
+		ICollection<ITechnique> Techniques
+		{
+			get;
+		}
+
 		/// <summary>
 		/// Gets a shader parameter by its name
 		/// </summary>

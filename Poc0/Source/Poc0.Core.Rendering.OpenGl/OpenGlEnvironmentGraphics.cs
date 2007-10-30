@@ -7,12 +7,12 @@ using Tao.OpenGl;
 
 namespace Poc0.Core.Rendering.OpenGl
 {
+	/// <summary>
+	/// Handles environment rendering in OpenGL
+	/// </summary>
 	[Serializable, RenderingLibraryType]
 	public class OpenGlEnvironmentGraphics : IEnvironmentGraphics, ISceneObject
 	{
-		private readonly RenderState m_WallState;
-		private readonly RenderState m_FloorState;
-
 		/// <summary>
 		/// Sets up render states
 		/// </summary>
@@ -45,76 +45,22 @@ namespace Poc0.Core.Rendering.OpenGl
 			Graphics.Renderer.PopRenderState( );
 		}
 
-		#region Private members
-
-		[NonSerialized]
-		private Cell[,] m_Grid;
-
-		private class GeometryGroup
-		{
-			public GeometryGroup( EnvironmentGraphicsData.CellGeometryGroup src )
-			{
-				m_Textures = src.Textures;
-				m_NumTris = src.Vertices.NumVertices / 3;
-				m_Vertices = Graphics.Factory.NewVertexBuffer( src.Vertices );
-			}
-
-			public void Render( IRenderContext context )
-			{
-				foreach ( Texture2d texture in m_Textures )
-				{
-					Graphics.Renderer.BindTexture( texture );
-				}
-
-				m_Vertices.Begin( );
-				Gl.glDrawArrays( Gl.GL_TRIANGLES, 0, m_NumTris * 3 );
-				m_Vertices.End( );
-
-				foreach ( Texture2d texture in m_Textures )
-				{
-					Graphics.Renderer.UnbindTexture( texture );
-				}
-			}
-
-			private readonly Texture2d[] m_Textures;
-			private readonly int m_NumTris;
-			private readonly IVertexBuffer m_Vertices;
-		}
-
-		private class Cell
-		{
-			public Cell( EnvironmentGraphicsData.GridCell src )
-			{
-				m_Groups = new GeometryGroup[ src.Groups.Count ];
-				for ( int groupIndex = 0; groupIndex < m_Groups.Length; ++groupIndex )
-				{
-					m_Groups[ groupIndex ] = new GeometryGroup( src.Groups[ groupIndex ] );
-				}
-			}
-
-			public void Render( IRenderContext context )
-			{
-				foreach ( GeometryGroup group in m_Groups )
-				{
-					group.Render( context );
-				}
-			}
-
-			private readonly GeometryGroup[] m_Groups;
-		}
-
-		private EnvironmentGraphicsData m_Data;
-
+		/// <summary>
+		/// Called when this object is deserialized
+		/// </summary>
+		/// <param name="context">Stream context</param>
 		[OnDeserialized]
 		public void OnDeserialized( StreamingContext context )
 		{
 			Build( m_Data );
 		}
-
-		#endregion
-
+		
 		#region IEnvironmentGraphics Members
 
+		/// <summary>
+		/// Builds this object
+		/// </summary>
+		/// <param name="data">Source data</param>
 		public void Build( EnvironmentGraphicsData data )
 		{
 			m_Data = data;
@@ -132,16 +78,110 @@ namespace Poc0.Core.Rendering.OpenGl
 
 		#region ISceneObject Members
 
+		/// <summary>
+		/// Called when this object is added to a scene
+		/// </summary>
 		public void AddedToScene( Scene scene )
 		{
 			scene.Renderables.Add( this );
 		}
 
+		/// <summary>
+		/// Called when this object removed from a scene
+		/// </summary>
 		public void RemovedFromScene( Scene scene )
 		{
 			scene.Renderables.Remove( this );
 		}
 
 		#endregion
+
+		#region Private members
+
+		[NonSerialized]
+		private Cell[,] m_Grid;
+		private readonly RenderState m_WallState;
+		private readonly RenderState m_FloorState;
+		private EnvironmentGraphicsData m_Data;
+
+		/// <summary>
+		/// A geometry group that shares a texture set
+		/// </summary>
+		private class GeometryGroup
+		{
+			/// <summary>
+			/// Sets up this group
+			/// </summary>
+			/// <param name="src">Source data</param>
+			public GeometryGroup( EnvironmentGraphicsData.CellGeometryGroup src )
+			{
+				m_Textures = src.Textures;
+				m_NumTris = src.Vertices.NumVertices / 3;
+				m_Vertices = Graphics.Factory.NewVertexBuffer( src.Vertices );
+			}
+
+			/// <summary>
+			/// Renders this group
+			/// </summary>
+			/// <param name="context">Rendering context</param>
+			public void Render( IRenderContext context )
+			{
+				foreach ( ITexture2d texture in m_Textures )
+				{
+					Graphics.Renderer.BindTexture( texture );
+				}
+
+				m_Vertices.Begin( );
+				Gl.glDrawArrays( Gl.GL_TRIANGLES, 0, m_NumTris * 3 );
+				m_Vertices.End( );
+
+				foreach ( ITexture2d texture in m_Textures )
+				{
+					Graphics.Renderer.UnbindTexture( texture );
+				}
+			}
+
+			private readonly ITexture2d[] m_Textures;
+			private readonly int m_NumTris;
+			private readonly IVertexBuffer m_Vertices;
+		}
+
+		/// <summary>
+		/// A grid cell, containing an array of geometry groups
+		/// </summary>
+		private class Cell
+		{
+			/// <summary>
+			/// Cell setup
+			/// </summary>
+			/// <param name="src">Cell source data</param>
+			public Cell( EnvironmentGraphicsData.GridCell src )
+			{
+				m_Groups = new GeometryGroup[ src.Groups.Count ];
+				for ( int groupIndex = 0; groupIndex < m_Groups.Length; ++groupIndex )
+				{
+					m_Groups[ groupIndex ] = new GeometryGroup( src.Groups[ groupIndex ] );
+				}
+			}
+
+			/// <summary>
+			/// Renders this cell
+			/// </summary>
+			/// <param name="context">Rendering context</param>
+			public void Render( IRenderContext context )
+			{
+				foreach ( GeometryGroup group in m_Groups )
+				{
+					group.Render( context );
+				}
+			}
+
+			private readonly GeometryGroup[] m_Groups;
+		}
+
+
+
+		#endregion
+
 	}
 }

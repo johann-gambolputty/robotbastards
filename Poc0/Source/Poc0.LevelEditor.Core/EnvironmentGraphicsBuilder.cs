@@ -1,8 +1,5 @@
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using Poc0.Core.Environment;
-using Rb.Core.Assets;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Graphics=Rb.Rendering.Graphics;
@@ -70,51 +67,64 @@ namespace Poc0.LevelEditor.Core
 		}
 
 		/// <summary>
+		/// Group material properties
+		/// </summary>
+		private class GroupMaterial
+		{
+			/// <summary>
+			/// Setup constructor
+			/// </summary>
+			/// <param name="technique">Group technique</param>
+			/// <param name="textures">Group textures</param>
+			public GroupMaterial( ITechnique technique, ITexture2d[] textures )
+			{
+				m_Technique = technique;
+				m_Textures = textures;
+			}
+
+			/// <summary>
+			/// Gets the group rendering technique
+			/// </summary>
+			public ITechnique Technique
+			{
+				get { return m_Technique;}
+			}
+
+			/// <summary>
+			/// Gets the group textures
+			/// </summary>
+			public ITexture2d[] Textures
+			{
+				get { return m_Textures; }
+			}
+
+			private readonly ITechnique m_Technique;
+			private readonly ITexture2d[] m_Textures;
+
+
+		}
+
+		/// <summary>
 		/// Builds a list of <see cref="GroupBuilder"/> objects
 		/// </summary>
 		private class GroupListBuilder
 		{
 			/// <summary>
-			/// Gets a group for a given technique
+			/// Gets a group for a given material
 			/// </summary>
-			/// <param name="techniqueSource">Source of the group technique</param>
-			/// <returns>Returns an existing unretired group that matches the specified technique, or a new group</returns>
-			public GroupBuilder GetGroup( ISource techniqueSource )
+			/// <param name="material">Group material</param>
+			/// <returns>Returns an existing unretired group that matches the specified material, or a new group</returns>
+			public GroupBuilder GetGroup( GroupMaterial material )
 			{
 				foreach ( GroupBuilder group in m_Groups )
 				{
-					if ( group.Technique == techniqueSource )
+					if ( group.Material == material )
 					{
 						return group;
 					}
 				}
-				GroupBuilder newGroup = new GroupBuilder( techniqueSource );
+				GroupBuilder newGroup = new GroupBuilder( material );
 				m_Groups.Add( newGroup );
-				return newGroup;
-			}
-
-			/// <summary>
-			/// Gets a group for a given technique, adding the given texture to it
-			/// </summary>
-			/// <param name="techniqueSource">Group technique source</param>
-			/// <param name="textureSource">Texture</param>
-			/// <returns>Returns an existing unretired group that matches the specified technique, or a new group</returns>
-			public GroupBuilder GetGroup( ISource techniqueSource, ISource textureSource, out Rectangle rect )
-			{
-				foreach ( GroupBuilder group in m_Groups )
-				{
-					if ( group.Technique == techniqueSource )
-					{
-						rect = group.AddTexture( textureSource );
-						if ( rect != null )
-						{
-							return group;
-						}
-					}
-				}
-				GroupBuilder newGroup = new GroupBuilder( techniqueSource );
-				m_Groups.Add( newGroup );
-				rect = newGroup.AddTexture( textureSource );
 				return newGroup;
 			}
 
@@ -137,18 +147,18 @@ namespace Poc0.LevelEditor.Core
 			/// <summary>
 			/// Setup constructor
 			/// </summary>
-			/// <param name="techniqueSource">Source of the technique used by all geometry in the group</param>
-			public GroupBuilder( ISource techniqueSource )
+			/// <param name="material">Group material</param>
+			public GroupBuilder( GroupMaterial material )
 			{
-				m_Technique = techniqueSource;
+				m_Material = material;
 			}
 
 			/// <summary>
-			/// Gets the source of the group technique
+			/// Gets the group material
 			/// </summary>
-			public ISource Technique
+			public GroupMaterial Material
 			{
-				get { return m_Technique; }
+				get { return m_Material; }
 			}
 
 			/// <summary>
@@ -160,36 +170,6 @@ namespace Poc0.LevelEditor.Core
 			}
 
 			/// <summary>
-			/// Gets the group textures
-			/// </summary>
-			public TexturePacker Textures
-			{
-				get { return m_Textures; }
-			}
-
-			/// <summary>
-			/// Adds a handle to a texture asset to the texture packer
-			/// </summary>
-			/// <param name="source">Texture asset source</param>
-			/// <returns>Returns the UV rectangle of the texture if successfully added, otherwise null</returns>
-			public Rectangle AddTexture( ISource source )
-			{
-				Rectangle rect;
-				if ( m_TextureAssets.TryGetValue( source, out rect ) )
-				{
-					return rect;
-				}
-				using ( System.IO.Stream stream = source.Open( ) )
-				{
-					Bitmap bmp = new Bitmap( stream );
-					rect = m_Textures.Add( bmp );
-
-					m_TextureAssets.Add( source, rect );
-					return rect;
-				}
-			}
-
-			/// <summary>
 			/// Creates a cell geometry group
 			/// </summary>
 			/// <returns>New cell geometry group</returns>
@@ -197,17 +177,21 @@ namespace Poc0.LevelEditor.Core
 			{
 				VertexBufferData buffer = VertexBufferData.FromVertexCollection( m_Vertices );
 
-				Texture2d[] textures = new Texture2d[] { m_Textures.Texture };
+				ITexture2d[] textures = new ITexture2d[ m_Material.Textures.Length ];
 				ITechnique technique = null;
+
+				for ( int textureIndex = 0; textureIndex < textures.Length; ++textureIndex )
+				{
+					//m_Material.Textures[ textureIndex ];
+				}
 
 				EnvironmentGraphicsData.CellGeometryGroup group = new EnvironmentGraphicsData.CellGeometryGroup( buffer, technique, textures );
 				return group;
 			}
 
-			private readonly Dictionary<ISource, Rectangle> m_TextureAssets = new Dictionary<ISource, Rectangle>( );
-			private readonly ISource m_Technique;
+
+			private readonly GroupMaterial m_Material;
 			private readonly List<Vertex> m_Vertices = new List<Vertex>( );
-			private readonly TexturePacker m_Textures = new TexturePacker( 512, 512 );
 		}
 
 		/// <summary>
@@ -225,26 +209,20 @@ namespace Poc0.LevelEditor.Core
 			Vector3 planeNormal = new Vector3( node.Plane.Normal.X, 0, node.Plane.Normal.Y );
 
 			//	Get the texture source for the wall
-			ISource textureSource = node.Edge.Wall.Texture.Source;
-			if ( textureSource == null )
-			{
-				textureSource = WallData.DefaultTextureSource;
-			}
+			ITexture2d textureSource = node.Edge.Wall.Texture;
+			ITechnique techniqueSource = node.Edge.Wall.Technique;
 
-			ISource techniqueSource = node.Edge.Wall.Technique.Source;
-			if ( techniqueSource == null )
-			{
-				techniqueSource = WallData.DefaultTechniqueSource;
-			}
-			Rectangle textureRect;
-			GroupBuilder group = builder.GetGroup( techniqueSource, textureSource, out textureRect );
+			GroupMaterial material = new GroupMaterial( techniqueSource, new ITexture2d[] { textureSource } );
+			GroupBuilder group = builder.GetGroup( material );
 
 			//	TODO: AP: Split quad up into grid depending on texture size
 			//	OR: Give groups a single technique + texture, remove the texture packer, repeat the UVs
-			Point2 uvBl = new Point2( textureRect.X, textureRect.Y );
-			Point2 uvBr = new Point2( textureRect.MaxX, textureRect.Y );
-			Point2 uvTr = new Point2( textureRect.MaxX, textureRect.MaxY );
-			Point2 uvTl = new Point2( textureRect.X, textureRect.MaxY );
+			float texWidth = node.Quad[ 0 ].DistanceTo( node.Quad[ 1 ] ) / 10.0f;
+			float texHeight = node.Quad[ 0 ].DistanceTo( node.Quad[ 3 ] ) / 10.0f;
+			Point2 uvBl = new Point2( 0, 0 );
+			Point2 uvBr = new Point2( texWidth, 0 );
+			Point2 uvTr = new Point2( texWidth, texHeight );
+			Point2 uvTl = new Point2( 0, texHeight );
 
 			ICollection<Vertex> vertices = group.Vertices;
 			vertices.Add( new Vertex( node.Quad[ 0 ], planeNormal, uvBl ) );
@@ -273,13 +251,6 @@ namespace Poc0.LevelEditor.Core
 
 			for ( int groupIndex = 0; groupIndex < groups.Length; ++groupIndex )
 			{
-				builder.Groups[ groupIndex ].Textures.Finish( true );
-
-				//	TODO: AP: REMOVEME
-				//	Let's see what the texture packer has done...
-				string texFilename = string.Format( "groupTexture{0}.jpg", groupIndex );
-				builder.Groups[ groupIndex ].Textures.Texture.Save( texFilename, ImageFormat.Jpeg );
-
 				groups[ groupIndex ] = builder.Groups[ groupIndex ].Create( );
 			}
 
