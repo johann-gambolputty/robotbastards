@@ -231,14 +231,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			float minV = 0;
 			float maxV = node.Quad[ 0 ].DistanceTo( node.Quad[ 3 ] ) / 5.0f;
 
-			Gl.glEnable( Gl.GL_TEXTURE_2D );
-			OpenGlTexture2d texture = ( OpenGlTexture2d )( node.Edge.Wall.Texture.Asset );
-			Gl.glBindTexture( Gl.GL_TEXTURE_2D, texture.TextureHandle );
-			Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_REPEAT );
-			Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_REPEAT );
-			Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_REPLACE );
-			Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST );
-			Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST );
+			ApplyTexture( node.Edge.Wall.Texture );
 
 			Gl.glBegin( Gl.GL_TRIANGLES );
 
@@ -267,6 +260,21 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		}
 
 		/// <summary>
+		/// Applies a given texture... nasty (should use texture sampler)
+		/// </summary>
+		/// <param name="tex">Texture to apply</param>
+		private static void ApplyTexture( ITexture2d tex )
+		{
+			OpenGlTexture2d texture = ( OpenGlTexture2d )( tex );
+			Gl.glBindTexture( Gl.GL_TEXTURE_2D, texture.TextureHandle );
+			Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_REPEAT );
+			Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_REPEAT );
+			Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_REPLACE );
+			Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST );
+			Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST );
+		}
+
+		/// <summary>
 		/// Renders floor nodes
 		/// </summary>
 		/// <param name="node">Current node</param>
@@ -279,20 +287,13 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 
 			if ( node.ConvexRegion != null )
 			{
-				Gl.glEnable( Gl.GL_TEXTURE_2D );
-				OpenGlTexture2d texture = ( OpenGlTexture2d )( node.FloorData.Texture.Asset );
-				Gl.glBindTexture( Gl.GL_TEXTURE_2D, texture.TextureHandle );
-				Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_REPEAT );
-				Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_REPEAT );
-				Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_REPLACE );
-				Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST );
-				Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST );
-
 				Point2[] points = node.ConvexRegion;
 				Point2 basePos = points[ 0 ];
 				float height = 0;
 				float uScale = 0.1f;
 				float vScale = 0.1f;
+
+				ApplyTexture( node.FloorData.Texture );
 				
 				Gl.glBegin( Gl.GL_TRIANGLES );
 				for ( int vertexIndex = 1; vertexIndex < points.Length - 1; ++vertexIndex )
@@ -329,7 +330,8 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			{
 				m_WallDisplayList = Gl.glGenLists( 1 );
 				Gl.glNewList( m_WallDisplayList, Gl.GL_COMPILE );
-
+				
+				Gl.glEnable( Gl.GL_TEXTURE_2D );
 				RenderWall( Csg.Root );
 
 				Gl.glEndList( );
@@ -347,7 +349,8 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			{
 				m_FloorDisplayList = Gl.glGenLists( 1 );
 				Gl.glNewList( m_FloorDisplayList, Gl.GL_COMPILE );
-
+				
+				Gl.glEnable( Gl.GL_TEXTURE_2D );
 				RenderFloor( Csg.Root );
 
 				Gl.glEndList( );

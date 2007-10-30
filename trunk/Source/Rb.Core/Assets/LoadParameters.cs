@@ -37,6 +37,12 @@ namespace Rb.Core.Assets
 		/// <summary>
 		/// Flag to determine if the loaded asset should be added to the asset cache
 		/// </summary>
+		/// <remarks>
+		/// There is a huge caveat about enabling asset caching - the cache is keyed to asset locations
+		/// only, so an asset will be retrieved from the cache, even if the load parameters have changed.
+		/// (e.g. if a texture is loaded with the generateMipMaps load parameter set to true, then cached,
+		/// subsequent loads will retrieve the mip-mapped texture, even if generateMipMaps is set to false).
+		/// </remarks>
 		public bool CanCache
 		{
 			get { return m_CanCache; }

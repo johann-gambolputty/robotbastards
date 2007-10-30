@@ -37,12 +37,13 @@ namespace Rb.Rendering.Assets
 		/// </remarks>
 		public override object Load( ISource source, LoadParameters parameters )
 		{
-			Texture2d texture = Graphics.Factory.NewTexture2d( );
+			parameters.CanCache = true;
+			ITexture2d texture = Graphics.Factory.NewTexture2d( );
 
 			using ( Stream stream = source.Open( ) )
 			{
 				bool generateMipMaps = DynamicProperties.GetProperty( parameters.Properties, "generateMipMaps", false );
-				texture.Load( stream, generateMipMaps );
+				TextureUtils.Load( texture, stream, generateMipMaps );
 			}
 
 			return texture;

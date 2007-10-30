@@ -151,7 +151,7 @@ namespace Rb.Rendering
         /// <summary>
         /// Gets the depth texture associated with a given buffer index
         /// </summary>
-        private Texture2d GetDepthTexture( int index )
+        private ITexture2d GetDepthTexture( int index )
         {
             return DepthTextureMethod ? m_RenderTargets[ index ].DepthTexture : m_RenderTargets[ index ].Texture;
         }
@@ -160,16 +160,16 @@ namespace Rb.Rendering
 
         #region Private stuff
 
-        private static ITechnique               ms_OverrideTechnique;
-        private static bool                     ms_DumpLights = false;
+        private static ITechnique               		ms_OverrideTechnique;
+        private static bool                     		ms_DumpLights = false;
 
-        private LightGroup                      m_ShadowLights = new LightGroup( );
-        private RenderTarget[]                  m_RenderTargets = new RenderTarget[MaxLights];
-        private float                           m_NearZ = 1.0f;
-        private float                           m_FarZ = 300.0f;
-        private ShaderParameterCustomBinding    m_ShadowMatrixBinding;
-        private ShaderParameterCustomBinding    m_ShadowNearZBinding;
-        private ShaderParameterCustomBinding    m_ShadowFarZBinding;
+        private readonly LightGroup                     m_ShadowLights = new LightGroup( );
+        private readonly RenderTarget[]                 m_RenderTargets = new RenderTarget[MaxLights];
+        private float                           		m_NearZ = 1.0f;
+        private float                           		m_FarZ = 300.0f;
+		private readonly ShaderParameterCustomBinding 	m_ShadowMatrixBinding;
+		private readonly ShaderParameterCustomBinding 	m_ShadowNearZBinding;
+		private readonly ShaderParameterCustomBinding 	m_ShadowFarZBinding;
 
         /// <summary>
         /// Makes the shadow buffers
@@ -238,11 +238,11 @@ namespace Rb.Rendering
                 {
                     if ( DepthTextureMethod )
                     {
-                        curTarget.DepthTexture.Save( string.Format( "ShadowBuffer{0}.png", numBuffers - 1 ) );
+						TextureUtils.Save( curTarget.DepthTexture, string.Format( "ShadowBuffer{0}.png", numBuffers - 1 ) );
                     }
                     else
                     {
-                        curTarget.Texture.Save( string.Format( "ShadowBuffer{0}.png", numBuffers - 1 ) );
+                        TextureUtils.Save( curTarget.Texture, string.Format( "ShadowBuffer{0}.png", numBuffers - 1 ) );
                     }
                 }
 

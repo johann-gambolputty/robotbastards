@@ -99,13 +99,11 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Sets the texture to apply
 		/// </summary>
-		/// <param name="unit"> Texture unit </param>
-		/// <param name="texture"> Texture to apply</param>
-		public TextureSampler2d( int unit, Texture2d texture )
+		/// <param name="texture">Texture to apply</param>
+		public TextureSampler2d( ITexture2d texture )
 		{
 			m_Texture = texture;
 		}
-
 
 		#region IPass methods
 
@@ -124,7 +122,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Access to the bound texture
 		/// </summary>
-		public Texture2d Texture
+		public ITexture2d Texture
 		{
 			get { return m_Texture; }
 			set { m_Texture = value; }
@@ -178,7 +176,7 @@ namespace Rb.Rendering
 		#region	Private stuff
 
 	//	private int				m_Unit;
-		private Texture2d		m_Texture;
+		private ITexture2d		m_Texture;
 		private TextureFilter	m_MinFilter	= TextureFilter.NearestTexel;
 		private TextureFilter	m_MagFilter = TextureFilter.NearestTexel;
 		private TextureWrap		m_WrapS		= TextureWrap.Clamp;

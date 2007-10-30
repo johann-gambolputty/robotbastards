@@ -1,8 +1,7 @@
 using System;
-using System.Diagnostics;
+using System.Text;
 using System.Windows.Forms;
 using Tao.OpenGl;
-using Tao.Platform.Windows;
 using Gdi = Tao.Platform.Windows.Gdi;
 using Wgl = Tao.Platform.Windows.Wgl;
 using User = Tao.Platform.Windows.User;
@@ -59,6 +58,21 @@ namespace Rb.Rendering.OpenGl.Windows
 		#endregion
 
 		#region IDisplaySetup Implementation
+
+		/// <summary>
+		/// Writes information about the GL renderer
+		/// </summary>
+		private static void WriteInfo( )
+		{
+			GraphicsLog.Info( "Successfully created GL render context:" );
+
+			StringBuilder sb = new StringBuilder( );
+			sb.AppendFormat( "Vendor: {0}\n", Gl.glGetString( Gl.GL_VENDOR ) );
+			sb.AppendFormat( "Renderer: {0}\n", Gl.glGetString( Gl.GL_RENDERER ) );
+			sb.AppendFormat( "Version: {0}", Gl.glGetString( Gl.GL_VERSION ) );
+
+			GraphicsLog.Info( sb.ToString( ) );
+		}
 
 		/// <summary>
 		/// Called when the control Load event fires
@@ -121,6 +135,7 @@ namespace Rb.Rendering.OpenGl.Windows
 				throw new ApplicationException( "Failed to create GL rendering context" );
 			}
 
+
 			//	All contexts share the same display list space
 			if ( ms_LastRenderContext == IntPtr.Zero )
 			{
@@ -140,7 +155,8 @@ namespace Rb.Rendering.OpenGl.Windows
 				Wgl.wglShareLists( ms_LastRenderContext, m_RenderContext );
 			}
 
-			GraphicsLog.Info( "Successfully created GL render context" );
+			WriteInfo( );
+
 		}
 
 		/// <summary>

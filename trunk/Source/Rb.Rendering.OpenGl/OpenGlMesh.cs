@@ -1,5 +1,4 @@
 using Rb.Core.Components;
-using Tao.OpenGl;
 
 namespace Rb.Rendering.OpenGl
 {
@@ -70,7 +69,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Gets a texture
 		/// </summary>
-		public OpenGlTexture2d	GetTexture( int index )
+		public OpenGlTexture2d GetTexture( int index )
 		{
 			return m_Textures[ index ].Texture;
 		}

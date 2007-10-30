@@ -58,6 +58,7 @@
     <Compile Include="Cameras\SphereCamera.cs" />
     <Compile Include="DelegateRenderable.cs" />
     <Compile Include="Draw.cs" />
+    <Compile Include="EffectAssetHandle.cs" />
     <Compile Include="EffectRenderedObject.cs" />
     <Compile Include="FpsCounter.cs" />
     <Compile Include="FpsDisplay.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="IEffect.cs" />
     <Compile Include="ITechnique.cs" />
     <Compile Include="ITechniqueSelector.cs" />
+    <Compile Include="ITexture2d.cs" />
     <Compile Include="IVertexBuffer.cs" />
     <Compile Include="Light.cs" />
     <Compile Include="LightGroup.cs" />
@@ -98,8 +100,11 @@
     <Compile Include="Technique.cs" />
     <Compile Include="TechniqueSelector.cs" />
     <Compile Include="Texture2d.cs" />
+    <Compile Include="Texture2dAssetHandle.cs" />
+    <Compile Include="TextureFormat.cs" />
     <Compile Include="TexturePacker.cs" />
     <Compile Include="TextureSampler2d.cs" />
+    <Compile Include="TextureUtils.cs" />
     <Compile Include="Transform.cs" />
     <Compile Include="VertexBufferData.cs" />
     <Compile Include="Viewer.cs" />

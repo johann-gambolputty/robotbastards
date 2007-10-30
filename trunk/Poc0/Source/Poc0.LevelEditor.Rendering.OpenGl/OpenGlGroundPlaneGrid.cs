@@ -21,7 +21,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			m_State.EnableCap( RenderStateFlag.Texture2d );
 			m_State.EnableCap( RenderStateFlag.Texture2dUnit0 );
 
-			Texture2d texture = Graphics.Factory.NewTexture2d( );
+			ITexture2d texture = Graphics.Factory.NewTexture2d( );
 			texture.Load( GridSquareBitmap, true );
 
 			m_Sampler = Graphics.Factory.NewTextureSampler2d( );

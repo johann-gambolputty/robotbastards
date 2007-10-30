@@ -583,50 +583,6 @@ namespace Rb.Rendering.OpenGl
 
 		#endregion
 
-		#region	Textures
-
-		/// <summary>
-		/// Applies a texture to the indexed texture stage
-		/// </summary>
-		public override int BindTexture( Texture2d texture )
-		{
-			//	TODO: AP: Don't bind if the texture is invalid
-            int unit = base.BindTexture( texture );
-            Gl.glActiveTextureARB( Gl.GL_TEXTURE0_ARB + unit );
-			Gl.glBindTexture( Gl.GL_TEXTURE_2D, ( ( OpenGlTexture2d )texture ).TextureHandle );
-		    return unit;
-		}
-
-		/// <summary>
-		/// Unbinds a texture from the indexed texture stage
-		/// </summary>
-		public override int UnbindTexture( Texture2d texture )
-		{
-			//	TODO: AP: Don't unbind if the texture is invalid
-            int unit = base.UnbindTexture( texture );
-            Gl.glActiveTextureARB( Gl.GL_TEXTURE0_ARB + unit );
-			Gl.glBindTexture( Gl.GL_TEXTURE_2D, 0 );
-		    return unit;
-		}
-        
-        /// <summary>
-        /// Unbinds all textures
-        /// </summary>
-        public override void UnbindAllTextures( )
-        {
-            for ( int unit = 0; unit < Textures.Length; ++unit )
-            {
-                if ( Textures[ unit ] != null )
-                {
-                    Gl.glActiveTextureARB( Gl.GL_TEXTURE0_ARB + unit );
-			        Gl.glBindTexture( Gl.GL_TEXTURE_2D, 0 );
-                }
-            }
-            base.UnbindAllTextures( );
-        }
-
-		#endregion
-
 		#region	Unprojection
 		
 		/// <summary>

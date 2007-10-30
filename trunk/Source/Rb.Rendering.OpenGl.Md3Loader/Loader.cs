@@ -182,11 +182,11 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 					if ( !tokens[ 0 ].StartsWith( "tag_" ) )
 					{
 						//	TODO: AP: Texture loading should be done through the asset manager
-						Texture2d newTexture = Graphics.Factory.NewTexture2d( );
+						ITexture2d newTexture = Graphics.Factory.NewTexture2d( );
 
 						using ( Stream textureStream = TextureFile( source, tokens[ 1 ] ).Open( ) )
 						{
-							newTexture.Load( textureStream, true );
+							TextureUtils.Load( newTexture, textureStream, true );
 						}
 
 						surfaceTextureMap[ tokens[ 0 ] ] = newTexture;
@@ -485,7 +485,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				int		endOffset			= reader.ReadInt32( );
 
 				//	Assign surface texture
-				curSurface.Texture			= ( Texture2d )surfaceTextureTable[ name ];
+				curSurface.Texture			= ( ITexture2d )surfaceTextureTable[ name ];
 			
 				//	Assign surface shaders
 			//	ReadShaders( reader, offset + shadersOffset, numShaders );

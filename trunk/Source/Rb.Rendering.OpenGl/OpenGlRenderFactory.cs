@@ -34,7 +34,7 @@ namespace Rb.Rendering.OpenGl
 		/// Creates a new Texture2d object
 		/// </summary>
 		/// <returns></returns>
-		public override Texture2d NewTexture2d( )
+		public override ITexture2d NewTexture2d( )
 		{
 			return new OpenGlTexture2d( );
 		}

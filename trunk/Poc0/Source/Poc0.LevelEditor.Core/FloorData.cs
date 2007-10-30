@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Text;
 using Rb.Core.Assets;
 using Rb.Rendering;
 
@@ -25,7 +22,7 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Gets/sets the texture source
 		/// </summary>
-		public AssetHandleT<Texture2d> Texture
+		public ITexture2d Texture
 		{
 			get { return m_Texture; }
 			set { m_Texture = value; }
@@ -44,9 +41,10 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Creates a texture asset handle from the default texture source
 		/// </summary>
-		private static AssetHandleT<Texture2d> CreateDefaultTextureHandle( )
+		private static ITexture2d CreateDefaultTexture( )
 		{
-			AssetHandleT<Texture2d> handle = new AssetHandleT<Texture2d>( ms_DefaultTextureSource );
+			Texture2dAssetHandle handle = new Texture2dAssetHandle( ms_DefaultTextureSource );
+
 			handle.LoadParameters = new LoadParameters( );
 
 			//	Mip maps yes please thank you
@@ -54,7 +52,7 @@ namespace Poc0.LevelEditor.Core
 			return handle;
 		}
 
-		private AssetHandleT<Texture2d> m_Texture = CreateDefaultTextureHandle( );
+		private ITexture2d m_Texture = CreateDefaultTexture( );
 		private static ISource ms_DefaultTextureSource;
 	}
 }

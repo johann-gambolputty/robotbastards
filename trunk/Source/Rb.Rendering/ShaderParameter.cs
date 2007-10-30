@@ -1,4 +1,3 @@
-using System;
 
 namespace Rb.Rendering
 {
@@ -42,7 +41,7 @@ namespace Rb.Rendering
 		/// Assumes that this parameter is a texture sampler of some description. Assumes that the texture
 		/// is already set up in the renderer
 		/// </remarks>
-		public abstract void	Set( Texture2d val );
+		public abstract void	Set( ITexture2d val );
 
 		/// <summary>
 		/// Sets the shader parameter to a single float value
