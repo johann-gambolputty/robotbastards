@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rb>
+  <!-- Spotlight pattern -->
+  <template type="Poc0.Core.Objects.PointLightSocket" assembly="Poc0.Core" name="Spotlight">
+    <template type="Rb.Rendering.Lights.SpotLight" dynProperty="Light"> 
+    </template>
+  </template>
+</rb>

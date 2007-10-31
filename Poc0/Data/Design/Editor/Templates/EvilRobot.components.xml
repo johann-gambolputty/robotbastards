@@ -9,7 +9,7 @@
       </template>
 
       <!-- Evil robot renderer pattern -->
-      <template type="Poc0.Core.Objects.EntityGraphics">
+      <template type="Poc0.Core.Objects.EntityGraphics" assembly="Poc0.Core">
         <location value="Graphics\Entities\TestPlayer0\Full.components.xml" dynProperty="GraphicsLocation"/>
       </template>
 

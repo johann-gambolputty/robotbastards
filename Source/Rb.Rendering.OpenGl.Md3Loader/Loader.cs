@@ -34,6 +34,25 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		}
 
 		/// <summary>
+		/// Creates default parameters for this loader
+		/// </summary>
+		/// <param name="addAllProperties">If true, then all dynamic properties are added</param>
+		/// <returns>Returns default loading parameters</returns>
+		public override LoadParameters CreateDefaultParameters( bool addAllProperties )
+		{
+			LoadParameters parameters = base.CreateDefaultParameters( addAllProperties );
+
+			if ( addAllProperties )
+			{
+				parameters.Properties.Add( "scaleX", 1.0f );
+				parameters.Properties.Add( "scaleY", 1.0f );
+				parameters.Properties.Add( "scaleZ", 1.0f );
+			}
+
+			return parameters;
+		}
+
+		/// <summary>
 		/// Loads... stuff
 		/// </summary>
 		public override object Load( ISource source, LoadParameters parameters )
@@ -47,16 +66,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 					DynamicProperties.GetProperty( parameters.Properties, "scaleZ", 1.0f )
 				);
 
-			Point3 offset = new Point3
-				(
-					DynamicProperties.GetProperty( parameters.Properties, "offsetX", 0.0f ),
-					DynamicProperties.GetProperty( parameters.Properties, "offsetY", 0.0f ),
-					DynamicProperties.GetProperty( parameters.Properties, "offsetZ", 0.0f )
-				);
-
 			Matrix44 transform = new Matrix44( );
 			transform.Scale( scale.X, scale.Y, scale.Z );
-			//transform.Translate( offset.X, offset.Y, offset.Z );
 
 			//	create the model
 			Model model = new Model( );

@@ -1,6 +1,6 @@
 using System;
 using Rb.Core.Components;
-using Rb.Rendering;
+using Rb.Rendering.Lights;
 using Rb.World.Services;
 
 namespace Rb.World
@@ -8,14 +8,14 @@ namespace Rb.World
 	//	TODO: AP: Just used for adding a light to the lighting manager - it can't be used afterwards
 
 	/// <summary>
-	/// A very poorly named class that adds a <see cref="Rb.Rendering.Light"/> into the scene <see cref="ILightingService"/>
+	/// A very poorly named class that adds a <see cref="ILight"/> into the scene <see cref="ILightingService"/>
 	/// </summary>
 	public class LightSocket : Component, ISceneObject
 	{
 		/// <summary>
 		/// The attached light
 		/// </summary>
-		public Light Light
+		public ILight Light
 		{
 			get
 			{
@@ -81,7 +81,7 @@ namespace Rb.World
 
 		#region Private stuff
 
-		private Light m_Light;
+		private ILight m_Light;
 		private Scene m_Scene;
 
 		#endregion

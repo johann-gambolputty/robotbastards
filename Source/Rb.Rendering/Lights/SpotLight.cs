@@ -1,18 +1,19 @@
 using System;
 using Rb.Core.Maths;
+using Rb.Rendering.Lights;
 
-namespace Rb.Rendering
+namespace Rb.Rendering.Lights
 {
 	/// <summary>
 	/// A spotlight
 	/// </summary>
 	[Serializable]
-	public class SpotLight : PointLight
+	public class SpotLight : PointLight, ISpotLight
 	{
 		/// <summary>
 		/// Gets the direction of the light
 		/// </summary>
-		public Vector3	Direction
+		public Vector3 Direction
 		{
 			get { return m_Direction; }
 			set { m_Direction = value; }
@@ -24,7 +25,7 @@ namespace Rb.Rendering
 		/// <remarks>
 		/// Light position must be set before calling LookAt
 		/// </remarks>
-		public Point3	LookAt
+		public Point3 LookAt
 		{
 			set
 			{
@@ -35,7 +36,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Access to the arc of the light
 		/// </summary>
-		public float	ArcDegrees
+		public float ArcDegrees
 		{
 			get { return m_Arc; }
 			set { m_Arc = value; }

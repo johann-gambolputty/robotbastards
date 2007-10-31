@@ -1,5 +1,6 @@
 using System;
 using Rb.Core.Maths;
+using Rb.Rendering.Lights;
 using TaoCgGl = Tao.Cg.CgGl;
 using TaoCg = Tao.Cg.Cg;
 
@@ -134,7 +135,7 @@ namespace Rb.Rendering.OpenGl.Cg
 					int numPointLights	= 0;
 					for ( int lightIndex = 0; lightIndex < numActiveLights; ++lightIndex )
 					{
-						PointLight curLight = Graphics.Renderer.GetLight( lightIndex ) as PointLight;
+						IPointLight curLight = Graphics.Renderer.GetLight( lightIndex ) as IPointLight;
 						if ( curLight != null )
 						{
 							IntPtr positionParam = TaoCg.cgGetArrayParameter( TaoCg.cgGetNamedStructParameter( param, "m_Positions" ), numPointLights );
@@ -155,7 +156,7 @@ namespace Rb.Rendering.OpenGl.Cg
 					int numSpotLights	= 0;
 					for ( int lightIndex = 0; lightIndex < numActiveLights; ++lightIndex )
 					{
-						SpotLight curLight = Graphics.Renderer.GetLight( lightIndex ) as SpotLight;
+						ISpotLight curLight = Graphics.Renderer.GetLight( lightIndex ) as ISpotLight;
 						if ( curLight != null )
 						{
 							IntPtr positionParam = TaoCg.cgGetArrayParameter( TaoCg.cgGetNamedStructParameter( param, "m_Positions" ), numSpotLights );

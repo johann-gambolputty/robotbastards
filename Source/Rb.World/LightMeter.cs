@@ -1,5 +1,5 @@
 using System;
-using Rb.Rendering;
+using Rb.Rendering.Lights;
 using Rb.World.Services;
 
 namespace Rb.World
@@ -43,7 +43,7 @@ namespace Rb.World
 		/// <summary>
 		/// Sets the lights that this meter is affected by
 		/// </summary>
-		public void SetLights( Light[] lights )
+		public void SetLights( ILight[] lights )
 		{
 			Lights = lights;
 		}

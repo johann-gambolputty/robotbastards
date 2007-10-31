@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Rb.Core.Maths;
+using Rb.Rendering.Lights;
 using Tao.OpenGl;
 
 namespace Rb.Rendering.OpenGl
@@ -72,7 +73,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Adds the specified light
 		/// </summary>
-		public override void AddLight( Light light )
+		public override void AddLight( ILight light )
 		{
 			//	TODO: AP: Lights should work for non-effect rendered objects. Need to set up lighting properties
 			int lightId = Gl.GL_LIGHT0 + NumActiveLights;

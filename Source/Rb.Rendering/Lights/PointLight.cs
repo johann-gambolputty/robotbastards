@@ -1,13 +1,13 @@
 using System;
 using Rb.Core.Maths;
 
-namespace Rb.Rendering
+namespace Rb.Rendering.Lights
 {
 	/// <summary>
 	/// A point light
 	/// </summary>
 	[Serializable]
-	public class PointLight : Light
+	public class PointLight : Light, IPointLight
 	{
 		/// <summary>
 		/// Light position

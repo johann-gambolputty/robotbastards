@@ -65,19 +65,27 @@
     <Compile Include="Graphics.cs" />
     <Compile Include="IDisplaySetup.cs" />
     <Compile Include="GraphicsLog.cs" />
+    <Compile Include="Lights\ILight.cs" />
     <Compile Include="IPass.cs" />
+    <Compile Include="Lights\IPointLight.cs" />
     <Compile Include="IRenderable.cs" />
     <Compile Include="IRenderContext.cs" />
     <Compile Include="IEffect.cs" />
+    <Compile Include="Lights\ISpotLight.cs" />
     <Compile Include="ITechnique.cs" />
     <Compile Include="ITechniqueSelector.cs" />
     <Compile Include="ITexture2d.cs" />
     <Compile Include="IVertexBuffer.cs" />
-    <Compile Include="Light.cs" />
-    <Compile Include="LightGroup.cs" />
+    <Compile Include="Lights\Light.cs" />
+    <Compile Include="Lights\LightGroup.cs" />
     <Compile Include="Material.cs" />
-    <Compile Include="PointLight.cs" />
+    <Compile Include="Lights\PointLight.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="RenderableAssetHandle.cs" />
     <Compile Include="RenderableList.cs" />
     <Compile Include="RenderContext.cs" />
@@ -96,7 +104,7 @@
     <Compile Include="ShaderParameterBindings.cs" />
     <Compile Include="ShadowBufferTechnique.cs" />
     <Compile Include="ShapeRenderer.cs" />
-    <Compile Include="SpotLight.cs" />
+    <Compile Include="Lights\SpotLight.cs" />
     <Compile Include="Technique.cs" />
     <Compile Include="TechniqueSelector.cs" />
     <Compile Include="Texture2d.cs" />
@@ -118,6 +126,17 @@
       <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
       <Name>Rb.Log</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\shadowMapDepthTexture.cgfx" />
+    <None Include="Resources\shadowMapTexture.cgfx" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

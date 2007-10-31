@@ -1,4 +1,4 @@
-using Rb.Rendering;
+using Rb.Rendering.Lights;
 
 namespace Rb.World
 {
@@ -12,6 +12,6 @@ namespace Rb.World
 		/// <summary>
 		/// Sets the lights that the meter is affected by
 		/// </summary>
-		void SetLights( Light[] lights );
+		void SetLights( ILight[] lights );
 	}
 }

@@ -1,0 +1,16 @@
+
+//
+//	This effect file is used when rendering to a depth texture
+//
+
+
+technique DefaultTechnique
+{
+	pass
+	{
+		LightingEnable	= false;
+		FrontFace		= CW;
+		DepthTestEnable	= true;
+		CullFaceEnable	= true;
+	}
+}
