@@ -10,6 +10,11 @@ namespace Rb.Rendering.Assets
 	public class TextureLoader : AssetLoader
 	{
 		/// <summary>
+		/// Name of the property in the load parameters, that sets mipmap generation when true
+		/// </summary>
+		public const string GenerateMipMapsPropertyName = "generateMipMaps";
+
+		/// <summary>
 		/// Gets the asset name
 		/// </summary>
 		public override string Name
@@ -23,6 +28,21 @@ namespace Rb.Rendering.Assets
 		public override string[] Extensions
 		{
 			get { return ms_Extensions; }
+		}
+
+		/// <summary>
+		/// Creates default texture load parameters
+		/// </summary>
+		/// <param name="addAllProperties">If true, adds all dynamic properties with default values to the parameters</param>
+		/// <returns>Returns default load parameters</returns>
+		public override LoadParameters CreateDefaultParameters( bool addAllProperties )
+		{
+			LoadParameters parameters = new LoadParameters( );
+			if ( addAllProperties )
+			{
+				parameters.Properties.Add( GenerateMipMapsPropertyName, false );
+			}
+			return parameters;
 		}
 
 		/// <summary>
@@ -42,7 +62,7 @@ namespace Rb.Rendering.Assets
 
 			using ( Stream stream = source.Open( ) )
 			{
-				bool generateMipMaps = DynamicProperties.GetProperty( parameters.Properties, "generateMipMaps", false );
+				bool generateMipMaps = DynamicProperties.GetProperty( parameters.Properties, GenerateMipMapsPropertyName, false );
 				TextureUtils.Load( texture, stream, generateMipMaps );
 			}
 

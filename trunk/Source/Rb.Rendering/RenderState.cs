@@ -35,6 +35,11 @@ namespace Rb.Rendering
 		CullBackFaces				= 0x10,
 
 		/// <summary>
+		/// Front and backface culling flag (useful for disabling all culling)
+		/// </summary>
+		CullFaces					= CullFrontFaces | CullBackFaces,
+
+		/// <summary>
 		/// Backface winding flag
 		/// </summary>
 		BackFacesAreClockwiseWound	= 0x20,

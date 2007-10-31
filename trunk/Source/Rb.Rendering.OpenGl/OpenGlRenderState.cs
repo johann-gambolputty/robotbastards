@@ -42,7 +42,7 @@ namespace Rb.Rendering.OpenGl
 				case DepthTestPass.Always			:	Gl.glDepthFunc( Gl.GL_ALWAYS );		break;
 			}
 
-			if ( ( m_CapFlags & ( RenderStateFlag.CullFrontFaces | RenderStateFlag.CullBackFaces ) ) == ( RenderStateFlag.CullFrontFaces | RenderStateFlag.CullBackFaces ) )
+			if ( ( m_CapFlags & RenderStateFlag.CullFaces ) == RenderStateFlag.CullFaces )
 			{
 				Gl.glEnable( Gl.GL_CULL_FACE );
 				Gl.glCullFace( Gl.GL_FRONT_AND_BACK );

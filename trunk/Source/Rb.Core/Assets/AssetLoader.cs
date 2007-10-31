@@ -36,7 +36,7 @@ namespace Rb.Core.Assets
 		/// <summary>
 		/// Creates default loading parameters
 		/// </summary>
-		public virtual LoadParameters CreateDefaultParameters( )
+		public virtual LoadParameters CreateDefaultParameters( bool addAllProperties )
 		{
 			return new LoadParameters( );
 		}

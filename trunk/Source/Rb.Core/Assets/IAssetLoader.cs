@@ -32,7 +32,9 @@ namespace Rb.Core.Assets
 		/// <summary>
 		/// Creates default loading parameters
 		/// </summary>
-		LoadParameters CreateDefaultParameters( );
+		/// <param name="addAllProperties">If true, then the parameters object gets all relevant dynamic properties with their default values added</param>
+		/// <returns>Returns default loading parameters</returns>
+		LoadParameters CreateDefaultParameters( bool addAllProperties );
 
 		/// <summary>
 		/// Loads an asset

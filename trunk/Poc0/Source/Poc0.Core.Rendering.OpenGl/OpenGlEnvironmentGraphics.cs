@@ -115,6 +115,7 @@ namespace Poc0.Core.Rendering.OpenGl
 			/// <param name="src">Source data</param>
 			public GeometryGroup( EnvironmentGraphicsData.CellGeometryGroup src )
 			{
+				m_Technique = src.Technique;
 				m_Textures = src.Textures;
 				m_NumTris = src.Vertices.NumVertices / 3;
 				m_Vertices = Graphics.Factory.NewVertexBuffer( src.Vertices );
@@ -126,6 +127,16 @@ namespace Poc0.Core.Rendering.OpenGl
 			/// <param name="context">Rendering context</param>
 			public void Render( IRenderContext context )
 			{
+				context.ApplyTechnique( m_Technique, RenderGeometry );
+			}
+
+			/// <summary>
+			/// Renders group geometry
+			/// </summary>
+			/// <param name="context">Rendering context</param>
+			private void RenderGeometry( IRenderContext context )
+			{
+
 				foreach ( ITexture2d texture in m_Textures )
 				{
 					Graphics.Renderer.BindTexture( texture );
@@ -141,6 +152,7 @@ namespace Poc0.Core.Rendering.OpenGl
 				}
 			}
 
+			private readonly ITechnique m_Technique;
 			private readonly ITexture2d[] m_Textures;
 			private readonly int m_NumTris;
 			private readonly IVertexBuffer m_Vertices;

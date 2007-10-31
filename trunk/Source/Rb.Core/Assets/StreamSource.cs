@@ -7,6 +7,7 @@ namespace Rb.Core.Assets
 	/// <summary>
 	/// Stream source
 	/// </summary>
+	[Serializable]
 	public class StreamSource : ISource
 	{
 		#region Construction
@@ -140,12 +141,15 @@ namespace Rb.Core.Assets
 		private readonly string m_Path;
 		private readonly Stream m_Stream;
 
+		/// <summary>
+		/// Stream that never closes, just reset read position to beginning
+		/// </summary>
+		[Serializable]
 		private class UndyingMemoryStream : MemoryStream
 		{
 			public UndyingMemoryStream( Stream src ) :
 				base( ReadStreamBytes( src ) )
 			{
-				
 			}
 
 			public UndyingMemoryStream( byte[] bytes ) :

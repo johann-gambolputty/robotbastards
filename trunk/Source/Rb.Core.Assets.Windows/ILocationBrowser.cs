@@ -29,6 +29,11 @@ namespace Rb.Core.Assets.Windows
 		}
 
 		/// <summary>
+		/// Event, raised when the user's selection of assets changes
+		/// </summary>
+		event EventHandler SelectionChanged;
+
+		/// <summary>
 		/// Event, invoked when the user has made his selection of assets (e.g. by double clicking on a location, or
 		///  pressing return)
 		/// </summary>

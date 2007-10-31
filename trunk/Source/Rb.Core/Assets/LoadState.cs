@@ -58,7 +58,7 @@ namespace Rb.Core.Assets
 		{
 			m_Loader		= loader;
 			m_Source		= source;
-			m_Parameters	= parameters ?? loader.CreateDefaultParameters( );
+			m_Parameters	= parameters ?? loader.CreateDefaultParameters( false );
 		}
 
 		/// <summary>
