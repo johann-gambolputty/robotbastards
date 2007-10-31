@@ -1,13 +1,14 @@
-
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Rb.Rendering
 {
 	/// <summary>
 	/// Selects a technique from one or more effects. Standard implementation of <see cref="ITechniqueSelector"/>
 	/// </summary>
-	public class TechniqueSelector : ITechniqueSelector, ITechnique
+	[Serializable]
+	public class TechniqueSelector : ITechniqueSelector, ITechnique, ISerializable
     {
 		/// <summary>
 		/// Default constructor
@@ -17,7 +18,7 @@ namespace Rb.Rendering
         }
 
 		/// <summary>
-		/// Sets the effect, from which a technique can be selected
+		/// Sets the effect, and selects the first stored technique
 		/// </summary>
         public TechniqueSelector( IEffect effect )
         {
@@ -25,7 +26,7 @@ namespace Rb.Rendering
         }
 
 		/// <summary>
-		/// Sets the effect, from which a technique can be selected
+		/// Sets the effect, and selects the named technique
 		/// </summary>
 		public TechniqueSelector( IEffect effect, string name )
 		{
@@ -40,6 +41,17 @@ namespace Rb.Rendering
         {
             Technique = technique;
         }
+
+		/// <summary>
+		/// Serialization constructor
+		/// </summary>
+		/// <param name="info">Serialization info</param>
+		/// <param name="context">Serialization context</param>
+		public TechniqueSelector( SerializationInfo info, StreamingContext context )
+		{
+			m_Effect = ( IEffect )info.GetValue( EffectName, typeof( IEffect ) );
+			Select( ( string )info.GetValue( TechniqueName, typeof( string ) ) );
+		}
 
 		/// <summary>
 		/// Selects a named technique from the current effect
@@ -132,16 +144,48 @@ namespace Rb.Rendering
 			return ( Technique != null ) && ( Technique.Name == technique.Name );
 		}
 
-        private IEffect		m_Effect;
-        private ITechnique	m_Technique;
+		#region Serialization
+
+		#endregion
 
 		#region INamed Members
 
-		//	TODO: AP: Probably get rid of INamed support in ITechnique
+		/// <summary>
+		/// Gets the name of the currently selected technique
+		/// </summary>
 		public string Name
 		{
-			get { throw new NotSupportedException( ); }
-			set { throw new NotSupportedException( ); }
+			get { return m_Technique == null ? "" : m_Technique.Name; }
+			set
+			{
+				throw new NotSupportedException( "Can't set the name of a technique selector" );
+			}
+		}
+
+		#endregion
+
+		#region Private members
+
+		private IEffect m_Effect;
+		private ITechnique m_Technique;
+
+		private const string EffectName = "effect";
+		private const string TechniqueName = "tname";
+
+		#endregion
+
+
+		#region ISerializable Members
+
+		/// <summary>
+		/// Gets object data
+		/// </summary>
+		/// <param name="info">Serialization information</param>
+		/// <param name="context">Streaming context</param>
+		public void GetObjectData( SerializationInfo info, StreamingContext context )
+		{
+			info.AddValue( EffectName, m_Effect );
+			info.AddValue( TechniqueName, Name );
 		}
 
 		#endregion

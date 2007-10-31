@@ -287,7 +287,7 @@ namespace Poc0.LevelEditor.Core
 			{
 				if ( ( childIntersection == null ) || ( intersection.Distance < childIntersection.Distance ) )
 				{
-					intersection.IntersectedObject = node.Edge.Wall;
+					intersection.IntersectedObject = node;
 				}
 				else if ( childIntersection.Distance < intersection.Distance )
 				{

@@ -91,6 +91,11 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		private static ITexture2d CreateDefaultTexture( )
 		{
+			//	Note: Both methods work. Texture asset handle is used if the default source is changed to
+			//	an external file
+		//	LoadParameters loadParams = new LoadParameters( );
+		//	loadParams.Properties.Add( "generateMipMaps", true );
+		//	return ( ITexture2d )AssetManager.Instance.Load( ms_DefaultTextureSource, loadParams );
 			Texture2dAssetHandle handle = new Texture2dAssetHandle( ms_DefaultTextureSource );
 			handle.LoadParameters = new LoadParameters( );
 

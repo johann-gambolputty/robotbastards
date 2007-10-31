@@ -147,7 +147,7 @@ namespace Rb.ComponentXmlLoader
         /// <summary>
         /// Creates a new empty ComponentLoadParameters object
         /// </summary>
-        public override LoadParameters CreateDefaultParameters( )
+		public override LoadParameters CreateDefaultParameters( bool addAllProperties )
         {
             return new ComponentLoadParameters( );
         }

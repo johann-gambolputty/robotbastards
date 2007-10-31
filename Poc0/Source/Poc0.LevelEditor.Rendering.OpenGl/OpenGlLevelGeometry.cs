@@ -4,7 +4,6 @@ using System.Runtime.Serialization;
 using Poc0.LevelEditor.Core;
 using Rb.Core.Assets;
 using Rb.Rendering;
-using Rb.Rendering.OpenGl;
 using Rb.Tools.LevelEditor.Core;
 using Tao.OpenGl;
 using Rb.Core.Maths;
@@ -112,6 +111,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			Gl.glBegin( Gl.GL_QUADS );
 			RenderSelectedWalls( csg.Root );
 			Gl.glEnd( );
+
 			Graphics.Renderer.PopRenderState( );
 		}
 
@@ -182,7 +182,9 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			RenderState state = Graphics.Factory.NewRenderState( );
 			state.SetBlendMode( BlendFactor.SrcAlpha, BlendFactor.One );
 			state.DisableCap( RenderStateFlag.DepthTest );
-			state.SetDepthOffset( -1.0f );
+			state.DisableCap( RenderStateFlag.CullBackFaces );
+			state.DisableCap( RenderStateFlag.Lighting );
+			//state.SetDepthOffset( -1.0f );
 			return state;
 		}
 
@@ -253,8 +255,6 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 
 			Gl.glEnd( );
 
-			//Graphics.Renderer.UnbindTexture( node.Edge.Wall.Texture.Asset );
-
 			RenderWall( node.InFront );
 			RenderWall( node.Behind );
 		}
@@ -265,8 +265,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		/// <param name="tex">Texture to apply</param>
 		private static void ApplyTexture( ITexture2d tex )
 		{
-			OpenGlTexture2d texture = ( OpenGlTexture2d )( tex );
-			Gl.glBindTexture( Gl.GL_TEXTURE_2D, texture.TextureHandle );
+			tex.Bind( 0 );
 			Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_REPEAT );
 			Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_REPEAT );
 			Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_REPLACE );

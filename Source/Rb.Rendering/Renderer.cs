@@ -269,6 +269,10 @@ namespace Rb.Rendering
 		/// </summary>
 		public virtual int BindTexture( ITexture2d texture )
 		{
+			if ( texture == null )
+			{
+				throw new ArgumentNullException( "texture" );
+			}
             for ( int unit = 0; unit < m_Textures.Length; ++unit )
             {
                 if ( m_Textures[ unit ] == null )
@@ -305,8 +309,11 @@ namespace Rb.Rendering
         {
             for ( int unit = 0; unit < m_Textures.Length; ++unit )
             {
-				m_Textures[ unit ].Unbind( unit );
-                m_Textures[ unit ] = null;
+				if ( m_Textures[ unit ] != null )
+				{
+					m_Textures[ unit ].Unbind( unit );
+					m_Textures[ unit ] = null;
+				}
             }
         }
 

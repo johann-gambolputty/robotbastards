@@ -30,15 +30,20 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		{
 			this.sourceTabs = new System.Windows.Forms.TabControl( );
 			this.createObjectTabPage = new System.Windows.Forms.TabPage( );
+			this.newObjectControl = new Rb.Tools.LevelEditor.Core.Controls.Forms.NewObjectControl( );
 			this.assetTabPage = new System.Windows.Forms.TabPage( );
+			this.loadLayoutContainer = new System.Windows.Forms.Panel( );
 			this.locationManagerControlPanel = new System.Windows.Forms.Panel( );
+			this.loadLayoutSplitter = new System.Windows.Forms.Splitter( );
+			this.loadParametersGrid = new System.Windows.Forms.PropertyGrid( );
+			this.toggleAdvancedButton = new System.Windows.Forms.Button( );
 			this.locationManagerComboBox = new System.Windows.Forms.ComboBox( );
 			this.okButton = new System.Windows.Forms.Button( );
 			this.cancelButton = new System.Windows.Forms.Button( );
-			this.newObjectControl = new Rb.Tools.LevelEditor.Core.Controls.Forms.NewObjectControl( );
 			this.sourceTabs.SuspendLayout( );
 			this.createObjectTabPage.SuspendLayout( );
 			this.assetTabPage.SuspendLayout( );
+			this.loadLayoutContainer.SuspendLayout( );
 			this.SuspendLayout( );
 			// 
 			// sourceTabs
@@ -65,9 +70,19 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			this.createObjectTabPage.Text = "Create";
 			this.createObjectTabPage.UseVisualStyleBackColor = true;
 			// 
+			// newObjectControl
+			// 
+			this.newObjectControl.BaseType = null;
+			this.newObjectControl.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.newObjectControl.Location = new System.Drawing.Point( 3, 3 );
+			this.newObjectControl.Name = "newObjectControl";
+			this.newObjectControl.Size = new System.Drawing.Size( 354, 260 );
+			this.newObjectControl.TabIndex = 0;
+			// 
 			// assetTabPage
 			// 
-			this.assetTabPage.Controls.Add( this.locationManagerControlPanel );
+			this.assetTabPage.Controls.Add( this.loadLayoutContainer );
+			this.assetTabPage.Controls.Add( this.toggleAdvancedButton );
 			this.assetTabPage.Controls.Add( this.locationManagerComboBox );
 			this.assetTabPage.Location = new System.Drawing.Point( 4, 22 );
 			this.assetTabPage.Name = "assetTabPage";
@@ -77,15 +92,55 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			this.assetTabPage.Text = "Load";
 			this.assetTabPage.UseVisualStyleBackColor = true;
 			// 
-			// locationManagerControlPanel
+			// loadLayoutContainer
 			// 
-			this.locationManagerControlPanel.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom )
+			this.loadLayoutContainer.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom )
 						| System.Windows.Forms.AnchorStyles.Left )
 						| System.Windows.Forms.AnchorStyles.Right ) ) );
-			this.locationManagerControlPanel.Location = new System.Drawing.Point( 6, 33 );
+			this.loadLayoutContainer.Controls.Add( this.locationManagerControlPanel );
+			this.loadLayoutContainer.Controls.Add( this.loadLayoutSplitter );
+			this.loadLayoutContainer.Controls.Add( this.loadParametersGrid );
+			this.loadLayoutContainer.Location = new System.Drawing.Point( 6, 33 );
+			this.loadLayoutContainer.Name = "loadLayoutContainer";
+			this.loadLayoutContainer.Size = new System.Drawing.Size( 348, 198 );
+			this.loadLayoutContainer.TabIndex = 3;
+			// 
+			// locationManagerControlPanel
+			// 
+			this.locationManagerControlPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.locationManagerControlPanel.Location = new System.Drawing.Point( 0, 0 );
 			this.locationManagerControlPanel.Name = "locationManagerControlPanel";
-			this.locationManagerControlPanel.Size = new System.Drawing.Size( 345, 227 );
-			this.locationManagerControlPanel.TabIndex = 1;
+			this.locationManagerControlPanel.Size = new System.Drawing.Size( 193, 198 );
+			this.locationManagerControlPanel.TabIndex = 0;
+			// 
+			// loadLayoutSplitter
+			// 
+			this.loadLayoutSplitter.Dock = System.Windows.Forms.DockStyle.Right;
+			this.loadLayoutSplitter.Location = new System.Drawing.Point( 193, 0 );
+			this.loadLayoutSplitter.Name = "loadLayoutSplitter";
+			this.loadLayoutSplitter.Size = new System.Drawing.Size( 10, 198 );
+			this.loadLayoutSplitter.TabIndex = 1;
+			this.loadLayoutSplitter.TabStop = false;
+			// 
+			// loadParametersGrid
+			// 
+			this.loadParametersGrid.Dock = System.Windows.Forms.DockStyle.Right;
+			this.loadParametersGrid.Location = new System.Drawing.Point( 203, 0 );
+			this.loadParametersGrid.Name = "loadParametersGrid";
+			this.loadParametersGrid.Size = new System.Drawing.Size( 145, 198 );
+			this.loadParametersGrid.TabIndex = 2;
+			this.loadParametersGrid.ToolbarVisible = false;
+			// 
+			// toggleAdvancedButton
+			// 
+			this.toggleAdvancedButton.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right ) ) );
+			this.toggleAdvancedButton.Location = new System.Drawing.Point( 270, 237 );
+			this.toggleAdvancedButton.Name = "toggleAdvancedButton";
+			this.toggleAdvancedButton.Size = new System.Drawing.Size( 84, 23 );
+			this.toggleAdvancedButton.TabIndex = 2;
+			this.toggleAdvancedButton.Text = "Advanced >>";
+			this.toggleAdvancedButton.UseVisualStyleBackColor = true;
+			this.toggleAdvancedButton.Click += new System.EventHandler( this.toggleAdvancedButton_Click );
 			// 
 			// locationManagerComboBox
 			// 
@@ -122,15 +177,6 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			this.cancelButton.Text = "Cancel";
 			this.cancelButton.UseVisualStyleBackColor = true;
 			// 
-			// newObjectControl
-			// 
-			this.newObjectControl.BaseType = null;
-			this.newObjectControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.newObjectControl.Location = new System.Drawing.Point( 3, 3 );
-			this.newObjectControl.Name = "newObjectControl";
-			this.newObjectControl.Size = new System.Drawing.Size( 354, 260 );
-			this.newObjectControl.TabIndex = 0;
-			// 
 			// ObjectUITypeEditorForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
@@ -144,6 +190,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			this.sourceTabs.ResumeLayout( false );
 			this.createObjectTabPage.ResumeLayout( false );
 			this.assetTabPage.ResumeLayout( false );
+			this.loadLayoutContainer.ResumeLayout( false );
 			this.ResumeLayout( false );
 
 		}
@@ -156,7 +203,11 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		private System.Windows.Forms.Button okButton;
 		private System.Windows.Forms.Button cancelButton;
 		private System.Windows.Forms.ComboBox locationManagerComboBox;
-		private System.Windows.Forms.Panel locationManagerControlPanel;
 		private NewObjectControl newObjectControl;
+		private System.Windows.Forms.Button toggleAdvancedButton;
+		private System.Windows.Forms.Panel loadLayoutContainer;
+		private System.Windows.Forms.PropertyGrid loadParametersGrid;
+		private System.Windows.Forms.Splitter loadLayoutSplitter;
+		private System.Windows.Forms.Panel locationManagerControlPanel;
 	}
 }

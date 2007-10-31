@@ -59,7 +59,7 @@ namespace Rb.ComponentXmlLoader
 				}
 				else
 				{
-					m_Loader.Parameters = m_Loader.Loader.CreateDefaultParameters( );
+					m_Loader.Parameters = m_Loader.Loader.CreateDefaultParameters( false );
 				}
                 BuildObject = m_Loader.Parameters;
 

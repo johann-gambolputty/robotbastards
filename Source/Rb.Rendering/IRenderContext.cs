@@ -19,7 +19,7 @@ namespace Rb.Rendering
         /// Sets or gets the global technique
         /// </summary>
         /// <remarks>
-        /// The global technique overrides locally applied techniques (passed to <see cref="ApplyTechnique"/>), unless
+        /// The global technique overrides locally applied techniques (passed to ApplyTechnique), unless
         /// the local technique is a reasonable substitute (<see cref="ITechnique.IsSubstituteFor"/>).
         /// </remarks>
         ITechnique GlobalTechnique
@@ -43,11 +43,22 @@ namespace Rb.Rendering
         /// <param name="technique">Technique to render with</param>
         /// <param name="renderable">Object to render</param>
         /// <remarks>
-        /// Equivalent to <see cref="ITechnique.Apply"/>. Differs in that if technique is a valid substitute to the 
+		/// Equivalent to <see cref="ITechnique.Apply(IRenderContext,IRenderable)"/>. Differs in that if technique is a valid substitute to the 
         /// global technique (<see cref="GlobalTechnique"/>), technique is used to render the object, otherwise, the
         ///  global technique is used.
         /// </remarks>
         void ApplyTechnique( ITechnique technique, IRenderable renderable );
 
+		/// <summary>
+		/// Calls a rendering method using a given technique
+		/// </summary>
+		/// <param name="technique">Technique to render with</param>
+		/// <param name="render">Render method delegate</param>
+		/// <remarks>
+		/// Equivalent to <see cref="ITechnique.Apply(IRenderContext,RenderDelegate)"/>. Differs in that if technique is a valid substitute to the 
+		/// global technique (<see cref="GlobalTechnique"/>), technique is used to render the object, otherwise, the
+		///  global technique is used.
+		/// </remarks>
+		void ApplyTechnique( ITechnique technique, RenderDelegate render );
     }
 }

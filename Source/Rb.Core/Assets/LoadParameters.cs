@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using Rb.Core.Components;
 
 namespace Rb.Core.Assets
@@ -43,6 +44,7 @@ namespace Rb.Core.Assets
 		/// (e.g. if a texture is loaded with the generateMipMaps load parameter set to true, then cached,
 		/// subsequent loads will retrieve the mip-mapped texture, even if generateMipMaps is set to false).
 		/// </remarks>
+		[Browsable(false)]
 		public bool CanCache
 		{
 			get { return m_CanCache; }

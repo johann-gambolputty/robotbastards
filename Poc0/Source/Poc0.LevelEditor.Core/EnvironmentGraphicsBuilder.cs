@@ -176,13 +176,13 @@ namespace Poc0.LevelEditor.Core
 			public EnvironmentGraphicsData.CellGeometryGroup Create( )
 			{
 				VertexBufferData buffer = VertexBufferData.FromVertexCollection( m_Vertices );
+				ITechnique technique = m_Material.Technique;
 
 				ITexture2d[] textures = new ITexture2d[ m_Material.Textures.Length ];
-				ITechnique technique = null;
 
 				for ( int textureIndex = 0; textureIndex < textures.Length; ++textureIndex )
 				{
-					//m_Material.Textures[ textureIndex ];
+					textures[ textureIndex ] = m_Material.Textures[ textureIndex ];
 				}
 
 				EnvironmentGraphicsData.CellGeometryGroup group = new EnvironmentGraphicsData.CellGeometryGroup( buffer, technique, textures );

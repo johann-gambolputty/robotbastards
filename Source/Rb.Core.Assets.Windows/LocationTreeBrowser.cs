@@ -76,6 +76,11 @@ namespace Rb.Core.Assets.Windows
 		}
 
 		/// <summary>
+		/// Event, raised when the user's selection of assets changes
+		/// </summary>
+		public event EventHandler SelectionChanged;
+
+		/// <summary>
 		/// Event, invoked when the user has made his selection of assets (e.g. by double clicking on a location, or
 		///  pressing return)
 		/// </summary>
@@ -396,6 +401,14 @@ namespace Rb.Core.Assets.Windows
 		{
 			m_Filter = ( LocationFilter )typeComboBox.SelectedItem;
 			ShowCurrentFolder( m_CurrentFolder );
+		}
+
+		private void currentFolderView_SelectedIndexChanged( object sender, EventArgs e )
+		{
+			if ( SelectionChanged != null )
+			{
+				SelectionChanged( this, e );
+			}
 		}
 	}
 }
