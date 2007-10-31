@@ -65,6 +65,7 @@
     <Compile Include="Objects\IBody.cs" />
     <Compile Include="Objects\IPlaceable.cs" />
     <Compile Include="Objects\IMoveable.cs" />
+    <Compile Include="Objects\PointLightSocket.cs" />
     <Compile Include="Objects\PlayerStart.cs" />
     <Compile Include="Objects\Signpost.cs" />
     <Compile Include="PerformanceDisplay.cs" />

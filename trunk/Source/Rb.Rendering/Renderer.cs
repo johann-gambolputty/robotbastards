@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using Rb.Core.Maths;
+using Rb.Rendering.Lights;
 
 namespace Rb.Rendering
 {
@@ -52,7 +53,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Adds the specified light
 		/// </summary>
-		public virtual void AddLight( Light light )
+		public virtual void AddLight( ILight light )
 		{
 			m_Lights[ m_NumLights++ ] = light;
 		}
@@ -60,7 +61,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Gets an indexed light
 		/// </summary>
-		public Light GetLight( int index )
+		public ILight GetLight( int index )
 		{
 			return m_Lights[ index ];
 		}
@@ -425,7 +426,7 @@ namespace Rb.Rendering
 
 		private readonly List< RenderState >	m_RenderStates	= new List< RenderState >( );
 		private Cameras.CameraBase				m_Camera;
-		private readonly Light[]				m_Lights = new Light[ MaxActiveLights ];
+		private readonly ILight[]				m_Lights = new Light[ MaxActiveLights ];
 		private int								m_NumLights;
 		private readonly ITexture2d[]			m_Textures = new ITexture2d[ MaxTextures ];
 		private readonly List<ITexture2d[]>		m_TextureStack = new List<ITexture2d[]>( );

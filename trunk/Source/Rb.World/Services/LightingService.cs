@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Rb.Rendering;
+using Rb.Rendering.Lights;
 
 namespace Rb.World.Services
 {
@@ -34,7 +34,7 @@ namespace Rb.World.Services
 		/// Adds a light to the lighting manager
 		/// </summary>
 		/// <param name="light">Light to add</param>
-		public void AddLight( Light light )
+		public void AddLight( ILight light )
 		{
 			m_Lights.Add( light );
 		}
@@ -43,7 +43,7 @@ namespace Rb.World.Services
 		/// Removes a light to the lighting manager
 		/// </summary>
 		/// <param name="light">Light to remove</param>
-		public void RemoveLight( Light light )
+		public void RemoveLight( ILight light )
 		{
 			m_Lights.Remove( light );
 		}
@@ -51,7 +51,7 @@ namespace Rb.World.Services
 		/// <summary>
 		/// Gets the array of lights in the scene
 		/// </summary>
-		public IList< Light > Lights
+		public IList< ILight > Lights
 		{
 			get { return m_Lights; }
 		}
@@ -83,7 +83,7 @@ namespace Rb.World.Services
 		#region Private stuff
 
 		private readonly List< ILightMeter > m_Meters = new List< ILightMeter >( );
-		private readonly List< Light > m_Lights = new List< Light >( );
+		private readonly List< ILight > m_Lights = new List< ILight >( );
 
 		/// <summary>
 		/// Called before the scene gets rendered
@@ -93,7 +93,7 @@ namespace Rb.World.Services
 		{
 			//	TODO: AP: BODGE - actually choose the damn lights per meter
 			//	(this will break with more than 4 lights)
-			Light[] lights = m_Lights.ToArray( );
+			ILight[] lights = m_Lights.ToArray( );
 			foreach ( ILightMeter meter in m_Meters )
 			{
 				meter.SetLights( lights );

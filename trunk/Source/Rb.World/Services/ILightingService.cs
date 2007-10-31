@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Rb.Rendering;
+using Rb.Rendering.Lights;
 
 namespace Rb.World.Services
 {
@@ -30,18 +30,18 @@ namespace Rb.World.Services
 		/// Adds a light to the lighting manager
 		/// </summary>
 		/// <param name="light">Light to add</param>
-		void AddLight( Light light );
+		void AddLight( ILight light );
 
 		/// <summary>
 		/// Removes a light to the lighting manager
 		/// </summary>
 		/// <param name="light">Light to remove</param>
-		void RemoveLight( Light light );
+		void RemoveLight( ILight light );
 
 		/// <summary>
 		/// Gets the set of all stored lights
 		/// </summary>
-		IList< Light > Lights
+		IList< ILight > Lights
 		{
 			get;
 		}

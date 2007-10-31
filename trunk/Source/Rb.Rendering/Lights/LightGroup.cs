@@ -1,7 +1,6 @@
-
 using System;
 
-namespace Rb.Rendering
+namespace Rb.Rendering.Lights
 {
     //  TODO: AP: Removed IChild interface, so light group no longer adds itself to parent ISceneRenderable pre-render list. Need to
     //  determine alternative mechanism for applying light group pass to renderables.
@@ -17,7 +16,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// The lights making up the group
 		/// </summary>
-		public Light[] Lights
+		public ILight[] Lights
 		{
 			get { return m_Lights; }
 			set { m_Lights = value;  }
@@ -34,7 +33,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Indexer. Returns the light at the specified index
 		/// </summary>
-		public Light this[ int index ]
+		public ILight this[ int index ]
 		{
 			get { return m_Lights[ index ]; }
 		}
@@ -71,6 +70,6 @@ namespace Rb.Rendering
 
 		#endregion
 
-		private Light[] m_Lights;
+		private ILight[] m_Lights;
 	}
 }

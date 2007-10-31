@@ -60,6 +60,83 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			get { return m_NewObject; }
 		}
 
+		#region DynPropertySpec private class
+		
+		/// <summary>
+		/// Dynamic property PropertySpec
+		/// </summary>
+		private class DynPropertySpec : PropertySpec
+		{
+			#region Access
+
+			/// <summary>
+			/// Sets the value of an extended property
+			/// </summary>
+			public static void SetValue( object sender, PropertySpecEventArgs e )
+			{
+				( ( DynPropertySpec )e.Property ).m_BaseProperty.Value = e.Value;
+			}
+
+			/// <summary>
+			/// Gets the value of an extended property
+			/// </summary>
+			public static void GetValue( object sender, PropertySpecEventArgs e )
+			{
+				e.Value = ( ( DynPropertySpec )e.Property ).m_BaseProperty.Value;
+			}
+
+			#endregion
+
+			/// <summary>
+			/// Setup constructor
+			/// </summary>
+			/// <param name="category">Property setup</param>
+			/// <param name="baseProperty">Dynamic property</param>
+			public DynPropertySpec( string category, IDynamicProperty baseProperty ) :
+				base( baseProperty.Name, baseProperty.Value.GetType( ), category, "", baseProperty.Value )
+			{
+				m_BaseProperty = baseProperty;
+			}
+
+			private readonly IDynamicProperty m_BaseProperty;
+		}
+
+
+		#endregion
+
+		#region Private members
+
+		private LoadParameters		m_CurrentLoadParameters;
+		private object				m_NewObject;
+		private ILocationBrowser	m_AssetBrowserUi;
+		private readonly Type		m_ObjectType;
+		private int					m_UnexpandedSplitPosition;
+		private bool				m_IsAdvancedSectionExpanded;
+		
+		/// <summary>
+		/// Opens the advanced section, used for specifying loading parameters
+		/// </summary>
+		private void OpenAdvancedSection( )
+		{
+			loadParametersGrid.Show( );
+			loadLayoutSplitter.SplitPosition = m_UnexpandedSplitPosition;
+			loadLayoutSplitter.Show( );
+			m_IsAdvancedSectionExpanded = true;
+		}
+
+		/// <summary>
+		/// Closes the advanced section
+		/// </summary>
+		private void CloseAdvancedSection( )
+		{
+			m_UnexpandedSplitPosition = loadLayoutSplitter.SplitPosition;
+			loadParametersGrid.Hide( );
+			loadLayoutSplitter.SplitPosition = Width;
+			loadLayoutSplitter.Hide( );
+
+			m_IsAdvancedSectionExpanded = false;
+		}
+
 		/// <summary>
 		/// Sets the new object and closes this dialog with an OK result
 		/// </summary>
@@ -97,9 +174,36 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 					( objectType.IsSubclassOf( typeof( AssetHandle ) ) );
 		}
 
-		private object m_NewObject;
-		private ILocationBrowser m_AssetBrowserUi;
-		private readonly Type m_ObjectType;
+		/// <summary>
+		/// Converts a source object to the expected object type
+		/// </summary>
+		private object SourceToObject( ISource source )
+		{
+			if ( m_ObjectType.GetInterface( typeof( ISource ).Name ) != null )
+			{
+				//	Expected object type is an ISource - no conversion necessary
+				return source;
+			}
+			if ( m_ObjectType.IsSubclassOf( typeof( AssetHandle ) ) )
+			{
+				//	Expected object type is an asset handle - create an instance of using the source
+				return Activator.CreateInstance( m_ObjectType, source );
+			}
+			
+			//	TODO: AP: There should be an option to directly load the object (as this hack does), as well as create an asset handle proxy
+
+			//return AssetProxy.CreateProxy( m_ObjectType, source )
+			//	Asset handle proxies are incorrect - the need to access the AssetHandle.Asset property rather than
+			//	their own m_Base field
+			//throw new NotImplementedException( "I am lazy ha ha" );
+			//	TODO: AP: This is a nasty workaround... just loads the object directly
+			AppLog.Warning( "Loading asset directly into memory, instead of creating asset handle proxy" );
+			return AssetManager.Instance.Load( source, m_CurrentLoadParameters );
+		}
+
+		#endregion
+
+		#region Event handlers
 
 		private void locationManagerComboBox_SelectedIndexChanged( object sender, EventArgs e )
 		{
@@ -120,44 +224,32 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			m_AssetBrowserUi.SelectionChanged += ui_SelectionChanged;
 		}
 
-		private object SourceToObject( ISource source )
-		{
-			if ( m_ObjectType is ISource )
-			{
-				return source;
-			}
-			if ( m_ObjectType.IsSubclassOf( typeof( AssetHandle ) ) )
-			{
-				return Activator.CreateInstance( m_ObjectType, source );
-			}
-			//return AssetProxy.CreateProxy( m_ObjectType, )
-			//	Asset handle proxies are incorrect - the need to access the AssetHandle.Asset property rather than
-			//	their own m_Base field
-			//throw new NotImplementedException( "I am lazy ha ha" );
-			//	TODO: AP: This is a nasty workaround...
-			AppLog.Warning( "Loading asset directly into memory, instead of creating asset handle proxy" );
-			return AssetManager.Instance.Load( source );
-		}
-
 		private void ui_SelectionChanged( object sender, EventArgs e )
 		{
+			//	The selection has changed - if the user has selected a loadable asset, then present the load parameters
+			//	in a property grid
 			ISource[] sources = m_AssetBrowserUi.Sources;
 			if ( sources.Length == 0 )
 			{
 				loadParametersGrid.SelectedObject = null;
 				return;
 			}
+
 			IAssetLoader loader = AssetManager.Instance.FindLoaderForAsset( sources[ 0 ] );
 			if ( loader == null )
 			{
 				return;
 			}
-			LoadParameters parameters = loader.CreateDefaultParameters( true );
+			m_CurrentLoadParameters = loader.CreateDefaultParameters( true );
 
+
+			//	Create a property bag from the dynamic properties
 			PropertyBag bag = new PropertyBag( );
-			foreach ( IDynamicProperty dynProperty in parameters.Properties )
+
+			string category = string.Format( Properties.Resources.LoaderProperties, loader.Name );
+			foreach ( IDynamicProperty dynProperty in m_CurrentLoadParameters.Properties )
 			{
-				bag.Properties.Add( new DynPropertySpec( dynProperty ) );
+				bag.Properties.Add( new DynPropertySpec( category, dynProperty ) );
 			}
 			if ( bag.Properties.Count == 0 )
 			{
@@ -165,41 +257,10 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			}
 			bag.SetValue += DynPropertySpec.SetValue;
 			bag.GetValue += DynPropertySpec.GetValue;
-
+			
+			//	Add the property bag to the load parameters property grid
 			loadParametersGrid.SelectedObject = bag;
 		}
-
-		private class DynPropertySpec : PropertySpec
-		{
-			#region Access
-
-			/// <summary>
-			/// Sets the value of an extended property
-			/// </summary>
-			public static void SetValue( object sender, PropertySpecEventArgs e )
-			{
-				( ( DynPropertySpec )e.Property ).m_BaseProperty.Value = e.Value;
-			}
-
-			/// <summary>
-			/// Gets the value of an extended property
-			/// </summary>
-			public static void GetValue( object sender, PropertySpecEventArgs e )
-			{
-				e.Value = ( ( DynPropertySpec )e.Property ).m_BaseProperty.Value;
-			}
-
-			#endregion
-
-			public DynPropertySpec( IDynamicProperty baseProperty ) :
-				base( baseProperty.Name, baseProperty.Value.GetType( ), "Properties", "", baseProperty.Value )
-			{
-				m_BaseProperty = baseProperty;
-			}
-
-			private readonly IDynamicProperty m_BaseProperty;
-		}
-
 
 		private void ui_SelectionChosen( object sender, EventArgs e )
 		{
@@ -238,25 +299,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			}
 		}
 
-		private void OpenAdvancedSection( )
-		{
-			loadParametersGrid.Show( );
-			loadLayoutSplitter.SplitPosition = m_UnexpandedSplitPosition;
-			loadLayoutSplitter.Show( );
-			m_IsAdvancedSectionExpanded = true;
-		}
+		#endregion
 
-		private void CloseAdvancedSection( )
-		{
-			m_UnexpandedSplitPosition = loadLayoutSplitter.SplitPosition;
-			loadParametersGrid.Hide( );
-			loadLayoutSplitter.SplitPosition = Width;
-			loadLayoutSplitter.Hide( );
-
-			m_IsAdvancedSectionExpanded = false;
-		}
-
-		private int m_UnexpandedSplitPosition;
-		private bool m_IsAdvancedSectionExpanded;
 	}
 }

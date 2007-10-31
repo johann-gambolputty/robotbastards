@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Rb.Rendering;
+using Rb.Rendering.Lights;
 using Rb.World.Services;
 
 namespace Rb.World.Rendering
@@ -28,12 +29,12 @@ namespace Rb.World.Rendering
 		{
             //  TODO: AP: Shouldn't have to do this each frame
             ILightingService service = m_Scene.GetService< ILightingService >( );
-            List< Light > lights = new List< Light >( );
+            List< ILight > lights = new List< ILight >( );
 
-            foreach ( Light light in service.Lights )
+            foreach ( ILight light in service.Lights )
             {
                 //  TODO: AP: Proper volume/coverage determination
-                if ( ( light.ShadowCaster ) && ( light is SpotLight ) )
+                if ( ( light.CastsShadows ) && ( light is ISpotLight ) )
                 {
                     lights.Add( light );
                 }

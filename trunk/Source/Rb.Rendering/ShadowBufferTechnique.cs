@@ -1,6 +1,7 @@
 using System;
 using Rb.Core.Assets;
 using Rb.Core.Maths;
+using Rb.Rendering.Lights;
 
 namespace Rb.Rendering
 {
@@ -14,6 +15,11 @@ namespace Rb.Rendering
 	public class ShadowBufferTechnique : Technique
 	{
 		#region	Technique properties
+
+		/// <summary>
+		/// Maximum number of shadow casting lights
+		/// </summary>
+		public const int MaxLights = 4;
 
 		/// <summary>
 		/// Sets the distance of the near z plane
@@ -34,14 +40,9 @@ namespace Rb.Rendering
 		}
 
 		/// <summary>
-		/// Maximum number of shadow casting lights
-		/// </summary>
-		public const int			MaxLights = 4;
-
-		/// <summary>
 		/// Gets the technique that the shadow buffer render technique uses to override rendered objects' techniques
 		/// </summary>
-		public static ITechnique    OverrideTechnique
+		public static ITechnique OverrideTechnique
 		{
 			get { return ms_OverrideTechnique; }
 		}
@@ -49,7 +50,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// The light group this technique uses to get shadow lights from
 		/// </summary>
-		public LightGroup			ShadowLights
+		public LightGroup ShadowLights
 		{
 			get { return m_ShadowLights; }
 		}
@@ -57,7 +58,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Temporary bodge to switch between depth texture and normal texture for shadow map source
 		/// </summary>
-		public static bool			DepthTextureMethod = true;
+		public static bool DepthTextureMethod = true;
 
 		#endregion
 
@@ -75,7 +76,9 @@ namespace Rb.Rendering
 			if ( ms_OverrideTechnique == null )
 			{
 				//	TODO: This should be an embedded resource, directly compiled from a hardcoded string, or something
-				Effect effect = ( Effect )AssetManager.Instance.Load( DepthTextureMethod ? "shadowMapDepthTexture.cgfx" : "shadowMapTexture.cgfx" );
+				byte[] shaderBytes = DepthTextureMethod ? Properties.Resources.shadowMapDepthTexture : Properties.Resources.shadowMapTexture;
+				StreamSource source = new StreamSource( shaderBytes, DepthTextureMethod ? "shadowMapDepthTexture.cgfx" : "shadowMapTexture.cgfx" );
+				Effect effect = ( Effect )AssetManager.Instance.Load( source );
 				ms_OverrideTechnique = effect.FindTechnique( "DefaultTechnique" );
 			}
 
@@ -208,7 +211,7 @@ namespace Rb.Rendering
             for ( int lightIndex = 0; lightIndex < numLights; ++lightIndex )
             {
                 RenderTarget curTarget = m_RenderTargets[ numBuffers++ ];
-                SpotLight curLight = ( SpotLight )lights[ lightIndex ];
+                ISpotLight curLight = ( ISpotLight )lights[ lightIndex ];
 
                 //	TODO: Need proper Y axis
                 int width = curTarget.Width;

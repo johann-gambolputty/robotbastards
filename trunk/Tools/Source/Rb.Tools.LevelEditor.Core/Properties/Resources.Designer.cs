@@ -133,6 +133,15 @@ namespace Rb.Tools.LevelEditor.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} properties.
+        /// </summary>
+        internal static string LoaderProperties {
+            get {
+                return ResourceManager.GetString("LoaderProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Middle.
         /// </summary>
         internal static string MiddleMouseButton {

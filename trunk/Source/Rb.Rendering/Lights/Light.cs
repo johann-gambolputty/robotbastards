@@ -1,18 +1,18 @@
-
 using System;
+using System.Drawing;
 
-namespace Rb.Rendering
+namespace Rb.Rendering.Lights
 {
 	/// <summary>
 	/// Base class for lights
 	/// </summary>
 	[Serializable]
-	public class Light
+	public class Light : ILight
 	{
 		/// <summary>
 		/// Sets whether this light is a shadow caster or not
 		/// </summary>
-		public bool	ShadowCaster
+		public bool	CastsShadows
 		{
 			get { return m_ShadowCaster; }
 			set { m_ShadowCaster = value; }
@@ -21,13 +21,13 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Light colour
 		/// </summary>
-		public System.Drawing.Color Colour
+		public Color Colour
 		{
 			get { return m_Colour; }
 			set { m_Colour = value; }
 		}
 
-		private bool					m_ShadowCaster = true;
-		private System.Drawing.Color	m_Colour;
+		private bool	m_ShadowCaster = true;
+		private Color	m_Colour;
 	}
 }
