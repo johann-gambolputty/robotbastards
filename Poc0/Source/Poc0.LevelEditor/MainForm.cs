@@ -26,6 +26,8 @@ namespace Poc0.LevelEditor
 			EditorState.Instance.ObjectEditorBuilder = new GameObjectEditorBuilder( );
 		}
 
+		#region Protected members
+
 		protected override void InitializeDockingControls( )
 		{
 			base.InitializeDockingControls( );
@@ -86,7 +88,15 @@ namespace Poc0.LevelEditor
 			scene.Objects.Add( Guid.NewGuid( ), Graphics.Factory.Create< LevelGeometry >( scene ) );
 		}
 
+		#endregion
+
+		#region Private members
+
 		private Content m_EditorControlsContent;
+
+		#endregion
+
+		#region Event handlers
 
 		private void MainForm_Load( object sender, EventArgs e )
 		{
@@ -114,18 +124,26 @@ namespace Poc0.LevelEditor
 					) 	
 				};
 
+			//	Disable continuous rendering on the main display
+			display.ContinuousRendering = false;
+
 			GameSetup setup = new GameSetup( sceneSource, players, viewerSource );
 
 			try
 			{
-				GameViewForm gameForm = new GameViewForm(setup);
-				gameForm.Show(this);
+				GameViewForm gameForm = new GameViewForm( setup );
+				gameForm.ShowDialog( this );
 			}
 			catch ( Exception ex )
 			{
 				AppLog.Exception( ex, "Game threw an exception" );
 				MessageBox.Show( Properties.Resources.GameUnhandledException, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
+
+			//	Re-enable continuous rendering on the main display
+			display.ContinuousRendering = true;
 		}
+
+		#endregion
 	}
 }
