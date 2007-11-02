@@ -3,7 +3,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using Rb.Core.Utils;
 
-namespace Rb.Rendering
+namespace Rb.Rendering.Textures
 {
 	/// <summary>
 	/// Utilities for loading, saving and manipulating textures

@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using Rb.Core.Utils;
+using Rb.Rendering.Textures;
 
 namespace Rb.Rendering
 {

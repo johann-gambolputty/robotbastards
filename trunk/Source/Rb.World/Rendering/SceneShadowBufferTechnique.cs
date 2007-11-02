@@ -12,7 +12,7 @@ namespace Rb.World.Rendering
 	/// This will do nothing, until a LightGroup is associated with the technique, using the ShadowLights property.
 	/// Any child techniques this technique has will be applied after the shadow buffer build step.
 	/// </remarks>
-	public class SceneShadowBufferTechnique : ShadowBufferTechnique, ISceneObject
+	public class SceneShadowBufferTechnique : ShadowBufferTechnique
 	{
 		/// <summary>
 		/// Scene shadow buffer
@@ -28,7 +28,7 @@ namespace Rb.World.Rendering
         public override void Apply( IRenderContext context, IRenderable renderable )
 		{
             //  TODO: AP: Shouldn't have to do this each frame
-            ILightingService service = m_Scene.GetService< ILightingService >( );
+            ILightingService service = ( ( Scene )renderable ).GetService< ILightingService >( );
             List< ILight > lights = new List< ILight >( );
 
             foreach ( ILight light in service.Lights )
@@ -44,31 +44,5 @@ namespace Rb.World.Rendering
             base.Apply( context, renderable );
 		}
 
-	    #region ISceneObject Members
-
-		/// <summary>
-		/// Called when this object is added to the specified scene
-		/// </summary>
-		/// <param name="scene">Scene object</param>
-        public void AddedToScene( Scene scene )
-        {
-            m_Scene = scene;
-        }
-		
-		/// <summary>
-		/// Called when this object is removed from the specified scene
-		/// </summary>
-		/// <param name="scene">Scene object</param>
-		public void RemovedFromScene( Scene scene )
-		{
-		}
-
-        #endregion
-
-        #region Private stuff
-
-	    private Scene m_Scene;
-
-        #endregion
     }
 }

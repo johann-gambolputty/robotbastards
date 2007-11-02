@@ -1,13 +1,13 @@
 using System;
+using Rb.Rendering.Textures;
 using Tao.OpenGl;
-
 
 namespace Rb.Rendering.OpenGl
 {
 	/// <summary>
 	/// Implements the RenderTarget abstract class using OpenGL frame buffer objects
 	/// </summary>
-	public class OpenGlRenderTarget : Rb.Rendering.RenderTarget, IDisposable
+	public class OpenGlRenderTarget : RenderTarget, IDisposable
 	{
 		~OpenGlRenderTarget( )
 		{
@@ -137,7 +137,7 @@ namespace Rb.Rendering.OpenGl
 			int status = Gl.glCheckFramebufferStatusEXT( Gl.GL_FRAMEBUFFER_EXT );
 			if ( status != Gl.GL_FRAMEBUFFER_COMPLETE_EXT )
 			{
-				string problem = "";
+				string problem;
 				switch ( status )
 				{
 					//case Gl.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENTS_EXT			:	problem = "GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENTS_EXT";			break;

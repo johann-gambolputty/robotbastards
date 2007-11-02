@@ -24,11 +24,11 @@ struct TestInput
 struct TestOutput
 {
 	float4	m_Position		: POSITION;
-	float2	m_Tex0			: TEXCOORD0;
-	float3	m_ModelPos		: TEXCOORD1;
-	float3	m_ModelNormal	: TEXCOORD2;
-	float4	m_LightPos		: TEXCOORD3;
-	float3	m_VecToLight	: TEXCOORD4;
+	float3	m_ModelPos		: TEXCOORD0;
+	float3	m_ModelNormal	: TEXCOORD1;
+	float4	m_LightPos		: TEXCOORD2;
+	float3	m_VecToLight	: TEXCOORD3;
+	float2	m_Tex0			: TEXCOORD4;
 };
 
 struct SpotLightArray
@@ -50,8 +50,8 @@ float4x4	InverseTransposeModelMatrix;
 float3		EyeZAxis;
 
 
-const float ShadowTexUStep = 1.0 / 1024.0;
-const float ShadowTexVStep = 1.0 / 1024.0;
+const float ShadowTexUStep = 1.0 / 512.0;
+const float ShadowTexVStep = 1.0 / 512.0;
 
 const int	SI = 0;
 
@@ -91,7 +91,8 @@ float4 TestFragmentShader( TestOutput input ) : COLOR
 	coverage /= 4.0f;
 
 	//float	shadowFactor	= ( storedDepth >= lightDepth ) && ( -dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ) ? 1 : 0.3f;
-	float	shadowFactor	= ( -dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ) ? coverage : 0.0f;
+	//float	shadowFactor	= ( -dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ) ? coverage : 0.0f;
+	float shadowFactor = ( -dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ) ? 1.0f : 0.0f;
 
 	float	spotDiffuse		= dot( normal, lightVec ) * shadowFactor.xxx;
 	float	specular		= dot( normal, halfVec );
@@ -116,33 +117,5 @@ technique NormalTechnique
 		PolygonOffsetFillEnable	= false;
 		VertexProgram			= compile arbvp1 TestVertexShader( );
 		FragmentProgram			= compile arbfp1 TestFragmentShader( );
-	}
-}
-
-technique WireframeTechnique
-{
-	pass
-	{
-		DepthMask				= true;
-		FrontFace				= CW;
-		DepthFunc				= LEqual;
-		DepthTestEnable			= true;
-		CullFaceEnable			= true;
-		PolygonMode				= int2( Front, Fill );
-		PolygonOffset			= float2( 0, 0 );
-		PolygonOffsetFillEnable	= false;
-		VertexProgram			= compile arbvp1 TestVertexShader( );
-		FragmentProgram			= compile arbfp1 TestFragmentShader( );
-	}
-	pass
-	{
-		DepthMask				= true;
-		FrontFace				= CW;
-		DepthTestEnable			= true;
-		CullFaceEnable			= true;
-		PolygonMode				= int2( Front, Line );
-		PolygonOffsetLineEnable	= true;
-		PolygonOffset			= float2( -0.5, -0.5 );
-		LightingEnable			= true;	//	TODO: This is a bodge to get the wireframe rendered black
 	}
 }

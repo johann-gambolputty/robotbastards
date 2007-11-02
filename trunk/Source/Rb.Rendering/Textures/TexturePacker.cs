@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using Rectangle=Rb.Core.Maths.Rectangle;
 
-namespace Rb.Rendering
+namespace Rb.Rendering.Textures
 {
 	/// <summary>
 	/// Packs a list of 2d textures into a single 2d texture

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Poc0.Core.Environment;
 using Rb.Core.Maths;
 using Rb.Rendering;
+using Rb.Rendering.Textures;
 using Graphics=Rb.Rendering.Graphics;
 using Rectangle=Rb.Core.Maths.Rectangle;
 
@@ -64,6 +65,8 @@ namespace Poc0.LevelEditor.Core
 				m_Normal = normal;
 				m_Texture0 = texture0;
 			}
+
+			public Vecte
 		}
 
 		/// <summary>
@@ -206,11 +209,57 @@ namespace Poc0.LevelEditor.Core
 				return;
 			}
 
+			CreateWallGroup( node, builder );
+			CreateFloorGroup( node, builder );
+
+			CreateGroup( node.Behind, builder );
+			CreateGroup( node.InFront, builder );
+		}
+
+		private static void CreateFloorGroup( Csg.BspNode node, GroupListBuilder builder )
+		{
+			if ( node.ConvexRegion == null )
+			{
+				return;
+			}
+			
+			//	Get the texture source for the floor
+			ITexture2d textureSource = node.FloorData.Texture;
+			ITechnique techniqueSource = node.FloorData.Technique;
+
+			
+			GroupMaterial material = new GroupMaterial( techniqueSource, new ITexture2d[] { textureSource } );
+			GroupBuilder group = builder.GetGroup( material );
+			
+			Point2[] points = node.ConvexRegion;
+			Point2 basePos = points[ 0 ];
+			ICollection<Vertex> vertices = group.Vertices;
+			for ( int vertexIndex = 1; vertexIndex < points.Length - 1; ++vertexIndex )
+			{
+				vertices.Add( new Vertex( basePos.X, height, basePos.Y, ) );
+
+				Gl.glTexCoord2f( basePos.X * uScale, basePos.Y * vScale );
+				Gl.glVertex3f( basePos.X, height, basePos.Y );
+
+				Point2 pt = points[ vertexIndex ];
+				Gl.glTexCoord2f( pt.X * uScale, pt.Y * vScale );
+				Gl.glVertex3f( pt.X, height, pt.Y );
+				
+				pt = points[ vertexIndex + 1 ];
+				Gl.glTexCoord2f( pt.X * uScale, pt.Y * vScale );
+				Gl.glVertex3f( pt.X, height, pt.Y );
+			}
+
+			
+		}
+
+		private static void CreateWallGroup( Csg.BspNode node, GroupListBuilder builder )
+		{
 			Vector3 planeNormal = new Vector3( node.Plane.Normal.X, 0, node.Plane.Normal.Y );
 
 			//	Get the texture source for the wall
-			ITexture2d textureSource = node.Edge.Wall.Texture;
-			ITechnique techniqueSource = node.Edge.Wall.Technique;
+			ITexture2d textureSource = node.Edge.WallData.Texture;
+			ITechnique techniqueSource = node.Edge.WallData.Technique;
 
 			GroupMaterial material = new GroupMaterial( techniqueSource, new ITexture2d[] { textureSource } );
 			GroupBuilder group = builder.GetGroup( material );
@@ -232,9 +281,7 @@ namespace Poc0.LevelEditor.Core
 			vertices.Add( new Vertex( node.Quad[ 2 ], planeNormal, uvTr ) );
 			vertices.Add( new Vertex( node.Quad[ 3 ], planeNormal, uvTl ) );
 			vertices.Add( new Vertex( node.Quad[ 0 ], planeNormal, uvBl ) );
-
-			CreateGroup( node.Behind, builder );
-			CreateGroup( node.InFront, builder );
+			
 		}
 
 		/// <summary>

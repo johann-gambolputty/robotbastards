@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Rb.Core.Maths;
+using Rb.Rendering.Textures;
 using Tao.OpenGl;
 
 namespace Rb.Rendering.OpenGl

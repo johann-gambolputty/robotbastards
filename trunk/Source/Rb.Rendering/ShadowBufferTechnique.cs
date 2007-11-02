@@ -2,6 +2,7 @@ using System;
 using Rb.Core.Assets;
 using Rb.Core.Maths;
 using Rb.Rendering.Lights;
+using Rb.Rendering.Textures;
 
 namespace Rb.Rendering
 {
@@ -225,7 +226,6 @@ namespace Rb.Rendering
                 Matrix44 shadowMat = Graphics.Renderer.GetTransform( Transform.ViewToScreen ) * Graphics.Renderer.GetTransform( Transform.WorldToView );
                 m_ShadowMatrixBinding.SetAt( lightIndex, shadowMat );
 
-
                 //	Set up the render target for the light
                 curTarget.Begin( );
                 Graphics.Renderer.ClearColour( System.Drawing.Color.Black );  //  NOTE: AP: Unecessary if depth texture is being used
@@ -239,14 +239,18 @@ namespace Rb.Rendering
                 //	Save the depth buffer
                 if ( ms_DumpLights )
                 {
+					string path = string.Format( "ShadowBuffer{0}.png", numBuffers - 1 );
+					path = System.IO.Path.Combine( System.IO.Directory.GetCurrentDirectory( ), path );
+					GraphicsLog.Verbose( "Dumping shadow buffer image to \"{0}\"...", path );
                     if ( DepthTextureMethod )
                     {
-						TextureUtils.Save( curTarget.DepthTexture, string.Format( "ShadowBuffer{0}.png", numBuffers - 1 ) );
+						TextureUtils.Save( curTarget.DepthTexture, path );
                     }
                     else
                     {
-                        TextureUtils.Save( curTarget.Texture, string.Format( "ShadowBuffer{0}.png", numBuffers - 1 ) );
+                        TextureUtils.Save( curTarget.Texture, path );
                     }
+					GraphicsLog.Verbose( "...Done" );
                 }
 
             }

@@ -1,4 +1,5 @@
 using Rb.Core.Maths;
+using Rb.Rendering.Textures;
 
 namespace Rb.Rendering
 {

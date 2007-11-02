@@ -3,6 +3,7 @@ using Rb.Rendering;
 using Rb.Core.Maths;
 using Rb.Core.Components;
 using Rb.Rendering.OpenGl;
+using Rb.Rendering.Textures;
 
 namespace Rb.Rendering.OpenGl.Md3Loader
 {
@@ -195,14 +196,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public Surface[] Surfaces
 		{
-			get
-			{
-				return m_Surfaces;
-			}
-			set
-			{
-				m_Surfaces = value;
-			}
+			get { return m_Surfaces; }
+			set { m_Surfaces = value; }
 		}
 
 
@@ -215,14 +210,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public IEffect Effect
 		{
-			get
-			{
-				return m_Technique.Effect;
-			}
-			set
-			{
-				m_Technique.Effect = value;
-			}
+			get { return m_Technique.Effect; }
+			set { m_Technique.Effect = value; }
 		}
 
 		/// <summary>
@@ -355,11 +344,20 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 			//	Assign texture sampler parameters
 			//	TODO: This should be part of the render technique
+			ITexture2d lastTexture = null;
 			for ( int surfaceIndex = 0; surfaceIndex < m_Surfaces.Length; ++surfaceIndex )
 			{
 				Surface curSurface = m_Surfaces[ surfaceIndex ];
 
-				Graphics.Renderer.BindTexture( curSurface.Texture );
+				if ( curSurface.Texture != lastTexture )
+				{
+					if ( lastTexture != null )
+					{
+						Graphics.Renderer.UnbindTexture( lastTexture );
+					}
+					Graphics.Renderer.BindTexture( curSurface.Texture );
+					lastTexture = curSurface.Texture;
+				}
 				if ( m_TextureParameter != null )
 				{
 					m_TextureParameter.Set( curSurface.Texture );
@@ -369,8 +367,10 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				m_SurfaceRenderer.CurrentFrame		= curSurface.SurfaceFrames[ currentFrame ];
 
 				m_Technique.Apply( context, m_SurfaceRenderer );
-
-				Graphics.Renderer.UnbindTexture( curSurface.Texture );
+			}
+			if ( lastTexture != null )
+			{
+				Graphics.Renderer.UnbindTexture( lastTexture );
 			}
 
 			if ( m_NestedMesh != null )

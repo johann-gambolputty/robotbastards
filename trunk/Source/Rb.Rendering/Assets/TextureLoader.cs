@@ -1,6 +1,7 @@
 using System.IO;
 using Rb.Core.Assets;
 using Rb.Core.Components;
+using Rb.Rendering.Textures;
 
 namespace Rb.Rendering.Assets
 {

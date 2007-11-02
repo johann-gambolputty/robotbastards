@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using Rb.Rendering.Textures;
 using TaoCg = Tao.Cg.Cg;
 
 namespace Rb.Rendering.OpenGl.Cg

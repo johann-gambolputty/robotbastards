@@ -159,13 +159,17 @@ namespace Poc0.LevelEditor.Core
 			public Point2[] ConvexRegion
 			{
 				get { return m_Region; }
-				set { m_Region = value; }
+				set
+				{
+					m_Region = value;
+					m_FloorData = StaticGeometryData.CreateDefaultFloorData( );
+				}
 			}
 
 			/// <summary>
 			/// Gets/sets floor data at this node
 			/// </summary>
-			public FloorData FloorData
+			public StaticGeometryData FloorData
 			{
 				get { return m_FloorData; }
 				set { m_FloorData = value; }
@@ -215,7 +219,7 @@ namespace Poc0.LevelEditor.Core
 
 			#region Private stuff
 
-			private FloorData m_FloorData = new FloorData( );
+			private StaticGeometryData m_FloorData;
 			private readonly Point3[] m_Quad = new Point3[ 4 ];
 			private readonly BspNode m_Parent;
 			private BspNode m_Behind;
@@ -239,7 +243,7 @@ namespace Poc0.LevelEditor.Core
 			/// <summary>
 			/// Gets data associated with the wall at the BSP node
 			/// </summary>
-			public WallData Wall
+			public StaticGeometryData WallData
 			{
 				get { return m_WallData; }
 				set { m_WallData = value; }
@@ -317,8 +321,7 @@ namespace Poc0.LevelEditor.Core
 			private Point2 m_P0;
 			private Point2 m_P1;
 			private readonly Plane2 m_Plane;
-			private WallData m_WallData = new WallData( );
-
+			private StaticGeometryData m_WallData = StaticGeometryData.CreateDefaultWallData( );
 		}
 
 		#endregion
@@ -711,8 +714,8 @@ namespace Poc0.LevelEditor.Core
 				Edge midToEndEdge = new Edge( intersection.IntersectionPosition, edge.P1 );
 
 				//	Make sure both halves get the same wall data
-				startToMidEdge.Wall = edge.Wall;
-				midToEndEdge.Wall = edge.Wall;
+				startToMidEdge.WallData = edge.WallData;
+				midToEndEdge.WallData = edge.WallData;
 
 				//	Add new edges to the appropriate edge lists
 				if ( p0Class != PlaneClassification.Behind )

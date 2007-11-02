@@ -2,6 +2,7 @@ using System;
 using System.Runtime.Serialization;
 using Poc0.Core.Environment;
 using Rb.Rendering;
+using Rb.Rendering.Textures;
 using Rb.World;
 using Tao.OpenGl;
 
@@ -136,7 +137,6 @@ namespace Poc0.Core.Rendering.OpenGl
 			/// <param name="context">Rendering context</param>
 			private void RenderGeometry( IRenderContext context )
 			{
-
 				foreach ( ITexture2d texture in m_Textures )
 				{
 					Graphics.Renderer.BindTexture( texture );

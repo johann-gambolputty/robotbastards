@@ -6,6 +6,7 @@ using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.OpenGl;
+using Rb.Rendering.Textures;
 using Tao.OpenGl;
 
 namespace Rb.Rendering.OpenGl.Md3Loader

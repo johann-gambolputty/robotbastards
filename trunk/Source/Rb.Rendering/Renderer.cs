@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Rb.Core.Maths;
 using Rb.Rendering.Lights;
+using Rb.Rendering.Textures;
 
 namespace Rb.Rendering
 {

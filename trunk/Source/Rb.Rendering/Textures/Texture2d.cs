@@ -2,7 +2,7 @@ using System.Drawing;
 using System;
 using System.Runtime.Serialization;
 
-namespace Rb.Rendering
+namespace Rb.Rendering.Textures
 {
 	/// <summary>
 	/// 2D texture data

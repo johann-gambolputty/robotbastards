@@ -540,24 +540,24 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public override void SetViewport( int x, int y, int width, int height )
 		{
-			m_X			= x;
-			m_Y			= y;
-			m_Width		= width;
-			m_Height	= height;
 			Gl.glViewport( x, y, width, height );
 		}
 
-		private int m_X;
-		private int m_Y;
-		private int	m_Width;
-		private int m_Height;
+		/// <summary>
+		/// Viewport storage. Only updated by the Viewport property
+		/// </summary>
+		private readonly int[] m_Viewport = new int[ 4 ];
 
 		/// <summary>
 		/// Gets the current viewport
 		/// </summary>
 		public override System.Drawing.Rectangle Viewport
 		{
-			get { return new System.Drawing.Rectangle( m_X, m_Y, m_Width, m_Height );}
+			get
+			{
+				Gl.glGetIntegerv( Gl.GL_VIEWPORT, m_Viewport );
+				return new System.Drawing.Rectangle( m_Viewport[ 0 ], m_Viewport[ 1 ], m_Viewport[ 2 ], m_Viewport[ 3 ] );
+			}
 		}
 
 		/// <summary>
@@ -567,7 +567,8 @@ namespace Rb.Rendering.OpenGl
 		{
 			get
 			{
-				return m_Width;
+				Gl.glGetIntegerv( Gl.GL_VIEWPORT, m_Viewport );
+				return m_Viewport[ 2 ];
 			}
 		}
 
@@ -578,7 +579,8 @@ namespace Rb.Rendering.OpenGl
 		{
 			get
 			{
-				return m_Height;
+				Gl.glGetIntegerv( Gl.GL_VIEWPORT, m_Viewport );
+				return m_Viewport[ 3 ];
 			}
 		}
 

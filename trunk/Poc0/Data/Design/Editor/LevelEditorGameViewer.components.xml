@@ -10,17 +10,15 @@
 
     </object>
 
-    <!-- Rendering technique
+    <!-- Rendering technique -->
     <object type="Rb.World.Rendering.SceneShadowBufferTechnique" assembly="Rb.World" property="Technique">
       <parameters>
-        <int value="1024"/>
-        <int value="1024"/>
+        <int value="512"/>
+        <int value="512"/>
       </parameters>
       <float value="0.5" property="NearZ"/>
       <float value="150" property="FarZ"/>
     </object>
-    -->
-
   </object>
 
 </rb>
