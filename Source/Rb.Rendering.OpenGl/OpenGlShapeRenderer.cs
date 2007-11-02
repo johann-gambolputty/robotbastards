@@ -1,5 +1,6 @@
 using System;
 using Rb.Core.Maths;
+using Rb.Rendering.Textures;
 using Tao.OpenGl;
 using System.Drawing;
 

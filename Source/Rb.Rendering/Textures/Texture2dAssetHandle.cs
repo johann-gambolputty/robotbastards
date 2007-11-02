@@ -1,7 +1,7 @@
 using System;
 using Rb.Core.Assets;
 
-namespace Rb.Rendering
+namespace Rb.Rendering.Textures
 {
 	/// <summary>
 	/// An implementation of <see cref="ITexture2d"/> that wraps up a texture asset

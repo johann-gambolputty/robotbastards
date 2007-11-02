@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Runtime.Serialization;
 using Rb.Core.Assets;
 using Rb.Core.Components;
 using Rb.Core.Maths;
@@ -92,7 +93,6 @@ namespace Poc0.Core.Objects
 
 			m_Lights.Begin( );
 
-			//	Resolve graphics references, then render
 			if ( Resolve( ) )
 			{
 				m_Graphics.Render( context );
@@ -134,6 +134,7 @@ namespace Poc0.Core.Objects
 		}
 
 		#endregion
+
 
 		/// <summary>
 		/// Resolves the graphics

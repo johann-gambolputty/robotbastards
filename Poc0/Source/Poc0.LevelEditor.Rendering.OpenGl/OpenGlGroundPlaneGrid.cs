@@ -1,6 +1,7 @@
 using System;
 using Poc0.LevelEditor.Core.Rendering;
 using Rb.Rendering;
+using Rb.Rendering.Textures;
 using Tao.OpenGl;
 
 namespace Poc0.LevelEditor.Rendering.OpenGl

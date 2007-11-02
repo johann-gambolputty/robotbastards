@@ -74,7 +74,7 @@
     <Compile Include="Lights\ISpotLight.cs" />
     <Compile Include="ITechnique.cs" />
     <Compile Include="ITechniqueSelector.cs" />
-    <Compile Include="ITexture2d.cs" />
+    <Compile Include="Textures\ITexture2d.cs" />
     <Compile Include="IVertexBuffer.cs" />
     <Compile Include="Lights\Light.cs" />
     <Compile Include="Lights\LightGroup.cs" />
@@ -107,12 +107,12 @@
     <Compile Include="Lights\SpotLight.cs" />
     <Compile Include="Technique.cs" />
     <Compile Include="TechniqueSelector.cs" />
-    <Compile Include="Texture2d.cs" />
-    <Compile Include="Texture2dAssetHandle.cs" />
-    <Compile Include="TextureFormat.cs" />
-    <Compile Include="TexturePacker.cs" />
-    <Compile Include="TextureSampler2d.cs" />
-    <Compile Include="TextureUtils.cs" />
+    <Compile Include="Textures\Texture2d.cs" />
+    <Compile Include="Textures\Texture2dAssetHandle.cs" />
+    <Compile Include="Textures\TextureFormat.cs" />
+    <Compile Include="Textures\TexturePacker.cs" />
+    <Compile Include="Textures\TextureSampler2d.cs" />
+    <Compile Include="Textures\TextureUtils.cs" />
     <Compile Include="Transform.cs" />
     <Compile Include="VertexBufferData.cs" />
     <Compile Include="Viewer.cs" />

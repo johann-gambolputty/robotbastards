@@ -2,7 +2,9 @@
 <rb>
   <!-- Spotlight pattern -->
   <template type="Poc0.Core.Objects.PointLightSocket" assembly="Poc0.Core" name="Spotlight">
-    <template type="Rb.Rendering.Lights.SpotLight" dynProperty="Light"> 
+    <template type="Rb.Rendering.Lights.SpotLight" dynProperty="Light">
+      <float value="30.0" dynProperty="InnerRadius"/>
+      <float value="40.0" dynProperty="OuterRadius"/>
     </template>
   </template>
 </rb>

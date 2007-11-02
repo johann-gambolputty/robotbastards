@@ -61,7 +61,6 @@
     <Compile Include="EditModes\UserBrushEditMode.cs" />
     <Compile Include="EditModes\DefinePolygonEditMode.cs" />
     <Compile Include="EnvironmentGraphicsBuilder.cs" />
-    <Compile Include="FloorData.cs" />
     <Compile Include="Rendering\GroundPlaneGrid.cs" />
     <Compile Include="LevelGeometry.cs" />
     <Compile Include="GameObjectEditorBuilder.cs" />
@@ -73,7 +72,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RayCastLayers.cs" />
-    <Compile Include="WallData.cs" />
+    <Compile Include="StaticGeometryData.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.csproj">

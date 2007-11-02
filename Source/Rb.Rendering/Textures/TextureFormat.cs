@@ -1,6 +1,6 @@
 using System;
 
-namespace Rb.Rendering
+namespace Rb.Rendering.Textures
 {
 	/// <summary>
 	/// Texture formats

@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using Poc0.LevelEditor.Core;
 using Rb.Core.Assets;
 using Rb.Rendering;
+using Rb.Rendering.Textures;
 using Rb.Tools.LevelEditor.Core;
 using Tao.OpenGl;
 using Rb.Core.Maths;
@@ -233,7 +234,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			float minV = 0;
 			float maxV = node.Quad[ 0 ].DistanceTo( node.Quad[ 3 ] ) / 5.0f;
 
-			ApplyTexture( node.Edge.Wall.Texture );
+			ApplyTexture( node.Edge.WallData.Texture );
 
 			Gl.glBegin( Gl.GL_TRIANGLES );
 
