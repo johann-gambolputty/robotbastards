@@ -114,5 +114,17 @@ namespace Rb.Rendering.Textures
 
 
 		#endregion
+
+		#region IDisposable Members
+
+		/// <summary>
+		/// Disposes of the underlying texture asset
+		/// </summary>
+		public void Dispose( )
+		{
+			Asset.Dispose( );
+		}
+
+		#endregion
 	}
 }

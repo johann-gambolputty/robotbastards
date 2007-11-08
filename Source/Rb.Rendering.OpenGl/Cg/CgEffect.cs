@@ -192,8 +192,12 @@ namespace Rb.Rendering.OpenGl.Cg
 
 		#endregion
 
+		#region Private stuff
+
 		private readonly IntPtr		m_Context;
 		private IntPtr				m_EffectHandle;
 		private readonly ArrayList	m_Parameters = new ArrayList( );
+
+		#endregion
 	}
 }

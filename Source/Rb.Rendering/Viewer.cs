@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using Rb.Core.Utils;
 
@@ -6,7 +7,7 @@ namespace Rb.Rendering
     /// <summary>
     /// Viewer stores information about how to view an object
     /// </summary>
-    public class Viewer
+    public class Viewer : IDisposable
     {
 		/// <summary>
 		/// The underlying control
@@ -151,12 +152,44 @@ namespace Rb.Rendering
         }
 
 		private object				m_Control;
-		private readonly FpsDisplay	m_FpsDisplay = new FpsDisplay( );
+		private FpsDisplay			m_FpsDisplay = new FpsDisplay( );
         private Cameras.CameraBase  m_Camera;
         private IRenderContext      m_Context = new RenderContext( );
         private IRenderable         m_Renderable;
         private ITechnique          m_Technique;
 		private RectangleF			m_ViewRect = new RectangleF( 0, 0, 1, 1 );
         private bool                m_ShowFps;
-    }
+
+		#region IDisposable Members
+
+		/// <summary>
+		/// Disposes of the viewer and its components
+		/// </summary>
+		public void Dispose( )
+		{
+			Dispose( m_FpsDisplay );
+			Dispose( m_Camera );
+			Dispose( m_Context );
+			Dispose( m_Renderable );
+			Dispose( m_Technique );
+
+			m_Control		= null;
+			m_FpsDisplay	= null;
+			m_Camera		= null;
+			m_Context		= null;
+			m_Renderable	= null;
+			m_Technique		= null;
+		}
+
+		private static void Dispose( object obj )
+		{
+			IDisposable disposable = obj as IDisposable;
+			if ( disposable != null )
+			{
+				disposable.Dispose( );
+			}
+		}
+
+		#endregion
+	}
 }

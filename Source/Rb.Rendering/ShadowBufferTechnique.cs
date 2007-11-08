@@ -13,7 +13,7 @@ namespace Rb.Rendering
 	/// This will do nothing, until a LightGroup is associated with the technique, using the ShadowLights property.
 	/// Any child techniques this technique has will be applied after the shadow buffer build step.
 	/// </remarks>
-	public class ShadowBufferTechnique : Technique
+	public class ShadowBufferTechnique : Technique, IDisposable
 	{
 		#region	Technique properties
 
@@ -168,7 +168,7 @@ namespace Rb.Rendering
         private static bool                     		ms_DumpLights = false;
 
         private readonly LightGroup                     m_ShadowLights = new LightGroup( );
-        private readonly RenderTarget[]                 m_RenderTargets = new RenderTarget[MaxLights];
+        private readonly RenderTarget[]                 m_RenderTargets = new RenderTarget[ MaxLights ];
         private float                           		m_NearZ = 1.0f;
         private float                           		m_FarZ = 300.0f;
 		private readonly ShaderParameterCustomBinding 	m_ShadowMatrixBinding;
@@ -268,5 +268,23 @@ namespace Rb.Rendering
 
         #endregion
 
-    }
+		#region IDisposable Members
+
+		/// <summary>
+		/// Cleans up technique resources
+		/// </summary>
+		public void Dispose( )
+		{
+			for ( int targetIndex = 0; targetIndex < m_RenderTargets.Length; ++targetIndex )
+			{
+				if ( m_RenderTargets[ targetIndex ] != null )
+				{
+					m_RenderTargets[ targetIndex ].Dispose( );
+					m_RenderTargets[ targetIndex ] = null;
+				}
+			}
+		}
+
+		#endregion
+	}
 }

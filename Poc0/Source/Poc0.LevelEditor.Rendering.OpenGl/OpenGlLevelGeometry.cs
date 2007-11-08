@@ -24,42 +24,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		public OpenGlLevelGeometry( EditorScene scene ) :
 			base( scene )
 		{
-			//	Try to load the wall rendering effect
-			try
-			{
-				IEffect wallEffect = ( IEffect )AssetManager.Instance.Load( WallEffectPath );
-				m_WallTechnique = wallEffect.GetTechnique( "MainTechnique" );
-			}
-			catch ( Exception ex )
-			{
-				GraphicsLog.Exception( ex, "Failed to build wall technique from \"{0}\" - making fallback technique", WallEffectPath );
-				
-				//	Failed to load wall rendering effect - create a simple default
-				RenderState wallState = Graphics.Factory.NewRenderState( );
-				wallState.DisableLighting( );
-				wallState.SetColour( Color.DarkOrange );
-				//wallState.EnableCap( RenderStateFlag.Texture2d | RenderStateFlag.Texture2dUnit0 );
-				m_WallTechnique = new Technique( "FallbackWallTechnique", wallState );
-			}
-
-			//	Try to load the floor rendering effect
-			try
-			{
-				IEffect floorEffect = ( IEffect )AssetManager.Instance.Load( FloorEffectPath );
-				m_FloorTechnique = floorEffect.GetTechnique( "MainTechnique" );
-			}
-			catch ( Exception ex )
-			{
-				GraphicsLog.Exception( ex, "Failed to build floor technique from \"{0}\" - making fallback technique", FloorEffectPath );
-
-				//	Failed to load floor rendering effect - create a simple default
-				RenderState floorState = Graphics.Factory.NewRenderState( );
-				floorState.DisableLighting( );
-				//floorState.EnableCap( RenderStateFlag.Texture2d | RenderStateFlag.Texture2dUnit0 );
-				floorState.SetColour( Color.Blue );
-
-				m_FloorTechnique = new Technique( "FallbackFloorTechnique", floorState );
-			}
+			InitializeTechniques( );
 		}
 
 		#region Serialization
@@ -73,6 +38,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		{
 			DestroyDisplayList( ref m_WallDisplayList );
 			DestroyDisplayList( ref m_FloorDisplayList );
+			InitializeTechniques( );
 		}
 
 		#endregion
@@ -90,6 +56,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			{
 				return;
 			}
+
 			if ( m_WallDisplayList == -1 )
 			{
 				RebuildWallDisplayList( );
@@ -171,9 +138,69 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		[NonSerialized]
 		private int m_FloorDisplayList = -1;
 
-		//	TODO: AP: Update serialization of these fields
-		private readonly ITechnique m_WallTechnique;
-		private readonly ITechnique m_FloorTechnique;
+		[NonSerialized]
+		private ITechnique m_WallTechnique;
+
+		[NonSerialized]
+		private ITechnique m_FloorTechnique;
+		
+		private void InitializeTechniques( )
+		{
+			InitializeWallTechnique( );
+			InitializeFloorTechnique( );
+		}
+
+		private void InitializeWallTechnique( )
+		{
+			if ( m_WallTechnique != null )
+			{
+				return;
+			}
+			
+			//	Try to load the wall rendering effect
+			try
+			{
+				IEffect wallEffect = ( IEffect )AssetManager.Instance.Load( WallEffectPath );
+				m_WallTechnique = wallEffect.GetTechnique( "MainTechnique" );
+			}
+			catch ( Exception ex )
+			{
+				GraphicsLog.Exception( ex, "Failed to build wall technique from \"{0}\" - making fallback technique", WallEffectPath );
+				
+				//	Failed to load wall rendering effect - create a simple default
+				RenderState wallState = Graphics.Factory.NewRenderState( );
+				wallState.DisableLighting( );
+				wallState.SetColour( Color.DarkOrange );
+				//wallState.EnableCap( RenderStateFlag.Texture2d | RenderStateFlag.Texture2dUnit0 );
+				m_WallTechnique = new Technique( "FallbackWallTechnique", wallState );
+			}
+		}
+
+		private void InitializeFloorTechnique( )
+		{
+			if ( m_FloorTechnique != null )
+			{
+				return;
+			}
+			//	Try to load the floor rendering effect
+			try
+			{
+				IEffect floorEffect = ( IEffect )AssetManager.Instance.Load( FloorEffectPath );
+				m_FloorTechnique = floorEffect.GetTechnique( "MainTechnique" );
+			}
+			catch ( Exception ex )
+			{
+				GraphicsLog.Exception( ex, "Failed to build floor technique from \"{0}\" - making fallback technique", FloorEffectPath );
+
+				//	Failed to load floor rendering effect - create a simple default
+				RenderState floorState = Graphics.Factory.NewRenderState( );
+				floorState.DisableLighting( );
+				//floorState.EnableCap( RenderStateFlag.Texture2d | RenderStateFlag.Texture2dUnit0 );
+				floorState.SetColour( Color.Blue );
+
+				m_FloorTechnique = new Technique( "FallbackFloorTechnique", floorState );
+			}
+		}
 
 		/// <summary>
 		/// Creates the render state used for rendering selected walls

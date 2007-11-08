@@ -81,30 +81,3 @@ technique NormalTechnique
 		FragmentProgram			= compile arbfp1 TestFragmentShader( );
 	}
 }
-
-technique WireframeTechnique
-{
-	pass
-	{
-		DepthMask				= false;
-		ShadeModel				= Smooth;
-		FrontFace				= CW;
-		DepthFunc				= LEqual;
-		DepthTestEnable			= true;
-		CullFaceEnable			= true;
-		PolygonMode				= int2( Front, Fill );
-		VertexProgram			= compile arbvp1 TestVertexShader( );
-		FragmentProgram			= compile arbfp1 TestFragmentShader( );
-	}
-	pass
-	{
-		DepthMask				= false;
-		FrontFace				= CW;
-		DepthTestEnable			= true;
-		CullFaceEnable			= true;
-		PolygonMode				= int2( Front, Line );
-		PolygonOffsetLineEnable	= true;
-		PolygonOffset			= float2( -0.5, -0.5 );
-		LightingEnable			= true;	//	TODO: This is a bodge to get the wireframe rendered black
-	}
-}

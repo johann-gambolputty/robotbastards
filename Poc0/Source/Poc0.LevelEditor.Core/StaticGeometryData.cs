@@ -8,6 +8,7 @@ using Rb.Rendering.Textures;
 
 namespace Poc0.LevelEditor.Core
 {
+	[Serializable]
 	public class StaticGeometryData
 	{
 		#region Creation
@@ -39,7 +40,6 @@ namespace Poc0.LevelEditor.Core
 
 
 		#endregion
-
 
 		#region Public members
 

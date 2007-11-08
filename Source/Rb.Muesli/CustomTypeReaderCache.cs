@@ -15,8 +15,6 @@ namespace Rb.Muesli
             get { return ms_Instance; }
         }
 
-        static private CustomTypeReaderCache ms_Instance = new CustomTypeReaderCache( );
-
         public CustomReaderDelegate GetReader( Type type )
         {
             CustomReaderDelegate Reader;
@@ -27,15 +25,19 @@ namespace Rb.Muesli
             }
             return Reader;
         }
-
-		private static MethodInfo IInput_GetContext							= typeof( IInput ).GetProperty( "Context" ).GetGetMethod( );
-        private static MethodInfo IInput_GetTypeReader						= typeof( IInput ).GetProperty( "TypeReader" ).GetGetMethod( );
-		private static MethodInfo IInput_ReadSerializationInfo				= typeof( IInput ).GetMethod( "ReadSerializationInfo" );
-        private static MethodInfo ITypeReader_Read              			= typeof( ITypeReader ).GetMethod( "Read" );
-		private static MethodInfo Type_TypeFromHandle						= typeof( Type ).GetMethod( "GetTypeFromHandle" );
-		private static MethodInfo FormatterServices_GetUninitializedObject	= typeof( FormatterServices ).GetMethod( "GetUninitializedObject" );
-		private static MethodInfo This_LoadGenericField						= typeof( CustomTypeReaderCache ).GetMethod( "LoadGenericField" );
 		
+        private readonly static CustomTypeReaderCache ms_Instance = new CustomTypeReaderCache( );
+
+		private readonly static MethodInfo IInput_GetContext						= typeof( IInput ).GetProperty( "Context" ).GetGetMethod( );
+        private readonly static MethodInfo IInput_GetTypeReader						= typeof( IInput ).GetProperty( "TypeReader" ).GetGetMethod( );
+		private readonly static MethodInfo IInput_ReadSerializationInfo				= typeof( IInput ).GetMethod( "ReadSerializationInfo" );
+        private readonly static MethodInfo ITypeReader_Read              			= typeof( ITypeReader ).GetMethod( "Read" );
+		private readonly static MethodInfo Type_TypeFromHandle						= typeof( Type ).GetMethod( "GetTypeFromHandle" );
+		private readonly static MethodInfo FormatterServices_GetUninitializedObject	= typeof( FormatterServices ).GetMethod( "GetUninitializedObject" );
+		private readonly static MethodInfo This_LoadGenericField					= typeof( CustomTypeReaderCache ).GetMethod( "LoadGenericField" );
+		
+        private readonly Dictionary< Type, CustomReaderDelegate > m_ReaderMap = new Dictionary< Type, CustomReaderDelegate >( );
+
         private static CustomReaderDelegate CreateSerializableReader( Type type )
         {
             ConstructorInfo constructor = type.GetConstructor( BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof( SerializationInfo ), typeof( StreamingContext ) }, null );
@@ -175,11 +177,17 @@ namespace Rb.Muesli
 				}
 
                 //  TODO: AP: Hardcoded primitive type write
-				generator.Emit( OpCodes.Ldloc_1 );						//  Load the object being serialized
+				generator.Emit( OpCodes.Ldloc_1 );						//  Load the object being deserialized
+
+				if ( !field.FieldType.IsValueType )
+				{
+					generator.Emit( OpCodes.Castclass, objType );
+				}
+
 				generator.Emit( OpCodes.Ldloc_0 );						//  Load the ITypeReader local variable
                 generator.Emit( OpCodes.Ldarg_0 );						//  Load the IInput argument
 
-                generator.Emit( OpCodes.Call, ITypeReader_Read );		//  Write the identifier using the output interface
+                generator.Emit( OpCodes.Call, ITypeReader_Read );		//  Read the identifier using the input interface
 
                 if ( field.FieldType.IsValueType )
 				{
@@ -195,7 +203,5 @@ namespace Rb.Muesli
                 BuildCustomReaderDelegate( generator, objType );
             }
         }
-
-        private Dictionary< Type, CustomReaderDelegate > m_ReaderMap = new Dictionary< Type, CustomReaderDelegate >( );
     }
 }

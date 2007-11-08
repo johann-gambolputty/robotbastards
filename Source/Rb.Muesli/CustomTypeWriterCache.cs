@@ -15,8 +15,6 @@ namespace Rb.Muesli
             get { return ms_Instance; }
         }
 
-        static private CustomTypeWriterCache ms_Instance = new CustomTypeWriterCache( );
-
         public CustomWriterDelegate GetWriter( Type type )
         {
             CustomWriterDelegate writer;
@@ -27,6 +25,16 @@ namespace Rb.Muesli
             }
             return writer;
         }
+
+		
+        private readonly static CustomTypeWriterCache ms_Instance		= new CustomTypeWriterCache( );
+
+		private readonly static MethodInfo IOutput_GetStreamingContext	= typeof( IOutput ).GetProperty( "Context" ).GetGetMethod( );
+        private readonly static MethodInfo IOutput_GetTypeWriter 		= typeof( IOutput ).GetProperty( "TypeWriter" ).GetGetMethod( );
+        private readonly static MethodInfo ITypeWriter_Write     		= typeof( ITypeWriter ).GetMethod( "Write" );
+		private readonly static MethodInfo This_SaveGenericField		= typeof( CustomTypeWriterCache ).GetMethod( "SaveGenericField" );
+
+        private readonly Dictionary< Type, CustomWriterDelegate > m_WriterMap = new Dictionary< Type, CustomWriterDelegate >( );
 
         private static void SerializableWriter( IOutput output, object obj )
         {
@@ -72,11 +80,6 @@ namespace Rb.Muesli
             return ( CustomWriterDelegate )method.CreateDelegate( typeof( CustomWriterDelegate ) );
         }
 
-		private static MethodInfo IOutput_GetStreamingContext	= typeof( IOutput ).GetProperty( "Context" ).GetGetMethod( );
-        private static MethodInfo IOutput_GetTypeWriter 		= typeof( IOutput ).GetProperty( "TypeWriter" ).GetGetMethod( );
-        private static MethodInfo ITypeWriter_Write     		= typeof( ITypeWriter ).GetMethod( "Write" );
-		private static MethodInfo This_SaveGenericField			= typeof( CustomTypeWriterCache ).GetMethod( "SaveGenericField" );
-
 		public static void SaveGenericField( IOutput output, object obj, string fieldName )
 		{
 			FieldInfo fieldInfo = obj.GetType( ).GetField( fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance );
@@ -84,7 +87,7 @@ namespace Rb.Muesli
 			output.Write( field );
 		}
 
-		private static void WriteGenericFieldSaveCode( ILGenerator generator, Type objType, FieldInfo fieldInfo )
+		private static void WriteGenericFieldSaveCode( ILGenerator generator, FieldInfo fieldInfo )
 		{
 			//	NOTE: AP: There's a problem accessing fields of generic types, so for the moment, we'll call the reflection
 			//	method to get around it
@@ -106,7 +109,6 @@ namespace Rb.Muesli
             FieldInfo[] fields = objType.GetFields( BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public );
             foreach ( FieldInfo field in fields )
             {
-
                 //  TODO: AP: Handle events, etc.?
                 if ( field.IsNotSerialized )
                 {
@@ -114,7 +116,7 @@ namespace Rb.Muesli
                 }
 				if ( objType.IsGenericType )
 				{
-					WriteGenericFieldSaveCode( generator, objType, field );
+					WriteGenericFieldSaveCode( generator, field );
 					continue;
 				}
 
@@ -122,6 +124,12 @@ namespace Rb.Muesli
                 generator.Emit( OpCodes.Ldloc_0 );                      //  Load the ITypeWriter local variable
                 generator.Emit( OpCodes.Ldarg_0 );                      //  Load the IOutput local variable
 				generator.Emit( OpCodes.Ldarg_1 );                      //  Load the object being serialized
+				if ( !field.FieldType.IsValueType )
+				{
+					//	Need to cast classes to the explicit type, because otherwise there'll be a field access
+					//	exception thrown for events
+					generator.Emit( OpCodes.Castclass, objType );
+				}
 				generator.Emit( OpCodes.Ldfld, field );					//  Load the current field
 
                 if ( field.FieldType.IsValueType )
@@ -140,7 +148,5 @@ namespace Rb.Muesli
                 BuildCustomWriterDelegate( generator, objType );
             }
         }
-
-        private Dictionary< Type, CustomWriterDelegate > m_WriterMap = new Dictionary< Type, CustomWriterDelegate >( );
     }
 }

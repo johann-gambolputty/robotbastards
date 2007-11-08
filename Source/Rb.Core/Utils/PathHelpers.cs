@@ -7,7 +7,7 @@ namespace Rb.Core.Utils
 	/// </summary>
 	public class PathHelpers
 	{
-		private static char[] DirectorySplitters = new char[] { '\\', '/' };
+		private static readonly char[] DirectorySplitters = new char[] { '\\', '/' };
 
 		/// <summary>
 		/// Makes a relative path from 2 absolute paths

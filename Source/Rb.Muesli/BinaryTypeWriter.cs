@@ -189,37 +189,44 @@ namespace Rb.Muesli
                     return;
             }
 
-            int objIndex = m_Objects.Find( obj );
-            if ( objIndex == -1 )
-            {
-                m_Objects.Add( obj );
-                CustomWriter writer = GetCustomWriter( objType );
-                WriteTypeId( output, writer.m_TypeId );
-                writer.m_Writer( output, obj );
-            }
-            else
-            {
-                WriteTypeId( output, ( int )TypeId.Existing );
-                output.Write( objIndex );
-            }
+			try
+			{
+				int objIndex = m_Objects.Find( obj );
+				if ( objIndex == -1 )
+				{
+					m_Objects.Add( obj );
+					CustomWriter writer = GetCustomWriter( objType );
+					WriteTypeId( output, writer.m_TypeId );
+					writer.m_Writer( output, obj );
+				}
+				else
+				{
+					WriteTypeId( output, ( int )TypeId.Existing );
+					output.Write( objIndex );
+				}
+			}
+			catch ( Exception ex )
+			{
+				
+			}
         }
 
         #endregion
 
         #region Private stuff
         
-        private ObjectTable                         m_Objects = new ObjectTable( );
-        private List< CustomWriter >                m_Writers = new List< CustomWriter >( );
-        private Dictionary< Type, CustomWriter >    m_TypeIds = new Dictionary< Type, CustomWriter >( );
+        private readonly ObjectTable                         m_Objects = new ObjectTable( );
+        private readonly List< CustomWriter >                m_Writers = new List< CustomWriter >( );
+        private readonly Dictionary< Type, CustomWriter >    m_TypeIds = new Dictionary< Type, CustomWriter >( );
 
         /// <summary>
         /// Stores a type, its identifier, and a delegate from <see cref="CustomTypeWriterCache"/> that is responsible for writing it
         /// </summary>
         private struct CustomWriter
         {
-            public Type                 m_Type;
-            public CustomWriterDelegate m_Writer;
-            public int                  m_TypeId;
+            public readonly Type					m_Type;
+			public readonly CustomWriterDelegate	m_Writer;
+			public readonly int						m_TypeId;
 
             /// <summary>
             /// Setup constructor

@@ -66,7 +66,12 @@ namespace Poc0.LevelEditor.Core
 				m_Texture0 = texture0;
 			}
 
-			public Vecte
+			public Vertex( float x, float y, float z, float nX, float nY, float nZ, float u, float v )
+			{
+				m_Point = new Point3( x, y, z );
+				m_Normal = new Vector3( nX, nY, nZ );
+				m_Texture0 = new Point2( u, v );
+			}
 		}
 
 		/// <summary>
@@ -216,6 +221,16 @@ namespace Poc0.LevelEditor.Core
 			CreateGroup( node.InFront, builder );
 		}
 
+		private const float FloorUScale = 0.1f;
+		private const float FloorVScale = 0.1f;
+
+		private static Vertex FloorVertex( float x, float y, float z )
+		{
+			float u = x * FloorUScale;
+			float v = z * FloorVScale;
+			return new Vertex( new Point3( x, y, z ), new Vector3( 0, 1, 0 ), new Point2( u, v ) );
+		}
+
 		private static void CreateFloorGroup( Csg.BspNode node, GroupListBuilder builder )
 		{
 			if ( node.ConvexRegion == null )
@@ -230,27 +245,21 @@ namespace Poc0.LevelEditor.Core
 			
 			GroupMaterial material = new GroupMaterial( techniqueSource, new ITexture2d[] { textureSource } );
 			GroupBuilder group = builder.GetGroup( material );
-			
+
+			float height = 0;
 			Point2[] points = node.ConvexRegion;
 			Point2 basePos = points[ 0 ];
 			ICollection<Vertex> vertices = group.Vertices;
 			for ( int vertexIndex = 1; vertexIndex < points.Length - 1; ++vertexIndex )
 			{
-				vertices.Add( new Vertex( basePos.X, height, basePos.Y, ) );
-
-				Gl.glTexCoord2f( basePos.X * uScale, basePos.Y * vScale );
-				Gl.glVertex3f( basePos.X, height, basePos.Y );
+				vertices.Add( FloorVertex( basePos.X, height, basePos.Y ) );
 
 				Point2 pt = points[ vertexIndex ];
-				Gl.glTexCoord2f( pt.X * uScale, pt.Y * vScale );
-				Gl.glVertex3f( pt.X, height, pt.Y );
+				vertices.Add( FloorVertex( pt.X, height, pt.Y ) );
 				
 				pt = points[ vertexIndex + 1 ];
-				Gl.glTexCoord2f( pt.X * uScale, pt.Y * vScale );
-				Gl.glVertex3f( pt.X, height, pt.Y );
+				vertices.Add( FloorVertex( pt.X, height, pt.Y ) );
 			}
-
-			
 		}
 
 		private static void CreateWallGroup( Csg.BspNode node, GroupListBuilder builder )

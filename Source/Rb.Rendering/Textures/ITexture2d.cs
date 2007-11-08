@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 
 namespace Rb.Rendering.Textures
@@ -8,7 +9,7 @@ namespace Rb.Rendering.Textures
 	/// <remarks>
 	/// Use <see cref="TextureUtils"/> for further load/save functionality
 	/// </remarks>
-	public interface ITexture2d
+	public interface ITexture2d : IDisposable // <= a bit lazy...
 	{
 		/// <summary>
 		/// Gets the width of the texture

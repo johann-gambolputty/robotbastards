@@ -11,7 +11,7 @@ namespace Rb.Rendering.Textures
 	/// To apply a texture, use Renderer.BindTexture(), or a TextureSampler2d object
 	/// </remarks>
 	[Serializable]
-	public abstract class Texture2d : IDisposable, ISerializable, ITexture2d
+	public abstract class Texture2d : ISerializable, ITexture2d
 	{
 		#region	Construction and setup
 
