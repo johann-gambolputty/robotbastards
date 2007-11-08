@@ -1,4 +1,5 @@
 
+using System;
 using Rb.Rendering.Textures;
 
 namespace Rb.Rendering
@@ -6,7 +7,7 @@ namespace Rb.Rendering
 	/// <summary>
 	/// Render target
 	/// </summary>
-	public abstract class RenderTarget
+	public abstract class RenderTarget : IDisposable
 	{
 		/// <summary>
 		/// Gets the underlying texture. This is null if the render target has not been created, or was created without a colour buffer
@@ -88,6 +89,27 @@ namespace Rb.Rendering
 		/// Height of the render target
 		/// </summary>
 		protected int m_Height;
+
+		#endregion
+
+		#region IDisposable Members
+
+		/// <summary>
+		/// Releases render target resources
+		/// </summary>
+		public virtual void Dispose( )
+		{
+			if ( m_Texture != null )
+			{
+				m_Texture.Dispose( );
+				m_Texture = null;
+			}
+			if ( m_DepthTexture != null )
+			{
+				m_DepthTexture.Dispose( );
+				m_DepthTexture = null;
+			}
+		}
 
 		#endregion
 	}

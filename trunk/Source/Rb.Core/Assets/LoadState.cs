@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Rb.Core.Assets
 {
@@ -66,7 +63,6 @@ namespace Rb.Core.Assets
 		/// </summary>
 		public virtual object Load( )
 		{
-			AssetsLog.Info( "Loading asset {0}", m_Source );
 			m_Asset = m_Loader.Cache.Find( m_Source.GetHashCode( ) );
 			if ( m_Asset != null )
 			{
@@ -74,6 +70,7 @@ namespace Rb.Core.Assets
 			}
 			else
 			{
+				AssetsLog.Info( "Loading asset {0}", m_Source );
 				m_Asset = m_Loader.Load( m_Source, m_Parameters );
 				if ( ( m_Asset != null ) && ( m_Parameters.CanCache ) )
 				{

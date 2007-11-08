@@ -64,6 +64,8 @@ namespace Rb.Log
                 entries.Add( new Entry( source, prefix + "(call stack)" ).Locate( info.File, int.Parse( info.Line ), 1, info.Method ) );
                 info.NextMatch( );
             }
+
+			ToLogEntries( source, ex.InnerException, entries, prefix + "\t" );
         }
 
         /// <summary>

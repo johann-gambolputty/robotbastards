@@ -165,7 +165,6 @@ namespace Rb.Rendering
 		#endregion
 
 		#region Private members
-
 		private IEffect m_Effect;
 		private ITechnique m_Technique;
 
@@ -173,7 +172,6 @@ namespace Rb.Rendering
 		private const string TechniqueName = "tname";
 
 		#endregion
-
 
 		#region ISerializable Members
 

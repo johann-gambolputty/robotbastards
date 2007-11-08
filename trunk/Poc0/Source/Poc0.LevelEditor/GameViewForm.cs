@@ -227,6 +227,11 @@ namespace Poc0.LevelEditor
 		{
 			m_Scene.Dispose( );
 			m_Scene = null;
+
+			//	Collect game garbage
+			GC.Collect( );
+			GC.WaitForPendingFinalizers( );
+			GC.Collect( );
 		}
 
 		private Scene m_Scene;

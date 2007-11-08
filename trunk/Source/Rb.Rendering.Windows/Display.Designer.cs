@@ -21,6 +21,10 @@ namespace Rb.Rendering.Windows
 			{
 				m_Setup.Dispose( );
 			}
+			foreach ( Viewer viewer in Viewers )
+			{
+				viewer.Dispose( );
+			}
 			base.Dispose( disposing );
 		}
 

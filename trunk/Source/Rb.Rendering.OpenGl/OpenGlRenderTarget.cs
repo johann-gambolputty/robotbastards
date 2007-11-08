@@ -235,18 +235,23 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Destroys associated buffers
 		/// </summary>
-		public void Dispose( )
+		public override unsafe void Dispose( )
 		{
+			//	NOTE: If GL context is no longer available, these delete calls will fail
 			if ( m_FboHandle != InvalidHandle )
 			{
-				//	TODO: GL context isn't available now, so delete will fail
-			//	Gl.glDeleteFramebuffersEXT( 1, ref m_FboHandle );
+				fixed ( int* fboHandle = &m_FboHandle )
+				{
+					Gl.glDeleteFramebuffersEXT( 1, ( IntPtr )fboHandle );
+				}
 				m_FboHandle = InvalidHandle;
 			}
 			if ( m_FboDepthHandle != InvalidHandle )
 			{
-				//	TODO: GL context isn't available now, so delete will fail
-			//	Gl.glDeleteRenderbuffersEXT( 1, ref m_FboDepthHandle );
+				fixed ( int* fboHandle = &m_FboDepthHandle )
+				{
+					Gl.glDeleteRenderbuffersEXT( 1, ( IntPtr )fboHandle );
+				}
 				m_FboDepthHandle = InvalidHandle;
 			}
 		}

@@ -16,19 +16,18 @@ sampler2D Texture1 = sampler_state
 
 struct TestInput
 {
-	float4	m_Position : POSITION;
-	float4	m_Normal : NORMAL;
-	float2	m_Tex0 : TEXCOORD0;
+	float4	m_Position	: POSITION;
+	float4	m_Normal	: NORMAL;
+	float2	m_Tex0		: TEXCOORD0;
 };
 
 struct TestOutput
 {
 	float4	m_Position		: POSITION;
-	float3	m_ModelPos		: TEXCOORD0;
-	float3	m_ModelNormal	: TEXCOORD1;
-	float4	m_LightPos		: TEXCOORD2;
-	float3	m_VecToLight	: TEXCOORD3;
-	float2	m_Tex0			: TEXCOORD4;
+	float4	m_LightPos		: TEXCOORD0;
+	float3	m_VecToLight	: TEXCOORD1;
+	float3	m_ModelNormal	: TEXCOORD2;
+//	float2	m_Tex0			: TEXCOORD2;
 };
 
 struct SpotLightArray
@@ -59,15 +58,18 @@ TestOutput TestVertexShader( TestInput input )
 {
 	TestOutput output;
 
+	float3 worldPos = mul( ModelMatrix, input.m_Position ).xyz;
+
 	output.m_Position		= mul( ModelViewProjectionMatrix, input.m_Position );
-	output.m_Tex0			= input.m_Tex0;
-	output.m_ModelPos		= mul( ModelMatrix, input.m_Position ).xyz;
 	output.m_ModelNormal	= normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
 	output.m_LightPos		= mul( ShadowMatrix[ SI ], mul( ModelMatrix, input.m_Position ) );
-	output.m_VecToLight		= normalize( SpotLights.m_Positions[ 0 ] - output.m_ModelPos );
+	output.m_VecToLight		= normalize( SpotLights.m_Positions[ 0 ] - worldPos );
+
+//	output.m_Tex0			= input.m_Tex0;
 
 	return output;
 }
+
 float4 TestFragmentShader( TestOutput input ) : COLOR
 {
 	float4	lightPos		= input.m_LightPos;
@@ -92,12 +94,11 @@ float4 TestFragmentShader( TestOutput input ) : COLOR
 
 	//float	shadowFactor	= ( storedDepth >= lightDepth ) && ( -dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ) ? 1 : 0.3f;
 	//float	shadowFactor	= ( -dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ) ? coverage : 0.0f;
-	float shadowFactor = ( -dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ) ? 1.0f : 0.0f;
+	float shadowFactor = ( -dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ) ? 1.0f : 0.2f;
 
 	float	spotDiffuse		= dot( normal, lightVec ) * shadowFactor.xxx;
 	float	specular		= dot( normal, halfVec );
 	float4	lighting		= lit( spotDiffuse, specular, 64 );
-
 	float4	colour			= float4( lighting.y.xxx + lighting.z.xxx, 1 );
 
 	return colour;
@@ -119,3 +120,4 @@ technique NormalTechnique
 		FragmentProgram			= compile arbfp1 TestFragmentShader( );
 	}
 }
+
