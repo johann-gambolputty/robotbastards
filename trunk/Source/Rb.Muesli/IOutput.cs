@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Rb.Muesli
@@ -21,7 +19,7 @@ namespace Rb.Muesli
 
         void WriteNull( );
         
-        void WriteSerializationInfo( SerializationInfo info );
+        void WriteSerializationInfo( SerializationInfo info, bool writeType );
 
 		void Write( bool val );
 
@@ -60,26 +58,6 @@ namespace Rb.Muesli
         void Write( object obj );
 
         #endregion
-
-        /*
-        #region Writing collections
-
-        void Write( ArrayList val );
-
-        void Write< T >( T[] val );
-
-        void Write< T >( ICollection< T > val );
-
-        void Write< Key, Val >( IDictionary< Key, Val > dictionary );
-
-        #endregion
-
-        #region Writing special objects
-
-        void Write( ISerializable persistentObject );
-
-        #endregion
-        */
 
         void Finish( );
     }

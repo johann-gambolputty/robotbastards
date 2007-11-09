@@ -37,8 +37,10 @@ namespace Rb.Muesli
             m_Writer.Write( ( byte )TypeId.Null );
         }
 
-        public void WriteSerializationInfo( SerializationInfo info )
-        {
+        public void WriteSerializationInfo( SerializationInfo info, bool writeType )
+		{
+			Write( writeType ? info.FullTypeName : "" );
+
             int memberCount = info.MemberCount;
             Write( memberCount );
 
@@ -150,10 +152,10 @@ namespace Rb.Muesli
             m_TypeWriter.Write( this, obj );
         }
 
-		private StreamingContext	m_Context;
-        private Stream				m_Stream;
-        private MemoryStream		m_WriterStream;
-        private BinaryWriter		m_Writer;
-        private ITypeWriter			m_TypeWriter = new BinaryTypeWriter( );
+		private readonly StreamingContext	m_Context;
+		private readonly Stream				m_Stream;
+		private readonly MemoryStream		m_WriterStream;
+		private readonly BinaryWriter		m_Writer;
+		private readonly ITypeWriter		m_TypeWriter = new BinaryTypeWriter();
     }
 }

@@ -124,9 +124,9 @@ namespace Rb.Core.Tests
 			/// <summary>
 			/// Gets the asset extension
 			/// </summary>
-			public override string Extension
+			public override string[] Extensions
 			{
-				get { return "xml"; }
+				get { return new string[] { "xml" }; }
 			}
 
 			/// <summary>

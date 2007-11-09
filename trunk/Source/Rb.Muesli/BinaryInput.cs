@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 
@@ -29,6 +28,17 @@ namespace Rb.Muesli
         public SerializationInfo ReadSerializationInfo( Type type )
         {
             SerializationInfo info = new SerializationInfo( type, new FormatterConverter( ) );
+
+        	string typeName;
+			Read( out typeName );
+			if ( !string.IsNullOrEmpty( typeName ) )
+			{
+				info.FullTypeName = typeName;
+			}
+			else
+			{
+				info.FullTypeName = ""; //	Optimisation - default type is used
+			}
 
             int memberCount;
             Read( out memberCount );
@@ -140,29 +150,20 @@ namespace Rb.Muesli
         public void Read( out object obj )
         {
             obj = m_TypeReader.Read( this );
-        	IDeserializationCallback listener = obj as IDeserializationCallback;
-			if ( listener != null )
-			{
-				m_DeserializationListeners.Add( listener );
-			}
         }
 
 		public void Finish( )
 		{
-			foreach ( IDeserializationCallback listener in m_DeserializationListeners )
-			{
-				listener.OnDeserialization( null );
-			}
+			m_TypeReader.Finish( );
 		}
 
         #endregion
         
         #region Private stuff
 
-		private StreamingContext				m_Context;
-        private BinaryTypeReader    			m_TypeReader = new BinaryTypeReader( );
-        private BinaryReader        			m_Reader;
-    	private List<IDeserializationCallback>	m_DeserializationListeners = new List< IDeserializationCallback >( );
+		private readonly StreamingContext				m_Context;
+		private readonly BinaryTypeReader				m_TypeReader = new BinaryTypeReader( );
+		private readonly BinaryReader					m_Reader;
 
         #endregion
     }
