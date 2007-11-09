@@ -32,7 +32,7 @@ namespace Rb.Muesli
 		private readonly static MethodInfo IOutput_GetStreamingContext	= typeof( IOutput ).GetProperty( "Context" ).GetGetMethod( );
         private readonly static MethodInfo IOutput_GetTypeWriter 		= typeof( IOutput ).GetProperty( "TypeWriter" ).GetGetMethod( );
         private readonly static MethodInfo ITypeWriter_Write     		= typeof( ITypeWriter ).GetMethod( "Write" );
-		private readonly static MethodInfo This_SaveGenericField		= typeof( CustomTypeWriterCache ).GetMethod( "SaveGenericField" );
+		private readonly static MethodInfo This_SaveNamedField			= typeof( CustomTypeWriterCache ).GetMethod( "SaveNamedField" );
 
         private readonly Dictionary< Type, CustomWriterDelegate > m_WriterMap = new Dictionary< Type, CustomWriterDelegate >( );
 
@@ -41,11 +41,18 @@ namespace Rb.Muesli
             SerializationInfo info = new SerializationInfo( obj.GetType( ), new FormatterConverter( ) );
             ( ( ISerializable )obj ).GetObjectData( info, output.Context );
 
-			output.WriteSerializationInfo( info );
+			output.WriteSerializationInfo( info, info.FullTypeName != obj.GetType().FullName );
         }
 
         private CustomWriterDelegate CreateWriter( Type type )
         {
+			if ( type.IsInterface )
+			{
+				//	Not an error, because CreateWriter() is used to create delegate for CustomWriter objects representing
+				//	interfaces, so they can have a unique type ID...
+				return null;
+			}
+
             if ( type.IsPrimitive )
             {
                 throw new ArgumentException( string.Format( "No writer available for primitive type \"{0}\"", type ) );
@@ -55,7 +62,7 @@ namespace Rb.Muesli
                 return SerializableWriter;
             }
 
-            DynamicMethod method = new DynamicMethod( "CustomWriter", typeof( void ), new Type[] { typeof( IOutput ), typeof( object ) }, type );
+            DynamicMethod method = new DynamicMethod( "CustomWriter", typeof( void ), new Type[] { typeof( IOutput ), typeof( object ) }, type, true );
             
             ILGenerator generator = method.GetILGenerator( );
             generator.DeclareLocal( typeof( ITypeWriter ) );
@@ -80,22 +87,31 @@ namespace Rb.Muesli
             return ( CustomWriterDelegate )method.CreateDelegate( typeof( CustomWriterDelegate ) );
         }
 
-		public static void SaveGenericField( IOutput output, object obj, string fieldName )
+		/// <summary>
+		/// Saves a named field, by accessing its value using reflection
+		/// </summary>
+		public static void SaveNamedField( IOutput output, RuntimeTypeHandle objTypeHandle, object obj, string fieldName )
 		{
-			FieldInfo fieldInfo = obj.GetType( ).GetField( fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance );
+			Type objType = Type.GetTypeFromHandle( objTypeHandle );
+			FieldInfo fieldInfo = objType.GetField( fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance );
 			object field = fieldInfo.GetValue( obj  );
 			output.Write( field );
 		}
 
-		private static void WriteGenericFieldSaveCode( ILGenerator generator, FieldInfo fieldInfo )
+		/// <summary>
+		/// Writes code that calls <see cref="SaveNamedField"/>
+		/// </summary>
+		private static void WriteNamedFieldSaveCode( ILGenerator generator, Type objType, FieldInfo fieldInfo )
 		{
 			//	NOTE: AP: There's a problem accessing fields of generic types, so for the moment, we'll call the reflection
 			//	method to get around it
 			//	see http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=221225
+			//	This is also used for accessing event fields
 			generator.Emit( OpCodes.Ldarg_0 );
+			generator.Emit( OpCodes.Ldtoken, objType );
 			generator.Emit( OpCodes.Ldarg_1 );
 			generator.Emit( OpCodes.Ldstr, fieldInfo.Name );
-			generator.Emit( OpCodes.Call, This_SaveGenericField );
+			generator.Emit( OpCodes.Call, This_SaveNamedField );
 		}
 
         private void BuildCustomWriterDelegate( ILGenerator generator, Type objType )
@@ -116,7 +132,10 @@ namespace Rb.Muesli
                 }
 				if ( objType.IsGenericType )
 				{
-					WriteGenericFieldSaveCode( generator, field );
+					//	Special case for saving fields using SaveNamedField()
+					//	Loading generic-typed fields doesn't work (.NET problem), and accessing events
+					//	must be done either through reflection, or via the owning class...
+					WriteNamedFieldSaveCode( generator, objType, field );
 					continue;
 				}
 
@@ -124,12 +143,6 @@ namespace Rb.Muesli
                 generator.Emit( OpCodes.Ldloc_0 );                      //  Load the ITypeWriter local variable
                 generator.Emit( OpCodes.Ldarg_0 );                      //  Load the IOutput local variable
 				generator.Emit( OpCodes.Ldarg_1 );                      //  Load the object being serialized
-				if ( !field.FieldType.IsValueType )
-				{
-					//	Need to cast classes to the explicit type, because otherwise there'll be a field access
-					//	exception thrown for events
-					generator.Emit( OpCodes.Castclass, objType );
-				}
 				generator.Emit( OpCodes.Ldfld, field );					//  Load the current field
 
                 if ( field.FieldType.IsValueType )
@@ -143,7 +156,7 @@ namespace Rb.Muesli
             }
 
             objType = objType.BaseType;
-            if ( objType != typeof( object ) )
+            if ( ( objType != typeof( object ) ) && ( objType != null ) )
             {
                 BuildCustomWriterDelegate( generator, objType );
             }

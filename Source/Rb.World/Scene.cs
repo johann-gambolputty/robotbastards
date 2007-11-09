@@ -29,7 +29,7 @@ namespace Rb.World
 		/// <summary>
 		/// Event, raised by <see cref="Dispose()"/>
 		/// </summary>
-		public EventHandler Disposing;
+		public event EventHandler Disposing;
 
 		/// <summary>
 		/// Disposes of the scene, raises the <see cref="Disposing"/> event

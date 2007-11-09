@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Rb.Muesli
@@ -26,6 +24,6 @@ namespace Rb.Muesli
             get { return m_Map.Count; }
         }
 
-        private Dictionary< object, int > m_Map = new Dictionary< object, int >( );
+        private readonly Dictionary< object, int > m_Map = new Dictionary< object, int >( );
     }
 }

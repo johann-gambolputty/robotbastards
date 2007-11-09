@@ -34,6 +34,9 @@ namespace Rb.Muesli
             }
         }
 
+		/// <summary>
+		/// Writes type information
+		/// </summary>
         private static void WriteType( BinaryWriter writer, Type type )
         {
         	uint id = SerializationIdAttribute.GetTypeId( type );
@@ -49,6 +52,9 @@ namespace Rb.Muesli
 			}
         }
 
+		/// <summary>
+		/// Gets the unique integer identifier for a type
+		/// </summary>
 		private int GetTypeId( Type type )
 		{
 			if ( type.IsArray )
@@ -189,27 +195,20 @@ namespace Rb.Muesli
                     return;
             }
 
-			try
+			int objIndex = m_Objects.Find( obj );
+			if ( objIndex == -1 )
 			{
-				int objIndex = m_Objects.Find( obj );
-				if ( objIndex == -1 )
-				{
-					m_Objects.Add( obj );
-					CustomWriter writer = GetCustomWriter( objType );
-					WriteTypeId( output, writer.m_TypeId );
-					writer.m_Writer( output, obj );
-				}
-				else
-				{
-					WriteTypeId( output, ( int )TypeId.Existing );
-					output.Write( objIndex );
-				}
+				m_Objects.Add( obj );
+				CustomWriter writer = GetCustomWriter( objType );
+				WriteTypeId( output, writer.m_TypeId );
+				writer.m_Writer( output, obj );
 			}
-			catch ( Exception ex )
+			else
 			{
-				
+				WriteTypeId( output, ( int )TypeId.Existing );
+				output.Write( objIndex );
 			}
-        }
+		}
 
         #endregion
 

@@ -10,7 +10,7 @@ namespace Rb.Muesli.Tests
     [TestFixture]
     public class TestMuesli
     {
-        private static string BuildRandomString( Random rnd, Dictionary< string, string > uniqueMap )
+        private static string BuildRandomString( Random rnd, IDictionary< string, string > uniqueMap )
         {
             int length = rnd.Next( 5, 20 );
 
@@ -166,21 +166,35 @@ namespace Rb.Muesli.Tests
 				Assert.AreEqual( inputDictionary[ key ], outputObject[ key ] );
 			}
 		}
-
-		[Serializable]
-		public struct Test< T > where T : IEquatable< T >
+		
+		[Test]
+		public void TestDictionaryIo2( )
 		{
-			private T m_Value;
-			public Test( T val ) { m_Value = val; }
-			public override bool Equals( object obj )
+			MemoryStream stream = new MemoryStream( );
+			BinaryOutput output = new BinaryOutput( stream );
+
+			Dictionary< Type, object > outputObject = new Dictionary< Type, object >( );
+
+			outputObject[ typeof( Primitives ) ] = new Primitives( );
+			output.Write( outputObject );
+
+			output.Finish( );
+
+			stream.Seek( 0, SeekOrigin.Begin );
+			BinaryInput input = new BinaryInput( stream );
+
+			object inputObject;
+			input.Read( out inputObject );
+			input.Finish( );
+			Dictionary< Type, object > inputDictionary = ( Dictionary< Type, object > )inputObject;
+
+			//	TODO: AP: Ditto here - Assert.AreEqual() isn't working anymore on the dictionaries :(
+			//Assert.AreEqual( outputObject, inputObject );
+			Assert.AreEqual( inputDictionary.Count, outputObject.Count );
+
+			foreach ( Type key in outputObject.Keys )
 			{
-				Test<T> rhs = (Test< T > )obj;
-				return m_Value.Equals( rhs.m_Value );
-			}
-			public override int GetHashCode( )
-			{
-				object tmp = this;
-				return tmp.GetHashCode( );
+			    Assert.AreEqual( inputDictionary[ key ], outputObject[ key ] );
 			}
 		}
 
@@ -246,14 +260,32 @@ namespace Rb.Muesli.Tests
             Assert.AreEqual( outputObject, inputObject );
         }
 
-        [Serializable]
-        private class RingTest
-        {
-            private static int ms_ValueInit = 0;
-            public int m_Value = ms_ValueInit++;
-            public RingTest m_Next;
-        }
-        
+		[Serializable]
+		private class MyNestedDictionary : NestedDictionary
+		{
+			
+		}
+
+		[Test]
+		public void TestNestedDictionaryIo( )
+		{
+            MemoryStream stream = new MemoryStream( );
+            BinaryOutput output = new BinaryOutput( stream );
+
+			NestedDictionary outputObject = new MyNestedDictionary();
+			output.Write( outputObject );
+			output.Finish( );
+
+            stream.Seek( 0, SeekOrigin.Begin );
+            BinaryInput input = new BinaryInput( stream );
+
+            object inputObject;
+            input.Read( out inputObject );
+			input.Finish( );
+			( ( NestedDictionary )inputObject ).Check( );
+
+		}
+
         [Test]
         public void TestRingIo()
         {
@@ -285,6 +317,83 @@ namespace Rb.Muesli.Tests
             } while ( curOutput != outputObject );
         }
 
+		[Test]
+		public void TestSerializationEvents( )
+		{
+			MemoryStream stream = new MemoryStream( );
+			IFormatter formatter = new BinaryFormatter( );
+
+			formatter.Serialize( stream, new EventsTest( ) );
+			stream.Seek( 0, SeekOrigin.Begin );
+			EventsTest test = ( EventsTest )formatter.Deserialize( stream );
+			EventsTest.CheckCalled( EventType.Serializing, true );
+			EventsTest.CheckCalled( EventType.Serialized, true );
+			EventsTest.CheckCalled( EventType.Deserializing, true );
+			EventsTest.CheckCalled( EventType.Deserialized, true );
+			EventsTest.CheckCalled( EventType.DeserializationCallback, true );
+		}
+		
+		[Test]
+		public void TestEventSerialization( )
+		{
+            MemoryStream stream = new MemoryStream( );
+            BinaryOutput output = new BinaryOutput( stream );
+
+			EventHandlers outputObject = new DerivedEventHandlers( );
+			output.Write( outputObject );
+			output.Finish( );
+
+            stream.Seek( 0, SeekOrigin.Begin );
+            BinaryInput input = new BinaryInput( stream );
+
+            object inputObject;
+            input.Read( out inputObject );
+			input.Finish( );
+			
+			( ( EventHandlers )inputObject ).Invoke( );
+		}
+
+		#region Test Classes
+
+		[Serializable]
+		public class EventHandlers
+		{
+			public EventHandlers( )
+			{
+				SimpleEvent += SimpleEventHandler;
+				GenericEvent += GenericEventHandler;
+			}
+
+			public void Invoke( )
+			{
+				SimpleEvent( this, null );
+				GenericEvent( this, null );
+			}
+
+			public class MyEventArgs : EventArgs
+			{
+			}
+
+			public event EventHandler SimpleEvent;
+			public event EventHandler< MyEventArgs > GenericEvent;
+
+			private static void SimpleEventHandler( object send, EventArgs args )
+			{
+			}
+			
+			private static void GenericEventHandler( object send, MyEventArgs args )
+			{
+			}
+		}
+
+		[Serializable]
+		public class DerivedEventHandlers : EventHandlers
+		{
+		}
+
+		/// <summary>
+		/// Serialization event enumeration
+		/// </summary>
 		public enum EventType
 		{
 			Serializing,
@@ -295,10 +404,69 @@ namespace Rb.Muesli.Tests
 			Count
 		}
 
+		/// <summary>
+		/// Tests generic nested values
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		[Serializable]
+		public struct Test<T> where T : IEquatable<T>
+		{
+			private readonly T m_Value;
+			public Test(T val) { m_Value = val; }
+			public override bool Equals(object obj)
+			{
+				Test<T> rhs = (Test<T>)obj;
+				return m_Value.Equals(rhs.m_Value);
+			}
+			public override int GetHashCode()
+			{
+				return base.GetHashCode();
+			}
+		}
+
+		/// <summary>
+		/// Tests circular references
+		/// </summary>
+		[Serializable]
+        private class RingTest
+        {
+            private static int ms_ValueInit = 0;
+            public readonly int m_Value = ms_ValueInit++;
+            public RingTest m_Next;
+		}
+		
+		/// <summary>
+		/// Tests nested generic dictionaries
+		/// </summary>
+		[Serializable]
+		private class NestedDictionary
+		{
+			public NestedDictionary( )
+			{
+				m_Dictionary[ "key0" ] = 0;
+				m_Dictionary[ "key1" ] = 1;
+				m_Dictionary[ "key2" ] = 2;
+				m_Dictionary[ "key3" ] = 3;
+			}
+
+			public void Check( )
+			{
+				Assert.AreEqual( m_Dictionary[ "key0" ], 0 );
+				Assert.AreEqual( m_Dictionary[ "key1" ], 1 );
+				Assert.AreEqual( m_Dictionary[ "key2" ], 2 );
+				Assert.AreEqual( m_Dictionary[ "key3" ], 3 );
+			}
+
+			private readonly Dictionary< string, int > m_Dictionary = new Dictionary< string, int >( );
+		}
+		
+		/// <summary>
+		/// Makes sure that (de)serialization events are called in the right order
+		/// </summary>
 		[Serializable]
 		public class EventsTest : IDeserializationCallback
 		{
-			private static bool[] m_Called = new bool[ ( int )EventType.Count ];
+			private static readonly bool[] m_Called = new bool[ ( int )EventType.Count ];
 
 			public static void CheckCalled( EventType eventType, bool called )
 			{
@@ -345,20 +513,6 @@ namespace Rb.Muesli.Tests
 			#endregion
 		}
 
-		[Test]
-		public void TestSerializationEvents( )
-		{
-			MemoryStream stream = new MemoryStream( );
-			IFormatter formatter = new BinaryFormatter( );
-
-			formatter.Serialize( stream, new EventsTest( ) );
-			stream.Seek( 0, SeekOrigin.Begin );
-			EventsTest test = ( EventsTest )formatter.Deserialize( stream );
-			EventsTest.CheckCalled( EventType.Serializing, true );
-			EventsTest.CheckCalled( EventType.Serialized, true );
-			EventsTest.CheckCalled( EventType.Deserializing, true );
-			EventsTest.CheckCalled( EventType.Deserialized, true );
-			EventsTest.CheckCalled( EventType.DeserializationCallback, true );
-		}
+		#endregion
     }
 }

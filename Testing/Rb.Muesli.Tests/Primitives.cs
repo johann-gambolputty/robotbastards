@@ -28,8 +28,7 @@ namespace Rb.Muesli.Tests
 
 		public override int GetHashCode( )
 		{
-			object tmp = this;
-			return tmp.GetHashCode( );
+			return base.GetHashCode( );
 		}
 
         #region IEquatable<TestObject> Members

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 
@@ -6,7 +7,15 @@ namespace Rb.Muesli
 {
     public class BinaryTypeReader : ITypeReader
     {
-        #region ITypeReader Members
+		public void Finish( )
+		{
+			foreach ( IDeserializationCallback listener in m_DeserializationListeners )
+			{
+				listener.OnDeserialization( null );
+			}
+		}
+
+    	#region ITypeReader Members
 
         public void ReadHeader( Stream stream )
         {
@@ -45,7 +54,7 @@ namespace Rb.Muesli
             switch( typeId )
             {
                 case ( int )TypeId.Null     : return null;
-                case ( int )TypeId.Bool     : return Input.ReadBoolean( input );;
+                case ( int )TypeId.Bool     : return Input.ReadBoolean( input );
                 case ( int )TypeId.Byte     : return Input.ReadByte( input );
                 case ( int )TypeId.SByte    : return Input.ReadSByte( input );
                 case ( int )TypeId.Char     : return Input.ReadChar( input );
@@ -74,8 +83,9 @@ namespace Rb.Muesli
 
                 case ( int )TypeId.Existing :
                     {
-                        return m_Objects[ Input.ReadInt32( input ) ];
-                    }
+                        int index = Input.ReadInt32( input );
+						return m_Objects[ index ];
+					}
             }
 
             int typeIndex = typeId - m_OtherOffset;
@@ -85,6 +95,12 @@ namespace Rb.Muesli
             object result = CustomTypeReaderCache.Instance.GetReader( objType )( input );
 
             m_Objects[ m_ObjectIndex++ ] = result;
+
+        	IDeserializationCallback deserializationListener = result as IDeserializationCallback;
+			if ( deserializationListener != null )
+			{
+				m_DeserializationListeners.Add( deserializationListener );
+			}
 
             return result;
         }
@@ -97,6 +113,8 @@ namespace Rb.Muesli
         private int			m_ObjectIndex;
 		private byte		m_OtherOffset;
 		private Type[]		m_TypeTable;
+    	private readonly List<IDeserializationCallback>	m_DeserializationListeners = new List< IDeserializationCallback >( );
+
 
         private static int ReadTypeId( IInput input )
         {
