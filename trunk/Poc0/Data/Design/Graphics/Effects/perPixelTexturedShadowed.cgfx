@@ -8,26 +8,18 @@ sampler2D Texture0 = sampler_state
 	BorderColor	= float4( 1, 1, 1, 1 );
 };
 
-sampler2D Texture1 = sampler_state
+struct InputVertex
 {
-	minFilter	= Linear;
-	magFilter	= Linear;
+	float4	m_Position	: POSITION;			//	Model position
+	float4	m_Normal	: NORMAL;			//	Model normal
+	float2	m_Tex0		: TEXCOORD0;		//	Model texture coordinate
 };
 
-struct TestInput
+struct OutputVertex
 {
-	float4	m_Position	: POSITION;
-	float4	m_Normal	: NORMAL;
-	float2	m_Tex0		: TEXCOORD0;
-};
-
-struct TestOutput
-{
-	float4	m_Position		: POSITION;
-	float4	m_LightPos		: TEXCOORD0;
-	float3	m_VecToLight	: TEXCOORD1;
-	float3	m_ModelNormal	: TEXCOORD2;
-//	float2	m_Tex0			: TEXCOORD2;
+	float4	m_Position		: POSITION;		//	Screen position
+	float3	m_WorldPos		: TEXCOORD0;	//	World position
+	float3	m_WorldNormal	: TEXCOORD1;	//	World normal
 };
 
 struct SpotLightArray
@@ -38,70 +30,78 @@ struct SpotLightArray
 	int			m_NumLights;
 };
 
+//	Default shader parameters
+float4x4		ModelMatrix;
+float4x4		ModelViewProjectionMatrix;
+float4x4		InverseTransposeModelMatrix;
 SpotLightArray	SpotLights;
+float3			EyeZAxis;
 
-float4x4	ShadowMatrix[ 4 ];
-float		ShadowNearZ;
-float		ShadowFarZ;
-float4x4	ModelMatrix;
-float4x4	ModelViewProjectionMatrix;
-float4x4	InverseTransposeModelMatrix;
-float3		EyeZAxis;
+//	Custom shader parameters
+float			ShadowNearZ;
+float			ShadowFarZ;
+float4x4		ShadowMatrix[ 4 ];
 
-
+//	Shader constants
 const float ShadowTexUStep = 1.0 / 512.0;
 const float ShadowTexVStep = 1.0 / 512.0;
 
-const int	SI = 0;
 
-TestOutput TestVertexShader( TestInput input )
+
+OutputVertex VertexShader( InputVertex input )
 {
-	TestOutput output;
-
-	float3 worldPos = mul( ModelMatrix, input.m_Position ).xyz;
-
+	OutputVertex output;
+	
 	output.m_Position		= mul( ModelViewProjectionMatrix, input.m_Position );
-	output.m_ModelNormal	= normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
-	output.m_LightPos		= mul( ShadowMatrix[ SI ], mul( ModelMatrix, input.m_Position ) );
-	output.m_VecToLight		= normalize( SpotLights.m_Positions[ 0 ] - worldPos );
-
-//	output.m_Tex0			= input.m_Tex0;
-
+	output.m_WorldPos		= mul( ModelMatrix, input.m_Position ).xyz;
+	output.m_WorldNormal	= normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
+	
 	return output;
 }
 
-float4 TestFragmentShader( TestOutput input ) : COLOR
-{
-	float4	lightPos		= input.m_LightPos;
-	float	rcp2W			= 1.0f / ( lightPos.w * 2 );
-	float2	uv				= float2( lightPos.x * rcp2W, lightPos.y * rcp2W ) + float2( 0.5f, 0.5f );	//	TODO: Move scale and translation to transform
 
+float GetShadowCoverage( float4 lightSpacePos )
+{
+	//	TODO: Move scale and translation to transform
+	float	rcp2W			= 1.0f / ( lightSpacePos.w * 2 );
+	float2	uv				= float2( lightSpacePos.x * rcp2W, lightSpacePos.y * rcp2W ) + float2( 0.5f, 0.5f );
 	float	storedDepth0	= tex2D( Texture0, uv ).r;
 	float	storedDepth1	= tex2D( Texture0, uv + float2( ShadowTexUStep, 0 ) ).r;
 	float	storedDepth2	= tex2D( Texture0, uv + float2( ShadowTexUStep, ShadowTexVStep  ) ).r;
 	float	storedDepth3	= tex2D( Texture0, uv + float2( 0, ShadowTexVStep  ) ).r;
 
-	float	lightDepth		= ( 1.f / ShadowNearZ - 1.f / lightPos.z ) / ( 1.f / ShadowNearZ - 1.f / ShadowFarZ );
-	float3	normal			= input.m_ModelNormal;
-	float3	lightVec		= input.m_VecToLight;
-	float3	halfVec			= normalize( lightVec + EyeZAxis );
+	float	lightDepth		= ( 1.f / ShadowNearZ - 1.f / lightSpacePos.z ) / ( 1.f / ShadowNearZ - 1.f / ShadowFarZ );
+	
+	float	coverage		= ( storedDepth0 >= lightDepth ) ? 0.25f : 0.0f;
+	coverage += ( storedDepth1 >= lightDepth ) ? 0.25f : 0.0f;
+	coverage += ( storedDepth2 >= lightDepth ) ? 0.25f : 0.0f;
+	coverage += ( storedDepth3 >= lightDepth ) ? 0.25f : 0.0f;
+	
+	return coverage;
+}
 
-	float	coverage		= ( storedDepth0 >= lightDepth ) ? 1.0f : 0.0f;
-	coverage += ( storedDepth1 >= lightDepth ) ? 1.0f : 0.0f;
-	coverage += ( storedDepth2 >= lightDepth ) ? 1.0f : 0.0f;
-	coverage += ( storedDepth3 >= lightDepth ) ? 1.0f : 0.0f;
-	coverage /= 4.0f;
+float4 GetPerPixelColour( float3 lightPos, float3 lightVec, float3 pos, float3 normal )
+{
+	float3 vecToLight	= normalize( lightPos - pos );
+	float3 halfVec		= normalize( vecToLight + EyeZAxis );
 
-	//float	shadowFactor	= ( storedDepth >= lightDepth ) && ( -dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ) ? 1 : 0.3f;
-	//float	shadowFactor	= ( -dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ) ? coverage : 0.0f;
-	float shadowFactor = ( -dot( lightVec, SpotLights.m_Directions[ 0 ] ) > SpotLights.m_CosArc[ 0 ] ) ? 1.0f : 0.2f;
+	float diffuse		= dot( normal, vecToLight );
+	float specular		= dot( normal, halfVec );
+	float4 lighting		= lit( diffuse, specular, 32 );
 
-	float	spotDiffuse		= dot( normal, lightVec ) * shadowFactor.xxx;
-	float	specular		= dot( normal, halfVec );
-	float4	lighting		= lit( spotDiffuse, specular, 64 );
-	float4	colour			= float4( lighting.y.xxx + lighting.z.xxx, 1 );
+	return float4( lighting.y.xxx + lighting.z.xxx, 1.0f );
+}
 
-	return colour;
+float4 PerPixelShadowLightingFragmentShader( OutputVertex input ) : COLOR
+{
+	float coverage = GetShadowCoverage( mul( ShadowMatrix[ 0 ], float4( input.m_WorldPos, 1 ) ) );
+	float4 ppColour = GetPerPixelColour( SpotLights.m_Positions[ 0 ], SpotLights.m_Directions[ 0 ], input.m_WorldPos, input.m_WorldNormal );
+	return coverage * ppColour;
+}
+
+float4 PerPixelLightingFragmentShader( OutputVertex input ) : COLOR
+{
+	return GetPerPixelColour( SpotLights.m_Positions[ 0 ], SpotLights.m_Directions[ 0 ], input.m_WorldPos, input.m_WorldNormal );
 }
 
 technique NormalTechnique
@@ -116,8 +116,8 @@ technique NormalTechnique
 		PolygonMode				= int2( Front, Fill );
 		PolygonOffset			= float2( 0, 0 );
 		PolygonOffsetFillEnable	= false;
-		VertexProgram			= compile arbvp1 TestVertexShader( );
-		FragmentProgram			= compile arbfp1 TestFragmentShader( );
+		VertexProgram			= compile arbvp1 VertexShader( );
+		FragmentProgram			= compile arbfp1 PerPixelShadowLightingFragmentShader( );
 	}
 }
 

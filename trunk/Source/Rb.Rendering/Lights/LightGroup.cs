@@ -70,6 +70,10 @@ namespace Rb.Rendering.Lights
 
 		#endregion
 
+		#region Private members
+
 		private ILight[] m_Lights;
+
+		#endregion
 	}
 }

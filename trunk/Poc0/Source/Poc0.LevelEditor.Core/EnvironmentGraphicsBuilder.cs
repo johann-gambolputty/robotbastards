@@ -290,7 +290,6 @@ namespace Poc0.LevelEditor.Core
 			vertices.Add( new Vertex( node.Quad[ 2 ], planeNormal, uvTr ) );
 			vertices.Add( new Vertex( node.Quad[ 3 ], planeNormal, uvTl ) );
 			vertices.Add( new Vertex( node.Quad[ 0 ], planeNormal, uvBl ) );
-			
 		}
 
 		/// <summary>
@@ -316,9 +315,10 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Builds runtime environment graphics from level geometry
 		/// </summary>
+		/// <param name="envGraphics">Environment graphics to build</param>
 		/// <param name="geometry">Level geometry</param>
 		/// <returns>Returns a new <see cref="IEnvironmentGraphics"/> object</returns>
-		public IEnvironmentGraphics Build( LevelGeometry geometry )
+		public IEnvironmentGraphics Build( IEnvironmentGraphics envGraphics, LevelGeometry geometry )
 		{
 			//	Check that there is some geometry to process
 			if ( ( geometry.Csg == null ) || ( geometry.Csg.Root == null ) )
@@ -335,8 +335,8 @@ namespace Poc0.LevelEditor.Core
 
 			envGraphicsData[ 0, 0 ] = levelCell;
 			
-			IEnvironmentGraphics envGraphics = Graphics.Factory.Create< IEnvironmentGraphics >( );
 			envGraphics.Build( envGraphicsData );
+
 			return envGraphics;
 
 			/*
