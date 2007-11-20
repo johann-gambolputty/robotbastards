@@ -4,7 +4,9 @@ using Poc0.Core.Environment;
 using Rb.Rendering;
 using Rb.Rendering.Textures;
 using Rb.World;
+using Rb.World.Services;
 using Tao.OpenGl;
+using Rb.Rendering.Lights;
 
 namespace Poc0.Core.Rendering.OpenGl
 {
@@ -12,7 +14,7 @@ namespace Poc0.Core.Rendering.OpenGl
 	/// Handles environment rendering in OpenGL
 	/// </summary>
 	[Serializable, RenderingLibraryType]
-	public class OpenGlEnvironmentGraphics : IEnvironmentGraphics, ISceneObject
+	public class OpenGlEnvironmentGraphics : IEnvironmentGraphics, ISceneObject, IDeserializationCallback
 	{
 		/// <summary>
 		/// Sets up render states
@@ -45,16 +47,6 @@ namespace Poc0.Core.Rendering.OpenGl
 			
 			Graphics.Renderer.PopRenderState( );
 		}
-
-		/// <summary>
-		/// Called when this object is deserialized
-		/// </summary>
-		/// <param name="context">Stream context</param>
-		[OnDeserialized]
-		public void OnDeserialized( StreamingContext context )
-		{
-			Build( m_Data );
-		}
 		
 		#region IEnvironmentGraphics Members
 
@@ -64,13 +56,15 @@ namespace Poc0.Core.Rendering.OpenGl
 		/// <param name="data">Source data</param>
 		public void Build( EnvironmentGraphicsData data )
 		{
+			GraphicsLog.Assert( m_Scene != null, "Expected environment graphics to be attached to a scene prior to Build()" );
+
 			m_Data = data;
 			m_Grid = new Cell[ data.Width, data.Height ];
 			for ( int y = 0; y < data.Height; ++y )
 			{
 				for ( int x = 0; x < data.Width; ++x )
 				{
-					m_Grid[ x, y ] = new Cell( data[ x, y ] );
+					m_Grid[ x, y ] = new Cell( m_Scene, data[ x, y ] );
 				}
 			}
 		}
@@ -84,6 +78,7 @@ namespace Poc0.Core.Rendering.OpenGl
 		/// </summary>
 		public void AddedToScene( Scene scene )
 		{
+			m_Scene = scene;
 			scene.Renderables.Add( this );
 		}
 
@@ -92,6 +87,7 @@ namespace Poc0.Core.Rendering.OpenGl
 		/// </summary>
 		public void RemovedFromScene( Scene scene )
 		{
+			m_Scene = null;
 			scene.Renderables.Remove( this );
 		}
 
@@ -104,6 +100,7 @@ namespace Poc0.Core.Rendering.OpenGl
 		private readonly RenderState m_WallState;
 		private readonly RenderState m_FloorState;
 		private EnvironmentGraphicsData m_Data;
+		private Scene m_Scene;
 
 		/// <summary>
 		/// A geometry group that shares a texture set
@@ -150,6 +147,7 @@ namespace Poc0.Core.Rendering.OpenGl
 				{
 					Graphics.Renderer.UnbindTexture( texture );
 				}
+
 			}
 
 			private readonly ITechnique m_Technique;
@@ -166,14 +164,23 @@ namespace Poc0.Core.Rendering.OpenGl
 			/// <summary>
 			/// Cell setup
 			/// </summary>
+			/// <param name="scene">Scene data</param>
 			/// <param name="src">Cell source data</param>
-			public Cell( EnvironmentGraphicsData.GridCell src )
+			public Cell( Scene scene, EnvironmentGraphicsData.GridCell src )
 			{
 				m_Groups = new GeometryGroup[ src.Groups.Count ];
 				for ( int groupIndex = 0; groupIndex < m_Groups.Length; ++groupIndex )
 				{
 					m_Groups[ groupIndex ] = new GeometryGroup( src.Groups[ groupIndex ] );
 				}
+				
+				//	TODO: AP: Fix lighting
+				//	Split between static lights and dynamic lights
+				//	Add grid lighting manager (scene service)
+				ILightingService lighting = scene.GetService< ILightingService >( );
+
+				m_Lights.Lights = new ILight[ lighting.Lights.Count ];
+				lighting.Lights.CopyTo( m_Lights.Lights, 0 );
 			}
 
 			/// <summary>
@@ -182,12 +189,15 @@ namespace Poc0.Core.Rendering.OpenGl
 			/// <param name="context">Rendering context</param>
 			public void Render( IRenderContext context )
 			{
+				m_Lights.Begin( );
 				foreach ( GeometryGroup group in m_Groups )
 				{
 					group.Render( context );
 				}
+				m_Lights.End( );
 			}
 
+			private readonly LightGroup m_Lights = new LightGroup( );
 			private readonly GeometryGroup[] m_Groups;
 		}
 
@@ -195,5 +205,18 @@ namespace Poc0.Core.Rendering.OpenGl
 
 		#endregion
 
+
+		#region IDeserializationCallback Members
+
+		/// <summary>
+		/// Called when the entire object graph for the scene has been deserialized
+		/// </summary>
+		/// <param name="sender">Sender</param>
+		public void OnDeserialization( object sender )
+		{
+			Build( m_Data );
+		}
+
+		#endregion
 	}
 }

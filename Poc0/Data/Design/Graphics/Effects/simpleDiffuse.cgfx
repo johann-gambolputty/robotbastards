@@ -1,0 +1,64 @@
+
+struct InputVertex
+{
+	float4	m_Position	: POSITION;
+	float4	m_Normal	: NORMAL;
+	float2	m_Tex0		: TEXCOORD0;
+};
+
+struct OutputVertex
+{
+	float4	m_Position	: POSITION;
+	float3	m_Normal	: TEXCOORD0;
+	float3	m_WorldPos	: TEXCOORD1;
+};
+
+struct SpotLightArray
+{
+	float3		m_Positions[ 4 ];
+	float3		m_Directions[ 4 ];
+	float		m_CosArc[ 4 ];
+	int			m_NumLights;
+};
+
+float4x4		ModelMatrix;
+float4x4		ModelViewProjectionMatrix;
+float4x4		InverseTransposeModelMatrix;
+SpotLightArray	SpotLights;
+
+OutputVertex VertexShader(InputVertex input)
+{
+	OutputVertex output;
+	
+	output.m_Position	= mul( ModelViewProjectionMatrix, input.m_Position );
+	output.m_Normal		= normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
+	output.m_WorldPos	= mul( ModelMatrix, input.m_Position ).xyz;
+	
+	return output;
+}
+
+float4 FragmentShader(OutputVertex input) : COLOR
+{
+	float3 vecToLight = normalize( input.m_WorldPos - SpotLights.m_Positions[ 0 ] );
+	
+	float dotToLight = dot( vecToLight, input.m_Normal );
+	return ( dotToLight / 2 ) + 1.2f;
+}
+
+technique DefaultTechnique
+{
+	pass
+	{
+		DepthMask				= true;
+		FrontFace				= CW;
+		DepthFunc				= LEqual;
+		DepthTestEnable			= true;
+		CullFaceEnable			= true;
+		PolygonMode				= int2( Front, Fill );
+		PolygonOffset			= float2( 0, 0 );
+		PolygonOffsetFillEnable	= false;
+		VertexProgram			= compile arbvp1 VertexShader( );
+		FragmentProgram			= compile arbfp1 FragmentShader( );
+	}
+}
+

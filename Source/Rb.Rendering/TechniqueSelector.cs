@@ -60,7 +60,7 @@ namespace Rb.Rendering
 		/// <exception cref="ArgumentException">Thrown if name does not correspond to a technique in the current effect</exception>
         public void Select( string name )
         {
-            Technique = Effect.GetTechnique( name );
+            m_Technique = Effect.GetTechnique( name );
         }
 		
 		/// <summary>
@@ -93,8 +93,9 @@ namespace Rb.Rendering
             set
             {
                 m_Technique = value;
-                if ( m_Technique != null )
+                if ( ( m_Technique != null ) && ( ( m_Effect == null ) || ( !m_Effect.Techniques.Contains( m_Technique ) ) ) )
                 {
+					//	Technique isn't null, and effect is
                     m_Effect = m_Technique.Effect;
                 }
             }

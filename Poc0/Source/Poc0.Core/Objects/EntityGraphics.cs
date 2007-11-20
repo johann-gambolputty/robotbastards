@@ -1,6 +1,5 @@
 using System;
 using System.Drawing;
-using System.Runtime.Serialization;
 using Rb.Core.Assets;
 using Rb.Core.Components;
 using Rb.Core.Maths;

@@ -28,7 +28,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// <summary>
 		/// Gets the name of this parameter
 		/// </summary>
-		public string					Name
+		public string Name
 		{
 			get
 			{
@@ -36,30 +36,21 @@ namespace Rb.Rendering.OpenGl.Cg
 			}
 		}
 
-			/// <summary>
-			/// Gets the CG context that this parameter is from
-			/// </summary>
-			public IntPtr					Context
+		/// <summary>
+		/// Gets the CG context that this parameter is from
+		/// </summary>
+		public IntPtr Context
 		{
-			get
-			{
-				return m_Context;
-			}
+			get { return m_Context; }
 		}
 
 		/// <summary>
-		/// Gets the parameter binding associated with this parameter
+		/// Gets/sets the parameter binding associated with this parameter
 		/// </summary>
-		public ShaderParameterBinding	Binding
+		public ShaderParameterBinding Binding
 		{
-			get
-			{
-				return m_Binding;
-			}
-			set
-			{
-				m_Binding = value;
-			}
+			get { return m_Binding; }
+			set { m_Binding = value; }
 		}
 
 		/// <summary>

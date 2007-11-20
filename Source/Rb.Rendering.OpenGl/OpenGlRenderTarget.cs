@@ -237,22 +237,30 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public override unsafe void Dispose( )
 		{
-			//	NOTE: If GL context is no longer available, these delete calls will fail
-			if ( m_FboHandle != InvalidHandle )
+			//	NOTE: AP: If GL context is no longer available, these delete calls will fail
+			//	TODO: AP: Ensure Dispose() is called correctly for all graphics objects prior to application exit
+			try
 			{
-				fixed ( int* fboHandle = &m_FboHandle )
+				if ( m_FboHandle != InvalidHandle )
 				{
-					Gl.glDeleteFramebuffersEXT( 1, ( IntPtr )fboHandle );
+					fixed ( int* fboHandle = &m_FboHandle )
+					{
+						Gl.glDeleteFramebuffersEXT( 1, ( IntPtr )fboHandle );
+					}
+					m_FboHandle = InvalidHandle;
 				}
-				m_FboHandle = InvalidHandle;
+				if ( m_FboDepthHandle != InvalidHandle )
+				{
+					fixed ( int* fboHandle = &m_FboDepthHandle )
+					{
+						Gl.glDeleteRenderbuffersEXT( 1, ( IntPtr )fboHandle );
+					}
+					m_FboDepthHandle = InvalidHandle;
+				}
 			}
-			if ( m_FboDepthHandle != InvalidHandle )
+			catch ( AccessViolationException ex )
 			{
-				fixed ( int* fboHandle = &m_FboDepthHandle )
-				{
-					Gl.glDeleteRenderbuffersEXT( 1, ( IntPtr )fboHandle );
-				}
-				m_FboDepthHandle = InvalidHandle;
+				GraphicsLog.Exception( ex, "RenderTarget.Dispose failed - ignoring exception" );
 			}
 		}
 
@@ -266,6 +274,5 @@ namespace Rb.Rendering.OpenGl
 		private int m_FboDepthHandle = InvalidHandle;
 
 		#endregion
-
 	}
 }

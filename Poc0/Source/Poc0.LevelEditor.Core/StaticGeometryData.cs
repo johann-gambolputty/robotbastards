@@ -8,6 +8,9 @@ using Rb.Rendering.Textures;
 
 namespace Poc0.LevelEditor.Core
 {
+	/// <summary>
+	/// Properties of a region of static geometry
+	/// </summary>
 	[Serializable]
 	public class StaticGeometryData
 	{

@@ -170,8 +170,8 @@ namespace Rb.Tools.LevelEditor.Core
 		/// </summary>
 		protected virtual IFormatter CreateFormatter( )
 		{
-		//	IFormatter formatter = new BinaryFormatter( null, new StreamingContext( ) );
-			IFormatter formatter = new Muesli.BinaryFormatter( );
+			IFormatter formatter = new BinaryFormatter( null, new StreamingContext( ) );
+		//	IFormatter formatter = new Muesli.BinaryFormatter( );
 			return formatter;
 		}
 

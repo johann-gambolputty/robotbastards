@@ -33,6 +33,6 @@ namespace Rb.Rendering.OpenGl.Cg
 			Tao.Cg.Cg.cgResetPassState( m_Pass );
 		}
 
-		private IntPtr	m_Pass;
+		private readonly IntPtr m_Pass;
 	}
 }

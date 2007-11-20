@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using Poc0.Core.Environment;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core;
@@ -221,7 +222,12 @@ namespace Poc0.LevelEditor.Core
 			//	TODO: AP: REMOVE (test)
 			
 			//	Update environment
-			m_Environment.Graphics = new EnvironmentGraphicsBuilder( 100.0f ).Build( this );
+
+			//	Graphics must be added to the environment first, so it gets a scene assigned
+			IEnvironmentGraphics envGraphics = Graphics.Factory.Create< IEnvironmentGraphics >();
+			m_Environment.Graphics = envGraphics;
+			
+			new EnvironmentGraphicsBuilder( 100.0f ).Build( envGraphics, this );
 		}
 
 		#endregion

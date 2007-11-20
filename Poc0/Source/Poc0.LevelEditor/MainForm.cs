@@ -101,6 +101,19 @@ namespace Poc0.LevelEditor
 		private void MainForm_Load( object sender, EventArgs e )
 		{
 			viewToolStripMenuItem.DropDownItems.Add( "&Game", null, OnGameClicked );
+
+			//	Load in a given level if one is specified in the program arguments
+			string[] cmdArgs = Environment.GetCommandLineArgs( );
+			if ( cmdArgs.Length > 1 )
+			{
+				string sceneToLoad = cmdArgs[ 1 ];
+
+				EditorScene scene = SceneSerializer.Instance.Open( sceneToLoad );
+				if ( scene != null )
+				{
+					EditorState.Instance.OpenScene( scene );
+				}
+			}
 		}
 
 		private void OnGameClicked( object sender, EventArgs args )
