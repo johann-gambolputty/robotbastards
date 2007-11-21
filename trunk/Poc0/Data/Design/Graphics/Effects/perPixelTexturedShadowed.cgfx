@@ -8,6 +8,15 @@ sampler2D Texture0 = sampler_state
 	BorderColor	= float4( 1, 1, 1, 1 );
 };
 
+sampler2D Texture1 = sampler_state
+{
+	MinFilter	= LinearMipMapNearest;
+	MagFilter	= LinearMipMapNearest;
+	WrapS		= Repeat;
+	WrapT		= Repeat;
+};
+
+
 struct InputVertex
 {
 	float4	m_Position	: POSITION;			//	Model position
@@ -18,8 +27,9 @@ struct InputVertex
 struct OutputVertex
 {
 	float4	m_Position		: POSITION;		//	Screen position
-	float3	m_WorldPos		: TEXCOORD0;	//	World position
-	float3	m_WorldNormal	: TEXCOORD1;	//	World normal
+	float2	m_Tex0			: TEXCOORD0;	//	Texture coordinate
+	float3	m_WorldPos		: TEXCOORD1;	//	World position
+	float3	m_WorldNormal	: TEXCOORD2;	//	World normal
 };
 
 struct SpotLightArray
@@ -83,20 +93,30 @@ float GetShadowCoverage( float4 lightSpacePos )
 float4 GetPerPixelColour( float3 lightPos, float3 lightVec, float3 pos, float3 normal )
 {
 	float3 vecToLight	= normalize( lightPos - pos );
+	
+	float mul = ( dot( vecToLight, SpotLights.m_Directions[ 0 ] ) < SpotLights.m_CosArc[ 0 ] ) ? 0.2f : 1.0f;
+
 	float3 halfVec		= normalize( vecToLight + EyeZAxis );
 
 	float diffuse		= dot( normal, vecToLight );
 	float specular		= dot( normal, halfVec );
 	float4 lighting		= lit( diffuse, specular, 32 );
 
-	return float4( lighting.y.xxx + lighting.z.xxx, 1.0f );
+	return float4( ( lighting.y.xxx + lighting.z.xxx ) * mul, 1.0f );
 }
 
-float4 PerPixelShadowLightingFragmentShader( OutputVertex input ) : COLOR
+float4 PerPixelShadowFragmentShader( OutputVertex input ) : COLOR
 {
 	float coverage = GetShadowCoverage( mul( ShadowMatrix[ 0 ], float4( input.m_WorldPos, 1 ) ) );
 	float4 ppColour = GetPerPixelColour( SpotLights.m_Positions[ 0 ], SpotLights.m_Directions[ 0 ], input.m_WorldPos, input.m_WorldNormal );
 	return coverage * ppColour;
+}
+
+float4 PerPixelShadowTextureFragmentShader( OutputVertex input ) : COLOR
+{
+	float coverage = GetShadowCoverage( mul( ShadowMatrix[ 0 ], float4( input.m_WorldPos, 1 ) ) );
+	float4 ppColour = GetPerPixelColour( SpotLights.m_Positions[ 0 ], SpotLights.m_Directions[ 0 ], input.m_WorldPos, input.m_WorldNormal );
+	return coverage * ppColour * tex2D( Texture1, input.m_Tex0 * float2( 0.1, 0.1 ) );
 }
 
 float4 PerPixelLightingFragmentShader( OutputVertex input ) : COLOR
@@ -112,12 +132,12 @@ technique NormalTechnique
 		FrontFace				= CW;
 		DepthFunc				= LEqual;
 		DepthTestEnable			= true;
-		CullFaceEnable			= true;
+		CullFaceEnable			= false;
 		PolygonMode				= int2( Front, Fill );
 		PolygonOffset			= float2( 0, 0 );
 		PolygonOffsetFillEnable	= false;
 		VertexProgram			= compile arbvp1 VertexShader( );
-		FragmentProgram			= compile arbfp1 PerPixelShadowLightingFragmentShader( );
+		FragmentProgram			= compile arbfp1 PerPixelShadowTextureFragmentShader( );
 	}
 }
 
