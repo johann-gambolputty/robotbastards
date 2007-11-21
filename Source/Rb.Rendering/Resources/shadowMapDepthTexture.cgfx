@@ -11,6 +11,7 @@ technique DefaultTechnique
 		LightingEnable	= false;
 		FrontFace		= CW;
 		DepthTestEnable	= true;
-		CullFaceEnable	= true;
+		DepthMask		= true;
+		CullFaceEnable	= false;
 	}
 }

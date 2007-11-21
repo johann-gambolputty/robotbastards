@@ -205,7 +205,6 @@ namespace Poc0.Core.Rendering.OpenGl
 
 		#endregion
 
-
 		#region IDeserializationCallback Members
 
 		/// <summary>

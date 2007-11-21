@@ -275,8 +275,8 @@ namespace Poc0.LevelEditor.Core
 
 			//	TODO: AP: Split quad up into grid depending on texture size
 			//	OR: Give groups a single technique + texture, remove the texture packer, repeat the UVs
-			float texWidth = node.Quad[ 0 ].DistanceTo( node.Quad[ 1 ] ) / 10.0f;
-			float texHeight = node.Quad[ 0 ].DistanceTo( node.Quad[ 3 ] ) / 10.0f;
+			float texWidth = node.Quad[ 0 ].DistanceTo( node.Quad[ 1 ] ) / 5.0f;
+			float texHeight = node.Quad[ 0 ].DistanceTo( node.Quad[ 3 ] ) / 5.0f;
 			Point2 uvBl = new Point2( 0, 0 );
 			Point2 uvBr = new Point2( texWidth, 0 );
 			Point2 uvTr = new Point2( texWidth, texHeight );

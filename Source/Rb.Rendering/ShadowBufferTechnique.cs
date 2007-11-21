@@ -175,6 +175,9 @@ namespace Rb.Rendering
 		private readonly ShaderParameterCustomBinding 	m_ShadowNearZBinding;
 		private readonly ShaderParameterCustomBinding 	m_ShadowFarZBinding;
 
+		private RenderTarget m_DumpTarget;
+		private static bool ms_DumpLights2;
+
         /// <summary>
         /// Makes the shadow buffers
         /// </summary>
@@ -201,7 +204,7 @@ namespace Rb.Rendering
             //  Set the global technique to the override technique (this forces all objects to be rendered using the
             //  override technique, unlesss they support a valid substitute technique), and render away...
             context.PushGlobalTechnique( ms_OverrideTechnique );
-            
+
             //	Set near and far Z plane bindings
             //	NOTE: AP: This could be done once in setup - kept here for now so I can change them on the fly
             m_ShadowNearZBinding.Set( m_NearZ );
@@ -219,8 +222,27 @@ namespace Rb.Rendering
                 int height = curTarget.Height;
                 float aspectRatio = ( height == 0 ) ? 1.0f : ( width / ( float )height );
 
-                Graphics.Renderer.SetLookAtTransform( curLight.Position + curLight.Direction, curLight.Position, Vector3.YAxis );
-                Graphics.Renderer.SetPerspectiveProjectionTransform( curLight.ArcDegrees * 2, aspectRatio, m_NearZ, m_FarZ );
+				Graphics.Renderer.SetLookAtTransform( curLight.Position + curLight.Direction, curLight.Position, Vector3.YAxis );
+				Graphics.Renderer.SetPerspectiveProjectionTransform( curLight.ArcDegrees, aspectRatio, m_NearZ, m_FarZ );
+
+				if ( ms_DumpLights2 )
+				{
+					if ( m_DumpTarget == null )
+					{
+						m_DumpTarget = Graphics.Factory.NewRenderTarget( );
+						m_DumpTarget.Create( 512, 512, TextureFormat.A8R8G8B8, 32, 0, false );
+					}
+					m_DumpTarget.Begin( );
+					renderable.Render( context );
+					m_DumpTarget.End( );
+
+					string path = string.Format( "ShadowDump.png" );
+					path = System.IO.Path.Combine( System.IO.Directory.GetCurrentDirectory( ), path );
+					GraphicsLog.Verbose( "Dumping shadow view to \"{0}\"...", path );
+
+					TextureUtils.Save( m_DumpTarget.Texture, path );
+					ms_DumpLights2 = false;
+				}
 
                 //	Set the current MVP matrix as the shadow transform. This is for after, when the scene is rendered properly
                 Matrix44 shadowMat = Graphics.Renderer.GetTransform( Transform.ViewToScreen ) * Graphics.Renderer.GetTransform( Transform.WorldToView );

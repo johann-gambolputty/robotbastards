@@ -224,7 +224,7 @@ namespace Rb.Rendering.OpenGl
 				case TextureFormat.R8G8B8X8			:	return PixelFormat.Format32bppRgb;
 				case TextureFormat.B8G8R8X8			:	break;	//	No mapping
 
-				case TextureFormat.R8G8B8A8			:	break;	//	No mapping
+				case TextureFormat.R8G8B8A8			:	return PixelFormat.Format32bppRgb;
 				case TextureFormat.B8G8R8A8			:	break;	//	No mapping
 
 				case TextureFormat.A8R8G8B8			:	return PixelFormat.Format32bppArgb;
