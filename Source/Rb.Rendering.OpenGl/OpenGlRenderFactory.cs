@@ -81,14 +81,6 @@ namespace Rb.Rendering.OpenGl
 		{
 			return new OpenGlRenderer( );
 		}
-
-		/// <summary>
-		/// Creates a new ShapeRenderer object
-		/// </summary>
-		protected override ShapeRenderer NewShapeRenderer( )
-		{
-			return new OpenGlShapeRenderer( );
-		}
 		
 		/// <summary>
 		/// Creates a new ShaderParameterBindings object

@@ -1,0 +1,144 @@
+sampler2D Texture0 = sampler_state
+{
+	DepthMode	= Luminance;
+	MinFilter	= Nearest;
+	MagFilter	= Nearest;
+	WrapS		= ClampToBorder;
+	WrapT		= ClampToBorder;
+	BorderColor	= float4( 1, 1, 1, 1 );
+};
+
+sampler2D Texture1 = sampler_state
+{
+	MinFilter	= LinearMipMapNearest;
+	MagFilter	= LinearMipMapNearest;
+	WrapS		= Repeat;
+	WrapT		= Repeat;
+};
+
+
+struct InputVertex
+{
+	float4	m_Position	: POSITION;			//	Model position
+	float4	m_Normal	: NORMAL;			//	Model normal
+	float2	m_Tex0		: TEXCOORD0;		//	Model texture coordinate
+};
+
+struct OutputVertex
+{
+	float4	m_Position		: POSITION;		//	Screen position
+	float2	m_Tex0			: TEXCOORD0;	//	Texture coordinate
+	float3	m_WorldPos		: TEXCOORD1;	//	World position
+	float3	m_WorldNormal	: TEXCOORD2;	//	World normal
+};
+
+struct SpotLightArray
+{
+	float3		m_Positions[ 4 ];
+	float3		m_Directions[ 4 ];
+	float		m_CosArc[ 4 ];
+	int			m_NumLights;
+};
+
+//	Default shader parameters
+float4x4		ModelMatrix;
+float4x4		ModelViewProjectionMatrix;
+float4x4		InverseTransposeModelMatrix;
+SpotLightArray	SpotLights;
+float3			EyeZAxis;
+
+//	Custom shader parameters
+float			ShadowNearZ;
+float			ShadowFarZ;
+float4x4		ShadowMatrix[ 4 ];
+
+//	Shader constants
+const float ShadowTexUStep = 1.0 / 512.0;
+const float ShadowTexVStep = 1.0 / 512.0;
+
+
+
+OutputVertex VertexShader( InputVertex input )
+{
+	OutputVertex output;
+	
+	output.m_Position		= mul( ModelViewProjectionMatrix, input.m_Position );
+	output.m_WorldPos		= mul( ModelMatrix, input.m_Position ).xyz;
+	output.m_WorldNormal	= normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
+	output.m_Tex0			= input.m_Tex0;
+	
+	return output;
+}
+
+
+float GetShadowCoverage( float4 lightSpacePos )
+{
+	//	TODO: Move scale and translation to transform
+	float	rcp2W			= 1.0f / ( lightSpacePos.w * 2 );
+	float2	uv				= float2( lightSpacePos.x * rcp2W, lightSpacePos.y * rcp2W ) + float2( 0.5f, 0.5f );
+	float	storedDepth0	= tex2D( Texture0, uv ).r;
+	float	storedDepth1	= tex2D( Texture0, uv + float2( ShadowTexUStep, 0 ) ).r;
+	float	storedDepth2	= tex2D( Texture0, uv + float2( ShadowTexUStep, ShadowTexVStep  ) ).r;
+	float	storedDepth3	= tex2D( Texture0, uv + float2( 0, ShadowTexVStep  ) ).r;
+
+	float	lightDepth		= ( 1.f / ShadowNearZ - 1.f / lightSpacePos.z ) / ( 1.f / ShadowNearZ - 1.f / ShadowFarZ );
+	
+	float	coverage		= ( storedDepth0 >= lightDepth ) ? 0.25f : 0.0f;
+	coverage += ( storedDepth1 >= lightDepth ) ? 0.25f : 0.0f;
+	coverage += ( storedDepth2 >= lightDepth ) ? 0.25f : 0.0f;
+	coverage += ( storedDepth3 >= lightDepth ) ? 0.25f : 0.0f;
+	
+	return coverage;
+}
+
+float4 GetPerPixelColour( float3 lightPos, float3 lightVec, float3 pos, float3 normal )
+{
+	float3 vecToLight	= normalize( lightPos - pos );
+	
+	float mul = ( dot( vecToLight, SpotLights.m_Directions[ 0 ] ) < SpotLights.m_CosArc[ 0 ] ) ? 0.2f : 1.0f;
+
+	float3 halfVec		= normalize( vecToLight + EyeZAxis );
+
+	float diffuse		= dot( normal, vecToLight );
+	float specular		= dot( normal, halfVec );
+	float4 lighting		= lit( diffuse, specular, 32 );
+
+	return float4( ( lighting.y.xxx + lighting.z.xxx ) * mul, 1.0f );
+}
+
+float4 PerPixelShadowFragmentShader( OutputVertex input ) : COLOR
+{
+	float coverage = GetShadowCoverage( mul( ShadowMatrix[ 0 ], float4( input.m_WorldPos, 1 ) ) );
+	float4 ppColour = GetPerPixelColour( SpotLights.m_Positions[ 0 ], SpotLights.m_Directions[ 0 ], input.m_WorldPos, input.m_WorldNormal );
+	return coverage * ppColour;
+}
+
+float4 PerPixelShadowTextureFragmentShader( OutputVertex input ) : COLOR
+{
+	float coverage = GetShadowCoverage( mul( ShadowMatrix[ 0 ], float4( input.m_WorldPos, 1 ) ) );
+	float4 ppColour = GetPerPixelColour( SpotLights.m_Positions[ 0 ], SpotLights.m_Directions[ 0 ], input.m_WorldPos, input.m_WorldNormal );
+	return coverage * ppColour * tex2D( Texture1, input.m_Tex0 );
+}
+
+float4 PerPixelLightingFragmentShader( OutputVertex input ) : COLOR
+{
+	return GetPerPixelColour( SpotLights.m_Positions[ 0 ], SpotLights.m_Directions[ 0 ], input.m_WorldPos, input.m_WorldNormal );
+}
+
+technique NormalTechnique
+{
+	pass
+	{
+		DepthMask				= true;
+		FrontFace				= CW;
+		DepthFunc				= LEqual;
+		DepthTestEnable			= true;
+		CullFaceEnable			= false;
+		PolygonMode				= int2( Front, Fill );
+		PolygonOffset			= float2( 0, 0 );
+		PolygonOffsetFillEnable	= false;
+		VertexProgram			= compile arbvp1 VertexShader( );
+		FragmentProgram			= compile arbfp1 PerPixelShadowTextureFragmentShader( );
+	}
+}
+

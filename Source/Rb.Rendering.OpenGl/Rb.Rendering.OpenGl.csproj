@@ -75,7 +75,6 @@
     <Compile Include="OpenGlRenderFont.cs" />
     <Compile Include="OpenGlRenderState.cs" />
     <Compile Include="OpenGlRenderTarget.cs" />
-    <Compile Include="OpenGlShapeRenderer.cs" />
     <Compile Include="OpenGlTexture2d.cs" />
     <Compile Include="OpenGlTextureSampler2d.cs" />
     <Compile Include="OpenGlVertexArray.cs" />
