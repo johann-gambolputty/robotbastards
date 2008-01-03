@@ -7,7 +7,7 @@ namespace Rb.Rendering
 	/// </summary>
 	public class Graphics
 	{
-		#region Singleons
+		#region Singletons
 
 		/// <summary>
 		/// Gets the render object factory
@@ -34,15 +34,6 @@ namespace Rb.Rendering
 		}
 
 		/// <summary>
-		/// Gets the shape renderer object (DEPRECATED)
-		/// </summary>
-		[Obsolete]
-		public static ShapeRenderer ShapeRenderer
-		{
-			get { return ms_ShapeRenderer; }
-		}
-
-		/// <summary>
 		/// Gets the shader parameter bindings
 		/// </summary>
 		public static ShaderParameterBindings ShaderParameterBindings
@@ -64,7 +55,6 @@ namespace Rb.Rendering
 			ms_Draw = factory.NewDraw( );
 			ms_Renderer = factory.NewRenderer( );
 			ms_ShaderBindings = factory.NewShaderParameterBindings( );
-			ms_ShapeRenderer = factory.NewShapeRenderer( );
 		}
 
 		#endregion
@@ -74,7 +64,6 @@ namespace Rb.Rendering
 		private static RenderFactory ms_Factory;
 		private static Draw ms_Draw;
 		private static Renderer ms_Renderer;
-		private static ShapeRenderer ms_ShapeRenderer;
 		private static ShaderParameterBindings ms_ShaderBindings;
 
 		#endregion

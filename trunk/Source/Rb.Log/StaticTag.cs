@@ -216,7 +216,7 @@ namespace Rb.Log
 
 		#region Private stuff
 
-		private static Tag ms_Root;
+		private static readonly Tag ms_Root;
 
 		#endregion
 	}

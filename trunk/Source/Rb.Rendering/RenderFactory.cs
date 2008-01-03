@@ -124,11 +124,6 @@ namespace Rb.Rendering
 		protected internal abstract Renderer NewRenderer( );
 
 		/// <summary>
-		/// Creates a new ShapeRenderer object
-		/// </summary>
-		protected internal abstract ShapeRenderer NewShapeRenderer( );
-
-		/// <summary>
 		/// Creates a new ShaderParamterBindings object
 		/// </summary>
 		protected internal abstract ShaderParameterBindings NewShaderParameterBindings( );

@@ -2,6 +2,22 @@ using Rb.Core.Maths;
 
 namespace Rb.Rendering.Cameras
 {
+	/*
+	 * Rendering interfaces:
+	 * 
+	 * - Core
+	 *	- IRenderer (name? IPipeline?)
+	 *	- IDraw
+	 *	- IState
+	 *	- 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+
+
 	/// <summary>
 	/// 3d camera interface
 	/// </summary>

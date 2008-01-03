@@ -1,0 +1,59 @@
+
+
+Design
+
+http://code.google.com/p/robotbastards/issues/list
+
+
+Environment:
+	- Flat arena with vertical walls
+	- Shadowed, bump-mapped, multiple light-sources
+		- Light-sources constrained to not overlap
+	- No physics (beyond simple collision response)
+	- Simple UI for showing score + other info, some interactivity (buttons, text box maybe)
+	- Windowed only: No fullscreen mode
+
+- Supported players
+	- Single player
+	- Multiple players over network
+	- Bot scripted
+	
+- Modes
+	- Deathmatch
+	- Tournaments (persistent scores)
+		- Team-based or 1-on-1
+			- Team-based will require team builder UI
+		- Automated tourneys (for bot-only matches)
+		- Tourney API (for learning bots)
+		- Tourney options (e.g. no power-ups, for simplified bot-matches)
+		
+- Wish-list
+	- Destructible characters
+	- Destructible environments
+	- Water dynamics (or, at least, water effects)
+	- Non-flat floors
+	- More play modes (...)
+
+Requirements:
+	- Editor
+		- Plugins
+			- Needs a bit of design thought
+		- Runtime bindings to identify graphically editable properties
+			- e.g. object position bindings
+		- Finish CSG modelling system
+		- Scripting support
+	- Game Engine
+		- Graphics
+			- Multiple light-source support
+			- Bump-mapping
+			- Particle systems
+			- Go beyond MD3 format for animation and graphics
+			- Simple UI
+		- Gameplay
+			- Add interface/support library for bot scripting
+			- Add interface/support library for level scripting
+			- Command input map modification and XML serialization
+				- Command input map UI (MVC with WinForms backend for the moment - no in-game UI)
+	- Misc
+		- Asset pipeline (using CMake/alternative)
+		- Tourney setup + team setup UIs (MVC with WinForms backend for the moment - no in-game UI)

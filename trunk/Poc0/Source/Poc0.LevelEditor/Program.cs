@@ -12,7 +12,6 @@ namespace Poc0.LevelEditor
 		[STAThread]
 		static void Main( )
 		{
-
 			AppDomain.CurrentDomain.Load( "MagicLibrary" );
 
 			EditorApp.InitializeAll( );

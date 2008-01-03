@@ -103,7 +103,6 @@
     <Compile Include="ShaderParameter.cs" />
     <Compile Include="ShaderParameterBindings.cs" />
     <Compile Include="ShadowBufferTechnique.cs" />
-    <Compile Include="ShapeRenderer.cs" />
     <Compile Include="Lights\SpotLight.cs" />
     <Compile Include="Technique.cs" />
     <Compile Include="TechniqueSelector.cs" />
