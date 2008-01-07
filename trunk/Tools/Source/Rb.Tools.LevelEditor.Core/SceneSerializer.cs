@@ -15,6 +15,16 @@ namespace Rb.Tools.LevelEditor.Core
 	public class SceneSerializer
 	{
 		/// <summary>
+		/// Called prior to the scene being serialized
+		/// </summary>
+		public event EventHandler PreSerialize;
+
+		/// <summary>
+		/// Called after the scene has been serialized
+		/// </summary>
+		public event EventHandler PostSerialize;
+
+		/// <summary>
 		/// Gets the scene serializer singleton
 		/// </summary>
 		public static SceneSerializer Instance
@@ -93,6 +103,11 @@ namespace Rb.Tools.LevelEditor.Core
 					mode.Stop( );
 				}
 
+				if ( PreSerialize != null )
+				{
+					PreSerialize( this, null );
+				}
+
 				MemoryStream outStream = new MemoryStream( );
 
 				IFormatter formatter = CreateFormatter( );
@@ -114,7 +129,11 @@ namespace Rb.Tools.LevelEditor.Core
 				string msg = string.Format( Properties.Resources.FailedToSaveScene, path );
 				AppLog.Exception( ex, msg );
 				MessageBox.Show( msg, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
-				return;
+			}
+
+			if ( PostSerialize != null )
+			{
+				PostSerialize( this, null );
 			}
 		}
 
