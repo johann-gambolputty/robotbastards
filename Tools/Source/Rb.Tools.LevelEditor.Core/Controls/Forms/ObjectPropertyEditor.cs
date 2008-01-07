@@ -33,9 +33,36 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			}
 			EditorState.Instance.SceneOpened += OnSceneOpened;
 			EditorState.Instance.SceneClosed += OnSceneClosed;
+
+			SceneSerializer.Instance.PreSerialize += OnPreSceneSerialized;
+			SceneSerializer.Instance.PostSerialize += OnPostSceneSerialized;
 		}
 
 		private bool m_RefreshValues;
+
+		private void OnPreSceneSerialized( object sender, EventArgs args )
+		{
+			foreach ( object obj in EditorState.Instance.CurrentSelection.Selection )
+			{
+				IObjectEditor editor = obj as IObjectEditor;
+				if ( editor != null )
+				{
+					editor.ObjectChanged -= OnObjectChanged;
+				}
+			}
+		}
+
+		private void OnPostSceneSerialized( object sender, EventArgs args )
+		{
+			foreach ( object obj in EditorState.Instance.CurrentSelection.Selection )
+			{
+				IObjectEditor editor = obj as IObjectEditor;
+				if ( editor != null )
+				{
+					editor.ObjectChanged += OnObjectChanged;
+				}
+			}
+		}
 
 		/// <summary>
 		/// Called when a new scene is opened

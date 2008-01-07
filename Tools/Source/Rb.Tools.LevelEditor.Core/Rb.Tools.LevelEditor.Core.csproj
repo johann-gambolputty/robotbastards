@@ -107,6 +107,7 @@
     <Compile Include="Selection\IObjectEditorBuilder.cs" />
     <Compile Include="Selection\ObjectEditorBuilder.cs" />
     <Compile Include="Selection\SelectionSet.cs" />
+    <Compile Include="UserOptions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Source\Rb.AssemblySelector\Rb.AssemblySelector.csproj">

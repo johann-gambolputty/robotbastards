@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Rb.Rendering
 {
@@ -11,7 +8,7 @@ namespace Rb.Rendering
     public delegate void RenderDelegate( IRenderContext context );
 
     /// <summary>
-    /// Calls a delegate to perform rendering
+    /// Calls a cached delegate to perform rendering
     /// </summary>
     public class DelegateRenderable : IRenderable
     {
@@ -23,7 +20,6 @@ namespace Rb.Rendering
         {
             m_Render = render;
         }
-
 
         #region IRenderable Members
 
@@ -38,6 +34,10 @@ namespace Rb.Rendering
 
         #endregion
 
-        private readonly RenderDelegate m_Render;
-    }
+		#region Private members
+
+		private readonly RenderDelegate m_Render;
+
+		#endregion
+	}
 }

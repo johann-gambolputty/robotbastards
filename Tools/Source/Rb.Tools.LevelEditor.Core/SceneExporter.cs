@@ -107,6 +107,7 @@ namespace Rb.Tools.LevelEditor.Core
 		/// <returns>Returns true if the scene was succesfully exported</returns>
 		public bool ExportTo( string path, Scene scene )
 		{
+			bool success = false;
 			try
 			{
 				if ( PreExport != null )
@@ -124,20 +125,21 @@ namespace Rb.Tools.LevelEditor.Core
 					fileStream.Write( outStream.ToArray( ), 0, ( int )outStream.Length );
 				}
 
-				if ( PostExport != null )
-				{
-					PostExport( this, null );
-				}
-
-				return true;
+				success = true;
 			}
 			catch ( Exception ex )
 			{
 				string msg = string.Format( Properties.Resources.FailedToExportScene, path );
 				AppLog.Exception( ex, msg );
 				MessageBox.Show( msg, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
-				return false;
 			}
+
+			if ( PostExport != null )
+			{
+				PostExport( this, null );
+			}
+
+			return success;
 		}
 
 		#region Private stuff
