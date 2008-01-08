@@ -1,14 +1,11 @@
 using System;
 using System.Drawing;
 
-namespace Rb.Rendering.Textures
+namespace Rb.Rendering.Contracts.Objects
 {
 	/// <summary>
-	/// Interface for 2D textures
+	/// 2 dimensional texture interface
 	/// </summary>
-	/// <remarks>
-	/// Use <see cref="TextureUtils"/> for further load/save functionality
-	/// </remarks>
 	public interface ITexture2d : IDisposable
 	{
 		/// <summary>
@@ -51,7 +48,6 @@ namespace Rb.Rendering.Textures
 		/// <summary>
 		/// Converts this texture to a bitmap
 		/// </summary>
-		/// <returns>Bitmap</returns>
 		Bitmap ToBitmap( );
 
 		/// <summary>
