@@ -1,0 +1,88 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3C4A6123-4264-42CB-8AED-E58111EC6183}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Rb.Rendering.Contracts</RootNamespace>
+    <AssemblyName>Rb.Rendering.Contracts</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Objects\BlendState.cs" />
+    <Compile Include="Draw.cs" />
+    <Compile Include="Graphics.cs" />
+    <Compile Include="IDraw.cs" />
+    <Compile Include="IGraphicsFactory.cs" />
+    <Compile Include="IRenderer.cs" />
+    <Compile Include="Objects\PassDepthTest.cs" />
+    <Compile Include="Objects\FontData.cs" />
+    <Compile Include="Objects\IEffect.cs" />
+    <Compile Include="Objects\IEffectParameter.cs" />
+    <Compile Include="Objects\IFont.cs" />
+    <Compile Include="Objects\IIndexBuffer.cs" />
+    <Compile Include="Objects\IMaterial.cs" />
+    <Compile Include="Objects\IndexBufferData.cs" />
+    <Compile Include="Objects\IPass.cs" />
+    <Compile Include="Objects\IRenderable.cs" />
+    <Compile Include="Objects\IRenderContext.cs" />
+    <Compile Include="Objects\IRenderState.cs" />
+    <Compile Include="Objects\IRenderTarget.cs" />
+    <Compile Include="Objects\ITechnique.cs" />
+    <Compile Include="Objects\ITexture2d.cs" />
+    <Compile Include="Objects\ITexture2dSampler.cs" />
+    <Compile Include="Objects\IVertexBuffer.cs" />
+    <Compile Include="Objects\PolygonRenderMode.cs" />
+    <Compile Include="Objects\PolygonShadeMode.cs" />
+    <Compile Include="Objects\TextureFilter.cs" />
+    <Compile Include="Objects\TextureFormat.cs" />
+    <Compile Include="Objects\TextureMode.cs" />
+    <Compile Include="Objects\TextureWrap.cs" />
+    <Compile Include="Objects\VertexBufferData.cs" />
+    <Compile Include="IDisplaySetup.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Objects\RenderDelegate.cs" />
+    <Compile Include="Objects\Winding.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
