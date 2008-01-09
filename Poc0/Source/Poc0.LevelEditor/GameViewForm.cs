@@ -203,14 +203,22 @@ namespace Poc0.LevelEditor
 					placeable.Position = playerStart.Position;
 				}
 
-				//	Bit of a hack... if the viewer camera is a follow camera, force it to look at the player
-				if ( ( playerIndex == 0 ) && m_Viewer.Camera is FollowCamera )
+				//	Hack... if the viewer camera is a follow camera, force it to look at the player
+				if ( ( m_Setup.NumberOfPlayers == 1 ) && ( m_Viewer.Camera is FollowCamera ) )
 				{
-					( ( FollowCamera )m_Viewer.Camera ).Target = ( IPlaceable )character;
+					FollowCamera camera = ( FollowCamera )m_Viewer.Camera;
+
+					//	Follow the player
+					camera.Target = ( IPlaceable )character;
+
+					//	Add a camera controller
+					FollowCameraControl cameraControl = new FollowCameraControl( camera, m_Users[ 0 ] );
+					m_Viewer.Camera.AddChild( cameraControl );
 				}
 
 				( ( IParent )character ).AddChild( new UserController( m_Users[ playerIndex ], ( IMessageHandler )character ) );
 			}
+
 
 			//	Start rendering the scene
 			m_Viewer.Renderable = m_Scene;

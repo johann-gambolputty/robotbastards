@@ -3,7 +3,6 @@ using Poc0.Core.Environment;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Textures;
-using Graphics=Rb.Rendering.Graphics;
 using Rectangle=Rb.Core.Maths.Rectangle;
 
 namespace Poc0.LevelEditor.Core
@@ -66,12 +65,6 @@ namespace Poc0.LevelEditor.Core
 				m_Texture0 = texture0;
 			}
 
-			public Vertex( float x, float y, float z, float nX, float nY, float nZ, float u, float v )
-			{
-				m_Point = new Point3( x, y, z );
-				m_Normal = new Vector3( nX, nY, nZ );
-				m_Texture0 = new Point2( u, v );
-			}
 		}
 
 		/// <summary>
@@ -241,7 +234,6 @@ namespace Poc0.LevelEditor.Core
 			//	Get the texture source for the floor
 			ITexture2d textureSource = node.FloorData.Texture;
 			ITechnique techniqueSource = node.FloorData.Technique;
-
 			
 			GroupMaterial material = new GroupMaterial( techniqueSource, new ITexture2d[] { textureSource } );
 			GroupBuilder group = builder.GetGroup( material );

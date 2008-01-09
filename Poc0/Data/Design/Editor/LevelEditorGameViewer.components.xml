@@ -8,16 +8,6 @@
       <float value="0.7" property="T"/>
       <float value="50" property="Zoom"/>
 
-      <!-- Camera controller -->
-      <object type="Rb.AppCore.Cameras.LookAtCameraController" assembly="Rb.AppCore">
-
-        <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
-          <type value="Rb.AppCore.Cameras.LookAtCameraController+Commands" assembly="Rb.AppCore" property="CommandListEnumType"/>
-          <dynProperty value="User" property="User"/>
-        </object>
-
-      </object>
-
     </object>
 
     <!-- Rendering technique -->
@@ -26,8 +16,8 @@
         <int value="512"/>
         <int value="512"/>
       </parameters>
-      <float value="0.5" property="NearZ"/>
-      <float value="150" property="FarZ"/>
+      <float value="2" property="NearZ"/>
+      <float value="100" property="FarZ"/>
     </object>
   </object>
 
