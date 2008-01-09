@@ -103,8 +103,8 @@ namespace Rb.Rendering
 
 			//	Create a shader parameter binding to the shadow matrix
 			m_ShadowMatrixBinding	= Graphics.ShaderParameterBindings.CreateBinding( "ShadowMatrix", ShaderParameterCustomBinding.ValueType.Matrix, MaxLights );
-			m_ShadowNearZBinding	= Graphics.ShaderParameterBindings.CreateBinding( "ShadowNearZ", ShaderParameterCustomBinding.ValueType.Float32 );
-			m_ShadowFarZBinding		= Graphics.ShaderParameterBindings.CreateBinding( "ShadowFarZ", ShaderParameterCustomBinding.ValueType.Float32 );
+			m_InvShadowNearZBinding = Graphics.ShaderParameterBindings.CreateBinding( "InvShadowNearZ", ShaderParameterCustomBinding.ValueType.Float32 );
+			m_InvShadowZRatio		= Graphics.ShaderParameterBindings.CreateBinding( "InvShadowZRatio", ShaderParameterCustomBinding.ValueType.Float32 );
 		}
 
 		#endregion
@@ -172,8 +172,8 @@ namespace Rb.Rendering
         private float                           		m_NearZ = 1.0f;
         private float                           		m_FarZ = 300.0f;
 		private readonly ShaderParameterCustomBinding 	m_ShadowMatrixBinding;
-		private readonly ShaderParameterCustomBinding 	m_ShadowNearZBinding;
-		private readonly ShaderParameterCustomBinding 	m_ShadowFarZBinding;
+		private readonly ShaderParameterCustomBinding	m_InvShadowNearZBinding;
+		private readonly ShaderParameterCustomBinding 	m_InvShadowZRatio;
 
 		private RenderTarget m_DumpTarget;
 		private static bool ms_DumpLights2;
@@ -207,8 +207,8 @@ namespace Rb.Rendering
 
             //	Set near and far Z plane bindings
             //	NOTE: AP: This could be done once in setup - kept here for now so I can change them on the fly
-            m_ShadowNearZBinding.Set( m_NearZ );
-            m_ShadowFarZBinding.Set( m_FarZ );
+			m_InvShadowNearZBinding.Set( 1.0f / m_NearZ );
+			m_InvShadowZRatio.Set( 1.0f / ( 1.0f / m_FarZ ) );
 
             int numLights = lights.NumLights > MaxLights ? MaxLights : lights.NumLights;
             int numBuffers = 0;

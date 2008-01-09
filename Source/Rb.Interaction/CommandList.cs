@@ -43,7 +43,7 @@ namespace Rb.Interaction
 		/// </summary>
 		public static CommandList FromEnum( Type enumType )
 		{
-			CommandList commands = CommandListManager.Instance.Get( enumType.Name );
+			CommandList commands = CommandListManager.Instance.Get( enumType.FullName );
 			if ( commands == null )
 			{
 				commands = BuildFromEnum( enumType );
@@ -59,7 +59,7 @@ namespace Rb.Interaction
 		{
 			InteractionLog.Info( "Creating command list from enum \"{0}\"", enumType.Name );
 
-			CommandList commands = new CommandList( enumType.Name );
+			CommandList commands = new CommandList( enumType.FullName );
 
 			string[] commandNames = Enum.GetNames( enumType );
 			int[] commandValues = ( int[] )Enum.GetValues( enumType );

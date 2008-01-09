@@ -11,8 +11,8 @@ namespace Rb.Rendering.Contracts
 		/// </summary>
 		public static void Initialize( IGraphicsFactory factory )
 		{
+			ms_Factory = factory;
 			ms_Renderer = factory.CreateRenderer( );
-			ms_RenderStateBuilder = factory.CreateRenderStateBuilder( );
 			ms_Draw = factory.CreateDraw( );
 		}
 
@@ -33,18 +33,18 @@ namespace Rb.Rendering.Contracts
 		}
 
 		/// <summary>
-		/// Gets the current render state builder
+		/// Gets the graphics factory
 		/// </summary>
-		public static IRenderStateBuilder RenderStateBuilder
+		public static IGraphicsFactory Factory
 		{
-			get { return ms_RenderStateBuilder; }
+			get { return ms_Factory; }
 		}
 
 		#region Private members
 
 		private static IDraw ms_Draw;
 		private static IRenderer ms_Renderer;
-		private static IRenderStateBuilder ms_RenderStateBuilder;
+		private static IGraphicsFactory ms_Factory;
 
 		#endregion
 

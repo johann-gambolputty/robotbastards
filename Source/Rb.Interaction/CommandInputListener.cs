@@ -1,6 +1,5 @@
 using System;
 using Rb.Core.Components;
-using Rb.Rendering;
 
 namespace Rb.Interaction
 {
