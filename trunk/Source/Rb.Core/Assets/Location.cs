@@ -92,7 +92,43 @@ namespace Rb.Core.Assets
 
 		#endregion
 
-		#region ISource implementation
+		#region ISource Members
+
+		/// <summary>
+		/// Event, invoked if the source changes
+		/// </summary>
+		public event EventHandler SourceChanged
+		{
+			add
+			{
+				if ( m_OnChanged == null )
+				{
+					AddWatcher( );
+				}
+				m_OnChanged += value;
+			}
+			remove
+			{
+				m_OnChanged -= value;
+				if ( m_OnChanged == null )
+				{
+					RemoveWatcher( );
+				}
+			}
+		}
+
+		/// <summary>
+		/// Called when the file/directory at the location changes
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="args"></param>
+		private void OnLocationChanged( object sender, FileSystemEventArgs args )
+		{
+			if ( m_OnChanged != null )
+			{
+				m_OnChanged( sender, args );
+			}
+		}
 
 		/// <summary>
 		/// Returns true if the source is valid
@@ -255,6 +291,46 @@ namespace Rb.Core.Assets
 
 		[NonSerialized]
 		private ILocationManager m_Provider;
+
+		[NonSerialized]
+		private EventHandler m_OnChanged;
+
+		[NonSerialized]
+		private FileSystemWatcher m_Watcher;
+
+		/// <summary>
+		/// Enables a file system watcher to look for changes at the location
+		/// </summary>
+		private void AddWatcher( )
+		{
+			if ( m_Watcher == null )
+			{
+				if ( Directory )
+				{
+					m_Watcher = new FileSystemWatcher(Path);
+				}
+				else
+				{
+					m_Watcher = new FileSystemWatcher( System.IO.Path.GetDirectoryName( Path ), System.IO.Path.GetFileName( Path ) );
+				}
+				m_Watcher.Changed += OnLocationChanged;
+				m_Watcher.Deleted += OnLocationChanged;
+				m_Watcher.Created += OnLocationChanged;
+				m_Watcher.EnableRaisingEvents = true;
+			}
+		}
+		
+		/// <summary>
+		/// Disables the file system watcher
+		/// </summary>
+		private void RemoveWatcher( )
+		{
+			if ( m_Watcher != null )
+			{
+				m_Watcher.Dispose( );
+				m_Watcher = null;
+			}
+		}
 
 		#endregion
 	}

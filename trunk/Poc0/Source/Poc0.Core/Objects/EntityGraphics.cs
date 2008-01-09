@@ -55,7 +55,10 @@ namespace Poc0.Core.Objects
 		public ISource GraphicsLocation
 		{
 			get { return m_GraphicsAsset.Source; }
-			set { m_GraphicsAsset.Source = value; }
+			set
+			{
+				m_GraphicsAsset.SetSource( value, true );
+			}
 		}
 
 		#region IRenderable Members
