@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 
 namespace Rb.Core.Assets
@@ -17,6 +18,11 @@ namespace Rb.Core.Assets
 	/// </remarks>
 	public interface ISource
 	{
+		/// <summary>
+		/// Event, invoked if the source changes
+		/// </summary>
+		event EventHandler SourceChanged;
+
 		/// <summary>
 		/// Returns true if the source exists
 		/// </summary>

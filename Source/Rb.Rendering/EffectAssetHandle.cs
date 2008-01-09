@@ -23,8 +23,9 @@ namespace Rb.Rendering
 		/// Sets the source of the asset. Does not load the asset until <see cref="AssetHandle.Asset"/> is first accessed
 		/// </summary>
 		/// <param name="source">Asset source</param>
-		public EffectAssetHandle( ISource source ) :
-			base( source )
+		/// <param name="trackChangesToSource">If true, then changes to the texture source are tracked</param>
+		public EffectAssetHandle( ISource source, bool trackChangesToSource ) :
+			base( source, trackChangesToSource )
 		{
 		}
 
@@ -34,8 +35,9 @@ namespace Rb.Rendering
 		/// <param name="source">Asset source</param>
 		/// <param name="loadImmediately">If true, the asset is loaded in this constructor. Otherwise, the
 		/// asset is loaded on-demand when <see cref="AssetHandle.Asset"/> is first accessed</param>
-		public EffectAssetHandle( ISource source, bool loadImmediately ) :
-			base( source, loadImmediately )
+		/// <param name="trackChangesToSource">If true, then changes to the texture source are tracked</param>
+		public EffectAssetHandle( ISource source, bool loadImmediately, bool trackChangesToSource ) :
+			base( source, loadImmediately, trackChangesToSource )
 		{
 		}
 

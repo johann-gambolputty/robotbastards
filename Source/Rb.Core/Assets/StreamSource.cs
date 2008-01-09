@@ -75,6 +75,18 @@ namespace Rb.Core.Assets
 		#region ISource Members
 
 		/// <summary>
+		/// Event, invoked if the source changes
+		/// </summary>
+		/// <remarks>
+		/// Does not add/remove event handlers, because the underlying stream will never be changed
+		/// </remarks>
+		public event EventHandler SourceChanged
+		{
+			add { }
+			remove { }
+		}
+
+		/// <summary>
 		/// Returns true if the source is valid
 		/// </summary>
 		public bool Exists

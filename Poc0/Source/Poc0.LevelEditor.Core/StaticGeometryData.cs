@@ -101,7 +101,7 @@ namespace Poc0.LevelEditor.Core
 			bmp.Save( stream, ImageFormat.Jpeg );
 			StreamSource streamSrc = new StreamSource( stream, name + ".jpeg" ); // NOTE: AP: Requires extension for dumb loaders
 
-			Texture2dAssetHandle texture = new Texture2dAssetHandle( streamSrc );
+			Texture2dAssetHandle texture = new Texture2dAssetHandle( streamSrc, true );
 			
 			//	Mip maps yes please thank you
 			texture.LoadParameters = new LoadParameters( );
@@ -114,7 +114,7 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		private static ITechnique CreateDefaultTechnique( string location )
 		{
-			EffectAssetHandle handle = new EffectAssetHandle( new Location( location ) );
+			EffectAssetHandle handle = new EffectAssetHandle( new Location( location ), true );
 			return new TechniqueSelector( handle );
 		}
 

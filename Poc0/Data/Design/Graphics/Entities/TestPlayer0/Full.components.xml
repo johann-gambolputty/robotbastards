@@ -10,6 +10,23 @@
       <float value="0.0" dynProperty="offsetZ"/>
     </parameters>
     <asset path="Graphics\Effects\perPixelTextured.cgfx" property="Effect"/>
+    <!-- Would be great to be able to add magical typed asset handle here -->
+    <!--
+    <assetHandleT trackChanges="true">
+      <handleType type="Rb.Rendering.IEffect" assembly="Rb.Rendering"/>
+      <location value="Graphics\Effects\perPixelTextured.cgfx"/>
+    </assetHandleT>
+    -->
+    <!--
+    <object type="Rb.Core.Assets.AssetHandle" assembly="Rb.Core" property="Effect">
+      <parameters>
+        <location value="Graphics\Effects\perPixelTextured.cgfx"/>
+        <bool value="true"/>
+      </parameters>
+    </object>
+    -->
+
     <string value="NormalTechnique" property="TechniqueName"/>
+
   </asset>
 </rb>

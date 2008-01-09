@@ -17,7 +17,7 @@ namespace Rb.Core.Assets
 	public class AssetHandle
 	{
 		/// <summary>
-		/// No source - set <see cref="AssetHandle.Source"/> prior to accessing <see cref="AssetHandle.Asset"/>
+		/// No source - call <see cref="AssetHandle.SetSource"/> prior to accessing <see cref="AssetHandle.Asset"/>
 		/// </summary>
 		public AssetHandle( )
 		{
@@ -27,9 +27,10 @@ namespace Rb.Core.Assets
 		/// Sets the source of the asset. Does not load the asset until <see cref="Asset"/> is first accessed
 		/// </summary>
 		/// <param name="source">Asset source</param>
-		public AssetHandle( ISource source )
+		/// <param name="trackChangesToSource">If true, then changes to the source are tracked</param>
+		public AssetHandle( ISource source, bool trackChangesToSource )
 		{
-			m_Source = source;
+			SetSource( source, trackChangesToSource );
 		}
 
 		/// <summary>
@@ -38,12 +39,31 @@ namespace Rb.Core.Assets
 		/// <param name="source">Asset source</param>
 		/// <param name="loadImmediately">If true, the asset is loaded in this constructor. Otherwise, the
 		/// asset is loaded on-demand when <see cref="Asset"/> is first accessed</param>
-		public AssetHandle( ISource source, bool loadImmediately )
+		/// <param name="trackChangesToSource">If true, then changes to the source are tracked</param>
+		public AssetHandle( ISource source, bool loadImmediately, bool trackChangesToSource )
 		{
-			m_Source = source;
+			SetSource( source, trackChangesToSource );
 			if ( loadImmediately )
 			{
 				LoadAsset( );
+			}
+		}
+
+		/// <summary>
+		/// Sets the source of the asset
+		/// </summary>
+		/// <param name="source">Asset source</param>
+		/// <param name="trackChangesToSource">If true, then changes to the source are caught, and the asset re-loaded</param>
+		public void SetSource( ISource source, bool trackChangesToSource )
+		{
+			if ( m_Source != null )
+			{
+				m_Source.SourceChanged -= ReloadAsset;
+			}
+			m_Source = source;
+			if ( ( m_Source != null ) && ( trackChangesToSource ) )
+			{
+				m_Source.SourceChanged += ReloadAsset;
 			}
 		}
 
@@ -53,7 +73,6 @@ namespace Rb.Core.Assets
 		public ISource Source
 		{
 			get { return m_Source; }
-			set { m_Source = value; }
 		}
 
 		/// <summary>
@@ -112,6 +131,14 @@ namespace Rb.Core.Assets
 				m_LoadFailed = true;
 				throw new InvalidOperationException( string.Format( "Failed to load asset handle \"{0}\"", m_Source ), ex );
 			}
+		}
+		
+		/// <summary>
+		/// Reloads the asset. Used as a listener to the ISource.SourceChanged event
+		/// </summary>
+		private void ReloadAsset( object sender, EventArgs args )
+		{
+			m_Asset = null;
 		}
 
 		#endregion
