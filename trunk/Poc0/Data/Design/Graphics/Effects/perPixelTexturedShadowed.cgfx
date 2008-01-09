@@ -10,8 +10,8 @@ sampler2D Texture0 = sampler_state
 
 sampler2D Texture1 = sampler_state
 {
-	MinFilter	= LinearMipMapNearest;
-	MagFilter	= LinearMipMapNearest;
+	MinFilter	= Linear;
+	MagFilter	= Linear;
 	WrapS		= Repeat;
 	WrapT		= Repeat;
 };
@@ -48,8 +48,8 @@ SpotLightArray	SpotLights;
 float3			EyeZAxis;
 
 //	Custom shader parameters
-float			ShadowNearZ;
-float			ShadowFarZ;
+float			InvShadowNearZ;
+float			InvShadowZRatio;
 float4x4		ShadowMatrix[ 4 ];
 
 //	Shader constants
@@ -65,10 +65,15 @@ OutputVertex VertexShader( InputVertex input )
 	output.m_Position		= mul( ModelViewProjectionMatrix, input.m_Position );
 	output.m_WorldPos		= mul( ModelMatrix, input.m_Position ).xyz;
 	output.m_WorldNormal	= normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
+	output.m_Tex0			= input.m_Tex0;
 	
 	return output;
 }
 
+float GetLightDepth( float z )
+{
+	return ( InvShadowNearZ - 1.f / z ) * InvShadowZRatio;
+}
 
 float GetShadowCoverage( float4 lightSpacePos )
 {
@@ -80,8 +85,9 @@ float GetShadowCoverage( float4 lightSpacePos )
 	float	storedDepth2	= tex2D( Texture0, uv + float2( ShadowTexUStep, ShadowTexVStep  ) ).r;
 	float	storedDepth3	= tex2D( Texture0, uv + float2( 0, ShadowTexVStep  ) ).r;
 
-	float	lightDepth		= ( 1.f / ShadowNearZ - 1.f / lightSpacePos.z ) / ( 1.f / ShadowNearZ - 1.f / ShadowFarZ );
-	
+	float	lightDepth		= GetLightDepth( lightSpacePos.z );
+
+	//	Percentage closer filtering
 	float	coverage		= ( storedDepth0 >= lightDepth ) ? 0.25f : 0.0f;
 	coverage += ( storedDepth1 >= lightDepth ) ? 0.25f : 0.0f;
 	coverage += ( storedDepth2 >= lightDepth ) ? 0.25f : 0.0f;
@@ -94,7 +100,7 @@ float4 GetPerPixelColour( float3 lightPos, float3 lightVec, float3 pos, float3 n
 {
 	float3 vecToLight	= normalize( lightPos - pos );
 	
-	float mul = ( dot( vecToLight, SpotLights.m_Directions[ 0 ] ) < SpotLights.m_CosArc[ 0 ] ) ? 0.2f : 1.0f;
+	float mul = -dot( vecToLight, SpotLights.m_Directions[ 0 ] );// < SpotLights.m_CosArc[ 0 ] ) ? 0.2f : 1.0f;
 
 	float3 halfVec		= normalize( vecToLight + EyeZAxis );
 
@@ -116,7 +122,7 @@ float4 PerPixelShadowTextureFragmentShader( OutputVertex input ) : COLOR
 {
 	float coverage = GetShadowCoverage( mul( ShadowMatrix[ 0 ], float4( input.m_WorldPos, 1 ) ) );
 	float4 ppColour = GetPerPixelColour( SpotLights.m_Positions[ 0 ], SpotLights.m_Directions[ 0 ], input.m_WorldPos, input.m_WorldNormal );
-	return coverage * ppColour * tex2D( Texture1, input.m_Tex0 * float2( 0.1, 0.1 ) );
+	return coverage * ppColour * tex2D( Texture1, input.m_Tex0 );
 }
 
 float4 PerPixelLightingFragmentShader( OutputVertex input ) : COLOR

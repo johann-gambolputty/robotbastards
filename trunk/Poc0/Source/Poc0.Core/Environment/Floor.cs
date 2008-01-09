@@ -5,7 +5,7 @@ using Rb.Core.Maths;
 namespace Poc0.Core.Environment
 {
 	/// <summary>
-	/// A convex region representing a piece of floor in a <see cref="WallNode"/> leaf
+	/// A convex region representing a piece of floor
 	/// </summary>
 	[Serializable]
 	public class Floor : Node
