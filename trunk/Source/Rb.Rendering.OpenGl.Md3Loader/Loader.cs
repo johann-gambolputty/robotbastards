@@ -545,8 +545,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			for ( int triangleCount = 0; triangleCount < numTriangles; ++triangleCount )
 			{
 				triangles[ curTriIndex + 0 ] = reader.ReadInt32( );
-				triangles[ curTriIndex + 1 ] = reader.ReadInt32( );
 				triangles[ curTriIndex + 2 ] = reader.ReadInt32( );
+				triangles[ curTriIndex + 1 ] = reader.ReadInt32( );
 				curTriIndex += 3;
 			}
 

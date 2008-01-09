@@ -46,7 +46,7 @@ namespace Rb.Interaction
 		/// </summary>
 		public CommandList Get( Type enumType )
 		{
-			return Get( enumType.Name );
+			return Get( enumType.FullName );
 		}
 
 		/// <summary>
