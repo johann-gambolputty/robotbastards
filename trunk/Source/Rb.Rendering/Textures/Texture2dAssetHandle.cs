@@ -28,18 +28,6 @@ namespace Rb.Rendering.Textures
 		{
 		}
 
-		/// <summary>
-		/// Sets the source of the asset
-		/// </summary>
-		/// <param name="source">Asset source</param>
-		/// <param name="loadImmediately">If true, the asset is loaded in this constructor. Otherwise, the
-		/// asset is loaded on-demand when <see cref="AssetHandle.Asset"/> is first accessed</param>
-		/// <param name="trackChangesToSource">If true, then changes to the texture source are tracked</param>
-		public Texture2dAssetHandle( ISource source, bool loadImmediately, bool trackChangesToSource ) :
-			base( source, loadImmediately, trackChangesToSource )
-		{
-		}
-
 		#endregion
 
 		#region ITexture2d Members

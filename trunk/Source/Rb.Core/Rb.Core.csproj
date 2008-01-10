@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Assets\AssetCache.cs" />
     <Compile Include="Assets\AssetHandle.cs" />
+    <Compile Include="Assets\AssetHandleProxy.cs" />
     <Compile Include="Assets\AssetHandleT.cs" />
     <Compile Include="Assets\AssetLoader.cs" />
     <Compile Include="Assets\AssetManager.cs" />

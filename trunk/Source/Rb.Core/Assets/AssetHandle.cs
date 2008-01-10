@@ -37,22 +37,6 @@ namespace Rb.Core.Assets
 		/// Sets the source of the asset
 		/// </summary>
 		/// <param name="source">Asset source</param>
-		/// <param name="loadImmediately">If true, the asset is loaded in this constructor. Otherwise, the
-		/// asset is loaded on-demand when <see cref="Asset"/> is first accessed</param>
-		/// <param name="trackChangesToSource">If true, then changes to the source are tracked</param>
-		public AssetHandle( ISource source, bool loadImmediately, bool trackChangesToSource )
-		{
-			SetSource( source, trackChangesToSource );
-			if ( loadImmediately )
-			{
-				LoadAsset( );
-			}
-		}
-
-		/// <summary>
-		/// Sets the source of the asset
-		/// </summary>
-		/// <param name="source">Asset source</param>
 		/// <param name="trackChangesToSource">If true, then changes to the source are caught, and the asset re-loaded</param>
 		public void SetSource( ISource source, bool trackChangesToSource )
 		{
@@ -103,6 +87,7 @@ namespace Rb.Core.Assets
 
 				return m_Asset;
 			}
+			set { m_Asset = value; }
 		}
 
 		#region Private stuff
