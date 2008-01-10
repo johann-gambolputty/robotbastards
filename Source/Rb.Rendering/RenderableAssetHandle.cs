@@ -28,18 +28,6 @@ namespace Rb.Rendering
 		{
 		}
 
-		/// <summary>
-		/// Sets the source of the asset
-		/// </summary>
-		/// <param name="source">Asset source</param>
-		/// <param name="loadImmediately">If true, the asset is loaded in this constructor. Otherwise, the
-		/// asset is loaded on-demand when <see cref="AssetHandleT{T}.Asset"/> is first accessed</param>
-		/// <param name="trackChangesToSource">If true, then changes to the texture source are tracked</param>
-		public RenderableAssetHandle( ISource source, bool loadImmediately, bool trackChangesToSource ) :
-			base( source, loadImmediately, trackChangesToSource )
-		{
-		}
-
 		#region IRenderable Members
 
 		/// <summary>
@@ -77,18 +65,6 @@ namespace Rb.Rendering
 		/// <param name="trackChangesToSource">If true, then changes to the texture source are tracked</param>
 		public RenderableAssetHandle( ISource source, bool trackChangesToSource ) :
 			base( source, trackChangesToSource )
-		{
-		}
-
-		/// <summary>
-		/// Sets the source of the asset
-		/// </summary>
-		/// <param name="source">Asset source</param>
-		/// <param name="loadImmediately">If true, the asset is loaded in this constructor. Otherwise, the
-		/// asset is loaded on-demand when <see cref="AssetHandleT{T}.Asset"/> is first accessed</param>
-		/// <param name="trackChangesToSource">If true, then changes to the texture source are tracked</param>
-		public RenderableAssetHandle( ISource source, bool loadImmediately, bool trackChangesToSource ) :
-			base( source, loadImmediately, trackChangesToSource )
 		{
 		}
 
