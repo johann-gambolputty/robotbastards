@@ -17,8 +17,8 @@ namespace Rb.World.Rendering
 		/// <summary>
 		/// Scene shadow buffer
 		/// </summary>
-		public SceneShadowBufferTechnique( int resX, int resY ) :
-			base( resX, resY )
+		public SceneShadowBufferTechnique( int resX, int resY, bool useDepthTexture ) :
+			base( resX, resY, useDepthTexture )
 		{
 		}
 

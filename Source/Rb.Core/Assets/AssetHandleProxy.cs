@@ -113,57 +113,10 @@ namespace Rb.Core.Assets
 		/// </summary>
 		private static void ImplementInterface( TypeBuilder builder, Type interfaceType, PropertyInfo assetProperty )
 		{
-			AddEvents( builder, interfaceType, assetProperty );
+			//	NOTE: Don't need to handle events, because when AddMethods() is called, it automatically overrides
+			//	the add_ and remove_ methods for all events the interface anyway
 			AddMethods( builder, interfaceType, assetProperty );
 			AddProperties( builder, interfaceType, assetProperty );
-		}
-
-		/// <summary>
-		/// Generates bytecode that accesses the specified property in the current object
-		/// </summary>
-		private static void AddGetPropertyCode( ILGenerator gen, PropertyInfo property )
-		{
-			gen.Emit( OpCodes.Ldarg_0 );
-			gen.Emit( OpCodes.Call, property.GetGetMethod( ) );
-		}
-
-		private static void AddEvents( TypeBuilder builder, Type interfaceType, PropertyInfo assetProperty )
-		{
-			foreach ( EventInfo interfaceEvent in interfaceType.GetEvents( ) )
-			{
-				EventBuilder eventBuilder = builder.DefineEvent( interfaceEvent.Name, interfaceEvent.Attributes, interfaceEvent.EventHandlerType );
-
-				string addMethodName = "EventAdd_" + interfaceEvent.Name;
-				string removeMethodName = "EventRemove_" + interfaceEvent.Name;
-				string raiseMethodName = "EventRaise_" + interfaceEvent.Name;
-
-				MethodAttributes attr = MethodAttributes.Private;
-				CallingConventions call = CallingConventions.HasThis;
-				Type returnType = typeof( void );
-				Type[] paramTypes = new Type[] { interfaceEvent.EventHandlerType };
-
-				MethodBuilder addMethod = builder.DefineMethod( addMethodName, attr, call, returnType, paramTypes );
-				ILGenerator addGen = addMethod.GetILGenerator( );
-				AddGetPropertyCode( addGen, assetProperty );
-				addGen.Emit( OpCodes.Call, interfaceEvent.GetAddMethod( ) );
-				addGen.Emit( OpCodes.Ret );
-
-				MethodBuilder removeMethod = builder.DefineMethod( removeMethodName, attr, call, returnType, paramTypes );
-				ILGenerator removeGen = removeMethod.GetILGenerator();
-				AddGetPropertyCode( removeGen, assetProperty );
-				addGen.Emit( OpCodes.Call, interfaceEvent.GetRemoveMethod( ) );
-				addGen.Emit( OpCodes.Ret );
-				
-				MethodBuilder raiseMethod = builder.DefineMethod( raiseMethodName, attr, call, returnType, paramTypes );
-				ILGenerator raiseGen = removeMethod.GetILGenerator( );
-				AddGetPropertyCode( raiseGen, assetProperty );
-				addGen.Emit( OpCodes.Call, interfaceEvent.GetRaiseMethod( ) );
-				addGen.Emit( OpCodes.Ret );
-
-				eventBuilder.SetAddOnMethod( addMethod );
-				eventBuilder.SetRemoveOnMethod( removeMethod );
-				eventBuilder.SetRaiseMethod( raiseMethod );
-			}
 		}
 		
 		/// <summary>
