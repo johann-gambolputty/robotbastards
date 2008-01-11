@@ -15,9 +15,10 @@
       <parameters>
         <int value="512"/>
         <int value="512"/>
+        <bool value="true"/>
       </parameters>
-      <float value="2" property="NearZ"/>
-      <float value="100" property="FarZ"/>
+      <float value="0.01" property="NearZ"/>
+      <float value="30" property="FarZ"/>
     </object>
   </object>
 

@@ -12,6 +12,8 @@ namespace Rb.Rendering
 	/// <remarks>
 	/// This will do nothing, until a LightGroup is associated with the technique, using the ShadowLights property.
 	/// Any child techniques this technique has will be applied after the shadow buffer build step.
+	/// A good wiki on shadow mapping is here: http://www.ogre3d.org/wiki/index.php/Custom_Shadow_Mapping (where
+	/// the projection ratio formula came from)
 	/// </remarks>
 	public class ShadowBufferTechnique : Technique, IDisposable
 	{
@@ -56,11 +58,6 @@ namespace Rb.Rendering
 			get { return m_ShadowLights; }
 		}
 
-		/// <summary>
-		/// Temporary bodge to switch between depth texture and normal texture for shadow map source
-		/// </summary>
-		public static bool DepthTextureMethod = true;
-
 		#endregion
 
 		#region	Construction
@@ -68,17 +65,20 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Sets up the builder
 		/// </summary>
+		/// <param name="resX">Shadow map resolution width</param>
+		/// <param name="resY">Shadow map resolution height</param>
+		/// <param name="useDepthTexture">If true, then depth textures are used. Otherwise, colour texturing is used</param>
 		/// <exception cref="ApplicationException">Thrown if internal render target creation is not successful</exception>
-		public ShadowBufferTechnique( int resX, int resY )
+		public ShadowBufferTechnique( int resX, int resY, bool useDepthTexture )
 		{
 		    Name = GetType( ).Name;
+			m_DepthTextureUsed = useDepthTexture;
 
 			//	Create a technique that is used to override standard scene rendering techniques (for shadow buffer generation)
 			if ( ms_OverrideTechnique == null )
 			{
-				//	TODO: This should be an embedded resource, directly compiled from a hardcoded string, or something
-				byte[] shaderBytes = DepthTextureMethod ? Properties.Resources.shadowMapDepthTexture : Properties.Resources.shadowMapTexture;
-				StreamSource source = new StreamSource( shaderBytes, DepthTextureMethod ? "shadowMapDepthTexture.cgfx" : "shadowMapTexture.cgfx" );
+				byte[] shaderBytes = m_DepthTextureUsed ? Properties.Resources.shadowMapDepthTexture : Properties.Resources.shadowMapTexture;
+				StreamSource source = new StreamSource( shaderBytes, m_DepthTextureUsed ? "shadowMapDepthTexture.cgfx" : "shadowMapTexture.cgfx" );
 				Effect effect = ( Effect )AssetManager.Instance.Load( source );
 				ms_OverrideTechnique = effect.FindTechnique( "DefaultTechnique" );
 			}
@@ -91,7 +91,7 @@ namespace Rb.Rendering
 					RenderTarget target = Graphics.Factory.NewRenderTarget( );
 
 					//	TODO: Remove hardcoded render target format
-					target.Create( resX, resY, DepthTextureMethod ? TextureFormat.Undefined : TextureFormat.R8G8B8, 16, 0, DepthTextureMethod );
+					target.Create( resX, resY, m_DepthTextureUsed ? TextureFormat.Undefined : TextureFormat.R8G8B8, 16, 0, m_DepthTextureUsed );
 
 					m_RenderTargets[ lightIndex ] = target;
 				}
@@ -120,7 +120,7 @@ namespace Rb.Rendering
 			int numBuffers = 0;
 			if ( ShadowLights.NumLights > 0 )
 			{
-				numBuffers = MakeBuffers( renderable, context, ShadowLights );
+				numBuffers = MakeBuffers( renderable, context, ShadowLights.Lights );
 			}
 
 			//	Apply all shadow depth buffer textures
@@ -157,7 +157,7 @@ namespace Rb.Rendering
         /// </summary>
         private ITexture2d GetDepthTexture( int index )
         {
-            return DepthTextureMethod ? m_RenderTargets[ index ].DepthTexture : m_RenderTargets[ index ].Texture;
+            return m_DepthTextureUsed ? m_RenderTargets[ index ].DepthTexture : m_RenderTargets[ index ].Texture;
         }
 
 		#endregion
@@ -174,14 +174,12 @@ namespace Rb.Rendering
 		private readonly ShaderParameterCustomBinding 	m_ShadowMatrixBinding;
 		private readonly ShaderParameterCustomBinding	m_InvShadowNearZBinding;
 		private readonly ShaderParameterCustomBinding 	m_InvShadowZRatio;
-
-		private RenderTarget m_DumpTarget;
-		private static bool ms_DumpLights2;
+		private readonly bool							m_DepthTextureUsed;
 
         /// <summary>
         /// Makes the shadow buffers
         /// </summary>
-        private int MakeBuffers( IRenderable renderable, IRenderContext context, LightGroup lights )
+        private int MakeBuffers( IRenderable renderable, IRenderContext context, ILight[] lights )
         {
             Graphics.Renderer.PushTransform( Transform.LocalToWorld );
             Graphics.Renderer.PushTransform( Transform.WorldToView );
@@ -189,28 +187,15 @@ namespace Rb.Rendering
 
             Graphics.Renderer.SetTransform( Transform.LocalToWorld, Matrix44.Identity );
 
-            //
-            //	Ideal:
-            //		- Run through currently active lights
-            //		- Query the scene renderables for any intersecting the current light's cone
-            //		- Render all objects in that list to current render target
-            //		- as before
-            //
-            //	Issues:
-            //		- Needs access to the light manager
-            //		- Naive inside-cone query will return the entire environment. Query needs to be aware of environment subsections (e.g. BSP nodes)
-            //
-
             //  Set the global technique to the override technique (this forces all objects to be rendered using the
             //  override technique, unlesss they support a valid substitute technique), and render away...
             context.PushGlobalTechnique( ms_OverrideTechnique );
 
             //	Set near and far Z plane bindings
-            //	NOTE: AP: This could be done once in setup - kept here for now so I can change them on the fly
 			m_InvShadowNearZBinding.Set( 1.0f / m_NearZ );
-			m_InvShadowZRatio.Set( 1.0f / ( 1.0f / m_FarZ ) );
+			m_InvShadowZRatio.Set( 1.0f / ( 1.0f / m_NearZ - 1.0f / m_FarZ ) );
 
-            int numLights = lights.NumLights > MaxLights ? MaxLights : lights.NumLights;
+			int numLights = lights.Length > MaxLights ? MaxLights : lights.Length;
             int numBuffers = 0;
             for ( int lightIndex = 0; lightIndex < numLights; ++lightIndex )
             {
@@ -225,32 +210,17 @@ namespace Rb.Rendering
 				Graphics.Renderer.SetLookAtTransform( curLight.Position + curLight.Direction, curLight.Position, Vector3.YAxis );
 				Graphics.Renderer.SetPerspectiveProjectionTransform( curLight.ArcDegrees, aspectRatio, m_NearZ, m_FarZ );
 
-				if ( ms_DumpLights2 )
-				{
-					if ( m_DumpTarget == null )
-					{
-						m_DumpTarget = Graphics.Factory.NewRenderTarget( );
-						m_DumpTarget.Create( 512, 512, TextureFormat.A8R8G8B8, 32, 0, false );
-					}
-					m_DumpTarget.Begin( );
-					renderable.Render( context );
-					m_DumpTarget.End( );
-
-					string path = string.Format( "ShadowDump.png" );
-					path = System.IO.Path.Combine( System.IO.Directory.GetCurrentDirectory( ), path );
-					GraphicsLog.Verbose( "Dumping shadow view to \"{0}\"...", path );
-
-					TextureUtils.Save( m_DumpTarget.Texture, path );
-					ms_DumpLights2 = false;
-				}
-
                 //	Set the current MVP matrix as the shadow transform. This is for after, when the scene is rendered properly
                 Matrix44 shadowMat = Graphics.Renderer.GetTransform( Transform.ViewToScreen ) * Graphics.Renderer.GetTransform( Transform.WorldToView );
                 m_ShadowMatrixBinding.SetAt( lightIndex, shadowMat );
 
                 //	Set up the render target for the light
                 curTarget.Begin( );
-                Graphics.Renderer.ClearColour( System.Drawing.Color.Black );  //  NOTE: AP: Unecessary if depth texture is being used
+
+				if ( !m_DepthTextureUsed )
+				{
+					Graphics.Renderer.ClearColour( System.Drawing.Color.Black );
+				}
                 Graphics.Renderer.ClearDepth( 1.0f );
 
                 renderable.Render( context );
@@ -264,7 +234,7 @@ namespace Rb.Rendering
 					string path = string.Format( "ShadowBuffer{0}.png", numBuffers - 1 );
 					path = System.IO.Path.Combine( System.IO.Directory.GetCurrentDirectory( ), path );
 					GraphicsLog.Verbose( "Dumping shadow buffer image to \"{0}\"...", path );
-                    if ( DepthTextureMethod )
+                    if ( m_DepthTextureUsed )
                     {
 						TextureUtils.Save( curTarget.DepthTexture, path );
                     }

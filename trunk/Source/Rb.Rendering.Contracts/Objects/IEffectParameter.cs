@@ -6,12 +6,25 @@ namespace Rb.Rendering.Contracts.Objects
 	/// <summary>
 	/// Interface for effect parameters
 	/// </summary>
+	/// <remarks>
+	/// </remarks>
 	public interface IEffectParameter
 	{
 		/// <summary>
 		/// Gets the effect that owns this parameter
 		/// </summary>
 		IEffect Owner
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Gets a named child parameter
+		/// </summary>
+		/// <param name="name">Child parameter name</param>
+		/// <returns>Returns the named effect parameter</returns>
+		/// <exception cref="System.ArgumentException">Thrown if the named parameter does not exist</exception>
+		IEffectParameter this[ string name ]
 		{
 			get;
 		}

@@ -113,6 +113,10 @@ namespace Poc0.LevelEditor
 				{
 					EditorState.Instance.OpenScene( scene );
 				}
+				if ( cmdArgs.Length > 2 )
+				{
+					SceneExporter.Instance.LastExportPath = cmdArgs[ 2 ];
+				}
 			}
 		}
 

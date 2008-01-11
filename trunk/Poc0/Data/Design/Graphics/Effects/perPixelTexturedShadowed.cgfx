@@ -36,7 +36,7 @@ struct SpotLightArray
 {
 	float3		m_Positions[ 4 ];
 	float3		m_Directions[ 4 ];
-	float		m_CosArc[ 4 ];
+	float		m_Arcs[ 4 ];
 	int			m_NumLights;
 };
 
@@ -55,8 +55,6 @@ float4x4		ShadowMatrix[ 4 ];
 //	Shader constants
 const float ShadowTexUStep = 1.0 / 512.0;
 const float ShadowTexVStep = 1.0 / 512.0;
-
-
 
 OutputVertex VertexShader( InputVertex input )
 {
@@ -88,20 +86,17 @@ float GetShadowCoverage( float4 lightSpacePos )
 	float	lightDepth		= GetLightDepth( lightSpacePos.z );
 
 	//	Percentage closer filtering
-	float	coverage		= ( storedDepth0 >= lightDepth ) ? 0.25f : 0.0f;
-	coverage += ( storedDepth1 >= lightDepth ) ? 0.25f : 0.0f;
-	coverage += ( storedDepth2 >= lightDepth ) ? 0.25f : 0.0f;
-	coverage += ( storedDepth3 >= lightDepth ) ? 0.25f : 0.0f;
+	float	coverage		= 0.2f;
+	coverage += ( storedDepth0 >= lightDepth ) ? 0.2f : 0.0f;
+	coverage += ( storedDepth1 >= lightDepth ) ? 0.2f : 0.0f;
+	coverage += ( storedDepth2 >= lightDepth ) ? 0.2f : 0.0f;
+	coverage += ( storedDepth3 >= lightDepth ) ? 0.2f : 0.0f;
 	
 	return coverage;
 }
 
-float4 GetPerPixelColour( float3 lightPos, float3 lightVec, float3 pos, float3 normal )
+float4 GetPerPixelColour( float3 vecToLight, float3 lightVec, float3 normal, float mul )
 {
-	float3 vecToLight	= normalize( lightPos - pos );
-	
-	float mul = -dot( vecToLight, SpotLights.m_Directions[ 0 ] );// < SpotLights.m_CosArc[ 0 ] ) ? 0.2f : 1.0f;
-
 	float3 halfVec		= normalize( vecToLight + EyeZAxis );
 
 	float diffuse		= dot( normal, vecToLight );
@@ -111,11 +106,29 @@ float4 GetPerPixelColour( float3 lightPos, float3 lightVec, float3 pos, float3 n
 	return float4( ( lighting.y.xxx + lighting.z.xxx ) * mul, 1.0f );
 }
 
+float4 GetPerPixelColour( float3 lightPos, float3 lightVec, float3 pos, float3 normal )
+{
+	float3 vecToLight	= normalize( lightPos - pos );
+	
+	float mul = -dot( vecToLight, SpotLights.m_Directions[ 0 ] ) < SpotLights.m_Arcs[ 0 ] ? 0.2f : 1.0f;
+
+	return GetPerPixelColour( vecToLight, lightVec, normal, mul );
+}
+
+float4 GetShadowedPerPixelColour( float3 pos, float3 normal, float3 vecToLight )
+{
+	float coverage = GetShadowCoverage( mul( ShadowMatrix[ 0 ], float4( pos, 1 ) ) );
+	float4 ppColour = GetPerPixelColour( vecToLight, SpotLights.m_Directions[ 0 ], normal, 1.0f );
+	
+	return coverage * ppColour;
+}
+
 float4 PerPixelShadowFragmentShader( OutputVertex input ) : COLOR
 {
-	float coverage = GetShadowCoverage( mul( ShadowMatrix[ 0 ], float4( input.m_WorldPos, 1 ) ) );
-	float4 ppColour = GetPerPixelColour( SpotLights.m_Positions[ 0 ], SpotLights.m_Directions[ 0 ], input.m_WorldPos, input.m_WorldNormal );
-	return coverage * ppColour;
+	float3 vecToLight = normalize( SpotLights.m_Positions[ 0 ] - input.m_WorldPos );	
+	float mul = -dot( vecToLight, SpotLights.m_Directions[ 0 ] );
+
+	return mul < SpotLights.m_Arcs[ 0 ] ? 0.2f : GetShadowedPerPixelColour( input.m_WorldPos, input.m_WorldNormal, vecToLight );
 }
 
 float4 PerPixelShadowTextureFragmentShader( OutputVertex input ) : COLOR

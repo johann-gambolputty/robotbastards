@@ -14,9 +14,6 @@ namespace Rb.Rendering.OpenGl
 			Dispose( );
 		}
 
-		private static bool	ms_CheckForExtension	= true;
-		private static bool ms_ExtensionPresent		= false;
-
 		/// <summary>
 		/// Creates the render target
 		/// </summary>
@@ -29,12 +26,6 @@ namespace Rb.Rendering.OpenGl
 		public unsafe override void Create( int width, int height, TextureFormat colourFormat, int depthBits, int stencilBits, bool depthBufferAsTexture )
 		{
 			//	Requires the frame buffer extension
-			if ( ms_CheckForExtension )
-			{
-				ms_ExtensionPresent		= Gl.IsExtensionSupported( "GL_EXT_framebuffer_object" );
-				ms_CheckForExtension	= false;
-			}
-
 			if ( !ms_ExtensionPresent )
 			{
 				throw new ApplicationException( "FBO extension not available - can't create render target" );
@@ -272,6 +263,16 @@ namespace Rb.Rendering.OpenGl
 
 		private int m_FboHandle = InvalidHandle;
 		private int m_FboDepthHandle = InvalidHandle;
+		
+		private static readonly bool ms_ExtensionPresent;
+
+		/// <summary>
+		/// Checks for framebuffer extension
+		/// </summary>
+		static OpenGlRenderTarget( )
+		{
+			ms_ExtensionPresent = Gl.IsExtensionSupported( "GL_EXT_framebuffer_object" );
+		}
 
 		#endregion
 	}
