@@ -15,6 +15,11 @@ namespace Rb.Rendering.Contracts
 		IRenderer CreateRenderer( );
 
 		/// <summary>
+		/// Creates an implementation of the IEffectDataSources interface
+		/// </summary>
+		IEffectDataSources CreateEffectDataSources( );
+
+		/// <summary>
 		/// Creates an implementation of the IDraw interface
 		/// </summary>
 		IDraw CreateDraw( );

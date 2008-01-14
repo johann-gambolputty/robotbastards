@@ -158,7 +158,15 @@ namespace Rb.Core.Assets
 		private static IAssetLoader ReadLoader( XmlReader reader )
 		{
 			IAssetLoader loader = ReadObject< IAssetLoader >( reader );
-			reader.Skip( );
+
+			if ( loader is IXmlSerializable )
+			{
+				( ( IXmlSerializable )loader ).ReadXml( reader );
+			}
+			else
+			{
+				reader.Skip( );
+			}
 			return loader;
 		}
 

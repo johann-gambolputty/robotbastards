@@ -115,7 +115,7 @@ namespace Poc0.LevelEditor
 				}
 				if ( cmdArgs.Length > 2 )
 				{
-					SceneExporter.Instance.LastExportPath = cmdArgs[ 2 ];
+					SceneExporter.Instance.LastExportPath = System.IO.Path.GetFullPath( cmdArgs[ 2 ] );
 				}
 			}
 		}
