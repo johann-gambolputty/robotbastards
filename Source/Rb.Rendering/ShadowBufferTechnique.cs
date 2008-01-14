@@ -91,7 +91,7 @@ namespace Rb.Rendering
 					RenderTarget target = Graphics.Factory.NewRenderTarget( );
 
 					//	TODO: Remove hardcoded render target format
-					target.Create( resX, resY, m_DepthTextureUsed ? TextureFormat.Undefined : TextureFormat.R8G8B8, 16, 0, m_DepthTextureUsed );
+					target.Create( resX, resY, m_DepthTextureUsed ? TextureFormat.Undefined : TextureFormat.R8G8B8, 24, 0, m_DepthTextureUsed );
 
 					m_RenderTargets[ lightIndex ] = target;
 				}

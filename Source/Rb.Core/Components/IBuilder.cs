@@ -13,7 +13,7 @@ namespace Rb.Core.Components
         /// <param name="type">Instance type</param>
         /// <returns>New instance of type</returns>
         /// <remarks>
-        /// <seealso cref="Builder.CreateInstance()"/>
+        /// <seealso cref="Builder.CreateInstance(Type, object[])"/>
         /// </remarks>
         object CreateInstance( Type type );
 
@@ -24,7 +24,7 @@ namespace Rb.Core.Components
         /// <param name="constructorArgs">Argument passed to object constructor</param>
         /// <returns>New instance of type</returns>
         /// <remarks>
-        /// <seealso cref="Builder.CreateInstance()"/>
+        /// <seealso cref="Builder.CreateInstance(Type)"/>
         /// </remarks>
         object CreateInstance( Type type, object[] constructorArgs );
     }

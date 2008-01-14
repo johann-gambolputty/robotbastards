@@ -42,6 +42,8 @@
     <Compile Include="IDraw.cs" />
     <Compile Include="IGraphicsFactory.cs" />
     <Compile Include="IRenderer.cs" />
+    <Compile Include="Objects\IEffectDataSource.cs" />
+    <Compile Include="IEffectDataSources.cs" />
     <Compile Include="Objects\PassDepthTest.cs" />
     <Compile Include="Objects\FontData.cs" />
     <Compile Include="Objects\IEffect.cs" />

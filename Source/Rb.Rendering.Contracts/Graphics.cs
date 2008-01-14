@@ -1,6 +1,10 @@
 
+
 namespace Rb.Rendering.Contracts
 {
+
+	//	TODO: AP: Move to Rb.Rendering
+
 	/// <summary>
 	/// A static class containing implementations of the key rendering interfaces
 	/// </summary>
@@ -14,6 +18,7 @@ namespace Rb.Rendering.Contracts
 			ms_Factory = factory;
 			ms_Renderer = factory.CreateRenderer( );
 			ms_Draw = factory.CreateDraw( );
+			ms_EffectDataSources = factory.CreateEffectDataSources( );
 		}
 
 		/// <summary>
@@ -33,6 +38,14 @@ namespace Rb.Rendering.Contracts
 		}
 
 		/// <summary>
+		/// Gets the current effect data source set
+		/// </summary>
+		public static IEffectDataSources EffectDataSources
+		{
+			get { return ms_EffectDataSources; }
+		}
+
+		/// <summary>
 		/// Gets the graphics factory
 		/// </summary>
 		public static IGraphicsFactory Factory
@@ -45,6 +58,7 @@ namespace Rb.Rendering.Contracts
 		private static IDraw ms_Draw;
 		private static IRenderer ms_Renderer;
 		private static IGraphicsFactory ms_Factory;
+		private static IEffectDataSources ms_EffectDataSources;
 
 		#endregion
 
