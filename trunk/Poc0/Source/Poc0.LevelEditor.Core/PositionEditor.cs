@@ -207,7 +207,7 @@ namespace Poc0.LevelEditor.Core
 		}
 
 		/// <summary>
-		/// Post-export event handler
+		/// Post-export event handler. Starts listening for position changes in the runtime object again
 		/// </summary>
 		private void OnPostExport( object sender, EventArgs args )
 		{

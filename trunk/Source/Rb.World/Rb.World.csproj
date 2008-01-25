@@ -54,6 +54,7 @@
     <Compile Include="Entities\TurnRequest.cs" />
     <Compile Include="Host.cs" />
     <Compile Include="IHost.cs" />
+    <Compile Include="Interfaces\IScene.cs" />
     <Compile Include="Services\ILightingService.cs" />
     <Compile Include="ILightMeter.cs" />
     <Compile Include="Interaction\CursorScenePickInput.cs" />

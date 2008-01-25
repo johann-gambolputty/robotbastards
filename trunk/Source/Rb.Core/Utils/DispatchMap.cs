@@ -26,7 +26,7 @@ namespace Rb.Core.Utils
         /// <returns>Returns a DispatchMap for type t</returns>
         public static DispatchMap Get( Type t )
         {
-            DispatchMap map = null;
+            DispatchMap map;
             if ( ms_Maps.ContainsKey( t ) )
             {
 				map = ms_Maps[ t ];
@@ -46,7 +46,7 @@ namespace Rb.Core.Utils
         /// <returns>Returns a DispatchMap for type t</returns>
         public static DispatchMap SafeGet( Type t )
         {
-            DispatchMap map = null;
+            DispatchMap map;
             lock ( ms_Maps )
             {
                 map = Get( t );
@@ -143,7 +143,7 @@ namespace Rb.Core.Utils
             {
 				throw new ApplicationException( string.Format( "Dispatch method \"{0}\" can have only 1 parameter", method ) );
             }
-            Type paramType = parameters[ 0 ].ParameterType;
+           // Type paramType = parameters[ 0 ].ParameterType;
             if ( method.ReturnType != returnType )
             {
 				throw new ApplicationException( string.Format( "Dispatch method \"{0}\" did not have the consistent return type (\"{1}\")", method, returnType ) );
@@ -155,7 +155,7 @@ namespace Rb.Core.Utils
         /// </summary>
         /// <param name="allMethods">Method set</param>
         /// <returns>Subset of methods that have the DispatchAttribute attribute</returns>
-        private static List< MethodInfo > GetDispatchMethods( MethodInfo[] allMethods )
+        private static List< MethodInfo > GetDispatchMethods( IEnumerable<MethodInfo> allMethods )
         {
             List< MethodInfo > dispatchMethods = new List< MethodInfo >( );
 

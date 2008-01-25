@@ -6,7 +6,8 @@ using System.Reflection.Emit;
 namespace Rb.Core.Assets
 {
 	/// <summary>
-	/// Builds classes derived from <see cref="AssetHandle"/> that implement specified interfaces
+	/// Builds classes derived from <see cref="AssetHandle"/> that implement specified interfaces,
+	/// deferring to the loaded assets to implement the interfaces.
 	/// </summary>
 	public class AssetHandleProxy
 	{
@@ -24,6 +25,21 @@ namespace Rb.Core.Assets
 		}
 
 		/// <summary>
+		/// Builds an class derived from <see cref="AssetHandle"/>, that implements interface T. Returns an instance of this class
+		/// </summary>
+		/// <param name="source">Asset source, passed to handle constructor</param>
+		/// <param name="trackChanges">Track changes flag, passed to handle constructor</param>
+		/// <returns>Returns an asset handle that implements interface T</returns>
+		/// <remarks>
+		/// The derived class is built only once for a given interface type - the class definition is cached.
+		/// </remarks>
+		public static T Create< T >( ISource source, bool trackChanges )
+			where T : class
+		{
+			return Create( typeof( T ), source, trackChanges ) as T;
+		}
+
+		/// <summary>
 		/// Builds an class derived from <see cref="AssetHandle"/>, that implements the specified interface.
 		/// Returns an instance of this class
 		/// </summary>
@@ -34,7 +50,7 @@ namespace Rb.Core.Assets
 		/// </remarks>
 		public static AssetHandle Create( Type interfaceType )
 		{
-			return ( AssetHandle )Activator.CreateInstance( GetProxyType( interfaceType ) );
+			return (AssetHandle)Activator.CreateInstance(GetProxyType(interfaceType));
 		}
 
 		/// <summary>
