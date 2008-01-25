@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Rb.Rendering.Contracts")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Workshare")]
+[assembly: AssemblyCompany("RB")]
 [assembly: AssemblyProduct("Rb.Rendering.Contracts")]
 [assembly: AssemblyCopyright("Copyright © Workshare 2008")]
 [assembly: AssemblyTrademark("")]

@@ -7,6 +7,9 @@ using Rb.World;
 
 namespace Rb.Tools.LevelEditor.Core.Actions
 {
+	/// <summary>
+	/// Action that moves any currently selected objects that implement <see cref="IMoveable3"/>
+	/// </summary>
 	public class MoveAction : IPickAction
 	{
 		/// <summary>

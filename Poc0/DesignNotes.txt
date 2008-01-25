@@ -33,15 +33,38 @@ Environment:
 	- Water dynamics (or, at least, water effects)
 	- Non-flat floors
 	- More play modes (...)
+	
+Refactor
+	- Rendering contracts
+	- Scene contracts
+		- Scene + host/view services...
+			- Scene services: Update heartbeats (AI/physics), networking
+			- View services: Lighting, rendering
+			- scene is an object graph only, host contains view-independent services, view contains
+			view-dependent services. A scene can have only one host, but many views
+			
+			Host -1----1-> Scene <-N----1- View
 
 Requirements:
 	- Editor
 		- Plugins
 			- Needs a bit of design thought
+			- Edit modes did satisfy requirements, just need a bit more independence from 
 		- Runtime bindings to identify graphically editable properties
 			- e.g. object position bindings
 		- Finish CSG modelling system
+			- CSG should define polygon outlines, which are passed to GLU tesselator
+				- Can this handle internal double-sided edges?
+				- Build up BSP tree when needed (thread)
+				- Polygon points can be moved about, leading to re-tesselation
+			- Convex region selection
 		- Scripting support
+		- Remove editor scene support
+			- Each layer maintains its own selection of objects (NOT world objects)
+				- Editor objects can therefore explicitly set editor specific attributes (e.g. position/orientation), etc.
+			- Layers are rendered separately
+			- TODO: Keep layer methodology?
+			- Runtime scene is built once on export
 	- Game Engine
 		- Graphics
 			- Multiple light-source support

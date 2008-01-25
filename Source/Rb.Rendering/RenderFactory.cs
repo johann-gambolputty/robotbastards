@@ -36,7 +36,7 @@ namespace Rb.Rendering
 				{
 					RenderFactory factory = ( RenderFactory )Activator.CreateInstance( curType );
 
-					//	Set up the graphics singleons from the factory
+					//	Set up the graphics singletons from the factory
 					Graphics.Initialise( factory );
 
 					factory.ScanAssembly( renderAssembly );

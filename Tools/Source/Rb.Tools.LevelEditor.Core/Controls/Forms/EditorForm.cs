@@ -385,6 +385,11 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			SceneSerializer.Instance.Save( EditorState.Instance.CurrentScene );
 		}
 
+		private void newToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			EditorState.Instance.OpenScene( CreateNewScene( ) );
+		}
+
 		private void openToolStripMenuItem_Click( object sender, EventArgs e )
 		{
 			EditorScene scene = SceneSerializer.Instance.Open( );

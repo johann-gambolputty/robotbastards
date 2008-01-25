@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Poc0.LevelEditor")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Workshare")]
+[assembly: AssemblyCompany("RB")]
 [assembly: AssemblyProduct("Poc0.LevelEditor")]
-[assembly: AssemblyCopyright("Copyright © Workshare 2007")]
+[assembly: AssemblyCopyright("Copyright © Private 2007")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

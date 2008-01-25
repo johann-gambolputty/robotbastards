@@ -10,9 +10,8 @@ using Rb.AssemblySelector;
 [assembly: AssemblyTitle("Poc0.LevelEditor.Rendering.OpenGl")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Workshare")]
+[assembly: AssemblyCompany("RB")]
 [assembly: AssemblyProduct("Poc0.LevelEditor.Rendering.OpenGl")]
-[assembly: AssemblyCopyright("Copyright © Workshare 2007")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

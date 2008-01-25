@@ -83,8 +83,11 @@ namespace Rb.AssemblySelector
         /// <param name="option">Directory search options</param>
         public void AddAssemblyIdentifiers( string directory, SearchOption option )
         {
-            foreach ( string file in Directory.GetFiles( directory, "*.dll", option ) )
+			string[] files = Directory.GetFiles( directory, "*.dll", option );
+            foreach ( string file in files )
             {
+
+				AppDomain.CurrentDomain.
 				try
 				{
 					string assemblyName = Path.GetFileNameWithoutExtension( file );
@@ -92,8 +95,10 @@ namespace Rb.AssemblySelector
 
 					AddAssemblyToMap( curAssembly );
 				}
-				catch
+				catch ( Exception ex )
 				{
+					//	Can't really do anything here... doh. At least dump the exception to debug output
+					System.Diagnostics.Trace.WriteLine( string.Format( "Failed to add assembly \"{0}\" to map:\n{1}", file, ex ) );
 				}
             }
         }
@@ -127,7 +132,7 @@ namespace Rb.AssemblySelector
                     curSelector = new HasIdOfValueSelector( id, value, curSelector );
                 }
             }
-            return curSelector == null ? new AssemblySelector( null ) : curSelector;
+            return curSelector ?? new AssemblySelector( null );
         }
 
         public class AssemblyIdentifiers : Dictionary< string, string >
@@ -146,10 +151,10 @@ namespace Rb.AssemblySelector
         {
         }
 
-        private AssemblyMap             m_Map           = new AssemblyMap( );
-        private IdMap                   m_IdMap         = new IdMap( );
-        private static IdentifierMap    ms_Singleton    = new IdentifierMap( );
-        private static Regex            SelectRegex     = new Regex( @"(?<Named>name=(?<Name>\w+))|(?<Matches>(?<Id>\w+)=(?<Value>\w+))|(?<Exists>\w+)" );
+        private readonly AssemblyMap             m_Map           = new AssemblyMap( );
+        private readonly IdMap                   m_IdMap         = new IdMap( );
+        private readonly static IdentifierMap    ms_Singleton    = new IdentifierMap( );
+        private readonly static Regex            SelectRegex     = new Regex( @"(?<Named>name=(?<Name>\w+))|(?<Matches>(?<Id>\w+)=(?<Value>\w+))|(?<Exists>\w+)" );
 
 
         /// <summary>
@@ -162,7 +167,7 @@ namespace Rb.AssemblySelector
                 AddAssemblyToMap( assembly );
             }
 
-            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler( OnAssemblyLoad );
+            AppDomain.CurrentDomain.AssemblyLoad += OnAssemblyLoad;
 
             AddAssemblyIdentifiers( ".", SearchOption.TopDirectoryOnly );
         }
@@ -189,7 +194,7 @@ namespace Rb.AssemblySelector
 
         private void AddAssemblyToMap( Assembly assembly )
         {
-            string assemblyKey = assembly.GetName().Name;
+            string assemblyKey = assembly.GetName( ).Name;
             if ( m_Map.ContainsKey( assemblyKey ) )
             {
                 return;
@@ -250,7 +255,7 @@ namespace Rb.AssemblySelector
                 return ( m_Next == null ) ? true : m_Next.MatchesIdentifiers( identifiers );
             }
 
-            private AssemblySelector m_Next;
+			private readonly AssemblySelector m_Next;
         }
 
         private class IdExistsSelector : AssemblySelector
@@ -273,7 +278,7 @@ namespace Rb.AssemblySelector
                 return false;
             }
 
-            private string m_Id;
+			private readonly string m_Id;
         }
 
         private class NameSelector : AssemblySelector
@@ -289,7 +294,7 @@ namespace Rb.AssemblySelector
                 return path.Contains( m_Name ) && base.MatchesFilename( path );
             }
 
-            private string m_Name;
+			private readonly string m_Name;
         }
         
         private class HasIdOfValueSelector : AssemblySelector
@@ -314,8 +319,8 @@ namespace Rb.AssemblySelector
                 return false;
             }
 
-            private string m_Id;
-            private string m_Value;
+            private readonly string m_Id;
+			private readonly string m_Value;
         }
 
     }

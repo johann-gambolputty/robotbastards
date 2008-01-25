@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Rb.CodeLoader")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Workshare")]
+[assembly: AssemblyCompany("RB")]
 [assembly: AssemblyProduct("Rb.CodeLoader")]
 [assembly: AssemblyCopyright("Copyright © Workshare 2008")]
 [assembly: AssemblyTrademark("")]
