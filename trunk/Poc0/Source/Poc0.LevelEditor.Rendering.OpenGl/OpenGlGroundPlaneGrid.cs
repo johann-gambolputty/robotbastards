@@ -55,8 +55,8 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 				Gl.glEnd( );
 				state.End( );
 				
-				state.SetDepthOffset( 0.1f );
 				state.SetColour( Color.White );
+				state.DisableCap( RenderStateFlag.DepthTest );
 				state.Begin( );
 				Gl.glBegin( Gl.GL_LINES );
 
@@ -132,7 +132,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		/// Make sure that the object is properly initialized after deserialization
 		/// </summary>
 		[OnDeserialized]
-		public void OnDeserialized( )
+		public void OnDeserialized( StreamingContext context )
 		{
 			m_LineDisplayList = -1;
 		}

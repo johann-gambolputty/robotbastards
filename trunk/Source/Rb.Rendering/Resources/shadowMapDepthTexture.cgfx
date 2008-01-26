@@ -12,7 +12,7 @@ technique DefaultTechnique
 		FrontFace		= CW;
 		DepthTestEnable	= true;
 		DepthMask		= true;
-		CullFaceEnable	= true;
+		CullFaceEnable	= false;
 		PolygonOffset	= float2( 0.1, 4 );
 		PolygonOffsetFillEnable	= true;
 	}

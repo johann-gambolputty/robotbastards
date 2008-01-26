@@ -28,6 +28,10 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			if ( viewer.Camera is ICamera3 )
 			{
 				IRayCastService rayCaster = EditorState.Instance.CurrentScene.GetService< IRayCastService >( );
+				if ( rayCaster == null )
+				{
+					return null;
+				}
 
 				Ray3 ray = ( ( ICamera3 )viewer.Camera ).PickRay( cursorX, cursorY );
 				Line3Intersection intersection = rayCaster.GetFirstIntersection( ray, options );
