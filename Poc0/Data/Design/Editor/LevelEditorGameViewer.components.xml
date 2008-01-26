@@ -15,6 +15,7 @@
       <parameters>
         <int value="1024"/>
         <int value="1024"/>
+        <int value="16"/>
         <bool value="true"/>
       </parameters>
       <float value="0.01" property="NearZ"/>

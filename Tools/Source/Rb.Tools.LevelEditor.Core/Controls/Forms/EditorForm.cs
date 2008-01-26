@@ -387,7 +387,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 
 		private void newToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			EditorState.Instance.OpenScene( CreateNewScene( ) );
+			NewScene( );
 		}
 
 		private void openToolStripMenuItem_Click( object sender, EventArgs e )

@@ -67,9 +67,10 @@ namespace Rb.Rendering
 		/// </summary>
 		/// <param name="resX">Shadow map resolution width</param>
 		/// <param name="resY">Shadow map resolution height</param>
+		/// <param name="bitDepth">Shadow map depth pixel resolution</param>
 		/// <param name="useDepthTexture">If true, then depth textures are used. Otherwise, colour texturing is used</param>
 		/// <exception cref="ApplicationException">Thrown if internal render target creation is not successful</exception>
-		public ShadowBufferTechnique( int resX, int resY, bool useDepthTexture )
+		public ShadowBufferTechnique( int resX, int resY, int bitDepth, bool useDepthTexture )
 		{
 		    Name = GetType( ).Name;
 			m_DepthTextureUsed = useDepthTexture;
@@ -91,7 +92,7 @@ namespace Rb.Rendering
 					RenderTarget target = Graphics.Factory.NewRenderTarget( );
 
 					//	TODO: Remove hardcoded render target format
-					target.Create( resX, resY, m_DepthTextureUsed ? TextureFormat.Undefined : TextureFormat.R8G8B8, 24, 0, m_DepthTextureUsed );
+					target.Create( resX, resY, m_DepthTextureUsed ? TextureFormat.Undefined : TextureFormat.R8G8B8, bitDepth, 0, m_DepthTextureUsed );
 
 					m_RenderTargets[ lightIndex ] = target;
 				}

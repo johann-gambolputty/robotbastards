@@ -209,7 +209,10 @@ namespace Rb.Core.Utils
 		/// </summary>
 		private void OnAssemblyLoad( object sender, AssemblyLoadEventArgs args )
 		{
-			ScanAssembly( args.LoadedAssembly );
+			if ( !args.LoadedAssembly.ReflectionOnly )
+			{
+				ScanAssembly( args.LoadedAssembly );
+			}
 		}
 
 		#endregion

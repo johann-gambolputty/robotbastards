@@ -10,7 +10,7 @@ namespace Rb.AssemblySelector
     /// Stores information about assemblies
     /// </summary>
     /// <remarks>
-    /// Assemblies are categorised by this class using the AssemblyIdentifierAttribute attribute, which is a key/value pair
+    /// Assemblies are categorised by this class using the AssemblyIdentifierAttribute assembly attribute, which is a key/value pair
     /// describing some aspect of the assembly.
     /// For example,
     /// <code>
@@ -71,7 +71,14 @@ namespace Rb.AssemblySelector
             {
                 if ( ( selector.MatchesFilename( kvp.Key ) ) && ( selector.MatchesIdentifiers( kvp.Value ) ) )
                 {
-                    Assembly.Load( kvp.Key );
+					try
+					{
+						Assembly.Load( kvp.Key );
+					}
+					catch ( Exception ex )
+					{
+						System.Diagnostics.Trace.WriteLine( string.Format( "Failed to load assembly \"{0}\":\n{1}", kvp.Key, ex ) );
+					}
                 }
             }
 		}
@@ -84,24 +91,42 @@ namespace Rb.AssemblySelector
         public void AddAssemblyIdentifiers( string directory, SearchOption option )
         {
 			string[] files = Directory.GetFiles( directory, "*.dll", option );
+			AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += new ResolveEventHandler( ResolveAssembly );
             foreach ( string file in files )
             {
-
-				AppDomain.CurrentDomain.
 				try
 				{
 					string assemblyName = Path.GetFileNameWithoutExtension( file );
-					Assembly curAssembly = Assembly.ReflectionOnlyLoad( assemblyName );
 
-					AddAssemblyToMap( curAssembly );
+					if ( m_Map.ContainsKey( assemblyName ) )
+					{
+						continue;
+					}
+
+
+					Assembly.ReflectionOnlyLoad( assemblyName );
+					//	NOTE: ReflectionOnlyLoad will trigger the "OnAssemblyLoad" event handler
 				}
 				catch ( Exception ex )
 				{
-					//	Can't really do anything here... doh. At least dump the exception to debug output
+					//	Can't really do anything here... doh. At least dump the exceptign to debug output
 					System.Diagnostics.Trace.WriteLine( string.Format( "Failed to add assembly \"{0}\" to map:\n{1}", file, ex ) );
 				}
-            }
+			}
+			AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve -= ResolveAssembly;
         }
+
+		/// <summary>
+		/// Resolves an assembly required by the reflection only load
+		/// </summary>
+		private static Assembly ResolveAssembly( object sender, ResolveEventArgs args )
+		{
+			//	This only seems to occur when trying to resolve the assembly selector assembly itself...
+		//	Assembly result = Assembly.Load( args.Name );
+			Assembly result = Assembly.ReflectionOnlyLoad( args.Name );
+			return result;
+		   // return Assembly.ReflectionOnlyLoad( args.Name );
+		}
         
         /// <summary>
         /// Builds an AssemblySelector object from a selection string
@@ -175,7 +200,19 @@ namespace Rb.AssemblySelector
         private static AssemblyIdentifiers CreateAssemblyIdentifiers( Assembly assembly )
         {
             AssemblyIdentifiers identifiers = null;
-			foreach ( CustomAttributeData idAttribute in CustomAttributeData.GetCustomAttributes( assembly ) )
+
+			IList<CustomAttributeData> attributes;
+			try
+			{
+				attributes = CustomAttributeData.GetCustomAttributes( assembly );
+			}
+			catch ( Exception ex )
+			{
+				System.Diagnostics.Trace.WriteLine( "Failed to read custom attributes" );
+				throw ex;
+			}
+
+			foreach ( CustomAttributeData idAttribute in attributes )
 			{
 				if ( idAttribute.Constructor.DeclaringType.GUID == typeof( AssemblyIdentifierAttribute ).GUID )
 				{
@@ -192,20 +229,30 @@ namespace Rb.AssemblySelector
             return identifiers;
         }
 
+		private static string GetAssemblyKey( Assembly assembly )
+		{
+			return assembly.GetName( ).Name;
+		}
+
         private void AddAssemblyToMap( Assembly assembly )
         {
-            string assemblyKey = assembly.GetName( ).Name;
+            string assemblyKey = GetAssemblyKey( assembly );
             if ( m_Map.ContainsKey( assemblyKey ) )
             {
                 return;
             }
+			//	Only add the assembly if it's not already loaded
+			if ( !assembly.ReflectionOnly )
+			{
+				return;
+			}
 
             AssemblyIdentifiers identifiers = CreateAssemblyIdentifiers( assembly );
-            if ( identifiers == null )
-            {
-                return;
-            }
             m_Map[ assemblyKey ] = identifiers;
+			if ( identifiers == null )
+			{
+				return;
+			}
 
             foreach ( KeyValuePair< string, string > identifier in identifiers )
             {
@@ -268,6 +315,11 @@ namespace Rb.AssemblySelector
 
 			public override bool MatchesIdentifiers( AssemblyIdentifiers identifiers )
             {
+				if ( identifiers == null )
+				{
+					return false;
+				}
+
                 foreach ( KeyValuePair< string, string > kvp in identifiers )
                 {
                     if ( ( kvp.Key == m_Id ) && ( Instance.IsMatchingId( kvp.Key, kvp.Value ) ) )
@@ -308,6 +360,10 @@ namespace Rb.AssemblySelector
 
 			public override bool MatchesIdentifiers( AssemblyIdentifiers identifiers )
 			{
+				if ( identifiers == null )
+				{
+					return false;
+				}
                 foreach ( KeyValuePair< string, string > kvp in identifiers )
                 {
                     if ( ( kvp.Key == m_Id ) && ( kvp.Value == m_Value ) )
