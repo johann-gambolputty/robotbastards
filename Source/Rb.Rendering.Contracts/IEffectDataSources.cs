@@ -12,8 +12,8 @@ namespace Rb.Rendering.Contracts
 	/// This is done by setting up a data source, then associating (binding) the source with effect
 	/// parameters.
 	/// Binding a data source to a parameter name means that for every effect, any parameters with
-	/// the specified name get their values set to a 
-	/// An IEffectDataSources object is available from <see cref="Graphics.EffectDataSources"/>.
+	/// the specified name get their values set to the value in the data source.
+	/// An IEffectDataSources singleton is available from <see cref="Graphics.EffectDataSources"/>.
 	/// </remarks>
 	public interface IEffectDataSources
 	{

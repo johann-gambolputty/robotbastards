@@ -1,4 +1,5 @@
 using System.Drawing;
+using Rb.Core.Maths;
 using Rb.Rendering.Contracts.Objects;
 
 namespace Rb.Rendering.Contracts
@@ -8,6 +9,111 @@ namespace Rb.Rendering.Contracts
 	/// </summary>
 	public interface IRenderer
 	{
+		#region	Transform pipeline
+
+		/// <summary>
+		/// Gets the current matrix from the specified transform stack
+		/// </summary>
+		Matrix44 GetTransform( Transform type );
+
+		/// <summary>
+		/// Transforms a local point into screen space using the current transform pipeline
+		/// </summary>
+		/// <param name="pt">Local point</param>
+		/// <returns>Screen space point</returns>
+		Point3 Project( Point3 pt );
+
+		/// <summary>
+		/// Sets an identity matrix in the projection and model view transforms
+		/// </summary>
+		void Set2d( );
+
+		/// <summary>
+		/// Pushes an identity matrix in the projection and model view transforms. The top left hand corner is (X,Y), the bottom right is (W,H) (where
+		/// (W,H) are the viewport dimensions, and (X,Y) is the viewport minimum corner position)
+		/// </summary>
+		void Push2d( );
+
+		/// <summary>
+		/// Pops the identity matrices pushed by Push2d()
+		/// </summary>
+		void Pop2d( );
+
+		/// <summary>
+		/// Translates the current transform in the specified transform stack
+		/// </summary>
+		void Translate( Transform type, float x, float y, float z );
+
+		/// <summary>
+		/// Scales the current transform in the specified transform stack
+		/// </summary>
+		void Scale( Transform type, float scaleX, float scaleY, float scaleZ );
+
+		/// <summary>
+		/// Applies the specified transform, multiplied by the current topmost transform, and adds it to the specified transform stack
+		/// </summary>
+		void PushTransform( Transform type, Matrix44 matrix );
+
+		/// <summary>
+		/// Pushes a copy of the transform currently at the top of the specified transform stack
+		/// </summary>
+		void PushTransform( Transform type );
+
+		/// <summary>
+		/// Sets the current Transform.kLocalToView transform to a look-at matrix
+		/// </summary>
+		void SetLookAtTransform( Point3 lookAt, Point3 camPos, Vector3 camYAxis );
+
+		/// <summary>
+		/// Sets the current Transform.kViewToScreen matrix to a projection matrix with the specified attributes
+		/// </summary>
+		void SetPerspectiveProjectionTransform( float fov, float aspectRatio, float zNear, float zFar );
+
+		/// <summary>
+		/// Applies the specified transform, adds it to the specified transform stack
+		/// </summary>
+		void SetTransform( Transform type, Matrix44 matrix );
+
+		/// <summary>
+		/// Pops a matrix from the specified transform stack, applies the new topmost matrix
+		/// </summary>
+		void PopTransform( Transform type );
+
+		#endregion
+
+		#region Viewport
+
+		/// <summary>
+		/// Sets the viewport (in pixels)
+		/// </summary>
+		void SetViewport( int x, int y, int width, int height );
+
+		/// <summary>
+		/// Gets the current viewport
+		/// </summary>
+		System.Drawing.Rectangle Viewport
+		{
+			get;
+		}
+
+		/// <summary>
+		///	The viewport width
+		/// </summary>
+		int ViewportWidth
+		{
+			get;
+		}
+
+		/// <summary>
+		/// The viewport height
+		/// </summary>
+		int ViewportHeight
+		{
+			get;
+		}
+
+		#endregion
+
 		#region Render state
 
 		/// <summary>

@@ -61,6 +61,7 @@
     <Compile Include="EditModes\UserBrushEditMode.cs" />
     <Compile Include="EditModes\DefinePolygonEditMode.cs" />
     <Compile Include="EnvironmentGraphicsBuilder.cs" />
+    <Compile Include="Objects\PlayerStartEditor.cs" />
     <Compile Include="Rendering\GroundPlaneGrid.cs" />
     <Compile Include="LevelGeometry.cs" />
     <Compile Include="GameObjectEditorBuilder.cs" />
