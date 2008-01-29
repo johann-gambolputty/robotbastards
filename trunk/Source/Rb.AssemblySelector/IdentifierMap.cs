@@ -91,7 +91,7 @@ namespace Rb.AssemblySelector
         public void AddAssemblyIdentifiers( string directory, SearchOption option )
         {
 			string[] files = Directory.GetFiles( directory, "*.dll", option );
-			AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += new ResolveEventHandler( ResolveAssembly );
+			AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += ResolveAssembly;
             foreach ( string file in files )
             {
 				try

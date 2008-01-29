@@ -14,5 +14,15 @@ namespace Rb.Rendering.Contracts.Objects
 	/// </remarks>
 	public interface IVertexBuffer : IPass
 	{
+		/// <summary>
+		/// Locks a region of the vertex buffer
+		/// </summary>
+		/// <param name="firstIndex">Index of the first vertex in the buffer to lock</param>
+		/// <param name="count">Number of vertices to lock after the first</param>
+		/// <returns>Returns a lock object that provides access to the buffer</returns>
+		/// <remarks>
+		/// Dispose of the lock object to commit the changes to the buffer
+		/// </remarks>
+		IVertexBufferLock Lock( int firstIndex, int count );
 	}
 }
