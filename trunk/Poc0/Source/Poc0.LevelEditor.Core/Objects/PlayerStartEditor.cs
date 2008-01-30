@@ -9,55 +9,86 @@ namespace Poc0.LevelEditor.Core.Objects
 	/// <summary>
 	/// Edits a player start position
 	/// </summary>
-	public class PlayerStartEditor
+	public class PlayerStartEditor : IPlaceable
 	{
-		/// <summary>
-		/// Event, invoked when properties are changed
-		/// </summary>
-		public EventHandler Changed;
-
-
-		/// <summary>
-		/// Sets up this editor
-		/// </summary>
-		public PlayerStartEditor( )
-		{
-			Position;
-		}
-
-		/// <summary>
-		/// Player start position
-		/// </summary>
-		public Point3 Position
-		{
-			get { return m_Position; }
-			set { m_Position = value; }
-		}
-
-		/// <summary>
-		/// Player start facing
-		/// </summary>
-		public float Facing
-		{
-			get { return m_Facing; }
-			set { m_Facing = value; }
-		}
-
 		/// <summary>
 		/// Builds the associated player start object
 		/// </summary>
 		public void Build( Scene scene )
 		{
 			PlayerStart obj = new PlayerStart( );
-			obj.Position = m_Position;
+			obj.Position = Position;
 
 			scene.Objects.Add( obj );
 		}
 
+		#region IPlaceable Members
+
+		/// <summary>
+		/// Event, raised when Position is changed
+		/// </summary>
+		public event PositionChangedDelegate PositionChanged;
+
+		/// <summary>
+		/// Current position
+		/// </summary>
+		public Point3 Position
+		{
+			get { return Frame.Translation; }
+			set
+			{
+				if ( PositionChanged == null )
+				{
+					Frame.Translation = value;
+				}
+				else
+				{
+					bool changed = ( m_Frame.Translation != value );
+
+					Point3 oldPos = m_Frame.Translation;
+					m_Frame.Translation = value;
+
+					if ( changed )
+					{
+						PositionChanged( this, oldPos, m_Frame.Translation );
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Angle (rotation around y axis)
+		/// </summary>
+		public float Angle
+		{
+			get
+			{
+				return ( float )Math.Atan2( -Frame.ZAxis.Z, -Frame.ZAxis.X );
+			}
+			set
+			{
+				float angle = value;
+				float sinA = ( float )Math.Sin( angle );
+				float cosA = ( float )Math.Cos( angle );
+				Frame.ZAxis = new Vector3( cosA, 0, sinA );
+				Frame.XAxis = new Vector3( -sinA, 0, cosA );
+			}
+		}
+
+		/// <summary>
+		/// Current coordinate frame
+		/// </summary>
+		public Matrix44 Frame
+		{
+			get { return m_Frame; }
+		}
+
+		#endregion
+
+
 		#region Private members
 
-		private Point3 m_Position;
-		private float m_Facing;
+		private readonly Matrix44 m_Frame = new Matrix44( );
 
 		#endregion
 	}
