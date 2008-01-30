@@ -100,6 +100,22 @@ namespace Rb.Core.Maths
 			get { return m_Z; }
 			set { m_Z = value; }
 		}
+		
+		/// <summary>
+		/// Returns true if two points are -exactly- equal (no tolerance for floating point imprecision)
+		/// </summary>
+		public static bool operator == ( Point3 lhs, Point3 rhs )
+		{
+			return ( lhs.X == rhs.X ) && ( lhs.Y == rhs.Y ) && ( lhs.Z == rhs.Z );
+		}
+
+		/// <summary>
+		/// Returns false if two points are in any way unequal (no tolerance for floating point imprecision)
+		/// </summary>
+		public static bool operator != ( Point3 lhs, Point3 rhs )
+		{
+			return ( lhs.X != rhs.X ) || ( lhs.Y != rhs.Y ) || ( lhs.Z != rhs.Z );
+		}
 
 		/// <summary>
 		/// Returns the negative of this point
