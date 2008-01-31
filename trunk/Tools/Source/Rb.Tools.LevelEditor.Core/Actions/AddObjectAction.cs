@@ -13,7 +13,7 @@ namespace Rb.Tools.LevelEditor.Core.Actions
 		public AddObjectAction( object template, ILineIntersection pick, Guid id )
 		{
 			m_Id = id;
-			m_Instance = EditorState.Instance.ObjectEditorBuilder.Create( pick, CreateInstance( template ) );
+			m_Instance = CreateInstance( template, pick );
 
 			Redo( );
 		}
@@ -27,7 +27,6 @@ namespace Rb.Tools.LevelEditor.Core.Actions
 		public void Undo( )
 		{
 			EditorState.Instance.CurrentScene.Objects.Remove( m_Id );
-			EditorState.Instance.CurrentRuntimeScene.Objects.Remove( m_Id );
 		}
 
 		/// <summary>
@@ -37,7 +36,6 @@ namespace Rb.Tools.LevelEditor.Core.Actions
 		public void Redo( )
 		{
 			EditorState.Instance.CurrentScene.Objects.Add( m_Id, m_Instance );
-			EditorState.Instance.CurrentRuntimeScene.Objects.Add( m_Id, m_Instance.Instance );
 		}
 
 		#endregion
@@ -45,7 +43,18 @@ namespace Rb.Tools.LevelEditor.Core.Actions
 		#region Private members
 
 		private readonly Guid m_Id;
-		private readonly IObjectEditor m_Instance;
+		private readonly object m_Instance;
+
+		private static object CreateInstance( object template, ILineIntersection pick )
+		{
+			object instance = CreateInstance( template );
+			IPlaceableObjectEditor placeable = instance as IPlaceableObjectEditor;
+			if ( placeable != null )
+			{
+				placeable.Place( pick );
+			}
+			return instance;
+		}
 		
 		private static object CreateInstance( object template )
 		{

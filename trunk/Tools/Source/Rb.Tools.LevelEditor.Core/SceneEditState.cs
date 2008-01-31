@@ -1,4 +1,3 @@
-using System;
 using Rb.Tools.LevelEditor.Core.Actions;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
@@ -14,7 +13,7 @@ namespace Rb.Tools.LevelEditor.Core
 		/// Setup constructor
 		/// </summary>
 		/// <param name="scene">Editor scene</param>
-		public SceneEditState( EditorScene scene )
+		public SceneEditState( Scene scene )
 		{
 			m_EditorScene = scene;
 		}
@@ -30,17 +29,9 @@ namespace Rb.Tools.LevelEditor.Core
 		/// <summary>
 		/// Gets the scene being edited
 		/// </summary>
-		public EditorScene EditorScene
+		public Scene EditorScene
 		{
 			get { return m_EditorScene; }
-		}
-
-		/// <summary>
-		/// Gets the runtime scene being edited
-		/// </summary>
-		public Scene RuntimeScene
-		{
-			get { return m_EditorScene.RuntimeScene; }
 		}
 
 		/// <summary>
@@ -54,7 +45,7 @@ namespace Rb.Tools.LevelEditor.Core
 		#region Private members
 
 		private readonly SelectionSet	m_Selection = new SelectionSet( );
-		private readonly EditorScene	m_EditorScene;
+		private readonly Scene			m_EditorScene;
 		private readonly UndoStack		m_UndoStack = new UndoStack( );
 
 		#endregion

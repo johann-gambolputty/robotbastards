@@ -256,7 +256,24 @@ namespace Rb.Core.Maths
 
 		#endregion
 
-		#region	Overloaded arithmetic operators
+		#region	Overloaded operators
+
+		
+		/// <summary>
+		/// Returns true if two vectors are -exactly- equal (no tolerance for floating point imprecision)
+		/// </summary>
+		public static bool operator == ( Vector3 lhs, Vector3 rhs )
+		{
+			return ( lhs.X == rhs.X ) && ( lhs.Y == rhs.Y ) && ( lhs.Z == rhs.Z );
+		}
+
+		/// <summary>
+		/// Returns false if two vectors are in any way unequal (no tolerance for floating point imprecision)
+		/// </summary>
+		public static bool operator != ( Vector3 lhs, Vector3 rhs )
+		{
+			return ( lhs.X != rhs.X ) || ( lhs.Y != rhs.Y ) || ( lhs.Z != rhs.Z );
+		}
 
 		/// <summary>
 		/// Unary minus operator
@@ -318,6 +335,24 @@ namespace Rb.Core.Maths
 		public override string ToString( )
 		{
 			return string.Format( "({0},{1},{2})", X, Y, Z );
+		}
+		
+		/// <summary>
+		/// Returns true if obj is a Point3 -exactly equal- to this point (no floating point tolerance)
+		/// </summary>
+		public override bool Equals( object obj )
+		{
+			return ( obj is Vector3 ) && ( ( Vector3 )obj == this );
+		}
+
+		/// <summary>
+		/// Returns the hash code of this point
+		/// </summary>
+		public unsafe override int GetHashCode()
+		{
+			//	Is this a good hash? who knows? fast, though :)
+			float res = m_X + m_Y + m_Z;
+			return *( int* )&res;
 		}
 
 		/// <summary>

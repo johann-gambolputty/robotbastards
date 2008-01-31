@@ -1,57 +1,21 @@
 using System;
-using System.Collections.Generic;
+using System.Collections;
+using System.ComponentModel;
 using Rb.Rendering;
+using Rb.World;
 
 namespace Rb.Tools.LevelEditor.Core.Selection
 {
 	/// <summary>
-	/// An object used for editing an in-game object
+	/// Base class for standard implementations of <see cref="IObjectEditor"/>
 	/// </summary>
 	[Serializable]
-	public class ObjectEditor : IObjectEditor, IRenderable, ISelectable
+	public abstract class ObjectEditor : IObjectEditor, IRenderable, ISelectable, ISceneObject
 	{
-		/// <summary>
-		/// Sets the tile object to get renderer
-		/// </summary>
-		public ObjectEditor( object obj )
-		{
-			m_Object = obj;
-			EditorState.Instance.CurrentScene.Renderables.Add( this );
-		}
-
-		/// <summary>
-		/// Adds a child editor
-		/// </summary>
-		/// <param name="childEditor">Child editor</param>
-		public void Add( IObjectEditor childEditor )
-		{
-			m_Children.Add( childEditor );
-			childEditor.ObjectChanged += ChildObjectChanged;
-		}
-
-		/// <summary>
-		/// Invokes the <see cref="ObjectChanged"/> event
-		/// </summary>
-		public void OnObjectChanged( )
-		{
-			if ( m_ObjectChanged != null )
-			{
-				m_ObjectChanged( this, null );
-			}
-		}
-
 		#region IObjectEditor members
 
 		/// <summary>
-		/// Gets the object being edited
-		/// </summary>
-		public object Instance
-		{
-			get { return m_Object; }
-		}
-
-		/// <summary>
-		/// Event, invoked when <see cref="Instance"/> (or one of its children) is modified
+		/// Event, invoked when this object is changed
 		/// </summary>
 		public event EventHandler ObjectChanged
 		{
@@ -59,14 +23,20 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 			remove { m_ObjectChanged -= value; }
 		}
 
-		#endregion
+		/// <summary>
+		/// Builds scene objects
+		/// </summary>
+		/// <param name="scene">Scene to add objects to</param>
+		public abstract void Build( Scene scene );
 
+		#endregion
 
 		#region ISelectable Members
 
 		/// <summary>
 		/// Gets/sets the selected flag
 		/// </summary>
+		[Browsable( false )]
 		public bool Selected
 		{
 			get { return m_Selected; }
@@ -76,6 +46,7 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 		/// <summary>
 		/// Gets/sets the highlighted flag
 		/// </summary>
+		[Browsable( false )]
 		public bool Highlighted
 		{
 			get { return m_Highlighted; }
@@ -90,20 +61,63 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 		/// Renders all child selectable objects
 		/// </summary>
 		/// <param name="context">Rendering context</param>
-		public void Render( IRenderContext context )
+		public virtual void Render( IRenderContext context )
 		{
-			foreach ( IObjectEditor editor in m_Children )
+			foreach ( object modifier in m_Modifiers )
 			{
-				IRenderable childRenderable = editor as IRenderable;
-				if ( childRenderable != null )
+				IRenderable renderModifier = modifier as IRenderable;
+				if ( renderModifier != null )
 				{
-					childRenderable.Render( context );
+					renderModifier.Render( context );
 				}
 			}
 		}
 
 		#endregion
+
+		#region ISceneObject Members
+
+		/// <summary>
+		/// Called when this object is added to the scene
+		/// </summary>
+		public void AddedToScene( Scene scene )
+		{
+			scene.Renderables.Add( this );
+		}
+
+		/// <summary>
+		/// Called when this object is removed from the scene
+		/// </summary>
+		public void RemovedFromScene( Scene scene )
+		{
+			scene.Renderables.Remove( this );
+		}
+
+		#endregion
 		
+		#region Protected members
+		
+		/// <summary>
+		/// Adds a modifier object
+		/// </summary>
+		protected void AddModifier( object modifier )
+		{
+			m_Modifiers.Add( modifier );
+		}
+		
+		/// <summary>
+		/// Invokes the <see cref="ObjectChanged"/> event
+		/// </summary>
+		protected void OnObjectChanged( )
+		{
+			if ( m_ObjectChanged != null )
+			{
+				m_ObjectChanged( this, null );
+			}
+		}
+
+		#endregion
+
 		#region Private members
 
 		[NonSerialized]
@@ -115,19 +129,10 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 		[NonSerialized]
 		private EventHandler m_ObjectChanged;
 
-		private readonly List< IObjectEditor > m_Children = new List< IObjectEditor >( );
-
-		private readonly object m_Object;
-
-		/// <summary>
-		/// Called when a child editor changes an object
-		/// </summary>
-		private void ChildObjectChanged( object sender, EventArgs args )
-		{
-			OnObjectChanged( );
-		}
+		private readonly ArrayList m_Modifiers = new ArrayList();
 
 		#endregion
+
 
 	}
 }

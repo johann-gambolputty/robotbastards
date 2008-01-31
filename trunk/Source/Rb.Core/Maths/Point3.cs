@@ -42,6 +42,24 @@ namespace Rb.Core.Maths
 		{
 			return string.Format( "({0},{1},{2})", X, Y, Z );
 		}
+		
+		/// <summary>
+		/// Returns true if obj is a Point3 -exactly equal- to this point (no floating point tolerance)
+		/// </summary>
+		public override bool Equals( object obj )
+		{
+			return ( obj is Point3 ) && ( ( Point3 )obj == this );
+		}
+
+		/// <summary>
+		/// Returns the hash code of this point
+		/// </summary>
+		public unsafe override int GetHashCode()
+		{
+			//	Is this a good hash? who knows? fast, though :)
+			float res = m_X + m_Y + m_Z;
+			return *( int* )&res;
+		}
 
 		/// <summary>
 		/// Sets the point's components
