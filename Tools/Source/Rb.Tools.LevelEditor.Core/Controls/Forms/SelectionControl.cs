@@ -55,9 +55,8 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 				object nodeObject = obj;
 				if ( nodeObject is IObjectEditor )
 				{
-					nodeObject = ( ( IObjectEditor )nodeObject ).Instance;
 				}
-				selectionTreeView.Nodes.Add( CreateObjectTreeNode( nodeObject ) );
+				selectionTreeView.Nodes.Add( CreateObjectTreeNode( obj ) );
 			}
 		}
 

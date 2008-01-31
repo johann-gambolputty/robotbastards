@@ -155,7 +155,7 @@ namespace Rb.Tools.LevelEditor.Core
 		/// Starts editing a given editor scene
 		/// </summary>
 		/// <param name="scene">Scene to edit</param>
-		public void OpenScene( EditorScene scene )
+		public void OpenScene( Scene scene )
 		{
 			if ( ( m_CurrentSceneEditState != null ) && ( SceneClosed != null ) )
 			{
@@ -171,17 +171,9 @@ namespace Rb.Tools.LevelEditor.Core
 		/// <summary>
 		/// Shortcut to get the current scene
 		/// </summary>
-		public EditorScene CurrentScene
+		public Scene CurrentScene
 		{
 			get { return m_CurrentSceneEditState == null ? null : m_CurrentSceneEditState.EditorScene; }
-		}
-
-		/// <summary>
-		/// Shortcut to get the current runtime scene
-		/// </summary>
-		public Scene CurrentRuntimeScene
-		{
-			get { return CurrentScene == null ? null : CurrentScene.RuntimeScene; }
 		}
 
 		/// <summary>
@@ -208,20 +200,10 @@ namespace Rb.Tools.LevelEditor.Core
 			get { return m_CurrentSceneEditState; }
 		}
 
-		/// <summary>
-		/// Gets/sets the object editor builder
-		/// </summary>
-		public IObjectEditorBuilder ObjectEditorBuilder
-		{
-			set { m_Builder = value; }
-			get { return m_Builder; }
-		}
-
 		#endregion
 
 		#region Private stuff
 
-		private IObjectEditorBuilder		m_Builder = new ObjectEditorBuilder( );
 		private SceneEditState				m_CurrentSceneEditState;
 		private static readonly EditorState	ms_Singleton = new EditorState( );
 		private readonly List< Control >	m_EditModeControls = new List< Control >( );

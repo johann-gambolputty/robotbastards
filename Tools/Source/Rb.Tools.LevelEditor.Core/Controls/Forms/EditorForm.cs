@@ -13,6 +13,7 @@ using Rb.Log;
 using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core.Actions;
 using Rb.Tools.LevelEditor.Core.EditModes;
+using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
 
 
@@ -227,17 +228,34 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		/// </summary>
 		public void NewScene( )
 		{
-			EditorScene scene = CreateNewScene( );
+			Scene scene = CreateNewScene( );
 			PopulateNewScene( scene );
 			EditorState.Instance.OpenScene( scene );
 		}
 
 		/// <summary>
+		/// Creates a new runtime scene from the current editor scene
+		/// </summary>
+		public Scene CreateNewRuntimeScene( )
+		{
+			Scene scene = new Scene( );
+			PopulateRuntimeScene( scene );
+
+			IEnumerable< IObjectEditor > editors = EditorState.Instance.CurrentScene.Objects.GetAllOfType< IObjectEditor >( );
+			foreach ( IObjectEditor editor in editors )
+			{
+				editor.Build( scene );
+			}
+
+			return scene;
+		}
+
+		/// <summary>
 		/// Creates a new scene
 		/// </summary>
-		protected virtual EditorScene CreateNewScene( )
+		protected virtual Scene CreateNewScene( )
 		{
-			EditorScene newScene = new EditorScene( new Scene( ) );
+			Scene newScene = new Scene( );
 			return newScene;
 		}
 
@@ -245,8 +263,17 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		/// Populates a scene created by CreateNewScene()
 		/// </summary>
 		/// <param name="scene">Scene to populate</param>
-		protected virtual void PopulateNewScene( EditorScene scene )
+		protected virtual void PopulateNewScene( Scene scene )
 		{
+		}
+
+		/// <summary>
+		/// Populates a runtime scene created by the export process
+		/// </summary>
+		/// <param name="scene">Scene to populate</param>
+		protected virtual void PopulateRuntimeScene( Scene scene )
+		{
+			
 		}
 
 		/// <summary>
@@ -392,7 +419,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 
 		private void openToolStripMenuItem_Click( object sender, EventArgs e )
 		{
-			EditorScene scene = SceneSerializer.Instance.Open( );
+			Scene scene = SceneSerializer.Instance.Open( );
 			if ( scene != null )
 			{
 				EditorState.Instance.OpenScene( scene );
@@ -411,12 +438,14 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 
 		private void exportToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SceneExporter.Instance.Export( EditorState.Instance.CurrentRuntimeScene );
+			Scene runtimeScene = CreateNewRuntimeScene( );
+			SceneExporter.Instance.Export( runtimeScene );
 		}
 
 		private void exportAsToolStripMenuItem_Click( object sender, EventArgs e )
 		{
-			SceneExporter.Instance.ExportAs( EditorState.Instance.CurrentRuntimeScene );
+			Scene runtimeScene = CreateNewRuntimeScene( );
+			SceneExporter.Instance.ExportAs( runtimeScene );
 		}
 
 		private void display_MouseMove( object sender, MouseEventArgs e )

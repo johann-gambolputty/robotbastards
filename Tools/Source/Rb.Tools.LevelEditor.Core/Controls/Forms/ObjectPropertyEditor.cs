@@ -164,10 +164,10 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 				return null;
 			}
 
-			if ( obj is IObjectEditor )
-			{
-				return CreatePropertyBag( ( ( IObjectEditor )obj ).Instance );
-			}
+			//if ( obj is IObjectEditor )
+			//{
+			//    return CreatePropertyBag( obj );
+			//}
 
 			ExPropertyBag bag = new ExPropertyBag( obj );
 			return bag;

@@ -142,15 +142,15 @@ namespace Rb.Tools.LevelEditor.Core
 		/// </summary>
 		/// <param name="path">Path to the scene file</param>
 		/// <returns>Returns the deserialized scene, or null if the open failed</returns>
-		public EditorScene Open( string path )
+		public Scene Open( string path )
 		{
-			EditorScene scene;
+			Scene scene;
 			try
 			{
 				using ( Stream fileStream = File.OpenRead( path ) )
 				{
 					IFormatter formatter = CreateFormatter( );
-					scene = ( EditorScene )formatter.Deserialize( fileStream );
+					scene = ( Scene )formatter.Deserialize( fileStream );
 				}
 			}
 			catch ( Exception ex )
@@ -170,7 +170,7 @@ namespace Rb.Tools.LevelEditor.Core
 		/// Opens a scene file at a user-defined path
 		/// </summary>
 		/// <returns>Returns the deserialized scene, or null if the open failed</returns>
-		public EditorScene Open( )
+		public Scene Open( )
 		{
 			OpenFileDialog openDialog = new OpenFileDialog( );
 			openDialog.Filter = "Scene Files (*.scene)|*.scene|All Files (*.*)|*.*";

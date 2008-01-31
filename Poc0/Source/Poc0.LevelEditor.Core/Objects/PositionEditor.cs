@@ -10,13 +10,13 @@ using Rb.World;
 using Rb.World.Services;
 using Graphics=Rb.Rendering.Graphics;
 
-namespace Poc0.LevelEditor.Core
+namespace Poc0.LevelEditor.Core.Objects
 {
 	/// <summary>
 	/// For changing the position of a game object
 	/// </summary>
 	[Serializable]
-	public class PositionEditor : IRay3Intersector, IObjectEditor, IPickable, IMoveable3, IRenderable, ISelectable
+	public class PositionEditor : IRay3Intersector, IPickable, IMoveable3, IRenderable, ISelectable
 	{
 		#region Public methods
 
@@ -24,16 +24,13 @@ namespace Poc0.LevelEditor.Core
 		/// Sets up this editor
 		/// </summary>
 		/// <param name="placeable">Positioning interface of the game object</param>
-		/// <param name="pick">Position to place the new object at</param>
-		public PositionEditor( IPlaceable placeable, ILineIntersection pick )
+		/// <param name="pos">Position to place the new object at</param>
+		public PositionEditor( IPlaceable placeable, Point3 pos )
 		{
 			m_Placeable = placeable;
 			m_Placeable.PositionChanged += OnPositionChanged;
 
-			SceneExporter.Instance.PreExport += OnPreExport;
-			SceneExporter.Instance.PostExport += OnPostExport;
-
-			Position = ( ( Line3Intersection )pick ).IntersectionPosition;
+			Position = pos;
 
 			IRayCastService rayCaster = EditorState.Instance.CurrentScene.GetService< IRayCastService >( );
 			rayCaster.AddIntersector( RayCastLayers.Entity, this );
@@ -196,23 +193,6 @@ namespace Poc0.LevelEditor.Core
 		private static readonly Draw.IBrush m_DrawSelected;
 		private bool m_Highlight;
 		private bool m_Selected;
-		
-		/// <summary>
-		/// Pre-export event handler. Stops listening for position changes in the runtime object (or this
-		/// and connected objects will be serialized also)
-		/// </summary>
-		private void OnPreExport( object sender, EventArgs args )
-		{
-			m_Placeable.PositionChanged -= OnPositionChanged;
-		}
-
-		/// <summary>
-		/// Post-export event handler. Starts listening for position changes in the runtime object again
-		/// </summary>
-		private void OnPostExport( object sender, EventArgs args )
-		{
-			m_Placeable.PositionChanged += OnPositionChanged;
-		}
 
 		static PositionEditor( )
 		{

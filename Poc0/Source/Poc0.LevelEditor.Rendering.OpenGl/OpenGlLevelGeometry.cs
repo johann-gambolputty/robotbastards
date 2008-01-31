@@ -5,7 +5,7 @@ using Poc0.LevelEditor.Core;
 using Rb.Core.Assets;
 using Rb.Rendering;
 using Rb.Rendering.Textures;
-using Rb.Tools.LevelEditor.Core;
+using Rb.World;
 using Tao.OpenGl;
 using Rb.Core.Maths;
 using Graphics=Rb.Rendering.Graphics;
@@ -21,7 +21,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		public OpenGlLevelGeometry( EditorScene scene ) :
+		public OpenGlLevelGeometry( Scene scene ) :
 			base( scene )
 		{
 			InitializeTechniques( );

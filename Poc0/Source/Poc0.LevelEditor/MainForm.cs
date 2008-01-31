@@ -23,7 +23,6 @@ namespace Poc0.LevelEditor
 			InitializeComponent( );
 
 			EditorState.Instance.AddEditMode( new SelectEditMode( System.Windows.Forms.MouseButtons.Left, new RayCastOptions( RayCastLayers.Entity | RayCastLayers.StaticGeometry ) ) );
-			EditorState.Instance.ObjectEditorBuilder = new GameObjectEditorBuilder( );
 		}
 
 		#region Protected members
@@ -66,26 +65,35 @@ namespace Poc0.LevelEditor
 		/// Populates the scene
 		/// </summary>
 		/// <param name="scene">Populates the scene</param>
-		protected override void PopulateNewScene( EditorScene scene )
+		protected override void PopulateNewScene( Scene scene )
 		{
 			base.PopulateNewScene( scene );
-
-			//	Populate runtime scene
-			scene.RuntimeScene.AddService( new LightingService( ) );
-			IUpdateService updater = new UpdateService( );
-			updater.AddClock( new Clock( "updateClock", 30, true ) );
-			updater.AddClock( new Clock( "animationClock", 60, true ) );
-			scene.RuntimeScene.AddService( updater );
 
 			//	Populate editor scene
 			IRayCastService rayCaster = new RayCastService( );
 			rayCaster.AddIntersector( RayCastLayers.Grid, new Plane3( new Vector3( 0, 1, 0 ), 0 ) );
 			scene.AddService( rayCaster );
 
-
 			//	TODO: AP: Fix Z order rendering cheat
 			scene.Objects.Add( Guid.NewGuid( ), Graphics.Factory.Create< GroundPlaneGrid >( ) );
 			scene.Objects.Add( Guid.NewGuid( ), Graphics.Factory.Create< LevelGeometry >( scene ) );
+		}
+
+		/// <summary>
+		/// Populates a runtime scene created by the export process
+		/// </summary>
+		/// <param name="scene">Scene to populate</param>
+		protected override void PopulateRuntimeScene( Scene scene )
+		{
+			base.PopulateRuntimeScene( scene );
+
+			//	Populate runtime scene
+			scene.AddService( new LightingService( ) );
+			IUpdateService updater = new UpdateService( );
+			updater.AddClock( new Clock( "updateClock", 30, true ) );
+			updater.AddClock( new Clock( "animationClock", 60, true ) );
+			scene.AddService( updater );
+
 		}
 
 		#endregion
@@ -108,7 +116,7 @@ namespace Poc0.LevelEditor
 			{
 				string sceneToLoad = cmdArgs[ 1 ];
 
-				EditorScene scene = SceneSerializer.Instance.Open( sceneToLoad );
+				Scene scene = SceneSerializer.Instance.Open( sceneToLoad );
 				if ( scene != null )
 				{
 					EditorState.Instance.OpenScene( scene );
@@ -122,7 +130,9 @@ namespace Poc0.LevelEditor
 
 		private void OnGameClicked( object sender, EventArgs args )
 		{
-			if ( !SceneExporter.Instance.Export( EditorState.Instance.CurrentRuntimeScene ) )
+			Scene runtimeScene = CreateNewRuntimeScene( );
+
+			if ( !SceneExporter.Instance.Export( runtimeScene ) )
 			{
 				MessageBox.Show( Properties.Resources.ExportFailedCantRunGame, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
 				return;

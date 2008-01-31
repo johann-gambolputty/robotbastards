@@ -32,6 +32,32 @@ namespace Rb.Core.Maths
 			m_X = x;
 			m_Y = y;
 		}
+		
+		/// <summary>
+		/// Converts this point to a string
+		/// </summary>
+		public override string ToString()
+		{
+			return string.Format( "({0},{1})", X, Y );
+		}
+		
+		/// <summary>
+		/// Returns true if obj is a Point3 -exactly equal- to this point (no floating point tolerance)
+		/// </summary>
+		public override bool Equals( object obj )
+		{
+			return ( obj is Point3 ) && ( ( Point2 )obj == this );
+		}
+
+		/// <summary>
+		/// Returns the hash code of this point
+		/// </summary>
+		public unsafe override int GetHashCode( )
+		{
+			//	Is this a good hash? who knows? fast, though :)
+			float res = m_X + m_Y;
+			return *( int* )&res;
+		}
 
 		/// <summary>
 		/// Sets the point's components
@@ -80,11 +106,27 @@ namespace Rb.Core.Maths
 			get { return m_Y; }
 			set { m_Y = value; }
 		}
+		
+		/// <summary>
+		/// Returns true if two points are -exactly- equal (no tolerance for floating point imprecision)
+		/// </summary>
+		public static bool operator == ( Point2 lhs, Point2 rhs )
+		{
+			return ( lhs.X == rhs.X ) && ( lhs.Y == rhs.Y );
+		}
+
+		/// <summary>
+		/// Returns false if two points are in any way unequal (no tolerance for floating point imprecision)
+		/// </summary>
+		public static bool operator != ( Point2 lhs, Point2 rhs )
+		{
+			return ( lhs.X != rhs.X ) || ( lhs.Y != rhs.Y );
+		}
 
 		/// <summary>
 		/// Subtracts two points to create a vector
 		/// </summary>
-		public static Vector2	operator - ( Point2 pt1, Point2 pt2 )
+		public static Vector2 operator - ( Point2 pt1, Point2 pt2 )
 		{
 			return new Vector2( ( pt1.X - pt2.X ), ( pt1.Y - pt2.Y ) );
 		}
@@ -92,7 +134,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Subtracts a vector from a point
 		/// </summary>
-		public static Point2	operator - ( Point2 pt, Vector2 vec )
+		public static Point2 operator - ( Point2 pt, Vector2 vec )
 		{
 			return new Point2( ( pt.X - vec.X ), ( pt.Y - vec.Y ) );
 		}
@@ -100,7 +142,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Adds a vector to a point
 		/// </summary>
-		public static Point2	operator + ( Point2 pt, Vector2 vec )
+		public static Point2 operator + ( Point2 pt, Vector2 vec )
 		{
 			return new Point2( pt.X + vec.X, pt.Y + vec.Y );
 		}
@@ -116,7 +158,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Scales the point by a vector
 		/// </summary>
-		public static Point2	operator * ( Point2 pt, Vector2 vec )
+		public static Point2 operator * ( Point2 pt, Vector2 vec )
 		{
 			return new Point2( pt.X * vec.X, pt.Y * vec.Y );
 		}
@@ -124,7 +166,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Gets the squared distance from one point to another
 		/// </summary>
-		public float	SqrDistanceTo( Point2 pt )
+		public float SqrDistanceTo( Point2 pt )
 		{
 			float diffX = ( X - pt.X );
 			float diffY = ( Y - pt.Y );
@@ -135,13 +177,16 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Gets the distance from on point to another
 		/// </summary>
-		public float	DistanceTo( Point2 pt )
+		public float DistanceTo( Point2 pt )
 		{
-			return ( float )System.Math.Sqrt( SqrDistanceTo( pt ) );
+			return ( float )Math.Sqrt( SqrDistanceTo( pt ) );
 		}
 
+		#region Private members
 
 		private float	m_X;
 		private float	m_Y;
+
+		#endregion
 	}
 }

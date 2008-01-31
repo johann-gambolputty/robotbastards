@@ -1,4 +1,5 @@
 using System;
+using Rb.World;
 
 namespace Rb.Tools.LevelEditor.Core.Selection
 {
@@ -13,11 +14,9 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 		event EventHandler ObjectChanged;
 
 		/// <summary>
-		/// Gets the in-game object
+		/// Builds the object(s) associated with this editor, adding them to a new scene
 		/// </summary>
-		object Instance
-		{
-			get;
-		}
+		/// <param name="scene">New scene to add created objects to</param>
+		void Build( Scene scene );
 	}
 }

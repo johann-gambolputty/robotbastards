@@ -3,7 +3,8 @@ using System.Drawing;
 using Poc0.Core.Environment;
 using Rb.Core.Maths;
 using Rb.Rendering;
-using Rb.Tools.LevelEditor.Core;
+using Rb.Tools.LevelEditor.Core.Selection;
+using Rb.World;
 using Rb.World.Services;
 using Graphics=Rb.Rendering.Graphics;
 using Environment=Poc0.Core.Environment.Environment;
@@ -14,21 +15,19 @@ namespace Poc0.LevelEditor.Core
 	/// Level geometry. Combines brushes to create the walkable geometry of a level
 	/// </summary>
 	[Serializable, RenderingLibraryType]
-	public abstract class LevelGeometry : IRenderable, IRay3Intersector
+	public abstract class LevelGeometry : IRenderable, IRay3Intersector, IObjectEditor
 	{
 		#region Public members
 
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		public LevelGeometry( EditorScene scene )
+		public LevelGeometry( Scene scene )
 		{
 			scene.Renderables.Add( this );
 
-			m_Environment = new Environment( );
-			scene.RuntimeScene.Objects.Add( m_Environment );
-
 			m_Csg.GeometryChanged += OnGeometryChanged;
+
 
 			scene.GetService< IRayCastService >( ).AddIntersector( RayCastLayers.StaticGeometry, this );
 		}
@@ -91,7 +90,6 @@ namespace Poc0.LevelEditor.Core
 
 		#region Private members
 
-		private readonly Environment m_Environment;
 		private readonly Csg m_Csg = new Csg( );
 
 		private readonly static Matrix44 m_YZSwap = new Matrix44
@@ -219,15 +217,10 @@ namespace Poc0.LevelEditor.Core
 			//	Rubbish renderable representation - (next) Render() recreates renderable representation
 			DestroyRenderable( );
 
-			//	TODO: AP: REMOVE (test)
-			
-			//	Update environment
-
-			//	Graphics must be added to the environment first, so it gets a scene assigned
-			IEnvironmentGraphics envGraphics = Graphics.Factory.Create< IEnvironmentGraphics >();
-			m_Environment.Graphics = envGraphics;
-			
-			new EnvironmentGraphicsBuilder( 100.0f ).Build( envGraphics, this );
+			if ( ObjectChanged != null )
+			{
+				ObjectChanged( this, null );
+			}
 		}
 
 		#endregion
@@ -307,5 +300,23 @@ namespace Poc0.LevelEditor.Core
 
 			return intersection;
 		}
+
+		#region IObjectEditor Members
+
+		public event EventHandler ObjectChanged;
+
+		public void Build( Scene scene )
+		{
+			//	Graphics must be added to the environment first, so it gets a scene assigned
+			IEnvironmentGraphics envGraphics = Graphics.Factory.Create< IEnvironmentGraphics >();
+			Environment environment = new Environment( );
+			environment.Graphics = envGraphics;
+			
+			new EnvironmentGraphicsBuilder( 100.0f ).Build( envGraphics, this );
+
+			scene.AddService( environment );
+		}
+
+		#endregion
 	}
 }
