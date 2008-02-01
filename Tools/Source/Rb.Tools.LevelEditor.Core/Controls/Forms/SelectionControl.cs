@@ -1,7 +1,6 @@
 using System.Windows.Forms;
 using Rb.Core.Components;
 using Rb.Tools.LevelEditor.Core;
-using Rb.Tools.LevelEditor.Core.Selection;
 
 namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 {
@@ -52,10 +51,6 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 
 			foreach ( object obj in EditorState.Instance.CurrentSelection.Selection )
 			{
-				object nodeObject = obj;
-				if ( nodeObject is IObjectEditor )
-				{
-				}
 				selectionTreeView.Nodes.Add( CreateObjectTreeNode( obj ) );
 			}
 		}

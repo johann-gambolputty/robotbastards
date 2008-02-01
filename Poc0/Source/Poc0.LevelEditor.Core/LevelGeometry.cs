@@ -311,6 +311,8 @@ namespace Poc0.LevelEditor.Core
 			IEnvironmentGraphics envGraphics = Graphics.Factory.Create< IEnvironmentGraphics >();
 			Environment environment = new Environment( );
 			environment.Graphics = envGraphics;
+
+			scene.Objects.Add( environment );
 			
 			new EnvironmentGraphicsBuilder( 100.0f ).Build( envGraphics, this );
 

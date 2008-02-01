@@ -62,7 +62,8 @@ namespace Rb.Tools.LevelEditor.Core.Actions
 				if ( delta.SqrLength > 0 )
 				{
 					m_Delta += delta;
-					MoveObjects( delta );
+					m_InputPos = curPick3.IntersectionPosition;
+					MoveObjects( delta, curPick3.IntersectionPosition );
 				}
 			}
 			else
@@ -88,7 +89,7 @@ namespace Rb.Tools.LevelEditor.Core.Actions
 		/// </summary>
 		public void Undo( )
 		{
-			MoveObjects( m_Delta );
+			MoveObjects( m_Delta, m_InputPos );
 		}
 
 		/// <summary>
@@ -96,7 +97,8 @@ namespace Rb.Tools.LevelEditor.Core.Actions
 		/// </summary>
 		public void Redo( )
 		{
-			MoveObjects( -m_Delta );
+			//	TODO: AP: It is incorrect to pass m_InputPos in here... Need an IRotateable3 interface
+			MoveObjects( -m_Delta, m_InputPos );
 		}
 
 		#endregion
@@ -105,6 +107,7 @@ namespace Rb.Tools.LevelEditor.Core.Actions
 
 		private readonly RayCastOptions m_PickOptions;
 		private Vector3 m_Delta;
+		private Point3 m_InputPos;
 		private readonly List< IMoveable3 > m_Movers = new List< IMoveable3 >( );
 		private bool m_Modified;
 		
@@ -112,12 +115,13 @@ namespace Rb.Tools.LevelEditor.Core.Actions
 		/// Moves all stored objects by the specified delta
 		/// </summary>
 		/// <param name="delta">Movement delta</param>
-		private void MoveObjects( Vector3 delta )
+		/// <param name="inputPos">Input position that defines the delta over time</param>
+		private void MoveObjects( Vector3 delta, Point3 inputPos )
 		{
 			m_Modified = true;
 			foreach ( IMoveable3 moveable in m_Movers )
 			{
-				moveable.Move( delta );
+				moveable.Move( delta, inputPos );
 			}
 		}
 

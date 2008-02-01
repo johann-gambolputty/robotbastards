@@ -1,4 +1,3 @@
-using System;
 
 namespace Rb.Animation
 {
@@ -10,6 +9,6 @@ namespace Rb.Animation
 		/// <summary>
 		/// Finds an animation in the set by name
 		/// </summary>
-		IAnimation	Find( string animationName );
+		IAnimation Find( string animationName );
 	}
 }

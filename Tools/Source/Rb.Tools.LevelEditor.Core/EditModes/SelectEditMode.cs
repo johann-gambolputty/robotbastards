@@ -145,11 +145,14 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 					SelectionSet selection = EditorState.Instance.CurrentSelection;
 
 					m_PickAction = pickable.CreatePickAction( m_CursorPick );
-					m_PickAction.AddObjects( selection.Selection );
-
-					if ( !selection.IsSelected( pickable ) )
+					if ( m_PickAction != null )
 					{
-						m_PickAction.AddObjects( new object[] { pickable } );
+						m_PickAction.AddObjects( selection.Selection );
+
+						if ( !selection.IsSelected( pickable ) )
+						{
+							m_PickAction.AddObjects( new object[] { pickable } );
+						}
 					}
 				}
 			}
@@ -223,6 +226,8 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 				{
 					objects = ( ( IPicker )sender ).GetObjectsInBox( m_SelectionStart.X, m_SelectionStart.Y, args.X, args.Y );
 				}
+
+				//	If any objects are modifiers, then 
 				
 				if ( ( objects != null ) && ( objects.Length > 0 ) )
 				{

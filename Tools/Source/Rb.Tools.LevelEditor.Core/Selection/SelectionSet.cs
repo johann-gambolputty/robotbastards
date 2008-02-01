@@ -78,6 +78,7 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 		/// <param name="addToSelection">true if the object should be added to the selection, false to replace the selection</param>
 		public void ApplySelect( object obj, bool addToSelection )
 		{
+			obj = GetActualSelectedObject( obj );
 			if ( addToSelection )
 			{
 				if ( m_Selection.Contains( obj ) )
@@ -115,20 +116,21 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 			}
 			foreach ( object obj in objects )
 			{
+				object actualObj = GetActualSelectedObject( obj );
 				if ( addToSelection )
 				{
-					if ( m_Selection.Contains( obj ) )
+					if ( m_Selection.Contains( actualObj ) )
 					{
-						Deselect( obj );
+						Deselect( actualObj );
 					}
 					else
 					{
-						Select( obj );
+						Select( actualObj );
 					}
 				}
-				else if ( !m_Selection.Contains( obj ) )
+				else if ( !m_Selection.Contains( actualObj ) )
 				{
-					Select( obj );
+					Select( actualObj );
 				}
 			}
 		}
@@ -216,6 +218,12 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 		private ObjectDeselectedDelegate m_ObjectDeselected;
 
 		private readonly ArrayList m_Selection = new ArrayList( );
+		
+		private static object GetActualSelectedObject( object obj )
+		{
+			ISelectionModifier modifier = obj as ISelectionModifier;
+			return ( modifier != null ) ? modifier.SelectedObject : obj;
+		}
 
 		#endregion
 	}

@@ -1,6 +1,8 @@
+using System;
 using Poc0.Core.Objects;
 using Rb.Core.Maths;
 using Rb.Rendering.Lights;
+using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
 
 namespace Poc0.LevelEditor.Core.Objects
@@ -8,8 +10,22 @@ namespace Poc0.LevelEditor.Core.Objects
 	/// <summary>
 	/// Edits a spotlight
 	/// </summary>
-	public class SpotlightEditor : PlaceableObjectEditor
+	[Serializable]
+	public class SpotlightEditor : ObjectEditor, IPlaceableObjectEditor
 	{
+		/// <summary>
+		/// Gets/sets the position of this object
+		/// </summary>
+		public Point3 Position
+		{
+			get { return m_PositionModifier.Position; }
+			set
+			{
+				m_PositionModifier.Position = value;
+				OnObjectChanged( );
+			}
+		}
+
 		/// <summary>
 		/// Spotlight direction
 		/// </summary>
@@ -18,13 +34,8 @@ namespace Poc0.LevelEditor.Core.Objects
 			get { return m_Direction; }
 			set
 			{
-				value.Normalise( );
-				bool changed = ( m_Direction != value );
-				m_Direction = value;
-				if ( changed )
-				{
-					OnObjectChanged( );
-				}
+				m_Direction = value.MakeNormal( );
+				OnObjectChanged( );
 			}
 		}
 
@@ -62,8 +73,30 @@ namespace Poc0.LevelEditor.Core.Objects
 			scene.Objects.Add( obj );
 		}
 
-		private float	m_InnerRadius;
-		private float	m_OuterRadius;
-		private Vector3 m_Direction;
+		#region IPlaceableObjectEditor Members
+
+		/// <summary>
+		/// Places this object at a line intersection
+		/// </summary>
+		public void Place( ILineIntersection intersection )
+		{
+			Point3 pt = ( ( Line3Intersection )intersection ).IntersectionPosition;
+
+			m_PositionModifier = new PositionModifier( this, pt );
+			m_PositionModifier.Changed += delegate { OnObjectChanged( ); };
+			AddModifier( m_PositionModifier );
+		}
+
+		#endregion
+
+		#region Private members
+
+		private PositionModifier	m_PositionModifier;
+		private float				m_InnerRadius	= 30;
+		private float				m_OuterRadius	= 40;
+		private Vector3 			m_Direction		= new Vector3( 0, 0, 1 );
+
+		#endregion
+
 	}
 }

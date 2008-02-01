@@ -41,13 +41,18 @@ namespace Rb.Core.Maths
 		/// <param name="normal">Plane normal</param>
 		public Plane3( Point3 pointOnPlane, Vector3 normal )
 		{
+			Set( pointOnPlane, normal );
+		}
+
+		/// <summary>
+		/// Builds this plane from a point on a plane, and the plane normal
+		/// </summary>
+		/// <param name="pointOnPlane">Point on the plane</param>
+		/// <param name="normal">Plane normal</param>
+		public void Set( Point3 pointOnPlane, Vector3 normal )
+		{
 			m_Normal = normal;
 			m_Distance = -normal.Dot( pointOnPlane );
-
-			//	TODO: AP: Remove checks
-			System.Diagnostics.Debug.Assert( ClassifyPoint( pointOnPlane, 0.001f ) == PlaneClassification.On );
-			System.Diagnostics.Debug.Assert( ClassifyPoint( pointOnPlane + normal, 0.001f ) == PlaneClassification.InFront );
-			System.Diagnostics.Debug.Assert( ClassifyPoint( pointOnPlane - normal, 0.001f ) == PlaneClassification.Behind );
 		}
 		
 		/// <summary>
