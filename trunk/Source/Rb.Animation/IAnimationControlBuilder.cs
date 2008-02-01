@@ -1,4 +1,3 @@
-using System;
 
 namespace Rb.Animation
 {
@@ -10,6 +9,6 @@ namespace Rb.Animation
 		/// <summary>
 		/// Returns a new animation control
 		/// </summary>
-		IAnimationControl	CreateControl( );
+		IAnimationControl CreateControl( );
 	}
 }

@@ -8,10 +8,18 @@ namespace Rb.Rendering
 	/// Draws various shapes, in 2d or 3d
 	/// </summary>
 	/// <remarks>
-	/// All draw operations are affected by the current state of the FFP transformation
+	/// All draw operations are affected by the current state of the rendering pipeline
 	/// </remarks>
 	public abstract class Draw
 	{
+		public static class Pens
+		{
+			public static IPen White	= Graphics.Draw.NewPen( Color.White );
+			public static IPen Red		= Graphics.Draw.NewPen( Color.Red );
+			public static IPen Blue		= Graphics.Draw.NewPen( Color.Blue );
+			public static IPen Green	= Graphics.Draw.NewPen( Color.Green );
+			public static IPen Black	= Graphics.Draw.NewPen( Color.Black );
+		}
 
 		#region Pens
 

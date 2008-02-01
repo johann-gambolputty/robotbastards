@@ -97,12 +97,14 @@
     <Compile Include="SceneSerializer.cs" />
     <Compile Include="Selection\IMoveable3.cs" />
     <Compile Include="Selection\IObjectEditor.cs" />
+    <Compile Include="Selection\IOrientable3.cs" />
     <Compile Include="Selection\IPickable.cs" />
     <Compile Include="Selection\IPicker.cs" />
     <Compile Include="Selection\IPlaceableObjectEditor.cs" />
     <Compile Include="Selection\ISelectable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SceneEditState.cs" />
+    <Compile Include="Selection\ISelectionModifier.cs" />
     <Compile Include="Selection\ObjectEditor.cs" />
     <Compile Include="Selection\SelectionSet.cs" />
   </ItemGroup>

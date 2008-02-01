@@ -132,7 +132,5 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 		private readonly ArrayList m_Modifiers = new ArrayList();
 
 		#endregion
-
-
 	}
 }

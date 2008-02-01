@@ -1,14 +1,13 @@
 using System;
 using System.Drawing;
-using Poc0.Core.Objects;
 using Rb.Core.Maths;
+using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.Actions;
 using Rb.Tools.LevelEditor.Core.Selection;
-using Rb.Rendering;
 using Rb.World;
-using Rb.World.Services;
 using Graphics=Rb.Rendering.Graphics;
+using Rb.World.Services;
 
 namespace Poc0.LevelEditor.Core.Objects
 {
@@ -16,20 +15,18 @@ namespace Poc0.LevelEditor.Core.Objects
 	/// For changing the position of a game object
 	/// </summary>
 	[Serializable]
-	public class PositionEditor : IRay3Intersector, IPickable, IMoveable3, IRenderable, ISelectable
+	public class PositionModifier : IRay3Intersector, IPickable, IMoveable3, IRenderable, ISelectable, ISelectionModifier
 	{
-		#region Public methods
+		#region Public members
 
 		/// <summary>
-		/// Sets up this editor
+		/// Sets up this modifier
 		/// </summary>
-		/// <param name="placeable">Positioning interface of the game object</param>
+		/// <param name="owner">Positioning interface of the game object</param>
 		/// <param name="pos">Position to place the new object at</param>
-		public PositionEditor( IPlaceable placeable, Point3 pos )
+		public PositionModifier( object owner, Point3 pos )
 		{
-			m_Placeable = placeable;
-			m_Placeable.PositionChanged += OnPositionChanged;
-
+			m_Owner = owner;
 			Position = pos;
 
 			IRayCastService rayCaster = EditorState.Instance.CurrentScene.GetService< IRayCastService >( );
@@ -37,18 +34,22 @@ namespace Poc0.LevelEditor.Core.Objects
 		}
 
 		/// <summary>
-		/// Gets the position of the game object
+		/// Event, invoked when the position changes
+		/// </summary>
+		public event EventHandler Changed;
+
+		/// <summary>
+		/// Gets/setse the position of the associated placeable object
 		/// </summary>
 		public Point3 Position
 		{
-			get { return m_Placeable.Position; }
+			get { return m_Pos; }
 			set
 			{
-				m_Placeable.Position = value;
-				if ( ObjectChanged != null )
-				{
-					ObjectChanged( this, null );
-				}
+				m_Pos = value;
+				m_Plane.Set( m_Pos + new Vector3( 0, 0.1f, 0 ), Vector3.YAxis );
+
+				OnChanged( );
 			}
 		}
 
@@ -63,6 +64,7 @@ namespace Poc0.LevelEditor.Core.Objects
 		/// <returns>Returns a move action</returns>
 		public IPickAction CreatePickAction( ILineIntersection pick )
 		{
+			//	TODO: AP: Correct move action parameters
 			return new MoveAction( new RayCastOptions( RayCastLayers.StaticGeometry ) );
 		}
 
@@ -81,29 +83,13 @@ namespace Poc0.LevelEditor.Core.Objects
 		#region IMoveable3 Members
 
 		/// <summary>
-		/// Moves the game object
+		/// Moves this object
 		/// </summary>
 		/// <param name="delta">Movement delta</param>
-		public void Move( Vector3 delta )
+		/// <param name="inputPos">Input position that defines the delta over time</param>
+		public void Move( Vector3 delta, Point3 inputPos )
 		{
 			Position += delta;
-		}
-
-		#endregion
-
-		#region IObjectEditor Members
-
-		/// <summary>
-		/// Called when this object changes
-		/// </summary>
-		public event EventHandler ObjectChanged;
-
-		/// <summary>
-		/// Gets the underlying game object
-		/// </summary>
-		public object Instance
-		{
-			get { return m_Placeable; }
 		}
 
 		#endregion
@@ -114,7 +100,7 @@ namespace Poc0.LevelEditor.Core.Objects
 		/// Renders this object
 		/// </summary>
 		/// <param name="context">Rendering context</param>
-		public void Render( IRenderContext context )
+		public virtual void Render( IRenderContext context )
 		{
 			Draw.IBrush drawProps = m_DrawUnselected;
 			if ( Selected )
@@ -125,7 +111,7 @@ namespace Poc0.LevelEditor.Core.Objects
 			{
 				drawProps = m_DrawHighlight;
 			}
-			Graphics.Draw.Circle( drawProps, m_Placeable.Position.X, m_Placeable.Position.Y + 0.1f, m_Placeable.Position.Z, Radius, 12 );
+			Graphics.Draw.Circle( drawProps, Position.X, Position.Y + 0.1f, Position.Z, Radius, 12 );
 		}
 
 		#endregion
@@ -137,8 +123,25 @@ namespace Poc0.LevelEditor.Core.Objects
 		/// </summary>
 		public bool Highlighted
 		{
-			get { return m_Highlight; }
-			set { m_Highlight = value; }
+			get
+			{
+				if ( m_Owner is ISelectable )
+				{
+					return ( ( ISelectable )m_Owner ).Highlighted;
+				}
+				return m_Highlight;
+			}
+			set
+			{
+				if ( m_Owner is ISelectable )
+				{
+					( ( ISelectable )m_Owner ).Highlighted = value;
+				}
+				else
+				{
+					m_Highlight = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -146,8 +149,25 @@ namespace Poc0.LevelEditor.Core.Objects
 		/// </summary>
 		public bool Selected
 		{
-			get { return m_Selected; }
-			set { m_Selected = value; }
+			get
+			{
+				if ( m_Owner is ISelectable )
+				{
+					return ( ( ISelectable )m_Owner ).Selected;
+				}
+				return m_Selected;
+			}
+			set
+			{
+				if ( m_Owner is ISelectable )
+				{
+					( ( ISelectable )m_Owner ).Selected = value;
+				}
+				else
+				{
+					m_Selected = value;
+				}
+			}
 		}
 
 		#endregion
@@ -159,10 +179,10 @@ namespace Poc0.LevelEditor.Core.Objects
 		/// </summary>
 		/// <param name="ray">Ray to check</param>
 		/// <returns>true if the ray intersects this object</returns>
-		public bool TestIntersection( Ray3 ray )
+		public virtual bool TestIntersection( Ray3 ray )
 		{
 			Line3Intersection pick = m_Plane.GetIntersection( ray );
-			return pick == null ? false : pick.IntersectionPosition.DistanceTo( m_Placeable.Position ) > Radius;
+			return pick == null ? false : pick.IntersectionPosition.DistanceTo( Position ) > Radius;
 		}
 
 		/// <summary>
@@ -170,10 +190,10 @@ namespace Poc0.LevelEditor.Core.Objects
 		/// </summary>
 		/// <param name="ray">Ray to check</param>
 		/// <returns>Intersection information. If no intersection takes place, this method returns null</returns>
-		public Line3Intersection GetIntersection( Ray3 ray )
+		public virtual Line3Intersection GetIntersection( Ray3 ray )
 		{
 			Line3Intersection pick = m_Plane.GetIntersection( ray );
-			if ( ( pick == null ) || ( pick.IntersectionPosition.DistanceTo( m_Placeable.Position ) > Radius ) )
+			if ( ( pick == null ) || ( pick.IntersectionPosition.DistanceTo( Position ) > Radius ) )
 			{
 			    return null;
 			}
@@ -182,11 +202,47 @@ namespace Poc0.LevelEditor.Core.Objects
 		}
 
 		#endregion
+		
+		#region ISelectionModifier Members
+
+		/// <summary>
+		/// Gets the actual object to select, if this is selected
+		/// </summary>
+		public object SelectedObject
+		{
+			get { return m_Owner; }
+		}
+
+		#endregion
+
+		#region Protected members
+		
+		/// <summary>
+		/// Invokes the Changed event
+		/// </summary>
+		protected void OnChanged( )
+		{
+			if ( Changed != null )
+			{
+				Changed( this, null );
+			}
+		}
+
+		/// <summary>
+		/// Gets the plane defined by the current position and the up vector
+		/// </summary>
+		protected Plane3 Plane
+		{
+			get { return m_Plane; }
+		}
+
+		#endregion
 
 		#region Private members
 
-		private readonly IPlaceable m_Placeable;
-		private Plane3 m_Plane;
+		private readonly object m_Owner;
+		private readonly Plane3 m_Plane = new Plane3( Point3.Origin, Vector3.YAxis );
+		private Point3 m_Pos = new Point3( 0, 0, 0 );
 		private const float Radius = 1.0f;
 		private static readonly Draw.IBrush m_DrawUnselected;
 		private static readonly Draw.IBrush m_DrawHighlight;
@@ -194,7 +250,7 @@ namespace Poc0.LevelEditor.Core.Objects
 		private bool m_Highlight;
 		private bool m_Selected;
 
-		static PositionEditor( )
+		static PositionModifier( )
 		{
 			m_DrawUnselected = Graphics.Draw.NewBrush( Color.Black, Color.PaleGoldenrod );
 			m_DrawHighlight = Graphics.Draw.NewBrush( Color.DarkSalmon, Color.Goldenrod );
@@ -210,14 +266,7 @@ namespace Poc0.LevelEditor.Core.Objects
 			m_DrawSelected.OutlinePen.State.EnableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
 		}
 
-		/// <summary>
-		/// Called when the position of the game object changes
-		/// </summary>
-		private void OnPositionChanged( object obj, Point3 oldPos, Point3 newPos )
-		{
-			m_Plane = new Plane3( m_Placeable.Position + new Vector3( 0, 0.1f, 0 ), Vector3.YAxis );
-		}
-
 		#endregion
 	}
+
 }

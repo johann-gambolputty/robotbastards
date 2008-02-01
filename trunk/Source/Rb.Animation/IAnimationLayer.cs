@@ -1,4 +1,3 @@
-using System;
 
 namespace Rb.Animation
 {
@@ -10,7 +9,7 @@ namespace Rb.Animation
 		/// <summary>
 		/// Gets the animations that this layer can play
 		/// </summary>
-		IAnimationSet		LayerAnimations
+		IAnimationSet LayerAnimations
 		{
 			get;
 		}
@@ -18,7 +17,7 @@ namespace Rb.Animation
 		/// <summary>
 		/// Gets the currently playing animation
 		/// </summary>
-		IAnimation			PlayingAnimation
+		IAnimation PlayingAnimation
 		{
 			get;
 		}
@@ -26,11 +25,11 @@ namespace Rb.Animation
 		/// <summary>
 		/// Plays an animation
 		/// </summary>
-		void				PlayAnimation( IAnimation anim );
+		void PlayAnimation( IAnimation anim );
 
 		/// <summary>
 		/// Stops playing the current animation
 		/// </summary>
-		void				StopCurrentAnimation( );
+		void StopCurrentAnimation( );
 	}
 }
