@@ -15,7 +15,7 @@ namespace Poc0.LevelEditor.Core.Objects
 	/// For changing the position and angle of a game object
 	/// </summary>
 	[Serializable]
-	internal class AngleModifier : IRay3Intersector, IPickable, IMoveable3, IRenderable, ISelectable, ISelectionModifier
+	internal class AngleModifier : IRay3Intersector, IPickable, IOrientable3, IRenderable, ISelectable, ISelectionModifier
 	{
 		/// <summary>
 		/// Event, invoked when the angle changes
@@ -49,14 +49,14 @@ namespace Poc0.LevelEditor.Core.Objects
 			set
 			{
 				m_Centre = value;
-				m_Plane.Set( value, Vector3.YAxis );
+				m_Plane.Set( value + new Vector3( 0, 0.1f, 0 ), Vector3.YAxis );
 				m_Spinner = CalculateSpinnerPosition( );
 			}
 		}
 
 		/// <summary>
 		/// Gets/sets the angle
-		/// </summary>
+		/// </summsary>
 		public float Angle
 		{
 			get { return m_Angle; }
@@ -64,6 +64,7 @@ namespace Poc0.LevelEditor.Core.Objects
 			{
 				bool changed = ( m_Angle != value );
 				m_Angle = value;
+				m_Spinner = CalculateSpinnerPosition( );
 				if ( ( changed ) && ( Changed != null ) )
 				{
 					Changed( this, null );
@@ -104,7 +105,7 @@ namespace Poc0.LevelEditor.Core.Objects
 		public bool TestIntersection( Ray3 ray )
 		{
 			Line3Intersection pick = m_Plane.GetIntersection( ray );
-			return pick == null ? false : pick.IntersectionPosition.DistanceTo( m_Spinner ) > Radius;
+			return pick == null ? false : pick.IntersectionPosition.DistanceTo( m_Spinner ) < Radius;
 		}
 
 		/// <summary>
@@ -185,14 +186,22 @@ namespace Poc0.LevelEditor.Core.Objects
 
 		#endregion
 
-		#region IMoveable3 Members
+		#region IOrientable3 Members
 
 		/// <summary>
-		/// Moves this object
+		/// Gets/sets the angle of this object (synonymous with <see cref="Angle"/> property)
 		/// </summary>
-		/// <param name="delta">Movement delta</param>
-		/// <param name="inputPos">Input position that defines the delta over time</param>
-		public void Move( Vector3 delta, Point3 inputPos )
+		public float Orientation
+		{
+			get { return Angle; }
+			set { Angle = value; }
+		}
+
+		/// <summary>
+		/// Turns to face a position
+		/// </summary>
+		/// <param name="inputPos">Position to face</param>
+		public void Face( Point3 inputPos )
 		{
 			Vector3 dir = inputPos - Centre;
 			Angle = Trigonometry.Atan2( dir.X, dir.Z );
@@ -210,17 +219,17 @@ namespace Poc0.LevelEditor.Core.Objects
 		public IPickAction CreatePickAction( ILineIntersection pick )
 		{
 			//	TODO: AP: Correct move action parameters
-			return new MoveAction( new RayCastOptions( RayCastLayers.StaticGeometry ) );
+			return new FaceAction( new RayCastOptions( RayCastLayers.StaticGeometry ) );
 		}
 
 		/// <summary>
 		/// Returns true if the specified action is a move action
 		/// </summary>
 		/// <param name="action">Action to check</param>
-		/// <returns>true if action is a <see cref="MoveAction"/></returns>
+		/// <returns>true if action is a <see cref="FaceAction"/></returns>
 		public bool SupportsPickAction( IPickAction action )
 		{
-			return action is MoveAction;
+			return action is FaceAction;
 		}
 
 		#endregion

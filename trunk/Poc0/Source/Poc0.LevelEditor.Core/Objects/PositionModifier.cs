@@ -86,8 +86,7 @@ namespace Poc0.LevelEditor.Core.Objects
 		/// Moves this object
 		/// </summary>
 		/// <param name="delta">Movement delta</param>
-		/// <param name="inputPos">Input position that defines the delta over time</param>
-		public void Move( Vector3 delta, Point3 inputPos )
+		public void Move( Vector3 delta )
 		{
 			Position += delta;
 		}

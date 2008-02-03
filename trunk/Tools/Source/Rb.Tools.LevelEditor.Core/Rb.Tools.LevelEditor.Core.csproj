@@ -43,6 +43,7 @@
     <Compile Include="Actions\ActionList.cs" />
     <Compile Include="Actions\AddObjectAction.cs" />
     <Compile Include="Actions\DeleteObjectAction.cs" />
+    <Compile Include="Actions\FaceAction.cs" />
     <Compile Include="Actions\IAction.cs" />
     <Compile Include="Actions\IPickAction.cs" />
     <Compile Include="Actions\MoveAction.cs" />

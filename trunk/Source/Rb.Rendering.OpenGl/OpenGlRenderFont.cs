@@ -263,7 +263,8 @@ namespace Rb.Rendering.OpenGl
 		private Bitmap BuildFontImage( Font font, CharacterSet characterSet )
 		{
 			string chars = new string( characterSet.Chars );
-			System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(new Bitmap(1, 1));
+			System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage( new Bitmap( 1, 1 ) );
+
 			Size charSetSize = MeasureString( graphics, chars, font );
 			graphics.Dispose( );
 

@@ -75,8 +75,8 @@ namespace Poc0.LevelEditor.Core.Objects
 			m_AngleModifier = new AngleModifier( this, pt, 0 );
 			m_AngleModifier.Changed += delegate { OnObjectChanged( ); };
 
-			AddModifier( m_PositionModifier );
 			AddModifier( m_AngleModifier );
+			AddModifier( m_PositionModifier );
 		}
 
 		#endregion
