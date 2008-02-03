@@ -14,7 +14,6 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 		/// Moves this object by the specified delta
 		/// </summary>
 		/// <param name="delta">Movement delta</param>
-		/// <param name="inputPos">Input position that defines the delta over time</param>
-		void Move( Vector3 delta, Point3 inputPos );
+		void Move( Vector3 delta );
 	}
 }

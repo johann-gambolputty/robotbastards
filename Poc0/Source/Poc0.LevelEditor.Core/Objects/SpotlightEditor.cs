@@ -19,24 +19,16 @@ namespace Poc0.LevelEditor.Core.Objects
 		public Point3 Position
 		{
 			get { return m_PositionModifier.Position; }
-			set
-			{
-				m_PositionModifier.Position = value;
-				OnObjectChanged( );
-			}
+			set { m_PositionModifier.Position = value; }
 		}
 
 		/// <summary>
 		/// Spotlight direction
 		/// </summary>
-		public Vector3 Direction
+		public float Facing
 		{
-			get { return m_Direction; }
-			set
-			{
-				m_Direction = value.MakeNormal( );
-				OnObjectChanged( );
-			}
+			get { return m_FacingModifier.Angle; }
+			set { m_FacingModifier.Angle = value; }
 		}
 
 		/// <summary>
@@ -58,15 +50,31 @@ namespace Poc0.LevelEditor.Core.Objects
 		}
 
 		/// <summary>
+		/// Sets the arc of the spotlight
+		/// </summary>
+		public float ArcDegrees
+		{
+			get { return m_ArcDegrees; }
+			set
+			{
+				m_ArcDegrees = value;
+				OnObjectChanged( );
+			}
+		}
+
+		/// <summary>
 		/// Builds the associated object
 		/// </summary>
 		public override void Build( Scene scene )
 		{
 			PointLightSocket obj = new PointLightSocket( );
 
-			SpotLight light = new SpotLight( Position, Direction );
+			Vector3 direction = new Vector3( Trigonometry.Sin( Facing ), 0, Trigonometry.Cos( Facing ) );
+
+			SpotLight light = new SpotLight( Position, direction );
 			light.InnerRadius = InnerRadius;
 			light.OuterRadius = OuterRadius;
+			light.ArcDegrees = ArcDegrees;
 
 			obj.Light = light;
 
@@ -83,7 +91,17 @@ namespace Poc0.LevelEditor.Core.Objects
 			Point3 pt = ( ( Line3Intersection )intersection ).IntersectionPosition;
 
 			m_PositionModifier = new PositionModifier( this, pt );
-			m_PositionModifier.Changed += delegate { OnObjectChanged( ); };
+			m_PositionModifier.Changed +=
+				delegate
+					{
+						m_FacingModifier.Centre = Position;
+						OnObjectChanged( );
+					};
+
+			m_FacingModifier = new AngleModifier( this, pt, 0 );
+			m_FacingModifier.Changed += delegate { OnObjectChanged( ); };
+
+			AddModifier( m_FacingModifier );
 			AddModifier( m_PositionModifier );
 		}
 
@@ -92,9 +110,10 @@ namespace Poc0.LevelEditor.Core.Objects
 		#region Private members
 
 		private PositionModifier	m_PositionModifier;
+		private AngleModifier		m_FacingModifier;
 		private float				m_InnerRadius	= 30;
 		private float				m_OuterRadius	= 40;
-		private Vector3 			m_Direction		= new Vector3( 0, 0, 1 );
+		private float				m_ArcDegrees	= 90;
 
 		#endregion
 

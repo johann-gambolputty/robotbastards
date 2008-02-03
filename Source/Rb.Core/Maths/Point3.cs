@@ -154,7 +154,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Subtracts a vector from a point
 		/// </summary>
-		public static Point3	operator - ( Point3 pt, Vector3 vec )
+		public static Point3 operator - ( Point3 pt, Vector3 vec )
 		{
 			return new Point3( ( pt.X - vec.X ), ( pt.Y - vec.Y ), ( pt.Z - vec.Z ) );
 		}
@@ -162,7 +162,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Adds a vector to a point
 		/// </summary>
-		public static Point3	operator + ( Point3 pt, Vector3 vec )
+		public static Point3 operator + ( Point3 pt, Vector3 vec )
 		{
 			return new Point3( pt.X + vec.X, pt.Y + vec.Y, pt.Z + vec.Z );
 		}
