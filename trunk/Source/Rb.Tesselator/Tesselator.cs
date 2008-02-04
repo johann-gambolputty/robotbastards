@@ -101,7 +101,7 @@ namespace Rb.Tesselator
 		/// </summary>
 		public static PolygonLists Tesselate( TesselatorInput input )
 		{
-			if ( input.Polygon == null)
+			if ( input.Polygon == null )
 			{
 				throw new InvalidOperationException( "SetPolygon() must be called prior to Tesselate()" );
 			}

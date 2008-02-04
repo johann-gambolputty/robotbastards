@@ -5,6 +5,7 @@ using Poc0.LevelEditor.Core;
 using Rb.Core.Assets;
 using Rb.Rendering;
 using Rb.Rendering.Textures;
+using Rb.Tesselator;
 using Rb.World;
 using Tao.OpenGl;
 using Rb.Core.Maths;
@@ -299,6 +300,39 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 			Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_REPLACE );
 			Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST );
 			Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST );
+		}
+
+		
+		protected override void RenderFlat( Tesselator.PolygonLists polyLists )
+		{
+			if ( polyLists == null )
+			{
+				return;
+			}
+			Point2[] points = polyLists.Points;
+			foreach ( Tesselator.PolygonList polyList in polyLists.Lists )
+			{
+				switch ( polyList.Order )
+				{
+					case Tesselator.Order.TriList	:
+						Gl.glBegin( Gl.GL_TRIANGLES );
+						break;
+					case Tesselator.Order.TriFan	:
+						Gl.glBegin( Gl.GL_TRIANGLE_FAN );
+						break;
+					case Tesselator.Order.TriStrip	:
+						Gl.glBegin( Gl.GL_TRIANGLE_STRIP );
+						break;
+				}
+
+				for ( int index = 0; index < polyList.Indices.Length; ++index )
+				{
+					Point2 pt = points[ polyList.Indices[ index ] ];
+					Gl.glVertex3f( pt.X, pt.Y, 0.02f );
+				}
+
+				Gl.glEnd( );
+			}
 		}
 
 		/// <summary>

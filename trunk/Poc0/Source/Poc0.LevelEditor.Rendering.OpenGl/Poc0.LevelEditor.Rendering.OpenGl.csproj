@@ -68,6 +68,10 @@
       <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
       <Name>Rb.Rendering</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Tesselator\Rb.Tesselator.csproj">
+      <Project>{7E6047EB-64A1-48ED-8ADF-43F02F593B02}</Project>
+      <Name>Rb.Tesselator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.World\Rb.World.csproj">
       <Project>{46980366-998B-4178-87B7-B04DD3B21979}</Project>
       <Name>Rb.World</Name>

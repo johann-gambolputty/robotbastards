@@ -56,21 +56,25 @@ namespace Poc0.LevelEditor.Core
 		/// <exception cref="InvalidOperationException">Thrown by convex region builder if BSP tree is internally invalid</exception>
 		public void Combine( Operation op, CsgBrush brush )
 		{
-			BspNode brushBsp = Build( brush );
+			List< Edge > brushEdges = new List< Edge >( );
+			BspNode brushBsp = Build( brush, brushEdges );
 			BspNode newRoot = null;
+			List< Edge > allEdges = null;
 			if ( m_Root == null )
 			{
 				if ( op == Operation.Union || op == Operation.EdgeUnion )
 				{
 					newRoot = brushBsp;
+					allEdges = brushEdges;
 				}
 			}
 			else
 			{
-				newRoot = Combine( op, m_Root, brushBsp );
+				newRoot = Combine( op, m_Root, brushBsp, out allEdges );
 			}
 			if ( newRoot != null )
 			{
+				BuildConvexRegions2( new List<Edge>( allEdges ) );
 				FixUpDoubleSidedNodes( newRoot );
 				BuildConvexRegions( newRoot );
 				m_Root = newRoot;
@@ -317,6 +321,18 @@ namespace Poc0.LevelEditor.Core
 				get { return m_Plane; }
 			}
 
+			public static void LinkEdges( Edge edge0, Edge edge1 )
+			{
+				edge0.NextEdge = edge1;
+				edge1.PreviousEdge = edge0;
+			}
+
+			public Edge PreviousEdge
+			{
+				get { return m_Prev; }
+				set { m_Prev = value; }
+			}
+
 			public Edge NextEdge
 			{
 				get { return m_Next; }
@@ -330,6 +346,7 @@ namespace Poc0.LevelEditor.Core
 			}
 
 			private Edge m_Next;
+			private Edge m_Prev;
 			private bool m_Internal;
 			private bool m_Temporary;
 			private bool m_DoubleSided;
@@ -353,11 +370,12 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Combines two BSP trees using a specified CSG operation
 		/// </summary>
-		private static BspNode Combine( Operation op, BspNode set0, BspNode set1 )
+		private static BspNode Combine( Operation op, BspNode set0, BspNode set1, out List< Edge > allEdges )
 		{
 			IList< Edge > set0Edges = Flatten( set0 );
 			IList< Edge > set1Edges = Flatten( set1 );
-			List< Edge > allEdges = new List< Edge >( );
+
+			allEdges = new List<Edge>( );
 
 			switch ( op )
 			{
@@ -396,7 +414,7 @@ namespace Poc0.LevelEditor.Core
 
 			allEdges = MergeEdges( allEdges );
 
-			return Build( null, allEdges );
+			return BuildNode( null, allEdges );
 		}
 
 		private static bool Equivalent( Point2 p0, Point2 p1 )
@@ -478,7 +496,7 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		private static void Flatten( BspNode root, IList< Edge > edges )
 		{
-			if (!root.Edge.Temporary)
+			if ( !root.Edge.Temporary )
 			{
 				edges.Add( root.Edge );
 			}
@@ -517,13 +535,9 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Builds a BSP tree from a CSG brush
 		/// </summary>
-		/// <param name="brush">CSG brush</param>
-		/// <returns>Returns the root node of the BSP tree that represents brush</returns>
-		private static BspNode Build( CsgBrush brush )
+		private static BspNode Build( CsgBrush brush, List< Edge > edges )
 		{
 			Point2[] points = brush.Points;
-
-			List< Edge > edges = new List< Edge >( points.Length );
 
 			//	Create edges
 			for ( int ptIndex = 0; ptIndex < points.Length; ++ptIndex )
@@ -531,13 +545,14 @@ namespace Poc0.LevelEditor.Core
 				edges.Add( new Edge( points[ ptIndex ], points[ ( ptIndex + 1 ) % points.Length ] ) );
 				if ( ptIndex > 0 )
 				{
-					edges[ ptIndex - 1 ].NextEdge = edges[ ptIndex ];
+					Edge.LinkEdges( edges[ ptIndex - 1 ], edges[ ptIndex ] );
 				}
 			}
 
-			edges[ edges.Count - 1 ].NextEdge = edges[ 0 ];
+			//	Link up the final edge to the first edge
+			Edge.LinkEdges( edges[ edges.Count - 1 ], edges[ 0 ] );
 
-			return Build( null, edges );
+			return BuildNode( null, edges );
 		}
 
 		private void FixUpDoubleSidedNodes( BspNode node )
@@ -555,7 +570,7 @@ namespace Poc0.LevelEditor.Core
 			}
 		}
 
-		private static void BuildConvexRegions2( IList< Edge > edges )
+		private void BuildConvexRegions2( IList< Edge > edges )
 		{
 			TesselatorInput input = new TesselatorInput( );
 
@@ -570,7 +585,7 @@ namespace Poc0.LevelEditor.Core
 					edge = edge.NextEdge;
 				}
 
-				if ( internalEdges )
+				if ( !internalEdges )
 				{
 					if ( input.Polygon != null )
 					{
@@ -584,9 +599,10 @@ namespace Poc0.LevelEditor.Core
 				}
 			}
 
-			Tesselator.PolygonLists lists = Tesselator.Tesselate(input);
-			//	TODO: AP: ...
+			m_PolyLists = Tesselator.Tesselate( input );
 		}
+
+		public Tesselator.PolygonLists m_PolyLists;
 
 		/// <summary>
 		/// Builds convex regions from a given root node
@@ -669,7 +685,7 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Builds a BSP node from a list of edges
 		/// </summary>
-		private static BspNode Build( BspNode parentNode, IList< Edge > edges )
+		private static BspNode BuildNode( BspNode parentNode, IList< Edge > edges )
 		{
 			if ( edges.Count == 0 )
 			{
@@ -694,11 +710,11 @@ namespace Poc0.LevelEditor.Core
 			//	Build BSP subtrees from left and right edges
 			if ( leftEdges.Count > 0 )
 			{
-				splitNode.Behind = Build( splitNode, leftEdges );
+				splitNode.Behind = BuildNode( splitNode, leftEdges );
 			}
 			if ( rightEdges.Count > 0 )
 			{
-				splitNode.InFront = Build( splitNode, rightEdges );
+				splitNode.InFront = BuildNode( splitNode, rightEdges );
 			}
 
 			return splitNode;
@@ -771,6 +787,12 @@ namespace Poc0.LevelEditor.Core
 				startToMidEdge.WallData = edge.WallData;
 				midToEndEdge.WallData = edge.WallData;
 
+
+				Edge.LinkEdges( edge.PreviousEdge, startToMidEdge );
+				Edge.LinkEdges( startToMidEdge, midToEndEdge );
+				Edge.LinkEdges( midToEndEdge, edge.NextEdge );
+
+
 				//	Add new edges to the appropriate edge lists
 				if ( p0Class != PlaneClassification.Behind )
 				{
@@ -781,13 +803,19 @@ namespace Poc0.LevelEditor.Core
 					leftEdges.Add( startToMidEdge );
 					startToMidEdge.DoubleSided = edge.DoubleSided;
 				}
+				else
+				{
+					Edge.LinkEdges( edge.PreviousEdge, midToEndEdge );
+				}
 
 				if ( rightEdges != null )
 				{
 					rightEdges.Add( midToEndEdge );
 					midToEndEdge.DoubleSided = edge.DoubleSided;
-					startToMidEdge.NextEdge = midToEndEdge;
-					midToEndEdge.NextEdge = edge.NextEdge;
+				}
+				else
+				{
+					Edge.LinkEdges( startToMidEdge, edge.NextEdge );	
 				}
 			}
 		}
