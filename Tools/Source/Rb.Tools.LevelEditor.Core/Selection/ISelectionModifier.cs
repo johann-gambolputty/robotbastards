@@ -12,7 +12,7 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 	public interface ISelectionModifier
 	{
 		/// <summary>
-		/// 
+		/// Gets the object to be selected
 		/// </summary>
 		object SelectedObject
 		{

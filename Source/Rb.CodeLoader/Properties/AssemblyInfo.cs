@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("RB")]
 [assembly: AssemblyProduct("Rb.CodeLoader")]
-[assembly: AssemblyCopyright("Copyright © Workshare 2008")]
+[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

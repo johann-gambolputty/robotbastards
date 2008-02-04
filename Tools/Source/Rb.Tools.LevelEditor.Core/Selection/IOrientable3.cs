@@ -22,7 +22,7 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 		/// <summary>
 		/// Turns this object to face a given point
 		/// </summary>
-		/// <param name="pt">Point to ace</param>
+		/// <param name="pt">Point to face</param>
 		void Face( Point3 pt );
 	}
 }

@@ -201,6 +201,33 @@ namespace Rb.Core.Maths
 			return null;
 		}
 
+		/// <summary>
+		/// Returns information about an intersection between a ray, and a plane defined by a point and a normal
+		/// </summary>
+		public static Line3Intersection GetRayIntersection( Ray3 ray, Point3 pt, Vector3 vec )
+		{
+			float	startDot	= vec.Dot( ray.Origin );
+			float	diffDot		= vec.Dot( ray.Direction );
+			
+			if ( !Utils.CloseToZero( diffDot ) )
+			{
+				float d = -vec.Dot( pt );
+				float t = ( startDot + d ) / -diffDot;
+
+				if ( t >= 0 )
+				{
+					Line3Intersection result = new Line3Intersection( );
+					result.IntersectedObject	= null;
+					result.IntersectionPosition = ray.Origin + ( ray.Direction * t );
+					result.IntersectionNormal	= vec;
+					result.Distance				= t;
+					return result;
+				}
+			}
+
+			return null;
+		}
+
 		#endregion
 	}
 }

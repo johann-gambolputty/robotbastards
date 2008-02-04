@@ -66,6 +66,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Rendering.Contracts", ".
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.CodeLoader", "..\Source\Rb.CodeLoader\Rb.CodeLoader.csproj", "{06BF677B-39AE-424A-B44D-C365AE05023D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Tesselator", "..\Source\Rb.Tesselator\Rb.Tesselator.csproj", "{7E6047EB-64A1-48ED-8ADF-43F02F593B02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -247,6 +249,12 @@ Global
 		{06BF677B-39AE-424A-B44D-C365AE05023D}.NDoc|Any CPU.Build.0 = Release|Any CPU
 		{06BF677B-39AE-424A-B44D-C365AE05023D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06BF677B-39AE-424A-B44D-C365AE05023D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E6047EB-64A1-48ED-8ADF-43F02F593B02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E6047EB-64A1-48ED-8ADF-43F02F593B02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E6047EB-64A1-48ED-8ADF-43F02F593B02}.NDoc|Any CPU.ActiveCfg = Release|Any CPU
+		{7E6047EB-64A1-48ED-8ADF-43F02F593B02}.NDoc|Any CPU.Build.0 = Release|Any CPU
+		{7E6047EB-64A1-48ED-8ADF-43F02F593B02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E6047EB-64A1-48ED-8ADF-43F02F593B02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

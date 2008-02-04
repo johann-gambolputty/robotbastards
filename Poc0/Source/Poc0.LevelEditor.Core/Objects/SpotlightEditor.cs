@@ -32,6 +32,18 @@ namespace Poc0.LevelEditor.Core.Objects
 		}
 
 		/// <summary>
+		/// Gets/sets the declination of the spotlight vector. Valid over the range (-1,1), where -1 is straight down, and 1 is straight up
+		/// </summary>
+		public float Declination
+		{
+			get { return m_FacingModifier.Declination; }
+			set
+			{
+				m_FacingModifier.Declination = Utils.Clamp( value, -1, 1 );
+			}
+		}
+
+		/// <summary>
 		/// Spotlight inner radius
 		/// </summary>
 		public float InnerRadius
@@ -69,7 +81,7 @@ namespace Poc0.LevelEditor.Core.Objects
 		{
 			PointLightSocket obj = new PointLightSocket( );
 
-			Vector3 direction = new Vector3( Trigonometry.Sin( Facing ), 0, Trigonometry.Cos( Facing ) );
+			Vector3 direction = m_FacingModifier.CreateDirectionVector( );
 
 			SpotLight light = new SpotLight( Position, direction );
 			light.InnerRadius = InnerRadius;

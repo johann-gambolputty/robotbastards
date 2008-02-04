@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Rb.Rendering.Contracts")]
+[assembly: AssemblyTitle("Rb.Tesselator.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("RB")]
-[assembly: AssemblyProduct("Rb.Rendering.Contracts")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCompany("Workshare")]
+[assembly: AssemblyProduct("Rb.Tesselator.Tests")]
+[assembly: AssemblyCopyright("Copyright © Workshare 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("fac0d61f-4523-4239-9abb-0953e01e06d0")]
+[assembly: Guid("e2e52da4-fd5a-4815-959d-dcad107b1303")]
 
 // Version information for an assembly consists of the following four values:
 //

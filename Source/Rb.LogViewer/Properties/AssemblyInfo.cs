@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Rb.LogViewer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Workshare")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Rb.LogViewer")]
-[assembly: AssemblyCopyright("Copyright © Workshare 2007")]
+[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
