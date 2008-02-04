@@ -3,6 +3,7 @@ using System.Drawing;
 using Poc0.Core.Environment;
 using Rb.Core.Maths;
 using Rb.Rendering;
+using Rb.Tesselator;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
 using Rb.World.Services;
@@ -159,7 +160,8 @@ namespace Poc0.LevelEditor.Core
 
 			Graphics.Draw.StartCache( );
 
-			RenderFlat( m_Csg.Root );
+		//	RenderFlat( m_Csg.Root );
+			RenderFlat( m_Csg.m_PolyLists );
 
 			m_FlatRenderer = Graphics.Draw.StopCache( );
 		}
@@ -181,6 +183,8 @@ namespace Poc0.LevelEditor.Core
 			Graphics.Draw.Circle( m_FillVertex, edge.P0.X, edge.P0.Y, 0.3f );
 			Graphics.Draw.Circle( m_FillVertex, edge.P1.X, edge.P1.Y, 0.3f );
 		}
+
+		protected abstract void RenderFlat( Tesselator.PolygonLists polyLists );
 
 		/// <summary>
 		/// Renders the specified BSP node
