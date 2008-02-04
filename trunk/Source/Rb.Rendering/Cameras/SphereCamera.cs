@@ -45,10 +45,7 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public float S
 		{
-			get
-			{
-				return m_S;
-			}
+			get { return m_S; }
 			set
 			{
 				m_S = Utils.Wrap( value, 0, Constants.TwoPi );
@@ -61,10 +58,7 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public float T
 		{
-			get
-			{
-				return m_T;
-			}
+			get { return m_T; }
 			set
 			{
 				m_T = Utils.Clamp( value, 0.1f, Constants.Pi - 0.1f );
@@ -78,10 +72,7 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public Point3 LookAt
 		{
-			get
-			{
-				return m_LookAt;
-			}
+			get { return m_LookAt; }
 			set
 			{
 				m_LookAt = value;
@@ -94,10 +85,7 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public float Zoom
 		{
-			get
-			{
-				return m_Zoom;
-			}
+			get { return m_Zoom; }
 			set
 			{
 				m_Zoom = value;

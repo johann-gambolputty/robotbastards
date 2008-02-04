@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Rb.Core.Maths;
 using Rb.Rendering;
+using Rb.Tesselator;
 using Rb.Tools.LevelEditor.Core.Selection;
 
 namespace Poc0.LevelEditor.Core
@@ -316,6 +317,20 @@ namespace Poc0.LevelEditor.Core
 				get { return m_Plane; }
 			}
 
+			public Edge NextEdge
+			{
+				get { return m_Next; }
+				set { m_Next = value; }
+			}
+
+			public bool IsInternal
+			{
+				get { return m_Internal; }
+				set { m_Internal = value; }
+			}
+
+			private Edge m_Next;
+			private bool m_Internal;
 			private bool m_Temporary;
 			private bool m_DoubleSided;
 			private Point2 m_P0;
@@ -514,7 +529,13 @@ namespace Poc0.LevelEditor.Core
 			for ( int ptIndex = 0; ptIndex < points.Length; ++ptIndex )
 			{
 				edges.Add( new Edge( points[ ptIndex ], points[ ( ptIndex + 1 ) % points.Length ] ) );
+				if ( ptIndex > 0 )
+				{
+					edges[ ptIndex - 1 ].NextEdge = edges[ ptIndex ];
+				}
 			}
+
+			edges[ edges.Count - 1 ].NextEdge = edges[ 0 ];
 
 			return Build( null, edges );
 		}
@@ -532,6 +553,39 @@ namespace Poc0.LevelEditor.Core
 			{
 				node.Behind = new BspNode( node, node.Edge.MakeTemporaryFlippedEdge( ) );
 			}
+		}
+
+		private static void BuildConvexRegions2( IList< Edge > edges )
+		{
+			TesselatorInput input = new TesselatorInput( );
+
+			while ( edges.Count > 0 )
+			{
+				List< Point2 > points = new List< Point2 >( );
+				Edge edge = edges[ 0 ];
+				bool internalEdges = edge.IsInternal;
+				while ( edges.Remove( edge ) )
+				{
+					points.Add( edge.P0 );
+					edge = edge.NextEdge;
+				}
+
+				if ( internalEdges )
+				{
+					if ( input.Polygon != null )
+					{
+						throw new InvalidOperationException( "Tried to generate more than one boundary during tesselation" );
+					}
+					input.Polygon = points;
+				}
+				else
+				{
+					input.AddContour( points );
+				}
+			}
+
+			Tesselator.PolygonLists lists = Tesselator.Tesselate(input);
+			//	TODO: AP: ...
 		}
 
 		/// <summary>
@@ -732,6 +786,8 @@ namespace Poc0.LevelEditor.Core
 				{
 					rightEdges.Add( midToEndEdge );
 					midToEndEdge.DoubleSided = edge.DoubleSided;
+					startToMidEdge.NextEdge = midToEndEdge;
+					midToEndEdge.NextEdge = edge.NextEdge;
 				}
 			}
 		}

@@ -34,10 +34,44 @@ namespace Poc0.LevelEditor.Core.Objects
 			m_Centre = pos;
 			m_Angle = angle;
 			m_Spinner = CalculateSpinnerPosition( );
-			m_Plane = new Plane3( pos, Vector3.YAxis );
 			
 			IRayCastService rayCaster = EditorState.Instance.CurrentScene.GetService< IRayCastService >( );
 			rayCaster.AddIntersector( RayCastLayers.Entity, this );
+		}
+
+		/// <summary>
+		/// Creates a normalized direction vector from the angle and declination
+		/// </summary>
+		public Vector3 CreateDirectionVector( )
+		{
+			float s = Angle;
+			float t = ( Declination + 1 ) * Constants.HalfPi;
+
+			float x = Trigonometry.Sin( s ) * Trigonometry.Sin( t );
+			float y = Trigonometry.Cos( t );
+			float z = Trigonometry.Cos( s ) * Trigonometry.Sin( t );
+			return new Vector3( x, y, z );
+		}
+
+		/// <summary>
+		/// Gets/sets the declination of the modifier
+		/// </summary>
+		public float Declination
+		{
+			get { return m_Declination; }
+			set
+			{
+				bool changed = m_Declination != value;
+				m_Declination = value;
+				if ( changed )
+				{
+					m_Spinner = CalculateSpinnerPosition( );
+					if ( Changed != null )
+					{
+						Changed( this, null );
+					}
+				}
+			}
 		}
 
 		/// <summary>
@@ -49,7 +83,6 @@ namespace Poc0.LevelEditor.Core.Objects
 			set
 			{
 				m_Centre = value;
-				m_Plane.Set( value + new Vector3( 0, 0.1f, 0 ), Vector3.YAxis );
 				m_Spinner = CalculateSpinnerPosition( );
 			}
 		}
@@ -64,10 +97,13 @@ namespace Poc0.LevelEditor.Core.Objects
 			{
 				bool changed = ( m_Angle != value );
 				m_Angle = value;
-				m_Spinner = CalculateSpinnerPosition( );
-				if ( ( changed ) && ( Changed != null ) )
+				if ( changed )
 				{
-					Changed( this, null );
+					m_Spinner = CalculateSpinnerPosition( );
+					if ( Changed != null )
+					{
+						Changed( this, null );
+					}
 				}
 			}
 		}
@@ -92,7 +128,7 @@ namespace Poc0.LevelEditor.Core.Objects
 			Graphics.Draw.Circle( drawProps, m_Spinner, Radius );
 		}
 
-		private const float Length = 4;
+		private const float Length = 3;
 		private const float Radius = 0.4f;
 		
 		#region IRay3Intersector Members
@@ -104,7 +140,7 @@ namespace Poc0.LevelEditor.Core.Objects
 		/// <returns>true if the ray intersects this object</returns>
 		public bool TestIntersection( Ray3 ray )
 		{
-			Line3Intersection pick = m_Plane.GetIntersection( ray );
+			Line3Intersection pick = Intersections3.GetRayIntersection( ray, m_Spinner, Vector3.YAxis );
 			return pick == null ? false : pick.IntersectionPosition.DistanceTo( m_Spinner ) < Radius;
 		}
 
@@ -115,7 +151,7 @@ namespace Poc0.LevelEditor.Core.Objects
 		/// <returns>Intersection information. If no intersection takes place, this method returns null</returns>
 		public Line3Intersection GetIntersection( Ray3 ray )
 		{
-			Line3Intersection pick = m_Plane.GetIntersection( ray );
+			Line3Intersection pick = Intersections3.GetRayIntersection( ray, m_Spinner, Vector3.YAxis );
 			if ( ( pick == null ) || ( pick.IntersectionPosition.DistanceTo( m_Spinner ) > Radius ) )
 			{
 			    return null;
@@ -128,9 +164,9 @@ namespace Poc0.LevelEditor.Core.Objects
 
 		private readonly object m_Owner;
 		private float m_Angle;
+		private float m_Declination;
 		private Point3 m_Centre;
 		private Point3 m_Spinner;
-		private readonly Plane3 m_Plane;
 		
 		private readonly static Draw.IPen ms_Selected;
 		private readonly static Draw.IPen ms_Highlighted;
@@ -145,7 +181,7 @@ namespace Poc0.LevelEditor.Core.Objects
 
 		private Point3 CalculateSpinnerPosition( )
 		{
-			Vector3 vec = new Vector3( Trigonometry.Sin( Angle ) * Length, 0, Trigonometry.Cos( Angle ) * Length );
+			Vector3 vec = CreateDirectionVector( ) * Length;
 			return Centre + vec;
 		}
 
