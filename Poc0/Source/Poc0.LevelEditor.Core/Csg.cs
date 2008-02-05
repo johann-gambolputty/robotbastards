@@ -76,7 +76,7 @@ namespace Poc0.LevelEditor.Core
 			{
 				BuildConvexRegions2( new List<Edge>( allEdges ) );
 				FixUpDoubleSidedNodes( newRoot );
-				BuildConvexRegions( newRoot );
+			//	BuildConvexRegions( newRoot );
 				m_Root = newRoot;
 			}
 			if ( GeometryChanged != null )
@@ -265,7 +265,6 @@ namespace Poc0.LevelEditor.Core
 			/// <summary>
 			/// Creates a flipped version of this edge, with its temporary flag set to true
 			/// </summary>
-			/// <returns></returns>
 			public Edge MakeTemporaryFlippedEdge( )
 			{
 				Edge edge = new Edge( new Point2( P1 ), new Point2( P0 ) );
@@ -284,6 +283,15 @@ namespace Poc0.LevelEditor.Core
 				m_P0 = p0;
 				m_P1 = p1;
 				m_Plane = new Plane2( p0, p1 );
+			}
+
+			/// <summary>
+			/// Gets/sets the index of this edge in the edge list
+			/// </summary>
+			public int Index
+			{
+				get { return m_Index; }
+				set { m_Index = value; }
 			}
 
 			/// <summary>
@@ -345,6 +353,7 @@ namespace Poc0.LevelEditor.Core
 				set { m_Internal = value; }
 			}
 
+			private int m_Index = -1;
 			private Edge m_Next;
 			private Edge m_Prev;
 			private bool m_Internal;
@@ -366,6 +375,18 @@ namespace Poc0.LevelEditor.Core
 		/// A point is considered to be on the plane (PlaneClassification.On) if it's within this distance of the plane
 		/// </summary>
 		private const float OnPlaneTolerance = 0.01f;
+
+		/// <summary>
+		/// Sets the index properties of all edges in an edge list
+		/// </summary>
+		private static void IndexEdges( IList< Edge > edges )
+		{
+			//	Set the indices of all edges
+			for ( int edgeIndex = 0; edgeIndex < edges.Count; ++edgeIndex )
+			{
+				edges[ edgeIndex ].Index = edgeIndex;
+			}
+		}
 
 		/// <summary>
 		/// Combines two BSP trees using a specified CSG operation
@@ -413,7 +434,7 @@ namespace Poc0.LevelEditor.Core
 			}
 
 			allEdges = MergeEdges( allEdges );
-
+			IndexEdges( allEdges );
 			return BuildNode( null, allEdges );
 		}
 
@@ -535,14 +556,15 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Builds a BSP tree from a CSG brush
 		/// </summary>
-		private static BspNode Build( CsgBrush brush, List< Edge > edges )
+		private static BspNode Build( CsgBrush brush, IList< Edge > edges )
 		{
 			Point2[] points = brush.Points;
 
 			//	Create edges
 			for ( int ptIndex = 0; ptIndex < points.Length; ++ptIndex )
 			{
-				edges.Add( new Edge( points[ ptIndex ], points[ ( ptIndex + 1 ) % points.Length ] ) );
+				Edge edge = new Edge( points[ ptIndex ], points[ ( ptIndex + 1 ) % points.Length ] );
+				edges.Add( edge );
 				if ( ptIndex > 0 )
 				{
 					Edge.LinkEdges( edges[ ptIndex - 1 ], edges[ ptIndex ] );
@@ -552,7 +574,13 @@ namespace Poc0.LevelEditor.Core
 			//	Link up the final edge to the first edge
 			Edge.LinkEdges( edges[ edges.Count - 1 ], edges[ 0 ] );
 
-			return BuildNode( null, edges );
+			//	Build the BSP tree from the edge list
+			BspNode node = BuildNode( null, edges );
+
+			//	Index all the edges in the edge list
+			IndexEdges( edges );
+
+			return node;
 		}
 
 		private void FixUpDoubleSidedNodes( BspNode node )
@@ -574,16 +602,25 @@ namespace Poc0.LevelEditor.Core
 		{
 			TesselatorInput input = new TesselatorInput( );
 
-			while ( edges.Count > 0 )
+			bool[] isProcessed = new bool[ edges.Count ];
+			int firstEdgeIndex = 0;
+
+			while ( firstEdgeIndex < edges.Count )
 			{
+				//	Each iteration begins with an unprocessed edge, then runs through the edge loop,
+				//	adding points to the current contour until it returns to the initial edge.
+
 				List< Point2 > points = new List< Point2 >( );
-				Edge edge = edges[ 0 ];
+				Edge edge = edges[ firstEdgeIndex ];
 				bool internalEdges = edge.IsInternal;
-				while ( edges.Remove( edge ) )
+
+				do
 				{
+					isProcessed[ edge.Index ] = true;
 					points.Add( edge.P0 );
 					edge = edge.NextEdge;
 				}
+				while ( edge.Index != firstEdgeIndex );
 
 				if ( !internalEdges )
 				{
@@ -596,6 +633,15 @@ namespace Poc0.LevelEditor.Core
 				else
 				{
 					input.AddContour( points );
+				}
+
+				//	Find the first unprocessed edge for the next iteration
+				for ( ; firstEdgeIndex < edges.Count; ++firstEdgeIndex )
+				{
+					if ( !isProcessed[ firstEdgeIndex ] )
+					{
+						break;
+					}
 				}
 			}
 
@@ -753,6 +799,7 @@ namespace Poc0.LevelEditor.Core
 		{
 			Plane2 splitter = splitterEdge.Plane;
 
+			//	TODO: AP: Expand point classification code. Results from classifications can be re-used later in intersection code
 			PlaneClassification p0Class = splitter.ClassifyPoint( edge.P0, OnPlaneTolerance );
 			PlaneClassification p1Class = splitter.ClassifyPoint( edge.P1, OnPlaneTolerance );
 
@@ -777,6 +824,10 @@ namespace Poc0.LevelEditor.Core
 			}
 			else
 			{
+				//	Calculate the intersection between edge and splitterEdge. If the intersection occurs inside
+				//	splitterEdge, then we have to link splitterEdge to either the new start-to-mid or mid-to-end
+				//	edge.
+
 				Line2Intersection intersection = Intersections2.GetLinePlaneIntersection( edge.P0, edge.P1, splitter );
 
 				//	Create subdivided edges
@@ -787,11 +838,10 @@ namespace Poc0.LevelEditor.Core
 				startToMidEdge.WallData = edge.WallData;
 				midToEndEdge.WallData = edge.WallData;
 
-
+				//	Link new edges into edge loop
 				Edge.LinkEdges( edge.PreviousEdge, startToMidEdge );
 				Edge.LinkEdges( startToMidEdge, midToEndEdge );
 				Edge.LinkEdges( midToEndEdge, edge.NextEdge );
-
 
 				//	Add new edges to the appropriate edge lists
 				if ( p0Class != PlaneClassification.Behind )

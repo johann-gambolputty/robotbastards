@@ -155,8 +155,8 @@ namespace Rb.World.Entities
 		[Dispatch]
 		public void HandleRotation( TurnRequest rotation )
 		{
-			float x = ( float )Math.Cos( rotation.Rotation );
-			float z = ( float )Math.Sin( rotation.Rotation );
+			float x = Functions.Cos( rotation.Rotation );
+			float z = Functions.Sin( rotation.Rotation );
 
 			m_ZAxis = new Vector3( x, 0, z );
 			m_XAxis = Vector3.Cross( m_YAxis, m_ZAxis ).MakeNormal( );

@@ -135,11 +135,11 @@ namespace Rb.Core.Maths
 		{
 			get
 			{
-				return ( float )Math.Sqrt( SqrLength );
+				return Functions.Sqrt( SqrLength );
 			}
 			set
 			{
-				IpMultiplyByValue( value / ( float )Math.Sqrt( SqrLength ) );
+				IpMultiplyByValue( value / Functions.Sqrt( SqrLength ) );
 			}
 		}
 

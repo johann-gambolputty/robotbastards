@@ -22,7 +22,7 @@
     </object>
 
     <!-- FPS display -->
-    <bool value="true" property="ShowFps"/>
+    <bool value="false" property="ShowFps"/>
     <colour value="White" property="FpsDisplay.TextColour"/>
 
     <!-- Rendering technique

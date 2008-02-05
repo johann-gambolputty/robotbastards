@@ -24,16 +24,16 @@ namespace Rb.Core.Maths
 
 			//	Set top and bottom planes
 			float hFov = fov / 2;
-			float sinHFov = ( float )System.Math.Sin( hFov );
-			float cosHFov = ( float )System.Math.Cos( hFov );
+			float sinHFov = Functions.Sin( hFov );
+			float cosHFov = Functions.Cos( hFov );
 
 			Top = new Plane3( 0, -cosHFov, -sinHFov, 0 );
 			Bottom = new Plane3( 0, cosHFov, -sinHFov, 0 );
 
 			//	Set left and right planes
-			float xHFov = ( float )System.Math.Atan( aspect * System.Math.Tan( hFov ) );
-			float sinXHFov = ( float )System.Math.Sin( xHFov );
-			float cosXHFov = ( float )System.Math.Cos( xHFov );
+			float xHFov = Functions.Atan( aspect * Functions.Tan( hFov ) );
+			float sinXHFov = Functions.Sin( xHFov );
+			float cosXHFov = Functions.Cos( xHFov );
 
 			Left = new Plane3( cosXHFov, 0, -sinXHFov, 0 );
 			Right = new Plane3( -cosXHFov, 0, -sinXHFov, 0 );

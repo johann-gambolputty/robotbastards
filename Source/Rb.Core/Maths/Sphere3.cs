@@ -36,7 +36,7 @@ namespace Rb.Core.Maths
 			}
 			set
 			{
-				m_Radius = ( float )Math.Sqrt( value );
+				m_Radius = Functions.Sqrt( value );
 			}
 		}
 

@@ -150,7 +150,7 @@ namespace Rb.Core.Maths
 		/// </remarks>
 		public float DistanceTo( BigPoint3 pt )
 		{
-			return ( float )System.Math.Sqrt( SqrDistanceTo( pt ) );
+			return Functions.Sqrt( SqrDistanceTo( pt ) );
 		}
 
 		private long	m_X;

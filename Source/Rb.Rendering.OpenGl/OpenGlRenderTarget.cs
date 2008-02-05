@@ -1,4 +1,5 @@
 using System;
+using Rb.Core.Maths;
 using Rb.Rendering.Textures;
 using Tao.OpenGl;
 
@@ -168,7 +169,7 @@ namespace Rb.Rendering.OpenGl
 			int bufferIndex = 0;
 			for ( int depthIndex = 0; depthIndex < depthPixels.Length; ++depthIndex )
 			{
-				float scaledDepth = ( float )Math.Exp( depthPixels[ depthIndex ] );
+				float scaledDepth = Functions.Exp( depthPixels[ depthIndex ] );
 				bufferMem[ bufferIndex++ ] = ( byte )( scaledDepth * 255.0f );
 				bufferMem[ bufferIndex++ ] = ( byte )( scaledDepth * 255.0f );
 				bufferMem[ bufferIndex++ ] = ( byte )( scaledDepth * 255.0f );

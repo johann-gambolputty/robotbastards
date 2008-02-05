@@ -68,7 +68,7 @@ namespace Poc0.LevelEditor.Core
 				Vector2 vec1 = ( nextPt - curPt ).MakeNormal( );
 
 				Vector2 perpVec0 = vec0.MakePerp( );
-				float angle = ( float )Math.Acos( vec0.Dot( vec1 ) );
+				float angle = Functions.Acos( vec0.Dot( vec1 ) );
 
 				if ( perpVec0.Dot( vec1 ) >= 0 )
 				{
