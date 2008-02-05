@@ -200,7 +200,7 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public float	DistanceTo( Point3 pt )
 		{
-			return ( float )Math.Sqrt( SqrDistanceTo( pt ) );
+			return Functions.Sqrt( SqrDistanceTo( pt ) );
 		}
 
 

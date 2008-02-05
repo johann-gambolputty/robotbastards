@@ -1,4 +1,5 @@
 using System;
+using Rb.Core.Maths;
 
 namespace Rb.World.Entities
 {
@@ -41,11 +42,11 @@ namespace Rb.World.Entities
 		{
 			get
 			{
-				return ( float )Math.Sqrt( m_X * m_X + m_Z * m_Z );
+				return Functions.Sqrt( m_X * m_X + m_Z * m_Z );
 			}
 		}
 
-		private float m_X;
-		private float m_Z;
+		private readonly float m_X;
+		private readonly float m_Z;
 	}
 }

@@ -164,7 +164,7 @@ namespace Rb.Rendering.OpenGl.Cg
 							IntPtr arcParam = TaoCg.cgGetArrayParameter( TaoCg.cgGetNamedStructParameter( param, "m_Arcs" ), numSpotLights );
 							TaoCg.cgSetParameter3f( positionParam, curLight.Position.X, curLight.Position.Y, curLight.Position.Z );
 							TaoCg.cgSetParameter3f( directionParam, curLight.Direction.X, curLight.Direction.Y, curLight.Direction.Z );
-							TaoCg.cgSetParameter1f( arcParam, ( float )Math.Cos( curLight.ArcDegrees * Constants.DegreesToRadians * 0.5f ) );
+							TaoCg.cgSetParameter1f( arcParam, Functions.Cos( curLight.ArcDegrees * Constants.DegreesToRadians * 0.5f ) );
 							++numSpotLights;
 						}
 					}

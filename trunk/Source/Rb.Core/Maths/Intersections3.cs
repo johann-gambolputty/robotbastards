@@ -93,7 +93,7 @@ namespace Rb.Core.Maths
 				return null;
 			}
 
-			nVec /= ( float )System.Math.Sqrt( nVecSqrLength );
+			nVec /= Functions.Sqrt( nVecSqrLength );
 			return new Line3Intersection( pt, nVec, r );
 		}
 
@@ -117,7 +117,7 @@ namespace Rb.Core.Maths
 			{
 				//	1 intersection: The origin of the ray is inside the sphere
 				discriminant = ( a1 * a1 ) - a0;
-				float t = -a1 + ( float )System.Math.Sqrt( discriminant );
+				float t = -a1 + Functions.Sqrt( discriminant );
 
 				intersectionPt = ray.GetPointOnRay( t );
 				return new Line3Intersection(  intersectionPt, ( intersectionPt - sphere.Centre ).MakeNormal( ), t );
@@ -144,7 +144,7 @@ namespace Rb.Core.Maths
 			}
 
 			//	2 intersections: 2 roots to the ray/sphere equation. Choose the closest
-			float root = ( float )System.Math.Sqrt( discriminant );
+			float root = Functions.Sqrt( discriminant );
 			float t0 = -a1 - root;
 			float t1 = -a1 + root;
 

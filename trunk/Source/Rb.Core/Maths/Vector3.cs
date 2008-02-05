@@ -75,14 +75,8 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public float X
 		{
-			get
-			{
-				return m_X;
-			}
-			set
-			{
-				m_X = value;
-			}
+			get { return m_X; }
+			set { m_X = value; }
 		}
 
 		/// <summary>
@@ -90,14 +84,8 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public float Y
 		{
-			get
-			{
-				return m_Y;
-			}
-			set
-			{
-				m_Y = value;
-			}
+			get { return m_Y; }
+			set { m_Y = value; }
 		}
 
 		/// <summary>
@@ -105,14 +93,8 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public float Z
 		{
-			get
-			{
-				return m_Z;
-			}
-			set
-			{
-				m_Z = value;
-			}
+			get { return m_Z; }
+			set { m_Z = value; }
 		}
 
 		/// <summary>
@@ -122,6 +104,7 @@ namespace Rb.Core.Maths
 		{
 			get
 			{
+				//	oh dear...
 				fixed ( float* vec = &m_X )
 				{
 					return vec[ index ];
@@ -147,7 +130,7 @@ namespace Rb.Core.Maths
 			}
 			set
 			{
-				Length = value * value;
+				Length = Functions.Sqrt( value );
 			}
 		}
 
@@ -158,11 +141,11 @@ namespace Rb.Core.Maths
 		{
 			get
 			{
-				return ( float )Math.Sqrt( SqrLength );
+				return Functions.Sqrt( SqrLength );
 			}
 			set
 			{
-				IpMultiplyByValue( value / ( float )Math.Sqrt( SqrLength ) );
+				IpMultiplyByValue( value / Functions.Sqrt( SqrLength ) );
 			}
 		}
 
@@ -403,7 +386,7 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public float DistanceTo( Vector3 pt )
 		{
-			return ( float )Math.Sqrt( SqrDistanceTo( pt ) );
+			return Functions.Sqrt( SqrDistanceTo( pt ) );
 		}
 
 		/// <summary>

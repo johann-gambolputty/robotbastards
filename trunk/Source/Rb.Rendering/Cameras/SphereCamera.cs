@@ -109,16 +109,16 @@ namespace Rb.Rendering.Cameras
 		{
 			Vector3 zAxis = new Vector3
 			    (
-			        ( float )( Math.Cos( m_S ) * Math.Sin( m_T ) ),
-			        ( float )( Math.Cos( m_T ) ),
-			        ( float )( Math.Sin( m_S ) * Math.Sin( m_T ) )
+			        ( Functions.Cos( m_S ) * Functions.Sin( m_T ) ),
+			        ( Functions.Cos( m_T ) ),
+			        ( Functions.Sin( m_S ) * Functions.Sin( m_T ) )
 			    );
 
 			Vector3 yAxis = new Vector3
 			    (
-			        ( float )-( Math.Cos( m_S ) * Math.Cos( m_T ) ),
-			        ( float )-( -Math.Sin( m_T ) ),
-			        ( float )-(  Math.Sin( m_S ) * Math.Cos( m_T ) )
+			        -( Functions.Cos( m_S ) * Functions.Cos( m_T ) ),
+			        -( -Functions.Sin( m_T ) ),
+			        -(  Functions.Sin( m_S ) * Functions.Cos( m_T ) )
 			    );
 
 			Vector3 xAxis = Vector3.Cross( zAxis, yAxis );

@@ -85,8 +85,8 @@ namespace Poc0.Core.Objects
 				localToWorld.Translation = pos;
 
 				float angle = placeable.Angle;
-				float sinA = ( float )Math.Sin( angle );
-				float cosA = ( float )Math.Cos( angle );
+				float sinA = Functions.Sin( angle );
+				float cosA = Functions.Cos( angle );
 				localToWorld.ZAxis = new Vector3( cosA, 0, sinA );
 				localToWorld.XAxis = new Vector3( -sinA, 0, cosA );
 			}

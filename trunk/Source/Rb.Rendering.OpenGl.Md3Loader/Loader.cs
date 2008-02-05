@@ -613,9 +613,9 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 					float s = reader.ReadByte( ) * ByteToAngle;
 					float t = reader.ReadByte( ) * ByteToAngle;
 
-					normals[ normalIndex + 2 ] = ( float )( Math.Cos( s ) * Math.Sin( t ) );
-					normals[ normalIndex + 0 ] = ( float )( Math.Sin( s ) * Math.Sin( t ) );
-					normals[ normalIndex + 1 ] = ( float )( Math.Cos( t ) );
+					normals[ normalIndex + 2 ] = ( Functions.Cos( s ) * Functions.Sin( t ) );
+					normals[ normalIndex + 0 ] = ( Functions.Sin( s ) * Functions.Sin( t ) );
+					normals[ normalIndex + 1 ] = ( Functions.Cos( t ) );
 					normalIndex += 3;
 				}
 

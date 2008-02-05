@@ -1,4 +1,5 @@
 using Poc0.Core.Objects;
+using Rb.Core.Maths;
 using Rb.Rendering.Cameras;
 
 namespace Poc0.Core.Cameras
@@ -55,7 +56,7 @@ namespace Poc0.Core.Cameras
 			if ( m_Target != null )
 			{
 				LookAt = m_Target.Position;
-				S = ( float )System.Math.Atan2( -m_Target.Frame.ZAxis.Z, -m_Target.Frame.ZAxis.X ) + m_SOffset;
+				S = Functions.Atan2( -m_Target.Frame.ZAxis.Z, -m_Target.Frame.ZAxis.X ) + m_SOffset;
 			}
 			base.Begin( );
 		}

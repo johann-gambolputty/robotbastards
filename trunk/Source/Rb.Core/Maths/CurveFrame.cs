@@ -88,7 +88,7 @@ namespace Rb.Core.Maths
 			XAxis		= velocity.MakeNormal( );
 			YAxis		= ( acceleration * sqrSpeed ) - ( velocity * dotVA );
 			ZAxis		= Vector3.Cross( XAxis, YAxis );
-			m_Speed		= ( float )Math.Sqrt( sqrSpeed );
+			m_Speed		= Functions.Sqrt( sqrSpeed );
 
 		//	NOTE: It's quite easy to calculate curvature here (because we've got first and second derivatives, and the square of speed, ready at hand).
 		//	I've removed the calculation because it does involve a length and a cross-product, which is a bit much if the caller isn't interested in the

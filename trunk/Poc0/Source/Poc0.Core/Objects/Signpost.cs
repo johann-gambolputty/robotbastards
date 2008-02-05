@@ -45,13 +45,13 @@ namespace Poc0.Core.Objects
 		{
 			get
 			{
-				return ( float )Math.Atan2( -m_Frame.ZAxis.Z, -m_Frame.ZAxis.X );
+				return Functions.Atan2( -m_Frame.ZAxis.Z, -m_Frame.ZAxis.X );
 			}
 			set
 			{
 				float angle = value;
-				float sinA = ( float )Math.Sin( angle );
-				float cosA = ( float )Math.Cos( angle );
+				float sinA = Functions.Sin( angle );
+				float cosA = Functions.Cos( angle );
 				m_Frame.ZAxis = new Vector3( cosA, 0, sinA );
 				m_Frame.XAxis = new Vector3( -sinA, 0, cosA );
 			}

@@ -353,8 +353,8 @@ namespace Rb.Rendering.OpenGl
 
 			for ( int sampleCount = 0; sampleCount <= samples; ++sampleCount )
 			{
-				float sinAR = radius * ( float )Math.Sin( angle );
-				float cosAR = radius * ( float )Math.Cos( angle );
+				float sinAR = radius * Functions.Sin( angle );
+				float cosAR = radius * Functions.Cos( angle );
 
 				Gl.glVertex2f( x + sinAR, y + cosAR );
 
@@ -391,8 +391,8 @@ namespace Rb.Rendering.OpenGl
 			
 			for ( int sampleCount = 0; sampleCount <= samples; ++sampleCount )
 			{
-				float sinAR = radius * ( float )Math.Sin( angle );
-				float cosAR = radius * ( float )Math.Cos( angle );
+				float sinAR = radius * Functions.Sin( angle );
+				float cosAR = radius * Functions.Cos( angle );
 			
 				Gl.glVertex2f( x + sinAR, y + cosAR );
 			
@@ -572,8 +572,8 @@ namespace Rb.Rendering.OpenGl
 
 			for ( int sampleCount = 0; sampleCount <= samples; ++sampleCount )
 			{
-				float sinAR = radius * ( float )Math.Sin( angle );
-				float cosAR = radius * ( float )Math.Cos( angle );
+				float sinAR = radius * Functions.Sin( angle );
+				float cosAR = radius * Functions.Cos( angle );
 
 				Gl.glVertex3f( x + sinAR, y, z + cosAR );
 
@@ -611,8 +611,8 @@ namespace Rb.Rendering.OpenGl
 
 			for ( int sampleCount = 0; sampleCount <= samples; ++sampleCount )
 			{
-				float sinAR = radius * ( float )Math.Sin( angle );
-				float cosAR = radius * ( float )Math.Cos( angle );
+				float sinAR = radius * Functions.Sin( angle );
+				float cosAR = radius * Functions.Cos( angle );
 
 				Gl.glVertex3f( x + sinAR, y, z + cosAR );
 

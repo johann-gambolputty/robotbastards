@@ -130,6 +130,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Maths\Point3Interpolator.cs" />
+    <Compile Include="Maths\Quaternion.cs" />
     <Compile Include="Maths\Ray3.cs" />
     <Compile Include="Maths\Line3Intersection.cs" />
     <Compile Include="Maths\Rectangle.cs" />
@@ -138,7 +139,7 @@
     <Compile Include="Maths\SplineControlPoint.cs" />
     <Compile Include="Maths\SplineControlPoints.cs" />
     <Compile Include="Maths\CurveFrame.cs" />
-    <Compile Include="Maths\Trigonometry.cs" />
+    <Compile Include="Maths\Functions.cs" />
     <Compile Include="Maths\Utils.cs" />
     <Compile Include="Maths\Vector2.cs" />
     <Compile Include="Maths\Vector3.cs" />

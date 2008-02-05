@@ -47,9 +47,9 @@ namespace Poc0.LevelEditor.Core.Objects
 			float s = Angle;
 			float t = ( Declination + 1 ) * Constants.HalfPi;
 
-			float x = Trigonometry.Sin( s ) * Trigonometry.Sin( t );
-			float y = Trigonometry.Cos( t );
-			float z = Trigonometry.Cos( s ) * Trigonometry.Sin( t );
+			float x = Functions.Sin( s ) * Functions.Sin( t );
+			float y = Functions.Cos( t );
+			float z = Functions.Cos( s ) * Functions.Sin( t );
 			return new Vector3( x, y, z );
 		}
 
@@ -240,7 +240,7 @@ namespace Poc0.LevelEditor.Core.Objects
 		public void Face( Point3 inputPos )
 		{
 			Vector3 dir = inputPos - Centre;
-			Angle = Trigonometry.Atan2( dir.X, dir.Z );
+			Angle = Functions.Atan2( dir.X, dir.Z );
 		}
 
 		#endregion

@@ -26,13 +26,20 @@ namespace Rb.Core.Maths
 			return new Point2( x, y );
 		}
 
+		/// <summary>
+		///	Generates a random point in the unit cube
+		/// </summary>
 		public static Point2 RandomPoint( System.Random rand )
 		{
 			return new Point2( ( float )rand.NextDouble( ), ( float )rand.NextDouble( ) );
 		}
 
+		/// <summary>
+		/// Tests plane-plane intersection code
+		/// </summary>
 		public static void TestPlanePlaneIntersection( )
 		{
+			//	TODO: Send to unit testing project
 			System.Random rand = new System.Random( );
 
 			for ( int i = 0; i < 100; ++i )

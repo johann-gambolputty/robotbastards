@@ -179,7 +179,7 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public float DistanceTo( Point2 pt )
 		{
-			return ( float )Math.Sqrt( SqrDistanceTo( pt ) );
+			return Functions.Sqrt( SqrDistanceTo( pt ) );
 		}
 
 		#region Private members
