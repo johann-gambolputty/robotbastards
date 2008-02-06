@@ -56,8 +56,8 @@ namespace Poc0.LevelEditor.Core
 		/// <exception cref="InvalidOperationException">Thrown by convex region builder if BSP tree is internally invalid</exception>
 		public void Combine( Operation op, CsgBrush brush )
 		{
-			List< Edge > brushEdges = new List< Edge >( );
-			BspNode brushBsp = Build( brush, brushEdges );
+			List< Edge > brushEdges;
+			BspNode brushBsp = Build( brush, out brushEdges );
 			BspNode newRoot = null;
 			List< Edge > allEdges = null;
 			if ( m_Root == null )
@@ -396,46 +396,50 @@ namespace Poc0.LevelEditor.Core
 			IList< Edge > set0Edges = Flatten( set0 );
 			IList< Edge > set1Edges = Flatten( set1 );
 
-			allEdges = new List<Edge>( );
+			List< Edge > sourceEdges = new List<Edge>( );
 
 			switch ( op )
 			{
 				case Operation.Union :
-					Clip( true, false, set0, set1Edges, allEdges );
-					Clip( true, false, set1, set0Edges, allEdges );
+					Clip( true, false, set0, set1Edges, sourceEdges );
+					Clip( true, false, set1, set0Edges, sourceEdges );
 					break;
 
 				case Operation.EdgeUnion :
-					Clip( false, true, set0, set1Edges, allEdges );
+					Clip( false, true, set0, set1Edges, sourceEdges );
 
-					foreach ( Edge edge in allEdges )
+					foreach ( Edge edge in sourceEdges )
 					{
 						edge.DoubleSided = true;
 					}
-					allEdges.AddRange( set0Edges );
+					sourceEdges.AddRange( set0Edges );
 					break;
 
 				case Operation.Intersection :
-					Clip( false, true, set0, set1Edges, allEdges );
-					Clip( false, true, set1, set0Edges, allEdges );
+					Clip( false, true, set0, set1Edges, sourceEdges );
+					Clip( false, true, set1, set0Edges, sourceEdges );
 					break;
 
 				case Operation.Complement :
-					Clip( false, true, set0, set1Edges, allEdges );
-					foreach ( Edge edge in allEdges )
+					Clip( false, true, set0, set1Edges, sourceEdges );
+					foreach ( Edge edge in sourceEdges )
 					{
 						Point2 oldP0 = new Point2( edge.P0 );
 						edge.P0 = edge.P1;
 						edge.P1 = oldP0;
 						edge.Plane.Invert( );
 					}
-					Clip( true, false, set1, set0Edges, allEdges );
+					Clip( true, false, set1, set0Edges, sourceEdges );
 					break;
 			}
 
-			allEdges = MergeEdges( allEdges );
+			sourceEdges = MergeEdges( sourceEdges );
+			allEdges = new List< Edge >( );
+			BspNode rootNode = BuildNode( null, sourceEdges, allEdges );
+
 			IndexEdges( allEdges );
-			return BuildNode( null, allEdges );
+
+			return rootNode;
 		}
 
 		private static bool Equivalent( Point2 p0, Point2 p1 )
@@ -534,51 +538,53 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Clips a set of edges against a BSP tree
 		/// </summary>
-		private static void Clip( bool keepLeftEdges, bool keepRightEdges, BspNode node, IEnumerable< Edge > edges, IList< Edge > outputEdges )
+		private static void Clip( bool keepOutsideEdges, bool keepInsideEdges, BspNode node, IEnumerable< Edge > edges, IList< Edge > outputEdges )
 		{
-			IList< Edge > leftEdges = ( node.Behind != null ) ? new List< Edge >( ) : ( keepLeftEdges ? outputEdges : null );
-			IList< Edge > rightEdges = ( node.InFront != null ) ? new List< Edge >( ) : ( keepRightEdges ? outputEdges : null );
+			IList< Edge > outsideEdges = ( node.Behind != null ) ? new List< Edge >( ) : ( keepOutsideEdges ? outputEdges : null );
+			IList< Edge > insideEdges = ( node.InFront != null ) ? new List< Edge >( ) : ( keepInsideEdges ? outputEdges : null );
 
 			foreach ( Edge edge in edges )
 			{
-				ClassifyEdge( node.Edge, edge, leftEdges, rightEdges );
+				ClassifyEdge( node.Edge, edge, insideEdges, outsideEdges );
 			}
 			if ( node.Behind != null )
 			{
-				Clip( keepLeftEdges, keepRightEdges, node.Behind, leftEdges, outputEdges );
+				Clip( keepOutsideEdges, keepInsideEdges, node.Behind, outsideEdges, outputEdges );
 			}
 			if ( node.InFront != null )
 			{
-				Clip( keepLeftEdges, keepRightEdges, node.InFront, rightEdges, outputEdges );
+				Clip( keepOutsideEdges, keepInsideEdges, node.InFront, insideEdges, outputEdges );
 			}
 		}
 		
 		/// <summary>
 		/// Builds a BSP tree from a CSG brush
 		/// </summary>
-		private static BspNode Build( CsgBrush brush, IList< Edge > edges )
+		private static BspNode Build( CsgBrush brush, out List< Edge > outputEdges )
 		{
 			Point2[] points = brush.Points;
 
 			//	Create edges
+			List< Edge > sourceEdges = new List< Edge >( points.Length );
 			for ( int ptIndex = 0; ptIndex < points.Length; ++ptIndex )
 			{
 				Edge edge = new Edge( points[ ptIndex ], points[ ( ptIndex + 1 ) % points.Length ] );
-				edges.Add( edge );
+				sourceEdges.Add( edge );
 				if ( ptIndex > 0 )
 				{
-					Edge.LinkEdges( edges[ ptIndex - 1 ], edges[ ptIndex ] );
+					Edge.LinkEdges( sourceEdges[ ptIndex - 1 ], sourceEdges[ ptIndex ] );
 				}
 			}
 
 			//	Link up the final edge to the first edge
-			Edge.LinkEdges( edges[ edges.Count - 1 ], edges[ 0 ] );
+			Edge.LinkEdges( sourceEdges[ sourceEdges.Count - 1 ], sourceEdges[ 0 ] );
 
 			//	Build the BSP tree from the edge list
-			BspNode node = BuildNode( null, edges );
+			outputEdges = new List< Edge >( );
+			BspNode node = BuildNode( null, sourceEdges, outputEdges );
 
 			//	Index all the edges in the edge list
-			IndexEdges( edges );
+			IndexEdges( outputEdges );
 
 			return node;
 		}
@@ -602,6 +608,32 @@ namespace Poc0.LevelEditor.Core
 		{
 			TesselatorInput input = new TesselatorInput( );
 
+			float minX = float.MaxValue;
+			float minY = float.MaxValue;
+			float maxX = float.MinValue;
+			float maxY = float.MinValue;
+
+			foreach ( Edge edge in edges )
+			{
+				minX = edge.P0.X < minX ? edge.P0.X : minX;
+				minY = edge.P0.Y < minY ? edge.P0.Y : minY;
+				maxX = edge.P0.X > maxX ? edge.P0.X : maxX;
+				maxY = edge.P0.Y > maxY ? edge.P0.Y : maxY;
+			}
+			float padding = 1;
+			minX -= padding;
+			minY -= padding;
+			maxX += padding;
+			maxY += padding;
+
+			input.Polygon = new Point2[]
+				{
+					new Point2( minX, minY ),
+					new Point2( maxX, minY ),
+					new Point2( maxX, maxY ),
+					new Point2( minX, maxY ), 
+				};
+
 			bool[] isProcessed = new bool[ edges.Count ];
 			int firstEdgeIndex = 0;
 
@@ -622,15 +654,15 @@ namespace Poc0.LevelEditor.Core
 				}
 				while ( edge.Index != firstEdgeIndex );
 
-				if ( !internalEdges )
-				{
-					if ( input.Polygon != null )
-					{
-						throw new InvalidOperationException( "Tried to generate more than one boundary during tesselation" );
-					}
-					input.Polygon = points;
-				}
-				else
+				//if ( !internalEdges )
+				//{
+				//    if ( input.Polygon != null )
+				//    {
+				//        throw new InvalidOperationException( "Tried to generate more than one boundary during tesselation" );
+				//    }
+				//    input.Polygon = points;
+				//}
+				//else
 				{
 					input.AddContour( points );
 				}
@@ -731,7 +763,7 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Builds a BSP node from a list of edges
 		/// </summary>
-		private static BspNode BuildNode( BspNode parentNode, IList< Edge > edges )
+		private static BspNode BuildNode( BspNode parentNode, IList< Edge > edges, IList< Edge > outputEdges )
 		{
 			if ( edges.Count == 0 )
 			{
@@ -740,6 +772,9 @@ namespace Poc0.LevelEditor.Core
 
 			Edge splitter = edges[ 0 ]; // TODO: AP: Choose better splitter
 			BspNode splitNode = new BspNode( parentNode, splitter );
+
+			outputEdges.Add( splitter );
+
 			if ( edges.Count == 1 )
 			{
 				return splitNode;
@@ -756,11 +791,11 @@ namespace Poc0.LevelEditor.Core
 			//	Build BSP subtrees from left and right edges
 			if ( leftEdges.Count > 0 )
 			{
-				splitNode.Behind = BuildNode( splitNode, leftEdges );
+				splitNode.Behind = BuildNode( splitNode, leftEdges, outputEdges );
 			}
 			if ( rightEdges.Count > 0 )
 			{
-				splitNode.InFront = BuildNode( splitNode, rightEdges );
+				splitNode.InFront = BuildNode( splitNode, rightEdges, outputEdges );
 			}
 
 			return splitNode;
@@ -795,7 +830,7 @@ namespace Poc0.LevelEditor.Core
 		/// infront of the plane, it's added to rightEdges. Otherwise, the edge is split on the edge/plane intersection, and the
 		/// 2 resulting lines are added to leftEdges and rightEdges
 		/// </summary>
-		private static void ClassifyEdge( Edge splitterEdge, Edge edge, ICollection< Edge > leftEdges, ICollection< Edge > rightEdges )
+		private static void ClassifyEdge( Edge splitterEdge, Edge edge, ICollection< Edge > outsideEdges, ICollection< Edge > insideEdges )
 		{
 			Plane2 splitter = splitterEdge.Plane;
 
@@ -809,16 +844,16 @@ namespace Poc0.LevelEditor.Core
 			{
 				if ( edgeClass == PlaneClassification.Behind )
 				{
-					if ( leftEdges != null )
+					if ( outsideEdges != null )
 					{
-						leftEdges.Add( edge );
+						outsideEdges.Add( edge );
 					}
 				}
 				else
 				{
-					if ( rightEdges != null )
+					if ( insideEdges != null )
 					{
-						rightEdges.Add( edge );
+						insideEdges.Add( edge );
 					}
 				}
 			}
@@ -846,11 +881,11 @@ namespace Poc0.LevelEditor.Core
 				//	Add new edges to the appropriate edge lists
 				if ( p0Class != PlaneClassification.Behind )
 				{
-					Utils.Swap( ref leftEdges, ref rightEdges );
+					Utils.Swap( ref outsideEdges, ref insideEdges );
 				}
-				if ( leftEdges != null )
+				if ( outsideEdges != null )
 				{
-					leftEdges.Add( startToMidEdge );
+					outsideEdges.Add( startToMidEdge );
 					startToMidEdge.DoubleSided = edge.DoubleSided;
 				}
 				else
@@ -858,9 +893,9 @@ namespace Poc0.LevelEditor.Core
 					Edge.LinkEdges( edge.PreviousEdge, midToEndEdge );
 				}
 
-				if ( rightEdges != null )
+				if ( insideEdges != null )
 				{
-					rightEdges.Add( midToEndEdge );
+					insideEdges.Add( midToEndEdge );
 					midToEndEdge.DoubleSided = edge.DoubleSided;
 				}
 				else
