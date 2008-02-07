@@ -160,8 +160,8 @@ namespace Poc0.LevelEditor.Core
 
 			Graphics.Draw.StartCache( );
 
-		//	RenderFlat( m_Csg.Root );
-			RenderFlat( m_Csg.m_PolyLists );
+			RenderFlat( m_Csg.Root );
+		//	RenderFlat( m_Csg.m_PolyLists );
 
 			m_FlatRenderer = Graphics.Draw.StopCache( );
 		}
