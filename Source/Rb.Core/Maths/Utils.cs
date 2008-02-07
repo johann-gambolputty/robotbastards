@@ -103,6 +103,16 @@ namespace Rb.Core.Maths
 		}
 
 		/// <summary>
+		/// Returns the minimum of three floating point values
+		/// </summary>
+		public static float Min( float v1, float v2, float v3 )
+		{
+			return v1 < v2 ?
+				( v1 < v3 ? v1 : v3 ) :
+				( v2 < v3 ? v2 : v3 );
+		}
+
+		/// <summary>
 		/// Returns the minimum of two integer values
 		/// </summary>
 		public static int Min( int val1, int val2 )
@@ -116,6 +126,16 @@ namespace Rb.Core.Maths
 		public static float Max( float val1, float val2 )
 		{
 			return val1 > val2 ? val1 : val2;
+		}
+
+		/// <summary>
+		/// Returns the maximum of three floating point values
+		/// </summary>
+		public static float Max( float v1, float v2, float v3 )
+		{
+			return v1 > v2 ?
+				( v1 > v3 ? v1 : v3 ) :
+				( v2 > v3 ? v2 : v3 );
 		}
 
 		/// <summary>

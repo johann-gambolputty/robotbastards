@@ -285,6 +285,15 @@ namespace Rb.Core.Maths
 		}
 
 		/// <summary>
+		/// Calculates the perp dot product of two vectors
+		/// </summary>
+		public float DotPerp( Vector2 vec )
+		{
+			return m_X * vec.m_Y - m_Y * m_X;
+		}
+
+
+		/// <summary>
 		/// Makes this vector perpendicular to itself
 		/// </summary>
 		public void Perp( )

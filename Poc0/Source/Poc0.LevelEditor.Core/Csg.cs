@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Rb.Core.Maths;
 using Rb.Rendering;
-using Rb.Tesselator;
 using Rb.Tools.LevelEditor.Core.Selection;
 
 namespace Poc0.LevelEditor.Core
@@ -56,27 +55,23 @@ namespace Poc0.LevelEditor.Core
 		/// <exception cref="InvalidOperationException">Thrown by convex region builder if BSP tree is internally invalid</exception>
 		public void Combine( Operation op, CsgBrush brush )
 		{
-			List< Edge > brushEdges;
-			BspNode brushBsp = Build( brush, out brushEdges );
+			BspNode brushBsp = Build( brush, op == Operation.Complement );
 			BspNode newRoot = null;
-			List< Edge > allEdges = null;
 			if ( m_Root == null )
 			{
 				if ( op == Operation.Union || op == Operation.EdgeUnion )
 				{
 					newRoot = brushBsp;
-					allEdges = brushEdges;
 				}
 			}
 			else
 			{
-				newRoot = Combine( op, m_Root, brushBsp, out allEdges );
+				newRoot = Combine( op, m_Root, brushBsp );
 			}
 			if ( newRoot != null )
 			{
-				BuildConvexRegions2( new List<Edge>( allEdges ) );
 				FixUpDoubleSidedNodes( newRoot );
-			//	BuildConvexRegions( newRoot );
+				BuildConvexRegions( newRoot );
 				m_Root = newRoot;
 			}
 			if ( GeometryChanged != null )
@@ -285,14 +280,6 @@ namespace Poc0.LevelEditor.Core
 				m_Plane = new Plane2( p0, p1 );
 			}
 
-			/// <summary>
-			/// Gets/sets the index of this edge in the edge list
-			/// </summary>
-			public int Index
-			{
-				get { return m_Index; }
-				set { m_Index = value; }
-			}
 
 			/// <summary>
 			/// Gets/sets the double sided flag
@@ -329,34 +316,6 @@ namespace Poc0.LevelEditor.Core
 				get { return m_Plane; }
 			}
 
-			public static void LinkEdges( Edge edge0, Edge edge1 )
-			{
-				edge0.NextEdge = edge1;
-				edge1.PreviousEdge = edge0;
-			}
-
-			public Edge PreviousEdge
-			{
-				get { return m_Prev; }
-				set { m_Prev = value; }
-			}
-
-			public Edge NextEdge
-			{
-				get { return m_Next; }
-				set { m_Next = value; }
-			}
-
-			public bool IsInternal
-			{
-				get { return m_Internal; }
-				set { m_Internal = value; }
-			}
-
-			private int m_Index = -1;
-			private Edge m_Next;
-			private Edge m_Prev;
-			private bool m_Internal;
 			private bool m_Temporary;
 			private bool m_DoubleSided;
 			private Point2 m_P0;
@@ -377,21 +336,9 @@ namespace Poc0.LevelEditor.Core
 		private const float OnPlaneTolerance = 0.01f;
 
 		/// <summary>
-		/// Sets the index properties of all edges in an edge list
-		/// </summary>
-		private static void IndexEdges( IList< Edge > edges )
-		{
-			//	Set the indices of all edges
-			for ( int edgeIndex = 0; edgeIndex < edges.Count; ++edgeIndex )
-			{
-				edges[ edgeIndex ].Index = edgeIndex;
-			}
-		}
-
-		/// <summary>
 		/// Combines two BSP trees using a specified CSG operation
 		/// </summary>
-		private static BspNode Combine( Operation op, BspNode set0, BspNode set1, out List< Edge > allEdges )
+		private static BspNode Combine( Operation op, BspNode set0, BspNode set1 )
 		{
 			IList< Edge > set0Edges = Flatten( set0 );
 			IList< Edge > set1Edges = Flatten( set1 );
@@ -422,29 +369,19 @@ namespace Poc0.LevelEditor.Core
 
 				case Operation.Complement :
 					Clip( false, true, set0, set1Edges, sourceEdges );
-					foreach ( Edge edge in sourceEdges )
-					{
-						Point2 oldP0 = new Point2( edge.P0 );
-						edge.P0 = edge.P1;
-						edge.P1 = oldP0;
-						edge.Plane.Invert( );
-					}
-					Clip( true, false, set1, set0Edges, sourceEdges );
+					Clip( false, true, set1, set0Edges, sourceEdges );
 					break;
 			}
 
 			sourceEdges = MergeEdges( sourceEdges );
-			allEdges = new List< Edge >( );
-			BspNode rootNode = BuildNode( null, sourceEdges, allEdges );
-
-			IndexEdges( allEdges );
+			BspNode rootNode = BuildNode( null, sourceEdges );
 
 			return rootNode;
 		}
 
 		private static bool Equivalent( Point2 p0, Point2 p1 )
 		{
-			return p0.SqrDistanceTo( p1 ) <= 0.1f ;
+			return p0.SqrDistanceTo( p1 ) <= 0.01f ;
 		}
 
 		/// <summary>
@@ -463,8 +400,8 @@ namespace Poc0.LevelEditor.Core
 				for ( int mergeIndex = 0; mergeIndex < srcEdges.Count; )
 				{
 					Edge mergeEdge = srcEdges[ mergeIndex ];
-					if ( ( mergeEdge.Plane.Normal.Dot( srcEdge.Plane.Normal ) >= 0.9f ) &&
-					     ( Utils.CloseToZero( mergeEdge.Plane.Distance - srcEdge.Plane.Distance, 0.1f ) ) )
+					if ( ( mergeEdge.Plane.Normal.Dot( srcEdge.Plane.Normal ) >= 0.99f ) &&
+					     ( Utils.CloseToZero( mergeEdge.Plane.Distance - srcEdge.Plane.Distance, 0.01f ) ) )
 					{
 						//	Edges are colinear - do they share a common vertex?
 						if ( Equivalent( mergeEdge.P0, srcEdge.P0 ) )
@@ -545,7 +482,7 @@ namespace Poc0.LevelEditor.Core
 
 			foreach ( Edge edge in edges )
 			{
-				ClassifyEdge( node.Edge, edge, insideEdges, outsideEdges );
+				ClassifyEdge( node.Edge, edge, outsideEdges, insideEdges );
 			}
 			if ( node.Behind != null )
 			{
@@ -560,9 +497,13 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Builds a BSP tree from a CSG brush
 		/// </summary>
-		private static BspNode Build( CsgBrush brush, out List< Edge > outputEdges )
+		private static BspNode Build( CsgBrush brush, bool reverse )
 		{
 			Point2[] points = brush.Points;
+			if ( reverse )
+			{
+				Array.Reverse( points );
+			}
 
 			//	Create edges
 			List< Edge > sourceEdges = new List< Edge >( points.Length );
@@ -570,21 +511,10 @@ namespace Poc0.LevelEditor.Core
 			{
 				Edge edge = new Edge( points[ ptIndex ], points[ ( ptIndex + 1 ) % points.Length ] );
 				sourceEdges.Add( edge );
-				if ( ptIndex > 0 )
-				{
-					Edge.LinkEdges( sourceEdges[ ptIndex - 1 ], sourceEdges[ ptIndex ] );
-				}
 			}
 
-			//	Link up the final edge to the first edge
-			Edge.LinkEdges( sourceEdges[ sourceEdges.Count - 1 ], sourceEdges[ 0 ] );
-
 			//	Build the BSP tree from the edge list
-			outputEdges = new List< Edge >( );
-			BspNode node = BuildNode( null, sourceEdges, outputEdges );
-
-			//	Index all the edges in the edge list
-			IndexEdges( outputEdges );
+			BspNode node = BuildNode( null, sourceEdges );
 
 			return node;
 		}
@@ -604,166 +534,228 @@ namespace Poc0.LevelEditor.Core
 			}
 		}
 
-		private void BuildConvexRegions2( IList< Edge > edges )
+		/// <summary>
+		/// Tesselator class. Builds convex regions for nodes
+		/// </summary>
+		private class Tesselator
 		{
-			TesselatorInput input = new TesselatorInput( );
-
-			float minX = float.MaxValue;
-			float minY = float.MaxValue;
-			float maxX = float.MinValue;
-			float maxY = float.MinValue;
-
-			foreach ( Edge edge in edges )
+			/// <summary>
+			/// Tesselator output polygon type
+			/// </summary>
+			public class Polygon
 			{
-				minX = edge.P0.X < minX ? edge.P0.X : minX;
-				minY = edge.P0.Y < minY ? edge.P0.Y : minY;
-				maxX = edge.P0.X > maxX ? edge.P0.X : maxX;
-				maxY = edge.P0.Y > maxY ? edge.P0.Y : maxY;
+				public Polygon( int[] indices )
+				{
+					m_Indices = indices;
+				}
+
+				public int[] Indices
+				{
+					get { return m_Indices; }
+				}
+
+				private readonly int[] m_Indices;
 			}
-			float padding = 1;
-			minX -= padding;
-			minY -= padding;
-			maxX += padding;
-			maxY += padding;
 
-			input.Polygon = new Point2[]
-				{
-					new Point2( minX, minY ),
-					new Point2( maxX, minY ),
-					new Point2( maxX, maxY ),
-					new Point2( minX, maxY ), 
-				};
-
-			bool[] isProcessed = new bool[ edges.Count ];
-			int firstEdgeIndex = 0;
-
-			while ( firstEdgeIndex < edges.Count )
+			/// <summary>
+			/// Creates an initial bounding polygon
+			/// </summary>
+			public Polygon CreateBoundingPolygon( float minX, float minY, float maxX, float maxY )
 			{
-				//	Each iteration begins with an unprocessed edge, then runs through the edge loop,
-				//	adding points to the current contour until it returns to the initial edge.
-
-				List< Point2 > points = new List< Point2 >( );
-				Edge edge = edges[ firstEdgeIndex ];
-				bool internalEdges = edge.IsInternal;
-
-				do
-				{
-					isProcessed[ edge.Index ] = true;
-					points.Add( edge.P0 );
-					edge = edge.NextEdge;
-				}
-				while ( edge.Index != firstEdgeIndex );
-
-				//if ( !internalEdges )
-				//{
-				//    if ( input.Polygon != null )
-				//    {
-				//        throw new InvalidOperationException( "Tried to generate more than one boundary during tesselation" );
-				//    }
-				//    input.Polygon = points;
-				//}
-				//else
-				{
-					input.AddContour( points );
-				}
-
-				//	Find the first unprocessed edge for the next iteration
-				for ( ; firstEdgeIndex < edges.Count; ++firstEdgeIndex )
-				{
-					if ( !isProcessed[ firstEdgeIndex ] )
+				return new Polygon
+				(
+					new int[]
 					{
-						break;
+						AddPoint( new Point2( minX, minY ) ),
+						AddPoint( new Point2( maxX, minY ) ),
+						AddPoint( new Point2( maxX, maxY ) ),
+						AddPoint( new Point2( minX, maxY ) )
+					}
+				);
+			}
+
+			/// <summary>
+			/// Converts a polygon to a point list
+			/// </summary>
+			public Point2[] ToPoints( Polygon poly )
+			{
+				Point2[] result = new Point2[ poly.Indices.Length ];
+				for ( int index = 0; index < poly.Indices.Length; ++index )
+				{
+					result[ index ] = m_Points[ poly.Indices[ index ] ];
+				}
+				return result;
+			}
+
+			/// <summary>
+			/// Splits a source polygon along a plane, returning the sub-poly behind the plane in "behind"
+			/// and the sub-poly in-front of the plane in "inFront"
+			/// </summary>
+			public void Split( Plane2 plane, Polygon source, out Polygon behind, out Polygon inFront )
+			{
+				float tolerance = 0.001f;
+				int firstDefiniteClassIndex = -1;
+				PlaneClassification[] classifications = new PlaneClassification[ source.Indices.Length ];
+				for ( int index = 0; index < source.Indices.Length; ++index )
+				{
+					classifications[ index ] = plane.ClassifyPoint( m_Points[ source.Indices[ index ] ], tolerance );
+					if ( ( firstDefiniteClassIndex == -1 ) && ( classifications[ index ] != PlaneClassification.On ) )
+					{
+						firstDefiniteClassIndex = index;
 					}
 				}
+				if ( firstDefiniteClassIndex > 1 )
+				{
+					//	The first two points are on the split plane. This means that we
+					//	can easily classify the polygon as either behind or in front depending on the first
+					//	definite class
+					if ( classifications[ firstDefiniteClassIndex ] == PlaneClassification.Behind )
+					{
+						behind = new Polygon( source.Indices );
+						inFront = null;
+					}
+					else
+					{
+						behind = null;
+						inFront = new Polygon( source.Indices );
+					}
+					return;
+				}
+
+				int lastPtIndex = firstDefiniteClassIndex;
+				int curPtIndex = ( lastPtIndex + 1 ) % source.Indices.Length;
+				Point2 lastPt = m_Points[ source.Indices[ lastPtIndex ] ];
+				PlaneClassification lastClass = classifications[ lastPtIndex ];
+
+				List< int > behindPoints = new List< int >( source.Indices.Length + 2 );
+				List< int > inFrontPoints = new List< int >( source.Indices.Length + 2 );
+
+				for ( int count = 0; count < source.Indices.Length; ++count )
+				{
+					Point2 curPt = m_Points[ source.Indices[ curPtIndex ] ];
+					PlaneClassification curClass = classifications[ curPtIndex ];
+					if ( curClass == PlaneClassification.On )
+					{
+						curClass = lastClass;
+					}
+
+					if ( curClass != lastClass )
+					{
+						//	Split line on plane
+						Line2Intersection intersection = Intersections2.GetLinePlaneIntersection( lastPt, curPt, plane );
+						int newPtIndex = AddPoint( intersection.IntersectionPosition );
+						behindPoints.Add( newPtIndex );
+						inFrontPoints.Add( newPtIndex );
+					}
+
+					if ( curClass == PlaneClassification.Behind )
+					{
+						behindPoints.Add( source.Indices[ curPtIndex ] );
+					}
+					else
+					{
+						inFrontPoints.Add( source.Indices[ curPtIndex ] );
+					}
+
+					lastClass = curClass;
+					lastPt = curPt;
+
+					curPtIndex = ( curPtIndex + 1 ) % source.Indices.Length;
+				}
+
+				behind = ( behindPoints.Count == 0 ) ? null : new Polygon( behindPoints.ToArray( ) );
+				inFront = ( inFrontPoints.Count == 0 ) ? null : new Polygon( inFrontPoints.ToArray( ) );
 			}
 
-			m_PolyLists = Tesselator.Tesselate( input );
+			#region Private members
+
+			private readonly List< Point2 > m_Points = new List< Point2 >( );
+
+			/// <summary>
+			/// Adds a point to the point list and returns its index
+			/// </summary>
+			private int AddPoint( Point2 pt )
+			{
+				int index = m_Points.Count;
+				m_Points.Add( pt );
+				return index;
+			}
+
+			#endregion
 		}
 
-		public Tesselator.PolygonLists m_PolyLists;
-
-		/// <summary>
-		/// Builds convex regions from a given root node
-		/// </summary>
-		/// <param name="node">Root node</param>
-		private static void BuildConvexRegions( BspNode node )
-		{
-			List< Plane2 > planes = new List< Plane2 >( );
-			BuildConvexRegions( node, planes );
-		}
 		
 		/// <summary>
-		/// Builds convex regions from a given node
+		/// Builds the convex region for a node and its children
 		/// </summary>
-		/// <param name="node">Current node</param>
-		/// <param name="planes">Current plane set</param>
-		private static void BuildConvexRegions( BspNode node, List< Plane2 > planes )
+		private static void BuildConvexRegions( BspNode node, Tesselator tess, Tesselator.Polygon poly )
 		{
+			Tesselator.Polygon behindPoly;
+			Tesselator.Polygon inFrontPoly;
+			tess.Split( node.Plane, poly, out behindPoly, out inFrontPoly );
+
 			if ( node.Behind != null )
 			{
-				List< Plane2 > behindPlanes = new List< Plane2 >( planes );
-
-				behindPlanes.Add( node.Plane.MakeInversePlane( ) );
-				BuildConvexRegions( node.Behind, behindPlanes );
+				BuildConvexRegions( node.Behind, tess, behindPoly );
 			}
-			planes.Add( node.Plane );
 			if ( node.InFront != null )
 			{
-				BuildConvexRegions( node.InFront, planes );
+				BuildConvexRegions( node.InFront, tess, inFrontPoly );
 			}
 			else
 			{
-				node.ConvexRegion = BuildConvexRegion( planes );
+				node.ConvexRegion = tess.ToPoints( inFrontPoly );
 			}
 		}
 
 		/// <summary>
-		/// Builds a convex region from a set of planes
+		/// Builds the convex regions for a root node and all its children
 		/// </summary>
-		/// <param name="allPlanes">Plane set</param>
-		/// <returns>Returns the points of the convex polygon made up from the intersection of the planes in allPlanes</returns>
-		private static Point2[] BuildConvexRegion( IList< Plane2 > allPlanes )
+		private static void BuildConvexRegions( BspNode node )
 		{
-			List< Point2 > points = new List< Point2 >( );
-			IList< Plane2 > planes = new List< Plane2 >( allPlanes );
-			Plane2 curPlane = allPlanes[ allPlanes.Count - 1 ];
-			while ( planes.Remove( curPlane ) )
-			{
-				Vector2 vec = curPlane.Normal.MakePerp( );
-				Plane2 nextPlane = null;
-				Point2 nextPt = Point2.Origin;
-				for ( int planeIndex = 0; planeIndex < allPlanes.Count; ++planeIndex )
-				{
-					Plane2 testPlane = allPlanes[ planeIndex ];
-					if ( vec.Dot( testPlane.Normal ) > -0.01f )
-					{
-						continue;
-					}
-					Point2 intersection = Intersections2.GetPlanePlaneIntersection( curPlane, testPlane ).Value;
-					if ( ( nextPlane == null ) || ( nextPlane.ClassifyPoint( intersection, 0.0001f ) == PlaneClassification.InFront ) )
-					{
-						nextPlane = testPlane;
-						nextPt = intersection;
-					}
-				}
-				points.Add( nextPt );
-				curPlane = nextPlane;
+			//	Find the bounding box for the tree
+			float[] bounds = new float[ 4 ] { float.MaxValue, float.MaxValue, float.MinValue, float.MinValue };
+			GetNodeBoundingRectangle( node, bounds );
 
-#if DEBUG
-				if ( curPlane == null )
-				{
-					throw new InvalidOperationException( "Current plane should never be null" );
-				}
-#endif
+			//	Expand bounds a bit
+			float boundary = 1.0f;
+			bounds[ 0 ] -= boundary;
+			bounds[ 1 ] -= boundary;
+			bounds[ 2 ] += boundary;
+			bounds[ 3 ] += boundary;
+			
+			float width = bounds[ 2 ] - bounds[ 0 ];
+			float height = bounds[ 3 ] - bounds[ 1 ];
+
+			Tesselator tess = new Tesselator( );
+			Tesselator.Polygon boundingPoly = tess.CreateBoundingPolygon( bounds[ 0 ], bounds[ 1 ], width, height );
+
+			BuildConvexRegions( node, tess, boundingPoly );
+		}
+
+		/// <summary>
+		/// Gets a bounding rectangle that encompasses a BSP node and its children
+		/// </summary>
+		private static void GetNodeBoundingRectangle( BspNode node, float[] rect )
+		{
+			if ( node == null )
+			{
+				return;
 			}
 
-			return points.ToArray( );
+			rect[ 0 ] 	= Utils.Min( rect[ 0 ], node.Edge.P0.X, node.Edge.P1.X );
+			rect[ 1 ] 	= Utils.Min( rect[ 1 ], node.Edge.P0.Y, node.Edge.P1.Y );
+			rect[ 2 ] 	= Utils.Max( rect[ 2 ], node.Edge.P0.X, node.Edge.P1.X );
+			rect[ 3 ] 	= Utils.Max( rect[ 3 ], node.Edge.P0.Y, node.Edge.P1.Y );
+
+			GetNodeBoundingRectangle( node.Behind, rect );
+			GetNodeBoundingRectangle( node.InFront, rect );
 		}
 
 		/// <summary>
 		/// Builds a BSP node from a list of edges
 		/// </summary>
-		private static BspNode BuildNode( BspNode parentNode, IList< Edge > edges, IList< Edge > outputEdges )
+		private static BspNode BuildNode( BspNode parentNode, IList< Edge > edges )
 		{
 			if ( edges.Count == 0 )
 			{
@@ -772,30 +764,27 @@ namespace Poc0.LevelEditor.Core
 
 			Edge splitter = edges[ 0 ]; // TODO: AP: Choose better splitter
 			BspNode splitNode = new BspNode( parentNode, splitter );
-
-			outputEdges.Add( splitter );
-
 			if ( edges.Count == 1 )
 			{
 				return splitNode;
 			}
 
 			//	Classify edges as left or right edges
-			List< Edge > leftEdges = new List< Edge >( );
-			List< Edge > rightEdges = new List< Edge >( );
+			List< Edge > outsideEdges = new List< Edge >( );
+			List< Edge > insideEdges = new List< Edge >( );
 			for ( int edgeIndex = 1; edgeIndex < edges.Count; ++edgeIndex )
 			{
-				ClassifyEdge( splitter, edges[ edgeIndex ], leftEdges, rightEdges );
+				ClassifyEdge( splitter, edges[ edgeIndex ], outsideEdges, insideEdges );
 			}
 
 			//	Build BSP subtrees from left and right edges
-			if ( leftEdges.Count > 0 )
+			if ( outsideEdges.Count > 0 )
 			{
-				splitNode.Behind = BuildNode( splitNode, leftEdges, outputEdges );
+				splitNode.Behind = BuildNode( splitNode, outsideEdges );
 			}
-			if ( rightEdges.Count > 0 )
+			if ( insideEdges.Count > 0 )
 			{
-				splitNode.InFront = BuildNode( splitNode, rightEdges, outputEdges );
+				splitNode.InFront = BuildNode( splitNode, insideEdges );
 			}
 
 			return splitNode;
@@ -858,7 +847,7 @@ namespace Poc0.LevelEditor.Core
 				}
 			}
 			else
-			{
+			{ 
 				//	Calculate the intersection between edge and splitterEdge. If the intersection occurs inside
 				//	splitterEdge, then we have to link splitterEdge to either the new start-to-mid or mid-to-end
 				//	edge.
@@ -873,11 +862,6 @@ namespace Poc0.LevelEditor.Core
 				startToMidEdge.WallData = edge.WallData;
 				midToEndEdge.WallData = edge.WallData;
 
-				//	Link new edges into edge loop
-				Edge.LinkEdges( edge.PreviousEdge, startToMidEdge );
-				Edge.LinkEdges( startToMidEdge, midToEndEdge );
-				Edge.LinkEdges( midToEndEdge, edge.NextEdge );
-
 				//	Add new edges to the appropriate edge lists
 				if ( p0Class != PlaneClassification.Behind )
 				{
@@ -888,23 +872,15 @@ namespace Poc0.LevelEditor.Core
 					outsideEdges.Add( startToMidEdge );
 					startToMidEdge.DoubleSided = edge.DoubleSided;
 				}
-				else
-				{
-					Edge.LinkEdges( edge.PreviousEdge, midToEndEdge );
-				}
-
 				if ( insideEdges != null )
 				{
 					insideEdges.Add( midToEndEdge );
 					midToEndEdge.DoubleSided = edge.DoubleSided;
 				}
-				else
-				{
-					Edge.LinkEdges( startToMidEdge, edge.NextEdge );	
-				}
 			}
 		}
 
 		#endregion
+
 	}
 }
