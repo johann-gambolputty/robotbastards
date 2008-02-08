@@ -29,7 +29,6 @@ namespace Poc0.LevelEditor.Core
 
 			m_Csg.GeometryChanged += OnGeometryChanged;
 
-
 			scene.GetService< IRayCastService >( ).AddIntersector( RayCastLayers.StaticGeometry, this );
 		}
 
