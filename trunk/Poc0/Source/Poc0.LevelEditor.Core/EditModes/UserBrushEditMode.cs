@@ -81,7 +81,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 					points2[ ptIndex ] = new Point2( points[ ptIndex ].X, points[ ptIndex ].Z );
 				}
 
-				CsgBrush brush = new CsgBrush( "", points2 );
+				UiPolygon brush = new UiPolygon( "", points2 );
 				m_LevelGeometry.Csg.Combine( m_Operation, brush );
 				AppLog.Info( "Combined brush with current level geometry" );
 			}

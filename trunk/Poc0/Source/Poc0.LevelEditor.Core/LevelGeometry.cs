@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using Poc0.Core.Environment;
 using Rb.Core.Maths;
@@ -12,314 +13,377 @@ using Environment=Poc0.Core.Environment.Environment;
 
 namespace Poc0.LevelEditor.Core
 {
-	/// <summary>
-	/// Level geometry. Combines brushes to create the walkable geometry of a level
-	/// </summary>
-	[Serializable, RenderingLibraryType]
-	public abstract class LevelGeometry : IRenderable, IRay3Intersector, IObjectEditor
+	/*
+	 * Floor region identification:
+	 *		- Edges can be used to define unique floor regions (for different graphics, properties, etc.)
+	 *		- When building floor regions, after BSP process, builder does as flood fill (need to keep neighbourhood information)
+	 *			- Barrier edges stop flood fill recursion
+	 * 
+	 * BSP structure:
+	 *	Convex leaf nodes 
+	 * 
+	 */
+
+	public class LevelPolygon
 	{
-		#region Public members
-
-		/// <summary>
-		/// Setup constructor
-		/// </summary>
-		public LevelGeometry( Scene scene )
+		public LevelPolygon( LevelVertex[] vertices, LevelEdge[] edges )
 		{
-			scene.Renderables.Add( this );
-
-			m_Csg.GeometryChanged += OnGeometryChanged;
-
-			scene.GetService< IRayCastService >( ).AddIntersector( RayCastLayers.StaticGeometry, this );
+			m_Vertices = vertices;
+			m_Edges = edges;
 		}
 
-		/// <summary>
-		/// Gets/sets the show flat flag
-		/// </summary>
-		public bool ShowFlat
+		public LevelVertex[] Vertices
 		{
-			get { return m_ShowFlat; }
-			set { m_ShowFlat = value; }
+			get { return m_Vertices; }
+			set { m_Vertices = value; }
 		}
 
-		/// <summary>
-		/// Gets the CSG handler for this level
-		/// </summary>
-		public Csg Csg
+		public LevelEdge[] Edges
 		{
-			get { return m_Csg; }
+			get { return m_Edges; }
+			set { m_Edges = value; }
 		}
 
-		/// <summary>
-		/// Renders the level geometry
-		/// </summary>
-		/// <param name="context">Rendering context</param>
-		public void Render( IRenderContext context )
+		private LevelVertex[] m_Vertices;
+		private LevelEdge[] m_Edges;
+	}
+
+	public class LevelEdge
+	{
+		public LevelEdge( LevelVertex start, LevelVertex end, LevelPolygon owner )
 		{
-			if ( ShowFlat )
+			m_Start = start;
+			m_End = end;
+			m_Owner = owner;
+
+			m_Start.StartEdge = this;
+			m_End.EndEdge = this;
+		}
+
+		public LevelPolygon Polygon
+		{
+			get { return m_Owner; }
+		}
+
+		public LevelVertex Start
+		{
+			get { return m_Start; }
+			set { m_Start = value; }
+		}
+
+		public LevelVertex End
+		{
+			get { return m_End; }
+			set { m_End = value; }
+		}
+
+		public LevelEdge PreviousEdge
+		{
+			get { return m_PrevEdge; }
+			set { m_PrevEdge = value; }
+		}
+
+		public LevelEdge NextEdge
+		{
+			get { return m_NextEdge; }
+			set { m_NextEdge = value; }
+		}
+
+		public static void LinkEdges( LevelEdge edge0, LevelEdge edge1 )
+		{
+			edge0.NextEdge = edge1;
+			edge1.PreviousEdge = edge0;
+		}
+
+		public float SqrDistanceTo( Point2 pt )
+		{
+			Vector2 lineVec = m_End.Position - m_Start.Position;
+			float sqrLength = lineVec.SqrLength;
+			float t = 0.0f;
+
+			if ( sqrLength != 0.0f )
 			{
-				if ( m_FlatRenderer == null )
+				t = Utils.Clamp( ( pt - m_Start.Position ).Dot( lineVec ) / sqrLength, 0.0f, 1.0f );
+			}
+
+			Point2 closestPt = m_Start.Position + ( lineVec * t );
+			return closestPt.SqrDistanceTo( pt );
+		}
+
+		private LevelEdge m_PrevEdge;
+		private LevelEdge m_NextEdge;
+		private LevelVertex m_Start;
+		private LevelVertex m_End;
+		private readonly LevelPolygon m_Owner;
+	}
+
+	public class LevelVertex
+	{
+		public LevelVertex( Point2 pt )
+		{
+			m_Position = pt;
+			m_StartEdge = null;
+			m_EndEdge = null;
+		}
+
+		public LevelEdge StartEdge
+		{
+			get { return m_StartEdge; }
+			set { m_StartEdge = value; }
+		}
+
+		public LevelEdge EndEdge
+		{
+			get { return m_EndEdge; }
+			set { m_EndEdge = value; }
+		}
+
+		public Point2 Position
+		{
+			get { return m_Position; }
+			set { m_Position = value; }
+		}
+
+		private Point2 m_Position;
+		private LevelEdge m_StartEdge;
+		private LevelEdge m_EndEdge;
+	}
+
+	/// <summary>
+	/// Level geometry
+	/// </summary>
+	public class LevelGeometry : IRay3Intersector
+	{
+		public static LevelGeometry Instance
+		{
+			get { return ms_Instance; }
+		}
+
+		private void OnChanged( )
+		{
+		}
+
+		public void Add( UiPolygon brush )
+		{
+			LevelVertex[] vertices = new LevelVertex[ brush.Points.Length ];
+			LevelEdge[] edges = new LevelEdge[ brush.Points.Length ];
+
+			LevelPolygon polygon = new LevelPolygon( vertices, edges );
+
+			for ( int vertexIndex = 0; vertexIndex < vertices.Length; ++vertexIndex )
+			{
+				vertices[ vertexIndex ] = AddVertex( brush.Points[ vertexIndex ] );
+			}
+
+			for ( int edgeIndex = 0; edgeIndex < edges.Length; ++edgeIndex )
+			{
+				LevelVertex start	= vertices[ edgeIndex ];
+				LevelVertex end		= vertices[ ( edgeIndex + 1 ) % vertices.Length ];
+
+				LevelEdge newEdge = new LevelEdge( start, end, polygon );
+				edges[ edgeIndex ] = newEdge;
+				AddEdge( newEdge );
+
+				if ( edgeIndex > 0 )
 				{
-					BuildFlatRenderer( );
+					LevelEdge.LinkEdges( edges[ edgeIndex - 1 ], newEdge );
 				}
+			}
+			
+			LevelEdge.LinkEdges( edges[ edges.Length - 1 ], edges[ 0 ] );
 
-				//	The graphics are all 2D, but we're watching it in 3D, so flip the Y and Z axis before we render
-				Graphics.Renderer.PushTransform( Transform.LocalToWorld, m_YZSwap );
+			m_Polygons.Add( polygon );
+		}
 
-				m_FlatRenderer.Render( context );
+		public void Remove( LevelPolygon polygon )
+		{
+			foreach ( LevelVertex vertex in polygon.Vertices )
+			{
+				m_Vertices.Remove( vertex );
+			}
+			foreach ( LevelEdge edge in polygon.Edges )
+			{
+				m_Edges.Remove( edge );
+			}
+			m_Polygons.Remove( polygon );
+		}
 
-				Graphics.Renderer.PopTransform( Transform.LocalToWorld );
+		public void Remove( LevelVertex vertex )
+		{
+			LevelEdge prevEdge = vertex.EndEdge;
+			LevelEdge nextEdge = vertex.StartEdge;
+			LevelEdge firstEdge = ( prevEdge == null ) ? null : prevEdge.PreviousEdge;
+			LevelEdge lastEdge = ( nextEdge == null ) ? null : nextEdge.NextEdge;
+
+			if ( prevEdge == null )
+			{
+				//	Case 0 : 0----x
+			}
+			else if ( nextEdge == null )
+			{
+				//	Case 1 : x----0
+			}
+			else if ( firstEdge == null )
+			{
+				//	Case 2 : x----0----x----x
+			}
+			else if ( lastEdge == null )
+			{
+				//	Case 3 : x----x----0----x
 			}
 			else
 			{
-				Render3d( context, m_Csg );
+				//	Case 4 : x----x----0----x----x
 			}
+
+			/*
+			LevelEdge prevEdge = ( vertex.EndEdge == null ) ? null : vertex.EndEdge.PreviousEdge;
+			LevelEdge nextEdge = ( vertex.StartEdge == null ) ? null : vertex.StartEdge.NextEdge;
+
+			//	TODO: AP: Create temporary edge
+			LevelEdge tempEdge = null;
+			if ( ( prevEdge != null ) && ( nextEdge != null ) )
+			{
+			//	tempEdge = new LevelEdge( );
+			}
+			if ( prevEdge != null )
+			{
+				prevEdge.NextEdge = tempEdge;
+				prevEdge.End.StartEdge = tempEdge;
+			}
+			if ( nextEdge != null )
+			{
+				nextEdge.PreviousEdge = prevEdge;
+			}
+
+			RemoveEdge( vertex.StartEdge );
+			RemoveEdge( vertex.EndEdge );
+			RemoveVertex( vertex );
+			*/
 		}
 
-		#endregion
-
-		#region Protected members
-
-		/// <summary>
-		/// Renders the level geometry in 3D
-		/// </summary>
-		/// <param name="context">Rendering context</param>
-		/// <param name="csg">Level geometry CSG object</param>
-		protected abstract void Render3d( IRenderContext context, Csg csg );
-
-		#endregion
-
-		#region Private members
-
-		private readonly Csg m_Csg = new Csg( );
-
-		private readonly static Matrix44 m_YZSwap = new Matrix44
-			(
-				1, 0, 0, 0,
-				0, 0, 1, 0,
-				0, 1, 0, 0,
-				0, 0, 0, 1
-			);
-
-		[NonSerialized]
-		private bool m_ShowFlat = true;
-
-		[NonSerialized]
-		private IRenderable m_FlatRenderer;
-
-		[NonSerialized]
-		private Draw.IPen m_DrawEdge;
-
-		[NonSerialized]
-		private Draw.IBrush m_FillVertex;
-
-		[NonSerialized]
-		private Draw.IBrush m_FillPolygon;
-
-		[NonSerialized]
-		private Draw.IPen m_DrawPolygon;
-
-
-		/// <summary>
-		/// Destroys the current renderable representation of the level geometry
-		/// </summary>
-		private void DestroyRenderable( )
+		private void RemoveVertex( LevelVertex vertex )
 		{
-			IDisposable dispose = m_FlatRenderer as IDisposable;
-			if ( dispose != null )
-			{
-				dispose.Dispose( );
-			}
-			m_FlatRenderer = null;
+			m_Vertices.Remove( vertex );
 		}
 
-		/// <summary>
-		/// Builds a renderable representation of the level geometry
-		/// </summary>
-		private void BuildFlatRenderer( )
+		private void RemoveEdge( LevelEdge edge )
 		{
-			if ( m_DrawEdge == null )
-			{
-				m_DrawEdge = Graphics.Draw.NewPen( Color.Red, 2.0f );
-			}
-
-			if ( m_FillVertex == null )
-			{
-				m_FillVertex = Graphics.Draw.NewBrush( Color.Wheat, Color.Black );
-			}
-
-			if ( m_FillPolygon == null )
-			{
-				m_FillPolygon = Graphics.Draw.NewBrush( Color.DeepSkyBlue );
-			}
-
-			if ( m_DrawPolygon == null )
-			{
-				m_DrawPolygon = Graphics.Draw.NewPen( Color.Wheat );
-			}
-
-			Graphics.Draw.StartCache( );
-
-			RenderFlat( m_Csg.Root );
-		//	RenderFlat( m_Csg.m_PolyLists );
-
-			m_FlatRenderer = Graphics.Draw.StopCache( );
+			m_Edges.Remove( edge );
 		}
-
-		/// <summary>
-		/// Draws a CSG edge
-		/// </summary>
-		private void DrawEdge( Csg.Edge edge )
+		
+		private LevelVertex AddVertex( Point2 pt )
 		{
-			Graphics.Draw.Line( m_DrawEdge, edge.P0, edge.P1 );
-
-			if ( !edge.DoubleSided )
-			{
-				Vector2 vec = ( edge.P1 - edge.P0 );
-				Point2 mid = edge.P0 + vec / 2;
-				Graphics.Draw.Line( m_DrawEdge, mid, mid + vec.MakePerpNormal( ) );
-			}
-
-			Graphics.Draw.Circle( m_FillVertex, edge.P0.X, edge.P0.Y, 0.3f );
-			Graphics.Draw.Circle( m_FillVertex, edge.P1.X, edge.P1.Y, 0.3f );
+			LevelVertex vertex = new LevelVertex( pt );
+			m_Vertices.Add( vertex );
+			return vertex;
 		}
-
-		protected abstract void RenderFlat( Tesselator.PolygonLists polyLists );
-
-		/// <summary>
-		/// Renders the specified BSP node
-		/// </summary>
-		private void RenderFlat( Csg.BspNode node )
+		
+		private void AddEdge( LevelEdge edge )
 		{
-			if ( node == null )
-			{
-				return;
-			}
-
-			if ( node.ConvexRegion != null )
-			{
-				Graphics.Draw.Polygon( m_FillPolygon, node.ConvexRegion );
-			}
-
-			RenderFlat( node.Behind );
-			RenderFlat( node.InFront );
-
-			if ( node.ConvexRegion != null )
-			{
-				Graphics.Draw.Polygon( m_DrawPolygon, node.ConvexRegion );
-			}
-
-			DrawEdge( node.Edge );
-
+			m_Edges.Add( edge );
 		}
 
-		/// <summary>
-		/// Called when level geometry has changed
-		/// </summary>
-		protected virtual void OnGeometryChanged( object sender, EventArgs args )
+		private LevelPolygon FindClosestPolygon( Point2 pt )
 		{
-			//	Rubbish renderable representation - (next) Render() recreates renderable representation
-			DestroyRenderable( );
-
-			if ( ObjectChanged != null )
-			{
-				ObjectChanged( this, null );
-			}
+			//	TODO: AP: Traverse BSP tree, find polygon that contains pt
+			return null;
 		}
 
-		#endregion
+		private LevelVertex FindClosestVertex( Point2 pt, float distance )
+		{
+			float sqrDistance = distance * distance;
+			foreach ( LevelVertex vertex in m_Vertices )
+			{
+				if ( pt.SqrDistanceTo( vertex.Position ) < sqrDistance )
+				{
+					return vertex;
+				}
+			}
+			return null;
+		}
+		
+		private LevelEdge FindClosestEdge( Point2 pt, float distance )
+		{
+			float sqrDistance = distance * distance;
+			foreach ( LevelEdge edge in m_Edges )
+			{
+				if ( edge.SqrDistanceTo( pt ) < sqrDistance )
+				{
+					return edge;
+				}
+			}
+			return null;
+		}
+
+		private readonly static LevelGeometry ms_Instance = new LevelGeometry( );
+
+		private const float VertexSelectionRadius = 0.1f;
+		private const float EdgeSelectionRadius = 0.1f;
+
+		private readonly Plane3					m_GroundPlane	= new Plane3( Vector3.YAxis, 0 );
+		private readonly List< LevelVertex >	m_Vertices		= new List< LevelVertex >( );
+		private readonly List< LevelEdge >		m_Edges			= new List< LevelEdge >( );
+		private readonly List< LevelPolygon >	m_Polygons		= new List< LevelPolygon >( );
 
 		#region IRay3Intersector Members
 
-		/// <summary>
-		/// Checks if a ray intersects this object
-		/// </summary>
-		/// <param name="ray">Ray to check</param>
-		/// <returns>true if the ray intersects this object</returns>
 		public bool TestIntersection( Ray3 ray )
 		{
-			return ( m_Csg == null ) ? false : TestIntersection( ray, m_Csg.Root );
+			Line3Intersection intersection = Intersections3.GetRayIntersection( ray, m_GroundPlane );
+			if ( intersection == null )
+			{
+				return false;
+			}
+			Point2 pt = new Point2( intersection.IntersectionPosition.X, intersection.IntersectionPosition.Z );
+			LevelVertex vertex = FindClosestVertex( pt, VertexSelectionRadius );
+			if ( vertex != null )
+			{
+				return true;
+			}
+
+			LevelEdge edge = FindClosestEdge( pt, EdgeSelectionRadius );
+			if ( edge != null )
+			{
+				return true;
+			}
+			LevelPolygon polygon = FindClosestPolygon( pt );
+			if ( polygon != null )
+			{
+				return true;
+			}
+			return false;
 		}
 
-		/// <summary>
-		/// Checks if a ray intersects this object, returning information about the intersection if it does
-		/// </summary>
-		/// <param name="ray">Ray to check</param>
-		/// <returns>Intersection information. If no intersection takes place, this method returns null</returns>
 		public Line3Intersection GetIntersection( Ray3 ray )
 		{
-			return ( m_Csg == null ) ? null : GetIntersection( ray, m_Csg.Root );
-		}
-
-		#endregion
-
-		/// <summary>
-		/// Tests the intersection between a ray and a csg node
-		/// </summary>
-		/// <param name="ray">Ray to test</param>
-		/// <param name="node">CSG node</param>
-		/// <returns>true if there is an intersection between ray and node, or a subnode</returns>
-		private static bool TestIntersection( Ray3 ray, Csg.BspNode node )
-		{
-			return GetIntersection( ray, node ) != null;
-		}
-
-		/// <summary>
-		/// Gets the intersection between a ray and a csg node
-		/// </summary>
-		/// <param name="ray">Ray to test</param>
-		/// <param name="node">CSG node</param>
-		/// <returns>Intersection detail if there is an intersection between ray and node, or a subnode</returns>
-		private static Line3Intersection GetIntersection( Ray3 ray, Csg.BspNode node )
-		{
-			if ( node == null )
+			Line3Intersection intersection = Intersections3.GetRayIntersection( ray, m_GroundPlane );
+			if ( intersection == null )
 			{
 				return null;
 			}
-
-			//	TODO: AP: Use BSP properties... this is lazy
-			Line3Intersection childIntersection = GetIntersection( ray, node.InFront ) ?? GetIntersection( ray, node.Behind );
-			
-			Point3 pt0 = node.Quad[ 0 ];
-			Point3 pt1 = node.Quad[ 1 ];
-			Point3 pt2 = node.Quad[ 2 ];
-			Point3 pt3 = node.Quad[ 3 ];
-
-			Line3Intersection intersection = Intersections3.GetRayQuadIntersection( ray, pt0, pt1, pt2, pt3 );
-			if ( intersection != null )
+			Point2 pt = new Point2( intersection.IntersectionPosition.X, intersection.IntersectionPosition.Z );
+			LevelVertex vertex = FindClosestVertex( pt, VertexSelectionRadius );
+			if ( vertex != null )
 			{
-				if ( ( childIntersection == null ) || ( intersection.Distance < childIntersection.Distance ) )
-				{
-					intersection.IntersectedObject = node;
-				}
-				else if ( childIntersection.Distance < intersection.Distance )
-				{
-					intersection = childIntersection;
-				}
-			}
-			else
-			{
-				intersection = childIntersection;
+				intersection.IntersectedObject = vertex;
+				return intersection;
 			}
 
-			return intersection;
-		}
+			LevelEdge edge = FindClosestEdge( pt, EdgeSelectionRadius );
+			if ( edge != null )
+			{
+				intersection.IntersectedObject = edge;
+				return intersection;
+			}
+			LevelPolygon polygon = FindClosestPolygon( pt );
+			if ( polygon != null )
+			{
+				intersection.IntersectedObject = polygon;
+				return intersection;
+			}
 
-		#region IObjectEditor Members
-
-		public event EventHandler ObjectChanged;
-
-		public void Build( Scene scene )
-		{
-			//	Graphics must be added to the environment first, so it gets a scene assigned
-			IEnvironmentGraphics envGraphics = Graphics.Factory.Create< IEnvironmentGraphics >();
-			Environment environment = new Environment( );
-			environment.Graphics = envGraphics;
-
-			scene.Objects.Add( environment );
-			
-			new EnvironmentGraphicsBuilder( 100.0f ).Build( envGraphics, this );
-
-			scene.AddService( environment );
+			return null;
 		}
 
 		#endregion

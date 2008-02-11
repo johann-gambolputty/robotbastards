@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Csg.cs" />
-    <Compile Include="CsgBrush.cs" />
+    <Compile Include="UiPolygon.cs" />
     <Compile Include="EditModes\UserBrushEditMode.cs" />
     <Compile Include="EditModes\DefinePolygonEditMode.cs" />
     <Compile Include="EnvironmentGraphicsBuilder.cs" />
