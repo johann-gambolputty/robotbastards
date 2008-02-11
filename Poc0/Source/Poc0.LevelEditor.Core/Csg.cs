@@ -7,6 +7,15 @@ using Rb.Tools.LevelEditor.Core.Selection;
 
 namespace Poc0.LevelEditor.Core
 {
+	/*
+	 * New user interface:
+	 *	- User adds collision geometry to level
+	 *	- Geometry can be moved, rotated, and scaled
+	 *	- Geometry vertices can be moved
+	 *	- Geometry pieces can be merged together, and unmerged (prio 2)
+	 *	- At build time, builder uses CSG ops to merge all geometry objects, to create AI map, graphics, etc.
+	 */
+
 	/// <summary>
 	/// Handles CSG operations
 	/// </summary>
@@ -52,7 +61,7 @@ namespace Poc0.LevelEditor.Core
 		/// <param name="op">CSG operation</param>
 		/// <param name="brush">Brush to add to the level geometry</param>
 		/// <exception cref="InvalidOperationException">Thrown by convex region builder if BSP tree is internally invalid</exception>
-		public void Combine( Operation op, CsgBrush brush )
+		public void Combine( Operation op, UiPolygon brush )
 		{
 			BspNode brushBsp = Build( brush, op == Operation.Complement );
 			BspNode newRoot = null;
@@ -505,7 +514,7 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Builds a BSP tree from a CSG brush
 		/// </summary>
-		private static BspNode Build( CsgBrush brush, bool reverse )
+		private static BspNode Build( UiPolygon brush, bool reverse )
 		{
 			Point2[] points = brush.Points;
 			if ( reverse )

@@ -4,16 +4,16 @@ using Rb.Core.Maths;
 namespace Poc0.LevelEditor.Core
 {
 	/// <summary>
-	/// A brush for editing level geometry
+	/// A polygon defined by user input
 	/// </summary>
-	public class CsgBrush
+	public class UiPolygon
 	{
 		/// <summary>
 		/// A named polygonal brush
 		/// </summary>
 		/// <param name="name">Brush name</param>
 		/// <param name="points">Brush polygon points</param>
-		public CsgBrush( string name, Point2[] points )
+		public UiPolygon( string name, Point2[] points )
 		{
 			m_Name = name;
 			m_Points = points;
