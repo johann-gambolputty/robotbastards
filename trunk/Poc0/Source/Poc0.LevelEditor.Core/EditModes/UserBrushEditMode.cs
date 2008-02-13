@@ -30,7 +30,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// </summary>
 		public override void Start( )
 		{
-			m_LevelGeometry.ShowFlat = true;
+		//	m_LevelGeometry.ShowFlat = true;
 			base.Start( );
 		}
 
@@ -39,7 +39,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// </summary>
 		public override void Stop( )
 		{
-			m_LevelGeometry.ShowFlat = false;
+		//	m_LevelGeometry.ShowFlat = false;
 			base.Stop( );
 		}
 
@@ -82,7 +82,8 @@ namespace Poc0.LevelEditor.Core.EditModes
 				}
 
 				UiPolygon brush = new UiPolygon( "", points2 );
-				m_LevelGeometry.Csg.Combine( m_Operation, brush );
+			//	m_LevelGeometry.Csg.Combine( m_Operation, brush );
+				m_LevelGeometry.Add( brush, false );
 				AppLog.Info( "Combined brush with current level geometry" );
 			}
 			catch ( Exception ex )

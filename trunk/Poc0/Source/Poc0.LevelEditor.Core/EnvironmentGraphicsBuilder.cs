@@ -239,7 +239,7 @@ namespace Poc0.LevelEditor.Core
 			GroupBuilder group = builder.GetGroup( material );
 
 			float height = 0;
-			Point2[] points = node.ConvexRegion;
+			Point2[] points = null; // node.ConvexRegion;
 			Point2 basePos = points[ 0 ];
 			ICollection<Vertex> vertices = group.Vertices;
 			for ( int vertexIndex = 1; vertexIndex < points.Length - 1; ++vertexIndex )
@@ -313,11 +313,12 @@ namespace Poc0.LevelEditor.Core
 		public IEnvironmentGraphics Build( IEnvironmentGraphics envGraphics, LevelGeometry geometry )
 		{
 			//	Check that there is some geometry to process
-			if ( ( geometry.Csg == null ) || ( geometry.Csg.Root == null ) )
+		//	if ( ( geometry.Csg == null ) || ( geometry.Csg.Root == null ) )
 			{
 				return null;
 			}
 
+			/*
 			EnvironmentGraphicsData envGraphicsData = new EnvironmentGraphicsData( 1, 1 );
 
 			EnvironmentGraphicsData.GridCell levelCell = new EnvironmentGraphicsData.GridCell( );

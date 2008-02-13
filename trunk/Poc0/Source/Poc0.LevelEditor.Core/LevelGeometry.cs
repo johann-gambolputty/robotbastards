@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Rb.Core.Maths;
+using Rb.Rendering;
+using Rb.World;
 
 namespace Poc0.LevelEditor.Core
 {
@@ -375,8 +377,11 @@ namespace Poc0.LevelEditor.Core
 	/// <summary>
 	/// Level geometry
 	/// </summary>
-	public class LevelGeometry : IRay3Intersector
+	[Serializable]
+	[RenderingLibraryType]
+	public class LevelGeometry : IRay3Intersector, IRenderable, ISceneObject
 	{
+
 		public static LevelGeometry Instance
 		{
 			get { return ms_Instance; }
@@ -385,6 +390,8 @@ namespace Poc0.LevelEditor.Core
 		private void OnChanged( )
 		{
 		}
+
+
 
 		public void Add( UiPolygon brush, bool doubleSided )
 		{
@@ -612,6 +619,41 @@ namespace Poc0.LevelEditor.Core
 			}
 
 			return null;
+		}
+
+		#endregion
+
+		#region IRenderable Members
+
+		private IEnumerable< Point3 > PolyPoints( LevelPolygon poly )
+		{
+			foreach ( LevelVertex vertex in poly.Vertices )
+			{
+				yield return new Point3( vertex.Position.X, 0.01f, vertex.Position.Y );
+			}
+		}
+
+		public void Render( IRenderContext context )
+		{
+			foreach ( LevelPolygon poly in m_Polygons )
+			{
+				IEnumerable< Point3 > nextPoint = PolyPoints( poly );
+				Graphics.Draw.Polygon( Draw.Brushes.Blue, nextPoint );
+			}
+		}
+
+		#endregion
+
+		#region ISceneObject Members
+
+		public void AddedToScene( Scene scene )
+		{
+			scene.Renderables.Add( this );
+		}
+
+		public void RemovedFromScene( Scene scene )
+		{
+			scene.Renderables.Remove( this );
 		}
 
 		#endregion
