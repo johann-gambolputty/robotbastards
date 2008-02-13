@@ -21,6 +21,15 @@ namespace Rb.Rendering
 			public static IPen Black	= Graphics.Draw.NewPen( Color.Black );
 		}
 
+		public static class Brushes
+		{
+			public static IBrush White	= Graphics.Draw.NewBrush( Color.White );
+			public static IBrush Red	= Graphics.Draw.NewBrush( Color.Red );
+			public static IBrush Blue	= Graphics.Draw.NewBrush( Color.Blue );
+			public static IBrush Green	= Graphics.Draw.NewBrush( Color.Green );
+			public static IBrush Black	= Graphics.Draw.NewBrush( Color.Black );
+		}
+
 		#region Pens
 
 		/// <summary>

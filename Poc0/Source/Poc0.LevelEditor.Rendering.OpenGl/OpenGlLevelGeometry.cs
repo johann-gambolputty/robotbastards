@@ -19,6 +19,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 	[Serializable]
 	public class OpenGlLevelGeometry : LevelGeometry
 	{
+		/*
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
@@ -431,5 +432,6 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		}
 
 		#endregion
+		 */
 	}
 }

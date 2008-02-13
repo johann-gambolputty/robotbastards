@@ -76,7 +76,7 @@ namespace Poc0.LevelEditor
 
 			//	TODO: AP: Fix Z order rendering cheat
 			scene.Objects.Add( Guid.NewGuid( ), Graphics.Factory.Create< GroundPlaneGrid >( ) );
-			scene.Objects.Add( Guid.NewGuid( ), Graphics.Factory.Create< LevelGeometry >( scene ) );
+			scene.Objects.Add( Guid.NewGuid( ), Graphics.Factory.Create< LevelGeometry >( ) );
 		}
 
 		/// <summary>
