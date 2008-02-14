@@ -57,6 +57,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Csg.cs" />
+    <Compile Include="Csg2.cs" />
+    <Compile Include="ILevelGeometryObject.cs" />
+    <Compile Include="LevelEdge.cs" />
+    <Compile Include="LevelPolygon.cs" />
+    <Compile Include="LevelPolygonGroup.cs" />
+    <Compile Include="LevelVertex.cs" />
     <Compile Include="UiPolygon.cs" />
     <Compile Include="EditModes\UserBrushEditMode.cs" />
     <Compile Include="EditModes\DefinePolygonEditMode.cs" />

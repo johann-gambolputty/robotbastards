@@ -17,362 +17,6 @@ namespace Poc0.LevelEditor.Core
 	 * 
 	 */
 
-	public class LevelPolygon
-	{
-		public LevelPolygon( LevelVertex[] vertices, LevelEdge[] edges )
-		{
-			m_Vertices = vertices;
-			m_Edges = edges;
-		}
-
-		public LevelVertex[] Vertices
-		{
-			get { return m_Vertices; }
-			set { m_Vertices = value; }
-		}
-
-		public LevelEdge[] Edges
-		{
-			get { return m_Edges; }
-			set { m_Edges = value; }
-		}
-
-		private LevelVertex[] m_Vertices;
-		private LevelEdge[] m_Edges;
-	}
-
-	public class LevelEdge
-	{
-		public LevelEdge( LevelVertex start, LevelVertex end, LevelPolygon owner, bool doubleSided )
-		{
-			m_Start = start;
-			m_End = end;
-			m_Owner = owner;
-			m_DoubleSided = doubleSided;
-
-			m_Start.StartEdge = this;
-			m_End.EndEdge = this;
-		}
-
-		public bool IsDoubleSided
-		{
-			get { return m_DoubleSided; }
-		}
-
-		public LevelPolygon Polygon
-		{
-			get { return m_Owner; }
-		}
-
-		public LevelVertex Start
-		{
-			get { return m_Start; }
-			set { m_Start = value; }
-		}
-
-		public LevelVertex End
-		{
-			get { return m_End; }
-			set { m_End = value; }
-		}
-
-		public LevelEdge PreviousEdge
-		{
-			get { return m_PrevEdge; }
-			set { m_PrevEdge = value; }
-		}
-
-		public LevelEdge NextEdge
-		{
-			get { return m_NextEdge; }
-			set { m_NextEdge = value; }
-		}
-
-		public static void LinkEdges( LevelEdge edge0, LevelEdge edge1 )
-		{
-			edge0.NextEdge = edge1;
-			edge1.PreviousEdge = edge0;
-		}
-
-		public float SqrDistanceTo( Point2 pt )
-		{
-			Vector2 lineVec = m_End.Position - m_Start.Position;
-			float sqrLength = lineVec.SqrLength;
-			float t = 0.0f;
-
-			if ( sqrLength != 0.0f )
-			{
-				t = Utils.Clamp( ( pt - m_Start.Position ).Dot( lineVec ) / sqrLength, 0.0f, 1.0f );
-			}
-
-			Point2 closestPt = m_Start.Position + ( lineVec * t );
-			return closestPt.SqrDistanceTo( pt );
-		}
-
-		private LevelEdge m_PrevEdge;
-		private LevelEdge m_NextEdge;
-		private LevelVertex m_Start;
-		private LevelVertex m_End;
-		private readonly bool m_DoubleSided;
-		private readonly LevelPolygon m_Owner;
-	}
-
-	public class LevelVertex
-	{
-		public LevelVertex( Point2 pt )
-		{
-			m_Position = pt;
-			m_StartEdge = null;
-			m_EndEdge = null;
-		}
-
-		public LevelEdge StartEdge
-		{
-			get { return m_StartEdge; }
-			set { m_StartEdge = value; }
-		}
-
-		public LevelEdge EndEdge
-		{
-			get { return m_EndEdge; }
-			set { m_EndEdge = value; }
-		}
-
-		public Point2 Position
-		{
-			get { return m_Position; }
-			set { m_Position = value; }
-		}
-
-		private Point2 m_Position;
-		private LevelEdge m_StartEdge;
-		private LevelEdge m_EndEdge;
-	}
-
-	internal class Csg2
-	{
-		public enum Operation
-		{
-			Union,
-			Intersection,
-			Complement
-		}
-
-		/// <summary>
-		/// Combines two polygons together using a CSG operator. Returns a BSP tree for the result polygon
-		/// </summary>
-		public static Node Combine( LevelPolygon poly1, LevelPolygon poly2, Operation op )
-		{
-			IList< Edge > poly1Edges = BuildPolygonEdgeList( poly1 );
-			IList< Edge > poly2Edges = BuildPolygonEdgeList( poly2 );
-
-			Node poly1Root = BuildNode( poly1Edges );
-			Node poly2Root = BuildNode( poly2Edges );
-
-			List< Edge > sourceEdges = new List< Edge >( );
-
-			switch ( op )
-			{
-				case Operation.Union :
-				{
-					ClipEdges( poly1Root, poly2Edges, true, false, sourceEdges );
-					ClipEdges( poly2Root, poly1Edges, true, false, sourceEdges );
-					break;
-				}
-				case Operation.Intersection :
-				{
-					ClipEdges( poly1Root, poly2Edges, false, true, sourceEdges );
-					ClipEdges( poly2Root, poly1Edges, false, true, sourceEdges );
-					break;
-				}
-				case Operation.Complement :
-				{
-					ClipEdges( poly1Root, poly2Edges, false, true, sourceEdges );
-					ClipEdges( poly2Root, poly1Edges, false, true, sourceEdges );
-					break;
-				}
-			}
-
-			return BuildNode( sourceEdges );
-		}
-		
-		private static void ClipEdges( Node node, IEnumerable< Edge > edges, bool keepOutsideEdges, bool keepInsideEdges, IList< Edge > outputEdges )
-		{
-			if ( node == null )
-			{
-				return;
-			}
-
-			IList< Edge > outsideEdges = ( node.Behind != null ) ? new List< Edge >( ) : ( keepOutsideEdges ? outputEdges : null );
-			IList< Edge > insideEdges = ( node.InFront != null ) ? new List< Edge >( ) : ( keepInsideEdges ? outputEdges : null );
-			
-			foreach ( Edge edge in edges )
-			{
-				ClassifyEdge( node.Plane, edge, outsideEdges, insideEdges );
-			}
-	
-			ClipEdges( node.Behind, outsideEdges, keepOutsideEdges, keepInsideEdges, outputEdges );
-			ClipEdges( node.InFront, insideEdges, keepOutsideEdges, keepInsideEdges, outputEdges );
-		}
-
-		private static Node BuildNode( IList< Edge > edges )
-		{
-			if ( edges.Count == 0 )
-			{
-				return null;
-			}
-
-			Node node = new Node( edges[ 0 ] );
-			
-			List< Edge > inFrontEdges = new List< Edge >( );
-			List< Edge > behindEdges = new List< Edge >( );
-
-			for ( int edgeIndex = 1; edgeIndex < edges.Count; ++edgeIndex )
-			{
-				ClassifyEdge( node.Plane, edges[ edgeIndex ], inFrontEdges, behindEdges );
-			}
-
-			node.Behind = BuildNode( behindEdges );
-			node.InFront = BuildNode( inFrontEdges );
-
-			return node;
-		}
-
-		private const float OnPlaneTolerance = 0.01f;
-
-		private static void ClassifyEdge( Plane2 plane, Edge edge, ICollection< Edge > inFrontEdges, ICollection< Edge > behindEdges )
-		{
-			PlaneClassification startClass = plane.ClassifyPoint( edge.Start, OnPlaneTolerance );
-			PlaneClassification endClass = plane.ClassifyPoint( edge.End, OnPlaneTolerance );
-
-			if ( startClass == PlaneClassification.On )
-			{
-				startClass = endClass;
-			}
-			if ( endClass == PlaneClassification.On )
-			{
-				endClass = startClass;
-			}
-			if ( startClass == endClass )
-			{
-				if ( startClass == PlaneClassification.Behind )
-				{
-					behindEdges.Add( edge );
-				}
-				else
-				{
-					inFrontEdges.Add( edge );
-				}
-				return;
-			}
-			Point2 midPt = Intersections2.GetLinePlaneIntersection( edge.Start, edge.End, plane ).IntersectionPosition;
-
-			Edge startToMid = new Edge( edge.Start, midPt, edge.IsDoubleSided );
-			Edge midToEnd = new Edge( midPt, edge.End, edge.IsDoubleSided );
-
-			if ( startClass == PlaneClassification.Behind )
-			{
-				AddEdge( behindEdges, startToMid );
-				AddEdge( inFrontEdges, midToEnd );
-			}
-			else
-			{
-				AddEdge( inFrontEdges, startToMid );
-				AddEdge( behindEdges, midToEnd );
-			}
-		}
-
-		private static void AddEdge( ICollection< Edge > edges, Edge edge )
-		{
-			if ( edges != null )
-			{
-				edges.Add( edge );
-			}
-		}
-
-		private static IList< Edge > BuildPolygonEdgeList( LevelPolygon poly )
-		{
-			List< Edge > edges = new List< Edge >( poly.Edges.Length );
-
-			for ( int edgeIndex = 0; edgeIndex < edges.Count; ++edgeIndex )
-			{
-				LevelEdge srcEdge = poly.Edges[ edgeIndex ];
-				edges[ edgeIndex ] = new Edge( srcEdge.Start.Position, srcEdge.End.Position, srcEdge.IsDoubleSided );
-			}
-
-			return edges;
-		}
-
-		public class Edge
-		{
-			public Edge( Point2 start, Point2 end, bool isDoubleSided )
-			{
-				m_Start = start;
-				m_End = end;
-				m_IsDoubleSided = isDoubleSided;
-			}
-
-			public Point2 Start
-			{
-				get { return m_Start; }
-			}
-
-			public Point2 End
-			{
-				get { return m_End; }
-			}
-
-			public bool IsDoubleSided
-			{
-				get { return m_IsDoubleSided; }
-			}
-
-			private readonly Point2	m_Start;
-			private readonly Point2	m_End;
-			private readonly bool	m_IsDoubleSided;
-		}
-
-		public class Node
-		{
-			public Node( Edge edge )
-			{
-				m_Edge = edge;
-				m_Plane = new Plane2( edge.Start, edge.End );
-			}
-
-			public bool IsDoubleSided
-			{
-				get { return m_Edge.IsDoubleSided; }
-			}
-
-			public Node Behind
-			{
-				get { return m_Behind; }
-				set { m_Behind = value; }
-			}
-
-			public Node InFront
-			{
-				get { return m_InFront; }
-				set { m_InFront = value; }
-			}
-
-			public Edge Edge
-			{
-				get { return m_Edge; }
-			}
-
-			public Plane2 Plane
-			{
-				get { return m_Plane; }
-			}
-
-			private readonly Edge	m_Edge;
-			private readonly Plane2	m_Plane;
-			private Node			m_Behind;
-			private Node			m_InFront;
-		}
-	}
 
 	/// <summary>
 	/// Level geometry
@@ -381,18 +25,24 @@ namespace Poc0.LevelEditor.Core
 	[RenderingLibraryType]
 	public class LevelGeometry : IRay3Intersector, IRenderable, ISceneObject
 	{
-
+		/// <summary>
+		/// Gets the level geometry singleton
+		/// </summary>
 		public static LevelGeometry Instance
 		{
 			get { return ms_Instance; }
 		}
 
-		private void OnChanged( )
+		private void RebuildGeometry( )
 		{
+			m_Root = Csg2.Build( m_Polygons );
 		}
 
+		private Csg2.Node m_Root;
 
-
+		/// <summary>
+		/// Converts a UI polygon to a <see cref="LevelPolygon"/>, adding the result to the level geometry
+		/// </summary>
 		public void Add( UiPolygon brush, bool doubleSided )
 		{
 			LevelVertex[] vertices = new LevelVertex[ brush.Points.Length ];
@@ -422,9 +72,19 @@ namespace Poc0.LevelEditor.Core
 			
 			LevelEdge.LinkEdges( edges[ edges.Length - 1 ], edges[ 0 ] );
 
+		}
+
+		/// <summary>
+		/// Adds a <see cref="LevelPolygon"/> to the level
+		/// </summary>
+		public void Add( LevelPolygon polygon )
+		{
 			m_Polygons.Add( polygon );
 		}
 
+		/// <summary>
+		/// Removes a <see cref="LevelPolygon"/> from the level
+		/// </summary>
 		public void Remove( LevelPolygon polygon )
 		{
 			foreach ( LevelVertex vertex in polygon.Vertices )
