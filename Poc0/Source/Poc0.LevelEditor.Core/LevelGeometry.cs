@@ -36,8 +36,48 @@ namespace Poc0.LevelEditor.Core
 		private void RebuildGeometry( )
 		{
 			m_Root = Csg2.Build( m_Polygons );
+
+			m_DisplayPolygons = new List< LevelGeometryTesselator.Polygon >( );
+
+			LevelGeometryTesselator tess = new LevelGeometryTesselator( );
+			LevelGeometryTesselator.Polygon poly = tess.CreateBoundingPolygon( -100, -100, 100, 100 );
+
+			BuildConvexRegions( m_Root, tess, poly );
+
+			m_DisplayPoints = tess.Points.ToArray( );
 		}
 
+		/// <summary>
+		/// Builds the convex region for a node and its children
+		/// </summary>
+		private void BuildConvexRegions( Csg2.Node node, LevelGeometryTesselator tess, LevelGeometryTesselator.Polygon poly )
+		{
+			LevelGeometryTesselator.Polygon behindPoly;
+			LevelGeometryTesselator.Polygon inFrontPoly;
+			tess.Split( node.Plane, poly, out behindPoly, out inFrontPoly );
+
+			if ( node.Behind != null )
+			{
+				BuildConvexRegions( node.Behind, tess, behindPoly );
+			}
+			else
+			{
+				m_DisplayPolygons.Add( behindPoly );
+			}
+			if ( node.InFront != null )
+			{
+				BuildConvexRegions( node.InFront, tess, inFrontPoly );
+			}
+			else
+			{
+			//	node.ConvexRegion = inFrontPoly.Indices;
+			//	m_DisplayPolygons.Add( inFrontPoly );
+			}
+		}
+
+
+		private Point2[] m_DisplayPoints;
+		private List<LevelGeometryTesselator.Polygon> m_DisplayPolygons;
 		private Csg2.Node m_Root;
 
 		/// <summary>
@@ -72,6 +112,7 @@ namespace Poc0.LevelEditor.Core
 			
 			LevelEdge.LinkEdges( edges[ edges.Length - 1 ], edges[ 0 ] );
 
+			Add( polygon );
 		}
 
 		/// <summary>
@@ -80,6 +121,7 @@ namespace Poc0.LevelEditor.Core
 		public void Add( LevelPolygon polygon )
 		{
 			m_Polygons.Add( polygon );
+			RebuildGeometry( );
 		}
 
 		/// <summary>
@@ -285,17 +327,22 @@ namespace Poc0.LevelEditor.Core
 
 		#region IRenderable Members
 
-		private IEnumerable< Point3 > PolyPoints( LevelPolygon poly )
+		private IEnumerable< Point3 > PolyPoints( LevelGeometryTesselator.Polygon poly )
 		{
-			foreach ( LevelVertex vertex in poly.Vertices )
+			for ( int index = 0; index < poly.Indices.Length; ++index )
 			{
-				yield return new Point3( vertex.Position.X, 0.01f, vertex.Position.Y );
+				Point2 pt = m_DisplayPoints[ poly.Indices[ index ] ];
+				yield return new Point3( pt.X, 0.01f, pt.Y );
 			}
 		}
 
 		public void Render( IRenderContext context )
 		{
-			foreach ( LevelPolygon poly in m_Polygons )
+			if ( m_DisplayPolygons == null )
+			{
+				return;
+			}
+			foreach ( LevelGeometryTesselator.Polygon poly in m_DisplayPolygons )
 			{
 				IEnumerable< Point3 > nextPoint = PolyPoints( poly );
 				Graphics.Draw.Polygon( Draw.Brushes.Blue, nextPoint );

@@ -3,8 +3,14 @@ using Rb.Core.Maths;
 
 namespace Poc0.LevelEditor.Core
 {
+	/// <summary>
+	/// Handles level geometry CSG operations
+	/// </summary>
 	internal class Csg2
 	{
+		/// <summary>
+		/// CSG operations
+		/// </summary>
 		public enum Operation
 		{
 			Union,
@@ -12,6 +18,9 @@ namespace Poc0.LevelEditor.Core
 			Complement
 		}
 
+		/// <summary>
+		/// Builds a BSP tree for a set of level polygons
+		/// </summary>
 		public static Node Build( IEnumerable< LevelPolygon > polygons )
 		{
 			IList< Edge > allEdges = new List< Edge>( );
@@ -159,7 +168,8 @@ namespace Poc0.LevelEditor.Core
 		{
 			foreach ( LevelEdge sourceEdge in sourceEdges )
 			{
-				edges.Add( new Edge( sourceEdge.End.Position, sourceEdge.Start.Position, sourceEdge.IsDoubleSided ) );
+			//	edges.Add( new Edge( sourceEdge.End.Position, sourceEdge.Start.Position, sourceEdge.IsDoubleSided ) );
+				edges.Add( new Edge( sourceEdge.Start.Position, sourceEdge.End.Position, sourceEdge.IsDoubleSided ) );
 			}
 		}
 

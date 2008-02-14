@@ -60,6 +60,7 @@
     <Compile Include="Csg2.cs" />
     <Compile Include="ILevelGeometryObject.cs" />
     <Compile Include="LevelEdge.cs" />
+    <Compile Include="LevelGeometryTesselator.cs" />
     <Compile Include="LevelPolygon.cs" />
     <Compile Include="LevelPolygonGroup.cs" />
     <Compile Include="LevelVertex.cs" />
