@@ -296,7 +296,6 @@ namespace Poc0.LevelEditor.Core
 				m_Plane = new Plane2( p0, p1 );
 			}
 
-
 			/// <summary>
 			/// Gets/sets the double sided flag
 			/// </summary>

@@ -27,6 +27,8 @@ namespace Rb.Rendering
 			public static IBrush Red	= Graphics.Draw.NewBrush( Color.Red );
 			public static IBrush Blue	= Graphics.Draw.NewBrush( Color.Blue );
 			public static IBrush Green	= Graphics.Draw.NewBrush( Color.Green );
+			public static IBrush Yellow	= Graphics.Draw.NewBrush( Color.Yellow );
+			public static IBrush Orange	= Graphics.Draw.NewBrush( Color.Orange );
 			public static IBrush Black	= Graphics.Draw.NewBrush( Color.Black );
 		}
 
