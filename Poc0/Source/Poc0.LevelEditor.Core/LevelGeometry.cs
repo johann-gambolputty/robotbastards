@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using Rb.Core.Maths;
 using Rb.Rendering;
+using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
+using Rb.World.Services;
+using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc0.LevelEditor.Core
 {
@@ -25,61 +29,6 @@ namespace Poc0.LevelEditor.Core
 	[RenderingLibraryType]
 	public class LevelGeometry : IRay3Intersector, IRenderable, ISceneObject
 	{
-		/// <summary>
-		/// Gets the level geometry singleton
-		/// </summary>
-		public static LevelGeometry Instance
-		{
-			get { return ms_Instance; }
-		}
-
-		private void RebuildGeometry( )
-		{
-			m_Root = Csg2.Build( m_Polygons );
-
-			m_DisplayPolygons = new List< LevelGeometryTesselator.Polygon >( );
-
-			LevelGeometryTesselator tess = new LevelGeometryTesselator( );
-			LevelGeometryTesselator.Polygon poly = tess.CreateBoundingPolygon( -100, -100, 100, 100 );
-
-			BuildConvexRegions( m_Root, tess, poly );
-
-			m_DisplayPoints = tess.Points.ToArray( );
-		}
-
-		/// <summary>
-		/// Builds the convex region for a node and its children
-		/// </summary>
-		private void BuildConvexRegions( Csg2.Node node, LevelGeometryTesselator tess, LevelGeometryTesselator.Polygon poly )
-		{
-			LevelGeometryTesselator.Polygon behindPoly;
-			LevelGeometryTesselator.Polygon inFrontPoly;
-			tess.Split( node.Plane, poly, out behindPoly, out inFrontPoly );
-
-			if ( node.Behind != null )
-			{
-				BuildConvexRegions( node.Behind, tess, behindPoly );
-			}
-			else
-			{
-				m_DisplayPolygons.Add( behindPoly );
-			}
-			if ( node.InFront != null )
-			{
-				BuildConvexRegions( node.InFront, tess, inFrontPoly );
-			}
-			else
-			{
-			//	node.ConvexRegion = inFrontPoly.Indices;
-			//	m_DisplayPolygons.Add( inFrontPoly );
-			}
-		}
-
-
-		private Point2[] m_DisplayPoints;
-		private List<LevelGeometryTesselator.Polygon> m_DisplayPolygons;
-		private Csg2.Node m_Root;
-
 		/// <summary>
 		/// Converts a UI polygon to a <see cref="LevelPolygon"/>, adding the result to the level geometry
 		/// </summary>
@@ -121,7 +70,8 @@ namespace Poc0.LevelEditor.Core
 		public void Add( LevelPolygon polygon )
 		{
 			m_Polygons.Add( polygon );
-			RebuildGeometry( );
+			polygon.Changed += OnPolygonChanged;
+			RebuildDisplay( );
 		}
 
 		/// <summary>
@@ -140,6 +90,9 @@ namespace Poc0.LevelEditor.Core
 			m_Polygons.Remove( polygon );
 		}
 
+		/// <summary>
+		/// Removes a vertex from the level
+		/// </summary>
 		public void Remove( LevelVertex vertex )
 		{
 			LevelEdge prevEdge = vertex.EndEdge;
@@ -150,7 +103,7 @@ namespace Poc0.LevelEditor.Core
 			if ( prevEdge == null )
 			{
 				//	Case 0 : 0----x....x
-				throw new NotImplementedException( );			
+				throw new NotImplementedException( );
 			}
 			else if ( nextEdge == null )
 			{
@@ -199,70 +152,6 @@ namespace Poc0.LevelEditor.Core
 			*/
 		}
 
-		private void RemoveVertex( LevelVertex vertex )
-		{
-			m_Vertices.Remove( vertex );
-		}
-
-		private void RemoveEdge( LevelEdge edge )
-		{
-			m_Edges.Remove( edge );
-		}
-		
-		private LevelVertex AddVertex( Point2 pt )
-		{
-			LevelVertex vertex = new LevelVertex( pt );
-			m_Vertices.Add( vertex );
-			return vertex;
-		}
-		
-		private void AddEdge( LevelEdge edge )
-		{
-			m_Edges.Add( edge );
-		}
-
-		private LevelPolygon FindClosestPolygon( Point2 pt )
-		{
-			//	TODO: AP: Traverse BSP tree, find polygon that contains pt
-			return null;
-		}
-
-		private LevelVertex FindClosestVertex( Point2 pt, float distance )
-		{
-			float sqrDistance = distance * distance;
-			foreach ( LevelVertex vertex in m_Vertices )
-			{
-				if ( pt.SqrDistanceTo( vertex.Position ) < sqrDistance )
-				{
-					return vertex;
-				}
-			}
-			return null;
-		}
-		
-		private LevelEdge FindClosestEdge( Point2 pt, float distance )
-		{
-			float sqrDistance = distance * distance;
-			foreach ( LevelEdge edge in m_Edges )
-			{
-				if ( edge.SqrDistanceTo( pt ) < sqrDistance )
-				{
-					return edge;
-				}
-			}
-			return null;
-		}
-
-		private readonly static LevelGeometry ms_Instance = new LevelGeometry( );
-
-		private const float VertexSelectionRadius = 0.1f;
-		private const float EdgeSelectionRadius = 0.1f;
-
-		private readonly Plane3					m_GroundPlane	= new Plane3( Vector3.YAxis, 0 );
-		private readonly List< LevelVertex >	m_Vertices		= new List< LevelVertex >( );
-		private readonly List< LevelEdge >		m_Edges			= new List< LevelEdge >( );
-		private readonly List< LevelPolygon >	m_Polygons		= new List< LevelPolygon >( );
-
 		#region IRay3Intersector Members
 
 		public bool TestIntersection( Ray3 ray )
@@ -273,23 +162,8 @@ namespace Poc0.LevelEditor.Core
 				return false;
 			}
 			Point2 pt = new Point2( intersection.IntersectionPosition.X, intersection.IntersectionPosition.Z );
-			LevelVertex vertex = FindClosestVertex( pt, VertexSelectionRadius );
-			if ( vertex != null )
-			{
-				return true;
-			}
 
-			LevelEdge edge = FindClosestEdge( pt, EdgeSelectionRadius );
-			if ( edge != null )
-			{
-				return true;
-			}
-			LevelPolygon polygon = FindClosestPolygon( pt );
-			if ( polygon != null )
-			{
-				return true;
-			}
-			return false;
+			return FindClosestObject( pt ) != null;
 		}
 
 		public Line3Intersection GetIntersection( Ray3 ray )
@@ -300,33 +174,113 @@ namespace Poc0.LevelEditor.Core
 				return null;
 			}
 			Point2 pt = new Point2( intersection.IntersectionPosition.X, intersection.IntersectionPosition.Z );
-			LevelVertex vertex = FindClosestVertex( pt, VertexSelectionRadius );
-			if ( vertex != null )
-			{
-				intersection.IntersectedObject = vertex;
-				return intersection;
-			}
 
-			LevelEdge edge = FindClosestEdge( pt, EdgeSelectionRadius );
-			if ( edge != null )
-			{
-				intersection.IntersectedObject = edge;
-				return intersection;
-			}
-			LevelPolygon polygon = FindClosestPolygon( pt );
-			if ( polygon != null )
-			{
-				intersection.IntersectedObject = polygon;
-				return intersection;
-			}
+			intersection.IntersectedObject = FindClosestObject( pt );
 
-			return null;
+			return ( intersection.IntersectedObject == null ) ? null : intersection;
 		}
 
 		#endregion
 
 		#region IRenderable Members
 
+		/// <summary>
+		/// Renders this object
+		/// </summary>
+		public void Render( IRenderContext context )
+		{
+			if ( m_DisplayCache == null )
+			{
+				RebuildDisplay( );
+			}
+
+			if ( m_DisplayCache != null )
+			{
+				m_DisplayCache.Render( context );
+			}
+
+		}
+
+		#endregion
+
+		#region ISceneObject Members
+
+		/// <summary>
+		/// Called when this object is added to a scene
+		/// </summary>
+		public void AddedToScene( Scene scene )
+		{
+			scene.GetService< IRayCastService >( ).AddIntersector( this );
+			scene.Renderables.Add( this );
+		}
+
+		/// <summary>
+		/// Called when this object is removed from a scene
+		/// </summary>
+		public void RemovedFromScene( Scene scene )
+		{
+			scene.GetService< IRayCastService >( ).RemoveIntersector( this );
+			scene.Renderables.Remove( this );
+		}
+
+		#endregion
+		
+		#region Private members
+		
+		private const float 							SelectionRadius		= 0.25f;
+		private const float 							SelectionRadiusSqr	= SelectionRadius * SelectionRadius;
+
+		private IRenderable								m_DisplayCache;
+
+		private readonly Plane3							m_GroundPlane		= new Plane3( Vector3.YAxis, 0 );
+		private readonly List< LevelVertex >			m_Vertices			= new List< LevelVertex >( );
+		private readonly List< LevelEdge >				m_Edges				= new List< LevelEdge >( );
+		private readonly List< LevelPolygon >			m_Polygons			= new List< LevelPolygon >( );
+		private Point2[]								m_DisplayPoints;
+		private List< LevelGeometryTesselator.Polygon >	m_FloorDisplayPolygons;
+		private List< LevelGeometryTesselator.Polygon >	m_ObstacleDisplayPolygons;
+		private Csg2.Node								m_Root;
+		
+		private readonly static Draw.IPen 				ms_EdgePen;
+		private readonly static Draw.IPen 				ms_SelectedEdgePen;
+		private readonly static Draw.IPen 				ms_HighlightedEdgePen;
+
+		private readonly static Draw.IBrush 			ms_VertexBrush;
+		private readonly static Draw.IBrush 			ms_SelectedVertexBrush;
+		private readonly static Draw.IBrush 			ms_HighlightedVertexBrush;
+
+		private readonly static Draw.IBrush 			ms_PolyBrush;
+		private readonly static Draw.IBrush 			ms_SelectedPolyBrush;
+		private readonly static Draw.IBrush 			ms_HighlightedPolyBrush;
+
+		private static Draw.IPen SelectPen( ISelectable sel, Draw.IPen selPen, Draw.IPen highlightPen, Draw.IPen defaultPen )
+		{
+			return ( sel.Selected ? selPen : ( sel.Highlighted ? highlightPen : defaultPen ) );
+		}
+		
+		private static Draw.IBrush SelectBrush( ISelectable sel, Draw.IBrush selBrush, Draw.IBrush highlightBrush, Draw.IBrush defaultBrush )
+		{
+			return ( sel.Selected ? selBrush : ( sel.Highlighted ? highlightBrush : defaultBrush ) );
+		}
+
+		static LevelGeometry( )
+		{
+			ms_EdgePen					= Graphics.Draw.NewPen( Color.Black, 1.5f );
+			ms_HighlightedEdgePen		= Graphics.Draw.NewPen( Color.Orange, 1.5f );
+			ms_SelectedEdgePen			= Graphics.Draw.NewPen( Color.Yellow, 1.5f );
+
+			ms_VertexBrush				= Graphics.Draw.NewBrush( Color.Red, Color.Black );
+			ms_SelectedVertexBrush		= Graphics.Draw.NewBrush( Color.Yellow, Color.Black );
+			ms_HighlightedVertexBrush	= Graphics.Draw.NewBrush( Color.Orange, Color.Black );
+			
+			ms_PolyBrush				= Graphics.Draw.NewBrush( Color.WhiteSmoke );
+			ms_SelectedPolyBrush		= Graphics.Draw.NewBrush( Color.Yellow );
+			ms_HighlightedPolyBrush		= Graphics.Draw.NewBrush( Color.Orange );
+		}
+
+		/// <summary>
+		/// Bodgy hack job to retrieve Point3s from a polygon
+		/// </summary>
 		private IEnumerable< Point3 > PolyPoints( LevelGeometryTesselator.Polygon poly )
 		{
 			for ( int index = 0; index < poly.Indices.Length; ++index )
@@ -336,33 +290,182 @@ namespace Poc0.LevelEditor.Core
 			}
 		}
 
-		public void Render( IRenderContext context )
+		private LevelVertex AddVertex( Point2 pt )
 		{
-			if ( m_DisplayPolygons == null )
+			LevelVertex vertex = new LevelVertex( pt );
+			m_Vertices.Add( vertex );
+
+			vertex.Changed += OnVertexChanged;
+			return vertex;
+		}
+		
+		private void OnPolygonChanged( LevelPolygon poly )
+		{
+			//	Force rebuild of display cache
+			m_DisplayCache = null;
+		}
+
+		private void OnEdgeChanged( LevelEdge edge )
+		{
+			//	Force rebuild of display cache
+			m_DisplayCache = null;
+		}
+
+		private void OnVertexChanged( LevelVertex vertex )
+		{
+			//	Force rebuild of display cache
+			m_DisplayCache = null;
+		}
+
+		private void AddEdge( LevelEdge edge )
+		{
+			m_Edges.Add( edge );
+			edge.Changed += OnEdgeChanged;
+		}
+
+		private object FindClosestObject( Point2 pt )
+		{
+			foreach ( LevelVertex vertex in m_Vertices )
+			{
+				if ( vertex.Position.SqrDistanceTo( pt ) < SelectionRadiusSqr )
+				{
+					return vertex;
+				}
+			}
+
+			foreach ( LevelEdge edge in m_Edges )
+			{
+				if ( edge.SqrDistanceTo( pt ) < SelectionRadiusSqr )
+				{
+					return edge;
+				}
+			}
+
+			return ( m_Root == null ) ? null : FindClosestObject( pt, m_Root );
+		}
+
+		private object FindClosestObject( Point2 pt, Csg2.Node node )
+		{
+			PlaneClassification ptClass = node.Plane.ClassifyPoint( pt, 0.01f );
+			LevelEdge edge = node.Edge.SourceEdge;
+			if ( ptClass == PlaneClassification.Behind )
+			{
+				return ( node.Behind == null ) ? null : FindClosestObject( pt, node.Behind );
+			}
+
+			return ( node.InFront == null ) ? edge.Polygon : FindClosestObject( pt, node.InFront );
+		}
+
+		/// <summary>
+		/// Rebuilds display data
+		/// </summary>
+		private void RebuildDisplay( )
+		{
+			if ( m_Polygons.Count == 0 )
 			{
 				return;
 			}
-			foreach ( LevelGeometryTesselator.Polygon poly in m_DisplayPolygons )
+
+			m_Root = Csg2.Build( m_Polygons );
+
+			m_FloorDisplayPolygons = new List< LevelGeometryTesselator.Polygon >( );
+			m_ObstacleDisplayPolygons = new List<LevelGeometryTesselator.Polygon>( );
+
+			LevelGeometryTesselator tess = new LevelGeometryTesselator( );
+			LevelGeometryTesselator.Polygon poly = tess.CreateBoundingPolygon( -100, -100, 100, 100 );
+
+			BuildConvexRegions( m_Root, tess, poly );
+
+			m_DisplayPoints = tess.Points.ToArray( );
+
+			Graphics.Draw.StartCache( );
+			RenderGeometry( );
+			m_DisplayCache = Graphics.Draw.StopCache( );
+		}
+
+		private void RenderGeometry( )
+		{
+			if ( m_FloorDisplayPolygons == null )
+			{
+				return;
+			}
+			foreach ( LevelGeometryTesselator.Polygon poly in m_FloorDisplayPolygons )
 			{
 				IEnumerable< Point3 > nextPoint = PolyPoints( poly );
 				Graphics.Draw.Polygon( Draw.Brushes.Blue, nextPoint );
 			}
+			foreach ( LevelGeometryTesselator.Polygon poly in m_ObstacleDisplayPolygons )
+			{
+				IEnumerable< Point3 > nextPoint = PolyPoints( poly );
+
+				LevelPolygon levelPoly = poly.LevelPolygon;
+
+				Draw.IBrush brush = Draw.Brushes.White;
+				if ( levelPoly != null )
+				{
+					brush = SelectBrush( levelPoly, ms_SelectedPolyBrush, ms_HighlightedPolyBrush, ms_PolyBrush );
+				}
+				Graphics.Draw.Polygon( brush, nextPoint );
+			}
+
+			foreach ( LevelEdge edge in m_Edges )
+			{
+				Draw.IPen pen = SelectPen( edge, ms_SelectedEdgePen, ms_HighlightedEdgePen, ms_EdgePen );
+				Graphics.Draw.Line( pen, edge.Start.Position.X, 0.01f, edge.Start.Position.Y, edge.End.Position.X, 0.01f, edge.End.Position.Y );
+			}
+
+			foreach ( LevelVertex vertex in m_Vertices )
+			{
+				Draw.IBrush brush = SelectBrush( vertex, ms_SelectedVertexBrush, ms_HighlightedVertexBrush, ms_VertexBrush );
+				Graphics.Draw.Circle( brush, vertex.Position.X, 0.01f, vertex.Position.Y, SelectionRadius );
+			}
+		}
+		
+		/// <summary>
+		/// Adds a floor display polygon
+		/// </summary>
+		private void AddFloorPolygon( LevelGeometryTesselator.Polygon poly )
+		{
+			m_FloorDisplayPolygons.Add( poly );
+		}
+
+		/// <summary>
+		/// Adds an obstacle display polygon
+		/// </summary>
+		private void AddObstaclePolygon( LevelGeometryTesselator.Polygon poly )
+		{
+			m_ObstacleDisplayPolygons.Add( poly );
+		}
+
+		/// <summary>
+		/// Builds the convex region for a node and its children
+		/// </summary>
+		private void BuildConvexRegions( Csg2.Node node, LevelGeometryTesselator tess, LevelGeometryTesselator.Polygon poly )
+		{
+			LevelGeometryTesselator.Polygon behindPoly;
+			LevelGeometryTesselator.Polygon inFrontPoly;
+			tess.Split( node.Plane, poly, out behindPoly, out inFrontPoly );
+
+			if ( node.Behind != null )
+			{
+				BuildConvexRegions( node.Behind, tess, behindPoly );
+			}
+			else
+			{
+				AddFloorPolygon( behindPoly );
+			}
+			if ( node.InFront != null )
+			{
+				BuildConvexRegions( node.InFront, tess, inFrontPoly );
+			}
+			else
+			{
+				AddObstaclePolygon( inFrontPoly );
+				inFrontPoly.LevelPolygon = node.Edge.SourceEdge.Polygon;
+			}
 		}
 
 		#endregion
 
-		#region ISceneObject Members
-
-		public void AddedToScene( Scene scene )
-		{
-			scene.Renderables.Add( this );
-		}
-
-		public void RemovedFromScene( Scene scene )
-		{
-			scene.Renderables.Remove( this );
-		}
-
-		#endregion
 	}
 }

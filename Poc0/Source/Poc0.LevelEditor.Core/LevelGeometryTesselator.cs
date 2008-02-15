@@ -23,6 +23,13 @@ namespace Poc0.LevelEditor.Core
 				get { return m_Indices; }
 			}
 
+			public LevelPolygon LevelPolygon
+			{
+				get { return m_LevelPoly; }
+				set { m_LevelPoly = value; }
+			}
+
+			private LevelPolygon m_LevelPoly;
 			private readonly int[] m_Indices;
 		}
 

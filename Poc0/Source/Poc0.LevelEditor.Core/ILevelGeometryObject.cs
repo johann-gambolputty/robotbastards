@@ -15,6 +15,7 @@ namespace Poc0.LevelEditor.Core
 		/// Removes this object from a level geometry instance
 		/// </summary>
 		void RemoveFromLevel( LevelGeometry level );
+
 	}
 
 }
