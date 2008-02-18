@@ -51,6 +51,14 @@ namespace Rb.World
 		#region	Services
 
 		/// <summary>
+		/// Returns all the services
+		/// </summary>
+		public IEnumerable Services
+		{
+			get { return m_AllServices; }
+		}
+
+		/// <summary>
 		/// Gets a typed service
 		/// </summary>
 		/// <param name="serviceType">Service type</param>
@@ -77,6 +85,8 @@ namespace Rb.World
 		/// <param name="service">Service object</param>
 		public void AddService( object service )
 		{
+			m_AllServices.Add( service );
+
 			AddService( service.GetType( ), service );
 
             //  Also register the service with all the interfaces that it supports
@@ -110,22 +120,25 @@ namespace Rb.World
 		/// <param name="service">Service to remove</param>
 		public void RemoveService( object service )
 		{
-			if ( service != null )
+			if ( service == null )
 			{
-				Type key = service.GetType( );
-				if ( !m_Services.ContainsKey( key ) )
-				{
-					WorldLog.Warning( "Failed to find service of type \"{0}\"", key );
-				}
-				else
-				{
-					m_Services.Remove( key );
+				return;
+			}
+			m_AllServices.Remove( service );
 
-					ISceneObject sceneService = service as ISceneObject;
-					if ( sceneService != null )
-					{
-						sceneService.RemovedFromScene( this );
-					}
+			Type key = service.GetType( );
+			if ( !m_Services.ContainsKey( key ) )
+			{
+				WorldLog.Warning( "Failed to find service of type \"{0}\"", key );
+			}
+			else
+			{
+				m_Services.Remove( key );
+
+				ISceneObject sceneService = service as ISceneObject;
+				if ( sceneService != null )
+				{
+					sceneService.RemovedFromScene( this );
 				}
 			}
 		}
@@ -181,6 +194,7 @@ namespace Rb.World
 
 		#region	Private stuff
 
+		private readonly ArrayList					m_AllServices	= new ArrayList( );
 		private readonly Dictionary< Type, object >	m_Services	    = new Dictionary< Type, object >( );
 		private readonly ObjectMap					m_Objects;
         private readonly RenderableList             m_Renderables   = new RenderableList( );

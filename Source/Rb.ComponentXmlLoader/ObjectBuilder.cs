@@ -149,7 +149,7 @@ namespace Rb.ComponentXmlLoader
 				objectType = AppDomainUtils.FindType( typeName );
 				if ( objectType == null )
 				{
-					throw new ApplicationException(string.Format("Failed to find type \"{0}\" in app domain", typeName ) );
+					throw new ApplicationException( string.Format( "Failed to find type \"{0}\" in app domain", typeName ) );
 				}
 			}
 			else

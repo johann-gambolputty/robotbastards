@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rb>
+
+  <object type="Poc0.LevelEditor.Core.Geometry.Material">
+    <parameters>
+      <string value="Default Floor"/>
+      <location value="Graphics\Effects\perPixelTexturedShadowed.cgfx"/>
+    </parameters>
+  </object>
+
+  <object type="Poc0.LevelEditor.Core.Geometry.Material">
+    <parameters>
+      <string value="Default Obstacle"/>
+      <location value="Graphics\Effects\perPixelTexturedShadowed.cgfx"/>
+    </parameters>
+  </object>
+
+  <object type="Poc0.LevelEditor.Core.Geometry.Material">
+    <parameters>
+      <string value="Default Wall"/>
+      <location value="Graphics\Effects\perPixelTexturedShadowed.cgfx"/>
+    </parameters>
+  </object>
+
+</rb>

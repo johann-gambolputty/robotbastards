@@ -1,70 +1,67 @@
-
 using System;
 using Rb.Core.Maths;
 using Rb.Tools.LevelEditor.Core.Actions;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
 
-namespace Poc0.LevelEditor.Core
+namespace Poc0.LevelEditor.Core.Geometry
 {
 	/// <summary>
-	/// Polygon level geometry object
+	/// A vertex used to define <see cref="LevelEdge"/> endpoints
 	/// </summary>
-	public class LevelPolygon : ILevelGeometryObject, ISelectable, IPickable, IMoveable3
+	[Serializable]
+	public class LevelVertex : ISelectable, IPickable, IMoveable3
 	{
 		/// <summary>
-		/// Event, raised when the state of this polygon changes
+		/// Event, raised when the state of this vertex changes
 		/// </summary>
-		public event Action< LevelPolygon > Changed;
+		public event Action< LevelVertex > Changed;
 
 		/// <summary>
-		/// Sets up this polygon
+		/// Setup constructor
 		/// </summary>
-		/// <param name="vertices">Polygon vertices</param>
-		/// <param name="edges">Polygon edges</param>
-		public LevelPolygon( LevelVertex[] vertices, LevelEdge[] edges )
+		/// <param name="pt">Initial position of the vertex</param>
+		public LevelVertex( Point2 pt )
 		{
-			m_Vertices = vertices;
-			m_Edges = edges;
+			m_Position = pt;
+			m_StartEdge = null;
+			m_EndEdge = null;
 		}
 
 		/// <summary>
-		/// Gets/sets polygon vertices
+		/// Edge that this vertex begins
 		/// </summary>
-		public LevelVertex[] Vertices
+		public LevelEdge StartEdge
 		{
-			get { return m_Vertices; }
-			set { m_Vertices = value; }
+			get { return m_StartEdge; }
+			set { m_StartEdge = value; }
 		}
 
 		/// <summary>
-		/// Gets/sets polygon edges
+		/// Edge that this vertex ends
 		/// </summary>
-		public LevelEdge[] Edges
+		public LevelEdge EndEdge
 		{
-			get { return m_Edges; }
-			set { m_Edges = value; }
-		}
-		
-		#region ILevelGeometryObject Members
-
-		/// <summary>
-		/// Adds this object to a level geometry instance
-		/// </summary>
-		public void AddToLevel( LevelGeometry level )
-		{
-			level.Add( this );
+			get { return m_EndEdge; }
+			set { m_EndEdge = value; }
 		}
 
 		/// <summary>
-		/// Removes this object from a level geometry instance
+		/// The position of this vertex
 		/// </summary>
-		public void RemoveFromLevel( LevelGeometry level )
+		public Point2 Position
 		{
-			level.Remove( this );
+			get { return m_Position; }
+			set
+			{
+				bool changed = ( m_Position != value );
+				m_Position = value;
+				if ( ( changed ) && ( Changed != null ) )
+				{
+					Changed( this );
+				}
+			}
 		}
-
-		#endregion
 
 		#region ISelectable Members
 
@@ -102,9 +99,8 @@ namespace Poc0.LevelEditor.Core
 			}
 		}
 
-
 		#endregion
-		
+
 		#region IPickable Members
 
 		/// <summary>
@@ -137,9 +133,12 @@ namespace Poc0.LevelEditor.Core
 		/// <param name="delta">Movement delta</param>
 		public void Move( Vector3 delta )
 		{
-			foreach ( LevelVertex vertex in m_Vertices )
+			m_Position.X += delta.X;
+			m_Position.Y += delta.Z;
+
+			if ( ( delta.SqrLength > 0.001f ) && ( Changed != null ) )
 			{
-				vertex.Move( delta );
+				Changed( this );
 			}
 		}
 
@@ -147,13 +146,12 @@ namespace Poc0.LevelEditor.Core
 
 		#region Private members
 
-		private bool 			m_Highlighted;
-		private bool 			m_Selected;
-		private LevelVertex[]	m_Vertices;
-		private LevelEdge[]		m_Edges;
+		private Point2		m_Position;
+		private LevelEdge	m_StartEdge;
+		private LevelEdge	m_EndEdge;
+		private bool		m_Highlighted;
+		private bool		m_Selected;
 
 		#endregion
-
 	}
-
 }

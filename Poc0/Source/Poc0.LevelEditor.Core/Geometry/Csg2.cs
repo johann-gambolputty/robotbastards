@@ -1,13 +1,17 @@
 using System.Collections.Generic;
 using Rb.Core.Maths;
 
-namespace Poc0.LevelEditor.Core
+namespace Poc0.LevelEditor.Core.Geometry
 {
 	/// <summary>
 	/// Handles level geometry CSG operations
 	/// </summary>
 	internal class Csg2
 	{
+
+		//	TODO: AP: Bucket vertices, edges, and polygons into loose quadtree
+		//	TODO: AP: Add vertex merging
+
 		#region Public members
 
 		/// <summary>

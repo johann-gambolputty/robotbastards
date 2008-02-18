@@ -178,6 +178,15 @@ namespace Rb.Tools.LevelEditor.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scene.
+        /// </summary>
+        internal static string Scene {
+            get {
+                return ResourceManager.GetString("Scene", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}: Selects object.
         /// </summary>
         internal static string SelectInputs {

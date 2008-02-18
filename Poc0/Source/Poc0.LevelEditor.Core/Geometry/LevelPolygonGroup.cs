@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Poc0.LevelEditor.Core
+namespace Poc0.LevelEditor.Core.Geometry
 {
 	/// <summary>
 	/// A group of polygons
