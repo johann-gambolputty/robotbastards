@@ -168,6 +168,11 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			//{
 			//    return CreatePropertyBag( obj );
 			//}
+			ISelectionModifier modifier = obj as ISelectionModifier;
+			if ( modifier != null )
+			{
+				obj = modifier.SelectedObject;
+			}
 
 			ExPropertyBag bag = new ExPropertyBag( obj );
 			return bag;
@@ -363,7 +368,12 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 					attributes.Add( ( Attribute )srcAttributes[ 0 ] );
 				}
 
-				if ( ObjectUITypeEditor.HandlesType( property.PropertyType ) )
+				srcAttributes = property.GetCustomAttributes( typeof( EditorAttribute ), false );
+				if ( srcAttributes.Length > 0 )
+				{
+					attributes.Add( ( Attribute )srcAttributes[ 0 ] );
+				}
+				else if ( ObjectUITypeEditor.HandlesType( property.PropertyType ) )
 				{
 					//	Set the editor attribute to ObjectUITypeEditor, if the property's type doesn't have a nice
 					//	default editor of its own

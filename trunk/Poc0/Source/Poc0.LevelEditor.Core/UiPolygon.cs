@@ -13,10 +13,26 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		/// <param name="name">Brush name</param>
 		/// <param name="points">Brush polygon points</param>
-		public UiPolygon( string name, Point2[] points )
+		public UiPolygon( string name, Point2[] points ) :
+			this( name, points, true )
+		{
+		}
+		
+		/// <summary>
+		/// A named polygonal brush
+		/// </summary>
+		/// <param name="name">Brush name</param>
+		/// <param name="points">Brush polygon points</param>
+		/// <param name="checkWinding">If true, the constructor re-orders the points to enforce anti-clockwise winding</param>
+		public UiPolygon( string name, Point2[] points, bool checkWinding )
 		{
 			m_Name = name;
 			m_Points = points;
+
+			if ( !checkWinding )
+			{
+				return;
+			}
 
 			//	Determine the winding of the polygon
 			float internalAngles;

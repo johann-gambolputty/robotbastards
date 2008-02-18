@@ -4,8 +4,9 @@ using Rb.Tools.LevelEditor.Core.Actions;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
 
-namespace Poc0.LevelEditor.Core
+namespace Poc0.LevelEditor.Core.Geometry
 {
+	[Serializable]
 	public class LevelEdge : ISelectable, IPickable, IMoveable3
 	{
 		/// <summary>

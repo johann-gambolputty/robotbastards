@@ -2,6 +2,7 @@ using System;
 using System.Windows.Forms;
 using Crownwood.Magic.Docking;
 using Poc0.LevelEditor.Core;
+using Poc0.LevelEditor.Core.Geometry;
 using Poc0.LevelEditor.Core.Rendering;
 using Rb.Core.Assets;
 using Rb.Core.Maths;
@@ -69,10 +70,15 @@ namespace Poc0.LevelEditor
 		{
 			base.PopulateNewScene( scene );
 
-			//	Populate editor scene
+			//	Add raycast service to scene
 			IRayCastService rayCaster = new RayCastService( );
 			rayCaster.AddIntersector( RayCastLayers.Grid, new Plane3( new Vector3( 0, 1, 0 ), 0 ) );
 			scene.AddService( rayCaster );
+
+			//	Add material set service to scene
+			MaterialSet materials = new MaterialSet( );
+			scene.AddService( materials );
+			materials.Load( new Location( "Editor/DefaultMaterialSet.components.xml" ) );
 
 			//	TODO: AP: Fix Z order rendering cheat
 			scene.Objects.Add( Guid.NewGuid( ), Graphics.Factory.Create< GroundPlaneGrid >( ) );

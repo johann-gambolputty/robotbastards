@@ -462,6 +462,12 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		{
 		}
 
+		private void sceneServicesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ServicesEditorForm servicesForm = new ServicesEditorForm();
+			servicesForm.Show( this );
+		}
+
 		#endregion
 
 	}

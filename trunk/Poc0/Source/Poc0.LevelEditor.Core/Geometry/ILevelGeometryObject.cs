@@ -1,5 +1,5 @@
 
-namespace Poc0.LevelEditor.Core
+namespace Poc0.LevelEditor.Core.Geometry
 {
 	/// <summary>
 	/// Level geometry object

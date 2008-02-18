@@ -5,7 +5,7 @@ using Rb.Rendering;
 using Rb.Rendering.Textures;
 using Rectangle=Rb.Core.Maths.Rectangle;
 
-namespace Poc0.LevelEditor.Core
+namespace Poc0.LevelEditor.Core.Geometry
 {
 	/// <summary>
 	/// Builds runtime environment graphics from level geometry

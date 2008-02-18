@@ -83,6 +83,12 @@
     <Compile Include="Controls\Forms\SelectionControl.designer.cs">
       <DependentUpon>SelectionControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Forms\ServicesEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\Forms\ServicesEditorForm.Designer.cs">
+      <DependentUpon>ServicesEditorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="EditModes\AddObjectEditMode.cs" />
     <Compile Include="EditModes\EditMode.cs" />
     <Compile Include="EditModes\IEditMode.cs" />
@@ -175,6 +181,10 @@
     <EmbeddedResource Include="Controls\Forms\SelectionControl.resx">
       <DependentUpon>SelectionControl.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Forms\ServicesEditorForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ServicesEditorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.Serialization;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core.Selection;
@@ -8,7 +9,7 @@ using Rb.World;
 using Rb.World.Services;
 using Graphics=Rb.Rendering.Graphics;
 
-namespace Poc0.LevelEditor.Core
+namespace Poc0.LevelEditor.Core.Geometry
 {
 	/*
 	 * Floor region identification:
@@ -29,6 +30,32 @@ namespace Poc0.LevelEditor.Core
 	[RenderingLibraryType]
 	public class LevelGeometry : IRay3Intersector, IRenderable, ISceneObject
 	{
+		/// <summary>
+		/// Sets up the initial bounding polygon
+		/// </summary>
+		public LevelGeometry( )
+		{
+			float minX = -20;
+			float minY = -20;
+			float maxX = 20;
+			float maxY = 20;
+
+			UiPolygon bounds = new UiPolygon
+				(
+					"",
+					new Point2[]
+						{
+							new Point2( minX, minY ),
+							new Point2( maxX, minY ),
+							new Point2( maxX, maxY ),
+							new Point2( minX, maxY ),
+						},
+					false
+				);
+
+			Add( bounds, false );
+		}
+
 		/// <summary>
 		/// Converts a UI polygon to a <see cref="LevelPolygon"/>, adding the result to the level geometry
 		/// </summary>
@@ -71,7 +98,9 @@ namespace Poc0.LevelEditor.Core
 		{
 			m_Polygons.Add( polygon );
 			polygon.Changed += OnPolygonChanged;
-			RebuildDisplay( );
+
+			//	Force rebuild of display cache
+			m_DisplayCache = null;
 		}
 
 		/// <summary>
@@ -88,6 +117,9 @@ namespace Poc0.LevelEditor.Core
 				m_Edges.Remove( edge );
 			}
 			m_Polygons.Remove( polygon );
+
+			//	Force rebuild of display cache
+			m_DisplayCache = null;
 		}
 
 		/// <summary>
@@ -126,6 +158,8 @@ namespace Poc0.LevelEditor.Core
 				throw new NotImplementedException( );
 			}
 
+			//	Force rebuild of display cache
+		//	m_DisplayCache = null;
 			/*
 			LevelEdge prevEdge = ( vertex.EndEdge == null ) ? null : vertex.EndEdge.PreviousEdge;
 			LevelEdge nextEdge = ( vertex.StartEdge == null ) ? null : vertex.StartEdge.NextEdge;
@@ -226,21 +260,33 @@ namespace Poc0.LevelEditor.Core
 		#endregion
 		
 		#region Private members
+
+		private const float VertexSelectionRadius		= 0.75f;
+		private const float VertexSelectionRadiusSqr	= VertexSelectionRadius * VertexSelectionRadius;
+
+		private const float EdgeSelectionRadius			= 0.4f;
+		private const float EdgeSelectionRadiusSqr		= EdgeSelectionRadius * EdgeSelectionRadius;
 		
-		private const float 							SelectionRadius		= 0.25f;
-		private const float 							SelectionRadiusSqr	= SelectionRadius * SelectionRadius;
-
-		private IRenderable								m_DisplayCache;
-
 		private readonly Plane3							m_GroundPlane		= new Plane3( Vector3.YAxis, 0 );
 		private readonly List< LevelVertex >			m_Vertices			= new List< LevelVertex >( );
 		private readonly List< LevelEdge >				m_Edges				= new List< LevelEdge >( );
 		private readonly List< LevelPolygon >			m_Polygons			= new List< LevelPolygon >( );
+
+		[NonSerialized]
+		private IRenderable								m_DisplayCache;
+
+		[NonSerialized]
 		private Point2[]								m_DisplayPoints;
+
+		[NonSerialized]
 		private List< LevelGeometryTesselator.Polygon >	m_FloorDisplayPolygons;
+
+		[NonSerialized]
 		private List< LevelGeometryTesselator.Polygon >	m_ObstacleDisplayPolygons;
+
+		[NonSerialized]
 		private Csg2.Node								m_Root;
-		
+
 		private readonly static Draw.IPen 				ms_EdgePen;
 		private readonly static Draw.IPen 				ms_SelectedEdgePen;
 		private readonly static Draw.IPen 				ms_HighlightedEdgePen;
@@ -253,14 +299,12 @@ namespace Poc0.LevelEditor.Core
 		private readonly static Draw.IBrush 			ms_SelectedPolyBrush;
 		private readonly static Draw.IBrush 			ms_HighlightedPolyBrush;
 
-		private static Draw.IPen SelectPen( ISelectable sel, Draw.IPen selPen, Draw.IPen highlightPen, Draw.IPen defaultPen )
+		/// <summary>
+		/// Selects an object, given the state of an ISelectable object
+		/// </summary>
+		private static T Select< T >( ISelectable sel, T selectedResult, T highlightResult, T defaultResult )
 		{
-			return ( sel.Selected ? selPen : ( sel.Highlighted ? highlightPen : defaultPen ) );
-		}
-		
-		private static Draw.IBrush SelectBrush( ISelectable sel, Draw.IBrush selBrush, Draw.IBrush highlightBrush, Draw.IBrush defaultBrush )
-		{
-			return ( sel.Selected ? selBrush : ( sel.Highlighted ? highlightBrush : defaultBrush ) );
+			return ( sel.Selected ? selectedResult : ( sel.Highlighted ? highlightResult : defaultResult ) );
 		}
 
 		static LevelGeometry( )
@@ -281,15 +325,18 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Bodgy hack job to retrieve Point3s from a polygon
 		/// </summary>
-		private IEnumerable< Point3 > PolyPoints( LevelGeometryTesselator.Polygon poly )
+		private IEnumerable< Point3 > PolyPoints( LevelGeometryTesselator.Polygon poly, float y )
 		{
 			for ( int index = 0; index < poly.Indices.Length; ++index )
 			{
 				Point2 pt = m_DisplayPoints[ poly.Indices[ index ] ];
-				yield return new Point3( pt.X, 0.01f, pt.Y );
+				yield return new Point3( pt.X, y, pt.Y );
 			}
 		}
 
+		/// <summary>
+		/// Adds a vertex to the level geometry set
+		/// </summary>
 		private LevelVertex AddVertex( Point2 pt )
 		{
 			LevelVertex vertex = new LevelVertex( pt );
@@ -299,35 +346,50 @@ namespace Poc0.LevelEditor.Core
 			return vertex;
 		}
 		
-		private void OnPolygonChanged( LevelPolygon poly )
-		{
-			//	Force rebuild of display cache
-			m_DisplayCache = null;
-		}
-
-		private void OnEdgeChanged( LevelEdge edge )
-		{
-			//	Force rebuild of display cache
-			m_DisplayCache = null;
-		}
-
-		private void OnVertexChanged( LevelVertex vertex )
-		{
-			//	Force rebuild of display cache
-			m_DisplayCache = null;
-		}
-
+		/// <summary>
+		/// Adds an edge to the level geometry set
+		/// </summary>
 		private void AddEdge( LevelEdge edge )
 		{
 			m_Edges.Add( edge );
 			edge.Changed += OnEdgeChanged;
 		}
 
+		/// <summary>
+		/// Invoked when a polygons's properties are changed
+		/// </summary>
+		private void OnPolygonChanged( LevelPolygon poly )
+		{
+			//	Force rebuild of display cache
+			m_DisplayCache = null;
+		}
+
+		/// <summary>
+		/// Invoked when a edge's properties are changed
+		/// </summary>
+		private void OnEdgeChanged( LevelEdge edge )
+		{
+			//	Force rebuild of display cache
+			m_DisplayCache = null;
+		}
+
+		/// <summary>
+		/// Invoked when a vertex's properties are changed
+		/// </summary>
+		private void OnVertexChanged( LevelVertex vertex )
+		{
+			//	Force rebuild of display cache
+			m_DisplayCache = null;
+		}
+
+		/// <summary>
+		/// Finds the closest object in the level geometry set
+		/// </summary>
 		private object FindClosestObject( Point2 pt )
 		{
 			foreach ( LevelVertex vertex in m_Vertices )
 			{
-				if ( vertex.Position.SqrDistanceTo( pt ) < SelectionRadiusSqr )
+				if ( vertex.Position.SqrDistanceTo( pt ) < VertexSelectionRadiusSqr )
 				{
 					return vertex;
 				}
@@ -335,7 +397,7 @@ namespace Poc0.LevelEditor.Core
 
 			foreach ( LevelEdge edge in m_Edges )
 			{
-				if ( edge.SqrDistanceTo( pt ) < SelectionRadiusSqr )
+				if ( edge.SqrDistanceTo( pt ) < EdgeSelectionRadiusSqr )
 				{
 					return edge;
 				}
@@ -344,13 +406,16 @@ namespace Poc0.LevelEditor.Core
 			return ( m_Root == null ) ? null : FindClosestObject( pt, m_Root );
 		}
 
+		/// <summary>
+		/// Finds the closest object in a given CSG node
+		/// </summary>
 		private object FindClosestObject( Point2 pt, Csg2.Node node )
 		{
 			PlaneClassification ptClass = node.Plane.ClassifyPoint( pt, 0.01f );
 			LevelEdge edge = node.Edge.SourceEdge;
 			if ( ptClass == PlaneClassification.Behind )
 			{
-				return ( node.Behind == null ) ? null : FindClosestObject( pt, node.Behind );
+				return ( node.Behind == null ) ? FloorProperties.Default : FindClosestObject( pt, node.Behind );
 			}
 
 			return ( node.InFront == null ) ? edge.Polygon : FindClosestObject( pt, node.InFront );
@@ -374,7 +439,7 @@ namespace Poc0.LevelEditor.Core
 			LevelGeometryTesselator tess = new LevelGeometryTesselator( );
 			LevelGeometryTesselator.Polygon poly = tess.CreateBoundingPolygon( -100, -100, 100, 100 );
 
-			BuildConvexRegions( m_Root, tess, poly );
+			tess.BuildConvexRegions( m_Root, poly, AddFloorPolygon, AddObstaclePolygon );
 
 			m_DisplayPoints = tess.Points.ToArray( );
 
@@ -383,48 +448,54 @@ namespace Poc0.LevelEditor.Core
 			m_DisplayCache = Graphics.Draw.StopCache( );
 		}
 
+		/// <summary>
+		/// Renders geometry
+		/// </summary>
 		private void RenderGeometry( )
 		{
 			if ( m_FloorDisplayPolygons == null )
 			{
 				return;
 			}
+
+			const float height = 0.01f;
+
 			foreach ( LevelGeometryTesselator.Polygon poly in m_FloorDisplayPolygons )
 			{
-				IEnumerable< Point3 > nextPoint = PolyPoints( poly );
+				IEnumerable< Point3 > nextPoint = PolyPoints( poly, height );
 				Graphics.Draw.Polygon( Draw.Brushes.Blue, nextPoint );
 			}
 			foreach ( LevelGeometryTesselator.Polygon poly in m_ObstacleDisplayPolygons )
 			{
-				IEnumerable< Point3 > nextPoint = PolyPoints( poly );
+				IEnumerable< Point3 > nextPoint = PolyPoints( poly, height );
 
 				LevelPolygon levelPoly = poly.LevelPolygon;
 
 				Draw.IBrush brush = Draw.Brushes.White;
 				if ( levelPoly != null )
 				{
-					brush = SelectBrush( levelPoly, ms_SelectedPolyBrush, ms_HighlightedPolyBrush, ms_PolyBrush );
+					brush = Select( levelPoly, ms_SelectedPolyBrush, ms_HighlightedPolyBrush, ms_PolyBrush );
 				}
 				Graphics.Draw.Polygon( brush, nextPoint );
 			}
 
 			foreach ( LevelEdge edge in m_Edges )
 			{
-				Draw.IPen pen = SelectPen( edge, ms_SelectedEdgePen, ms_HighlightedEdgePen, ms_EdgePen );
-				Graphics.Draw.Line( pen, edge.Start.Position.X, 0.01f, edge.Start.Position.Y, edge.End.Position.X, 0.01f, edge.End.Position.Y );
+				Draw.IPen pen = Select( edge, ms_SelectedEdgePen, ms_HighlightedEdgePen, ms_EdgePen );
+				Graphics.Draw.Line( pen, edge.Start.Position.X, height, edge.Start.Position.Y, edge.End.Position.X, 0.01f, edge.End.Position.Y );
 			}
 
 			foreach ( LevelVertex vertex in m_Vertices )
 			{
-				Draw.IBrush brush = SelectBrush( vertex, ms_SelectedVertexBrush, ms_HighlightedVertexBrush, ms_VertexBrush );
-				Graphics.Draw.Circle( brush, vertex.Position.X, 0.01f, vertex.Position.Y, SelectionRadius );
+				Draw.IBrush brush = Select( vertex, ms_SelectedVertexBrush, ms_HighlightedVertexBrush, ms_VertexBrush );
+				Graphics.Draw.Circle( brush, vertex.Position.X, height, vertex.Position.Y, VertexSelectionRadius );
 			}
 		}
 		
 		/// <summary>
 		/// Adds a floor display polygon
 		/// </summary>
-		private void AddFloorPolygon( LevelGeometryTesselator.Polygon poly )
+		private void AddFloorPolygon( LevelGeometryTesselator.Polygon poly, Csg2.Node node )
 		{
 			m_FloorDisplayPolygons.Add( poly );
 		}
@@ -432,37 +503,10 @@ namespace Poc0.LevelEditor.Core
 		/// <summary>
 		/// Adds an obstacle display polygon
 		/// </summary>
-		private void AddObstaclePolygon( LevelGeometryTesselator.Polygon poly )
+		private void AddObstaclePolygon( LevelGeometryTesselator.Polygon poly, Csg2.Node node )
 		{
-			m_ObstacleDisplayPolygons.Add( poly );
-		}
-
-		/// <summary>
-		/// Builds the convex region for a node and its children
-		/// </summary>
-		private void BuildConvexRegions( Csg2.Node node, LevelGeometryTesselator tess, LevelGeometryTesselator.Polygon poly )
-		{
-			LevelGeometryTesselator.Polygon behindPoly;
-			LevelGeometryTesselator.Polygon inFrontPoly;
-			tess.Split( node.Plane, poly, out behindPoly, out inFrontPoly );
-
-			if ( node.Behind != null )
-			{
-				BuildConvexRegions( node.Behind, tess, behindPoly );
-			}
-			else
-			{
-				AddFloorPolygon( behindPoly );
-			}
-			if ( node.InFront != null )
-			{
-				BuildConvexRegions( node.InFront, tess, inFrontPoly );
-			}
-			else
-			{
-				AddObstaclePolygon( inFrontPoly );
-				inFrontPoly.LevelPolygon = node.Edge.SourceEdge.Polygon;
-			}
+			m_ObstacleDisplayPolygons.Add(poly);
+			poly.LevelPolygon = node.Edge.SourceEdge.Polygon;
 		}
 
 		#endregion
