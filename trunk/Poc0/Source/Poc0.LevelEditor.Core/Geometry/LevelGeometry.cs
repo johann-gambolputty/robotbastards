@@ -538,7 +538,6 @@ namespace Poc0.LevelEditor.Core.Geometry
 
 		#endregion
 
-
 		#region IObjectEditor Members
 
 		/// <summary>
@@ -552,16 +551,15 @@ namespace Poc0.LevelEditor.Core.Geometry
 		public void Build( Scene scene )
 		{
 			//	TODO: AP: Make independent of rendering API 
-			IEnvironmentGraphics graphics = Graphics.Factory.Create< IEnvironmentGraphics >( );
-			
-			EnvironmentGraphicsBuilder builder = new EnvironmentGraphicsBuilder( 10 );
-			graphics = builder.Build( graphics, this );
-
 			//	Create the environment
 			Environment env = new Environment( );
+			IEnvironmentGraphics graphics = Graphics.Factory.Create< IEnvironmentGraphics >( );
 			env.Graphics = graphics;
 
 			scene.Objects.Add( env );
+			
+			EnvironmentGraphicsBuilder builder = new EnvironmentGraphicsBuilder( 10 );
+			builder.Build( graphics, this );
 		}
 
 		#endregion

@@ -214,7 +214,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 			return groups;
 		}
 
-		private static void GenerateConvexPolygonTriIndices( LevelGeometryTesselator.Polygon poly, GroupListBuilder builder, GroupMaterial material, int offset )
+		private static void GenerateConvexPolygonTriIndices( LevelGeometryTesselator.Polygon poly, GroupListBuilder builder, GroupMaterial material )
 		{
 			GroupBuilder group = builder.GetGroup( material );
 			ICollection< int > indices = group.Indices;
@@ -222,9 +222,9 @@ namespace Poc0.LevelEditor.Core.Geometry
 			int baseIndex = poly.Indices[ 0 ];
 			for ( int index = 1; index < poly.Indices.Length - 1; ++index )
 			{
-				indices.Add( baseIndex + offset );
-				indices.Add( poly.Indices[ index ] + offset );
-				indices.Add( poly.Indices[ index + 1 ] + offset );
+				indices.Add( baseIndex );
+				indices.Add( poly.Indices[ index + 1 ] );
+				indices.Add( poly.Indices[ index ] );
 			}
 		}
 
@@ -254,7 +254,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 			LevelGeometryTesselator.AddPolygonDelegate addObstaclePoly =
 				delegate( LevelGeometryTesselator.Polygon obstaclePoly, Csg2.Node node )
 				{
-					floorPolys.Add( obstaclePoly );
+					obstaclePolys.Add( obstaclePoly );
 				};
 
 			tess.BuildConvexRegions( root, poly, addFloorPoly, addObstaclePoly );
@@ -262,7 +262,6 @@ namespace Poc0.LevelEditor.Core.Geometry
 			GroupListBuilder groupsBuilder = new GroupListBuilder( );
 
 			Point2[] flatPoints = tess.Points.ToArray( );
-			Vertex[] vertices = new Vertex[ flatPoints.Length * 2 ];
 
 			//    //	Get the texture source for the wall
 			//    ITexture2d textureSource = node.Edge.WallData.Texture;
@@ -270,77 +269,105 @@ namespace Poc0.LevelEditor.Core.Geometry
 
 			//    GroupMaterial material = new GroupMaterial( techniqueSource, new ITexture2d[] { textureSource } );
 			//    GroupBuilder group = builder.GetGroup( material );
+			StaticGeometryData defaultFloor = StaticGeometryData.CreateDefaultFloorData( );
+			StaticGeometryData defaultWall = StaticGeometryData.CreateDefaultWallData( );
 			GroupMaterial defaultFloorMaterial = new GroupMaterial
 				(
-					null, null
+					defaultFloor.Technique, new ITexture2d[] { defaultFloor.Texture }
 				);
 			GroupMaterial defaultWallMaterial = new GroupMaterial
 				(
-					null, null
+					defaultWall.Technique, new ITexture2d[] { defaultWall.Texture }
 				);
 			GroupMaterial defaultObstacleMaterial = new GroupMaterial
 				(
-					null, null
+					defaultFloor.Technique, new ITexture2d[] { defaultFloor.Texture }
 				);
+
+
+			int[] floorIndexMap = new int[ flatPoints.Length ];
+			int[] roofIndexMap = new int[ flatPoints.Length ];
+
+			for ( int index = 0; index < flatPoints.Length; ++index )
+			{
+				floorIndexMap[ index ] = -1;
+				roofIndexMap[ index ] = -1;
+			}
+
+			List< Vertex > vertices = new List< Vertex >( flatPoints.Length * 2 );
 
 			foreach ( LevelGeometryTesselator.Polygon floorPoly in floorPolys )
 			{
 				for ( int index = 0; index < floorPoly.Indices.Length; ++index )
 				{
 					int pIndex = floorPoly.Indices[ index ];
-					if ( vertices[ pIndex ] != null )
+					if ( floorIndexMap[ pIndex ] == -1 )
 					{
-						continue;
+						Point2 srcPt = flatPoints[ pIndex ];
+						floorIndexMap[ pIndex ] = vertices.Count;
+						vertices.Add( FloorVertex( srcPt.X, 0, srcPt.Y ) );
 					}
-					Point2 srcPt = flatPoints[ pIndex ];
-					vertices[ pIndex ] = FloorVertex( srcPt.X, 0, srcPt.Y );
+					floorPoly.Indices[ index ] = floorIndexMap[ pIndex ];
 				}
-				GenerateConvexPolygonTriIndices( floorPoly, groupsBuilder, defaultFloorMaterial, 0 );
+				GenerateConvexPolygonTriIndices( floorPoly, groupsBuilder, defaultFloorMaterial );
 			}
-			
-			int obstacleVertexOffset = flatPoints.Length;
+
 			foreach ( LevelGeometryTesselator.Polygon obstaclePoly in obstaclePolys )
 			{
 				//	Duplicate floor points at obstacle height, add wall polys
 				for ( int index = 0; index < obstaclePoly.Indices.Length; ++index )
 				{
 					int pIndex = obstaclePoly.Indices[ index ];
-					int vIndex = pIndex + obstacleVertexOffset;
-					if ( vertices[ vIndex ] != null )
+					if ( roofIndexMap[ pIndex ] == -1 )
 					{
-						continue;
+						Point2 srcPt = flatPoints[ pIndex ];
+						roofIndexMap[ pIndex ] = vertices.Count;
+						vertices.Add( FloorVertex( srcPt.X, 6, srcPt.Y ) );
 					}
-
-					Point2 srcPt = flatPoints[ pIndex ];
-					vertices[ vIndex ] = FloorVertex( srcPt.X, 6, srcPt.Y );
 				}
-				GenerateConvexPolygonTriIndices( obstaclePoly, groupsBuilder, defaultObstacleMaterial, obstacleVertexOffset );
-
 				//	Generate wall polys
 				for ( int index = 0; index < obstaclePoly.Indices.Length; ++index )
 				{
 					int pIndex = obstaclePoly.Indices[ index ];
 					int nextPIndex = obstaclePoly.Indices[ ( index + 1 ) % obstaclePoly.Indices.Length ];
-					if ( ( vertices[ pIndex ] == null ) || ( vertices[ nextPIndex ] == null ) )
+					int floorIndex = floorIndexMap[ pIndex ];
+					int nextFloorIndex = floorIndexMap[ nextPIndex ];
+
+					if ( ( floorIndex == -1 ) || ( nextFloorIndex == -1 ) )
 					{
 						//	No equivalent floor vertices - ignore
 						continue;
 					}
-					int vIndex = pIndex + obstacleVertexOffset;
-					int nextVIndex = nextPIndex + obstacleVertexOffset;
+					int roofIndex = roofIndexMap[ pIndex ];
+					int nextRoofIndex = roofIndexMap[ nextPIndex ];
 
 					GroupBuilder group = groupsBuilder.GetGroup( defaultWallMaterial );
-					group.Indices.Add( pIndex );
-					group.Indices.Add( nextPIndex );
-					group.Indices.Add( nextVIndex );
-					group.Indices.Add( vIndex );
+					group.Indices.Add( floorIndex );
+					group.Indices.Add( nextFloorIndex );
+					group.Indices.Add( roofIndex );
+
+					group.Indices.Add( nextFloorIndex );
+					group.Indices.Add( nextRoofIndex );
+					group.Indices.Add( roofIndex );
 				}
 
+				for ( int index = 0; index < obstaclePoly.Indices.Length; ++index )
+				{
+					int pIndex = obstaclePoly.Indices[ index ];
+					obstaclePoly.Indices[ index ] = roofIndexMap[ pIndex ];
+				}
+
+				GenerateConvexPolygonTriIndices( obstaclePoly, groupsBuilder, defaultObstacleMaterial );
 			}
 
 			VertexBufferData buffer = VertexBufferData.FromVertexCollection( vertices );
 			EnvironmentGraphicsData.GridCell cell = new EnvironmentGraphicsData.GridCell( buffer );
 			
+			foreach ( GroupBuilder group in groupsBuilder.Groups )
+			{
+				cell.Groups.Add( group.Create( ) );
+			}
+
 			EnvironmentGraphicsData data = new EnvironmentGraphicsData( 1, 1 );
 			data[ 0, 0 ] = cell;
 
