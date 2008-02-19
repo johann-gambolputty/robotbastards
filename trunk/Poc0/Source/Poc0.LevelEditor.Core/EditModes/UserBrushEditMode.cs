@@ -18,7 +18,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// <param name="operation">CSG operation to perform with the brush</param>
 		public UserBrushEditMode( Csg.Operation operation )
 		{
-			m_LevelGeometry = EditorState.Instance.CurrentScene.Objects.GetFirstOfType< LevelGeometry >( );
+			m_LevelGeometry = LevelGeometry.FromScene( EditorState.Instance.CurrentScene );
 			if ( m_LevelGeometry == null )
 			{
 				throw new InvalidOperationException( "Expected a LevelGeometry object to be present in the scene" );

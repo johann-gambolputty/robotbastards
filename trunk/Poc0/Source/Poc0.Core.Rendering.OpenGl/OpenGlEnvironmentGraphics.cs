@@ -113,10 +113,9 @@ namespace Poc0.Core.Rendering.OpenGl
 			/// <param name="src">Source data</param>
 			public GeometryGroup( EnvironmentGraphicsData.CellGeometryGroup src )
 			{
+				m_Indices = src.Indices;
 				m_Technique = src.Technique;
 				m_Textures = src.Textures;
-				m_NumTris = src.Vertices.NumVertices / 3;
-				m_Vertices = Graphics.Factory.NewVertexBuffer( src.Vertices );
 			}
 
 			/// <summary>
@@ -139,9 +138,7 @@ namespace Poc0.Core.Rendering.OpenGl
 					Graphics.Renderer.BindTexture( texture );
 				}
 
-				m_Vertices.Begin( );
-				Gl.glDrawArrays( Gl.GL_TRIANGLES, 0, m_NumTris * 3 );
-				m_Vertices.End( );
+				Gl.glDrawElements( Gl.GL_TRIANGLES, m_Indices.Length, Gl.GL_UNSIGNED_INT, m_Indices );
 
 				foreach ( ITexture2d texture in m_Textures )
 				{
@@ -152,8 +149,7 @@ namespace Poc0.Core.Rendering.OpenGl
 
 			private readonly ITechnique m_Technique;
 			private readonly ITexture2d[] m_Textures;
-			private readonly int m_NumTris;
-			private readonly IVertexBuffer m_Vertices;
+			private readonly int[] m_Indices;
 		}
 
 		/// <summary>
@@ -168,6 +164,7 @@ namespace Poc0.Core.Rendering.OpenGl
 			/// <param name="src">Cell source data</param>
 			public Cell( Scene scene, EnvironmentGraphicsData.GridCell src )
 			{
+				m_VertexBuffer = Graphics.Factory.NewVertexBuffer( src.VertexData );
 				m_Groups = new GeometryGroup[ src.Groups.Count ];
 				for ( int groupIndex = 0; groupIndex < m_Groups.Length; ++groupIndex )
 				{
@@ -189,16 +186,19 @@ namespace Poc0.Core.Rendering.OpenGl
 			/// <param name="context">Rendering context</param>
 			public void Render( IRenderContext context )
 			{
+				m_VertexBuffer.Begin( );
 				m_Lights.Begin( );
 				foreach ( GeometryGroup group in m_Groups )
 				{
 					group.Render( context );
 				}
 				m_Lights.End( );
+				m_VertexBuffer.End( );
 			}
 
 			private readonly LightGroup m_Lights = new LightGroup( );
 			private readonly GeometryGroup[] m_Groups;
+			private readonly IVertexBuffer m_VertexBuffer;
 		}
 
 

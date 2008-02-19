@@ -28,6 +28,11 @@ namespace Rb.Core.Components
 		void Remove( IUnique obj );
 
 		/// <summary>
+		/// Removes an object from the map
+		/// </summary>
+		void Remove( object obj );
+
+		/// <summary>
 		/// Gets an object of a given type, and key, from the map
 		/// </summary>
 		object Get( Type objectType, Guid key );

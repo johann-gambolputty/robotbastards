@@ -60,12 +60,12 @@ namespace Poc0.Core.Environment
 			/// <summary>
 			/// Setup constructor
 			/// </summary>
-			/// <param name="vertices">Vertex buffer</param>
+			/// <param name="indices">Index buffer</param>
 			/// <param name="technique">Rendering technique</param>
 			/// <param name="textures">Textures</param>
-			public CellGeometryGroup( VertexBufferData vertices, ITechnique technique, ITexture2d[] textures )
+			public CellGeometryGroup( int[] indices, ITechnique technique, ITexture2d[] textures )
 			{
-				m_Vertices = vertices;
+				m_Indices = indices;
 				m_Textures = textures;
 				m_Technique = technique;
 			}
@@ -73,9 +73,9 @@ namespace Poc0.Core.Environment
 			/// <summary>
 			/// Gets the group vertex buffer
 			/// </summary>
-			public VertexBufferData Vertices
+			public int[] Indices
 			{
-				get { return m_Vertices; }
+				get { return m_Indices; }
 			}
 
 			/// <summary>
@@ -95,7 +95,7 @@ namespace Poc0.Core.Environment
 			}
 
 			private readonly ITechnique m_Technique;
-			private readonly VertexBufferData m_Vertices;
+			private readonly int[] m_Indices;
 			private readonly ITexture2d[] m_Textures;
 		}
 
@@ -106,6 +106,22 @@ namespace Poc0.Core.Environment
 		public class GridCell
 		{
 			/// <summary>
+			/// Setup constructor
+			/// </summary>
+			public GridCell( VertexBufferData vertices )
+			{
+				m_Vertices = vertices;
+			}
+
+			/// <summary>
+			/// Gets vertex buffer data for all geometry in this cell
+			/// </summary>
+			public VertexBufferData VertexData
+			{
+				get { return m_Vertices; }
+			}
+
+			/// <summary>
 			/// Gets the list of geometry groups making up this cell
 			/// </summary>
 			public List<CellGeometryGroup> Groups
@@ -113,6 +129,7 @@ namespace Poc0.Core.Environment
 				get { return m_Groups; }
 			}
 
+			private readonly VertexBufferData m_Vertices;
 			private readonly List<CellGeometryGroup> m_Groups = new List<CellGeometryGroup>( );
 		}
 

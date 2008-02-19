@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
+using Rb.Core.Components;
 using Rb.Rendering;
 using Rb.World;
 
@@ -10,7 +11,7 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 	/// Base class for standard implementations of <see cref="IObjectEditor"/>
 	/// </summary>
 	[Serializable]
-	public abstract class ObjectEditor : IObjectEditor, IRenderable, ISelectable, ISceneObject
+	public abstract class ObjectEditor : IObjectEditor, IRenderable, ISelectable, ISceneObject, IDelete, IUnique
 	{
 		#region IObjectEditor members
 
@@ -95,6 +96,40 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 
 		#endregion
 		
+		#region IDelete Members
+
+		/// <summary>
+		/// Adds this object back to the scene
+		/// </summary>
+		public void UnDelete( )
+		{
+			EditorState.Instance.CurrentScene.Objects.Add( this );
+		}
+
+		/// <summary>
+		/// Removes this object from the scene
+		/// </summary>
+		public void Delete( )
+		{
+			EditorState.Instance.CurrentScene.Objects.Remove( this );
+		}
+
+		#endregion
+
+		#region IUnique Members
+
+		/// <summary>
+		/// Gets/sets the unique ID of this object
+		/// </summary>
+		[ReadOnly(true)]
+		public Guid Id
+		{
+			get { return m_Id; }
+			set { m_Id = value; }
+		}
+
+		#endregion
+
 		#region Protected members
 		
 		/// <summary>
@@ -129,8 +164,10 @@ namespace Rb.Tools.LevelEditor.Core.Selection
 		[NonSerialized]
 		private EventHandler m_ObjectChanged;
 
-		private readonly ArrayList m_Modifiers = new ArrayList();
+		private Guid m_Id = Guid.NewGuid( );
+		private readonly ArrayList m_Modifiers = new ArrayList( );
 
 		#endregion
+
 	}
 }
