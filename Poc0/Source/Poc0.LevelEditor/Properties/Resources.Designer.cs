@@ -113,6 +113,15 @@ namespace Poc0.LevelEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to load default material set from &quot;{0}&quot;.
+        /// </summary>
+        internal static string FailedToLoadMaterialSet {
+            get {
+                return ResourceManager.GetString("FailedToLoadMaterialSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to open scene file &quot;{0}&quot;.
         /// </summary>
         internal static string FailedToOpenScene {
@@ -145,6 +154,15 @@ namespace Poc0.LevelEditor.Properties {
         internal static string NoLocationManagersWithUI {
             get {
                 return ResourceManager.GetString("NoLocationManagersWithUI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scene did not contain material set.
+        /// </summary>
+        internal static string NoMaterialSetInScene {
+            get {
+                return ResourceManager.GetString("NoMaterialSetInScene", resourceCulture);
             }
         }
     }

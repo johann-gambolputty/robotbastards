@@ -129,9 +129,8 @@ namespace Rb.Tools.LevelEditor.Core
 			}
 			catch ( Exception ex )
 			{
-				string msg = string.Format( Properties.Resources.FailedToExportScene, path );
-				AppLog.Exception( ex, msg );
-				MessageBox.Show( msg, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
+				AppLog.Exception( ex, "Failed to export scene to \"{0}\"", path );
+				ErrorMessageBox.Show( Properties.Resources.FailedToExportScene, path );
 			}
 
 			if ( PostExport != null )

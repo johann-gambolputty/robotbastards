@@ -1,3 +1,4 @@
+using System;
 using Rb.Core.Assets;
 
 namespace Poc0.LevelEditor.Core.Geometry
@@ -5,6 +6,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 	/// <summary>
 	/// A static geometry material
 	/// </summary>
+	[Serializable]
 	public class Material
 	{
 		/// <summary>

@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using Rb.Core.Assets;
-using Rb.Log;
 using Rb.World;
 
 namespace Poc0.LevelEditor.Core.Geometry
@@ -11,6 +11,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 	/// <remarks>
 	/// Available as a scene service in the editor scene
 	/// </remarks>
+	[Serializable]
 	public class MaterialSet
 	{
 		//	TODO: AP: MaterialSet should be a scene service, not a singleton
@@ -20,20 +21,14 @@ namespace Poc0.LevelEditor.Core.Geometry
 		/// Gets the MaterialSet in a given scene
 		/// </summary>
 		/// <param name="scene">Scene containing MaterialSet service</param>
-		/// <param name="createIfNonExistant">If true, a MaterialSet is created and added to the scene, if there isn't one present</param>
-		/// <returns>Returns the scene's MaterialSet service. Returns null if the MaterialSet does not exist, and createIfNonExistant is false</returns>
-		public static MaterialSet FromScene( Scene scene, bool createIfNonExistant )
+		/// <returns>Returns the scene's MaterialSet service</returns>
+		/// <exception cref="System.ArgumentException">Thrown if scene does not contain a material set</exception>
+		public static MaterialSet FromScene( Scene scene )
 		{
 			MaterialSet result = scene.GetService< MaterialSet >( );
 			if ( result == null )
 			{
-				if ( !createIfNonExistant )
-				{
-					return null;
-				}
-				AppLog.Warning( "Creating MaterialSet for scene..." );
-				result = new MaterialSet( );
-				scene.AddService( result );
+				throw new ArgumentException( "No material set available in scene", "scene" );
 			}
 			return result;
 		}
@@ -42,10 +37,27 @@ namespace Poc0.LevelEditor.Core.Geometry
 		/// Loads materials from an asset
 		/// </summary>
 		/// <param name="source">Asset source</param>
-		public void Load( ISource source )
+		/// <param name="createFallbackOnError">Generates a fallback default material set if an error occurs</param>
+		public static MaterialSet Load( ISource source, bool createFallbackOnError )
 		{
-			LoadParameters parameters = new LoadParameters( m_Materials );
-			AssetManager.Instance.Load( source, parameters );
+			LoadParameters parameters = new LoadParameters( );
+			return ( MaterialSet )AssetManager.Instance.Load( source, parameters );
+		}
+
+		/// <summary>
+		/// Sets the name of this material set
+		/// </summary>
+		public MaterialSet( string name )
+		{
+			m_Name = name;
+		}
+
+		/// <summary>
+		/// Gets the name of this material set
+		/// </summary>
+		public string Name
+		{
+			get { return m_Name; }
 		}
 
 		/// <summary>
@@ -84,19 +96,20 @@ namespace Poc0.LevelEditor.Core.Geometry
 		}
 
 		/// <summary>
-		/// Gets the set of stored materials
+		/// Gets/sets the set of stored materials
 		/// </summary>
-		public IEnumerable< Material > Materials
+		public List< Material > Materials
 		{
 			get { return m_Materials; }
 		}
 
 		#region Private members
 
+		private readonly string m_Name;
+		private readonly List<Material> m_Materials = new List<Material>( );
 		private Material m_DefaultWallMaterial;
 		private Material m_DefaultFloorMaterial;
 		private Material m_DefaultObstacleMaterial;
-		private readonly List< Material > m_Materials = new List< Material >( );
 
 		#endregion
 	}

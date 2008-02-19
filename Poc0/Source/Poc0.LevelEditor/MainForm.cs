@@ -4,6 +4,7 @@ using Crownwood.Magic.Docking;
 using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.Geometry;
 using Poc0.LevelEditor.Core.Rendering;
+using Poc0.LevelEditor.Properties;
 using Rb.Core.Assets;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
@@ -76,9 +77,19 @@ namespace Poc0.LevelEditor
 			scene.AddService( rayCaster );
 
 			//	Add material set service to scene
-			MaterialSet materials = new MaterialSet( );
+			ISource materialSetSource = new Location( "Editor/DefaultMaterialSet.components.xml" );
+			MaterialSet materials;
+			try
+			{
+				materials = MaterialSet.Load( materialSetSource, false );
+			}
+			catch ( Exception ex )
+			{
+				AppLog.Exception( ex, "Failed to load default material set from \"{0}\"", materialSetSource );
+				ErrorMessageBox.Show( this, Resources.FailedToLoadMaterialSet, materialSetSource );
+				materials = new MaterialSet( "Default" );
+			}
 			scene.AddService( materials );
-			materials.Load( new Location( "Editor/DefaultMaterialSet.components.xml" ) );
 
 			//	TODO: AP: Fix Z order rendering cheat
 			scene.Objects.Add( Guid.NewGuid( ), Graphics.Factory.Create< GroundPlaneGrid >( ) );
@@ -115,6 +126,7 @@ namespace Poc0.LevelEditor
 		private void MainForm_Load( object sender, EventArgs e )
 		{
 			viewToolStripMenuItem.DropDownItems.Add( "&Game", null, OnGameClicked );
+			editToolStripMenuItem.DropDownItems.Add( "&Materials", null, OnMaterialsClicked );
 
 			//	Load in a given level if one is specified in the program arguments
 			string[] cmdArgs = Environment.GetCommandLineArgs( );
@@ -134,13 +146,19 @@ namespace Poc0.LevelEditor
 			}
 		}
 
+		private void OnMaterialsClicked( object sender, EventArgs args )
+		{
+			MaterialsEditorForm form = new MaterialsEditorForm( );
+			form.Show( this );
+		}
+
 		private void OnGameClicked( object sender, EventArgs args )
 		{
 			Scene runtimeScene = CreateNewRuntimeScene( );
 
 			if ( !SceneExporter.Instance.Export( runtimeScene ) )
 			{
-				MessageBox.Show( Properties.Resources.ExportFailedCantRunGame, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
+				ErrorMessageBox.Show( this, Properties.Resources.ExportFailedCantRunGame );
 				return;
 			}
 
@@ -170,7 +188,7 @@ namespace Poc0.LevelEditor
 			catch ( Exception ex )
 			{
 				AppLog.Exception( ex, "Game threw an exception" );
-				MessageBox.Show( Properties.Resources.GameUnhandledException, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
+				ErrorMessageBox.Show( this, Properties.Resources.GameUnhandledException );
 			}
 
 			//	Re-enable continuous rendering on the main display
