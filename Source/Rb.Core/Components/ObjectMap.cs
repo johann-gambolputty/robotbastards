@@ -19,6 +19,12 @@ namespace Rb.Core.Components
 		/// <returns>Returns the ID of the added object</returns>
 		public Guid Add( object obj )
 		{
+			IUnique unique = obj as IUnique;
+			if ( unique != null )
+			{
+				Add( unique );
+				return unique.Id;
+			}
 			Guid newId = Guid.NewGuid( );
 			Add( newId, obj );
 			return newId;
@@ -40,6 +46,29 @@ namespace Rb.Core.Components
 		public void Remove( IUnique obj )
 		{
 			Remove( obj.Id );
+		}
+
+		/// <summary>
+		/// Removes an object from the map
+		/// </summary>
+		public void Remove( object obj )
+		{
+			IUnique unique = obj as IUnique;
+			if ( unique != null )
+			{
+				Remove( unique );
+			}
+			else
+			{
+				foreach ( KeyValuePair< Guid, object > pair in this )
+				{
+					if ( ReferenceEquals( pair.Value, obj ) )
+					{
+						Remove( pair.Key );
+						return;
+					}
+				}
+			}
 		}
 
 		/// <summary>

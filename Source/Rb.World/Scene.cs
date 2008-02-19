@@ -260,7 +260,7 @@ namespace Rb.World
 				if ( TryGetValue( key, out obj ) )
 				{
 					RemoveSceneObject( obj );
-					Remove( key );
+					base.Remove( key );
 					return true;
 				}
 				return false;

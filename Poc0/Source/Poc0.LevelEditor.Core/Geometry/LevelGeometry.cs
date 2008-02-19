@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Runtime.Serialization;
+using Poc0.Core.Environment;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
 using Rb.World.Services;
+using Environment=Poc0.Core.Environment.Environment;
 using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc0.LevelEditor.Core.Geometry
@@ -28,8 +29,24 @@ namespace Poc0.LevelEditor.Core.Geometry
 	/// </summary>
 	[Serializable]
 	[RenderingLibraryType]
-	public class LevelGeometry : IRay3Intersector, IRenderable, ISceneObject
+	public class LevelGeometry : IRay3Intersector, IRenderable, ISceneObject, IObjectEditor
 	{
+		/// <summary>
+		/// Gets a LevelGeometry object from the scene
+		/// </summary>
+		public static LevelGeometry FromScene( Scene scene )
+		{
+			return scene.Objects.GetFirstOfType< LevelGeometry >( );
+		}
+
+		/// <summary>
+		/// Gets the list of obstacle polygons
+		/// </summary>
+		public IEnumerable< LevelPolygon > ObstaclePolygons
+		{
+			get { return m_Polygons; }
+		}
+
 		/// <summary>
 		/// Sets up the initial bounding polygon
 		/// </summary>
@@ -68,7 +85,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 
 			for ( int vertexIndex = 0; vertexIndex < vertices.Length; ++vertexIndex )
 			{
-				vertices[ vertexIndex ] = AddVertex( brush.Points[ vertexIndex ] );
+				vertices[ vertexIndex ] = new LevelVertex( brush.Points[ vertexIndex ] );
 			}
 
 			for ( int edgeIndex = 0; edgeIndex < edges.Length; ++edgeIndex )
@@ -78,7 +95,6 @@ namespace Poc0.LevelEditor.Core.Geometry
 
 				LevelEdge newEdge = new LevelEdge( start, end, polygon, doubleSided );
 				edges[ edgeIndex ] = newEdge;
-				AddEdge( newEdge );
 
 				if ( edgeIndex > 0 )
 				{
@@ -96,6 +112,15 @@ namespace Poc0.LevelEditor.Core.Geometry
 		/// </summary>
 		public void Add( LevelPolygon polygon )
 		{
+			foreach ( LevelVertex vertex in polygon.Vertices )
+			{
+				AddVertex( vertex );
+			}
+			foreach ( LevelEdge edge in polygon.Edges )
+			{
+				AddEdge( edge );
+			}
+
 			m_Polygons.Add( polygon );
 			polygon.Changed += OnPolygonChanged;
 
@@ -232,7 +257,6 @@ namespace Poc0.LevelEditor.Core.Geometry
 			{
 				m_DisplayCache.Render( context );
 			}
-
 		}
 
 		#endregion
@@ -337,13 +361,10 @@ namespace Poc0.LevelEditor.Core.Geometry
 		/// <summary>
 		/// Adds a vertex to the level geometry set
 		/// </summary>
-		private LevelVertex AddVertex( Point2 pt )
+		private void AddVertex( LevelVertex vertex )
 		{
-			LevelVertex vertex = new LevelVertex( pt );
 			m_Vertices.Add( vertex );
-
 			vertex.Changed += OnVertexChanged;
-			return vertex;
 		}
 		
 		/// <summary>
@@ -355,13 +376,21 @@ namespace Poc0.LevelEditor.Core.Geometry
 			edge.Changed += OnEdgeChanged;
 		}
 
+		private void OnChanged( )
+		{
+			m_DisplayCache = null;
+			if ( ObjectChanged != null )
+			{
+				ObjectChanged(this, null);
+			}
+		}
+
 		/// <summary>
 		/// Invoked when a polygons's properties are changed
 		/// </summary>
 		private void OnPolygonChanged( LevelPolygon poly )
 		{
-			//	Force rebuild of display cache
-			m_DisplayCache = null;
+			OnChanged( );
 		}
 
 		/// <summary>
@@ -369,8 +398,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 		/// </summary>
 		private void OnEdgeChanged( LevelEdge edge )
 		{
-			//	Force rebuild of display cache
-			m_DisplayCache = null;
+			OnChanged( );
 		}
 
 		/// <summary>
@@ -378,8 +406,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 		/// </summary>
 		private void OnVertexChanged( LevelVertex vertex )
 		{
-			//	Force rebuild of display cache
-			m_DisplayCache = null;
+			OnChanged( );
 		}
 
 		/// <summary>
@@ -511,5 +538,32 @@ namespace Poc0.LevelEditor.Core.Geometry
 
 		#endregion
 
+
+		#region IObjectEditor Members
+
+		/// <summary>
+		/// Raised when this object changes
+		/// </summary>
+		public event EventHandler ObjectChanged;
+
+		/// <summary>
+		/// Builds runtime environment geometry and adds it to the scene
+		/// </summary>
+		public void Build( Scene scene )
+		{
+			//	TODO: AP: Make independent of rendering API 
+			IEnvironmentGraphics graphics = Graphics.Factory.Create< IEnvironmentGraphics >( );
+			
+			EnvironmentGraphicsBuilder builder = new EnvironmentGraphicsBuilder( 10 );
+			graphics = builder.Build( graphics, this );
+
+			//	Create the environment
+			Environment env = new Environment( );
+			env.Graphics = graphics;
+
+			scene.Objects.Add( env );
+		}
+
+		#endregion
 	}
 }

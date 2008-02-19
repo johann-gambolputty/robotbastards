@@ -19,6 +19,7 @@ namespace Poc0.LevelEditor.Core.Objects
 		{
 			PlayerStart obj = new PlayerStart( );
 			obj.Position = Position;
+			obj.Id = Id;
 
 			scene.Objects.Add( obj );
 		}

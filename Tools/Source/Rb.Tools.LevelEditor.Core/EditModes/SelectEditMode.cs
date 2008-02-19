@@ -118,10 +118,16 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 			{
 				m_AddToSelection = true;
 			}
+			else if ( args.KeyCode == Keys.Delete )
+			{
+				DeleteObjectAction delete = new DeleteObjectAction( EditorState.Instance.CurrentSelection.Selection );
+				EditorState.Instance.CurrentUndoStack.Push( delete );
+			}
 		}
 
 		private void OnKeyUp( object sender, KeyEventArgs args )
 		{
+
 			m_AddToSelection = false;
 		}
 

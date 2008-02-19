@@ -64,7 +64,6 @@ namespace Poc0.LevelEditor.Core.Geometry
 				m_Normal = normal;
 				m_Texture0 = texture0;
 			}
-
 		}
 
 		/// <summary>
@@ -99,10 +98,8 @@ namespace Poc0.LevelEditor.Core.Geometry
 				get { return m_Textures; }
 			}
 
-			private readonly ITechnique m_Technique;
-			private readonly ITexture2d[] m_Textures;
-
-
+			private readonly ITechnique		m_Technique;
+			private readonly ITexture2d[]	m_Textures;
 		}
 
 		/// <summary>
@@ -132,12 +129,12 @@ namespace Poc0.LevelEditor.Core.Geometry
 			/// <summary>
 			/// Gets the list of groups
 			/// </summary>
-			public IList<GroupBuilder> Groups
+			public IList< GroupBuilder > Groups
 			{
 				get { return m_Groups; }
 			}
 
-			private readonly List<GroupBuilder> m_Groups = new List<GroupBuilder>( );
+			private readonly List< GroupBuilder > m_Groups = new List< GroupBuilder >( );
 		}
 
 		/// <summary>
@@ -163,11 +160,11 @@ namespace Poc0.LevelEditor.Core.Geometry
 			}
 
 			/// <summary>
-			/// Gets the group vertices
+			/// Gets the group indices
 			/// </summary>
-			public ICollection<Vertex> Vertices
+			public ICollection<int> Indices
 			{
-				get { return m_Vertices; }
+				get { return m_Indices; }
 			}
 
 			/// <summary>
@@ -176,7 +173,6 @@ namespace Poc0.LevelEditor.Core.Geometry
 			/// <returns>New cell geometry group</returns>
 			public EnvironmentGraphicsData.CellGeometryGroup Create( )
 			{
-				VertexBufferData buffer = VertexBufferData.FromVertexCollection( m_Vertices );
 				ITechnique technique = m_Material.Technique;
 
 				ITexture2d[] textures = new ITexture2d[ m_Material.Textures.Length ];
@@ -186,32 +182,13 @@ namespace Poc0.LevelEditor.Core.Geometry
 					textures[ textureIndex ] = m_Material.Textures[ textureIndex ];
 				}
 
-				EnvironmentGraphicsData.CellGeometryGroup group = new EnvironmentGraphicsData.CellGeometryGroup( buffer, technique, textures );
+				EnvironmentGraphicsData.CellGeometryGroup group = new EnvironmentGraphicsData.CellGeometryGroup( m_Indices.ToArray( ), technique, textures );
 				return group;
 			}
 
 
 			private readonly GroupMaterial m_Material;
-			private readonly List<Vertex> m_Vertices = new List<Vertex>( );
-		}
-
-		/// <summary>
-		/// Creates a list of group builders from a CSG node and its children
-		/// </summary>
-		/// <param name="node">CSG node</param>
-		/// <param name="builder">Group builder</param>
-		private static void CreateGroup( Csg.BspNode node, GroupListBuilder builder )
-		{
-			if ( node == null )
-			{
-				return;
-			}
-
-			CreateWallGroup( node, builder );
-			CreateFloorGroup( node, builder );
-
-			CreateGroup( node.Behind, builder );
-			CreateGroup( node.InFront, builder );
+			private readonly List< int > m_Indices = new List< int >( );
 		}
 
 		private const float FloorUScale = 0.1f;
@@ -224,76 +201,9 @@ namespace Poc0.LevelEditor.Core.Geometry
 			return new Vertex( new Point3( x, y, z ), new Vector3( 0, 1, 0 ), new Point2( u, v ) );
 		}
 
-		private static void CreateFloorGroup( Csg.BspNode node, GroupListBuilder builder )
+
+		private static EnvironmentGraphicsData.CellGeometryGroup[] CreateGroups( GroupListBuilder builder )
 		{
-			if ( node.ConvexRegion == null )
-			{
-				return;
-			}
-			
-			//	Get the texture source for the floor
-			ITexture2d textureSource = node.FloorData.Texture;
-			ITechnique techniqueSource = node.FloorData.Technique;
-			
-			GroupMaterial material = new GroupMaterial( techniqueSource, new ITexture2d[] { textureSource } );
-			GroupBuilder group = builder.GetGroup( material );
-
-			float height = 0;
-			Point2[] points = null; // node.ConvexRegion;
-			Point2 basePos = points[ 0 ];
-			ICollection<Vertex> vertices = group.Vertices;
-			for ( int vertexIndex = 1; vertexIndex < points.Length - 1; ++vertexIndex )
-			{
-				vertices.Add( FloorVertex( basePos.X, height, basePos.Y ) );
-
-				Point2 pt = points[ vertexIndex ];
-				vertices.Add( FloorVertex( pt.X, height, pt.Y ) );
-				
-				pt = points[ vertexIndex + 1 ];
-				vertices.Add( FloorVertex( pt.X, height, pt.Y ) );
-			}
-		}
-
-		private static void CreateWallGroup( Csg.BspNode node, GroupListBuilder builder )
-		{
-			Vector3 planeNormal = new Vector3( node.Plane.Normal.X, 0, node.Plane.Normal.Y );
-
-			//	Get the texture source for the wall
-			ITexture2d textureSource = node.Edge.WallData.Texture;
-			ITechnique techniqueSource = node.Edge.WallData.Technique;
-
-			GroupMaterial material = new GroupMaterial( techniqueSource, new ITexture2d[] { textureSource } );
-			GroupBuilder group = builder.GetGroup( material );
-
-			//	TODO: AP: Split quad up into grid depending on texture size
-			//	OR: Give groups a single technique + texture, remove the texture packer, repeat the UVs
-			float texWidth = node.Quad[ 0 ].DistanceTo( node.Quad[ 1 ] ) / 5.0f;
-			float texHeight = node.Quad[ 0 ].DistanceTo( node.Quad[ 3 ] ) / 5.0f;
-			Point2 uvBl = new Point2( 0, 0 );
-			Point2 uvBr = new Point2( texWidth, 0 );
-			Point2 uvTr = new Point2( texWidth, texHeight );
-			Point2 uvTl = new Point2( 0, texHeight );
-
-			ICollection<Vertex> vertices = group.Vertices;
-			vertices.Add( new Vertex( node.Quad[ 0 ], planeNormal, uvBl ) );
-			vertices.Add( new Vertex( node.Quad[ 1 ], planeNormal, uvBr ) );
-			vertices.Add( new Vertex( node.Quad[ 2 ], planeNormal, uvTr ) );
-
-			vertices.Add( new Vertex( node.Quad[ 2 ], planeNormal, uvTr ) );
-			vertices.Add( new Vertex( node.Quad[ 3 ], planeNormal, uvTl ) );
-			vertices.Add( new Vertex( node.Quad[ 0 ], planeNormal, uvBl ) );
-		}
-
-		/// <summary>
-		/// Creates cell geometry groups from a CSG tree
-		/// </summary>
-		/// <param name="node">Root CSG node</param>
-		/// <returns>Returns a list of cell geometry groups</returns>
-		private static EnvironmentGraphicsData.CellGeometryGroup[] CreateGroups( Csg.BspNode node )
-		{
-			GroupListBuilder builder = new GroupListBuilder( );
-			CreateGroup( node, builder );
-
 			EnvironmentGraphicsData.CellGeometryGroup[] groups = new EnvironmentGraphicsData.CellGeometryGroup[ builder.Groups.Count ];
 
 			for ( int groupIndex = 0; groupIndex < groups.Length; ++groupIndex )
@@ -304,6 +214,20 @@ namespace Poc0.LevelEditor.Core.Geometry
 			return groups;
 		}
 
+		private static void GenerateConvexPolygonTriIndices( LevelGeometryTesselator.Polygon poly, GroupListBuilder builder, GroupMaterial material, int offset )
+		{
+			GroupBuilder group = builder.GetGroup( material );
+			ICollection< int > indices = group.Indices;
+
+			int baseIndex = poly.Indices[ 0 ];
+			for ( int index = 1; index < poly.Indices.Length - 1; ++index )
+			{
+				indices.Add( baseIndex + offset );
+				indices.Add( poly.Indices[ index ] + offset );
+				indices.Add( poly.Indices[ index + 1 ] + offset );
+			}
+		}
+
 		/// <summary>
 		/// Builds runtime environment graphics from level geometry
 		/// </summary>
@@ -312,11 +236,117 @@ namespace Poc0.LevelEditor.Core.Geometry
 		/// <returns>Returns a new <see cref="IEnvironmentGraphics"/> object</returns>
 		public IEnvironmentGraphics Build( IEnvironmentGraphics envGraphics, LevelGeometry geometry )
 		{
-			//	Check that there is some geometry to process
-		//	if ( ( geometry.Csg == null ) || ( geometry.Csg.Root == null ) )
+			//	Create environment graphics
+
+			Csg2.Node root = Csg2.Build( geometry.ObstaclePolygons );
+			List< LevelGeometryTesselator.Polygon > floorPolys = new List< LevelGeometryTesselator.Polygon >( );
+			List< LevelGeometryTesselator.Polygon > obstaclePolys = new List< LevelGeometryTesselator.Polygon >( );
+
+			LevelGeometryTesselator tess = new LevelGeometryTesselator( );
+			LevelGeometryTesselator.Polygon poly = tess.CreateBoundingPolygon( -100, -100, 100, 100 );
+
+			LevelGeometryTesselator.AddPolygonDelegate addFloorPoly =
+				delegate( LevelGeometryTesselator.Polygon floorPoly, Csg2.Node node )
+				{
+					floorPolys.Add( floorPoly );
+				};
+			
+			LevelGeometryTesselator.AddPolygonDelegate addObstaclePoly =
+				delegate( LevelGeometryTesselator.Polygon obstaclePoly, Csg2.Node node )
+				{
+					floorPolys.Add( obstaclePoly );
+				};
+
+			tess.BuildConvexRegions( root, poly, addFloorPoly, addObstaclePoly );
+
+			GroupListBuilder groupsBuilder = new GroupListBuilder( );
+
+			Point2[] flatPoints = tess.Points.ToArray( );
+			Vertex[] vertices = new Vertex[ flatPoints.Length * 2 ];
+
+			//    //	Get the texture source for the wall
+			//    ITexture2d textureSource = node.Edge.WallData.Texture;
+			//    ITechnique techniqueSource = node.Edge.WallData.Technique;
+
+			//    GroupMaterial material = new GroupMaterial( techniqueSource, new ITexture2d[] { textureSource } );
+			//    GroupBuilder group = builder.GetGroup( material );
+			GroupMaterial defaultFloorMaterial = new GroupMaterial
+				(
+					null, null
+				);
+			GroupMaterial defaultWallMaterial = new GroupMaterial
+				(
+					null, null
+				);
+			GroupMaterial defaultObstacleMaterial = new GroupMaterial
+				(
+					null, null
+				);
+
+			foreach ( LevelGeometryTesselator.Polygon floorPoly in floorPolys )
 			{
-				return null;
+				for ( int index = 0; index < floorPoly.Indices.Length; ++index )
+				{
+					int pIndex = floorPoly.Indices[ index ];
+					if ( vertices[ pIndex ] != null )
+					{
+						continue;
+					}
+					Point2 srcPt = flatPoints[ pIndex ];
+					vertices[ pIndex ] = FloorVertex( srcPt.X, 0, srcPt.Y );
+				}
+				GenerateConvexPolygonTriIndices( floorPoly, groupsBuilder, defaultFloorMaterial, 0 );
 			}
+			
+			int obstacleVertexOffset = flatPoints.Length;
+			foreach ( LevelGeometryTesselator.Polygon obstaclePoly in obstaclePolys )
+			{
+				//	Duplicate floor points at obstacle height, add wall polys
+				for ( int index = 0; index < obstaclePoly.Indices.Length; ++index )
+				{
+					int pIndex = obstaclePoly.Indices[ index ];
+					int vIndex = pIndex + obstacleVertexOffset;
+					if ( vertices[ vIndex ] != null )
+					{
+						continue;
+					}
+
+					Point2 srcPt = flatPoints[ pIndex ];
+					vertices[ vIndex ] = FloorVertex( srcPt.X, 6, srcPt.Y );
+				}
+				GenerateConvexPolygonTriIndices( obstaclePoly, groupsBuilder, defaultObstacleMaterial, obstacleVertexOffset );
+
+				//	Generate wall polys
+				for ( int index = 0; index < obstaclePoly.Indices.Length; ++index )
+				{
+					int pIndex = obstaclePoly.Indices[ index ];
+					int nextPIndex = obstaclePoly.Indices[ ( index + 1 ) % obstaclePoly.Indices.Length ];
+					if ( ( vertices[ pIndex ] == null ) || ( vertices[ nextPIndex ] == null ) )
+					{
+						//	No equivalent floor vertices - ignore
+						continue;
+					}
+					int vIndex = pIndex + obstacleVertexOffset;
+					int nextVIndex = nextPIndex + obstacleVertexOffset;
+
+					GroupBuilder group = groupsBuilder.GetGroup( defaultWallMaterial );
+					group.Indices.Add( pIndex );
+					group.Indices.Add( nextPIndex );
+					group.Indices.Add( nextVIndex );
+					group.Indices.Add( vIndex );
+				}
+
+			}
+
+			VertexBufferData buffer = VertexBufferData.FromVertexCollection( vertices );
+			EnvironmentGraphicsData.GridCell cell = new EnvironmentGraphicsData.GridCell( buffer );
+			
+			EnvironmentGraphicsData data = new EnvironmentGraphicsData( 1, 1 );
+			data[ 0, 0 ] = cell;
+
+			envGraphics.Build( data );
+
+			return envGraphics;
 
 			/*
 			EnvironmentGraphicsData envGraphicsData = new EnvironmentGraphicsData( 1, 1 );
@@ -578,6 +608,66 @@ namespace Poc0.LevelEditor.Core.Geometry
 			GetLevelBounds( node.InFront, min, max );
 			GetLevelBounds( node.Behind, min, max );
 		}
+
+		//private static void CreateFloorGroup( Csg.BspNode node, GroupListBuilder builder )
+		//{
+		//    if ( node.ConvexRegion == null )
+		//    {
+		//        return;
+		//    }
+			
+		//    //	Get the texture source for the floor
+		//    ITexture2d textureSource = node.FloorData.Texture;
+		//    ITechnique techniqueSource = node.FloorData.Technique;
+			
+		//    GroupMaterial material = new GroupMaterial( techniqueSource, new ITexture2d[] { textureSource } );
+		//    GroupBuilder group = builder.GetGroup( material );
+
+		//    float height = 0;
+		//    Point2[] points = null; // node.ConvexRegion;
+		//    Point2 basePos = points[ 0 ];
+		//    ICollection<Vertex> vertices = group.Vertices;
+		//    for ( int vertexIndex = 1; vertexIndex < points.Length - 1; ++vertexIndex )
+		//    {
+		//        vertices.Add( FloorVertex( basePos.X, height, basePos.Y ) );
+
+		//        Point2 pt = points[ vertexIndex ];
+		//        vertices.Add( FloorVertex( pt.X, height, pt.Y ) );
+				
+		//        pt = points[ vertexIndex + 1 ];
+		//        vertices.Add( FloorVertex( pt.X, height, pt.Y ) );
+		//    }
+		//}
+
+		//private static void CreateWallGroup( Csg.BspNode node, GroupListBuilder builder )
+		//{
+		//    Vector3 planeNormal = new Vector3( node.Plane.Normal.X, 0, node.Plane.Normal.Y );
+
+		//    //	Get the texture source for the wall
+		//    ITexture2d textureSource = node.Edge.WallData.Texture;
+		//    ITechnique techniqueSource = node.Edge.WallData.Technique;
+
+		//    GroupMaterial material = new GroupMaterial( techniqueSource, new ITexture2d[] { textureSource } );
+		//    GroupBuilder group = builder.GetGroup( material );
+
+		//    //	TODO: AP: Split quad up into grid depending on texture size
+		//    //	OR: Give groups a single technique + texture, remove the texture packer, repeat the UVs
+		//    float texWidth = node.Quad[ 0 ].DistanceTo( node.Quad[ 1 ] ) / 5.0f;
+		//    float texHeight = node.Quad[ 0 ].DistanceTo( node.Quad[ 3 ] ) / 5.0f;
+		//    Point2 uvBl = new Point2( 0, 0 );
+		//    Point2 uvBr = new Point2( texWidth, 0 );
+		//    Point2 uvTr = new Point2( texWidth, texHeight );
+		//    Point2 uvTl = new Point2( 0, texHeight );
+
+		//    ICollection<Vertex> vertices = group.Vertices;
+		//    vertices.Add( new Vertex( node.Quad[ 0 ], planeNormal, uvBl ) );
+		//    vertices.Add( new Vertex( node.Quad[ 1 ], planeNormal, uvBr ) );
+		//    vertices.Add( new Vertex( node.Quad[ 2 ], planeNormal, uvTr ) );
+
+		//    vertices.Add( new Vertex( node.Quad[ 2 ], planeNormal, uvTr ) );
+		//    vertices.Add( new Vertex( node.Quad[ 3 ], planeNormal, uvTl ) );
+		//    vertices.Add( new Vertex( node.Quad[ 0 ], planeNormal, uvBl ) );
+		//}
 
 		private readonly float m_ChopSize;
 	}

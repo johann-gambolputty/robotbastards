@@ -103,6 +103,7 @@
     <Compile Include="ResourceHelper.cs" />
     <Compile Include="SceneExporter.cs" />
     <Compile Include="SceneSerializer.cs" />
+    <Compile Include="Selection\IDelete.cs" />
     <Compile Include="Selection\IMoveable3.cs" />
     <Compile Include="Selection\IObjectEditor.cs" />
     <Compile Include="Selection\IOrientable3.cs" />

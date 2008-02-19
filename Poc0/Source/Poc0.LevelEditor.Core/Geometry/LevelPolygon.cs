@@ -1,6 +1,7 @@
 
 using System;
 using Rb.Core.Maths;
+using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.Actions;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
@@ -11,7 +12,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 	/// Polygon level geometry object
 	/// </summary>
 	[Serializable]
-	public class LevelPolygon : ILevelGeometryObject, ISelectable, IPickable, IMoveable3, ISelectionModifier
+	public class LevelPolygon : ILevelGeometryObject, ISelectable, IPickable, IMoveable3, ISelectionModifier, IDelete
 	{
 		/// <summary>
 		/// Event, raised when the state of this polygon changes
@@ -165,6 +166,28 @@ namespace Poc0.LevelEditor.Core.Geometry
 		public object SelectedObject
 		{
 			get { return m_Properties; }
+		}
+
+		#endregion
+
+		#region IDelete Members
+
+		/// <summary>
+		/// Adds this polygon to the scene
+		/// </summary>
+		public void UnDelete( )
+		{
+			LevelGeometry geometry = LevelGeometry.FromScene( EditorState.Instance.CurrentScene );
+			AddToLevel( geometry );
+		}
+
+		/// <summary>
+		/// Removes this polygon from the scene
+		/// </summary>
+		public void Delete( )
+		{
+			LevelGeometry geometry = LevelGeometry.FromScene( EditorState.Instance.CurrentScene );
+			RemoveFromLevel( geometry );
 		}
 
 		#endregion

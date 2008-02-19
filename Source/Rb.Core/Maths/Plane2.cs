@@ -115,6 +115,17 @@ namespace Rb.Core.Maths
 		}
 
 		/// <summary>
+		/// Gets the signed distance to a point
+		/// </summary>
+		/// <param name="x">X coordinate of point</param>
+		/// <param name="y">Y coordinate of point</param>
+		/// <returns>Returns +ve distance to pt if pt is in front of this plane, -ve distance if pt is behind this plane</returns>
+		public float GetSignedDistanceTo( float x, float y )
+		{
+			return ( x * m_Normal.X ) + ( y * m_Normal.Y ) + m_Distance;
+		}
+
+		/// <summary>
 		/// Classifies a point
 		/// </summary>
 		/// <param name="pt">Point to classify</param>
@@ -123,6 +134,19 @@ namespace Rb.Core.Maths
 		public PlaneClassification ClassifyPoint( Point2 pt, float tolerance )
 		{
 			float signedDist = GetSignedDistanceTo( pt );
+			return signedDist < -tolerance ? PlaneClassification.Behind : ( signedDist > tolerance ? PlaneClassification.InFront : PlaneClassification.On );
+		}
+		
+		/// <summary>
+		/// Classifies a point
+		/// </summary>
+		/// <param name="x">X coordinate of point to classify</param>
+		/// <param name="y">Y coordinate of point to classify</param>
+		/// <param name="tolerance">"On" plane tolerance</param>
+		/// <returns>Returns the classification of the specified point with respect to this plane</returns>
+		public PlaneClassification ClassifyPoint( float x, float y, float tolerance )
+		{
+			float signedDist = GetSignedDistanceTo( x, y );
 			return signedDist < -tolerance ? PlaneClassification.Behind : ( signedDist > tolerance ? PlaneClassification.InFront : PlaneClassification.On );
 		}
 
