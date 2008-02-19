@@ -53,6 +53,10 @@ namespace Rb.Tools.LevelEditor.Core.Actions
 		/// <param name="curPick">Current pick information</param>
 		public void PickChanged( ILineIntersection lastPick,  ILineIntersection curPick )
 		{
+			if ( lastPick == null )
+			{
+				return;
+			}
 			if ( lastPick is Line3Intersection )
 			{
 				Line3Intersection lastPick3 = ( Line3Intersection )lastPick;
