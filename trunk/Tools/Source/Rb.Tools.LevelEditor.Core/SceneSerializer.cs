@@ -126,9 +126,8 @@ namespace Rb.Tools.LevelEditor.Core
 			}
 			catch ( Exception ex )
 			{
-				string msg = string.Format( Properties.Resources.FailedToSaveScene, path );
-				AppLog.Exception( ex, msg );
-				MessageBox.Show( msg, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
+				AppLog.Exception( ex, "Failed to save scene to \"{0}\"", path );
+				ErrorMessageBox.Show( Properties.Resources.FailedToSaveScene, path );
 			}
 
 			if ( PostSerialize != null )
@@ -155,9 +154,8 @@ namespace Rb.Tools.LevelEditor.Core
 			}
 			catch ( Exception ex )
 			{
-				string msg = string.Format( Properties.Resources.FailedToOpenScene, path );
-				AppLog.Exception( ex, msg );
-				MessageBox.Show( msg, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
+				AppLog.Exception( ex, "Failed to open scene \"{0}\"", path );
+				ErrorMessageBox.Show( Properties.Resources.FailedToOpenScene, path );
 				return null;
 			}
 

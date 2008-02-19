@@ -71,7 +71,7 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 				catch ( Exception ex )
 				{
 					AppLog.Exception( ex, "Failed to add new object" );
-					MessageBox.Show( Properties.Resources.FailedToAddObject, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
+					ErrorMessageBox.Show( Properties.Resources.FailedToAddObject );
 				}
 			}
 		}

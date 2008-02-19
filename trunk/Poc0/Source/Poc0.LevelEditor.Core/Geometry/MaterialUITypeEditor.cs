@@ -30,7 +30,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 			}
 
 			//	Get the material set from the current scene
-			MaterialSet matSet = MaterialSet.FromScene( EditorState.Instance.CurrentScene, true );
+			MaterialSet matSet = MaterialSet.FromScene( EditorState.Instance.CurrentScene );
 
 			//	Can't show an actual combo box, because this is displayed under the original drop-down icon
 			ListBox combo = new ListBox( );

@@ -94,6 +94,7 @@
     <Compile Include="EditModes\IEditMode.cs" />
     <Compile Include="EditModes\SelectEditMode.cs" />
     <Compile Include="EditorState.cs" />
+    <Compile Include="ErrorMessageBox.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -90,8 +90,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 			catch ( Exception ex )
 			{
 				AppLog.Exception( ex, "Failed to combine brush with current level geometry" );
-
-				MessageBox.Show( Properties.Resources.FailedToCombineCsgBrush, Properties.Resources.ErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error );
+				ErrorMessageBox.Show( Properties.Resources.FailedToCombineCsgBrush );
 			}
 		}
 
