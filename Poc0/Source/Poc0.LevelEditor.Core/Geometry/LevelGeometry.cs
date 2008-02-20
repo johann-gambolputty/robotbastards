@@ -351,9 +351,9 @@ namespace Poc0.LevelEditor.Core.Geometry
 		/// </summary>
 		private IEnumerable< Point3 > PolyPoints( LevelGeometryTesselator.Polygon poly, float y )
 		{
-			for ( int index = 0; index < poly.Indices.Length; ++index )
+			for ( int index = 0; index < poly.Edges.Length; ++index )
 			{
-				Point2 pt = m_DisplayPoints[ poly.Indices[ index ] ];
+				Point2 pt = m_DisplayPoints[ poly.Edges[ index ].StartIndex ];
 				yield return new Point3( pt.X, y, pt.Y );
 			}
 		}
@@ -466,7 +466,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 			LevelGeometryTesselator tess = new LevelGeometryTesselator( );
 			LevelGeometryTesselator.Polygon poly = tess.CreateBoundingPolygon( -100, -100, 100, 100 );
 
-			tess.BuildConvexRegions( m_Root, poly, AddFloorPolygon, AddObstaclePolygon );
+			tess.BuildConvexRegions( m_Root, poly, AddFloorPolygon, AddObstaclePolygon, false );
 
 			m_DisplayPoints = tess.Points.ToArray( );
 

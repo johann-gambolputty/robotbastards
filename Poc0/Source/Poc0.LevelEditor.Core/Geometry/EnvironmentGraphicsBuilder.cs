@@ -214,17 +214,17 @@ namespace Poc0.LevelEditor.Core.Geometry
 			return groups;
 		}
 
-		private static void GenerateConvexPolygonTriIndices( LevelGeometryTesselator.Polygon poly, GroupListBuilder builder, GroupMaterial material )
+		private static void GenerateConvexPolygonTriIndices( LevelGeometryTesselator.Polygon poly, int[] indexMap, GroupListBuilder builder, GroupMaterial material )
 		{
 			GroupBuilder group = builder.GetGroup( material );
 			ICollection< int > indices = group.Indices;
 
-			int baseIndex = poly.Indices[ 0 ];
-			for ( int index = 1; index < poly.Indices.Length - 1; ++index )
+			int baseIndex = indexMap[ poly.Edges[0].StartIndex ];
+			for ( int index = 1; index < poly.Edges.Length - 1; ++index )
 			{
 				indices.Add( baseIndex );
-				indices.Add( poly.Indices[ index + 1 ] );
-				indices.Add( poly.Indices[ index ] );
+				indices.Add( indexMap[ poly.Edges[ index ].StartIndex ] );
+				indices.Add( indexMap[ poly.Edges[ index ].EndIndex ] );
 			}
 		}
 
@@ -257,7 +257,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 					obstaclePolys.Add( obstaclePoly );
 				};
 
-			tess.BuildConvexRegions( root, poly, addFloorPoly, addObstaclePoly );
+			tess.BuildConvexRegions( root, poly, addFloorPoly, addObstaclePoly, true );
 
 			GroupListBuilder groupsBuilder = new GroupListBuilder( );
 
@@ -298,26 +298,25 @@ namespace Poc0.LevelEditor.Core.Geometry
 
 			foreach ( LevelGeometryTesselator.Polygon floorPoly in floorPolys )
 			{
-				for ( int index = 0; index < floorPoly.Indices.Length; ++index )
+				for ( int edgeIndex = 0; edgeIndex < floorPoly.Edges.Length; ++edgeIndex )
 				{
-					int pIndex = floorPoly.Indices[ index ];
+					int pIndex = floorPoly.Edges[ edgeIndex ].StartIndex;
 					if ( floorIndexMap[ pIndex ] == -1 )
 					{
 						Point2 srcPt = flatPoints[ pIndex ];
 						floorIndexMap[ pIndex ] = vertices.Count;
 						vertices.Add( FloorVertex( srcPt.X, 0, srcPt.Y ) );
 					}
-					floorPoly.Indices[ index ] = floorIndexMap[ pIndex ];
 				}
-				GenerateConvexPolygonTriIndices( floorPoly, groupsBuilder, defaultFloorMaterial );
+				GenerateConvexPolygonTriIndices( floorPoly, floorIndexMap, groupsBuilder, defaultFloorMaterial );
 			}
 
 			foreach ( LevelGeometryTesselator.Polygon obstaclePoly in obstaclePolys )
 			{
 				//	Duplicate floor points at obstacle height, add wall polys
-				for ( int index = 0; index < obstaclePoly.Indices.Length; ++index )
+				for ( int edgeIndex = 0; edgeIndex < obstaclePoly.Edges.Length; ++edgeIndex )
 				{
-					int pIndex = obstaclePoly.Indices[ index ];
+					int pIndex = obstaclePoly.Edges[ edgeIndex ].StartIndex;
 					if ( roofIndexMap[ pIndex ] == -1 )
 					{
 						Point2 srcPt = flatPoints[ pIndex ];
@@ -326,10 +325,10 @@ namespace Poc0.LevelEditor.Core.Geometry
 					}
 				}
 				//	Generate wall polys
-				for ( int index = 0; index < obstaclePoly.Indices.Length; ++index )
+				for ( int edgeIndex = 0; edgeIndex < obstaclePoly.Edges.Length; ++edgeIndex )
 				{
-					int pIndex = obstaclePoly.Indices[ index ];
-					int nextPIndex = obstaclePoly.Indices[ ( index + 1 ) % obstaclePoly.Indices.Length ];
+					int pIndex = obstaclePoly.Edges[ edgeIndex ].StartIndex;
+					int nextPIndex = obstaclePoly.Edges[ edgeIndex ].EndIndex;
 					int floorIndex = floorIndexMap[ pIndex ];
 					int nextFloorIndex = floorIndexMap[ nextPIndex ];
 
@@ -351,13 +350,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 					group.Indices.Add( roofIndex );
 				}
 
-				for ( int index = 0; index < obstaclePoly.Indices.Length; ++index )
-				{
-					int pIndex = obstaclePoly.Indices[ index ];
-					obstaclePoly.Indices[ index ] = roofIndexMap[ pIndex ];
-				}
-
-				GenerateConvexPolygonTriIndices( obstaclePoly, groupsBuilder, defaultObstacleMaterial );
+				GenerateConvexPolygonTriIndices( obstaclePoly, roofIndexMap, groupsBuilder, defaultObstacleMaterial );
 			}
 
 			VertexBufferData buffer = VertexBufferData.FromVertexCollection( vertices );

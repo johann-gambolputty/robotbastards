@@ -73,6 +73,9 @@ float GetLightDepth( float z )
 	return ( InvShadowNearZ - 1.f / z ) * InvShadowZRatio;
 }
 
+const float MinCoverage = 0.4f;
+const float CoverageIncrement = ( 1 - MinCoverage ) / 4;
+
 float GetShadowCoverage( float4 lightSpacePos )
 {
 	//	TODO: Move scale and translation to transform
@@ -86,11 +89,11 @@ float GetShadowCoverage( float4 lightSpacePos )
 	float	lightDepth		= GetLightDepth( lightSpacePos.z );
 
 	//	Percentage closer filtering
-	float	coverage		= 0.2f;
-	coverage += ( storedDepth0 >= lightDepth ) ? 0.2f : 0.0f;
-	coverage += ( storedDepth1 >= lightDepth ) ? 0.2f : 0.0f;
-	coverage += ( storedDepth2 >= lightDepth ) ? 0.2f : 0.0f;
-	coverage += ( storedDepth3 >= lightDepth ) ? 0.2f : 0.0f;
+	float	coverage		= MinCoverage;
+	coverage += ( storedDepth0 >= lightDepth ) ? CoverageIncrement : 0.0f;
+	coverage += ( storedDepth1 >= lightDepth ) ? CoverageIncrement : 0.0f;
+	coverage += ( storedDepth2 >= lightDepth ) ? CoverageIncrement : 0.0f;
+	coverage += ( storedDepth3 >= lightDepth ) ? CoverageIncrement : 0.0f;
 	
 	return coverage;
 }
@@ -110,7 +113,7 @@ float4 GetPerPixelColour( float3 lightPos, float3 lightVec, float3 pos, float3 n
 {
 	float3 vecToLight	= normalize( lightPos - pos );
 	
-	float mul = -dot( vecToLight, SpotLights.m_Directions[ 0 ] ) < SpotLights.m_Arcs[ 0 ] ? 0.2f : 1.0f;
+	float mul = -dot( vecToLight, SpotLights.m_Directions[ 0 ] ) < SpotLights.m_Arcs[ 0 ] ? 0.4f : 1.0f;
 
 	return GetPerPixelColour( vecToLight, lightVec, normal, mul );
 }

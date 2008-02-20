@@ -8,6 +8,7 @@ namespace Rb.Rendering.Contracts
 	/// </summary>
 	public class Draw
 	{
+		//	TODO: AP: Move to Rb.Rendering
 
 		#region Pre-defined pens, brushes and surfaces
 
