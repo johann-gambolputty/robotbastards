@@ -74,7 +74,7 @@ float GetLightDepth( float z )
 }
 
 const float MinCoverage = 0.4f;
-const float CoverageIncrement = ( 1 - MinCoverage ) / 4;
+const float CoverageIncrement = 0.6f / 4.f;
 
 float GetShadowCoverage( float4 lightSpacePos )
 {

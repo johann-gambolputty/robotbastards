@@ -304,8 +304,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 					if ( floorIndexMap[ pIndex ] == -1 )
 					{
 						Point2 srcPt = flatPoints[ pIndex ];
-						floorIndexMap[ pIndex ] = vertices.Count;
-						vertices.Add( FloorVertex( srcPt.X, 0, srcPt.Y ) );
+						floorIndexMap[ pIndex ] = AddVertex( vertices, FloorVertex( srcPt.X, 0, srcPt.Y ) );
 					}
 				}
 				GenerateConvexPolygonTriIndices( floorPoly, floorIndexMap, groupsBuilder, defaultFloorMaterial );
@@ -320,8 +319,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 					if ( roofIndexMap[ pIndex ] == -1 )
 					{
 						Point2 srcPt = flatPoints[ pIndex ];
-						roofIndexMap[ pIndex ] = vertices.Count;
-						vertices.Add( FloorVertex( srcPt.X, 6, srcPt.Y ) );
+						roofIndexMap[ pIndex ] = AddVertex( vertices, FloorVertex( srcPt.X, 6, srcPt.Y ) );
 					}
 				}
 				//	Generate wall polys
@@ -329,16 +327,18 @@ namespace Poc0.LevelEditor.Core.Geometry
 				{
 					int pIndex = obstaclePoly.Edges[ edgeIndex ].StartIndex;
 					int nextPIndex = obstaclePoly.Edges[ edgeIndex ].EndIndex;
-					int floorIndex = floorIndexMap[ pIndex ];
-					int nextFloorIndex = floorIndexMap[ nextPIndex ];
 
-					if ( ( floorIndex == -1 ) || ( nextFloorIndex == -1 ) )
+					if ( ( floorIndexMap[ pIndex ] == -1 ) || ( floorIndexMap[ nextPIndex ] == -1 ) )
 					{
 						//	No equivalent floor vertices - ignore
 						continue;
 					}
-					int roofIndex = roofIndexMap[ pIndex ];
-					int nextRoofIndex = roofIndexMap[ nextPIndex ];
+
+					int v0 = AddVertex( vertices, null );
+					int v1 = AddVertex( vertices, null );
+					int v2 = AddVertex( vertices, null );
+					int v3 = AddVertex( vertices, null );
+					
 
 					GroupBuilder group = groupsBuilder.GetGroup( defaultWallMaterial );
 					group.Indices.Add( floorIndex );
@@ -404,6 +404,18 @@ namespace Poc0.LevelEditor.Core.Geometry
 
 			return null;
 			*/
+		}
+
+		private static Vertex WallVertex( Point3 pt, Vector3 normal )
+		{
+			return new Vertex( pt, normal, );
+		}
+
+		private static int AddVertex( ICollection< Vertex > vertices, Vertex vertex )
+		{
+			int index = vertices.Count;
+			vertices.Add( vertex );
+			return index;
 		}
 
 		private class TriBuilder
