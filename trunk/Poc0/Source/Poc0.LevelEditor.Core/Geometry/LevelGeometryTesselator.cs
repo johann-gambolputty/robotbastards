@@ -8,6 +8,38 @@ namespace Poc0.LevelEditor.Core.Geometry
 	/// </summary>
 	internal class LevelGeometryTesselator
 	{
+		public class Edge
+		{
+			public Edge( int startIndex, int endIndex, Polygon neighbour )
+			{
+				m_StartIndex	= startIndex;
+				m_EndIndex		= endIndex;
+				m_Neighbour		= neighbour;
+			}
+
+			public int StartIndex
+			{
+				get { return m_StartIndex; }
+				set { m_StartIndex = value; }
+			}
+
+			public int EndIndex
+			{
+				get { return m_EndIndex; }
+				set { m_EndIndex = value; }
+			}
+
+			public Polygon Neighbour
+			{
+				get { return m_Neighbour; }
+				set { m_Neighbour = value; }
+			}
+
+			private int m_StartIndex;
+			private int m_EndIndex;
+			private Polygon m_Neighbour;
+		}
+
 		/// <summary>
 		/// Tesselator output polygon type
 		/// </summary>
@@ -16,25 +48,17 @@ namespace Poc0.LevelEditor.Core.Geometry
 			/// <summary>
 			/// Setup constructor
 			/// </summary>
-			public Polygon( int[] indices )
+			public Polygon( Edge[] edges )
 			{
-				m_Indices = indices;
+				m_Edges = edges;
 			}
 
 			/// <summary>
-			/// Polygon vertex indices
+			/// Polygon edges
 			/// </summary>
-			public int[] Indices
+			public Edge[] Edges
 			{
-				get { return m_Indices; }
-			}
-
-			/// <summary>
-			/// Returns an array of neighbouring polygons. For each index pair (edge), there's a neighbour
-			/// </summary>
-			public Polygon[] Neighbours
-			{
-				get { return null; }
+				get { return m_Edges; }
 			}
 
 			/// <summary>
@@ -49,7 +73,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 			#region Private members
 
 			private LevelPolygon m_LevelPoly;
-			private readonly int[] m_Indices;
+			private readonly Edge[] m_Edges;
 
 			#endregion
 		}
@@ -59,14 +83,22 @@ namespace Poc0.LevelEditor.Core.Geometry
 		/// </summary>
 		public Polygon CreateBoundingPolygon( float minX, float minY, float maxX, float maxY )
 		{
+			int[] pointIndices = new int[]
+				{
+					AddPoint( new Point2( minX, minY ) ),
+					AddPoint( new Point2( maxX, minY ) ),
+					AddPoint( new Point2( maxX, maxY ) ),
+					AddPoint( new Point2( minX, maxY ) )
+				};
+
 			return new Polygon
 			(
-				new int[]
+				new Edge[]
 					{
-						AddPoint( new Point2( minX, minY ) ),
-						AddPoint( new Point2( maxX, minY ) ),
-						AddPoint( new Point2( maxX, maxY ) ),
-						AddPoint( new Point2( minX, maxY ) )
+						new Edge( pointIndices[ 0 ], pointIndices[ 1 ], null ),
+						new Edge( pointIndices[ 1 ], pointIndices[ 2 ], null ),
+						new Edge( pointIndices[ 2 ], pointIndices[ 3 ], null ),
+						new Edge( pointIndices[ 3 ], pointIndices[ 0 ], null ),
 					}
 			);
 		}
@@ -76,7 +108,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 		/// <summary>
 		/// Builds the convex region for a node and its children
 		/// </summary>
-		public void BuildConvexRegions( Csg2.Node node, Polygon poly, AddPolygonDelegate addFloorPoly, AddPolygonDelegate addObstaclePoly )
+		public void BuildConvexRegions( Csg2.Node node, Polygon poly, AddPolygonDelegate addFloorPoly, AddPolygonDelegate addObstaclePoly, bool fixTJunctions )
 		{
 			Polygon behindPoly;
 			Polygon inFrontPoly;
@@ -84,7 +116,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 
 			if ( node.Behind != null )
 			{
-				BuildConvexRegions( node.Behind, behindPoly, addFloorPoly, addObstaclePoly );
+				BuildConvexRegions( node.Behind, behindPoly, addFloorPoly, addObstaclePoly, fixTJunctions );
 			}
 			else if ( addFloorPoly != null )
 			{
@@ -92,7 +124,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 			}
 			if ( node.InFront != null )
 			{
-				BuildConvexRegions( node.InFront, inFrontPoly, addFloorPoly, addObstaclePoly );
+				BuildConvexRegions( node.InFront, inFrontPoly, addFloorPoly, addObstaclePoly, fixTJunctions );
 			}
 			else if ( addObstaclePoly != null )
 			{
@@ -116,44 +148,122 @@ namespace Poc0.LevelEditor.Core.Geometry
 		{
 			float tolerance = 0.001f;
 			int firstDefiniteClassIndex = -1;
-			PlaneClassification[] classifications = new PlaneClassification[ source.Indices.Length ];
-			for ( int index = 0; index < source.Indices.Length; ++index )
+			PlaneClassification[] classifications = new PlaneClassification[ source.Edges.Length ];
+			bool edgeIsOnPlane = false;
+			for ( int index = 0; index < source.Edges.Length; ++index )
 			{
-				classifications[ index ] = plane.ClassifyPoint( m_Points[ source.Indices[ index ] ], tolerance );
+				classifications[ index ] = plane.ClassifyPoint( m_Points[ source.Edges[ index ].StartIndex ], tolerance );
 				if ( ( firstDefiniteClassIndex == -1 ) && ( classifications[ index ] != PlaneClassification.On ) )
 				{
 					firstDefiniteClassIndex = index;
 				}
 			}
-			if ( firstDefiniteClassIndex > 1 )
+			int lastIndex = classifications.Length - 1;
+			for ( int index = 0; index < classifications.Length; ++index )
 			{
-				//	The first two points are on the split plane. This means that we
-				//	can easily classify the polygon as either behind or in front depending on the first
-				//	definite class
+				if ((classifications[lastIndex] == PlaneClassification.On) && (classifications[index] == PlaneClassification.On ) )
+				{
+					edgeIsOnPlane = true;
+					break;
+				}
+				lastIndex = index;
+			}
+			if ( edgeIsOnPlane )
+			{
+				//	One of the polygon's edges is on the plane. This means that we can easily classify the
+				//	polygon as either behind or in front depending on the first definite class
 				if ( classifications[ firstDefiniteClassIndex ] == PlaneClassification.Behind )
 				{
-					behind = new Polygon( source.Indices );
+					behind = new Polygon( source.Edges );
 					inFront = null;
 				}
 				else
 				{
 					behind = null;
-					inFront = new Polygon( source.Indices );
+					inFront = new Polygon( source.Edges );
 				}
 				return;
 			}
 
-			int lastPtIndex = firstDefiniteClassIndex;
-			int curPtIndex = ( lastPtIndex + 1 ) % source.Indices.Length;
-			Point2 lastPt = m_Points[ source.Indices[ lastPtIndex ] ];
-			PlaneClassification lastClass = classifications[ lastPtIndex ];
+			//int lastPtIndex = firstDefiniteClassIndex;
+			//int curPtIndex = ( lastPtIndex + 1 ) % source.Edges.Length;
+			//Point2 lastPt = m_Points[ source.Edges[ lastPtIndex ].StartIndex ];
+			//PlaneClassification lastClass = classifications[ lastPtIndex ];
 
-			List<int> behindPoints = new List<int>( source.Indices.Length + 2 );
-			List<int> inFrontPoints = new List<int>( source.Indices.Length + 2 );
+			List<Edge> behindEdges = new List<Edge>( source.Edges.Length + 1 );
+			List<Edge> inFrontEdges = new List<Edge>( source.Edges.Length + 1 );
 
-			for ( int count = 0; count < source.Indices.Length; ++count )
+			int inFrontSplitEdgeIndex = -1;
+			int behindSplitEdgeIndex = -1;
+
+			for ( int count = 0; count < source.Edges.Length; ++count )
 			{
-				Point2 curPt = m_Points[ source.Indices[ curPtIndex ] ];
+				Edge srcEdge = source.Edges[ count ];
+				if ( classifications[ srcEdge.StartIndex ] == classifications[ srcEdge.EndIndex ] )
+				{
+					if ( classifications[ srcEdge.StartIndex ] == PlaneClassification.Behind )
+					{
+						behindEdges.Add( srcEdge );
+					}
+					else
+					{
+						inFrontEdges.Add( srcEdge );
+					}
+				}
+				else if ( classifications[ srcEdge.StartIndex ] == PlaneClassification.On )
+				{
+					//	We know that the end index is not classified as "On", because this function early-outs
+					//	if there's 2 or more points on the split plane
+					if ( classifications[ srcEdge.EndIndex ] == PlaneClassification.Behind )
+					{
+						System.Diagnostics.Trace.Assert( inFrontSplitEdgeIndex == -1 );
+						inFrontSplitEdgeIndex = inFrontEdges.Count;
+						inFrontEdges.Add( null );
+						behindEdges.Add( srcEdge );
+					}
+					else
+					{
+						System.Diagnostics.Trace.Assert( behindSplitEdgeIndex == -1 );
+						behindSplitEdgeIndex = behindEdges.Count;
+						behindEdges.Add( null );
+						inFrontEdges.Add( srcEdge );
+					}
+				}
+				else
+				{
+					//	Edge straddles split plane. Determine the intersection
+					Point2 startPt = m_Points[ srcEdge.StartIndex ];
+					Point2 endPt = m_Points[ srcEdge.EndIndex ];
+					Line2Intersection intersection = Intersections2.GetLinePlaneIntersection( startPt, endPt, plane );
+					int newPtIndex = AddPoint( intersection.IntersectionPosition );
+
+					Edge startToMid = new Edge( srcEdge.StartIndex, newPtIndex, srcEdge.Neighbour );
+					Edge midToEnd = new Edge( newPtIndex, srcEdge.EndIndex, srcEdge.Neighbour );
+
+					if ( classifications[ srcEdge.StartIndex ] == PlaneClassification.Behind )
+					{
+						System.Diagnostics.Trace.Assert( inFrontSplitEdgeIndex == -1 );
+						inFrontSplitEdgeIndex = inFrontEdges.Count;
+						inFrontEdges.Add( null );
+
+						behindEdges.Add( startToMid );
+						inFrontEdges.Add( midToEnd );
+					}
+					else
+					{
+						System.Diagnostics.Trace.Assert( behindSplitEdgeIndex == -1 );
+						behindSplitEdgeIndex = behindEdges.Count;
+						behindEdges.Add( null );
+
+						inFrontEdges.Add( startToMid );
+						behindEdges.Add( midToEnd );
+					}
+				}
+
+
+				/*
+
+				Point2 curPt = m_Points[ source.Edges[ curPtIndex ].StartIndex ];
 				PlaneClassification curClass = classifications[ curPtIndex ];
 				if ( curClass == PlaneClassification.On )
 				{
@@ -172,20 +282,55 @@ namespace Poc0.LevelEditor.Core.Geometry
 				if ( curClass == PlaneClassification.Behind )
 				{
 					behindPoints.Add( source.Indices[ curPtIndex ] );
+					behindNeighbours.Add( source.Neighbours[ curPtIndex ] );
 				}
 				else
 				{
 					inFrontPoints.Add( source.Indices[ curPtIndex ] );
+					inFrontNeighbours.Add( source.Neighbours[ curPtIndex ] );
 				}
 
 				lastClass = curClass;
 				lastPt = curPt;
-
 				curPtIndex = ( curPtIndex + 1 ) % source.Indices.Length;
+				*/
 			}
 
-			behind = ( behindPoints.Count == 0 ) ? null : new Polygon( behindPoints.ToArray( ) );
-			inFront = ( inFrontPoints.Count == 0 ) ? null : new Polygon( inFrontPoints.ToArray( ) );
+			//behind = ( behindPoints.Count == 0 ) ? null : new Polygon( behindPoints.ToArray( ), behindNeighbours.ToArray( ) );
+			//inFront = ( inFrontPoints.Count == 0 ) ? null : new Polygon( inFrontPoints.ToArray( ), behindNeighbours.ToArray( ) );
+
+			Edge behindSplitEdge = AddSplitEdge( behindEdges, behindSplitEdgeIndex );
+			Edge inFrontSplitEdge = AddSplitEdge( inFrontEdges, inFrontSplitEdgeIndex );
+
+			if ( behindEdges.Count == 0 )
+			{
+				behind = null;
+			}
+			else
+			{
+				behind = new Polygon( behindEdges.ToArray( ) );
+				inFrontSplitEdge.Neighbour = behind;
+			}
+			
+			if ( inFrontEdges.Count == 0 )
+			{
+				inFront = null;
+			}
+			else
+			{
+				inFront = new Polygon( inFrontEdges.ToArray( ) );
+				behindSplitEdge.Neighbour = inFront;
+			}
+		}
+
+		private static Edge AddSplitEdge( IList< Edge > edges, int splitEdgeIndex )
+		{
+			Edge previousEdge = edges[ splitEdgeIndex == 0 ? edges.Count - 1 : splitEdgeIndex - 1 ];
+			Edge nextEdge = edges[ ( splitEdgeIndex + 1 ) % edges.Count ];
+
+			edges[ splitEdgeIndex ] = new Edge( previousEdge.EndIndex, nextEdge.StartIndex, null );
+
+			return edges[ splitEdgeIndex ];
 		}
 
 		#region Private members

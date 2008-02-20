@@ -93,6 +93,8 @@ namespace Rb.Rendering.Contracts
 	/// </summary>
 	public static class Transforms
 	{
+		//	TODO: AP: Move to Rb.Rendering
+
 		/// <summary>
 		/// Gets the transform associated with a given texture unit
 		/// </summary>
