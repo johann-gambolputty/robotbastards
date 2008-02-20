@@ -198,10 +198,11 @@ namespace Poc0.LevelEditor.Core.Geometry
 
 			for ( int count = 0; count < source.Edges.Length; ++count )
 			{
+				int next = ( count + 1 ) % source.Edges.Length;
 				Edge srcEdge = source.Edges[ count ];
-				if ( classifications[ srcEdge.StartIndex ] == classifications[ srcEdge.EndIndex ] )
+				if ( classifications[ count ] == classifications[ next ] )
 				{
-					if ( classifications[ srcEdge.StartIndex ] == PlaneClassification.Behind )
+					if ( classifications[ count ] == PlaneClassification.Behind )
 					{
 						behindEdges.Add( srcEdge );
 					}
@@ -210,11 +211,11 @@ namespace Poc0.LevelEditor.Core.Geometry
 						inFrontEdges.Add( srcEdge );
 					}
 				}
-				else if ( classifications[ srcEdge.StartIndex ] == PlaneClassification.On )
+				else if ( classifications[ count ] == PlaneClassification.On )
 				{
 					//	We know that the end index is not classified as "On", because this function early-outs
 					//	if there's 2 or more points on the split plane
-					if ( classifications[ srcEdge.EndIndex ] == PlaneClassification.Behind )
+					if ( classifications[ next ] == PlaneClassification.Behind )
 					{
 						System.Diagnostics.Trace.Assert( inFrontSplitEdgeIndex == -1 );
 						inFrontSplitEdgeIndex = inFrontEdges.Count;
@@ -240,7 +241,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 					Edge startToMid = new Edge( srcEdge.StartIndex, newPtIndex, srcEdge.Neighbour );
 					Edge midToEnd = new Edge( newPtIndex, srcEdge.EndIndex, srcEdge.Neighbour );
 
-					if ( classifications[ srcEdge.StartIndex ] == PlaneClassification.Behind )
+					if ( classifications[ count ] == PlaneClassification.Behind )
 					{
 						System.Diagnostics.Trace.Assert( inFrontSplitEdgeIndex == -1 );
 						inFrontSplitEdgeIndex = inFrontEdges.Count;
