@@ -8,6 +8,9 @@ namespace Poc0.LevelEditor.Core.Geometry
 	/// </summary>
 	internal class LevelGeometryTesselator
 	{
+		/// <summary>
+		/// Tesselator edge type
+		/// </summary>
 		public class Edge
 		{
 			public Edge( int startIndex, int endIndex, Polygon neighbour )
@@ -59,6 +62,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 			public Edge[] Edges
 			{
 				get { return m_Edges; }
+				set { m_Edges = value; }
 			}
 
 			/// <summary>
@@ -73,7 +77,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 			#region Private members
 
 			private LevelPolygon m_LevelPoly;
-			private readonly Edge[] m_Edges;
+			private Edge[] m_Edges;
 
 			#endregion
 		}
@@ -238,6 +242,10 @@ namespace Poc0.LevelEditor.Core.Geometry
 					Line2Intersection intersection = Intersections2.GetLinePlaneIntersection( startPt, endPt, plane );
 					int newPtIndex = AddPoint( intersection.IntersectionPosition );
 
+					//	TODO: AP: Find the edge in the neighbour polygon, and split that too
+					SplitNeighbourEdge( srcEdge, newPtIndex );
+				//	srcEdge.Neighbour;
+
 					Edge startToMid = new Edge( srcEdge.StartIndex, newPtIndex, srcEdge.Neighbour );
 					Edge midToEnd = new Edge( newPtIndex, srcEdge.EndIndex, srcEdge.Neighbour );
 
@@ -260,45 +268,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 						behindEdges.Add( midToEnd );
 					}
 				}
-
-
-				/*
-
-				Point2 curPt = m_Points[ source.Edges[ curPtIndex ].StartIndex ];
-				PlaneClassification curClass = classifications[ curPtIndex ];
-				if ( curClass == PlaneClassification.On )
-				{
-					curClass = lastClass;
-				}
-
-				if ( curClass != lastClass )
-				{
-					//	Split line on plane
-					Line2Intersection intersection = Intersections2.GetLinePlaneIntersection( lastPt, curPt, plane );
-					int newPtIndex = AddPoint( intersection.IntersectionPosition );
-					behindPoints.Add( newPtIndex );
-					inFrontPoints.Add( newPtIndex );
-				}
-
-				if ( curClass == PlaneClassification.Behind )
-				{
-					behindPoints.Add( source.Indices[ curPtIndex ] );
-					behindNeighbours.Add( source.Neighbours[ curPtIndex ] );
-				}
-				else
-				{
-					inFrontPoints.Add( source.Indices[ curPtIndex ] );
-					inFrontNeighbours.Add( source.Neighbours[ curPtIndex ] );
-				}
-
-				lastClass = curClass;
-				lastPt = curPt;
-				curPtIndex = ( curPtIndex + 1 ) % source.Indices.Length;
-				*/
 			}
-
-			//behind = ( behindPoints.Count == 0 ) ? null : new Polygon( behindPoints.ToArray( ), behindNeighbours.ToArray( ) );
-			//inFront = ( inFrontPoints.Count == 0 ) ? null : new Polygon( inFrontPoints.ToArray( ), behindNeighbours.ToArray( ) );
 
 			Edge behindSplitEdge = AddSplitEdge( behindEdges, behindSplitEdgeIndex );
 			Edge inFrontSplitEdge = AddSplitEdge( inFrontEdges, inFrontSplitEdgeIndex );
@@ -321,6 +291,42 @@ namespace Poc0.LevelEditor.Core.Geometry
 			{
 				inFront = new Polygon( inFrontEdges.ToArray( ) );
 				behindSplitEdge.Neighbour = inFront;
+			}
+		}
+
+		private static void SplitNeighbourEdge( Edge srcEdge, int midPointIndex )
+		{
+			Polygon neighbour = srcEdge.Neighbour;
+
+			if ( neighbour == null )
+			{
+				return;
+			}
+
+			Edge[] edges = neighbour.Edges;
+
+			for ( int edgeIndex = 0; edgeIndex < edges.Length; ++edgeIndex )
+			{
+				Edge edge = edges[ edgeIndex ];
+				if ( ( ( edge.StartIndex == srcEdge.StartIndex ) && ( edge.EndIndex == srcEdge.EndIndex ) ) ||
+					 ( ( edge.EndIndex == srcEdge.StartIndex ) && ( edge.StartIndex == srcEdge.EndIndex ) ) )
+				{
+					Edge[] newEdges = new Edge[ edges.Length + 1 ];
+					int newIndex = 0;
+					int oldIndex = 0;
+					while ( oldIndex < edgeIndex )
+					{
+						newEdges[ newIndex++ ] = edges[ oldIndex++ ];
+					}
+					++oldIndex; //	Skip
+					newEdges[ newIndex++ ] = new Edge( edge.StartIndex, midPointIndex, edge.Neighbour );
+					newEdges[ newIndex++ ] = new Edge( midPointIndex, edge.EndIndex, edge.Neighbour );
+					while ( oldIndex < edges.Length )
+					{
+						newEdges[ newIndex++ ] = edges[ oldIndex++ ];
+					}
+					return;
+				}
 			}
 		}
 

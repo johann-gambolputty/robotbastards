@@ -157,7 +157,6 @@ namespace Poc0.LevelEditor.Core.Geometry
 
 		#endregion
 
-
 		#region ISelectionModifier Members
 
 		/// <summary>
