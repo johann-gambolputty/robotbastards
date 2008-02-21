@@ -328,26 +328,45 @@ namespace Poc0.LevelEditor.Core.Geometry
 					int pIndex = obstaclePoly.Edges[ edgeIndex ].StartIndex;
 					int nextPIndex = obstaclePoly.Edges[ edgeIndex ].EndIndex;
 
-					if ( ( floorIndexMap[ pIndex ] == -1 ) || ( floorIndexMap[ nextPIndex ] == -1 ) )
+					//if ( ( floorIndexMap[ pIndex ] == -1 ) || ( floorIndexMap[ nextPIndex ] == -1 ) )
+					//{
+					//    //	No equivalent floor vertices - ignore
+					//    continue;
+					//}
+					if ( floorIndexMap[ pIndex ] == -1 )
 					{
-						//	No equivalent floor vertices - ignore
-						continue;
+						floorIndexMap[ pIndex ] = AddVertex( vertices, FloorVertex( flatPoints[ pIndex ].X, 0, flatPoints[ pIndex ].Y ) );
+					}
+					if ( floorIndexMap[ nextPIndex ] == -1 )
+					{
+						floorIndexMap[ nextPIndex ] = AddVertex( vertices, FloorVertex( flatPoints[ nextPIndex ].X, 0, flatPoints[ nextPIndex ].Y ) );
 					}
 
-					int v0 = AddVertex( vertices, null );
-					int v1 = AddVertex( vertices, null );
-					int v2 = AddVertex( vertices, null );
-					int v3 = AddVertex( vertices, null );
+					Point3 floor0Pt = vertices[ floorIndexMap[ pIndex ] ].m_Point;
+					Point3 floor1Pt = vertices[ floorIndexMap[ nextPIndex ] ].m_Point;
 					
+					Point3 roof0Pt	= vertices[ roofIndexMap[ pIndex ] ].m_Point;
+					Point3 roof1Pt	= vertices[ roofIndexMap[ nextPIndex ] ].m_Point;
+
+					Vector3 dir = Vector3.Cross( floor1Pt - floor0Pt, roof1Pt - roof0Pt ).MakeNormal( );
+
+					//	TODO: AP: Better texture coordinate generation
+					float texWidth = floor0Pt.DistanceTo( floor1Pt ) / 5.0f;
+					float texHeight = floor0Pt.DistanceTo( roof0Pt ) / 5.0f;
+
+					int floorP0 = AddVertex( vertices, new Vertex( floor0Pt, dir, new Point2( 0, 0 ) ) );
+					int floorP1 = AddVertex( vertices, new Vertex( floor1Pt, dir, new Point2( texWidth, 0 ) ) );
+					int roofP0 = AddVertex( vertices, new Vertex( roof0Pt, dir, new Point2( 0, texHeight ) ) );
+					int roofP1 = AddVertex( vertices, new Vertex( roof1Pt, dir, new Point2( texWidth, texHeight ) ) );
 
 					GroupBuilder group = groupsBuilder.GetGroup( defaultWallMaterial );
-					group.Indices.Add( floorIndex );
-					group.Indices.Add( nextFloorIndex );
-					group.Indices.Add( roofIndex );
+					group.Indices.Add( floorP0 );
+					group.Indices.Add( floorP1 );
+					group.Indices.Add( roofP0 );
 
-					group.Indices.Add( nextFloorIndex );
-					group.Indices.Add( nextRoofIndex );
-					group.Indices.Add( roofIndex );
+					group.Indices.Add( floorP1 );
+					group.Indices.Add( roofP1 );
+					group.Indices.Add( roofP0 );
 				}
 
 				GenerateConvexPolygonTriIndices( obstaclePoly, roofIndexMap, groupsBuilder, defaultObstacleMaterial );
@@ -408,7 +427,11 @@ namespace Poc0.LevelEditor.Core.Geometry
 
 		private static Vertex WallVertex( Point3 pt, Vector3 normal )
 		{
-			return new Vertex( pt, normal, );
+			//	TODO: AP: Better uv generation
+			float u = pt.X / 10;
+			float v = pt.Y / 10;
+
+			return new Vertex( pt, normal, new Point2( u, v ) );
 		}
 
 		private static int AddVertex( ICollection< Vertex > vertices, Vertex vertex )

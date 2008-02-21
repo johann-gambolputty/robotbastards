@@ -9,6 +9,28 @@
       <object type="Poc0.LevelEditor.Core.Geometry.Material" property="Materials">
         <parameters>
           <string value="Default Floor"/>
+          <location value="Graphics\Effects\textured.cgfx"/>
+        </parameters>
+      </object>
+
+      <object type="Poc0.LevelEditor.Core.Geometry.Material" property="Materials">
+        <parameters>
+          <string value="Default Obstacle"/>
+          <location value="Graphics\Effects\textured.cgfx"/>
+        </parameters>
+      </object>
+
+      <object type="Poc0.LevelEditor.Core.Geometry.Material" property="Materials">
+        <parameters>
+          <string value="Default Wall"/>
+          <location value="Graphics\Effects\textured.cgfx"/>
+        </parameters>
+      </object>
+    
+    <!--
+      <object type="Poc0.LevelEditor.Core.Geometry.Material" property="Materials">
+        <parameters>
+          <string value="Default Floor"/>
           <location value="Graphics\Effects\perPixelTexturedShadowed.cgfx"/>
         </parameters>
       </object>
@@ -26,6 +48,7 @@
           <location value="Graphics\Effects\perPixelTexturedShadowed.cgfx"/>
         </parameters>
       </object>
+    -->
     
   </object>
 
