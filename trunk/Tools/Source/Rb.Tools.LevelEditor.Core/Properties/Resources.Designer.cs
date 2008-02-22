@@ -97,6 +97,15 @@ namespace Rb.Tools.LevelEditor.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to build runtime scene.
+        /// </summary>
+        internal static string FailedToBuildScene {
+            get {
+                return ResourceManager.GetString("FailedToBuildScene", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to export scene to file &quot;{0}&quot;.
         /// </summary>
         internal static string FailedToExportScene {

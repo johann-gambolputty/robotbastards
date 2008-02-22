@@ -104,6 +104,15 @@ namespace Poc0.LevelEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to build runtime scene - can&apos;t run game.
+        /// </summary>
+        internal static string FailedToBuildSceneCantRunGame {
+            get {
+                return ResourceManager.GetString("FailedToBuildSceneCantRunGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to export scene to file &quot;{0}&quot;.
         /// </summary>
         internal static string FailedToExportScene {

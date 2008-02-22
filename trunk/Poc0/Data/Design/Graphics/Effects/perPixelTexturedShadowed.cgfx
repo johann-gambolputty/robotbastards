@@ -150,6 +150,7 @@ technique NormalTechnique
 {
 	pass
 	{
+		LightingEnable			= false;
 		DepthMask				= true;
 		FrontFace				= CW;
 		DepthFunc				= LEqual;

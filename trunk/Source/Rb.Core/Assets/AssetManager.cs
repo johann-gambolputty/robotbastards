@@ -21,6 +21,20 @@ namespace Rb.Core.Assets
 		#region Loaders
 
 		/// <summary>
+		/// Clears all asset caches
+		/// </summary>
+		public void ClearAllCaches( )
+		{
+			foreach ( IAssetLoader loader in Loaders )
+			{
+				if ( loader.Cache != null )
+				{
+					loader.Cache.Clear( );
+				}
+			}
+		}
+
+		/// <summary>
 		/// Gets the currently available loaders
 		/// </summary>
 		public IEnumerable< IAssetLoader > Loaders

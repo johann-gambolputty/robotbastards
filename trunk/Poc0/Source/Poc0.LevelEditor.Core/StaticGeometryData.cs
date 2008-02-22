@@ -25,6 +25,7 @@ namespace Poc0.LevelEditor.Core
 
 			data.Texture = CreateDefaultTexture( "DefaultWallTexture" );
 			data.Technique = CreateDefaultTechnique( @"Graphics\Effects\perPixelTexturedShadowed.cgfx" );
+		//	data.Technique = CreateDefaultTechnique( @"Graphics\Effects\textured.cgfx" );
 
 			return data;
 		}
@@ -38,6 +39,7 @@ namespace Poc0.LevelEditor.Core
 			
 			data.Texture = CreateDefaultTexture( "DefaultFloorTexture" );
 			data.Technique = CreateDefaultTechnique( @"Graphics\Effects\perPixelTexturedShadowed.cgfx" );
+		//	data.Technique = CreateDefaultTechnique( @"Graphics\Effects\textured.cgfx" );
 			return data;
 		}
 
