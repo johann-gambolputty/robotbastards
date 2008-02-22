@@ -1,5 +1,4 @@
 using System;
-using System.Windows.Forms;
 using Crownwood.Magic.Docking;
 using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.Geometry;
@@ -33,7 +32,7 @@ namespace Poc0.LevelEditor
 		{
 			base.InitializeDockingControls( );
 
-			m_EditorControlsContent = DockingManager.Contents.Add( new EditorControls( ), Properties.Resources.EditorToolbox );
+			m_EditorControlsContent = DockingManager.Contents.Add( new EditorControls( ), Resources.EditorToolbox );
 			//	NOTE: AP: Removed game view for now - it was screwing up pick ray calculation in Camera3 (game view viewport used occasionally)
 			//m_GameViewContent = DockingManager.Contents.Add( new GameViewControl( ), Properties.Resources.EditorToolbox );
 			//DockingManager.AddContentToZone( m_GameViewContent, LogDisplayContent.ParentWindowContent.ParentZone, 0 );
@@ -154,11 +153,21 @@ namespace Poc0.LevelEditor
 
 		private void OnGameClicked( object sender, EventArgs args )
 		{
-			Scene runtimeScene = CreateNewRuntimeScene( );
+			Scene runtimeScene;
+			try
+			{
+				runtimeScene = CreateNewRuntimeScene( );
+			}
+			catch ( Exception ex )
+			{
+				AppLog.Exception( ex, "Error creating runtime scene" );
+				ErrorMessageBox.Show( this, Resources.FailedToBuildSceneCantRunGame );
+				return;
+			}
 
 			if ( !SceneExporter.Instance.Export( runtimeScene ) )
 			{
-				ErrorMessageBox.Show( this, Properties.Resources.ExportFailedCantRunGame );
+				ErrorMessageBox.Show( this, Resources.ExportFailedCantRunGame );
 				return;
 			}
 
@@ -182,13 +191,16 @@ namespace Poc0.LevelEditor
 
 			try
 			{
+				//	Make sure that all assets are loaded afresh
+				AssetManager.Instance.ClearAllCaches( );
+
 				GameViewForm gameForm = new GameViewForm( setup );
 				gameForm.ShowDialog( this );
 			}
 			catch ( Exception ex )
 			{
-				AppLog.Exception( ex, "Game threw an exception" );
-				ErrorMessageBox.Show( this, Properties.Resources.GameUnhandledException );
+				AppLog.Exception( ex, "Game threw an unhandled exception" );
+				ErrorMessageBox.Show( this, Resources.GameUnhandledException );
 			}
 
 			//	Re-enable continuous rendering on the main display

@@ -133,6 +133,9 @@
   <data name="ExportFailedCantRunGame" xml:space="preserve">
     <value>Scene not exported - can't run game</value>
   </data>
+  <data name="FailedToBuildSceneCantRunGame" xml:space="preserve">
+    <value>Failed to build runtime scene - can't run game</value>
+  </data>
   <data name="FailedToExportScene" xml:space="preserve">
     <value>Failed to export scene to file "{0}"</value>
   </data>

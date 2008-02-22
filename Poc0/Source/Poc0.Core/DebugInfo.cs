@@ -8,6 +8,11 @@ namespace Poc0.Core
 	/// </summary>
 	public static class DebugInfo
 	{
+		public delegate void DebugInfoChangedDelegate( );
+
+		public static event DebugInfoChangedDelegate DebugInfoChanged;
+
+
 		#region Performance information
 
 		/// <summary>
@@ -17,7 +22,11 @@ namespace Poc0.Core
 		public static bool ShowFps
 		{
 			get { return m_ShowFps; }
-			set { m_ShowFps = value; }
+			set
+			{
+				m_ShowFps = value;
+				OnDebugInfoChanged( );
+			}
 		}
 
 		/// <summary>
@@ -27,7 +36,11 @@ namespace Poc0.Core
 		public static bool ShowMemoryWorkingSet
 		{
 			get { return m_ShowWorkingMem; }
-			set { m_ShowWorkingMem = value; }
+			set
+			{
+				m_ShowWorkingMem = value;
+				OnDebugInfoChanged( );
+			}
 		}
 
 		/// <summary>
@@ -37,7 +50,11 @@ namespace Poc0.Core
 		public static bool ShowMemoryPeakWorkingSet
 		{
 			get { return m_ShowPeakWorkingMem; }
-			set { m_ShowPeakWorkingMem = value; }
+			set
+			{
+				m_ShowPeakWorkingMem = value;
+				OnDebugInfoChanged( );
+			}
 		}
 
 		#endregion
@@ -51,7 +68,25 @@ namespace Poc0.Core
 		public static bool ShowSignposts
 		{
 			get { return m_ShowSignposts; }
-			set { m_ShowSignposts = value; }
+			set
+			{
+				m_ShowSignposts = value;
+				OnDebugInfoChanged( );
+			}
+		}
+
+		/// <summary>
+		/// Shows/hides debug information about lights
+		/// </summary>
+		[Category( "Objects" )]
+		public static bool ShowLights
+		{
+			get { return m_ShowLights; }
+			set
+			{
+				m_ShowLights = value;
+				OnDebugInfoChanged( );
+			}
 		}
 		
 		/// <summary>
@@ -61,7 +96,11 @@ namespace Poc0.Core
 		public static bool ShowEntityNames
 		{
 			get { return m_ShowEntityNames; }
-			set { m_ShowEntityNames = value; }
+			set
+			{
+				m_ShowEntityNames = value;
+				OnDebugInfoChanged( );
+			}
 		}
 
 		/// <summary>
@@ -71,7 +110,11 @@ namespace Poc0.Core
 		public static bool ShowEntityBounds
 		{
 			get { return m_ShowEntityBounds; }
-			set { m_ShowEntityBounds = value; }
+			set
+			{
+				m_ShowEntityBounds = value;
+				OnDebugInfoChanged( );
+			}
 		}
 
 		#endregion
@@ -87,8 +130,20 @@ namespace Poc0.Core
 		private static bool m_ShowPeakWorkingMem;
 
 		private static bool m_ShowSignposts;
+		private static bool m_ShowLights;
 		private static bool m_ShowEntityBounds;
 		private static bool m_ShowEntityNames;
+
+		/// <summary>
+		/// Raises the DebugInfoChanged event
+		/// </summary>
+		private static void OnDebugInfoChanged( )
+		{
+			if ( DebugInfoChanged != null )
+			{
+				DebugInfoChanged( );
+			}
+		}
 
 		#endregion
 	}

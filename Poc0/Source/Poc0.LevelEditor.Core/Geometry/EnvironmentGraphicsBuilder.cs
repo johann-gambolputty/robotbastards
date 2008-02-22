@@ -425,15 +425,6 @@ namespace Poc0.LevelEditor.Core.Geometry
 			*/
 		}
 
-		private static Vertex WallVertex( Point3 pt, Vector3 normal )
-		{
-			//	TODO: AP: Better uv generation
-			float u = pt.X / 10;
-			float v = pt.Y / 10;
-
-			return new Vertex( pt, normal, new Point2( u, v ) );
-		}
-
 		private static int AddVertex( ICollection< Vertex > vertices, Vertex vertex )
 		{
 			int index = vertices.Count;

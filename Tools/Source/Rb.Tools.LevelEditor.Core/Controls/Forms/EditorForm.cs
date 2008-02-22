@@ -13,6 +13,7 @@ using Rb.Log;
 using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core.Actions;
 using Rb.Tools.LevelEditor.Core.EditModes;
+using Rb.Tools.LevelEditor.Core.Properties;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
 
@@ -239,12 +240,26 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		public Scene CreateNewRuntimeScene( )
 		{
 			Scene scene = new Scene( );
-			PopulateRuntimeScene( scene );
+			try
+			{
+				PopulateRuntimeScene( scene );
+			}
+			catch ( Exception ex )
+			{
+				throw new ApplicationException( "Failed to populate runtime scene", ex );
+			}
 
 			IEnumerable< IObjectEditor > editors = EditorState.Instance.CurrentScene.Objects.GetAllOfType< IObjectEditor >( );
 			foreach ( IObjectEditor editor in editors )
 			{
-				editor.Build( scene );
+				try
+				{
+					editor.Build( scene );
+				}
+				catch ( Exception ex )
+				{
+					throw new ApplicationException( "Failed to populate runtime scene", ex );	
+				}
 			}
 
 			return scene;
@@ -438,7 +453,17 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 
 		private void exportToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Scene runtimeScene = CreateNewRuntimeScene( );
+			Scene runtimeScene;
+			try
+			{
+				runtimeScene = CreateNewRuntimeScene( );
+			}
+			catch ( Exception ex )
+			{
+				AppLog.Exception( ex, "Failed to build runtime scene" );
+				ErrorMessageBox.Show( this, Resources.FailedToBuildScene );
+				return;
+			}
 			SceneExporter.Instance.Export( runtimeScene );
 		}
 
