@@ -1,4 +1,5 @@
 using System;
+using Poc0.Core.Environment;
 using Rb.Core.Assets;
 using Rb.Core.Components;
 using Rb.Core.Maths;
@@ -105,6 +106,7 @@ namespace Poc0.Core.Objects
 		/// <param name="scene">Scene object</param>
         public virtual void AddedToScene( Scene scene )
         {
+			m_Scene = scene;
 			IUpdateService updates = scene.GetService< IUpdateService >( );
 			if ( updates == null )
 			{
@@ -121,6 +123,8 @@ namespace Poc0.Core.Objects
 		/// <param name="scene">Scene object</param>
 		public virtual void RemovedFromScene( Scene scene )
 		{
+			m_Scene = null;
+
 			//	Unsubscribe from the update clock
 			scene.GetService< IUpdateService >( )[ "updateClock" ].Unsubscribe( Update );
 		}
@@ -136,7 +140,19 @@ namespace Poc0.Core.Objects
 		[Dispatch]
 		public void HandleMovementRequest( MovementXzRequest request )
 		{
-			Travel.EndPosition += new Vector3( request.DeltaX, 0, request.DeltaZ );
+			Environment.Environment env = m_Scene.Objects.GetFirstOfType< Environment.Environment >( );
+			IEnvironmentCollisions collisions = env.Collisions;
+
+			Vector3 move = new Vector3( request.DeltaX, 0, request.DeltaZ );
+			Collision col = collisions.CheckMovement( Travel.EndPosition, move );
+			if ( col == null )
+			{
+				Travel.EndPosition += move;
+			}
+			else
+			{
+				Travel.EndPosition = col.CollisionPoint;
+			}
 		}
 
 		/// <summary>
@@ -178,6 +194,7 @@ namespace Poc0.Core.Objects
 
 		#region Private members
 
+		private Scene m_Scene;
 		private readonly Matrix44 m_Frame = new Matrix44( );
 		private readonly Frame3Interpolator m_Travel = new Frame3Interpolator( );
 		private string m_Name = "Bob";

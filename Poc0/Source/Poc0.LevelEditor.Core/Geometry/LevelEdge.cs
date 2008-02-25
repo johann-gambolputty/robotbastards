@@ -155,6 +155,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 		}
 
 		#endregion
+
 		#region Private members
 
 		private LevelEdge 				m_PrevEdge;

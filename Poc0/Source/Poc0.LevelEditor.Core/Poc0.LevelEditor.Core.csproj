@@ -57,7 +57,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Csg.cs" />
+    <Compile Include="EditModes\CircleBrushEditMode.cs" />
     <Compile Include="Geometry\Csg2.cs" />
+    <Compile Include="Geometry\EnvironmentCollisionsBuilder.cs" />
     <Compile Include="Geometry\FloorProperties.cs" />
     <Compile Include="Geometry\GeometryProperties.cs" />
     <Compile Include="Geometry\ILevelGeometryObject.cs" />
@@ -72,7 +74,7 @@
     <Compile Include="Geometry\ObstacleProperties.cs" />
     <Compile Include="Geometry\WallProperties.cs" />
     <Compile Include="UiPolygon.cs" />
-    <Compile Include="EditModes\UserBrushEditMode.cs" />
+    <Compile Include="EditModes\PolygonBrushEditMode.cs" />
     <Compile Include="EditModes\DefinePolygonEditMode.cs" />
     <Compile Include="Geometry\EnvironmentGraphicsBuilder.cs" />
     <Compile Include="Objects\PlayerStartEditor.cs" />

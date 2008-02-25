@@ -24,10 +24,22 @@ namespace Poc0.LevelEditor.Core.Geometry
 		/// </summary>
 		/// <param name="vertices">Polygon vertices</param>
 		/// <param name="edges">Polygon edges</param>
-		public LevelPolygon( LevelVertex[] vertices, LevelEdge[] edges )
+		public LevelPolygon( LevelVertex[] vertices, LevelEdge[] edges, bool reversed )
 		{
-			m_Vertices = vertices;
-			m_Edges = edges;
+			m_Vertices	= vertices;
+			m_Edges		= edges;
+			m_Reversed	= reversed;
+		}
+
+		/// <summary>
+		/// Returns true if this polygon is reversed (edges point outwards)
+		/// </summary>
+		/// <remarks>
+		/// A reversed polygon is used to define the level border
+		/// </remarks>
+		public bool Reversed
+		{
+			get { return m_Reversed; }
 		}
 
 		/// <summary>
@@ -149,6 +161,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 
 		#region Private members
 
+		private readonly bool				m_Reversed;
 		private bool 						m_Highlighted;
 		private bool 						m_Selected;
 		private LevelVertex[]				m_Vertices;

@@ -289,9 +289,8 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public float DotPerp( Vector2 vec )
 		{
-			return m_X * vec.m_Y - m_Y * m_X;
+			return m_X * vec.m_Y - m_Y * vec.m_X;
 		}
-
 
 		/// <summary>
 		/// Makes this vector perpendicular to itself

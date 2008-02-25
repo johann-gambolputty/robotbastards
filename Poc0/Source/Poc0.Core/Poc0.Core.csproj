@@ -53,6 +53,8 @@
     <Compile Include="Controllers\EntityCommands.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="DebugInfo.cs" />
+    <Compile Include="Environment\EnvironmentCollisions.cs" />
+    <Compile Include="Environment\IEnvironmentCollisions.cs" />
     <Compile Include="Environment\IEnvironmentGraphics.cs" />
     <Compile Include="Objects\Body.cs" />
     <Compile Include="Objects\Entity.cs" />
