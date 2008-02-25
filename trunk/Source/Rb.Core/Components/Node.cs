@@ -40,6 +40,11 @@ namespace Rb.Core.Components
 		/// <param name="obj">Child object to add</param>
 		public virtual void AddChild( object obj )
 		{
+			if ( obj == null )
+			{
+				throw new ArgumentNullException( "obj" );
+			}
+
 			m_Children.Add( obj );
 			if ( OnChildAdded != null )
 			{
@@ -58,6 +63,11 @@ namespace Rb.Core.Components
 		/// <param name="obj">Child object to remove</param>
 		public virtual void RemoveChild( object obj )
 		{
+			if ( obj == null )
+			{
+				throw new ArgumentNullException( "obj" );
+			}
+
 			m_Children.Remove( obj );
 			if ( OnChildRemoved != null )
 			{

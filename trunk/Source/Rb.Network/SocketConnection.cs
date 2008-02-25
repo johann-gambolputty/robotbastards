@@ -100,6 +100,7 @@ namespace Rb.Network
 			if ( IsConnected )
 			{
 				//	TODO: AP: Use a network stream? Requires stream sockets
+				//	TODO: AP: Cache messages in a memory stream?
 				MemoryStream messageStore = new MemoryStream( );
 				m_Formatter.Serialize( messageStore, msg );
 				messageStore.Close( );
@@ -156,7 +157,7 @@ namespace Rb.Network
 			}
 		}
 
-		private IFormatter m_Formatter = new BinaryFormatter( );
+		private readonly IFormatter m_Formatter = new BinaryFormatter( );
 
 		#endregion
 

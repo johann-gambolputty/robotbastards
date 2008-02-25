@@ -15,6 +15,42 @@ namespace Poc0.LevelEditor.Core.Geometry
 		#region Public members
 
 		/// <summary>
+		/// Builds a BSP tree for an expanded set of level polygons
+		/// </summary>
+		public static Node BuildExpansion( IEnumerable< LevelPolygon > polygons, float distance )
+		{
+			Node rootNode = null;
+			IList< Edge > allEdges = new List<Edge>( );
+			IList< Edge > edges = new List<Edge>( );
+			foreach ( LevelPolygon polygon in polygons )
+			{
+				if ( rootNode == null )
+				{
+					AddExpandedEdges( polygon.Edges, allEdges, distance, polygon.Reversed );
+					rootNode = BuildNode( allEdges );
+				}
+				else
+				{
+					IList< Edge > tempEdges = new List< Edge >( );
+
+					//	TODO: AP: Could cache edge list and BSP node in level polygon
+					edges.Clear( );
+					AddExpandedEdges( polygon.Edges, edges, distance, polygon.Reversed );
+					Node polyNode = BuildNode( edges );
+
+					ClipEdges( rootNode, edges, true, false, tempEdges );
+					ClipEdges( polyNode, allEdges, true, false, tempEdges );
+
+					rootNode = BuildNode( tempEdges );
+					allEdges = tempEdges;
+				}
+				
+			}
+
+			return rootNode;
+		}
+
+		/// <summary>
 		/// Builds a BSP tree for a set of level polygons
 		/// </summary>
 		public static Node Build( IEnumerable< LevelPolygon > polygons )
@@ -145,8 +181,12 @@ namespace Poc0.LevelEditor.Core.Geometry
 			/// <summary>
 			/// Get the start point of the edge
 			/// </summary>
+			/// <remarks>
+			/// Expanded edge generation requires this property to be writable
+			/// </remarks>
 			public Point2 Start
 			{
+				set { m_Start = value; }
 				get { return m_Start; }
 			}
 
@@ -166,7 +206,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 				get { return m_IsDoubleSided; }
 			}
 
-			private readonly Point2		m_Start;
+			private Point2				m_Start;
 			private readonly Point2		m_End;
 			private readonly bool		m_IsDoubleSided;
 			private readonly LevelEdge	m_SourceEdge;
@@ -340,6 +380,88 @@ namespace Poc0.LevelEditor.Core.Geometry
 			foreach ( LevelEdge sourceEdge in sourceEdges )
 			{
 				edges.Add( new Edge( sourceEdge ) );
+			}
+		}
+
+		private static Vector2 EdgeNormal( LevelEdge edge, bool reverse )
+		{
+			if ( !reverse )
+			{
+				return ( edge.End.Position - edge.Start.Position ).MakePerpNormal( );
+			}
+			return ( edge.Start.Position - edge.End.Position ).MakePerpNormal( );
+		}
+
+		/// <summary>
+		/// Addges edges from a LevelEdge list to an Edge list. Pushes the edges out to a given distance, and adds a chamfer
+		/// </summary>
+		private static void AddExpandedEdges( LevelEdge[] sourceEdges, IList< Edge > edges, float distance, bool reverse )
+		{
+			float sgnDistance = ( reverse ? distance : -distance );
+			Vector2 curNormal = EdgeNormal( sourceEdges[ 0 ], reverse );
+			Point2 newStartPt = sourceEdges[ 0 ].Start.Position + ( curNormal * sgnDistance );
+
+
+			for ( int sourceEdgeIndex = 0; sourceEdgeIndex < sourceEdges.Length; ++sourceEdgeIndex )
+			{
+				LevelEdge sourceEdge = sourceEdges[ sourceEdgeIndex ];
+				LevelEdge nextSourceEdge = sourceEdges[ ( sourceEdgeIndex + 1 ) % sourceEdges.Length ];
+				Vector2 nextNormal = EdgeNormal( nextSourceEdge, reverse );
+
+				//	Calculate the chamfer point, or edge meeting point
+				Point2 chPos = sourceEdge.End.Position + ( ( curNormal + nextNormal ).MakeNormal( ) * sgnDistance );
+				
+				float pdp = curNormal.DotPerp( nextNormal );
+			//	if ( reverse ? pdp > -0.001f : pdp < 0.001f )
+				if ( pdp > -0.001f )
+				{
+					//	Facing edges - no chamfer needed
+					// x---V---x
+					// ........|
+					//        .<
+					//        .|
+					//        .x	(dots indicate new edges)
+
+					//	Add expanded edge
+					Edge edge = new Edge( newStartPt, chPos, sourceEdge.IsDoubleSided, sourceEdge );
+					edges.Add( edge );
+
+					newStartPt = chPos;
+
+					//	If this is the last edge, then reset the start position of the first edge
+					if ( sourceEdgeIndex == ( sourceEdges.Length - 1 ) )
+					{
+						edges[ 0 ].Start = chPos;
+					}
+				}
+				else
+				{
+					//	Non-facing edges - create chamfer
+					// ..........    
+					// x---^---x.
+					//         |.
+					//         >.
+					//         |.
+					//         x.	(dots indicate new edges)
+
+					//	Calculate expanded edge end point
+					Point2 exEnd = sourceEdge.End.Position + ( curNormal * sgnDistance );
+
+					//	Add expanded edge
+					Edge edge = new Edge( newStartPt, exEnd, sourceEdge.IsDoubleSided, sourceEdge );
+					edges.Add( edge );
+					
+					//	Add chamfer edge joining the end of the current edge to the chamfer point
+					Edge chEdge = new Edge( exEnd, chPos, sourceEdge.IsDoubleSided, sourceEdge );
+					edges.Add( chEdge );
+
+					//	Add chamfer edge joining the chamfer point to the start of the next edge
+					newStartPt = nextSourceEdge.Start.Position + ( nextNormal * sgnDistance );
+					chEdge = new Edge( chPos, newStartPt, nextSourceEdge.IsDoubleSided, nextSourceEdge );
+					edges.Add( chEdge );
+				}
+
+				curNormal = nextNormal;
 			}
 		}
 

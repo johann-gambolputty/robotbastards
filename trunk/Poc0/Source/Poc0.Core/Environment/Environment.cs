@@ -1,6 +1,5 @@
 using System;
 using Rb.Core.Components;
-using Rb.Rendering;
 
 namespace Poc0.Core.Environment
 {
@@ -11,6 +10,23 @@ namespace Poc0.Core.Environment
 	public class Environment : Component
 	{
 		#region Public members
+
+		public IEnvironmentCollisions Collisions
+		{
+			get { return m_Collisions; }
+			set
+			{
+				if ( m_Collisions != null )
+				{
+					RemoveChild( m_Collisions );
+				}
+				m_Collisions = value;
+				if ( m_Collisions != null )
+				{
+					AddChild( m_Collisions );
+				}
+			}
+		}
 
 		public IEnvironmentGraphics Graphics
 		{
@@ -33,6 +49,7 @@ namespace Poc0.Core.Environment
 
 		#region Private stuff
 
+		private IEnvironmentCollisions m_Collisions;
 		private IEnvironmentGraphics m_Graphics;
 
 		#endregion

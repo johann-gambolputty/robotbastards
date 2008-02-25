@@ -10,22 +10,16 @@ namespace Poc0.LevelEditor.Core.EditModes
 	/// <summary>
 	/// Performs a CSG operation
 	/// </summary>
-	public class UserBrushEditMode : DefinePolygonEditMode
+	public class PolygonBrushEditMode : DefinePolygonEditMode
 	{
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		/// <param name="operation">CSG operation to perform with the brush</param>
-		public UserBrushEditMode( Csg.Operation operation )
+		public PolygonBrushEditMode( LevelGeometry level )
 		{
-			m_LevelGeometry = LevelGeometry.FromScene( EditorState.Instance.CurrentScene );
-			if ( m_LevelGeometry == null )
-			{
-				throw new InvalidOperationException( "Expected a LevelGeometry object to be present in the scene" );
-			}
-			m_Operation = operation;
+			m_LevelGeometry = level;
 		}
-
+		/*
 		/// <summary>
 		/// Starts this edit mode
 		/// </summary>
@@ -43,6 +37,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 		//	m_LevelGeometry.ShowFlat = false;
 			base.Stop( );
 		}
+		*/
 
 		/// <summary>
 		/// Returns the input description of this edit mode
@@ -57,15 +52,6 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 				return string.Format( Properties.Resources.UserBrushInputs, addPoint, closePoly, clearPoly );
 			}
-		}
-
-		/// <summary>
-		/// Sets/gets the current CSG operation that will be applied when the defined polygon is closed
-		/// </summary>
-		public Csg.Operation Operation
-		{
-			get { return m_Operation; }
-			set { m_Operation = value; }
 		}
 
 		/// <summary>
@@ -84,7 +70,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 				UiPolygon brush = new UiPolygon( "", points2 );
 			//	m_LevelGeometry.Csg.Combine( m_Operation, brush );
-				m_LevelGeometry.Add( brush, false );
+				m_LevelGeometry.Add( brush, false, false );
 				AppLog.Info( "Combined brush with current level geometry" );
 			}
 			catch ( Exception ex )
@@ -95,6 +81,5 @@ namespace Poc0.LevelEditor.Core.EditModes
 		}
 
 		private readonly LevelGeometry m_LevelGeometry;
-		private Csg.Operation m_Operation;
 	}
 }

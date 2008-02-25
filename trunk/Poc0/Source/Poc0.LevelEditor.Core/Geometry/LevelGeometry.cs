@@ -70,18 +70,18 @@ namespace Poc0.LevelEditor.Core.Geometry
 					false
 				);
 
-			Add( bounds, false );
+			Add( bounds, false, true );
 		}
 
 		/// <summary>
 		/// Converts a UI polygon to a <see cref="LevelPolygon"/>, adding the result to the level geometry
 		/// </summary>
-		public void Add( UiPolygon brush, bool doubleSided )
+		public void Add( UiPolygon brush, bool doubleSided, bool reversed )
 		{
 			LevelVertex[] vertices = new LevelVertex[ brush.Points.Length ];
 			LevelEdge[] edges = new LevelEdge[ brush.Points.Length ];
 
-			LevelPolygon polygon = new LevelPolygon( vertices, edges );
+			LevelPolygon polygon = new LevelPolygon( vertices, edges, reversed );
 
 			for ( int vertexIndex = 0; vertexIndex < vertices.Length; ++vertexIndex )
 			{
@@ -125,7 +125,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 			polygon.Changed += OnPolygonChanged;
 
 			//	Force rebuild of display cache
-			m_DisplayCache = null;
+			DestroyDisplayCache( );
 		}
 
 		/// <summary>
@@ -144,7 +144,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 			m_Polygons.Remove( polygon );
 
 			//	Force rebuild of display cache
-			m_DisplayCache = null;
+			DestroyDisplayCache( );
 		}
 
 		/// <summary>
@@ -184,7 +184,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 			}
 
 			//	Force rebuild of display cache
-		//	m_DisplayCache = null;
+		//	DestroyDisplayCache( );
 			/*
 			LevelEdge prevEdge = ( vertex.EndEdge == null ) ? null : vertex.EndEdge.PreviousEdge;
 			LevelEdge nextEdge = ( vertex.StartEdge == null ) ? null : vertex.StartEdge.NextEdge;
@@ -378,7 +378,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 
 		private void OnChanged( )
 		{
-			m_DisplayCache = null;
+			DestroyDisplayCache( );
 			if ( ObjectChanged != null )
 			{
 				ObjectChanged(this, null);
@@ -458,10 +458,10 @@ namespace Poc0.LevelEditor.Core.Geometry
 				return;
 			}
 
-			m_Root = Csg2.Build( m_Polygons );
+			m_Root = Csg2.BuildExpansion( m_Polygons, 1.0f );
 
 			m_FloorDisplayPolygons = new List< LevelGeometryTesselator.Polygon >( );
-			m_ObstacleDisplayPolygons = new List<LevelGeometryTesselator.Polygon>( );
+			m_ObstacleDisplayPolygons = new List< LevelGeometryTesselator.Polygon >( );
 
 			LevelGeometryTesselator tess = new LevelGeometryTesselator( );
 			LevelGeometryTesselator.Polygon poly = tess.CreateBoundingPolygon( -100, -100, 100, 100 );
@@ -473,6 +473,21 @@ namespace Poc0.LevelEditor.Core.Geometry
 			Graphics.Draw.StartCache( );
 			RenderGeometry( );
 			m_DisplayCache = Graphics.Draw.StopCache( );
+		}
+
+		/// <summary>
+		/// Destroys the current display cache
+		/// </summary>
+		private void DestroyDisplayCache( )
+		{
+			if ( m_DisplayCache != null )
+			{
+				if ( m_DisplayCache is IDisposable )
+				{
+					( ( IDisposable )m_DisplayCache ).Dispose( );
+				}
+				m_DisplayCache = null;
+			}
 		}
 
 		/// <summary>
@@ -532,7 +547,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 		/// </summary>
 		private void AddObstaclePolygon( LevelGeometryTesselator.Polygon poly, Csg2.Node node )
 		{
-			m_ObstacleDisplayPolygons.Add(poly);
+			m_ObstacleDisplayPolygons.Add( poly );
 			poly.LevelPolygon = node.Edge.SourceEdge.Polygon;
 		}
 
@@ -550,7 +565,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 		/// </summary>
 		public void Build( Scene scene )
 		{
-			//	TODO: AP: Make independent of rendering API 
+			//	TODO: AP: Make independent of rendering API (this creates an API-specific graphics object, that is serialized to the scene file)
 			//	Create the environment
 			Environment env = new Environment( );
 			IEnvironmentGraphics graphics = Graphics.Factory.Create< IEnvironmentGraphics >( );
@@ -558,8 +573,12 @@ namespace Poc0.LevelEditor.Core.Geometry
 
 			scene.Objects.Add( env );
 			
+			//	Build environment graphics
 			EnvironmentGraphicsBuilder builder = new EnvironmentGraphicsBuilder( 10 );
 			builder.Build( graphics, this );
+
+			//	Add collisions
+			env.Collisions = EnvironmentCollisionsBuilder.Build( this );
 		}
 
 		#endregion

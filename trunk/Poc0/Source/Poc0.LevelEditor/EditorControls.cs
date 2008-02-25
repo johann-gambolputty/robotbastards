@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
-using System.IO;
 using System.Windows.Forms;
 using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.EditModes;
+using Poc0.LevelEditor.Core.Geometry;
 using Rb.Core.Assets;
 using Rb.Core.Components;
 using Rb.Tools.LevelEditor.Core;
@@ -21,11 +21,6 @@ namespace Poc0.LevelEditor
 		{
 			InitializeComponent( );
 
-			foreach ( object csgOp in Enum.GetValues( typeof( Csg.Operation ) ) )
-			{
-				csgComboBox.Items.Add( csgOp );
-			}
-			csgComboBox.SelectedIndex = 0;
 
 			//	TODO: AP: Make directory traversal part of the location manager
 			ILocationManager locations = Rb.Core.Assets.Location.DetermineLocationManager( "Editor/Templates" );
@@ -52,7 +47,7 @@ namespace Poc0.LevelEditor
 			PopulateObjectTemplates( m_Templates );
 		}
 
-		private UserBrushEditMode m_CurrentEditMode;
+		private EditMode m_CurrentEditMode;
 		private readonly ArrayList m_Templates = new ArrayList( );
 		private static readonly RayCastOptions ms_PickOptions = new RayCastOptions( RayCastLayers.Grid | RayCastLayers.StaticGeometry );
 
@@ -82,30 +77,45 @@ namespace Poc0.LevelEditor
 			}
 		}
 
+		private static LevelGeometry LevelGeometry
+		{
+			get
+			{	
+				LevelGeometry level = LevelGeometry.FromScene( EditorState.Instance.CurrentScene );
+				if ( level == null )
+				{
+					throw new InvalidOperationException( "Expected a LevelGeometry object to be present in the scene" );
+				}
+				return level;
+			}
+		}
+
 		private void userBrushRadioButton_CheckedChanged( object sender, EventArgs e )
 		{
-			Csg.Operation csg = ( Csg.Operation )csgComboBox.SelectedItem;
-
-			m_CurrentEditMode = new UserBrushEditMode( csg );
+			m_CurrentEditMode = new PolygonBrushEditMode( LevelGeometry );
 			EditorState.Instance.AddEditMode( m_CurrentEditMode );
 		}
 
 		private void brushPage_Enter( object sender, EventArgs e )
 		{
-			Csg.Operation csg = ( Csg.Operation )csgComboBox.SelectedItem;
-
-			m_CurrentEditMode = new UserBrushEditMode( csg );
+			m_CurrentEditMode = new PolygonBrushEditMode( LevelGeometry );
 			EditorState.Instance.AddEditMode( m_CurrentEditMode );
 		}
 
-
-		private void csgComboBox_SelectedIndexChanged( object sender, EventArgs e )
+		private void circleBrushRadioButton_CheckedChanged( object sender, EventArgs e )
 		{
-			if ( m_CurrentEditMode != null )
+			m_CurrentEditMode = new CircleBrushEditMode( LevelGeometry, ( int )circleEdgeCountUpDown.Value );
+			EditorState.Instance.AddEditMode( m_CurrentEditMode );
+		}
+
+		private void circleEdgeCountUpDown_ValueChanged( object sender, EventArgs e )
+		{
+			CircleBrushEditMode circleEditMode = m_CurrentEditMode as CircleBrushEditMode;
+			if ( circleEditMode == null )
 			{
-				Csg.Operation csg = ( Csg.Operation )csgComboBox.SelectedItem;
-				m_CurrentEditMode.Operation = csg;
+				return;
 			}
+			circleEditMode.EdgeCount = ( int )circleEdgeCountUpDown.Value; 
 		}
 	}
 }
