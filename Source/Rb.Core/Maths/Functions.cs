@@ -4,6 +4,11 @@ namespace Rb.Core.Maths
 {
 	public static class Functions
 	{
+		public static float Pow( float x, float p )
+		{
+			return ( float )Math.Pow( x, p );
+		}
+
 		public static float Sqrt( float x )
 		{
 			return ( float )Math.Sqrt( x );

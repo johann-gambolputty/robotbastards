@@ -1,5 +1,9 @@
 using System;
 using System.Collections;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
+using Rb.Core.Assets;
 using TaoCg = Tao.Cg.Cg;
 
 namespace Rb.Rendering.OpenGl.Cg
@@ -34,13 +38,11 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// <summary>
 		/// Creates the effect, loading it from a .cgfx stream
 		/// </summary>
-		/// <param name="context">Handle to the CG context that created this effect</param>
-		/// <param name="input">Input stream</param>
-		/// <param name="inputSource">Input stream path</param>
-		public CgEffect( IntPtr context, System.IO.Stream input, string inputSource )
+		/// <param name="source">Asset source</param>
+		public CgEffect( IntPtr context, ISource source )
 		{
 			m_Context = context;
-			Load( input, inputSource );
+			Load( source );
 		}
 
 		#endregion
@@ -79,6 +81,9 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// Loads this effect from a .cgfx file
 		/// </summary>
 		/// <param name="path"> Path to the effect file </param>
+		/// <remarks>
+		/// Included files must be in the current working directory!
+		/// </remarks>
 		public void	Load( string path )
 		{
 			if ( !CreateFromHandle( TaoCg.cgCreateEffectFromFile( m_Context, path, null ) ) )
@@ -87,18 +92,99 @@ namespace Rb.Rendering.OpenGl.Cg
 			}
 		}
 
+		private static readonly Regex ms_IncludeRegex = new Regex
+			(
+				@"\#include ""(?<path>.*)"""
+			);
+
+		private static string OpenIncludePath( ISource source, string path )
+		{
+			ISource includeSource = source.GetRelativeSource( path );
+			if ( includeSource == null )
+			{
+				throw new FileNotFoundException( "Could not find include file", path );
+			}
+			using ( Stream stream = includeSource.Open( ) )
+			{
+				StreamReader reader = new StreamReader( stream );
+				string contents = reader.ReadToEnd( );
+
+				//	Recursively inline all includes
+				contents = InlineAllIncludes( includeSource, contents );
+				return contents;
+			}
+		}
+
+		private static int CountLines( string str, int start, int end )
+		{
+			int lines = 0;
+			for ( int index = start; index < end; ++index )
+			{
+				if ( str[ index ] == '\n' )
+				{
+					++lines;
+				}
+			}
+			return lines;
+		}
+
+		public static string InlineAllIncludes(ISource source, string cgCode)
+		{
+			Match match = ms_IncludeRegex.Match( cgCode );
+			if ( !match.Success )
+			{
+				return cgCode;
+			}
+
+			string sourcePath = source.Path.Replace( @"\", @"\\" );
+
+			StringBuilder sb = new StringBuilder( cgCode.Length );
+			int lastPos = 0;
+			int orgLine = 1;
+			for ( ; match.Success; match = match.NextMatch( ) )
+			{
+				Capture cap = match.Captures[ 0 ];
+				sb.Append( cgCode, lastPos, cap.Index - lastPos );
+				orgLine += CountLines( cgCode, lastPos, cap.Index );
+
+				string path = match.Groups[ "path" ].Value;
+				sb.AppendFormat( "#line 1 \"{0}\"\n", path );
+
+				string includeContents = OpenIncludePath( source, path );
+				sb.Append( includeContents );
+
+				sb.AppendFormat( "#line {0} \"{1}\"\n", orgLine, sourcePath );
+
+				lastPos = cap.Index + cap.Length;
+			}
+
+			sb.Append( cgCode, lastPos, cgCode.Length - lastPos );
+
+			return sb.ToString( );
+		}
+
 		/// <summary>
 		/// Loads this effect from a .cgfx stream
 		/// </summary>
-		/// <param name="input">Stream containing the .cgfx file</param>
-		/// <param name="inputSource">Input stream path</param>
-		public void Load( System.IO.Stream input, string inputSource )
+		/// <param name="source">Asset source</param>
+		public void Load( ISource source )
 		{
-			System.IO.StreamReader reader = new System.IO.StreamReader( input );
-			string str = reader.ReadToEnd( );
-			if ( !CreateFromHandle( TaoCg.cgCreateEffect( m_Context, str, null ) ) )
+			using ( Stream streamSource = source.Open( ) )
 			{
-				throw new ApplicationException( string.Format( "Unable to create CG effect from stream \"{0}\"\n{1}", inputSource, TaoCg.cgGetLastListing( m_Context ) ) );
+				StreamReader reader = new StreamReader( streamSource );
+				string str = reader.ReadToEnd( );
+
+				//	Replace any instances of "#include" with the actual file contents
+				//	(this is because CG doesn't appear to have a search path, and wouldn't be able
+				//	to handle, say, compressed file systems, databases, or other methods of retrieving assets)
+				str = InlineAllIncludes( source, str );
+
+				File.WriteAllText("c:\\temp\\effectDump.cgfx", str);
+
+				if ( !CreateFromHandle( TaoCg.cgCreateEffect( m_Context, str, null ) ) )
+				{
+					throw new ApplicationException( string.Format( "Unable to create CG effect from stream \"{0}\"\n{1}", source.Path, TaoCg.cgGetLastListing( m_Context ) ) );
+				}
 			}
 		}
 
