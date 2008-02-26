@@ -1,9 +1,12 @@
+using System;
 using Rb.Core.Maths;
 
 namespace Poc0.Core.Environment
 {
+	[Serializable]
 	public class EnvironmentCollisions : IEnvironmentCollisions
 	{
+		[Serializable]
 		public class Node
 		{
 			public Node( Point2 start, Point2 end )
@@ -21,6 +24,15 @@ namespace Poc0.Core.Environment
 			{
 				get { return m_Behind; }
 				set { m_Behind = value; }
+			}
+
+			public bool IsInside( Point3 pt )
+			{
+				if ( m_Plane.ClassifyPoint( pt.X, pt.Z, 0.01f ) == PlaneClassification.InFront )
+				{
+					return ( m_InFront == null ) || ( m_InFront.IsInside( pt ) );
+				}
+				return ( m_Behind != null ) && ( m_Behind.IsInside( pt ) );
 			}
 
 			public bool Check( Point2 start, Point2 end, float startT, float endT, ref float collisionT, ref Vector2 collisionNormal )
@@ -88,6 +100,11 @@ namespace Poc0.Core.Environment
 
 		#region IEnvironmentCollisions Members
 
+		public bool IsPointInObstacle( Point3 pt )
+		{
+			return ( m_Root == null ) ? false : !m_Root.IsInside( pt );
+		}
+
 		public Collision CheckMovement( Point3 pos,  Vector3 move )
 		{
 			if ( m_Root == null )
@@ -103,7 +120,8 @@ namespace Poc0.Core.Environment
 			{
 				return null;
 			}
-			return new Collision( pos + move * collisionT, new Vector3( collisionNormal.X, 0, collisionNormal.Y ), move.Length * collisionT );
+
+			return new Collision( pos + move * collisionT, new Vector3( collisionNormal.X, 0, collisionNormal.Y ), move.Length * collisionT, collisionT );
 		}
 
 		#endregion

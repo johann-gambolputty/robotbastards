@@ -71,7 +71,8 @@ namespace Rb.Core.Maths
 		public static Line2Intersection GetLinePlaneIntersection( Point2 start, Point2 end, Plane2 plane )
 		{
 			Vector2 vec = end - start;
-			vec.Normalise( );
+			float len = vec.Length;
+			vec /= len;
 
 			float startDot = plane.Normal.Dot( start );
 			float diffDot = plane.Normal.Dot( vec );
@@ -80,7 +81,7 @@ namespace Rb.Core.Maths
 			{
 				float t = ( startDot + plane.Distance ) / -diffDot;
 
-				if ( t >= 0 )
+				if ( ( t >= 0 ) && ( t <= len ) )
 				{
 					Line2Intersection result = new Line2Intersection( );
 					result.IntersectionPosition = start + ( vec * t );

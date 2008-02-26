@@ -12,7 +12,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 		/// </summary>
 		public static IEnvironmentCollisions Build( LevelGeometry level )
 		{
-			Csg2.Node srcNode = Csg2.BuildExpansion( level.ObstaclePolygons, 1.0f );
+			Csg2.Node srcNode = Csg2.BuildExpansion( level.ObstaclePolygons, 1.5f );
 
 			EnvironmentCollisions.Node node = Build( srcNode );
 			EnvironmentCollisions impl = new EnvironmentCollisions( node );
@@ -24,15 +24,16 @@ namespace Poc0.LevelEditor.Core.Geometry
 		/// </summary>
 		private static EnvironmentCollisions.Node Build( Csg2.Node srcNode )
 		{
-			EnvironmentCollisions.Node newNode = new EnvironmentCollisions.Node( srcNode.Edge.Start, srcNode.Edge.End );
+			//	Note: Source node edges and child node assignments are reversed, because the source BSP is built from obstacle polys, wheras we want the floor BSP...
+			EnvironmentCollisions.Node newNode = new EnvironmentCollisions.Node( srcNode.Edge.End, srcNode.Edge.Start );
 
 			if ( srcNode.InFront != null )
 			{
-				newNode.InFront = Build( srcNode.InFront );
+				newNode.Behind = Build( srcNode.InFront );
 			}
 			if ( srcNode.Behind != null )
 			{
-				newNode.Behind = Build( srcNode.Behind );
+				newNode.InFront = Build( srcNode.Behind );
 			}
 
 			return newNode;

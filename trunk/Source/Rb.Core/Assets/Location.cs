@@ -156,7 +156,8 @@ namespace Rb.Core.Assets
 		/// <returns>New source</returns>
 		public ISource GetRelativeSource( string path )
 		{
-			return new Location( this, path );
+			string baseDir = Directory ? Path : System.IO.Path.GetDirectoryName( Path );
+			return new Location( System.IO.Path.Combine( baseDir, path ) );
 		}
 
 		/// <summary>

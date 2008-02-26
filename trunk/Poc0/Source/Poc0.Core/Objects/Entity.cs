@@ -151,7 +151,25 @@ namespace Poc0.Core.Objects
 			}
 			else
 			{
-				Travel.EndPosition = col.CollisionPoint;
+				//	Slide...
+				Point3 stopPt = col.CollisionPoint + col.CollisionNormal * 0.01f;
+				Point3 slidePt = stopPt;
+				slidePt += col.CollisionNormal * 0.01f; // Push slightly away from the wall
+
+				Vector3 perpCollisionNormal = new Vector3( col.CollisionNormal.Z, col.CollisionNormal.Y, -col.CollisionNormal.X );
+
+				float dp = move.MakeNormal( ).Dot( perpCollisionNormal );
+				float mod = ( dp < 0 ) ? -Functions.Pow( -dp, 0.2f ) : Functions.Pow( dp, 0.5f );
+				slidePt += perpCollisionNormal * ( move.Length * ( 1 - col.T ) * mod );
+
+				if ( !collisions.IsPointInObstacle( slidePt ) )
+				{
+					Travel.EndPosition = slidePt;
+				}
+				else
+				{
+					Travel.EndPosition = stopPt;
+				}
 			}
 		}
 

@@ -43,6 +43,7 @@ OutputVertex VertexShader( InputVertex input )
 
 float4 FragmentShader( OutputVertex input ) : COLOR
 {
+	float4 t = tex2D( Texture0, input.m_Texture );
 	return tex2D( Texture1, input.m_Texture );
 }
 
