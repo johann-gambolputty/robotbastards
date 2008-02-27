@@ -1,49 +1,51 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using Poc0.LevelEditor.Core;
 using Rb.Core.Maths;
 using Rb.Rendering;
-using Rb.Tools.LevelEditor.Core;
-using Rb.Tools.LevelEditor.Core.EditModes;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
 using Graphics=Rb.Rendering.Graphics;
 
-namespace Poc0.LevelEditor.Core.EditModes
+namespace Poc0.LevelEditor.EditModes
 {
-	/// <summary>
-	/// Base class edit mode for defining polygonal areas
-	/// </summary>
-	public class DefinePolygonEditMode : EditMode, IRenderable
+	public abstract class EdgeListEditor : IEditor
 	{
 		/// <summary>
-		/// Raised when a polygon is closed
+		/// Delegate, used by the <see cref="EdgeListFinished"/> event
 		/// </summary>
-		public event Action< Point3[] > PolygonClosed;
+		/// <param name="points">Edge list points</param>
+		/// <param name="loop">If true, then the edge list is a closed loop</param>
+		public delegate void EdgeListFinishedDelegate( Point3[] points, bool loop );
+
+		/// <summary>
+		/// Raised when the current edge list is finished (by pressing return or closing the loop)
+		/// </summary>
+		public event EdgeListFinishedDelegate EdgeListFinished;
 
 		/// <summary>
 		/// Initialises this object
 		/// </summary>
-		public DefinePolygonEditMode( )
+		public EdgeListEditor( )
 		{
 			m_DrawEdge = Graphics.Draw.NewPen( Color.White, 2.0f );
 			m_DrawVertex = Graphics.Draw.NewBrush( Color.Red, Color.DarkRed );
 		}
 
 		/// <summary>
-		/// Gets the mouse buttons used by this edit mode
+		/// Gets a string describing the usage of this editor
 		/// </summary>
-		public override MouseButtons Buttons
+		public abstract string Description
 		{
-			get { return MouseButtons.Right; }
+			get;
 		}
 
 		/// <summary>
 		/// Binds to the specified control
 		/// </summary>
 		/// <param name="control">Control to bind to</param>
-		protected override void BindToControl( Control control )
+		public void BindToControl( Control control )
 		{
 			control.MouseMove += OnMouseMove;
 			control.MouseClick += OnMouseClick;
@@ -54,29 +56,11 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// Unbinds to the specified control
 		/// </summary>
 		/// <param name="control">Control to unbind from</param>
-		protected override void UnbindFromControl( Control control )
+		public void UnbindFromControl( Control control )
 		{
 			control.MouseMove -= OnMouseMove;
 			control.MouseClick -= OnMouseClick;
 			control.KeyDown -= OnKeyDown;
-		}
-
-		/// <summary>
-		/// Starts the edit mode
-		/// </summary>
-		public override void Start( )
-		{
-			EditorState.Instance.CurrentScene.Renderables.Add( this );
-			base.Start( );
-		}
-
-		/// <summary>
-		/// Stops the edit mode
-		/// </summary>
-		public override void Stop( )
-		{
-			EditorState.Instance.CurrentScene.Renderables.Remove( this );
-			base.Stop( );
 		}
 
 		#region IRenderable Implementation
@@ -100,9 +84,6 @@ namespace Poc0.LevelEditor.Core.EditModes
 			{
 				Graphics.Draw.Circle( m_DrawVertex, point, 0.5f );
 			}
-
-			//RenderFont font = RenderFonts.GetDefaultFont( DefaultFont.Debug );
-			//font.DrawText( 0, 0, Color.Black, "X: {0:F2} Y: {1:F2} Z: {2:F2}", m_CursorPoint.X, m_CursorPoint.Y, m_CursorPoint.Z );
 		}
 
 		#endregion
@@ -128,10 +109,9 @@ namespace Poc0.LevelEditor.Core.EditModes
 		}
 
 		/// <summary>
-		/// Called when a polygon is closed
+		/// Called when a edge list is finished
 		/// </summary>
-		/// <param name="polygon">Polygon points</param>
-		protected virtual void OnPolygonClosed( Point3[] polygon )
+		protected virtual void OnFinished( Point3[] points, bool loop )
 		{
 		}
 
@@ -144,12 +124,14 @@ namespace Poc0.LevelEditor.Core.EditModes
 		private readonly List< Point3 >	m_Points = new List< Point3 >( );
 		private Point3					m_CursorPoint;
 
+		protected static MouseButtons	ms_AddPointButton = MouseButtons.Right;
+
 		private static readonly RayCastOptions ms_PickOptions = new RayCastOptions( RayCastLayers.Grid );
 
 		/// <summary>
-		/// Point distance tolerance - the polygon is closed when the user adds a vertex this close to the first vertex
+		/// Point distance tolerance - the edge list is closed when the user adds a vertex this close to the first vertex
 		/// </summary>
-		private const float				CloseTolerance = 0.2f;
+		private const float CloseTolerance = 0.2f;
 
 		/// <summary>
 		/// Returns true if a point is close to the first point in the polygon
@@ -166,15 +148,15 @@ namespace Poc0.LevelEditor.Core.EditModes
 		}
 		
 		/// <summary>
-		/// Closes off the current polygon
+		/// Finishes the current edge list
 		/// </summary>
-		private void ClosePolygon( )
+		private void Finish( bool loop )
 		{
 			Point3[] points = m_Points.ToArray( );
-			OnPolygonClosed( points );
-			if ( PolygonClosed != null )
+			OnFinished( points, loop );
+			if ( EdgeListFinished != null )
 			{
-				PolygonClosed( points );
+				EdgeListFinished( points, loop );
 			}
 			m_Points.Clear( );
 		}
@@ -190,7 +172,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 			}
 			else if ( args.KeyCode == Keys.Return )
 			{
-				ClosePolygon( );
+				Finish( false );
 			}
 		}
 
@@ -213,11 +195,11 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// </summary>
 		private void OnMouseClick( object sender, MouseEventArgs args )
 		{
-			if ( args.Button == MouseButtons.Right )
+			if ( args.Button == ms_AddPointButton )
 			{
 				if ( IsOverFirstPoint( m_CursorPoint ) )
 				{
-					ClosePolygon( );
+					Finish( true );
 				}
 				else
 				{
@@ -228,7 +210,4 @@ namespace Poc0.LevelEditor.Core.EditModes
 
 		#endregion
 	}
-	
-	
-	
 }

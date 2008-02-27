@@ -2,6 +2,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Rb.Core.Maths;
 using Rb.Tools.LevelEditor.Core.Actions;
+using Rb.Tools.LevelEditor.Core.Properties;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
 
@@ -26,6 +27,14 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 		#region Public members
 
 		/// <summary>
+		/// Gets the display name of this edit mode
+		/// </summary>
+		public override string DisplayName
+		{
+			get { return Resources.SelectEditModeName; }
+		}
+
+		/// <summary>
 		/// Gets the mouse buttons used by this edit mode
 		/// </summary>
 		public override MouseButtons Buttons
@@ -48,7 +57,7 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 		{
 			get
 			{
-				return string.Format( Properties.Resources.SelectInputs, ResourceHelper.MouseButtonName( Buttons ) );
+				return string.Format( Resources.SelectInputs, ResourceHelper.MouseButtonName( Buttons ) );
 			}
 		}
 

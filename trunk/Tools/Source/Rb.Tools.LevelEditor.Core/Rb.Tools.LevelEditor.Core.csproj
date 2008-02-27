@@ -48,6 +48,12 @@
     <Compile Include="Actions\IPickAction.cs" />
     <Compile Include="Actions\MoveAction.cs" />
     <Compile Include="Actions\UndoStack.cs" />
+    <Compile Include="Controls\Forms\EditModesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Forms\EditModesControl.Designer.cs">
+      <DependentUpon>EditModesControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Forms\EditorApp.cs" />
     <Compile Include="Controls\Forms\EditorForm.cs">
       <SubType>Form</SubType>
@@ -89,7 +95,6 @@
     <Compile Include="Controls\Forms\ServicesEditorForm.Designer.cs">
       <DependentUpon>ServicesEditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="EditModes\AddObjectEditMode.cs" />
     <Compile Include="EditModes\EditMode.cs" />
     <Compile Include="EditModes\IEditMode.cs" />
     <Compile Include="EditModes\SelectEditMode.cs" />
@@ -164,6 +169,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\Forms\EditModesControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>EditModesControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\Forms\EditorForm.resx">
       <DependentUpon>EditorForm.cs</DependentUpon>
       <SubType>Designer</SubType>

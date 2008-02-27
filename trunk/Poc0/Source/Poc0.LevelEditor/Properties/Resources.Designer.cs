@@ -60,6 +60,24 @@ namespace Poc0.LevelEditor.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Error adding new object to scene.
+        /// </summary>
+        internal static string AddObjectFailed {
+            get {
+                return ResourceManager.GetString("AddObjectFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: Creates object.
+        /// </summary>
+        internal static string AddObjectInputs {
+            get {
+                return ResourceManager.GetString("AddObjectInputs", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Icon AppIcon {
             get {
                 object obj = ResourceManager.GetObject("AppIcon", resourceCulture);
@@ -73,6 +91,15 @@ namespace Poc0.LevelEditor.Properties {
         internal static string CantLoadAssetIntoType {
             get {
                 return ResourceManager.GetString("CantLoadAssetIntoType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: Adds brush, 2nd {0}: Confirms size and rotation. {1} exits.
+        /// </summary>
+        internal static string CircleBrushInputs {
+            get {
+                return ResourceManager.GetString("CircleBrushInputs", resourceCulture);
             }
         }
         
@@ -113,6 +140,15 @@ namespace Poc0.LevelEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error occurred while combining brush and level geometry.
+        /// </summary>
+        internal static string FailedToCombineCsgBrush {
+            get {
+                return ResourceManager.GetString("FailedToCombineCsgBrush", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to export scene to file &quot;{0}&quot;.
         /// </summary>
         internal static string FailedToExportScene {
@@ -149,11 +185,29 @@ namespace Poc0.LevelEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Found invalid object template files:\n{0}.
+        /// </summary>
+        internal static string FoundInvalidTemplates {
+            get {
+                return ResourceManager.GetString("FoundInvalidTemplates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Game threw an exception.
         /// </summary>
         internal static string GameUnhandledException {
             get {
                 return ResourceManager.GetString("GameUnhandledException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Level Geometry.
+        /// </summary>
+        internal static string LevelGeometryEditModeName {
+            get {
+                return ResourceManager.GetString("LevelGeometryEditModeName", resourceCulture);
             }
         }
         
@@ -172,6 +226,24 @@ namespace Poc0.LevelEditor.Properties {
         internal static string NoMaterialSetInScene {
             get {
                 return ResourceManager.GetString("NoMaterialSetInScene", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Objects.
+        /// </summary>
+        internal static string ObjectEditModeName {
+            get {
+                return ResourceManager.GetString("ObjectEditModeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: Adds point, {1}: Closes polygon, {2}: Clears polygon.
+        /// </summary>
+        internal static string PolygonBrushInputs {
+            get {
+                return ResourceManager.GetString("PolygonBrushInputs", resourceCulture);
             }
         }
     }

@@ -57,7 +57,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Csg.cs" />
-    <Compile Include="EditModes\CircleBrushEditMode.cs" />
     <Compile Include="Geometry\Csg2.cs" />
     <Compile Include="Geometry\EnvironmentCollisionsBuilder.cs" />
     <Compile Include="Geometry\FloorProperties.cs" />
@@ -73,9 +72,9 @@
     <Compile Include="Geometry\MaterialUITypeEditor.cs" />
     <Compile Include="Geometry\ObstacleProperties.cs" />
     <Compile Include="Geometry\WallProperties.cs" />
+    <Compile Include="EditorSceneBuilder.cs" />
+    <Compile Include="RuntimeSceneBuilder.cs" />
     <Compile Include="UiPolygon.cs" />
-    <Compile Include="EditModes\PolygonBrushEditMode.cs" />
-    <Compile Include="EditModes\DefinePolygonEditMode.cs" />
     <Compile Include="Geometry\EnvironmentGraphicsBuilder.cs" />
     <Compile Include="Objects\PlayerStartEditor.cs" />
     <Compile Include="Objects\AngleModifier.cs" />
@@ -144,9 +143,6 @@
   <ItemGroup>
     <None Include="Resources\DefaultFloorTexture.bmp" />
     <Content Include="Resources\DefaultWallTexture.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Actions\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

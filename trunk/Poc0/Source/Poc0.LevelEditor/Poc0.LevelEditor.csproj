@@ -55,12 +55,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EditorControls.cs">
+    <Compile Include="EditModes\EdgeListEditor.cs" />
+    <Compile Include="EditModes\IEditor.cs" />
+    <Compile Include="EditModes\CircleBrushEditor.cs" />
+    <Compile Include="EditModes\Controls\LevelGeometryEditModeControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="EditorControls.Designer.cs">
-      <DependentUpon>EditorControls.cs</DependentUpon>
+    <Compile Include="EditModes\Controls\LevelGeometryEditModeControl.Designer.cs">
+      <DependentUpon>LevelGeometryEditModeControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="EditModes\Controls\ObjectEditModeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EditModes\Controls\ObjectEditModeControl.Designer.cs">
+      <DependentUpon>ObjectEditModeControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditModes\LevelGeometryEditMode.cs" />
+    <Compile Include="EditModes\ObjectEditMode.cs" />
+    <Compile Include="EditModes\PolygonBrushEditor.cs" />
     <Compile Include="GameViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -87,9 +99,13 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="EditorControls.resx">
+    <EmbeddedResource Include="EditModes\Controls\LevelGeometryEditModeControl.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>EditorControls.cs</DependentUpon>
+      <DependentUpon>LevelGeometryEditModeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditModes\Controls\ObjectEditModeControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ObjectEditModeControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GameViewForm.resx">
       <SubType>Designer</SubType>
@@ -223,6 +239,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DesignNotes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Actions\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

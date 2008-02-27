@@ -130,7 +130,7 @@ namespace Rb.Tools.LevelEditor.Core
 			catch ( Exception ex )
 			{
 				AppLog.Exception( ex, "Failed to export scene to \"{0}\"", path );
-				ErrorMessageBox.Show( Properties.Resources.FailedToExportScene, path );
+				ErrorMessageBox.Show( Properties.Resources.ExportSceneFailed, path );
 			}
 
 			if ( PostExport != null )

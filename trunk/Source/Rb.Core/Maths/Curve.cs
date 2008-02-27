@@ -74,8 +74,6 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Evaluates the speed (length of the first derivative vector) at fraction t on the curve
 		/// </summary>
-		/// <param name="t"></param>
-		/// <returns></returns>
 		public float EvaluateSpeed( float t )
 		{
 			return EvaluateFirstDerivative( t ).Length;

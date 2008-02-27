@@ -98,7 +98,7 @@ namespace Rb.Tools.LevelEditor.Core
 			{
 				//	Stop all the current edit modes - they sometimes attach themselves to the
 				//	scene to be rendered
-				foreach ( IEditMode mode in EditorState.Instance.EditModes )
+				foreach ( IEditMode mode in EditorState.Instance.ActiveEditModes )
 				{
 					mode.Stop( );
 				}
@@ -119,7 +119,7 @@ namespace Rb.Tools.LevelEditor.Core
 				}
 
 				//	Restart all edit modes
-				foreach ( IEditMode mode in EditorState.Instance.EditModes )
+				foreach ( IEditMode mode in EditorState.Instance.ActiveEditModes )
 				{
 					mode.Start( );
 				}
@@ -127,7 +127,7 @@ namespace Rb.Tools.LevelEditor.Core
 			catch ( Exception ex )
 			{
 				AppLog.Exception( ex, "Failed to save scene to \"{0}\"", path );
-				ErrorMessageBox.Show( Properties.Resources.FailedToSaveScene, path );
+				ErrorMessageBox.Show( Properties.Resources.SaveSceneFailed, path );
 			}
 
 			if ( PostSerialize != null )
@@ -155,7 +155,7 @@ namespace Rb.Tools.LevelEditor.Core
 			catch ( Exception ex )
 			{
 				AppLog.Exception( ex, "Failed to open scene \"{0}\"", path );
-				ErrorMessageBox.Show( Properties.Resources.FailedToOpenScene, path );
+				ErrorMessageBox.Show( Properties.Resources.OpenSceneFailed, path );
 				return null;
 			}
 

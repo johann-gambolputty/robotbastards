@@ -1,37 +1,29 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.Geometry;
+using Poc0.LevelEditor.Properties;
 using Rb.Core.Maths;
 using Rb.Log;
 using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core;
-using Rb.Tools.LevelEditor.Core.EditModes;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
 using Graphics=Rb.Rendering.Graphics;
 
-namespace Poc0.LevelEditor.Core.EditModes
+namespace Poc0.LevelEditor.EditModes
 {
-	public class CircleBrushEditMode : EditMode, IRenderable
+	public class CircleBrushEditor : IEditor
 	{
 		/// <summary>
 		/// Initialises this object
 		/// </summary>
-		public CircleBrushEditMode( LevelGeometry level, int numEdges )
+		public CircleBrushEditor( int numEdges )
 		{
-			m_LevelGeometry = level;
 			m_EdgeCount = numEdges;
 			m_DrawEdge = Graphics.Draw.NewPen( Color.White, 2.0f );
 			m_DrawVertex = Graphics.Draw.NewBrush( Color.Red, Color.DarkRed );
-		}
-
-		/// <summary>
-		/// Gets the mouse buttons used by this edit mode
-		/// </summary>
-		public override MouseButtons Buttons
-		{
-			get { return MouseButtons.Right; }
 		}
 
 		/// <summary>
@@ -43,11 +35,27 @@ namespace Poc0.LevelEditor.Core.EditModes
 			set { m_EdgeCount = value; }
 		}
 
+		#region IEditor members
+
+		/// <summary>
+		/// Gets a string describing the usage of this editor
+		/// </summary>
+		public string Description
+		{
+			get
+			{ 
+				string addPoint	= ResourceHelper.MouseButtonName( MouseButtons.Right );
+				string clear	= Keys.Escape.ToString( );
+
+				return string.Format( Resources.CircleBrushInputs, addPoint, clear );
+			}
+		}
+
 		/// <summary>
 		/// Binds to the specified control
 		/// </summary>
 		/// <param name="control">Control to bind to</param>
-		protected override void BindToControl( Control control )
+		public void BindToControl( Control control )
 		{
 			control.MouseMove += OnMouseMove;
 			control.MouseClick += OnMouseClick;
@@ -58,33 +66,13 @@ namespace Poc0.LevelEditor.Core.EditModes
 		/// Unbinds to the specified control
 		/// </summary>
 		/// <param name="control">Control to unbind from</param>
-		protected override void UnbindFromControl( Control control )
+		public void UnbindFromControl( Control control )
 		{
 			control.MouseMove -= OnMouseMove;
 			control.MouseClick -= OnMouseClick;
 			control.KeyDown -= OnKeyDown;
 		}
-
-		/// <summary>
-		/// Starts the edit mode
-		/// </summary>
-		public override void Start( )
-		{
-			EditorState.Instance.CurrentScene.Renderables.Add( this );
-			base.Start( );
-		}
-
-		/// <summary>
-		/// Stops the edit mode
-		/// </summary>
-		public override void Stop( )
-		{
-			EditorState.Instance.CurrentScene.Renderables.Remove( this );
-			base.Stop( );
-		}
-
-		#region IRenderable Implementation
-
+		
 		/// <summary>
 		/// Renders this edit mode
 		/// </summary>
@@ -145,7 +133,6 @@ namespace Poc0.LevelEditor.Core.EditModes
 		private float					m_AngleStart = 0.0f;
 		private int						m_EdgeCount;
 		private bool					m_DefiningRadius;
-		private readonly LevelGeometry	m_LevelGeometry;
 
 
 		private static readonly RayCastOptions ms_PickOptions = new RayCastOptions( RayCastLayers.Grid );
@@ -188,7 +175,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 				}
 				else
 				{
-					AddCircleToLevelGeometry( );
+					AddCircleToLevelGeometry( LevelGeometry.FromCurrentScene( ));
 				}
 			}
 		}
@@ -212,11 +199,11 @@ namespace Poc0.LevelEditor.Core.EditModes
 			}
 			else if ( args.KeyCode == Keys.Return )
 			{
-				AddCircleToLevelGeometry( );
+				AddCircleToLevelGeometry( LevelGeometry.FromCurrentScene( ) );
 			}
 		}
 
-		private void AddCircleToLevelGeometry( )
+		private void AddCircleToLevelGeometry( LevelGeometry geometry )
 		{
 			try
 			{
@@ -239,7 +226,7 @@ namespace Poc0.LevelEditor.Core.EditModes
 				}
 
 				UiPolygon brush = new UiPolygon( "", points2 );
-				m_LevelGeometry.Add( brush, false, false );
+				geometry.Add( brush, false, false );
 				AppLog.Info( "Combined brush with current level geometry" );
 			}
 			catch ( Exception ex )

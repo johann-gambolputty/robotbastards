@@ -14,6 +14,22 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 		event EventHandler Stopped;
 
 		/// <summary>
+		/// Gets the display name of this edit mode
+		/// </summary>
+		string DisplayName
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Creates a control used to manipulate the edit mode
+		/// </summary>
+		/// <remarks>
+		/// This control is added to the edit mode tab pages (<see cref="Controls.Forms.EditModesControl"/>)
+		/// </remarks>
+		Control CreateControl( );
+
+		/// <summary>
 		/// Called when the edit mode is activated
 		/// </summary>
 		void Start( );
