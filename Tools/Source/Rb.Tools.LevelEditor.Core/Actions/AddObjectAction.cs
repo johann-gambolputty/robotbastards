@@ -5,7 +5,10 @@ using Rb.Tools.LevelEditor.Core.Selection;
 
 namespace Rb.Tools.LevelEditor.Core.Actions
 {
-	class AddObjectAction : IAction
+	/// <summary>
+	/// Adds an object to the scene
+	/// </summary>
+	public class AddObjectAction : IAction
 	{
 		/// <summary>
 		/// Action setup constructor

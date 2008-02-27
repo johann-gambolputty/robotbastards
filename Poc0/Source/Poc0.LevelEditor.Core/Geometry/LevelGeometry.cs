@@ -4,6 +4,7 @@ using System.Drawing;
 using Poc0.Core.Environment;
 using Rb.Core.Maths;
 using Rb.Rendering;
+using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
 using Rb.World.Services;
@@ -37,6 +38,14 @@ namespace Poc0.LevelEditor.Core.Geometry
 		public static LevelGeometry FromScene( Scene scene )
 		{
 			return scene.Objects.GetFirstOfType< LevelGeometry >( );
+		}
+		
+		/// <summary>
+		/// Gets a LevelGeometry object from the current editor scene
+		/// </summary>
+		public static LevelGeometry FromCurrentScene( )
+		{
+			return FromScene( EditorState.Instance.CurrentScene );
 		}
 
 		/// <summary>

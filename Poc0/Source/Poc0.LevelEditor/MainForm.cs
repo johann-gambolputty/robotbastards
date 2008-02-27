@@ -1,19 +1,13 @@
 using System;
-using Crownwood.Magic.Docking;
 using Poc0.LevelEditor.Core;
-using Poc0.LevelEditor.Core.Geometry;
-using Poc0.LevelEditor.Core.Rendering;
+using Poc0.LevelEditor.EditModes;
 using Poc0.LevelEditor.Properties;
 using Rb.Core.Assets;
-using Rb.Core.Maths;
-using Rb.Core.Utils;
 using Rb.Log;
-using Rb.Rendering;
 using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.Controls.Forms;
 using Rb.Tools.LevelEditor.Core.EditModes;
 using Rb.World;
-using Rb.World.Services;
 
 namespace Poc0.LevelEditor
 {
@@ -23,22 +17,22 @@ namespace Poc0.LevelEditor
 		{
 			InitializeComponent( );
 
-			EditorState.Instance.AddEditMode( new SelectEditMode( System.Windows.Forms.MouseButtons.Left, new RayCastOptions( RayCastLayers.Entity | RayCastLayers.StaticGeometry ) ) );
+			EditorState.Instance.ActivateEditMode( new SelectEditMode( System.Windows.Forms.MouseButtons.Left, new RayCastOptions( RayCastLayers.Entity | RayCastLayers.StaticGeometry ) ) );
+
+			EditorState.Instance.RegisterEditMode( new ObjectEditMode( SelectionPickOptions ) );
+			EditorState.Instance.RegisterEditMode( new LevelGeometryEditMode( ) );
 		}
 
 		#region Protected members
 
-		protected override void InitializeDockingControls( )
-		{
-			base.InitializeDockingControls( );
+		//protected override void InitializeDockingControls( )
+		//{
+		//    base.InitializeDockingControls( );
 
-			m_EditorControlsContent = DockingManager.Contents.Add( new EditorControls( ), Resources.EditorToolbox );
-			//	NOTE: AP: Removed game view for now - it was screwing up pick ray calculation in Camera3 (game view viewport used occasionally)
-			//m_GameViewContent = DockingManager.Contents.Add( new GameViewControl( ), Properties.Resources.EditorToolbox );
-			//DockingManager.AddContentToZone( m_GameViewContent, LogDisplayContent.ParentWindowContent.ParentZone, 0 );
-
-			DockingManager.AddContentToZone( m_EditorControlsContent, SelectionContent.ParentWindowContent.ParentZone, 0 );
-		}
+		//    //	NOTE: AP: Removed game view for now - it was screwing up pick ray calculation in Camera3 (game view viewport used occasionally)
+		//    //m_GameViewContent = DockingManager.Contents.Add( new GameViewControl( ), Properties.Resources.EditorToolbox );
+		//    //DockingManager.AddContentToZone( m_GameViewContent, LogDisplayContent.ParentWindowContent.ParentZone, 0 );
+		//}
 		
 		/// <summary>
 		/// Gets the location of the standard level editor viewer
@@ -63,62 +57,23 @@ namespace Poc0.LevelEditor
 		}
 
 		/// <summary>
-		/// Populates the scene
+		/// Creates a new scene for the editor to use
 		/// </summary>
-		/// <param name="scene">Populates the scene</param>
-		protected override void PopulateNewScene( Scene scene )
+		protected override Scene CreateNewScene( )
 		{
-			base.PopulateNewScene( scene );
-
-			//	Add raycast service to scene
-			IRayCastService rayCaster = new RayCastService( );
-			rayCaster.AddIntersector( RayCastLayers.Grid, new Plane3( new Vector3( 0, 1, 0 ), 0 ) );
-			scene.AddService( rayCaster );
-
-			//	Add material set service to scene
-			ISource materialSetSource = new Location( "Editor/DefaultMaterialSet.components.xml" );
-			MaterialSet materials;
-			try
-			{
-				materials = MaterialSet.Load( materialSetSource, false );
-			}
-			catch ( Exception ex )
-			{
-				AppLog.Exception( ex, "Failed to load default material set from \"{0}\"", materialSetSource );
-				ErrorMessageBox.Show( this, Resources.FailedToLoadMaterialSet, materialSetSource );
-				materials = new MaterialSet( "Default" );
-			}
-			scene.AddService( materials );
-
-			//	TODO: AP: Fix Z order rendering cheat
-			scene.Objects.Add( Guid.NewGuid( ), Graphics.Factory.Create< GroundPlaneGrid >( ) );
-			scene.Objects.Add( Guid.NewGuid( ), Graphics.Factory.Create< LevelGeometry >( ) );
+			return EditorSceneBuilder.CreateScene( );
 		}
 
 		/// <summary>
-		/// Populates a runtime scene created by the export process
+		/// Creates a new runtime scene
 		/// </summary>
-		/// <param name="scene">Scene to populate</param>
-		protected override void PopulateRuntimeScene( Scene scene )
+		protected override Scene CreateNewRuntimeScene( )
 		{
-			base.PopulateRuntimeScene( scene );
-
-			//	Populate runtime scene
-			scene.AddService( new LightingService( ) );
-			IUpdateService updater = new UpdateService( );
-			updater.AddClock( new Clock( "updateClock", 30, true ) );
-			updater.AddClock( new Clock( "animationClock", 60, true ) );
-			scene.AddService( updater );
-
+			return RuntimeSceneBuilder.CreateScene( );
 		}
 
 		#endregion
 
-		#region Private members
-
-		private Content m_EditorControlsContent;
-
-		#endregion
 
 		#region Event handlers
 
@@ -157,6 +112,7 @@ namespace Poc0.LevelEditor
 			try
 			{
 				runtimeScene = CreateNewRuntimeScene( );
+				BuildRuntimeScene( EditorState.Instance.CurrentScene, runtimeScene );
 			}
 			catch ( Exception ex )
 			{

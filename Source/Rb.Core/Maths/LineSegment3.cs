@@ -37,6 +37,39 @@ namespace Rb.Core.Maths
 
 		#endregion
 
+		#region Static operations
+
+		/// <summary>
+		/// Gets a point on the line
+		/// </summary>
+		/// <param name="start">Start point of the line</param>
+		/// <param name="end">End point of the line</param>
+		/// <param name="t">Fraction along the line (0==start, 1==end)</param>
+		/// <returns>Returns the evaluated point on the line</returns>
+		public static Point3 GetPointOnLine( Point3 start, Point3 end, float t )
+		{
+			return start + ( end - start ) * t;
+		}
+		
+		/// <summary>
+		/// Returns a time value on the line that minimises the distance to pt
+		/// </summary>
+		public static float GetClosestTimeOnLine( Point3 start, Point3 end, Point3 pt )
+		{
+			Vector3 lineVec = end - start;
+			float sqrLength = lineVec.SqrLength;
+			float t = 0.0f;
+
+			if ( sqrLength != 0.0f )
+			{
+				t = Utils.Clamp( ( pt - start).Dot( lineVec ) / sqrLength, 0.0f, 1.0f );
+			}
+
+			return t;
+		}
+
+		#endregion
+
 		#region	Operations
 
 		/// <summary>
@@ -46,7 +79,25 @@ namespace Rb.Core.Maths
 		/// <returns>Returns the evaluated point on the line</returns>
 		public Point3 GetPointOnLine( float t )
 		{
-			return m_Start + ( m_End - m_Start ) * t;
+			return GetPointOnLine( Start, End, t );
+		}
+
+
+		/// <summary>
+		/// Returns a time value on the line that minimises the distance to pt
+		/// </summary>
+		public float GetClosestTimeOnLine( Point3 pt )
+		{
+			return GetClosestTimeOnLine( Start, End, pt );
+		}
+
+		/// <summary>
+		/// Returns a point on the line that minimises the distance to pt
+		/// </summary>
+		public Point3 GetClosestPointOnLine( Point3 pt )
+		{
+			Point3 closestPt = GetPointOnLine( GetClosestTimeOnLine( pt ) );
+			return closestPt;
 		}
 
 		/// <summary>
@@ -56,17 +107,7 @@ namespace Rb.Core.Maths
 		/// <returns> Squared distance to pt </returns>
 		public float GetSqrDistanceToPoint( Point3 pt )
 		{
-			Vector3	lineVec		= End - Start;
-			float	sqrLength	= lineVec.SqrLength;
-			float	t			= 0.0f;
-
-			if ( sqrLength != 0.0f )
-			{
-				t = Utils.Clamp( ( pt - Start ).Dot( lineVec ) / sqrLength, 0.0f, 1.0f );
-			}
-
-			Point3 closestPt = Start + ( lineVec * t );
-			return closestPt.SqrDistanceTo( pt );
+			return GetClosestPointOnLine( pt ).SqrDistanceTo( pt );
 		}
 
 		/// <summary>
@@ -76,7 +117,7 @@ namespace Rb.Core.Maths
 		/// <returns> Distance to pt </returns>
 		public float GetDistanceToPoint( Point3 pt )
 		{
-			return ( float )Math.Sqrt( GetSqrDistanceToPoint( pt ) );
+			return GetClosestPointOnLine( pt ).DistanceTo( pt );
 		}
 
 		#endregion

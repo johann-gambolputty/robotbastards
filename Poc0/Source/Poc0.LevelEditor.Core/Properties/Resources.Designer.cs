@@ -91,15 +91,6 @@ namespace Poc0.LevelEditor.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error occurred while adding object.
-        /// </summary>
-        internal static string FailedToAddObject {
-            get {
-                return ResourceManager.GetString("FailedToAddObject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Error occurred while combining brush and level geometry.
         /// </summary>
         internal static string FailedToCombineCsgBrush {
@@ -112,15 +103,6 @@ namespace Poc0.LevelEditor.Core.Properties {
             get {
                 object obj = ResourceManager.GetObject("GridSquare", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0}: Adds point, {1}: Closes polygon, {2}: Clears polygon.
-        /// </summary>
-        internal static string UserBrushInputs {
-            get {
-                return ResourceManager.GetString("UserBrushInputs", resourceCulture);
             }
         }
     }

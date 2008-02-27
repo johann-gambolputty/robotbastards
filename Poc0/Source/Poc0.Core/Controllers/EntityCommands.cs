@@ -30,6 +30,9 @@ namespace Poc0.Core.Controllers
 		Jump,
 
 		[CommandDescription( "Fire", "Fires main weapon" )]
-		Fire
+		Fire,
+
+		[CommandDescription( "Move To", "Moves towards a given point" )]
+		MoveTo
 	}
 }

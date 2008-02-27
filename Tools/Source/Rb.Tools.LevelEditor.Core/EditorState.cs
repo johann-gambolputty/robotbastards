@@ -61,14 +61,29 @@ namespace Rb.Tools.LevelEditor.Core
 		#region Edit modes
 
 		/// <summary>
-		/// Raised after an edit mode is added
+		/// Raised after an edit mode is registered (<see cref="ActivateEditMode"/>)
 		/// </summary>
-		public event EventHandler EditModeAdded;
+		public event Action<IEditMode> EditModeRegistered;
+
+		/// <summary>
+		/// Raised after an edit mode is activated (<see cref="ActivateEditMode"/>)
+		/// </summary>
+		public event Action< IEditMode > EditModeActivated;
+
+
+		/// <summary>
+		/// Gets the list of registered edit modes
+		/// </summary>
+		public IEnumerable< IEditMode > RegisteredEditModes
+		{
+			get { return m_RegisteredModes; }
+		}
+
 
 		/// <summary>
 		/// Returns an enumerator to the current set edit modes
 		/// </summary>
-		public IEnumerable< IEditMode > EditModes
+		public IEnumerable< IEditMode > ActiveEditModes
 		{
 			get
 			{
@@ -82,13 +97,37 @@ namespace Rb.Tools.LevelEditor.Core
 				}
 			}
 		}
-		
+
+		/// <summary>
+		/// Registers an edit mode. This does nothing more that put it in the registered edit mode list
+		///  (<see cref="RegisteredEditModes"/>), and call the register event (<see cref="EditModeRegistered"/>)
+		/// </summary>
+		/// <param name="mode">Edit mode to register</param>
+		/// <remarks>
+		/// This method will not register the same mode twice (will return without exception)
+		/// </remarks>
+		public void RegisterEditMode( IEditMode mode )
+		{
+			if ( m_RegisteredModes.Contains( mode ) )
+			{
+				return;
+			}
+			m_RegisteredModes.Add( mode );
+			if ( EditModeRegistered != null )
+			{
+				EditModeRegistered( mode );
+			}
+		}
+
 		/// <summary>
 		/// Adds an edit mode. If the mode is exclusive, then it replaces the current exclusive mode
 		/// </summary>
 		/// <param name="mode">Mode to add</param>
-		public void AddEditMode( IEditMode mode )
+		public void ActivateEditMode( IEditMode mode )
 		{
+			//	Make sure that the mode is registered...
+			RegisterEditMode( mode );
+
 			if ( mode.Exclusive )
 			{
 				if ( m_ExclusiveMode != null )
@@ -117,9 +156,9 @@ namespace Rb.Tools.LevelEditor.Core
 				mode.Start( );
 			}
 
-			if ( EditModeAdded != null )
+			if ( EditModeActivated != null )
 			{
-				EditModeAdded( this, null );
+				EditModeActivated( mode );
 			}
 		}
 
@@ -209,6 +248,7 @@ namespace Rb.Tools.LevelEditor.Core
 		private readonly List< Control >	m_EditModeControls = new List< Control >( );
 		private IEditMode					m_ExclusiveMode;
 		private readonly List< IEditMode >	m_SharedModes = new List< IEditMode >( );
+		private readonly List< IEditMode >	m_RegisteredModes = new List< IEditMode >( );
 
 		#endregion
 	}

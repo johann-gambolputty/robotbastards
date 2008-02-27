@@ -61,11 +61,11 @@ namespace Rb.Tools.LevelEditor.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}: Creates object.
+        ///   Looks up a localized string similar to Failed to build runtime scene.
         /// </summary>
-        internal static string AddObjectInputs {
+        internal static string BuildSceneFailed {
             get {
-                return ResourceManager.GetString("AddObjectInputs", resourceCulture);
+                return ResourceManager.GetString("BuildSceneFailed", resourceCulture);
             }
         }
         
@@ -79,6 +79,24 @@ namespace Rb.Tools.LevelEditor.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit Modes.
+        /// </summary>
+        internal static string EditModes {
+            get {
+                return ResourceManager.GetString("EditModes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred creating a new editor scene.
+        /// </summary>
+        internal static string EditorSceneCreationFailed {
+            get {
+                return ResourceManager.GetString("EditorSceneCreationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         internal static string ErrorCaption {
@@ -88,47 +106,11 @@ namespace Rb.Tools.LevelEditor.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error adding new object to scene.
-        /// </summary>
-        internal static string FailedToAddObject {
-            get {
-                return ResourceManager.GetString("FailedToAddObject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to build runtime scene.
-        /// </summary>
-        internal static string FailedToBuildScene {
-            get {
-                return ResourceManager.GetString("FailedToBuildScene", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to export scene to file &quot;{0}&quot;.
         /// </summary>
-        internal static string FailedToExportScene {
+        internal static string ExportSceneFailed {
             get {
-                return ResourceManager.GetString("FailedToExportScene", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to open scene file &quot;{0}&quot;.
-        /// </summary>
-        internal static string FailedToOpenScene {
-            get {
-                return ResourceManager.GetString("FailedToOpenScene", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to save scene to file &quot;{0}&quot;.
-        /// </summary>
-        internal static string FailedToSaveScene {
-            get {
-                return ResourceManager.GetString("FailedToSaveScene", resourceCulture);
+                return ResourceManager.GetString("ExportSceneFailed", resourceCulture);
             }
         }
         
@@ -178,6 +160,15 @@ namespace Rb.Tools.LevelEditor.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to open scene file &quot;{0}&quot;.
+        /// </summary>
+        internal static string OpenSceneFailed {
+            get {
+                return ResourceManager.GetString("OpenSceneFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Right.
         /// </summary>
         internal static string RightMouseButton {
@@ -187,11 +178,29 @@ namespace Rb.Tools.LevelEditor.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to save scene to file &quot;{0}&quot;.
+        /// </summary>
+        internal static string SaveSceneFailed {
+            get {
+                return ResourceManager.GetString("SaveSceneFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Scene.
         /// </summary>
         internal static string Scene {
             get {
                 return ResourceManager.GetString("Scene", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select.
+        /// </summary>
+        internal static string SelectEditModeName {
+            get {
+                return ResourceManager.GetString("SelectEditModeName", resourceCulture);
             }
         }
         

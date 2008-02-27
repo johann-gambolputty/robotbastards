@@ -20,13 +20,24 @@ using Rb.World;
 
 namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 {
-	public partial class EditorForm : Form
+	public abstract partial class EditorForm : Form
 	{
+		/// <summary>
+		/// Gets the editor form instance
+		/// </summary>
+		public static EditorForm Instance
+		{
+			get { return ms_Instance; }
+		}
+
+
 		/// <summary>
 		/// Sets up the form
 		/// </summary>
 		public EditorForm( )
 		{
+			System.Diagnostics.Trace.Assert( ms_Instance == null );
+			ms_Instance = this;
 
 			//	Create the log display - it will start caching log entries immediately
 			m_LogDisplay = new Log.Controls.Vs.VsLogListView( );
@@ -44,7 +55,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			SceneExporter.Instance.LastExportPathChanged += ExportPathChanged;
 
 			UpdateInputsStatusLabel( );
-			EditorState.Instance.EditModeAdded += EditModeAdded;
+			EditorState.Instance.EditModeActivated += EditModeAdded;
 		}
 
 		private readonly Control m_LogDisplay;
@@ -56,7 +67,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			m_DockingManager.InnerControl = display;
 			m_DockingManager.OuterControl = statusStrip;
 
-			//	Add log, property editor views to the docking manager
+			//	Add log, property editor, and edit mode controls to the docking manager
 			m_LogDisplayContent = m_DockingManager.Contents.Add( m_LogDisplay, "Log" );
 			m_PropertyEditorContent = m_DockingManager.Contents.Add( new ObjectPropertyEditor( ), "Property Editor" );
 			m_SelectionContent = m_DockingManager.Contents.Add( new SelectionControl( ), "Selection" );
@@ -65,9 +76,20 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			m_DockingManager.AddContentWithState( m_SelectionContent, State.DockRight );
 			m_DockingManager.AddContentWithState( m_PropertyEditorContent, State.DockLeft );
 	
+			m_EditModesContent = m_DockingManager.Contents.Add( new EditModesControl( ), Resources.EditModes );
+			m_DockingManager.AddContentToZone( m_EditModesContent, m_SelectionContent.ParentWindowContent.ParentZone, 0 );
+
 		}
 
 		#region Properties
+
+		/// <summary>
+		/// Returns raycasting options used for standard selection
+		/// </summary>
+		public RayCastOptions SelectionPickOptions
+		{
+			get { return ms_PickOptions; }
+		}
 
 		/// <summary>
 		/// Gets the log display content (docking object)
@@ -136,7 +158,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		{
 			StringBuilder sb = new StringBuilder( );
 
-			IEnumerator< IEditMode > modePos = EditorState.Instance.EditModes.GetEnumerator( );
+			IEnumerator< IEditMode > modePos = EditorState.Instance.ActiveEditModes.GetEnumerator( );
 			if ( modePos.MoveNext( ) )
 			{
 				sb.Append( modePos.Current.InputDescription );
@@ -153,7 +175,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 		/// <summary>
 		/// Called when an edit mode is added
 		/// </summary>
-		protected virtual void EditModeAdded( object sender, EventArgs args )
+		protected virtual void EditModeAdded( IEditMode editMode )
 		{
 			UpdateInputsStatusLabel( );
 		}
@@ -222,39 +244,50 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 
 		#endregion
 
-		#region Public methods
+		#region Public members
 
 		/// <summary>
 		/// Creates a new scene, populates it, and opens it up for editing
 		/// </summary>
 		public void NewScene( )
 		{
-			Scene scene = CreateNewScene( );
-			PopulateNewScene( scene );
-			EditorState.Instance.OpenScene( scene );
-		}
-
-		/// <summary>
-		/// Creates a new runtime scene from the current editor scene
-		/// </summary>
-		public Scene CreateNewRuntimeScene( )
-		{
-			Scene scene = new Scene( );
 			try
 			{
-				PopulateRuntimeScene( scene );
+				Scene scene = CreateNewScene( );
+				EditorState.Instance.OpenScene( scene );
 			}
 			catch ( Exception ex )
 			{
-				throw new ApplicationException( "Failed to populate runtime scene", ex );
+				AppLog.Exception( ex, "Failed to create new scene" );
+				ErrorMessageBox.Show( this, Resources.EditorSceneCreationFailed );
 			}
+		}
 
-			IEnumerable< IObjectEditor > editors = EditorState.Instance.CurrentScene.Objects.GetAllOfType< IObjectEditor >( );
+		#endregion
+
+		#region Protected members
+
+		/// <summary>
+		/// Creates a new scene
+		/// </summary>
+		protected abstract Scene CreateNewScene( );
+
+		/// <summary>
+		/// Creates a new runtime scene
+		/// </summary>
+		protected abstract Scene CreateNewRuntimeScene( );
+		
+		/// <summary>
+		/// Builds a runtime scene from the contents of an editor scene
+		/// </summary>
+		protected static void BuildRuntimeScene( Scene editorScene, Scene runtimeScene )
+		{
+			IEnumerable< IObjectEditor > editors = editorScene.Objects.GetAllOfType< IObjectEditor >( );
 			foreach ( IObjectEditor editor in editors )
 			{
 				try
 				{
-					editor.Build( scene );
+					editor.Build( runtimeScene );
 				}
 				catch ( Exception ex )
 				{
@@ -262,33 +295,6 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 				}
 			}
 
-			return scene;
-		}
-
-		/// <summary>
-		/// Creates a new scene
-		/// </summary>
-		protected virtual Scene CreateNewScene( )
-		{
-			Scene newScene = new Scene( );
-			return newScene;
-		}
-
-		/// <summary>
-		/// Populates a scene created by CreateNewScene()
-		/// </summary>
-		/// <param name="scene">Scene to populate</param>
-		protected virtual void PopulateNewScene( Scene scene )
-		{
-		}
-
-		/// <summary>
-		/// Populates a runtime scene created by the export process
-		/// </summary>
-		/// <param name="scene">Scene to populate</param>
-		protected virtual void PopulateRuntimeScene( Scene scene )
-		{
-			
 		}
 
 		/// <summary>
@@ -356,14 +362,17 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 
 		#region Private fields
 
-		private readonly CommandUser		m_User = new CommandUser( );
+		private readonly CommandUser			m_User = new CommandUser( );
 
-		private DockingManager				m_DockingManager;
-		private Content						m_LogDisplayContent;
-		private Content						m_PropertyEditorContent;
-		private Content						m_SelectionContent;
+		private DockingManager					m_DockingManager;
+		private Content							m_LogDisplayContent;
+		private Content							m_PropertyEditorContent;
+		private Content							m_SelectionContent;
+		private Content							m_EditModesContent;
 
-		private static readonly RayCastOptions ms_PickOptions = new RayCastOptions( );
+		private static readonly RayCastOptions	ms_PickOptions = new RayCastOptions( );
+
+		private static EditorForm				ms_Instance;
 
 		#endregion
 
@@ -457,11 +466,12 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			try
 			{
 				runtimeScene = CreateNewRuntimeScene( );
+				BuildRuntimeScene( EditorState.Instance.CurrentScene, runtimeScene );
 			}
 			catch ( Exception ex )
 			{
 				AppLog.Exception( ex, "Failed to build runtime scene" );
-				ErrorMessageBox.Show( this, Resources.FailedToBuildScene );
+				ErrorMessageBox.Show( this, Resources.BuildSceneFailed );
 				return;
 			}
 			SceneExporter.Instance.Export( runtimeScene );

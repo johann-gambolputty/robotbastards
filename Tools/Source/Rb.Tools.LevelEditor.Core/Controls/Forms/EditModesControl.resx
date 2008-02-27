@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,55 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BuildSceneFailed" xml:space="preserve">
-    <value>Failed to build runtime scene</value>
-  </data>
-  <data name="CantLoadAssetIntoType" xml:space="preserve">
-    <value>Can't load asset into type "{0}"</value>
-  </data>
-  <data name="EditModes" xml:space="preserve">
-    <value>Edit Modes</value>
-  </data>
-  <data name="EditorSceneCreationFailed" xml:space="preserve">
-    <value>An error occurred creating a new editor scene</value>
-  </data>
-  <data name="ErrorCaption" xml:space="preserve">
-    <value>Error</value>
-  </data>
-  <data name="ExportSceneFailed" xml:space="preserve">
-    <value>Failed to export scene to file "{0}"</value>
-  </data>
-  <data name="LeftMouseButton" xml:space="preserve">
-    <value>Left</value>
-  </data>
-  <data name="LoaderProperties" xml:space="preserve">
-    <value>{0} properties</value>
-  </data>
-  <data name="MiddleMouseButton" xml:space="preserve">
-    <value>Middle</value>
-  </data>
-  <data name="MoveInputs" xml:space="preserve">
-    <value>{0}: Moves selected objects</value>
-  </data>
-  <data name="NoLocationManagersWithUI" xml:space="preserve">
-    <value>No asset location managers with UI were available</value>
-  </data>
-  <data name="OpenSceneFailed" xml:space="preserve">
-    <value>Failed to open scene file "{0}"</value>
-  </data>
-  <data name="RightMouseButton" xml:space="preserve">
-    <value>Right</value>
-  </data>
-  <data name="SaveSceneFailed" xml:space="preserve">
-    <value>Failed to save scene to file "{0}"</value>
-  </data>
-  <data name="Scene" xml:space="preserve">
-    <value>Scene</value>
-  </data>
-  <data name="SelectEditModeName" xml:space="preserve">
-    <value>Select</value>
-  </data>
-  <data name="SelectInputs" xml:space="preserve">
-    <value>{0}: Selects object</value>
-  </data>
 </root>

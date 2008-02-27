@@ -52,6 +52,7 @@
     <Compile Include="Cameras\FollowCameraControl.cs" />
     <Compile Include="Controllers\EntityCommands.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\UserRtsController.cs" />
     <Compile Include="DebugInfo.cs" />
     <Compile Include="Environment\EnvironmentCollisions.cs" />
     <Compile Include="Environment\IEnvironmentCollisions.cs" />
@@ -66,8 +67,11 @@
     <Compile Include="Environment\Navigator.cs" />
     <Compile Include="Objects\HealthChange.cs" />
     <Compile Include="Objects\IBody.cs" />
+    <Compile Include="Objects\IPath.cs" />
     <Compile Include="Objects\IPlaceable.cs" />
     <Compile Include="Objects\IMoveable.cs" />
+    <Compile Include="Objects\LinePath.cs" />
+    <Compile Include="Objects\PathWalkState.cs" />
     <Compile Include="Objects\PointLightSocket.cs" />
     <Compile Include="Objects\PlayerStart.cs" />
     <Compile Include="Objects\Signpost.cs" />

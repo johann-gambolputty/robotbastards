@@ -117,12 +117,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddObjectFailed" xml:space="preserve">
+    <value>Error adding new object to scene</value>
+  </data>
+  <data name="AddObjectInputs" xml:space="preserve">
+    <value>{0}: Creates object</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="AppIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AppIcon.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CantLoadAssetIntoType" xml:space="preserve">
     <value>Can't load asset into type "{0}"</value>
+  </data>
+  <data name="CircleBrushInputs" xml:space="preserve">
+    <value>{0}: Adds brush, 2nd {0}: Confirms size and rotation. {1} exits</value>
   </data>
   <data name="EditorToolbox" xml:space="preserve">
     <value>Editor Toolbox</value>
@@ -136,6 +145,9 @@
   <data name="FailedToBuildSceneCantRunGame" xml:space="preserve">
     <value>Failed to build runtime scene - can't run game</value>
   </data>
+  <data name="FailedToCombineCsgBrush" xml:space="preserve">
+    <value>Error occurred while combining brush and level geometry</value>
+  </data>
   <data name="FailedToExportScene" xml:space="preserve">
     <value>Failed to export scene to file "{0}"</value>
   </data>
@@ -148,13 +160,25 @@
   <data name="FailedToSaveScene" xml:space="preserve">
     <value>Failed to save scene to file "{0}"</value>
   </data>
+  <data name="FoundInvalidTemplates" xml:space="preserve">
+    <value>Found invalid object template files:\n{0}</value>
+  </data>
   <data name="GameUnhandledException" xml:space="preserve">
     <value>Game threw an exception</value>
+  </data>
+  <data name="LevelGeometryEditModeName" xml:space="preserve">
+    <value>Level Geometry</value>
   </data>
   <data name="NoLocationManagersWithUI" xml:space="preserve">
     <value>No asset location managers with UI were available</value>
   </data>
   <data name="NoMaterialSetInScene" xml:space="preserve">
     <value>Scene did not contain material set</value>
+  </data>
+  <data name="ObjectEditModeName" xml:space="preserve">
+    <value>Objects</value>
+  </data>
+  <data name="PolygonBrushInputs" xml:space="preserve">
+    <value>{0}: Adds point, {1}: Closes polygon, {2}: Clears polygon</value>
   </data>
 </root>

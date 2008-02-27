@@ -152,9 +152,8 @@ namespace Poc0.Core.Objects
 			else
 			{
 				//	Slide...
-				Point3 stopPt = col.CollisionPoint + col.CollisionNormal * 0.01f;
+				Point3 stopPt = col.CollisionPoint + col.CollisionNormal * 0.02f;
 				Point3 slidePt = stopPt;
-				slidePt += col.CollisionNormal * 0.01f; // Push slightly away from the wall
 
 				Vector3 perpCollisionNormal = new Vector3( col.CollisionNormal.Z, col.CollisionNormal.Y, -col.CollisionNormal.X );
 

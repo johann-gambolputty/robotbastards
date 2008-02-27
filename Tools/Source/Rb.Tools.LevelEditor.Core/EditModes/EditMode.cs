@@ -7,7 +7,7 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 	/// <summary>
 	/// Base class implementation of <see cref="IEditMode"/>
 	/// </summary>
-	public class EditMode : IEditMode
+	public abstract class EditMode : IEditMode
 	{
 		#region IEditMode Members
 
@@ -15,6 +15,22 @@ namespace Rb.Tools.LevelEditor.Core.EditModes
 		/// Raised by Stop()
 		/// </summary>
 		public event EventHandler Stopped;
+
+		/// <summary>
+		/// Gets the display name of this edit mode
+		/// </summary>
+		public abstract string DisplayName
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Creates the control associated with this edit mode
+		/// </summary>
+		public virtual Control CreateControl( )
+		{
+			return null;
+		}
 
 		/// <summary>
 		/// Returns true if the mode has started
