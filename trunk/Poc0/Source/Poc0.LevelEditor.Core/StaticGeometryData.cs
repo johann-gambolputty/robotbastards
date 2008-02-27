@@ -43,7 +43,6 @@ namespace Poc0.LevelEditor.Core
 			return data;
 		}
 
-
 		#endregion
 
 		#region Public members

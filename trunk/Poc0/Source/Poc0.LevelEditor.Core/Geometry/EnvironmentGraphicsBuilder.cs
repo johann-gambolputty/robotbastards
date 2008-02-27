@@ -348,7 +348,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 					Point3 roof0Pt	= vertices[ roofIndexMap[ pIndex ] ].m_Point;
 					Point3 roof1Pt	= vertices[ roofIndexMap[ nextPIndex ] ].m_Point;
 
-					Vector3 dir = Vector3.Cross( floor1Pt - floor0Pt, roof1Pt - roof0Pt ).MakeNormal( );
+					Vector3 dir = Vector3.Cross( floor1Pt - floor0Pt, floor0Pt - roof0Pt ).MakeNormal( );
 
 					//	TODO: AP: Better texture coordinate generation
 					float texWidth = floor0Pt.DistanceTo( floor1Pt ) / 5.0f;

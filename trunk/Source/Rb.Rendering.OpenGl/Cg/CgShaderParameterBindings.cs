@@ -76,8 +76,8 @@ namespace Rb.Rendering.OpenGl.Cg
 			}
 		}
 		
-		private readonly ArrayList							m_CustomBindings	= new ArrayList( );
-		private readonly CgShaderParameterDefaultBinding[] m_DefaultBindings	= new CgShaderParameterDefaultBinding[(int)ShaderParameterDefaultBinding.NumDefaults];
+		private readonly ArrayList m_CustomBindings	= new ArrayList( );
+		private readonly CgShaderParameterDefaultBinding[] m_DefaultBindings = new CgShaderParameterDefaultBinding[(int)ShaderParameterDefaultBinding.NumDefaults];
 
 	}
 }
