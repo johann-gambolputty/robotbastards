@@ -328,19 +328,19 @@ namespace Poc0.LevelEditor.Core.Geometry
 					int pIndex = obstaclePoly.Edges[ edgeIndex ].StartIndex;
 					int nextPIndex = obstaclePoly.Edges[ edgeIndex ].EndIndex;
 
-					//if ( ( floorIndexMap[ pIndex ] == -1 ) || ( floorIndexMap[ nextPIndex ] == -1 ) )
+					if ( ( floorIndexMap[ pIndex ] == -1 ) || ( floorIndexMap[ nextPIndex ] == -1 ) )
+					{
+					    //	No equivalent floor vertices - ignore
+					    continue;
+					}
+					//if ( floorIndexMap[ pIndex ] == -1 )
 					//{
-					//    //	No equivalent floor vertices - ignore
-					//    continue;
+					//    floorIndexMap[ pIndex ] = AddVertex( vertices, FloorVertex( flatPoints[ pIndex ].X, 0, flatPoints[ pIndex ].Y ) );
 					//}
-					if ( floorIndexMap[ pIndex ] == -1 )
-					{
-						floorIndexMap[ pIndex ] = AddVertex( vertices, FloorVertex( flatPoints[ pIndex ].X, 0, flatPoints[ pIndex ].Y ) );
-					}
-					if ( floorIndexMap[ nextPIndex ] == -1 )
-					{
-						floorIndexMap[ nextPIndex ] = AddVertex( vertices, FloorVertex( flatPoints[ nextPIndex ].X, 0, flatPoints[ nextPIndex ].Y ) );
-					}
+					//if ( floorIndexMap[ nextPIndex ] == -1 )
+					//{
+					//    floorIndexMap[ nextPIndex ] = AddVertex( vertices, FloorVertex( flatPoints[ nextPIndex ].X, 0, flatPoints[ nextPIndex ].Y ) );
+					//}
 
 					Point3 floor0Pt = vertices[ floorIndexMap[ pIndex ] ].m_Point;
 					Point3 floor1Pt = vertices[ floorIndexMap[ nextPIndex ] ].m_Point;

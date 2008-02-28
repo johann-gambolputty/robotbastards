@@ -137,7 +137,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\DefaultWallEffect.cgfx" />
     <None Include="Resources\GridSquare.bmp" />
   </ItemGroup>
   <ItemGroup>

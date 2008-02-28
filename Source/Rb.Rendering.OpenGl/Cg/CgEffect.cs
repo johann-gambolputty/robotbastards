@@ -38,6 +38,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// <summary>
 		/// Creates the effect, loading it from a .cgfx stream
 		/// </summary>
+		/// <param name="context">CG context</param>
 		/// <param name="source">Asset source</param>
 		public CgEffect( IntPtr context, ISource source )
 		{
@@ -179,7 +180,7 @@ namespace Rb.Rendering.OpenGl.Cg
 				//	to handle, say, compressed file systems, databases, or other methods of retrieving assets)
 				str = InlineAllIncludes( source, str );
 
-				File.WriteAllText("c:\\temp\\effectDump.cgfx", str);
+			//	File.WriteAllText("c:\\temp\\effectDump.cgfx", str);
 
 				if ( !CreateFromHandle( TaoCg.cgCreateEffect( m_Context, str, null ) ) )
 				{

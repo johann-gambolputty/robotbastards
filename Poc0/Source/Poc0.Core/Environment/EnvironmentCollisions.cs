@@ -35,15 +35,17 @@ namespace Poc0.Core.Environment
 				return ( m_Behind != null ) && ( m_Behind.IsInside( pt ) );
 			}
 
+			private const float PlaneTolerance = 0.001f;
+
 			public bool Check( Point2 start, Point2 end, float startT, float endT, ref float collisionT, ref Vector2 collisionNormal )
 			{
 				Line2Intersection intersection = Intersections2.GetLinePlaneIntersection( start, end, m_Plane );
 				if ( intersection == null )
 				{
-					PlaneClassification edgeClass = m_Plane.ClassifyPoint( start, 0.01f );
+					PlaneClassification edgeClass = m_Plane.ClassifyPoint( start, PlaneTolerance );
 					if ( edgeClass == PlaneClassification.On )
 					{
-						edgeClass = m_Plane.ClassifyPoint( end, 0.01f );
+						edgeClass = m_Plane.ClassifyPoint( end, PlaneTolerance );
 					}
 					if ( edgeClass == PlaneClassification.InFront )
 					{

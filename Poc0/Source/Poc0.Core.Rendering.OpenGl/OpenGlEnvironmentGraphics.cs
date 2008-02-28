@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 using Poc0.Core.Environment;
+using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Textures;
 using Rb.World;
@@ -164,20 +165,13 @@ namespace Poc0.Core.Rendering.OpenGl
 			/// <param name="src">Cell source data</param>
 			public Cell( Scene scene, EnvironmentGraphicsData.GridCell src )
 			{
+				m_Scene = scene;
 				m_VertexBuffer = Graphics.Factory.NewVertexBuffer( src.VertexData );
 				m_Groups = new GeometryGroup[ src.Groups.Count ];
 				for ( int groupIndex = 0; groupIndex < m_Groups.Length; ++groupIndex )
 				{
 					m_Groups[ groupIndex ] = new GeometryGroup( src.Groups[ groupIndex ] );
 				}
-				
-				//	TODO: AP: Fix lighting
-				//	Split between static lights and dynamic lights
-				//	Add grid lighting manager (scene service)
-				ILightingService lighting = scene.GetService< ILightingService >( );
-
-				m_Lights.Lights = new ILight[ lighting.Lights.Count ];
-				lighting.Lights.CopyTo( m_Lights.Lights, 0 );
 			}
 
 			/// <summary>
@@ -186,17 +180,28 @@ namespace Poc0.Core.Rendering.OpenGl
 			/// <param name="context">Rendering context</param>
 			public void Render( IRenderContext context )
 			{
+				Graphics.Renderer.PushTransform( Transform.LocalToWorld, Matrix44.Identity );
+
+				//	TODO: AP: Fix lighting
+				ILightingService lighting = m_Scene.GetService< ILightingService >( );
+				foreach ( ILight light in lighting.Lights )
+				{
+					Graphics.Renderer.AddLight( light );
+				}
+
 				m_VertexBuffer.Begin( );
-				m_Lights.Begin( );
 				foreach ( GeometryGroup group in m_Groups )
 				{
 					group.Render( context );
 				}
-				m_Lights.End( );
 				m_VertexBuffer.End( );
+
+				Graphics.Renderer.ClearLights( );
+
+				Graphics.Renderer.PopTransform( Transform.LocalToWorld );
 			}
 
-			private readonly LightGroup m_Lights = new LightGroup( );
+			private readonly Scene m_Scene;
 			private readonly GeometryGroup[] m_Groups;
 			private readonly IVertexBuffer m_VertexBuffer;
 		}
@@ -219,3 +224,4 @@ namespace Poc0.Core.Rendering.OpenGl
 		#endregion
 	}
 }
+

@@ -109,41 +109,26 @@ float4 GetPerPixelColour( float3 vecToLight, float3 lightVec, float3 normal, flo
 	return float4( ( lighting.y.xxx + lighting.z.xxx ) * mul, 1.0f );
 }
 
-float4 GetPerPixelColour( float3 lightPos, float3 lightVec, float3 pos, float3 normal )
+float4 GetPerPixelColour( float3 lightPos, float3 lightVec, float arc, float3 pos, float3 normal )
 {
 	float3 vecToLight	= normalize( lightPos - pos );
 	
-	float mul = -dot( vecToLight, SpotLights.m_Directions[ 0 ] ) < SpotLights.m_Arcs[ 0 ] ? 0.4f : 1.0f;
+	float coverage = GetShadowCoverage( mul( ShadowMatrix[ 0 ], float4( pos, 1 ) ) );
+	float mul = -dot( vecToLight, lightVec ) < arc ? 0.4f : coverage;
 
 	return GetPerPixelColour( vecToLight, lightVec, normal, mul );
 }
 
-float4 GetShadowedPerPixelColour( float3 pos, float3 normal, float3 vecToLight )
-{
-	float coverage = GetShadowCoverage( mul( ShadowMatrix[ 0 ], float4( pos, 1 ) ) );
-	float4 ppColour = GetPerPixelColour( vecToLight, SpotLights.m_Directions[ 0 ], normal, 1.0f );
-	
-	return coverage * ppColour;
-}
-
-float4 PerPixelShadowFragmentShader( OutputVertex input ) : COLOR
-{
-	float3 vecToLight = normalize( SpotLights.m_Positions[ 0 ] - input.m_WorldPos );	
-	float mul = -dot( vecToLight, SpotLights.m_Directions[ 0 ] );
-
-	return mul < SpotLights.m_Arcs[ 0 ] ? 0.2f : GetShadowedPerPixelColour( input.m_WorldPos, input.m_WorldNormal, vecToLight );
-}
-
 float4 PerPixelShadowTextureFragmentShader( OutputVertex input ) : COLOR
 {
-	float coverage = GetShadowCoverage( mul( ShadowMatrix[ 0 ], float4( input.m_WorldPos, 1 ) ) );
-	float4 ppColour = GetPerPixelColour( SpotLights.m_Positions[ 0 ], SpotLights.m_Directions[ 0 ], input.m_WorldPos, input.m_WorldNormal );
-	return coverage * ppColour * tex2D( Texture1, input.m_Tex0 );
-}
+	float3 spotPos = SpotLights.m_Positions[ 0 ];
+	float3 spotDir = SpotLights.m_Directions[ 0 ];
+	float spotArc = SpotLights.m_Arcs[ 0 ];
 
-float4 PerPixelLightingFragmentShader( OutputVertex input ) : COLOR
-{
-	return GetPerPixelColour( SpotLights.m_Positions[ 0 ], SpotLights.m_Directions[ 0 ], input.m_WorldPos, input.m_WorldNormal );
+//	float coverage = GetShadowCoverage( mul( ShadowMatrix[ 0 ], float4( input.m_WorldPos, 1 ) ) );
+	float4 ppColour = GetPerPixelColour( spotPos, spotDir, spotArc, input.m_WorldPos, input.m_WorldNormal );
+	
+	return ppColour * tex2D( Texture1, input.m_Tex0 );
 }
 
 technique NormalTechnique

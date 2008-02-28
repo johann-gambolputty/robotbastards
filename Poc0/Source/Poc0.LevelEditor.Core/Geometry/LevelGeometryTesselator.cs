@@ -49,6 +49,13 @@ namespace Poc0.LevelEditor.Core.Geometry
 		public class Polygon
 		{
 			/// <summary>
+			/// Default constructor
+			/// </summary>
+			public Polygon( )
+			{
+			}
+
+			/// <summary>
 			/// Setup constructor
 			/// </summary>
 			public Polygon( Edge[] edges )
@@ -165,7 +172,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 			int lastIndex = classifications.Length - 1;
 			for ( int index = 0; index < classifications.Length; ++index )
 			{
-				if ((classifications[lastIndex] == PlaneClassification.On) && (classifications[index] == PlaneClassification.On ) )
+				if ( ( classifications[ lastIndex ] == PlaneClassification.On ) && ( classifications[ index ] == PlaneClassification.On ) )
 				{
 					edgeIsOnPlane = true;
 					break;
@@ -189,16 +196,14 @@ namespace Poc0.LevelEditor.Core.Geometry
 				return;
 			}
 
-			//int lastPtIndex = firstDefiniteClassIndex;
-			//int curPtIndex = ( lastPtIndex + 1 ) % source.Edges.Length;
-			//Point2 lastPt = m_Points[ source.Edges[ lastPtIndex ].StartIndex ];
-			//PlaneClassification lastClass = classifications[ lastPtIndex ];
-
 			List<Edge> behindEdges = new List<Edge>( source.Edges.Length + 1 );
 			List<Edge> inFrontEdges = new List<Edge>( source.Edges.Length + 1 );
 
 			int inFrontSplitEdgeIndex = -1;
 			int behindSplitEdgeIndex = -1;
+
+			behind = new Polygon( );
+			inFront = new Polygon( );
 
 			for ( int count = 0; count < source.Edges.Length; ++count )
 			{
@@ -221,18 +226,30 @@ namespace Poc0.LevelEditor.Core.Geometry
 					//	if there's 2 or more points on the split plane
 					if ( classifications[ next ] == PlaneClassification.Behind )
 					{
-						System.Diagnostics.Trace.Assert( inFrontSplitEdgeIndex == -1 );
+						behindEdges.Add( srcEdge );
+					}
+					else
+					{
+						inFrontEdges.Add( srcEdge );
+					}
+				}
+				else if ( classifications[ next ] == PlaneClassification.On )
+				{
+					if ( classifications[ count ] == PlaneClassification.Behind )
+					{
+						System.Diagnostics.Debug.Assert( inFrontSplitEdgeIndex == -1 );
 						inFrontSplitEdgeIndex = inFrontEdges.Count;
 						inFrontEdges.Add( null );
 						behindEdges.Add( srcEdge );
 					}
 					else
 					{
-						System.Diagnostics.Trace.Assert( behindSplitEdgeIndex == -1 );
+						System.Diagnostics.Debug.Assert( behindSplitEdgeIndex == -1 );
 						behindSplitEdgeIndex = behindEdges.Count;
 						behindEdges.Add( null );
 						inFrontEdges.Add( srcEdge );
 					}
+					
 				}
 				else
 				{
@@ -242,9 +259,15 @@ namespace Poc0.LevelEditor.Core.Geometry
 					Line2Intersection intersection = Intersections2.GetLinePlaneIntersection( startPt, endPt, plane );
 					int newPtIndex = AddPoint( intersection.IntersectionPosition );
 
-					//	TODO: AP: Find the edge in the neighbour polygon, and split that too
-					SplitNeighbourEdge( srcEdge, newPtIndex );
-				//	srcEdge.Neighbour;
+					//	Find the edge in the neighbour polygon, and split that too
+					if ( classifications[ count ] == PlaneClassification.Behind )
+					{
+						SplitNeighbourEdge( srcEdge, newPtIndex, behind, inFront );	
+					}
+					else
+					{
+						SplitNeighbourEdge( srcEdge, newPtIndex, inFront, behind );	
+					}
 
 					Edge startToMid = new Edge( srcEdge.StartIndex, newPtIndex, srcEdge.Neighbour );
 					Edge midToEnd = new Edge( newPtIndex, srcEdge.EndIndex, srcEdge.Neighbour );
@@ -270,31 +293,17 @@ namespace Poc0.LevelEditor.Core.Geometry
 				}
 			}
 
-			Edge behindSplitEdge = AddSplitEdge( behindEdges, behindSplitEdgeIndex );
-			Edge inFrontSplitEdge = AddSplitEdge( inFrontEdges, inFrontSplitEdgeIndex );
+			System.Diagnostics.Debug.Assert( behindEdges.Count > 0 );
+			System.Diagnostics.Debug.Assert( inFrontEdges.Count > 0 );
 
-			if ( behindEdges.Count == 0 )
-			{
-				behind = null;
-			}
-			else
-			{
-				behind = new Polygon( behindEdges.ToArray( ) );
-				inFrontSplitEdge.Neighbour = behind;
-			}
-			
-			if ( inFrontEdges.Count == 0 )
-			{
-				inFront = null;
-			}
-			else
-			{
-				inFront = new Polygon( inFrontEdges.ToArray( ) );
-				behindSplitEdge.Neighbour = inFront;
-			}
+			AddSplitEdge( behindEdges, behindSplitEdgeIndex, inFront );
+			AddSplitEdge( inFrontEdges, inFrontSplitEdgeIndex, behind );
+
+			behind.Edges = behindEdges.ToArray( );
+			inFront.Edges = inFrontEdges.ToArray( );
 		}
 
-		private static void SplitNeighbourEdge( Edge srcEdge, int midPointIndex )
+		private static void SplitNeighbourEdge( Edge srcEdge, int midPointIndex, Polygon startPoly, Polygon endPoly )
 		{
 			Polygon neighbour = srcEdge.Neighbour;
 
@@ -308,8 +317,11 @@ namespace Poc0.LevelEditor.Core.Geometry
 			for ( int edgeIndex = 0; edgeIndex < edges.Length; ++edgeIndex )
 			{
 				Edge edge = edges[ edgeIndex ];
-				if ( ( ( edge.StartIndex == srcEdge.StartIndex ) && ( edge.EndIndex == srcEdge.EndIndex ) ) ||
-					 ( ( edge.EndIndex == srcEdge.StartIndex ) && ( edge.StartIndex == srcEdge.EndIndex ) ) )
+			//	if ( ( ( edge.StartIndex == srcEdge.StartIndex ) && ( edge.EndIndex == srcEdge.EndIndex ) ) ||
+			//		 ( ( edge.EndIndex == srcEdge.StartIndex ) && ( edge.StartIndex == srcEdge.EndIndex ) ) )
+				bool backwardMatch = ( edge.EndIndex == srcEdge.StartIndex ) && ( edge.StartIndex == srcEdge.EndIndex );
+				bool forwardMatch = !backwardMatch && ( ( edge.StartIndex == srcEdge.StartIndex ) && ( edge.EndIndex == srcEdge.EndIndex ) );
+				if ( backwardMatch || forwardMatch )
 				{
 					Edge[] newEdges = new Edge[ edges.Length + 1 ];
 					int newIndex = 0;
@@ -319,23 +331,25 @@ namespace Poc0.LevelEditor.Core.Geometry
 						newEdges[ newIndex++ ] = edges[ oldIndex++ ];
 					}
 					++oldIndex; //	Skip
-					newEdges[ newIndex++ ] = new Edge( edge.StartIndex, midPointIndex, edge.Neighbour );
-					newEdges[ newIndex++ ] = new Edge( midPointIndex, edge.EndIndex, edge.Neighbour );
+					newEdges[ newIndex++ ] = new Edge( edge.StartIndex, midPointIndex, forwardMatch ? startPoly : endPoly );
+					newEdges[ newIndex++ ] = new Edge( midPointIndex, edge.EndIndex, forwardMatch ? endPoly : startPoly );
 					while ( oldIndex < edges.Length )
 					{
 						newEdges[ newIndex++ ] = edges[ oldIndex++ ];
 					}
+
+					neighbour.Edges = newEdges;
 					return;
 				}
 			}
 		}
 
-		private static Edge AddSplitEdge( IList< Edge > edges, int splitEdgeIndex )
+		private static Edge AddSplitEdge( IList< Edge > edges, int splitEdgeIndex, Polygon neighbour )
 		{
 			Edge previousEdge = edges[ splitEdgeIndex == 0 ? edges.Count - 1 : splitEdgeIndex - 1 ];
 			Edge nextEdge = edges[ ( splitEdgeIndex + 1 ) % edges.Count ];
 
-			edges[ splitEdgeIndex ] = new Edge( previousEdge.EndIndex, nextEdge.StartIndex, null );
+			edges[ splitEdgeIndex ] = new Edge( previousEdge.EndIndex, nextEdge.StartIndex, neighbour );
 
 			return edges[ splitEdgeIndex ];
 		}

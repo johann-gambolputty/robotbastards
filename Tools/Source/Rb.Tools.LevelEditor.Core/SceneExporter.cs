@@ -53,6 +53,19 @@ namespace Rb.Tools.LevelEditor.Core
 		public event Action< string > LastExportPathChanged;
 
 		/// <summary>
+		/// Opens an exported scene from a given file
+		/// </summary>
+		/// <param name="path">Path tothe file containing serialized Scene object</param>
+		/// <returns>Returns the loaded scene object</returns>
+		public static Scene Open( string path )
+		{
+			using ( FileStream stream = new FileStream( path, FileMode.Open, FileAccess.Read ) )
+			{
+				return Open( stream );
+			}
+		}
+		
+		/// <summary>
 		/// Opens an exported scene from a given stream
 		/// </summary>
 		/// <param name="stream">Stream containing serialized Scene object</param>
