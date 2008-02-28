@@ -13,7 +13,6 @@ using Rb.Core.Assets;
 using Rb.Core.Components;
 using Rb.Interaction;
 using Rb.Rendering;
-using Rb.Tools.LevelEditor.Core;
 using Rb.World;
 using Rb.World.Services;
 
@@ -134,24 +133,15 @@ namespace Poc0.LevelEditor
 		private CommandUser[] m_Users;
 		private Viewer m_Viewer;
 
-		/// <summary>
-		/// Deserializes a Scene object from an ISource
-		/// </summary>
-		private static Scene DeserializeScene( ISource source )
+		private Scene Scene
 		{
-			using ( System.IO.Stream stream = source.Open( ) )
-			{
-				return SceneExporter.Open( stream );
-			}
+			get { return m_Setup.Scene; }
 		}
 
 		private void GameViewForm_Load( object sender, EventArgs e )
 		{
-			//	Load the scene
-			m_Scene = DeserializeScene( m_Setup.SceneSource );
-
 			//	Add a performance display
-			m_Scene.Objects.Add( new PerformanceDisplay( ) );
+			Scene.Objects.Add( new PerformanceDisplay( ) );
 			DebugInfo.ShowFps = true;
 			DebugInfo.ShowMemoryWorkingSet = true;
 			DebugInfo.ShowMemoryPeakWorkingSet = true;
@@ -163,7 +153,7 @@ namespace Poc0.LevelEditor
 			gameDisplay.AddViewer( m_Viewer );
 
 			//	Get start points
-			IEnumerable< PlayerStart > startPoints = m_Scene.Objects.GetAllOfType<PlayerStart>( );
+			IEnumerable< PlayerStart > startPoints = Scene.Objects.GetAllOfType<PlayerStart>( );
 
 			//	Setup players
 			InputContext inputContext = new InputContext( m_Viewer );
@@ -194,7 +184,7 @@ namespace Poc0.LevelEditor
 				
 				//	Load the player's character
 				object character = AssetManager.Instance.Load( player.CharacterSource );
-				m_Scene.Objects.Add( ( IUnique )character );
+				Scene.Objects.Add( ( IUnique )character );
 
 				//	Place the character at the start position
 				IPlaceable placeable = Rb.Core.Components.Parent.GetType<IPlaceable>( character );
@@ -221,10 +211,10 @@ namespace Poc0.LevelEditor
 
 
 			//	Start rendering the scene
-			m_Viewer.Renderable = m_Scene;
+			m_Viewer.Renderable = Scene;
 
 			//	Kick off the update service... (TODO: AP: Not a very good hack)
-			IUpdateService updater = m_Scene.GetService< IUpdateService >( );
+			IUpdateService updater = Scene.GetService< IUpdateService >( );
 			if ( updater != null )
 			{
 				updater.Start( );
@@ -233,16 +223,13 @@ namespace Poc0.LevelEditor
 
 		private void GameViewForm_FormClosing( object sender, FormClosingEventArgs e )
 		{
-			m_Scene.Dispose( );
-			m_Scene = null;
+			Scene.Dispose( );
 
 			//	Collect game garbage
 			GC.Collect( );
 			GC.WaitForPendingFinalizers( );
 			GC.Collect( );
 		}
-
-		private Scene m_Scene;
 	}
 
 	/// <summary>
@@ -300,12 +287,12 @@ namespace Poc0.LevelEditor
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		/// <param name="sceneSource">Location of the scene file</param>
+		/// <param name="scene">Game scene</param>
 		/// <param name="players">Player setup data</param>
 		/// <param name="viewerSource">Location of the viewer file</param>
-		public GameSetup( ISource sceneSource, PlayerSetup[] players, ISource viewerSource )
+		public GameSetup( Scene scene, PlayerSetup[] players, ISource viewerSource )
 		{
-			m_SceneSource = sceneSource;
+			m_Scene = scene;
 			m_Players = players;
 			m_ViewerSource = viewerSource;
 		}
@@ -321,9 +308,9 @@ namespace Poc0.LevelEditor
 		/// <summary>
 		/// Gets the scene source
 		/// </summary>
-		public ISource SceneSource
+		public Scene Scene
 		{
-			get { return m_SceneSource; }
+			get { return m_Scene; }
 		}
 
 		/// <summary>
@@ -343,7 +330,7 @@ namespace Poc0.LevelEditor
 		}
 
 		private readonly ISource m_ViewerSource;
-		private readonly ISource m_SceneSource;
+		private readonly Scene m_Scene;
 		private readonly PlayerSetup[] m_Players;
 	}
 

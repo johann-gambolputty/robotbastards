@@ -106,6 +106,7 @@ namespace Poc0.LevelEditor
 			form.Show( this );
 		}
 
+
 		private void OnGameClicked( object sender, EventArgs args )
 		{
 			Scene runtimeScene;
@@ -113,6 +114,11 @@ namespace Poc0.LevelEditor
 			{
 				runtimeScene = CreateNewRuntimeScene( );
 				BuildRuntimeScene( EditorState.Instance.CurrentScene, runtimeScene );
+
+				//string tmp = System.IO.Path.GetTempFileName( );
+				//SceneExporter.Instance.ExportTo( tmp, runtimeScene );
+				//runtimeScene = SceneExporter.Open( tmp );
+				//System.IO.File.Delete( tmp );
 			}
 			catch ( Exception ex )
 			{
@@ -121,15 +127,7 @@ namespace Poc0.LevelEditor
 				return;
 			}
 
-			if ( !SceneExporter.Instance.Export( runtimeScene ) )
-			{
-				ErrorMessageBox.Show( this, Resources.ExportFailedCantRunGame );
-				return;
-			}
-
-			ISource sceneSource = new Location( SceneExporter.Instance.LastExportPath );
 			ISource viewerSource = new Location( "Editor/LevelEditorGameViewer.components.xml" );
-
 			PlayerSetup[] players = new PlayerSetup[]
 				{
 					new PlayerSetup
@@ -143,7 +141,7 @@ namespace Poc0.LevelEditor
 			//	Disable continuous rendering on the main display
 			display.ContinuousRendering = false;
 
-			GameSetup setup = new GameSetup( sceneSource, players, viewerSource );
+			GameSetup setup = new GameSetup( runtimeScene, players, viewerSource );
 
 			try
 			{

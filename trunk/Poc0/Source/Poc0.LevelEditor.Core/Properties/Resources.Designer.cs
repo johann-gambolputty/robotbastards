@@ -67,13 +67,6 @@ namespace Poc0.LevelEditor.Core.Properties {
             }
         }
         
-        internal static byte[] DefaultWallEffect {
-            get {
-                object obj = ResourceManager.GetObject("DefaultWallEffect", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap DefaultWallTexture {
             get {
                 object obj = ResourceManager.GetObject("DefaultWallTexture", resourceCulture);

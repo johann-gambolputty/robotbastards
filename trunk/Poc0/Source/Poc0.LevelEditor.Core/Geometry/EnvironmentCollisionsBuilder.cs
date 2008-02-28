@@ -12,7 +12,8 @@ namespace Poc0.LevelEditor.Core.Geometry
 		/// </summary>
 		public static IEnvironmentCollisions Build( LevelGeometry level )
 		{
-			Csg2.Node srcNode = Csg2.BuildExpansion( level.ObstaclePolygons, 1.5f );
+		//	Csg2.Node srcNode = Csg2.BuildExpansion( level.ObstaclePolygons, 1.5f );
+			Csg2.Node srcNode = Csg2.Build( level.ObstaclePolygons );
 
 			EnvironmentCollisions.Node node = Build( srcNode );
 			EnvironmentCollisions impl = new EnvironmentCollisions( node );

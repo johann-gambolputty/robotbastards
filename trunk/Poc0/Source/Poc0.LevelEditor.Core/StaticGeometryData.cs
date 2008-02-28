@@ -24,7 +24,6 @@ namespace Poc0.LevelEditor.Core
 			StaticGeometryData data = new StaticGeometryData( );
 
 			data.Texture = CreateDefaultTexture( "DefaultWallTexture" );
-		//	data.Technique = CreateDefaultTechnique( @"Graphics\Effects\perPixelTexturedShadowed.cgfx" );
 			data.Technique = CreateDefaultTechnique( @"Graphics\Effects\DefaultWall.cgfx" );
 
 			return data;
@@ -38,7 +37,6 @@ namespace Poc0.LevelEditor.Core
 			StaticGeometryData data = new StaticGeometryData( );
 			
 			data.Texture = CreateDefaultTexture( "DefaultFloorTexture" );
-		//	data.Technique = CreateDefaultTechnique( @"Graphics\Effects\perPixelTexturedShadowed.cgfx" );
 			data.Technique = CreateDefaultTechnique( @"Graphics\Effects\DefaultFloor.cgfx" );
 			return data;
 		}

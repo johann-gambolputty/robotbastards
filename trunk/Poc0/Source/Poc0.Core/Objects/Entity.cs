@@ -152,7 +152,7 @@ namespace Poc0.Core.Objects
 			else
 			{
 				//	Slide...
-				Point3 stopPt = col.CollisionPoint + col.CollisionNormal * 0.02f;
+				Point3 stopPt = col.CollisionPoint + col.CollisionNormal * 0.01f;
 				Point3 slidePt = stopPt;
 
 				Vector3 perpCollisionNormal = new Vector3( col.CollisionNormal.Z, col.CollisionNormal.Y, -col.CollisionNormal.X );
