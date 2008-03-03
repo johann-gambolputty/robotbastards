@@ -11,5 +11,11 @@ namespace Rb.Core.Components
         /// </summary>
         /// <param name="parent">Parent object</param>
         void AddedToParent( object parent );
+
+		/// <summary>
+		/// Called when this object is removed from a parent object
+		/// </summary>
+		/// <param name="parent">Parent object</param>
+		void RemovedFromParent( object parent );
     }
 }

@@ -113,6 +113,18 @@ namespace Rb.Interaction
 			}
 		}
 
+		/// <summary>
+		/// Called when this object is removed from a parent object
+		/// </summary>
+		/// <param name="parent">Parent object</param>
+		public virtual void RemovedFromParent( object parent )
+		{
+			if ( Target == parent )
+			{
+				Target = null;
+			}
+		}
+
 		#endregion
 
 		#region	Private stuff

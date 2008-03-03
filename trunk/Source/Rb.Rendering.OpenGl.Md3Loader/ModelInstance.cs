@@ -118,7 +118,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			}
 		}
 
-		#region IChildObject Members
+		#region IChild Members
 
 		/// <summary>
 		/// Handles a movement request message
@@ -205,6 +205,19 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			if ( MessageSource == null && parent is IMessageHub )
 			{
 				MessageSource = parent;
+			}
+		}
+
+
+		/// <summary>
+		/// Called when this object is removed from a parent object
+		/// </summary>
+		/// <param name="parent">Parent object</param>
+		public void RemovedFromParent( object parent )
+		{
+			if ( MessageSource == parent )
+			{
+				MessageSource = null;
 			}
 		}
 

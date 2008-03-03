@@ -2,8 +2,10 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.Serialization;
+using Rb.Core.Maths;
 using Rb.Rendering.Textures;
 using Tao.OpenGl;
+using Rectangle=System.Drawing.Rectangle;
 
 namespace Rb.Rendering.OpenGl
 {
@@ -437,46 +439,36 @@ namespace Rb.Rendering.OpenGl
 
 				//	Get texture memory
 				float[] textureMemory = new float[ Width * Height ];
-				Gl.glGetTexImage( Gl.GL_TEXTURE_2D, 0, m_GlFormat, Gl.GL_FLOAT, textureMemory );
+				Gl.glGetTexImage( Gl.GL_TEXTURE_2D, 0, Gl.GL_DEPTH_COMPONENT, Gl.GL_FLOAT, textureMemory );
 
-				//	Create bitmap
-				bmp = new Bitmap( Width, Height, PixelFormat.Format24bppRgb );
-
-				//	Create image memory
-				int texIndex = 0;
-				for ( int h = 0; h < Height; ++h )
+				float minDepth = float.MaxValue;
+				float maxDepth = float.MinValue;
+				for ( int textureIndex = 0; textureIndex < textureMemory.Length; ++textureIndex )
 				{
-					for ( int w = 0; w < Width; ++w, ++texIndex )
+					minDepth = Utils.Min( textureMemory[ textureIndex ], minDepth );
+					maxDepth = Utils.Max( textureMemory[ textureIndex ], maxDepth );
+				}
+
+				bmp = new Bitmap( Width, Height, PixelFormat.Format24bppRgb );
+				BitmapData bmpData = bmp.LockBits( new Rectangle( 0, 0, Width, Height ), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb );
+
+				byte* bmpMem = ( byte* )bmpData.Scan0;
+				{
+					int texOffset = 0;
+					for ( int y = Height - 1; y >= 0; --y )
 					{
-						float depth = ( textureMemory[ texIndex ] );
-					//	byte grey = ( byte )( System.Math.Exp( depth ) * 255.0f);
-						byte grey = ( byte )( depth * 255.0f );
-						bmp.SetPixel( w, h, Color.FromArgb( grey, grey, grey ) );
+						byte* curBmpPixel = bmpMem + ( y * bmpData.Stride );
+						for ( int x = 0; x < Width; ++x )
+						{
+							float depth = textureMemory[ texOffset++ ];
+							depth = ( depth - minDepth ) / ( maxDepth - minDepth );
+							byte grey = ( byte )( depth * 255.0f );
+							*( curBmpPixel++ ) = grey;
+							*( curBmpPixel++ ) = grey;
+							*( curBmpPixel++ ) = grey;
+						}
 					}
 				}
-
-				//	NOTE: Was using this code, but it was crashing occasionally when using the bitmap, making me think that the
-				//	garbage collector was cleaning up imageMemory while is was being used, and the System.Drawing.Bitmap is
-				//	expecting the memory given to it to be permanent (maybe...)
-
-				/*
-			//	byte[] imageMemory = new byte[ Width * Height * 3 ];
-			//	int imageIndex = 0;
-				for ( int texIndex = 0; texIndex < textureMemory.Length; ++texIndex )
-				{
-					float depth = ( ( float )textureMemory[ texIndex ] );
-					byte grey = ( byte )( System.Math.Exp( depth ) * 255.0f);
-					imageMemory[ imageIndex++ ] = grey;
-					imageMemory[ imageIndex++ ] = grey;
-					imageMemory[ imageIndex++ ] = grey;
-				}
-
-				//	Create a Bitmap object from the image memory
-				fixed ( byte* imageMemoryPtr = imageMemory )
-				{
-					bmp = new System.Drawing.Bitmap( Width, Height, Width * 3, PixelFormat.Format24bppRgb, ( IntPtr )imageMemoryPtr );
-				}
-				*/
 			}
 			else
 			{

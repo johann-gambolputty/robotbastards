@@ -8,6 +8,9 @@
       <float value="0.7" property="T"/>
       <float value="50" property="Zoom"/>
 
+      <float value="0.5" property="PerspectiveZNear"/>
+      <float value="300" property="PerspectiveZFar"/>
+
     </object>
 
     <!-- Rendering technique -->
@@ -18,8 +21,8 @@
         <int value="16"/>
         <bool value="true"/>
       </parameters>
-      <float value="0.01" property="NearZ"/>
-      <float value="30" property="FarZ"/>
+      <float value="0.5" property="NearZ"/>
+      <float value="300" property="FarZ"/>
     </object>
   </object>
 

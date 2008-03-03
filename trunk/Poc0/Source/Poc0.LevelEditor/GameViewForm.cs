@@ -206,7 +206,8 @@ namespace Poc0.LevelEditor
 					m_Viewer.Camera.AddChild( cameraControl );
 				}
 
-				( ( IParent )character ).AddChild( new UserController( m_Users[ playerIndex ], ( IMessageHandler )character ) );
+				IParent characterParent = ( IParent )character;
+				characterParent.AddChild( new UserController( m_Users[ playerIndex ], ( IMessageHandler )character ) );
 			}
 
 
@@ -219,6 +220,7 @@ namespace Poc0.LevelEditor
 			{
 				updater.Start( );
 			}
+			playButton.Enabled = false;
 		}
 
 		private void GameViewForm_FormClosing( object sender, FormClosingEventArgs e )
@@ -229,6 +231,33 @@ namespace Poc0.LevelEditor
 			GC.Collect( );
 			GC.WaitForPendingFinalizers( );
 			GC.Collect( );
+		}
+
+		private void shadowBufferToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			ShadowBufferTechnique.DumpShadowBuffer = true;
+		}
+
+		private void playButton_Click( object sender, EventArgs e )
+		{
+			IUpdateService updater = Scene.GetService<IUpdateService>( );
+			if ( updater != null )
+			{
+				updater.Start( );
+			}
+			pauseButton.Enabled = true;
+			playButton.Enabled = false;
+		}
+
+		private void pauseButton_Click( object sender, EventArgs e )
+		{
+			IUpdateService updater = Scene.GetService<IUpdateService>( );
+			if ( updater != null )
+			{
+				updater.Stop( );
+			}
+			pauseButton.Enabled = false;
+			playButton.Enabled = true;
 		}
 	}
 

@@ -53,8 +53,8 @@ float			InvShadowZRatio;
 float4x4		ShadowMatrix[ 4 ];
 
 //	Shader constants
-const float ShadowTexUStep = 1.0 / 512.0;
-const float ShadowTexVStep = 1.0 / 512.0;
+const float ShadowTexUStep = 1.0 / 1024.0;
+const float ShadowTexVStep = 1.0 / 1024.0;
 
 OutputVertex VertexShader( InputVertex input )
 {
@@ -70,21 +70,22 @@ OutputVertex VertexShader( InputVertex input )
 
 float GetLightDepth( float z )
 {
-	return ( InvShadowNearZ - 1.f / z ) * InvShadowZRatio;
+	return ( ( InvShadowNearZ - ( 1.f / ( z + 1.0f ) ) ) * InvShadowZRatio );
 }
 
 const float MinCoverage = 0.4f;
-const float CoverageIncrement = 0.6f / 4.f;
+const float CoverageIncrement = 0.6f / 5.f;
 
 float GetShadowCoverage( float4 lightSpacePos )
 {
 	//	TODO: Move scale and translation to transform
-	float	rcp2W			= 1.0f / ( lightSpacePos.w * 2 );
+	float	rcp2W			= 1.0f / ( lightSpacePos.w * 2.0f );
 	float2	uv				= float2( lightSpacePos.x * rcp2W, lightSpacePos.y * rcp2W ) + float2( 0.5f, 0.5f );
 	float	storedDepth0	= tex2D( Texture0, uv ).r;
-	float	storedDepth1	= tex2D( Texture0, uv + float2( ShadowTexUStep, 0 ) ).r;
-	float	storedDepth2	= tex2D( Texture0, uv + float2( ShadowTexUStep, ShadowTexVStep  ) ).r;
-	float	storedDepth3	= tex2D( Texture0, uv + float2( 0, ShadowTexVStep  ) ).r;
+	float	storedDepth1	= tex2D( Texture0, uv - float2( ShadowTexUStep, 0 ) ).r;
+	float	storedDepth2	= tex2D( Texture0, uv + float2( ShadowTexUStep, 0 ) ).r;
+	float	storedDepth3	= tex2D( Texture0, uv - float2( 0, ShadowTexVStep  ) ).r;
+	float	storedDepth4	= tex2D( Texture0, uv + float2( 0, ShadowTexVStep  ) ).r;
 
 	float	lightDepth		= GetLightDepth( lightSpacePos.z );
 
@@ -94,6 +95,7 @@ float GetShadowCoverage( float4 lightSpacePos )
 	coverage += ( storedDepth1 >= lightDepth ) ? CoverageIncrement : 0.0f;
 	coverage += ( storedDepth2 >= lightDepth ) ? CoverageIncrement : 0.0f;
 	coverage += ( storedDepth3 >= lightDepth ) ? CoverageIncrement : 0.0f;
+	coverage += ( storedDepth4 >= lightDepth ) ? CoverageIncrement : 0.0f;
 	
 	return coverage;
 }

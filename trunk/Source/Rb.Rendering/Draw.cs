@@ -32,6 +32,15 @@ namespace Rb.Rendering
 			public static IBrush Black	= Graphics.Draw.NewBrush( Color.Black );
 		}
 
+		public static class Moulds
+		{
+			public static IMould White	= Graphics.Draw.NewMould( Color.White );
+			public static IMould Red	= Graphics.Draw.NewMould( Color.Red );
+			public static IMould Blue	= Graphics.Draw.NewMould( Color.Blue );
+			public static IMould Green	= Graphics.Draw.NewMould( Color.Green );
+			public static IMould Black	= Graphics.Draw.NewMould( Color.Black );
+		}
+
 		#region Pens
 
 		/// <summary>

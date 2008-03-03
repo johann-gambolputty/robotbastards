@@ -1,5 +1,6 @@
 
 using System.ComponentModel;
+using Rb.Rendering;
 
 namespace Poc0.Core
 {
@@ -11,7 +12,6 @@ namespace Poc0.Core
 		public delegate void DebugInfoChangedDelegate( );
 
 		public static event DebugInfoChangedDelegate DebugInfoChanged;
-
 
 		#region Performance information
 

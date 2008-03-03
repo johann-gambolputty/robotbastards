@@ -58,6 +58,15 @@ namespace Rb.Rendering
 			get { return m_ShadowLights; }
 		}
 
+		/// <summary>
+		/// Dumps the shadow buffer to a texture
+		/// </summary>
+		public static bool DumpShadowBuffer
+		{
+			get { return ms_DumpLights; }
+			set { ms_DumpLights = value; }
+		}
+
 		#endregion
 
 		#region	Construction
@@ -171,7 +180,7 @@ namespace Rb.Rendering
         private readonly LightGroup                     m_ShadowLights = new LightGroup( );
         private readonly RenderTarget[]                 m_RenderTargets = new RenderTarget[ MaxLights ];
         private float                           		m_NearZ = 1.0f;
-        private float                           		m_FarZ = 300.0f;
+        private float                           		m_FarZ = 30.0f;
 		private readonly ShaderParameterCustomBinding 	m_ShadowMatrixBinding;
 		private readonly ShaderParameterCustomBinding	m_InvShadowNearZBinding;
 		private readonly ShaderParameterCustomBinding 	m_InvShadowZRatio;
@@ -193,8 +202,10 @@ namespace Rb.Rendering
             context.PushGlobalTechnique( ms_OverrideTechnique );
 
             //	Set near and far Z plane bindings
-			m_InvShadowNearZBinding.Set( 1.0f / m_NearZ );
-			m_InvShadowZRatio.Set( 1.0f / ( 1.0f / m_NearZ - 1.0f / m_FarZ ) );
+			float nearZ = m_NearZ;
+			float farZ = m_FarZ;
+			m_InvShadowNearZBinding.Set( 1.0f / nearZ );
+			m_InvShadowZRatio.Set( 1.0f / ( 1.0f / nearZ - 1.0f / farZ ) );
 
 			int numLights = lights.Length > MaxLights ? MaxLights : lights.Length;
             int numBuffers = 0;
@@ -226,8 +237,9 @@ namespace Rb.Rendering
 
                 renderable.Render( context );
 
-                //	Stop using the current render target
-                curTarget.End( );
+				//	Stop using the current render target
+				curTarget.End( );
+
 
                 //	Save the depth buffer
                 if ( ms_DumpLights )
@@ -237,6 +249,7 @@ namespace Rb.Rendering
 					GraphicsLog.Verbose( "Dumping shadow buffer image to \"{0}\"...", path );
                     if ( m_DepthTextureUsed )
                     {
+					//	curTarget.SaveDepthBuffer( path );
 						TextureUtils.Save( curTarget.DepthTexture, path );
                     }
                     else
@@ -244,8 +257,7 @@ namespace Rb.Rendering
                         TextureUtils.Save( curTarget.Texture, path );
                     }
 					GraphicsLog.Verbose( "...Done" );
-                }
-
+				}
             }
 
             ms_DumpLights = false;

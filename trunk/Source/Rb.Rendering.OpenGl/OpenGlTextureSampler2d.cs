@@ -24,6 +24,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public override void Begin( )
 		{
+		//	Gl.glEnable( Gl.GL_TEXTURE_2D );
 			Graphics.Renderer.BindTexture( Texture );
 
 			ApplyTextureFilter( Gl.GL_TEXTURE_MIN_FILTER, MinFilter );

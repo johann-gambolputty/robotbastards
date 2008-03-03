@@ -53,19 +53,14 @@ namespace Poc0.Core.Environment
 					}
 					else if ( edgeClass == PlaneClassification.Behind )
 					{
-						if ( m_Behind == null )
-						{
-							//	Line crossed through obstacle
-							collisionT = startT;
-							collisionNormal = m_Plane.Normal;
-							return true;
-						}
-						return m_Behind.Check( start, end, startT, endT, ref collisionT, ref collisionNormal );
+						return ( m_Behind == null ) || m_Behind.Check( start, end, startT, endT, ref collisionT, ref collisionNormal );
 					}
 
 					return false;
 				}
 				float intersectionT = startT + ( endT - startT ) * ( intersection.Distance / start.DistanceTo( end ) );
+				collisionT = intersectionT;
+				collisionNormal = m_Plane.Normal;
 				if ( m_InFront != null )
 				{
 					if ( m_InFront.Check( start, intersection.IntersectionPosition, startT, intersectionT, ref collisionT, ref collisionNormal ) )
@@ -82,8 +77,6 @@ namespace Poc0.Core.Environment
 				}
 				else
 				{
-					collisionT = intersectionT;
-					collisionNormal = m_Plane.Normal;
 					return true;
 				}
 

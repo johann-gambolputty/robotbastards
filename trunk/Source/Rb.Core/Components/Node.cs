@@ -98,6 +98,15 @@ namespace Rb.Core.Components
 			m_Parent = parent;
 		}
 
+		/// <summary>
+		/// Called when this object is removed from a parent object
+		/// </summary>
+		/// <param name="parent">Parent object</param>
+		public virtual void RemovedFromParent( object parent )
+		{
+			m_Parent = null;
+		}
+
 		#endregion
 		
 		#region Private stuff

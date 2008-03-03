@@ -174,13 +174,17 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="str">Text to draw</param>
 		public override void DrawText( Alignment align, int x, int y, Color colour, string str )
 		{
+			DrawText( align, x, y, colour, colour, str );
+		}
+
+		public override void DrawText( Alignment align, int x, int y, Color colour, Color outlineColour, string str )
+		{
 			Graphics.Renderer.Push2d( );
+			Graphics.Renderer.PushTextures( );
 			Graphics.Renderer.PushRenderState( m_RenderState );
-            Graphics.Renderer.PushTextures( );
 			m_FontTextureSampler.Begin( );
 
 			Gl.glColor3ub( colour.R, colour.G, colour.B );
-
 			Gl.glBegin( Gl.GL_QUADS );
 			int		curX		= x;
 			int		curY		= y;
@@ -207,6 +211,27 @@ namespace Rb.Rendering.OpenGl
 
 				int maxX = curX + charData.Width;
 				int maxY = curY + charData.Height;
+
+				/*
+				if ( outline )
+				{
+					Gl.glColor3ub( outlineColour.R, outlineColour.G, outlineColour.B );
+
+					Gl.glTexCoord2f( u, v );
+					Gl.glVertex2i( curX - outlineSize, curY - outlineSize );
+
+					Gl.glTexCoord2f( maxU, v );
+					Gl.glVertex2i( maxX + outlineSize, curY - outlineSize );
+
+					Gl.glTexCoord2f( maxU, maxV );
+					Gl.glVertex2i( maxX + outlineSize, maxY + outlineSize );
+
+					Gl.glTexCoord2f( u, maxV );
+					Gl.glVertex2i( curX - outlineSize, maxY + outlineSize );
+
+					Gl.glColor3ub( colour.R, colour.G, colour.B );
+				}
+				*/
 
 				Gl.glTexCoord2f( u, v );
 				Gl.glVertex2i( curX, curY );
@@ -278,7 +303,7 @@ namespace Rb.Rendering.OpenGl
 			//	Set up new image and graphics object to render to it
 			Bitmap img = new Bitmap( size, size, PixelFormat.Format32bppRgb );
 			graphics = System.Drawing.Graphics.FromImage( img );
-			graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+			graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
 			StringFormat format = new StringFormat( StringFormatFlags.FitBlackBox );
 			format.Alignment = StringAlignment.Near;

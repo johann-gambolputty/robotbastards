@@ -141,7 +141,7 @@ namespace Poc0.Core.Objects
 		public void HandleMovementRequest( MovementXzRequest request )
 		{
 			Environment.Environment env = m_Scene.Objects.GetFirstOfType< Environment.Environment >( );
-			IEnvironmentCollisions collisions = env.Collisions;
+			IEnvironmentCollisions collisions = env.EntityCollisions;
 
 			Vector3 move = new Vector3( request.DeltaX, 0, request.DeltaZ );
 			Collision col = collisions.CheckMovement( Travel.EndPosition, move );
@@ -152,13 +152,14 @@ namespace Poc0.Core.Objects
 			else
 			{
 				//	Slide...
-				Point3 stopPt = col.CollisionPoint + col.CollisionNormal * 0.01f;
+				Point3 stopPt = col.CollisionPoint + col.CollisionNormal * 0.1f;
 				Point3 slidePt = stopPt;
 
 				Vector3 perpCollisionNormal = new Vector3( col.CollisionNormal.Z, col.CollisionNormal.Y, -col.CollisionNormal.X );
 
 				float dp = move.MakeNormal( ).Dot( perpCollisionNormal );
-				float mod = ( dp < 0 ) ? -Functions.Pow( -dp, 0.2f ) : Functions.Pow( dp, 0.5f );
+				float slideBias = 0.4f;
+				float mod = ( dp < 0 ) ? -Functions.Pow( -dp, slideBias ) : Functions.Pow( dp, slideBias );
 				slidePt += perpCollisionNormal * ( move.Length * ( 1 - col.T ) * mod );
 
 				if ( !collisions.IsPointInObstacle( slidePt ) )

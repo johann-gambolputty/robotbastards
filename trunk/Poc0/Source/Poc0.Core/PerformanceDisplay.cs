@@ -27,29 +27,31 @@ namespace Poc0.Core
 		{
 			m_Counter.Update( );
 
+			Color outlineColour = Color.WhiteSmoke;
+
 			RenderFont font = RenderFonts.GetDefaultFont( DefaultFont.Debug );
 			int y = 0;
 			if ( DebugInfo.ShowFps )
 			{
-				font.DrawText( 0, y, TextColour, "Fps: {0:F2}", m_Counter.AverageFps );
+				font.DrawText( 0, y, TextColour, outlineColour, "Fps: {0:F2}", m_Counter.AverageFps );
 				y += font.MaxHeight + 2;
 			}
 			if ( DebugInfo.ShowMemoryWorkingSet )
 			{
 				Process currentProcess = Process.GetCurrentProcess( );
-				font.DrawText( 0, y, TextColour, "Mem: {0:N}kb", currentProcess.WorkingSet64 / 1024 );
+				font.DrawText( 0, y, TextColour, outlineColour, "Mem: {0:N}kb", currentProcess.WorkingSet64 / 1024 );
 				y += font.MaxHeight + 2;
 			}
 			if ( DebugInfo.ShowMemoryPeakWorkingSet )
 			{
 				Process currentProcess = Process.GetCurrentProcess( );
-				font.DrawText( 0, y, TextColour, "PMem: {0:N}kb", currentProcess.PeakWorkingSet64 / 1024 );
+				font.DrawText( 0, y, TextColour, outlineColour, "PMem: {0:N}kb", currentProcess.PeakWorkingSet64 / 1024 );
 			}
 
 			base.Render( context );
 		}
 
 		private readonly FpsCounter m_Counter = new FpsCounter( );
-		private Color m_TextColour = Color.Black;
+		private Color m_TextColour = Color.WhiteSmoke;
 	}
 }

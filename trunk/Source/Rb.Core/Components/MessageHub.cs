@@ -75,6 +75,16 @@ namespace Rb.Core.Components
 
         #region IMessageHub helpers
 
+		public delegate MessageRecipientResult MessageHandlerDelegate< T >( T msg );
+
+		/// <summary>
+		/// Adds a generic delegate recipient 
+		/// </summary>
+		public static void AddRecipient< T >( IMessageHub hub, MessageHandlerDelegate< T > handler, int order )
+		{
+			AddRecipient( hub, typeof( T ), handler.Target, handler.Method, order );
+		}
+
         /// <summary>
         /// Searches an object for [Dispatch]-attributed methods. If one takes the supplied message type (exact match only)
         /// the method is added as a recipient to the message hub

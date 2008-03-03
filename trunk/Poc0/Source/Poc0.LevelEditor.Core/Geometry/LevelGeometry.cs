@@ -587,7 +587,8 @@ namespace Poc0.LevelEditor.Core.Geometry
 			builder.Build( graphics, this );
 
 			//	Add collisions
-			env.Collisions = EnvironmentCollisionsBuilder.Build( this );
+			env.EntityCollisions = EnvironmentCollisionsBuilder.Build( this, 1.5f );
+			env.PointCollisions = EnvironmentCollisionsBuilder.Build( this, 0.0f );
 		}
 
 		#endregion

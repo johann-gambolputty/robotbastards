@@ -116,6 +116,18 @@ namespace Rb.Network.Runt
 			}
 		}
 
+		/// <summary>
+		/// Called when this object is removed from a parent object
+		/// </summary>
+		/// <param name="parent">Parent object</param>
+		public void RemovedFromParent( object parent )
+		{
+			if ( Source == parent )
+			{
+				Source = null;
+			}
+		}
+
 		#endregion
 
 		#region	IUnique Members
