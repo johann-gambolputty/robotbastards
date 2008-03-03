@@ -1,139 +1,92 @@
-
 using System.Collections.Generic;
+using Poc0.Core.Objects;
 using Rb.Core.Maths;
 
 namespace Poc0.Core.Environment
 {
-	class LinePathFollower : IPathFollower
+	/// <summary>
+	/// AI path planner
+	/// </summary>
+	public class Navigator : INavigator
 	{
-		public LinePathFollower( LinePath path )
+		/// <summary>
+		/// Path node
+		/// </summary>
+		public class Node
 		{
-		}
-
-		#region IPathFollower Members
-
-		public Point3 MoveForward( float distance )
-		{
-			throw new System.Exception("The method or operation is not implemented.");
-		}
-
-		public float DistanceAlongPath
-		{
-			get { throw new System.Exception("The method or operation is not implemented."); }
-		}
-
-		public bool AtStartOfPath
-		{
-			get { throw new System.Exception("The method or operation is not implemented."); }
-		}
-
-		public bool AtEndOfPath
-		{
-			get { throw new System.Exception("The method or operation is not implemented."); }
-		}
-
-		#endregion
-	}
-
-	enum PathFollowDirection
-	{
-		Forwards,
-		Backwards
-	}
-
-	class MultiplePathFollower : IPathFollower
-	{
-		public void AddPath( IPath path, PathFollowDirection direction )
-		{
-			m_Followers.Add( path.CreateFollower( ) );
-		}
-
-		private readonly List< IPathFollower > m_Followers = new List< IPathFollower >( );
-		private Point3 m_CurPoint;
-
-		#region IPathFollower Members
-
-		public Point3 MoveForward( float distance )
-		{
-			if ( m_Followers.Count == 0 )
+			public Node InFront
 			{
-				return m_CurPoint;
+				get { return m_InFront; }
+				set { m_InFront = value; }
 			}
 
-			IPathFollower follower = m_Followers[ 0 ];
-			m_CurPoint = follower.MoveForward( distance );
-			
-			if ( follower.AtEndOfPath )
+			public Node Behind
 			{
-				//	TODO: AP: Move along next path by distance remainder
-				m_Followers.RemoveAt( 0 );
+				get { return m_Behind; }
+				set { m_Behind = value; }
 			}
 
-			return m_CurPoint;
+			public Plane2 Plane
+			{
+				get { return m_Plane;  }
+			}
+
+			public Region GetRegion( float x, float y )
+			{
+				if ( m_Plane.ClassifyPoint( x, y, 0.0001f ) == PlaneClassification.Behind )
+				{
+					return ( m_Behind == null ) ? null : m_Behind.GetRegion( x, y );
+				}
+
+				return ( m_InFront == null ) ? m_Region : m_InFront.GetRegion( x, y );
+			}
+
+			private Plane2 m_Plane;
+			private Region m_Region;
+			private Node m_InFront;
+			private Node m_Behind;
 		}
 
-		public float DistanceAlongPath
+		/// <summary>
+		/// Connects two regions
+		/// </summary>
+		public class RegionConnector
 		{
-			get { throw new System.Exception("The method or operation is not implemented."); }
+			public RegionConnector( Region region0, Region region1 )
+			{
+				m_Region0 = region0;
+				m_Region1 = region1;
+			}
+
+			private readonly Region m_Region0;
+			private readonly Region m_Region1;
 		}
 
-		public bool AtStartOfPath
+		/// <summary>
+		/// Leaf node region
+		/// </summary>
+		public class Region
 		{
-			get { throw new System.Exception("The method or operation is not implemented."); }
+			public Region( RegionConnector[] connectors )
+			{
+				m_Connectors = connectors;
+			}
+
+			private RegionConnector[] m_Connectors;
 		}
 
-		public bool AtEndOfPath
-		{
-			get { throw new System.Exception("The method or operation is not implemented."); }
-		}
 
-		#endregion
-	}
-
-	class LinePath : IPath
-	{
-		public LinePath( Point3[] points, bool loop )
-		{
-			m_Points = points;
-			m_Loop = loop;
-		}
-
-		public bool Loop
-		{
-			get { return m_Loop; }
-		}
-
-		public Point3[] Points
-		{
-			get { return m_Points; }
-		}
-
-		#region IPath Members
-
-		public IPathFollower CreateFollower( )
-		{
-			throw new System.Exception("The method or operation is not implemented.");
-		}
-
-		#endregion
-
-		#region Private members
-
-		private readonly Point3[] m_Points;
-		private readonly bool m_Loop;
-
-		#endregion
-	}
-
-	class Navigator : INavigator
-	{
 		#region INavigator Members
 
-		public IPath CreatePath( Matrix44 startFrame, Matrix44 endFrame )
+		/// <summary>
+		/// Creates a path between two points
+		/// </summary>
+		public IPath CreatePath( Point3 start, Point3 end )
 		{
-			throw new System.Exception("The method or operation is not implemented.");
+			return null;
 		}
 
 		#endregion
+
 	}
 }

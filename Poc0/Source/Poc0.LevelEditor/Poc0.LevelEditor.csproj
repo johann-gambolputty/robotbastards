@@ -239,9 +239,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DesignNotes.txt" />
-    <None Include="Resources\Capture.bmp" />
     <None Include="Resources\Pause.bmp" />
     <None Include="Resources\Play.bmp" />
+    <None Include="Resources\Capture.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Actions\" />

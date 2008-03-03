@@ -1,34 +1,16 @@
+using Poc0.Core.Objects;
 using Rb.Core.Maths;
 
 namespace Poc0.Core.Environment
 {
-	interface IPathFollower
-	{
-		Point3 MoveForward( float distance );
-
-		float DistanceAlongPath
-		{
-			get;
-		}
-
-		bool AtStartOfPath
-		{
-			get;
-		}
-
-		bool AtEndOfPath
-		{
-			get;
-		}
-	}
-
-	interface IPath
-	{
-		IPathFollower CreateFollower( );
-	}
-
+	/// <summary>
+	/// AI path planner
+	/// </summary>
 	interface INavigator
 	{
-		IPath CreatePath( Matrix44 startFrame, Matrix44 endFrame );
+		/// <summary>
+		/// Creates a path between two points
+		/// </summary>
+		IPath CreatePath( Point3 start, Point3 end );
 	}
 }
