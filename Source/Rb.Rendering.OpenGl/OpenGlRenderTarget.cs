@@ -66,7 +66,7 @@ namespace Rb.Rendering.OpenGl
 					}
 
 					//	Add texture parameters (barfs otherwise - incomplete attachements)		
-				//	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_DEPTH_TEXTURE_MODE, Gl.GL_LUMINANCE );
+					Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_DEPTH_TEXTURE_MODE, Gl.GL_LUMINANCE );
 				//	Gl.glTexEnvf( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_REPLACE );
 					Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_CLAMP_TO_EDGE );
 					Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_CLAMP_TO_EDGE );
@@ -169,10 +169,11 @@ namespace Rb.Rendering.OpenGl
 			int bufferIndex = 0;
 			for ( int depthIndex = 0; depthIndex < depthPixels.Length; ++depthIndex )
 			{
-				float scaledDepth = Functions.Exp( depthPixels[ depthIndex ] );
-				bufferMem[ bufferIndex++ ] = ( byte )( scaledDepth * 255.0f );
-				bufferMem[ bufferIndex++ ] = ( byte )( scaledDepth * 255.0f );
-				bufferMem[ bufferIndex++ ] = ( byte )( scaledDepth * 255.0f );
+				float scaledDepth = Functions.Pow( depthPixels[ depthIndex ], 0.1f ) * 255.0f;
+				byte pixel = ( byte )scaledDepth;
+				bufferMem[ bufferIndex++ ] = pixel;
+				bufferMem[ bufferIndex++ ] = pixel;
+				bufferMem[ bufferIndex++ ] = pixel;
 			}
 
 			System.Drawing.Bitmap bmp;

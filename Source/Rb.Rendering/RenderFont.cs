@@ -128,6 +128,14 @@ namespace Rb.Rendering
 		{
 			DrawText( Alignment.TopLeft, x, y, colour, string.Format( str, formatArgs ) );
 		}
+
+		/// <summary>
+		/// Draws formatted text using this font, at a given position
+		/// </summary>
+		public void DrawText( int x, int y, Color colour, Color outlineColour, string str, params object[] formatArgs )
+		{
+			DrawText( Alignment.TopLeft, x, y, colour, outlineColour, string.Format( str, formatArgs ) );
+		}
 		
 		/// <summary>
 		/// Draws formatted text using this font, at a given position
@@ -156,7 +164,12 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Draws text using this font, at a given position
 		/// </summary>
-		public abstract void DrawText( Alignment align, int x, int y, Color colour, string str);
+		public abstract void DrawText( Alignment align, int x, int y, Color colour, string str );
+
+		/// <summary>
+		/// Draws text using this font, at a given position
+		/// </summary>
+		public abstract void DrawText( Alignment align, int x, int y, Color colour, Color outlineColour, string str );
 
 		/// <summary>
 		/// Draws text using this font, at a given position

@@ -25,7 +25,7 @@ namespace Rb.Rendering
 
 			//	Display the FPS
 			RenderFont font = RenderFonts.GetDefaultFont( DefaultFont.Debug );
-			font.DrawText( 0, 0, m_Colour, "FPS: {0}", m_Counter.AverageFps.ToString( "G4" ) );
+			font.DrawText( 0, 0, m_Colour, Color.Black, "FPS: {0}", m_Counter.AverageFps.ToString( "G4" ) );
 		}
 
 		private Color m_Colour = Color.White;

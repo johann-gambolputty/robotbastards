@@ -115,7 +115,7 @@ namespace Rb.Core.Maths
 		public void UpdateCurrent( float t )
 		{
 			m_CurPos = ( m_StartPos + ( m_EndPos - m_StartPos ) * t );
-			m_CurAngle = ( m_StartAngle + ( m_EndAngle - m_StartAngle ) * t );
+			m_CurAngle = Utils.Wrap( m_StartAngle + ( m_EndAngle - m_StartAngle ) * t, 0, Constants.TwoPi );
 		}
 
 		/// <summary>

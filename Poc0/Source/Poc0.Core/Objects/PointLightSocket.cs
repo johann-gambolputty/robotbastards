@@ -1,8 +1,11 @@
 using System;
+using System.Drawing;
 using Rb.Core.Maths;
+using Rb.Rendering;
 using Rb.Rendering.Lights;
 using Rb.World.Services;
 using Rb.World;
+using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc0.Core.Objects
 {
@@ -10,7 +13,7 @@ namespace Poc0.Core.Objects
 	/// A very poorly named class that adds a <see cref="ILight"/> into the scene <see cref="ILightingService"/>
 	/// </summary>
 	[Serializable]
-	public class PointLightSocket : IPlaceable, ISceneObject
+	public class PointLightSocket : IPlaceable, ISceneObject, IRenderable
 	{
 		/// <summary>
 		/// Gets/sets the attached light
@@ -80,6 +83,31 @@ namespace Poc0.Core.Objects
 		{
 			m_Scene = scene;
 			AttachLight( );
+
+			//if ( DebugInfo.ShowLights )
+			{
+				m_Scene.Renderables.Add( this );
+			}
+
+			DebugInfo.DebugInfoChanged += OnDebugInfoChanged;
+		}
+
+		private void OnDebugInfoChanged( )
+		{
+			if ( DebugInfo.ShowLights )
+			{
+				if ( !m_Scene.Renderables.Contains( this ) )
+				{
+					m_Scene.Renderables.Add( this );
+				}
+			}
+			else
+			{
+				if ( m_Scene.Renderables.Contains( this ) )
+				{
+					m_Scene.Renderables.Remove( this );
+				}
+			}
 		}
 
 		/// <summary>
@@ -122,6 +150,32 @@ namespace Poc0.Core.Objects
 				lighting.AddLight( m_Light );
 			}
 		}
+
+		#endregion
+
+		#region IRenderable Members
+
+		/// <summary>
+		/// Renders this light
+		/// </summary>
+		public void Render( IRenderContext context )
+		{
+			Graphics.Draw.Sphere( Mould, Position, 1.0f );
+		}
+
+		private static Draw.IMould Mould
+		{
+			get
+			{
+				if ( ms_Mould == null )
+				{
+					ms_Mould = Graphics.Draw.NewMould( Color.Firebrick );
+				}
+				return ms_Mould;
+			}
+		}
+
+		private static Draw.IMould ms_Mould;
 
 		#endregion
 	}

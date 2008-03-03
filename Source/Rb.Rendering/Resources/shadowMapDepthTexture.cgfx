@@ -9,11 +9,11 @@ technique DefaultTechnique
 	pass
 	{
 		LightingEnable	= false;
-		FrontFace		= CW;
+		FrontFace		= CCW;
 		DepthTestEnable	= true;
 		DepthMask		= true;
-		CullFaceEnable	= false;
-	//	PolygonOffset	= float2( 0.1, 4 );
-		PolygonOffsetFillEnable	= true;
+		CullFaceEnable	= true;
+	//	PolygonOffset	= float2( 0.1, 0.01 );
+	//	PolygonOffsetFillEnable	= true;
 	}
 }

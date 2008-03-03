@@ -835,7 +835,57 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="tSamples">Number of latitudinal samples</param>
 		public override void Sphere( IMould mould, Point3 centre, float radius, int sSamples, int tSamples )
 		{
-			throw new NotImplementedException( );
+			mould.Begin( );
+
+			float minT = 0;
+			float maxT	= Constants.Pi;
+			float minS	= 0;
+			float maxS	= Constants.TwoPi;
+
+			//	Render the sphere as a series of strips
+			float sIncrement = ( maxS - minS ) / ( sSamples );
+			float tIncrement = ( maxT - minT ) / ( tSamples );
+
+			float t = minT;
+
+			Gl.glBegin( Gl.GL_QUADS );
+
+			for ( int tCount = 0; tCount < tSamples; ++tCount )
+			{
+				float s = minS;
+				for ( int SCount = 0; SCount < sSamples; ++SCount )
+				{
+					//	TODO: This is wasteful, because 2 positions are shared from the previous samples
+					//	Cache an array of points on the first entry in this function, and read from
+					//	it instead of calculating points on the fly.
+					RenderSTVertex( s, t, centre, radius );
+					RenderSTVertex( s, t + tIncrement, centre, radius );
+					RenderSTVertex( s + sIncrement, t + tIncrement, centre, radius );
+					RenderSTVertex( s + sIncrement, t, centre, radius );
+
+					s += sIncrement;
+				}
+				t += tIncrement;
+			}
+
+			Gl.glEnd( );
+
+			mould.End( );
+		}
+
+		private static void RenderSTVertex( float s, float t, Point3 c, float r )
+		{
+			float cosS = Functions.Cos( s );
+			float cosT = Functions.Cos( t );
+
+			float sinS = Functions.Sin( s );
+			float sinT = Functions.Sin( t );
+			
+			float x = cosS * sinT;
+			float y = cosT;
+			float z = sinS * sinT;
+
+			Gl.glVertex3f( c.X + x * r, c.Y + y * r, c.Z+ z * r );
 		}
 
 		#endregion

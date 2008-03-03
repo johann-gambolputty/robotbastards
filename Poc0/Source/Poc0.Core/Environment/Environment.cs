@@ -11,19 +11,36 @@ namespace Poc0.Core.Environment
 	{
 		#region Public members
 
-		public IEnvironmentCollisions Collisions
+		public IEnvironmentCollisions PointCollisions
 		{
-			get { return m_Collisions; }
+			get { return m_PointCollisions; }
 			set
 			{
-				if ( m_Collisions != null )
+				if ( m_PointCollisions != null )
 				{
-					RemoveChild( m_Collisions );
+					RemoveChild( m_PointCollisions );
 				}
-				m_Collisions = value;
-				if ( m_Collisions != null )
+				m_PointCollisions = value;
+				if ( m_PointCollisions != null )
 				{
-					AddChild( m_Collisions );
+					AddChild( m_PointCollisions );
+				}
+			}
+		}
+
+		public IEnvironmentCollisions EntityCollisions
+		{
+			get { return m_EntityCollisions; }
+			set
+			{
+				if ( m_EntityCollisions != null )
+				{
+					RemoveChild( m_EntityCollisions );
+				}
+				m_EntityCollisions = value;
+				if ( m_EntityCollisions != null )
+				{
+					AddChild( m_EntityCollisions );
 				}
 			}
 		}
@@ -49,7 +66,8 @@ namespace Poc0.Core.Environment
 
 		#region Private stuff
 
-		private IEnvironmentCollisions m_Collisions;
+		private IEnvironmentCollisions m_PointCollisions;
+		private IEnvironmentCollisions m_EntityCollisions;
 		private IEnvironmentGraphics m_Graphics;
 
 		#endregion

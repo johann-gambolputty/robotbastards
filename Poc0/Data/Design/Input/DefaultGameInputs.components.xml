@@ -24,6 +24,9 @@
         <command name="TurnRight">
           <input key="E" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
         </command>
+        <command name="Fire">
+          <input key="Space" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
       </commandList>
       <commandList enum="Poc0.Core.Cameras.FollowCameraControl+Commands" assembly="Poc0.Core">
         <command name="Zoom">

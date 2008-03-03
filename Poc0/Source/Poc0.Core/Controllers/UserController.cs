@@ -182,6 +182,7 @@ namespace Poc0.Core.Controllers
 				}
 				case EntityCommands.Fire :
 				{
+					Target.HandleMessage( new FireWeaponMessage( ) );
 					break;
 				}
 			}

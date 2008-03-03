@@ -94,6 +94,13 @@ namespace Poc0.LevelEditor.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Capture {
+            get {
+                object obj = ResourceManager.GetObject("Capture", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to {0}: Adds brush, 2nd {0}: Confirms size and rotation. {1} exits.
         /// </summary>
@@ -235,6 +242,20 @@ namespace Poc0.LevelEditor.Properties {
         internal static string ObjectEditModeName {
             get {
                 return ResourceManager.GetString("ObjectEditModeName", resourceCulture);
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Pause {
+            get {
+                object obj = ResourceManager.GetObject("Pause", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Play {
+            get {
+                object obj = ResourceManager.GetObject("Play", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

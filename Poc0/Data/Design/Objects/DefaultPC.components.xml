@@ -8,6 +8,8 @@
       <int value="200" dynProperty="Health"/>
     </object>
 
+    <object type="Poc0.Core.Objects.Weapon"/>
+
     <object type="Poc0.Core.Objects.EntityGraphics">
       <location value="Graphics\Entities\TestPlayer0\Full.components.xml" property="GraphicsLocation"/>
     </object>

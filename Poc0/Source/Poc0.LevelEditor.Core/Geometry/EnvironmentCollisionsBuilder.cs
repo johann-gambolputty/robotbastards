@@ -10,10 +10,9 @@ namespace Poc0.LevelEditor.Core.Geometry
 		/// <summary>
 		/// Builds an <see cref="IEnvironmentCollisions"/> object
 		/// </summary>
-		public static IEnvironmentCollisions Build( LevelGeometry level )
+		public static IEnvironmentCollisions Build( LevelGeometry level, float expansion )
 		{
-		//	Csg2.Node srcNode = Csg2.BuildExpansion( level.ObstaclePolygons, 1.5f );
-			Csg2.Node srcNode = Csg2.Build( level.ObstaclePolygons );
+			Csg2.Node srcNode = expansion == 0 ? Csg2.Build( level.ObstaclePolygons ) : Csg2.BuildExpansion( level.ObstaclePolygons, 1.5f );
 
 			EnvironmentCollisions.Node node = Build( srcNode );
 			EnvironmentCollisions impl = new EnvironmentCollisions( node );

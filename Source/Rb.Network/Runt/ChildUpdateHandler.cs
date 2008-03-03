@@ -55,7 +55,7 @@ namespace Rb.Network.Runt
 
 		#endregion
 
-		#region IChildObject Members
+		#region IChild Members
 
 		/// <summary>
 		/// Called when this object is added to a parent object
@@ -68,6 +68,17 @@ namespace Rb.Network.Runt
 			}
 		}
 
+		/// <summary>
+		/// Called when this object is removed from a parent object
+		/// </summary>
+		/// <param name="parent">Parent object</param>
+		public void RemovedFromParent( object parent )
+		{
+			if ( Target == parent )
+			{
+				Target = null;
+			}
+		}
 		#endregion
 
 		#region IUpdateHandler Members
