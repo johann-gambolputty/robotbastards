@@ -1,6 +1,7 @@
 using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
+using Rb.Rendering;
 using Rb.World;
 
 namespace Poc0.Core.Objects
@@ -50,10 +51,21 @@ namespace Poc0.Core.Objects
 
 		#endregion
 
+		#region Public properties
+
+		public IRenderable Graphics
+		{
+			get { return m_Graphics; }
+			set { m_Graphics = value; }
+		}
+
+		#endregion
+
 		#region Private members
 
 		private object m_Owner;
 		private Scene m_Scene;
+		private IRenderable m_Graphics;
 
 		#endregion
 

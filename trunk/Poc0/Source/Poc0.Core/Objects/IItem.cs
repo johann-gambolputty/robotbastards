@@ -6,6 +6,16 @@ namespace Poc0.Core.Objects
 	public interface IItem
 	{
 		/// <summary>
+		/// Called when this item is unequipped
+		/// </summary>
+		void Unequip( );
+
+		/// <summary>
+		/// Called when this item is equipped
+		/// </summary>
+		void Equip( );
+
+		/// <summary>
 		/// Uses the item
 		/// </summary>
 		void Use( );
