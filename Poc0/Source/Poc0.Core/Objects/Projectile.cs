@@ -16,7 +16,7 @@ namespace Poc0.Core.Objects
 	{
 		public Projectile( Scene scene, Point3 start, Vector3 dir, float speed )
 		{
-			m_Pos = start;
+			m_Pos.Set( start );
 			m_Dir = dir;
 			m_Speed = speed;
 			m_Scene = scene;
@@ -35,16 +35,18 @@ namespace Poc0.Core.Objects
 			float t = 1.0f / ( float )TinyTime.ToSeconds( clock.LastInterval );
 
 			Vector3 move = m_Dir * ( m_Speed * t );
-			Collision col = collisions.CheckMovement( m_Pos, move );
+			Collision col = collisions.CheckMovement( m_Pos.End, move );
 			
 			if ( col == null )
 			{
-				m_Pos += move;
+				m_Pos.End += move;
 			}
 			else
 			{
 				m_Scene.Renderables.Remove( this );
 			}
+
+			m_Pos.Step( clock.CurrentTickTime );
 		}
 
 		#region Private members
@@ -52,7 +54,7 @@ namespace Poc0.Core.Objects
 		private readonly Scene m_Scene;
 		private readonly float m_Speed;
 		private readonly Vector3 m_Dir;
-		private Point3 m_Pos;
+		private readonly Point3Interpolator m_Pos = new Point3Interpolator( );
 
 		#endregion
 
@@ -60,7 +62,7 @@ namespace Poc0.Core.Objects
 
 		public Point3 Position
 		{
-			get { return m_Pos; }
+			get { return m_Pos.Current; }
 		}
 
 		public Vector3 Direction
@@ -93,8 +95,12 @@ namespace Poc0.Core.Objects
 
 		public virtual void Render( IRenderContext context )
 		{
+			m_Pos.UpdateCurrent( context.RenderTime );
+
+			Point3 pos = m_Pos.Current;
+
 			Graphics.Renderer.PushTransform( Transform.LocalToWorld );
-			Graphics.Renderer.Translate( Transform.LocalToWorld, m_Pos.X, m_Pos.Y, m_Pos.Z );
+			Graphics.Renderer.Translate( Transform.LocalToWorld, pos.X, pos.Y, pos.Z );
 			ms_Cache.Render( context );
 			Graphics.Renderer.PopTransform( Transform.LocalToWorld );
 		}
