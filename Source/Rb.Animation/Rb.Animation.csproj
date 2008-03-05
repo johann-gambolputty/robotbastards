@@ -52,6 +52,8 @@
     <Compile Include="IAnimationControlBuilder.cs" />
     <Compile Include="IAnimationLayer.cs" />
     <Compile Include="IAnimationSet.cs" />
+    <Compile Include="IReferencePoint.cs" />
+    <Compile Include="IReferencePoints.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

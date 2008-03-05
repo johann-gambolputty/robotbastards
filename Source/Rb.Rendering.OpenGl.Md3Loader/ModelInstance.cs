@@ -1,5 +1,6 @@
 using System;
 using Rb.Core.Components;
+using Rb.Core.Maths;
 using Rb.Core.Utils;
 using Rb.Rendering;
 using Rb.Animation;
@@ -17,7 +18,22 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 	/// <summary>
 	/// An instance of an MD3-loaded model
 	/// </summary>
-	public class ModelInstance : IRenderable, IAnimationControl, ISceneObject, IChild
+	/// <remarks>
+	/// How the MD3 model works:
+	/// 
+	/// <see cref="Model"/> stores a set of mesh objects, one for each <see cref="ModelPart"/> value.
+	/// Each part mesh contains a list of transforms for child objects, called tags, for each animation frame.
+	/// A part mesh can have a single nested mesh that is connected by a tag - lower body connects to upper
+	/// body, upper body connects to head. There's also a tag for a weapon attachment point in the upper body.
+	/// 
+	/// When a model instance is rendered, it renders its source model, passing in a set of animation layers
+	/// to the render method. The model render method renders the root part mesh (the lower body) with an
+	/// identity transform. When a mesh is rendered, it renders the associated vertex buffers, then pushes
+	/// a transform for the nested mesh, based on transform in the tag that corresponds to the associated
+	/// animation layer's current frame
+	/// 
+	/// </remarks>
+	public class ModelInstance : IRenderable, IAnimationControl, ISceneObject, IChild, IReferencePoints
 	{
 		/// <summary>
 		/// Sets the model that this object was instanced from
@@ -30,9 +46,50 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			m_Layers = new AnimationLayer[ ( int )ModelPart.NumParts ];
 			for ( int layerIndex = 0; layerIndex < ( int )ModelPart.NumParts; ++layerIndex )
 			{
+				Mesh partMesh = source.GetPartMesh( ( ModelPart )layerIndex );
+
+				if ( partMesh == null )
+				{
+					continue;
+				}
 				//	TODO: This assigns the entire animation set to each layer, which isn't correct (although it'll work OK)
 				m_Layers[ layerIndex ] = new AnimationLayer( source.Animations, ( ModelPart )layerIndex );
+				m_ReferencePoints[ layerIndex ] = new ReferencePoint( ( ModelPart )layerIndex );
 			}
+		}
+
+		private ReferencePoint[] m_ReferencePoints = new ReferencePoint[ ( int )ModelPart.NumParts ];
+
+		public class ReferencePoint : IReferencePoint
+		{
+			public ReferencePoint( ModelPart modelPart )
+			{
+				m_Part = modelPart;
+				m_Name = modelPart.ToString( );
+			}
+
+			public ModelPart Part
+			{
+				get { return m_Part; }
+			}
+
+			private readonly ModelPart m_Part;
+			private readonly string m_Name;
+			private readonly Matrix44 m_Transform = new Matrix44( );
+
+			#region IReferencePoint Members
+
+			public string Name
+			{
+				get { return m_Name; }
+			}
+
+			public Matrix44 Transform
+			{
+				get { return m_Transform; }
+			}
+
+			#endregion
 		}
 
 		#region IRenderable Members
@@ -42,7 +99,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public void Render( IRenderContext context )
 		{
-			m_Source.Render( context, m_Layers );
+			m_Source.Render( context, m_Layers, m_ReferencePoints );
 		}
 
 		#endregion
@@ -186,14 +243,6 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 		#endregion
 
-		#region	Private stuff
-
-		private readonly Model m_Source;
-		private readonly AnimationLayer[] m_Layers;
-
-		#endregion
-
-
 		#region IChild Members
 
 		/// <summary>
@@ -220,6 +269,38 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				MessageSource = null;
 			}
 		}
+
+		#endregion
+
+		#region IReferencePoints Members
+
+		/// <summary>
+		/// Gets a named reference point
+		/// </summary>
+		/// <param name="name">The reference point name to look up</param>
+		/// <returns>Returns the named reference point</returns>
+		/// <exception cref="System.ArgumentException">Thrown if the named reference point does not exist</exception>
+		public IReferencePoint this[ string name ]
+		{
+			get
+			{
+				foreach ( ReferencePoint refPoint in m_ReferencePoints )
+				{
+					if ( string.Compare( refPoint.Name, name, StringComparison.InvariantCultureIgnoreCase ) == 0 )
+					{
+						return refPoint;
+					}
+				}
+				throw new ArgumentException( string.Format( "Reference point \"{0}\" not found", name ), "name" );
+			}
+		}
+
+		#endregion
+
+		#region	Private stuff
+
+		private readonly Model m_Source;
+		private readonly AnimationLayer[] m_Layers;
 
 		#endregion
 	}
