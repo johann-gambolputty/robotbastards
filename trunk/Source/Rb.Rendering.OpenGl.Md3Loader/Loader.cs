@@ -81,6 +81,11 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			{
 				ModelPart curPart = ( ModelPart )partIndex;
 
+				if ( curPart == ModelPart.Weapon )
+				{
+					//	The weapon does not have a related mesh, so just ignore...
+					continue;
+				}
 				//	Load the skin file for the current part
 				Hashtable surfaceTextureTable = LoadSkin( source, DefaultSkinFile( source, curPart ) );
 
@@ -89,10 +94,10 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				model.SetPartMesh( curPart, partMesh );
 
 				//	Nest the current mesh in the previous mesh
-				if ( partIndex > 0 )
-				{
-					model.GetPartMesh( ( ModelPart )( partIndex - 1 ) ).NestedMesh = partMesh;
-				}
+				//if ( partIndex > 0 )
+				//{
+				//    model.GetPartMesh( ( ModelPart )( partIndex - 1 ) ).NestedMesh = partMesh;
+				//}
 			}
 
 			//	Set the transform tags
@@ -443,18 +448,21 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				Mesh.Tag[] tags = new Mesh.Tag[ numTags ];
 				for ( int tagCount = 0; tagCount < numTags; ++tagCount )
 				{
-					string tagName		= ReadString( reader, MaxPathLength );
+					string tagName = ReadString( reader, MaxPathLength );
 
 					if ( frameIndex == 0 )
 					{
 						mesh.TagNames[ tagCount ] = tagName;
 					}
 
-					Mesh.Tag curTag		= new Mesh.Tag( );
-					curTag.Origin		= transform * ReadPoint( reader );
-					curTag.XAxis		= ReadVector( reader );
-					curTag.YAxis		= ReadVector( reader );
-					curTag.ZAxis		= ReadVector( reader );
+					Point3	origin	= transform * ReadPoint( reader );
+					Vector3 xAxis	= ReadVector( reader );
+					Vector3 yAxis	= ReadVector( reader );
+					Vector3 zAxis	= ReadVector( reader );
+
+					Mesh.Tag curTag = new Mesh.Tag( );
+					curTag.Transform = new Matrix44( origin, xAxis, yAxis, zAxis );
+					curTag.Name = tagName;
 
 					tags[ tagCount ] = curTag;
 				}

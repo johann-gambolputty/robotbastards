@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Drawing;
 using Rb.Rendering;
 using Rb.Core.Maths;
@@ -10,13 +11,14 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 	/// <summary>
 	/// OpenGL mesh with support for MD3 animation
 	/// </summary>
-	public class Mesh : IRenderable, INamed
+	public class Mesh : INamed
 	{
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public Mesh( ModelPart part )
+		public Mesh( Model model, ModelPart part )
 		{
+			m_Model = model;
 			m_Part = part;
 		}
 
@@ -35,10 +37,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public class Tag
 		{
-			public Point3	Origin;
-			public Vector3	XAxis;
-			public Vector3	YAxis;
-			public Vector3	ZAxis;
+			public Matrix44		Transform;
+			public string		Name;
 		}
 
 		/// <summary>
@@ -70,23 +70,24 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		#region	Nested mesh
 
 		/// <summary>
-		/// Access to the tag that specifies the coordinate frame for the nested mesh
+		/// Adds a nested model part to the mesh
 		/// </summary>
-		public int TransformTagIndex
+		public void AddNestedPart( ModelPart part, int transformTagIndex )
 		{
-			set { m_TransformTagIndex = value; }
-			get { return m_TransformTagIndex; }
+			NestedPart nestedPart = new NestedPart( );
+			nestedPart.m_Part = part;
+			nestedPart.m_TransformTagIndex = transformTagIndex;
+
+			m_NestedParts.Add( nestedPart );
 		}
 
-		/// <summary>
-		/// Access to the mesh attached to this one by the transform tag
-		/// </summary>
-		public Mesh	NestedMesh
+		private struct NestedPart
 		{
-			get { return m_NestedMesh; }
-			set { m_NestedMesh = value; }
-
+			public ModelPart m_Part;
+			public int m_TransformTagIndex;
 		}
+
+		private readonly List< NestedPart > m_NestedParts = new List< NestedPart >( ); 
 
 		#endregion
 
@@ -333,7 +334,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Renders this mesh using the given context and animation setup
 		/// </summary>
-		public void Render( IRenderContext context, AnimationLayer[] layers )
+		public void Render( IRenderContext context, AnimationLayer[] layers, ModelInstance.ReferencePoint[] refPoints )
 		{
 			//	Determine the current animation frame
 			int currentFrame = DefaultFrame;
@@ -373,6 +374,24 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				Graphics.Renderer.UnbindTexture( lastTexture );
 			}
 
+			foreach ( NestedPart nestedPart in m_NestedParts )
+			{
+				FrameInfo curFrame = FrameInfoList[ currentFrame ];
+				Tag transformTag = curFrame.Tags[ nestedPart.m_TransformTagIndex ];
+
+				Matrix44 transform = transformTag.Transform;
+				Graphics.Renderer.PushTransform( Transform.LocalToWorld, transform );
+
+				Mesh nestedMesh = m_Model.GetPartMesh( nestedPart.m_Part );
+				if ( nestedMesh != null )
+				{
+					nestedMesh.Render( context, layers, refPoints );
+				}
+				refPoints[ ( int )nestedPart.m_Part ]
+
+				Graphics.Renderer.PopTransform( Transform.LocalToWorld );
+
+			}
 			if ( m_NestedMesh != null )
 			{
 				if ( m_TransformTagIndex != -1 )
@@ -380,11 +399,11 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 					FrameInfo	curFrame		= FrameInfoList[ currentFrame ];
 					Tag			transformTag	= curFrame.Tags[ TransformTagIndex ];
 
-					Matrix44 transform = new Matrix44( transformTag.Origin, transformTag.XAxis, transformTag.YAxis, transformTag.ZAxis );
+					Matrix44 transform = transformTag.Transform;
 					Graphics.Renderer.PushTransform( Transform.LocalToWorld, transform );
 				}
 
-				m_NestedMesh.Render( context );
+				m_NestedMesh.Render( context, layers, refPoints );
 
 				if ( m_TransformTagIndex != -1 )
 				{
@@ -396,10 +415,10 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Renders this mesh
 		/// </summary>
-		public void Render( IRenderContext context )
-		{
-			Render( context, null );
-		}
+		//public void Render( IRenderContext context )
+		//{
+		//    Render( context, null );
+		//}
 
 		#endregion
 
@@ -417,15 +436,14 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		#endregion	
 
 		#region	Private stuff
-		
+
+		private readonly Model				m_Model;
 		private readonly ModelPart			m_Part;
 		private readonly TechniqueSelector	m_Technique = new TechniqueSelector( );
 		private readonly SurfaceRenderer	m_SurfaceRenderer = new SurfaceRenderer( );
 		private string						m_Name;
 		private string[]					m_TagNames;
 		private FrameInfo[]					m_FrameInfo;
-		private int							m_TransformTagIndex = -1;
-		private Mesh						m_NestedMesh;
 		private int							m_Frame;
 		private Surface[]					m_Surfaces;
 		private ShaderParameter				m_TextureParameter;

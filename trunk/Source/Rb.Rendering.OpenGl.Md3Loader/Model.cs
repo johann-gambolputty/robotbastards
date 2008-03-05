@@ -12,13 +12,14 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		Lower,
 		Upper,
 		Head,
+		Weapon,
 		NumParts
 	}
 
 	/// <summary>
 	/// MD3 model
 	/// </summary>
-	public class Model : INamed, IRenderable, IInstanceBuilder
+	public class Model : INamed, IInstanceBuilder
 	{
 		#region	Meshes
 
@@ -97,7 +98,11 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			{
 				for ( int partIndex = 0; partIndex < m_PartMeshes.Length; ++partIndex )
 				{
-					m_PartMeshes[ partIndex ].Effect = value;
+					//	The weapon part mesh doesn't exist...
+					if ( m_PartMeshes[ partIndex ] != null )
+					{
+						m_PartMeshes[ partIndex ].Effect = value;
+					}
 				}
 			}
 		}
@@ -111,7 +116,11 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			{
 				for ( int partIndex = 0; partIndex < m_PartMeshes.Length; ++partIndex )
 				{
-					m_PartMeshes[ partIndex ].TechniqueName = value;
+					//	The weapon part mesh doesn't exist...
+					if ( m_PartMeshes[ partIndex ] != null )
+					{
+						m_PartMeshes[ partIndex ].TechniqueName = value;
+					}
 				}
 			}
 		}
@@ -123,29 +132,21 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Renders the model with a particular set of animation layers
 		/// </summary>
-		public void Render( IRenderContext context, AnimationLayer[] layers )
+		public void Render( IRenderContext context, AnimationLayer[] layers, ModelInstance.ReferencePoint[] refPoints )
 		{
 			Mesh.FrameInfo frame = m_PartMeshes[ 0 ].GetAnimationFrame( layers );
 			Graphics.Renderer.Translate( Transform.LocalToWorld, 0, 0.2f + ( frame.MaxBounds - frame.MinBounds ).Y / 2, 0 );
-			m_PartMeshes[ 0 ].Render( context, layers );
+			m_PartMeshes[ 0 ].Render( context, layers, refPoints );
 		}
 
 		#endregion
 
-		#region IRenderable Members
-
-		/// <summary>
-		/// Render all part meshes
-		/// </summary>
-		public void Render( IRenderContext context )
-		{
-			m_PartMeshes[ 0 ].Render( context );
-		}
-
-		#endregion
+		#region Private members
 
 		private AnimationSet	m_Animations;
 		private readonly Mesh[]	m_PartMeshes = new Mesh[ ( int )ModelPart.NumParts ];
 		private string			m_Name;
+
+		#endregion
 	}
 }
