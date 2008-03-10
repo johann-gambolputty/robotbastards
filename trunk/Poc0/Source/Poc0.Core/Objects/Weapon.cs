@@ -56,16 +56,11 @@ namespace Poc0.Core.Objects
 		public IRenderable Graphics
 		{
 			get { return m_Graphics; }
-			set { m_Graphics = value; }
+			set
+			{
+				m_Graphics = value;
+			}
 		}
-
-		#endregion
-
-		#region Private members
-
-		private object m_Owner;
-		private Scene m_Scene;
-		private IRenderable m_Graphics;
 
 		#endregion
 
@@ -80,6 +75,14 @@ namespace Poc0.Core.Objects
 		{
 			m_Scene = null;
 		}
+
+		#endregion
+		
+		#region Private members
+
+		private object m_Owner;
+		private Scene m_Scene;
+		private IRenderable m_Graphics;
 
 		#endregion
 	}

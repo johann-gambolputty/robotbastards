@@ -84,6 +84,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\Rb.Animation\Rb.Animation.csproj">
+      <Project>{0BC4E246-A4E1-431C-AC93-395AE22188E1}</Project>
+      <Name>Rb.Animation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>

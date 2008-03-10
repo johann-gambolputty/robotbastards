@@ -46,6 +46,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			m_Layers = new AnimationLayer[ ( int )ModelPart.NumParts ];
 			for ( int layerIndex = 0; layerIndex < ( int )ModelPart.NumParts; ++layerIndex )
 			{
+				m_ReferencePoints[ layerIndex ] = new ReferencePoint( ( ModelPart )layerIndex );
+
 				Mesh partMesh = source.GetPartMesh( ( ModelPart )layerIndex );
 
 				if ( partMesh == null )
@@ -54,7 +56,6 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				}
 				//	TODO: This assigns the entire animation set to each layer, which isn't correct (although it'll work OK)
 				m_Layers[ layerIndex ] = new AnimationLayer( source.Animations, ( ModelPart )layerIndex );
-				m_ReferencePoints[ layerIndex ] = new ReferencePoint( ( ModelPart )layerIndex );
 			}
 		}
 
@@ -73,11 +74,22 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				get { return m_Part; }
 			}
 
+			public void Render( IRenderContext context )
+			{
+				Graphics.Renderer.GetTransform( Rb.Rendering.Transform.LocalToWorld, m_Transform );
+				if ( OnRender != null )
+				{
+					OnRender( context );
+				}
+			}
+
 			private readonly ModelPart m_Part;
 			private readonly string m_Name;
 			private readonly Matrix44 m_Transform = new Matrix44( );
 
 			#region IReferencePoint Members
+
+			public event RenderDelegate OnRender;
 
 			public string Name
 			{

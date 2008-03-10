@@ -8,6 +8,11 @@ namespace Rb.Core.Assets
 	public interface ILocationManager
 	{
 		/// <summary>
+		/// Returns true if a search string (wildcard) matches a source in this manager
+		/// </summary>
+		bool Contains( string location, string search );
+
+		/// <summary>
 		/// Gets the full path of a location
 		/// </summary>
 		/// <param name="location">Location</param>

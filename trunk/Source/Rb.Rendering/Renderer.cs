@@ -130,6 +130,11 @@ namespace Rb.Rendering
 		public abstract Matrix44 GetTransform( Transform type );
 
 		/// <summary>
+		/// Gets the current matrix from the specified transform stack
+		/// </summary>
+		public abstract void GetTransform( Transform type, Matrix44 matrix );
+
+		/// <summary>
 		/// Gets an indexed texture transform
 		/// </summary>
 		public static Transform TextureTransform( int textureUnit )

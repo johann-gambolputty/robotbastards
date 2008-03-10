@@ -24,6 +24,14 @@ namespace Rb.Core.Assets
 		event EventHandler SourceChanged;
 
 		/// <summary>
+		/// Gets the provider of this source
+		/// </summary>
+		ILocationManager Provider
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Returns true if the source exists
 		/// </summary>
 		bool Exists

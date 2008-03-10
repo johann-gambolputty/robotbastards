@@ -35,6 +35,14 @@ namespace Rb.Core.Assets
 		#region ILocationManager Members
 
 		/// <summary>
+		/// Returns true if a search string (wildcard) matches a source in this manager
+		/// </summary>
+		public bool Contains( string location, string search )
+		{
+			return Directory.GetFiles( GetFullPath( location ), search ).Length > 0;
+		}
+
+		/// <summary>
 		/// Gets the full path of a location
 		/// </summary>
 		/// <param name="location">Location</param>
