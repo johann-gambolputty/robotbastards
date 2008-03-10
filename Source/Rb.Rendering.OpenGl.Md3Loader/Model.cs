@@ -39,6 +39,14 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			return m_PartMeshes[ ( int )part ];
 		}
 
+		/// <summary>
+		/// Sets the root mesh, rendered 
+		/// </summary>
+		public void SetRootMesh( Mesh rootMesh )
+		{
+			m_RootMesh = rootMesh;
+		}
+
 		#endregion
 
 		#region	Animations
@@ -136,7 +144,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		{
 			Mesh.FrameInfo frame = m_PartMeshes[ 0 ].GetAnimationFrame( layers );
 			Graphics.Renderer.Translate( Transform.LocalToWorld, 0, 0.2f + ( frame.MaxBounds - frame.MinBounds ).Y / 2, 0 );
-			m_PartMeshes[ 0 ].Render( context, layers, refPoints );
+			m_RootMesh.Render( context, layers, refPoints );
 		}
 
 		#endregion
@@ -146,6 +154,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		private AnimationSet	m_Animations;
 		private readonly Mesh[]	m_PartMeshes = new Mesh[ ( int )ModelPart.NumParts ];
 		private string			m_Name;
+		private Mesh			m_RootMesh;
 
 		#endregion
 	}

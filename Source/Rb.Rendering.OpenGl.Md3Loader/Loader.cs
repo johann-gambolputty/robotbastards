@@ -75,7 +75,27 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 			//	Load animations
 			model.Animations = LoadAnimations( AnimationFile( source ) );
+			if ( model.Animations == null )
+			{
+				//	oh dear another md3 hack - no animations means that the model is a weapon...
+				LoadWeaponModel( model, source, transform );
+			}
+			else
+			{
+				LoadPlayerModel( model, source, transform );
+			}
+			return model;
+		}
 
+		private static void LoadWeaponModel( Model model, ISource source, Matrix44 transform )
+		{
+			//	Load the MD3 associated with the current part
+			Mesh partMesh = LoadMd3( model, ModelPart.Weapon, transform, MeshFile( source, curPart ), surfaceTextureTable );
+			model.SetPartMesh( ModelPart.Weapon, partMesh );
+		}
+
+		private static void LoadPlayerModel( Model model, ISource source, Matrix44 transform )
+		{
 			//	Run through all the parts
 			for ( int partIndex = 0; partIndex < ( int )ModelPart.NumParts; ++partIndex )
 			{
@@ -90,22 +110,21 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				Hashtable surfaceTextureTable = LoadSkin( source, DefaultSkinFile( source, curPart ) );
 
 				//	Load the MD3 associated with the current part
-				Mesh partMesh = LoadMd3( curPart, transform, MeshFile( source, curPart ), surfaceTextureTable );
+				Mesh partMesh = LoadMd3( model, curPart, transform, MeshFile( source, curPart ), surfaceTextureTable );
 				model.SetPartMesh( curPart, partMesh );
-
-				//	Nest the current mesh in the previous mesh
-				//if ( partIndex > 0 )
-				//{
-				//    model.GetPartMesh( ( ModelPart )( partIndex - 1 ) ).NestedMesh = partMesh;
-				//}
 			}
 
-			//	Set the transform tags
-			//	TODO: Should be data driven
-			model.GetPartMesh( ModelPart.Lower ).TransformTagIndex = model.GetPartMesh( ModelPart.Lower ).GetTagIndex( "tag_torso" );
-			model.GetPartMesh( ModelPart.Upper ).TransformTagIndex = model.GetPartMesh( ModelPart.Upper ).GetTagIndex( "tag_head" );
+			NestMesh( model, ModelPart.Lower, ModelPart.Upper, "tag_torso" );
+			NestMesh( model, ModelPart.Upper, ModelPart.Head, "tag_head" );
+			NestMesh( model, ModelPart.Upper, ModelPart.Weapon, "tag_weapon" );
+		}
 
-			return model;
+		/// <summary>
+		/// Nests one model part's mesh inside another, using a named tag as a transform
+		/// </summary>
+		private static void NestMesh( Model model, ModelPart parent, ModelPart child, string tagName )
+		{
+			model.GetPartMesh( parent ).AddNestedPart( child, model.GetPartMesh( parent ).GetTagIndex( tagName ) );
 		}
 
 		/// <summary>
@@ -115,9 +134,9 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		{
 			if ( !source.Directory )
 			{
-				return false;
+				return source.HasExtension( "md3" );
 			}
-			return MeshFile( source, ModelPart.Head ).Exists;
+			return source.Provider.Contains( source.Path, "*.md3" );
 		}
 
 		#endregion
@@ -223,6 +242,11 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public AnimationSet LoadAnimations( ISource source )
 		{
+			if ( !source.Exists )
+			{
+				return null;
+			}
+
 			using ( Stream inputStream = source.Open( ) )
 			{
 				TextReader		reader		= new StreamReader( inputStream );
@@ -284,7 +308,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Loads an MD3 mesh resource from a stream
 		/// </summary>
-		private static Mesh LoadMd3( ModelPart part, Matrix44 transform, ISource md3Source, IDictionary surfaceTextureTable )
+		private static Mesh LoadMd3( Model model, ModelPart part, Matrix44 transform, ISource md3Source, IDictionary surfaceTextureTable )
 		{
 			using ( Stream inputStream = md3Source.Open( ) )
 			{
@@ -318,7 +342,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				reader.ReadInt32( );
 
 				//	TODO: Can load directly into mesh frame, tag and surface structures - don't do this intermediate step
-				Mesh mesh = new Mesh( part );
+				Mesh mesh = new Mesh( model, part );
 
 				ReadFrames( reader, framesOffset, numFrames, mesh, transform );
 				ReadTags( reader, tagsOffset, numTags, numFrames, mesh, transform );

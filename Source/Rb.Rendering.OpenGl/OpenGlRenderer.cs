@@ -217,26 +217,33 @@ namespace Rb.Rendering.OpenGl
 		public override Matrix44 GetTransform( Transform type )
 		{
 			Matrix44 mat = new Matrix44( );
+			GetTransform( type, mat );
+			return mat;
+		}
+
+		/// <summary>
+		/// Gets the current matrix from the specified transform stack
+		/// </summary>
+		public override void GetTransform( Transform type, Matrix44 matrix )
+		{
 			switch ( type )
 			{
-				case Transform.LocalToWorld	:
-				{
-					mat.Copy( CurrentLocalToWorld );
-					break;
-				}
-				case Transform.WorldToView	:
-				{
-					mat.Copy( CurrentWorldToView );
-					break;
-				}
-				case Transform.ViewToScreen	:
-				{
-					Gl.glGetFloatv( Gl.GL_PROJECTION_MATRIX, mat.Elements );
-					break;
-				}
+				case Transform.LocalToWorld:
+					{
+						matrix.Copy( CurrentLocalToWorld );
+						break;
+					}
+				case Transform.WorldToView:
+					{
+						matrix.Copy( CurrentWorldToView );
+						break;
+					}
+				case Transform.ViewToScreen:
+					{
+						Gl.glGetFloatv( Gl.GL_PROJECTION_MATRIX, matrix.Elements );
+						break;
+					}
 			}
-
-			return mat;
 		}
 
 		/// <summary>

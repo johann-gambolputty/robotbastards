@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using Rb.Animation;
 using Rb.Core.Assets;
 using Rb.Core.Components;
 using Rb.Core.Maths;
@@ -46,7 +47,18 @@ namespace Poc0.Core.Objects
 		public IRenderable Graphics
 		{
 			get { return m_Graphics; }
-			set { m_Graphics = value; }
+			set
+			{
+				m_Graphics = value;
+				IReferencePoint refPt = ( ( IReferencePoints )m_Graphics )[ "Weapon" ];
+				refPt.OnRender +=
+					delegate
+					{
+						Rb.Rendering.Graphics.Draw.Line( Draw.Pens.Red, Point3.Origin, Point3.Origin + Vector3.XAxis * 2 );
+						Rb.Rendering.Graphics.Draw.Line( Draw.Pens.Blue, Point3.Origin, Point3.Origin + Vector3.YAxis * 2 );
+						Rb.Rendering.Graphics.Draw.Line( Draw.Pens.Green, Point3.Origin, Point3.Origin + Vector3.ZAxis * 2 );
+					};
+			}
 		}
 
 		/// <summary>
@@ -155,11 +167,11 @@ namespace Poc0.Core.Objects
 			IInstanceBuilder builder = m_GraphicsAsset.Asset as IInstanceBuilder;
 			if ( builder != null )
 			{
-				m_Graphics = ( IRenderable )builder.CreateInstance( Builder.Instance );
+				Graphics = ( IRenderable )builder.CreateInstance( Builder.Instance );
 			}
 			else
 			{
-				m_Graphics = ( IRenderable )m_GraphicsAsset;
+				Graphics = ( IRenderable )m_GraphicsAsset;
 			}
 
 			//	Add the graphics object as a child. Although this relationship isn't strictly necessary, it does

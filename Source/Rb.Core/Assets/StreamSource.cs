@@ -74,6 +74,14 @@ namespace Rb.Core.Assets
 
 		#region ISource Members
 
+		public ILocationManager Provider
+		{
+			get
+			{
+				throw new InvalidOperationException( "Stream sources have no location providers" );
+			}
+		}
+
 		/// <summary>
 		/// Event, invoked if the source changes
 		/// </summary>

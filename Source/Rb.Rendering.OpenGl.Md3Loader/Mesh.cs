@@ -387,29 +387,35 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				{
 					nestedMesh.Render( context, layers, refPoints );
 				}
-				refPoints[ ( int )nestedPart.m_Part ]
+				ModelInstance.ReferencePoint refPt = refPoints[ ( int )nestedPart.m_Part ];
+				if ( refPt != null )
+				{
+					refPt.Render( context );
+				}
 
 				Graphics.Renderer.PopTransform( Transform.LocalToWorld );
 
 			}
-			if ( m_NestedMesh != null )
-			{
-				if ( m_TransformTagIndex != -1 )
-				{
-					FrameInfo	curFrame		= FrameInfoList[ currentFrame ];
-					Tag			transformTag	= curFrame.Tags[ TransformTagIndex ];
 
-					Matrix44 transform = transformTag.Transform;
-					Graphics.Renderer.PushTransform( Transform.LocalToWorld, transform );
-				}
 
-				m_NestedMesh.Render( context, layers, refPoints );
+			//if ( m_NestedMesh != null )
+			//{
+			//    if ( m_TransformTagIndex != -1 )
+			//    {
+			//        FrameInfo	curFrame		= FrameInfoList[ currentFrame ];
+			//        Tag			transformTag	= curFrame.Tags[ TransformTagIndex ];
 
-				if ( m_TransformTagIndex != -1 )
-				{
-					Graphics.Renderer.PopTransform( Transform.LocalToWorld );
-				}
-			}
+			//        Matrix44 transform = transformTag.Transform;
+			//        Graphics.Renderer.PushTransform( Transform.LocalToWorld, transform );
+			//    }
+
+			//    m_NestedMesh.Render( context, layers, refPoints );
+
+			//    if ( m_TransformTagIndex != -1 )
+			//    {
+			//        Graphics.Renderer.PopTransform( Transform.LocalToWorld );
+			//    }
+			//}
 		}
 
 		/// <summary>
