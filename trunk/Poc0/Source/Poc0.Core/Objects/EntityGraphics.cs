@@ -149,7 +149,6 @@ namespace Poc0.Core.Objects
 
 		#endregion
 
-
 		/// <summary>
 		/// Resolves the graphics
 		/// </summary>

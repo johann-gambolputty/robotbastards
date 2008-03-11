@@ -9,7 +9,9 @@
     </object>
 
     <object type="Poc0.Core.Objects.Weapon">
-    	<asset path="Graphics\Objects\TestWeapon\Full.components.xml" property="Graphics"/>
+      <instance property="Graphics">
+        <asset path="Graphics\Objects\TestWeapon\Full.components.xml" property="Graphics"/>
+      </instance>
     </object>
 
     <object type="Poc0.Core.Objects.EntityGraphics">

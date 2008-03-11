@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections;
+using System.Collections.Generic;
 using Rb.Core.Assets;
 using Rb.Core.Components;
 using Rb.Core.Maths;
@@ -73,28 +74,33 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			//	create the model
 			Model model = new Model( );
 
-			//	Load animations
-			model.Animations = LoadAnimations( AnimationFile( source ) );
-			if ( model.Animations == null )
+			//	oh dear another md3 hack - directories mean articulated models, with skins and animations. Files
+			//	mean single objects
+			if ( !source.Directory )
 			{
-				//	oh dear another md3 hack - no animations means that the model is a weapon...
-				LoadWeaponModel( model, source, transform );
+				LoadObjectModel (model, source, transform );
 			}
 			else
 			{
-				LoadPlayerModel( model, source, transform );
+				//	Load animations
+				model.Animations = LoadAnimations(AnimationFile(source));
+				LoadNestedModel(model, source, transform);
 			}
 			return model;
 		}
 
-		private static void LoadWeaponModel( Model model, ISource source, Matrix44 transform )
+		private static void LoadObjectModel( Model model, ISource source, Matrix44 transform )
 		{
+			//	Load the skin file for the current part
+			IDictionary< string, ITexture2d > textureTable = LoadSkin( source, DefaultSkinFile( source, ModelPart.Weapon ) );
+
 			//	Load the MD3 associated with the current part
-			Mesh partMesh = LoadMd3( model, ModelPart.Weapon, transform, MeshFile( source, curPart ), surfaceTextureTable );
+			Mesh partMesh = LoadMd3( source, model, ModelPart.Weapon, transform, source, textureTable );
 			model.SetPartMesh( ModelPart.Weapon, partMesh );
+			model.SetRootMesh( partMesh );
 		}
 
-		private static void LoadPlayerModel( Model model, ISource source, Matrix44 transform )
+		private static void LoadNestedModel( Model model, ISource source, Matrix44 transform )
 		{
 			//	Run through all the parts
 			for ( int partIndex = 0; partIndex < ( int )ModelPart.NumParts; ++partIndex )
@@ -107,13 +113,14 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 					continue;
 				}
 				//	Load the skin file for the current part
-				Hashtable surfaceTextureTable = LoadSkin( source, DefaultSkinFile( source, curPart ) );
+				IDictionary< string, ITexture2d > surfaceTextureTable = LoadSkin( source, DefaultSkinFile( source, curPart ) );
 
 				//	Load the MD3 associated with the current part
-				Mesh partMesh = LoadMd3( model, curPart, transform, MeshFile( source, curPart ), surfaceTextureTable );
+				Mesh partMesh = LoadMd3( source, model, curPart, transform, MeshFile( source, curPart ), surfaceTextureTable );
 				model.SetPartMesh( curPart, partMesh );
 			}
 
+			model.SetRootMesh( model.GetPartMesh( ModelPart.Lower ) );
 			NestMesh( model, ModelPart.Lower, ModelPart.Upper, "tag_torso" );
 			NestMesh( model, ModelPart.Upper, ModelPart.Head, "tag_head" );
 			NestMesh( model, ModelPart.Upper, ModelPart.Weapon, "tag_weapon" );
@@ -202,20 +209,21 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Loads a skin file
 		/// </summary>
-		private static Hashtable LoadSkin( ISource source, ISource skinSource )
+		private static IDictionary<string, ITexture2d> LoadSkin( ISource source, ISource skinSource )
 		{
 			using ( Stream inputStream = skinSource.Open( ) )
 			{
-				TextReader	reader				= new StreamReader( inputStream );
-				Hashtable	surfaceTextureMap	= new Hashtable( );
+				TextReader reader = new StreamReader( inputStream );
+				IDictionary<string, ITexture2d> surfaceTextureMap = new Dictionary<string, ITexture2d>();
 
-				char[]		tokenSplit			= new char[ ] { ',' };
+				char[] tokenSplit = new char[ ] { ',' };
 
 				for ( string curLine = reader.ReadLine( ); curLine != null; curLine = reader.ReadLine( ) )
 				{
 					string[] tokens = curLine.Split( tokenSplit );
 
-					if ( !tokens[ 0 ].StartsWith( "tag_" ) )
+				//	if ( !tokens[ 0 ].StartsWith( "tag_" ) )
+					if ( ( tokens.Length == 2 ) && ( !string.IsNullOrEmpty( tokens[ 1 ] ) ) )
 					{
 						//	TODO: AP: Texture loading should be done through the asset manager
 						ITexture2d newTexture = Graphics.Factory.NewTexture2d( );
@@ -308,7 +316,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Loads an MD3 mesh resource from a stream
 		/// </summary>
-		private static Mesh LoadMd3( Model model, ModelPart part, Matrix44 transform, ISource md3Source, IDictionary surfaceTextureTable )
+		private static Mesh LoadMd3( ISource source, Model model, ModelPart part, Matrix44 transform, ISource md3Source, IDictionary<string, ITexture2d> surfaceTextureTable )
 		{
 			using ( Stream inputStream = md3Source.Open( ) )
 			{
@@ -346,7 +354,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 				ReadFrames( reader, framesOffset, numFrames, mesh, transform );
 				ReadTags( reader, tagsOffset, numTags, numFrames, mesh, transform );
-				ReadSurfaces( reader, surfacesOffset, numSurfaces, numFrames, mesh, surfaceTextureTable, transform );
+				ReadSurfaces( source, reader, surfacesOffset, numSurfaces, numFrames, mesh, surfaceTextureTable, transform );
 
 				//	TODO: REMOVE. test frames
 				string md3Name = md3Source.ToString( );
@@ -497,7 +505,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Reads surface information
 		/// </summary>
-		private static void ReadSurfaces( BinaryReader reader, long offset, int numSurfaces, int numFrames, Mesh mesh, IDictionary surfaceTextureTable, Matrix44 transform )
+		private static void ReadSurfaces( ISource source, BinaryReader reader, long offset, int numSurfaces, int numFrames, Mesh mesh, IDictionary<string, ITexture2d> surfaceTextureTable, Matrix44 transform)
 		{
 			//	Move to the start of the first surface
 			reader.BaseStream.Seek( offset, SeekOrigin.Begin );
@@ -529,7 +537,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				int		endOffset			= reader.ReadInt32( );
 
 				//	Assign surface texture
-				curSurface.Texture			= ( ITexture2d )surfaceTextureTable[ name ];
+				curSurface.Texture			= GetTexture( source, surfaceTextureTable, name );
 			
 				//	Assign surface shaders
 			//	ReadShaders( reader, offset + shadersOffset, numShaders );
@@ -548,6 +556,29 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				//	Move the stream to the next surface
 				reader.BaseStream.Seek( offset + endOffset, SeekOrigin.Begin );
 				offset += endOffset;
+			}
+		}
+
+		private static ITexture2d GetTexture( ISource source, IDictionary<string, ITexture2d> textureTable, string name )
+		{
+			try
+			{
+				if ( textureTable != null )
+				{
+					return textureTable[ name ];
+				}
+				ISource textureSource = TextureFile( source, name );
+
+				ITexture2d newTexture = Graphics.Factory.NewTexture2d( );
+				using ( Stream textureStream = textureSource.Open( ) )
+				{
+					TextureUtils.Load( newTexture, textureStream, true );
+				}
+				return newTexture;
+			}
+			catch ( Exception ex )
+			{
+				throw new ApplicationException( string.Format( "Failed to load texture for name \"{0}\"", name ), ex );
 			}
 		}
 
