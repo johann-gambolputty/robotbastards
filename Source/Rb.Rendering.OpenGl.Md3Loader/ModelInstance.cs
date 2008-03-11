@@ -54,12 +54,13 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				{
 					continue;
 				}
-				//	TODO: This assigns the entire animation set to each layer, which isn't correct (although it'll work OK)
-				m_Layers[ layerIndex ] = new AnimationLayer( source.Animations, ( ModelPart )layerIndex );
+				if ( source.Animations != null )
+				{
+					//	TODO: This assigns the entire animation set to each layer, which isn't correct (although it'll work OK)
+					m_Layers[ layerIndex ] = new AnimationLayer( source.Animations, ( ModelPart )layerIndex );
+				}
 			}
 		}
-
-		private ReferencePoint[] m_ReferencePoints = new ReferencePoint[ ( int )ModelPart.NumParts ];
 
 		public class ReferencePoint : IReferencePoint
 		{
@@ -313,6 +314,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 		private readonly Model m_Source;
 		private readonly AnimationLayer[] m_Layers;
+		private readonly ReferencePoint[] m_ReferencePoints = new ReferencePoint[ ( int )ModelPart.NumParts ];
+
 
 		#endregion
 	}
