@@ -8,14 +8,16 @@
       <int value="200" dynProperty="Health"/>
     </object>
 
-    <object type="Poc0.Core.Objects.Weapon">
-      <instance property="Graphics">
-        <asset path="Graphics\Objects\TestWeapon\Full.components.xml" property="Graphics"/>
-      </instance>
-    </object>
-
     <object type="Poc0.Core.Objects.EntityGraphics">
       <location value="Graphics\Entities\TestPlayer0\Full.components.xml" property="GraphicsLocation"/>
+    </object>
+
+    <object type="Poc0.Core.Objects.Weapon">
+      <preLink>
+        <instance property="Graphics">
+          <asset path="Graphics\Objects\TestWeapon\Full.components.xml"/>
+        </instance>
+      </preLink>
     </object>
 
   </object>

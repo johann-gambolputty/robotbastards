@@ -43,6 +43,11 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			m_Source = source;
 
 			//	Set up the animation layers
+			if ( source.Animations == null )
+			{
+				return;
+			}
+
 			m_Layers = new AnimationLayer[ ( int )ModelPart.NumParts ];
 			for ( int layerIndex = 0; layerIndex < ( int )ModelPart.NumParts; ++layerIndex )
 			{

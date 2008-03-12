@@ -18,7 +18,10 @@ namespace Rb.Core.Utils
 		/// </summary>
 		public void Add( Type libraryType )
 		{
-			Add( libraryType.BaseType, libraryType );
+			if ( libraryType.BaseType != null )
+			{
+				Add( libraryType.BaseType, libraryType );
+			}
 		}
 
 		/// <summary>
