@@ -142,8 +142,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public void Render( IRenderContext context, AnimationLayer[] layers, ModelInstance.ReferencePoint[] refPoints )
 		{
-			Mesh.FrameInfo frame = m_PartMeshes[ 0 ].GetAnimationFrame( layers );
-			Graphics.Renderer.Translate( Transform.LocalToWorld, 0, 0.2f + ( frame.MaxBounds - frame.MinBounds ).Y / 2, 0 );
+			Mesh.FrameInfo frame = m_RootMesh.GetAnimationFrame( layers );
+		//	Graphics.Renderer.Translate( Transform.LocalToWorld, 0, 0.2f + ( frame.MaxBounds - frame.MinBounds ).Y / 2, 0 );
 			m_RootMesh.Render( context, layers, refPoints );
 		}
 

@@ -70,6 +70,7 @@ namespace Poc0.Core.Objects
 			set
 			{
 				m_GraphicsAsset.SetSource( value, true );
+				Resolve( );
 			}
 		}
 

@@ -50,7 +50,7 @@ namespace Poc0.Core.Objects
 		}
 
 		[Dispatch]
-		private MessageRecipientResult FireWeapon(FireWeaponMessage msg)
+		private MessageRecipientResult FireWeapon( FireWeaponMessage msg )
 		{
 			IPlaceable placeable = (IPlaceable)m_Owner;
 			Point3 start = placeable.Frame.Translation + placeable.Frame.YAxis * 1.5f;

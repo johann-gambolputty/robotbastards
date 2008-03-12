@@ -368,7 +368,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				}
 				else
 				{
-					mesh.DefaultFrame = 100;
+					mesh.DefaultFrame = 0;
 				}
 
 				return mesh;
