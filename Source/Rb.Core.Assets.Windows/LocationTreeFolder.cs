@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Rb.Assets.Interfaces;
 
 namespace Rb.Core.Assets.Windows
 {

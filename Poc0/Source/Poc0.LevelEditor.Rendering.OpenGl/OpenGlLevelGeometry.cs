@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Runtime.Serialization;
 using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.Geometry;
-using Rb.Core.Assets;
 using Rb.Rendering;
 using Rb.Rendering.Textures;
 using Rb.Tesselator;

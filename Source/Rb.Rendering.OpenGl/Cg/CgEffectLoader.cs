@@ -1,5 +1,7 @@
 using System;
-using Rb.Core.Assets;
+using Rb.Assets;
+using Rb.Assets.Base;
+using Rb.Assets.Interfaces;
 
 namespace Rb.Rendering.OpenGl.Cg
 {
@@ -41,7 +43,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		public override object Load( ISource source, LoadParameters parameters )
 		{
 			parameters.CanCache = true;
-			return new CgEffect( m_Context, source );
+			return new CgEffect( m_Context, ( IStreamSource )source );
 		}
 
 		private readonly IntPtr m_Context;

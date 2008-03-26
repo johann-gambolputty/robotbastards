@@ -2,7 +2,8 @@ using System;
 using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.EditModes;
 using Poc0.LevelEditor.Properties;
-using Rb.Core.Assets;
+using Rb.Assets;
+using Rb.Assets.Interfaces;
 using Rb.Log;
 using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.Controls.Forms;
@@ -41,7 +42,7 @@ namespace Poc0.LevelEditor
 		{
 			get
 			{
-				return new Location( "Editor/LevelEditorStandardViewer.components.xml" );
+				return Locations.NewLocation( "Editor/LevelEditorStandardViewer.components.xml" );
 			}
 		}
 
@@ -52,7 +53,7 @@ namespace Poc0.LevelEditor
 		{
 			get
 			{
-				return new Location( "Editor/LevelEditorCommandInputs.components.xml" );
+				return Locations.NewLocation( "Editor/LevelEditorCommandInputs.components.xml" );
 			}
 		}
 
@@ -127,14 +128,14 @@ namespace Poc0.LevelEditor
 				return;
 			}
 
-			ISource viewerSource = new Location( "Editor/LevelEditorGameViewer.components.xml" );
+			ISource viewerSource = Locations.NewLocation( "Editor/LevelEditorGameViewer.components.xml" );
 			PlayerSetup[] players = new PlayerSetup[]
 				{
 					new PlayerSetup
 					(
 						"Test Player",
-						new Location( "Input/DefaultGameInputs.components.xml" ),
-						new Location( "Objects/DefaultPC.components.xml" )
+						Locations.NewLocation( "Input/DefaultGameInputs.components.xml" ),
+						Locations.NewLocation( "Objects/DefaultPC.components.xml" )
 					) 	
 				};
 

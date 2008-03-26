@@ -1,7 +1,8 @@
 using System;
 using Poc0.LevelEditor.Core.Geometry;
 using Poc0.LevelEditor.Core.Rendering;
-using Rb.Core.Assets;
+using Rb.Assets;
+using Rb.Assets.Interfaces;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.World;
@@ -27,7 +28,7 @@ namespace Poc0.LevelEditor.Core
 			scene.AddService( rayCaster );
 
 			//	Add material set service to scene
-			ISource materialSetSource = new Location( "Editor/DefaultMaterialSet.components.xml" );
+			ISource materialSetSource = Locations.NewLocation( "Editor/DefaultMaterialSet.components.xml" );
 			MaterialSet materials = MaterialSet.Load( materialSetSource, false );
 
 			scene.AddService( materials );

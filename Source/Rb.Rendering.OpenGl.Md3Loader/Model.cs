@@ -21,6 +21,16 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 	/// </summary>
 	public class Model : INamed, IInstanceBuilder
 	{
+		/// <summary>
+		/// If set to true, the root mesh is moved up by its current animation frame's height
+		/// </summary>
+		public bool RaiseRootMeshToFloor
+		{
+			get { return m_RaiseRootMeshToFloor; }
+			set { m_RaiseRootMeshToFloor = value; }
+		}
+
+
 		#region	Meshes
 
 		/// <summary>
@@ -142,8 +152,11 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public void Render( IRenderContext context, AnimationLayer[] layers, ModelInstance.ReferencePoint[] refPoints )
 		{
-			Mesh.FrameInfo frame = m_RootMesh.GetAnimationFrame( layers );
-		//	Graphics.Renderer.Translate( Transform.LocalToWorld, 0, 0.2f + ( frame.MaxBounds - frame.MinBounds ).Y / 2, 0 );
+			if ( m_RaiseRootMeshToFloor )
+			{
+				Mesh.FrameInfo frame = m_RootMesh.GetAnimationFrame( layers );
+				Graphics.Renderer.Translate( Transform.LocalToWorld, 0, -frame.MinBounds.Y, 0 );
+			}
 			m_RootMesh.Render( context, layers, refPoints );
 		}
 
@@ -155,6 +168,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		private readonly Mesh[]	m_PartMeshes = new Mesh[ ( int )ModelPart.NumParts ];
 		private string			m_Name;
 		private Mesh			m_RootMesh;
+		private bool			m_RaiseRootMeshToFloor;
 
 		#endregion
 	}

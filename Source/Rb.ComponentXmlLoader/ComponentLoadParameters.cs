@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using Rb.Core.Components;
 
-namespace Rb.Core.Components
+namespace Rb.ComponentXmlLoader
 {
     /// <summary>
     /// Resource loading parameters required by component resource loaders

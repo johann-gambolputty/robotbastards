@@ -1,7 +1,6 @@
 using System.Xml;
 using System.Collections.Generic;
-using Rb.Core.Components;
-using Rb.Core.Assets;
+using Rb.Assets;
 
 
 namespace Rb.ComponentXmlLoader
@@ -25,7 +24,7 @@ namespace Rb.ComponentXmlLoader
 
 			string instance = reader.GetAttribute( "instance" );
         	m_Instance = string.IsNullOrEmpty( instance ) ? false : bool.Parse( instance );
-            m_Loader = AssetManager.Instance.CreateLoadState( new Location( assetPath ), null );
+            m_Loader = AssetManager.Instance.CreateLoadState( Locations.NewLocation( assetPath ), null );
 
 			string useCurrentParams = reader.GetAttribute( "useCurrentParameters" );
 			if ( useCurrentParams != null )

@@ -1,5 +1,5 @@
 using System;
-using Rb.Core.Assets;
+using Rb.Assets.Interfaces;
 
 namespace Poc0.LevelEditor.Core.Geometry
 {

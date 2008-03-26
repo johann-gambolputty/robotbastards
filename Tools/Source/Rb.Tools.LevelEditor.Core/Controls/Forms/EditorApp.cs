@@ -1,6 +1,6 @@
 using System.Configuration;
 using System.IO;
-using Rb.Core.Assets;
+using Rb.Assets;
 using Rb.Rendering;
 
 namespace Rb.Tools.LevelEditor.Core.Controls.Forms
@@ -18,7 +18,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			{
 				assetSetupPath = "../assetSetup.xml";
 			}
-			AssetXmlSetup.Setup( assetSetupPath, AssetManager.Instance, LocationManagers.Instance );	
+			AssetUtils.Setup( assetSetupPath );	
 		}
 
 		/// <summary>

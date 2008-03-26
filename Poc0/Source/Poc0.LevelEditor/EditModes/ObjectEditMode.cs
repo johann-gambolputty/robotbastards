@@ -4,7 +4,8 @@ using System.Text;
 using System.Windows.Forms;
 using Poc0.LevelEditor.EditModes.Controls;
 using Poc0.LevelEditor.Properties;
-using Rb.Core.Assets;
+using Rb.Assets;
+using Rb.Assets.Interfaces;
 using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Log;
@@ -155,10 +156,10 @@ namespace Poc0.LevelEditor.EditModes
 			StringBuilder invalidTemplates = new StringBuilder( );
 
 			//	TODO: AP: Make directory traversal part of the location manager
-			ILocationManager locations = Location.DetermineLocationManager( templatesLocation );
-			foreach ( ISource source in locations.GetSourcesInDirectory( templatesLocation ) )
+			IFolder folder = Locations.Instance.GetFolder( templatesLocation );
+			foreach ( IFile file in folder.Files )
 			{
-				object loadResult = AssetManager.Instance.Load( source );
+				object loadResult = AssetManager.Instance.Load( file );
 				if ( loadResult is ObjectTemplate )
 				{
 					templates.Add( loadResult );
@@ -172,7 +173,7 @@ namespace Poc0.LevelEditor.EditModes
 				}
 				else
 				{
-					invalidTemplates.AppendLine( source.Name );
+					invalidTemplates.AppendLine( file.Name );
 				}
 			}
 

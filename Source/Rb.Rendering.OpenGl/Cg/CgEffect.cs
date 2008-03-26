@@ -3,7 +3,7 @@ using System.Collections;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using Rb.Core.Assets;
+using Rb.Assets.Interfaces;
 using TaoCg = Tao.Cg.Cg;
 
 namespace Rb.Rendering.OpenGl.Cg
@@ -40,7 +40,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// </summary>
 		/// <param name="context">CG context</param>
 		/// <param name="source">Asset source</param>
-		public CgEffect( IntPtr context, ISource source )
+		public CgEffect( IntPtr context, IStreamSource source )
 		{
 			m_Context = context;
 			Load( source );
@@ -100,7 +100,7 @@ namespace Rb.Rendering.OpenGl.Cg
 
 		private static string OpenIncludePath( ISource source, string path )
 		{
-			ISource includeSource = source.GetRelativeSource( path );
+			IStreamSource includeSource = source.Location.ParentFolder.GetFile( path );
 			if ( includeSource == null )
 			{
 				throw new FileNotFoundException( "Could not find include file", path );
@@ -168,7 +168,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// Loads this effect from a .cgfx stream
 		/// </summary>
 		/// <param name="source">Asset source</param>
-		public void Load( ISource source )
+		public void Load( IStreamSource source )
 		{
 			using ( Stream streamSource = source.Open( ) )
 			{

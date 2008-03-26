@@ -1,5 +1,6 @@
 using System;
-using Rb.Core.Assets;
+using Rb.Assets;
+using Rb.Assets.Interfaces;
 using Rb.Core.Components;
 
 namespace Rb.World.Entities
@@ -60,7 +61,7 @@ namespace Rb.World.Entities
 
 		private void LoadController( )
 		{
-			Location controllerAssetLocation = new Location( m_ControllerPath );
+			ILocation controllerAssetLocation = Locations.NewLocation( m_ControllerPath );
 
 			LoadState loader = AssetManager.Instance.CreateLoadState( controllerAssetLocation, null );
 			loader.Parameters.Target = this;

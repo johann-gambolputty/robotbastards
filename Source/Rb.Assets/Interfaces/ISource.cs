@@ -1,36 +1,22 @@
 using System;
-using System.IO;
 
 namespace Rb.Assets.Interfaces
 {
 	/// <summary>
-	/// Asset source interface
+	/// Base interface for files, folders and streams
 	/// </summary>
 	/// <remarks>
-	/// An ISource is a data source containing serialized objects - for example, a file location
-	/// Sources are loaded by a specific <see cref="IAssetLoader"/> object in the
-	/// <see cref="IAssetManager"/>, by calling <see cref="IAssetManager.Load(ISource)"/> or some
-	/// overload.
-	/// It's also possible to directly access the stream, using <see cref="Open()"/> (remember
-	/// to Dispose the resulting stream).
+	/// A source can be any location (<see cref="ILocation"/>), or a stream wrapper (<see cref="IStreamSource"/>).
 	/// </remarks>
 	public interface ISource
 	{
 		/// <summary>
 		/// Event, invoked if the source changes
 		/// </summary>
-		event EventHandler SourceChanged;
+		event Action<ISource> SourceChanged;
 
 		/// <summary>
-		/// Gets the name of the source (e.g. filename)
-		/// </summary>
-		string Name
-		{
-			get;
-		}
-
-		/// <summary>
-		/// Gets the full path of the source (e.g. rooted file path)
+		/// Path to this source (e.g. "c:\a\b\c.txt")
 		/// </summary>
 		string Path
 		{
@@ -38,8 +24,35 @@ namespace Rb.Assets.Interfaces
 		}
 
 		/// <summary>
-		/// Opens a stream from this source
+		/// Gets the name of this source. For files, this includes the extension (e.g. "c.txt")
 		/// </summary>
-		Stream Open( );
+		string Name
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Gets the extension of this source. For folders, this returns an empty string
+		/// </summary>
+		string Extension
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Returns true if this source has a specified extension
+		/// </summary>
+		bool HasExtension( string extension );
+
+		/// <summary>
+		/// Gets the location of this source
+		/// </summary>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown if the source has no location (e.g. this is a memory stream wrapper).
+		/// </exception>
+		ILocation Location
+		{
+			get;
+		}
 	}
 }

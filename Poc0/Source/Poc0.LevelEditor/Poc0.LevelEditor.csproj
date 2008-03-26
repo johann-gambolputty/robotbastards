@@ -145,13 +145,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Source\Rb.AppCore\Rb.AppCore.csproj">
-      <Project>{51095D19-F325-49A4-89C1-18FA270515FD}</Project>
-      <Name>Rb.AppCore</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.AssemblySelector\Rb.AssemblySelector.csproj">
       <Project>{2097B22A-91A5-4CFF-8CCB-846A10523CB9}</Project>
       <Name>Rb.AssemblySelector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Assets\Rb.Assets.csproj">
+      <Project>{22440804-2D3F-4FEF-AD01-812923F6E04C}</Project>
+      <Name>Rb.Assets</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.ComponentXmlLoader\Rb.ComponentXmlLoader.csproj">
       <Project>{61B562C4-66D5-4048-B482-858A791249A2}</Project>
