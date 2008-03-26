@@ -36,7 +36,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Sets the mesh for a specified body part
 		/// </summary>
-		public void SetPartMesh( ModelPart part, Mesh mesh )
+		public void SetPartMesh( ModelPart part, ModelMesh mesh )
 		{
 			m_PartMeshes[ ( int )part ] = mesh;
 		}
@@ -44,7 +44,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Gets the mesh for a specified body part
 		/// </summary>
-		public Mesh GetPartMesh( ModelPart part )
+		public ModelMesh GetPartMesh( ModelPart part )
 		{
 			return m_PartMeshes[ ( int )part ];
 		}
@@ -52,7 +52,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// <summary>
 		/// Sets the root mesh, rendered 
 		/// </summary>
-		public void SetRootMesh( Mesh rootMesh )
+		public void SetRootMesh( ModelMesh rootMesh )
 		{
 			m_RootMesh = rootMesh;
 		}
@@ -154,7 +154,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		{
 			if ( m_RaiseRootMeshToFloor )
 			{
-				Mesh.FrameInfo frame = m_RootMesh.GetAnimationFrame( layers );
+				ModelMesh.FrameInfo frame = m_RootMesh.GetAnimationFrame( layers );
 				Graphics.Renderer.Translate( Transform.LocalToWorld, 0, -frame.MinBounds.Y, 0 );
 			}
 			m_RootMesh.Render( context, layers, refPoints );
@@ -165,9 +165,9 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		#region Private members
 
 		private AnimationSet	m_Animations;
-		private readonly Mesh[]	m_PartMeshes = new Mesh[ ( int )ModelPart.NumParts ];
+		private readonly ModelMesh[]	m_PartMeshes = new ModelMesh[ ( int )ModelPart.NumParts ];
 		private string			m_Name;
-		private Mesh			m_RootMesh;
+		private ModelMesh			m_RootMesh;
 		private bool			m_RaiseRootMeshToFloor;
 
 		#endregion

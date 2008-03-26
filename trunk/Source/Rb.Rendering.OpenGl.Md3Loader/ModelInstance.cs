@@ -53,7 +53,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			{
 				m_ReferencePoints[ layerIndex ] = new ReferencePoint( ( ModelPart )layerIndex );
 
-				Mesh partMesh = source.GetPartMesh( ( ModelPart )layerIndex );
+				ModelMesh partMesh = source.GetPartMesh( ( ModelPart )layerIndex );
 
 				if ( partMesh == null )
 				{
