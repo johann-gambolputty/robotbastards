@@ -44,7 +44,7 @@
     <Compile Include="AnimationLayer.cs" />
     <Compile Include="AnimationSet.cs" />
     <Compile Include="Loader.cs" />
-    <Compile Include="Mesh.cs" />
+    <Compile Include="ModelMesh.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="ModelInstance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

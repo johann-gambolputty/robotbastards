@@ -11,12 +11,12 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 	/// <summary>
 	/// OpenGL mesh with support for MD3 animation
 	/// </summary>
-	public class Mesh : INamed
+	public class ModelMesh : INamed
 	{
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public Mesh( Model model, ModelPart part )
+		public ModelMesh( Model model, ModelPart part )
 		{
 			m_Model = model;
 			m_Part = part;
@@ -37,8 +37,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public class Tag
 		{
-			public Matrix44		Transform;
-			public string		Name;
+			public Matrix44	Transform;
+			public string	Name;
 		}
 
 		/// <summary>
@@ -384,7 +384,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				Matrix44 transform = transformTag.Transform;
 				Graphics.Renderer.PushTransform( Transform.LocalToWorld, transform );
 
-				Mesh nestedMesh = m_Model.GetPartMesh( nestedPart.m_Part );
+				ModelMesh nestedMesh = m_Model.GetPartMesh( nestedPart.m_Part );
 				if ( nestedMesh != null )
 				{
 					nestedMesh.Render( context, layers, refPoints );
@@ -429,7 +429,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		
 		private readonly static Draw.IPen	m_BoundsDraw;
 
-		static Mesh( )
+		static ModelMesh( )
 		{
 			m_BoundsDraw = Graphics.Draw.NewPen( Color.Red, 1.5f );
 			m_BoundsDraw.State.EnableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
