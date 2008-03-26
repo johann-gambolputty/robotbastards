@@ -1,6 +1,6 @@
 using System;
 using Poc0.Core.Environment;
-using Rb.Core.Assets;
+using Rb.Assets.Interfaces;
 using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Core.Utils;

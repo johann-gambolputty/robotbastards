@@ -1,5 +1,5 @@
 using System;
-using Rb.Core.Assets;
+using Rb.Assets;
 using Rb.Core.Components;
 using Rb.Core.Utils;
 using Rb.Interaction;

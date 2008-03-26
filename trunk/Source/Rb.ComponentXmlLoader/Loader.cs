@@ -1,9 +1,10 @@
 using System;
 using System.IO;
 using System.Xml;
-using Rb.Core.Assets;
+using Rb.Assets;
+using Rb.Assets.Base;
+using Rb.Assets.Interfaces;
 using Rb.Core.Components;
-using Rb.Core;
 using Rb.Log;
 
 namespace Rb.ComponentXmlLoader
@@ -50,7 +51,7 @@ namespace Rb.ComponentXmlLoader
 		/// <summary>
 		/// Loads component XML from a stream
 		/// </summary>
-		public object Load( Stream stream, string sourceName, LoadParameters parameters )
+		public object Load( Stream stream, ISource source, LoadParameters parameters )
 		{
 			if ( !( parameters is ComponentLoadParameters ) )
 			{
@@ -66,9 +67,7 @@ namespace Rb.ComponentXmlLoader
 
 			parameters.CanCache = false;
 
-			ErrorCollection errors = new ErrorCollection( string.Copy( sourceName ) );
-
-			sourceName = Path.GetFileName( sourceName );
+			ErrorCollection errors = new ErrorCollection( string.Copy( source.Path ) );
 
 			XmlTextReader reader = new XmlTextReader( stream );
 			reader.WhitespaceHandling = WhitespaceHandling.Significant;
@@ -76,18 +75,18 @@ namespace Rb.ComponentXmlLoader
 			{
 				if ( reader.MoveToContent( ) == XmlNodeType.None )
 				{
-					AssetsLog.Warning( "XML component asset \"{0}\" was empty - returning null", sourceName );
+					AssetsLog.Warning( "XML component asset \"{0}\" was empty - returning null", source.Name );
 					return null;
 				}
 			}
 			catch ( XmlException ex )
 			{
-				AssetsLog.Error( "Moving to XML component asset \"{0}\" content threw an exception", sourceName );
+				AssetsLog.Error( "Moving to XML component asset \"{0}\" content threw an exception", source.Name );
 
 				Entry entry = new Entry( AssetsLog.GetSource( Severity.Error ), ex.Message );
-				Source.HandleEntry( entry.Locate( sourceName, ex.LineNumber, ex.LinePosition, "" ) );
+				Source.HandleEntry( entry.Locate( source.Path, ex.LineNumber, ex.LinePosition, "" ) );
 
-			    throw new ApplicationException( string.Format( "Failed to load component XML asset \"{0}\" (see log for details)", sourceName ) );
+			    throw new ApplicationException( string.Format( "Failed to load component XML asset \"{0}\" (see log for details)", source.Name ) );
 			}
 
             string cacheable = reader.GetAttribute( "cacheable" );
@@ -115,13 +114,13 @@ namespace Rb.ComponentXmlLoader
                 {
                     Source.HandleEntry( error );
                 }
-                throw new ApplicationException( string.Format( "Failed to load component XML asset \"{0}\" (see log for details)", sourceName ) );
+                throw new ApplicationException( string.Format( "Failed to load component XML asset \"{0}\" (see log for details)", source.Name ) );
             }
 
 			//	TODO: AP: bit dubious... if there's more than one object, return a list
 			if ( builder.Children.Count == 0 )
 			{
-				throw new ApplicationException( string.Format( "Failed to load component XML asset \"{0}\" - did not contain any components", sourceName ) );
+				throw new ApplicationException( string.Format( "Failed to load component XML asset \"{0}\" - did not contain any components", source.Name ) );
 			}
 			if ( builder.Children.Count == 1 )
 			{
@@ -138,9 +137,9 @@ namespace Rb.ComponentXmlLoader
 		/// <returns>Returns loaded object</returns>
 		public override object Load( ISource source, LoadParameters parameters )
 		{
-			using ( Stream stream = source.Open( ) )
+			using ( Stream stream = OpenStream( source ) )
 			{
-				return Load( stream, source.Path, parameters );
+				return Load( stream, source, parameters );
 			}
 		}
 

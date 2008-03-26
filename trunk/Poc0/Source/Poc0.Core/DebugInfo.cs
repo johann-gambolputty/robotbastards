@@ -62,6 +62,20 @@ namespace Poc0.Core
 		#region Object debug information
 
 		/// <summary>
+		/// Shows/hides animation tag transforms
+		/// </summary>
+		[Category( "Objects" )]
+		public static bool ShowTagTransforms
+		{
+			get { return m_ShowTagTransforms; }
+			set
+			{
+				m_ShowTagTransforms = value;
+				OnDebugInfoChanged( );
+			}
+		}
+
+		/// <summary>
 		/// Shows/hides debug information about signposts
 		/// </summary>
 		[Category( "Objects" )]
@@ -129,6 +143,7 @@ namespace Poc0.Core
 		private static bool m_ShowWorkingMem;
 		private static bool m_ShowPeakWorkingMem;
 
+		private static bool m_ShowTagTransforms;
 		private static bool m_ShowSignposts;
 		private static bool m_ShowLights;
 		private static bool m_ShowEntityBounds;

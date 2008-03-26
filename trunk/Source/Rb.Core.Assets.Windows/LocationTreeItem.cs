@@ -1,3 +1,5 @@
+using Rb.Assets.Interfaces;
+
 namespace Rb.Core.Assets.Windows
 {
 	public class LocationTreeItem : LocationTreeNode

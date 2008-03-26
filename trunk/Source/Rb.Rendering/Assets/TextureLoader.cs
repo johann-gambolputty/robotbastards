@@ -1,5 +1,7 @@
 using System.IO;
-using Rb.Core.Assets;
+using Rb.Assets;
+using Rb.Assets.Base;
+using Rb.Assets.Interfaces;
 using Rb.Core.Components;
 using Rb.Rendering.Textures;
 
@@ -61,7 +63,7 @@ namespace Rb.Rendering.Assets
 			parameters.CanCache = true;
 			ITexture2d texture = Graphics.Factory.NewTexture2d( );
 
-			using ( Stream stream = source.Open( ) )
+			using ( Stream stream = ( ( IStreamSource )source ).Open( ) )
 			{
 				bool generateMipMaps = DynamicProperties.GetProperty( parameters.Properties, GenerateMipMapsPropertyName, false );
 				TextureUtils.Load( texture, stream, generateMipMaps );

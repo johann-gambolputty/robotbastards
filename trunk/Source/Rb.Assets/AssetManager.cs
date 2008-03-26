@@ -4,9 +4,17 @@ using Rb.Assets.Interfaces;
 
 namespace Rb.Assets
 {
-	class AssetManager
+	public class AssetManager
 	{
 		//	TODO: AP: Asynchronous asset loading
+
+		/// <summary>
+		/// Gets the class singleton
+		/// </summary>
+		public static AssetManager Instance
+		{
+			get { return ms_Singleton; }
+		}
 
 		#region Loaders
 
@@ -41,6 +49,20 @@ namespace Rb.Assets
 			}
 			return null;
 		}
+		
+		/// <summary>
+		/// Clears all asset caches
+		/// </summary>
+		public void ClearAllCaches( )
+		{
+			foreach ( IAssetLoader loader in Loaders )
+			{
+				if ( loader.Cache != null )
+				{
+					loader.Cache.Clear( );
+				}
+			}
+		}
 
 		#endregion
 
@@ -70,7 +92,8 @@ namespace Rb.Assets
 		/// <returns>Returns the loaded asset</returns>
 		public object Load( string path )
 		{
-			return Load( new Location( path ) );
+			ISource loc = Locations.Instance.GetLocation( path );
+			return Load( loc );
 		}
 
 		/// <summary>
@@ -81,7 +104,8 @@ namespace Rb.Assets
 		/// <returns>Returns the loaded asset</returns>
 		public object Load( string path, LoadParameters parameters )
 		{
-			return Load( new Location( path ), parameters );
+			ISource loc = Locations.Instance.GetLocation( path );
+			return Load( loc, parameters );
 		}
 
 		/// <summary>
@@ -100,12 +124,11 @@ namespace Rb.Assets
 		/// <param name="source">Asset source</param>
 		/// <param name="parameters">Loading parameters</param>
 		/// <returns>Returns the loaded asset</returns>
-		/// <exception cref="ArgumentException">If source is invalid, or referenced an asset that failed to load</exception>
 		public object Load( ISource source, LoadParameters parameters )
 		{
-			if ( !source.Exists )
+			if ( source == null )
 			{
-				throw new ArgumentException( string.Format( "Invalid asset source {0}", source ) );
+				throw new ArgumentNullException( "source" );
 			}
 
 			foreach ( IAssetLoader loader in m_Loaders )
@@ -117,17 +140,16 @@ namespace Rb.Assets
 				}
 			}
 
-			throw new ArgumentException( string.Format( "No loader could load asset {0}", source ) );
+			throw new ArgumentException( string.Format( "No loader could load asset \"{0}\"", source ) );
 		}
 
 		#endregion
 
 		#region Private stuff
 
-		private readonly List< IAssetLoader >	m_Loaders		= new List< IAssetLoader >( );
-		private static readonly AssetManager	ms_Singleton	= new AssetManager( );
+		private readonly List< IAssetLoader > m_Loaders = new List< IAssetLoader >( );
+		private readonly static AssetManager ms_Singleton = new AssetManager( );
 		
 		#endregion
-
 	}
 }

@@ -3,8 +3,9 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.CSharp;
-using Rb.Core;
-using Rb.Core.Assets;
+using Rb.Assets;
+using Rb.Assets.Base;
+using Rb.Assets.Interfaces;
 using Rb.Core.Components;
 using Rb.Log;
 
@@ -52,7 +53,7 @@ namespace Rb.CodeLoader
 			string typeToInstance = DynamicProperties.GetProperty< string >( parameters.Properties, InstanceTypeName, null );
 			IEnumerable< string > assemblies = DynamicProperties.GetProperty< IEnumerable< string > >( parameters.Properties, ReferencesName, new string[] { } );
 
-			using ( Stream stream = source.Open( ) )
+			using ( Stream stream = OpenStream( source ) )
 			{
 				StreamReader reader = new StreamReader( stream );
 				string allLines = reader.ReadToEnd( );

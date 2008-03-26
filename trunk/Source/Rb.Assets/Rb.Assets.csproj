@@ -34,15 +34,52 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssetManager.cs" />
+    <Compile Include="AssetsLog.cs" />
+    <Compile Include="AssetUtils.cs" />
+    <Compile Include="Base\AssetCache.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\AssetHandle.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\AssetHandleProxy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\AssetHandleT.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\AssetLoader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\StreamSource.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Files\FilePath.cs" />
-    <Compile Include="Files\DirectoryPath.cs" />
+    <Compile Include="Files\FolderPath.cs" />
     <Compile Include="Files\FileSystem.cs" />
+    <Compile Include="Files\LocationPath.cs" />
     <Compile Include="Interfaces\IAssetCache.cs" />
     <Compile Include="Interfaces\IAssetLoader.cs" />
+    <Compile Include="Interfaces\IFile.cs" />
+    <Compile Include="Interfaces\ILocationManager.cs" />
     <Compile Include="Interfaces\IFolder.cs" />
-    <Compile Include="Interfaces\IProvider.cs" />
+    <Compile Include="Interfaces\ILocation.cs" />
     <Compile Include="Interfaces\ISource.cs" />
+    <Compile Include="Interfaces\IStreamSource.cs" />
+    <Compile Include="LoadParameters.cs" />
+    <Compile Include="LoadState.cs" />
+    <Compile Include="Locations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Log\Rb.Log.csproj">
+      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
+      <Name>Rb.Log</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

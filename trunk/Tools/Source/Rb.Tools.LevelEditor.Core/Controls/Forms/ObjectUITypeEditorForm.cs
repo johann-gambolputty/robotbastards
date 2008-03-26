@@ -1,6 +1,8 @@
 using System;
 using System.Windows.Forms;
-using Rb.Core.Assets;
+using Rb.Assets;
+using Rb.Assets.Base;
+using Rb.Assets.Interfaces;
 using Rb.Core.Assets.Windows;
 using Rb.Core.Components;
 using Rb.Log;
@@ -28,7 +30,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			}
 
 			//	Run through all available location managers
-			foreach ( ILocationManager locationManager in LocationManagers.Instance )
+			foreach ( ILocationManager locationManager in Locations.Instance.Systems )
 			{
 				//	Add the current location manager to the manager combo box, if it can provide a browser UI
 				if ( locationManager is ILocationBrowserProvider )

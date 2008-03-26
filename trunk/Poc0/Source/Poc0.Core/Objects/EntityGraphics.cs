@@ -1,7 +1,8 @@
 using System;
 using System.Drawing;
 using Rb.Animation;
-using Rb.Core.Assets;
+using Rb.Assets.Base;
+using Rb.Assets.Interfaces;
 using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Rendering;
@@ -18,7 +19,7 @@ namespace Poc0.Core.Objects
 	/// NOTE: Assumes a couple of times that the entity is the immediate parent object
 	/// </remarks>
 	[Serializable]
-	public class EntityGraphics : Component, IRenderable, ISceneObject
+	public class EntityGraphics : Component, IRenderable, ISceneObject, IReferencePoints
 	{
 		#region Construction
 
@@ -51,13 +52,17 @@ namespace Poc0.Core.Objects
 			{
 				m_Graphics = value;
 				IReferencePoint refPt = ( ( IReferencePoints )m_Graphics )[ "Weapon" ];
-				refPt.OnRender +=
-					delegate
-					{
-						Rb.Rendering.Graphics.Draw.Line( Draw.Pens.Red, Point3.Origin, Point3.Origin + Vector3.XAxis * 2 );
-						Rb.Rendering.Graphics.Draw.Line( Draw.Pens.Blue, Point3.Origin, Point3.Origin + Vector3.YAxis * 2 );
-						Rb.Rendering.Graphics.Draw.Line( Draw.Pens.Green, Point3.Origin, Point3.Origin + Vector3.ZAxis * 2 );
-					};
+				refPt.OnRender += OnWeaponRender;
+			}
+		}
+
+		private static void OnWeaponRender( IRenderContext context )
+		{
+			if ( DebugInfo.ShowTagTransforms )
+			{
+				Rb.Rendering.Graphics.Draw.Line( Draw.Pens.Red, Point3.Origin, Point3.Origin + Vector3.XAxis * 2 );
+				Rb.Rendering.Graphics.Draw.Line( Draw.Pens.Blue, Point3.Origin, Point3.Origin + Vector3.YAxis * 2 );
+				Rb.Rendering.Graphics.Draw.Line( Draw.Pens.Green, Point3.Origin, Point3.Origin + Vector3.ZAxis * 2 );
 			}
 		}
 
@@ -206,5 +211,20 @@ namespace Poc0.Core.Objects
 		private IRenderable m_Graphics;
 		private readonly LightMeter m_Lights = new LightMeter( );
 		private readonly AssetHandle m_GraphicsAsset = new AssetHandle( );
+
+		#region IReferencePoints Members
+
+		/// <summary>
+		/// Gets a named reference point
+		/// </summary>
+		public IReferencePoint this[ string name ]
+		{
+			get
+			{
+				return ( ( IReferencePoints )m_Graphics )[ name ];
+			}
+		}
+
+		#endregion
 	}
 }

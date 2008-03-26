@@ -24,45 +24,6 @@ namespace Poc0.Core.Objects
 			return true;
 		}
 
-		private void Bind( )
-		{
-			if ( m_Bound )
-			{
-				return;
-			}
-			
-			IMessageHub hub = ( IMessageHub )m_Owner;
-			MessageHub.AddRecipient< FireWeaponMessage >( hub, FireWeapon, 0 );
-
-			IReferencePoints refPoints = ( IReferencePoints )Parent.GetType< EntityGraphics >( m_Owner ).Graphics;
-			refPoints[ "Weapon" ].OnRender += m_Graphics.Render;
-			m_Bound = true;
-		}
-
-		private void Unbind( )
-		{
-			if ( !m_Bound )
-			{
-				return;
-			}
-			( ( IMessageHub )m_Owner ).RemoveRecipient( typeof( FireWeaponMessage ), this );
-			m_Bound = false;
-		}
-
-		[Dispatch]
-		private MessageRecipientResult FireWeapon( FireWeaponMessage msg )
-		{
-			IPlaceable placeable = (IPlaceable)m_Owner;
-			Point3 start = placeable.Frame.Translation + placeable.Frame.YAxis * 1.5f;
-			Vector3 dir = placeable.Frame.ZAxis;
-
-			new Projectile(m_Scene, start, dir, 0.1f);
-
-			return MessageRecipientResult.DeliverToNext;
-		}
-
-		private bool m_Bound;
-
 		#region IChild Members
 
 		public void AddedToParent( object parent )
@@ -81,13 +42,13 @@ namespace Poc0.Core.Objects
 
 		#region Public properties
 
+		/// <summary>
+		/// Weapon graphics object
+		/// </summary>
 		public IRenderable Graphics
 		{
 			get { return m_Graphics; }
-			set
-			{
-				m_Graphics = value;
-			}
+			set { m_Graphics = value; }
 		}
 
 		#endregion
@@ -114,9 +75,57 @@ namespace Poc0.Core.Objects
 		
 		#region Private members
 
-		private object		m_Owner;
-		private Scene		m_Scene;
-		private IRenderable m_Graphics;
+		private object			m_Owner;
+		private Scene			m_Scene;
+		private IRenderable 	m_Graphics;
+		private bool			m_Bound;
+		private IReferencePoint m_AttachPoint;
+		
+		[Dispatch]
+		private MessageRecipientResult FireWeapon( FireWeaponMessage msg )
+		{
+			Point3 start = m_AttachPoint.Transform.Translation;
+			Vector3 dir = m_AttachPoint.Transform.ZAxis;
+
+			new Projectile( m_Scene, start, dir, 0.1f );
+
+			return MessageRecipientResult.DeliverToNext;
+		}
+		
+		/// <summary>
+		/// Binds this weapon to its current owner
+		/// </summary>
+		private void Bind( )
+		{
+			if ( m_Bound )
+			{
+				return;
+			}
+			
+			IMessageHub hub = ( IMessageHub )m_Owner;
+			MessageHub.AddRecipient< FireWeaponMessage >( hub, FireWeapon, 0 );
+
+			IReferencePoints refPoints = Parent.GetType< IReferencePoints >( m_Owner );
+			m_AttachPoint = refPoints[ "Weapon" ];
+			m_AttachPoint.OnRender += m_Graphics.Render;
+
+			m_Bound = true;
+		}
+
+		/// <summary>
+		/// Unbinds this weapon from its current owner
+		/// </summary>
+		private void Unbind( )
+		{
+			if ( !m_Bound )
+			{
+				return;
+			}
+			( ( IMessageHub )m_Owner ).RemoveRecipient( typeof( FireWeaponMessage ), this );
+			m_AttachPoint.OnRender -= m_Graphics.Render;
+			m_Bound = false;
+		}
+
 
 		#endregion
 	}

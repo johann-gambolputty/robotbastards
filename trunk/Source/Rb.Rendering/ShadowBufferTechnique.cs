@@ -1,5 +1,6 @@
 using System;
-using Rb.Core.Assets;
+using Rb.Assets;
+using Rb.Assets.Base;
 using Rb.Core.Maths;
 using Rb.Rendering.Lights;
 using Rb.Rendering.Textures;

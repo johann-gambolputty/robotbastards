@@ -1,8 +1,9 @@
 using System;
 using System.IO;
-using System.Collections;
 using System.Collections.Generic;
-using Rb.Core.Assets;
+using Rb.Assets;
+using Rb.Assets.Base;
+using Rb.Assets.Interfaces;
 using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Rendering;
@@ -76,15 +77,15 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 			//	oh dear another md3 hack - directories mean articulated models, with skins and animations. Files
 			//	mean single objects
-			if ( !source.Directory )
+			if ( source is IFolder )
 			{
-				LoadObjectModel (model, source, transform );
+				//	Load animations
+				model.Animations = LoadAnimations( AnimationFile( source ) );
+				LoadNestedModel( model, source, transform );
 			}
 			else
 			{
-				//	Load animations
-				model.Animations = LoadAnimations(AnimationFile(source));
-				LoadNestedModel(model, source, transform);
+				LoadObjectModel( model, source, transform );
 			}
 			return model;
 		}
@@ -139,11 +140,11 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public override bool CanLoad( ISource source )
 		{
-			if ( !source.Directory )
+			if ( source is IFolder )
 			{
-				return source.HasExtension( "md3" );
+				return ( ( IFolder )source ).Contains( "*.md3" );
 			}
-			return source.Provider.Contains( source.Path, "*.md3" );
+			return source.HasExtension( "md3" );
 		}
 
 		#endregion
@@ -155,16 +156,15 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		private static ISource AnimationFile( ISource source )
 		{
-			return source.GetRelativeSource( "animation.cfg" );
+			return AssetUtils.GetRelativeFile( source, "animation.cfg" );
 		}
-
 
 		/// <summary>
 		/// Returns the mesh filename for a part
 		/// </summary>
 		private static ISource MeshFile( ISource source, ModelPart part )
 		{
-			return source.GetRelativeSource( part + ".md3" );
+			return AssetUtils.GetRelativeFile( source, part + ".md3" );
 		}
 
 		/// <summary>
@@ -172,7 +172,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		private static ISource DefaultSkinFile( ISource source, ModelPart part )
 		{
-			return source.GetRelativeSource( part + "_default.skin" );
+			return AssetUtils.GetRelativeFile( source, part + "_default.skin" );
 		}
 
 		/// <summary>
@@ -184,14 +184,16 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// Also, the textures are usually .tga files, which the texture loader can't currently cope with (TODO: ...) - change the extension to
 		/// .bmp in this case
 		/// </remarks>
-		private static ISource TextureFile( ISource source, string path )
+		private static IStreamSource TextureFile( ISource source, string path )
 		{
 			//	Remove the extension
 			string name = Path.GetFileNameWithoutExtension( path );
 			foreach ( string ext in TextureExtensions )
 			{
-				ISource textureSource = source.GetRelativeSource( name + ext );
-				if ( textureSource.Exists )
+				string filename = name + ext;
+
+				IStreamSource textureSource = AssetUtils.GetRelativeFile( source, filename );
+				if ( textureSource != null )
 				{
 					return textureSource;
 				}
@@ -211,7 +213,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		private static IDictionary<string, ITexture2d> LoadSkin( ISource source, ISource skinSource )
 		{
-			using ( Stream inputStream = skinSource.Open( ) )
+			using ( Stream inputStream = OpenStream( skinSource ) )
 			{
 				TextReader reader = new StreamReader( inputStream );
 				IDictionary<string, ITexture2d> surfaceTextureMap = new Dictionary<string, ITexture2d>();
@@ -228,7 +230,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 						//	TODO: AP: Texture loading should be done through the asset manager
 						ITexture2d newTexture = Graphics.Factory.NewTexture2d( );
 
-						using ( Stream textureStream = TextureFile( source, tokens[ 1 ] ).Open( ) )
+						using ( Stream textureStream = OpenStream( TextureFile( source, tokens[ 1 ] ) ) )
 						{
 							TextureUtils.Load( newTexture, textureStream, true );
 						}
@@ -250,12 +252,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		public AnimationSet LoadAnimations( ISource source )
 		{
-			if ( !source.Exists )
-			{
-				return null;
-			}
-
-			using ( Stream inputStream = source.Open( ) )
+			using ( Stream inputStream = OpenStream( source ) )
 			{
 				TextReader		reader		= new StreamReader( inputStream );
 				char[]			tokenSplit	= new char[ ] { ' ', '\t' };
@@ -318,7 +315,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		/// </summary>
 		private static Mesh LoadMd3( ISource source, Model model, ModelPart part, Matrix44 transform, ISource md3Source, IDictionary<string, ITexture2d> surfaceTextureTable )
 		{
-			using ( Stream inputStream = md3Source.Open( ) )
+			using ( Stream inputStream = OpenStream( md3Source ) )
 			{
 				BinaryReader reader = new BinaryReader( inputStream );
 
@@ -570,7 +567,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				ISource textureSource = TextureFile( source, name );
 
 				ITexture2d newTexture = Graphics.Factory.NewTexture2d( );
-				using ( Stream textureStream = textureSource.Open( ) )
+				using ( Stream textureStream = OpenStream( textureSource ) )
 				{
 					TextureUtils.Load( newTexture, textureStream, true );
 				}

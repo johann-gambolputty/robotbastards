@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using System.Reflection;
-
+using Rb.Assets;
+using Rb.Assets.Interfaces;
 using Rb.Core.Maths;
 using Rb.Core.Components;
-using Rb.Core.Assets;
 
 namespace Rb.ComponentXmlLoader
 {
@@ -73,7 +73,7 @@ namespace Rb.ComponentXmlLoader
 					case "template"	: result = new TemplateBuilder( parameters, errors, reader, parentBuilder );		break;
 					case "location" :
 						string loc = reader.GetAttribute( "value" );
-						result = new ValueBuilder( parameters, errors,reader, parentBuilder, new Location( loc ) );
+						result = new ValueBuilder( parameters, errors,reader, parentBuilder, Locations.NewLocation( loc ) );
                 		break;
 					case "dictionaryEntry"	:
 						result = new DictionaryEntryBuilder( parameters, errors, reader, parentBuilder );
@@ -605,7 +605,7 @@ namespace Rb.ComponentXmlLoader
                 ISupportsDynamicProperties dynPropertySupport = parent as ISupportsDynamicProperties;
                 if ( dynPropertySupport == null )
                 {
-                    string err = string.Format( "Parent \"{0}\" of type \"{1}\" does not support dynamic properties", ComponentHelpers.GetName( BuildObject ), parent.GetType( ) );
+                    string err = string.Format( "The parent of object \"{0}\" does not support dynamic properties (type is \"{1}\")", ComponentHelpers.GetName( BuildObject ), parent.GetType( ) );
             		throw new ApplicationException( err );
                 }
                 dynPropertySupport.Properties[ m_DynProperty ] = BuildObject;

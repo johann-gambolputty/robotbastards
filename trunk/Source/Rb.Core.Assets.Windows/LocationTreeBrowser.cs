@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using Rb.Assets;
+using Rb.Assets.Interfaces;
 using Rb.NiceControls;
 
 namespace Rb.Core.Assets.Windows

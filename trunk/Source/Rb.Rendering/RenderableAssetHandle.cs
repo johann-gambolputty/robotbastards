@@ -1,5 +1,6 @@
 using System;
-using Rb.Core.Assets;
+using Rb.Assets.Base;
+using Rb.Assets.Interfaces;
 
 namespace Rb.Rendering
 {

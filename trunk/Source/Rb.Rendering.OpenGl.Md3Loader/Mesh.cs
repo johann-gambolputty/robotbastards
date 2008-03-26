@@ -343,6 +343,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				currentFrame = ( layers[ ( int )Part ].CurrentAnimationFrame );
 			}
 
+		//	DrawMeshBounds( layers );
+
 			//	Assign texture sampler parameters
 			//	TODO: This should be part of the render technique
 			ITexture2d lastTexture = null;
@@ -394,37 +396,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				}
 
 				Graphics.Renderer.PopTransform( Transform.LocalToWorld );
-
 			}
-
-
-			//if ( m_NestedMesh != null )
-			//{
-			//    if ( m_TransformTagIndex != -1 )
-			//    {
-			//        FrameInfo	curFrame		= FrameInfoList[ currentFrame ];
-			//        Tag			transformTag	= curFrame.Tags[ TransformTagIndex ];
-
-			//        Matrix44 transform = transformTag.Transform;
-			//        Graphics.Renderer.PushTransform( Transform.LocalToWorld, transform );
-			//    }
-
-			//    m_NestedMesh.Render( context, layers, refPoints );
-
-			//    if ( m_TransformTagIndex != -1 )
-			//    {
-			//        Graphics.Renderer.PopTransform( Transform.LocalToWorld );
-			//    }
-			//}
 		}
-
-		/// <summary>
-		/// Renders this mesh
-		/// </summary>
-		//public void Render( IRenderContext context )
-		//{
-		//    Render( context, null );
-		//}
 
 		#endregion
 
@@ -454,7 +427,13 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		private Surface[]					m_Surfaces;
 		private ShaderParameter				m_TextureParameter;
 		
-		private readonly static Draw.IPen	m_BoundsDraw = Graphics.Draw.NewPen( Color.Red, 1.5f );
+		private readonly static Draw.IPen	m_BoundsDraw;
+
+		static Mesh( )
+		{
+			m_BoundsDraw = Graphics.Draw.NewPen( Color.Red, 1.5f );
+			m_BoundsDraw.State.EnableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
+		}
 
 		#endregion
 	}

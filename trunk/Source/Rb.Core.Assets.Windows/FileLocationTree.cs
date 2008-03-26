@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using Rb.Assets;
+using Rb.Assets.Interfaces;
 
 
 namespace Rb.Core.Assets.Windows
@@ -220,7 +222,7 @@ namespace Rb.Core.Assets.Windows
 		/// <summary>
 		/// Gets the location manager
 		/// </summary>
-		public ILocationManager Locations
+		public ILocationManager LocationManager
 		{
 			get { return m_Locations; }
 		}
@@ -270,7 +272,7 @@ namespace Rb.Core.Assets.Windows
 		public class Folder : LocationTreeFolder
 		{
 			public Folder( LocationTreeFolder parent, FileLocationTree tree, string path ) :
-				base( parent, new Location( tree.Locations, path ), tree.GetFolderIcon( false ), tree.GetFolderIcon( true ) )
+				base( parent, Locations.NewLocation( path ), tree.GetFolderIcon( false ), tree.GetFolderIcon( true ) )
 			{
 				m_Context = tree;
 			}
@@ -312,7 +314,7 @@ namespace Rb.Core.Assets.Windows
 				{
 					int img = m_Context.GetFileIcon( file );
 
-					LocationTreeItem item = new LocationTreeItem( this, new Location( m_Context.Locations, file ), img, img );
+					LocationTreeItem item = new LocationTreeItem( this, m_Context.LocationManager.GetLocation( file ), img, img );
 
 					item[ m_Context.NameProperty ]		= item.Name;
 					item[ m_Context.TypeProperty ]		= System.IO.Path.GetExtension( file );

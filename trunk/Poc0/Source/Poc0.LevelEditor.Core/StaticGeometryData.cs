@@ -2,7 +2,8 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using Rb.Core.Assets;
+using Rb.Assets;
+using Rb.Assets.Base;
 using Rb.Rendering;
 using Rb.Rendering.Textures;
 
@@ -113,7 +114,7 @@ namespace Poc0.LevelEditor.Core
 		/// </summary>
 		private static ITechnique CreateDefaultTechnique( string location )
 		{
-			EffectAssetHandle handle = new EffectAssetHandle( new Location( location ), true );
+			EffectAssetHandle handle = new EffectAssetHandle( Locations.NewLocation( location ), true );
 			return new TechniqueSelector( handle );
 		}
 

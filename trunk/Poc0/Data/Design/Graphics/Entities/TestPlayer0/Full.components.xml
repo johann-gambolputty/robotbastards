@@ -29,6 +29,8 @@
     </object>
     -->
 
+    <bool value="true" property="RaiseRootMeshToFloor"/>
+
     <string value="NormalTechnique" property="TechniqueName"/>
 
   </asset>

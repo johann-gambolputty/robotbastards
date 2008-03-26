@@ -1,10 +1,12 @@
 
+using Rb.Assets.Files;
+
 namespace Rb.Core.Assets.Windows
 {
 	/// <summary>
-	/// Extends <see cref="FileLocationManager"/>, adding UI
+	/// Extends <see cref="FileSystem"/>, adding UI
 	/// </summary>
-	public class FileLocationManagerWithUI : FileLocationManager, ILocationBrowserProvider
+	public class FileLocationManagerWithUI : FileSystem, ILocationBrowserProvider
 	{
 		/// <summary>
 		/// Creates a control that implements the ILocationBrowser interface

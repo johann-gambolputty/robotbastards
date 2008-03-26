@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Rb.Core.Assets;
+using Rb.Assets;
+using Rb.Assets.Interfaces;
 using Rb.World;
 
 namespace Poc0.LevelEditor.Core.Geometry

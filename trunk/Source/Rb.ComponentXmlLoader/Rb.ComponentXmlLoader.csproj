@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseBuilder.cs" />
+    <Compile Include="ComponentLoadParameters.cs" />
     <Compile Include="DictionaryBuilder.cs" />
     <Compile Include="DictionaryEntryBuilder.cs" />
     <Compile Include="Errors.cs" />
@@ -66,6 +67,10 @@
     <Compile Include="ValueBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Rb.Assets\Rb.Assets.csproj">
+      <Project>{22440804-2D3F-4FEF-AD01-812923F6E04C}</Project>
+      <Name>Rb.Assets</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>

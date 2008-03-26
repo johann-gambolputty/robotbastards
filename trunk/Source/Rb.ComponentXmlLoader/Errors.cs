@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using Rb.Assets;
 using Rb.Core;
 using Rb.Log;
 

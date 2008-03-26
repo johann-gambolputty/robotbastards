@@ -52,32 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\AssetCache.cs" />
-    <Compile Include="Assets\AssetHandle.cs" />
-    <Compile Include="Assets\AssetHandleProxy.cs" />
-    <Compile Include="Assets\AssetHandleT.cs" />
-    <Compile Include="Assets\AssetLoader.cs" />
-    <Compile Include="Assets\AssetManager.cs" />
-    <Compile Include="Assets\AssetNotFoundException.cs" />
-    <Compile Include="Assets\AssetProxy.cs" />
-    <Compile Include="Assets\LocationManagers.cs" />
-    <Compile Include="Assets\AsyncAssetLoader.cs" />
-    <Compile Include="Assets\AsyncLoadResult.cs" />
-    <Compile Include="Assets\FileLocationManager.cs" />
-    <Compile Include="Assets\IAssetCache.cs" />
-    <Compile Include="Assets\IAssetLoader.cs" />
-    <Compile Include="Assets\ILocationManager.cs" />
-    <Compile Include="Assets\IAsyncAssetLoader.cs" />
-    <Compile Include="Assets\ISource.cs" />
-    <Compile Include="Assets\LoadParameters.cs" />
-    <Compile Include="Assets\LoadState.cs" />
-    <Compile Include="Assets\Location.cs" />
-    <Compile Include="Assets\StreamSource.cs" />
-    <Compile Include="Assets\AssetXmlSetup.cs" />
     <Compile Include="Components\Builder.cs" />
     <Compile Include="Components\Component.cs" />
     <Compile Include="Components\ComponentHelpers.cs" />
-    <Compile Include="Components\ComponentLoadParameters.cs" />
     <Compile Include="Components\DynamicProperties.cs" />
     <Compile Include="Components\DynamicProperty.cs" />
     <Compile Include="Components\IBuilder.cs" />
