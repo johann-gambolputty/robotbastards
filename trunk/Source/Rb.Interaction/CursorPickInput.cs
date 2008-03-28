@@ -1,6 +1,6 @@
 using System;
 using Rb.Core.Maths;
-using Rb.Rendering.Cameras;
+using Rb.Rendering.Interfaces.Objects.Cameras;
 
 namespace Rb.Interaction
 {
@@ -54,12 +54,12 @@ namespace Rb.Interaction
             }
 
             //	Create a pick ray using the input binding's cursor position, and camera
-            Ray3 pickRay = ( ( Camera3 )Context.Viewer.Camera ).PickRay( m_Cursor.X, m_Cursor.Y );
+            Ray3 pickRay = ( ( ICamera3 )Context.Viewer.Camera ).PickRay( m_Cursor.X, m_Cursor.Y );
             Line3Intersection pickIntersection = intersector.GetIntersection( pickRay );
 
             return new PickCommandMessage( cmd, pickIntersection );
         }
 
-        private CursorInput m_Cursor;
+        private readonly CursorInput m_Cursor;
     }
 }
