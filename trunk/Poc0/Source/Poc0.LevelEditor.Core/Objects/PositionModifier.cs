@@ -1,7 +1,8 @@
 using System;
 using System.Drawing;
 using Rb.Core.Maths;
-using Rb.Rendering;
+using Rb.Rendering.Interfaces;
+using Rb.Rendering.Interfaces.Objects;
 using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.Actions;
 using Rb.Tools.LevelEditor.Core.Selection;
@@ -255,14 +256,20 @@ namespace Poc0.LevelEditor.Core.Objects
 			m_DrawHighlight = Graphics.Draw.NewBrush( Color.DarkSalmon, Color.Goldenrod );
 			m_DrawSelected = Graphics.Draw.NewBrush( Color.Red, Color.Orange );
 
-			m_DrawUnselected.State.EnableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
-			m_DrawUnselected.OutlinePen.State.EnableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
-			
-			m_DrawHighlight.State.EnableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
-			m_DrawHighlight.OutlinePen.State.EnableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
-			
-			m_DrawSelected.State.EnableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
-			m_DrawSelected.OutlinePen.State.EnableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
+			m_DrawUnselected.State.DepthTest = true;
+			m_DrawUnselected.State.DepthWrite = true;
+			m_DrawUnselected.OutlinePen.State.DepthTest = true;
+			m_DrawUnselected.OutlinePen.State.DepthWrite = true;
+
+			m_DrawHighlight.State.DepthTest = true;
+			m_DrawHighlight.State.DepthWrite = true;
+			m_DrawHighlight.OutlinePen.State.DepthTest = true;
+			m_DrawHighlight.OutlinePen.State.DepthWrite = true;
+
+			m_DrawSelected.State.DepthTest = true;
+			m_DrawSelected.State.DepthWrite = true;
+			m_DrawSelected.OutlinePen.State.DepthTest = true;
+			m_DrawSelected.OutlinePen.State.DepthWrite = true;
 		}
 
 		#endregion

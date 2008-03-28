@@ -3,8 +3,8 @@ using Rb.Assets;
 using Rb.Core.Components;
 using Rb.Core.Utils;
 using Rb.Interaction;
-using Rb.Rendering;
 using Rb.Network.Runt;
+using Rb.Rendering.Interfaces.Objects;
 using Rb.World.Services;
 
 namespace Rb.World.Entities

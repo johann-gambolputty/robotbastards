@@ -4,6 +4,8 @@ using System.Drawing;
 using Poc0.Core.Environment;
 using Rb.Core.Maths;
 using Rb.Rendering;
+using Rb.Rendering.Interfaces;
+using Rb.Rendering.Interfaces.Objects;
 using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
@@ -514,7 +516,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 			foreach ( LevelGeometryTesselator.Polygon poly in m_FloorDisplayPolygons )
 			{
 				IEnumerable< Point3 > nextPoint = PolyPoints( poly, height );
-				Graphics.Draw.Polygon( Draw.Brushes.Blue, nextPoint );
+				Graphics.Draw.Polygon( Graphics.Brushes.Blue, nextPoint );
 			}
 			foreach ( LevelGeometryTesselator.Polygon poly in m_ObstacleDisplayPolygons )
 			{
@@ -522,7 +524,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 
 				LevelPolygon levelPoly = poly.LevelPolygon;
 
-				Draw.IBrush brush = Draw.Brushes.White;
+				Draw.IBrush brush = Graphics.Brushes.White;
 				if ( levelPoly != null )
 				{
 					brush = Select( levelPoly, ms_SelectedPolyBrush, ms_HighlightedPolyBrush, ms_PolyBrush );
@@ -577,7 +579,7 @@ namespace Poc0.LevelEditor.Core.Geometry
 			//	TODO: AP: Make independent of rendering API (this creates an API-specific graphics object, that is serialized to the scene file)
 			//	Create the environment
 			Environment env = new Environment( );
-			IEnvironmentGraphics graphics = Graphics.Factory.Create< IEnvironmentGraphics >( );
+			IEnvironmentGraphics graphics = Graphics.Factory.CustomTypes.Create< IEnvironmentGraphics >( );
 			env.Graphics = graphics;
 
 			scene.Objects.Add( env );

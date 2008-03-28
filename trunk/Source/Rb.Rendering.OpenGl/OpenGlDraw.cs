@@ -2,14 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using Rb.Core.Maths;
+using Rb.Rendering.Base;
+using Rb.Rendering.Interfaces.Objects;
 using Tao.OpenGl;
 
 namespace Rb.Rendering.OpenGl
 {
-	public class OpenGlDraw : Draw
+	public class OpenGlDraw : DrawBase
 	{
+		#region GlDrawState class
+
 		/// <summary>
-		/// Base class for implementations of IPen, IBrush, and IMould
+		/// Base class for implementations of IPen, IBrush, andISurface
 		/// </summary>
 		private class GlDrawState
 		{
@@ -18,7 +22,8 @@ namespace Rb.Rendering.OpenGl
 			/// </summary>
 			public GlDrawState( )
 			{
-				m_State.DisableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
+				m_State.DepthTest = false;
+				m_State.DepthWrite = false;
 			}
 
 			/// <summary>
@@ -40,7 +45,7 @@ namespace Rb.Rendering.OpenGl
 			/// <summary>
 			/// Gets the underlying render state
 			/// </summary>
-			public RenderState State
+			public IRenderState State
 			{
 				get { return m_State; }
 			}
@@ -50,17 +55,14 @@ namespace Rb.Rendering.OpenGl
 			/// </summary>
 			public Color Colour
 			{
-				get { return m_Colour; }
-				set
-				{
-					m_Colour = value;
-					m_State.SetColour( value );
-				}
+				get { return m_State.Colour; }
+				set { m_State.Colour = value; }
 			}
 
 			private readonly OpenGlRenderState m_State = new OpenGlRenderState( );
-			private Color m_Colour = Color.Black;
 		}
+
+		#endregion
 
 		#region Pens
 
@@ -71,40 +73,9 @@ namespace Rb.Rendering.OpenGl
 			/// </summary>
 			public float Thickness
 			{
-				get { return m_Thickness; }
-				set
-				{
-					m_Thickness = value;
-					State.SetLineWidth( value );
-				}
+				get { return State.LineWidth; }
+				set { State.LineWidth = value; }
 			}
-
-			private float m_Thickness = 1.0f;
-		}
-
-		/// <summary>
-		/// Creates a new IPen from an existing <see cref="System.Drawing.Pen"/>
-		/// </summary>
-		/// <param name="pen">Source pen</param>
-		/// <returns>New IPen</returns>
-		public override IPen NewPen( Pen pen )
-		{
-			GlPen newPen = new GlPen( );
-			newPen.Thickness = pen.Width;
-			newPen.Colour = pen.Color;
-			return newPen;
-		}
-
-		/// <summary>
-		/// Creates a new IPen, with a width of 1, drawing with the specified colour
-		/// </summary>
-		/// <param name="colour">Pen colour</param>
-		/// <returns>New IPen</returns>
-		public override IPen NewPen( Color colour )
-		{
-			GlPen newPen = new GlPen( );
-			newPen.Colour = colour;
-			return newPen;
 		}
 
 		/// <summary>
@@ -142,18 +113,6 @@ namespace Rb.Rendering.OpenGl
 			
 			private IPen m_OutlinePen;
 		}
-
-		/// <summary>
-		/// Creates a new IBrush from an existing <see cref="System.Drawing.Brush"/>
-		/// </summary>
-		/// <param name="brush">Source brush</param>
-		/// <returns>New IBrush</returns>
-		public override IBrush NewBrush( Brush brush )
-		{
-			GlBrush newBrush = new GlBrush( );
-			newBrush.Colour = ( ( SolidBrush )brush ).Color; // TODO: AP: Better handling of source brush type
-			return newBrush;
-		}
 		
 		/// <summary>
 		/// Creates a new IBrush from an existing <see cref="System.Drawing.Brush"/>
@@ -183,53 +142,47 @@ namespace Rb.Rendering.OpenGl
 
 		#endregion
 
-		#region Moulds
+		#region Surfaces
 
 		/// <summary>
-		/// Er... OK. A mould is to 3D solid rendering operations what a brush is to 2D drawing operations. See?
+		/// Er... OK. A surface is to 3D rendering operations what a brush is to 2D drawing operations. See?
 		/// </summary>
-		private class Mould : GlDrawState, IMould
+		private class GlSurface : GlDrawState, ISurface
 		{
 			/// <summary>
-			/// Wireframe flag
+			/// Gets/sets the brush used to fill the surface faces. If null, faces aren't rendered
 			/// </summary>
-			public bool Wireframe
+			public IBrush FaceBrush
 			{
-				get { return m_Wireframe; }
-				set
-				{
-					m_Wireframe = value;
-					State.SetPolygonRenderingMode( value ? PolygonRenderMode.Lines : PolygonRenderMode.Fill );
-				}
+				get { return m_Brush; }
+				set { m_Brush = value; }
 			}
 
-			private bool m_Wireframe;
+			/// <summary>
+			/// Gets/sets the pen used to draw face edges. If null, wireframe isn't rendered
+			/// </summary>
+			public IPen EdgePen
+			{
+				get { return m_Pen; }
+				set { m_Pen = value; }
+			}
+
+			private IBrush m_Brush;
+			private IPen m_Pen;
 		}
 
 		/// <summary>
-		/// Creates a new mould
+		/// Creates a new surface
 		/// </summary>
-		/// <param name="colour">Surface colour</param>
-		/// <returns>Returns a new IMould</returns>
-		public override IMould NewMould( Color colour )
+		/// <param name="faceBrush">Brush used for filling in faces. If null, faces are rendered in wireframe only</param>
+		/// <param name="edgePen">Pen used for drawing edges. If null, faces are rendered as filled only</param>
+		/// <returns>Returns a new ISurface</returns>
+		public override ISurface NewSurface( IBrush faceBrush, IPen edgePen )
 		{
-			Mould newMould = new Mould( );
-			newMould.Colour = colour;
-			return newMould;
-		}
-
-		/// <summary>
-		/// Creates a new mould
-		/// </summary>
-		/// <param name="wireframe">If true, the sphere is rendered in wireframe</param>
-		/// <param name="colour">Surface colour</param>
-		/// <returns>Returns a new IMould</returns>
-		public override IMould NewMould( bool wireframe, Color colour )
-		{
-			Mould newMould = new Mould( );
-			newMould.Colour = colour;
-			newMould.Wireframe = wireframe;
-			return newMould;
+			GlSurface newSurface = new GlSurface( );
+			newSurface.FaceBrush = faceBrush;
+			newSurface.EdgePen = edgePen;
+			return newSurface;
 		}
 
 		#endregion
@@ -327,6 +280,38 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glEnd( );
 
+			pen.End( );
+		}
+
+		/// <summary>
+		/// Draws a series of lines connecting a list of points. Can join the last point to the first
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="points">Points to connect</param>
+		/// <param name="closed">If true, then a line is drawn connecting the last point to the first</param>
+		public override void Lines( IPen pen, IEnumerable<Point2> points, bool closed )
+		{
+			pen.Begin( );
+			Gl.glBegin( Gl.GL_LINE_STRIP );
+
+			IEnumerator<Point2> pointPos = points.GetEnumerator( );
+			if ( pointPos.MoveNext( ) )
+			{
+				Point2 firstPoint = pointPos.Current;
+				Gl.glVertex2f( firstPoint.X, firstPoint.Y );
+
+				while ( pointPos.MoveNext( ) )
+				{
+					Gl.glVertex2f( pointPos.Current.X, pointPos.Current.Y );
+				}
+
+				if ( closed )
+				{
+					Gl.glVertex2f( firstPoint.X, firstPoint.Y );
+				}
+			}
+
+			Gl.glEnd( );
 			pen.End( );
 		}
 
@@ -479,7 +464,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		/// <param name="pen">Drawing properties</param>
 		/// <param name="points">Polygon points</param>
-		public override void Polygon( IPen pen, IEnumerable< Point2 > points )
+		public override void Polygon( IPen pen, IEnumerable<Point2> points )
 		{
 			Lines( pen, points, true );
 		}
@@ -493,7 +478,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		/// <param name="brush">Drawing properties</param>
 		/// <param name="points">Polygon points</param>
-		public override void Polygon( IBrush brush, IEnumerable< Point2 > points )
+		public override void Polygon( IBrush brush, IEnumerable<Point2> points )
 		{
 			brush.Begin( );
 			
@@ -543,6 +528,38 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glEnd( );
 
+			pen.End( );
+		}
+
+		/// <summary>
+		/// Draws a series of lines connecting a list of points. Can join the last point to the first
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="points">Points to connect</param>
+		/// <param name="closed">If true, then a line is drawn connecting the last point to the first</param>
+		public override void Lines( IPen pen, IEnumerable<Point3> points, bool closed )
+		{
+			pen.Begin( );
+			Gl.glBegin( Gl.GL_LINE_STRIP );
+
+			IEnumerator<Point3> pointPos = points.GetEnumerator( );
+			if ( pointPos.MoveNext( ) )
+			{
+				Point3 firstPoint = pointPos.Current;
+				Gl.glVertex3f( firstPoint.X, firstPoint.Y, firstPoint.Z );
+
+				while ( pointPos.MoveNext( ) )
+				{
+					Gl.glVertex3f( pointPos.Current.X, pointPos.Current.Y, pointPos.Current.Z );
+				}
+
+				if ( closed )
+				{
+					Gl.glVertex3f( firstPoint.X, firstPoint.Y, firstPoint.Z );
+				}
+			}
+
+			Gl.glEnd( );
 			pen.End( );
 		}
 
@@ -707,7 +724,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		/// <param name="pen">Drawing properties</param>
 		/// <param name="points">Polygon points</param>
-		public override void Polygon( IPen pen, IEnumerable< Point3 > points )
+		public override void Polygon( IPen pen, IEnumerable<Point3> points )
 		{
 			pen.Begin( );
 
@@ -828,14 +845,14 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// An ST sphere
 		/// </summary>
-		/// <param name="mould">Drawing parameters</param>
+		/// <param name="surface">Drawing parameters</param>
 		/// <param name="centre">Centre of the sphere</param>
 		/// <param name="radius">Sphere radius</param>
 		/// <param name="sSamples">Number of longitudinal samples</param>
 		/// <param name="tSamples">Number of latitudinal samples</param>
-		public override void Sphere( IMould mould, Point3 centre, float radius, int sSamples, int tSamples )
+		public override void Sphere( ISurface surface, Point3 centre, float radius, int sSamples, int tSamples )
 		{
-			mould.Begin( );
+			surface.Begin( );
 
 			float minT = 0;
 			float maxT	= Constants.Pi;
@@ -870,7 +887,7 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glEnd( );
 
-			mould.End( );
+			surface.End( );
 		}
 
 		private static void RenderSTVertex( float s, float t, Point3 c, float r )
@@ -892,16 +909,15 @@ namespace Rb.Rendering.OpenGl
 
 		#region Cylinders
 
-
 		/// <summary>
 		/// Draws a cylinder. Cylinder is defined by a line and a radius value
 		/// </summary>
-		/// <param name="mould">Drawing parameters</param>
+		/// <param name="surface">Drawing parameters</param>
 		/// <param name="start">Cylinder line start point</param>
 		/// <param name="end">Cylinder line end point</param>
 		/// <param name="radius">Cylinder radius</param>
 		/// <param name="sSamples">Number of samples around the circumference of the cylinder</param>
-		public override void Cylinder( IMould mould, Point3 start, Point3 end, float radius, int sSamples )
+		public override void Cylinder( ISurface surface, Point3 start, Point3 end, float radius, int sSamples )
 		{
 			throw new NotImplementedException( );
 		}
@@ -913,12 +929,12 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Draws a capsule. Capsule is defined by a line and a radius value
 		/// </summary>
-		/// <param name="mould">Drawing parameters</param>
+		/// <param name="surface">Drawing parameters</param>
 		/// <param name="start">Capsule line start point</param>
 		/// <param name="end">Capsule line end point</param>
 		/// <param name="radius">Capsule radius</param>
 		/// <param name="sSamples">Number of samples around the circumference of the capsule</param>
-		public override void Capsule( IMould mould, Point3 start, Point3 end, float radius, int sSamples )
+		public override void Capsule( ISurface surface, Point3 start, Point3 end, float radius, int sSamples )
 		{
 			throw new NotImplementedException( );
 		}

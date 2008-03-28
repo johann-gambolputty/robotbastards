@@ -7,8 +7,9 @@ using Rb.Assets.Interfaces;
 using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Rendering;
+using Rb.Rendering.Base.Textures;
+using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.OpenGl;
-using Rb.Rendering.Textures;
 using Tao.OpenGl;
 
 namespace Rb.Rendering.OpenGl.Md3Loader
@@ -228,7 +229,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 					if ( ( tokens.Length == 2 ) && ( !string.IsNullOrEmpty( tokens[ 1 ] ) ) )
 					{
 						//	TODO: AP: Texture loading should be done through the asset manager
-						ITexture2d newTexture = Graphics.Factory.NewTexture2d( );
+						ITexture2d newTexture = Graphics.Factory.CreateTexture2d( );
 
 						using ( Stream textureStream = OpenStream( TextureFile( source, tokens[ 1 ] ) ) )
 						{

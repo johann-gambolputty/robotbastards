@@ -2,7 +2,7 @@ using Rb.Animation;
 using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
-using Rb.Rendering;
+using Rb.Rendering.Interfaces.Objects;
 using Rb.World;
 
 namespace Poc0.Core.Objects

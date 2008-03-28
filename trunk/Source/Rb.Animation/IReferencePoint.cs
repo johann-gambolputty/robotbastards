@@ -1,5 +1,5 @@
 using Rb.Core.Maths;
-using Rb.Rendering;
+using Rb.Rendering.Interfaces.Objects;
 
 namespace Rb.Animation
 {

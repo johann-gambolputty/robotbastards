@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Rb.Rendering.Lights;
+using Rb.Rendering.Interfaces.Objects.Lights;
 
 namespace Rb.World.Services
 {

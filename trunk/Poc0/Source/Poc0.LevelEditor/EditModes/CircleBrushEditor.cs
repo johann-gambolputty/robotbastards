@@ -6,7 +6,8 @@ using Poc0.LevelEditor.Core.Geometry;
 using Poc0.LevelEditor.Properties;
 using Rb.Core.Maths;
 using Rb.Log;
-using Rb.Rendering;
+using Rb.Rendering.Interfaces;
+using Rb.Rendering.Interfaces.Objects;
 using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
@@ -232,7 +233,7 @@ namespace Poc0.LevelEditor.EditModes
 			catch ( Exception ex )
 			{
 				AppLog.Exception( ex, "Failed to combine circle brush with current level geometry" );
-				ErrorMessageBox.Show( Properties.Resources.FailedToCombineCsgBrush );
+				ErrorMessageBox.Show( Resources.FailedToCombineCsgBrush );
 			}
 
 			m_DefiningRadius = false;

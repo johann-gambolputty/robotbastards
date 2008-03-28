@@ -11,7 +11,7 @@ using Rb.ComponentXmlLoader;
 using Rb.Core.Maths;
 using Rb.Interaction;
 using Rb.Log;
-using Rb.Rendering;
+using Rb.Rendering.Base;
 using Rb.Tools.LevelEditor.Core.Actions;
 using Rb.Tools.LevelEditor.Core.EditModes;
 using Rb.Tools.LevelEditor.Core.Properties;

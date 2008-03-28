@@ -1,6 +1,8 @@
 using System;
 using Rb.Core.Components;
 using Rb.Rendering;
+using Rb.Rendering.Interfaces;
+using Rb.Rendering.Interfaces.Objects;
 
 namespace Rb.Rendering.OpenGl.Md3Loader
 {

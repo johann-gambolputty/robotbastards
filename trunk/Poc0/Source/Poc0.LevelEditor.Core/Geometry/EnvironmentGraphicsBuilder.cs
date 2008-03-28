@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using Poc0.Core.Environment;
 using Rb.Core.Maths;
-using Rb.Rendering;
-using Rb.Rendering.Textures;
+using Rb.Rendering.Interfaces.Objects;
 using Rectangle=Rb.Core.Maths.Rectangle;
 
 namespace Poc0.LevelEditor.Core.Geometry

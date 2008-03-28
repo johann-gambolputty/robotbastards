@@ -1,9 +1,11 @@
+using Rb.Rendering.Interfaces;
+
 namespace Rb.Rendering.OpenGl.Windows
 {
 	/// <summary>
 	/// Windows implementation of OpenGlRenderFactory
 	/// </summary>
-	public class RenderFactory : OpenGlRenderFactory
+	public class RenderFactory : OpenGlGraphicsFactory
 	{
 		/// <summary>
 		/// Display setup creator

@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using Rb.Rendering.Interfaces;
 
 namespace Rb.Rendering.Windows
 {

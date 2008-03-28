@@ -71,7 +71,6 @@
     <Compile Include="Ray3LayerIntersector.cs" />
     <Compile Include="Services\RayCastService.cs" />
     <Compile Include="Services\RayCastOptions.cs" />
-    <Compile Include="Rendering\SceneShadowBufferTechnique.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="Rendering\SceneRenderable.cs" />
     <Compile Include="Services\IUpdateService.cs" />

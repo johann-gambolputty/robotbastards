@@ -1,4 +1,5 @@
 using Rb.Core.Components;
+using Rb.Rendering.Interfaces.Objects;
 
 namespace Rb.Rendering.OpenGl
 {
@@ -7,20 +8,12 @@ namespace Rb.Rendering.OpenGl
 	/// </summary>
 	public class OpenGlMesh : IRenderable, INamed
 	{
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		public OpenGlMesh( )
-		{
-            m_RenderMesh = new DelegateRenderable( RenderMesh );
-		}
-
 		#region	Group setup
 
 		/// <summary>
 		/// Creates the mesh index buffer
 		/// </summary>
-		public void			CreateGroups( int size )
+		public void	CreateGroups( int size )
 		{
 			m_Groups = new OpenGlIndexedGroup[ size ];
 		}
@@ -28,7 +21,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Sets up a group's index buffer
 		/// </summary>
-		public void			SetGroup( int index, OpenGlIndexedGroup group )
+		public void	SetGroup( int index, OpenGlIndexedGroup group )
 		{
 			m_Groups[ index ] = group;
 		}
@@ -71,7 +64,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public OpenGlTexture2d GetTexture( int index )
 		{
-			return m_Textures[ index ].Texture;
+			return m_Textures[ index ].OpenGlTexture;
 		}
 
 		#endregion
@@ -111,7 +104,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
         public void Render( IRenderContext context )
 		{
-            context.ApplyTechnique( m_Technique.Technique, m_RenderMesh );
+            context.ApplyTechnique( m_Technique.Technique, RenderMesh );
 		}
 
 		/// <summary>
@@ -163,13 +156,12 @@ namespace Rb.Rendering.OpenGl
 
 		#region	Private stuff
 
-        private DelegateRenderable          m_RenderMesh;
-		private OpenGlIndexedGroup[]		m_Groups;
-		private OpenGlVertexArray[]		m_VertexBuffers;
-		private string						m_Name;
-        private TechniqueSelector           m_Technique = new TechniqueSelector( );
-		private OpenGlTextureSampler2d[]	m_Textures = new OpenGlTextureSampler2d[ 8 ];
-		private int							m_NumTextures;
+		private OpenGlIndexedGroup[]				m_Groups;
+		private OpenGlVertexArray[]					m_VertexBuffers;
+		private string								m_Name;
+        private readonly TechniqueSelector          m_Technique = new TechniqueSelector( );
+		private readonly OpenGlTextureSampler2d[]	m_Textures = new OpenGlTextureSampler2d[ 8 ];
+		private int									m_NumTextures;
 
 		#endregion
 	}

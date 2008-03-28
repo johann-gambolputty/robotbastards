@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Rb.Rendering;
+using Rb.Rendering.Interfaces.Objects;
 
 namespace Rb.World.Rendering
 {

@@ -32,11 +32,8 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			{
 				renderAssemblyName = "Rb.Rendering.OpenGl.Windows";
 			}
-			RenderFactory.Load( renderAssemblyName );
-
-			//	Load all assemblies that support the chosen graphics API
-			Rb.AssemblySelector.IdentifierMap.Instance.AddAssemblyIdentifiers( Directory.GetCurrentDirectory( ), SearchOption.TopDirectoryOnly );
-			Rb.AssemblySelector.IdentifierMap.Instance.LoadAll( "GraphicsApi=" + Graphics.Factory.ApiName );		
+			Graphics.Initialize( renderAssemblyName );
+			Graphics.LoadCustomTypeAssemblies( Directory.GetCurrentDirectory( ), false );
 		}
 
 		/// <summary>
