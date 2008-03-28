@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Rb.Core.Utils
@@ -8,6 +9,18 @@ namespace Rb.Core.Utils
 	/// </summary>
 	public class AppDomainUtils
 	{
+		public static Type FindTypeImplementingInterface( IEnumerable<Type> types, Type interfaceType )
+		{
+			foreach ( Type type in types )
+			{
+				if ( type.GetInterface( interfaceType.Name ) != null )
+				{
+					return type;
+				}
+			}
+			return null;
+		}
+
 		/// <summary>
 		/// Looks for a named type in all the currently loaded assemblies
 		/// </summary>
