@@ -1,3 +1,5 @@
+using Rb.Rendering.Base;
+
 namespace Rb.Rendering.Windows
 {
 	partial class Display

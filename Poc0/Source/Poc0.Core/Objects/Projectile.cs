@@ -2,7 +2,8 @@ using System.Drawing;
 using Poc0.Core.Environment;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
-using Rb.Rendering;
+using Rb.Rendering.Interfaces;
+using Rb.Rendering.Interfaces.Objects;
 using Rb.World;
 using Rb.World.Services;
 using Graphics=Rb.Rendering.Graphics;
@@ -79,20 +80,24 @@ namespace Poc0.Core.Objects
 
 		#region IRenderable Members
 
-		static IRenderable ms_Cache;
-		static Draw.IMould ms_Mould;
+		private static readonly IRenderable ms_Cache;
+		private static readonly Draw.ISurface ms_Surface;
+
 		static Projectile( )
 		{
-			ms_Mould = Graphics.Draw.NewMould( Color.LimeGreen );
-			ms_Mould.State.EnableCap( RenderStateFlag.DepthWrite );
-			ms_Mould.State.EnableCap( RenderStateFlag.DepthTest );
+			ms_Surface = Graphics.Draw.NewSurface( Color.LimeGreen );
+			ms_Surface.State.DepthWrite = true;
+			ms_Surface.State.DepthTest = true;
 
 			Graphics.Draw.StartCache( );
-			Graphics.Draw.Sphere( ms_Mould, Point3.Origin, 0.2f );
+			Graphics.Draw.Sphere( ms_Surface, Point3.Origin, 0.2f );
 			ms_Cache = Graphics.Draw.StopCache( );
 		}
 
-
+		/// <summary>
+		/// Renders the projectile
+		/// </summary>
+		/// <param name="context">Rendering context</param>
 		public virtual void Render( IRenderContext context )
 		{
 			m_Pos.UpdateCurrent( context.RenderTime );

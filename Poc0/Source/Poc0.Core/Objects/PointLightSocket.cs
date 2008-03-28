@@ -1,8 +1,9 @@
 using System;
 using System.Drawing;
 using Rb.Core.Maths;
-using Rb.Rendering;
-using Rb.Rendering.Lights;
+using Rb.Rendering.Interfaces;
+using Rb.Rendering.Interfaces.Objects;
+using Rb.Rendering.Interfaces.Objects.Lights;
 using Rb.World.Services;
 using Rb.World;
 using Graphics=Rb.Rendering.Graphics;
@@ -160,22 +161,16 @@ namespace Poc0.Core.Objects
 		/// </summary>
 		public void Render( IRenderContext context )
 		{
-			Graphics.Draw.Sphere( Mould, Position, 1.0f );
+			Graphics.Draw.Sphere( ms_Surface, Position, 1.0f );
 		}
 
-		private static Draw.IMould Mould
+		private readonly static Draw.ISurface ms_Surface;
+
+		static PointLightSocket( )
 		{
-			get
-			{
-				if ( ms_Mould == null )
-				{
-					ms_Mould = Graphics.Draw.NewMould( Color.Firebrick );
-				}
-				return ms_Mould;
-			}
+			ms_Surface = Graphics.Draw.NewSurface( Color.Firebrick );
+			
 		}
-
-		private static Draw.IMould ms_Mould;
 
 		#endregion
 	}

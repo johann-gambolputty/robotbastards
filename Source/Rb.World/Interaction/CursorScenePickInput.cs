@@ -1,6 +1,6 @@
 using Rb.Interaction;
-using Rb.Rendering.Cameras;
 using Rb.Core.Maths;
+using Rb.Rendering.Interfaces.Objects.Cameras;
 using Rb.World.Services;
 
 namespace Rb.World.Interaction

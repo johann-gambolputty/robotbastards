@@ -2,7 +2,9 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Rb.Core.Maths;
-using Rb.Rendering.Lights;
+using Rb.Rendering.Base;
+using Rb.Rendering.Interfaces;
+using Rb.Rendering.Interfaces.Objects.Lights;
 using Tao.OpenGl;
 
 namespace Rb.Rendering.OpenGl
@@ -10,7 +12,7 @@ namespace Rb.Rendering.OpenGl
 	/// <summary>
 	/// Renderer implementation using OpenGL
 	/// </summary>
-	public class OpenGlRenderer : Renderer
+	public class OpenGlRenderer : RendererBase
 	{
 		#region	Setup
 
@@ -30,14 +32,19 @@ namespace Rb.Rendering.OpenGl
 			}
 		}
 
-        /// <summary>
+
+		#endregion
+
+		#region Setup
+
+		/// <summary>
 		/// Loads all supported OpenGL extensions
 		/// </summary>
 		public static void LoadExtensions( )
-        {	
+		{
 			//	Show the extensions
-            string extensions = Gl.glGetString( Gl.GL_EXTENSIONS );
-            GraphicsLog.Info( extensions.Replace( ' ', '\n' ) );
+			string extensions = Gl.glGetString( Gl.GL_EXTENSIONS );
+			GraphicsLog.Info( extensions.Replace( ' ', '\n' ) );
 
 			//	Write some important caps to the info
 			int[] result = new int[ 1 ];
@@ -45,12 +52,10 @@ namespace Rb.Rendering.OpenGl
 			GraphicsLog.Info( "Max texture units: " + result );
 
 			//	Hinty-hinty
-            Gl.glHint( Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST );
-
-			//	
+			Gl.glHint( Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST );
 
 			//	Add a default renderstate
-			Graphics.Renderer.PushRenderState( Graphics.Factory.NewRenderState( ) );
+			Graphics.Renderer.PushRenderState( Graphics.Factory.CreateRenderState( ) );
 		}
 
 		#endregion
@@ -96,6 +101,18 @@ namespace Rb.Rendering.OpenGl
 				throw new ApplicationException( string.Format( "GL error: {0}", Glu.gluErrorString( errorCode ) ) );
 			}
 		}
+		
+		/// <summary>
+		/// Sets the specified colour as the current colour in the renderer (OpenGL specific)
+		/// </summary>
+		public static void ApplyColour( Color colour )
+		{
+			Gl.glColor3ub( colour.R, colour.G, colour.B );
+		}
+
+		#endregion
+
+		#region Clears
 
 		/// <summary>
 		/// Clears the viewport
@@ -109,7 +126,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Clears the viewport using a vertical gradient fill
 		/// </summary>
-		public override void ClearVerticalGradient( Color topColour, Color bottomColour )
+		public override void ClearColourToVerticalGradient( Color topColour, Color bottomColour )
 		{
 			Gl.glMatrixMode( Gl.GL_PROJECTION );
 			Gl.glPushMatrix( );
@@ -132,9 +149,9 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
-		/// Clears the viewport using a radial gradient fill (shit)
+		/// Clears the viewport using a radial gradient fill (looks shit, currently)
 		/// </summary>
-		public override void ClearRadialGradient( Color centreColour, Color outerColour )
+		public override void ClearColourToRadialGradient( Color centreColour, Color outerColour )
 		{
 			Gl.glMatrixMode( Gl.GL_PROJECTION );
 			Gl.glPushMatrix( );
@@ -170,38 +187,17 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
-		/// Sets the specified colour as the current colour in the renderer (OpenGL specific)
+		/// Clears the depth buffer
 		/// </summary>
-		public void ApplyColour( Color colour )
+		public override void ClearStencil( int value )
 		{
-			Gl.glColor3ub( colour.R, colour.G, colour.B );
-		}
-
-		/// <summary>
-		/// Draws a 2d quad. Used by ClearVerticalGradient(), ClearRadialGradient()
-		/// </summary>
-		private void Draw2dQuad( float x, float y, float width, float height, Color tlColour, Color trColour, Color blColour, Color brColour )
-		{
-			float maxX = x + width;
-			float maxY = y + height;
-
-			ApplyColour( blColour );
-			Gl.glVertex2f( x, y );
-
-			ApplyColour( tlColour );
-			Gl.glVertex2f( x, maxY );
-
-			ApplyColour( trColour );
-			Gl.glVertex2f( maxX, maxY );
-
-			ApplyColour( brColour );
-			Gl.glVertex2f( maxX, y );
+			Gl.glClearStencil( value );
+			Gl.glClear( Gl.GL_STENCIL_BUFFER_BIT );
 		}
 
 		#endregion
 
 		#region	Transform pipeline
-
 
 		/// <summary>
 		/// Helper to convert a Matrix44 to a GL-friendly float array
@@ -767,6 +763,31 @@ namespace Rb.Rendering.OpenGl
 			Gl.glMatrixMode( Gl.GL_MODELVIEW );
 			Gl.glLoadMatrixf( GetGlMatrix( CurrentWorldToView ) );
 			Gl.glMultMatrixf( GetGlMatrix( CurrentLocalToWorld ) );
+		}
+
+		#endregion
+
+		#region Private Members
+
+		/// <summary>
+		/// Draws a 2d quad. Used by ClearColourToVerticalGradient(), ClearColourToRadialGradient()
+		/// </summary>
+		private static void Draw2dQuad( float x, float y, float width, float height, Color tlColour, Color trColour, Color blColour, Color brColour )
+		{
+			float maxX = x + width;
+			float maxY = y + height;
+
+			ApplyColour( blColour );
+			Gl.glVertex2f( x, y );
+
+			ApplyColour( tlColour );
+			Gl.glVertex2f( x, maxY );
+
+			ApplyColour( trColour );
+			Gl.glVertex2f( maxX, maxY );
+
+			ApplyColour( brColour );
+			Gl.glVertex2f( maxX, y );
 		}
 
 		#endregion

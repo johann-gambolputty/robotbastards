@@ -1,5 +1,5 @@
 using System.Windows.Forms;
-using Rb.Rendering;
+using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc0.LevelEditor.EditModes
 {

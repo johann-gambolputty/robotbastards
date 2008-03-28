@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using Rb.Core.Components;
-using Rb.Rendering;
+using Rb.Rendering.Interfaces.Objects;
 using Rb.World;
 
 namespace Rb.Tools.LevelEditor.Core.Selection

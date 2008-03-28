@@ -1,7 +1,7 @@
 using System.Windows.Forms;
 using Poc0.LevelEditor.EditModes.Controls;
 using Poc0.LevelEditor.Properties;
-using Rb.Rendering;
+using Rb.Rendering.Interfaces.Objects;
 using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.EditModes;
 

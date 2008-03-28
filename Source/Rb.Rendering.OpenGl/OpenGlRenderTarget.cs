@@ -1,6 +1,6 @@
 using System;
 using Rb.Core.Maths;
-using Rb.Rendering.Textures;
+using Rb.Rendering.Interfaces.Objects;
 using Tao.OpenGl;
 
 namespace Rb.Rendering.OpenGl
@@ -8,7 +8,7 @@ namespace Rb.Rendering.OpenGl
 	/// <summary>
 	/// Implements the RenderTarget abstract class using OpenGL frame buffer objects
 	/// </summary>
-	public class OpenGlRenderTarget : RenderTarget, IDisposable
+	public class OpenGlRenderTarget : IRenderTarget
 	{
 		~OpenGlRenderTarget( )
 		{
@@ -24,7 +24,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="depthBits">Number of bits per element in the depth buffer (0 for no depth buffer)</param>
 		/// <param name="stencilBits">Number of bits per element in the stencil buffer (0 for no stencil buffer)</param>
 		/// <param name="depthBufferAsTexture">If true, then depth buffer storage is created in a texture</param>
-		public unsafe override void Create( int width, int height, TextureFormat colourFormat, int depthBits, int stencilBits, bool depthBufferAsTexture )
+		public unsafe void Create( int width, int height, TextureFormat colourFormat, int depthBits, int stencilBits, bool depthBufferAsTexture )
 		{
 			//	Requires the frame buffer extension
 			if ( !ms_ExtensionPresent )
@@ -56,7 +56,7 @@ namespace Rb.Rendering.OpenGl
 					Gl.glEnable( Gl.GL_TEXTURE_2D );
 
 					//	Create the depth texture
-					OpenGlTexture2d texture = ( OpenGlTexture2d )Graphics.Factory.NewTexture2d( );
+					OpenGlTexture2d texture = ( OpenGlTexture2d )Graphics.Factory.CreateTexture2d( );
 					switch ( depthBits )
 					{
 						case 16 :	texture.Create( width, height, TextureFormat.Depth16 );	break;
@@ -96,7 +96,7 @@ namespace Rb.Rendering.OpenGl
 			if ( colourFormat != TextureFormat.Undefined )
 			{
 				//	Create a texture
-				OpenGlTexture2d texture = ( OpenGlTexture2d )Graphics.Factory.NewTexture2d( );
+				OpenGlTexture2d texture = ( OpenGlTexture2d )Graphics.Factory.CreateTexture2d( );
 				texture.Create( width, height, colourFormat );
 
 				//	Add texture parameters (barfs otherwise - incomplete attachements)

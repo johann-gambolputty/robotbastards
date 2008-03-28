@@ -1,7 +1,8 @@
 using System;
 using System.Drawing;
 using Rb.Core.Maths;
-using Rb.Rendering;
+using Rb.Rendering.Interfaces;
+using Rb.Rendering.Interfaces.Objects;
 using Rb.Tools.LevelEditor.Core;
 using Rb.Tools.LevelEditor.Core.Actions;
 using Rb.Tools.LevelEditor.Core.Selection;

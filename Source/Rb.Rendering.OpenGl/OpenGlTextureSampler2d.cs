@@ -1,5 +1,6 @@
 using System;
-using Rb.Rendering.Textures;
+using Rb.Rendering.Base.Textures;
+using Rb.Rendering.Interfaces.Objects;
 using Tao.OpenGl;
 
 namespace Rb.Rendering.OpenGl
@@ -8,16 +9,16 @@ namespace Rb.Rendering.OpenGl
 	/// Summary description for OpenGlApplyTexture2d.
 	/// </summary>
 	[Serializable]
-	public class OpenGlTextureSampler2d : TextureSampler2d
+	public class OpenGlTextureSampler2d : Texture2dSamplerBase
 	{
 		/// <summary>
 		/// OpenGl texture access
 		/// </summary>
-		public new OpenGlTexture2d Texture
+		public OpenGlTexture2d OpenGlTexture
 		{
-			get { return ( OpenGlTexture2d )base.Texture;  }
-			set { base.Texture = value;  }
+			get { return ( OpenGlTexture2d )Texture;  }
 		}
+
 
 		/// <summary>
 		/// Applies the associated texture and texture parameters
@@ -50,6 +51,8 @@ namespace Rb.Rendering.OpenGl
 			Graphics.Renderer.UnbindTexture( Texture );
 		}
 
+		#region Private Members
+
 		private static void ApplyTextureWrap( int dir, TextureWrap wrap )
 		{
 			switch ( wrap )
@@ -71,6 +74,8 @@ namespace Rb.Rendering.OpenGl
 				case TextureFilter.LinearTexelLinearMipMap		:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_LINEAR_MIPMAP_LINEAR	);	break;
 			}
 		}
+
+		#endregion
 
 	}
 }

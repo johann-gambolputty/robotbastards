@@ -3,8 +3,9 @@ using System.Drawing;
 using Rb.Rendering;
 using Rb.Core.Maths;
 using Rb.Core.Components;
+using Rb.Rendering.Interfaces;
+using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.OpenGl;
-using Rb.Rendering.Textures;
 
 namespace Rb.Rendering.OpenGl.Md3Loader
 {
@@ -432,7 +433,8 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		static ModelMesh( )
 		{
 			m_BoundsDraw = Graphics.Draw.NewPen( Color.Red, 1.5f );
-			m_BoundsDraw.State.EnableCap( RenderStateFlag.DepthTest | RenderStateFlag.DepthWrite );
+			m_BoundsDraw.State.DepthTest = true;
+			m_BoundsDraw.State.DepthWrite = true;
 		}
 
 		#endregion

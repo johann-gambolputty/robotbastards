@@ -5,9 +5,11 @@ using Rb.Assets.Base;
 using Rb.Assets.Interfaces;
 using Rb.Core.Components;
 using Rb.Core.Maths;
-using Rb.Rendering;
+using Rb.Rendering.Interfaces;
+using Rb.Rendering.Interfaces.Objects;
 using Rb.World;
 using Component=Rb.Core.Components.Component;
+using RbGraphics = Rb.Rendering.Graphics;
 
 namespace Poc0.Core.Objects
 {
@@ -42,6 +44,8 @@ namespace Poc0.Core.Objects
 
 		#endregion
 
+		#region Public Members
+
 		/// <summary>
 		/// Sets/gets the rendered graphics object
 		/// </summary>
@@ -56,16 +60,6 @@ namespace Poc0.Core.Objects
 			}
 		}
 
-		private static void OnWeaponRender( IRenderContext context )
-		{
-			if ( DebugInfo.ShowTagTransforms )
-			{
-				Rb.Rendering.Graphics.Draw.Line( Draw.Pens.Red, Point3.Origin, Point3.Origin + Vector3.XAxis * 2 );
-				Rb.Rendering.Graphics.Draw.Line( Draw.Pens.Blue, Point3.Origin, Point3.Origin + Vector3.YAxis * 2 );
-				Rb.Rendering.Graphics.Draw.Line( Draw.Pens.Green, Point3.Origin, Point3.Origin + Vector3.ZAxis * 2 );
-			}
-		}
-
 		/// <summary>
 		/// Location of the graphics asset used to display the entity
 		/// </summary>
@@ -75,9 +69,11 @@ namespace Poc0.Core.Objects
 			set
 			{
 				m_GraphicsAsset.SetSource( value, true );
-				Resolve( );
+				ResolveGraphics( );
 			}
 		}
+
+		#endregion
 
 		#region IRenderable Members
 
@@ -109,11 +105,11 @@ namespace Poc0.Core.Objects
 				localToWorld.XAxis = new Vector3( -sinA, 0, cosA );
 			}
 
-			Rb.Rendering.Graphics.Renderer.PushTransform( Transform.LocalToWorld, localToWorld );
+			RbGraphics.Renderer.PushTransform( Transform.LocalToWorld, localToWorld );
 
 			m_Lights.Begin( );
 
-			if ( Resolve( ) )
+			if ( ResolveGraphics( ) )
 			{
 				m_Graphics.Render( context );
 			}
@@ -121,12 +117,12 @@ namespace Poc0.Core.Objects
 			if ( DebugInfo.ShowEntityNames )
 			{
 				string name = ( ( INamed )Parent ).Name;
-				RenderFonts.GetDefaultFont( DefaultFont.Debug ).DrawText( RenderFont.Alignment.BottomCentre, 0, 5.0f, 0, Color.White, name );
+				RbGraphics.Fonts.DebugFont.Write( 0, 5.0f, 0, FontAlignment.BottomCentre, Color.White, name );
 			}
 
 			m_Lights.End( );
 
-			Rb.Rendering.Graphics.Renderer.PopTransform( Transform.LocalToWorld );
+			RbGraphics.Renderer.PopTransform( Transform.LocalToWorld );
 		}
 
 		#endregion
@@ -155,10 +151,42 @@ namespace Poc0.Core.Objects
 
 		#endregion
 
+		#region IReferencePoints Members
+
 		/// <summary>
-		/// Resolves the graphics
+		/// Gets a named reference point
 		/// </summary>
-		private bool Resolve( )
+		public IReferencePoint this[ string name ]
+		{
+			get
+			{
+				return ( ( IReferencePoints )m_Graphics )[ name ];
+			}
+		}
+
+		#endregion
+
+		#region Private Members
+
+		[NonSerialized]
+		private IRenderable m_Graphics;
+		private readonly LightMeter m_Lights = new LightMeter( );
+		private readonly AssetHandle m_GraphicsAsset = new AssetHandle( );
+
+		private static void OnWeaponRender( IRenderContext context )
+		{
+			if ( DebugInfo.ShowTagTransforms )
+			{
+				Rb.Rendering.Graphics.Draw.Line( RbGraphics.Pens.Red, Point3.Origin, Point3.Origin + Vector3.XAxis * 2 );
+				Rb.Rendering.Graphics.Draw.Line( RbGraphics.Pens.Blue, Point3.Origin, Point3.Origin + Vector3.YAxis * 2 );
+				Rb.Rendering.Graphics.Draw.Line( RbGraphics.Pens.Green, Point3.Origin, Point3.Origin + Vector3.ZAxis * 2 );
+			}
+		}
+		
+		/// <summary>
+		/// Resolves the m_Graphics field
+		/// </summary>
+		private bool ResolveGraphics( )
 		{
 			if ( m_Graphics != null )
 			{
@@ -206,25 +234,7 @@ namespace Poc0.Core.Objects
 			}
 			return true;
 		}
-
-		[NonSerialized]
-		private IRenderable m_Graphics;
-		private readonly LightMeter m_Lights = new LightMeter( );
-		private readonly AssetHandle m_GraphicsAsset = new AssetHandle( );
-
-		#region IReferencePoints Members
-
-		/// <summary>
-		/// Gets a named reference point
-		/// </summary>
-		public IReferencePoint this[ string name ]
-		{
-			get
-			{
-				return ( ( IReferencePoints )m_Graphics )[ name ];
-			}
-		}
-
+		
 		#endregion
 	}
 }

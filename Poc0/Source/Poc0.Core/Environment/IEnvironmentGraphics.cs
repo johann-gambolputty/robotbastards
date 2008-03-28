@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Rb.Rendering;
-using Rb.Rendering.Textures;
+using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc0.Core.Environment
 {

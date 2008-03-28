@@ -4,6 +4,7 @@ using Rb.Core.Maths;
 using Rb.Core.Utils;
 using Rb.Rendering;
 using Rb.Animation;
+using Rb.Rendering.Interfaces.Objects;
 using Rb.World;
 using Rb.World.Entities;
 using Rb.World.Services;

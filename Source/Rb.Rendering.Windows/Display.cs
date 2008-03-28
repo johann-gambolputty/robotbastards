@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Rb.Rendering.Base;
 
 namespace Rb.Rendering.Windows
 {
@@ -181,7 +182,7 @@ namespace Rb.Rendering.Windows
 			if ( m_Viewers.Count == 0 )
 			{
 				Graphics.Renderer.ClearDepth( 1.0f );
-				Graphics.Renderer.ClearVerticalGradient( Color.DarkSeaGreen, Color.Black );
+				Graphics.Renderer.ClearColourToVerticalGradient( Color.DarkSeaGreen, Color.Black );
 			}
 			else
 			{

@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using Rb.Rendering;
+using Rb.Rendering.Interfaces.Objects;
 using Rb.World;
 
 namespace Poc0.LevelEditor.Core.Rendering

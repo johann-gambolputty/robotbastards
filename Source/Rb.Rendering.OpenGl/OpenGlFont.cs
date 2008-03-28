@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Rb.Core.Maths;
-using Rb.Rendering.Textures;
+using Rb.Rendering.Interfaces.Objects;
 using Tao.OpenGl;
 
 namespace Rb.Rendering.OpenGl
@@ -10,7 +10,7 @@ namespace Rb.Rendering.OpenGl
 	/// <summary>
 	/// OpenGL implementation of RenderFont.
 	/// </summary>
-	public class OpenGlRenderFont : RenderFont
+	public class OpenGlFont : IFont
 	{
 
 		/// <summary>
@@ -35,7 +35,7 @@ namespace Rb.Rendering.OpenGl
 			}
 		}
 
-		private TextureSampler2d m_FontTextureSampler;
+		private ITexture2dSampler m_FontTextureSampler;
 		private readonly CharacterData[] m_CharacterData = new CharacterData[ 256 ];
 
 		/// <summary>
@@ -44,7 +44,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="font">Font to build from</param>
 		/// <param name="characters">Set of characters to build the font texture from</param>
 		/// <returns>Returns this</returns>
-		public override RenderFont Setup( Font font, CharacterSet characters )
+		public IFont Setup( Font font, FontData.CharacterSet characters )
 		{
 			Bitmap img = BuildFontImage( font, characters );
 			img.Save( string.Format( "{0}{1}.png", font.Name, font.Size ), ImageFormat.Png );
@@ -59,7 +59,7 @@ namespace Rb.Rendering.OpenGl
 			return this;
 		}
 
-		private readonly RenderState m_RenderState =
+		private readonly IRenderState m_RenderState =
 			Graphics.Factory.NewRenderState( )
 				.DisableCap( RenderStateFlag.DepthTest )
 				.EnableCap( RenderStateFlag.Blend )
@@ -72,7 +72,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Gets the height of the largest letter in the font
 		/// </summary>
-		public override int MaxHeight
+		public int MaxHeight
 		{
 			get { return m_MaxHeight; }
 		}
@@ -82,7 +82,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		/// <param name="str">String to measure</param>
 		/// <returns>Size of the string in pixels</returns>
-		public override Size MeasureString( string str )
+		public Size MeasureString( string str )
 		{
 			int width = 0;
 			int height = 0;
@@ -258,7 +258,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Draws text using this font, at a given position
 		/// </summary>
-		public override void DrawText( Alignment align, float x, float y, float z, Color colour, string str )
+		public override void DrawText( FontAlignment align, float x, float y, float z, Color colour, string str )
 		{
 			Point3 screenPt = Graphics.Renderer.Project( new Point3( x, y, z ) );
 			DrawText( align, ( int )screenPt.X, ( int )screenPt.Y, colour, str );
@@ -285,7 +285,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Builds an image from this font
 		/// </summary>
-		private Bitmap BuildFontImage( Font font, CharacterSet characterSet )
+		private Bitmap BuildFontImage( Font font, FontData.CharacterSet characterSet )
 		{
 			string chars = new string( characterSet.Chars );
 			System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage( new Bitmap( 1, 1 ) );

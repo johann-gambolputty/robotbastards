@@ -1,6 +1,6 @@
 using System;
 using Rb.Core.Components;
-using Rb.Rendering.Lights;
+using Rb.Rendering.Interfaces.Objects.Lights;
 using Rb.World.Services;
 
 namespace Rb.World

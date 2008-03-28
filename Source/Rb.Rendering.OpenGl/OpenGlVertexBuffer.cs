@@ -1,4 +1,5 @@
 using System;
+using Rb.Rendering.Interfaces.Objects;
 using Tao.OpenGl;
 
 namespace Rb.Rendering.OpenGl

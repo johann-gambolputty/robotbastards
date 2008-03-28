@@ -1,5 +1,6 @@
 using System.Drawing;
-using Rb.Rendering;
+using Rb.Rendering.Base;
+using Rb.Rendering.Interfaces.Objects;
 using Rb.World.Rendering;
 using System.Diagnostics;
 
@@ -27,31 +28,33 @@ namespace Poc0.Core
 		{
 			m_Counter.Update( );
 
-			Color outlineColour = Color.WhiteSmoke;
-
-			RenderFont font = RenderFonts.GetDefaultFont( DefaultFont.Debug );
+			IFont font = Rb.Rendering.Graphics.Fonts.DebugFont;
 			int y = 0;
 			if ( DebugInfo.ShowFps )
 			{
-				font.DrawText( 0, y, TextColour, outlineColour, "Fps: {0:F2}", m_Counter.AverageFps );
-				y += font.MaxHeight + 2;
+				font.Write( 0, y, TextColour, "Fps: {0:F2}", m_Counter.AverageFps );
+				y += font.MaximumHeight + 2;
 			}
 			if ( DebugInfo.ShowMemoryWorkingSet )
 			{
 				Process currentProcess = Process.GetCurrentProcess( );
-				font.DrawText( 0, y, TextColour, outlineColour, "Mem: {0:N}kb", currentProcess.WorkingSet64 / 1024 );
-				y += font.MaxHeight + 2;
+				font.Write( 0, y, TextColour, "Mem: {0:N}kb", currentProcess.WorkingSet64 / 1024 );
+				y += font.MaximumHeight + 2;
 			}
 			if ( DebugInfo.ShowMemoryPeakWorkingSet )
 			{
 				Process currentProcess = Process.GetCurrentProcess( );
-				font.DrawText( 0, y, TextColour, outlineColour, "PMem: {0:N}kb", currentProcess.PeakWorkingSet64 / 1024 );
+				font.Write( 0, y, TextColour, "PMem: {0:N}kb", currentProcess.PeakWorkingSet64 / 1024 );
 			}
 
 			base.Render( context );
 		}
 
+		#region Private Members
+
 		private readonly FpsCounter m_Counter = new FpsCounter( );
 		private Color m_TextColour = Color.WhiteSmoke;
+
+		#endregion
 	}
 }

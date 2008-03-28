@@ -3,11 +3,12 @@ using System.Runtime.Serialization;
 using Poc0.Core.Environment;
 using Rb.Core.Maths;
 using Rb.Rendering;
-using Rb.Rendering.Textures;
+using Rb.Rendering.Interfaces;
+using Rb.Rendering.Interfaces.Objects;
+using Rb.Rendering.Interfaces.Objects.Lights;
 using Rb.World;
 using Rb.World.Services;
 using Tao.OpenGl;
-using Rb.Rendering.Lights;
 
 namespace Poc0.Core.Rendering.OpenGl
 {
@@ -22,14 +23,15 @@ namespace Poc0.Core.Rendering.OpenGl
 		/// </summary>
 		public OpenGlEnvironmentGraphics( )
 		{
-			m_WallState = Graphics.Factory.NewRenderState( );
-			m_WallState.DisableLighting( );
-			m_WallState.SetColour( System.Drawing.Color.DarkOrange );
-			m_WallState.EnableCap( RenderStateFlag.Texture2d | RenderStateFlag.Texture2dUnit0 );
+			m_WallState = Graphics.Factory.CreateRenderState( );
+			m_WallState.Lighting = false;
+			m_WallState.Colour = System.Drawing.Color.DarkOrange;
+			m_WallState.Enable2dTextures = true;
+			m_WallState.Enable2dTextureUnit( 0, true );
 
-			m_FloorState = Graphics.Factory.NewRenderState( );
-			m_FloorState.DisableLighting( );
-			m_FloorState.SetColour( System.Drawing.Color.Blue );
+			m_FloorState = Graphics.Factory.CreateRenderState( );
+			m_FloorState.Lighting = false;
+			m_FloorState.Colour = System.Drawing.Color.Blue;
 		}
 
 		/// <summary>
@@ -98,8 +100,8 @@ namespace Poc0.Core.Rendering.OpenGl
 
 		[NonSerialized]
 		private Cell[,] m_Grid;
-		private readonly RenderState m_WallState;
-		private readonly RenderState m_FloorState;
+		private readonly IRenderState m_WallState;
+		private readonly IRenderState m_FloorState;
 		private EnvironmentGraphicsData m_Data;
 		private Scene m_Scene;
 
@@ -166,7 +168,7 @@ namespace Poc0.Core.Rendering.OpenGl
 			public Cell( Scene scene, EnvironmentGraphicsData.GridCell src )
 			{
 				m_Scene = scene;
-				m_VertexBuffer = Graphics.Factory.NewVertexBuffer( src.VertexData );
+				m_VertexBuffer = Graphics.Factory.CreateVertexBuffer( src.VertexData );
 				m_Groups = new GeometryGroup[ src.Groups.Count ];
 				for ( int groupIndex = 0; groupIndex < m_Groups.Length; ++groupIndex )
 				{

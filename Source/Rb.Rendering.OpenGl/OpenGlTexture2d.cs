@@ -3,7 +3,8 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.Serialization;
 using Rb.Core.Maths;
-using Rb.Rendering.Textures;
+using Rb.Rendering.Base.Textures;
+using Rb.Rendering.Interfaces.Objects;
 using Tao.OpenGl;
 using Rectangle=System.Drawing.Rectangle;
 
@@ -14,7 +15,7 @@ namespace Rb.Rendering.OpenGl
 	/// OpenGL implementation of Texture2d
 	/// </summary>
 	[Serializable]
-	public class OpenGlTexture2d : Texture2d
+	public class OpenGlTexture2d : Texture2dBase
 	{
 		/// <summary>
 		/// Returns the internal texture handle

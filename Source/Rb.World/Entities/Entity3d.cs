@@ -1,7 +1,7 @@
-using System;
 using Rb.Core.Utils;
 using Rb.Core.Maths;
-using Rb.Rendering;
+using Rb.Rendering.Interfaces;
+using Rb.Rendering.Interfaces.Objects;
 
 namespace Rb.World.Entities
 {
@@ -129,7 +129,7 @@ namespace Rb.World.Entities
 			base.Render( context );
 
 			//	Pop the entity transform
-			Rb.Rendering.Graphics.Renderer.PopTransform(Transform.LocalToWorld);
+			Rb.Rendering.Graphics.Renderer.PopTransform( Transform.LocalToWorld );
 		}
 
 		#endregion
