@@ -126,6 +126,7 @@
     <Compile Include="Utils\Clock.cs" />
     <Compile Include="Utils\DispatchMap.cs" />
     <Compile Include="Utils\ExpandableStructConverter.cs" />
+    <Compile Include="Utils\FunctionDelegates.cs" />
     <Compile Include="Utils\InvokeQueue.cs" />
     <Compile Include="Utils\LibraryBuilder.cs" />
     <Compile Include="Utils\PathHelpers.cs" />
