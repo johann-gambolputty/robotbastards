@@ -49,75 +49,91 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\TextureLoader.cs" />
-    <Compile Include="Cameras\Camera3.cs" />
-    <Compile Include="Cameras\CameraBase.cs" />
-    <Compile Include="Cameras\ICamera3.cs" />
-    <Compile Include="Cameras\MultiCamera.cs" />
-    <Compile Include="Cameras\MultiCamera3.cs" />
-    <Compile Include="Cameras\ProjectionCamera.cs" />
-    <Compile Include="Cameras\SphereCamera.cs" />
-    <Compile Include="DelegateRenderable.cs" />
-    <Compile Include="Draw.cs" />
-    <Compile Include="EffectAssetHandle.cs" />
-    <Compile Include="EffectRenderedObject.cs" />
-    <Compile Include="FpsCounter.cs" />
-    <Compile Include="FpsDisplay.cs" />
+    <Compile Include="Base\Cameras\Camera3.cs" />
+    <Compile Include="Base\Cameras\CameraBase.cs" />
+    <Compile Include="Base\Cameras\MultiCamera.cs" />
+    <Compile Include="Base\Cameras\MultiCamera3.cs" />
+    <Compile Include="Base\Cameras\ProjectionCamera.cs" />
+    <Compile Include="Base\Cameras\SphereCamera.cs" />
+    <Compile Include="Base\DelegateRenderable.cs" />
+    <Compile Include="Base\DrawBase.cs" />
+    <Compile Include="Base\Effect.cs" />
+    <Compile Include="Base\EffectAssetHandle.cs" />
+    <Compile Include="Base\EffectDataSourcesBase.cs" />
+    <Compile Include="Base\FpsCounter.cs" />
+    <Compile Include="Base\FpsDisplay.cs" />
+    <Compile Include="Base\Lights\Light.cs" />
+    <Compile Include="Base\Lights\LightGroup.cs" />
+    <Compile Include="Base\Lights\PointLight.cs" />
+    <Compile Include="Base\Lights\SpotLight.cs" />
+    <Compile Include="Base\MaterialBase.cs" />
+    <Compile Include="Base\RenderContext.cs" />
+    <Compile Include="Base\RendererBase.cs" />
+    <Compile Include="Base\Technique.cs" />
+    <Compile Include="Base\Textures\Texture2dAssetHandle.cs" />
+    <Compile Include="Base\Textures\Texture2dBase.cs" />
+    <Compile Include="Base\Textures\Texture2dSamplerBase.cs" />
+    <Compile Include="Base\Textures\TextureUtils.cs" />
+    <Compile Include="Base\Viewer.cs" />
     <Compile Include="Graphics.cs" />
-    <Compile Include="IDisplaySetup.cs" />
     <Compile Include="GraphicsLog.cs" />
-    <Compile Include="Lights\ILight.cs" />
-    <Compile Include="IPass.cs" />
-    <Compile Include="Lights\IPointLight.cs" />
-    <Compile Include="IRenderable.cs" />
-    <Compile Include="IRenderContext.cs" />
-    <Compile Include="IEffect.cs" />
-    <Compile Include="Lights\ISpotLight.cs" />
-    <Compile Include="ITechnique.cs" />
-    <Compile Include="ITechniqueSelector.cs" />
-    <Compile Include="Textures\ITexture2d.cs" />
-    <Compile Include="IVertexBuffer.cs" />
-    <Compile Include="Lights\Light.cs" />
-    <Compile Include="Lights\LightGroup.cs" />
-    <Compile Include="Material.cs" />
-    <Compile Include="Lights\PointLight.cs" />
+    <Compile Include="Interfaces\Draw.cs" />
+    <Compile Include="Interfaces\IDisplaySetup.cs" />
+    <Compile Include="Interfaces\IDraw.cs" />
+    <Compile Include="Interfaces\IEffectDataSources.cs" />
+    <Compile Include="Interfaces\IGraphicsFactory.cs" />
+    <Compile Include="Interfaces\IRenderer.cs" />
+    <Compile Include="Interfaces\Objects\BlendState.cs" />
+    <Compile Include="Interfaces\Objects\Cameras\ICamera.cs" />
+    <Compile Include="Interfaces\Objects\Cameras\ICamera3.cs" />
+    <Compile Include="Interfaces\Objects\FontData.cs" />
+    <Compile Include="Interfaces\Objects\IEffect.cs" />
+    <Compile Include="Interfaces\Objects\IEffectDataSource.cs" />
+    <Compile Include="Interfaces\Objects\IEffectParameter.cs" />
+    <Compile Include="Interfaces\Objects\IFont.cs" />
+    <Compile Include="Interfaces\Objects\IIndexBuffer.cs" />
+    <Compile Include="Interfaces\Objects\IIndexBufferLock.cs" />
+    <Compile Include="Interfaces\Objects\IMaterial.cs" />
+    <Compile Include="Interfaces\Objects\IndexBufferData.cs" />
+    <Compile Include="Interfaces\Objects\IPass.cs" />
+    <Compile Include="Interfaces\Objects\IRenderable.cs" />
+    <Compile Include="Interfaces\Objects\IRenderContext.cs" />
+    <Compile Include="Interfaces\Objects\IRenderState.cs" />
+    <Compile Include="Interfaces\Objects\IRenderTarget.cs" />
+    <Compile Include="Interfaces\Objects\ITechnique.cs" />
+    <Compile Include="Interfaces\Objects\ITexture.cs" />
+    <Compile Include="Interfaces\Objects\ITexture2d.cs" />
+    <Compile Include="Interfaces\Objects\ITexture2dSampler.cs" />
+    <Compile Include="Interfaces\Objects\IVertexBuffer.cs" />
+    <Compile Include="Interfaces\Objects\IVertexBufferLock.cs" />
+    <Compile Include="Interfaces\Objects\Lights\ILight.cs" />
+    <Compile Include="Interfaces\Objects\Lights\IPointLight.cs" />
+    <Compile Include="Interfaces\Objects\Lights\ISpotLight.cs" />
+    <Compile Include="Interfaces\Objects\PassDepthTest.cs" />
+    <Compile Include="Interfaces\Objects\PolygonRenderMode.cs" />
+    <Compile Include="Interfaces\Objects\PolygonShadeMode.cs" />
+    <Compile Include="Base\RenderableList.cs" />
+    <Compile Include="Interfaces\Objects\RenderDelegate.cs" />
+    <Compile Include="Interfaces\Objects\TextureFilter.cs" />
+    <Compile Include="Interfaces\Objects\TextureFormat.cs" />
+    <Compile Include="Interfaces\Objects\TextureMode.cs" />
+    <Compile Include="Interfaces\Objects\TextureWrap.cs" />
+    <Compile Include="Interfaces\Objects\VertexBufferData.cs" />
+    <Compile Include="Interfaces\Objects\Winding.cs" />
+    <Compile Include="Interfaces\Transform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RenderableAssetHandle.cs" />
-    <Compile Include="RenderableList.cs" />
-    <Compile Include="RenderContext.cs" />
-    <Compile Include="Renderer.cs" />
-    <Compile Include="RenderFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="RenderFont.cs" />
-    <Compile Include="RenderFonts.cs" />
-    <Compile Include="Pass.cs" />
     <Compile Include="RenderingLibraryTypeAttribute.cs" />
-    <Compile Include="RenderState.cs" />
-    <Compile Include="RenderTarget.cs" />
-    <Compile Include="Effect.cs" />
-    <Compile Include="ShaderParameter.cs" />
-    <Compile Include="ShaderParameterBindings.cs" />
-    <Compile Include="ShadowBufferTechnique.cs" />
-    <Compile Include="Lights\SpotLight.cs" />
-    <Compile Include="Technique.cs" />
-    <Compile Include="TechniqueSelector.cs" />
-    <Compile Include="Textures\Texture2d.cs" />
-    <Compile Include="Textures\Texture2dAssetHandle.cs" />
-    <Compile Include="Textures\TextureFormat.cs" />
-    <Compile Include="Textures\TexturePacker.cs" />
-    <Compile Include="Textures\TextureSampler2d.cs" />
-    <Compile Include="Textures\TextureUtils.cs" />
-    <Compile Include="Transform.cs" />
-    <Compile Include="VertexBufferData.cs" />
-    <Compile Include="Viewer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Rb.AssemblySelector\Rb.AssemblySelector.csproj">
+      <Project>{2097B22A-91A5-4CFF-8CCB-846A10523CB9}</Project>
+      <Name>Rb.AssemblySelector</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rb.Assets\Rb.Assets.csproj">
       <Project>{22440804-2D3F-4FEF-AD01-812923F6E04C}</Project>
       <Name>Rb.Assets</Name>
@@ -139,8 +155,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\shadowMapDepthTexture.cgfx" />
-    <None Include="Resources\shadowMapTexture.cgfx" />
+    <None Include="Resources\DefaultShadowMapDepthTexture.cgfx" />
+    <None Include="Resources\DefaultShadowMapTexture.cgfx" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
