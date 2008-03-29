@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Rb.Core.Maths;
+using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 using Tao.OpenGl;
 
@@ -10,33 +11,27 @@ namespace Rb.Rendering.OpenGl
 	/// <summary>
 	/// OpenGL implementation of RenderFont.
 	/// </summary>
-	public class OpenGlFont : IFont
+	public class OpenGlFont : FontBase
 	{
 
+
 		/// <summary>
-		/// Character UV data
+		/// Setup constructor
 		/// </summary>
-		private struct CharacterData
+		/// <param name="fontData">Font data</param>
+		public OpenGlFont( FontData fontData )
 		{
-			public readonly short	U;
-			public readonly short	V;
-			public readonly byte	Width;
-			public readonly byte	Height;
+			m_RenderState					= Graphics.Factory.CreateRenderState( );
+			m_RenderState.DepthTest			= false;
+			m_RenderState.Blend				= true;
+			m_RenderState.SourceBlend		= BlendFactor.SrcAlpha;
+			m_RenderState.DestinationBlend	= BlendFactor.OneMinusSrcAlpha;
+			m_RenderState.FaceRenderMode	= PolygonRenderMode.Fill;
+			m_RenderState.Enable2dTextures	= true;
+			m_RenderState.Lighting			= false;
 
-			/// <summary>
-			/// Sets up the character UV rectangle
-			/// </summary>
-			public CharacterData( short u, short v, byte width, byte height )
-			{
-				U = u;
-				V = v;
-				Width = width;
-				Height = height;
-			}
+			Setup( fontData.Font, fontData.Characters );
 		}
-
-		private ITexture2dSampler m_FontTextureSampler;
-		private readonly CharacterData[] m_CharacterData = new CharacterData[ 256 ];
 
 		/// <summary>
 		/// Builds this font from a System.Drawing.Font object
@@ -44,35 +39,25 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="font">Font to build from</param>
 		/// <param name="characters">Set of characters to build the font texture from</param>
 		/// <returns>Returns this</returns>
-		public IFont Setup( Font font, FontData.CharacterSet characters )
+		public void Setup( Font font, FontData.CharacterSet characters )
 		{
 			Bitmap img = BuildFontImage( font, characters );
 			img.Save( string.Format( "{0}{1}.png", font.Name, font.Size ), ImageFormat.Png );
 
-			m_FontTextureSampler			= Graphics.Factory.NewTextureSampler2d( );
-			m_FontTextureSampler.Texture	= Graphics.Factory.NewTexture2d( );
+			m_FontTextureSampler			= Graphics.Factory.CreateTexture2dSampler( );
+			m_FontTextureSampler.Texture	= Graphics.Factory.CreateTexture2d( );
 			m_FontTextureSampler.Texture.Load( img, false );
 			m_FontTextureSampler.Mode		= TextureMode.Modulate;
 			m_FontTextureSampler.MinFilter	= TextureFilter.NearestTexel;
 			m_FontTextureSampler.MagFilter	= TextureFilter.NearestTexel;
-
-			return this;
 		}
 
-		private readonly IRenderState m_RenderState =
-			Graphics.Factory.NewRenderState( )
-				.DisableCap( RenderStateFlag.DepthTest )
-				.EnableCap( RenderStateFlag.Blend )
-				.SetBlendMode( BlendFactor.SrcAlpha, BlendFactor.OneMinusSrcAlpha )
-				.SetPolygonRenderingMode( PolygonRenderMode.Fill )
-				.EnableCap( RenderStateFlag.Texture2d )
-				.DisableLighting( )
-			;
+		#region FontBase Members
 
 		/// <summary>
 		/// Gets the height of the largest letter in the font
 		/// </summary>
-		public int MaxHeight
+		public override int MaximumHeight
 		{
 			get { return m_MaxHeight; }
 		}
@@ -82,7 +67,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		/// <param name="str">String to measure</param>
 		/// <returns>Size of the string in pixels</returns>
-		public Size MeasureString( string str )
+		public override Size MeasureString( string str )
 		{
 			int width = 0;
 			int height = 0;
@@ -103,81 +88,7 @@ namespace Rb.Rendering.OpenGl
 			return new Size( width, height );
 		}
 
-		/// <summary>
-		/// Sets the (x,y) starting position of text, for a given alignment
-		/// </summary>
-		private void AlignText( Alignment align, string str, ref int x, ref int y )
-		{
-			if ( align == Alignment.TopLeft )
-			{
-				return;
-			}
-			Size size = MeasureString( str );
-
-			switch ( align )
-			{
-				case Alignment.TopCentre :
-					{
-						x -= size.Width / 2;
-						break;
-					}
-				case Alignment.TopRight :
-					{
-						x -= size.Width;
-						break;
-					}
-				case Alignment.MiddleLeft :
-					{
-						y -= size.Height / 2;
-						break;
-					}
-				case Alignment.MiddleCentre :
-					{
-						x -= size.Width / 2;
-						y -= size.Height / 2;
-						break;
-					}
-				case Alignment.MiddleRight :
-					{
-						x -= size.Width;
-						y -= size.Height / 2;
-						break;
-					}
-				case Alignment.BottomLeft :
-					{
-						y -= size.Height;
-						break;
-					}
-				case Alignment.BottomCentre :
-					{
-						x -= size.Width / 2;
-						y -= size.Height;
-						break;
-					}
-				case Alignment.BottomRight:
-					{
-						x -= size.Width;
-						y -= size.Height;
-						break;
-					}
-			}
-
-		}
-
-		/// <summary>
-		/// Draws text using this font, at a given position
-		/// </summary>
-		/// <param name="align">Alignment of text relative to (x,y) position</param>
-        /// <param name="x">Screen position coordinate</param>
-        /// <param name="y">Screen position coordinate</param>
-        /// <param name="colour">Text colour</param>
-		/// <param name="str">Text to draw</param>
-		public override void DrawText( Alignment align, int x, int y, Color colour, string str )
-		{
-			DrawText( align, x, y, colour, colour, str );
-		}
-
-		public override void DrawText( Alignment align, int x, int y, Color colour, Color outlineColour, string str )
+		public override void Write( int x, int y, FontAlignment align, Color colour, string str )
 		{
 			Graphics.Renderer.Push2d( );
 			Graphics.Renderer.PushTextures( );
@@ -186,10 +97,10 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glColor3ub( colour.R, colour.G, colour.B );
 			Gl.glBegin( Gl.GL_QUADS );
-			int		curX		= x;
-			int		curY		= y;
-			float	rcpWidth	= 1.0f / m_FontTextureSampler.Texture.Width;
-			float	rcpHeight	= 1.0f / m_FontTextureSampler.Texture.Height;
+			int curX = x;
+			int curY = y;
+			float rcpWidth = 1.0f / m_FontTextureSampler.Texture.Width;
+			float rcpHeight = 1.0f / m_FontTextureSampler.Texture.Height;
 
 			AlignText( align, str, ref curX, ref curY );
 
@@ -204,34 +115,13 @@ namespace Rb.Rendering.OpenGl
 
 				CharacterData charData = m_CharacterData[ curCh ];
 
-				float u		= ( charData.U ) * rcpWidth;
-				float v		= ( charData.V ) * rcpHeight;
-				float maxU	= u + ( charData.Width ) * rcpWidth;
-				float maxV	= v + ( charData.Height ) * rcpWidth;
+				float u = ( charData.U ) * rcpWidth;
+				float v = ( charData.V ) * rcpHeight;
+				float maxU = u + ( charData.Width ) * rcpWidth;
+				float maxV = v + ( charData.Height ) * rcpWidth;
 
 				int maxX = curX + charData.Width;
 				int maxY = curY + charData.Height;
-
-				/*
-				if ( outline )
-				{
-					Gl.glColor3ub( outlineColour.R, outlineColour.G, outlineColour.B );
-
-					Gl.glTexCoord2f( u, v );
-					Gl.glVertex2i( curX - outlineSize, curY - outlineSize );
-
-					Gl.glTexCoord2f( maxU, v );
-					Gl.glVertex2i( maxX + outlineSize, curY - outlineSize );
-
-					Gl.glTexCoord2f( maxU, maxV );
-					Gl.glVertex2i( maxX + outlineSize, maxY + outlineSize );
-
-					Gl.glTexCoord2f( u, maxV );
-					Gl.glVertex2i( curX - outlineSize, maxY + outlineSize );
-
-					Gl.glColor3ub( colour.R, colour.G, colour.B );
-				}
-				*/
 
 				Gl.glTexCoord2f( u, v );
 				Gl.glVertex2i( curX, curY );
@@ -250,7 +140,7 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glEnd( );
 			m_FontTextureSampler.End( );
-            Graphics.Renderer.PopTextures( );
+			Graphics.Renderer.PopTextures( );
 			Graphics.Renderer.PopRenderState( );
 			Graphics.Renderer.Pop2d( );
 		}
@@ -258,10 +148,106 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Draws text using this font, at a given position
 		/// </summary>
-		public override void DrawText( FontAlignment align, float x, float y, float z, Color colour, string str )
+		public override void Write( float x, float y, float z, FontAlignment align, Color colour, string str )
 		{
 			Point3 screenPt = Graphics.Renderer.Project( new Point3( x, y, z ) );
-			DrawText( align, ( int )screenPt.X, ( int )screenPt.Y, colour, str );
+			Write( ( int )screenPt.X, ( int )screenPt.Y, align, colour, str );
+		}
+
+		#endregion
+
+		#region CharacterData
+
+		/// <summary>
+		/// Character UV data
+		/// </summary>
+		private struct CharacterData
+		{
+			public readonly short U;
+			public readonly short V;
+			public readonly byte Width;
+			public readonly byte Height;
+
+			/// <summary>
+			/// Sets up the character UV rectangle
+			/// </summary>
+			public CharacterData( short u, short v, byte width, byte height )
+			{
+				U = u;
+				V = v;
+				Width = width;
+				Height = height;
+			}
+		}
+
+		#endregion
+
+		#region Private Members
+
+		private int m_MaxHeight;
+		private ITexture2dSampler m_FontTextureSampler;
+		private readonly CharacterData[] m_CharacterData = new CharacterData[ 256 ];
+		private readonly IRenderState m_RenderState;
+
+		/// <summary>
+		/// Sets the (x,y) starting position of text, for a given alignment
+		/// </summary>
+		private void AlignText( FontAlignment align, string str, ref int x, ref int y )
+		{
+			if ( align == FontAlignment.TopLeft )
+			{
+				return;
+			}
+			Size size = MeasureString( str );
+
+			switch ( align )
+			{
+				case FontAlignment.TopCentre :
+					{
+						x -= size.Width / 2;
+						break;
+					}
+				case FontAlignment.TopRight:
+					{
+						x -= size.Width;
+						break;
+					}
+				case FontAlignment.MiddleLeft :
+					{
+						y -= size.Height / 2;
+						break;
+					}
+				case FontAlignment.MiddleCentre:
+					{
+						x -= size.Width / 2;
+						y -= size.Height / 2;
+						break;
+					}
+				case FontAlignment.MiddleRight:
+					{
+						x -= size.Width;
+						y -= size.Height / 2;
+						break;
+					}
+				case FontAlignment.BottomLeft:
+					{
+						y -= size.Height;
+						break;
+					}
+				case FontAlignment.BottomCentre:
+					{
+						x -= size.Width / 2;
+						y -= size.Height;
+						break;
+					}
+				case FontAlignment.BottomRight:
+					{
+						x -= size.Width;
+						y -= size.Height;
+						break;
+					}
+			}
+
 		}
 
 		/// <summary>
@@ -296,8 +282,8 @@ namespace Rb.Rendering.OpenGl
 			m_MaxHeight = charSetSize.Height;
 
 			//	HACK: Add a fair bit of padding to width and height when calculating required area
-			int area		= ( charSetSize.Width + 1 ) * ( charSetSize.Height + 1 );
-			int size		= 128;
+			int area = ( charSetSize.Width + 1 ) * ( charSetSize.Height + 1 );
+			int size = 128;
 			for ( ; ( size * size ) < area; size *= 2 ) { }
 
 			//	Set up new image and graphics object to render to it
@@ -312,9 +298,9 @@ namespace Rb.Rendering.OpenGl
 			int y = 0;
 			for ( int charIndex = 0; charIndex < chars.Length; ++charIndex )
 			{
-				string	charStr		= chars.Substring( charIndex, 1 );
-				SizeF	charSize	= graphics.MeasureString( charStr, font );
-				int		charWidth	= ( int )charSize.Width;
+				string charStr = chars.Substring( charIndex, 1 );
+				SizeF charSize = graphics.MeasureString( charStr, font );
+				int charWidth = ( int )charSize.Width;
 				if ( ( x + charWidth ) >= size )
 				{
 					x = 0;
@@ -366,6 +352,7 @@ namespace Rb.Rendering.OpenGl
 			img.UnlockBits( bmpData );
 		}
 
-		private int m_MaxHeight;
+		#endregion
+
 	}
 }

@@ -49,78 +49,39 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base\Cameras\Camera3.cs" />
-    <Compile Include="Base\Cameras\CameraBase.cs" />
-    <Compile Include="Base\Cameras\MultiCamera.cs" />
-    <Compile Include="Base\Cameras\MultiCamera3.cs" />
-    <Compile Include="Base\Cameras\ProjectionCamera.cs" />
-    <Compile Include="Base\Cameras\SphereCamera.cs" />
-    <Compile Include="Base\DelegateRenderable.cs" />
-    <Compile Include="Base\DrawBase.cs" />
-    <Compile Include="Base\Effect.cs" />
-    <Compile Include="Base\EffectAssetHandle.cs" />
-    <Compile Include="Base\EffectDataSourcesBase.cs" />
-    <Compile Include="Base\FpsCounter.cs" />
-    <Compile Include="Base\FpsDisplay.cs" />
-    <Compile Include="Base\Lights\Light.cs" />
-    <Compile Include="Base\Lights\LightGroup.cs" />
-    <Compile Include="Base\Lights\PointLight.cs" />
-    <Compile Include="Base\Lights\SpotLight.cs" />
-    <Compile Include="Base\MaterialBase.cs" />
-    <Compile Include="Base\RenderContext.cs" />
-    <Compile Include="Base\RendererBase.cs" />
-    <Compile Include="Base\Technique.cs" />
-    <Compile Include="Base\Textures\Texture2dAssetHandle.cs" />
-    <Compile Include="Base\Textures\Texture2dBase.cs" />
-    <Compile Include="Base\Textures\Texture2dSamplerBase.cs" />
-    <Compile Include="Base\Textures\TextureUtils.cs" />
-    <Compile Include="Base\Viewer.cs" />
+    <Compile Include="Cameras\Camera3.cs" />
+    <Compile Include="Cameras\CameraBase.cs" />
+    <Compile Include="Cameras\MultiCamera.cs" />
+    <Compile Include="Cameras\MultiCamera3.cs" />
+    <Compile Include="Cameras\ProjectionCamera.cs" />
+    <Compile Include="Cameras\SphereCamera.cs" />
+    <Compile Include="DelegateRenderable.cs" />
+    <Compile Include="DrawBase.cs" />
+    <Compile Include="Effect.cs" />
+    <Compile Include="EffectAssetHandle.cs" />
+    <Compile Include="EffectDataSourcesBase.cs" />
+    <Compile Include="FontBase.cs" />
+    <Compile Include="FpsCounter.cs" />
+    <Compile Include="FpsDisplay.cs" />
+    <Compile Include="Lights\Light.cs" />
+    <Compile Include="Lights\LightGroup.cs" />
+    <Compile Include="Lights\PointLight.cs" />
+    <Compile Include="Lights\SpotLight.cs" />
+    <Compile Include="MaterialBase.cs" />
+    <Compile Include="RenderContext.cs" />
+    <Compile Include="RendererBase.cs" />
+    <Compile Include="Technique.cs" />
+    <Compile Include="TechniqueSelector.cs" />
+    <Compile Include="Textures\Texture2dAssetHandle.cs" />
+    <Compile Include="Textures\Texture2dBase.cs" />
+    <Compile Include="Textures\Texture2dSamplerBase.cs" />
+    <Compile Include="Textures\TextureLoader.cs" />
+    <Compile Include="Textures\TexturePacker.cs" />
+    <Compile Include="Textures\TextureUtils.cs" />
+    <Compile Include="Viewer.cs" />
     <Compile Include="Graphics.cs" />
     <Compile Include="GraphicsLog.cs" />
-    <Compile Include="Interfaces\Draw.cs" />
-    <Compile Include="Interfaces\IDisplaySetup.cs" />
-    <Compile Include="Interfaces\IDraw.cs" />
-    <Compile Include="Interfaces\IEffectDataSources.cs" />
-    <Compile Include="Interfaces\IGraphicsFactory.cs" />
-    <Compile Include="Interfaces\IRenderer.cs" />
-    <Compile Include="Interfaces\Objects\BlendState.cs" />
-    <Compile Include="Interfaces\Objects\Cameras\ICamera.cs" />
-    <Compile Include="Interfaces\Objects\Cameras\ICamera3.cs" />
-    <Compile Include="Interfaces\Objects\FontData.cs" />
-    <Compile Include="Interfaces\Objects\IEffect.cs" />
-    <Compile Include="Interfaces\Objects\IEffectDataSource.cs" />
-    <Compile Include="Interfaces\Objects\IEffectParameter.cs" />
-    <Compile Include="Interfaces\Objects\IFont.cs" />
-    <Compile Include="Interfaces\Objects\IIndexBuffer.cs" />
-    <Compile Include="Interfaces\Objects\IIndexBufferLock.cs" />
-    <Compile Include="Interfaces\Objects\IMaterial.cs" />
-    <Compile Include="Interfaces\Objects\IndexBufferData.cs" />
-    <Compile Include="Interfaces\Objects\IPass.cs" />
-    <Compile Include="Interfaces\Objects\IRenderable.cs" />
-    <Compile Include="Interfaces\Objects\IRenderContext.cs" />
-    <Compile Include="Interfaces\Objects\IRenderState.cs" />
-    <Compile Include="Interfaces\Objects\IRenderTarget.cs" />
-    <Compile Include="Interfaces\Objects\ITechnique.cs" />
-    <Compile Include="Interfaces\Objects\ITexture.cs" />
-    <Compile Include="Interfaces\Objects\ITexture2d.cs" />
-    <Compile Include="Interfaces\Objects\ITexture2dSampler.cs" />
-    <Compile Include="Interfaces\Objects\IVertexBuffer.cs" />
-    <Compile Include="Interfaces\Objects\IVertexBufferLock.cs" />
-    <Compile Include="Interfaces\Objects\Lights\ILight.cs" />
-    <Compile Include="Interfaces\Objects\Lights\IPointLight.cs" />
-    <Compile Include="Interfaces\Objects\Lights\ISpotLight.cs" />
-    <Compile Include="Interfaces\Objects\PassDepthTest.cs" />
-    <Compile Include="Interfaces\Objects\PolygonRenderMode.cs" />
-    <Compile Include="Interfaces\Objects\PolygonShadeMode.cs" />
-    <Compile Include="Base\RenderableList.cs" />
-    <Compile Include="Interfaces\Objects\RenderDelegate.cs" />
-    <Compile Include="Interfaces\Objects\TextureFilter.cs" />
-    <Compile Include="Interfaces\Objects\TextureFormat.cs" />
-    <Compile Include="Interfaces\Objects\TextureMode.cs" />
-    <Compile Include="Interfaces\Objects\TextureWrap.cs" />
-    <Compile Include="Interfaces\Objects\VertexBufferData.cs" />
-    <Compile Include="Interfaces\Objects\Winding.cs" />
-    <Compile Include="Interfaces\Transform.cs" />
+    <Compile Include="RenderableList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -145,6 +106,10 @@
     <ProjectReference Include="..\Rb.Log\Rb.Log.csproj">
       <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
       <Name>Rb.Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.csproj">
+      <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>
+      <Name>Rb.Rendering.Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

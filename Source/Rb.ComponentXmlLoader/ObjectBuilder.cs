@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Reflection;
-
-using Rb.Core.Components;
 using Rb.Core.Utils;
 
 namespace Rb.ComponentXmlLoader

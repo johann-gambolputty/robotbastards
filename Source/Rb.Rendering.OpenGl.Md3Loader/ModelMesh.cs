@@ -235,7 +235,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				if ( m_Technique.Effect != null )
 				{
 					//	TODO: AP: Hardcoded sampler (unnecessary now - first texture is automatically bound to named sampler "Texture0")
-					m_TextureParameter = m_Technique.Effect.GetParameter( "Sampler" );
+					m_Technique.Effect.Parameters.TryGetValue( "Sampler", out m_TextureParameter );
 				}
 			}
 		}
@@ -426,7 +426,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 		private FrameInfo[]					m_FrameInfo;
 		private int							m_Frame;
 		private Surface[]					m_Surfaces;
-		private ShaderParameter				m_TextureParameter;
+		private IEffectParameter			m_TextureParameter;
 		
 		private readonly static Draw.IPen	m_BoundsDraw;
 

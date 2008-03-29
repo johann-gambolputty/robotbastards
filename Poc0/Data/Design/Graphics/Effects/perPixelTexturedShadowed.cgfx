@@ -127,7 +127,6 @@ float4 PerPixelShadowTextureFragmentShader( OutputVertex input ) : COLOR
 	float3 spotDir = SpotLights.m_Directions[ 0 ];
 	float spotArc = SpotLights.m_Arcs[ 0 ];
 
-//	float coverage = GetShadowCoverage( mul( ShadowMatrix[ 0 ], float4( input.m_WorldPos, 1 ) ) );
 	float4 ppColour = GetPerPixelColour( spotPos, spotDir, spotArc, input.m_WorldPos, input.m_WorldNormal );
 	
 	return ppColour * tex2D( Texture1, input.m_Tex0 );

@@ -1,7 +1,7 @@
 using System;
 using Poc0.Core.Objects;
 using Rb.Core.Maths;
-using Rb.Rendering.Base.Lights;
+using Rb.Rendering.Lights;
 using Rb.Tools.LevelEditor.Core.Selection;
 using Rb.World;
 

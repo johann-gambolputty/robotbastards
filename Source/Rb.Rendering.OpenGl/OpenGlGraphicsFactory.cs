@@ -9,10 +9,12 @@ namespace Rb.Rendering.OpenGl
 	/// <summary>
 	/// Implementation of RenderFactory
 	/// </summary>
-	public abstract class OpenGlGraphicsFactory : IGraphicsFactory
+	public class OpenGlGraphicsFactory : LibraryBuilder, IGraphicsFactory
 	{
 		public OpenGlGraphicsFactory( )
 		{
+			AutoAssemblyScan = true;
+
 			string effectAssemblyName = "Rb.Rendering.OpenGl.Cg";
 			string platformAssemblyName = "Rb.Rendering.OpenGl.Windows";
 
@@ -24,7 +26,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public LibraryBuilder CustomTypes
 		{
-			get { return m_CustomTypes; }
+			get { return this; }
 		}
 
 		/// <summary>
@@ -102,11 +104,21 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
+		/// Creates a new IIndexBuffer object
+		/// </summary>
+		public IIndexBuffer CreateIndexBuffer( IndexBufferData bufferData )
+		{
+			throw new NotImplementedException( );
+		}
+
+		/// <summary>
 		/// Creates a new Renderer object
 		/// </summary>
 		public IRenderer CreateRenderer( )
 		{
-			return new OpenGlRenderer( );
+			OpenGlRenderer renderer = new OpenGlRenderer( );
+			renderer.Setup( );
+			return renderer;
 		}
 		
 		/// <summary>
@@ -127,7 +139,6 @@ namespace Rb.Rendering.OpenGl
 
 		#region Private Members
 
-		private readonly LibraryBuilder m_CustomTypes = new LibraryBuilder( );
 		private Type m_EffectDataSourcesType;
 		private Type m_DisplaySetupType;
 
@@ -146,6 +157,18 @@ namespace Rb.Rendering.OpenGl
 				throw new ArgumentException( string.Format( "There was no type in assembly \"{0}\" that implemented IEffectDataSources", asm ) );
 			}
 			return result;
+		}
+
+		#endregion
+
+		#region LibraryBuilder Members
+
+		/// <summary>
+		/// Returns true if the specified type has the RenderingLibraryTypeAttribute
+		/// </summary>
+		protected override bool IsLibraryType( Type type )
+		{
+			return type.GetCustomAttributes( typeof( RenderingLibraryTypeAttribute ), true ).Length == 1;
 		}
 
 		#endregion

@@ -4,7 +4,7 @@
   <object type="Rb.Interaction.CommandInputTemplateMap" assembly="Rb.Interaction">
 
     <serialise>
-      <commandList enum="Rb.AppCore.Cameras.LookAtCameraController+Commands" assembly="Rb.AppCore">
+      <commandList enum="Rb.Tools.LevelEditor.Core.Cameras.LookAtCameraController+Commands" assembly="Rb.Tools.LevelEditor.Core">
         <command name="Pan">
           <input button="Middle" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
         </command>

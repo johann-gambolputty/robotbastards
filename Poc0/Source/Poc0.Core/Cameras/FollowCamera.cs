@@ -1,5 +1,5 @@
 using Poc0.Core.Objects;
-using Rb.Rendering.Base.Cameras;
+using Rb.Rendering.Cameras;
 
 namespace Poc0.Core.Cameras
 {

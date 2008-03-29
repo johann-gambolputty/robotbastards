@@ -4,8 +4,8 @@ using System.Drawing.Imaging;
 using System.IO;
 using Rb.Assets;
 using Rb.Assets.Base;
-using Rb.Rendering.Base;
-using Rb.Rendering.Base.Textures;
+using Rb.Rendering;
+using Rb.Rendering.Textures;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc0.LevelEditor.Core

@@ -14,7 +14,7 @@
     </object>
 
     <!-- Rendering technique -->
-    <object type="Rb.World.Rendering.SceneShadowBufferTechnique" assembly="Rb.World" property="Technique">
+    <object type="Rb.Rendering.Shadows.ShadowBufferTechnique" assembly="Rb.Rendering.Shadows" property="Technique">
       <parameters>
         <int value="1024"/>
         <int value="1024"/>

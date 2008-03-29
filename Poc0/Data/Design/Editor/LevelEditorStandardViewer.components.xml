@@ -10,10 +10,10 @@
       <float value="50" property="Zoom"/>
 
       <!-- Camera controller -->
-      <object type="Rb.AppCore.Cameras.LookAtCameraController" assembly="Rb.AppCore">
+      <object type="Rb.Tools.LevelEditor.Core.Cameras.LookAtCameraController" assembly="Rb.Tools.LevelEditor.Core">
 
         <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
-          <type value="Rb.AppCore.Cameras.LookAtCameraController+Commands" assembly="Rb.AppCore" property="CommandListEnumType"/>
+          <type value="Rb.Tools.LevelEditor.Core.Cameras.LookAtCameraController+Commands" assembly="Rb.Tools.LevelEditor.Core" property="CommandListEnumType"/>
           <dynProperty value="User" property="User"/>
         </object>
 

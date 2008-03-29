@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Rb.Core.Maths;
-using Rb.Rendering.Base;
+using Rb.Rendering;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects.Lights;
 using Tao.OpenGl;

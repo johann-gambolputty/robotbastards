@@ -1,4 +1,5 @@
 using Rb.Core.Components;
+using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Rb.Rendering.OpenGl

@@ -1,0 +1,19 @@
+
+//
+//	This effect file is used when rendering to a depth texture
+//
+
+
+technique DefaultTechnique
+{
+	pass
+	{
+		LightingEnable	= false;
+		FrontFace		= CCW;
+		DepthTestEnable	= true;
+		DepthMask		= true;
+		CullFaceEnable	= true;
+	//	PolygonOffset	= float2( 0.1, 0.01 );
+	//	PolygonOffsetFillEnable	= true;
+	}
+}

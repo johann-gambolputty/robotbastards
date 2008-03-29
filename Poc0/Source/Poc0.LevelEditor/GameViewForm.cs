@@ -13,7 +13,8 @@ using Rb.Assets;
 using Rb.Assets.Interfaces;
 using Rb.Core.Components;
 using Rb.Interaction;
-using Rb.Rendering.Base;
+using Rb.Rendering;
+using Rb.Rendering.Shadows;
 using Rb.World;
 using Rb.World.Services;
 

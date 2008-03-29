@@ -7,7 +7,7 @@ using Rb.Assets.Interfaces;
 using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Rendering;
-using Rb.Rendering.Base.Textures;
+using Rb.Rendering.Textures;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.OpenGl;
 using Tao.OpenGl;
@@ -567,7 +567,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				}
 				ISource textureSource = TextureFile( source, name );
 
-				ITexture2d newTexture = Graphics.Factory.NewTexture2d( );
+				ITexture2d newTexture = Graphics.Factory.CreateTexture2d( );
 				using ( Stream textureStream = OpenStream( textureSource ) )
 				{
 					TextureUtils.Load( newTexture, textureStream, true );

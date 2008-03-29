@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using Rb.Assets.Interfaces;
-using Rb.Rendering.Base;
+using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 using TaoCg = Tao.Cg.Cg;
 
@@ -177,6 +177,8 @@ namespace Rb.Rendering.OpenGl.Cg
 				//	Replace any instances of "#include" with the actual file contents
 				//	(this is because CG doesn't appear to have a search path, and wouldn't be able
 				//	to handle, say, compressed file systems, databases, or other methods of retrieving assets)
+				//	It's a bit shit, because it doesn't handle any other pre-processor directives that might
+				//	affect how includes are handled (not to mention comments)
 				str = InlineAllIncludes( source, str );
 
 			//	File.WriteAllText("c:\\temp\\effectDump.cgfx", str);
@@ -246,9 +248,9 @@ namespace Rb.Rendering.OpenGl.Cg
 		{
 			foreach ( CgEffectParameter curParam in m_Parameters )
 			{
-				if ( ( curParam.DataSource == null ) && ( dataSource.Bind( curParam ) ) )
+				if ( curParam.DataSource == null )
 				{
-					return;
+					Graphics.EffectDataSources.BindParameter( curParam );
 				}
 			}
 		}
