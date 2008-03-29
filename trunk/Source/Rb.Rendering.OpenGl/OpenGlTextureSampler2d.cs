@@ -1,5 +1,5 @@
 using System;
-using Rb.Rendering.Base.Textures;
+using Rb.Rendering.Textures;
 using Rb.Rendering.Interfaces.Objects;
 using Tao.OpenGl;
 

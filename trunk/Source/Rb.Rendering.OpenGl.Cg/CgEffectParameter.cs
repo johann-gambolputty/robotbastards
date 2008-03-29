@@ -33,6 +33,22 @@ namespace Rb.Rendering.OpenGl.Cg
 		#region Public Members
 
 		/// <summary>
+		/// Returns the name of this parameter
+		/// </summary>
+		public override string ToString( )
+		{
+			return Name;
+		}
+
+		/// <summary>
+		/// Gets the CG shader context handle
+		/// </summary>
+		public IntPtr Context
+		{
+			get { return m_Context; }
+		}
+
+		/// <summary>
 		/// Gets the CG shader parameter handle
 		/// </summary>
 		public IntPtr Parameter
@@ -57,6 +73,25 @@ namespace Rb.Rendering.OpenGl.Cg
 		#endregion
 
 		#region IEffectParameter Members
+
+		/// <summary>
+		/// Gets the semantic of this parameter
+		/// </summary>
+		public string Semantic
+		{
+			get
+			{
+				return TaoCg.cgGetParameterSemantic( m_Parameter );
+			}
+		}
+
+		/// <summary>
+		/// Gets the name of this parameter
+		/// </summary>
+		public string Name
+		{
+			get { return TaoCg.cgGetParameterName( m_Parameter ); }
+		}
 
 		/// <summary>
 		/// Gets the effect that owns this parameter
@@ -196,6 +231,5 @@ namespace Rb.Rendering.OpenGl.Cg
 		public static extern void cgSetMatrixParameterfr( IntPtr param, float[] matrix );
 
 		#endregion
-
 	}
 }

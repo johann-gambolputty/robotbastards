@@ -1,4 +1,4 @@
-using Rb.Rendering.Base;
+using Rb.Rendering;
 using Tao.OpenGl;
 
 namespace Rb.Rendering.OpenGl

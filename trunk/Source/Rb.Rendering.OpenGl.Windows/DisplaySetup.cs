@@ -77,7 +77,7 @@ namespace Rb.Rendering.OpenGl.Windows
 		/// <summary>
 		/// Called when the control Load event fires
 		/// </summary>
-		public void Create( object display, byte colourBits, byte depthBits, byte stencilBits )
+		public void Create( object display, int colourBits, int depthBits, int stencilBits )
 		{
 			Dispose( );
 
@@ -89,7 +89,7 @@ namespace Rb.Rendering.OpenGl.Windows
 			descriptor.nVersion = 1;
 			descriptor.dwFlags = Gdi.PFD_DRAW_TO_WINDOW | Gdi.PFD_SUPPORT_OPENGL | Gdi.PFD_DOUBLEBUFFER;
 			descriptor.iPixelType = Gdi.PFD_TYPE_RGBA;
-			descriptor.cColorBits = colourBits;
+			descriptor.cColorBits = ( byte )colourBits;
 			descriptor.cRedBits = 0;
 			descriptor.cRedShift = 0;
 			descriptor.cGreenBits = 0;
@@ -103,8 +103,8 @@ namespace Rb.Rendering.OpenGl.Windows
 			descriptor.cAccumGreenBits = 0;
 			descriptor.cAccumBlueBits = 0;
 			descriptor.cAccumAlphaBits = 0;
-			descriptor.cDepthBits = depthBits;
-			descriptor.cStencilBits = stencilBits;
+			descriptor.cDepthBits = ( byte )depthBits;
+			descriptor.cStencilBits = ( byte )stencilBits;
 			descriptor.cAuxBuffers = 0;
 			descriptor.iLayerType = Gdi.PFD_MAIN_PLANE;
 			descriptor.bReserved = 0;

@@ -184,25 +184,25 @@ namespace Rb.Rendering.OpenGl
 			}
 		}
 
-		private bool m_Lighting;
-		private float m_DepthOffset;
-		private PassDepthTest m_PassDepthTest;
-		private bool m_DepthTest;
-		private bool m_DepthWrite;
-		private bool m_CullBackFaces;
-		private bool m_CullFrontFaces;
-		private Winding m_FaceWinding;
-		private PolygonRenderMode m_FrontFaceRenderMode;
-		private PolygonRenderMode m_BackFaceRenderMode;
-		private Color m_Colour;
-		private PolygonShadeMode m_ShadeMode;
-		private bool m_Enable2dTextures;
-		private bool m_Blend;
-		private BlendFactor m_SourceBlend;
-		private BlendFactor m_DestinationBlend;
-		private float m_PointSize;
-		private float m_LineWidth;
-		private uint m_TextureUnits;
+		private bool				m_Lighting				= false;
+		private float				m_DepthOffset			= 0;
+		private PassDepthTest		m_PassDepthTest			= PassDepthTest.LessOrEqual;
+		private bool 				m_DepthTest				= true;
+		private bool 				m_DepthWrite			= true;
+		private bool 				m_CullBackFaces			= false;
+		private bool 				m_CullFrontFaces		= false;
+		private Winding 			m_FaceWinding			= Winding.Clockwise;
+		private PolygonRenderMode	m_FrontFaceRenderMode	= PolygonRenderMode.Fill;
+		private PolygonRenderMode 	m_BackFaceRenderMode	= PolygonRenderMode.Fill;
+		private Color				m_Colour				= Color.Black;
+		private PolygonShadeMode	m_ShadeMode				= PolygonShadeMode.Smooth;
+		private bool 				m_Enable2dTextures		= false;
+		private bool 				m_Blend					= false;
+		private BlendFactor 		m_SourceBlend			= BlendFactor.One;
+		private BlendFactor 		m_DestinationBlend		= BlendFactor.Zero;
+		private float 				m_PointSize				= 1;
+		private float 				m_LineWidth				= 1;
+		private uint				m_TextureUnits			= 0;
 
 		#region IRenderState Members
 
@@ -282,6 +282,15 @@ namespace Rb.Rendering.OpenGl
 		{
 			get { return m_FaceWinding; }
 			set { m_FaceWinding = value; }
+		}
+
+		public PolygonRenderMode FaceRenderMode
+		{
+			set
+			{
+				m_FrontFaceRenderMode = value;
+				m_BackFaceRenderMode = value;
+			}
 		}
 
 		public PolygonRenderMode FrontFaceRenderMode

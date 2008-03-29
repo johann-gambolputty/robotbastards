@@ -115,6 +115,21 @@ namespace Rb.Rendering.OpenGl
 			Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, size, mem, data.Static ? Gl.GL_STATIC_DRAW_ARB : Gl.GL_DYNAMIC_DRAW_ARB );
 		}
 
+
+		/// <summary>
+		/// Locks a region of the vertex buffer
+		/// </summary>
+		/// <param name="firstIndex">Index of the first vertex in the buffer to lock</param>
+		/// <param name="count">Number of vertices to lock after the first</param>
+		/// <returns>Returns a lock object that provides access to the buffer</returns>
+		/// <remarks>
+		/// Dispose of the lock object to commit the changes to the buffer
+		/// </remarks>
+		public IVertexBufferLock Lock( int firstIndex, int count )
+		{
+			throw new NotImplementedException( );
+		}
+
 		#region IPass Members
 
 		/// <summary>

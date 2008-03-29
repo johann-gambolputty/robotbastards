@@ -1,15 +1,5 @@
 using System;
-using System.Drawing;
-using System.Runtime.Serialization;
-using Poc0.LevelEditor.Core;
 using Poc0.LevelEditor.Core.Geometry;
-using Rb.Rendering;
-using Rb.Rendering.Textures;
-using Rb.Tesselator;
-using Rb.World;
-using Tao.OpenGl;
-using Rb.Core.Maths;
-using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc0.LevelEditor.Rendering.OpenGl
 {

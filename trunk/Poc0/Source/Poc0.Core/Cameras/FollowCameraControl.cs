@@ -16,6 +16,9 @@ namespace Poc0.Core.Cameras
 		{
 			[CommandDescription( "Zoom", "Changes the camera zoom" )]
 			Zoom,
+
+			[CommandDescription( "Rotate", "Changes the camera rotation" )]
+			Rotate
 		}
 
 		/// <summary>
@@ -40,10 +43,25 @@ namespace Poc0.Core.Cameras
 		[Dispatch]
 		public void HandleCameraCommand( CommandMessage msg )
 		{
-            if ( ( Commands )msg.CommandId == Commands.Zoom )
-            {
-                m_Camera.Zoom = ( ( ScalarCommandMessage )msg ).Value;
-            }
+			switch ( ( Commands )msg.CommandId )
+			{
+				case Commands.Zoom :
+					{
+						m_Camera.Zoom = ( ( ScalarCommandMessage )msg ).Value;
+						break;
+					}
+				case Commands.Rotate :
+					{
+						CursorCommandMessage cursorMsg = ( CursorCommandMessage )msg;
+						float deltaX = cursorMsg.X - cursorMsg.LastX;
+						float deltaY = cursorMsg.Y - cursorMsg.LastY;
+
+						m_Camera.S += deltaX * 0.01f;
+						m_Camera.T -= deltaY * 0.01f;
+
+						break;
+					}
+			}
 		}
 
 		private readonly FollowCamera m_Camera;

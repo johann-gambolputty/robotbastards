@@ -1,8 +1,7 @@
 using System;
 using System.Drawing;
 using Poc0.LevelEditor.Core.Rendering;
-using Rb.Rendering;
-using Rb.Rendering.Textures;
+using Rb.Rendering.Interfaces.Objects;
 using Tao.OpenGl;
 using Graphics=Rb.Rendering.Graphics;
 using System.Runtime.Serialization;
@@ -42,7 +41,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 				m_LineDisplayList = Gl.glGenLists( 1 );
 				Gl.glNewList( m_LineDisplayList, Gl.GL_COMPILE );
 
-				RenderState state = Graphics.Factory.NewRenderState( );
+				IRenderState state = Graphics.Factory.CreateRenderState( );
 				state.Begin( );
 
 				Gl.glBegin( Gl.GL_QUADS );
@@ -55,8 +54,8 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 				Gl.glEnd( );
 				state.End( );
 				
-				state.SetColour( Color.White );
-				state.DisableCap( RenderStateFlag.DepthTest );
+				state.Colour = Color.White;
+				state.DepthTest = false;
 				state.Begin( );
 				Gl.glBegin( Gl.GL_LINES );
 
@@ -86,15 +85,15 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		{
 			if ( m_TextureState == null )
 			{
-				m_TextureState = Graphics.Factory.NewRenderState( );
-				m_TextureState.DisableLighting( );
-				m_TextureState.EnableCap( RenderStateFlag.Texture2d );
-				m_TextureState.EnableCap( RenderStateFlag.Texture2dUnit0 );
+				m_TextureState = Graphics.Factory.CreateRenderState( );
+				m_TextureState.Lighting = false;
+				m_TextureState.Enable2dTextures = true;
+				m_TextureState.Enable2dTextureUnit(0, true );
 
-				ITexture2d texture = Graphics.Factory.NewTexture2d( );
+				ITexture2d texture = Graphics.Factory.CreateTexture2d( );
 				texture.Load( GridSquareBitmap, true );
 
-				m_Sampler = Graphics.Factory.NewTextureSampler2d( );
+				m_Sampler = Graphics.Factory.CreateTexture2dSampler( );
 				m_Sampler.Texture = texture;
 				m_Sampler.Mode = TextureMode.Replace;
 				m_Sampler.MinFilter = TextureFilter.NearestTexelLinearMipMap;
@@ -143,10 +142,10 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 		private int						m_LineDisplayList = -1;
 
 		[NonSerialized]
-		private RenderState				m_TextureState;
+		private IRenderState			m_TextureState;
 
 		[NonSerialized]
-		private TextureSampler2d		m_Sampler;
+		private ITexture2dSampler		m_Sampler;
 
 		private const float 			Width	= 100;
 		private const float 			Depth	= 100;

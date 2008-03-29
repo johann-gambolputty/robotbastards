@@ -30,7 +30,7 @@ namespace Rb.Tools.LevelEditor.Core.Controls.Forms
 			string renderAssemblyName = ConfigurationManager.AppSettings[ "renderAssembly" ];
 			if ( renderAssemblyName == null )
 			{
-				renderAssemblyName = "Rb.Rendering.OpenGl.Windows";
+				renderAssemblyName = "Rb.Rendering.OpenGl";
 			}
 			Graphics.Initialize( renderAssemblyName );
 			Graphics.LoadCustomTypeAssemblies( Directory.GetCurrentDirectory( ), false );

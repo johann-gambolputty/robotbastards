@@ -1,5 +1,5 @@
 using System;
-using Rb.Rendering.Base;
+using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Rb.Rendering.OpenGl.Cg
@@ -11,10 +11,12 @@ namespace Rb.Rendering.OpenGl.Cg
 	{
 		public CgEffectDataSources( )
 		{
-			//foreach ( object renderStateValue in Enum.GetValues( typeof( CgEffectRenderStateDataSource.RenderStateSource ) ) )
-			//{
-			//    ParameterNameDataSources.Add( renderStateValue.ToString( ), new CgEffectRenderStateDataSource( ( );
-			//}
+			foreach ( object binding in Enum.GetValues( typeof( EffectRenderStateBinding ) ) )
+			{
+				IEffectDataSource dataSource = new CgEffectRenderStateDataSource( ( EffectRenderStateBinding )binding );
+				ParameterNameDataSources.Add( binding.ToString( ), dataSource );
+				SemanticNameDataSources.Add( binding.ToString( ), dataSource );
+			}
 		}
 
 		protected override IEffectValueDataSource<T> CreateValueDataSource<T>( )

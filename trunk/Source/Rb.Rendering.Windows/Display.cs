@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Rb.Rendering.Base;
+using Rb.Rendering;
 
 namespace Rb.Rendering.Windows
 {

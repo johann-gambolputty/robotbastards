@@ -16,6 +16,38 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
+		/// Gets the underlying texture. This is null if the render target has not been created, or was created without a colour buffer
+		/// </summary>
+		public ITexture2d Texture
+		{
+			get { return m_Texture; }
+		}
+
+		/// <summary>
+		/// Gets the underlying depth texture. This is null if the render target has not been created, or was created without a depth buffer as texture
+		/// </summary>
+		public ITexture2d DepthTexture
+		{
+			get { return m_DepthTexture; }
+		}
+
+		/// <summary>
+		/// Gets the width of the render target
+		/// </summary>
+		public int Width
+		{
+			get { return m_Width; }
+		}
+
+		/// <summary>
+		/// Gets the height of the render target
+		/// </summary>
+		public int Height
+		{
+			get { return m_Height; }
+		}
+
+		/// <summary>
 		/// Creates the render target
 		/// </summary>
 		/// <param name="width">Width of the render target</param>
@@ -159,7 +191,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Saves the depth buffer to a file. Render target must be bound for this to work (i.e. between Begin() and End() calls)
 		/// </summary>
-		public override unsafe void	SaveDepthBuffer( string path )
+		public unsafe void	SaveDepthBuffer( string path )
 		{
 			float[] depthPixels = new float[ Width * Height ];	//	depthels? dexels? who knows?
 			Gl.glReadPixels( 0, 0, Width, Height, Gl.GL_DEPTH_COMPONENT, Gl.GL_FLOAT, depthPixels );
@@ -176,20 +208,20 @@ namespace Rb.Rendering.OpenGl
 				bufferMem[ bufferIndex++ ] = pixel;
 			}
 
-			System.Drawing.Bitmap bmp;
 			fixed ( byte* bufferMemPtr = bufferMem )
 			{
+				System.Drawing.Bitmap bmp;
 				bmp = new System.Drawing.Bitmap( Width, Height, Width * 3, System.Drawing.Imaging.PixelFormat.Format24bppRgb, ( IntPtr )bufferMemPtr );
 				bmp.Save( path, System.Drawing.Imaging.ImageFormat.Png );
 			}
 		}
 
-		#region IAppliance Members
+		#region IPass Members
 
 		/// <summary>
 		/// Sets the render target as the current target
 		/// </summary>
-		public override void Begin( )
+		public void Begin( )
 		{
 			//	Bind the frame buffer
 			if ( m_FboHandle != InvalidHandle )
@@ -209,7 +241,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Sets the frame buffer as the current target
 		/// </summary>
-		public override void End( )
+		public void End( )
 		{
 			//	Unbind the frame buffer
 			if ( m_FboHandle != InvalidHandle )
@@ -228,8 +260,18 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Destroys associated buffers
 		/// </summary>
-		public override unsafe void Dispose( )
+		public unsafe void Dispose( )
 		{
+			if ( m_Texture != null )
+			{
+				m_Texture.Dispose( );
+				m_Texture = null;
+			}
+			if ( m_DepthTexture != null )
+			{
+				m_DepthTexture.Dispose( );
+				m_DepthTexture = null;
+			}
 			//	NOTE: AP: If GL context is no longer available, these delete calls will fail
 			//	TODO: AP: Ensure Dispose() is called correctly for all graphics objects prior to application exit
 			try
@@ -265,6 +307,10 @@ namespace Rb.Rendering.OpenGl
 
 		private int m_FboHandle = InvalidHandle;
 		private int m_FboDepthHandle = InvalidHandle;
+		private ITexture2d m_Texture;
+		private ITexture2d m_DepthTexture;
+		private int m_Width;
+		private int m_Height;
 		
 		private static readonly bool ms_ExtensionPresent;
 

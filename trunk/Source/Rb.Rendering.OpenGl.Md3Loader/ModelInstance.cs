@@ -83,7 +83,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 			public void Render( IRenderContext context )
 			{
-				Graphics.Renderer.GetTransform( Rb.Rendering.Transform.LocalToWorld, m_Transform );
+				Graphics.Renderer.GetTransform( Rb.Rendering.Interfaces.Transform.LocalToWorld, m_Transform );
 				if ( OnRender != null )
 				{
 					OnRender( context );

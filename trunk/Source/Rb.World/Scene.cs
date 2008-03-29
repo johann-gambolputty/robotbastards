@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Rb.Core.Components;
-using Rb.Rendering.Base;
+using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Rb.World
