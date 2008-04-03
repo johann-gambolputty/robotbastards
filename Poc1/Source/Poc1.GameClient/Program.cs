@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
 using Rb.Assets;
@@ -15,6 +15,9 @@ namespace Poc1.GameClient
 		[STAThread]
 		static void Main( )
 		{
+			InitializeAssets( );
+			InitializeRendering( );
+
 			Application.EnableVisualStyles( );
 			Application.SetCompatibleTextRenderingDefault( false );
 			Application.Run( new GameClientForm( ) );

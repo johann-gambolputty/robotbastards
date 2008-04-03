@@ -1,20 +1,23 @@
 
+using System.Collections.Generic;
+using Rb.Rendering.Interfaces.Objects;
+
 namespace Poc1.Universe.Interfaces
 {
-	public interface IPlanet : IEntity
+	public interface IPlanet : IEntity, IRenderable
 	{
 		/// <summary>
-		/// Gets the name of this planet
+		/// Gets the description of the orbit of this planet
 		/// </summary>
-		string Name
+		IOrbit Orbit
 		{
 			get;
 		}
 
 		/// <summary>
-		/// A planet orbits around another entity (sun, another planet)
+		/// Gets a list of moons that orbit this planet
 		/// </summary>
-		IEntity OrbitCentre
+		IList<IPlanet> Moons
 		{
 			get;
 		}

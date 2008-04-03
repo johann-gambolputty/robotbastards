@@ -18,6 +18,17 @@ namespace Rb.Rendering.Cameras
 		}
 
 		/// <summary>
+		/// Sets up initial camera frame
+		/// </summary>
+		public SphereCamera( float s, float t, float r )
+		{
+			m_S = s;
+			m_T = t;
+			m_Zoom = r;
+			UpdateCameraFrame( );
+		}
+
+		/// <summary>
 		/// Applies a look at transform to the renderer, as well as the standard perspective transform in the Camera base class
 		/// </summary>
 		public override void Begin( )
