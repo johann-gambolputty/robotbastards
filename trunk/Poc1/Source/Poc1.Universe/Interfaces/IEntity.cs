@@ -1,6 +1,4 @@
 
-using Rb.Core.Maths;
-
 namespace Poc1.Universe.Interfaces
 {
 	/*
@@ -19,22 +17,18 @@ namespace Poc1.Universe.Interfaces
 
 	public interface IEntity
 	{
-		UniPoint3 Position
+		/// <summary>
+		/// Gets the name of this entity
+		/// </summary>
+		string Name
 		{
 			get;
 		}
 
-		Vector3 XAxis
-		{
-			get;
-		}
-
-		Vector3 YAxis
-		{
-			get;
-		}
-
-		Vector3 ZAxis
+		/// <summary>
+		/// Gets the entity transform
+		/// </summary>
+		UniTransform Transform
 		{
 			get;
 		}

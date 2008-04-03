@@ -68,6 +68,11 @@ namespace Rb.Rendering.OpenGl
 
 		private class GlPen : GlDrawState, IPen
 		{
+			public GlPen( )
+			{
+				State.FaceRenderMode = PolygonRenderMode.Lines;
+			}
+
 			/// <summary>
 			/// Pen thickness
 			/// </summary>
@@ -147,7 +152,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Er... OK. A surface is to 3D rendering operations what a brush is to 2D drawing operations. See?
 		/// </summary>
-		private class GlSurface : GlDrawState, ISurface
+		private class GlSurface : ISurface
 		{
 			/// <summary>
 			/// Gets/sets the brush used to fill the surface faces. If null, faces aren't rendered
@@ -169,6 +174,29 @@ namespace Rb.Rendering.OpenGl
 
 			private IBrush m_Brush;
 			private IPen m_Pen;
+
+			#region IState Members
+
+			public IRenderState State
+			{
+				get { return m_Brush.State; }
+			}
+
+			#endregion
+
+			#region IPass Members
+
+			public void Begin( )
+			{
+				m_Brush.Begin( );
+			}
+
+			public void End( )
+			{
+				m_Brush.End( );
+			}
+
+			#endregion
 		}
 
 		/// <summary>
@@ -852,12 +880,26 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="tSamples">Number of latitudinal samples</param>
 		public override void Sphere( ISurface surface, Point3 centre, float radius, int sSamples, int tSamples )
 		{
-			surface.Begin( );
+			if ( surface.FaceBrush != null )
+			{
+				surface.FaceBrush.Begin( );
+				RenderSphere( centre, radius, sSamples, tSamples );
+				surface.FaceBrush.End( );
+			}
+			if ( surface.EdgePen != null )
+			{
+				surface.EdgePen.Begin( );
+				RenderSphere( centre, radius, sSamples, tSamples );
+				surface.EdgePen.End( );
+			}
+		}
 
+		private static void RenderSphere( Point3 centre, float radius, int sSamples, int tSamples )
+		{
 			float minT = 0;
-			float maxT	= Constants.Pi;
-			float minS	= 0;
-			float maxS	= Constants.TwoPi;
+			float maxT = Constants.Pi;
+			float minS = 0;
+			float maxS = Constants.TwoPi;
 
 			//	Render the sphere as a series of strips
 			float sIncrement = ( maxS - minS ) / ( sSamples );
@@ -886,8 +928,7 @@ namespace Rb.Rendering.OpenGl
 			}
 
 			Gl.glEnd( );
-
-			surface.End( );
+			
 		}
 
 		private static void RenderSTVertex( float s, float t, Point3 c, float r )
