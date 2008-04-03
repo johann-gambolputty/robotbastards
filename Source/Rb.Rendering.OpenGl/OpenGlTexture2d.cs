@@ -180,7 +180,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="unit">Texture unit to bind this texture to</param>
 		public override void Bind( int unit )
 		{
-            Gl.glActiveTextureARB( Gl.GL_TEXTURE0_ARB + unit );
+			Gl.glActiveTextureARB( Gl.GL_TEXTURE0_ARB + unit );
 			Gl.glBindTexture( Gl.GL_TEXTURE_2D, TextureHandle );
 		}
 		
@@ -188,9 +188,9 @@ namespace Rb.Rendering.OpenGl
 		/// Unbinds this texture
 		/// </summary>
 		/// <param name="unit">Texture unit that this texture is bound to</param>
-		public override void Unbind(int unit)
+		public override void Unbind( int unit )
 		{
-            Gl.glActiveTextureARB( Gl.GL_TEXTURE0_ARB + unit );
+			Gl.glActiveTextureARB( Gl.GL_TEXTURE0_ARB + unit );
 			Gl.glBindTexture( Gl.GL_TEXTURE_2D, 0 );
 		}
 

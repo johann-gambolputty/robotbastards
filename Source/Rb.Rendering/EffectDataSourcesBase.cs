@@ -48,7 +48,6 @@ namespace Rb.Rendering
 			IEffectDataSource source;
 			if ( !m_ParameterNameDataSources.TryGetValue( parameterName, out source ) )
 			{
-
 				source = CreateValueDataSource<T>( );
 				m_ParameterNameDataSources.Add( parameterName, source );
 			}

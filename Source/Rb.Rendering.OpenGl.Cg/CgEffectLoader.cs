@@ -6,7 +6,7 @@ using Rb.Assets.Interfaces;
 namespace Rb.Rendering.OpenGl.Cg
 {
 	/// <summary>
-	/// Summary description for CgRenderEffectLoader.
+	/// Loads cgfx effects files
 	/// </summary>
 	public class CgEffectLoader : AssetLoader
 	{
@@ -17,7 +17,8 @@ namespace Rb.Rendering.OpenGl.Cg
 		public CgEffectLoader( )
 		{
 			m_Context = Tao.Cg.Cg.cgCreateContext( );
-			
+
+		//	Tao.Cg.CgGl.cgGLSetManageTextureParameters( m_Context, true );
 			Tao.Cg.CgGl.cgGLRegisterStates( m_Context );
 		}
 
