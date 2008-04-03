@@ -1,5 +1,6 @@
 
 using System;
+using System.IO;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
@@ -20,6 +21,8 @@ namespace Rb.Assets
 		/// </summary>
 		public static void Setup( string uri )
 		{
+			uri = Path.GetFullPath( uri );
+
 			XmlTextReader reader;
 			try
 			{

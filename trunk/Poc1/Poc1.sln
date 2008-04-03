@@ -32,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Rendering.OpenGl.Windows
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Rendering.OpenGl.Cg", "..\Source\Rb.Rendering.OpenGl.Cg\Rb.Rendering.OpenGl.Cg.csproj", "{C0A53C66-30B1-4891-9E33-31F96D6590D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Log.Controls", "..\Source\Rb.Log.Controls\Rb.Log.Controls.csproj", "{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +125,12 @@ Global
 		{C0A53C66-30B1-4891-9E33-31F96D6590D8}.NDoc|Any CPU.Build.0 = Release|Any CPU
 		{C0A53C66-30B1-4891-9E33-31F96D6590D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0A53C66-30B1-4891-9E33-31F96D6590D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}.NDoc|Any CPU.ActiveCfg = NDoc|Any CPU
+		{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}.NDoc|Any CPU.Build.0 = NDoc|Any CPU
+		{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

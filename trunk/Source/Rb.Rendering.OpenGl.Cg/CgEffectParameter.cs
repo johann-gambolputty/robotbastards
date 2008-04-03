@@ -64,9 +64,10 @@ namespace Rb.Rendering.OpenGl.Cg
 			if ( tex != null )
 			{
 				int texHandle = ( ( OpenGlTexture2d )tex ).TextureHandle;
+				Tao.Cg.CgGl.cgGLSetManageTextureParameters( context, true );
+				Tao.Cg.CgGl.cgGLEnableTextureParameter( parameter );
 				Tao.Cg.CgGl.cgGLSetTextureParameter( parameter, texHandle );
 				TaoCg.cgSetSamplerState( parameter );
-				Tao.Cg.CgGl.cgGLSetManageTextureParameters( context, true );
 			}
 		}
 

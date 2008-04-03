@@ -250,10 +250,12 @@
     <None Include="Resources\AppIcon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DesignNotes.txt" />
     <None Include="Resources\Pause.bmp" />
     <None Include="Resources\Play.bmp" />
     <None Include="Resources\Capture.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DesignNotes.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Actions\" />
