@@ -20,6 +20,22 @@ namespace Rb.Rendering.Interfaces.Objects
 	public unsafe interface IVertexBufferLock : IDisposable
 	{
 		/// <summary>
+		/// Gets the index of the vertex in the buffer where the lock starts
+		/// </summary>
+		int FirstVertexIndex
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Gets the number of vertices covered by the lock
+		/// </summary>
+		int VertexCount
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Gets a pointer to the locked memory 
 		/// </summary>
 		byte* Bytes

@@ -84,7 +84,13 @@ namespace Rb.Rendering.Interfaces
 		/// <summary>
 		/// Creates a vertex buffer
 		/// </summary>
-		/// <param name="data">Data used to initialize the vertex buffer</param>
+		/// <param name="format">Format of vertices in the vertex buffer</param>
+		/// <param name="numVertices">Number of vertices to allocate in the buffer</param>
+		IVertexBuffer CreateVertexBuffer( VertexBufferFormat format, int numVertices );
+
+		/// <summary>
+		/// Creates a vertex buffer
+		/// </summary>
 		IVertexBuffer CreateVertexBuffer( VertexBufferData data );
 
 		/// <summary>
@@ -92,6 +98,13 @@ namespace Rb.Rendering.Interfaces
 		/// </summary>
 		/// <param name="data">Data used to initialize the index buffer</param>
 		IIndexBuffer CreateIndexBuffer( IndexBufferData data );
+
+		/// <summary>
+		/// Creates an index buffer
+		/// </summary>
+		/// <param name="format">Index buffer format</param>
+		/// <param name="numIndices">Number of indices in the buffer</param>
+		IIndexBuffer CreateIndexBuffer( IndexBufferFormat format, int numIndices );
 
 		#endregion
 

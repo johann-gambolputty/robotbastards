@@ -4,7 +4,7 @@ namespace Rb.Rendering.Interfaces.Objects
 	/// Index buffer interface
 	/// </summary>
 	/// <remarks>
-	/// Index buffers are classified as passes - "beginning" an index buffer passes inedx data 
+	/// Index buffers are classified as passes - "beginning" an index buffer passes index data 
 	/// to the rendering engine, "ending" an index buffer disables index buffering.
 	/// Index buffers are created by passing an <see cref="IndexBufferData"/> object to
 	/// <see cref="IGraphicsFactory.CreateIndexBuffer"/>.

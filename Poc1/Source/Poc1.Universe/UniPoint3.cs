@@ -76,6 +76,13 @@ namespace Poc1.Universe
 
 		#region Operators
 
+		public const float UnitsPerMetre = 0.1f;
+
+		public static UniPoint3 operator + ( UniPoint3 pt, Vector3 vec )
+		{
+			return new UniPoint3( pt.X + ( long )vec.X, pt.Y + ( long )vec.Y, pt.Z + ( long )vec.Z );
+		}
+
 		#endregion
 
 		#region Private Members
