@@ -71,25 +71,11 @@ namespace Poc1.Universe.OpenGl
 			Gl.glEnd( );
 		}
 
-		public class Patch
-		{
-			public void IncreaseLod( )
-			{
-				
-			}
-
-			public void DecreaseLod( )
-			{
-
-			}
-
-			private int m_Lod;
-		}
-
-
 
 		public override void Render( IRenderContext context )
 		{
+			ms_TerrainRenderer.Render( context );
+
 			float x = ( float )UniUnits.ToMetres( Planet.Transform.Position.X );
 			float y = ( float )UniUnits.ToMetres( Planet.Transform.Position.Y );
 			float z = ( float )UniUnits.ToMetres( Planet.Transform.Position.Z );

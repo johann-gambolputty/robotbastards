@@ -10,16 +10,16 @@ namespace Poc1.Universe.OpenGl
 	{
 		public PlanetTerrainRenderer( )
 		{
-			m_Patch = new TerrainPatch( );
-			m_Patch.Build( m_Builder );
+			m_TestPatch = new TerrainPatch( );
+			m_TestPatch.Build( m_Builder );
 		}
 
 		public void Render( IRenderContext context )
 		{
+			m_TestPatch.Render( context );
 		}
 
-		private TerrainPatch m_Patch;
-
-		private TerrainPatchBuilder m_Builder = new TerrainPatchBuilder( );
+		private readonly TerrainPatch m_TestPatch;
+		private readonly TerrainPatchBuilder m_Builder = new TerrainPatchBuilder( );
 	}
 }

@@ -34,7 +34,7 @@ namespace Poc1.Universe.OpenGl
 			}
 		}
 
-		public void Render( )
+		public void Render( IRenderContext context )
 		{
 			m_IndexBuffer.Begin( );
 			m_IndexBuffer.End( );

@@ -65,21 +65,33 @@ namespace Poc1.Universe.OpenGl
 
 		private class Lod
 		{
+			public Lod( int size )
+			{
+				IndexBufferFormat format = new IndexBufferFormat( IndexBufferIndexSize.Int32 );
+				m_IndexBuffer = Graphics.Factory.CreateIndexBuffer( format, size );
+			}
+
+			public IIndexBuffer IndexBuffer
+			{
+				get { return m_IndexBuffer; }
+			}
+
 			public List<int> VbPool
 			{
 				get { return m_VbPool; }
 			}
 
+			private readonly IIndexBuffer m_IndexBuffer;
 			private readonly List<int> m_VbPool = new List<int>( );
 		}
 
 		public IVertexBufferLock AllocatePatchVertices( int level )
 		{
-			if ( m_Levels[ level ].Count == 0 )
+			if ( m_Lods[ level ].VbPool.Count == 0 )
 			{
 				return null;
 			}
-			List< int > levelIndexes = m_Levels[ level ];
+			List< int > levelIndexes = m_Lods[ level ].VbPool;
 			int firstIndex = levelIndexes[ 0 ];
 			levelIndexes.RemoveAt( 0 );
 			return new PatchVbLock( this, m_Buffer.Lock( firstIndex, NumberOfLevelVertices( level ), false, true ), level );
@@ -90,7 +102,7 @@ namespace Poc1.Universe.OpenGl
 			m_Levels[ level ].Add( index );
 		}
 
-		private const int MaxLevels = 4;
+		private const int MaxLodLevels = 4;
 
 		public static int GetLevelSize( int level )
 		{
@@ -125,7 +137,7 @@ namespace Poc1.Universe.OpenGl
 		public TerrainPatchBuilder( )
 		{
 			int numVertices = 0;
-			for ( int level = 0; level < MaxLevels; ++level )
+			for ( int level = 0; level < MaxLodLevels; ++level )
 			{
 				numVertices += LevelPoolSize( level ) * NumberOfLevelVertices( level );
 			}
@@ -137,9 +149,9 @@ namespace Poc1.Universe.OpenGl
 
 			m_Buffer = Graphics.Factory.CreateVertexBuffer( format, numVertices );
 
-			m_Levels = new List<int>[ MaxLevels ];
+			m_Lods = new List<Lod>( );
 			int curVertexIndex = 0;
-			for ( int level = 0; level < MaxLevels; ++level )
+			for ( int level = 0; level < MaxLodLevels; ++level )
 			{
 				int numLevelVertices = NumberOfLevelVertices( level );
 				int poolSize = LevelPoolSize( level );
@@ -153,7 +165,7 @@ namespace Poc1.Universe.OpenGl
 			}
 		}
 
-		private List<int>[] m_Levels = new List<int>[ MaxLevels ]; 
+		private readonly Lod[] m_Lods = new Lod[ MaxLodLevels ]; 
 		private readonly IVertexBuffer m_Buffer;
 	}
 }
