@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="OpenGlDraw.cs" />
+    <Compile Include="OpenGlIndexBuffer.cs" />
     <Compile Include="OpenGlIndexedGroup.cs" />
     <Compile Include="OpenGlMaterial.cs" />
     <Compile Include="OpenGlMesh.cs" />

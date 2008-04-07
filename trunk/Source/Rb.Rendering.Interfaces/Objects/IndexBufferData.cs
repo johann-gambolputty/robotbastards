@@ -1,6 +1,7 @@
 
 namespace Rb.Rendering.Interfaces.Objects
 {
+
 	/// <summary>
 	/// Index buffer creation data
 	/// </summary>
@@ -9,10 +10,20 @@ namespace Rb.Rendering.Interfaces.Objects
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
+		/// <param name="format">Index buffer format</param>
 		/// <param name="indices">Index buffer contents</param>
-		public IndexBufferData( int[] indices )
+		public IndexBufferData( IndexBufferFormat format, int[] indices )
 		{
+			m_Format = format;
 			m_Indices = indices;
+		}
+
+		/// <summary>
+		/// Gets the format of the index buffer data
+		/// </summary>
+		public IndexBufferFormat Format
+		{
+			get { return m_Format; }
 		}
 
 		/// <summary>
@@ -23,6 +34,7 @@ namespace Rb.Rendering.Interfaces.Objects
 			get { return m_Indices; }
 		}
 
+		private readonly IndexBufferFormat m_Format;
 		private readonly int[] m_Indices;
 	}
 }

@@ -15,6 +15,7 @@ namespace Rb.Rendering.OpenGl
 		{
 			AutoAssemblyScan = true;
 
+			//	TODO: AP: Remove effect and platform assembly hardcoding
 			string effectAssemblyName = "Rb.Rendering.OpenGl.Cg";
 			string platformAssemblyName = "Rb.Rendering.OpenGl.Windows";
 
@@ -98,9 +99,17 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Creates a new IVertexBuffer object
 		/// </summary>
-		public IVertexBuffer CreateVertexBuffer( VertexBufferData bufferData )
+		public IVertexBuffer CreateVertexBuffer( VertexBufferFormat format, int numVertices )
 		{
-			return new OpenGlVertexBuffer( bufferData );
+			return new OpenGlVertexBuffer( format, numVertices );
+		}
+
+		/// <summary>
+		/// Creates a new IVertexBuffer object
+		/// </summary>
+		public IVertexBuffer CreateVertexBuffer( VertexBufferData data )
+		{
+			return new OpenGlVertexBuffer( data );
 		}
 
 		/// <summary>
@@ -108,7 +117,17 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public IIndexBuffer CreateIndexBuffer( IndexBufferData bufferData )
 		{
-			throw new NotImplementedException( );
+			return new OpenGlIndexBuffer( bufferData );
+		}
+
+		/// <summary>
+		/// Creates an index buffer
+		/// </summary>
+		/// <param name="format">Index buffer format</param>
+		/// <param name="numIndices">Number of indices in the buffer</param>
+		public IIndexBuffer CreateIndexBuffer( IndexBufferFormat format, int numIndices )
+		{
+			return new OpenGlIndexBuffer( format, numIndices );
 		}
 
 		/// <summary>

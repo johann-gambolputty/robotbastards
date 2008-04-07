@@ -55,6 +55,7 @@
     <Compile Include="Objects\IIndexBufferLock.cs" />
     <Compile Include="Objects\IMaterial.cs" />
     <Compile Include="Objects\IndexBufferData.cs" />
+    <Compile Include="Objects\IndexBufferFormat.cs" />
     <Compile Include="Objects\IPass.cs" />
     <Compile Include="Objects\IRenderable.cs" />
     <Compile Include="Objects\IRenderContext.cs" />
@@ -78,6 +79,9 @@
     <Compile Include="Objects\TextureMode.cs" />
     <Compile Include="Objects\TextureWrap.cs" />
     <Compile Include="Objects\VertexBufferData.cs" />
+    <Compile Include="Objects\VertexBufferFormat.cs" />
+    <Compile Include="Objects\VertexFieldAttribute.cs" />
+    <Compile Include="Objects\VertexFieldSemantic.cs" />
     <Compile Include="Objects\Winding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transform.cs" />

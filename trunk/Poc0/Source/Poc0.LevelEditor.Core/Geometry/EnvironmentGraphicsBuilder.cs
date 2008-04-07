@@ -36,19 +36,19 @@ namespace Poc0.LevelEditor.Core.Geometry
 			/// <summary>
 			/// Vertex position
 			/// </summary>
-			[VertexField( VertexField.Position )]
+			[VertexField( VertexFieldSemantic.Position )]
 			public Point3 m_Point;
 			
 			/// <summary>
 			/// Vertex normal
 			/// </summary>
-			[VertexField( VertexField.Normal )]
+			[VertexField( VertexFieldSemantic.Normal )]
 			public Vector3 m_Normal;
 
 			/// <summary>
 			/// Texture 0 coordinate
 			/// </summary>
-			[VertexField( VertexField.Texture0 )]
+			[VertexField( VertexFieldSemantic.Texture0 )]
 			public Point2 m_Texture0;
 
 			/// <summary>

@@ -153,6 +153,28 @@ namespace Rb.Core.Maths
 		/// float degrees = 361.0f;
 		/// Wrap( degrees, 0, 360 );  // Returns 1.0f
 		/// </example>
+		public static double Wrap( double val, double min, double max )
+		{
+			double range = max - min;
+			while ( val < min )
+			{
+				val += range;
+			}
+			while ( val >= max )
+			{
+				val -= range;
+			}
+
+			return val;
+		}
+
+		/// <summary>
+		/// Wraps a floating point value into the range [min,max)
+		/// </summary>
+		/// <example>
+		/// float degrees = 361.0f;
+		/// Wrap( degrees, 0, 360 );  // Returns 1.0f
+		/// </example>
 		public static float Wrap( float val, float min, float max )
 		{
 			float range = max - min;
