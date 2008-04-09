@@ -44,15 +44,14 @@ namespace Rb.Rendering.OpenGl
 		/// </remarks>
 		public IVertexBufferLock Lock( int firstIndex, int count, bool read, bool write )
 		{
-			return new BufferLock( m_Handle, firstIndex * m_Stride, count, read, write );
+			return new BufferLock( m_Handle, firstIndex, m_Stride, count, read, write );
 		}
-
 
 		#region Lock Class
 
 		private unsafe class BufferLock : IVertexBufferLock
 		{
-			public BufferLock( int handle, int firstIndex, int count, bool read, bool write )
+			public BufferLock( int handle, int firstIndex, int stride, int count, bool read, bool write )
 			{
 				Gl.glBindBuffer( Gl.GL_ARRAY_BUFFER_ARB, handle );
 				m_Handle = handle;
@@ -76,7 +75,7 @@ namespace Rb.Rendering.OpenGl
 					access = Gl.GL_WRITE_ONLY;
 				}
 				m_Bytes = ( byte* )Gl.glMapBuffer( Gl.GL_ARRAY_BUFFER_ARB, access );
-				m_Bytes += firstIndex;
+				m_Bytes += firstIndex * stride;
 			}
 
 			private readonly int m_FirstIndex;
@@ -145,6 +144,8 @@ namespace Rb.Rendering.OpenGl
 			for ( int fieldIndex = 0; fieldIndex < m_Fields.Length; ++fieldIndex )
 			{
 				FieldInfo field = m_Fields[ fieldIndex ];
+
+				//	TODO: AP: Can we move this client state enable to the constructor?
 				Gl.glEnableClientState( field.m_State );
 				switch ( field.m_State )
 				{
@@ -181,6 +182,7 @@ namespace Rb.Rendering.OpenGl
 		{
 			for ( int fieldIndex = 0; fieldIndex < m_Fields.Length; ++fieldIndex )
 			{
+				//	TODO: AP: Can we remove this client state disable altogether?
 				Gl.glDisableClientState( m_Fields[ fieldIndex ].m_State );
 			}
 		}

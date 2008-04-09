@@ -1,16 +1,44 @@
+using System;
+
 namespace Rb.Rendering.Interfaces.Objects
 {
+	/// <summary>
+	/// Types of primitive that can be rendered by the <see cref="IIndexBuffer.Draw"/> method
+	/// </summary>
+	public enum PrimitiveType
+	{
+		TriList,
+		TriStrip,
+		TriFan
+	}
+
 	/// <summary>
 	/// Index buffer interface
 	/// </summary>
 	/// <remarks>
-	/// Index buffers are classified as passes - "beginning" an index buffer passes index data 
-	/// to the rendering engine, "ending" an index buffer disables index buffering.
 	/// Index buffers are created by passing an <see cref="IndexBufferData"/> object to
-	/// <see cref="IGraphicsFactory.CreateIndexBuffer"/>.
+	/// <see cref="IGraphicsFactory.CreateIndexBuffer(IndexBufferData)"/>.
 	/// </remarks>
-	public interface IIndexBuffer : IPass
+	public interface IIndexBuffer : IDisposable
 	{
+		/// <summary>
+		/// Gets the length of the index buffer
+		/// </summary>
+		int Length
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Draws elements of the specified primitive type using the index buffer
+		/// </summary>
+		void Draw( PrimitiveType primType );
+
+		/// <summary>
+		/// Draws elements of the specified primitive type, using a range within the index buffer
+		/// </summary>
+		void Draw( PrimitiveType primType, int firstIndex, int count );
+
 		/// <summary>
 		/// Locks a region of the index buffer
 		/// </summary>
