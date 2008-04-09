@@ -29,6 +29,7 @@ namespace Poc1.Universe.Classes
 		public string Name
 		{
 			get { return m_Name; }
+			set { m_Name = value; }
 		}
 
 		public UniTransform Transform
@@ -56,8 +57,8 @@ namespace Poc1.Universe.Classes
 
 		private readonly IList<IPlanet> m_Moons = new List<IPlanet>( );
 		private readonly UniTransform m_Transform = new UniTransform( );
-		private readonly string m_Name;
 		private readonly IOrbit m_Orbit;
+		private string m_Name;
 
 		#endregion
 	}

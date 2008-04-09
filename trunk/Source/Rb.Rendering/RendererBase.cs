@@ -103,6 +103,11 @@ namespace Rb.Rendering
 		public abstract void Translate( Transform type, float x, float y, float z );
 
 		/// <summary>
+		/// Rotates the current transform around a given axis
+		/// </summary>
+		public abstract void RotateAroundAxis( Transform type, Vector3 axis, float angleInRadians );
+
+		/// <summary>
 		/// Scales the current transform in the specified transform stack
 		/// </summary>
 		public abstract void Scale( Transform type, float scaleX, float scaleY, float scaleZ );
@@ -131,6 +136,11 @@ namespace Rb.Rendering
 		/// Applies the specified transform, adds it to the specified transform stack
 		/// </summary>
 		public abstract void SetTransform( Transform type, Matrix44 matrix );
+
+		/// <summary>
+		/// Applies the specified transform, adds it to the specified transform stack
+		/// </summary>
+		public abstract void SetTransform( Transform type, Point3 translation, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis );
 
 		/// <summary>
 		/// Pops a matrix from the specified transform stack, applies the new topmost matrix

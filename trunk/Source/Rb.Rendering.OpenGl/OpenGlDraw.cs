@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Rb.Core.Maths;
 using Rb.Rendering;
+using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
 using Tao.OpenGl;
 
@@ -960,8 +961,105 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="sSamples">Number of samples around the circumference of the cylinder</param>
 		public override void Cylinder( ISurface surface, Point3 start, Point3 end, float radius, int sSamples )
 		{
-			throw new NotImplementedException( );
+			if (surface.FaceBrush != null)
+			{
+				surface.FaceBrush.Begin();
+				RenderCylinder(start, end, radius, sSamples);
+				surface.FaceBrush.End();
+			}
+
+			if (surface.EdgePen != null)
+			{
+				surface.EdgePen.Begin();
+				RenderCylinder(start, end, radius, sSamples);
+				surface.EdgePen.End();
+			}
 		}
+
+		#region Private Cylinder Rendering
+
+		private static void RenderSVertex( float angle, float y, float radius )
+		{
+			float sinAngle = Functions.Sin( angle );
+			float cosAngle = Functions.Cos( angle );
+			Gl.glNormal3f( sinAngle, 0, cosAngle );
+			Gl.glVertex3f( sinAngle * radius, y, cosAngle * radius );	
+		}
+			
+		private static void RenderYAxisCylinder( int subDivCount, float radius, float length )
+		{
+			float angleIncrement = Constants.TwoPi / subDivCount;
+			float angle = 0;
+
+			Gl.glBegin( Gl.GL_QUADS );
+
+			for ( int subDiv = 0; subDiv < subDivCount; ++subDiv )
+			{
+				RenderSVertex( angle, 0, radius );
+				RenderSVertex( angle, length, radius );
+				RenderSVertex( angle+ angleIncrement, length, radius );
+				RenderSVertex( angle + angleIncrement, 0, radius );
+
+				angle += angleIncrement;
+			}
+
+			Gl.glEnd( );
+		}
+
+		private static void RenderCylinder( Point3 start, Point3 end, float radius, int sSamples )
+		{
+			Vector3 cylinderVec = end - start;
+			float cylinderLength = cylinderVec.Length;
+			cylinderVec /= cylinderLength;
+
+			//	TODO: AP: Build Matrix44 and pre-multiply vertices
+			Graphics.Renderer.PushTransform( Transform.LocalToWorld );
+			Graphics.Renderer.Translate( Transform.LocalToWorld, start.X, start.Y, start.Z );
+
+			Vector3 up = Vector3.YAxis;
+			if ( up.Dot( cylinderVec ) < 0.9999f )
+			{
+				Vector3 rotateVec = Vector3.Cross( up, cylinderVec );
+				float rotation = Functions.Acos( up.Dot( cylinderVec ) );
+				Graphics.Renderer.RotateAroundAxis( Transform.LocalToWorld, rotateVec, rotation );
+			}
+			else
+			{
+				throw new NotImplementedException( "Cylinder transform for cylinder axis == y axis not implemented" );
+			}
+			RenderYAxisCylinder( sSamples, radius, cylinderLength );
+
+			RenderYAxisCylinderEndCap( sSamples, radius, 0, 1 );
+			RenderYAxisCylinderEndCap( sSamples, radius, cylinderLength, -1 );
+
+			Graphics.Renderer.PopTransform( Transform.LocalToWorld );
+		}
+		
+		private static void RenderYAxisCylinderEndCap( int subDivCount, float radius, float y, float dir )
+		{
+			float	AngleIncrement	= ( Constants.TwoPi / subDivCount ) * dir;
+			float	Angle			= 0;
+			float 	SinAngle		= Functions.Sin( Angle );
+			float 	CosAngle		= Functions.Sin( Angle );
+
+			Gl.glBegin( Gl.GL_TRIANGLE_FAN );
+
+			Gl.glNormal3f( 0, dir, 0 );
+			Gl.glVertex3f( SinAngle * radius, y, CosAngle * radius );
+
+			for ( int SubDiv = 0; SubDiv < subDivCount; ++SubDiv )
+			{
+				Angle += AngleIncrement;
+				SinAngle = Functions.Sin( Angle );
+				CosAngle = Functions.Cos( Angle );
+
+				Gl.glVertex3f( SinAngle * radius, y, CosAngle * radius );
+			}
+
+			Gl.glEnd( );
+		}
+
+		#endregion
 
 		#endregion
 

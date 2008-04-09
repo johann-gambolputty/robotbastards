@@ -308,6 +308,8 @@ namespace Rb.Core.Maths
 
 		#region	Operations
 
+		//	TODO: AP: Add rotation code
+
 		/// <summary>
 		/// Converts the matrix into a string representation
 		/// </summary>

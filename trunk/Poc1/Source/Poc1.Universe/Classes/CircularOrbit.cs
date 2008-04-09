@@ -17,7 +17,7 @@ namespace Poc1.Universe.Classes
 		{
 			m_Centre = centre;
 			m_Radius = radius;
-			m_AnglePerSecond = (Math.PI * 2.0) / year.Seconds;
+			m_AnglePerSecond = Math.PI * 2.0 / year.Seconds;
 		}
 
 		/// <summary>
@@ -67,7 +67,6 @@ namespace Poc1.Universe.Classes
 		private double m_Angle;
 		private readonly double m_AnglePerSecond;
 		private long m_LastUpdate;
-
 
 		#endregion
 	}

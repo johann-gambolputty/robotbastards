@@ -4,6 +4,7 @@ namespace Rb.Rendering.Interfaces.Objects
 	/// <summary>
 	/// Depth test pass values (pixel is rendered if the result of a depth test is the selected value)
 	/// </summary>
+	/// <seealso cref="IRenderState.PassDepthTest"/>
 	public enum PassDepthTest
 	{
 		/// <summary>

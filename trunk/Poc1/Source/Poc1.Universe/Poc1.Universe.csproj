@@ -33,16 +33,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Cameras\EntityTrackingCamera.cs" />
+    <Compile Include="Classes\Cameras\PointTrackingCamera.cs" />
+    <Compile Include="Classes\Cameras\UniCamera.cs" />
     <Compile Include="Classes\CircularOrbit.cs" />
     <Compile Include="Classes\Planet.cs" />
+    <Compile Include="Classes\Ship.cs" />
     <Compile Include="Classes\SpherePlanetRenderer.cs" />
     <Compile Include="Classes\SpherePlanet.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Interfaces\IOrbit.cs" />
     <Compile Include="Interfaces\IPlanet.cs" />
     <Compile Include="Interfaces\ISun.cs" />
+    <Compile Include="Interfaces\IUniCamera.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UniPoint3.cs" />
+    <Compile Include="UniRay3.cs" />
     <Compile Include="UniTransform.cs" />
     <Compile Include="UniUnits.cs" />
   </ItemGroup>

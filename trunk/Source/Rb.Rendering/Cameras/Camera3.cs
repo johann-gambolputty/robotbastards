@@ -13,8 +13,7 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public override void Begin( )
 		{
-			m_InvProjView = new Matrix44( m_ProjectionMatrix );
-			m_InvProjView.StoreMultiply( m_ViewMatrix );
+			m_InvProjView.StoreMultiply( m_ProjectionMatrix, m_ViewMatrix );
 			m_InvProjView.Invert( );
 			base.Begin( );
 		}
@@ -53,9 +52,7 @@ namespace Rb.Rendering.Cameras
 		/// <returns>Returns world ray</returns>
 		public Ray3 PickRay( int x, int y )
 		{
-			Matrix44 matrix = new Matrix44( m_ProjectionMatrix );
-			matrix.StoreMultiply( m_ViewMatrix );
-			matrix.Invert( );
+			Matrix44 matrix = m_InvProjView;
 
 			float width = Graphics.Renderer.Viewport.Width;
 			float height = Graphics.Renderer.Viewport.Height;
@@ -85,7 +82,7 @@ namespace Rb.Rendering.Cameras
 		private readonly Matrix44	m_CameraMatrix		= new Matrix44( );
 		protected Matrix44			m_ViewMatrix		= Matrix44.Identity;
 		protected Matrix44			m_ProjectionMatrix	= Matrix44.Identity;
-		private Matrix44			m_InvProjView		= Matrix44.Identity;
+		private readonly Matrix44	m_InvProjView		= new Matrix44( );
 
 		protected void SetFrame( Point3 pt, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
 		{
