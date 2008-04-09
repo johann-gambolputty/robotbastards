@@ -18,11 +18,11 @@ namespace Poc1.Universe.Interfaces
 	public interface IEntity
 	{
 		/// <summary>
-		/// Gets the name of this entity
+		/// Gets/sets the name of this entity
 		/// </summary>
 		string Name
 		{
-			get;
+			get; set;
 		}
 
 		/// <summary>

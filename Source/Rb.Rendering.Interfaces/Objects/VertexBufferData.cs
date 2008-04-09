@@ -13,6 +13,9 @@ namespace Rb.Rendering.Interfaces.Objects
 	[Serializable]
 	public class VertexBufferData
 	{
+		/// <summary>
+		/// Creates a byte array containing interleaved data from all the vertex field arrays
+		/// </summary>
 		public unsafe byte[] CreateInterleavedArray( )
 		{
 			byte[] mem = new byte[ Format.VertexSize * NumVertices ];
@@ -28,6 +31,9 @@ namespace Rb.Rendering.Interfaces.Objects
 			return mem;
 		}
 
+		/// <summary>
+		/// Returns the set of field values supported by this data
+		/// </summary>
 		public IEnumerable<FieldValues> SupportedFieldValues
 		{
 			get

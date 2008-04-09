@@ -91,6 +91,11 @@ namespace Rb.Rendering.Interfaces
 		void Pop2d( );
 
 		/// <summary>
+		/// Rotates the current transform around a given axis
+		/// </summary>
+		void RotateAroundAxis( Transform type, Vector3 axis, float angleInRadians );
+
+		/// <summary>
 		/// Translates the current transform in the specified transform stack
 		/// </summary>
 		void Translate( Transform type, float x, float y, float z );
@@ -124,6 +129,11 @@ namespace Rb.Rendering.Interfaces
 		/// Applies the specified transform, adds it to the specified transform stack
 		/// </summary>
 		void SetTransform( Transform type, Matrix44 matrix );
+		
+		/// <summary>
+		/// Applies the specified transform, adds it to the specified transform stack
+		/// </summary>
+		void SetTransform( Transform type, Point3 translation, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis );
 
 		/// <summary>
 		/// Pops a matrix from the specified transform stack, applies the new topmost matrix

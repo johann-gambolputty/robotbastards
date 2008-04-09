@@ -360,7 +360,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Translates the current transform in the specified transform stack
 		/// </summary>
-		public override void	Translate( Transform type, float x, float y, float z )
+		public override void Translate( Transform type, float x, float y, float z )
 		{
 			switch ( type )
 			{
@@ -382,6 +382,42 @@ namespace Rb.Rendering.OpenGl
 					Gl.glTranslatef( x, y, z );
 					break;
 				}
+			}
+		}
+
+		/// <summary>
+		/// Rotates the current transform around a given axis
+		/// </summary>
+		public override void RotateAroundAxis( Transform type, Vector3 axis, float angleInRadians )
+		{
+			switch ( type )
+			{
+				case Transform.LocalToWorld:
+					{
+						//	TODO: AP: Add rotation code to matrices
+						Gl.glMatrixMode( Gl.GL_MODELVIEW );
+						Gl.glLoadMatrixf( GetGlMatrix( CurrentLocalToWorld ) );
+						Gl.glRotatef( angleInRadians, axis.X, axis.Y, axis.Z );
+						Gl.glGetFloatv( Gl.GL_MODELVIEW, CurrentLocalToWorld.Elements );
+						UpdateModelView( );
+						break;
+					}
+				case Transform.WorldToView:
+					{
+						//	TODO: AP: Add rotation code to matrices
+						Gl.glMatrixMode( Gl.GL_MODELVIEW );
+						Gl.glLoadMatrixf( GetGlMatrix( CurrentWorldToView ) );
+						Gl.glRotatef( angleInRadians, axis.X, axis.Y, axis.Z );
+						Gl.glGetFloatv( Gl.GL_MODELVIEW, CurrentWorldToView.Elements );
+						UpdateModelView( );
+						break;
+					}
+				default:
+					{
+						SetSupportedMatrixMode( type );
+						Gl.glRotatef( angleInRadians, axis.X, axis.Y, axis.Z );
+						break;
+					}
 			}
 		}
 
@@ -423,7 +459,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Pushes a copy of the transform currently at the top of the specified transform stack
 		/// </summary>
-		public override void	PushTransform( Transform type )
+		public override void PushTransform( Transform type )
 		{
 			switch ( type )
 			{
@@ -471,6 +507,37 @@ namespace Rb.Rendering.OpenGl
 			Gl.glMatrixMode( Gl.GL_PROJECTION );
 			Gl.glLoadIdentity( );
 			Glu.gluPerspective( fov, aspectRatio, zNear, zFar );
+		}
+
+		/// <summary>
+		/// Applies the specified transform, adds it to the specified transform stack
+		/// </summary>
+		public override void SetTransform( Transform type, Point3 translation, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
+		{
+			switch ( type )
+			{
+				case Transform.LocalToWorld:
+					{
+						CurrentLocalToWorld.Set( translation, xAxis, yAxis, zAxis );
+						UpdateModelView( );
+						break;
+					}
+
+				case Transform.WorldToView:
+					{
+						CurrentLocalToWorld.Set( translation, xAxis, yAxis, zAxis );
+						UpdateModelView( );
+						break;
+					}
+
+				default:
+					{
+						//	TODO: AP: Too many allocations to get this working
+						SetSupportedMatrixMode( type );
+						Gl.glLoadMatrixf( GetGlMatrix( new Matrix44( translation, xAxis, yAxis, zAxis ) ) );
+						break;
+					}
+			}
 		}
 
 		/// <summary>

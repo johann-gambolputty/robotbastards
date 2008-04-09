@@ -32,6 +32,24 @@ namespace Poc1.Universe
 			m_Z = src.m_Z;
 		}
 
+		public override int GetHashCode( )
+		{
+			//	Absolutely rubbish hash
+			long res = m_X + m_Y + m_Z;
+			return unchecked( ( int )res );
+		}
+
+		public override bool Equals( object obj )
+		{
+			UniPoint3 pt = ( obj as UniPoint3 );
+			if ( pt == null )
+			{
+				return false;
+			}
+
+			return this == pt;
+		}
+
 		public long X
 		{
 			get { return m_X; }
@@ -81,6 +99,21 @@ namespace Poc1.Universe
 		public static UniPoint3 operator + ( UniPoint3 pt, Vector3 vec )
 		{
 			return new UniPoint3( pt.X + ( long )vec.X, pt.Y + ( long )vec.Y, pt.Z + ( long )vec.Z );
+		}
+
+		public static UniPoint3 operator - ( UniPoint3 pt, Vector3 vec )
+		{
+			return new UniPoint3( pt.X - ( long )vec.X, pt.Y - ( long )vec.Y, pt.Z - ( long )vec.Z );
+		}
+		
+		public static bool operator == ( UniPoint3 lhs, UniPoint3 rhs )
+		{
+			return ( lhs.X == rhs.X ) && ( lhs.Y == rhs.Y ) && ( lhs.Z == rhs.Z );
+		}
+
+		public static bool operator != ( UniPoint3 lhs, UniPoint3 rhs )
+		{
+			return ( lhs.X != rhs.X ) || ( lhs.Y != rhs.Y ) || ( lhs.Z != rhs.Z );
 		}
 
 		#endregion

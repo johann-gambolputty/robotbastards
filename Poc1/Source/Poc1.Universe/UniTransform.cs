@@ -25,6 +25,21 @@ namespace Poc1.Universe
 			get { return m_Axis[ 2 ]; }
 		}
 
+		public void Set( Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
+		{
+			m_Axis[ 0 ] = xAxis;
+			m_Axis[ 1 ] = yAxis;
+			m_Axis[ 2 ] = zAxis;
+		}
+
+		public void Set( UniPoint3 pt, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
+		{
+			Position = pt;
+			m_Axis[ 0 ] = xAxis;
+			m_Axis[ 1 ] = yAxis;
+			m_Axis[ 2 ] = zAxis;
+		}
+
 		#region Private Members
 
 		private UniPoint3	m_Translation = new UniPoint3( );
