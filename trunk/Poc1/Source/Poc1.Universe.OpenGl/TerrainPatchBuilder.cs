@@ -8,6 +8,7 @@ namespace Poc1.Universe.OpenGl
 {
 	internal class TerrainPatchBuilder
 	{
+		#region PatchVbLock Private Class
 
 		private class PatchVbLock : IVertexBufferLock
 		{
@@ -18,10 +19,13 @@ namespace Poc1.Universe.OpenGl
 				m_Level = level;
 			}
 
+			#region Private Members
 
 			private readonly IVertexBufferLock m_Lock;
 			private readonly TerrainPatchBuilder m_Builder;
 			private readonly int m_Level;
+
+			#endregion
 
 			#region IVertexBufferLock Members
 
@@ -63,35 +67,39 @@ namespace Poc1.Universe.OpenGl
 			#endregion
 		}
 
+		#endregion
+
+		#region Lod Private Class
+
 		private class Lod
 		{
-			public Lod( int size )
-			{
-				IndexBufferFormat format = new IndexBufferFormat( IndexBufferIndexSize.Int32 );
-				m_IndexBuffer = Graphics.Factory.CreateIndexBuffer( format, size );
-			}
-
-			public IIndexBuffer IndexBuffer
-			{
-				get { return m_IndexBuffer; }
-			}
-
 			public List<int> VbPool
 			{
 				get { return m_VbPool; }
 			}
 
-			private readonly IIndexBuffer m_IndexBuffer;
 			private readonly List<int> m_VbPool = new List<int>( );
+		}
+
+		#endregion
+
+		public void BeginPatchRendering( )
+		{
+			m_Buffer.Begin( );
+		}
+
+		public void EndPatchRendering( )
+		{
+			m_Buffer.End( );
 		}
 
 		public IVertexBufferLock AllocatePatchVertices( int level )
 		{
-			if ( m_Lods[ level ].VbPool.Count == 0 )
+			if ( m_LodLevels[ level ].VbPool.Count == 0 )
 			{
 				return null;
 			}
-			List< int > levelIndexes = m_Lods[ level ].VbPool;
+			List< int > levelIndexes = m_LodLevels[ level ].VbPool;
 			int firstIndex = levelIndexes[ 0 ];
 			levelIndexes.RemoveAt( 0 );
 			return new PatchVbLock( this, m_Buffer.Lock( firstIndex, NumberOfLevelVertices( level ), false, true ), level );
@@ -99,7 +107,7 @@ namespace Poc1.Universe.OpenGl
 
 		public void ReleasePatchVertices( int level, int index )
 		{
-			m_Levels[ level ].Add( index );
+			m_LodLevels[ level ].VbPool.Add( index );
 		}
 
 		private const int MaxLodLevels = 4;
@@ -126,10 +134,10 @@ namespace Poc1.Universe.OpenGl
 		{
 			switch ( level )
 			{
-				case 0: return 4;
-				case 1: return 8;
-				case 2: return 16;
-				case 3: return 16;
+				case 0: return 1;
+				case 1: return 1;
+				case 2: return 1;
+				case 3: return 1;
 			}
 			throw new ArgumentException( "Level is out of range - " + level, "level" );
 		}
@@ -149,23 +157,23 @@ namespace Poc1.Universe.OpenGl
 
 			m_Buffer = Graphics.Factory.CreateVertexBuffer( format, numVertices );
 
-			m_Lods = new List<Lod>( );
 			int curVertexIndex = 0;
 			for ( int level = 0; level < MaxLodLevels; ++level )
 			{
+				Lod newLod = new Lod( );
+				m_LodLevels[ level ] = newLod;
+
 				int numLevelVertices = NumberOfLevelVertices( level );
 				int poolSize = LevelPoolSize( level );
-				m_Levels[ level ] = new List<int>( );
 				for ( int poolIndex = 0; poolIndex < poolSize; ++poolIndex )
 				{
-
-					m_Levels[ level ].Add( curVertexIndex );
+					newLod.VbPool.Add( curVertexIndex );
 					curVertexIndex += numLevelVertices;
 				}
 			}
 		}
 
-		private readonly Lod[] m_Lods = new Lod[ MaxLodLevels ]; 
+		private readonly Lod[] m_LodLevels = new Lod[ MaxLodLevels ]; 
 		private readonly IVertexBuffer m_Buffer;
 	}
 }
