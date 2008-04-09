@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
-using Poc1.Universe;
 using Poc1.Universe.Classes;
+using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Cameras;
 
@@ -28,7 +28,7 @@ namespace Poc1.GameClient
 			planet.Moons.Add( moon );
 
 			Viewer viewer = new Viewer( );
-			viewer.Camera = new SphereCamera( 0, 0, 70 );
+			viewer.Camera = new SphereCamera( 0, Constants.DegreesToRadians * 0.0f, 100 );
 			viewer.ShowFps = true;
 			viewer.Control = this;
 			viewer.Renderable = planet;

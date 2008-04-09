@@ -14,7 +14,7 @@ namespace Rb.Rendering.OpenGl
 	/// </summary>
 	public class OpenGlRenderer : RendererBase
 	{
-		#region	Setup
+		#region	Construction and Setup
 
 		/// <summary>
 		/// Sets up the renderer
@@ -31,11 +31,6 @@ namespace Rb.Rendering.OpenGl
 				m_WorldToViewStack[ stackIndex ] = new Matrix44( );
 			}
 		}
-
-
-		#endregion
-
-		#region Setup
 
 		/// <summary>
 		/// Loads all supported OpenGL extensions
