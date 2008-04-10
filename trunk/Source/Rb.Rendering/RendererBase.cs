@@ -241,6 +241,10 @@ namespace Rb.Rendering
 			int lastIndex = m_RenderStates.Count - 1;
 			m_RenderStates[ lastIndex ].End( );
 			m_RenderStates.RemoveAt( lastIndex );
+			if ( lastIndex > 0 )
+			{
+				m_RenderStates[ lastIndex - 1 ].Begin( );
+			}
 		}
 
 		#endregion

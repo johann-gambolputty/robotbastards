@@ -28,7 +28,7 @@ namespace Poc1.GameClient
 			planet.Moons.Add( moon );
 
 			Viewer viewer = new Viewer( );
-			viewer.Camera = new SphereCamera( 0, Constants.DegreesToRadians * 0.0f, 100 );
+			viewer.Camera = new SphereCamera( 0, Constants.DegreesToRadians * Constants.HalfPi, 200 );
 			viewer.ShowFps = true;
 			viewer.Control = this;
 			viewer.Renderable = planet;

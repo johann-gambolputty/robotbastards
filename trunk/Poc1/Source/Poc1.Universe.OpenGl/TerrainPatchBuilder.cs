@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 
@@ -10,61 +11,33 @@ namespace Poc1.Universe.OpenGl
 	{
 		#region PatchVbLock Private Class
 
-		private class PatchVbLock : IVertexBufferLock
+		public class PatchVertexRange
 		{
-			public PatchVbLock( TerrainPatchBuilder builder, IVertexBufferLock vbLock, int level )
+			public PatchVertexRange( IVertexBuffer buffer, int firstIndex, int count )
 			{
-				m_Builder = builder;
-				m_Lock = vbLock;
-				m_Level = level;
+				m_Buffer = buffer;
+				m_FirstIndex = firstIndex;
+				m_Count = count;
+			}
+
+			public int FirstVertexOffset
+			{
+				get { return m_FirstIndex; }
+			}
+
+			public IVertexBufferLock Lock( )
+			{
+				return m_Buffer.Lock( m_FirstIndex, m_Count, false, true );
 			}
 
 			#region Private Members
 
-			private readonly IVertexBufferLock m_Lock;
-			private readonly TerrainPatchBuilder m_Builder;
-			private readonly int m_Level;
+			private readonly IVertexBuffer m_Buffer;
+			private readonly int m_FirstIndex;
+			private readonly int m_Count;
 
 			#endregion
 
-			#region IVertexBufferLock Members
-
-			public int FirstVertexIndex
-			{
-				get { return m_Lock.FirstVertexIndex; }
-			}
-
-			public int VertexCount
-			{
-				get { return m_Lock.VertexCount; }
-			}
-
-			public unsafe byte* Bytes
-			{
-				get { return m_Lock.Bytes; }
-			}
-
-			public unsafe void Write<T>( int offset, IEnumerable<T> vertices )
-			{
-				m_Lock.Write( offset, vertices );
-			}
-
-			public unsafe System.IO.Stream ToStream( )
-			{
-				return m_Lock.ToStream( );
-			}
-
-			#endregion
-
-			#region IDisposable Members
-
-			public void Dispose( )
-			{
-				m_Builder.ReleasePatchVertices( m_Level, FirstVertexIndex );
-				m_Lock.Dispose( );
-			}
-
-			#endregion
 		}
 
 		#endregion
@@ -93,7 +66,7 @@ namespace Poc1.Universe.OpenGl
 			m_Buffer.End( );
 		}
 
-		public IVertexBufferLock AllocatePatchVertices( int level )
+		public PatchVertexRange AllocatePatchVertices( int level )
 		{
 			if ( m_LodLevels[ level ].VbPool.Count == 0 )
 			{
@@ -102,7 +75,7 @@ namespace Poc1.Universe.OpenGl
 			List< int > levelIndexes = m_LodLevels[ level ].VbPool;
 			int firstIndex = levelIndexes[ 0 ];
 			levelIndexes.RemoveAt( 0 );
-			return new PatchVbLock( this, m_Buffer.Lock( firstIndex, NumberOfLevelVertices( level ), false, true ), level );
+			return new PatchVertexRange( m_Buffer, firstIndex, NumberOfLevelVertices( level ) );
 		}
 
 		public void ReleasePatchVertices( int level, int index )
@@ -110,18 +83,12 @@ namespace Poc1.Universe.OpenGl
 			m_LodLevels[ level ].VbPool.Add( index );
 		}
 
-		private const int MaxLodLevels = 4;
+		public const int MaxLodLevels = 4;
+		private static int MaxSize = ( int )Functions.Pow( 2, MaxLodLevels + 1 );
 
 		public static int GetLevelSize( int level )
 		{
-			switch ( level )
-			{
-				case 0: return 129;
-				case 1: return 65;
-				case 2: return 31;
-				case 3: return 15;
-			}
-			throw new ArgumentException( "Level is out of range - " + level, "level" );
+			return ( MaxSize / ( int )Functions.Pow( 2, level ) ) + 1;
 		}
 
 		private static int NumberOfLevelVertices( int level )
@@ -134,10 +101,10 @@ namespace Poc1.Universe.OpenGl
 		{
 			switch ( level )
 			{
-				case 0: return 1;
-				case 1: return 1;
-				case 2: return 1;
-				case 3: return 1;
+				case 0: return 32;
+				case 1: return 64;
+				case 2: return 64;
+				case 3: return 64;
 			}
 			throw new ArgumentException( "Level is out of range - " + level, "level" );
 		}
