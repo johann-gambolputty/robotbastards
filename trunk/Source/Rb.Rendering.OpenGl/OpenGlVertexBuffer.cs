@@ -25,11 +25,18 @@ namespace Rb.Rendering.OpenGl
 		/// Creates this vertex buffer
 		/// </summary>
 		/// <param name="data">Vertex buffer data</param>
-		public unsafe OpenGlVertexBuffer( VertexBufferData data ) :
+		public OpenGlVertexBuffer( VertexBufferData data ) :
 			this( data.Format, data.NumVertices, data.CreateInterleavedArray( ) )
 		{
 		}
 
+		/// <summary>
+		/// Draws the contents of the vertex buffer directly
+		/// </summary>
+		public void Draw( PrimitiveType primType )
+		{
+			throw new NotImplementedException( );
+		}
 
 		/// <summary>
 		/// Locks a region of the vertex buffer

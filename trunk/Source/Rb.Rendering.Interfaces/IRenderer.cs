@@ -60,12 +60,12 @@ namespace Rb.Rendering.Interfaces
 		/// <summary>
 		/// Gets the current matrix from the specified transform stack
 		/// </summary>
-		Matrix44 GetTransform( Transform type );
+		Matrix44 GetTransform( TransformType type );
 
 		/// <summary>
 		/// Gets the current matrix from the specified transform stack
 		/// </summary>
-		void GetTransform( Transform type, Matrix44 matrix );
+		void GetTransform( TransformType type, Matrix44 matrix );
 
 		/// <summary>
 		/// Transforms a local point into screen space using the current transform pipeline
@@ -93,27 +93,27 @@ namespace Rb.Rendering.Interfaces
 		/// <summary>
 		/// Rotates the current transform around a given axis
 		/// </summary>
-		void RotateAroundAxis( Transform type, Vector3 axis, float angleInRadians );
+		void RotateAroundAxis( TransformType type, Vector3 axis, float angleInRadians );
 
 		/// <summary>
 		/// Translates the current transform in the specified transform stack
 		/// </summary>
-		void Translate( Transform type, float x, float y, float z );
+		void Translate( TransformType type, float x, float y, float z );
 
 		/// <summary>
 		/// Scales the current transform in the specified transform stack
 		/// </summary>
-		void Scale( Transform type, float scaleX, float scaleY, float scaleZ );
+		void Scale( TransformType type, float scaleX, float scaleY, float scaleZ );
 
 		/// <summary>
 		/// Applies the specified transform, multiplied by the current topmost transform, and adds it to the specified transform stack
 		/// </summary>
-		void PushTransform( Transform type, Matrix44 matrix );
+		void PushTransform( TransformType type, Matrix44 matrix );
 
 		/// <summary>
 		/// Pushes a copy of the transform currently at the top of the specified transform stack
 		/// </summary>
-		void PushTransform( Transform type );
+		void PushTransform( TransformType type );
 
 		/// <summary>
 		/// Sets the current Transform.kLocalToView transform to a look-at matrix
@@ -128,17 +128,17 @@ namespace Rb.Rendering.Interfaces
 		/// <summary>
 		/// Applies the specified transform, adds it to the specified transform stack
 		/// </summary>
-		void SetTransform( Transform type, Matrix44 matrix );
+		void SetTransform( TransformType type, Matrix44 matrix );
 		
 		/// <summary>
 		/// Applies the specified transform, adds it to the specified transform stack
 		/// </summary>
-		void SetTransform( Transform type, Point3 translation, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis );
+		void SetTransform( TransformType type, Point3 translation, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis );
 
 		/// <summary>
 		/// Pops a matrix from the specified transform stack, applies the new topmost matrix
 		/// </summary>
-		void PopTransform( Transform type );
+		void PopTransform( TransformType type );
 
 		#endregion
 

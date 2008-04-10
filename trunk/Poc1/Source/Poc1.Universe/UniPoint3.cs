@@ -32,6 +32,20 @@ namespace Poc1.Universe
 			m_Z = src.m_Z;
 		}
 
+		public void Add( Vector3 vec )
+		{
+			m_X += ( long )vec.X;
+			m_Y += ( long )vec.Y;
+			m_Z += ( long )vec.Z;
+		}
+
+		public void Copy( UniPoint3 src )
+		{
+			m_X = src.m_X;
+			m_Y = src.m_Y;
+			m_Z = src.m_Z;
+		}
+
 		public override int GetHashCode( )
 		{
 			//	Absolutely rubbish hash
@@ -68,11 +82,11 @@ namespace Poc1.Universe
 			set { m_Z = value; }
 		}
 		
-		public double SqrDistanceTo( UniPoint3 pt )
+		public long SqrDistanceTo( UniPoint3 pt )
 		{
-			double diffX = ( m_X - pt.m_X );
-			double diffY = ( m_Y - pt.m_Y );
-			double diffZ = ( m_Z - pt.m_Z );
+			long diffX = ( m_X - pt.m_X );
+			long diffY = ( m_Y - pt.m_Y );
+			long diffZ = ( m_Z - pt.m_Z );
 
 			return ( diffX * diffX + diffY * diffY + diffZ * diffZ );
 		}
@@ -93,8 +107,6 @@ namespace Poc1.Universe
 		}
 
 		#region Operators
-
-		public const float UnitsPerMetre = 0.1f;
 
 		public static UniPoint3 operator + ( UniPoint3 pt, Vector3 vec )
 		{

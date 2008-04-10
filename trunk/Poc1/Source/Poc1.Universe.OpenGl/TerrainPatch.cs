@@ -10,21 +10,28 @@ namespace Poc1.Universe.OpenGl
 		public const float PatchWidth = 32;
 		public const float PatchHeight = PatchWidth;
 
+		public const float PlanetRadius = 32;
+
 		private Point3 m_TopLeft;
 		private Point3 m_TopRight;
 		private Point3 m_BottomLeft;
-		private Point3 m_BottomRight;
 		private Vector3 m_PatchXDir;
 		private Vector3 m_PatchZDir;
 		private float m_PatchWidth;
 		private float m_PatchHeight;
+		private bool m_Visible;
 
-		public void SetBounds( Point3 topLeft, Point3 topRight, Point3 bottomLeft, Point3 bottomRight )
+		public bool Visible
+		{
+			get { return m_Visible; }
+			set { m_Visible = value; }
+		}
+
+		public void SetBounds( Point3 topLeft, Point3 topRight, Point3 bottomLeft )
 		{
 			m_TopLeft = topLeft;
 			m_TopRight = topRight;
 			m_BottomLeft = bottomLeft;
-			m_BottomRight = bottomRight;
 			m_PatchXDir = m_TopRight - m_TopLeft;
 			m_PatchZDir = m_BottomLeft - m_TopLeft;
 			m_PatchWidth = m_PatchXDir.Length;
@@ -83,7 +90,7 @@ namespace Poc1.Universe.OpenGl
 			}
 		}
 
-		private bool BuildConnectingStripIndexBuffer( TerrainPatch neighbour, Side side, List<int> indices )
+		private bool BuildConnectingStripIndexBuffer( TerrainPatch neighbour, Side side, ICollection<int> indices )
 		{
 			if ( neighbour == null )
 			{
@@ -205,7 +212,7 @@ namespace Poc1.Universe.OpenGl
 					Point3 curPt = rowStart;
 					for ( int col = 0; col < m_Size; ++col )
 					{
-						Point3 rlPt = Point3.Origin + ( curPt - Point3.Origin ).MakeNormal( ) * 64;
+						Point3 rlPt = Point3.Origin + ( curPt - Point3.Origin ).MakeNormal( ) * PlanetRadius;
 
 						curVertex->X = rlPt.X;
 						curVertex->Y = rlPt.Y;// +Functions.Sin( col * Constants.TwoPi / size ) * yScale;
@@ -275,6 +282,10 @@ namespace Poc1.Universe.OpenGl
 
 		public void Render( )
 		{
+			if ( !Visible )
+			{
+				return;
+			}
 			m_IndexBuffer.Draw( PrimitiveType.TriList );
 		}
 

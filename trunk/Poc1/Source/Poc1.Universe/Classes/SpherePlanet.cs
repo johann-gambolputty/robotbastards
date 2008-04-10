@@ -6,22 +6,25 @@ namespace Poc1.Universe.Classes
 {
 	public class SpherePlanet : Planet
 	{
-		public SpherePlanet( IOrbit orbit, string name, float radius ) :
+		public SpherePlanet( IOrbit orbit, string name, double radius ) :
 			base( orbit, name )
 		{
-			m_Radius = radius;
+			m_Radius = UniUnits.FromMetres( radius );
 			m_Renderer = Graphics.Factory.CustomTypes.Create<SpherePlanetRenderer>( this );
 		}
 
-		public float Radius
+		/// <summary>
+		/// Gets the radius of this planet, in universe units
+		/// </summary>
+		public long Radius
 		{
 			get { return m_Radius; }
 		}
 
 		#region Private Members
 
-		private readonly float m_Radius;
-		private SpherePlanetRenderer m_Renderer;
+		private readonly long m_Radius;
+		private readonly SpherePlanetRenderer m_Renderer;
 
 		#endregion
 

@@ -145,7 +145,7 @@ namespace Rb.Log.Controls
 				{
 					Items.Add( item );
 
-					if ( m_TrackingLastItem )
+					if ( m_TrackingLastItem && item.Index != -1 )
 					{
 						item.Selected = true;
 						item.EnsureVisible( );

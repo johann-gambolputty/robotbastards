@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rb cacheable="true">
+
+  <object type="Rb.Interaction.CommandInputTemplateMap" assembly="Rb.Interaction">
+
+    <serialise>
+      <commandList enum="Poc1.Universe.Classes.Cameras.TrackingCameraController+Commands" assembly="Poc1.Universe">
+        <command name="Pan">
+          <input button="Middle" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Pan">
+          <input button="None" key="M" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Zoom">
+          <input button="None" min="0.5" max="1000000.0" delta="1000.0" initial="100000" type="Rb.Interaction.Windows.MouseScrollInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Rotate">
+          <input button="None" key="R" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+      </commandList>
+    </serialise>
+
+  </object>
+</rb>

@@ -50,10 +50,10 @@ namespace Poc1.Universe.Classes
 				return;
 			}
 			
-			Graphics.Renderer.PushTransform( Rb.Rendering.Interfaces.Transform.LocalToWorld );
-			UniCamera.SetRenderTransform( Rb.Rendering.Interfaces.Transform.LocalToWorld, Transform );
+			Graphics.Renderer.PushTransform( Rb.Rendering.Interfaces.TransformType.LocalToWorld );
+			UniCamera.SetRenderTransform( Rb.Rendering.Interfaces.TransformType.LocalToWorld, Transform );
 			m_ShipGraphics.Render( context );
-			Graphics.Renderer.PopTransform( Rb.Rendering.Interfaces.Transform.LocalToWorld );
+			Graphics.Renderer.PopTransform( Rb.Rendering.Interfaces.TransformType.LocalToWorld );
 		}
 
 		#endregion

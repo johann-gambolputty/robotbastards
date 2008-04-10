@@ -1,9 +1,15 @@
 using System;
+using System.Reflection;
 using System.Windows.Forms;
+using Crownwood.Magic.Common;
+using Crownwood.Magic.Docking;
+using Poc1.GameClient.Properties;
 using Poc1.Universe.Classes;
-using Rb.Core.Maths;
+using Rb.Assets;
+using Rb.Interaction;
+using Rb.Log;
+using Rb.Log.Controls.Vs;
 using Rb.Rendering;
-using Rb.Rendering.Cameras;
 
 namespace Poc1.GameClient
 {
@@ -12,27 +18,83 @@ namespace Poc1.GameClient
 		public GameClientForm( )
 		{
 			InitializeComponent( );
+
+			//	Write greeting
+			AppLog.Info( "Beginning {0} at {1}", Assembly.GetCallingAssembly( ), DateTime.Now );
+			AppLog.GetSource( Severity.Info ).WriteEnvironment( );
 		}
 
-		private void GameClientForm_Load( object sender, EventArgs e )
+		private readonly Control m_LogDisplay = new VsLogListView( );
+		private Content m_LogDisplayContent;
+		private DockingManager m_DockingManager;
+		private readonly CommandUser m_User = new CommandUser( );
+
+		private void GameClientForm_Shown( object sender, EventArgs e )
 		{
 			if ( DesignMode )
 			{
 				return;
 			}
 
-			SpherePlanet planet = new SpherePlanet( null, "TEST0", 8.0f );
-			SpherePlanet moon = new SpherePlanet( new CircularOrbit( planet, 15.0, TimeSpan.FromSeconds( 6 ) ), "TEST1", 3.0f );
-			SpherePlanet moon1 = new SpherePlanet( new CircularOrbit( moon, 5.0, TimeSpan.FromSeconds( 6 ) ), "TEST2", 1.0f );
+			//	Load the game viewer
+			try
+			{
+				LoadParameters loadParams = new LoadParameters( );
+				loadParams.Properties[ "user" ] = m_User;
+				Viewer viewer = ( Viewer )AssetManager.Instance.Load( "Viewers/TestGameViewer.components.xml", loadParams );
+				viewer.Renderable = CreateSolarSystem( );
+				gameDisplay.AddViewer( viewer );
+			}
+			catch ( Exception ex )
+			{
+				AppLog.Exception( ex, "Error occurred creating game viewer" );
+				ErrorMessageBox.Show( this, Resources.ErrorCreatingGameViewer, ex );
+			}
+
+			//	Load the game controls
+			try
+			{
+				CommandInputTemplateMap gameControlsMap = ( CommandInputTemplateMap )AssetManager.Instance.Load( "Input/TestTrackingCameraInputs.components.xml" );
+
+				foreach ( Viewer viewer in gameDisplay.Viewers )
+				{
+					gameControlsMap.BindToInput( new InputContext( viewer ), m_User );
+				}
+			}
+			catch ( Exception ex )
+			{
+				AppLog.Exception( ex, "Error occurred creating game controls" );
+				ErrorMessageBox.Show( this, Resources.ErrorCreatingGameControls, ex );
+			}
+		}
+
+		private static SolarSystem CreateSolarSystem( )
+		{
+			SolarSystem system = new SolarSystem( );
+
+			SpherePlanet planet = new SpherePlanet( null, "TEST0", 8000.0f );
+			SpherePlanet moon = new SpherePlanet( new CircularOrbit( planet, 15000.0, TimeSpan.FromSeconds( 6 ) ), "TEST1", 3000.0f );
+			SpherePlanet moon1 = new SpherePlanet( new CircularOrbit( moon, 5000.0, TimeSpan.FromSeconds( 6 ) ), "TEST2", 1000.0f );
 			moon.Moons.Add( moon1 );
 			planet.Moons.Add( moon );
 
-			Viewer viewer = new Viewer( );
-			viewer.Camera = new SphereCamera( 0, Constants.DegreesToRadians * Constants.HalfPi, 200 );
-			viewer.ShowFps = true;
-			viewer.Control = this;
-			viewer.Renderable = planet;
-			gameDisplay.AddViewer( viewer );
+			system.Planets.Add( planet );
+			system.Planets.Add( moon );
+			system.Planets.Add( moon1 );
+
+			return system;
 		}
+
+		private void GameClientForm_Load( object sender, EventArgs e )
+		{
+			//	Create the docking manager
+			m_DockingManager = new DockingManager( this, VisualStyle.IDE );
+			m_DockingManager.InnerControl = gameDisplay;
+			m_DockingManager.OuterControl = this;
+
+			m_LogDisplayContent = m_DockingManager.Contents.Add( m_LogDisplay, "Log" );
+			m_DockingManager.AddContentWithState( m_LogDisplayContent, State.DockBottom );
+		}
+
 	}
 }

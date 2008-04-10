@@ -1,3 +1,4 @@
+using Rb.Core.Maths;
 using Rb.Rendering.Interfaces.Objects.Cameras;
 
 namespace Poc1.Universe.Interfaces
@@ -8,9 +9,17 @@ namespace Poc1.Universe.Interfaces
 	public interface IUniCamera : ICamera
 	{
 		/// <summary>
-		/// Gets this camera's transform
+		/// Gets the position of the camera
 		/// </summary>
-		UniTransform Frame
+		UniPoint3 Position
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Gets the view frame of the camera (orientation matrix without translation)
+		/// </summary>
+		Matrix44 Frame
 		{
 			get;
 		}

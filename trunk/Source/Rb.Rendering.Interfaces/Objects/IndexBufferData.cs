@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+
 namespace Rb.Rendering.Interfaces.Objects
 {
 
@@ -7,6 +9,14 @@ namespace Rb.Rendering.Interfaces.Objects
 	/// </summary>
 	public class IndexBufferData
 	{
+		/// <summary>
+		/// Creates an IndexBufferData object from an index array
+		/// </summary>
+		public static IndexBufferData FromIndexArray( int[] array )
+		{
+			return new IndexBufferData( new IndexBufferFormat( IndexBufferIndexSize.Int32 ), array );
+		}
+
 		/// <summary>
 		/// Setup constructor
 		/// </summary>

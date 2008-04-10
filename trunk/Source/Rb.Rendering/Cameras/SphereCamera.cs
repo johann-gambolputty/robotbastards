@@ -33,9 +33,9 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public override void Begin( )
 		{
-			Graphics.Renderer.PushTransform( Transform.WorldToView );
+			Graphics.Renderer.PushTransform( TransformType.WorldToView );
 			Graphics.Renderer.SetLookAtTransform( m_LookAt, Frame.Translation, Frame.YAxis );
-			m_ViewMatrix = Graphics.Renderer.GetTransform( Transform.WorldToView );
+			m_ViewMatrix = Graphics.Renderer.GetTransform( TransformType.WorldToView );
 			//	TODO: AP: View matrix should be calculated by SetFrame()
 			base.Begin( );
 		}
@@ -45,7 +45,7 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public override void End( )
 		{
-			Graphics.Renderer.PopTransform( Transform.WorldToView );
+			Graphics.Renderer.PopTransform( TransformType.WorldToView );
 			base.End( );
 		}
 

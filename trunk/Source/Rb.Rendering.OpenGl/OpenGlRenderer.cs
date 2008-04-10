@@ -205,7 +205,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Gets the current matrix from the specified transform stack
 		/// </summary>
-		public override Matrix44 GetTransform( Transform type )
+		public override Matrix44 GetTransform( TransformType type )
 		{
 			Matrix44 mat = new Matrix44( );
 			GetTransform( type, mat );
@@ -215,21 +215,21 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Gets the current matrix from the specified transform stack
 		/// </summary>
-		public override void GetTransform( Transform type, Matrix44 matrix )
+		public override void GetTransform( TransformType type, Matrix44 matrix )
 		{
 			switch ( type )
 			{
-				case Transform.LocalToWorld:
+				case TransformType.LocalToWorld:
 					{
 						matrix.Copy( CurrentLocalToWorld );
 						break;
 					}
-				case Transform.WorldToView:
+				case TransformType.WorldToView:
 					{
 						matrix.Copy( CurrentWorldToView );
 						break;
 					}
-				case Transform.ViewToScreen:
+				case TransformType.ViewToScreen:
 					{
 						Gl.glGetFloatv( Gl.GL_PROJECTION_MATRIX, matrix.Elements );
 						break;
@@ -308,16 +308,16 @@ namespace Rb.Rendering.OpenGl
 		/// Sets up an OpenGL matrix mode that has a direct correspondence with a Transform value
 		/// </summary>
 		/// <param name="type"></param>
-		private static void SetSupportedMatrixMode( Transform type )
+		private static void SetSupportedMatrixMode( TransformType type )
 		{
 			switch ( type )
 			{
-				case Transform.ViewToScreen :
+				case TransformType.ViewToScreen :
 				{
 					Gl.glMatrixMode( Gl.GL_PROJECTION );
 					break;
 				}
-				case Transform.Texture0		:
+				case TransformType.Texture0		:
 				{
 					Gl.glMatrixMode( Gl.GL_TEXTURE );
 					break;
@@ -332,17 +332,17 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Scales the current transform in the specified transform stack
 		/// </summary>
-		public override void Scale( Transform type, float scaleX, float scaleY, float scaleZ )
+		public override void Scale( TransformType type, float scaleX, float scaleY, float scaleZ )
 		{
 			switch ( type )
 			{
-				case Transform.LocalToWorld :
+				case TransformType.LocalToWorld :
 				{
 					CurrentLocalToWorld.Scale( scaleX, scaleY, scaleZ );
 					UpdateModelView( );
 					break;
 				}
-				case Transform.WorldToView :
+				case TransformType.WorldToView :
 				{
 					CurrentWorldToView.Scale( scaleX, scaleY, scaleZ );
 					UpdateModelView( );
@@ -360,17 +360,17 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Translates the current transform in the specified transform stack
 		/// </summary>
-		public override void Translate( Transform type, float x, float y, float z )
+		public override void Translate( TransformType type, float x, float y, float z )
 		{
 			switch ( type )
 			{
-				case Transform.LocalToWorld :
+				case TransformType.LocalToWorld :
 				{
 					CurrentLocalToWorld.Translate( x, y, z );
 					UpdateModelView( );
 					break;
 				}
-				case Transform.WorldToView :
+				case TransformType.WorldToView :
 				{
 					CurrentWorldToView.Translate( x, y, z );
 					UpdateModelView( );
@@ -388,11 +388,11 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Rotates the current transform around a given axis
 		/// </summary>
-		public override void RotateAroundAxis( Transform type, Vector3 axis, float angleInRadians )
+		public override void RotateAroundAxis( TransformType type, Vector3 axis, float angleInRadians )
 		{
 			switch ( type )
 			{
-				case Transform.LocalToWorld:
+				case TransformType.LocalToWorld:
 					{
 						//	TODO: AP: Add rotation code to matrices
 						Gl.glMatrixMode( Gl.GL_MODELVIEW );
@@ -402,7 +402,7 @@ namespace Rb.Rendering.OpenGl
 						UpdateModelView( );
 						break;
 					}
-				case Transform.WorldToView:
+				case TransformType.WorldToView:
 					{
 						//	TODO: AP: Add rotation code to matrices
 						Gl.glMatrixMode( Gl.GL_MODELVIEW );
@@ -424,11 +424,11 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Applies the specified transform, multiplied by the current topmost transform, and adds it to the specified transform stack
 		/// </summary>
-		public override void PushTransform( Transform type, Matrix44 matrix )
+		public override void PushTransform( TransformType type, Matrix44 matrix )
 		{
 			switch ( type )
 			{
-				case Transform.LocalToWorld :
+				case TransformType.LocalToWorld :
 				{
 					Matrix44 lastLocalToWorld = CurrentLocalToWorld;
 					++m_TopOfLocalToWorldStack;
@@ -437,7 +437,7 @@ namespace Rb.Rendering.OpenGl
 					break;
 				}
 
-				case Transform.WorldToView :
+				case TransformType.WorldToView :
 				{
 					Matrix44 lastWorldToView = CurrentWorldToView;
 					++m_TopOfWorldToViewStack;
@@ -459,11 +459,11 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Pushes a copy of the transform currently at the top of the specified transform stack
 		/// </summary>
-		public override void PushTransform( Transform type )
+		public override void PushTransform( TransformType type )
 		{
 			switch ( type )
 			{
-				case Transform.LocalToWorld :
+				case TransformType.LocalToWorld :
 				{
 					Matrix44 lastLocalToWorld = CurrentLocalToWorld;
 					++m_TopOfLocalToWorldStack;
@@ -472,7 +472,7 @@ namespace Rb.Rendering.OpenGl
 					break;
 				}
 
-				case Transform.WorldToView :
+				case TransformType.WorldToView :
 				{
 					Matrix44 lastWorldToView = CurrentWorldToView;
 					++m_TopOfWorldToViewStack;
@@ -512,18 +512,18 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Applies the specified transform, adds it to the specified transform stack
 		/// </summary>
-		public override void SetTransform( Transform type, Point3 translation, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
+		public override void SetTransform( TransformType type, Point3 translation, Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
 		{
 			switch ( type )
 			{
-				case Transform.LocalToWorld:
+				case TransformType.LocalToWorld:
 					{
 						CurrentLocalToWorld.Set( translation, xAxis, yAxis, zAxis );
 						UpdateModelView( );
 						break;
 					}
 
-				case Transform.WorldToView:
+				case TransformType.WorldToView:
 					{
 						CurrentLocalToWorld.Set( translation, xAxis, yAxis, zAxis );
 						UpdateModelView( );
@@ -543,18 +543,18 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Applies the specified transform, adds it to the specified transform stack
 		/// </summary>
-		public override void SetTransform( Transform type, Matrix44 matrix )
+		public override void SetTransform( TransformType type, Matrix44 matrix )
 		{
 			switch ( type )
 			{
-				case Transform.LocalToWorld :
+				case TransformType.LocalToWorld :
 				{
 					CurrentLocalToWorld.Copy( matrix );
 					UpdateModelView( );
 					break;
 				}
 
-				case Transform.WorldToView :
+				case TransformType.WorldToView :
 				{
 					CurrentWorldToView.Copy( matrix );
 					UpdateModelView( );
@@ -573,18 +573,18 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Pops a matrix from the specified transform stack, applies the new topmost matrix
 		/// </summary>
-		public override void PopTransform( Transform type )
+		public override void PopTransform( TransformType type )
 		{
 			switch ( type )
 			{
-				case Transform.LocalToWorld :
+				case TransformType.LocalToWorld :
 				{
 					--m_TopOfLocalToWorldStack;
 					UpdateModelView( );
 					break;
 				}
 
-				case Transform.WorldToView :
+				case TransformType.WorldToView :
 				{
 					--m_TopOfWorldToViewStack;
 					UpdateModelView( );

@@ -10,10 +10,17 @@ namespace Rb.Rendering.Interfaces.Objects
 	/// Vertex buffers are classified as passes - "beginning" a vertex buffer passes vertex data 
 	/// to the rendering engine, "ending" a vertex buffer reverts changes.
 	/// Vertex buffers are created by passing an <see cref="VertexBufferData"/> object to
-	/// <see cref="IGraphicsFactory.CreateVertexBuffer"/>.
+	/// <see cref="IGraphicsFactory.CreateVertexBuffer(VertexBufferData)"/>, or creating a
+	/// vertex buffer with a given format, using <see cref="IGraphicsFactory.CreateVertexBuffer(VertexBufferFormat, int)"/>,
+	/// then defining the contents using the <see cref="Lock"/> method.
 	/// </remarks>
 	public interface IVertexBuffer : IPass
 	{
+		/// <summary>
+		/// Draws the contents of the vertex buffer directly
+		/// </summary>
+		void Draw( PrimitiveType primType );
+
 		/// <summary>
 		/// Locks a region of the vertex buffer
 		/// </summary>

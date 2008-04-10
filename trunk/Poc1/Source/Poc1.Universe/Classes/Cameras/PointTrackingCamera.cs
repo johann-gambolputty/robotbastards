@@ -1,10 +1,20 @@
-using Poc1.Universe.Interfaces;
 using Rb.Core.Maths;
 
 namespace Poc1.Universe.Classes.Cameras
 {
+	/// <summary>
+	/// A universe camera that focuses on a point
+	/// </summary>
 	public class PointTrackingCamera : UniCamera
 	{
+		/// <summary>
+		/// Returns true if the lookat point can be modified
+		/// </summary>
+		public virtual bool CanModifyLookAtPoint
+		{
+			get { return true; }
+		}
+
 		/// <summary>
 		/// Gets the point that the camera is focused on
 		/// </summary>
@@ -51,20 +61,32 @@ namespace Poc1.Universe.Classes.Cameras
 		/// <summary>
 		/// Gets/sets the Radius spherical coordinate of the camera (forces update of camera frame)
 		/// </summary>
-		public float Radius
+		public double Radius
 		{
-			get { return m_Radius; }
+			get { return UniUnits.ToMetres( m_Radius ); }
 			set
 			{
 				m_UpdateFrame |= ( m_Radius != value );
-				m_Radius = value;
+				m_Radius = UniUnits.FromMetres( value );
+			}
+		}
+
+		/// <summary>
+		/// Gets/sets the current camera position
+		/// </summary>
+		public override UniPoint3 Position
+		{
+			set
+			{
+				m_UpdateFrame |= ( Position != value );
+				base.Position = value;
 			}
 		}
 
 		/// <summary>
 		/// Gets the current camera transform
 		/// </summary>
-		public override UniTransform Frame
+		public override Matrix44 Frame
 		{
 			get
 			{
@@ -96,10 +118,10 @@ namespace Poc1.Universe.Classes.Cameras
 				);
 
 			Vector3 xAxis = Vector3.Cross( zAxis, yAxis );
-			UniPoint3 pt = m_LookAt + ( zAxis * m_Radius );
-
+			Position.Copy( m_LookAt );
+			Position.Add( zAxis * m_Radius );
 			m_UpdateFrame = false;
-			Frame.Set( pt, xAxis, yAxis, zAxis );
+			SetViewFrame( xAxis, yAxis, zAxis );
 		}
 
 		/// <summary>
@@ -127,7 +149,7 @@ namespace Poc1.Universe.Classes.Cameras
 
 		private float m_S;
 		private float m_T;
-		private float m_Radius;
+		private long m_Radius;
 		private bool m_UpdateFrame;
 		private UniPoint3 m_LookAt = new UniPoint3( );
 

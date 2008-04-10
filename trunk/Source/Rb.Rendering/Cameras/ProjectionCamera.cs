@@ -20,10 +20,10 @@ namespace Rb.Rendering.Cameras
 
 			float aspectRatio = ( height == 0 ) ? 1.0f : width / ( float )height;
 
-			Graphics.Renderer.PushTransform( Transform.ViewToScreen );
+			Graphics.Renderer.PushTransform( TransformType.ViewToScreen );
 			Graphics.Renderer.SetPerspectiveProjectionTransform( m_PerspectiveFov, aspectRatio, m_PerspectiveZNear, m_PerspectiveZFar );
 
-			m_ProjectionMatrix = Graphics.Renderer.GetTransform( Transform.ViewToScreen );
+			m_ProjectionMatrix = Graphics.Renderer.GetTransform( TransformType.ViewToScreen );
 			//	TODO: AP: Projection matrix should be updated by projection property sets
 
 			base.Begin( );
@@ -34,7 +34,7 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public override void End( )
 		{
-			Graphics.Renderer.PopTransform( Transform.ViewToScreen );
+			Graphics.Renderer.PopTransform( TransformType.ViewToScreen );
 			base.End( );
 		}
 

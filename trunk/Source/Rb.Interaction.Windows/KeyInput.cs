@@ -29,8 +29,8 @@ namespace Rb.Interaction.Windows
 			m_State = state;
 			m_Key = key;
 
-			( ( Control )context.Control ).KeyDown += new KeyEventHandler( OnKeyDown );
-            ( ( Control )context.Control ).KeyUp += new KeyEventHandler( OnKeyUp );
+			( ( Control )context.Control ).KeyDown += OnKeyDown;
+            ( ( Control )context.Control ).KeyUp += OnKeyUp;
 		}
 
 		/// <summary>
