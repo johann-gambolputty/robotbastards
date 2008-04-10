@@ -40,7 +40,7 @@ namespace Poc1.GameClient
 			this.gameDisplay.Location = new System.Drawing.Point( 0, 0 );
 			this.gameDisplay.Name = "gameDisplay";
 			this.gameDisplay.RenderInterval = 1;
-			this.gameDisplay.Size = new System.Drawing.Size( 295, 269 );
+			this.gameDisplay.Size = new System.Drawing.Size( 493, 448 );
 			this.gameDisplay.StencilBits = ( ( byte )( 0 ) );
 			this.gameDisplay.TabIndex = 0;
 			// 
@@ -48,11 +48,12 @@ namespace Poc1.GameClient
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size( 295, 269 );
+			this.ClientSize = new System.Drawing.Size( 493, 448 );
 			this.Controls.Add( this.gameDisplay );
 			this.Name = "GameClientForm";
 			this.Text = "Form1";
 			this.Load += new System.EventHandler( this.GameClientForm_Load );
+			this.Shown += new System.EventHandler( this.GameClientForm_Shown );
 			this.ResumeLayout( false );
 
 		}

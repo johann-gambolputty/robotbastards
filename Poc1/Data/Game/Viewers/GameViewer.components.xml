@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rb>
+
+  <object type="Rb.Rendering.Viewer" assembly="Rb.Rendering">
+
+    <object type="Rb.Rendering.Cameras.SphereCamera" assembly="Rb.Rendering" property="Camera">
+
+      <float value="0.7" property="T"/>
+      <float value="200" property="Zoom"/>
+
+      <float value="0.5" property="PerspectiveZNear"/>
+      <float value="10000" property="PerspectiveZFar"/>
+
+    </object>
+
+    <bool value="true" property="ShowFps"/>
+
+    <object type="Poc1.Universe.Classes.SpherePlanet" assembly="Poc1.Universe" property="Renderable">
+      <parameters>
+        <null/>
+        <string value="pie"/>
+        <float value="15"/>
+      </parameters>
+    </object>
+
+  </object>
+</rb>

@@ -38,21 +38,21 @@ namespace Rb.Rendering.OpenGl.Cg
 			{
 				case EffectRenderStateBinding.ModelMatrix:
 					{
-						Matrix44 modelMatrix = Graphics.Renderer.GetTransform( Transform.LocalToWorld );
+						Matrix44 modelMatrix = Graphics.Renderer.GetTransform( TransformType.LocalToWorld );
 						CgEffectParameter.cgSetMatrixParameterfc( param, modelMatrix.Elements );
 						break;
 					}
 
 				case EffectRenderStateBinding.ViewMatrix:
 					{
-						Matrix44 viewMatrix = Graphics.Renderer.GetTransform( Transform.WorldToView );
+						Matrix44 viewMatrix = Graphics.Renderer.GetTransform( TransformType.WorldToView );
 						CgEffectParameter.cgSetMatrixParameterfc( param, viewMatrix.Elements );
 						break;
 					}
 
 				case EffectRenderStateBinding.InverseTransposeModelMatrix:
 					{
-						Matrix44 itModelMatrix = Graphics.Renderer.GetTransform( Transform.LocalToWorld );
+						Matrix44 itModelMatrix = Graphics.Renderer.GetTransform( TransformType.LocalToWorld );
 						itModelMatrix.Translation = Point3.Origin;
 						itModelMatrix.Transpose( );
 						itModelMatrix.Invert( );

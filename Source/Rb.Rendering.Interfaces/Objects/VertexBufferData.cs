@@ -192,6 +192,15 @@ namespace Rb.Rendering.Interfaces.Objects
 			return index;
 		}
 
+		private static int ColourToFloat32( Color src, float[] values, int index )
+		{
+			values[ index++ ] = src.R / 255.0f;
+			values[ index++ ] = src.G / 255.0f;
+			values[ index++ ] = src.B / 255.0f;
+			values[ index++ ] = src.A / 255.0f;
+			return index;
+		}
+
 		#endregion
 
 		public delegate int ElementArrayWriterDelegate< SrcType, ElementType >( SrcType src, ElementType[] values, int index );
@@ -507,11 +516,12 @@ namespace Rb.Rendering.Interfaces.Objects
 		{
 			ms_DefaultConverters = new Dictionary<Type, ElementTypeConverter>( );
 			
-			AddConverter< Point2, float >( 2, VertexFieldElementTypeId.Float32, Point2ToFloat32 );
+			AddConverter<Point2, float>( 2, VertexFieldElementTypeId.Float32, Point2ToFloat32 );
 			AddConverter<Point3, float>( 3, VertexFieldElementTypeId.Float32, Point3ToFloat32 );
 			AddConverter<Vector2, float>( 2, VertexFieldElementTypeId.Float32, Vector2ToFloat32 );
 			AddConverter<Vector3, float>( 3, VertexFieldElementTypeId.Float32, Vector3ToFloat32 );
-			AddConverter<Color, byte>( 4, VertexFieldElementTypeId.Byte, ColourToByte );
+		//	AddConverter<Color, byte>( 4, VertexFieldElementTypeId.Byte, ColourToByte );
+			AddConverter<Color, float>( 4, VertexFieldElementTypeId.Float32, ColourToFloat32 );
 		}
 
 		#endregion

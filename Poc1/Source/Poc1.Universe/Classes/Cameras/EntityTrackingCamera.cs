@@ -9,6 +9,14 @@ namespace Poc1.Universe.Classes.Cameras
 	public class EntityTrackingCamera : PointTrackingCamera
 	{
 		/// <summary>
+		/// Can't modify the look at position (TODO: AP: Make pan change an offset vector rather than the look-at point itself)
+		/// </summary>
+		public override bool CanModifyLookAtPoint
+		{
+			get { return false; }
+		}
+
+		/// <summary>
 		/// Gets the position of the tracked entity. Throws on set
 		/// </summary>
 		public override UniPoint3 LookAtPoint

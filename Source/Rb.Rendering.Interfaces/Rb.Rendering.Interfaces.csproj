@@ -84,7 +84,7 @@
     <Compile Include="Objects\VertexFieldSemantic.cs" />
     <Compile Include="Objects\Winding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Transform.cs" />
+    <Compile Include="TransformType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">

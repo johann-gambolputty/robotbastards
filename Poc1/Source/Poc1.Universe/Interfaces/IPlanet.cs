@@ -15,6 +15,17 @@ namespace Poc1.Universe.Interfaces
 		}
 
 		/// <summary>
+		/// Enables/disables the rendering of the terrain of this planet
+		/// </summary>
+		/// <remarks>
+		/// Only one planet should have this flag enabled
+		/// </remarks>
+		bool EnableTerrainRendering
+		{
+			get; set;
+		}
+
+		/// <summary>
 		/// Gets a list of moons that orbit this planet
 		/// </summary>
 		IList<IPlanet> Moons

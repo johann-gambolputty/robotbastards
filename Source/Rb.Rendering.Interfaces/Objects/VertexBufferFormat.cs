@@ -113,7 +113,8 @@ namespace Rb.Rendering.Interfaces.Objects
 				}
 				else if ( fieldType == typeof( Color ) )
 				{
-					m_ElementType = VertexFieldElementTypeId.Byte;
+				//	m_ElementType = VertexFieldElementTypeId.Byte;	//	TODO: AP: Colour to byte array is not working
+					m_ElementType = VertexFieldElementTypeId.Float32;
 					m_NumElements = 4;
 				}
 				else if ( fieldType == typeof( float ) )

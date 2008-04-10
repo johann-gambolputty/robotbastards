@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Reflection;
 using Rb.Assets;
-using Rb.Assets.Interfaces;
 using Rb.Core.Maths;
 using Rb.Core.Components;
 
@@ -16,6 +15,20 @@ namespace Rb.ComponentXmlLoader
     internal class BaseBuilder
     {
         #region Factory
+
+		private static TimeSpan MakeTimeSpan( XmlReader reader )
+		{
+			double seconds = 0;
+
+			string value = reader.GetAttribute( "seconds" );
+			if ( value != null )
+			{
+				seconds = double.Parse( value );
+			}
+
+			return TimeSpan.FromSeconds( seconds );
+			
+		}
 
 		/// <summary>
 		/// Creates a Color object from attributes stored in an xml element
@@ -61,6 +74,7 @@ namespace Rb.ComponentXmlLoader
             {
                 switch ( reader.Name )
                 {
+					case "null"		: result = new ValueBuilder( parameters, errors, reader, parentBuilder, null );		break;
                     case "rb"       : result = new RootBuilder( parameters, errors, reader );							break;
                     case "object"   : result = new ObjectBuilder( parameters, errors, reader, parentBuilder );			break;
                     case "ref"      : result = new ReferenceBuilder( parameters, errors, reader, parentBuilder );		break;
@@ -127,6 +141,9 @@ namespace Rb.ComponentXmlLoader
                     case "double"		:
                         result = new ValueBuilder( parameters, errors, reader, parentBuilder, double.Parse( reader.GetAttribute( "value" ) ) );
                         break;
+					case "timeSpan"		:
+						result = new ValueBuilder( parameters, errors, reader, parentBuilder, MakeTimeSpan( reader ) );
+                		break;
                     case "point3"		:
                         {
                             float x = float.Parse( reader.GetAttribute( "x" ) );

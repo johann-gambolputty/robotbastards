@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rb>
+
+  <object type="Rb.Rendering.Viewer" assembly="Rb.Rendering">
+
+    <object type="Poc1.Universe.Classes.Cameras.PointTrackingCamera" assembly="Poc1.Universe" property="Camera">
+
+      <float value="0.7" property="T"/>
+      <double value="100000" property="Radius"/>
+
+      <float value="0.5" property="PerspectiveZNear"/>
+      <float value="10000" property="PerspectiveZFar"/>
+
+      <!-- Camera controller -->
+      <object type="Poc1.Universe.Classes.Cameras.TrackingCameraController" assembly="Poc1.Universe">
+
+        <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
+          <type value="Poc1.Universe.Classes.Cameras.TrackingCameraController+Commands" assembly="Poc1.Universe" property="CommandListEnumType"/>
+          <dynProperty value="user" property="User"/>
+        </object>
+
+      </object>
+    </object>
+
+    <bool value="true" property="ShowFps"/>
+
+    <!--
+    Currently solar system is created programmatically in game client, because of difficulties
+    setting the centre of the circular orbit
+    -->
+    <!--
+    <object type="Poc1.Universe.Classes.SpherePlanet" assembly="Poc1.Universe" property="Renderable">
+      <parameters>
+        <null/>
+        <string value="pie"/>
+        <double value="10000"/>
+      </parameters>
+
+      <object type="Poc1.Universe.Classes.SpherePlanet" assembly="Poc1.Universe" property="Moons">
+        <parameters>
+          <object type="Poc1.Universe.Classes.CircularOrbit" assembly="Poc1.Universe">
+            <parameters>
+              <ref objectId="parent"/>
+              <double value="17000"/>
+              <timeSpan seconds="10"/>
+            </parameters>
+          </object>
+          <string value="pieMoon"/>
+          <double value="5000"/>
+        </parameters>
+      </object>
+    </object>
+    -->
+
+  </object>
+</rb>

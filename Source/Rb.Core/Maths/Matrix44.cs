@@ -56,6 +56,39 @@ namespace Rb.Core.Maths
 		}
 
 		/// <summary>
+		/// Extracts the x axis from this matrix, if the matrix were transposed 
+		/// </summary>
+		public Vector3 TransposedXAxis
+		{
+			get
+			{
+				return new Vector3( Elements[ 0 ], Elements[ 4 ], Elements[ 8 ] );
+			}
+		}
+
+		/// <summary>
+		/// Extracts the y axis from this matrix, if the matrix were transposed 
+		/// </summary>
+		public Vector3 TransposedYAxis
+		{
+			get
+			{
+				return new Vector3( Elements[ 1 ], Elements[ 5 ], Elements[ 9 ] );
+			}
+		}
+
+		/// <summary>
+		/// Extracts the z axis from this matrix, if the matrix were transposed 
+		/// </summary>
+		public Vector3 TransposedZAxis
+		{
+			get
+			{
+				return new Vector3( Elements[ 2 ], Elements[ 6 ], Elements[ 10 ] );
+			}
+		}
+
+		/// <summary>
 		/// Extracts the x axis from this matrix
 		/// </summary>
 		public Vector3 XAxis

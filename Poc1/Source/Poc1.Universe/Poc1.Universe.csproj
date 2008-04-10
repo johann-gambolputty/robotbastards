@@ -30,15 +30,19 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Cameras\EntityTrackingCamera.cs" />
     <Compile Include="Classes\Cameras\PointTrackingCamera.cs" />
+    <Compile Include="Classes\Cameras\TrackingCameraController.cs" />
     <Compile Include="Classes\Cameras\UniCamera.cs" />
     <Compile Include="Classes\CircularOrbit.cs" />
     <Compile Include="Classes\Planet.cs" />
     <Compile Include="Classes\Ship.cs" />
+    <Compile Include="Classes\SkyBox.cs" />
+    <Compile Include="Classes\SolarSystem.cs" />
     <Compile Include="Classes\SpherePlanetRenderer.cs" />
     <Compile Include="Classes\SpherePlanet.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
@@ -56,6 +60,10 @@
     <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Interaction\Rb.Interaction.csproj">
+      <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
+      <Name>Rb.Interaction</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.csproj">
       <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>

@@ -4,7 +4,7 @@ namespace Rb.Rendering.Interfaces
 	/// <summary>
 	/// Transform types
 	/// </summary>
-	public enum Transform : int
+	public enum TransformType : int
 	{
 		/// <summary>
 		/// Transforms vertices from local space to world space
@@ -98,17 +98,17 @@ namespace Rb.Rendering.Interfaces
 		/// <summary>
 		/// Gets the transform associated with a given texture unit
 		/// </summary>
-		public static Transform Texture( int unit )
+		public static TransformType Texture( int unit )
 		{
-			return ( Transform.Texture0 + unit );
+			return ( TransformType.Texture0 + unit );
 		}
 
 		/// <summary>
 		/// Gets the transform associated with a given blend weight
 		/// </summary>
-		public static Transform Blend( int weight )
+		public static TransformType Blend( int weight )
 		{
-			return ( Transform.Blend0 + weight );
+			return ( TransformType.Blend0 + weight );
 		}
 	}
 }

@@ -16,10 +16,6 @@ namespace Poc1.Universe.Classes
 
 		public virtual void Render( IRenderContext context )
 		{
-			if ( m_Orbit != null )
-			{
-				m_Orbit.Update( this, context.RenderTime );
-			}
 		}
 
 		#endregion
@@ -46,6 +42,18 @@ namespace Poc1.Universe.Classes
 			get { return m_Orbit; }
 		}
 
+		/// <summary>
+		/// Enables/disables the rendering of the terrain of this planet
+		/// </summary>
+		/// <remarks>
+		/// Only one planet should have this flag enabled
+		/// </remarks>
+		public bool EnableTerrainRendering
+		{
+			get { return m_EnableTerrainRendering; }
+			set { m_EnableTerrainRendering = value; }
+		}
+
 		public IList<IPlanet> Moons
 		{
 			get { return m_Moons; }
@@ -59,6 +67,7 @@ namespace Poc1.Universe.Classes
 		private readonly UniTransform m_Transform = new UniTransform( );
 		private readonly IOrbit m_Orbit;
 		private string m_Name;
+		private bool m_EnableTerrainRendering;
 
 		#endregion
 	}

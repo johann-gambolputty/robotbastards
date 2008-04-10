@@ -1013,15 +1013,15 @@ namespace Rb.Rendering.OpenGl
 			cylinderVec /= cylinderLength;
 
 			//	TODO: AP: Build Matrix44 and pre-multiply vertices
-			Graphics.Renderer.PushTransform( Transform.LocalToWorld );
-			Graphics.Renderer.Translate( Transform.LocalToWorld, start.X, start.Y, start.Z );
+			Graphics.Renderer.PushTransform( TransformType.LocalToWorld );
+			Graphics.Renderer.Translate( TransformType.LocalToWorld, start.X, start.Y, start.Z );
 
 			Vector3 up = Vector3.YAxis;
 			if ( up.Dot( cylinderVec ) < 0.9999f )
 			{
 				Vector3 rotateVec = Vector3.Cross( up, cylinderVec );
 				float rotation = Functions.Acos( up.Dot( cylinderVec ) );
-				Graphics.Renderer.RotateAroundAxis( Transform.LocalToWorld, rotateVec, rotation );
+				Graphics.Renderer.RotateAroundAxis( TransformType.LocalToWorld, rotateVec, rotation );
 			}
 			else
 			{
@@ -1032,7 +1032,7 @@ namespace Rb.Rendering.OpenGl
 			RenderYAxisCylinderEndCap( sSamples, radius, 0, 1 );
 			RenderYAxisCylinderEndCap( sSamples, radius, cylinderLength, -1 );
 
-			Graphics.Renderer.PopTransform( Transform.LocalToWorld );
+			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 		}
 		
 		private static void RenderYAxisCylinderEndCap( int subDivCount, float radius, float y, float dir )
