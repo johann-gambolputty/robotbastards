@@ -61,6 +61,11 @@ namespace Rb.Rendering.Interfaces
 		ITexture2d CreateTexture2d( );
 
 		/// <summary>
+		/// Creates a cube map texture
+		/// </summary>
+		ICubeMapTexture CreateCubeMapTexture( );
+
+		/// <summary>
 		/// Creates a 2d texture sampler
 		/// </summary>
 		ITexture2dSampler CreateTexture2dSampler( );
@@ -84,27 +89,13 @@ namespace Rb.Rendering.Interfaces
 		/// <summary>
 		/// Creates a vertex buffer
 		/// </summary>
-		/// <param name="format">Format of vertices in the vertex buffer</param>
-		/// <param name="numVertices">Number of vertices to allocate in the buffer</param>
-		IVertexBuffer CreateVertexBuffer( VertexBufferFormat format, int numVertices );
-
-		/// <summary>
-		/// Creates a vertex buffer
-		/// </summary>
-		IVertexBuffer CreateVertexBuffer( VertexBufferData data );
+		IVertexBuffer CreateVertexBuffer( );
 
 		/// <summary>
 		/// Creates an index buffer
 		/// </summary>
-		/// <param name="data">Data used to initialize the index buffer</param>
-		IIndexBuffer CreateIndexBuffer( IndexBufferData data );
+		IIndexBuffer CreateIndexBuffer( );
 
-		/// <summary>
-		/// Creates an index buffer
-		/// </summary>
-		/// <param name="format">Index buffer format</param>
-		/// <param name="numIndices">Number of indices in the buffer</param>
-		IIndexBuffer CreateIndexBuffer( IndexBufferFormat format, int numIndices );
 
 		#endregion
 
