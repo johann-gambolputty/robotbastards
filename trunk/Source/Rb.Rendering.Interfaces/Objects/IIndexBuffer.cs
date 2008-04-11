@@ -21,6 +21,8 @@ namespace Rb.Rendering.Interfaces.Objects
 	/// </remarks>
 	public interface IIndexBuffer : IDisposable
 	{
+		#region Index buffer properties
+
 		/// <summary>
 		/// Gets the length of the index buffer
 		/// </summary>
@@ -29,15 +31,24 @@ namespace Rb.Rendering.Interfaces.Objects
 			get;
 		}
 
-		/// <summary>
-		/// Draws elements of the specified primitive type using the index buffer
-		/// </summary>
-		void Draw( PrimitiveType primType );
+		#endregion
+
+		#region Index buffer creation
 
 		/// <summary>
-		/// Draws elements of the specified primitive type, using a range within the index buffer
+		/// Creates this index buffer
 		/// </summary>
-		void Draw( PrimitiveType primType, int firstIndex, int count );
+		void Create( IndexBufferIndexSize indexSize, bool staticBuffer, int numIndices );
+
+		/// <summary>
+		/// Creates this index buffer from an index array
+		/// </summary>
+		void Create( int[] indices, bool staticBuffer );
+
+		/// <summary>
+		/// Creates this index buffer from an index array
+		/// </summary>
+		void Create( ushort[] indices, bool staticBuffer );
 
 		/// <summary>
 		/// Locks a region of the index buffer
@@ -49,5 +60,22 @@ namespace Rb.Rendering.Interfaces.Objects
 		/// Dispose of the lock object to commit the changes to the buffer
 		/// </remarks>
 		IIndexBufferLock Lock( int firstIndex, int count );
+
+		#endregion
+
+		#region Index buffer application
+
+		/// <summary>
+		/// Draws elements of the specified primitive type using the index buffer
+		/// </summary>
+		void Draw( PrimitiveType primType );
+
+		/// <summary>
+		/// Draws elements of the specified primitive type, using a range within the index buffer
+		/// </summary>
+		void Draw( PrimitiveType primType, int firstIndex, int count );
+
+		#endregion
+
 	}
 }

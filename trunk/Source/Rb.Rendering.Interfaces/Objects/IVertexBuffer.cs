@@ -14,8 +14,39 @@ namespace Rb.Rendering.Interfaces.Objects
 	/// vertex buffer with a given format, using <see cref="IGraphicsFactory.CreateVertexBuffer(VertexBufferFormat, int)"/>,
 	/// then defining the contents using the <see cref="Lock"/> method.
 	/// </remarks>
-	public interface IVertexBuffer : IPass
+	public interface IVertexBuffer : IPass, IDisposable
 	{
+		#region Vertex buffer creation
+
+		/// <summary>
+		/// Creates this vertex buffer with a given format and size
+		/// </summary>
+		/// <param name="format"></param>
+		/// <param name="numVertices"></param>
+		/// <remarks>
+		/// Buffer must be filled using <see cref="Lock"/> prior to use
+		/// </remarks>
+		void Create( VertexBufferFormat format, int numVertices );
+
+		/// <summary>
+		/// Creates this vertex buffer from a <see cref="VertexBufferData"/> object
+		/// </summary>
+		/// <param name="data">Vertex buffer data</param>
+		void Create( VertexBufferData data );
+
+		/// <summary>
+		/// Creates this vertex buffer from an array of vertices
+		/// </summary>
+		/// <typeparam name="T">Vertex type</typeparam>
+		/// <param name="vertices">Vertex array</param>
+		/// <remarks>
+		/// The vertex type T must have one or more fields tagged with the <see cref="VertexFieldAttribute"/> attribute.
+		/// At least one of those fields must have the semantic <see cref="VertexFieldSemantic.Position"/>
+		/// </remarks>
+		void Create<T>( T[] vertices );
+
+		#endregion
+
 		/// <summary>
 		/// Draws the contents of the vertex buffer directly
 		/// </summary>

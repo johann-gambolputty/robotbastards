@@ -13,22 +13,45 @@ namespace Rb.Rendering.OpenGl
 	/// </remarks>
 	public class OpenGlVertexBuffer : IVertexBuffer
 	{
+		#region Vertex buffer creation
+
 		/// <summary>
-		/// Creates this vertex buffer
+		/// Creates this vertex buffer with a given format and size
 		/// </summary>
-		public OpenGlVertexBuffer( VertexBufferFormat format, int numVertices ) :
-			this( format, numVertices, null )
+		/// <param name="format"></param>
+		/// <param name="numVertices"></param>
+		/// <remarks>
+		/// Buffer must be filled using <see cref="Lock"/> prior to use
+		/// </remarks>
+		public void Create( VertexBufferFormat format, int numVertices )
 		{
+			CreateVertexBuffer( format, numVertices, null );
 		}
 
 		/// <summary>
-		/// Creates this vertex buffer
+		/// Creates this vertex buffer from a <see cref="VertexBufferData"/> object
 		/// </summary>
 		/// <param name="data">Vertex buffer data</param>
-		public OpenGlVertexBuffer( VertexBufferData data ) :
-			this( data.Format, data.NumVertices, data.CreateInterleavedArray( ) )
+		public void Create( VertexBufferData data )
 		{
+			CreateVertexBuffer( data.Format, data.NumVertices, data.CreateInterleavedArray( ) );
 		}
+
+		/// <summary>
+		/// Creates this vertex buffer from an array of vertices
+		/// </summary>
+		/// <typeparam name="T">Vertex type</typeparam>
+		/// <param name="vertices">Vertex array</param>
+		/// <remarks>
+		/// The vertex type T must have one or more fields tagged with the <see cref="VertexFieldAttribute"/> attribute.
+		/// At least one of those fields must have the semantic <see cref="VertexFieldSemantic.Position"/>
+		/// </remarks>
+		public void Create<T>( T[] vertices )
+		{
+			Create( VertexBufferData.FromVertexCollection( vertices ) );
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Draws the contents of the vertex buffer directly
@@ -54,13 +77,13 @@ namespace Rb.Rendering.OpenGl
 			return new BufferLock( m_Handle, firstIndex, m_Stride, count, read, write );
 		}
 
-		#region Lock Class
+		#region BufferLock Class
 
 		private unsafe class BufferLock : IVertexBufferLock
 		{
 			public BufferLock( int handle, int firstIndex, int stride, int count, bool read, bool write )
 			{
-				Gl.glBindBuffer( Gl.GL_ARRAY_BUFFER_ARB, handle );
+				Gl.glBindBuffer( Gl.GL_ARRAY_BUFFER, handle );
 				m_Handle = handle;
 				m_FirstIndex = firstIndex;
 				m_Count = count;
@@ -81,7 +104,7 @@ namespace Rb.Rendering.OpenGl
 				{
 					access = Gl.GL_WRITE_ONLY;
 				}
-				m_Bytes = ( byte* )Gl.glMapBuffer( Gl.GL_ARRAY_BUFFER_ARB, access );
+				m_Bytes = ( byte* )Gl.glMapBuffer( Gl.GL_ARRAY_BUFFER, access );
 				m_Bytes += firstIndex * stride;
 			}
 
@@ -129,8 +152,8 @@ namespace Rb.Rendering.OpenGl
 
 			public void Dispose( )
 			{
-				Gl.glBindBuffer( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );
-				Gl.glUnmapBuffer( Gl.GL_ARRAY_BUFFER_ARB );
+				Gl.glBindBuffer( Gl.GL_ARRAY_BUFFER, m_Handle );
+				Gl.glUnmapBuffer( Gl.GL_ARRAY_BUFFER );
 			}
 
 			#endregion
@@ -145,7 +168,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public void Begin( )
 		{
-			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );
+			Gl.glBindBuffer( Gl.GL_ARRAY_BUFFER, m_Handle );
 
 			int offset = 0;
 			for ( int fieldIndex = 0; fieldIndex < m_Fields.Length; ++fieldIndex )
@@ -196,6 +219,18 @@ namespace Rb.Rendering.OpenGl
 
 		#endregion
 
+		#region IDisposable Members
+
+		/// <summary>
+		/// Destroys the vertex buffer
+		/// </summary>
+		public void Dispose( )
+		{
+			DestroyBuffer( );
+		}
+
+		#endregion
+
 		#region Private stuff
 
 		private struct FieldInfo
@@ -206,9 +241,9 @@ namespace Rb.Rendering.OpenGl
 			public short	m_Size;
 		}
 
-		private readonly int m_Stride;
-		private readonly int m_Handle;
-		private readonly FieldInfo[] m_Fields;
+		private int m_Stride;
+		private int m_Handle;
+		private FieldInfo[] m_Fields;
 
 		/// <summary>
 		/// Maps a <see cref="VertexFieldElementTypeId"/> value to its associated GL value
@@ -239,7 +274,7 @@ namespace Rb.Rendering.OpenGl
 				case VertexFieldSemantic.Blend0:
 				case VertexFieldSemantic.Blend1:
 				case VertexFieldSemantic.Blend2:
-				case VertexFieldSemantic.Blend3: return Gl.GL_WEIGHT_ARRAY_ARB;
+				case VertexFieldSemantic.Blend3: return Gl.GL_WEIGHT_ARRAY;
 				case VertexFieldSemantic.Texture0:
 				case VertexFieldSemantic.Texture1:
 				case VertexFieldSemantic.Texture2:
@@ -253,17 +288,31 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
-		/// Shared private constructor
+		/// Vertex buffer destruction
 		/// </summary>
-		private unsafe OpenGlVertexBuffer( VertexBufferFormat format, int numVertices, byte[] memory )
+		private void DestroyBuffer( )
 		{
+			if ( m_Handle != 0 )
+			{
+				Gl.glDeleteBuffers( 1, new int[] { m_Handle } );
+				m_Handle = 0;
+			}
+		}
+
+		/// <summary>
+		/// Vertex buffer creation
+		/// </summary>
+		private unsafe void CreateVertexBuffer( VertexBufferFormat format, int numVertices, byte[] memory )
+		{
+			DestroyBuffer( );
+
 			format.ValidateFormat( );
 
 			int[] bufferHandles = new int[ 1 ] { 0 };
-			Gl.glGenBuffersARB( 1, bufferHandles );
+			Gl.glGenBuffers( 1, bufferHandles );
 			m_Handle = bufferHandles[ 0 ];
 
-			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, m_Handle );
+			Gl.glBindBuffer( Gl.GL_ARRAY_BUFFER, m_Handle );
 
 			m_Stride = format.VertexSize;
 			m_Fields = new FieldInfo[ format.NumFields ];
@@ -283,7 +332,7 @@ namespace Rb.Rendering.OpenGl
 			{
 				IntPtr memPtr = new IntPtr( pMem );
 				IntPtr size = new IntPtr( format.VertexSize * numVertices );
-				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, size, memPtr, format.Static ? Gl.GL_STATIC_DRAW_ARB : Gl.GL_DYNAMIC_DRAW_ARB );
+				Gl.glBufferData( Gl.GL_ARRAY_BUFFER, size, memPtr, format.Static ? Gl.GL_STATIC_DRAW : Gl.GL_DYNAMIC_DRAW );
 			}
 		}
 

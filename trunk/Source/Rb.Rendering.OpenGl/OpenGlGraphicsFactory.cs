@@ -65,11 +65,19 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Creates a new Texture2d object
 		/// </summary>
-		/// <returns></returns>
 		public ITexture2d CreateTexture2d( )
 		{
 			return new OpenGlTexture2d( );
 		}
+
+		/// <summary>
+		/// Creates a cube map texture
+		/// </summary>
+		ICubeMapTexture CreateCubeMapTexture( )
+		{
+			return new OpenGlCubeMapTexture( );
+		}
+
 
 		/// <summary>
 		/// Creates a new TextureSampler2d object
@@ -99,35 +107,17 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Creates a new IVertexBuffer object
 		/// </summary>
-		public IVertexBuffer CreateVertexBuffer( VertexBufferFormat format, int numVertices )
+		public IVertexBuffer CreateVertexBuffer( )
 		{
-			return new OpenGlVertexBuffer( format, numVertices );
-		}
-
-		/// <summary>
-		/// Creates a new IVertexBuffer object
-		/// </summary>
-		public IVertexBuffer CreateVertexBuffer( VertexBufferData data )
-		{
-			return new OpenGlVertexBuffer( data );
-		}
-
-		/// <summary>
-		/// Creates a new IIndexBuffer object
-		/// </summary>
-		public IIndexBuffer CreateIndexBuffer( IndexBufferData bufferData )
-		{
-			return new OpenGlIndexBuffer( bufferData );
+			return new OpenGlVertexBuffer( );
 		}
 
 		/// <summary>
 		/// Creates an index buffer
 		/// </summary>
-		/// <param name="format">Index buffer format</param>
-		/// <param name="numIndices">Number of indices in the buffer</param>
-		public IIndexBuffer CreateIndexBuffer( IndexBufferFormat format, int numIndices )
+		public IIndexBuffer CreateIndexBuffer( )
 		{
-			return new OpenGlIndexBuffer( format, numIndices );
+			return new OpenGlIndexBuffer( );
 		}
 
 		/// <summary>
