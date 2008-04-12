@@ -15,10 +15,6 @@ namespace Rb.Rendering.Interfaces.Objects
 	/// <summary>
 	/// Index buffer interface
 	/// </summary>
-	/// <remarks>
-	/// Index buffers are created by passing an <see cref="IndexBufferData"/> object to
-	/// <see cref="IGraphicsFactory.CreateIndexBuffer(IndexBufferData)"/>.
-	/// </remarks>
 	public interface IIndexBuffer : IDisposable
 	{
 		#region Index buffer properties
@@ -38,7 +34,7 @@ namespace Rb.Rendering.Interfaces.Objects
 		/// <summary>
 		/// Creates this index buffer
 		/// </summary>
-		void Create( IndexBufferIndexSize indexSize, bool staticBuffer, int numIndices );
+		void Create( IndexBufferFormat indexSize, bool staticBuffer, int numIndices );
 
 		/// <summary>
 		/// Creates this index buffer from an index array

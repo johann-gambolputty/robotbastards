@@ -59,22 +59,27 @@ namespace Rb.Rendering.Textures
 		}
 
 		/// <summary>
+		/// Gets the usage of this texture
+		/// </summary>
+		public TextureUsage Usage
+		{
+			get { return Asset.Usage; }
+		}
+
+		/// <summary>
 		/// Creates an empty texture
 		/// </summary>
-		/// <param name="width">Width of the texture in pixels</param>
-		/// <param name="height">Height of the texture in pixels</param>
-		/// <param name="format">Format of the texture</param>
-		public void Create( int width, int height, TextureFormat format )
+		public void Create( int width, int height, TextureFormat format, TextureUsage usage )
 		{
-			Asset.Create( width, height, format );
+			Asset.Create( width, height, format, usage );
 		}
 
 		/// <summary>
 		/// Loads the texture from bitmap data
 		/// </summary>
-		public void Load( System.Drawing.Bitmap bmp, bool generateMipMap )
+		public void Load( System.Drawing.Bitmap bmp, bool generateMipMap, TextureUsage usage )
 		{
-			Asset.Load( bmp, generateMipMap );
+			Asset.Load( bmp, generateMipMap, usage );
 		}
 
 		/// <summary>

@@ -44,7 +44,7 @@ namespace Poc1.Universe.Classes
 
 		#region IRenderable Members
 
-		private readonly SkyBox m_SkyBox = new SkyBox( );
+		private readonly StarBox m_SkyBox = new StarBox( );
 
 		/// <summary>
 		/// Renders this solar system

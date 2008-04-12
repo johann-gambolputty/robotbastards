@@ -53,11 +53,11 @@ namespace Rb.Rendering.Textures
 				return null;
 			}
 
-			m_Graphics.DrawImage( bmp, node.Rect.X, node.Rect.Y );
+			m_Graphics.DrawImage( bmp, node.Rect.MinX, node.Rect.MinY );
 
 			float invWidth = 1.0f / m_TextureImage.Width;
 			float invHeight = 1.0f / m_TextureImage.Height;
-			return new Rectangle( node.Rect.X * invWidth, node.Rect.Y * invHeight, node.Rect.Width * invWidth, node.Rect.Height * invHeight );
+			return new Rectangle( node.Rect.MinX * invWidth, node.Rect.MinY * invHeight, node.Rect.Width * invWidth, node.Rect.Height * invHeight );
 		}
 		
 		/// <summary>
@@ -77,7 +77,7 @@ namespace Rb.Rendering.Textures
 		public void Finish( bool generateMipMaps )
 		{
 			m_Texture = Graphics.Factory.CreateTexture2d( );
-			m_Texture.Load( m_TextureImage, generateMipMaps );
+			m_Texture.Load( m_TextureImage, generateMipMaps, TextureUsage.Normal );
 		}
 
 		#region Private stuff

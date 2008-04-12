@@ -59,7 +59,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// <summary>
 		/// Binds a texture to a sampler parameter (shared with CgRenderEffect)
 		/// </summary>
-		public static void BindTexture( IntPtr context, IntPtr parameter, ITexture2d tex )
+		public static void BindTexture( IntPtr context, IntPtr parameter, ITexture tex )
 		{
 			if ( tex != null )
 			{

@@ -105,7 +105,7 @@ namespace Poc0.Core.Objects
 				localToWorld.XAxis = new Vector3( -sinA, 0, cosA );
 			}
 
-			RbGraphics.Renderer.PushTransform( Transform.LocalToWorld, localToWorld );
+			RbGraphics.Renderer.PushTransform( TransformType.LocalToWorld, localToWorld );
 
 			m_Lights.Begin( );
 
@@ -122,7 +122,7 @@ namespace Poc0.Core.Objects
 
 			m_Lights.End( );
 
-			RbGraphics.Renderer.PopTransform( Transform.LocalToWorld );
+			RbGraphics.Renderer.PopTransform( TransformType.LocalToWorld );
 		}
 
 		#endregion

@@ -86,18 +86,12 @@ namespace Poc1.Universe.OpenGl
 		{
 			UniCamera.PushAstroRenderTransform( TransformType.LocalToWorld, Planet.Transform );
 
-			//float scale = ( float )0.1;
-			//Graphics.Renderer.Scale( TransformType.LocalToWorld, scale, scale, scale );
-
-		//	ms_TerrainRenderer.Render( context, PlanetRadius );
-
 			TempSurface.FaceBrush.Begin( );
-			RenderSphere( 2 );
+			RenderSphere( 4 );
 			TempSurface.FaceBrush.End( );
 			TempSurface.EdgePen.Begin( );
-			RenderSphere( 2 );
+			RenderSphere( 4 );
 			TempSurface.EdgePen.End( );
-
 
 			if ( Planet.EnableTerrainRendering )
 			{

@@ -47,6 +47,8 @@
     <Compile Include="Objects\Cameras\ICamera3.cs" />
     <Compile Include="Objects\EffectRenderStateBinding.cs" />
     <Compile Include="Objects\FontData.cs" />
+    <Compile Include="Objects\ICubeMapTextureSampler.cs" />
+    <Compile Include="Objects\ICubeMapTexture.cs" />
     <Compile Include="Objects\IEffect.cs" />
     <Compile Include="Objects\IEffectDataSource.cs" />
     <Compile Include="Objects\IEffectParameter.cs" />
@@ -54,7 +56,6 @@
     <Compile Include="Objects\IIndexBuffer.cs" />
     <Compile Include="Objects\IIndexBufferLock.cs" />
     <Compile Include="Objects\IMaterial.cs" />
-    <Compile Include="Objects\IndexBufferData.cs" />
     <Compile Include="Objects\IndexBufferFormat.cs" />
     <Compile Include="Objects\IPass.cs" />
     <Compile Include="Objects\IRenderable.cs" />

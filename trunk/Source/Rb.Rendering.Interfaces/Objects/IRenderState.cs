@@ -7,7 +7,7 @@ namespace Rb.Rendering.Interfaces.Objects
 	/// </summary>
 	/// <remarks>
 	/// Rendering states are managed by pushing or popping them from the renderer
-	/// (<see cref="IRenderer.PushRenderState"/>, <see cref="IRenderer.PopRenderState"/>)
+	/// (<see cref="IRenderer.PushRenderState(IRenderState)"/>, <see cref="IRenderer.PopRenderState"/>)
 	/// </remarks>
 	public interface IRenderState : IPass
 	{

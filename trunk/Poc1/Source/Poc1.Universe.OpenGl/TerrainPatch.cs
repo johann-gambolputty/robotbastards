@@ -171,12 +171,15 @@ namespace Poc1.Universe.OpenGl
 				}
 			}
 
-			IndexBufferData data = new IndexBufferData( new IndexBufferFormat( IndexBufferIndexSize.Int32 ), indices.ToArray( ) );
-			IIndexBuffer buffer = Graphics.Factory.CreateIndexBuffer( data );
+			IIndexBuffer buffer = Graphics.Factory.CreateIndexBuffer( );
+			buffer.Create( indices.ToArray( ), false );
 
 			return buffer;
 		}
 
+		/// <summary>
+		/// Destroys the terrain index buffer
+		/// </summary>
 		private void DestroyIndexBuffer( )
 		{
 			if ( m_IndexBuffer != null )

@@ -383,7 +383,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				Tag transformTag = curFrame.Tags[ nestedPart.m_TransformTagIndex ];
 
 				Matrix44 transform = transformTag.Transform;
-				Graphics.Renderer.PushTransform( Transform.LocalToWorld, transform );
+				Graphics.Renderer.PushTransform( TransformType.LocalToWorld, transform );
 
 				ModelMesh nestedMesh = m_Model.GetPartMesh( nestedPart.m_Part );
 				if ( nestedMesh != null )
@@ -396,7 +396,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 					refPt.Render( context );
 				}
 
-				Graphics.Renderer.PopTransform( Transform.LocalToWorld );
+				Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 			}
 		}
 

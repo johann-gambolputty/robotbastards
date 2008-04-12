@@ -1,4 +1,5 @@
 using System.Drawing;
+using Rb.Rendering.Interfaces.Objects;
 
 namespace Rb.Rendering.Interfaces
 {
@@ -17,17 +18,6 @@ namespace Rb.Rendering.Interfaces
 		/// <param name="posZ">Positive Z axis bitmap</param>
 		/// <param name="negZ">Negative Z axis bitmap</param>
 		void Build( Bitmap posX, Bitmap negX, Bitmap posY, Bitmap negY, Bitmap posZ, Bitmap negZ );
-
-		/// <summary>
-		/// Builds this cube map from 6 textures
-		/// </summary>
-		/// <param name="posX">Positive X axis texture</param>
-		/// <param name="negX">Negative X axis texture</param>
-		/// <param name="posY">Positive Y axis texture</param>
-		/// <param name="negY">Negative Y axis texture</param>
-		/// <param name="posZ">Positive Z axis texture</param>
-		/// <param name="negZ">Negative Z axis texture</param>
-		void Build( ITexture2d posX, ITexture2d negX, ITexture2d posY, ITexture2d negY, ITexture2d posZ, ITexture2d negZ );
 
 		/// <summary>
 		/// Renders this cubemap texture to a series of bitmaps

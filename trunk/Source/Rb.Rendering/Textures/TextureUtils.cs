@@ -19,10 +19,11 @@ namespace Rb.Rendering.Textures
 		/// <param name="texture">Texture to load into</param>
 		/// <param name="name">Resource name</param>
 		/// <param name="generateMipMaps">If true, then mipmaps are generated for the created texture</param>
-		public static void LoadResource( ITexture2d texture, string name, bool generateMipMaps )
+		/// <param name="usage">How the texture is used</param>
+		public static void LoadResource( ITexture2d texture, string name, bool generateMipMaps, TextureUsage usage )
 		{
 			Stream stream = AppDomainUtils.FindManifestResource( name );
-			Load( texture, stream, generateMipMaps );
+			Load( texture, stream, generateMipMaps, usage );
 		}
 		
 		/// <summary>
@@ -31,10 +32,11 @@ namespace Rb.Rendering.Textures
 		/// <param name="texture">Texture to load into</param>
 		/// <param name="stream">Stream containing an image</param>
 		/// <param name="generateMipMaps">If true, then mipmaps are generated for the created texture</param>
-		public static void Load( ITexture2d texture, Stream stream, bool generateMipMaps )
+		/// <param name="usage">How the texture is used</param>
+		public static void Load( ITexture2d texture, Stream stream, bool generateMipMaps, TextureUsage usage )
 		{
 			Bitmap bmp = new Bitmap( stream );
-			texture.Load( bmp, generateMipMaps );
+			texture.Load( bmp, generateMipMaps, usage );
 		}
 
 		/// <summary>
@@ -43,10 +45,11 @@ namespace Rb.Rendering.Textures
 		/// <param name="texture">Texture to load into</param>
 		/// <param name="path">Path to image file</param>
 		/// <param name="generateMipMaps">If true, then mipmaps are generated for the created texture</param>
-		public static void Load( ITexture2d texture, string path, bool generateMipMaps )
+		/// <param name="usage">How the texture is used</param>
+		public static void Load( ITexture2d texture, string path, bool generateMipMaps, TextureUsage usage )
 		{
 			Bitmap bmp = new Bitmap( path );
-			texture.Load( bmp, generateMipMaps );
+			texture.Load( bmp, generateMipMaps, usage );
 		}
 
 		#endregion
@@ -59,10 +62,11 @@ namespace Rb.Rendering.Textures
 		/// <param name="name">Resource name</param>
 		/// <param name="generateMipMaps">If true, then mipmaps are generated for the created texture</param>
 		/// <returns>Returns the created texture</returns>
-		public static ITexture2d LoadResource( string name, bool generateMipMaps )
+		/// <param name="usage">How the texture is used</param>
+		public static ITexture2d LoadResource( string name, bool generateMipMaps, TextureUsage usage )
 		{
 			Stream stream = AppDomainUtils.FindManifestResource( name );
-			return Load( stream, generateMipMaps );
+			return Load( stream, generateMipMaps, usage );
 		}
 		
 
@@ -71,12 +75,13 @@ namespace Rb.Rendering.Textures
 		/// </summary>
 		/// <param name="stream">Stream containing an image</param>
 		/// <param name="generateMipMaps">If true, then mipmaps are generated for the created texture</param>
+		/// <param name="usage">How the texture is used</param>
 		/// <returns>Returns the created texture</returns>
-		public static ITexture2d Load( Stream stream, bool generateMipMaps )
+		public static ITexture2d Load( Stream stream, bool generateMipMaps, TextureUsage usage )
 		{
 			Bitmap bmp = new Bitmap( stream );
 			ITexture2d texture = Graphics.Factory.CreateTexture2d( );
-			texture.Load( bmp, generateMipMaps );
+			texture.Load( bmp, generateMipMaps, usage );
 			return texture;
 		}
 
@@ -85,12 +90,13 @@ namespace Rb.Rendering.Textures
 		/// </summary>
 		/// <param name="path">Path to image file</param>
 		/// <param name="generateMipMaps">If true, then mipmaps are generated for the created texture</param>
+		/// <param name="usage">How the texture is used</param>
 		/// <returns>Returns the created texture</returns>
-		public static ITexture2d Load( string path, bool generateMipMaps )
+		public static ITexture2d Load( string path, bool generateMipMaps, TextureUsage usage )
 		{
 			Bitmap bmp = new Bitmap( path );
 			ITexture2d texture = Graphics.Factory.CreateTexture2d( );
-			texture.Load( bmp, generateMipMaps );
+			texture.Load( bmp, generateMipMaps, usage );
 			return texture;
 		}
 
@@ -130,3 +136,4 @@ namespace Rb.Rendering.Textures
 		#endregion
 	}
 }
+

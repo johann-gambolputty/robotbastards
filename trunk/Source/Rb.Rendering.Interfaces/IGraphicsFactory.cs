@@ -71,6 +71,11 @@ namespace Rb.Rendering.Interfaces
 		ITexture2dSampler CreateTexture2dSampler( );
 
 		/// <summary>
+		/// Creates a cube map sampler
+		/// </summary>
+		ICubeMapTextureSampler CreateCubeMapTextureSampler( );
+
+		/// <summary>
 		/// Creates a new material
 		/// </summary>
 		IMaterial CreateMaterial( );

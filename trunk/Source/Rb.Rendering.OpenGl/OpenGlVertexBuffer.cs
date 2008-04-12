@@ -274,7 +274,7 @@ namespace Rb.Rendering.OpenGl
 				case VertexFieldSemantic.Blend0:
 				case VertexFieldSemantic.Blend1:
 				case VertexFieldSemantic.Blend2:
-				case VertexFieldSemantic.Blend3: return Gl.GL_WEIGHT_ARRAY;
+				case VertexFieldSemantic.Blend3: return Gl.GL_WEIGHT_ARRAY_ARB;
 				case VertexFieldSemantic.Texture0:
 				case VertexFieldSemantic.Texture1:
 				case VertexFieldSemantic.Texture2:

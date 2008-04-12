@@ -73,7 +73,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Creates a cube map texture
 		/// </summary>
-		ICubeMapTexture CreateCubeMapTexture( )
+		public ICubeMapTexture CreateCubeMapTexture( )
 		{
 			return new OpenGlCubeMapTexture( );
 		}
@@ -85,6 +85,14 @@ namespace Rb.Rendering.OpenGl
 		public ITexture2dSampler CreateTexture2dSampler( )
 		{
 			return new OpenGlTextureSampler2d( );
+		}
+
+		/// <summary>
+		/// Creates a cube map sampler
+		/// </summary>
+		public ICubeMapTextureSampler CreateCubeMapTextureSampler( )
+		{
+			return new OpenGlCubeMapTextureSampler( );
 		}
 
 		/// <summary>

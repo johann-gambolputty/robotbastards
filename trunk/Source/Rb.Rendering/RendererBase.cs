@@ -19,7 +19,7 @@ namespace Rb.Rendering
 
 		public virtual void Setup( )
 		{
-			m_Textures = new ITexture2d[ MaxTextureUnits ];
+			m_Textures = new ITexture[ MaxTextureUnits ];
 			m_Lights = new ILight[ MaxActiveLights ];
 		}
 
@@ -264,7 +264,7 @@ namespace Rb.Rendering
 		/// </summary>
 		public void PushTextures( )
 		{
-			m_TextureStack.Add( ( ITexture2d[] )m_Textures.Clone( ) );
+			m_TextureStack.Add( ( ITexture[] )m_Textures.Clone( ) );
 			UnbindAllTextures( );
 		}
 
@@ -274,7 +274,7 @@ namespace Rb.Rendering
 		public void PopTextures( )
 		{
 			UnbindAllTextures( );
-			ITexture2d[] oldTextures = m_TextureStack[ m_TextureStack.Count - 1 ];
+			ITexture[] oldTextures = m_TextureStack[ m_TextureStack.Count - 1 ];
 			for ( int textureIndex = 0; textureIndex < oldTextures.Length; ++textureIndex )
 			{
 				if ( oldTextures[ textureIndex ] != null )
@@ -288,7 +288,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Binds a texture. Returns the unit that the texture occupies
 		/// </summary>
-		public virtual int BindTexture( ITexture2d texture )
+		public virtual int BindTexture( ITexture texture )
 		{
 			if ( texture == null )
 			{
@@ -309,7 +309,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Unbinds a texture from the indexed texture stage. Returns the unit that the texture was bound to
 		/// </summary>
-		public virtual int UnbindTexture( ITexture2d texture )
+		public virtual int UnbindTexture( ITexture texture )
 		{
 			for ( int unit = 0; unit < m_Textures.Length; ++unit )
 			{
@@ -341,7 +341,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Gets a 2D texture, indexed by stage
 		/// </summary>
-		public ITexture2d GetTexture( int index )
+		public ITexture GetTexture( int index )
 		{
 			return m_Textures[ index ];
 		}
@@ -349,7 +349,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Gets the texture array
 		/// </summary>
-		public ITexture2d[] Textures
+		public ITexture[] Textures
 		{
 			get { return m_Textures; }
 		}
@@ -435,8 +435,8 @@ namespace Rb.Rendering
 		private readonly List<IRenderState>	m_RenderStates = new List<IRenderState>( );
 		private ILight[]					m_Lights;
 		private int							m_NumLights;
-		private ITexture2d[]				m_Textures;
-		private readonly List<ITexture2d[]> m_TextureStack = new List<ITexture2d[]>( );
+		private ITexture[]					m_Textures;
+		private readonly List<ITexture[]>	m_TextureStack = new List<ITexture[]>( );
 
 		#endregion
 	}

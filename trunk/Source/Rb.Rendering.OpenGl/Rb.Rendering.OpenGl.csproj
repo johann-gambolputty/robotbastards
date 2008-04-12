@@ -54,6 +54,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OpenGlCubeMapTexture.cs" />
+    <Compile Include="OpenGlCubeMapTextureSampler.cs" />
     <Compile Include="OpenGlDraw.cs" />
     <Compile Include="OpenGlIndexBuffer.cs" />
     <Compile Include="OpenGlIndexedGroup.cs" />

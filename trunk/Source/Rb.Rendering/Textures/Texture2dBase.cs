@@ -29,15 +29,16 @@ namespace Rb.Rendering.Textures
 		public Texture2dBase( SerializationInfo info, StreamingContext context )
 		{
 			bool mipMapped = ( bool )info.GetValue( "mm", typeof( bool ) );
-			Load( ( Bitmap )info.GetValue( "img", typeof( Bitmap ) ), mipMapped );
+			TextureUsage usage = ( TextureUsage )info.GetValue( "usage", typeof( TextureUsage ) );
+			Load( ( Bitmap )info.GetValue( "img", typeof( Bitmap ) ), mipMapped, usage );
 		}
 
 		/// <summary>
 		/// Loads the texture from a bitmap file
 		/// </summary>
-		public Texture2dBase( string path, bool generateMipMaps )
+		public Texture2dBase( string path, bool generateMipMaps, TextureUsage usage )
 		{
-			TextureUtils.Load( this, path, generateMipMaps );
+			TextureUtils.Load( this, path, generateMipMaps, usage );
 		}
 
 		#endregion
@@ -67,19 +68,28 @@ namespace Rb.Rendering.Textures
 		{
 			get { return m_Format; }
 		}
-		
+
+		/// <summary>
+		/// Gets the texture usage type
+		/// </summary>
+		public TextureUsage Usage
+		{
+			get { return m_Usage;  }
+		}
+
 		/// <summary>
 		/// Creates an empty texture
 		/// </summary>
 		/// <param name="width">Width of the texture in pixels</param>
 		/// <param name="height">Height of the texture in pixels</param>
 		/// <param name="format">Format of the texture</param>
-		public abstract void Create( int width, int height, TextureFormat format );
+		/// <param name="usage">How the texture will be used</param>
+		public abstract void Create( int width, int height, TextureFormat format, TextureUsage usage );
 		
 		/// <summary>
 		/// Loads the texture from bitmap data
 		/// </summary>
-		public abstract void Load( Bitmap bmp, bool generateMipMaps );
+		public abstract void Load( Bitmap bmp, bool generateMipMaps, TextureUsage usage );
 
 		/// <summary>
 		/// Generates an image from the texture
@@ -106,6 +116,7 @@ namespace Rb.Rendering.Textures
 		protected int			m_Height;
 		protected TextureFormat	m_Format;
 		protected bool			m_MipMapped;
+		protected TextureUsage	m_Usage;
 
 		#endregion
 
@@ -129,6 +140,7 @@ namespace Rb.Rendering.Textures
 		{
 			info.AddValue( "img", ToBitmap( ) );
 			info.AddValue( "mm", m_MipMapped );
+			info.AddValue( "usage", m_Usage );
 		}
 
 		#endregion
