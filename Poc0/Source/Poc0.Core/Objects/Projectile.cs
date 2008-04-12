@@ -104,10 +104,10 @@ namespace Poc0.Core.Objects
 
 			Point3 pos = m_Pos.Current;
 
-			Graphics.Renderer.PushTransform( Transform.LocalToWorld );
-			Graphics.Renderer.Translate( Transform.LocalToWorld, pos.X, pos.Y, pos.Z );
+			Graphics.Renderer.PushTransform( TransformType.LocalToWorld );
+			Graphics.Renderer.Translate( TransformType.LocalToWorld, pos.X, pos.Y, pos.Z );
 			ms_Cache.Render( context );
-			Graphics.Renderer.PopTransform( Transform.LocalToWorld );
+			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 		}
 
 		#endregion

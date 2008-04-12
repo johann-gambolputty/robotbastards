@@ -21,6 +21,35 @@ namespace Rb.Rendering.OpenGl
 
 
 		/// <summary>
+		/// Applies a texture filter to a given gl texture target
+		/// </summary>
+		public static void ApplyTextureFilter( int target, int filterType, TextureFilter filter )
+		{
+			switch ( filter )
+			{
+				case TextureFilter.NearestTexel				: Gl.glTexParameteri( target, filterType, Gl.GL_NEAREST ); break;
+				case TextureFilter.LinearTexel				: Gl.glTexParameteri( target, filterType, Gl.GL_LINEAR ); break;
+				case TextureFilter.NearestTexelNearestMipMap: Gl.glTexParameteri( target, filterType, Gl.GL_NEAREST_MIPMAP_NEAREST ); break;
+				case TextureFilter.LinearTexelNearestMipMap	: Gl.glTexParameteri( target, filterType, Gl.GL_LINEAR_MIPMAP_NEAREST ); break;
+				case TextureFilter.NearestTexelLinearMipMap	: Gl.glTexParameteri( target, filterType, Gl.GL_NEAREST_MIPMAP_LINEAR ); break;
+				case TextureFilter.LinearTexelLinearMipMap	: Gl.glTexParameteri( target, filterType, Gl.GL_LINEAR_MIPMAP_LINEAR ); break;
+			}
+		}
+
+
+		/// <summary>
+		/// Applies a texture wrap style to a given gl texture target
+		/// </summary>
+		public static void ApplyTextureWrap( int target, int dir, TextureWrap wrap )
+		{
+			switch ( wrap )
+			{
+				case TextureWrap.Repeat	: Gl.glTexParameteri( target, dir, Gl.GL_REPEAT ); break;
+				case TextureWrap.Clamp	: Gl.glTexParameteri( target, dir, Gl.GL_CLAMP ); break;
+			}
+		}
+
+		/// <summary>
 		/// Applies the associated texture and texture parameters
 		/// </summary>
 		public override void Begin( )
@@ -28,11 +57,13 @@ namespace Rb.Rendering.OpenGl
 		//	Gl.glEnable( Gl.GL_TEXTURE_2D );
 			Graphics.Renderer.BindTexture( Texture );
 
-			ApplyTextureFilter( Gl.GL_TEXTURE_MIN_FILTER, MinFilter );
-			ApplyTextureFilter( Gl.GL_TEXTURE_MAG_FILTER, MagFilter );
+			int target = OpenGlTexture.Target;
 
-			ApplyTextureWrap( Gl.GL_TEXTURE_WRAP_S, WrapS );
-			ApplyTextureWrap( Gl.GL_TEXTURE_WRAP_T, WrapT );
+			ApplyTextureFilter( target, Gl.GL_TEXTURE_MIN_FILTER, MinFilter );
+			ApplyTextureFilter( target, Gl.GL_TEXTURE_MAG_FILTER, MagFilter );
+
+			ApplyTextureWrap( target, Gl.GL_TEXTURE_WRAP_S, WrapS );
+			ApplyTextureWrap( target, Gl.GL_TEXTURE_WRAP_T, WrapT );
 
 			switch ( Mode )
 			{
@@ -50,32 +81,6 @@ namespace Rb.Rendering.OpenGl
 		{
 			Graphics.Renderer.UnbindTexture( Texture );
 		}
-
-		#region Private Members
-
-		private static void ApplyTextureWrap( int dir, TextureWrap wrap )
-		{
-			switch ( wrap )
-			{
-				case TextureWrap.Repeat		:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, dir, Gl.GL_REPEAT );	break;
-				case TextureWrap.Clamp		:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, dir, Gl.GL_CLAMP );	break;
-			}
-		}
-
-		private static void ApplyTextureFilter( int filterType, TextureFilter filter )
-		{
-			switch ( filter )
-			{
-				case TextureFilter.NearestTexel					:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_NEAREST					);	break;
-				case TextureFilter.LinearTexel					:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_LINEAR					);	break;
-				case TextureFilter.NearestTexelNearestMipMap	:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_NEAREST_MIPMAP_NEAREST	);	break;
-				case TextureFilter.LinearTexelNearestMipMap		:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_LINEAR_MIPMAP_NEAREST	);	break;
-				case TextureFilter.NearestTexelLinearMipMap		:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_NEAREST_MIPMAP_LINEAR	);	break;
-				case TextureFilter.LinearTexelLinearMipMap		:	Gl.glTexParameteri( Gl.GL_TEXTURE_2D, filterType, Gl.GL_LINEAR_MIPMAP_LINEAR	);	break;
-			}
-		}
-
-		#endregion
 
 	}
 }

@@ -124,12 +124,12 @@ namespace Rb.World.Entities
 			//	Push the entity transform
 			Matrix44 mat = new Matrix44( curPos, Left, Up, Ahead );
 
-			Rb.Rendering.Graphics.Renderer.PushTransform( Transform.LocalToWorld, mat );
+			Rb.Rendering.Graphics.Renderer.PushTransform( TransformType.LocalToWorld, mat );
 
 			base.Render( context );
 
 			//	Pop the entity transform
-			Rb.Rendering.Graphics.Renderer.PopTransform( Transform.LocalToWorld );
+			Rb.Rendering.Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 		}
 
 		#endregion

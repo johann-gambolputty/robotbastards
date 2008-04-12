@@ -24,13 +24,13 @@ namespace Rb.Core.Maths
 			m_Height = max.Y - min.Y;
 		}
 
-		public float X
+		public float MinX
 		{
 			get { return m_X; }
 			set { m_X = value; }
 		}
 
-		public float Y
+		public float MinY
 		{
 			get { return m_Y; }
 			set { m_Y = value; }

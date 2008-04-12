@@ -91,7 +91,7 @@ namespace Poc0.LevelEditor.Rendering.OpenGl
 				m_TextureState.Enable2dTextureUnit(0, true );
 
 				ITexture2d texture = Graphics.Factory.CreateTexture2d( );
-				texture.Load( GridSquareBitmap, true );
+				texture.Load( GridSquareBitmap, true, TextureUsage.Normal );
 
 				m_Sampler = Graphics.Factory.CreateTexture2dSampler( );
 				m_Sampler.Texture = texture;

@@ -168,7 +168,8 @@ namespace Poc0.Core.Rendering.OpenGl
 			public Cell( Scene scene, EnvironmentGraphicsData.GridCell src )
 			{
 				m_Scene = scene;
-				m_VertexBuffer = Graphics.Factory.CreateVertexBuffer( src.VertexData );
+				m_VertexBuffer = Graphics.Factory.CreateVertexBuffer( );
+				m_VertexBuffer.Create( src.VertexData );
 				m_Groups = new GeometryGroup[ src.Groups.Count ];
 				for ( int groupIndex = 0; groupIndex < m_Groups.Length; ++groupIndex )
 				{
@@ -182,7 +183,7 @@ namespace Poc0.Core.Rendering.OpenGl
 			/// <param name="context">Rendering context</param>
 			public void Render( IRenderContext context )
 			{
-				Graphics.Renderer.PushTransform( Transform.LocalToWorld, Matrix44.Identity );
+				Graphics.Renderer.PushTransform( TransformType.LocalToWorld, Matrix44.Identity );
 
 				//	TODO: AP: Fix lighting
 				ILightingService lighting = m_Scene.GetService< ILightingService >( );
@@ -200,7 +201,7 @@ namespace Poc0.Core.Rendering.OpenGl
 
 				Graphics.Renderer.ClearLights( );
 
-				Graphics.Renderer.PopTransform( Transform.LocalToWorld );
+				Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 			}
 
 			private readonly Scene m_Scene;

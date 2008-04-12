@@ -20,9 +20,17 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Returns the internal texture handle
 		/// </summary>
-		public int	TextureHandle
+		public int TextureHandle
 		{
 			get { return m_TextureHandle; }
+		}
+
+		/// <summary>
+		/// Gets the GL texture target implied by this texture's <see cref="ITexture2d.Usage"/> property
+		/// </summary>
+		public int Target
+		{
+			get { return m_Target;  }
 		}
 
 		/// <summary>
@@ -49,12 +57,47 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
+		/// Converts a <see cref="TextureUsage"/> value to an OpenGL texture image target
+		/// </summary>
+		public static int GetTextureImageTarget( TextureUsage usage )
+		{
+			switch ( usage )
+			{
+				case TextureUsage.CubeMapNegativeX: return Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_X;
+				case TextureUsage.CubeMapPositiveX: return Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_X;
+				case TextureUsage.CubeMapNegativeY: return Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y;
+				case TextureUsage.CubeMapPositiveY: return Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_Y;
+				case TextureUsage.CubeMapNegativeZ: return Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z;
+				case TextureUsage.CubeMapPositiveZ: return Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_Z;
+			}
+			return Gl.GL_TEXTURE_2D;
+		}
+
+		/// <summary>
+		/// Converts a <see cref="TextureUsage"/> value to an OpenGL texture target
+		/// </summary>
+		public static int GetTextureTarget( TextureUsage usage )
+		{
+			switch ( usage )
+			{
+				case TextureUsage.CubeMapNegativeX :
+				case TextureUsage.CubeMapPositiveX :
+				case TextureUsage.CubeMapNegativeY :
+				case TextureUsage.CubeMapPositiveY :
+				case TextureUsage.CubeMapNegativeZ :
+				case TextureUsage.CubeMapPositiveZ : return Gl.GL_TEXTURE_CUBE_MAP;
+			}
+			return Gl.GL_TEXTURE_2D;
+		}
+
+		/// <summary>
 		/// Creates an empty texture
 		/// </summary>
 		/// <param name="width">Width of the texture in pixels</param>
 		/// <param name="height">Height of the texture in pixels</param>
 		/// <param name="format">Format of the texture</param>
-		public unsafe override void Create( int width, int height, TextureFormat format )
+		/// <param name="usage">Texture usage</param>
+		public unsafe override void Create( int width, int height, TextureFormat format, TextureUsage usage )
 		{
 			DestroyCurrent( );
 
@@ -63,22 +106,24 @@ namespace Rb.Rendering.OpenGl
 			m_Width		= width;
 			m_Height	= height;
 			m_MipMapped = false;
+			m_Usage		= usage;
+			m_Target	= GetTextureTarget( usage ); 
 
 			//	Generate a texture name
 			fixed ( int* handleMem = &m_TextureHandle )
 			{
 				Gl.glGenTextures( 1, ( IntPtr )handleMem );
 			}
-			Gl.glBindTexture( Gl.GL_TEXTURE_2D, m_TextureHandle );
+			Gl.glBindTexture( m_Target, m_TextureHandle );
 
 			byte[] nullArray = null;
-			Gl.glTexImage2D( Gl.GL_TEXTURE_2D, 0, m_InternalGlFormat, width, height, 0, m_GlFormat, m_GlType, nullArray );
+			Gl.glTexImage2D( GetTextureImageTarget( usage ), 0, m_InternalGlFormat, width, height, 0, m_GlFormat, m_GlType, nullArray );
 		}
 
 		/// <summary>
 		/// Loads the texture from bitmap data
 		/// </summary>
-		public override void Load( Bitmap bmp, bool generateMipMaps )
+		public override void Load( Bitmap bmp, bool generateMipMaps, TextureUsage usage )
 		{
 			//	Get the GL format of the bitmap, possibly converting it in the process
 			int glInternalFormat;
@@ -96,25 +141,57 @@ namespace Rb.Rendering.OpenGl
 				throw new ArgumentException( string.Format( "Unexpected stride in bitmap (was {0}, expected {1})", bmpData.Stride, expectedStride ) );
 			}
 
-			Create( bmpData.Width, bmpData.Stride, bmpData.Height, glInternalFormat, glFormat, glType, generateMipMaps, bmpData.Scan0 );
+			int target = GetTextureTarget( usage );
+			int imageTarget = GetTextureImageTarget( usage );
+			m_Usage = usage;
+			Create( target, imageTarget, bmpData.Width, bmpData.Stride, bmpData.Height, glInternalFormat, glFormat, glType, generateMipMaps, bmpData.Scan0 );
 			bmp.UnlockBits( bmpData );
 
 			m_Format = PixelFormatToTextureFormat( bmp.PixelFormat );
 		}
 
+		public static TextureFormat CreateTextureImageFromBitmap( Bitmap bmp, bool generateMipMaps, TextureUsage usage )
+		{
+			//	Get the GL format of the bitmap, possibly converting it in the process
+			int glInternalFormat;
+			int glFormat;
+			int glType;
+			bmp = CheckBmpFormat( bmp, out glInternalFormat, out glFormat, out glType );
+
+			//	Lock the bitmap, and create the texture
+			BitmapData bmpData = bmp.LockBits( new Rectangle( 0, 0, bmp.Width, bmp.Height ), ImageLockMode.ReadOnly, bmp.PixelFormat );
+
+			//	Argh... we don't quite handle bitmaps with loony strides
+			int expectedStride = bmp.Width * ( Image.GetPixelFormatSize( bmpData.PixelFormat ) / 8 );
+			if ( bmpData.Stride != expectedStride )
+			{
+				throw new ArgumentException( string.Format( "Unexpected stride in bitmap (was {0}, expected {1})", bmpData.Stride, expectedStride ) );
+			}
+
+			int imageTarget = GetTextureImageTarget( usage );
+			if ( generateMipMaps )
+			{
+				Glu.gluBuild2DMipmaps( imageTarget, glInternalFormat, bmpData.Width, bmpData.Height, glFormat, glType, bmpData.Scan0 );
+			}
+			else
+			{
+				Gl.glTexImage2D( imageTarget, 0, glInternalFormat, bmpData.Width, bmpData.Height, 0, glFormat, glType, bmpData.Scan0 );
+			}
+			bmp.UnlockBits( bmpData );
+
+			return PixelFormatToTextureFormat( bmp.PixelFormat );
+		}
+
 		/// <summary>
 		/// Destroys the current texture
 		/// </summary>
-		private unsafe void DestroyCurrent( )
+		private void DestroyCurrent( )
 		{
 			try
 			{
 				if ( m_TextureHandle != InvalidHandle )
 				{
-					fixed ( int* handleMem = &m_TextureHandle )
-					{
-						Gl.glDeleteTextures( 1, ( IntPtr )handleMem );
-					}
+					Gl.glDeleteTextures( 1, new int[] { m_TextureHandle } );
 					m_TextureHandle = InvalidHandle;
 				}
 			}
@@ -124,47 +201,53 @@ namespace Rb.Rendering.OpenGl
 			}
 		}
 
-		/// <summary>
-		/// Creates the texture
-		/// </summary>
-		private unsafe void Create( int width, int stride, int height, int glInternalFormat, int glFormat, int glType, bool generateMipMaps, IntPtr bytes )
+		private static unsafe int CreateStatic( int target, int imageTarget, int width, int stride, int height, int glInternalFormat, int glFormat, int glType, bool generateMipMaps, IntPtr bytes )
 		{
-			DestroyCurrent( );
-
 			//	Generate a texture name
-			fixed ( int* handleMem = &m_TextureHandle )
-			{
-				Gl.glGenTextures( 1, ( IntPtr )handleMem );
-			}
-			Gl.glBindTexture( Gl.GL_TEXTURE_2D, m_TextureHandle );
+			int[] handles = new int[ 1 ];
+			Gl.glGenTextures( 1, handles );
+			int textureHandle = handles[ 0 ];
+			Gl.glBindTexture( target, textureHandle );
 
 			try
 			{
 				if ( generateMipMaps )
 				{
-					Glu.gluBuild2DMipmaps( Gl.GL_TEXTURE_2D, glInternalFormat, width, height, glFormat, glType, bytes );
+					Glu.gluBuild2DMipmaps( imageTarget, glInternalFormat, width, height, glFormat, glType, bytes );
 				}
 				else
 				{
-					Gl.glTexImage2D( Gl.GL_TEXTURE_2D, 0, glInternalFormat, width, height, 0, glFormat, glType, bytes );
+					Gl.glTexImage2D( imageTarget, 0, glInternalFormat, width, height, 0, glFormat, glType, bytes );
 				}
 			}
 			catch ( AccessViolationException )
 			{
-				GraphicsLog.Warning( "Access violation occurred during texture creation (was image resource used as input?) - attempting managed buffer transfer");
+				GraphicsLog.Warning( "Access violation occurred during texture creation (was image resource used as input?) - attempting managed buffer transfer" );
 
 				int length = stride * height;
-				byte[] init = new byte[length];
+				byte[] init = new byte[ length ];
 
 				//	Oh dear oh dear...
 				byte* bmpAddress = ( byte* )bytes.ToPointer( );
-				for (int index = 0; index < length; ++index)
+				for ( int index = 0; index < length; ++index )
 				{
 					init[ index ] = bmpAddress[ index ];
 				}
-				
-				Gl.glTexImage2D( Gl.GL_TEXTURE_2D, 0, glInternalFormat, width, height, 0, glFormat, glType, init );
+
+				Gl.glTexImage2D( imageTarget, 0, glInternalFormat, width, height, 0, glFormat, glType, init );
 			}
+
+			return textureHandle;
+		}
+
+		/// <summary>
+		/// Creates the texture
+		/// </summary>
+		private unsafe void Create( int target, int imageTarget, int width, int stride, int height, int glInternalFormat, int glFormat, int glType, bool generateMipMaps, IntPtr bytes )
+		{
+			DestroyCurrent( );
+
+			m_TextureHandle = CreateStatic( target, imageTarget, width, stride, height, glInternalFormat, glFormat, glType, generateMipMaps, bytes );
 
 			m_InternalGlFormat	= glInternalFormat;
 			m_GlFormat			= glFormat;
@@ -172,6 +255,7 @@ namespace Rb.Rendering.OpenGl
 			m_Width				= width;
 			m_Height			= height;
 			m_MipMapped			= generateMipMaps;
+			m_Target			= target;
 		}
 
 		/// <summary>
@@ -181,7 +265,7 @@ namespace Rb.Rendering.OpenGl
 		public override void Bind( int unit )
 		{
 			Gl.glActiveTextureARB( Gl.GL_TEXTURE0_ARB + unit );
-			Gl.glBindTexture( Gl.GL_TEXTURE_2D, TextureHandle );
+			Gl.glBindTexture( m_Target, TextureHandle );
 		}
 		
 		/// <summary>
@@ -191,7 +275,7 @@ namespace Rb.Rendering.OpenGl
 		public override void Unbind( int unit )
 		{
 			Gl.glActiveTextureARB( Gl.GL_TEXTURE0_ARB + unit );
-			Gl.glBindTexture( Gl.GL_TEXTURE_2D, 0 );
+			Gl.glBindTexture( m_Target, 0 );
 		}
 
 		/// <summary>
@@ -213,7 +297,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Converts a TextureFormat value into a PixelFormat value
 		/// </summary>
-		private static PixelFormat TextureFormatToPixelFormat( TextureFormat texFormat )
+		public static PixelFormat TextureFormatToPixelFormat( TextureFormat texFormat )
 		{
 			switch ( texFormat )
 			{
@@ -245,13 +329,13 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="glFormat">Output GL texture format</param>
 		/// <param name="glType">OUtput GL texel type</param>
 		/// <returns>Returns either format, if it was directly supported by OpenGL, or a reasonable alternative</returns>
-		private static TextureFormat CheckTextureFormat( TextureFormat format, out int glInternalFormat, out int glFormat, out int glType )
+		public static TextureFormat CheckTextureFormat( TextureFormat format, out int glInternalFormat, out int glFormat, out int glType )
 		{
 			//	Handle direct mappings to GL texture image formats
 			switch ( format )
 			{
 				case TextureFormat.Depth16			:
-				{
+				{	
 					glInternalFormat	= Gl.GL_DEPTH_COMPONENT16;
 					glFormat			= Gl.GL_DEPTH_COMPONENT;
 					glType				= Gl.GL_FLOAT;	//	TODO: Is this correct?
@@ -522,5 +606,6 @@ namespace Rb.Rendering.OpenGl
 		private int	m_InternalGlFormat;
 		private int	m_GlFormat;
 		private int	m_GlType;
+		private int m_Target;
 	}
 }

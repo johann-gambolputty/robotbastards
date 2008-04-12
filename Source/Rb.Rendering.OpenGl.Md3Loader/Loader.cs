@@ -233,7 +233,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 						using ( Stream textureStream = OpenStream( TextureFile( source, tokens[ 1 ] ) ) )
 						{
-							TextureUtils.Load( newTexture, textureStream, true );
+							TextureUtils.Load( newTexture, textureStream, true, TextureUsage.Normal );
 						}
 
 						surfaceTextureMap[ tokens[ 0 ] ] = newTexture;
@@ -570,7 +570,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 				ITexture2d newTexture = Graphics.Factory.CreateTexture2d( );
 				using ( Stream textureStream = OpenStream( textureSource ) )
 				{
-					TextureUtils.Load( newTexture, textureStream, true );
+					TextureUtils.Load( newTexture, textureStream, true, TextureUsage.Normal );
 				}
 				return newTexture;
 			}

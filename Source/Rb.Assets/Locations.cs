@@ -65,11 +65,11 @@ namespace Rb.Assets
 		/// <summary>
 		/// Returns true if a specified path refers to an existing location
 		/// </summary>
-		public bool IsPathValid(string path)
+		public bool IsPathValid( string path )
 		{
-			foreach (ILocationManager manager in m_Systems)
+			foreach ( ILocationManager manager in m_Systems )
 			{
-				if (manager.IsPathValid(path))
+				if ( manager.IsPathValid( path ) )
 				{
 					return true;
 				}

@@ -4,6 +4,7 @@ using Rb.Core.Maths;
 using Rb.Core.Utils;
 using Rb.Rendering;
 using Rb.Animation;
+using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.World;
 using Rb.World.Entities;
@@ -83,7 +84,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 
 			public void Render( IRenderContext context )
 			{
-				Graphics.Renderer.GetTransform( Rb.Rendering.Interfaces.Transform.LocalToWorld, m_Transform );
+				Graphics.Renderer.GetTransform( TransformType.LocalToWorld, m_Transform );
 				if ( OnRender != null )
 				{
 					OnRender( context );

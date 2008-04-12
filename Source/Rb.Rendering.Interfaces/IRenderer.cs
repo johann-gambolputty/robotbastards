@@ -241,14 +241,14 @@ namespace Rb.Rendering.Interfaces
 		/// </summary>
 		/// <param name="texture">Texture to bind</param>
 		/// <returns>Returns the index of the texture unit that the texture was bound to</returns>
-		int BindTexture( ITexture2d texture );
+		int BindTexture( ITexture texture );
 
 		/// <summary>
 		/// Unbinds a texture from its texture unit
 		/// </summary>
 		/// <param name="texture">Texture to unbind</param>
 		/// <returns>Returns the index of the texture unit that the texture was unbound from</returns>
-		int UnbindTexture( ITexture2d texture );
+		int UnbindTexture( ITexture texture );
 
 		/// <summary>
 		/// Unbinds all textures from all texture units
@@ -260,7 +260,7 @@ namespace Rb.Rendering.Interfaces
 		/// </summary>
 		/// <param name="unit">Unit index</param>
 		/// <returns>Returns the texture current bound to the specified unit</returns>
-		ITexture2d GetTexture( int unit );
+		ITexture GetTexture( int unit );
 
 		#endregion
 

@@ -220,11 +220,11 @@ namespace Rb.Rendering.Shadows
 		/// </summary>
 		private int MakeBuffers( IRenderable renderable, IRenderContext context, ILight[] lights )
 		{
-			Graphics.Renderer.PushTransform( Transform.LocalToWorld );
-			Graphics.Renderer.PushTransform( Transform.WorldToView );
-			Graphics.Renderer.PushTransform( Transform.ViewToScreen );
+			Graphics.Renderer.PushTransform( TransformType.LocalToWorld );
+			Graphics.Renderer.PushTransform( TransformType.WorldToView );
+			Graphics.Renderer.PushTransform( TransformType.ViewToScreen );
 
-			Graphics.Renderer.SetTransform( Transform.LocalToWorld, Matrix44.Identity );
+			Graphics.Renderer.SetTransform( TransformType.LocalToWorld, Matrix44.Identity );
 
 			//  Set the global technique to the override technique (this forces all objects to be rendered using the
 			//  override technique, unlesss they support a valid substitute technique), and render away...
@@ -252,7 +252,7 @@ namespace Rb.Rendering.Shadows
 				Graphics.Renderer.SetPerspectiveProjectionTransform( curLight.ArcDegrees, aspectRatio, m_NearZ, m_FarZ );
 
 				//	Set the current MVP matrix as the shadow transform. This is for after, when the scene is rendered properly
-				Matrix44 shadowMat = Graphics.Renderer.GetTransform( Transform.ViewToScreen ) * Graphics.Renderer.GetTransform( Transform.WorldToView );
+				Matrix44 shadowMat = Graphics.Renderer.GetTransform( TransformType.ViewToScreen ) * Graphics.Renderer.GetTransform( TransformType.WorldToView );
 				m_ShadowMatrixBinding.Value[ lightIndex ] = shadowMat;
 
 				//	Set up the render target for the light
@@ -293,9 +293,9 @@ namespace Rb.Rendering.Shadows
 
 			context.PopGlobalTechnique( );
 
-			Graphics.Renderer.PopTransform( Transform.LocalToWorld );
-			Graphics.Renderer.PopTransform( Transform.WorldToView );
-			Graphics.Renderer.PopTransform( Transform.ViewToScreen );
+			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
+			Graphics.Renderer.PopTransform( TransformType.WorldToView );
+			Graphics.Renderer.PopTransform( TransformType.ViewToScreen );
 
 			return numBuffers;
 		}

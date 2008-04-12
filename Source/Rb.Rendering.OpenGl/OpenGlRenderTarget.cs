@@ -91,9 +91,9 @@ namespace Rb.Rendering.OpenGl
 					OpenGlTexture2d texture = ( OpenGlTexture2d )Graphics.Factory.CreateTexture2d( );
 					switch ( depthBits )
 					{
-						case 16 :	texture.Create( width, height, TextureFormat.Depth16 );	break;
-						case 24 :	texture.Create( width, height, TextureFormat.Depth24 );	break;
-						case 32 :	texture.Create( width, height, TextureFormat.Depth32 );	break;
+						case 16 :	texture.Create( width, height, TextureFormat.Depth16, TextureUsage.Normal );	break;
+						case 24 :	texture.Create( width, height, TextureFormat.Depth24, TextureUsage.Normal );	break;
+						case 32 :	texture.Create( width, height, TextureFormat.Depth32, TextureUsage.Normal );	break;
 						default	:	throw new ApplicationException( string.Format( "Unsupported render target depth buffer size of {0} bits", depthBits ) );
 					}
 
@@ -129,7 +129,7 @@ namespace Rb.Rendering.OpenGl
 			{
 				//	Create a texture
 				OpenGlTexture2d texture = ( OpenGlTexture2d )Graphics.Factory.CreateTexture2d( );
-				texture.Create( width, height, colourFormat );
+				texture.Create( width, height, colourFormat, TextureUsage.Normal );
 
 				//	Add texture parameters (barfs otherwise - incomplete attachements)
 				Gl.glTexParameterf( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_CLAMP_TO_EDGE );

@@ -122,7 +122,8 @@ namespace Poc1.Universe.OpenGl
 
 			GraphicsLog.Info( "Allocating terrain patch builder VBO: {0} vertices in format {1}", numVertices, format );
 
-			m_Buffer = Graphics.Factory.CreateVertexBuffer( format, numVertices );
+			m_Buffer = Graphics.Factory.CreateVertexBuffer( );
+			m_Buffer.Create( format, numVertices );
 
 			int curVertexIndex = 0;
 			for ( int level = 0; level < MaxLodLevels; ++level )

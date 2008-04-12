@@ -157,7 +157,7 @@ namespace Rb.Rendering.OpenGl.Md3Loader
 			if ( m_RaiseRootMeshToFloor )
 			{
 				ModelMesh.FrameInfo frame = m_RootMesh.GetAnimationFrame( layers );
-				Graphics.Renderer.Translate( Transform.LocalToWorld, 0, -frame.MinBounds.Y, 0 );
+				Graphics.Renderer.Translate( TransformType.LocalToWorld, 0, -frame.MinBounds.Y, 0 );
 			}
 			m_RootMesh.Render( context, layers, refPoints );
 		}

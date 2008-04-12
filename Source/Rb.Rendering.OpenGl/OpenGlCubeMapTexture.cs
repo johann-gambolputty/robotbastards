@@ -1,4 +1,10 @@
-using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
+using Rb.Rendering.Interfaces;
+using Rb.Rendering.Interfaces.Objects;
+using Tao.OpenGl;
 
 namespace Rb.Rendering.OpenGl
 {
@@ -9,26 +15,10 @@ namespace Rb.Rendering.OpenGl
 	{
 		#region Private Members
 
-		private TextureFormat m_Format = TextureFormat.Unknown;
-		private readonly OpenGlTexture2d[] m_Textures = new OpenGlTexture2d[ 6 ];
+		private TextureFormat m_Format = TextureFormat.Undefined;
+		private int m_Width;
+		private int m_Height;
 
-		private const int NegativeX = 0;
-		private const int PositiveX = 1;
-		private const int NegativeY = 2;
-		private const int PositiveY = 3;
-		private const int NegativeZ = 4;
-		private const int PositiveZ = 5;
-
-		/// <summary>
-		/// Disposes of all cube map textures
-		/// </summary>
-		private void DisposeTextures( )
-		{
-			foreach ( IDisposable disposable in m_Textures )
-			{
-				disposable.Dispose( );
-			}
-		}
 
 		#endregion
 
@@ -39,7 +29,11 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public void Dispose( )
 		{
-			DisposeTextures( );
+			if ( m_Handle != -1 )
+			{
+				Gl.glDeleteTextures( 1, new int[] { m_Handle } );
+				m_Handle = -1;
+			}
 		}
 
 		#endregion
@@ -60,7 +54,8 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="unit">Texture unit to bind this texture to</param>
 		public void Bind( int unit )
 		{
-			throw new NotImplementedException( );
+			Gl.glEnable( Gl.GL_TEXTURE_CUBE_MAP );
+			Gl.glBindTexture( Gl.GL_TEXTURE_CUBE_MAP, m_Handle );
 		}
 
 		/// <summary>
@@ -69,10 +64,12 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="unit">Texture unit that this texture is bound to</param>
 		public void Unbind( int unit )
 		{
-			throw new NotImplementedException( );
+			Gl.glDisable( Gl.GL_TEXTURE_CUBE_MAP );
 		}
 
 		#endregion
+
+		private int m_Handle = -1;
 
 		#region ICubeMapTexture Members
 
@@ -85,49 +82,25 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="negY">Negative Y axis bitmap</param>
 		/// <param name="posZ">Positive Z axis bitmap</param>
 		/// <param name="negZ">Negative Z axis bitmap</param>
-		public void Build( Bitmap posX, Bitmap negX, Bitmap posY, Bitmap negY, Bitmap posZ, Bitmap negZ )
+		public unsafe void Build( Bitmap posX, Bitmap negX, Bitmap posY, Bitmap negY, Bitmap posZ, Bitmap negZ )
 		{
-			throw new NotImplementedException( );
-		}
+			int[] textureHandles = new int[ 1 ];
+			Gl.glGenTextures( 1, textureHandles );
+			m_Handle = textureHandles[ 0 ];
 
-		/// <summary>
-		/// Builds this cube map from 6 textures
-		/// </summary>
-		/// <param name="posX">Positive X axis texture</param>
-		/// <param name="negX">Negative X axis texture</param>
-		/// <param name="posY">Positive Y axis texture</param>
-		/// <param name="negY">Negative Y axis texture</param>
-		/// <param name="posZ">Positive Z axis texture</param>
-		/// <param name="negZ">Negative Z axis texture</param>
-		public void Build( ITexture2d posX, ITexture2d negX, ITexture2d posY, ITexture2d negY, ITexture2d posZ, ITexture2d negZ )
-		{
-			if ( negX.Format != posX.Format )
-			{
-				throw new ArgumentException( "Negative X texture did not have the correct format " + posX.Format );
-			}
-			if ( posY.Format != posX.Format )
-			{
-				throw new ArgumentException( "Positive Y texture did not have the correct format " + posX.Format );
-			}
-			if ( negY.Format != posX.Format )
-			{
-				throw new ArgumentException( "Negative Y texture did not have the correct format " + posX.Format );
-			}
-			if ( posZ.Format != posX.Format )
-			{
-				throw new ArgumentException( "Positive Z texture did not have the correct format " + posX.Format );
-			}
-			if ( negZ.Format != posX.Format )
-			{
-				throw new ArgumentException( "Negative Z texture did not have the correct format " + posX.Format );
-			}
+			Gl.glEnable( Gl.GL_TEXTURE_CUBE_MAP );
+			Gl.glBindTexture( Gl.GL_TEXTURE_CUBE_MAP, m_Handle );
 
-			m_Textures[ PositiveX ] = posX;
-			m_Textures[ NegativeX ] = negX;
-			m_Textures[ PositiveY ] = posY;
-			m_Textures[ NegativeY ] = negY;
-			m_Textures[ PositiveZ ] = posZ;
-			m_Textures[ NegativeZ ] = negZ;
+			m_Width = posX.Width;
+			m_Height = posX.Height;
+			m_Format = OpenGlTexture2d.CreateTextureImageFromBitmap( posX, true, TextureUsage.CubeMapPositiveX );
+			OpenGlTexture2d.CreateTextureImageFromBitmap( negX, true, TextureUsage.CubeMapNegativeX );
+			OpenGlTexture2d.CreateTextureImageFromBitmap( posY, true, TextureUsage.CubeMapPositiveY );
+			OpenGlTexture2d.CreateTextureImageFromBitmap( negY, true, TextureUsage.CubeMapNegativeY );
+			OpenGlTexture2d.CreateTextureImageFromBitmap( posZ, true, TextureUsage.CubeMapPositiveZ );
+			OpenGlTexture2d.CreateTextureImageFromBitmap( negZ, true, TextureUsage.CubeMapNegativeZ );
+
+			Gl.glDisable( Gl.GL_TEXTURE_CUBE_MAP );
 		}
 
 		/// <summary>
@@ -135,12 +108,48 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public Bitmap[] ToBitmaps( )
 		{
-			List<Bitmap> bitmaps = new List<Bitmap>( );
-			foreach ( ITexture2d texture in m_Textures )
+			if ( m_Handle == -1 )
 			{
-				bitmaps.Add( texture.ToBitmap( ) );
+				GraphicsLog.Warning( "COuld not convert cube map texture to images - handle was invalid" );
+				return null;
 			}
+			Gl.glEnable( Gl.GL_TEXTURE_CUBE_MAP );
+			Gl.glBindTexture( Gl.GL_TEXTURE_CUBE_MAP, m_Handle );
+			List< Bitmap > bitmaps = new List<Bitmap>( );
+
+			bitmaps.Add( GetFaceBitmap( Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_X ) );
+			bitmaps.Add( GetFaceBitmap( Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_X ) );
+			bitmaps.Add( GetFaceBitmap( Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y ) );
+			bitmaps.Add( GetFaceBitmap( Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_Y ) );
+			bitmaps.Add( GetFaceBitmap( Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z ) );
+			bitmaps.Add( GetFaceBitmap( Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_Z ) );
+
+			Gl.glDisable( Gl.GL_TEXTURE_CUBE_MAP );
+
 			return bitmaps.ToArray( );
+		}
+
+		private unsafe Bitmap GetFaceBitmap( int imageTarget )
+		{
+			//	Get texture memory
+			int bytesPerPixel = TextureFormatInfo.GetBitSize( Format ) / 8;
+
+			byte[] textureMemory = new byte[ m_Width * m_Height * bytesPerPixel ];
+
+			int internalFormat;
+			int format;
+			int type;
+			OpenGlTexture2d.CheckTextureFormat( m_Format, out internalFormat, out format, out type );
+
+			Gl.glGetTexImage( imageTarget, 0, format, Gl.GL_UNSIGNED_BYTE, textureMemory );
+
+			PixelFormat pixelFormat = OpenGlTexture2d.TextureFormatToPixelFormat( Format );
+			Bitmap bmp = new Bitmap( m_Width, m_Height, pixelFormat );
+			BitmapData bmpData = bmp.LockBits( new Rectangle( 0, 0, m_Width, m_Height ), ImageLockMode.WriteOnly, pixelFormat );
+			Marshal.Copy( textureMemory, 0, bmpData.Scan0, textureMemory.Length );
+			bmp.UnlockBits( bmpData );
+
+			return bmp;
 		}
 
 		#endregion
