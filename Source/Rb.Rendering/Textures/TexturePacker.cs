@@ -77,7 +77,7 @@ namespace Rb.Rendering.Textures
 		public void Finish( bool generateMipMaps )
 		{
 			m_Texture = Graphics.Factory.CreateTexture2d( );
-			m_Texture.Load( m_TextureImage, generateMipMaps, TextureUsage.Normal );
+			m_Texture.Load( m_TextureImage, generateMipMaps );
 		}
 
 		#region Private stuff

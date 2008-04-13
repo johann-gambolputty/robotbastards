@@ -82,7 +82,8 @@ namespace Poc1.Universe.Classes
 					LoadCubeMapFace( path + "starBox_up.jpg" ),
 					LoadCubeMapFace( path + "starBox_dn.jpg" ),
 					LoadCubeMapFace( path + "starBox_fr.jpg" ),
-					LoadCubeMapFace( path + "starBox_bk.jpg" )
+					LoadCubeMapFace( path + "starBox_bk.jpg" ),
+					true
 				);
 		}
 

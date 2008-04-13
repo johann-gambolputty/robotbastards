@@ -1,5 +1,4 @@
 using Rb.Core.Components;
-using Rb.Core.Maths;
 using Rb.Core.Utils;
 using Rb.Interaction;
 
@@ -44,7 +43,7 @@ namespace Poc1.Universe.Classes.Cameras
 			{
 				case Commands.Zoom:
 					{
-						m_Camera.Radius = ( ( ScalarCommandMessage )msg ).Value;
+						m_Camera.Radius += ( ( ScalarCommandMessage )msg ).Value;
 						break;
 					}
 				case Commands.Pan:

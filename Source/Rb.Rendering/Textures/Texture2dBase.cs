@@ -29,16 +29,15 @@ namespace Rb.Rendering.Textures
 		public Texture2dBase( SerializationInfo info, StreamingContext context )
 		{
 			bool mipMapped = ( bool )info.GetValue( "mm", typeof( bool ) );
-			TextureUsage usage = ( TextureUsage )info.GetValue( "usage", typeof( TextureUsage ) );
-			Load( ( Bitmap )info.GetValue( "img", typeof( Bitmap ) ), mipMapped, usage );
+			Load( ( Bitmap )info.GetValue( "img", typeof( Bitmap ) ), mipMapped );
 		}
 
 		/// <summary>
 		/// Loads the texture from a bitmap file
 		/// </summary>
-		public Texture2dBase( string path, bool generateMipMaps, TextureUsage usage )
+		public Texture2dBase( string path, bool generateMipMaps )
 		{
-			TextureUtils.Load( this, path, generateMipMaps, usage );
+			TextureUtils.Load( this, path, generateMipMaps );
 		}
 
 		#endregion
@@ -70,26 +69,17 @@ namespace Rb.Rendering.Textures
 		}
 
 		/// <summary>
-		/// Gets the texture usage type
-		/// </summary>
-		public TextureUsage Usage
-		{
-			get { return m_Usage;  }
-		}
-
-		/// <summary>
 		/// Creates an empty texture
 		/// </summary>
 		/// <param name="width">Width of the texture in pixels</param>
 		/// <param name="height">Height of the texture in pixels</param>
 		/// <param name="format">Format of the texture</param>
-		/// <param name="usage">How the texture will be used</param>
-		public abstract void Create( int width, int height, TextureFormat format, TextureUsage usage );
+		public abstract void Create( int width, int height, TextureFormat format );
 		
 		/// <summary>
 		/// Loads the texture from bitmap data
 		/// </summary>
-		public abstract void Load( Bitmap bmp, bool generateMipMaps, TextureUsage usage );
+		public abstract void Load( Bitmap bmp, bool generateMipMaps );
 
 		/// <summary>
 		/// Generates an image from the texture
@@ -116,7 +106,6 @@ namespace Rb.Rendering.Textures
 		protected int			m_Height;
 		protected TextureFormat	m_Format;
 		protected bool			m_MipMapped;
-		protected TextureUsage	m_Usage;
 
 		#endregion
 
@@ -140,7 +129,6 @@ namespace Rb.Rendering.Textures
 		{
 			info.AddValue( "img", ToBitmap( ) );
 			info.AddValue( "mm", m_MipMapped );
-			info.AddValue( "usage", m_Usage );
 		}
 
 		#endregion

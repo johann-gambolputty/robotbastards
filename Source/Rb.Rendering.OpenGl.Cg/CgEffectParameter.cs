@@ -63,7 +63,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		{
 			if ( tex != null )
 			{
-				int texHandle = ( ( OpenGlTexture2d )tex ).TextureHandle;
+				int texHandle = ( ( IOpenGlTexture )tex ).TextureHandle;
 				Tao.Cg.CgGl.cgGLSetManageTextureParameters( context, true );
 				Tao.Cg.CgGl.cgGLEnableTextureParameter( parameter );
 				Tao.Cg.CgGl.cgGLSetTextureParameter( parameter, texHandle );
@@ -128,15 +128,7 @@ namespace Rb.Rendering.OpenGl.Cg
 		/// </summary>
 		public void Set( ITexture texture )
 		{
-			ITexture2d tex2d = texture as ITexture2d;
-			if ( tex2d != null )
-			{
-				BindTexture( m_Context, m_Parameter, tex2d );
-			}
-			else
-			{
-				throw new NotImplementedException( "Cannot set effect parameters to non-2d textures (unimplemented)" );
-			}
+			BindTexture( m_Context, m_Parameter, texture );
 		}
 
 		/// <summary>

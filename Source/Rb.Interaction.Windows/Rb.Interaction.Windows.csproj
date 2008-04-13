@@ -52,6 +52,8 @@
     <Compile Include="MouseButtonInputTemplate.cs" />
     <Compile Include="MouseCursorInput.cs" />
     <Compile Include="MouseCursorInputTemplate.cs" />
+    <Compile Include="MouseScrollDeltaInput.cs" />
+    <Compile Include="MouseScrollDeltaInputTemplate.cs" />
     <Compile Include="MouseScrollInput.cs" />
     <Compile Include="MouseScrollInputTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
