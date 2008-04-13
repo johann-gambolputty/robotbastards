@@ -91,9 +91,9 @@ namespace Poc1.Universe.Classes
 			delegate( IPlanet p0, IPlanet p1 )
 			{
 				UniPoint3 cameraPos = UniCamera.Current.Position;
-				long p0SqrDistToCam = p0.Transform.Position.SqrDistanceTo( cameraPos );
-				long p1SqrDistToCam = p1.Transform.Position.SqrDistanceTo( cameraPos );
-				return p0SqrDistToCam > p1SqrDistToCam ? -1 : ( p0SqrDistToCam == p1SqrDistToCam ? 0 : 1 );
+				long p0Score = p0.Transform.Position.ManhattanDistanceTo( cameraPos );
+				long p1Score = p1.Transform.Position.ManhattanDistanceTo( cameraPos );
+				return p0Score > p1Score ? -1 : ( p0Score == p1Score ? 0 : 1 );
 			};
 
 		#endregion

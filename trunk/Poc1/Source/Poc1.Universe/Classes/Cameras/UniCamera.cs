@@ -26,7 +26,7 @@ namespace Poc1.Universe.Classes.Cameras
 			}
 		}
 
-		public const double UniUnitsToAstroRenderUnits = 0.001f;
+		public const double UniUnitsToAstroRenderUnits = 0.00001;
 
 		public static float ToAstroRenderUnits( long uniUnits )
 		{
@@ -130,6 +130,14 @@ namespace Poc1.Universe.Classes.Cameras
 		}
 
 		/// <summary>
+		/// Gets this camera's transform
+		/// </summary>
+		public virtual Matrix44 InverseFrame
+		{
+			get { return m_InvLocalView; }
+		}
+
+		/// <summary>
 		/// Creates a pick ray from a screen position
 		/// </summary>
 		/// <param name="x">Screen X position</param>
@@ -182,8 +190,9 @@ namespace Poc1.Universe.Classes.Cameras
 		/// </summary>
 		protected void SetViewFrame( Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
 		{
-			m_LocalView.Set( Point3.Origin, xAxis, yAxis, zAxis );
-			m_LocalView.Invert( );
+			m_InvLocalView.Set( Point3.Origin, xAxis, yAxis, zAxis );
+			m_LocalView.Copy( m_InvLocalView );
+			m_LocalView.Transpose( );
 		}
 
 		#endregion
@@ -192,6 +201,7 @@ namespace Poc1.Universe.Classes.Cameras
 
 		private UniPoint3 m_Position = new UniPoint3( );
 		private readonly Matrix44 m_LocalView = new Matrix44( );
+		private readonly Matrix44 m_InvLocalView = new Matrix44( );
 		private float m_PerspectiveFov = 45.0f;
 		private float m_PerspectiveZNear = 5.0f;
 		private float m_PerspectiveZFar = 1000.0f;

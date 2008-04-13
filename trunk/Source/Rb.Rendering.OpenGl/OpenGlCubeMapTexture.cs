@@ -11,7 +11,7 @@ namespace Rb.Rendering.OpenGl
 	/// <summary>
 	/// Implements ICubeMapTexture using OpenGL cube map extensions
 	/// </summary>
-	public class OpenGlCubeMapTexture : ICubeMapTexture
+	public class OpenGlCubeMapTexture : ICubeMapTexture, IOpenGlTexture
 	{
 		#region Private Members
 
@@ -82,7 +82,8 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="negY">Negative Y axis bitmap</param>
 		/// <param name="posZ">Positive Z axis bitmap</param>
 		/// <param name="negZ">Negative Z axis bitmap</param>
-		public unsafe void Build( Bitmap posX, Bitmap negX, Bitmap posY, Bitmap negY, Bitmap posZ, Bitmap negZ )
+		/// <param name="generateMipMaps">If true, mipmaps are generated for the cube map faces</param>
+		public unsafe void Build( Bitmap posX, Bitmap negX, Bitmap posY, Bitmap negY, Bitmap posZ, Bitmap negZ, bool generateMipMaps )
 		{
 			int[] textureHandles = new int[ 1 ];
 			Gl.glGenTextures( 1, textureHandles );
@@ -91,14 +92,18 @@ namespace Rb.Rendering.OpenGl
 			Gl.glEnable( Gl.GL_TEXTURE_CUBE_MAP );
 			Gl.glBindTexture( Gl.GL_TEXTURE_CUBE_MAP, m_Handle );
 
+			Gl.glTexParameteri( Gl.GL_TEXTURE_CUBE_MAP, Gl.GL_TEXTURE_WRAP_S, Gl.GL_CLAMP_TO_EDGE );
+			Gl.glTexParameteri( Gl.GL_TEXTURE_CUBE_MAP, Gl.GL_TEXTURE_WRAP_T, Gl.GL_CLAMP_TO_EDGE );
+			Gl.glTexParameteri( Gl.GL_TEXTURE_CUBE_MAP, Gl.GL_TEXTURE_WRAP_R, Gl.GL_CLAMP_TO_EDGE );
+
 			m_Width = posX.Width;
 			m_Height = posX.Height;
-			m_Format = OpenGlTexture2d.CreateTextureImageFromBitmap( posX, true, TextureUsage.CubeMapPositiveX );
-			OpenGlTexture2d.CreateTextureImageFromBitmap( negX, true, TextureUsage.CubeMapNegativeX );
-			OpenGlTexture2d.CreateTextureImageFromBitmap( posY, true, TextureUsage.CubeMapPositiveY );
-			OpenGlTexture2d.CreateTextureImageFromBitmap( negY, true, TextureUsage.CubeMapNegativeY );
-			OpenGlTexture2d.CreateTextureImageFromBitmap( posZ, true, TextureUsage.CubeMapPositiveZ );
-			OpenGlTexture2d.CreateTextureImageFromBitmap( negZ, true, TextureUsage.CubeMapNegativeZ );
+			m_Format = OpenGlTexture2d.CreateTextureImageFromBitmap( posX, generateMipMaps, Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_X );
+			OpenGlTexture2d.CreateTextureImageFromBitmap( negX, generateMipMaps, Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_X );
+			OpenGlTexture2d.CreateTextureImageFromBitmap( posY, generateMipMaps, Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y );
+			OpenGlTexture2d.CreateTextureImageFromBitmap( negY, generateMipMaps, Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_Y );
+			OpenGlTexture2d.CreateTextureImageFromBitmap( posZ, generateMipMaps, Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z );
+			OpenGlTexture2d.CreateTextureImageFromBitmap( negZ, generateMipMaps, Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_Z );
 
 			Gl.glDisable( Gl.GL_TEXTURE_CUBE_MAP );
 		}
@@ -150,6 +155,18 @@ namespace Rb.Rendering.OpenGl
 			bmp.UnlockBits( bmpData );
 
 			return bmp;
+		}
+
+		#endregion
+
+		#region IOpenGlTexture Members
+
+		/// <summary>
+		/// Gets the opengl handle for this texture
+		/// </summary>
+		public int TextureHandle
+		{
+			get { return m_Handle; }
 		}
 
 		#endregion

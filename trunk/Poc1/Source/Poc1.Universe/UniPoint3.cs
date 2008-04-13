@@ -81,6 +81,15 @@ namespace Poc1.Universe
 			get { return m_Z; }
 			set { m_Z = value; }
 		}
+
+		public long ManhattanDistanceTo( UniPoint3 pt )
+		{
+			long diffX = ( m_X - pt.m_X );
+			long diffY = ( m_Y - pt.m_Y );
+			long diffZ = ( m_Z - pt.m_Z );
+
+			return ( diffX < 0 ? -diffX : diffX ) + ( diffY < 0 ? -diffY : diffY ) + ( diffZ < 0 ? -diffZ : diffZ );
+		}
 		
 		public long SqrDistanceTo( UniPoint3 pt )
 		{

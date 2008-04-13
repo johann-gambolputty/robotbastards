@@ -72,9 +72,9 @@ namespace Poc1.GameClient
 		{
 			SolarSystem system = new SolarSystem( );
 
-			SpherePlanet planet = new SpherePlanet( null, "TEST0", 8000.0f );
-			SpherePlanet moon = new SpherePlanet( new CircularOrbit( planet, 15000.0, TimeSpan.FromSeconds( 6 ) ), "TEST1", 3000.0f );
-			SpherePlanet moon1 = new SpherePlanet( new CircularOrbit( moon, 5000.0, TimeSpan.FromSeconds( 6 ) ), "TEST2", 1000.0f );
+			SpherePlanet planet = new SpherePlanet( null, "TEST0", 800000.0 );
+			SpherePlanet moon = new SpherePlanet( new CircularOrbit( planet, 1500000.0, TimeSpan.FromSeconds( 60 ) ), "TEST1", 300000.0f );
+			SpherePlanet moon1 = new SpherePlanet( new CircularOrbit( moon, 500000.0, TimeSpan.FromSeconds( 60 ) ), "TEST2", 100000.0f );
 			moon.Moons.Add( moon1 );
 			planet.Moons.Add( moon );
 

@@ -68,6 +68,7 @@
     <Compile Include="Lights\PointLight.cs" />
     <Compile Include="Lights\SpotLight.cs" />
     <Compile Include="MaterialBase.cs" />
+    <Compile Include="PassList.cs" />
     <Compile Include="RenderContext.cs" />
     <Compile Include="RendererBase.cs" />
     <Compile Include="Technique.cs" />

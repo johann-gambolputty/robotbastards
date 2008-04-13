@@ -231,6 +231,7 @@ namespace Rb.Rendering.OpenGl.Cg
 			{
 				CgEffectParameter newParam = new CgEffectParameter( this, m_Context, curParam );
 				m_Parameters.Add( newParam );
+				Parameters.Add( newParam.Name, newParam );
 
 				Graphics.EffectDataSources.BindParameter( newParam );
 			}

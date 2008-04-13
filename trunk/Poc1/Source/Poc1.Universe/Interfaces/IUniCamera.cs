@@ -25,6 +25,14 @@ namespace Poc1.Universe.Interfaces
 		}
 
 		/// <summary>
+		/// Gets the view frame of the camera (orientation matrix without translation)
+		/// </summary>
+		Matrix44 InverseFrame
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Creates a pick ray from a screen position
 		/// </summary>
 		/// <param name="x">Screen X position</param>

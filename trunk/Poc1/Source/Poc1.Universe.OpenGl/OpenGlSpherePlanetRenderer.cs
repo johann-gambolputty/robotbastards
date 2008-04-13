@@ -1,35 +1,85 @@
+using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using Poc1.Universe.Classes;
 using Poc1.Universe.Classes.Cameras;
+using Rb.Assets;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
 using Tao.OpenGl;
 using Graphics=Rb.Rendering.Graphics;
+using Rectangle=System.Drawing.Rectangle;
 
 namespace Poc1.Universe.OpenGl
 {
 	[RenderingLibraryType]
 	public class OpenGlSpherePlanetRenderer : SpherePlanetRenderer
 	{
-
-		static OpenGlSpherePlanetRenderer( )
-		{
-			Draw.ISurface surface = Graphics.Draw.NewSurface( Color.Red, Color.Black );
-			surface.FaceBrush.State.DepthTest = false;
-			surface.FaceBrush.State.DepthWrite = false;
-			surface.FaceBrush.State.CullBackFaces = true;
-			surface.EdgePen.State.DepthTest = false;
-			surface.EdgePen.State.DepthWrite = false;
-			surface.EdgePen.State.CullBackFaces = true;
-			TempSurface = surface;
-		}
-
 		public OpenGlSpherePlanetRenderer( SpherePlanet planet ) :
 			base( planet )
 		{
+			IEffect effect = ( IEffect )AssetManager.Instance.Load( "Effects/Planets/terrestrialPlanet.cgfx" );
+			TechniqueSelector selector = new TechniqueSelector( effect, "DefaultTechnique" );
+
+			m_PlanetTextureParam = effect.Parameters[ "TerrainSampler" ];
+
+			ICubeMapTexture planetTexture = Graphics.Factory.CreateCubeMapTexture( );
+		//	Bitmap bmp = ( Bitmap )Bitmap.FromStream( Locations.NewStreamLocation( "Textures/TestPlanet0/planet0.bmp" ).Open( ) );
+			int res =64;
+			planetTexture.Build
+				(
+					//GeneratePlanetTextureFace( testAxis, res, PixelFormat.Format24bppRgb ),
+					//GeneratePlanetTextureFace( testAxis, res, PixelFormat.Format24bppRgb ),
+					//GeneratePlanetTextureFace( testAxis, res, PixelFormat.Format24bppRgb ),
+					//GeneratePlanetTextureFace( testAxis, res, PixelFormat.Format24bppRgb ),
+					//GeneratePlanetTextureFace( testAxis, res, PixelFormat.Format24bppRgb ),
+					//GeneratePlanetTextureFace( testAxis, res, PixelFormat.Format24bppRgb ),
+					GeneratePlanetTextureFace( PlanetMapFace.PosX, res, PixelFormat.Format24bppRgb ),
+					GeneratePlanetTextureFace( PlanetMapFace.NegX, res, PixelFormat.Format24bppRgb ),
+					GeneratePlanetTextureFace( PlanetMapFace.PosY, res, PixelFormat.Format24bppRgb ),
+					GeneratePlanetTextureFace( PlanetMapFace.NegY, res, PixelFormat.Format24bppRgb ),
+					GeneratePlanetTextureFace( PlanetMapFace.PosZ, res, PixelFormat.Format24bppRgb ),
+					GeneratePlanetTextureFace( PlanetMapFace.NegZ, res, PixelFormat.Format24bppRgb ),
+					true
+				);
+
+			int bmpIndex = 0;
+			foreach ( Bitmap bitmap in planetTexture.ToBitmaps( ) )
+			{
+				bitmap.Save( "PlanetTexture" + bmpIndex++ + ".jpg", ImageFormat.Jpeg );
+			}
+			m_PlanetTexture = planetTexture;
+
+			m_Technique = selector;
+
+			Graphics.Draw.StartCache( );
+			RenderSphere( 6 );
+			m_PlanetGeometry = Graphics.Draw.StopCache( );
 		}
+
+
+		private unsafe static Bitmap GeneratePlanetTextureFace( PlanetMapFace face, int res, PixelFormat format )
+		{
+			Bitmap bmp = new Bitmap( res, res, format );
+			BitmapData bmpData = bmp.LockBits( new Rectangle( 0, 0, res, res ), ImageLockMode.WriteOnly, format );
+
+			byte* curRow = ( byte* )bmpData.Scan0;
+
+			IPlanetTerrainGenerator gen = new TestNoisePlanetTerrainGenerator( );
+		//	IPlanetTerrainGenerator gen = new TestStPlanetTerrainGenerator( );
+			gen.GenerateSide( face, curRow, res, res, bmpData.Stride );
+
+			bmp.UnlockBits( bmpData );
+			return bmp;
+		}
+
+
+		private IEffectParameter	m_PlanetTextureParam;
+		private ITexture			m_PlanetTexture;
+		private ITechnique			m_Technique;
+		private IRenderable			m_PlanetGeometry;
 
 		private delegate void UvToPointDelegate( float x, float y );
 
@@ -66,7 +116,10 @@ namespace Poc1.Universe.OpenGl
 
 		public void UvSpherePoint( float x, float y, float z )
 		{
-			float length = PlanetRenderRadius / Functions.Sqrt( x * x + y * y + z * z );
+			float invLength = 1.0f / Functions.Sqrt( x * x + y * y + z * z );
+			float length = PlanetRenderRadius * invLength;
+
+			Gl.glNormal3f( x * invLength, y * invLength, z * invLength );
 			Gl.glVertex3f( x * length, y * length, z * length );
 		}
 
@@ -86,22 +139,17 @@ namespace Poc1.Universe.OpenGl
 		{
 			UniCamera.PushAstroRenderTransform( TransformType.LocalToWorld, Planet.Transform );
 
-			TempSurface.FaceBrush.Begin( );
-			RenderSphere( 4 );
-			TempSurface.FaceBrush.End( );
-			TempSurface.EdgePen.Begin( );
-			RenderSphere( 4 );
-			TempSurface.EdgePen.End( );
+			m_PlanetTextureParam.Set( m_PlanetTexture );
+			context.ApplyTechnique( m_Technique, m_PlanetGeometry );
 
 			if ( Planet.EnableTerrainRendering )
 			{
-				ms_TerrainRenderer.Render( context, PlanetRenderRadius );
+			//	ms_TerrainRenderer.Render( context, PlanetRenderRadius );
 			}
 
 			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 		}
 
-		private readonly static Draw.ISurface TempSurface;
 		private readonly static PlanetTerrainRenderer ms_TerrainRenderer = new PlanetTerrainRenderer( );
 	}
 }

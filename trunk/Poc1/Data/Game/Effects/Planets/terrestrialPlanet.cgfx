@@ -1,0 +1,63 @@
+
+samplerCUBE TerrainSampler = sampler_state
+{
+	WrapS = ClampToBorder;
+	WrapT = ClampToBorder;
+	WrapR = ClampToBorder;
+	BorderColour = float4( 0, 1, 0, 1 );
+	MinFilter = Linear;
+	MagFilter = Linear;
+
+};
+
+struct VertexShaderInput
+{
+	float4 m_Position : POSITION;
+	float4 m_Normal : NORMAL;
+};
+
+struct FragmentShaderInput
+{
+	float4 m_Position : POSITION;
+	float3 m_Normal;
+};
+
+float4x4 ModelViewProjectionMatrix;
+float4x4 InverseTransposeModelMatrix;
+
+FragmentShaderInput VertexShader( VertexShaderInput input )
+{
+	FragmentShaderInput output;
+
+	output.m_Position	= mul( ModelViewProjectionMatrix, input.m_Position );
+	output.m_Normal		= normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
+
+	return output;
+}
+
+
+float4 FragmentShader( FragmentShaderInput input ) : COLOR
+{
+	return texCUBE( TerrainSampler, input.m_Normal );
+}
+
+technique DefaultTechnique
+{
+	pass
+	{
+		LightingEnable			= false;
+		DepthMask				= false;
+		ShadeModel				= Smooth;
+		FrontFace				= CW;
+		DepthTestEnable			= false;
+		CullFaceEnable			= true;
+		BlendEnable				= false;
+		PolygonMode				= int2( Front, Fill );
+		VertexProgram			= compile arbvp1 VertexShader( );
+		FragmentProgram			= compile arbfp1 FragmentShader( );
+	}
+}
+
+
+
+

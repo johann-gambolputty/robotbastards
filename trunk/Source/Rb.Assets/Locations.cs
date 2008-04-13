@@ -13,7 +13,7 @@ namespace Rb.Assets
 		#region Public members
 
 		/// <summary>
-		/// Helper function that creates a new ILocation object from a path
+		/// Helper function that creates a new <see cref="ILocation"/> object from a path
 		/// </summary>
 		/// <exception cref="ArgumentException">Thrown if the path does not refer to a valid location</exception>
 		public static ILocation NewLocation( string path )
@@ -24,6 +24,15 @@ namespace Rb.Assets
 				throw new ArgumentException( string.Format( "Location \"{0}\" does not exist", path ), "path" );
 			}
 			return location;
+		}
+
+		/// <summary>
+		/// Returns a new <see cref="IStreamSource"/> location from a path
+		/// </summary>
+		/// <exception cref="ArgumentException">Thrown if the path does not refer to a valid location</exception>
+		public static IStreamSource NewStreamLocation( string path )
+		{
+			return ( IStreamSource )NewLocation( path );
 		}
 
 		/// <summary>

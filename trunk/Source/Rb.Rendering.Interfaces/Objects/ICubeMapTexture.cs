@@ -17,7 +17,8 @@ namespace Rb.Rendering.Interfaces
 		/// <param name="negY">Negative Y axis bitmap</param>
 		/// <param name="posZ">Positive Z axis bitmap</param>
 		/// <param name="negZ">Negative Z axis bitmap</param>
-		void Build( Bitmap posX, Bitmap negX, Bitmap posY, Bitmap negY, Bitmap posZ, Bitmap negZ );
+		/// <param name="generateMipMaps">If true, mipmaps are generated for the cube map faces</param>
+		void Build( Bitmap posX, Bitmap negX, Bitmap posY, Bitmap negY, Bitmap posZ, Bitmap negZ, bool generateMipMaps );
 
 		/// <summary>
 		/// Renders this cubemap texture to a series of bitmaps

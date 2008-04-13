@@ -63,12 +63,10 @@ namespace Rb.Rendering.Textures
 			parameters.CanCache = true;
 			ITexture2d texture = Graphics.Factory.CreateTexture2d( );
 
-			TextureUsage usage = DynamicProperties.GetProperty( parameters.Properties, UsagePropertyName, TextureUsage.Normal );
-
 			using ( Stream stream = ( ( IStreamSource )source ).Open( ) )
 			{
 				bool generateMipMaps = DynamicProperties.GetProperty( parameters.Properties, GenerateMipMapsPropertyName, false );
-				TextureUtils.Load( texture, stream, generateMipMaps, usage );
+				TextureUtils.Load( texture, stream, generateMipMaps );
 			}
 
 			return texture;
