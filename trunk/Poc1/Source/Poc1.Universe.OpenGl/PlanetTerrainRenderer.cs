@@ -1,6 +1,9 @@
 
 using System;
 using System.Collections.Generic;
+using Poc1.Universe.Classes;
+using Poc1.Universe.Classes.Cameras;
+using Poc1.Universe.Interfaces;
 using Rb.Assets;
 using Rb.Core.Maths;
 using Rb.Rendering;
@@ -179,14 +182,15 @@ namespace Poc1.Universe.OpenGl
 					new Point3( -hDim, +hDim, +hDim ),
 				};
 			int res = 3;
+			int defaultLodLevel = 0;
 			CubeSide[] sides = new CubeSide[ ]
 				{
-					new CubeSide( res, cubePoints[ 0 ], cubePoints[ 1 ], cubePoints[ 3 ], 2, true ),	//	-z
-					new CubeSide( res, cubePoints[ 7 ], cubePoints[ 6 ], cubePoints[ 4 ], 2, true ),	//	+z
-					new CubeSide( res, cubePoints[ 4 ], cubePoints[ 5 ], cubePoints[ 0 ], 2, true ),	//	+y
-					new CubeSide( res, cubePoints[ 6 ], cubePoints[ 7 ], cubePoints[ 2 ], 2, true ),	//	-y
-					new CubeSide( res, cubePoints[ 0 ], cubePoints[ 3 ], cubePoints[ 4 ], 2, true ),	//	-x
-					new CubeSide( res, cubePoints[ 5 ], cubePoints[ 6 ], cubePoints[ 1 ], 2, true )		//	+x
+					new CubeSide( res, cubePoints[ 0 ], cubePoints[ 1 ], cubePoints[ 3 ], defaultLodLevel, true ),	//	-z
+					new CubeSide( res, cubePoints[ 7 ], cubePoints[ 6 ], cubePoints[ 4 ], defaultLodLevel, true ),	//	+z
+					new CubeSide( res, cubePoints[ 4 ], cubePoints[ 5 ], cubePoints[ 0 ], defaultLodLevel, true ),	//	+y
+					new CubeSide( res, cubePoints[ 6 ], cubePoints[ 7 ], cubePoints[ 2 ], defaultLodLevel, true ),	//	-y
+					new CubeSide( res, cubePoints[ 0 ], cubePoints[ 3 ], cubePoints[ 4 ], defaultLodLevel, true ),	//	-x
+					new CubeSide( res, cubePoints[ 5 ], cubePoints[ 6 ], cubePoints[ 1 ], defaultLodLevel, true )		//	+x
 				};
 
 			foreach ( CubeSide side in sides )
@@ -263,11 +267,24 @@ namespace Poc1.Universe.OpenGl
 			}
 		}
 
-		public void Render( IRenderContext context, float radius )
+		public void Render( IRenderContext context, SpherePlanet planet, ITexture planetTerrainTexture )
 		{
 			Graphics.Renderer.PushTransform( TransformType.LocalToWorld );
-			float scale = radius / TerrainPatch.PlanetRadius;
-			Graphics.Renderer.Scale( TransformType.LocalToWorld, scale, scale, scale );
+			{
+				IUniCamera curCam = UniCamera.Current;
+				UniTransform transform = planet.Transform;
+				double scale = 1.0 / 100000.0;
+				float x = ( float )( UniUnits.ToMetres( transform.Position.X - curCam.Position.X ) * scale );
+				float y = ( float )( UniUnits.ToMetres( transform.Position.Y - curCam.Position.Y ) * scale );
+				float z = ( float )( UniUnits.ToMetres( transform.Position.Z - curCam.Position.Z ) * scale );
+
+				Graphics.Renderer.SetTransform( TransformType.LocalToWorld, new Point3( x, y, z ), transform.XAxis, transform.YAxis, transform.ZAxis );
+
+				float radius = ( float )( ( UniUnits.ToMetres( planet.Radius ) * scale ) / TerrainPatch.PlanetRadius );
+				Graphics.Renderer.Scale( TransformType.LocalToWorld, radius, radius, radius );
+			}
+
+			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainSampler" ].Set( planetTerrainTexture );
 
 			m_Builder.BeginPatchRendering( );
 			context.ApplyTechnique( m_PlanetTerrainTechnique, RenderPatches );

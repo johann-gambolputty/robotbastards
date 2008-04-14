@@ -55,6 +55,8 @@ namespace Poc1.Universe.Classes
 			m_RState = Graphics.Factory.CreateRenderState( );
 			m_RState.CullFaces = false;
 			m_RState.FaceRenderMode = PolygonRenderMode.Fill;
+			m_RState.DepthWrite = false;
+			m_RState.DepthTest = false;
 
 			ICubeMapTexture texture = Graphics.Factory.CreateCubeMapTexture( );
 			LoadStarBoxTextures( texture, "Textures/StarField0/" );

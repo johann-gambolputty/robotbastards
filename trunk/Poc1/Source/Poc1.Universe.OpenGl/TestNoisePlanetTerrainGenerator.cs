@@ -20,17 +20,29 @@ namespace Poc1.Universe.OpenGl
 			}
 		}
 
+		public static float TerrainHeight( float x, float y, float z )
+		{
+			float fVal = Fractals.SimpleFractal( x, y, z, 0.7f, 8, 1.0f );
+			fVal += ( Fractals.RidgedFractal( x, y, z, 1.5f, 8, 2.0f ) - 0.5f ) * 0.2f;
+			fVal = Utils.Clamp( fVal, 0, 1 );
+
+			return fVal;
+		}
+
+		//https://www.internal.pandromeda.com/engineering/musgrave/unsecure/S01_Course_Notes.html
+
 		static TestNoisePlanetTerrainGenerator( )
 		{
 			List<TerrainRange> ranges = new List<TerrainRange>( );
 
-			ranges.Add( new TerrainRange( Color.DarkBlue, 64 ) );
+			ranges.Add( new TerrainRange( Color.DarkBlue, 32 ) );
 			ranges.Add( new TerrainRange( Color.Blue, 32 ) );
-			ranges.Add( new TerrainRange( Color.LightBlue, 16 ) );
+			ranges.Add( new TerrainRange( Color.LightBlue, 32 ) );
 			ranges.Add( new TerrainRange( Color.BlanchedAlmond, 8 ) );
-			ranges.Add( new TerrainRange( Color.SandyBrown, 48 ) );
-			ranges.Add( new TerrainRange( Color.ForestGreen, 48 ) );
-			ranges.Add( new TerrainRange( Color.White, 32 ) );
+			ranges.Add( new TerrainRange( Color.SandyBrown, 32 ) );
+			ranges.Add( new TerrainRange( Color.Brown, 10 ) );
+			ranges.Add( new TerrainRange( Color.ForestGreen, 20 ) );
+			ranges.Add( new TerrainRange( Color.White, 42 ) );
 
 			int index = 0;
 			for ( int range = 0; range < ranges.Count; ++range )
@@ -43,7 +55,7 @@ namespace Poc1.Universe.OpenGl
 				float lastG = range == 0 ? g : ranges[ range - 1 ].m_Colour.G;
 				float lastB = range == 0 ? b : ranges[ range - 1 ].m_Colour.B;
 
-				int boundary = 10;
+				int boundary = ranges[ range ].m_Height;
 				for ( int count = 0; count < ranges[ range ].m_Height; ++count, ++index )
 				{
 					Color col;
@@ -88,7 +100,7 @@ namespace Poc1.Universe.OpenGl
 			float incV = 2.0f / ( height - 1 );
 			float v = -1;
 
-			float res = 5.0f;
+			float res = 2.0f;
 			for ( int row = 0; row < height; ++row, v += incV )
 			{
 				float u = -1;
@@ -97,14 +109,16 @@ namespace Poc1.Universe.OpenGl
 				{
 					float x, y, z;
 					PlanetMap.UvToXyz( u, v, face, out x, out y, out z );
-				
+
 					float invLength = res / Functions.Sqrt( u * u + v * v + 1 );
 					x *= invLength;
 					y *= invLength;
 					z *= invLength;
 
 					int latitude = ( int )( ( LatitudeCount / 2 ) * ( y / res ) ) + 2;
-					byte val = ( byte )( 255.0f * ( Fractals.SimpleFractal( x, y, z, 1.5f, 4, 0.5f ) ) );
+
+					float fVal = TerrainHeight( x, y, z );
+					int val = ( int )( fVal * 255.0f );
 					Color colour = TerrainColourMap[ latitude, val ];
 					curPixel[ 0 ] = colour.R;
 					curPixel[ 1 ] = colour.G;
@@ -142,9 +156,6 @@ namespace Poc1.Universe.OpenGl
 			
 			return p * x3 + q * x2 + r * x + s;
 		}
-		
-		 
-
 
 		private static float Noise2d( int x, int y )
 		{

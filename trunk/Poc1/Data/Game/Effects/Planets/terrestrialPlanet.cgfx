@@ -35,10 +35,19 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 	return output;
 }
 
+float3 SunNormal = float3( 1, 0, 0 );
+const float MinAngle = 0.5f;
+const float MaxAngle = 0.6f;
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
-	return texCUBE( TerrainSampler, input.m_Normal );
+	float shade = ( dot( input.m_Normal, SunNormal ) + 1 ) / 2;
+	
+	float t = shade < MinAngle ? 0.0f : ( shade > MaxAngle ? 1.0f :  ( ( shade - MinAngle ) / ( MaxAngle - MinAngle ) ) );
+	
+	shade = 0.4f + 0.9f * t;
+	
+	return texCUBE( TerrainSampler, -input.m_Normal ) * shade;
 }
 
 technique DefaultTechnique

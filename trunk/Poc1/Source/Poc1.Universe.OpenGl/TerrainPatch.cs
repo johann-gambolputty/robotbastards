@@ -215,10 +215,13 @@ namespace Poc1.Universe.OpenGl
 					Point3 curPt = rowStart;
 					for ( int col = 0; col < m_Size; ++col )
 					{
-						Point3 rlPt = Point3.Origin + ( curPt - Point3.Origin ).MakeNormal( ) * PlanetRadius;
+						Vector3 rlVec = ( curPt - Point3.Origin ).MakeNormal( );
+						Point3 rlPt = Point3.Origin + rlVec * 2;
+						float ptHeight = ( TestNoisePlanetTerrainGenerator.TerrainHeight( rlPt.X, rlPt.Y, rlPt.Z ) - 0.5f ) * 16.0f;
+						rlPt = Point3.Origin + rlVec * ( PlanetRadius + ptHeight );
 
 						curVertex->X = rlPt.X;
-						curVertex->Y = rlPt.Y;// +Functions.Sin( col * Constants.TwoPi / size ) * yScale;
+						curVertex->Y = rlPt.Y;
 						curVertex->Z = rlPt.Z;
 						++curVertex;
 						curPt += xInc;

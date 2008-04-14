@@ -24,17 +24,10 @@ namespace Poc1.Universe.OpenGl
 
 			m_PlanetTextureParam = effect.Parameters[ "TerrainSampler" ];
 
+			int res = 256;
 			ICubeMapTexture planetTexture = Graphics.Factory.CreateCubeMapTexture( );
-		//	Bitmap bmp = ( Bitmap )Bitmap.FromStream( Locations.NewStreamLocation( "Textures/TestPlanet0/planet0.bmp" ).Open( ) );
-			int res = 128;
 			planetTexture.Build
 				(
-					//GeneratePlanetTextureFace( testAxis, res, PixelFormat.Format24bppRgb ),
-					//GeneratePlanetTextureFace( testAxis, res, PixelFormat.Format24bppRgb ),
-					//GeneratePlanetTextureFace( testAxis, res, PixelFormat.Format24bppRgb ),
-					//GeneratePlanetTextureFace( testAxis, res, PixelFormat.Format24bppRgb ),
-					//GeneratePlanetTextureFace( testAxis, res, PixelFormat.Format24bppRgb ),
-					//GeneratePlanetTextureFace( testAxis, res, PixelFormat.Format24bppRgb ),
 					GeneratePlanetTextureFace( PlanetMapFace.PosX, res, PixelFormat.Format24bppRgb ),
 					GeneratePlanetTextureFace( PlanetMapFace.NegX, res, PixelFormat.Format24bppRgb ),
 					GeneratePlanetTextureFace( PlanetMapFace.PosY, res, PixelFormat.Format24bppRgb ),
@@ -47,14 +40,14 @@ namespace Poc1.Universe.OpenGl
 			int bmpIndex = 0;
 			foreach ( Bitmap bitmap in planetTexture.ToBitmaps( ) )
 			{
-				bitmap.Save( "PlanetTexture" + bmpIndex++ + ".jpg", ImageFormat.Jpeg );
+				bitmap.Save( planet.Name + " Planet Texture " + bmpIndex++ + ".jpg", ImageFormat.Jpeg );
 			}
 			m_PlanetTexture = planetTexture;
 
 			m_Technique = selector;
 
 			Graphics.Draw.StartCache( );
-			RenderSphere( 6 );
+			RenderSphere( 8 );
 			m_PlanetGeometry = Graphics.Draw.StopCache( );
 		}
 
@@ -137,17 +130,20 @@ namespace Poc1.Universe.OpenGl
 
 		public override void Render( IRenderContext context )
 		{
-			UniCamera.PushAstroRenderTransform( TransformType.LocalToWorld, Planet.Transform );
-
-			m_PlanetTextureParam.Set( m_PlanetTexture );
-			context.ApplyTechnique( m_Technique, m_PlanetGeometry );
-
 			if ( Planet.EnableTerrainRendering )
 			{
-				ms_TerrainRenderer.Render( context, PlanetRenderRadius );
+				ms_TerrainRenderer.Render( context, Planet, m_PlanetTexture );
+			}
+			else
+			{
+				UniCamera.PushAstroRenderTransform( TransformType.LocalToWorld, Planet.Transform );
+
+				m_PlanetTextureParam.Set( m_PlanetTexture );
+				context.ApplyTechnique( m_Technique, m_PlanetGeometry );
+
+				Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 			}
 
-			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 		}
 
 		private readonly static PlanetTerrainRenderer ms_TerrainRenderer = new PlanetTerrainRenderer( );

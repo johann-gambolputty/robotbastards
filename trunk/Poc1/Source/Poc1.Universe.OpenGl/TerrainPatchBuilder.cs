@@ -83,7 +83,7 @@ namespace Poc1.Universe.OpenGl
 		}
 
 		public const int MaxLodLevels = 4;
-		private readonly static int MaxSize = ( int )Functions.Pow( 2, MaxLodLevels - 1 );
+		private readonly static int MaxSize = ( int )Functions.Pow( 2, MaxLodLevels + 1 );
 
 		public static int GetLevelSize( int level )
 		{
@@ -100,7 +100,7 @@ namespace Poc1.Universe.OpenGl
 		{
 			switch ( level )
 			{
-				case 0: return 32;
+				case 0: return 64;
 				case 1: return 64;
 				case 2: return 64;
 				case 3: return 64;
