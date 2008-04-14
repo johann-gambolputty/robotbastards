@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using Rb.Core.Maths;
@@ -143,5 +142,6 @@ namespace Poc1.Universe.OpenGl
 
 		private readonly Lod[] m_LodLevels = new Lod[ MaxLodLevels ]; 
 		private readonly IVertexBuffer m_Buffer;
+
 	}
 }

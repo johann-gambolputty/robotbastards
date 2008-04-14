@@ -15,16 +15,8 @@ namespace Poc1.Universe.OpenGl
 
 	internal class PlanetMap
 	{
-		public static void UvToSt( float u, float v, PlanetMapFace face, out float s, out float t )
+		public static void UvToXyz( float u, float v, PlanetMapFace face, out float x, out float y, out float z )
 		{
-			//
-			//	x, y, z
-			//	r=length
-			//	s=invTan(y/x)
-			//	t=invCos(z/r)
-			//
-
-			float x, y, z;
 			switch ( face )
 			{
 				default:
@@ -39,17 +31,17 @@ namespace Poc1.Universe.OpenGl
 					z = -u;
 					break;
 				case PlanetMapFace.NegY:
-					x = u;
+					x = -u;
 					y = -1;
 					z = -v;
 					break;
 				case PlanetMapFace.PosY:
-					x = u;
+					x = -u;
 					y = 1;
 					z = v;
 					break;
 				case PlanetMapFace.NegZ:
-					x = u;
+					x = -u;
 					y = v;
 					z = -1;
 					break;
@@ -60,6 +52,19 @@ namespace Poc1.Universe.OpenGl
 					break;
 			}
 
+		}
+	
+		public static void UvToSt( float u, float v, PlanetMapFace face, out float s, out float t )
+		{
+			//
+			//	x, y, z
+			//	r=length
+			//	s=invTan(y/x)
+			//	t=invCos(z/r)
+			//
+
+			float x, y, z;
+			UvToXyz( u, v, face, out x, out y, out z );
 			float invLength = 1.0f / Functions.Sqrt( u * u + v * v + 1 );
 			s = Functions.Atan2( x, y );
 			t = Functions.Acos( z * invLength );

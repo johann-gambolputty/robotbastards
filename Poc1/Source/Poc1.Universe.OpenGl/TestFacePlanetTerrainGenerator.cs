@@ -1,4 +1,8 @@
 
+using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+
 namespace Poc1.Universe.OpenGl
 {
 	/// <summary>
@@ -17,6 +21,14 @@ namespace Poc1.Universe.OpenGl
 				{
 					ColourFace( face, curPixel );
 					curPixel += 3;
+				}
+			}
+
+			using ( Bitmap bmp = new Bitmap( width, height, stride, PixelFormat.Format24bppRgb, ( IntPtr )pixels ) )
+			{
+				using ( Graphics g = Graphics.FromImage( bmp ) )
+				{
+					g.DrawString( face.ToString( ), new Font( "Arial", 8 ), Brushes.White, width / 2, height / 2 );
 				}
 			}
 		}
