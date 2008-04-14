@@ -8,6 +8,20 @@ namespace Poc1.Universe.OpenGl
 	/// </summary>
 	public static class SimpleNoise
 	{
+		public static float Noise( float x )
+		{
+			int iX = ( int )x;
+			return NoiseBasis( iX ) / 2 + NoiseBasis( iX - 1 ) / 4 + NoiseBasis( iX + 1 ) / 4;
+
+		}
+
+		private static float NoiseBasis( int x )
+		{
+			uint n = ( uint )( x );
+			n = ( n << 13 ) ^ n;
+			return ( 1.0f - ( ( n * ( n * n * 15731 + 789221 ) + 1376312589 ) & 0x7fffffff ) / 1073741824.0f );
+		}
+
 		public static float Noise( float x, float y, float z )
 		{
 			int X = ( int )Math.Floor( x ) & 255,                  // FIND UNIT CUBE THAT

@@ -1,10 +1,9 @@
 
 samplerCUBE TerrainSampler = sampler_state
 {
-	WrapS = ClampToBorder;
-	WrapT = ClampToBorder;
-	WrapR = ClampToBorder;
-	BorderColor = float4( 0, 1, 0, 1 );
+	WrapS = ClampToEdge;
+	WrapT = ClampToEdge;
+	WrapR = ClampToEdge;
 	MinFilter = Linear;
 	MagFilter = Linear;
 };
@@ -35,9 +34,19 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 	return output;
 }
 
+float3 SunNormal = float3( 1, 0, 0 );
+const float MinAngle = 0.5f;
+const float MaxAngle = 0.6f;
+
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
-	return float4( texCUBE( TerrainSampler, input.m_Normal ).r, 0, 0, 1 );
+	float shade = ( dot( input.m_Normal, SunNormal ) + 1 ) / 2;
+	
+	float t = shade < MinAngle ? 0.0f : ( shade > MaxAngle ? 1.0f :  ( ( shade - MinAngle ) / ( MaxAngle - MinAngle ) ) );
+	
+	shade = 0.4f + 0.9f * t;
+	
+	return texCUBE( TerrainSampler, -input.m_Normal ) * shade;
 }
 
 technique DefaultTechnique
@@ -45,10 +54,10 @@ technique DefaultTechnique
 	pass
 	{
 		LightingEnable			= false;
-		DepthMask				= false;
+		DepthMask				= true;
 		ShadeModel				= Smooth;
 		FrontFace				= CCW;
-		DepthTestEnable			= false;
+		DepthTestEnable			= true;
 		CullFaceEnable			= true;
 		BlendEnable				= false;
 		PolygonMode				= int2( Front, Fill );
@@ -56,7 +65,3 @@ technique DefaultTechnique
 		FragmentProgram			= compile arbfp1 FragmentShader( );
 	}
 }
-
-
-
-
