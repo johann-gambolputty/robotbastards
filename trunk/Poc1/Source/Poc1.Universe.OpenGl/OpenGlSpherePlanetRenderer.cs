@@ -1,4 +1,3 @@
-using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Poc1.Universe.Classes;
@@ -27,7 +26,7 @@ namespace Poc1.Universe.OpenGl
 
 			ICubeMapTexture planetTexture = Graphics.Factory.CreateCubeMapTexture( );
 		//	Bitmap bmp = ( Bitmap )Bitmap.FromStream( Locations.NewStreamLocation( "Textures/TestPlanet0/planet0.bmp" ).Open( ) );
-			int res =64;
+			int res = 128;
 			planetTexture.Build
 				(
 					//GeneratePlanetTextureFace( testAxis, res, PixelFormat.Format24bppRgb ),
@@ -69,6 +68,7 @@ namespace Poc1.Universe.OpenGl
 
 			IPlanetTerrainGenerator gen = new TestNoisePlanetTerrainGenerator( );
 		//	IPlanetTerrainGenerator gen = new TestStPlanetTerrainGenerator( );
+		//	IPlanetTerrainGenerator gen = new TestFacePlanetTerrainGenerator( );
 			gen.GenerateSide( face, curRow, res, res, bmpData.Stride );
 
 			bmp.UnlockBits( bmpData );
@@ -76,10 +76,10 @@ namespace Poc1.Universe.OpenGl
 		}
 
 
-		private IEffectParameter	m_PlanetTextureParam;
-		private ITexture			m_PlanetTexture;
-		private ITechnique			m_Technique;
-		private IRenderable			m_PlanetGeometry;
+		private readonly IEffectParameter	m_PlanetTextureParam;
+		private readonly ITexture			m_PlanetTexture;
+		private readonly ITechnique			m_Technique;
+		private readonly IRenderable		m_PlanetGeometry;
 
 		private delegate void UvToPointDelegate( float x, float y );
 
@@ -144,7 +144,7 @@ namespace Poc1.Universe.OpenGl
 
 			if ( Planet.EnableTerrainRendering )
 			{
-			//	ms_TerrainRenderer.Render( context, PlanetRenderRadius );
+				ms_TerrainRenderer.Render( context, PlanetRenderRadius );
 			}
 
 			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );

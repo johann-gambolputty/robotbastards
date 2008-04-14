@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using Rb.Assets;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces;
@@ -155,8 +156,15 @@ namespace Poc1.Universe.OpenGl
 
 		#endregion
 
+		private readonly ITechnique m_PlanetTerrainTechnique; 
+
 		public PlanetTerrainRenderer( )
 		{
+			IEffect effect = ( IEffect )AssetManager.Instance.Load( "Effects/Planets/terrestrialPlanetTerrain.cgfx" );
+			TechniqueSelector selector = new TechniqueSelector( effect, "DefaultTechnique" );
+
+			m_PlanetTerrainTechnique = selector;
+
 			float hDim = 1;
 			Point3[] cubePoints = new Point3[]
 				{
@@ -247,21 +255,26 @@ namespace Poc1.Universe.OpenGl
 			m_PatchRenderState.FaceRenderMode = PolygonRenderMode.Lines;
 		}
 
+		private void RenderPatches( IRenderContext context )
+		{
+			foreach ( TerrainPatch patch in m_Patches )
+			{
+				patch.Render( );
+			}
+		}
 
 		public void Render( IRenderContext context, float radius )
 		{
 			Graphics.Renderer.PushTransform( TransformType.LocalToWorld );
 			float scale = radius / TerrainPatch.PlanetRadius;
 			Graphics.Renderer.Scale( TransformType.LocalToWorld, scale, scale, scale );
-			Graphics.Renderer.PushRenderState( m_PatchRenderState );
-			m_Builder.BeginPatchRendering( );
 
-			foreach ( TerrainPatch patch in m_Patches )
-			{
-				patch.Render( );
-			}
+			m_Builder.BeginPatchRendering( );
+			context.ApplyTechnique( m_PlanetTerrainTechnique, RenderPatches );
 			m_Builder.EndPatchRendering( );
-			Graphics.Renderer.PopRenderState( );
+
+		//	Graphics.Renderer.PushRenderState( m_PatchRenderState );
+		//	Graphics.Renderer.PopRenderState( );
 			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 		}
 

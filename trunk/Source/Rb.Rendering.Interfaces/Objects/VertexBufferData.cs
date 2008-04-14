@@ -176,6 +176,7 @@ namespace Rb.Rendering.Interfaces.Objects
 			values[ index++ ]	= src.Y;
 			return index;
 		}
+
 		private static int Vector3ToFloat32( Vector3 src, float[] values, int index )
 		{
 			values[ index++ ]	= src.X;
@@ -183,14 +184,15 @@ namespace Rb.Rendering.Interfaces.Objects
 			values[ index++ ]	= src.Z;
 			return index;
 		}
-		private static int ColourToByte( Color src, byte[] values, int index)
-		{
-			values[ index++ ] = src.R;
-			values[ index++ ] = src.G;
-			values[ index++ ] = src.B;
-			values[ index++ ] = src.A;
-			return index;
-		}
+
+		//private static int ColourToByte( Color src, byte[] values, int index)
+		//{
+		//    values[ index++ ] = src.R;
+		//    values[ index++ ] = src.G;
+		//    values[ index++ ] = src.B;
+		//    values[ index++ ] = src.A;
+		//    return index;
+		//}
 
 		private static int ColourToFloat32( Color src, float[] values, int index )
 		{
