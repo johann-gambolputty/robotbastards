@@ -49,6 +49,7 @@
     <Compile Include="TerrainPatch.cs" />
     <Compile Include="TerrainPatchBuilder.cs" />
     <Compile Include="TerrainVertex.cs" />
+    <Compile Include="TestCloudGenerator.cs" />
     <Compile Include="TestFacePlanetTerrainGenerator.cs" />
     <Compile Include="TestNoisePlanetTerrainGenerator.cs" />
     <Compile Include="TestStPlanetTerrainGenerator.cs" />

@@ -35,6 +35,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Cameras\EntityTrackingCamera.cs" />
+    <Compile Include="Classes\Cameras\HeadCamera.cs" />
+    <Compile Include="Classes\Cameras\HeadCameraController.cs" />
     <Compile Include="Classes\Cameras\PointTrackingCamera.cs" />
     <Compile Include="Classes\Cameras\TrackingCameraController.cs" />
     <Compile Include="Classes\Cameras\UniCamera.cs" />

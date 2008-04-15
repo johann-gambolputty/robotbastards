@@ -39,7 +39,7 @@ namespace Poc1.Universe.OpenGl
 			ranges.Add( new TerrainRange( Color.Blue, 32 ) );
 			ranges.Add( new TerrainRange( Color.LightBlue, 32 ) );
 			ranges.Add( new TerrainRange( Color.BlanchedAlmond, 8 ) );
-			ranges.Add( new TerrainRange( Color.SandyBrown, 32 ) );
+			ranges.Add( new TerrainRange( Color.SandyBrown, 10 ) );
 			ranges.Add( new TerrainRange( Color.Brown, 10 ) );
 			ranges.Add( new TerrainRange( Color.ForestGreen, 20 ) );
 			ranges.Add( new TerrainRange( Color.White, 42 ) );

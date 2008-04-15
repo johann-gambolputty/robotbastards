@@ -64,4 +64,17 @@ technique DefaultTechnique
 		VertexProgram			= compile arbvp1 VertexShader( );
 		FragmentProgram			= compile arbfp1 FragmentShader( );
 	}
+	pass
+	{
+		PolygonOffsetLineEnable	= true;
+		PolygonOffset			= float2( -1.0f, -1.0f );
+		LightingEnable			= true;
+		DepthMask				= true;
+		ShadeModel				= Smooth;
+		FrontFace				= CCW;
+		DepthTestEnable			= true;
+		CullFaceEnable			= true;
+		BlendEnable				= false;
+		PolygonMode				= int2( Front, Line );
+	}
 }
