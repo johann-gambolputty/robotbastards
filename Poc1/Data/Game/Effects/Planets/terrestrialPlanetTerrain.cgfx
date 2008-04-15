@@ -11,13 +11,14 @@ samplerCUBE TerrainSampler = sampler_state
 struct VertexShaderInput
 {
 	float4 m_Position : POSITION;
-//	float4 m_Normal : NORMAL;
+	float4 m_Normal : NORMAL;
 };
 
 struct FragmentShaderInput
 {
 	float4 m_Position : POSITION;
-	float3 m_Normal;
+	float3 m_TerrainNormal : TEXCOORD0;
+	float3 m_Normal : TEXCOORD1;
 };
 
 float4x4 ModelViewProjectionMatrix;
@@ -27,26 +28,27 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 {
 	FragmentShaderInput output;
 
-	output.m_Position	= mul( ModelViewProjectionMatrix, input.m_Position );
+	output.m_Position = mul( ModelViewProjectionMatrix, input.m_Position );
 //	output.m_Normal		= normalize( mul( InverseTransposeModelMatrix, normal ).xyz );
-	output.m_Normal		= normalize( mul( InverseTransposeModelMatrix, normalize( input.m_Position ) ).xyz );
+	output.m_TerrainNormal = normalize( mul( InverseTransposeModelMatrix, normalize( input.m_Position ) ).xyz );
+	output.m_Normal = mul( InverseTransposeModelMatrix, input.m_Normal ).xyz;
 
 	return output;
 }
 
 float3 SunNormal = float3( 1, 0, 0 );
-const float MinAngle = 0.5f;
-const float MaxAngle = 0.6f;
+const float MinAngle = 0.0f;
+const float MaxAngle = 1.0f;
+const float Dark = 0.0f;
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
 	float shade = ( dot( input.m_Normal, SunNormal ) + 1 ) / 2;
+//	float t = shade < MinAngle ? 0.0f : ( shade > MaxAngle ? 1.0f :  ( ( shade - MinAngle ) / ( MaxAngle - MinAngle ) ) );
+//	shade = Dark + ( 1 - Dark ) * t;
 	
-	float t = shade < MinAngle ? 0.0f : ( shade > MaxAngle ? 1.0f :  ( ( shade - MinAngle ) / ( MaxAngle - MinAngle ) ) );
-	
-	shade = 0.4f + 0.9f * t;
-	
-	return texCUBE( TerrainSampler, -input.m_Normal ) * shade;
+	return texCUBE( TerrainSampler, -input.m_TerrainNormal ) * shade;
+//	return shade.xxxx;
 }
 
 technique DefaultTechnique
@@ -64,17 +66,17 @@ technique DefaultTechnique
 		VertexProgram			= compile arbvp1 VertexShader( );
 		FragmentProgram			= compile arbfp1 FragmentShader( );
 	}
-	pass
-	{
-		PolygonOffsetLineEnable	= true;
-		PolygonOffset			= float2( -1.0f, -1.0f );
-		LightingEnable			= true;
-		DepthMask				= true;
-		ShadeModel				= Smooth;
-		FrontFace				= CCW;
-		DepthTestEnable			= true;
-		CullFaceEnable			= true;
-		BlendEnable				= false;
-		PolygonMode				= int2( Front, Line );
-	}
+	//pass
+	//{
+	//	PolygonOffsetLineEnable	= true;
+	//	PolygonOffset			= float2( -1.0f, -1.0f );
+	//	LightingEnable			= true;
+	//	DepthMask				= true;
+	//	ShadeModel				= Smooth;
+	//	FrontFace				= CCW;
+	//	DepthTestEnable			= true;
+	//	CullFaceEnable			= true;
+	//	BlendEnable				= false;
+	//	PolygonMode				= int2( Front, Line );
+	//}
 }
