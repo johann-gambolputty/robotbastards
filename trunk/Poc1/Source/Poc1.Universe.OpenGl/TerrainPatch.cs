@@ -199,12 +199,16 @@ namespace Poc1.Universe.OpenGl
 			m_Offset = m_VbRange.FirstVertexOffset;
 		}
 
+		//	Correct normal calculations
+		//http://www.gamedev.net/reference/articles/article2264.asp
+
 		public unsafe void Build( TerrainPatchBuilder builder )
 		{
 			using ( IVertexBufferLock vbLock = m_VbRange.Lock( ) )
 			{
 				m_IndexBuffer = BuildIndexBuffer( );
-				TerrainVertex* curVertex = ( TerrainVertex* )vbLock.Bytes;
+				TerrainVertex* firstVertex = ( TerrainVertex* )vbLock.Bytes;
+				TerrainVertex* curVertex = firstVertex;
 
 				Vector3 xInc = m_PatchXDir * ( m_PatchWidth / ( m_Size - 1 ) );
 				Vector3 zInc = m_PatchZDir * ( m_PatchHeight / ( m_Size - 1 ) );
@@ -220,14 +224,28 @@ namespace Poc1.Universe.OpenGl
 						float ptHeight = ( TestNoisePlanetTerrainGenerator.TerrainHeight( rlPt.X, rlPt.Y, rlPt.Z ) - 0.5f ) * 16.0f;
 						rlPt = Point3.Origin + rlVec * ( PlanetRadius + ptHeight );
 
-						curVertex->X = rlPt.X;
-						curVertex->Y = rlPt.Y;
-						curVertex->Z = rlPt.Z;
+						curVertex->SetPosition( rlPt.X, rlPt.Y, rlPt.Z );
 						++curVertex;
 						curPt += xInc;
 					}
 
 					rowStart += zInc;
+				}
+
+				for ( int row = 0; row < m_Size - 1; ++row )
+				{
+				    curVertex = firstVertex + ( row * m_Size );
+				    for ( int col = 0; col < m_Size - 1; ++col )
+				    {
+				        Point3 pt0 = curVertex->Position;
+				        Point3 pt1 = ( curVertex + m_Size )->Position;
+				        Point3 pt2 = ( curVertex + 1 )->Position;
+				        Vector3 vec = Vector3.Cross( pt1 - pt0, pt2 - pt0 ).MakeNormal( );
+
+				        //	TODO: Make correct normal calculation
+				        curVertex->SetNormal( vec.X, vec.Y, vec.Z );
+						++curVertex;
+				    }
 				}
 			}
 		}

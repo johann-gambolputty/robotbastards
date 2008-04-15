@@ -118,6 +118,7 @@ namespace Poc1.Universe.OpenGl
 
 			VertexBufferFormat format = new VertexBufferFormat( );
 			format.Add( VertexFieldSemantic.Position, VertexFieldElementTypeId.Float32, 3 );
+			format.Add( VertexFieldSemantic.Normal, VertexFieldElementTypeId.Float32, 3 );
 
 			GraphicsLog.Info( "Allocating terrain patch builder VBO: {0} vertices in format {1}", numVertices, format );
 
@@ -137,6 +138,7 @@ namespace Poc1.Universe.OpenGl
 					newLod.VbPool.Add( curVertexIndex );
 					curVertexIndex += numLevelVertices;
 				}
+				//	BABY P SAYS HELLO
 			}
 		}
 

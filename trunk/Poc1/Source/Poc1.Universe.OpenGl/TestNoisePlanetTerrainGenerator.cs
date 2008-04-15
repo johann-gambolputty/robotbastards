@@ -22,8 +22,8 @@ namespace Poc1.Universe.OpenGl
 
 		public static float TerrainHeight( float x, float y, float z )
 		{
-			float fVal = Fractals.SimpleFractal( x, y, z, 0.7f, 8, 1.0f );
-			fVal += ( Fractals.RidgedFractal( x, y, z, 1.5f, 8, 2.0f ) - 0.5f ) * 0.2f;
+			float fVal = Fractals.SimpleFractal( x, y, z, 0.9f, 8, 1.0f ) * 0.8f;
+			fVal += ( Fractals.RidgedFractal( x, y, z, 2.1f, 8, 2.0f ) - 0.5f ) * 0.2f;
 			fVal = Utils.Clamp( fVal, 0, 1 );
 
 			return fVal;
@@ -42,6 +42,7 @@ namespace Poc1.Universe.OpenGl
 			ranges.Add( new TerrainRange( Color.SandyBrown, 10 ) );
 			ranges.Add( new TerrainRange( Color.Brown, 10 ) );
 			ranges.Add( new TerrainRange( Color.ForestGreen, 20 ) );
+			ranges.Add( new TerrainRange( Color.DarkGreen, 20 ) );
 			ranges.Add( new TerrainRange( Color.White, 42 ) );
 
 			int index = 0;
