@@ -8,6 +8,8 @@ namespace Rb.Assets
 	{
 		//	TODO: AP: Asynchronous asset loading
 
+		#region Singleton
+
 		/// <summary>
 		/// Gets the class singleton
 		/// </summary>
@@ -15,6 +17,8 @@ namespace Rb.Assets
 		{
 			get { return ms_Singleton; }
 		}
+ 
+		#endregion
 
 		#region Loaders
 

@@ -269,6 +269,21 @@ namespace Rb.Core.Maths
 		}
 
 		/// <summary>
+		/// Sets up this matrix as a rotation transform around the x axis
+		/// </summary>
+		public void SetXRotation( float angleInRadians )
+		{
+			float sinA = Functions.Sin( angleInRadians );
+			float cosA = Functions.Cos( angleInRadians );
+
+			Elements[ 0 ] = 1; Elements[ 1 ] = 0; Elements[ 2 ] = 0; Elements[ 3 ] = 0;
+			Elements[ 4 ] = 0; Elements[ 5 ] = cosA; Elements[ 6 ] = -sinA; Elements[ 7 ] = 0;
+			Elements[ 8 ] = 0; Elements[ 9 ] = sinA; Elements[ 10 ] = cosA; Elements[ 11 ] = 0;
+			Elements[ 12 ] = 0; Elements[ 13 ] = 0; Elements[ 14 ] = 0; Elements[ 15 ] = 1;
+
+		}
+
+		/// <summary>
 		/// Sets up this matrix as a look-at matrix
 		/// </summary>
 		public void SetLookAt( Point3 origin, Point3 lookAt, Vector3 up )

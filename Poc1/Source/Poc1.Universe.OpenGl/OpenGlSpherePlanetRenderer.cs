@@ -22,9 +22,7 @@ namespace Poc1.Universe.OpenGl
 			IEffect effect = ( IEffect )AssetManager.Instance.Load( "Effects/Planets/terrestrialPlanet.cgfx" );
 			TechniqueSelector selector = new TechniqueSelector( effect, "DefaultTechnique" );
 
-			m_PlanetTextureParam = effect.Parameters[ "TerrainSampler" ];
-
-			int res = 256;
+			int res = 128;
 			ICubeMapTexture planetTexture = Graphics.Factory.CreateCubeMapTexture( );
 			planetTexture.Build
 				(
@@ -37,41 +35,68 @@ namespace Poc1.Universe.OpenGl
 					true
 				);
 
+			int cloudRes = 128;
+			ICubeMapTexture cloudTexture = Graphics.Factory.CreateCubeMapTexture( );
+			cloudTexture.Build
+			(
+				GeneratePlanetCloudTextureFace( PlanetMapFace.PosX, cloudRes, PixelFormat.Format32bppArgb ),
+				GeneratePlanetCloudTextureFace( PlanetMapFace.NegX, cloudRes, PixelFormat.Format32bppArgb ),
+				GeneratePlanetCloudTextureFace( PlanetMapFace.PosY, cloudRes, PixelFormat.Format32bppArgb ),
+				GeneratePlanetCloudTextureFace( PlanetMapFace.NegY, cloudRes, PixelFormat.Format32bppArgb ),
+				GeneratePlanetCloudTextureFace( PlanetMapFace.PosZ, cloudRes, PixelFormat.Format32bppArgb ),
+				GeneratePlanetCloudTextureFace( PlanetMapFace.NegZ, cloudRes, PixelFormat.Format32bppArgb ),
+				true
+			);
+
 			int bmpIndex = 0;
 			foreach ( Bitmap bitmap in planetTexture.ToBitmaps( ) )
 			{
 				bitmap.Save( planet.Name + " Planet Texture " + bmpIndex++ + ".jpg", ImageFormat.Jpeg );
 			}
 			m_PlanetTexture = planetTexture;
+			m_CloudTexture = cloudTexture;
 
-			m_Technique = selector;
+			m_PlanetTechnique = selector;
+			
+			IEffect cloudEffect = ( IEffect )AssetManager.Instance.Load( "Effects/Planets/cloudLayer.cgfx" );
+			m_CloudTechnique = new TechniqueSelector( cloudEffect, "DefaultTechnique" );
 
 			Graphics.Draw.StartCache( );
 			RenderSphere( 8 );
 			m_PlanetGeometry = Graphics.Draw.StopCache( );
 		}
 
+		private unsafe static Bitmap GeneratePlanetCloudTextureFace( PlanetMapFace face, int res, PixelFormat format )
+		{
+			Bitmap bmp = new Bitmap( res, res, format );
+			BitmapData bmpData = bmp.LockBits( new Rectangle( 0, 0, res, res ), ImageLockMode.WriteOnly, format );
+
+			IPlanetTerrainGenerator gen = new TestCloudGenerator( );
+			gen.GenerateSide( face, ( byte* )bmpData.Scan0, res, res, bmpData.Stride );
+
+			bmp.UnlockBits( bmpData );
+			return bmp;
+		}
 
 		private unsafe static Bitmap GeneratePlanetTextureFace( PlanetMapFace face, int res, PixelFormat format )
 		{
 			Bitmap bmp = new Bitmap( res, res, format );
 			BitmapData bmpData = bmp.LockBits( new Rectangle( 0, 0, res, res ), ImageLockMode.WriteOnly, format );
 
-			byte* curRow = ( byte* )bmpData.Scan0;
-
 			IPlanetTerrainGenerator gen = new TestNoisePlanetTerrainGenerator( );
 		//	IPlanetTerrainGenerator gen = new TestStPlanetTerrainGenerator( );
 		//	IPlanetTerrainGenerator gen = new TestFacePlanetTerrainGenerator( );
-			gen.GenerateSide( face, curRow, res, res, bmpData.Stride );
+			gen.GenerateSide( face, ( byte* )bmpData.Scan0, res, res, bmpData.Stride );
 
 			bmp.UnlockBits( bmpData );
 			return bmp;
 		}
 
 
-		private readonly IEffectParameter	m_PlanetTextureParam;
 		private readonly ITexture			m_PlanetTexture;
-		private readonly ITechnique			m_Technique;
+		private readonly ITexture			m_CloudTexture;
+		private readonly ITechnique			m_PlanetTechnique;
+		private readonly ITechnique			m_CloudTechnique;
 		private readonly IRenderable		m_PlanetGeometry;
 
 		private delegate void UvToPointDelegate( float x, float y );
@@ -138,14 +163,26 @@ namespace Poc1.Universe.OpenGl
 			{
 				UniCamera.PushAstroRenderTransform( TransformType.LocalToWorld, Planet.Transform );
 
-				m_PlanetTextureParam.Set( m_PlanetTexture );
-				context.ApplyTechnique( m_Technique, m_PlanetGeometry );
+				m_PlanetTechnique.Effect.Parameters[ "TerrainSampler" ].Set( m_PlanetTexture );
+				m_PlanetTechnique.Effect.Parameters[ "CloudSampler" ].Set( m_CloudTexture );
+				m_PlanetTechnique.Effect.Parameters[ "CloudTransform" ].Set( m_CloudOffsetTransform );
+				context.ApplyTechnique( m_PlanetTechnique, m_PlanetGeometry );
+
+				float cloudLayerScale = 1.01f;
+				Graphics.Renderer.Scale( TransformType.LocalToWorld, cloudLayerScale, cloudLayerScale, cloudLayerScale );
+				m_CloudTechnique.Effect.Parameters[ "CloudSampler" ].Set( m_CloudTexture );
+				m_CloudTechnique.Effect.Parameters[ "CloudTransform" ].Set( m_CloudOffsetTransform );
+				context.ApplyTechnique( m_CloudTechnique, m_PlanetGeometry );
 
 				Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 			}
 
+			m_CloudAngle = Utils.Wrap( m_CloudAngle + Constants.DegreesToRadians * 0.01f, 0, Constants.TwoPi );
+			m_CloudOffsetTransform.SetXRotation( m_CloudAngle );
 		}
 
+		private float m_CloudAngle;
+		private readonly Matrix44 m_CloudOffsetTransform = new Matrix44( );
 		private readonly static PlanetTerrainRenderer ms_TerrainRenderer = new PlanetTerrainRenderer( );
 	}
 }

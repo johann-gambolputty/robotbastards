@@ -6,10 +6,10 @@
     <object type="Poc1.Universe.Classes.Cameras.PointTrackingCamera" assembly="Poc1.Universe" property="Camera">
 
       <float value="0.7" property="T"/>
-      <double value="3000000" property="Radius"/>
+      <double value="2000000" property="Radius"/>
 
       <float value="0.5" property="PerspectiveZNear"/>
-      <float value="100000" property="PerspectiveZFar"/>
+      <float value="10000" property="PerspectiveZFar"/>
 
       <!-- Camera controller -->
       <object type="Poc1.Universe.Classes.Cameras.TrackingCameraController" assembly="Poc1.Universe">
