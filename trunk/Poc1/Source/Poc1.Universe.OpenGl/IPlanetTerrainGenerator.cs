@@ -1,5 +1,6 @@
 
 using Rb.Core.Maths;
+using System.Drawing.Imaging;
 
 namespace Poc1.Universe.OpenGl
 {
@@ -74,6 +75,11 @@ namespace Poc1.Universe.OpenGl
 
 	internal unsafe interface IPlanetTerrainGenerator
 	{
+		PixelFormat CubeMapFormat
+		{
+			get;
+		}
+
 		void GenerateSide( PlanetMapFace face, byte* pixels, int width, int height, int stride );
 	}
 }

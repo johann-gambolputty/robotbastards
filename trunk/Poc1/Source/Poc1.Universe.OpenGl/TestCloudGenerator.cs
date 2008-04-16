@@ -1,9 +1,16 @@
 
+using System.Drawing.Imaging;
+
 namespace Poc1.Universe.OpenGl
 {
 	internal class TestCloudGenerator : IPlanetTerrainGenerator
 	{
 		#region IPlanetTerrainGenerator Members
+
+		public PixelFormat CubeMapFormat
+		{
+			get { return PixelFormat.Format32bppRgb; }
+		}
 
 		public unsafe void GenerateSide( PlanetMapFace face, byte* pixels, int width, int height, int stride )
 		{

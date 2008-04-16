@@ -4,24 +4,26 @@ using System;
 namespace Poc1.Universe.OpenGl
 {
 	/// <summary>
-	/// Simple un-optimised noise, nabbed from Perlin's java implementation
+	/// Simple un-optimised noise, nabbed from Ken Perlin's java implementation
 	/// </summary>
 	public static class SimpleNoise
 	{
+		/// <summary>
+		/// Returns a noise value given the input value x
+		/// </summary>
 		public static float Noise( float x )
 		{
 			int iX = ( int )x;
 			return NoiseBasis( iX ) / 2 + NoiseBasis( iX - 1 ) / 4 + NoiseBasis( iX + 1 ) / 4;
-
 		}
 
-		private static float NoiseBasis( int x )
-		{
-			uint n = ( uint )( x );
-			n = ( n << 13 ) ^ n;
-			return ( 1.0f - ( ( n * ( n * n * 15731 + 789221 ) + 1376312589 ) & 0x7fffffff ) / 1073741824.0f );
-		}
-
+		/// <summary>
+		/// Returns a noise value given the input position (x,y,z). 
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="z"></param>
+		/// <returns>Noise value in the range [-0.5f,0.5f]</returns>
 		public static float Noise( float x, float y, float z )
 		{
 			int X = ( int )Math.Floor( x ) & 255,                  // FIND UNIT CUBE THAT
@@ -45,15 +47,27 @@ namespace Poc1.Universe.OpenGl
 								   lerp( u, grad( p[ AB + 1 ], x, y - 1, z - 1 ),
 										   grad( p[ BB + 1 ], x - 1, y - 1, z - 1 ) ) ) );
 		}
-		static float fade( float t ) { return t * t * t * ( t * ( t * 6 - 15 ) + 10 ); }
-		static float lerp( float t, float a, float b ) { return a + t * ( b - a ); }
-		static float grad( int hash, float x, float y, float z )
+
+		#region Private Members
+
+		private static float fade( float t )
+		{
+			return t * t * t * ( t * ( t * 6 - 15 ) + 10 );
+		}
+
+		private static float lerp( float t, float a, float b )
+		{
+			return a + t * ( b - a );
+		}
+
+		private static float grad( int hash, float x, float y, float z )
 		{
 			int h = hash & 15;                      // CONVERT LO 4 BITS OF HASH CODE
 			float u = h < 8 ? x : y,                 // INTO 12 GRADIENT DIRECTIONS.
 				   v = h < 4 ? y : h == 12 || h == 14 ? x : z;
 			return ( ( h & 1 ) == 0 ? u : -u ) + ( ( h & 2 ) == 0 ? v : -v );
 		}
+
 		private static readonly int[] p = new int[ 512 ];
 		private static readonly int[] permutation = new int[]
 		{
@@ -71,12 +85,28 @@ namespace Poc1.Universe.OpenGl
 			49,192,214, 31,181,199,106,157,184, 84,204,176,115,121,50,45,127, 4,150,254,
 			138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
 	   };
+
+		/// <summary>
+		/// Sets up permnutation and index tables for 3-valued noise
+		/// </summary>
 		static SimpleNoise( )
 		{
 			for ( int i = 0; i < 256; ++i )
 			{
-				p[256 + i] = p[i] = permutation[i];
+				p[ 256 + i ] = p[ i ] = permutation[ i ];
 			}
 		}
+
+		/// <summary>
+		/// Basis function for single-valued noise
+		/// </summary>
+		private static float NoiseBasis( int x )
+		{
+			uint n = ( uint )( x );
+			n = ( n << 13 ) ^ n;
+			return ( 1.0f - ( ( n * ( n * n * 15731 + 789221 ) + 1376312589 ) & 0x7fffffff ) / 1073741824.0f );
+		} 
+		#endregion
+
 	}
 }

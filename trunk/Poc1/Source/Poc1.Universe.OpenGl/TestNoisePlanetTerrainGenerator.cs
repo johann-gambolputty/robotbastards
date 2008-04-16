@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using Rb.Core.Maths;
 
 namespace Poc1.Universe.OpenGl
@@ -12,11 +13,20 @@ namespace Poc1.Universe.OpenGl
 		{
 			public readonly Color m_Colour;
 			public readonly int m_Height;
+			public readonly bool m_Cutoff;
 
 			public TerrainRange( Color colour, int height )
 			{
 				m_Colour = colour;
 				m_Height = height;
+				m_Cutoff = false;
+			}
+
+			public TerrainRange( Color colour, int height, bool cutoff )
+			{
+				m_Colour = colour;
+				m_Height = height;
+				m_Cutoff = cutoff;
 			}
 		}
 
@@ -36,11 +46,11 @@ namespace Poc1.Universe.OpenGl
 			List<TerrainRange> ranges = new List<TerrainRange>( );
 
 			ranges.Add( new TerrainRange( Color.DarkBlue, 32 ) );
-			ranges.Add( new TerrainRange( Color.Blue, 32 ) );
-			ranges.Add( new TerrainRange( Color.LightBlue, 32 ) );
-			ranges.Add( new TerrainRange( Color.BlanchedAlmond, 8 ) );
-			ranges.Add( new TerrainRange( Color.SandyBrown, 10 ) );
-			ranges.Add( new TerrainRange( Color.Brown, 10 ) );
+			ranges.Add( new TerrainRange( Color.Blue, 48 ) );
+			ranges.Add( new TerrainRange( Color.LightBlue, 4, true ) );
+			ranges.Add( new TerrainRange( Color.BlanchedAlmond, 2 ) );
+			ranges.Add( new TerrainRange( Color.Brown, 4 ) );
+			ranges.Add( new TerrainRange( Color.Khaki, 10 ) );
 			ranges.Add( new TerrainRange( Color.ForestGreen, 20 ) );
 			ranges.Add( new TerrainRange( Color.DarkGreen, 20 ) );
 			ranges.Add( new TerrainRange( Color.White, 42 ) );
@@ -52,9 +62,10 @@ namespace Poc1.Universe.OpenGl
 				float g = ranges[ range ].m_Colour.G;
 				float b = ranges[ range ].m_Colour.B;
 
-				float lastR = range == 0 ? r : ranges[ range - 1 ].m_Colour.R;
-				float lastG = range == 0 ? g : ranges[ range - 1 ].m_Colour.G;
-				float lastB = range == 0 ? b : ranges[ range - 1 ].m_Colour.B;
+				bool noLastRange = ( range == 0 || ranges[ range - 1 ].m_Cutoff );
+				float lastR = noLastRange ? r : ranges[ range - 1 ].m_Colour.R;
+				float lastG = noLastRange ? g : ranges[ range - 1 ].m_Colour.G;
+				float lastB = noLastRange ? b : ranges[ range - 1 ].m_Colour.B;
 
 				int boundary = ranges[ range ].m_Height;
 				for ( int count = 0; count < ranges[ range ].m_Height; ++count, ++index )
@@ -94,6 +105,11 @@ namespace Poc1.Universe.OpenGl
 		private const int LatitudeCount = 4;
 
 		private readonly static Color[ , ] TerrainColourMap = new Color[ LatitudeCount, 256 ];
+
+		public PixelFormat CubeMapFormat
+		{
+			get { return PixelFormat.Format24bppRgb; }
+		}
 
 		public unsafe void GenerateSide( PlanetMapFace face, byte* pixels, int width, int height, int stride )
 		{
