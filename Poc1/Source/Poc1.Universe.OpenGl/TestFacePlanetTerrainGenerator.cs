@@ -12,6 +12,11 @@ namespace Poc1.Universe.OpenGl
 	{
 		#region IPlanetTerrainGenerator Members
 
+		public PixelFormat CubeMapFormat
+		{
+			get { return PixelFormat.Format24bppRgb; }
+		}
+
 		public unsafe void GenerateSide( PlanetMapFace face, byte* pixels, int width, int height, int stride )
 		{
 			for ( int row = 0; row < height; ++row )

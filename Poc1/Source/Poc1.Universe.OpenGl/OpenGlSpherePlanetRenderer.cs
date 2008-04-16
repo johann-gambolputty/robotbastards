@@ -23,28 +23,33 @@ namespace Poc1.Universe.OpenGl
 			TechniqueSelector selector = new TechniqueSelector( effect, "DefaultTechnique" );
 
 			int res = 128;
+			//	IPlanetTerrainGenerator terrainGenerator = new TestStPlanetTerrainGenerator( );
+			//	IPlanetTerrainGenerator terrainGenerator = new TestFacePlanetTerrainGenerator( );
+			//	IPlanetTerrainGenerator terrainGenerator = new TestCloudGenerator( );
+			IPlanetTerrainGenerator terrainGenerator = new TestNoisePlanetTerrainGenerator( );
 			ICubeMapTexture planetTexture = Graphics.Factory.CreateCubeMapTexture( );
 			planetTexture.Build
 				(
-					GeneratePlanetTextureFace( PlanetMapFace.PosX, res, PixelFormat.Format24bppRgb ),
-					GeneratePlanetTextureFace( PlanetMapFace.NegX, res, PixelFormat.Format24bppRgb ),
-					GeneratePlanetTextureFace( PlanetMapFace.PosY, res, PixelFormat.Format24bppRgb ),
-					GeneratePlanetTextureFace( PlanetMapFace.NegY, res, PixelFormat.Format24bppRgb ),
-					GeneratePlanetTextureFace( PlanetMapFace.PosZ, res, PixelFormat.Format24bppRgb ),
-					GeneratePlanetTextureFace( PlanetMapFace.NegZ, res, PixelFormat.Format24bppRgb ),
+					GeneratePlanetTextureFace( terrainGenerator, PlanetMapFace.PosX, res ),
+					GeneratePlanetTextureFace( terrainGenerator, PlanetMapFace.NegX, res ),
+					GeneratePlanetTextureFace( terrainGenerator, PlanetMapFace.PosY, res ),
+					GeneratePlanetTextureFace( terrainGenerator, PlanetMapFace.NegY, res ),
+					GeneratePlanetTextureFace( terrainGenerator, PlanetMapFace.PosZ, res ),
+					GeneratePlanetTextureFace( terrainGenerator, PlanetMapFace.NegZ, res ),
 					true
 				);
 
 			int cloudRes = 128;
 			ICubeMapTexture cloudTexture = Graphics.Factory.CreateCubeMapTexture( );
+			IPlanetTerrainGenerator cloudGenerator = new TestCloudGenerator( );
 			cloudTexture.Build
 			(
-				GeneratePlanetCloudTextureFace( PlanetMapFace.PosX, cloudRes, PixelFormat.Format32bppArgb ),
-				GeneratePlanetCloudTextureFace( PlanetMapFace.NegX, cloudRes, PixelFormat.Format32bppArgb ),
-				GeneratePlanetCloudTextureFace( PlanetMapFace.PosY, cloudRes, PixelFormat.Format32bppArgb ),
-				GeneratePlanetCloudTextureFace( PlanetMapFace.NegY, cloudRes, PixelFormat.Format32bppArgb ),
-				GeneratePlanetCloudTextureFace( PlanetMapFace.PosZ, cloudRes, PixelFormat.Format32bppArgb ),
-				GeneratePlanetCloudTextureFace( PlanetMapFace.NegZ, cloudRes, PixelFormat.Format32bppArgb ),
+				GeneratePlanetCloudTextureFace( cloudGenerator, PlanetMapFace.PosX, cloudRes ),
+				GeneratePlanetCloudTextureFace( cloudGenerator, PlanetMapFace.NegX, cloudRes ),
+				GeneratePlanetCloudTextureFace( cloudGenerator, PlanetMapFace.PosY, cloudRes ),
+				GeneratePlanetCloudTextureFace( cloudGenerator, PlanetMapFace.NegY, cloudRes ),
+				GeneratePlanetCloudTextureFace( cloudGenerator, PlanetMapFace.PosZ, cloudRes ),
+				GeneratePlanetCloudTextureFace( cloudGenerator, PlanetMapFace.NegZ, cloudRes ),
 				true
 			);
 
@@ -66,26 +71,24 @@ namespace Poc1.Universe.OpenGl
 			m_PlanetGeometry = Graphics.Draw.StopCache( );
 		}
 
-		private unsafe static Bitmap GeneratePlanetCloudTextureFace( PlanetMapFace face, int res, PixelFormat format )
+		private unsafe static Bitmap GeneratePlanetCloudTextureFace( IPlanetTerrainGenerator gen, PlanetMapFace face, int res )
 		{
+			PixelFormat format = gen.CubeMapFormat;
 			Bitmap bmp = new Bitmap( res, res, format );
 			BitmapData bmpData = bmp.LockBits( new Rectangle( 0, 0, res, res ), ImageLockMode.WriteOnly, format );
 
-			IPlanetTerrainGenerator gen = new TestCloudGenerator( );
 			gen.GenerateSide( face, ( byte* )bmpData.Scan0, res, res, bmpData.Stride );
 
 			bmp.UnlockBits( bmpData );
 			return bmp;
 		}
 
-		private unsafe static Bitmap GeneratePlanetTextureFace( PlanetMapFace face, int res, PixelFormat format )
+		private unsafe static Bitmap GeneratePlanetTextureFace( IPlanetTerrainGenerator gen, PlanetMapFace face, int res )
 		{
+			PixelFormat format = gen.CubeMapFormat;
 			Bitmap bmp = new Bitmap( res, res, format );
 			BitmapData bmpData = bmp.LockBits( new Rectangle( 0, 0, res, res ), ImageLockMode.WriteOnly, format );
 
-			IPlanetTerrainGenerator gen = new TestNoisePlanetTerrainGenerator( );
-		//	IPlanetTerrainGenerator gen = new TestStPlanetTerrainGenerator( );
-		//	IPlanetTerrainGenerator gen = new TestFacePlanetTerrainGenerator( );
 			gen.GenerateSide( face, ( byte* )bmpData.Scan0, res, res, bmpData.Stride );
 
 			bmp.UnlockBits( bmpData );

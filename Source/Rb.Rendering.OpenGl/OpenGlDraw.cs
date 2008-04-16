@@ -300,7 +300,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="endY">Line end Y coordinate</param>
 		public override void Line( IPen pen, float startX, float startY, float endX, float endY )
 		{
-			pen.Begin( );
+			Begin( pen );
 			
 			Gl.glBegin( Gl.GL_LINES );
 
@@ -309,7 +309,7 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glEnd( );
 
-			pen.End( );
+			End( pen );
 		}
 
 		/// <summary>
@@ -320,7 +320,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="closed">If true, then a line is drawn connecting the last point to the first</param>
 		public override void Lines( IPen pen, IEnumerable<Point2> points, bool closed )
 		{
-			pen.Begin( );
+			Begin( pen );
 			Gl.glBegin( Gl.GL_LINE_STRIP );
 
 			IEnumerator<Point2> pointPos = points.GetEnumerator( );
@@ -341,7 +341,7 @@ namespace Rb.Rendering.OpenGl
 			}
 
 			Gl.glEnd( );
-			pen.End( );
+			End( pen );
 		}
 
 		#endregion
@@ -361,7 +361,7 @@ namespace Rb.Rendering.OpenGl
 			float angle = 0;
 			float angleInc = Constants.TwoPi / samples;
 
-			pen.Begin( );
+			Begin( pen );
 
 			Gl.glBegin( Gl.GL_LINE_STRIP );
 
@@ -377,7 +377,7 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glEnd( );
 
-			pen.End( );
+			End( pen );
 		}
 
 		#endregion
@@ -397,7 +397,7 @@ namespace Rb.Rendering.OpenGl
 			float angle = 0;
 			float angleInc = Constants.TwoPi / samples;
 
-			brush.Begin( );
+			Begin( brush );
 			
 			Gl.glBegin( Gl.GL_TRIANGLE_FAN );
 			
@@ -414,7 +414,7 @@ namespace Rb.Rendering.OpenGl
 			}
 			
 			Gl.glEnd( );
-			brush.End( );
+			End( brush );
 			
 			if ( brush.OutlinePen != null )
 			{
@@ -436,7 +436,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="height">The rectangle height</param>
 		public override void Rectangle( IPen pen, float x, float y, float width, float height )
 		{
-			pen.Begin( );
+			Begin( pen );
 
 			Gl.glBegin( Gl.GL_LINE_STRIP );
 
@@ -448,7 +448,7 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glEnd( );
 
-			pen.End( );
+			End( pen );
 		}
 
 		#endregion
@@ -465,7 +465,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="height">The rectangle height</param>
 		public override void Rectangle( IBrush brush, float x, float y, float width, float height )
 		{
-			brush.Begin( );
+			Begin( brush );
 
 			Gl.glBegin( Gl.GL_QUADS );
 
@@ -476,7 +476,7 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glEnd( );
 
-			brush.End( );
+			End( brush );
 			
 			if ( brush.OutlinePen != null )
 			{
@@ -509,7 +509,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="points">Polygon points</param>
 		public override void Polygon( IBrush brush, IEnumerable<Point2> points )
 		{
-			brush.Begin( );
+			Begin( brush );
 			
 			Gl.glBegin( Gl.GL_POLYGON );
 			
@@ -521,7 +521,7 @@ namespace Rb.Rendering.OpenGl
 			
 			Gl.glEnd( );
 
-			brush.End( );
+			End( brush );
 			if ( brush.OutlinePen != null )
 			{
 				Polygon( brush.OutlinePen, points );
@@ -548,7 +548,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="endZ">Line end Z coordinate</param>
 		public override void Line( IPen pen, float x, float y, float z, float endX, float endY, float endZ )
 		{
-			pen.Begin( );
+			Begin( pen );
 			
 			Gl.glBegin( Gl.GL_LINES );
 
@@ -557,7 +557,7 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glEnd( );
 
-			pen.End( );
+			End( pen );
 		}
 
 		/// <summary>
@@ -568,7 +568,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="closed">If true, then a line is drawn connecting the last point to the first</param>
 		public override void Lines( IPen pen, IEnumerable<Point3> points, bool closed )
 		{
-			pen.Begin( );
+			Begin( pen );
 			Gl.glBegin( Gl.GL_LINE_STRIP );
 
 			IEnumerator<Point3> pointPos = points.GetEnumerator( );
@@ -589,7 +589,7 @@ namespace Rb.Rendering.OpenGl
 			}
 
 			Gl.glEnd( );
-			pen.End( );
+			End( pen );
 		}
 
 		#endregion
@@ -612,7 +612,7 @@ namespace Rb.Rendering.OpenGl
 			float angle = 0;
 			float angleInc = Constants.TwoPi / samples;
 
-			pen.Begin( );
+			Begin( pen );
 
 			Gl.glBegin( Gl.GL_LINE_STRIP );
 
@@ -627,7 +627,7 @@ namespace Rb.Rendering.OpenGl
 			}
 
 			Gl.glEnd( );
-			pen.End( );
+			End( pen );
 		}
 
 		#endregion
@@ -649,7 +649,7 @@ namespace Rb.Rendering.OpenGl
 			float angle = 0;
 			float angleInc = Constants.TwoPi / samples;
 
-			brush.Begin( );
+			Begin( brush );
 
 			Gl.glBegin( Gl.GL_TRIANGLE_FAN );
 
@@ -666,7 +666,7 @@ namespace Rb.Rendering.OpenGl
 			}
 
 			Gl.glEnd( );
-			brush.End( );
+			End( brush );
 
 			if ( brush.OutlinePen != null )
 			{
@@ -692,7 +692,7 @@ namespace Rb.Rendering.OpenGl
 			float hWidth = width / 2;
 			float hHeight = height / 2;
 
-			pen.Begin( );
+			Begin( pen );
 
 			Gl.glBegin( Gl.GL_LINE_STRIP );
 
@@ -704,7 +704,7 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glEnd( );
 
-			pen.End( );
+			End( pen );
 		}
 
 		#endregion
@@ -725,7 +725,7 @@ namespace Rb.Rendering.OpenGl
 			float hWidth = width / 2;
 			float hHeight = height / 2;
 
-			brush.Begin( );
+			Begin( brush );
 
 			Gl.glBegin( Gl.GL_QUADS );
 
@@ -736,7 +736,7 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glEnd( );
 
-			brush.End( );
+			End( brush );
 
 			if ( brush.OutlinePen != null )
 			{
@@ -755,7 +755,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="points">Polygon points</param>
 		public override void Polygon( IPen pen, IEnumerable<Point3> points )
 		{
-			pen.Begin( );
+			Begin( pen );
 
 			Gl.glBegin( Gl.GL_POLYGON );
 
@@ -767,7 +767,7 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glEnd( );
 
-			pen.End( );
+			End( pen );
 		}
 
 		#endregion
@@ -781,7 +781,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="points">Polygon points</param>
 		public override void Polygon( IBrush brush, IEnumerable<Point3> points )
 		{
-			brush.Begin( );
+			Begin( brush );
 
 			Gl.glBegin( Gl.GL_POLYGON );
 
@@ -793,8 +793,7 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glEnd( );
 
-
-			brush.End( );
+			End( brush );
 			if ( brush.OutlinePen != null )
 			{
 				Polygon( brush.OutlinePen, points );
@@ -818,7 +817,7 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="maxZ">Bottom right front z coordinate</param>
 		public override void AlignedBox( IPen pen, float minX, float minY, float minZ, float maxX, float maxY, float maxZ )
 		{
-			pen.Begin( );
+			Begin( pen );
 
 			Gl.glBegin( Gl.GL_LINE_STRIP );
 
@@ -864,7 +863,7 @@ namespace Rb.Rendering.OpenGl
 
 			Gl.glEnd( );
 
-			pen.End( );
+			End( pen );
 		}
 
 		#endregion
@@ -881,6 +880,11 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="tSamples">Number of latitudinal samples</param>
 		public override void Sphere( ISurface surface, Point3 centre, float radius, int sSamples, int tSamples )
 		{
+			if ( surface == null )
+			{
+				RenderSphere( centre, radius, sSamples, tSamples );
+				return;
+			}
 			if ( surface.FaceBrush != null )
 			{
 				surface.FaceBrush.Begin( );
@@ -961,18 +965,23 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="sSamples">Number of samples around the circumference of the cylinder</param>
 		public override void Cylinder( ISurface surface, Point3 start, Point3 end, float radius, int sSamples )
 		{
-			if (surface.FaceBrush != null)
+			if ( surface == null )
 			{
-				surface.FaceBrush.Begin();
-				RenderCylinder(start, end, radius, sSamples);
-				surface.FaceBrush.End();
+				RenderCylinder( start, end, radius, sSamples );
+				return;
+			}
+			if ( surface.FaceBrush != null )
+			{
+				surface.FaceBrush.Begin( );
+				RenderCylinder( start, end, radius, sSamples );
+				surface.FaceBrush.End( );
 			}
 
-			if (surface.EdgePen != null)
+			if ( surface.EdgePen != null )
 			{
-				surface.EdgePen.Begin();
-				RenderCylinder(start, end, radius, sSamples);
-				surface.EdgePen.End();
+				surface.EdgePen.Begin( );
+				RenderCylinder( start, end, radius, sSamples );
+				surface.EdgePen.End( );
 			}
 		}
 
@@ -1079,6 +1088,26 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		#endregion
+
+		#endregion
+
+		#region Private Members
+
+		private static void Begin( IPass pass )
+		{
+			if ( pass != null )
+			{
+				pass.Begin( );
+			}
+		}
+
+		private static void End( IPass pass )
+		{
+			if ( pass != null )
+			{
+				pass.End( );
+			}
+		}
 
 		#endregion
 	}

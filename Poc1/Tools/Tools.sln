@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc1.Tools.TerrainTextures", "Source\Poc1.Tools.TerrainTextures\Poc1.Tools.TerrainTextures.csproj", "{A73F1D6A-4FED-479E-9C6B-BEFAA1E90768}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc1.Tools.TerrainTextures.Core", "Source\Poc1.Tools.TerrainTextures.Core\Poc1.Tools.TerrainTextures.Core.csproj", "{F34331DC-90A9-4C51-B7F9-34B3B96965BD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A73F1D6A-4FED-479E-9C6B-BEFAA1E90768}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A73F1D6A-4FED-479E-9C6B-BEFAA1E90768}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A73F1D6A-4FED-479E-9C6B-BEFAA1E90768}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A73F1D6A-4FED-479E-9C6B-BEFAA1E90768}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F34331DC-90A9-4C51-B7F9-34B3B96965BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F34331DC-90A9-4C51-B7F9-34B3B96965BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F34331DC-90A9-4C51-B7F9-34B3B96965BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F34331DC-90A9-4C51-B7F9-34B3B96965BD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
