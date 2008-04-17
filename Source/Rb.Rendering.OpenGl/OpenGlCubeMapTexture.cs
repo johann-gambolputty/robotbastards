@@ -84,11 +84,14 @@ namespace Rb.Rendering.OpenGl
 		/// <param name="posZ">Positive Z axis bitmap</param>
 		/// <param name="negZ">Negative Z axis bitmap</param>
 		/// <param name="generateMipMaps">If true, mipmaps are generated for the cube map faces</param>
-		public unsafe void Build( Bitmap posX, Bitmap negX, Bitmap posY, Bitmap negY, Bitmap posZ, Bitmap negZ, bool generateMipMaps )
+		public void Build( Bitmap posX, Bitmap negX, Bitmap posY, Bitmap negY, Bitmap posZ, Bitmap negZ, bool generateMipMaps )
 		{
-			int[] textureHandles = new int[ 1 ];
-			Gl.glGenTextures( 1, textureHandles );
-			m_Handle = textureHandles[ 0 ];
+			if ( m_Handle == -1 )
+			{
+				int[] textureHandles = new int[ 1 ];
+				Gl.glGenTextures( 1, textureHandles );
+				m_Handle = textureHandles[ 0 ];
+			}
 
 			Gl.glEnable( Gl.GL_TEXTURE_CUBE_MAP );
 			Gl.glBindTexture( Gl.GL_TEXTURE_CUBE_MAP, m_Handle );

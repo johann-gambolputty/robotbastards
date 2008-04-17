@@ -19,7 +19,7 @@ namespace Rb.Rendering.Interfaces.Objects
 	/// <summary>
 	/// Interface for cube mapped textures
 	/// </summary>
-	public interface ICubeMapTexture : ITexture
+	public unsafe interface ICubeMapTexture : ITexture
 	{
 		/// <summary>
 		/// Builds this cube map from 6 bitmaps

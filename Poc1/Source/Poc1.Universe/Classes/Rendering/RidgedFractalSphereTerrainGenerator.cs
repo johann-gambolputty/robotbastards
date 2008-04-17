@@ -29,10 +29,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		public override float GetHeight( float x, float y, float z )
 		{
-			float fVal = Fractals.SimpleFractal( x, y, z, 0.9f, 8, 1.0f, m_Noise ) * 0.8f;
-			fVal += ( Fractals.RidgedFractal( x, y, z, 2.1f, 8, 2.0f, m_Noise ) - 0.5f ) * 0.2f;
-			fVal = Utils.Clamp( fVal, 0, 1 );
-
+			float fVal = Fractals.RidgedFractal( x, y, z, 1.5f, 8, 0.8f, m_Noise );
 			return fVal;
 		}
 

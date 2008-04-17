@@ -61,6 +61,17 @@ namespace Poc1.Universe.Classes
 
 		#endregion
 
+		#region IDisposable Members
+
+		/// <summary>
+		/// Disposes of this planet. Away with you, I say
+		/// </summary>
+		public virtual void Dispose( )
+		{
+		}
+
+		#endregion
+
 		#region Private Members
 
 		private readonly IList<IPlanet> m_Moons = new List<IPlanet>( );
@@ -70,5 +81,6 @@ namespace Poc1.Universe.Classes
 		private bool m_EnableTerrainRendering;
 
 		#endregion
+
 	}
 }

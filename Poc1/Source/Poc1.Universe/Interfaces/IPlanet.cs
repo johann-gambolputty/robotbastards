@@ -1,10 +1,14 @@
 
+using System;
 using System.Collections.Generic;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Interfaces
 {
-	public interface IPlanet : IEntity, IRenderable
+	/// <summary>
+	/// Planetary body interface
+	/// </summary>
+	public interface IPlanet : IEntity, IRenderable, IDisposable
 	{
 		/// <summary>
 		/// Gets the description of the orbit of this planet

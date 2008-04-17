@@ -51,9 +51,10 @@ namespace Poc1.GameClient
 			this.ClientSize = new System.Drawing.Size( 493, 448 );
 			this.Controls.Add( this.gameDisplay );
 			this.Name = "GameClientForm";
-			this.Text = "Form1";
+			this.Text = "Space... ";
 			this.Load += new System.EventHandler( this.GameClientForm_Load );
 			this.Shown += new System.EventHandler( this.GameClientForm_Shown );
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.GameClientForm_FormClosing );
 			this.ResumeLayout( false );
 
 		}

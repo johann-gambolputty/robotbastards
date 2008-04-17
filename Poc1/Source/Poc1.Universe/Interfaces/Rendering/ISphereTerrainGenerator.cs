@@ -5,7 +5,7 @@ namespace Poc1.Universe.Interfaces.Rendering
 	/// <summary>
 	/// Interfaces for classes that generate terrains for spherical planets
 	/// </summary>
-	public unsafe interface ISpherePlanetTerrainGenerator
+	public unsafe interface ISphereTerrainGenerator
 	{
 		/// <summary>
 		/// Gets the height of a point on the surface of the surface
@@ -16,10 +16,10 @@ namespace Poc1.Universe.Interfaces.Rendering
 		/// Displaces a set of terrain vertices
 		/// </summary>
 		/// <remarks>
-		/// Vertices should already be initialised with their position on the sphere (position property), and
+		/// Vertices should already be initialised with their position on the unit sphere (position property), and
 		/// their initial normal (sphere normal)
 		/// </remarks>
-		void DisplaceTerrainVertices( int vertexCount, TerrainVertex* vertices );
+		void DisplaceTerrainVertices( int vertexCount, TerrainVertex* vertices, float radius, float scale );
 
 		/// <summary>
 		/// Generates the side of a cube map

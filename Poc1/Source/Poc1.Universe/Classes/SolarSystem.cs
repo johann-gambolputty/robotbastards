@@ -6,7 +6,7 @@ using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Classes
 {
-	public class SolarSystem : IRenderable
+	public class SolarSystem : IRenderable, IDisposable
 	{
 
 		#region Public Members
@@ -95,6 +95,18 @@ namespace Poc1.Universe.Classes
 				long p1Score = p1.Transform.Position.ManhattanDistanceTo( cameraPos );
 				return p0Score > p1Score ? -1 : ( p0Score == p1Score ? 0 : 1 );
 			};
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose( )
+		{
+			foreach ( IPlanet planet in m_Planets )
+			{
+				planet.Dispose( );
+			}
+		}
 
 		#endregion
 	}

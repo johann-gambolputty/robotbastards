@@ -24,6 +24,14 @@ namespace Poc1.Universe.Classes
 			get { return m_Radius; }
 		}
 
+		/// <summary>
+		/// Disposes of this planet. Away with you, I say
+		/// </summary>
+		public override void Dispose( )
+		{
+			m_Renderer.Dispose( );
+		}
+
 		#region Private Members
 
 		private readonly long m_Radius;

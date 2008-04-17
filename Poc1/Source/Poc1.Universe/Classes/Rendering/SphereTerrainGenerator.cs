@@ -7,7 +7,7 @@ namespace Poc1.Universe.Classes.Rendering
 	/// <summary>
 	/// Base class for sphere planet terrain generators
 	/// </summary>
-	public abstract class SphereTerrainGenerator : ISpherePlanetTerrainGenerator
+	public abstract class SphereTerrainGenerator : ISphereTerrainGenerator
 	{
 		/// <summary>
 		/// Converts the (u,v) coordinate on a cube map face to an x,y,z position
@@ -62,15 +62,16 @@ namespace Poc1.Universe.Classes.Rendering
 		/// Vertices should already be initialised with their position on the sphere (position property), and
 		/// their initial normal (sphere normal)
 		/// </remarks>
-		public unsafe void DisplaceTerrainVertices( int vertexCount, TerrainVertex* vertices )
+		public unsafe void DisplaceTerrainVertices( int vertexCount, TerrainVertex* vertices, float radius, float scale )
 		{
 			TerrainVertex* curVertex = vertices;
 			for ( int index = 0; index < vertexCount; ++index )
 			{
-				float height = GetHeight( curVertex->X, curVertex->Y, curVertex->Z );
-				curVertex->X = curVertex->NormalX * height;
-				curVertex->Y = curVertex->NormalY * height;
-				curVertex->Z = curVertex->NormalZ * height;
+				float height = radius + GetHeight( curVertex->X, curVertex->Y, curVertex->Z ) * scale;
+				curVertex->X += curVertex->NormalX * height;
+				curVertex->Y += curVertex->NormalY * height;
+				curVertex->Z += curVertex->NormalZ * height;
+				++curVertex;
 			}
 		}
 
@@ -83,7 +84,7 @@ namespace Poc1.Universe.Classes.Rendering
 			float incV = 2.0f / ( height - 1 );
 			float v = -1;
 
-			float res = 2.0f;
+			float res = 1.0f;
 			for ( int row = 0; row < height; ++row, v += incV )
 			{
 				float u = -1;
@@ -98,17 +99,19 @@ namespace Poc1.Universe.Classes.Rendering
 					y *= invLength;
 					z *= invLength;
 
-					float fVal = GetHeight( x, y, z );
-					int val = ( int )( fVal * 255.0f );
+					float terrainHeight = GetHeight( x, y, z );
+					byte bTerrainHeight = ( byte )( terrainHeight * 255.0f );
+					byte val = bTerrainHeight;
 				//	Color colour = TerrainColourMap[ latitude, val ];
 				//	curPixel[ 0 ] = colour.R;
 				//	curPixel[ 1 ] = colour.G;
 				//	curPixel[ 2 ] = colour.B;
-					curPixel[ 0 ] = ( byte )val;
-					curPixel[ 1 ] = ( byte )val;
-					curPixel[ 2 ] = ( byte )val;
+					curPixel[ 0 ] = val;
+					curPixel[ 1 ] = val;
+					curPixel[ 2 ] = val;
+					curPixel[ 3 ] = bTerrainHeight;
 
-					curPixel += 3;
+					curPixel += 4;
 				}
 			}
 		}
