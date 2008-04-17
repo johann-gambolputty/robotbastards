@@ -45,7 +45,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#endregion
 
-		#region ITerrainPatchBuffers Members
+		#region ITerrainPatchGeometry Members
 
 		/// <summary>
 		/// Gets the level of detail forthis patch
@@ -66,8 +66,9 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <summary>
 		/// Sets up the patch index buffer
 		/// </summary>
-		public void SetIndexBuffer( int[] indices )
+		public void SetIndexBuffer( PrimitiveType primType, int[] indices )
 		{
+			m_PrimitiveType = primType;
 			m_IndexBuffer.Create( indices, true );
 		}
 
@@ -94,6 +95,14 @@ namespace Poc1.Universe.Classes.Rendering
 			}
 		}
 
+		/// <summary>
+		/// Renders this patch geometry
+		/// </summary>
+		public void Draw( )
+		{
+			m_IndexBuffer.Draw( m_PrimitiveType );
+		}
+
 		#endregion
 
 		#region Private Members
@@ -102,10 +111,12 @@ namespace Poc1.Universe.Classes.Rendering
 		private readonly int m_Resolution;
 		private readonly int m_FirstVertexIndex;
 		private readonly int m_VertexCount;
+		private PrimitiveType m_PrimitiveType;
 		private readonly IIndexBuffer m_IndexBuffer;
 		private readonly IVertexBuffer m_VertexBuffer;
 		private IVertexBufferLock m_VertexBufferLock;
 
 		#endregion
+
 	}
 }

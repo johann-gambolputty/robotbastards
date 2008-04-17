@@ -1,5 +1,4 @@
 using Rb.Core.Maths;
-using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Interfaces.Rendering
 {
@@ -9,13 +8,14 @@ namespace Poc1.Universe.Interfaces.Rendering
 	public unsafe interface IPlanetTerrain
 	{
 		/// <summary>
-		/// Generates the position and normal from a point on a terrain patch
+		/// Generates vertices for a patch
 		/// </summary>
-		void MakeTerrainVertexFromPatchPoint( Point3 patchPt, TerrainVertex* vertex );
+		/// <param name="origin">Patch origin</param>
+		/// <param name="uStep">Offset between row vertices</param>
+		/// <param name="vStep">Offset between column vertices</param>
+		/// <param name="res">Patch resolution</param>
+		/// <param name="firstVertex">Patch vertices</param>
+		void GenerateTerrainPatchVertices( Point3 origin, Vector3 uStep, Vector3 vStep, int res, TerrainVertex* firstVertex );
 
-		/// <summary>
-		/// Renders the planet using textures only (no terrain)
-		/// </summary>
-		void RenderFlat( IRenderContext context );
 	}
 }

@@ -67,7 +67,7 @@ technique DefaultTechnique
 		LightingEnable			= false;
 		DepthMask				= false;
 		ShadeModel				= Smooth;
-		FrontFace				= CW;
+		FrontFace				= CCW;
 		DepthTestEnable			= false;
 		CullFaceEnable			= true;
 		BlendEnable				= false;

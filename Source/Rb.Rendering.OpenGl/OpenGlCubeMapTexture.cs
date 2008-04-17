@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -106,6 +107,45 @@ namespace Rb.Rendering.OpenGl
 			OpenGlTexture2d.CreateTextureImageFromBitmap( negZ, generateMipMaps, Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_Z );
 
 			Gl.glDisable( Gl.GL_TEXTURE_CUBE_MAP );
+		}
+
+		/// <summary>
+		/// Converts a given cube map face to a bitmap
+		/// </summary>
+		public Bitmap ToBitmap( CubeMapFace face )
+		{
+			if ( m_Handle == -1 )
+			{
+				GraphicsLog.Warning( "COuld not convert cube map texture to images - handle was invalid" );
+				return null;
+			}
+
+			Gl.glEnable( Gl.GL_TEXTURE_CUBE_MAP );
+			Gl.glBindTexture( Gl.GL_TEXTURE_CUBE_MAP, m_Handle );
+
+			Bitmap result = GetFaceBitmap( GetGlCubeFaceEnum( face ) );
+
+			Gl.glDisable( Gl.GL_TEXTURE_CUBE_MAP );
+
+			return result;
+		}
+
+		/// <summary>
+		/// Converts a value from <see cref="CubeMapFace"/> to its associated GL_TEXTURE_CUBE_MAP_... enum value
+		/// </summary>
+		public static int GetGlCubeFaceEnum( CubeMapFace face )
+		{
+			switch ( face )
+			{
+				case CubeMapFace.NegativeX : return Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_X;
+				case CubeMapFace.PositiveX : return Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_X;
+				case CubeMapFace.NegativeY : return Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y;
+				case CubeMapFace.PositiveY : return Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_Y;
+				case CubeMapFace.NegativeZ : return Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z;
+				case CubeMapFace.PositiveZ : return Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_Z;
+			}
+			throw new NotImplementedException( "Unsupported cube face enum value " + face );
+			
 		}
 
 		/// <summary>

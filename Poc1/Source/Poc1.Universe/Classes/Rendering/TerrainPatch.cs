@@ -103,6 +103,12 @@ namespace Poc1.Universe.Classes.Rendering
 				int res = m_Geometry.Resolution;
 
 				TerrainVertex* firstVertex = m_Geometry.LockVertexBuffer( false, true );
+				
+				Vector3 uStep = m_PatchXDir * ( m_PatchWidth / ( res - 1 ) );
+				Vector3 vStep = m_PatchZDir * ( m_PatchHeight / ( res - 1 ) );
+				planetTerrain.GenerateTerrainPatchVertices( m_TopLeft, uStep, vStep, res, firstVertex );
+
+				/*
 				TerrainVertex* curVertex = firstVertex;
 
 				Vector3 xInc = m_PatchXDir * ( m_PatchWidth / ( res - 1 ) );
@@ -137,6 +143,7 @@ namespace Poc1.Universe.Classes.Rendering
 						++curVertex;
 					}
 				}
+				*/
 			}
 			finally
 			{

@@ -57,6 +57,61 @@ namespace Poc1.Universe.Interfaces.Rendering
 			}
 		}
 
+		/// <summary>
+		/// Gets/sets vertex x coordinate
+		/// </summary>
+		public float X
+		{
+			get { return m_X; }
+			set { m_X = value; }
+		}
+
+		/// <summary>
+		/// Gets/sets vertex y coordinate
+		/// </summary>
+		public float Y
+		{
+			get { return m_Y; }
+			set { m_Y = value; }
+		}
+
+		/// <summary>
+		/// Gets/sets vertex z coordinate
+		/// </summary>
+		public float Z
+		{
+			get { return m_Z; }
+			set { m_Z = value; }
+		}
+
+		/// <summary>
+		/// Gets/sets vertex normal x component
+		/// </summary>
+		public float NormalX
+		{
+			get { return m_NormalX; }
+			set { m_NormalX = value; }
+		}
+
+		/// <summary>
+		/// Gets/sets vertex normal y component
+		/// </summary>
+		public float NormalY
+		{
+			get { return m_NormalY; }
+			set { m_NormalY = value; }
+		}
+
+		/// <summary>
+		/// Gets/sets vertex normal z component
+		/// </summary>
+		public float NormalZ
+		{
+			get { return m_NormalZ; }
+			set { m_NormalZ = value; }
+		}
+
+
 		#region Private Members
 
 		private float m_X;
