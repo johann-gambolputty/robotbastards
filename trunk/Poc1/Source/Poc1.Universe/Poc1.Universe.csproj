@@ -44,13 +44,17 @@
     <Compile Include="Classes\Cameras\UniCamera.cs" />
     <Compile Include="Classes\CircularOrbit.cs" />
     <Compile Include="Classes\Planet.cs" />
-    <Compile Include="Classes\Rendering\SpherePlanetTerrain.cs" />
+    <Compile Include="Classes\Rendering\SphereCloudsGenerator.cs" />
+    <Compile Include="Classes\Rendering\SphereTerrain.cs" />
+    <Compile Include="Classes\Rendering\SphereTerrainGenerator.cs" />
+    <Compile Include="Classes\Rendering\RidgedFractalSphereTerrainGenerator.cs" />
+    <Compile Include="Classes\Rendering\SphereTerrainPatches.cs" />
     <Compile Include="Classes\Rendering\TerrainPatch.cs" />
     <Compile Include="Classes\Rendering\TerrainPatchGeometry.cs" />
     <Compile Include="Classes\Rendering\TerrainPatchGeometryManager.cs" />
     <Compile Include="Classes\Ship.cs" />
     <Compile Include="Classes\SolarSystem.cs" />
-    <Compile Include="Classes\SpherePlanetRenderer.cs" />
+    <Compile Include="Classes\Rendering\SpherePlanetRenderer.cs" />
     <Compile Include="Classes\SpherePlanet.cs" />
     <Compile Include="Classes\StarBox.cs">
       <SubType>Code</SubType>
@@ -83,6 +87,10 @@
     <ProjectReference Include="..\..\..\Source\Rb.Interaction\Rb.Interaction.csproj">
       <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
       <Name>Rb.Interaction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Log\Rb.Log.csproj">
+      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
+      <Name>Rb.Log</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.csproj">
       <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>

@@ -156,7 +156,7 @@ namespace Poc1.Universe.OpenGl
 			Gl.glEnd( );
 		}
 
-		public override void Render( IRenderContext context )
+		public void Render( IRenderContext context )
 		{
 			if ( Planet.EnableTerrainRendering )
 			{

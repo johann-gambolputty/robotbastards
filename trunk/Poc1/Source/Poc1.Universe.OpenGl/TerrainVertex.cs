@@ -25,6 +25,24 @@ namespace Poc1.Universe.OpenGl
 			get { return new Point3( m_X, m_Y, m_Z ); }
 		}
 
+		public float X
+		{
+			get { return m_X; }
+			set { m_X = value; }
+		}
+
+		public float Y
+		{
+			get { return m_Y; }
+			set { m_Y = value; }
+		}
+
+		public float Z
+		{
+			get { return m_Z; }
+			set { m_Z = value; }
+		}
+
 		#region Private Members
 
 		private float m_X;

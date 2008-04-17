@@ -84,6 +84,7 @@
     <Compile Include="Maths\Constants.cs" />
     <Compile Include="Maths\ControlledSpline.cs" />
     <Compile Include="Maths\FloatInterpolator.cs" />
+    <Compile Include="Maths\Fractals.cs" />
     <Compile Include="Maths\Frame3Interpolator.cs" />
     <Compile Include="Maths\Frustum.cs" />
     <Compile Include="Maths\GaussianQuadrature.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="Maths\Line2Intersection.cs" />
     <Compile Include="Maths\LineSegment3.cs" />
     <Compile Include="Maths\Matrix44.cs" />
+    <Compile Include="Maths\Noise.cs" />
     <Compile Include="Maths\OffsetCatmullRomSpline.cs" />
     <Compile Include="Maths\Plane2.cs" />
     <Compile Include="Maths\Plane3.cs" />

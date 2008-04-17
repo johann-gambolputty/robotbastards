@@ -948,6 +948,7 @@ namespace Rb.Rendering.OpenGl
 			float y = cosT;
 			float z = sinS * sinT;
 
+			Gl.glNormal3f( x, y, z );
 			Gl.glVertex3f( c.X + x * r, c.Y + y * r, c.Z+ z * r );
 		}
 
