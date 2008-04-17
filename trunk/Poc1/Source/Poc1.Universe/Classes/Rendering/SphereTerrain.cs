@@ -36,12 +36,12 @@ namespace Poc1.Universe.Classes.Rendering
 
 			texture.Build
 				(
-					GenerateCubeMapFace( CubeMapFace.PositiveX, res, PixelFormat.Format24bppRgb ),
-					GenerateCubeMapFace( CubeMapFace.NegativeX, res, PixelFormat.Format24bppRgb ),
-					GenerateCubeMapFace( CubeMapFace.PositiveY, res, PixelFormat.Format24bppRgb ),
-					GenerateCubeMapFace( CubeMapFace.NegativeY, res, PixelFormat.Format24bppRgb ),
-					GenerateCubeMapFace( CubeMapFace.PositiveZ, res, PixelFormat.Format24bppRgb ),
-					GenerateCubeMapFace( CubeMapFace.NegativeZ, res, PixelFormat.Format24bppRgb ),
+					GenerateCubeMapFace( CubeMapFace.PositiveX, res, PixelFormat.Format32bppArgb ),
+					GenerateCubeMapFace( CubeMapFace.NegativeX, res, PixelFormat.Format32bppArgb ),
+					GenerateCubeMapFace( CubeMapFace.PositiveY, res, PixelFormat.Format32bppArgb ),
+					GenerateCubeMapFace( CubeMapFace.NegativeY, res, PixelFormat.Format32bppArgb ),
+					GenerateCubeMapFace( CubeMapFace.PositiveZ, res, PixelFormat.Format32bppArgb ),
+					GenerateCubeMapFace( CubeMapFace.NegativeZ, res, PixelFormat.Format32bppArgb ),
 					true
 				);
 			return texture;
@@ -61,6 +61,8 @@ namespace Poc1.Universe.Classes.Rendering
 		{
 			TerrainVertex* curVertex = firstVertex;
 
+			float heightScale = 8.0f;
+
 			Point3 rowStart = origin;
 			for ( int row = 0; row < res; ++row )
 			{
@@ -69,60 +71,71 @@ namespace Poc1.Universe.Classes.Rendering
 				for ( int col = 0; col < res; ++col )
 				{
 					float invLength = 1.0f / Functions.Sqrt( curPt.X * curPt.X + curPt.Y * curPt.Y + curPt.Z * curPt.Z );
-					float toSurface = invLength * PlanetStandardRadius;
-					curVertex->SetPosition( curPt.X * toSurface, curPt.Y * toSurface, curPt.Z * toSurface );
-					curVertex->SetNormal( curPt.X * invLength, curPt.Y * invLength, curPt.Z * invLength );
+					float x = curPt.X * invLength;
+					float y = curPt.Y * invLength;
+					float z = curPt.Z * invLength;
+					curVertex->SetPosition( x, y, z );
+					curVertex->SetNormal( x, y, z );
 					++curVertex;
 					curPt += uStep;
 				}
-				m_Generator.DisplaceTerrainVertices( res, rowVertices );
+				m_Generator.DisplaceTerrainVertices( res, rowVertices, PlanetStandardRadius, heightScale );
 
 				rowStart += vStep;
 			}
 
-			int right = res - 1;
-			int bottom = res - 1;
+			//	Build border regions
+			//	TODO: AP: Can be optimised - remove arrays, don't calculate border vertices in main loop, make separate border loop
+			Point3[] upPoints = new Point3[ res ];
+			Point3[] leftPoints = new Point3[ res ];
+			Point3[] rightPoints = new Point3[ res ];
+			Point3[] downPoints = new Point3[ res ];
 
-			for ( int row = 1; row < bottom; ++row )
+			Point3 upPos = origin - vStep;
+			Point3 leftPos = origin - uStep;
+			Point3 downPos = origin + ( vStep * res );
+			Point3 rightPos = origin + ( uStep * res );
+			for ( int row = 0; row < res; ++row, upPos += uStep, downPos += uStep, leftPos += vStep, rightPos += vStep )
 			{
-				curVertex = firstVertex + ( row * res ) + 1;
-				for ( int col = 1; col < right; ++col, ++curVertex )
-				{
-					float curHeight		= curVertex->Y;
-					float leftHeight	= ( curVertex - 1 )->Y;
-					float rightHeight	= ( curVertex + 1 )->Y;
-					float upHeight		= ( curVertex - res )->Y;
-					float downHeight	= ( curVertex + res )->Y;
+				float invLength = 1.0f / Functions.Sqrt( upPos.X * upPos.X + upPos.Y * upPos.Y + upPos.Z * upPos.Z );
+				upPoints[ row ] = new Point3( upPos.X * invLength, upPos.Y * invLength, upPos.Z * invLength );
+				invLength *= PlanetStandardRadius + heightScale * m_Generator.GetHeight( upPoints[ row ].X, upPoints[ row ].Y, upPoints[ row ].Z );
+				upPoints[ row ] += new Vector3( upPos.X * invLength, upPos.Y * invLength, upPos.Z * invLength );
 
-					//	Calculate normal from ((right - cur)x(down - cur))
-					float n0x = curHeight - rightHeight;
-					float n0y = 1.0f;
-					float n0z = curHeight - downHeight;
+				invLength = 1.0f / Functions.Sqrt( downPos.X * downPos.X + downPos.Y * downPos.Y + downPos.Z * downPos.Z );
+				downPoints[ row ] = new Point3( downPos.X * invLength, downPos.Y * invLength, downPos.Z * invLength );
+				invLength *= PlanetStandardRadius + heightScale * m_Generator.GetHeight( downPoints[ row ].X, downPoints[ row ].Y, downPoints[ row ].Z );
+				downPoints[ row ] += new Vector3( downPos.X * invLength, downPos.Y * invLength, downPos.Z * invLength );
 
-					//	Calculate normal from ((up - cur)x(right - cur))
-					float n1x = curHeight - upHeight;
-					float n1y = 1.0f;
-					float n1z = curHeight - rightHeight;
-					
-					//	Calculate normal from ((left - cur)x(up - cur))
-					float n2x = curHeight - leftHeight;
-					float n2y = 1.0f;
-					float n2z = curHeight - upHeight;
-					
-					//	Calculate normal from ((down - cur)x(left - cur))
-					float n3x = curHeight - downHeight;
-					float n3y = 1.0f;
-					float n3z = curHeight - leftHeight;
+				invLength = 1.0f / Functions.Sqrt( leftPos.X * leftPos.X + leftPos.Y * leftPos.Y + leftPos.Z * leftPos.Z );
+				leftPoints[ row ] = new Point3( leftPos.X * invLength, leftPos.Y * invLength, leftPos.Z * invLength );
+				invLength *= PlanetStandardRadius + heightScale * m_Generator.GetHeight( leftPoints[ row ].X, leftPoints[ row ].Y, leftPoints[ row ].Z );
+				leftPoints[ row ] += new Vector3( leftPos.X * invLength, leftPos.Y * invLength, leftPos.Z * invLength );
 
-					float nX = ( n0x + n1x + n2x + n3x ) / 4;
-					float nY = ( n0y + n1y + n2y + n3y ) / 4;
-					float nZ = ( n0z + n1z + n2z + n3z ) / 4;
+				invLength = 1.0f / Functions.Sqrt( rightPos.X * rightPos.X + rightPos.Y * rightPos.Y + rightPos.Z * rightPos.Z );
+				rightPoints[ row ] = new Point3( rightPos.X * invLength, rightPos.Y * invLength, rightPos.Z * invLength );
+				invLength *= PlanetStandardRadius + heightScale * m_Generator.GetHeight( rightPoints[ row ].X, rightPoints[ row ].Y, rightPoints[ row ].Z );
+				rightPoints[ row ] += new Vector3( rightPos.X * invLength, rightPos.Y * invLength, rightPos.Z * invLength );
+			}
 
-					float invLength = 1.0f / Functions.Sqrt( nX * nX + nY * nY + nZ * nZ );
+			int max = res - 1;
+			for ( int row = 0; row < res; ++row )
+			{
+			    curVertex = firstVertex + ( row * res );
+			    for ( int col = 0; col < res; ++col, ++curVertex )
+			    {
+					//	TODO: AP: This is very very slow
+					Vector3 left = ( col == 0 ? leftPoints[ row ] : ( curVertex - 1 )->Position ) - curVertex->Position;
+					Vector3 up = ( ( row == 0 ) ? upPoints[ col ] : ( curVertex - res )->Position ) - curVertex->Position;
+					Vector3 right = ( col == max ? rightPoints[ row ] : ( curVertex + 1 )->Position ) - curVertex->Position;
+					Vector3 down = ( ( row == max ) ? downPoints[ col ] : ( curVertex + res )->Position ) - curVertex->Position;
 
-					curVertex->SetNormal( nX * invLength, nY * invLength, nZ * invLength );
-					++curVertex;
-				}
+					Vector3 acc = Vector3.Cross( up, left );
+					acc.IpAdd( Vector3.Cross( right, up ) );
+					acc.IpAdd( Vector3.Cross( down, right ) );
+					acc.IpAdd( Vector3.Cross( left, down ) );
+					curVertex->Normal = acc.MakeNormal( );
+			    }
 			}
 		}
 
@@ -130,7 +143,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#region Private Members
 
-		private readonly ISpherePlanetTerrainGenerator m_Generator;
+		private readonly ISphereTerrainGenerator m_Generator;
 
 		/// <summary>
 		/// Generates cube map face bitmaps

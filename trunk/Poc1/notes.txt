@@ -1,0 +1,35 @@
+- Terrain types
+	- Dependent on elevation, slope, latitude
+	- Use 2d noise (x,z) to offset type calculation
+	- Each type gets their own contribution value, weighted by (e,s,l) weights
+		- E(p) == elevation
+		- S(p) == slope
+		- L(p) == latitude
+		- Te(e) == Distribution of terrain type at elevation
+		- Ts(e) == Distribution of terrain type at slope
+		- Tl(e) == Distribution of terrain type at latitude
+		- Tc = Te(E(p)).Ts(S(p)).Tl(L(p)).Noise(p)
+		- Partly finished - implemented as TerrainDistribution class
+
+- Patch splat texturing without pixel shader U/V wrapping:
+	- Patch initial visibility:
+		- Determine all terrain types affecting the patch
+		- There should be a maximum of N=4, possibly 6, per patch
+		- If there's more than N terrain types, just use one of the existing terrain types
+		- Munge terrain type byte IDs into an int32
+		- Store this value in the patch (TerrainPackID)
+	- Sort visible patches by TerrainPackID
+	- For each visible patch in sorted list:
+		- If TerrainPackID has changed from previous visible patch:
+			- Load up 
+
+- This same scheme can be used to define terrain packs, with pixel shader u/v wrapping:
+	- 
+	- 
+		
+
+- Splatting:
+	- http://www.cbloom.com/3d/techdocs/splatting.txt
+
+- Terrain LOD:
+	- http://number-none.com/product/Unified%20Rendering%20LOD,%20Part%201/index.html

@@ -65,7 +65,7 @@
     <Compile Include="Interfaces\ISun.cs" />
     <Compile Include="Interfaces\IUniCamera.cs" />
     <Compile Include="Interfaces\Rendering\IPlanetTerrain.cs" />
-    <Compile Include="Interfaces\Rendering\ISpherePlanetTerrainGenerator.cs" />
+    <Compile Include="Interfaces\Rendering\ISphereTerrainGenerator.cs" />
     <Compile Include="Interfaces\Rendering\ITerrainPatchGeometry.cs" />
     <Compile Include="Interfaces\Rendering\ITerrainPatchGeometryManager.cs" />
     <Compile Include="Interfaces\Rendering\TerrainVertex.cs" />

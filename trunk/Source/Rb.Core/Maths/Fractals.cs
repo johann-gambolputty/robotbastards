@@ -28,7 +28,7 @@ namespace Rb.Core.Maths
 			float max = 0;
 			for ( int octave = 0; octave < numOctaves; ++octave )
 			{
-				total += basis( x, y, z ) * amp * 2;
+				total += basis( x, y, z ) * amp;
 				max += amp;
 				amp *= persistence;
 				x *= freq;
@@ -36,7 +36,7 @@ namespace Rb.Core.Maths
 				z *= freq;
 			}
 
-			return total / max;
+			return ( total + max ) / ( max * 2 );
 		}
 
 		/// <summary>

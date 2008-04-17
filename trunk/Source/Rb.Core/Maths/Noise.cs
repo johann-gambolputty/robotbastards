@@ -36,10 +36,10 @@ namespace Rb.Core.Maths
 		{
 		}
 
-
 		/// <summary>
 		/// Returns a noise value given the input value x
 		/// </summary>
+		/// <returns>Noise value in the range [-1,1]</returns>
 		public float GetNoise( float x )
 		{
 			int iX = ( int )x;
@@ -49,10 +49,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Returns a noise value given the input position (x,y,z). 
 		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <returns>Noise value in the range [-0.5f,0.5f]</returns>
+		/// <returns>Noise value in the range [-1,1]</returns>
 		public float GetNoise( float x, float y, float z )
 		{
 			int X = ( int )Math.Floor( x ) & 255,                  // FIND UNIT CUBE THAT
@@ -76,7 +73,8 @@ namespace Rb.Core.Maths
 								   lerp( u, grad( m_Perms[ AB + 1 ], x, y - 1, z - 1 ),
 										   grad( m_Perms[ BB + 1 ], x - 1, y - 1, z - 1 ) ) ) );
 
-			return res;
+			//	Experimental hand-wavy normalization
+			return ( res / 0.7f);
 		}
 
 		#region Private Members

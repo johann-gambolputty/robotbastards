@@ -2,6 +2,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using Poc1.Universe.Classes;
 using Poc1.Universe.Classes.Cameras;
+using Poc1.Universe.Classes.Rendering;
 using Rb.Assets;
 using Rb.Core.Maths;
 using Rb.Rendering;

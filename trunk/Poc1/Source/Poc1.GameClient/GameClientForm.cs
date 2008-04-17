@@ -28,6 +28,7 @@ namespace Poc1.GameClient
 		private Content m_LogDisplayContent;
 		private DockingManager m_DockingManager;
 		private readonly CommandUser m_User = new CommandUser( );
+		private SolarSystem m_SolarSystem;
 
 		private void GameClientForm_Shown( object sender, EventArgs e )
 		{
@@ -36,13 +37,16 @@ namespace Poc1.GameClient
 				return;
 			}
 
+			m_SolarSystem = CreateSolarSystem( );
+
 			//	Load the game viewer
 			try
 			{
 				LoadParameters loadParams = new LoadParameters( );
 				loadParams.Properties[ "user" ] = m_User;
 				Viewer viewer = ( Viewer )AssetManager.Instance.Load( "Viewers/TestGameViewer.components.xml", loadParams );
-				viewer.Renderable = CreateSolarSystem( );
+				viewer.Renderable = m_SolarSystem;
+
 				gameDisplay.AddViewer( viewer );
 			}
 			catch ( Exception ex )
@@ -73,13 +77,13 @@ namespace Poc1.GameClient
 			SolarSystem system = new SolarSystem( );
 
 			SpherePlanet planet = new SpherePlanet( null, "TEST0", 800000.0 );
-			//SpherePlanet moon = new SpherePlanet( new CircularOrbit( planet, 1500000.0, TimeSpan.FromSeconds( 60 ) ), "TEST1", 300000.0f );
+		//	SpherePlanet moon = new SpherePlanet( new CircularOrbit( planet, 1500000.0, TimeSpan.FromSeconds( 60 ) ), "TEST1", 300000.0f );
 			//SpherePlanet moon1 = new SpherePlanet( new CircularOrbit( moon, 500000.0, TimeSpan.FromSeconds( 60 ) ), "TEST2", 100000.0f );
 			//moon.Moons.Add( moon1 );
 			//planet.Moons.Add( moon );
 
 			system.Planets.Add( planet );
-			//system.Planets.Add( moon );
+		//	system.Planets.Add( moon );
 			//system.Planets.Add( moon1 );
 
 			return system;
@@ -96,5 +100,9 @@ namespace Poc1.GameClient
 			m_DockingManager.AddContentWithState( m_LogDisplayContent, State.DockBottom );
 		}
 
+		private void GameClientForm_FormClosing( object sender, FormClosingEventArgs e )
+		{
+			m_SolarSystem.Dispose( );
+		}
 	}
 }
