@@ -21,7 +21,7 @@ namespace Poc1.Universe.Classes
 		#region Construction
 
 		/// <summary>
-		/// Builds the star box (dome, thing)
+		/// Builds the star box (dome, sphere, thing)
 		/// </summary>
 		public StarBox( )
 		{
@@ -96,11 +96,13 @@ namespace Poc1.Universe.Classes
 		/// </summary>
 		public void Render( IRenderContext context )
 		{
+			GameProfiles.Game.Rendering.StarSphereRendering.Begin( );
 			Graphics.Renderer.PushTransform( TransformType.Texture0, UniCamera.Current.InverseFrame );
 			m_Sampler.Begin( );
 			m_Box.Render( context );
 			m_Sampler.End( );
 			Graphics.Renderer.PopTransform( TransformType.Texture0 );
+			GameProfiles.Game.Rendering.StarSphereRendering.End( );
 		}
 
 		#endregion

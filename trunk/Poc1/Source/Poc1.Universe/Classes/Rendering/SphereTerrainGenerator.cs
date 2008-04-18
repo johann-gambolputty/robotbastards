@@ -5,6 +5,8 @@ using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Classes.Rendering
 {
+	//	http://www.gamedev.net/community/forums/topic.asp?topic_id=263350
+
 	/// <summary>
 	/// Base class for sphere planet terrain generators
 	/// </summary>

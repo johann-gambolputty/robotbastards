@@ -36,3 +36,23 @@
 
 - Terrain LOD:
 	- http://number-none.com/product/Unified%20Rendering%20LOD,%20Part%201/index.html
+
+- Nice terrain textures:
+	- http://www.gamedev.net/community/forums/topic.asp?topic_id=263350
+
+- SSE problems with noise generation:
+	- http://www.gamedev.net/community/forums/topic.asp?topic_id=469446
+
+- Profiling code pretty much done
+	- Add bits to controls
+	- Save profile logs
+		- Add .exe profile viewer that can be associated with profile logs
+	- Add named events?
+	- Add axis to graphs
+	- Add zoom in/out buttons
+	- Make data page an expando control rather than a tab page
+	- Add pause button
+	- Add labelling to graph lines on mouse hover
+	- Add sample rate up/down spinner
+
+- 

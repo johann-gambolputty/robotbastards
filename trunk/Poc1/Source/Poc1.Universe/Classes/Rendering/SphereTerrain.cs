@@ -2,6 +2,8 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using Poc1.Universe.Interfaces.Rendering;
 using Rb.Core.Maths;
+using Rb.Core.Utils;
+using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 using RbGraphics = Rb.Rendering.Graphics;
 
@@ -32,6 +34,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <returns>Returns the texture</returns>
 		public ICubeMapTexture CreatePlanetTexture( int res )
 		{
+			long start = TinyTime.CurrentTime;
 			ICubeMapTexture texture = RbGraphics.Factory.CreateCubeMapTexture( );
 
 			texture.Build
@@ -44,6 +47,12 @@ namespace Poc1.Universe.Classes.Rendering
 					GenerateCubeMapFace( CubeMapFace.NegativeZ, res, PixelFormat.Format32bppArgb ),
 					true
 				);
+
+			long end = TinyTime.CurrentTime;
+
+			GraphicsLog.Info("Generated {0}x{0} planet texture using {1} generator type", res, m_Generator.GetType( ) );
+			GraphicsLog.Info( "Time taken to generate planet texture: {0:F2} seconds", TinyTime.ToSeconds( start, end ) );
+
 			return texture;
 		}
 

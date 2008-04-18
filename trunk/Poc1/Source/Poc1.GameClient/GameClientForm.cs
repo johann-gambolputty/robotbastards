@@ -4,11 +4,13 @@ using System.Windows.Forms;
 using Crownwood.Magic.Common;
 using Crownwood.Magic.Docking;
 using Poc1.GameClient.Properties;
+using Poc1.Universe;
 using Poc1.Universe.Classes;
 using Rb.Assets;
 using Rb.Interaction;
 using Rb.Log;
 using Rb.Log.Controls.Vs;
+using Rb.ProfileViewerControls;
 using Rb.Rendering;
 
 namespace Poc1.GameClient
@@ -26,6 +28,8 @@ namespace Poc1.GameClient
 
 		private readonly Control m_LogDisplay = new VsLogListView( );
 		private Content m_LogDisplayContent;
+		private Content m_ProfileViewer1Content;
+		private Content m_ProfileViewer2Content;
 		private DockingManager m_DockingManager;
 		private readonly CommandUser m_User = new CommandUser( );
 		private SolarSystem m_SolarSystem;
@@ -36,6 +40,13 @@ namespace Poc1.GameClient
 			{
 				return;
 			}
+
+			gameDisplay.OnBeginPaint += delegate { GameProfiles.Game.Rendering.Begin( ); };
+			gameDisplay.OnEndPaint += delegate
+			                          {
+										GameProfiles.Game.Rendering.End( );
+										GameProfiles.Game.Rendering.Reset( );
+			                          };
 
 			m_SolarSystem = CreateSolarSystem( );
 
@@ -96,6 +107,18 @@ namespace Poc1.GameClient
 			m_DockingManager.InnerControl = gameDisplay;
 			m_DockingManager.OuterControl = this;
 
+			ProfileViewer profileViewer1 = new ProfileViewer( );
+			profileViewer1.RootSection = GameProfiles.Game;
+			m_ProfileViewer1Content = m_DockingManager.Contents.Add( profileViewer1, "Profile Viewer 1" );
+			m_DockingManager.AddContentWithState( m_ProfileViewer1Content, State.Floating );
+		//	m_DockingManager.HideContent( m_ProfileViewer1Content );
+
+			ProfileViewer profileViewer2 = new ProfileViewer( );
+			profileViewer2.RootSection = GameProfiles.Game;
+			m_ProfileViewer2Content = m_DockingManager.Contents.Add( profileViewer2, "Profile Viewer 2" );
+			m_DockingManager.AddContentWithState( m_ProfileViewer2Content, State.Floating );
+			m_DockingManager.HideContent( m_ProfileViewer2Content );
+
 			m_LogDisplayContent = m_DockingManager.Contents.Add( m_LogDisplay, "Log" );
 			m_DockingManager.AddContentWithState( m_LogDisplayContent, State.DockBottom );
 		}
@@ -103,6 +126,30 @@ namespace Poc1.GameClient
 		private void GameClientForm_FormClosing( object sender, FormClosingEventArgs e )
 		{
 			m_SolarSystem.Dispose( );
+		}
+
+		private void profileWindow1ToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			if ( !m_ProfileViewer1Content.Visible )
+			{
+				m_DockingManager.ShowContent( m_ProfileViewer1Content );
+			}
+		}
+
+		private void profileWindow2ToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			if ( !m_ProfileViewer2Content.Visible )
+			{
+				m_DockingManager.ShowContent( m_ProfileViewer2Content );
+			}
+		}
+
+		private void logWindowToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			if ( !m_LogDisplayContent.Visible )
+			{
+				m_DockingManager.ShowContent( m_LogDisplayContent );
+			}
 		}
 	}
 }
