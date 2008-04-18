@@ -14,7 +14,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Noise singleton
 		/// </summary>
-		public Noise Instance
+		public static Noise Instance
 		{
 			get { return ms_Instance; }
 		}
@@ -47,6 +47,29 @@ namespace Rb.Core.Maths
 		}
 
 		/// <summary>
+		/// Returns a noise value given the input vector (x,y)
+		/// </summary>
+		/// <returns>Noise value in the range [-1,1]</returns>
+		public float GetNoise( float x, float y )
+		{
+			int iX = ( int )x;
+			float fX = x - iX;
+			int iY = ( int )y;
+			float fY = y - iY;
+
+			float v1 = SmoothNoise( iX, iY );
+			float v2 = SmoothNoise( iX + 1, iY );
+			float v3 = SmoothNoise( iX, iY + 1 );
+			float v4 = SmoothNoise( iX + 1, iY + 1 );
+
+			float i1 = v1 + ( v2 - v1 ) * fX;
+			float i2 = v3 + ( v4 - v3 ) * fX;
+
+			float r = i1 + ( i2 - i1 ) * fY;
+			return ( r / 0.8f ); // TODO: AP: Handy-wavy experimental normalization values
+		}
+
+		/// <summary>
 		/// Returns a noise value given the input position (x,y,z). 
 		/// </summary>
 		/// <returns>Noise value in the range [-1,1]</returns>
@@ -74,7 +97,7 @@ namespace Rb.Core.Maths
 										   grad( m_Perms[ BB + 1 ], x - 1, y - 1, z - 1 ) ) ) );
 
 			//	Experimental hand-wavy normalization
-			return ( res / 0.7f);
+			return ( res / 0.7f );
 		}
 
 		#region Private Members
@@ -104,6 +127,21 @@ namespace Rb.Core.Maths
 		}
 
 
+		private static float SmoothNoise( int iX, int iY )
+		{
+			float corners = ( NoiseBasis( iX - 1, iY - 1 ) + NoiseBasis( iX + 1, iY - 1 ) + NoiseBasis( iX - 1, iY + 1 ) + NoiseBasis( iX + 1, iY + 1 ) ) / 16.0f;
+			float sides = ( NoiseBasis( iX - 1, iY ) + NoiseBasis( iX + 1, iY ) + NoiseBasis( iX, iY - 1 ) + NoiseBasis( iX, iY + 1 ) ) / 8.0f;
+			float centre = NoiseBasis( iX, iY ) / 4;
+
+			return corners + sides + centre;
+		}
+
+		private static float NoiseBasis( int x, int y )
+		{
+			uint n = ( uint )( x + y * 57 );
+			n = ( n << 13 ) ^ n;
+			return ( 1.0f - ( ( n * ( n * n * 15731 + 789221 ) + 1376312589 ) & 0x7fffffff ) / 1073741824.0f );
+		}
 
 		/// <summary>
 		/// Basis function for single-valued noise

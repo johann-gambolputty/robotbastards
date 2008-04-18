@@ -1,3 +1,4 @@
+using System.Drawing;
 using Poc1.Universe.Interfaces.Rendering;
 using Rb.Core.Maths;
 using Rb.Rendering.Interfaces.Objects;
@@ -78,11 +79,13 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <summary>
 		/// Generates the side of a cube map
 		/// </summary>
-		public unsafe void GenerateSide( CubeMapFace face, byte* pixels, int width, int height, int stride )
+		public unsafe void GenerateSide( ITerrainTypeManager terrainTypes, CubeMapFace face, byte* pixels, int width, int height, int stride )
 		{
 			float incU = 2.0f / ( width - 1 );
 			float incV = 2.0f / ( height - 1 );
 			float v = -1;
+
+			float[] weights = new float[ terrainTypes.TerrainTypes.Length ];
 
 			float res = 1.0f;
 			for ( int row = 0; row < height; ++row, v += incV )
@@ -99,18 +102,37 @@ namespace Poc1.Universe.Classes.Rendering
 					y *= invLength;
 					z *= invLength;
 
+					float latitude = ( y + 1 ) / 2;
 					float terrainHeight = GetHeight( x, y, z );
-					byte bTerrainHeight = ( byte )( terrainHeight * 255.0f );
-					byte val = bTerrainHeight;
-				//	Color colour = TerrainColourMap[ latitude, val ];
-				//	curPixel[ 0 ] = colour.R;
-				//	curPixel[ 1 ] = colour.G;
-				//	curPixel[ 2 ] = colour.B;
-					curPixel[ 0 ] = val;
-					curPixel[ 1 ] = val;
-					curPixel[ 2 ] = val;
-					curPixel[ 3 ] = bTerrainHeight;
+					float total = 0.0f;
+					float offset = 0;
+					for ( int i = 0; i < weights.Length; ++i )
+					{
+					//	weights[ i ] = Fractals.RidgedFractal( x + offset, y + offset, z + offset, 1.8f, 8, 0.9f, Fractals.Noise3dBasis );
+						weights[ i ] = ( Fractals.Noise3dBasis( x * 3.0f + offset, y * 3.0f + offset, z * 3.0f + offset ) + 1 ) / 2;
+						weights[ i ] *= weights[ i ] * weights[ i ];
+						weights[ i ] *= terrainTypes.TerrainTypes[ i ].Distribution.GetSample( terrainHeight, latitude, 0 );
 
+						offset += 2.3f;
+						total += weights[ i ];
+					}
+					float r = 0;
+					float g = 0;
+					float b = 0;
+					for ( int i = 0; i < weights.Length; ++i )
+					{
+						Color c = terrainTypes.TerrainTypes[ i ].Colour;
+						float f = weights[ i ] / total;
+						r += c.R * f;
+						g += c.G * f;
+						b += c.B * f;
+					}
+
+					byte bTerrainHeight = ( byte )( terrainHeight * 255.0f );
+					curPixel[ 0 ] = ( byte )r;
+					curPixel[ 1 ] = ( byte )g;
+					curPixel[ 2 ] = ( byte )b;
+					curPixel[ 3 ] = bTerrainHeight;
 					curPixel += 4;
 				}
 			}

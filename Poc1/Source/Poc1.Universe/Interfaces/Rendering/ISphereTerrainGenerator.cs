@@ -24,6 +24,6 @@ namespace Poc1.Universe.Interfaces.Rendering
 		/// <summary>
 		/// Generates the side of a cube map
 		/// </summary>
-		void GenerateSide( CubeMapFace face, byte* pixels, int width, int height, int stride );
+		void GenerateSide( ITerrainTypeManager terrainTypes, CubeMapFace face, byte* pixels, int width, int height, int stride );
 	}
 }

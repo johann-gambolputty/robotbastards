@@ -31,7 +31,7 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 	output.m_Position = mul( ModelViewProjectionMatrix, input.m_Position );
 //	output.m_Normal = normalize( mul( InverseTransposeModelMatrix, normal ).xyz );
 	output.m_SphereNormal = normalize( mul( InverseTransposeModelMatrix, normalize( input.m_Position ) ).xyz );
-	output.m_Normal = mul( InverseTransposeModelMatrix, input.m_Normal ).xyz;
+	output.m_Normal = normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
 
 	return output;
 }
@@ -44,9 +44,6 @@ const float Dark = 0.0f;
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
 	float shade = ( dot( input.m_Normal, SunNormal ) + 1 ) / 2;
-//	float t = shade < MinAngle ? 0.0f : ( shade > MaxAngle ? 1.0f :  ( ( shade - MinAngle ) / ( MaxAngle - MinAngle ) ) );
-//	shade = Dark + ( 1 - Dark ) * t;
-	
 	return texCUBE( TerrainSampler, -input.m_SphereNormal ) * shade;
 }
 

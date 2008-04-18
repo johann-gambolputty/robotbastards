@@ -410,7 +410,7 @@ namespace Rb.Rendering.OpenGl
 				case PixelFormat.Format32bppArgb		:
 				{
 					glInternalFormat	= Gl.GL_RGBA;
-					glFormat			= Gl.GL_BGRA_EXT;
+					glFormat			= Gl.GL_RGBA;
 					glType				= Gl.GL_UNSIGNED_BYTE;
 					return format;
 				}

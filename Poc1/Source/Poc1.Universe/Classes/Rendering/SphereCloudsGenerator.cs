@@ -96,7 +96,7 @@ namespace Poc1.Universe.Classes.Rendering
 		public void Update( )
 		{
 			//	A very gradual blend between the 2 active cloud textures is required - 
-			m_Blend = Utils.Min( m_Blend + 0.005f, 1.0f );
+			m_Blend = Utils.Min( m_Blend + 0.02f, 1.0f );
 			if ( m_Blend < 1.0f )
 			{
 				return;
@@ -159,8 +159,8 @@ namespace Poc1.Universe.Classes.Rendering
 			float density = 0.3f + Functions.Cos( m_CloudCoverage ) * 0.2f;
 			float cloudCut = density;
 			float cloudBorder = cloudCut + 0.2f;
-			float incU = 2.0f / width;
-			float incV = 2.0f / height;
+			float incU = 2.0f / ( width - 1 );
+			float incV = 2.0f / ( height - 1 );
 			float v = -1;
 			for ( int row = 0; row < height; ++row, v += incV )
 			{

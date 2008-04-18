@@ -11,6 +11,9 @@
 		- Tc = Te(E(p)).Ts(S(p)).Tl(L(p)).Noise(p)
 		- Partly finished - implemented as TerrainDistribution class
 
+		- Works OK, but would be better if L(p) is removed, and instead add E(p) and S(p)
+		for different latitude bands.
+
 - Patch splat texturing without pixel shader U/V wrapping:
 	- Patch initial visibility:
 		- Determine all terrain types affecting the patch

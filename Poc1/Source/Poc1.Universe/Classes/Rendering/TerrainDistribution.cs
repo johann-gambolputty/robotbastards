@@ -1,4 +1,7 @@
 
+using System;
+using Rb.Core.Maths;
+
 namespace Poc1.Universe.Classes.Rendering
 {
 	/// <summary>
@@ -14,7 +17,29 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		public TerrainDistribution( )
 		{
-			Setup( new float[] { 1 }, new float[] { 1 }, new float[] { 1 } );
+			m_Elevations = new float[] { 1 };
+			m_Latitudes = new float[] { 1 };
+			m_Slopes = new float[] { 1 };
+		}
+
+		/// <summary>
+		/// Creates a terrain distribution
+		/// </summary>
+		public TerrainDistribution( Sample[] elevations, Sample[] latitudes, Sample[] slopes )
+		{
+			Setup( elevations, latitudes, slopes );
+		}
+
+		public struct Sample
+		{
+			public float Value;
+			public float T;
+
+			public Sample( float t, float value )
+			{
+				T = t;
+				Value = value;
+			}
 		}
 
 		/// <summary>
@@ -23,11 +48,36 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <param name="elevations">Elevation densities</param>
 		/// <param name="latitudes">Latitude densities</param>
 		/// <param name="slopes">Slope densities</param>
-		public void Setup( float[] elevations, float[] latitudes, float[] slopes )
+		public void Setup( Sample[] elevations, Sample[] latitudes, Sample[] slopes )
 		{
-			m_Elevations = elevations;
-			m_Latitudes = latitudes;
-			m_Slopes = slopes;
+			if ( elevations == null )
+			{
+				throw new ArgumentNullException( "elevations" );
+			}
+			if ( elevations.Length == 0 )
+			{
+				throw new ArgumentException( "Elevations array must contain 1 or more values" );
+			}
+			if ( latitudes == null )
+			{
+				throw new ArgumentNullException( "latitudes" );
+			}
+			if ( latitudes.Length == 0 )
+			{
+				throw new ArgumentException( "Latitudes array must contain 1 or more values" );
+			}
+			if ( slopes == null )
+			{
+				throw new ArgumentNullException( "slopes" );
+			}
+			if ( slopes.Length == 0 )
+			{
+				throw new ArgumentException( "Slopes array must contain 1 or more values" );
+			}
+
+			m_Elevations = CreateUniformSampleArray( elevations, 256 );
+			m_Latitudes = CreateUniformSampleArray( latitudes, 256 );
+			m_Slopes = CreateUniformSampleArray( slopes, 256 );
 		}
 
 		/// <summary>
@@ -37,7 +87,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <param name="l">Normalised latitude</param>
 		/// <param name="s">Normalised slope</param>
 		/// <returns>Returns the value of the density function at (e,l,s)</returns>
-		public float Sample( float e, float l, float s )
+		public float GetSample( float e, float l, float s )
 		{
 			float eD = GetValue( m_Elevations, e );
 			float lD = GetValue( m_Latitudes, l );
@@ -46,40 +96,56 @@ namespace Poc1.Universe.Classes.Rendering
 			return eD * lD * sD;
 		}
 
-		/// <summary>
-		/// Builds a set of weights from a series of terrain distribution functions. Sum of all weights is 1
-		/// </summary>
-		public static void GetWeights( TerrainDistribution[] distributions, float e, float l, float s, float[] weights )
-		{
-			float total = 0;
-			for ( int index = 0; index < distributions.Length; ++index )
-			{
-				weights[ index ] = distributions[ index ].Sample( e, l, s );
-				total += weights[ index ];
-			}
-			if ( total <= 0.00001f )
-			{
-				//	Just weight the first one - it's a bad situation, though
-				weights[ index ] = 0;
-				return;
-			}
-			for ( int index = 0; index < distributions.Length; ++index )
-			{
-				weights[ index ] /= total;
-			}
-
-		}
-
 		#region Private Members
 
 		private float[] m_Elevations;
 		private float[] m_Latitudes;
 		private float[] m_Slopes;
 
+		private static float[] CreateUniformSampleArray( Sample[] samples, int count )
+		{
+			float[] results = new float[ count ];
+
+			if ( samples.Length == 1 )
+			{
+				for( int i = 0; i < count; ++i )
+				{
+					results[ i ] = samples[ 0 ].Value;
+				}
+				return results;
+			}
+
+			float inc = 1.0f / ( count - 1 );
+			int sampleIndex = 0;
+
+			float t = 0.0f;
+			float startT = samples[ 0 ].T;
+			float endT = samples[ 1 ].T;
+			float curSample = samples[ 0 ].Value;
+			float nextSample = samples[ 1 ].Value;
+
+			for ( int i = 0; i < count; ++i )
+			{
+				results[ i ] = t < startT ? curSample : Utils.Lerp( curSample, nextSample, ( t - startT ) / ( endT - startT ) );
+
+				t += inc;
+				if ( t >= endT )
+				{
+					++sampleIndex;
+					bool lastSample = sampleIndex == samples.Length - 1;
+					curSample = samples[ sampleIndex ].Value;
+					nextSample = lastSample ? curSample : samples[ sampleIndex + 1 ].Value;
+					startT = samples[ sampleIndex ].T;
+					endT = lastSample ? 2.0f : samples[ sampleIndex + 1 ].T;
+				}
+			}
+			return results;
+		}
+
 		/// <summary>
 		/// Linearly interpolates between values from a value array
 		/// </summary>
-		private static void GetValue( float[] values, float v )
+		private static float GetValue( float[] values, float v )
 		{
 			if ( ( values.Length == 1 ) || ( v <= 0 ) )
 			{
@@ -89,10 +155,10 @@ namespace Poc1.Universe.Classes.Rendering
 			{
 				return values[ values.Length - 1 ];
 			}
-			int i = ( int )v;
 			float step = 1.0f / ( values.Length - 1 );
+			int i = ( int )( v / step );
 			float f = ( v - ( step * i ) ) / step;
-			return values[ i ] + ( values[ i + 1 ] - values[ i - 1 ] ) * f;
+			return values[ i ] + ( values[ i + 1 ] - values[ i ] ) * f;
 		}
 
 		#endregion
