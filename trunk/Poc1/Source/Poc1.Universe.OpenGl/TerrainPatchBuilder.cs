@@ -138,7 +138,7 @@ namespace Poc1.Universe.OpenGl
 					newLod.VbPool.Add( curVertexIndex );
 					curVertexIndex += numLevelVertices;
 				}
-				//	BABY P SAYS HELLO
+				//	NOTE: BP: BABY P SAYS HELLO
 			}
 		}
 

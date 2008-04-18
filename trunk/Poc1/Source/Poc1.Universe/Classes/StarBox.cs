@@ -31,7 +31,7 @@ namespace Poc1.Universe.Classes
 			surface.FaceBrush.State.DepthTest = false;
 
 			Graphics.Draw.StartCache( );
-			Graphics.Draw.Sphere( surface, Point3.Origin, 5, 10, 10 );
+			Graphics.Draw.Sphere( surface, Point3.Origin, 100, 10, 10 );
 			m_Box = Graphics.Draw.StopCache( );
 
 			ICubeMapTexture texture = Graphics.Factory.CreateCubeMapTexture( );

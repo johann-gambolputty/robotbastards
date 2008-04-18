@@ -49,9 +49,12 @@
     <Compile Include="Classes\Rendering\SphereTerrainGenerator.cs" />
     <Compile Include="Classes\Rendering\RidgedFractalSphereTerrainGenerator.cs" />
     <Compile Include="Classes\Rendering\SphereTerrainPatches.cs" />
+    <Compile Include="Classes\Rendering\TerrainDistribution.cs" />
     <Compile Include="Classes\Rendering\TerrainPatch.cs" />
     <Compile Include="Classes\Rendering\TerrainPatchGeometry.cs" />
     <Compile Include="Classes\Rendering\TerrainPatchGeometryManager.cs" />
+    <Compile Include="Classes\Rendering\TerrainType.cs" />
+    <Compile Include="Classes\Rendering\TerrainTypeManager.cs" />
     <Compile Include="Classes\Ship.cs" />
     <Compile Include="Classes\SolarSystem.cs" />
     <Compile Include="Classes\Rendering\SpherePlanetRenderer.cs" />
@@ -68,6 +71,8 @@
     <Compile Include="Interfaces\Rendering\ISphereTerrainGenerator.cs" />
     <Compile Include="Interfaces\Rendering\ITerrainPatchGeometry.cs" />
     <Compile Include="Interfaces\Rendering\ITerrainPatchGeometryManager.cs" />
+    <Compile Include="Interfaces\Rendering\ITerrainType.cs" />
+    <Compile Include="Interfaces\Rendering\ITerrainTypeManager.cs" />
     <Compile Include="Interfaces\Rendering\TerrainVertex.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UniPoint3.cs" />

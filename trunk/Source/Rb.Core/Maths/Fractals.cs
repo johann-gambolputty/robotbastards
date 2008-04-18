@@ -11,6 +11,11 @@ namespace Rb.Core.Maths
 		public delegate float Basis3dFunction( float x, float y, float z );
 
 		/// <summary>
+		/// Handy reference to the default noise instance 3d noise function
+		/// </summary>
+		public static Basis3dFunction Noise3dBasis = Noise.Instance.GetNoise;
+
+		/// <summary>
 		/// Simple fractal
 		/// </summary>
 		/// <param name="x">Initial x coordinate</param>

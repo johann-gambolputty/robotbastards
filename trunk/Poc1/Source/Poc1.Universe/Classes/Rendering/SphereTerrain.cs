@@ -143,6 +143,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#region Private Members
 
+		private readonly ITerrainTypeManager m_TerrainTypes = TerrainTypeManager.CreateDefault( );
 		private readonly ISphereTerrainGenerator m_Generator;
 
 		/// <summary>
@@ -152,7 +153,7 @@ namespace Poc1.Universe.Classes.Rendering
 		{
 			Bitmap bmp = new Bitmap( res, res, format );
 			BitmapData bmpData = bmp.LockBits( new System.Drawing.Rectangle( 0, 0, res, res ), ImageLockMode.WriteOnly, format );
-			m_Generator.GenerateSide( face, ( byte* )bmpData.Scan0, res, res, bmpData.Stride );
+			m_Generator.GenerateSide( m_TerrainTypes, face, ( byte* )bmpData.Scan0, res, res, bmpData.Stride );
 			bmp.UnlockBits( bmpData );
 
 			return bmp;
