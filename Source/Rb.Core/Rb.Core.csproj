@@ -133,6 +133,7 @@
     <Compile Include="Utils\LibraryBuilder.cs" />
     <Compile Include="Utils\PathHelpers.cs" />
     <Compile Include="Utils\PolyList.cs" />
+    <Compile Include="Utils\ProfileSection.cs" />
     <Compile Include="Utils\StringHelpers.cs" />
     <Compile Include="Utils\TinyTime.cs" />
     <Compile Include="Utils\WeakDelegate.cs" />

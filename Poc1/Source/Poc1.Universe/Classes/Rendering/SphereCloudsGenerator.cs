@@ -8,6 +8,10 @@ using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc1.Universe.Classes.Rendering
 {
+
+	//	SSE problems with noise generation:
+	//	http://www.gamedev.net/community/forums/topic.asp?topic_id=469446
+
 	public class SphereCloudsGenerator : IDisposable
 	{
 		public SphereCloudsGenerator( int res )
@@ -76,6 +80,7 @@ namespace Poc1.Universe.Classes.Rendering
 			{
 				m_UpdatedEvent.WaitOne( );
 
+				GameProfiles.Game.CloudGeneration.Begin( );
 				m_XOffset = Utils.Wrap( m_XOffset + 0.01f, 0, Constants.TwoPi );
 				m_ZOffset = Utils.Wrap( m_ZOffset + 0.015f, 0, Constants.TwoPi );
 
@@ -89,35 +94,43 @@ namespace Poc1.Universe.Classes.Rendering
 				BuildFaceBitmap( CubeMapFace.NegativeY );
 				BuildFaceBitmap( CubeMapFace.PositiveZ );
 				BuildFaceBitmap( CubeMapFace.NegativeZ );
+
+				GameProfiles.Game.CloudGeneration.End( );
+				GameProfiles.Game.CloudGeneration.Reset( );
+
 				m_CompleteEvent.Set( );
 			}
 		}
 
 		public void Update( )
 		{
-			//	A very gradual blend between the 2 active cloud textures is required - 
-			m_Blend = Utils.Min( m_Blend + 0.02f, 1.0f );
-			if ( m_Blend < 1.0f )
+			using ( GameProfiles.Game.Rendering.PlanetRendering.CloudRendering.CreateGuard( ) )
 			{
-				return;
+				//	A very gradual blend between the 2 active cloud textures is required - any faster
+				//	and there's a noticeable jump, when the new texture is completed
+				m_Blend = Utils.Min( m_Blend + 0.02f, 1.0f );
+				if ( m_Blend < 1.0f )
+				{
+					return;
+				}
+				if ( !m_CompleteEvent.WaitOne( 0, false) )
+				{
+					return;
+				}
+				InProgressCloudTexture.Build
+					(
+						GetFaceBitmap( CubeMapFace.PositiveX ),
+						GetFaceBitmap( CubeMapFace.NegativeX ),
+						GetFaceBitmap( CubeMapFace.PositiveY ),
+						GetFaceBitmap( CubeMapFace.NegativeY ),
+						GetFaceBitmap( CubeMapFace.PositiveZ ),
+						GetFaceBitmap( CubeMapFace.NegativeZ ),
+						true
+					);
+				m_CurrentTexture = ( m_CurrentTexture + 1 ) % m_Textures.Length;
+				m_Blend = 0;
+				m_UpdatedEvent.Set( );
 			}
-			if ( !m_CompleteEvent.WaitOne( 0, false ) )
-			{
-				return;
-			}
-			InProgressCloudTexture.Build
-				(
-					GetFaceBitmap( CubeMapFace.PositiveX ),
-					GetFaceBitmap( CubeMapFace.NegativeX ),
-					GetFaceBitmap( CubeMapFace.PositiveY ),
-					GetFaceBitmap( CubeMapFace.NegativeY ),
-					GetFaceBitmap( CubeMapFace.PositiveZ ),
-					GetFaceBitmap( CubeMapFace.NegativeZ ),
-					true
-				);
-			m_CurrentTexture = ( m_CurrentTexture + 1 ) % m_Textures.Length;
-			m_Blend = 0;
-			m_UpdatedEvent.Set( );
 		}
 
 		#region Private Members

@@ -12,6 +12,8 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		public RidgedFractalSphereTerrainGenerator( )
 		{
+			Poc1.Fast.FastNoise.Noise( 1.1f, 2.2f, 3.3f );
+
 			m_Noise = new Noise( ).GetNoise;
 		}
 

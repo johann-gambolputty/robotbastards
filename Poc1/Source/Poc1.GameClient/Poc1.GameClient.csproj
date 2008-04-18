@@ -66,6 +66,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="App.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -108,6 +109,10 @@
     <ProjectReference Include="..\..\..\Source\Rb.Log\Rb.Log.csproj">
       <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
       <Name>Rb.Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.ProfileViewerControls\Rb.ProfileViewerControls.csproj">
+      <Project>{484AA727-6DEE-4F49-8DD6-E3FE24458169}</Project>
+      <Name>Rb.ProfileViewerControls</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.Rendering.OpenGl.Cg\Rb.Rendering.OpenGl.Cg.csproj">
       <Project>{C0A53C66-30B1-4891-9E33-31F96D6590D8}</Project>

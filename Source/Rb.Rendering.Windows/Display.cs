@@ -171,6 +171,10 @@ namespace Rb.Rendering.Windows
 		/// </summary>
 		protected virtual bool BeginPaint( )
 		{
+			if ( OnBeginPaint != null )
+			{
+				OnBeginPaint( this, null );
+			}
 			return m_Setup.BeginPaint( this );
 		}
 
@@ -199,7 +203,14 @@ namespace Rb.Rendering.Windows
 		protected virtual void EndPaint( )
 		{
 			m_Setup.EndPaint( this );
+			if ( OnEndPaint != null )
+			{
+				OnEndPaint( this, null );
+			}
 		}
+
+		public event EventHandler OnBeginPaint;
+		public event EventHandler OnEndPaint;
 
 		/// <summary>
 		/// Rendering timer tick callback. Invalidates the control
