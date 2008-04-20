@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using Rb.Core.Maths;
 using Rb.Rendering.Interfaces.Objects;
@@ -9,7 +10,7 @@ namespace Rb.Rendering.Interfaces
 	/// <summary>
 	/// Manages overall state of the rendering process
 	/// </summary>
-	public interface IRenderer
+	public interface IRenderer : IDisposable
 	{
 		#region Setup
 
@@ -17,6 +18,20 @@ namespace Rb.Rendering.Interfaces
 		/// Sets up the renderer
 		/// </summary>
 		void Setup( );
+
+		#endregion
+
+		#region Frames
+
+		/// <summary>
+		/// Sets up to render the next frame
+		/// </summary>
+		void Begin( );
+
+		/// <summary>
+		/// Cleans up after rendering the frame
+		/// </summary>
+		void End( );
 
 		#endregion
 

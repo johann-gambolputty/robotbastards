@@ -3,18 +3,28 @@ using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
 using Rb.Assets;
-using Rb.Rendering;
+using Graphics=Rb.Rendering.Graphics;
+using Poc1.Universe;
 
 namespace Poc1.GameClient
 {
 	static class Program
 	{
+
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>
 		[STAThread]
 		static void Main( )
 		{
+			NoiseTest.TestSlowNoise( );
+			NoiseTest.TestFastNoise( );
+			NoiseTest.TestFastNoiseSP( );
+			NoiseTest.TestVeryFastNoise( );
+
+			MessageBox.Show( "Done" );
+			return;
+
 			InitializeAssets( );
 			InitializeRendering( );
 

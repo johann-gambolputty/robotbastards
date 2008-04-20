@@ -25,7 +25,26 @@ namespace Rb.Rendering
 
 		#endregion
 
+		#region Frames
+
+		/// <summary>
+		/// Sets up to render the next frame
+		/// </summary>
+		public virtual void Begin( )
+		{
+		}
+
+		/// <summary>
+		/// Cleans up after rendering the frame
+		/// </summary>
+		public virtual void End( )
+		{
+		}
+
+		#endregion
+
 		private ICamera m_Camera;
+
 		//	TODO: AP: REMOVEME (required for now for cg effect render state bindings
 		public ICamera Camera
 		{
@@ -430,6 +449,17 @@ namespace Rb.Rendering
 
 		#endregion
 
+		#region IDisposable Members
+
+		/// <summary>
+		/// Clears up this renderer
+		/// </summary>
+		public virtual void Dispose( )
+		{
+		}
+
+		#endregion
+
 		#region	Private stuff
 
 		private readonly List<IRenderState>	m_RenderStates = new List<IRenderState>( );
@@ -439,5 +469,6 @@ namespace Rb.Rendering
 		private readonly List<ITexture[]>	m_TextureStack = new List<ITexture[]>( );
 
 		#endregion
+
 	}
 }

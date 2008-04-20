@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
 using Tao.OpenGl;
 
@@ -30,10 +29,10 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public void Dispose( )
 		{
-			if ( m_Handle != -1 )
+			if ( m_Handle != OpenGlTextureHandle.InvalidHandle )
 			{
-				Gl.glDeleteTextures( 1, new int[] { m_Handle } );
-				m_Handle = -1;
+				( ( OpenGlRenderer )Graphics.Renderer ).DisposeRenderingResource( new OpenGlTextureHandle( m_Handle ) );
+				m_Handle = OpenGlTextureHandle.InvalidHandle;
 			}
 		}
 
@@ -69,8 +68,6 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		#endregion
-
-		private int m_Handle = -1;
 
 		#region ICubeMapTexture Members
 
@@ -177,6 +174,27 @@ namespace Rb.Rendering.OpenGl
 			return bitmaps.ToArray( );
 		}
 
+		#endregion
+
+		#region IOpenGlTexture Members
+
+		/// <summary>
+		/// Gets the opengl handle for this texture
+		/// </summary>
+		public int TextureHandle
+		{
+			get { return m_Handle; }
+		}
+
+		#endregion
+
+		#region Private Members
+
+		private int m_Handle = -1;
+
+		/// <summary>
+		/// Gets a bitmap from a particular cube map face
+		/// </summary>
 		private unsafe Bitmap GetFaceBitmap( int imageTarget )
 		{
 			//	Get texture memory
@@ -198,18 +216,6 @@ namespace Rb.Rendering.OpenGl
 			bmp.UnlockBits( bmpData );
 
 			return bmp;
-		}
-
-		#endregion
-
-		#region IOpenGlTexture Members
-
-		/// <summary>
-		/// Gets the opengl handle for this texture
-		/// </summary>
-		public int TextureHandle
-		{
-			get { return m_Handle; }
 		}
 
 		#endregion

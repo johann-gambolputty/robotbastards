@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Threading;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces;
@@ -19,8 +21,12 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Sets up the renderer
 		/// </summary>
-		public OpenGlRenderer( )
+		/// <param name="renderingThreadId">
+		/// OpenGL works within a single thread, and any resources (textures, display lists,...) 
+		///  </param>
+		public OpenGlRenderer( int renderingThreadId )
 		{
+			m_RenderingThreadId = renderingThreadId;
 			int stackIndex = 0;
 			for ( ; stackIndex < m_LocalToWorldStack.Length; ++stackIndex )
 			{
@@ -29,6 +35,44 @@ namespace Rb.Rendering.OpenGl
 			for ( stackIndex = 0; stackIndex < m_WorldToViewStack.Length; ++stackIndex )
 			{
 				m_WorldToViewStack[ stackIndex ] = new Matrix44( );
+			}
+		}
+
+		/// <summary>
+		/// Cleans up all the rendering resource that DisposeRenderingResource() were unable to deal with immediately
+		/// </summary>
+		/// <remarks>
+		/// Called at the end of every frame, and once by Dispose
+		/// </remarks>
+		public void CleanUpRenderingResources( )
+		{
+			if ( Thread.CurrentThread.ManagedThreadId == m_RenderingThreadId )
+			{
+				foreach ( IDisposable disposable in m_Disposables )
+				{
+					disposable.Dispose( );
+				}
+				m_Disposables.Clear( );
+			}
+		}
+
+		/// <summary>
+		/// Calls Dispose on an OpenGL rendering resource (if it implements IDisposable).
+		/// </summary>
+		public void DisposeRenderingResource( object resource )
+		{
+			IDisposable disposable = resource as IDisposable;
+			if ( disposable == null )
+			{
+				return;
+			}
+			if ( Thread.CurrentThread.ManagedThreadId != m_RenderingThreadId )
+			{
+				m_Disposables.Add( disposable );
+			}
+			else
+			{
+				disposable.Dispose( );
 			}
 		}
 
@@ -51,6 +95,25 @@ namespace Rb.Rendering.OpenGl
 
 			//	Add a default renderstate
 			Graphics.Renderer.PushRenderState( Graphics.Factory.CreateRenderState( ) );
+		}
+
+		#endregion
+
+		#region Frames
+
+		/// <summary>
+		/// Sets up to render the next frame
+		/// </summary>
+		public override void Begin( )
+		{
+		}
+
+		/// <summary>
+		/// Cleans up after rendering the frame
+		/// </summary>
+		public override void End( )
+		{
+			CleanUpRenderingResources( );
 		}
 
 		#endregion
@@ -778,6 +841,7 @@ namespace Rb.Rendering.OpenGl
 
 		#endregion
 
+
 		#region	Local to world transforms
 
 		/// <summary>
@@ -829,7 +893,23 @@ namespace Rb.Rendering.OpenGl
 
 		#endregion
 
+		#region Disposing
+
+		/// <summary>
+		/// Clears up this renderer
+		/// </summary>
+		public override void Dispose( )
+		{
+			CleanUpRenderingResources( );
+		}
+
+		#endregion
+
 		#region Private Members
+
+		private readonly int m_RenderingThreadId;
+		private readonly List<IDisposable> m_Disposables = new List<IDisposable>( );
+
 
 		/// <summary>
 		/// Draws a 2d quad. Used by ClearColourToVerticalGradient(), ClearColourToRadialGradient()

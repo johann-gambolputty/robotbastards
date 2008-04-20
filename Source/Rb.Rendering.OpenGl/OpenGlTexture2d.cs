@@ -71,7 +71,7 @@ namespace Rb.Rendering.OpenGl
 			m_Width		= width;
 			m_Height	= height;
 			m_MipMapped = false;
-			m_Target	= Gl.GL_TEXTURE_2D; 
+			m_Target	= Gl.GL_TEXTURE_2D;
 
 			//	Generate a texture name
 			fixed ( int* handleMem = &m_TextureHandle )
@@ -149,17 +149,10 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		private void DestroyCurrent( )
 		{
-			try
+			if ( m_TextureHandle != OpenGlTextureHandle.InvalidHandle )
 			{
-				if ( m_TextureHandle != InvalidHandle )
-				{
-					Gl.glDeleteTextures( 1, new int[] { m_TextureHandle } );
-					m_TextureHandle = InvalidHandle;
-				}
-			}
-			catch ( AccessViolationException )
-			{
-				//	TODO: AP: Don't know why this happens - usually when a texture is disposed after it was allocated from a bitmap
+				( ( OpenGlRenderer )Graphics.Renderer ).DisposeRenderingResource( new OpenGlTextureHandle( m_TextureHandle ) );
+				m_TextureHandle = OpenGlTextureHandle.InvalidHandle;
 			}
 		}
 
@@ -461,7 +454,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public unsafe override Bitmap ToBitmap( )
 		{
-			if ( m_TextureHandle == InvalidHandle )
+			if ( m_TextureHandle == OpenGlTextureHandle.InvalidHandle )
 			{
 				GraphicsLog.Warning( "COuld not convert texture to image - handle was invalid" );
 				return null;
@@ -557,7 +550,6 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public override void Dispose( )
 		{
-			//	TODO: ... can't delete, because the GL context may have disappeared
 			DestroyCurrent( );
 		}
 
@@ -565,9 +557,7 @@ namespace Rb.Rendering.OpenGl
 
 		#region Private Members
 
-		private const int InvalidHandle = -1;
-
-		private int	m_TextureHandle = InvalidHandle;
+		private int m_TextureHandle = OpenGlTextureHandle.InvalidHandle;
 		private int	m_InternalGlFormat;
 		private int	m_GlFormat;
 		private int	m_GlType;
