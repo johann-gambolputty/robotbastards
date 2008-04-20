@@ -126,6 +126,7 @@ namespace Poc1.GameClient
 		private void GameClientForm_FormClosing( object sender, FormClosingEventArgs e )
 		{
 			m_SolarSystem.Dispose( );
+			Graphics.Renderer.Dispose( );
 		}
 
 		private void profileWindow1ToolStripMenuItem_Click( object sender, EventArgs e )

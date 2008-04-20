@@ -78,6 +78,16 @@ namespace Rb.Rendering.Windows
 		#endregion
 
 		/// <summary>
+		/// Event, invoked when rendering is about to start on the next frame
+		/// </summary>
+		public event EventHandler OnBeginPaint;
+
+		/// <summary>
+		///	Event, invoked when rendering has completed on the current frame
+		/// </summary>
+		public event EventHandler OnEndPaint;
+
+		/// <summary>
 		/// Display construciton
 		/// </summary>
 		public Display( )
@@ -175,6 +185,7 @@ namespace Rb.Rendering.Windows
 			{
 				OnBeginPaint( this, null );
 			}
+			Graphics.Renderer.Begin( );
 			return m_Setup.BeginPaint( this );
 		}
 
@@ -203,14 +214,12 @@ namespace Rb.Rendering.Windows
 		protected virtual void EndPaint( )
 		{
 			m_Setup.EndPaint( this );
+			Graphics.Renderer.End( );
 			if ( OnEndPaint != null )
 			{
 				OnEndPaint( this, null );
 			}
 		}
-
-		public event EventHandler OnBeginPaint;
-		public event EventHandler OnEndPaint;
 
 		/// <summary>
 		/// Rendering timer tick callback. Invalidates the control

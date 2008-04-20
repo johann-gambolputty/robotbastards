@@ -1,3 +1,4 @@
+using Poc1.Fast;
 using Rb.Core.Maths;
 
 namespace Poc1.Universe.Classes.Rendering
@@ -12,7 +13,12 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		public RidgedFractalSphereTerrainGenerator( )
 		{
-			Poc1.Fast.FastNoise.Noise( 1.1f, 2.2f, 3.3f );
+			FastNoise n = new FastNoise();
+			Point3 test0 = Point3.Origin;
+			Point3 test1 = new Point3( 1.1f, 2.2f, 3.3f );
+			Point3 test2 = new Point3( 4.1f, 5.2f, 6.3f );
+			Point3 test3 = new Point3( -4.1f, -5.2f, 6.3f );
+			FastNoiseResult result = n.Noise( test0, test1, test2, test3 );
 
 			m_Noise = new Noise( ).GetNoise;
 		}

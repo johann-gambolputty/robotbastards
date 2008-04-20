@@ -84,23 +84,46 @@ namespace Rb.Core.Maths
 			float u = fade( x ),                                // COMPUTE FADE CURVES
 				   v = fade( y ),                                // FOR EACH OF X,Y,Z.
 				   w = fade( z );
-			int A = m_Perms[ X ] + Y, AA = m_Perms[ A ] + Z, AB = m_Perms[ A + 1 ] + Z,      // HASH COORDINATES OF
-				B = m_Perms[ X + 1 ] + Y, BA = m_Perms[ B ] + Z, BB = m_Perms[ B + 1 ] + Z;      // THE 8 CUBE CORNERS,
+			int A = Perm( X ) + Y,
+				AA = Perm( A ) + Z,
+				AB = Perm( A + 1 ) + Z,      // HASH COORDINATES OF
+				B = Perm( X + 1 ) + Y,
+				BA = Perm( B ) + Z,
+				BB = Perm( B + 1 ) + Z;      // THE 8 CUBE CORNERS,
 
-			float res = lerp( w, lerp( v, lerp( u, grad( m_Perms[ AA ], x, y, z ),  // AND ADD
-										   grad( m_Perms[ BA ], x - 1, y, z ) ), // BLENDED
-								   lerp( u, grad( m_Perms[ AB ], x, y - 1, z ),  // RESULTS
-										   grad( m_Perms[ BB ], x - 1, y - 1, z ) ) ),// FROM  8
-						   lerp( v, lerp( u, grad( m_Perms[ AA + 1 ], x, y, z - 1 ),  // CORNERS
-										   grad( m_Perms[ BA + 1 ], x - 1, y, z - 1 ) ), // OF CUBE
-								   lerp( u, grad( m_Perms[ AB + 1 ], x, y - 1, z - 1 ),
-										   grad( m_Perms[ BB + 1 ], x - 1, y - 1, z - 1 ) ) ) );
+			float res = lerp( w,
+							lerp( v,
+								lerp( u,
+									grad( Perm( AA ), x, y, z ),
+									grad( Perm( BA ), x - 1, y, z ) ), // BLENDED
+								lerp( u,
+									grad( Perm( AB ), x, y - 1, z ),  // RESULTS
+									grad( Perm( BB ), x - 1, y - 1, z ) ) ),// FROM  8
+							lerp( v,
+								lerp( u,
+									grad( Perm( AA + 1 ), x, y, z - 1 ),
+									grad( Perm( BA + 1 ), x - 1, y, z - 1 ) ), // OF CUBE
+								lerp( u,
+									grad( Perm( AB + 1 ), x, y - 1, z - 1 ),
+									grad( Perm( BB + 1 ), x - 1, y - 1, z - 1 ) ) ) );
 
 			//	Experimental hand-wavy normalization
-			return ( res / 0.7f );
+			return ( res );
 		}
 
 		#region Private Members
+
+		private int Perm( int x )
+		{
+		//	return x;
+		    return m_Perms[ x ];
+		}
+		//private static int Perm( int x )
+		//{
+		//    uint n = ( uint )( x );
+		//    n = ( n << 13 ) ^ n;
+		//    return ( int )( ( n * ( n * n * 15731 + 789221 ) + 1376312589 ) & 0xff );
+		//}
 
 		private readonly int[] m_Perms = new int[ 512 ];
 		private readonly static Noise ms_Instance = new Noise( );
@@ -122,7 +145,8 @@ namespace Rb.Core.Maths
 		{
 			int h = hash & 15;                      // CONVERT LO 4 BITS OF HASH CODE
 			float u = h < 8 ? x : y,                 // INTO 12 GRADIENT DIRECTIONS.
-				   v = h < 4 ? y : h == 12 || h == 14 ? x : z;
+			     v = h < 4 ? y : h == 12 || h == 14 ? x : z;
+			     //v = h < 4 ? y : z;
 			return ( ( h & 1 ) == 0 ? u : -u ) + ( ( h & 2 ) == 0 ? v : -v );
 		}
 
