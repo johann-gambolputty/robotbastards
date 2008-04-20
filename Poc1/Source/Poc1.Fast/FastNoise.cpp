@@ -1,17 +1,7 @@
 #include "stdafx.h"
 #include "FastNoise.h"
 #include "SseNoise.h"
-
-struct PlacementNew { };
-
-inline void* operator new( const size_t numBytes, const PlacementNew&, void* mem )
-{
-	return mem;
-}
-
-inline void operator delete( void*, const PlacementNew&, void* )
-{
-}
+#include "Mem.h"
 
 namespace Poc1
 {
@@ -19,19 +9,24 @@ namespace Poc1
 	{
 		FastNoise::FastNoise( )
 		{
-			void* mem = _aligned_malloc( sizeof( SseNoise ), 16 );
-			m_pImpl = new ( PlacementNew( ), mem ) SseNoise;
+			m_pImpl = AlignedNew< SseNoise >( 16 );
 		}
 
 		FastNoise::FastNoise( unsigned int seed )
 		{
-			void* mem = _aligned_malloc( sizeof( SseNoise ), 16 );
-			m_pImpl = new ( PlacementNew( ), mem ) SseNoise( seed );
+			m_pImpl = AlignedNew< SseNoise >( 16, seed );
+		}
+
+		FastNoise::!FastNoise( )
+		{
+			AlignedDelete( m_pImpl );
+			m_pImpl = 0;
 		}
 
 		FastNoise::~FastNoise( )
 		{
-			delete m_pImpl;
+			AlignedDelete( m_pImpl );
+			m_pImpl = 0;
 		}
 	};
 };

@@ -17,6 +17,53 @@ namespace Rb.Rendering.Interfaces.Objects
 	}
 
 	/// <summary>
+	/// Cube map face UV mappings
+	/// </summary>
+	public static class CubeMapFaceUv
+	{
+		/// <summary>
+		/// Converts a (u,v) point to an (x,y,z) coordinate, depending on the value of face
+		/// </summary>
+		public static void ToXyz( CubeMapFace face, float u, float v, out float x, out float y, out float z )
+		{
+			switch ( face )
+			{
+				default:
+				case CubeMapFace.NegativeX:
+					x = -1;
+					y = v;
+					z = u;
+					break;
+				case CubeMapFace.PositiveX:
+					x = 1;
+					y = v;
+					z = -u;
+					break;
+				case CubeMapFace.NegativeY:
+					x = -u;
+					y = -1;
+					z = -v;
+					break;
+				case CubeMapFace.PositiveY:
+					x = -u;
+					y = 1;
+					z = v;
+					break;
+				case CubeMapFace.NegativeZ:
+					x = -u;
+					y = v;
+					z = -1;
+					break;
+				case CubeMapFace.PositiveZ:
+					x = u;
+					y = v;
+					z = 1;
+					break;
+			}
+		}
+	}
+
+	/// <summary>
 	/// Interface for cube mapped textures
 	/// </summary>
 	public unsafe interface ICubeMapTexture : ITexture

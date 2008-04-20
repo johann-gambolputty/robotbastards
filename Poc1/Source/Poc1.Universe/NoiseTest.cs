@@ -8,6 +8,24 @@ using Rectangle=System.Drawing.Rectangle;
 
 namespace Poc1.Universe
 {
+	/// <summary>
+	/// Tests out various noise and fractal generation code, for speed and output
+	/// </summary>
+	/// <remarks>
+	/// 
+	/// Really rough test timings
+	/// Note that in debug builds, timings for unmanaged code are 2x to 3x longer.
+	/// 
+	/// Results so far (Release Build, plain noise filling a 512x512 r8g8b8 bitmap):
+	///		Plain vanilla C# Noise: 0.26 seconds
+	///		C++ noise with C# outer loop: 0.18 seconds
+	///		C++ noise with C++ outer loop: 0.02 seconds
+	/// 
+	/// Results so far (Release Build, ridged fractal filling a 512x512 r8g8b8 bitmap):
+	///		Plain vanilla C# Noise: 0.90 seconds
+	///		C++ noise with C++ outer loop: 0.17 seconds
+	/// 
+	/// </remarks>
 	public class NoiseTest
 	{
 		private const float IncX = 0.0220987f;
@@ -34,8 +52,8 @@ namespace Poc1.Universe
 				for ( int x = 0; x < bmp.Width; ++x )
 				{
 					
-				//	curPixel[ 0 ] = ( byte )( 128 + ( byte )( n.GetNoise( pt0.X, pt0.Y, pt0.Z ) * 127.0f ) );
-					curPixel[ 0 ] = ( byte )( Fractals.RidgedFractal( pt0.X, pt0.Y, pt0.Z, 1.2f, 6, 0.6f, Fractals.Noise3dBasis ) * 255.0f );
+					curPixel[ 0 ] = ( byte )( 128 + ( byte )( n.GetNoise( pt0.X, pt0.Y, pt0.Z ) * 127.0f ) );
+				//	curPixel[ 0 ] = ( byte )( Fractals.RidgedFractal( pt0.X, pt0.Y, pt0.Z, 1.2f, 6, 0.6f, Fractals.Noise3dBasis ) * 255.0f );
 					curPixel[ 1 ] = curPixel[ 0 ];
 					curPixel[ 2 ] = curPixel[ 0 ];
 

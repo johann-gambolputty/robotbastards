@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
+using Poc1.Fast;
 using Rb.Core.Maths;
 using Rb.Rendering.Interfaces.Objects;
 using Graphics=Rb.Rendering.Graphics;
@@ -163,8 +164,13 @@ namespace Poc1.Universe.Classes.Rendering
 			BuildFaceBitmap( face );
 		}
 
+		private readonly SphereCloudsBitmap m_Gen = new SphereCloudsBitmap( );
+
 		private unsafe void GenerateSide( CubeMapFace face, byte* pixels, int width, int height, int stride )
 		{
+			m_Gen.GenerateFace( face, PixelFormat.Format32bppArgb, width, height, stride, pixels );
+			
+			/*
 			Fractals.Basis3dFunction basis = m_Noise.GetNoise;
 
 			float xOffset = Functions.Sin( m_XOffset );
@@ -204,9 +210,9 @@ namespace Poc1.Universe.Classes.Rendering
 					curPixel += 4;
 				}
 			}
+			*/
 		}
 
-		private readonly Noise m_Noise = new Noise( );
 		private float m_XOffset = 0;
 		private float m_ZOffset = 0;
 
