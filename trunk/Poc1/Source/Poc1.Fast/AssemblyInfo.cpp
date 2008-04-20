@@ -15,9 +15,9 @@ using namespace System::Security::Permissions;
 [assembly:AssemblyTitleAttribute("Poc1Fast")];
 [assembly:AssemblyDescriptionAttribute("")];
 [assembly:AssemblyConfigurationAttribute("")];
-[assembly:AssemblyCompanyAttribute("Workshare")];
+[assembly:AssemblyCompanyAttribute("")];
 [assembly:AssemblyProductAttribute("Poc1Fast")];
-[assembly:AssemblyCopyrightAttribute("Copyright (c) Workshare 2008")];
+[assembly:AssemblyCopyrightAttribute("")];
 [assembly:AssemblyTrademarkAttribute("")];
 [assembly:AssemblyCultureAttribute("")];
 

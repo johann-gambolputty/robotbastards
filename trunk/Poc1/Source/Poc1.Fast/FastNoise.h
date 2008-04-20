@@ -36,6 +36,8 @@ namespace Poc1
 
 				FastNoise( unsigned int seed );
 
+				!FastNoise( );
+
 				~FastNoise( );
 
 				inline void GenerateRgbBitmap( const int width,
@@ -47,9 +49,9 @@ namespace Poc1
 					const float incColArr[] = { incCol->X, incCol->Y, incCol->Z };
 					const float incRowArr[] = { incRow->X, incRow->Y, incRow->Z };
 
-				//	m_pImpl->GenerateRgbBitmap( width, height, pixels, originArr, incColArr, incRowArr );
+					m_pImpl->GenerateRgbBitmap( width, height, pixels, originArr, incColArr, incRowArr );
 				//	m_pImpl->GenerateRgbSimpleFractal( width, height, pixels, originArr, incColArr, incRowArr );
-					m_pImpl->GenerateRgbRidgedFractal( width, height, pixels, originArr, incColArr, incRowArr );
+				//	m_pImpl->GenerateRgbRidgedFractal( width, height, pixels, originArr, incColArr, incRowArr );
 				}
 
 				inline FastNoiseResult Noise( Rb::Core::Maths::Point3^ pt0, Rb::Core::Maths::Point3^ pt1, Rb::Core::Maths::Point3^ pt2, Rb::Core::Maths::Point3^ pt3 )

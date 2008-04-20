@@ -17,13 +17,13 @@ namespace Poc1.GameClient
 		[STAThread]
 		static void Main( )
 		{
-			NoiseTest.TestSlowNoise( );
-			NoiseTest.TestFastNoise( );
-			NoiseTest.TestFastNoiseSP( );
-			NoiseTest.TestVeryFastNoise( );
+			//NoiseTest.TestSlowNoise( );
+			//NoiseTest.TestFastNoise( );
+			//NoiseTest.TestFastNoiseSP( );
+			//NoiseTest.TestVeryFastNoise( );
 
-			MessageBox.Show( "Done" );
-			return;
+			//MessageBox.Show( "Done" );
+			//return;
 
 			InitializeAssets( );
 			InitializeRendering( );
