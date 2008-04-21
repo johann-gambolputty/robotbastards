@@ -18,7 +18,7 @@ namespace Poc1
 				SseSimpleFractal( const unsigned int seed );
 
 				///	\brief	Sets up fractal parameters
-				void Setup( const unsigned int seed, const float freq, const float persistence, const int numOctaves );
+				void Setup( const float freq, const float persistence, const int numOctaves );
 
 				///	\brief	Gets 4 fractal values from 4 points
 				__m128 GetValue( __m128 xxxx, __m128 yyyy, __m128 zzzz ) const;
@@ -41,7 +41,7 @@ namespace Poc1
 		{
 		}
 
-		inline void SseSimpleFractal::Setup( const unsigned int seed, const float freq, const float persistence, const int numOctaves )
+		inline void SseSimpleFractal::Setup( const float freq, const float persistence, const int numOctaves )
 		{
 			m_Freq = _mm_set1_ps( freq );
 			m_Persistence = _mm_set1_ps( persistence );

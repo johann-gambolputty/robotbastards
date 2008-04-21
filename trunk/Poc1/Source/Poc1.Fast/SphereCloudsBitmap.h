@@ -8,7 +8,7 @@ namespace Poc1
 {
 	namespace Fast
 	{
-		class SseRidgedFractal;
+		class SphereCloudsBitmapImpl;
 
 		///	\brief	Generates cloud bitmaps for cube mapping onto a sphere
 		public ref class SphereCloudsBitmap
@@ -21,12 +21,14 @@ namespace Poc1
 
 				!SphereCloudsBitmap( );
 
+				///	\brief	Sets generation parameters
+				void Setup( float xOffset, float zOffset, float cloudCutoff, float cloudBorder );
+
 				///	\brief	Generates a face of a cube map
 				void GenerateFace( CubeMapFace face, PixelFormat format, const int width, const int height, const int stride, unsigned char* pixels );
 
 			private :
-
-				SseRidgedFractal* m_pImpl;
+				SphereCloudsBitmapImpl* m_pImpl;
 		};
 	};
 };

@@ -10,6 +10,16 @@ namespace Poc1.GameClient
 {
 	static class Program
 	{
+		private static void FastTest( )
+		{
+			NoiseTest.TestSlowNoise();
+			//NoiseTest.TestFastNoise( );
+			//NoiseTest.TestFastNoiseSP( );
+			NoiseTest.TestVeryFastNoise();
+			NoiseTest.TestFastSphereCloudsGenerator();
+
+			MessageBox.Show("Done");
+		}
 
 		/// <summary>
 		/// The main entry point for the application.
@@ -17,13 +27,7 @@ namespace Poc1.GameClient
 		[STAThread]
 		static void Main( )
 		{
-			//NoiseTest.TestSlowNoise( );
-			//NoiseTest.TestFastNoise( );
-			//NoiseTest.TestFastNoiseSP( );
-			//NoiseTest.TestVeryFastNoise( );
-
-			//MessageBox.Show( "Done" );
-			//return;
+			//FastTest( );
 
 			InitializeAssets( );
 			InitializeRendering( );

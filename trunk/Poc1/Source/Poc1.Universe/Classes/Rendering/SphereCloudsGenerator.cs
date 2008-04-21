@@ -96,6 +96,8 @@ namespace Poc1.Universe.Classes.Rendering
 				BuildFaceBitmap( CubeMapFace.PositiveZ );
 				BuildFaceBitmap( CubeMapFace.NegativeZ );
 
+				GetFaceBitmap(CubeMapFace.PositiveX).Save("test.bmp", ImageFormat.Bmp);
+
 				GameProfiles.Game.CloudGeneration.End( );
 				GameProfiles.Game.CloudGeneration.Reset( );
 
@@ -168,6 +170,12 @@ namespace Poc1.Universe.Classes.Rendering
 
 		private unsafe void GenerateSide( CubeMapFace face, byte* pixels, int width, int height, int stride )
 		{
+			float xOffset = Functions.Sin( m_XOffset );
+			float zOffset = Functions.Cos( m_ZOffset );
+			float density = 0.3f + Functions.Cos( m_CloudCoverage ) * 0.2f;
+			float cloudCut = density;
+			float cloudBorder = cloudCut + 0.2f;
+			m_Gen.Setup( xOffset, zOffset, cloudCut, cloudBorder );
 			m_Gen.GenerateFace( face, PixelFormat.Format32bppArgb, width, height, stride, pixels );
 			
 			/*

@@ -19,110 +19,163 @@ namespace Poc1
 			NegativeZ,
 			PositiveZ
 		};
+		
+		///	\brief	Unmanaged pixel formats
+		enum UPixelFormat
+		{
+			FormatR8G8B8,
+			FormatR8G8B8A8,
+		};
 
-		inline __m128 CubeFaceFractal( const SseRidgedFractal& fractal, const UCubeMapFace face, const __m128& uuuu, const __m128& vvvv )
+		class _CRT_ALIGN( 16 ) SphereCloudsBitmapImpl
+		{
+			public :
+
+				SphereCloudsBitmapImpl( )
+				{
+					m_Gen.Setup( 1.8f, 1.6f, 8 );
+				}
+
+				void Setup( const float xOffset, const float zOffset, const float cloudCutoff, const float cloudBorder )
+				{
+					m_XOffset = _mm_set1_ps( xOffset );
+					m_ZOffset = _mm_set1_ps( zOffset );
+					m_CloudCutoff = _mm_mul_ps( _mm_set1_ps( cloudCutoff ), _mm_set1_ps( 255.0f ) );
+					m_CloudBorder = _mm_mul_ps( _mm_set1_ps( cloudBorder ), _mm_set1_ps( 255.0f ) );
+					m_CloudBorderDiff = _mm_div_ps( _mm_set1_ps( 255.0f ), _mm_sub_ps( m_CloudBorder, m_CloudCutoff ) );
+				}
+
+				void GenerateCloudsFace( const UCubeMapFace face, const UPixelFormat format, const int width, const int height, const int stride, unsigned char* pixels );
+
+			private :
+
+				__m128 m_XOffset;
+				__m128 m_ZOffset;
+				__m128 m_CloudCutoff;
+				__m128 m_CloudBorder;
+				__m128 m_CloudBorderDiff;
+				SseRidgedFractal m_Gen;
+
+		};
+
+		inline __m128 CubeFaceFractal( const SseRidgedFractal& fractal, const UCubeMapFace face, const __m128& uuuu, const __m128& vvvv, const __m128& xOffset, const __m128& zOffset )
 		{
 			//	TODO: AP: Normalize (x,y,z)?
+			__m128 xxxx, yyyy, zzzz;
 			switch ( face )
 			{
 				default:
 				case NegativeX:
 				//	x = -1; y = v; z = u;
-					return fractal.GetValue( Constants::Fc_Neg1, vvvv, uuuu );
+					xxxx = Constants::Fc_Neg1;
+					yyyy = vvvv;
+					zzzz = uuuu;
+					break;
 				case PositiveX:
 				//	x = 1; y = v; z = -u;
-					return fractal.GetValue( Constants::Fc_1, vvvv, Neg( uuuu ) );
+					xxxx = Constants::Fc_1;
+					yyyy = vvvv;
+					zzzz = Neg( uuuu );
+					break;
 				case NegativeY:
 					//x = -u; y = -1; z = -v;
-					return fractal.GetValue( Neg( uuuu ), Constants::Fc_0, Neg( vvvv ) );
+					xxxx = Neg( uuuu );
+					yyyy = Constants::Fc_Neg1;
+					zzzz = Neg( vvvv );
+					break;
 				case PositiveY:
 				//	x = -u; y = 1; z = v;
-					return fractal.GetValue( Neg( uuuu ), Constants::Fc_1, vvvv );
+					xxxx = Neg( uuuu );
+					yyyy = Constants::Fc_1;
+					zzzz = vvvv;
+					break;
 				case NegativeZ:
 				//	x = -u; y = v; z = -1;
-					return fractal.GetValue( Neg( uuuu ), vvvv, Constants::Fc_Neg1 );
+					xxxx = Neg( uuuu );
+					yyyy = vvvv;
+					zzzz = Constants::Fc_Neg1;
+					break;
 				case PositiveZ:
 					//x = u; y = v; z = 1;
-					return fractal.GetValue( uuuu, vvvv, Constants::Fc_1 );
+					xxxx = uuuu;
+					yyyy = vvvv;
+					zzzz = Constants::Fc_1;
+					break;
 			};
+
+			return fractal.GetValue( _mm_add_ps( xxxx, xOffset ), yyyy, _mm_add_ps( zzzz, zOffset ) );
 		}
 
-		static void GenerateCloudsFace( const SseRidgedFractal& fractal, const UCubeMapFace face, const int width, const int height, const int stride, unsigned char* pixels )
+		void SphereCloudsBitmapImpl::GenerateCloudsFace( const UCubeMapFace face, const UPixelFormat format, const int width, const int height, const int stride, unsigned char* pixels )
 		{
 
-			float incU = 1.0f / float( height );
-			float incV = 1.0f / float( height );
-			__m128 vvvv = _mm_add_ps( _mm_set1_ps( -1 ), _mm_set_ps( 0, incV, incV * 2, incV * 3 ) );
-			__m128 vvvvInc = _mm_set1_ps( incV * 4 );
+			float incU = 2.0f / float( width - 1 );
+			float incV = 2.0f / float( height - 1 );
+			__m128 vvvv = _mm_set1_ps( -1 );
+			__m128 vvvvInc = _mm_set1_ps( incV );
 
-			__m128 uuuuStart = _mm_add_ps( _mm_set1_ps( -1 ), _mm_set_ps( 0, incV, incV * 2, incV * 3 ) );
+			__m128 uuuuStart = _mm_add_ps( _mm_set1_ps( -1 ), _mm_set_ps( 0, incU, incU * 2, incU * 3 ) );
 			__m128 uuuuInc = _mm_set1_ps( incU * 4 );
 
 			_CRT_ALIGN( 16 ) float res[ 4 ] = { 0, 0, 0, 0 };
+			_CRT_ALIGN( 16 ) float alphaValues[ 4 ] = { 0, 0, 0, 0 };
 
+			int width4 = width / 4;
 			unsigned char* rowPixel = pixels;
 			for ( int row = 0; row < height; ++row )
 			{
 				unsigned char* curPixel = rowPixel;
 				__m128 uuuu = uuuuStart;
-				for ( int col = 0; col < width; ++col )
+				for ( int col = 0; col < width4; ++col )
 				{
-					const __m128 value = CubeFaceFractal( fractal, face, uuuu, vvvv );
+					//	TODO: AP: Could move face switch to outer loop
+					__m128 value = _mm_mul_ps( CubeFaceFractal( m_Gen, face, uuuu, vvvv, m_XOffset, m_ZOffset ), _mm_set1_ps( 255.0f ) );
+					
+					__m128 cutMask = _mm_cmpgt_ps( value, m_CloudCutoff );
+					__m128 borderMask = _mm_cmpgt_ps( value, m_CloudBorder );
+					__m128 fadeValue = _mm_mul_ps( _mm_sub_ps( value, m_CloudCutoff ), m_CloudBorderDiff );
+					__m128 alpha = _mm_or_ps( _mm_and_ps( borderMask, _mm_set1_ps( 255.0f ) ), _mm_andnot_ps( borderMask, fadeValue ) );
+					value = _mm_and_ps( cutMask, value );
+					alpha = _mm_and_ps( cutMask, alpha );
 
 					_mm_store_ps( res, value );
+					_mm_store_ps( alphaValues, alpha );
+
 					unsigned char b0 = ( unsigned char )( res[ 3 ] );
 					unsigned char b1 = ( unsigned char )( res[ 2 ] );
 					unsigned char b2 = ( unsigned char )( res[ 1 ] );
 					unsigned char b3 = ( unsigned char )( res[ 0 ] );
+					
+					unsigned char a0 = ( unsigned char )( alphaValues[ 3 ] );
+					unsigned char a1 = ( unsigned char )( alphaValues[ 2 ] );
+					unsigned char a2 = ( unsigned char )( alphaValues[ 1 ] );
+					unsigned char a3 = ( unsigned char )( alphaValues[ 0 ] );
 
-					//	TODO: AP: Handle pixel format
-
-					curPixel[ 0 ] = curPixel[ 1 ] = curPixel[ 2 ] = curPixel[ 3 ] = b0;
-					curPixel[ 4 ] = curPixel[ 5 ] = curPixel[ 6 ] = curPixel[ 7 ] = b1;
-					curPixel[ 8 ] = curPixel[ 9 ] = curPixel[ 10 ] = curPixel[ 11 ] = b2;
-					curPixel[ 12 ] = curPixel[ 13 ] = curPixel[ 14 ] = curPixel[ 15 ] = b3;
-
-					curPixel += 16;
+					//	TODO: AP: Move switch to outer loop
+					switch ( format )
+					{
+						case FormatR8G8B8A8 :
+							curPixel[ 0 ] = curPixel[ 1 ] = curPixel[ 2 ] = b0; curPixel[ 3 ] = a0;
+							curPixel[ 4 ] = curPixel[ 5 ] = curPixel[ 6 ] = b1; curPixel[ 7 ] = a1;
+							curPixel[ 8 ] = curPixel[ 9 ] = curPixel[ 10 ] = b2; curPixel[ 11 ] = a2;
+							curPixel[ 12 ] = curPixel[ 13 ] = curPixel[ 14 ] = b3; curPixel[ 15 ] = a3;
+							curPixel += 16;
+							break;
+							
+						case FormatR8G8B8 :
+							curPixel[ 0 ] = curPixel[ 1 ] = curPixel[ 2 ] = b0;
+							curPixel[ 3 ] = curPixel[ 4 ] = curPixel[ 5 ] = b1;
+							curPixel[ 6 ] = curPixel[ 7 ] = curPixel[ 8 ] = b2;
+							curPixel[ 9 ] = curPixel[ 10 ] = curPixel[ 11 ] = b3;
+							curPixel += 12;
+							break;
+					};
 
 					uuuu = _mm_add_ps( uuuu, uuuuInc );
 				}
 				vvvv = _mm_add_ps( vvvv, vvvvInc );
 				rowPixel += stride;
 			}
-
-		}
-
-	}; //Fast
-}; //Poc1
-
-#pragma managed
-using namespace Rb::Rendering::Interfaces::Objects;
-
-namespace Poc1
-{
-	namespace Fast
-	{
-
-		SphereCloudsBitmap::SphereCloudsBitmap( )
-		{
-			m_pImpl = AlignedNew< SseRidgedFractal >( 16 );
-		}
-
-		SphereCloudsBitmap::~SphereCloudsBitmap( )
-		{
-			AlignedDelete( m_pImpl );
-		}
-		
-		SphereCloudsBitmap::!SphereCloudsBitmap( )
-		{
-			AlignedDelete( m_pImpl );
-		}
-
-	//	inline static __m128 
-
-		void SphereCloudsBitmap::GenerateFace( CubeMapFace face, PixelFormat format, const int width, const int height, const int stride, unsigned char* pixels )
-		{
-			GenerateCloudsFace( *m_pImpl, ( UCubeMapFace )face, width, height, stride, pixels );
 			/*
 			Fractals.Basis3dFunction basis = m_Noise.GetNoise;
 
@@ -165,6 +218,53 @@ namespace Poc1
 
 			}
 			*/
+		}
+
+	}; //Fast
+}; //Poc1
+
+#pragma managed
+using namespace Rb::Rendering::Interfaces::Objects;
+
+namespace Poc1
+{
+	namespace Fast
+	{
+
+		SphereCloudsBitmap::SphereCloudsBitmap( )
+		{
+		//	m_pImpl = AlignedNew< SseRidgedFractal >( 16 );
+		//	m_pImpl->Setup( 1.8f, 1.6f, 8 );
+			m_pImpl = AlignedNew< SphereCloudsBitmapImpl >( 16 );
+		}
+
+		SphereCloudsBitmap::~SphereCloudsBitmap( )
+		{
+			AlignedDelete( m_pImpl );
+		}
+		
+		SphereCloudsBitmap::!SphereCloudsBitmap( )
+		{
+			AlignedDelete( m_pImpl );
+		}
+		
+		void SphereCloudsBitmap::Setup( float xOffset, float zOffset, float cloudCutoff, float cloudBorder )
+		{
+			m_pImpl->Setup( xOffset, zOffset, cloudCutoff, cloudBorder );
+		}
+
+		void SphereCloudsBitmap::GenerateFace( CubeMapFace face, PixelFormat format, const int width, const int height, const int stride, unsigned char* pixels )
+		{
+			UPixelFormat uFormat;
+			switch ( format )
+			{
+				case PixelFormat::Format32bppArgb : uFormat = FormatR8G8B8A8; break;
+				case PixelFormat::Format24bppRgb : uFormat = FormatR8G8B8; break;
+			default :
+				throw gcnew System::ArgumentException( "Unhandled pixel format", "format" );
+			}
+
+			m_pImpl->GenerateCloudsFace( ( UCubeMapFace )face, uFormat, width, height, stride, pixels );
 		}
 
 	}; //Fast
