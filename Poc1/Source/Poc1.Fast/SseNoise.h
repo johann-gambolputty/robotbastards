@@ -86,8 +86,21 @@ namespace Poc1
 
 				__m128i Perm( __m128i vec ) const;
 				__m128 SimpleFractal( __m128 xxxx, __m128 yyyy, __m128 zzzz );
-				__m128 RidgedFractal( __m128 xxxx, __m128 yyyy, __m128 zzzz );
+		public :
+				__m128 RidgedFractal( __m128 xxxx, __m128 yyyy, __m128 zzzz ) const;
 		};
+
+		inline void Normalize( __m128& xxxx, __m128& yyyy, __m128& zzzz )
+		{
+			__m128 xxxx2 = _mm_mul_ps( xxxx, xxxx );
+			__m128 yyyy2 = _mm_mul_ps( yyyy, yyyy );
+			__m128 zzzz2 = _mm_mul_ps( zzzz, zzzz );
+			
+			__m128 rsqrt = _mm_rsqrt_ps( _mm_add_ps( xxxx2, _mm_add_ps( yyyy2, zzzz2 ) ) );
+			xxxx = _mm_mul_ps( xxxx, rsqrt );
+			yyyy = _mm_mul_ps( yyyy, rsqrt );
+			zzzz = _mm_mul_ps( zzzz, rsqrt );
+		}
 
 		///	\brief	Returns the absolute value of a floating point vector
 		inline __m128 Abs( const __m128& val )
@@ -163,7 +176,10 @@ namespace Poc1
 			uuuu = _mm_or_ps( uuuu, _mm_andnot_ps( uMask, yyyy ) );
 
 			__m128 vvvv = _mm_and_ps( vMask, yyyy );
-			vvvv = _mm_or_ps( vvvv, _mm_andnot_ps( vMask, zzzz ) );	//	TODO: AP: Add (h==12||h==14) condition
+
+			__m128 hMask = _mm_or_ps( _mm_cmpeq_ps( hF, _mm_set1_ps( 12 ) ), _mm_cmpeq_ps( hF, _mm_set1_ps( 14 ) ) );
+			__m128 xOrZ = _mm_or_ps( _mm_and_ps( hMask, xxxx ), _mm_andnot_ps( hMask, zzzz ) );
+			vvvv = _mm_or_ps( vvvv, _mm_andnot_ps( vMask, xOrZ ) );
 
 			const __m128 hAndOne = _mm_cvtepi32_ps( _mm_and_si128( h, Constants::Ic_2 ) );
 			const __m128 hAndTwo = _mm_cvtepi32_ps( _mm_and_si128( h, Constants::Ic_1 ) );
@@ -179,7 +195,8 @@ namespace Poc1
 
 		inline __m128i Poc1::Fast::SseNoise::Perm( __m128i vec ) const
 		{
-			//	Originally I thought to get permutation values from a PRN generator like this:
+			//	Originally I thought to get permutation values from a PRN generator (to avoid a potentially expensive
+			//	load), like this:
 		//	uint n = ( uint )( x );
 		//	n = ( n << 13 ) ^ n;
 		//	return ( ( n * ( n * n * 15731 + 789221 ) + 1376312589 ) & 0xff;
@@ -191,18 +208,27 @@ namespace Poc1
 			//	But it produced odd patterns in the noise, so I switched back to the standard improved noise
 			//	method of using a pre-computed permutation table as a temporary measure...
 			//	I don't know why, but doing it like this has not slowed things down at all...
-			return _mm_set_epi32( m_Perms[vec.m128i_i32[0]], m_Perms[vec.m128i_i32[1]], m_Perms[vec.m128i_i32[2]], m_Perms[vec.m128i_i32[3]]);
+			return _mm_set_epi32( m_Perms[vec.m128i_i32[3]], m_Perms[vec.m128i_i32[2]], m_Perms[vec.m128i_i32[1]], m_Perms[vec.m128i_i32[0]]);
+		}
+
+		inline __m128i RoundToInt( __m128 v )
+		{
+			return _mm_cvtps_epi32( _mm_sub_ps( v, _mm_set1_ps( 0.5f ) ) );
 		}
 
 		inline __m128 Poc1::Fast::SseNoise::Noise( __m128 xxxx, __m128 yyyy, __m128 zzzz ) const
 		{
-			__m128i ixxxx = _mm_cvttps_epi32( xxxx );
-			__m128i iyyyy = _mm_cvttps_epi32( yyyy );
-			__m128i izzzz = _mm_cvttps_epi32( zzzz );
+			__m128i ixxxx = RoundToInt( xxxx );
+			__m128i iyyyy = RoundToInt( yyyy );
+			__m128i izzzz = RoundToInt( zzzz );
 
 			xxxx = _mm_sub_ps( xxxx, _mm_cvtepi32_ps( ixxxx ) );
 			yyyy = _mm_sub_ps( yyyy, _mm_cvtepi32_ps( iyyyy ) );
 			zzzz = _mm_sub_ps( zzzz, _mm_cvtepi32_ps( izzzz ) );
+			
+			ixxxx = _mm_and_si128( ixxxx, Constants::Ic_FF );
+			iyyyy = _mm_and_si128( iyyyy, Constants::Ic_FF );
+			izzzz = _mm_and_si128( izzzz, Constants::Ic_FF );
 
 			__m128 fade0 = Fade( xxxx );
 			__m128 fade1 = Fade( yyyy );
@@ -220,6 +246,16 @@ namespace Poc1
 			__m128 lyyyy = _mm_sub_ps( yyyy, Constants::Fc_1 );
 			__m128 lzzzz = _mm_sub_ps( zzzz, Constants::Fc_1 );
 
+			__m128i AA1 = Perm( _mm_add_epi32( AA, Constants::Ic_1 ) );
+			__m128i BA1 = Perm( _mm_add_epi32( BA, Constants::Ic_1 ) );
+			__m128i AB1 = Perm( _mm_add_epi32( AB, Constants::Ic_1 ) );
+			__m128i BB1 = Perm( _mm_add_epi32( BB, Constants::Ic_1 ) );
+			AA = Perm( AA );
+			BA = Perm( BA );
+			AB = Perm( AB );
+			BB = Perm( BB );
+
+
 			__m128 res =
 				Lerp
 				(
@@ -233,8 +269,8 @@ namespace Poc1
 					Lerp
 					(
 						fade1,
-						Lerp( fade0, Grad( AA, xxxx, yyyy, lzzzz ), Grad( BA, lxxxx, yyyy, lzzzz ) ),
-						Lerp( fade0, Grad( AB, xxxx, lyyyy, lzzzz ), Grad( BB, lxxxx, lyyyy, lzzzz ) )
+						Lerp( fade0, Grad( AA1, xxxx, yyyy, lzzzz ), Grad( BA1, lxxxx, yyyy, lzzzz ) ),
+						Lerp( fade0, Grad( AB1, xxxx, lyyyy, lzzzz ), Grad( BB1, lxxxx, lyyyy, lzzzz ) )
 					)
 				); 
 			res = _mm_div_ps( res, _mm_set1_ps( 0.9f ) );

@@ -75,7 +75,7 @@ namespace Poc1
 			return _mm_div_ps( _mm_add_ps( total, max ), _mm_mul_ps( max, Constants::Fc_2 ) );
 		}
 
-		inline __m128 Poc1::Fast::SseNoise::RidgedFractal( __m128 xxxx, __m128 yyyy, __m128 zzzz )
+		inline __m128 Poc1::Fast::SseNoise::RidgedFractal( __m128 xxxx, __m128 yyyy, __m128 zzzz ) const
 		{
 			__m128 offset = _mm_set1_ps( 1 );
 			__m128 signal = _mm_sub_ps( offset, Abs( Noise( xxxx, yyyy, zzzz ) ) );
@@ -115,13 +115,13 @@ namespace Poc1
 		Poc1::Fast::SseNoise::SseNoise( )
 		{
 			InitializePerms( 0 );
-			_MM_SET_ROUNDING_MODE( _MM_ROUND_UP );
+			_MM_SET_ROUNDING_MODE( _MM_ROUND_NEAREST );
 		}
 
 		Poc1::Fast::SseNoise::SseNoise( unsigned int seed )
 		{
 			InitializePerms( seed );
-			_MM_SET_ROUNDING_MODE( _MM_ROUND_UP );
+			_MM_SET_ROUNDING_MODE( _MM_ROUND_NEAREST );
 		}
 
 		void Poc1::Fast::SseNoise::GenerateRgbBitmap( const int width, const int height, unsigned char* pixels, const float* origin, const float* incCol, const float* incRow )

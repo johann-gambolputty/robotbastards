@@ -4,6 +4,7 @@ using Poc1.Fast;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
 using Rb.Rendering;
+using Rb.Rendering.Interfaces.Objects;
 using Rectangle=System.Drawing.Rectangle;
 
 namespace Poc1.Universe
@@ -28,10 +29,10 @@ namespace Poc1.Universe
 	/// </remarks>
 	public class NoiseTest
 	{
-		private const float IncX = 0.0220987f;
-		private static Point3 RowStart = new Point3( 3.1f, 2.1f, 5.1f );
-		private static Vector3 IncCol = new Vector3( IncX, 0, 0 );
-		private static Vector3 IncRow = new Vector3( 0, 0.0114f, 0 );
+		private const float IncX = 2 / 512.0f;
+		private static Point3 RowStart = new Point3( 1, -1, 1 );
+		private static Vector3 IncCol = new Vector3(0, 0, -IncX);
+		private static Vector3 IncRow = new Vector3( 0, 2 / 512.0f, 0 );
 		private const int Res = 512;
 
 		public static unsafe void TestSlowNoise( )
@@ -99,6 +100,22 @@ namespace Poc1.Universe
 			bmp.UnlockBits( bmpData );
 
 			bmp.Save( "FastNoiseTestSP.bmp", ImageFormat.Bmp );
+		}
+
+		public static unsafe void TestFastSphereCloudsGenerator( )
+		{
+			Bitmap bmp = new Bitmap(Res, Res, PixelFormat.Format24bppRgb);
+			BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, bmp.PixelFormat);
+
+			SphereCloudsBitmap gen = new SphereCloudsBitmap( );
+			long start = TinyTime.CurrentTime;
+			gen.GenerateFace( CubeMapFace.PositiveX, bmp.PixelFormat, bmp.Width, bmp.Height, bmpData.Stride, ( byte* )bmpData.Scan0);
+
+			GraphicsLog.Info("Time taken to generate fast very noise: {0:F2} seconds", TinyTime.ToSeconds(start, TinyTime.CurrentTime));
+
+
+			bmp.UnlockBits(bmpData);
+			bmp.Save("TestFastSphereCloudsGenerator.bmp", ImageFormat.Bmp);
 		}
 
 		

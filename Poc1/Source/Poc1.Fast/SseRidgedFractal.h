@@ -18,7 +18,7 @@ namespace Poc1
 				SseRidgedFractal( const unsigned int seed );
 
 				///	\brief	Sets up fractal parameters
-				void Setup( const unsigned int seed, const float freq, const float gain, const int numOctaves );
+				void Setup( const float freq, const float gain, const int numOctaves );
 
 				///	\brief	Gets 4 fractal values from 4 points
 				__m128 GetValue( __m128 xxxx, __m128 yyyy, __m128 zzzz ) const;
@@ -41,13 +41,13 @@ namespace Poc1
 		{
 		}
 
-		inline void SseRidgedFractal::Setup( const unsigned int seed, const float freq, const float gain, const int numOctaves )
+		inline void SseRidgedFractal::Setup( const float freq, const float gain, const int numOctaves )
 		{
 			m_Freq = _mm_set1_ps( freq );
 			m_Gain = _mm_set1_ps( gain );
 			m_NumOctaves = numOctaves;
 			
-			m_Max = Constants::Fc_0;
+			m_Max = Constants::Fc_1;
 			__m128 amp = Constants::Fc_1;
 			for ( int octave = 0; octave < numOctaves; ++octave )
 			{
@@ -76,7 +76,9 @@ namespace Poc1
 				__m128 weightMask = _mm_cmple_ps( weight, Constants::Fc_1 );
 				weight = _mm_or_ps( _mm_and_ps( weightMask, weight ), _mm_andnot_ps( weightMask, Constants::Fc_1 ) );
 
-				signal = _mm_sub_ps( offset, Abs( m_Noise.Noise( xxxx, yyyy, zzzz ) ) );
+				__m128 basis = m_Noise.Noise( xxxx, yyyy, zzzz );
+				basis = Abs( basis );
+				signal = _mm_sub_ps( offset, basis );
 				signal = _mm_mul_ps( signal, signal );
 				signal = _mm_mul_ps( signal, weight );
 				result = _mm_add_ps( result, _mm_div_ps( signal, exp ) );
