@@ -167,6 +167,7 @@ namespace Poc1.Universe.Classes.Rendering
 		}
 
 		private readonly SphereCloudsBitmap m_Gen = new SphereCloudsBitmap( );
+	//	private readonly Noise m_Noise = new Noise( );
 
 		private unsafe void GenerateSide( CubeMapFace face, byte* pixels, int width, int height, int stride )
 		{
@@ -179,13 +180,8 @@ namespace Poc1.Universe.Classes.Rendering
 			m_Gen.GenerateFace( face, PixelFormat.Format32bppArgb, width, height, stride, pixels );
 			
 			/*
-			Fractals.Basis3dFunction basis = m_Noise.GetNoise;
 
-			float xOffset = Functions.Sin( m_XOffset );
-			float zOffset = Functions.Cos( m_ZOffset );
-			float density = 0.3f + Functions.Cos( m_CloudCoverage ) * 0.2f;
-			float cloudCut = density;
-			float cloudBorder = cloudCut + 0.2f;
+			Fractals.Basis3dFunction basis = m_Noise.GetNoise;
 			float incU = 2.0f / ( width - 1 );
 			float incV = 2.0f / ( height - 1 );
 			float v = -1;
@@ -218,7 +214,7 @@ namespace Poc1.Universe.Classes.Rendering
 					curPixel += 4;
 				}
 			}
-			*/
+			 */
 		}
 
 		private float m_XOffset = 0;

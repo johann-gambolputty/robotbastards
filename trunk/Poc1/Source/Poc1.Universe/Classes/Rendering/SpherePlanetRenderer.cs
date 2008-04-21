@@ -84,15 +84,15 @@ namespace Poc1.Universe.Classes.Rendering
 
 				GameProfiles.Game.Rendering.PlanetRendering.FlatPlanetRendering.Begin( );
 				m_PlanetTechnique.Effect.Parameters[ "TerrainSampler" ].Set( m_PlanetTexture );
-				m_CloudTechnique.Effect.Parameters[ "CloudTexture" ].Set( m_CloudGenerator.CurrentCloudTexture );
-				m_CloudTechnique.Effect.Parameters[ "NextCloudTexture" ].Set( m_CloudGenerator.NextCloudTexture );
 				m_CloudTechnique.Effect.Parameters[ "CloudBlend" ].Set( m_CloudGenerator.Blend );
 				m_PlanetTechnique.Effect.Parameters[ "CloudTransform" ].Set( m_CloudOffsetTransform );
+				m_CloudTechnique.Effect.Parameters[ "CloudTexture" ].Set( m_CloudGenerator.CurrentCloudTexture );
+				m_CloudTechnique.Effect.Parameters[ "NextCloudTexture" ].Set( m_CloudGenerator.NextCloudTexture );
 				context.ApplyTechnique( m_PlanetTechnique, m_PlanetGeometry );
 				GameProfiles.Game.Rendering.PlanetRendering.FlatPlanetRendering.End( );
-				
+
 				GameProfiles.Game.Rendering.PlanetRendering.CloudRendering.Begin( );
-				float cloudLayerScale = 1.02f;
+				float cloudLayerScale = 1.1f;
 				Graphics.Renderer.Scale( TransformType.LocalToWorld, cloudLayerScale, cloudLayerScale, cloudLayerScale );
 				m_CloudTechnique.Effect.Parameters[ "CloudTexture" ].Set( m_CloudGenerator.CurrentCloudTexture );
 				m_CloudTechnique.Effect.Parameters[ "NextCloudTexture" ].Set( m_CloudGenerator.NextCloudTexture );
@@ -100,7 +100,7 @@ namespace Poc1.Universe.Classes.Rendering
 				m_CloudTechnique.Effect.Parameters[ "CloudTransform" ].Set( m_CloudOffsetTransform );
 				context.ApplyTechnique( m_CloudTechnique, m_PlanetGeometry );
 				GameProfiles.Game.Rendering.PlanetRendering.CloudRendering.End( );
-
+				
 				Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 			}
 

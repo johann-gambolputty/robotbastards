@@ -103,11 +103,17 @@ namespace Poc1
 					break;
 			};
 
+			Normalize( xxxx, yyyy, zzzz );
 			return fractal.GetValue( _mm_add_ps( xxxx, xOffset ), yyyy, _mm_add_ps( zzzz, zOffset ) );
 		}
 
 		void SphereCloudsBitmapImpl::GenerateCloudsFace( const UCubeMapFace face, const UPixelFormat format, const int width, const int height, const int stride, unsigned char* pixels )
 		{
+			const int a = 0;
+			const int r = 1;
+			const int g = 2;
+			const int b = 3;
+
 
 			float incU = 2.0f / float( width - 1 );
 			float incV = 2.0f / float( height - 1 );
@@ -155,10 +161,10 @@ namespace Poc1
 					switch ( format )
 					{
 						case FormatR8G8B8A8 :
-							curPixel[ 0 ] = curPixel[ 1 ] = curPixel[ 2 ] = b0; curPixel[ 3 ] = a0;
-							curPixel[ 4 ] = curPixel[ 5 ] = curPixel[ 6 ] = b1; curPixel[ 7 ] = a1;
-							curPixel[ 8 ] = curPixel[ 9 ] = curPixel[ 10 ] = b2; curPixel[ 11 ] = a2;
-							curPixel[ 12 ] = curPixel[ 13 ] = curPixel[ 14 ] = b3; curPixel[ 15 ] = a3;
+							curPixel[ 0 ] = curPixel[ 1 ] = curPixel[ 2 ] = a0; curPixel[ 3 ] = a0;
+							curPixel[ 4 ] = curPixel[ 5 ] = curPixel[ 6 ] = a1; curPixel[ 7 ] = a1;
+							curPixel[ 8 ] = curPixel[ 9 ] = curPixel[ 10 ] = a2; curPixel[ 11 ] = a2;
+							curPixel[ 12 ] = curPixel[ 13 ] = curPixel[ 14 ] = a3; curPixel[ 15 ] = a3;
 							curPixel += 16;
 							break;
 							
