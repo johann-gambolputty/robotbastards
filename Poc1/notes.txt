@@ -31,7 +31,7 @@
 	- 
 	- 
 
-- Links:	
+- Links:
 
 	- Splatting:
 		- http://www.cbloom.com/3d/techdocs/splatting.txt
