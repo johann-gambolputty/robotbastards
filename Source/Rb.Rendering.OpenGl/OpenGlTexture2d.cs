@@ -350,7 +350,7 @@ namespace Rb.Rendering.OpenGl
 				case TextureFormat.A8R8G8B8			:
 				{
 					glFormat			= Gl.GL_BGRA_EXT;
-					glInternalFormat	= Gl.GL_RGB;
+					glInternalFormat	= Gl.GL_RGBA;
 					glType				= Gl.GL_UNSIGNED_BYTE;
 					return format;
 				}
