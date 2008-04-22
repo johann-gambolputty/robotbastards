@@ -14,6 +14,12 @@ namespace Poc1
 		{
 			public :
 
+				///	\brief	Sets up reasonable defaults
+				SseSphereTerrainDisplacer( )
+				{
+					Setup( 1.0f, 2.0f, 3.0f );
+				}
+
 				///	\brief	Sets up this displacer
 				void Setup( float minHeight, float seaLevel, float maxHeight )
 				{
@@ -38,7 +44,7 @@ namespace Poc1
 		};
 
 		///	\brief	SseSphereTerrainGenerator Displacer type. Does not perturb input positions
-		class SseFlatSphereTerrain : SseSphereTerrainDisplacer
+		class SseFlatSphereTerrainDisplacer : SseSphereTerrainDisplacer
 		{
 			public :
 
@@ -53,7 +59,7 @@ namespace Poc1
 		};
 
 		///	\brief	SseSphereTerrainGenerator Displacer type. Uses a ridged fractal to generate input positions
-		struct SseRidgedFractalDisplacer : SseSphereTerrainDisplacer
+		class SseRidgedFractalDisplacer : SseSphereTerrainDisplacer
 		{
 			public :
 

@@ -42,7 +42,7 @@ namespace Poc1
 
 			protected :
 
-				DisplaceType m_DisplaceType;
+				DisplaceType m_Displacer;
 		};
 		
 		//	---------------------------------------------------------------------------------------
@@ -52,19 +52,73 @@ namespace Poc1
 		template < typename DisplaceType >
 		inline DisplaceType& SseSphereTerrainGeneratorT< DisplaceType >::GetDisplacer( )
 		{
-			return m_DisplaceType;
+			return m_Displacer;
 		}
 		
 		template < typename DisplaceType >
 		inline const DisplaceType& SseSphereTerrainGeneratorT< DisplaceType >::GetDisplacer( ) const
 		{
-			return m_DisplaceType;
+			return m_Displacer;
 		}
 
 		template < typename DisplaceType >
-		inline void SseSphereTerrainGeneratorT< DisplaceType >::GenerateVertices( const float* origin, const float* xAxis, const float* zAxis, void* vertices, const int stride, const int positionOffset, const int normalOffset ) const
+		inline void SseSphereTerrainGeneratorT< DisplaceType >::GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, void* vertices, const int stride, const int positionOffset, const int normalOffset ) const
 		{
-			//	TODO: AP: ...
+			__m128 startXxxx = _mm_set_ps( origin[ 0 ], origin[ 0 ] + xStep[ 0 ], origin[ 0 ] + 2 * xStep[ 0 ], origin[ 0 ] + 3 * xStep[ 0 ] );
+			__m128 startYyyy = _mm_set_ps( origin[ 1 ], origin[ 1 ] + xStep[ 1 ], origin[ 1 ] + 2 * xStep[ 1 ], origin[ 1 ] + 3 * xStep[ 1 ] );
+			__m128 startZzzz = _mm_set_ps( origin[ 2 ], origin[ 2 ] + xStep[ 2 ], origin[ 2 ] + 2 * xStep[ 2 ], origin[ 2 ] + 3 * xStep[ 2 ] );
+			const __m128 colXInc = _mm_set1_ps( xAxis[ 0 ] );
+			const __m128 colYInc = _mm_set1_ps( xAxis[ 1 ] );
+			const __m128 colZInc = _mm_set1_ps( xAxis[ 2 ] );
+			const __m128 rowXInc = _mm_set1_ps( zAxis[ 0 ] );
+			const __m128 rowYInc = _mm_set1_ps( zAxis[ 1 ] );
+			const __m128 rowZInc = _mm_set1_ps( zAxis[ 2 ] );
+
+			unsigned char* vertexBytes = ( unsigned char* )vertices;
+			float* p0 = ( float* )( vertexBytes + positionOffset );
+			float* p1 = ( float* )( vertexBytes + positionOffset + stride );
+			float* p2 = ( float* )( vertexBytes + positionOffset + stride * 2 );
+			float* p3 = ( float* )( vertexBytes + positionOffset + stride * 3 );
+			float* n0 = ( float* )( vertexBytes + normalOffset );
+			float* n1 = ( float* )( vertexBytes + normalOffset + stride );
+			float* n2 = ( float* )( vertexBytes + normalOffset + stride * 2 );
+			float* n3 = ( float* )( vertexBytes + normalOffset + stride * 3 );
+
+
+			const int w4 = width / 4;
+			for ( int row = 0; row < height; ++row )
+			{
+				__m128 xxxx = startXxxx;
+				__m128 yyyy = startXxxx;
+				__m128 zzzz = startZzzz;
+				for ( int col = 0; col < w4; ++col )
+				{
+					Normalize( xxxx, yyyy, zzzz );
+
+					_CRT_ALIGN( 16 ) float nArr[ 4 ];
+					_mm_store_ps( xxxx, nArr );
+
+					n0[ 0 ] = nArr[ 0 ]; n1[ 0 ] = nArr[ 1 ]; n2[ 0 ] = nArr[ 2 ]; n3[ 0 ] = nArr[ 2 ];
+					
+					_mm_store_ps( yyyy, nArr );
+					n0[ 1 ] = nArr[ 0 ]; n1[ 1 ] = nArr[ 1 ]; n2[ 1 ] = nArr[ 2 ]; n3[ 1 ] = nArr[ 2 ];
+					
+					_mm_store_ps( yyyyZ, nArr );
+					n0[ 2 ] = nArr[ 0 ]; n1[ 2 ] = nArr[ 1 ]; n2[ 2 ] = nArr[ 2 ]; n3[ 2 ] = nArr[ 2 ];
+
+					const __m128 heights = m_Displacer.Displace( xxxx, yyyy, zzzz );
+
+
+					xxxx = _mm_add_ps( colXInc );
+					yyyy = _mm_add_ps( colYInc );
+					zzzz = _mm_add_ps( colZInc );
+					p0 += stride; p1 += stride;
+					curNormal += stride;
+				}
+				startXxxx = _mm_add_ps( startXxxx, rowXInc );
+				startYyyy = _mm_add_ps( startYyyy, rowYInc );
+				startZzzz = _mm_add_ps( startZzzz, rowZInc );
+			}
 		}
 
 		template < typename DisplaceType >
@@ -74,7 +128,7 @@ namespace Poc1
 			float incV 			= 2.0f / float( height - 1 );
 			__m128 vvvv			= _mm_set1_ps( -1 );
 			__m128 vvvvInc		= _mm_set1_ps( incV );
-			__m128 uuuuStart	= _mm_add_ps( _mm_set1_ps( -1 ), _mm_set_ps( 0, incU, incU * 2, incU * 3 ) );
+			__m128 uuuuStart	= _mm_set_ps( -1, -1 + incU, -1 + incU * 2, -1 + incU * 3 );
 			__m128 uuuuInc		= _mm_set1_ps( incU * 4 );
 
 			_CRT_ALIGN( 16 ) float heightsArr[ 4 ] = { 0, 0, 0, 0 };
@@ -90,7 +144,7 @@ namespace Poc1
 					__m128 xxxx, yyyy, zzzz;
 					CubeFacePosition( face, uuuu, vvvv, xxxx, yyyy, zzzz );
 					Normalize( xxxx, yyyy, zzzz );
-					__m128 heights = m_DisplaceType.Displace( xxxx, yyyy, zzzz );
+					__m128 heights = m_Displacer.Displace( xxxx, yyyy, zzzz );
 
 					//	TODO: AP: Need to inject colour from height/angle solution here... 
 					_mm_store_ps( heightsArr, _mm_mul_ps( heights, _mm_set1_ps( 255 ) ) );
@@ -118,6 +172,8 @@ namespace Poc1
 							curPixel += 12;
 							break;
 					};
+
+					uuuu = _mm_add_ps( uuuu, uuuuInc );
 				}
 				vvvv = _mm_add_ps( vvvv, vvvvInc );
 				rowPixel += stride;

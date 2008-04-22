@@ -7,16 +7,23 @@ namespace Poc1
 {
 	namespace Fast
 	{		
-		SphereTerrainGenerator::SphereTerrainGenerator( const TerrainType terrain, const unsigned int seed )
+		SphereTerrainGenerator::SphereTerrainGenerator( const TerrainGeneratorType generatorType, const unsigned int seed )
 		{
-			switch ( terrain )
+			switch ( generatorType )
 			{
-				case TerrainType_Simple		:
-				case TerrainType_Ridged		:
-				case TerrainType_Voronoi	:
-				case TerrainType_Flat		:
-				default						:
-					m_pImpl = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseFlatSphereTerrain >( );
+				case TerrainGeneratorType::Ridged	:
+					{
+						SseSphereTerrainGeneratorT< SseRidgedFractalDisplacer >* impl = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseRidgedFractalDisplacer >( );
+						impl->GetDisplacer( ).GetFractal( ).GetNoise( ).SetNewSeed( seed );
+						impl->GetDisplacer( ).GetFractal( ).Setup( 2.0f, 0.9f, 12 );
+						m_pImpl = impl;
+						break;
+					}
+				case TerrainGeneratorType::Flat		:
+				case TerrainGeneratorType::Simple	:
+				case TerrainGeneratorType::Voronoi	:
+				default								:
+					m_pImpl = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseFlatSphereTerrainDisplacer >( );
 					break;
 			}
 		}

@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Drawing.Imaging;
 using Poc1.Universe.Interfaces.Rendering;
 using Rb.Core.Maths;
 using Rb.Rendering.Interfaces.Objects;
@@ -77,12 +78,15 @@ namespace Poc1.Universe.Classes.Rendering
 				++curVertex;
 			}
 		}
+		private readonly Fast.SphereTerrainGenerator m_Gen = new Fast.SphereTerrainGenerator( Fast.TerrainGeneratorType.Ridged, 0 );
 
 		/// <summary>
 		/// Generates the side of a cube map
 		/// </summary>
 		public unsafe void GenerateSide( ITerrainTypeManager terrainTypes, CubeMapFace face, byte* pixels, int width, int height, int stride )
 		{
+			m_Gen.GenerateTexture( face, PixelFormat.Format32bppArgb, width, height, stride, pixels );
+			/*
 			float incU = 2.0f / ( width - 1 );
 			float incV = 2.0f / ( height - 1 );
 			float v = -1;
@@ -138,6 +142,7 @@ namespace Poc1.Universe.Classes.Rendering
 					curPixel += 4;
 				}
 			}
+			 */
 		}
 	}
 }
