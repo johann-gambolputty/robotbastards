@@ -1,32 +1,52 @@
 #pragma once
+#include <stdlib.h>
 
+///	\brief	Tag for placement new
 struct PlacementNew { };
 
+///	\brief	Tag for aligned new
+struct Aligned
+{
+	const int m_Alignment;
+
+	///	\brief	Sets the required alignment
+	Aligned( int alignment ) : m_Alignment( alignment ) { }
+};
+
+///	\bref	Placement new
+///
+///	Usage:
+///	\code
+///	new ( PlacementNew(), mem ) Type( ... );
+///	\endcode
 inline void* operator new( const size_t numBytes, const PlacementNew&, void* mem )
 {
 	return mem;
 }
 
+///	\brief	Placement delete (required partner of placement new - does nothing)
 inline void operator delete( void*, const PlacementNew&, void* )
 {
 }
 
-template < typename T >
-inline T* AlignedNew( const int alignment )
+///	\bref	Aligned new
+///
+///	Usage:
+///	\code
+///	new ( Aligned( 16 ) ) Type( ... );
+///	\endcode
+inline void* operator new( const size_t numBytes, const Aligned& aligned )
 {
-	void* mem = _aligned_malloc( sizeof( T ), alignment );
-	T* result = new ( PlacementNew( ), mem ) T;
-	return result;
+	return _aligned_malloc( numBytes, aligned.m_Alignment );
 }
 
-template < typename T, typename TP1 >
-inline T* AlignedNew( const int alignment, TP1 p1 )
+///	\brief	Aligned delete
+inline void operator delete( void* mem, const Aligned& aligned )
 {
-	void* mem = _aligned_malloc( sizeof( T ), alignment );
-	T* result = new ( PlacementNew( ), mem ) T( p1 );
-	return result;
+	_aligned_free( mem );
 }
 
+///	\brief	Frees an object that was allocated with aligned new
 template < typename T >
 inline void AlignedDelete( T* obj )
 {

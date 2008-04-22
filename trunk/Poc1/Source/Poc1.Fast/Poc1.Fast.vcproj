@@ -41,6 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="$(ProjectDir)"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
@@ -115,6 +116,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="$(ProjectDir)"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
@@ -192,48 +194,16 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\AssemblyInfo.cpp"
+				RelativePath=".\Source\FastNoise.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FastNoise.cpp"
+				RelativePath=".\Source\SphereCloudsBitmap.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\SphereCloudsBitmap.cpp"
+				RelativePath=".\Source\SphereTerrainGenerator.cpp"
 				>
-			</File>
-			<File
-				RelativePath=".\SseNoise.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SseRidgedFractal.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SseSimpleFractal.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Stdafx.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -254,31 +224,93 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SseNoise.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SseRidgedFractal.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SseSimpleFractal.h"
+				RelativePath=".\SphereTerrainGenerator.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Stdafx.h"
 				>
 			</File>
+			<File
+				RelativePath=".\UEnums.h"
+				>
+			</File>
 		</Filter>
 		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			Name="Sse"
 			>
+			<Filter
+				Name="Sse Headers"
+				>
+				<File
+					RelativePath=".\Sse\SseConstants.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Sse\SseNoise.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Sse\SseRidgedFractal.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Sse\SseSimpleFractal.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Sse\SseSphereTerrainGenerator.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Sse\SseUtils.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Sse Source"
+				>
+				<File
+					RelativePath=".\Sse\Source\SseConstants.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Sse\Source\SseNoise.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Sse\Source\SseSphereTerrainGenerator.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
+		<File
+			RelativePath=".\AssemblyInfo.cpp"
+			>
+		</File>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>
+		</File>
+		<File
+			RelativePath=".\Stdafx.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="1"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="1"
+				/>
+			</FileConfiguration>
 		</File>
 	</Files>
 	<Globals>

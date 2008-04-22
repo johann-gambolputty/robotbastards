@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "FastNoise.h"
-#include "SseNoise.h"
 #include "Mem.h"
 
 namespace Poc1
@@ -9,24 +8,22 @@ namespace Poc1
 	{
 		FastNoise::FastNoise( )
 		{
-			m_pImpl = AlignedNew< SseNoise >( 16 );
+			m_pImpl = new ( Aligned( 16 ) ) SseNoise;
 		}
 
 		FastNoise::FastNoise( unsigned int seed )
 		{
-			m_pImpl = AlignedNew< SseNoise >( 16, seed );
+			m_pImpl = new ( Aligned( 16 ) ) SseNoise( seed );
 		}
 
 		FastNoise::!FastNoise( )
 		{
 			AlignedDelete( m_pImpl );
-			m_pImpl = 0;
 		}
 
 		FastNoise::~FastNoise( )
 		{
 			AlignedDelete( m_pImpl );
-			m_pImpl = 0;
 		}
 	};
 };
