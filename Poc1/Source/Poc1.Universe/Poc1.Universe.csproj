@@ -66,6 +66,7 @@
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Interfaces\IOrbit.cs" />
     <Compile Include="Interfaces\IPlanet.cs" />
+    <Compile Include="Interfaces\IPlanetTerrain.cs" />
     <Compile Include="Interfaces\ISun.cs" />
     <Compile Include="Interfaces\IUniCamera.cs" />
     <Compile Include="Interfaces\Rendering\IPlanetTerrain.cs" />
@@ -111,6 +112,9 @@
       <Project>{2EA4865D-CDBB-4EC3-83A3-4703FE7B7A28}</Project>
       <Name>Poc1.Fast</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Classes.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,7 +1,8 @@
 #include "StdAfx.h"
 #include "SphereCloudsBitmap.h"
-#include "SseRidgedFractal.h"
+#include "Sse/SseRidgedFractal.h"
 #include "Mem.h"
+#include "UEnums.h"
 
 #pragma unmanaged
 
@@ -9,23 +10,6 @@ namespace Poc1
 {
 	namespace Fast
 	{
-		///	\brief	Unmanaged cube map faces. MUST MATCH values in CubeMapFace
-		enum UCubeMapFace
-		{
-			NegativeX,
-			PositiveX,
-			NegativeY,
-			PositiveY,
-			NegativeZ,
-			PositiveZ
-		};
-		
-		///	\brief	Unmanaged pixel formats
-		enum UPixelFormat
-		{
-			FormatR8G8B8,
-			FormatR8G8B8A8,
-		};
 
 		class _CRT_ALIGN( 16 ) SphereCloudsBitmapImpl
 		{
@@ -60,49 +44,8 @@ namespace Poc1
 
 		inline __m128 CubeFaceFractal( const SseRidgedFractal& fractal, const UCubeMapFace face, const __m128& uuuu, const __m128& vvvv, const __m128& xOffset, const __m128& zOffset )
 		{
-			//	TODO: AP: Normalize (x,y,z)?
 			__m128 xxxx, yyyy, zzzz;
-			switch ( face )
-			{
-				default:
-				case NegativeX:
-				//	x = -1; y = v; z = u;
-					xxxx = Constants::Fc_Neg1;
-					yyyy = vvvv;
-					zzzz = uuuu;
-					break;
-				case PositiveX:
-				//	x = 1; y = v; z = -u;
-					xxxx = Constants::Fc_1;
-					yyyy = vvvv;
-					zzzz = Neg( uuuu );
-					break;
-				case NegativeY:
-					//x = -u; y = -1; z = -v;
-					xxxx = Neg( uuuu );
-					yyyy = Constants::Fc_Neg1;
-					zzzz = Neg( vvvv );
-					break;
-				case PositiveY:
-				//	x = -u; y = 1; z = v;
-					xxxx = Neg( uuuu );
-					yyyy = Constants::Fc_1;
-					zzzz = vvvv;
-					break;
-				case NegativeZ:
-				//	x = -u; y = v; z = -1;
-					xxxx = Neg( uuuu );
-					yyyy = vvvv;
-					zzzz = Constants::Fc_Neg1;
-					break;
-				case PositiveZ:
-					//x = u; y = v; z = 1;
-					xxxx = uuuu;
-					yyyy = vvvv;
-					zzzz = Constants::Fc_1;
-					break;
-			};
-
+			CubeFacePosition( face, uuuu, vvvv, xxxx, yyyy, zzzz );
 			Normalize( xxxx, yyyy, zzzz );
 			return fractal.GetValue( _mm_add_ps( xxxx, xOffset ), yyyy, _mm_add_ps( zzzz, zOffset ) );
 		}
@@ -182,48 +125,6 @@ namespace Poc1
 				vvvv = _mm_add_ps( vvvv, vvvvInc );
 				rowPixel += stride;
 			}
-			/*
-			Fractals.Basis3dFunction basis = m_Noise.GetNoise;
-
-			float xOffset = Functions.Sin( m_XOffset );
-			float zOffset = Functions.Cos( m_ZOffset );
-			float density = 0.3f + Functions.Cos( m_CloudCoverage ) * 0.2f;
-			float cloudCut = density;
-			float cloudBorder = cloudCut + 0.2f;
-			float incU = 2.0f / ( width - 1 );
-			float incV = 2.0f / ( height - 1 );
-			float v = -1;
-			for ( int row = 0; row < height; ++row, v += incV )
-			{
-				float u = -1;
-				byte* curPixel = pixels + row * stride;
-				for ( int col = 0; col < width; ++col, u += incU )
-				{
-					float x, y, z;
-					SphereTerrainGenerator.UvToXyz( u, v, face, out x, out y, out z );
-
-					float val = Fractals.RidgedFractal( x + xOffset, y, z + zOffset, 1.8f, 8, 1.6f, basis );
-					float alpha = 0;
-					if ( val < cloudCut )
-					{
-						val = 0;
-					}
-					else
-					{
-						alpha = val < cloudBorder ? ( val - cloudCut ) / ( cloudBorder - cloudCut ) : 1.0f;
-					}
-
-					byte colour = ( byte )( val * 255.0f );
-					curPixel[ 0 ] = colour;
-					curPixel[ 1 ] = colour;
-					curPixel[ 2 ] = colour;
-					curPixel[ 3 ] = ( byte )( alpha * 255.0f );
-
-					curPixel += 4;
-				}
-
-			}
-			*/
 		}
 
 	}; //Fast
@@ -239,16 +140,14 @@ namespace Poc1
 
 		SphereCloudsBitmap::SphereCloudsBitmap( )
 		{
-		//	m_pImpl = AlignedNew< SseRidgedFractal >( 16 );
-		//	m_pImpl->Setup( 1.8f, 1.6f, 8 );
-			m_pImpl = AlignedNew< SphereCloudsBitmapImpl >( 16 );
+			m_pImpl = new ( Aligned( 16 ) ) SphereCloudsBitmapImpl;
 		}
 
 		SphereCloudsBitmap::~SphereCloudsBitmap( )
 		{
 			AlignedDelete( m_pImpl );
 		}
-		
+
 		SphereCloudsBitmap::!SphereCloudsBitmap( )
 		{
 			AlignedDelete( m_pImpl );
@@ -270,7 +169,7 @@ namespace Poc1
 				throw gcnew System::ArgumentException( "Unhandled pixel format", "format" );
 			}
 
-			m_pImpl->GenerateCloudsFace( ( UCubeMapFace )face, uFormat, width, height, stride, pixels );
+			m_pImpl->GenerateCloudsFace( GetUCubeMapFace( face ), uFormat, width, height, stride, pixels );
 		}
 
 	}; //Fast

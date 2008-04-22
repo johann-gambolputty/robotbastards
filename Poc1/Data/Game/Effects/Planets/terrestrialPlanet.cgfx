@@ -66,12 +66,12 @@ float4 FragmentShader( FragmentShaderInput input ) : COLOR
 	float3 cloudNormal = normalize( mul( CloudTransform, float4( input.m_Normal, 1 ) ).xyz );
 
 	float4 curCloud = texCUBE( CloudTexture, cloudNormal );
-	float4 nextCloud = curCloud; //texCUBE( NextCloudTexture, cloudNormal );
+	float4 nextCloud = texCUBE( NextCloudTexture, cloudNormal );
 	
 	float4 cloudCover = ( ( nextCloud * CloudBlend ) + ( curCloud * ( 1 - CloudBlend ) ) );
 	float4 terrainColour = texCUBE( TerrainSampler, -input.m_Normal );
 
-	float4 colour = terrainColour * ( 1.0f - cloudCover.a );
+	float4 colour = terrainColour * ( 1.0f - cloudCover.a * 0.5f );
 	
 	return colour * shade;
 }

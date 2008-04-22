@@ -28,6 +28,7 @@ namespace Poc1
 				void GenerateFace( CubeMapFace face, PixelFormat format, const int width, const int height, const int stride, unsigned char* pixels );
 
 			private :
+
 				SphereCloudsBitmapImpl* m_pImpl;
 		};
 	};

@@ -1,19 +1,21 @@
 #pragma once
-#include "SseNoise.h"
+#include "Sse\SseNoise.h"
 
 namespace Poc1
 {
 	namespace Fast
 	{
+		///	\brief	Result returned from FastNoise::Noise()
 		public value struct FastNoiseResult
 		{
 			public :
 
-				const float X;
-				const float Y;
-				const float Z;
-				const float W;
+				const float X;	///<	Noise result from first point
+				const float Y;	///<	Noise result from second point
+				const float Z;	///<	Noise result from third point
+				const float W;	///<	Noise result from fourth point
 
+				///	\brief	Setup constructor
 				FastNoiseResult( const float x, const float y, const float z, const float w ) :
 					X( x ),
 					Y( y ),
@@ -21,40 +23,41 @@ namespace Poc1
 					W( w )
 				{
 				}
-
-
 		};
 
-		//	Fast noise implementation
+		///	\brief	Managed wrapper around SSE2 noise implementation
 		public ref class FastNoise
 		{
 			public :
 
+				
 				typedef Rb::Core::Maths::Point3 Point3;
+				typedef Rb::Core::Maths::Vector3 Vector3;
 
+
+				///	\brief	Default constructor. Noise is seeded with value zero
 				FastNoise( );
 
+				///	\brief	Setup constructor. Noise is seeded with specified value
 				FastNoise( unsigned int seed );
 
+				///	\brief	Finalizer. Frees up unmanaged resources
 				!FastNoise( );
 
+				///	\brief	Destructor. Frees up unmanaged resources
 				~FastNoise( );
 
-				inline void GenerateRgbBitmap( const int width,
-					const int height,
-					unsigned char* pixels,
-					Rb::Core::Maths::Point3^ origin, Rb::Core::Maths::Vector3^ incCol, Rb::Core::Maths::Vector3^ incRow )
+				///	\brief	Fills an R8G8B8 bitmap with noise values
+				inline void GenerateRgbBitmap( const int width, const int height, unsigned char* pixels, Point3^ origin, Vector3^ xAxis, Vector3^ yAxis )
 				{
 					const float originArr[] = { origin->X, origin->Y, origin->Z };
-					const float incColArr[] = { incCol->X, incCol->Y, incCol->Z };
-					const float incRowArr[] = { incRow->X, incRow->Y, incRow->Z };
-
-					m_pImpl->GenerateRgbBitmap( width, height, pixels, originArr, incColArr, incRowArr );
-				//	m_pImpl->GenerateRgbSimpleFractal( width, height, pixels, originArr, incColArr, incRowArr );
-				//	m_pImpl->GenerateRgbRidgedFractal( width, height, pixels, originArr, incColArr, incRowArr );
+					const float xAxisArr[] = { xAxis->X, xAxis->Y, xAxis->Z };
+					const float yAxisArr[] = { yAxis->X, yAxis->Y, yAxis->Z };
+					m_pImpl->GenerateRgbBitmap( width, height, pixels, originArr, xAxisArr, yAxisArr );
 				}
 
-				inline FastNoiseResult Noise( Rb::Core::Maths::Point3^ pt0, Rb::Core::Maths::Point3^ pt1, Rb::Core::Maths::Point3^ pt2, Rb::Core::Maths::Point3^ pt3 )
+				///	\brief	Generates 4 noise values from 4 3d points
+				inline FastNoiseResult Noise( Point3^ pt0, Point3^ pt1, Point3^ pt2, Point3^ pt3 )
 				{
 					const float pt0arr[] = { pt0->X, pt0->Y, pt0->Z };
 					const float pt1arr[] = { pt1->X, pt1->Y, pt1->Z };
