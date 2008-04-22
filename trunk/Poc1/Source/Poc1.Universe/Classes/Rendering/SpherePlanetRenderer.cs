@@ -1,4 +1,6 @@
 using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Classes.Rendering;
 using Rb.Assets;
@@ -34,13 +36,13 @@ namespace Poc1.Universe.Classes.Rendering
 			m_CloudTechnique = new TechniqueSelector( cloudEffect, "DefaultTechnique" );
 			
 			//	Generate planet terrain texture
-			m_PlanetTexture = m_Terrain.CreatePlanetTexture( 64 );
+			m_PlanetTexture = m_Terrain.CreatePlanetTexture( 256 );
 
-			//int index = 0;
-			//foreach ( Bitmap bmp in m_PlanetTexture.ToBitmaps( ) )
-			//{
-			//    bmp.Save( m_Planet.Name + " Planet Texture " + index++ + ".jpg", ImageFormat.Jpeg );
-			//}
+			int index = 0;
+			foreach ( Bitmap bmp in m_PlanetTexture.ToBitmaps( ) )
+			{
+			    bmp.Save( m_Planet.Name + " Planet Texture " + index++ + ".jpg", ImageFormat.Jpeg );
+			}
 
 			//	Generate cloud textures
 			m_CloudGenerator = new SphereCloudsGenerator( 128 );

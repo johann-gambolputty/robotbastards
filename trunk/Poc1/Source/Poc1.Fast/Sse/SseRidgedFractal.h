@@ -40,13 +40,13 @@ namespace Poc1
 
 		inline SseRidgedFractal::SseRidgedFractal( )
 		{
-			Setup( 1.2f, 1.6f, 8 );
+			Setup( 1.8f, 0.9f, 8 );
 		}
 		
 		inline SseRidgedFractal::SseRidgedFractal( const unsigned int seed ) :
 			m_Noise( seed )
 		{
-			Setup( 1.2f, 1.6f, 8 );
+			Setup( 1.8f, 0.9f, 8 );
 		}
 
 		inline SseNoise& SseRidgedFractal::GetNoise( )
