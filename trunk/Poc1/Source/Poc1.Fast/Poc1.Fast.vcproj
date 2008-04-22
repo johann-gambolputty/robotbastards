@@ -228,6 +228,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Sse\SseSphereTerrainDisplacers.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Stdafx.h"
 				>
 			</File>
