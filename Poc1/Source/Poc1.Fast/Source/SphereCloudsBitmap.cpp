@@ -52,12 +52,6 @@ namespace Poc1
 
 		void SphereCloudsBitmapImpl::GenerateCloudsFace( const UCubeMapFace face, const UPixelFormat format, const int width, const int height, const int stride, unsigned char* pixels )
 		{
-			const int a = 0;
-			const int r = 1;
-			const int g = 2;
-			const int b = 3;
-
-
 			float incU = 2.0f / float( width - 1 );
 			float incV = 2.0f / float( height - 1 );
 			__m128 vvvv = _mm_set1_ps( -1 );
@@ -79,37 +73,37 @@ namespace Poc1
 				{
 					//	TODO: AP: Could move face switch to outer loop
 					__m128 value = _mm_mul_ps( CubeFaceFractal( m_Gen, face, uuuu, vvvv, m_XOffset, m_ZOffset ), _mm_set1_ps( 255.0f ) );
-					
 					__m128 cutMask = _mm_cmpgt_ps( value, m_CloudCutoff );
-					__m128 borderMask = _mm_cmpgt_ps( value, m_CloudBorder );
-					__m128 fadeValue = _mm_mul_ps( _mm_sub_ps( value, m_CloudCutoff ), m_CloudBorderDiff );
-					__m128 alpha = _mm_or_ps( _mm_and_ps( borderMask, _mm_set1_ps( 255.0f ) ), _mm_andnot_ps( borderMask, fadeValue ) );
 					value = _mm_and_ps( cutMask, value );
-					alpha = _mm_and_ps( cutMask, alpha );
 
 					_mm_store_ps( res, value );
-					_mm_store_ps( alphaValues, alpha );
 
 					unsigned char b0 = ( unsigned char )( res[ 3 ] );
 					unsigned char b1 = ( unsigned char )( res[ 2 ] );
 					unsigned char b2 = ( unsigned char )( res[ 1 ] );
 					unsigned char b3 = ( unsigned char )( res[ 0 ] );
 					
-					unsigned char a0 = ( unsigned char )( alphaValues[ 3 ] );
-					unsigned char a1 = ( unsigned char )( alphaValues[ 2 ] );
-					unsigned char a2 = ( unsigned char )( alphaValues[ 1 ] );
-					unsigned char a3 = ( unsigned char )( alphaValues[ 0 ] );
-
-					//	TODO: AP: Move switch to outer loop
 					switch ( format )
 					{
 						case FormatR8G8B8A8 :
-							curPixel[ 0 ] = curPixel[ 1 ] = curPixel[ 2 ] = a0; curPixel[ 3 ] = a0;
-							curPixel[ 4 ] = curPixel[ 5 ] = curPixel[ 6 ] = a1; curPixel[ 7 ] = a1;
-							curPixel[ 8 ] = curPixel[ 9 ] = curPixel[ 10 ] = a2; curPixel[ 11 ] = a2;
-							curPixel[ 12 ] = curPixel[ 13 ] = curPixel[ 14 ] = a3; curPixel[ 15 ] = a3;
-							curPixel += 16;
-							break;
+							{
+								const __m128 borderMask = _mm_cmpgt_ps( value, m_CloudBorder );
+								const __m128 fadeValue = _mm_mul_ps( _mm_sub_ps( value, m_CloudCutoff ), m_CloudBorderDiff );
+								__m128 alpha = _mm_or_ps( _mm_and_ps( borderMask, _mm_set1_ps( 255.0f ) ), _mm_andnot_ps( borderMask, fadeValue ) );
+								alpha = _mm_and_ps( cutMask, alpha );
+								_mm_store_ps( alphaValues, alpha );
+								const unsigned char a0 = ( unsigned char )( alphaValues[ 3 ] );
+								const unsigned char a1 = ( unsigned char )( alphaValues[ 2 ] );
+								const unsigned char a2 = ( unsigned char )( alphaValues[ 1 ] );
+								const unsigned char a3 = ( unsigned char )( alphaValues[ 0 ] );
+
+								curPixel[ 0 ] = curPixel[ 1 ] = curPixel[ 2 ] = b0; curPixel[ 3 ] = a0;
+								curPixel[ 4 ] = curPixel[ 5 ] = curPixel[ 6 ] = b1; curPixel[ 7 ] = a1;
+								curPixel[ 8 ] = curPixel[ 9 ] = curPixel[ 10 ] = b2; curPixel[ 11 ] = a2;
+								curPixel[ 12 ] = curPixel[ 13 ] = curPixel[ 14 ] = b3; curPixel[ 15 ] = a3;
+								curPixel += 16;
+								break;
+							};
 							
 						case FormatR8G8B8 :
 							curPixel[ 0 ] = curPixel[ 1 ] = curPixel[ 2 ] = b0;

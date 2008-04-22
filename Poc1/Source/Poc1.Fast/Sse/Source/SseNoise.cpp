@@ -10,16 +10,21 @@ namespace Poc1
 {
 	namespace Fast
 	{
-		Poc1::Fast::SseNoise::SseNoise( )
+		SseNoise::SseNoise( )
 		{
 			InitializePerms( 0 );
 			_MM_SET_ROUNDING_MODE( _MM_ROUND_NEAREST );
 		}
 
-		Poc1::Fast::SseNoise::SseNoise( unsigned int seed )
+		SseNoise::SseNoise( unsigned int seed )
 		{
 			InitializePerms( seed );
 			_MM_SET_ROUNDING_MODE( _MM_ROUND_NEAREST );
+		}
+
+		void SseNoise::SetNewSeed( const unsigned int seed )
+		{
+			InitializePerms( seed );
 		}
 
 		void Poc1::Fast::SseNoise::GenerateRgbBitmap( const int width, const int height, unsigned char* pixels, const float* origin, const float* incCol, const float* incRow ) const

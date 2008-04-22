@@ -16,7 +16,7 @@ namespace Poc1
 				case TerrainType_Voronoi	:
 				case TerrainType_Flat		:
 				default						:
-					m_pImpl = new ( Aligned( 16 ) ) SseSphereTerrainGenerator( );
+					m_pImpl = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseFlatSphereTerrain >( );
 					break;
 			}
 		}
@@ -36,7 +36,7 @@ namespace Poc1
 			m_pImpl->GenerateTexture( GetUCubeMapFace( face ), GetUPixelFormat( format ), width,  height, stride, pixels );
 		}
 
-		void SphereTerrainGenerator::GenerateVertices( Point3 origin, Vector3 xAxis, Vector3 zAxis, void* vertices, const int stride, const int positionOffset, const int normalOffset )
+		void SphereTerrainGenerator::GenerateVertices( Point3^ origin, Vector3^ xAxis, Vector3^ zAxis, void* vertices, const int stride, const int positionOffset, const int normalOffset )
 		{
 			float originArr[] = { origin->X, origin->Y, origin->Z };
 			float xAxisArr[] = { xAxis->X, xAxis->Y, xAxis->Z };

@@ -19,6 +19,9 @@ namespace Poc1
 				///	\brief	Initializes this noise object with a supplied seed value
 				SseNoise( unsigned int seed );
 
+				///	\brief	Sets a new seed value
+				void SetNewSeed( const unsigned int seed );
+
 				///	\brief	Fills a bitmap with noise values
 				void GenerateRgbBitmap( const int width, const int height, unsigned char* pixels, const float* origin, const float* incCol, const float* incRow ) const;
 

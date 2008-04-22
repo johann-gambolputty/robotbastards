@@ -17,6 +17,12 @@ namespace Poc1
 				///	\brief	Sets the seed for the noise basis function
 				SseRidgedFractal( const unsigned int seed );
 
+				///	\brief	Gets the noise object
+				SseNoise& GetNoise( );
+				
+				///	\brief	Gets the noise object
+				const SseNoise& GetNoise( ) const;
+
 				///	\brief	Sets up fractal parameters
 				void Setup( const float freq, const float gain, const int numOctaves );
 
@@ -34,11 +40,23 @@ namespace Poc1
 
 		inline SseRidgedFractal::SseRidgedFractal( )
 		{
+			Setup( 1.2f, 1.6f, 8 );
 		}
 		
 		inline SseRidgedFractal::SseRidgedFractal( const unsigned int seed ) :
 			m_Noise( seed )
 		{
+			Setup( 1.2f, 1.6f, 8 );
+		}
+
+		inline SseNoise& SseRidgedFractal::GetNoise( )
+		{
+			return m_Noise;
+		}
+
+		inline const SseNoise& SseRidgedFractal::GetNoise( ) const
+		{
+			return m_Noise;
 		}
 
 		inline void SseRidgedFractal::Setup( const float freq, const float gain, const int numOctaves )
