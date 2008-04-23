@@ -58,6 +58,8 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#region IPlanetTerrain Members
 
+		private readonly Fast.SphereTerrainGenerator m_Gen = new Fast.SphereTerrainGenerator( Fast.TerrainGeneratorType.Flat, 0 );
+
 		/// <summary>
 		/// Generates vertices for a patch
 		/// </summary>
@@ -68,10 +70,12 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <param name="firstVertex">Patch vertices</param>
 		public unsafe void GenerateTerrainPatchVertices( Point3 origin, Vector3 uStep, Vector3 vStep, int res, TerrainVertex* firstVertex )
 		{
-			TerrainVertex* curVertex = firstVertex;
-
 			float heightScale = 8.0f;
+			m_Gen.SetHeightRange( PlanetStandardRadius, PlanetStandardRadius + heightScale );
+			m_Gen.GenerateVertices( origin, uStep, vStep, res, res, firstVertex, sizeof( TerrainVertex ), 0, 12 );
 
+			/*
+			TerrainVertex* curVertex = firstVertex;
 			Point3 rowStart = origin;
 			for ( int row = 0; row < res; ++row )
 			{
@@ -79,7 +83,7 @@ namespace Poc1.Universe.Classes.Rendering
 				TerrainVertex* rowVertices = curVertex;
 				for ( int col = 0; col < res; ++col )
 				{
-					float invLength = 1.0f / Functions.Sqrt( curPt.X * curPt.X + curPt.Y * curPt.Y + curPt.Z * curPt.Z );
+					float invLength = PlanetStandardRadius / Functions.Sqrt(curPt.X * curPt.X + curPt.Y * curPt.Y + curPt.Z * curPt.Z);
 					float x = curPt.X * invLength;
 					float y = curPt.Y * invLength;
 					float z = curPt.Z * invLength;
@@ -108,29 +112,29 @@ namespace Poc1.Universe.Classes.Rendering
 			{
 				float invLength = 1.0f / Functions.Sqrt( upPos.X * upPos.X + upPos.Y * upPos.Y + upPos.Z * upPos.Z );
 				upPoints[ row ] = new Point3( upPos.X * invLength, upPos.Y * invLength, upPos.Z * invLength );
-				invLength *= PlanetStandardRadius + heightScale * m_Generator.GetHeight( upPoints[ row ].X, upPoints[ row ].Y, upPoints[ row ].Z );
+				invLength *= PlanetStandardRadius + heightScale;// * m_Generator.GetHeight( upPoints[ row ].X, upPoints[ row ].Y, upPoints[ row ].Z );
 				upPoints[ row ] += new Vector3( upPos.X * invLength, upPos.Y * invLength, upPos.Z * invLength );
 
 				invLength = 1.0f / Functions.Sqrt( downPos.X * downPos.X + downPos.Y * downPos.Y + downPos.Z * downPos.Z );
 				downPoints[ row ] = new Point3( downPos.X * invLength, downPos.Y * invLength, downPos.Z * invLength );
-				invLength *= PlanetStandardRadius + heightScale * m_Generator.GetHeight( downPoints[ row ].X, downPoints[ row ].Y, downPoints[ row ].Z );
+				invLength *= PlanetStandardRadius + heightScale;// *m_Generator.GetHeight(downPoints[row].X, downPoints[row].Y, downPoints[row].Z);
 				downPoints[ row ] += new Vector3( downPos.X * invLength, downPos.Y * invLength, downPos.Z * invLength );
 
 				invLength = 1.0f / Functions.Sqrt( leftPos.X * leftPos.X + leftPos.Y * leftPos.Y + leftPos.Z * leftPos.Z );
 				leftPoints[ row ] = new Point3( leftPos.X * invLength, leftPos.Y * invLength, leftPos.Z * invLength );
-				invLength *= PlanetStandardRadius + heightScale * m_Generator.GetHeight( leftPoints[ row ].X, leftPoints[ row ].Y, leftPoints[ row ].Z );
+				invLength *= PlanetStandardRadius + heightScale;// * m_Generator.GetHeight( leftPoints[ row ].X, leftPoints[ row ].Y, leftPoints[ row ].Z );
 				leftPoints[ row ] += new Vector3( leftPos.X * invLength, leftPos.Y * invLength, leftPos.Z * invLength );
 
 				invLength = 1.0f / Functions.Sqrt( rightPos.X * rightPos.X + rightPos.Y * rightPos.Y + rightPos.Z * rightPos.Z );
 				rightPoints[ row ] = new Point3( rightPos.X * invLength, rightPos.Y * invLength, rightPos.Z * invLength );
-				invLength *= PlanetStandardRadius + heightScale * m_Generator.GetHeight( rightPoints[ row ].X, rightPoints[ row ].Y, rightPoints[ row ].Z );
+				invLength *= PlanetStandardRadius + heightScale;// * m_Generator.GetHeight( rightPoints[ row ].X, rightPoints[ row ].Y, rightPoints[ row ].Z );
 				rightPoints[ row ] += new Vector3( rightPos.X * invLength, rightPos.Y * invLength, rightPos.Z * invLength );
 			}
 
 			int max = res - 1;
 			for ( int row = 0; row < res; ++row )
 			{
-			    curVertex = firstVertex + ( row * res );
+				curVertex = firstVertex + (row * res);
 			    for ( int col = 0; col < res; ++col, ++curVertex )
 			    {
 					//	TODO: AP: This is very very slow
@@ -146,6 +150,7 @@ namespace Poc1.Universe.Classes.Rendering
 					curVertex->Normal = acc.MakeNormal( );
 			    }
 			}
+			*/
 		}
 
 		#endregion

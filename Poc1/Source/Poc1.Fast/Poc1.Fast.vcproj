@@ -232,6 +232,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Sse\SseSphereTerrainTypeSelector.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Stdafx.h"
 				>
 			</File>
