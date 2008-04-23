@@ -37,11 +37,14 @@ namespace Poc1
 				///	\brief	Destructor. Frees up unmanaged resources
 				~SphereTerrainGenerator( );
 
+				///	\brief	Sets the minimum and maximum heights that can be generated
+				void SetHeightRange( const float minHeight, const float maxHeight );
+
 				///	\brief	Generates a side of a cube map texture used to render this terrain in marble mode
 				void GenerateTexture( const CubeMapFace face, const PixelFormat format, const int width, const int height, const int stride, unsigned char* pixels );
 
 				///	\brief	Generates terrain vertex points and normals
-				void GenerateVertices( Point3^ origin, Vector3^ xAxis, Vector3^ zAxis, void* vertices, const int stride, const int positionOffset, const int normalOffset );
+				void GenerateVertices( Point3^ origin, Vector3^ xAxis, Vector3^ zAxis, const int width, const int height, void* vertices, const int stride, const int positionOffset, const int normalOffset );
 
 			private :
 

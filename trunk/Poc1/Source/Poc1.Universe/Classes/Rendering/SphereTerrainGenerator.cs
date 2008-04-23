@@ -85,6 +85,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		public unsafe void GenerateSide( ITerrainTypeManager terrainTypes, CubeMapFace face, byte* pixels, int width, int height, int stride )
 		{
+			//	ReSharper LIES about face being unassignable to CubeMapFace... ignore
 			m_Gen.GenerateTexture( face, PixelFormat.Format32bppArgb, width, height, stride, pixels );
 			/*
 			float incU = 2.0f / ( width - 1 );

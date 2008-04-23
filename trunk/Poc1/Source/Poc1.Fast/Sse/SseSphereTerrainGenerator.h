@@ -15,8 +15,14 @@ namespace Poc1
 		{
 			public :
 
+				///	\brief	Gets the displacer
+				virtual SseSphereTerrainDisplacer& GetBaseDisplacer( ) = 0;
+
+				///	\brief	Gets the displacer
+				virtual const SseSphereTerrainDisplacer& GetBaseDisplacer( ) const = 0;
+
 				///	\brief	Generates terrain vertex points and normals
-				virtual void GenerateVertices( const float* origin, const float* xAxis, const float* zAxis, void* vertices, const int stride, const int positionOffset, const int normalOffset ) const = 0;
+				virtual void GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, void* vertices, const int stride, const int positionOffset, const int normalOffset ) const = 0;
 
 				///	\brief	Generates a cube map texture face
 				virtual void GenerateTexture( const UCubeMapFace face, const UPixelFormat format, const int width, const int height, const int stride, unsigned char* pixels ) const = 0;
@@ -34,15 +40,46 @@ namespace Poc1
 				///	\brief	Gets the object used to displace vertices from the sphere surface
 				const DisplaceType& GetDisplacer( ) const;
 
+				///	\brief	Gets the displacer
+				virtual SseSphereTerrainDisplacer& GetBaseDisplacer( );
+
+				///	\brief	Gets the displacer
+				virtual const SseSphereTerrainDisplacer& GetBaseDisplacer( ) const;
+
 				///	\brief	Generates terrain vertex points and normals
-				void GenerateVertices( const float* origin, const float* xAxis, const float* zAxis, void* vertices, const int stride, const int positionOffset, const int normalOffset ) const;
+				virtual void GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, void* vertices, const int stride, const int positionOffset, const int normalOffset ) const;
 
 				///	\brief	Generates a cube map texture face
-				void GenerateTexture( const UCubeMapFace face, const UPixelFormat format, const int width, const int height, const int stride, unsigned char* pixels ) const;
+				virtual void GenerateTexture( const UCubeMapFace face, const UPixelFormat format, const int width, const int height, const int stride, unsigned char* pixels ) const;
 
 			protected :
 
 				DisplaceType m_Displacer;
+
+				void GenerateVertexNormals( );
+
+				inline static void Store( const __m128& src, float* n0, float* n1, float* n2, float* n3, const int index, float* tmp )
+				{
+					_mm_store_ps( tmp, src );
+					n0[ index ] = tmp[ 3 ];
+					n1[ index ] = tmp[ 2 ];
+					n2[ index ] = tmp[ 1 ];
+					n3[ index ] = tmp[ 0 ];
+				}
+				
+				inline static void Store( const __m128& src, float* n0, float* n1, float* n2, const int index, float* tmp, const int max )
+				{
+					_mm_store_ps( tmp, src );
+					n0[ index ] = tmp[ 3 ];
+					if ( max > 1 )
+					{
+						n1[ index ] = tmp[ 2 ];
+						if ( max > 2 )
+						{
+							n2[ index ] = tmp[ 1 ];
+						}
+					}
+				}
 		};
 		
 		//	---------------------------------------------------------------------------------------
@@ -62,17 +99,29 @@ namespace Poc1
 		}
 
 		template < typename DisplaceType >
+		inline SseSphereTerrainDisplacer& SseSphereTerrainGeneratorT< DisplaceType >::GetBaseDisplacer( )
+		{
+			return m_Displacer;
+		}
+		
+		template < typename DisplaceType >
+		inline const SseSphereTerrainDisplacer& SseSphereTerrainGeneratorT< DisplaceType >::GetBaseDisplacer( ) const
+		{
+			return m_Displacer;
+		}
+
+		template < typename DisplaceType >
 		inline void SseSphereTerrainGeneratorT< DisplaceType >::GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, void* vertices, const int stride, const int positionOffset, const int normalOffset ) const
 		{
 			__m128 startXxxx = _mm_set_ps( origin[ 0 ], origin[ 0 ] + xStep[ 0 ], origin[ 0 ] + 2 * xStep[ 0 ], origin[ 0 ] + 3 * xStep[ 0 ] );
 			__m128 startYyyy = _mm_set_ps( origin[ 1 ], origin[ 1 ] + xStep[ 1 ], origin[ 1 ] + 2 * xStep[ 1 ], origin[ 1 ] + 3 * xStep[ 1 ] );
 			__m128 startZzzz = _mm_set_ps( origin[ 2 ], origin[ 2 ] + xStep[ 2 ], origin[ 2 ] + 2 * xStep[ 2 ], origin[ 2 ] + 3 * xStep[ 2 ] );
-			const __m128 colXInc = _mm_set1_ps( xAxis[ 0 ] );
-			const __m128 colYInc = _mm_set1_ps( xAxis[ 1 ] );
-			const __m128 colZInc = _mm_set1_ps( xAxis[ 2 ] );
-			const __m128 rowXInc = _mm_set1_ps( zAxis[ 0 ] );
-			const __m128 rowYInc = _mm_set1_ps( zAxis[ 1 ] );
-			const __m128 rowZInc = _mm_set1_ps( zAxis[ 2 ] );
+			const __m128 colXInc = _mm_set1_ps( xStep[ 0 ] * 4 );
+			const __m128 colYInc = _mm_set1_ps( xStep[ 1 ] * 4 );
+			const __m128 colZInc = _mm_set1_ps( xStep[ 2 ] * 4 );
+			const __m128 rowXInc = _mm_set1_ps( zStep[ 0 ] );
+			const __m128 rowYInc = _mm_set1_ps( zStep[ 1 ] );
+			const __m128 rowZInc = _mm_set1_ps( zStep[ 2 ] );
 
 			unsigned char* vertexBytes = ( unsigned char* )vertices;
 			float* p0 = ( float* )( vertexBytes + positionOffset );
@@ -84,42 +133,76 @@ namespace Poc1
 			float* n2 = ( float* )( vertexBytes + normalOffset + stride * 2 );
 			float* n3 = ( float* )( vertexBytes + normalOffset + stride * 3 );
 
+			_CRT_ALIGN( 16 ) float nArr[ 4 ];	//	Temporary array used to store normals/displaced points
 
-			const int w4 = width / 4;
+			const int widthDiv4 = width / 4;
+			const int widthRem4 = width % 4;
+			int vertex4Stride = stride; // Not x4, because this is used to increment p0 - sizeof(*p0) == sizeof(float) == 4
+			int vertexRemStride = ( stride / 4 ) * widthRem4;
 			for ( int row = 0; row < height; ++row )
 			{
 				__m128 xxxx = startXxxx;
-				__m128 yyyy = startXxxx;
+				__m128 yyyy = startYyyy;
 				__m128 zzzz = startZzzz;
-				for ( int col = 0; col < w4; ++col )
+				int col = 0;
+				for ( ; col < widthDiv4; ++col )
 				{
-					Normalize( xxxx, yyyy, zzzz );
+					//	Create a normal from the current point
+					__m128 tmpXxxx = xxxx;
+					__m128 tmpYyyy = yyyy;
+					__m128 tmpZzzz = zzzz;
+					Normalize( tmpXxxx, tmpYyyy, tmpZzzz );
 
-					_CRT_ALIGN( 16 ) float nArr[ 4 ];
-					_mm_store_ps( xxxx, nArr );
+					//	Transfer normals to 4 vertex normals
+					Store( tmpXxxx, n0, n1, n2, n3, 0, nArr );
+					Store( tmpYyyy, n0, n1, n2, n3, 1, nArr );
+					Store( tmpZzzz, n0, n1, n2, n3, 2, nArr );
 
-					n0[ 0 ] = nArr[ 0 ]; n1[ 0 ] = nArr[ 1 ]; n2[ 0 ] = nArr[ 2 ]; n3[ 0 ] = nArr[ 2 ];
-					
-					_mm_store_ps( yyyy, nArr );
-					n0[ 1 ] = nArr[ 0 ]; n1[ 1 ] = nArr[ 1 ]; n2[ 1 ] = nArr[ 2 ]; n3[ 1 ] = nArr[ 2 ];
-					
-					_mm_store_ps( yyyyZ, nArr );
-					n0[ 2 ] = nArr[ 0 ]; n1[ 2 ] = nArr[ 1 ]; n2[ 2 ] = nArr[ 2 ]; n3[ 2 ] = nArr[ 2 ];
+					//	Displace points on sphere, transfer positions to 4 vertex positions
+					m_Displacer.Displace( tmpXxxx, tmpYyyy, tmpZzzz );
+					Store( tmpXxxx, p0, p1, p2, p3, 0, nArr );
+					Store( tmpYyyy, p0, p1, p2, p3, 1, nArr );
+					Store( tmpZzzz, p0, p1, p2, p3, 2, nArr );
 
-					const __m128 heights = m_Displacer.Displace( xxxx, yyyy, zzzz );
+					//	Move to next positions on patch column
+					xxxx = _mm_add_ps( xxxx, colXInc );
+					yyyy = _mm_add_ps( yyyy, colYInc );
+					zzzz = _mm_add_ps( zzzz, colZInc );
 
-
-					xxxx = _mm_add_ps( colXInc );
-					yyyy = _mm_add_ps( colYInc );
-					zzzz = _mm_add_ps( colZInc );
-					p0 += stride; p1 += stride;
-					curNormal += stride;
+					//	Move vertex position and normal pointers on
+					p0 += vertex4Stride; p1 += vertex4Stride; p2 += vertex4Stride; p3 += vertex4Stride;
+					n0 += vertex4Stride; n1 += vertex4Stride; n2 += vertex4Stride; n3 += vertex4Stride;
 				}
+
+				if ( widthRem4 != 0 )
+				{
+					__m128 tmpXxxx = xxxx;
+					__m128 tmpYyyy = yyyy;
+					__m128 tmpZzzz = zzzz;
+					Normalize( tmpXxxx, tmpYyyy, tmpZzzz );
+
+					//	Transfer normals to 1-3 vertex normals
+					Store( tmpXxxx, n0, n1, n2, 0, nArr, widthRem4 );
+					Store( tmpYyyy, n0, n1, n2, 1, nArr, widthRem4 );
+					Store( tmpZzzz, n0, n1, n2, 2, nArr, widthRem4 );
+
+					//	Displace points on sphere, transfer positions to 1-3 vertex positions
+					m_Displacer.Displace( tmpXxxx, tmpYyyy, tmpZzzz );
+					Store( tmpXxxx, p0, p1, p2, 0, nArr, widthRem4 );
+					Store( tmpYyyy, p0, p1, p2, 1, nArr, widthRem4 );
+					Store( tmpZzzz, p0, p1, p2, 2, nArr, widthRem4 );
+
+					p0 += vertexRemStride; p1 += vertexRemStride; p2 += vertexRemStride; p3 += vertexRemStride;
+					n0 += vertexRemStride; n1 += vertexRemStride; n2 += vertexRemStride; n3 += vertexRemStride;
+				}
+
+				//	Move to next positions on patch row
 				startXxxx = _mm_add_ps( startXxxx, rowXInc );
 				startYyyy = _mm_add_ps( startYyyy, rowYInc );
 				startZzzz = _mm_add_ps( startZzzz, rowZInc );
 			}
 		}
+
 
 		template < typename DisplaceType >
 		inline void SseSphereTerrainGeneratorT< DisplaceType >::GenerateTexture( const UCubeMapFace face, const UPixelFormat format, const int width, const int height, const int stride, unsigned char* pixels ) const

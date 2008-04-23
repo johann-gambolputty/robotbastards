@@ -44,7 +44,7 @@ namespace Poc1
 		};
 
 		///	\brief	SseSphereTerrainGenerator Displacer type. Does not perturb input positions
-		class SseFlatSphereTerrainDisplacer : SseSphereTerrainDisplacer
+		class SseFlatSphereTerrainDisplacer : public SseSphereTerrainDisplacer
 		{
 			public :
 
@@ -59,7 +59,7 @@ namespace Poc1
 		};
 
 		///	\brief	SseSphereTerrainGenerator Displacer type. Uses a ridged fractal to generate input positions
-		class SseRidgedFractalDisplacer : SseSphereTerrainDisplacer
+		class SseRidgedFractalDisplacer : public SseSphereTerrainDisplacer
 		{
 			public :
 
