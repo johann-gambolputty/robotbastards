@@ -1,6 +1,5 @@
 #pragma once
 
-
 //	Erk...
 using namespace System::Drawing::Imaging;
 using namespace Rb::Rendering::Interfaces::Objects;
@@ -10,6 +9,7 @@ namespace Poc1
 	namespace Fast
 	{
 		class SseSphereTerrainGenerator;
+		class USphereTerrainTypeSelector;
 
 		///	\brief	Available terrain generation types
 		public enum class TerrainGeneratorType
@@ -49,6 +49,7 @@ namespace Poc1
 			private :
 
 				SseSphereTerrainGenerator* m_pImpl;
+				USphereTerrainTypeSelector* m_Selector;
 		};
 
 	};

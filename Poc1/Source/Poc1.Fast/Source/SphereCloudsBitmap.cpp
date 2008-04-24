@@ -131,7 +131,6 @@ namespace Poc1
 {
 	namespace Fast
 	{
-
 		SphereCloudsBitmap::SphereCloudsBitmap( )
 		{
 			m_pImpl = new ( Aligned( 16 ) ) SphereCloudsBitmapImpl;
@@ -154,16 +153,7 @@ namespace Poc1
 
 		void SphereCloudsBitmap::GenerateFace( CubeMapFace face, PixelFormat format, const int width, const int height, const int stride, unsigned char* pixels )
 		{
-			UPixelFormat uFormat;
-			switch ( format )
-			{
-				case PixelFormat::Format32bppArgb : uFormat = FormatR8G8B8A8; break;
-				case PixelFormat::Format24bppRgb : uFormat = FormatR8G8B8; break;
-			default :
-				throw gcnew System::ArgumentException( "Unhandled pixel format", "format" );
-			}
-
-			m_pImpl->GenerateCloudsFace( GetUCubeMapFace( face ), uFormat, width, height, stride, pixels );
+			m_pImpl->GenerateCloudsFace( GetUCubeMapFace( face ), GetUPixelFormat( format ), width, height, stride, pixels );
 		}
 
 	}; //Fast

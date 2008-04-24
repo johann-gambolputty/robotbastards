@@ -205,6 +205,10 @@
 				RelativePath=".\Source\SphereTerrainGenerator.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\Source\USphereTerrainTypeSelector.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -228,11 +232,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Sse\SseSphereTerrainDisplacers.h"
+				RelativePath=".\SphereTerrainTypeSelector.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Sse\SseSphereTerrainTypeSelector.h"
+				RelativePath=".\Sse\SseSphereTerrainDisplacers.h"
 				>
 			</File>
 			<File
@@ -240,7 +244,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\UColour.h"
+				>
+			</File>
+			<File
 				RelativePath=".\UEnums.h"
+				>
+			</File>
+			<File
+				RelativePath=".\USphereTerrainTypeSelector.h"
 				>
 			</File>
 		</Filter>
