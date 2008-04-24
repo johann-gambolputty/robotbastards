@@ -56,3 +56,11 @@ inline void AlignedDelete( T* obj )
 		_aligned_free( obj );
 	}
 }
+
+///	\brief	Frees an object that was allocated with aligned new
+template < typename T >
+inline void AlignedArrayDelete( T* obj )
+{
+	//	TODO: AP: Add non-POD destructor calls
+	_aligned_free( obj );
+}

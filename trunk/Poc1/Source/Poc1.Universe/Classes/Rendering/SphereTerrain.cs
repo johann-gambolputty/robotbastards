@@ -20,14 +20,6 @@ namespace Poc1.Universe.Classes.Rendering
 		public const float PlanetStandardRadius = 32;
 
 		/// <summary>
-		/// Default constructor
-		/// </summary>
-		public SphereTerrain( )
-		{
-			m_Generator = new RidgedFractalSphereTerrainGenerator( );
-		}
-
-		/// <summary>
 		/// Generates the terrain cube map texture for this planet
 		/// </summary>
 		/// <param name="res">Cube map face resolution</param>
@@ -50,15 +42,13 @@ namespace Poc1.Universe.Classes.Rendering
 
 			long end = TinyTime.CurrentTime;
 
-			GraphicsLog.Info("Generated {0}x{0} planet texture using {1} generator type", res, m_Generator.GetType( ) );
+			GraphicsLog.Info("Generated {0}x{0} planet texture using {1} generator type", res, m_Gen.GetType( ) );
 			GraphicsLog.Info( "Time taken to generate planet texture: {0:F2} seconds", TinyTime.ToSeconds( start, end ) );
 
 			return texture;
 		}
 
 		#region IPlanetTerrain Members
-
-		private readonly Fast.SphereTerrainGenerator m_Gen = new Fast.SphereTerrainGenerator( Fast.TerrainGeneratorType.Flat, 0 );
 
 		/// <summary>
 		/// Generates vertices for a patch
@@ -96,6 +86,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 				rowStart += vStep;
 			}
+			*/
 
 			//	Build border regions
 			//	TODO: AP: Can be optimised - remove arrays, don't calculate border vertices in main loop, make separate border loop
@@ -134,7 +125,7 @@ namespace Poc1.Universe.Classes.Rendering
 			int max = res - 1;
 			for ( int row = 0; row < res; ++row )
 			{
-				curVertex = firstVertex + (row * res);
+				TerrainVertex* curVertex = firstVertex + ( row * res );
 			    for ( int col = 0; col < res; ++col, ++curVertex )
 			    {
 					//	TODO: AP: This is very very slow
@@ -150,7 +141,6 @@ namespace Poc1.Universe.Classes.Rendering
 					curVertex->Normal = acc.MakeNormal( );
 			    }
 			}
-			*/
 		}
 
 		#endregion
@@ -158,7 +148,8 @@ namespace Poc1.Universe.Classes.Rendering
 		#region Private Members
 
 		private readonly ITerrainTypeManager m_TerrainTypes = TerrainTypeManager.CreateDefault( );
-		private readonly ISphereTerrainGenerator m_Generator;
+		private readonly Fast.SphereTerrainGenerator m_Gen = new Fast.SphereTerrainGenerator(Fast.TerrainGeneratorType.Ridged, 0);
+
 
 		/// <summary>
 		/// Generates cube map face bitmaps
@@ -167,7 +158,7 @@ namespace Poc1.Universe.Classes.Rendering
 		{
 			Bitmap bmp = new Bitmap( res, res, format );
 			BitmapData bmpData = bmp.LockBits( new System.Drawing.Rectangle( 0, 0, res, res ), ImageLockMode.WriteOnly, format );
-			m_Generator.GenerateSide( m_TerrainTypes, face, ( byte* )bmpData.Scan0, res, res, bmpData.Stride );
+			m_Gen.GenerateTexture( face, bmp.PixelFormat, bmp.Width, bmp.Height, bmpData.Stride, ( byte* )bmpData.Scan0 );
 			bmp.UnlockBits( bmpData );
 
 			return bmp;
