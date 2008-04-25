@@ -42,6 +42,7 @@ namespace Poc1
 			UTerrainDistributionBuilder defaultSlopes;
 			defaultSlopes.Add( 0, 1 ).Add( 1, 1 );
 
+			/*
 			USphereTerrainTypeSelector::LatitudeData& arctic = m_Selector->AddLatitudeData( );
 			arctic.m_Distributions[ snow ].Build
 				(
@@ -53,6 +54,7 @@ namespace Poc1
 					UTerrainDistributionBuilder( ).Add( 0, 1 ).Add( 0.5f, 0.0f ),
 					defaultSlopes
 				);
+			*/
 
 			USphereTerrainTypeSelector::LatitudeData& temperate = m_Selector->AddLatitudeData( );
 

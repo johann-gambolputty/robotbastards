@@ -186,6 +186,10 @@
 			ReferencedProjectIdentifier="{EC130734-6F0F-402B-8215-9F133F0ADEE4}"
 			RelativePathToProject="..\Source\Rb.Rendering\Rb.Rendering.csproj"
 		/>
+		<AssemblyReference
+			RelativePath="System.Windows.Forms.dll"
+			AssemblyName="System.Windows.Forms, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
+		/>
 	</References>
 	<Files>
 		<Filter
@@ -240,6 +244,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Sse\SseVector.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Stdafx.h"
 				>
 			</File>
@@ -253,6 +261,10 @@
 			</File>
 			<File
 				RelativePath=".\USphereTerrainTypeSelector.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UVector3.h"
 				>
 			</File>
 		</Filter>

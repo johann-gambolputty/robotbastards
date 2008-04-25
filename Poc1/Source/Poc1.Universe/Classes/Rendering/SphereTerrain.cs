@@ -86,7 +86,6 @@ namespace Poc1.Universe.Classes.Rendering
 
 				rowStart += vStep;
 			}
-			*/
 
 			//	Build border regions
 			//	TODO: AP: Can be optimised - remove arrays, don't calculate border vertices in main loop, make separate border loop
@@ -141,6 +140,7 @@ namespace Poc1.Universe.Classes.Rendering
 					curVertex->Normal = acc.MakeNormal( );
 			    }
 			}
+			*/
 		}
 
 		#endregion
