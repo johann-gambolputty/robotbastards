@@ -61,95 +61,16 @@ namespace Poc1.Universe.Classes.Rendering
 		public unsafe void GenerateTerrainPatchVertices( Point3 origin, Vector3 uStep, Vector3 vStep, int res, TerrainVertex* firstVertex )
 		{
 			float heightScale = 8.0f;
+			
 			m_Gen.SetHeightRange( PlanetStandardRadius, PlanetStandardRadius + heightScale );
 			m_Gen.GenerateVertices( origin, uStep, vStep, res, res, firstVertex, sizeof( TerrainVertex ), 0, 12 );
-
-			/*
-			TerrainVertex* curVertex = firstVertex;
-			Point3 rowStart = origin;
-			for ( int row = 0; row < res; ++row )
-			{
-				Point3 curPt = rowStart;
-				TerrainVertex* rowVertices = curVertex;
-				for ( int col = 0; col < res; ++col )
-				{
-					float invLength = PlanetStandardRadius / Functions.Sqrt(curPt.X * curPt.X + curPt.Y * curPt.Y + curPt.Z * curPt.Z);
-					float x = curPt.X * invLength;
-					float y = curPt.Y * invLength;
-					float z = curPt.Z * invLength;
-					curVertex->SetPosition( x, y, z );
-					curVertex->SetNormal( x, y, z );
-					++curVertex;
-					curPt += uStep;
-				}
-				m_Generator.DisplaceTerrainVertices( res, rowVertices, PlanetStandardRadius, heightScale );
-
-				rowStart += vStep;
-			}
-
-			//	Build border regions
-			//	TODO: AP: Can be optimised - remove arrays, don't calculate border vertices in main loop, make separate border loop
-			Point3[] upPoints = new Point3[ res ];
-			Point3[] leftPoints = new Point3[ res ];
-			Point3[] rightPoints = new Point3[ res ];
-			Point3[] downPoints = new Point3[ res ];
-
-			Point3 upPos = origin - vStep;
-			Point3 leftPos = origin - uStep;
-			Point3 downPos = origin + ( vStep * res );
-			Point3 rightPos = origin + ( uStep * res );
-			for ( int row = 0; row < res; ++row, upPos += uStep, downPos += uStep, leftPos += vStep, rightPos += vStep )
-			{
-				float invLength = 1.0f / Functions.Sqrt( upPos.X * upPos.X + upPos.Y * upPos.Y + upPos.Z * upPos.Z );
-				upPoints[ row ] = new Point3( upPos.X * invLength, upPos.Y * invLength, upPos.Z * invLength );
-				invLength *= PlanetStandardRadius + heightScale;// * m_Generator.GetHeight( upPoints[ row ].X, upPoints[ row ].Y, upPoints[ row ].Z );
-				upPoints[ row ] += new Vector3( upPos.X * invLength, upPos.Y * invLength, upPos.Z * invLength );
-
-				invLength = 1.0f / Functions.Sqrt( downPos.X * downPos.X + downPos.Y * downPos.Y + downPos.Z * downPos.Z );
-				downPoints[ row ] = new Point3( downPos.X * invLength, downPos.Y * invLength, downPos.Z * invLength );
-				invLength *= PlanetStandardRadius + heightScale;// *m_Generator.GetHeight(downPoints[row].X, downPoints[row].Y, downPoints[row].Z);
-				downPoints[ row ] += new Vector3( downPos.X * invLength, downPos.Y * invLength, downPos.Z * invLength );
-
-				invLength = 1.0f / Functions.Sqrt( leftPos.X * leftPos.X + leftPos.Y * leftPos.Y + leftPos.Z * leftPos.Z );
-				leftPoints[ row ] = new Point3( leftPos.X * invLength, leftPos.Y * invLength, leftPos.Z * invLength );
-				invLength *= PlanetStandardRadius + heightScale;// * m_Generator.GetHeight( leftPoints[ row ].X, leftPoints[ row ].Y, leftPoints[ row ].Z );
-				leftPoints[ row ] += new Vector3( leftPos.X * invLength, leftPos.Y * invLength, leftPos.Z * invLength );
-
-				invLength = 1.0f / Functions.Sqrt( rightPos.X * rightPos.X + rightPos.Y * rightPos.Y + rightPos.Z * rightPos.Z );
-				rightPoints[ row ] = new Point3( rightPos.X * invLength, rightPos.Y * invLength, rightPos.Z * invLength );
-				invLength *= PlanetStandardRadius + heightScale;// * m_Generator.GetHeight( rightPoints[ row ].X, rightPoints[ row ].Y, rightPoints[ row ].Z );
-				rightPoints[ row ] += new Vector3( rightPos.X * invLength, rightPos.Y * invLength, rightPos.Z * invLength );
-			}
-
-			int max = res - 1;
-			for ( int row = 0; row < res; ++row )
-			{
-				TerrainVertex* curVertex = firstVertex + ( row * res );
-			    for ( int col = 0; col < res; ++col, ++curVertex )
-			    {
-					//	TODO: AP: This is very very slow
-					Vector3 left = ( col == 0 ? leftPoints[ row ] : ( curVertex - 1 )->Position ) - curVertex->Position;
-					Vector3 up = ( ( row == 0 ) ? upPoints[ col ] : ( curVertex - res )->Position ) - curVertex->Position;
-					Vector3 right = ( col == max ? rightPoints[ row ] : ( curVertex + 1 )->Position ) - curVertex->Position;
-					Vector3 down = ( ( row == max ) ? downPoints[ col ] : ( curVertex + res )->Position ) - curVertex->Position;
-
-					Vector3 acc = Vector3.Cross( up, left );
-					acc.IpAdd( Vector3.Cross( right, up ) );
-					acc.IpAdd( Vector3.Cross( down, right ) );
-					acc.IpAdd( Vector3.Cross( left, down ) );
-					curVertex->Normal = acc.MakeNormal( );
-			    }
-			}
-			*/
 		}
 
 		#endregion
 
 		#region Private Members
 
-		private readonly ITerrainTypeManager m_TerrainTypes = TerrainTypeManager.CreateDefault( );
-		private readonly Fast.SphereTerrainGenerator m_Gen = new Fast.SphereTerrainGenerator(Fast.TerrainGeneratorType.Ridged, 0);
-
+		private readonly Fast.SphereTerrainGenerator m_Gen = new Fast.SphereTerrainGenerator( Fast.TerrainGeneratorType.Ridged, 0 );
 
 		/// <summary>
 		/// Generates cube map face bitmaps

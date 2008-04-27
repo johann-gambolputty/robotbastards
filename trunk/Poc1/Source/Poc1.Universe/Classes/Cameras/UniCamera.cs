@@ -12,7 +12,6 @@ namespace Poc1.Universe.Classes.Cameras
 	/// </summary>
 	public class UniCamera : Component, IUniCamera
 	{
-
 		#region Current camera helper operations
 
 		/// <summary>

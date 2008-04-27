@@ -152,5 +152,10 @@ namespace Poc1.GameClient
 				m_DockingManager.ShowContent( m_LogDisplayContent );
 			}
 		}
+
+		private void exitToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			Close( );
+		}
 	}
 }
