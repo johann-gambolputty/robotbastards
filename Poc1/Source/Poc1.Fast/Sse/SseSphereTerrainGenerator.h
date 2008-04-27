@@ -165,6 +165,7 @@ namespace Poc1
 				tmpXxxx = xxxx;
 				tmpYyyy = yyyy;
 				tmpZzzz = zzzz;
+
 				Normalize( tmpXxxx, tmpYyyy, tmpZzzz );
 				m_Displacer.Displace( tmpXxxx, tmpYyyy, tmpZzzz );
 
@@ -197,6 +198,10 @@ namespace Poc1
 			const __m128 rowYInc = _mm_set1_ps( zStep[ 1 ] );
 			const __m128 rowZInc = _mm_set1_ps( zStep[ 2 ] );
 
+			startXxxx = _mm_sub_ps( startXxxx, rowXInc );
+			startYyyy = _mm_sub_ps( startYyyy, rowYInc );
+			startZzzz = _mm_sub_ps( startZzzz, rowZInc );
+
 			//	Create a cache for storing vertex positions
 			int fullWidth = width + 8;
 			fullWidth = ( fullWidth % 4 == 0 ) ? fullWidth : fullWidth + ( 4 - ( fullWidth % 4 ) );
@@ -221,9 +226,6 @@ namespace Poc1
 			startZzzz = _mm_add_ps( startZzzz, rowZInc );
 
 			FillPositionCacheLine( fullWidthDiv4, cacheLines[ 2 ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
-			startXxxx = _mm_add_ps( startXxxx, rowXInc );
-			startYyyy = _mm_add_ps( startYyyy, rowYInc );
-			startZzzz = _mm_add_ps( startZzzz, rowZInc );
 
 			//	Point to the positions and normals in the first 4 vertices
 			unsigned char* vertexBytes = ( unsigned char* )vertices;

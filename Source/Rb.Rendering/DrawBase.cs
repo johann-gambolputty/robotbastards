@@ -415,6 +415,37 @@ namespace Rb.Rendering
 
 		#endregion
 
+		#region Billboards
+
+		//	TODO: AP: Add alternative methods
+
+		/// <summary>
+		/// Draws a rectangle, facing the viewer
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="centre">Rectangle centre</param>
+		/// <param name="width">Rectangle width</param>
+		/// <param name="height">Rectangle height</param>
+		public abstract void Billboard( IPen pen, Point3 centre, float width, float height );
+
+		#endregion
+
+		#region Filled billboards
+
+		//	TODO: AP: Add alternative methods
+
+		/// <summary>
+		/// Draws a rectangle, facing up the viewer
+		/// </summary>
+		/// <param name="brush">Drawing properties</param>
+		/// <param name="centre">Rectangle centre</param>
+		/// <param name="width">Rectangle width</param>
+		/// <param name="height">Rectangle height</param>
+		public abstract void Billboard( IBrush brush, Point3 centre, float width, float height );
+
+
+		#endregion
+
 		#region Polygons
 
 		/// <summary>

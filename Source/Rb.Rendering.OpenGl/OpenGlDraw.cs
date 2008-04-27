@@ -5,6 +5,7 @@ using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
+using Rb.Rendering.Interfaces.Objects.Cameras;
 using Tao.OpenGl;
 
 namespace Rb.Rendering.OpenGl
@@ -743,6 +744,98 @@ namespace Rb.Rendering.OpenGl
 				Rectangle( brush.OutlinePen, x, y, z, width, height );
 			}
 		}
+
+		#endregion
+
+		#region Billboards
+
+		//	TODO: AP: Add alternative methods
+
+		/// <summary>
+		/// Draws a rectangle, facing the viewer
+		/// </summary>
+		/// <param name="pen">Drawing properties</param>
+		/// <param name="centre">Rectangle centre</param>
+		/// <param name="width">Rectangle width</param>
+		/// <param name="height">Rectangle height</param>
+		public override void Billboard( IPen pen, Point3 centre, float width, float height )
+		{
+			ICamera3 camera = Graphics.Renderer.Camera as ICamera3;
+			if ( camera == null )
+			{
+				return;
+			}
+
+			Vector3 xVec = camera.Frame.XAxis * width / 2;
+			Vector3 yVec = camera.Frame.YAxis * height / 2;
+
+			Point3 tL = centre - xVec - yVec;
+			Point3 tR = centre + xVec - yVec;
+			Point3 bR = centre + xVec + yVec;
+			Point3 bL = centre - xVec + yVec;
+
+			Begin( pen );
+
+			Gl.glBegin( Gl.GL_QUADS );
+
+			Gl.glVertex3f( tL.X, tL.Y, tL.Z );
+			Gl.glVertex3f( tR.X, tR.Y, tR.Z );
+			Gl.glVertex3f( bR.X, bR.Y, bR.Z );
+			Gl.glVertex3f( bL.X, bL.Y, bL.Z );
+
+			Gl.glEnd( );
+
+			End( pen );
+		}
+
+		#endregion
+
+		#region Screen aligned filled rectangles
+
+		//	TODO: AP: Add alternative methods
+
+		/// <summary>
+		/// Draws a rectangle, facing up the viewer
+		/// </summary>
+		/// <param name="brush">Drawing properties</param>
+		/// <param name="centre">Rectangle centre</param>
+		/// <param name="width">Rectangle width</param>
+		/// <param name="height">Rectangle height</param>
+		public override void Billboard( IBrush brush, Point3 centre, float width, float height )
+		{
+			ICamera3 camera = Graphics.Renderer.Camera as ICamera3;
+			if ( camera == null )
+			{
+				return;
+			}
+
+			Vector3 xVec = camera.Frame.XAxis * width / 2;
+			Vector3 yVec = camera.Frame.YAxis * height / 2;
+
+			Point3 tL = centre - xVec - yVec;
+			Point3 tR = centre + xVec - yVec;
+			Point3 bR = centre + xVec + yVec;
+			Point3 bL = centre - xVec + yVec;
+
+			Begin( brush );
+
+			Gl.glBegin( Gl.GL_QUADS );
+
+			Gl.glVertex3f( tL.X, tL.Y, tL.Z );
+			Gl.glVertex3f( tR.X, tR.Y, tR.Z );
+			Gl.glVertex3f( bR.X, bR.Y, bR.Z );
+			Gl.glVertex3f( bL.X, bL.Y, bL.Z );
+
+			Gl.glEnd( );
+
+			End( brush );
+
+			if ( brush.OutlinePen != null )
+			{
+				Billboard( brush.OutlinePen, centre, width, height );
+			}
+		}
+
 
 		#endregion
 

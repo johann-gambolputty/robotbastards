@@ -67,6 +67,14 @@ namespace Poc1.Universe.Classes.Rendering
 		}
 
 		/// <summary>
+		/// Gets the centrepoint of the patch
+		/// </summary>
+		public Point3 Centre
+		{
+			get { return m_Centre; }
+		}
+
+		/// <summary>
 		/// Sets the patch bounds
 		/// </summary>
 		public void SetBounds( Point3 topLeft, Point3 topRight, Point3 bottomLeft )
@@ -76,6 +84,9 @@ namespace Poc1.Universe.Classes.Rendering
 			m_BottomLeft = bottomLeft;
 			m_PatchXDir = m_TopRight - m_TopLeft;
 			m_PatchZDir = m_BottomLeft - m_TopLeft;
+
+			m_Centre = m_TopLeft + m_PatchXDir / 2 + m_PatchZDir / 2;
+
 			m_PatchWidth = m_PatchXDir.Length;
 			m_PatchHeight = m_PatchZDir.Length;
 			m_PatchXDir /= m_PatchWidth;
@@ -95,8 +106,6 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		public unsafe void Build( IPlanetTerrain planetTerrain )
 		{
-			//	Correct normal calculations
-			//http://www.gamedev.net/reference/articles/article2264.asp
 			m_Geometry.SetIndexBuffer( PrimitiveType.TriList, BuildIndexBuffer( ) );
 			try
 			{
@@ -107,43 +116,6 @@ namespace Poc1.Universe.Classes.Rendering
 				Vector3 uStep = m_PatchXDir * ( m_PatchWidth / ( res - 1 ) );
 				Vector3 vStep = m_PatchZDir * ( m_PatchHeight / ( res - 1 ) );
 				planetTerrain.GenerateTerrainPatchVertices( m_TopLeft, uStep, vStep, res, firstVertex );
-
-				/*
-				TerrainVertex* curVertex = firstVertex;
-
-				Vector3 xInc = m_PatchXDir * ( m_PatchWidth / ( res - 1 ) );
-				Vector3 zInc = m_PatchZDir * ( m_PatchHeight / ( res - 1 ) );
-
-				Point3 rowStart = m_TopLeft;
-				for ( int row = 0; row < res; ++row )
-				{
-					Point3 curPt = rowStart;
-					for ( int col = 0; col < res; ++col )
-					{
-						planetTerrain.MakeTerrainVertexFromPatchPoint( curPt, curVertex );
-						++curVertex;
-						curPt += xInc;
-					}
-
-					rowStart += zInc;
-				}
-
-				for ( int row = 0; row < res - 1; ++row )
-				{
-					curVertex = firstVertex + ( row * res );
-					for ( int col = 0; col < res - 1; ++col )
-					{
-						Point3 pt0 = curVertex->Position;
-						Point3 pt1 = ( curVertex + res )->Position;
-						Point3 pt2 = ( curVertex + 1 )->Position;
-						Vector3 vec = Vector3.Cross( pt1 - pt0, pt2 - pt0 ).MakeNormal( );
-
-						//	TODO: Make correct normal calculation
-						curVertex->SetNormal( vec.X, vec.Y, vec.Z );
-						++curVertex;
-					}
-				}
-				*/
 			}
 			finally
 			{
@@ -198,6 +170,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#region Private Members
 
+		private Point3					m_Centre;
 		private Point3					m_TopLeft;
 		private Point3					m_TopRight;
 		private Point3					m_BottomLeft;
