@@ -36,6 +36,14 @@ namespace Rb.Core.Maths
 		}
 
 		/// <summary>
+		/// Creates a vector from this point
+		/// </summary>
+		public Vector3 ToVector3( )
+		{
+			return new Vector3( X, Y, Z );
+		}
+
+		/// <summary>
 		/// Converts this point to a string
 		/// </summary>
 		public override string ToString()

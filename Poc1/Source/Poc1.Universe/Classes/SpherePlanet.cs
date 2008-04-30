@@ -12,7 +12,7 @@ namespace Poc1.Universe.Classes
 		public SpherePlanet( IOrbit orbit, string name, double radius ) :
 			base( orbit, name )
 		{
-			m_Radius = UniUnits.FromMetres( radius );
+			m_Radius = UniUnits.Metres.ToUniUnits( radius );
 			m_Renderer = new SpherePlanetRenderer( this );
 		}
 

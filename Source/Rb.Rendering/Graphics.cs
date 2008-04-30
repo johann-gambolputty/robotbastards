@@ -81,10 +81,26 @@ namespace Rb.Rendering
 					return ms_DebugFont;
 				}
 			}
+			
+			/// <summary>
+			/// Gets a simple font used for displaying debug information
+			/// </summary>
+			public static IFont SmallDebugFont
+			{
+				get
+				{
+					if ( ms_SmallDebugFont == null )
+					{
+						ms_SmallDebugFont = Factory.CreateFont( new FontData( "arial", 10 ) );
+					}
+					return ms_SmallDebugFont;
+				}
+			}
 
 			#region Private Members
 
 			private static IFont ms_DebugFont;
+			private static IFont ms_SmallDebugFont;
 
 			#endregion
 		}

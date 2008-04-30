@@ -88,15 +88,12 @@ namespace Poc1.Universe.Classes.Rendering
 				//	Simple cloud coverage cycle
 				m_CloudCoverage = Utils.Wrap( m_CloudCoverage + 0.01f, 0, Constants.TwoPi );
 
-				//	TODO: AP: This should lock the unused texture's faces and write to them directly
 				BuildFaceBitmap( CubeMapFace.PositiveX );
 				BuildFaceBitmap( CubeMapFace.NegativeX );
 				BuildFaceBitmap( CubeMapFace.PositiveY );
 				BuildFaceBitmap( CubeMapFace.NegativeY );
 				BuildFaceBitmap( CubeMapFace.PositiveZ );
 				BuildFaceBitmap( CubeMapFace.NegativeZ );
-
-				GetFaceBitmap(CubeMapFace.PositiveX).Save("test.bmp", ImageFormat.Bmp);
 
 				GameProfiles.Game.CloudGeneration.End( );
 				GameProfiles.Game.CloudGeneration.Reset( );
@@ -111,7 +108,7 @@ namespace Poc1.Universe.Classes.Rendering
 			{
 				//	A very gradual blend between the 2 active cloud textures is required - any faster
 				//	and there's a noticeable jump, when the new texture is completed
-				m_Blend = Utils.Min( m_Blend + 0.02f, 1.0f );
+				m_Blend = Utils.Min( m_Blend + 0.04f, 1.0f );
 				if ( m_Blend < 1.0f )
 				{
 					return;
@@ -144,6 +141,10 @@ namespace Poc1.Universe.Classes.Rendering
 		private readonly ICubeMapTexture[] m_Textures = new ICubeMapTexture[ 3 ];
 		private readonly Bitmap[] m_Faces = new Bitmap[ 6 ];
 		private readonly int m_Resolution;
+		private readonly SphereCloudsBitmap m_Gen = new SphereCloudsBitmap();
+		private float m_XOffset = 0;
+		private float m_ZOffset = 0;
+
 
 		private Bitmap GetFaceBitmap( CubeMapFace face )
 		{
@@ -166,59 +167,17 @@ namespace Poc1.Universe.Classes.Rendering
 			BuildFaceBitmap( face );
 		}
 
-		private readonly SphereCloudsBitmap m_Gen = new SphereCloudsBitmap( );
-	//	private readonly Noise m_Noise = new Noise( );
 
 		private unsafe void GenerateSide( CubeMapFace face, byte* pixels, int width, int height, int stride )
 		{
 			float xOffset = Functions.Sin( m_XOffset );
 			float zOffset = Functions.Cos( m_ZOffset );
-			float density = 0.3f + Functions.Cos( m_CloudCoverage ) * 0.2f;
+			float density = 0.1f + Functions.Cos( m_CloudCoverage ) * 0.2f;
 			float cloudCut = density;
 			float cloudBorder = cloudCut + 0.2f;
 			m_Gen.Setup( xOffset, zOffset, cloudCut, cloudBorder );
 			m_Gen.GenerateFace( face, PixelFormat.Format32bppArgb, width, height, stride, pixels );
-			
-			/*
-
-			Fractals.Basis3dFunction basis = m_Noise.GetNoise;
-			float incU = 2.0f / ( width - 1 );
-			float incV = 2.0f / ( height - 1 );
-			float v = -1;
-			for ( int row = 0; row < height; ++row, v += incV )
-			{
-				float u = -1;
-				byte* curPixel = pixels + row * stride;
-				for ( int col = 0; col < width; ++col, u += incU )
-				{
-					float x, y, z;
-					SphereTerrainGenerator.UvToXyz( u, v, face, out x, out y, out z );
-
-					float val = Fractals.RidgedFractal( x + xOffset, y, z + zOffset, 1.8f, 8, 1.6f, basis );
-					float alpha = 0;
-					if ( val < cloudCut )
-					{
-						val = 0;
-					}
-					else
-					{
-						alpha = val < cloudBorder ? ( val - cloudCut ) / ( cloudBorder - cloudCut ) : 1.0f;
-					}
-
-					byte colour = ( byte )( val * 255.0f );
-					curPixel[ 0 ] = colour;
-					curPixel[ 1 ] = colour;
-					curPixel[ 2 ] = colour;
-					curPixel[ 3 ] = ( byte )( alpha * 255.0f );
-
-					curPixel += 4;
-				}
-			}
-			 */
 		}
-
-		private float m_XOffset = 0;
-		private float m_ZOffset = 0;
 
 		#endregion
 

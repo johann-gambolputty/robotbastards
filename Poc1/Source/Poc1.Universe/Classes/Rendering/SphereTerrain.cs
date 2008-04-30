@@ -15,9 +15,14 @@ namespace Poc1.Universe.Classes.Rendering
 	public class SphereTerrain : IPlanetTerrain
 	{
 		/// <summary>
-		/// Radius of the planet - used when placing patch vertices on the planetary sphere
+		/// Sets the planet
 		/// </summary>
-		public const float PlanetStandardRadius = 32;
+		public SphereTerrain( SpherePlanet planet )
+		{
+			m_Planet = planet;
+		}
+
+		private readonly SpherePlanet m_Planet;
 
 		/// <summary>
 		/// Generates the terrain cube map texture for this planet
@@ -58,12 +63,17 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <param name="vStep">Offset between column vertices</param>
 		/// <param name="res">Patch resolution</param>
 		/// <param name="firstVertex">Patch vertices</param>
-		public unsafe void GenerateTerrainPatchVertices( Point3 origin, Vector3 uStep, Vector3 vStep, int res, TerrainVertex* firstVertex )
+		/// <returns>Centre point of the patch, in render unit space</returns>
+		public unsafe Point3 GenerateTerrainPatchVertices( Point3 origin, Vector3 uStep, Vector3 vStep, int res, TerrainVertex* firstVertex)
 		{
-			float heightScale = 8.0f;
-			
-			m_Gen.SetHeightRange( PlanetStandardRadius, PlanetStandardRadius + heightScale );
+			float radius = ( float )UniUnits.RenderUnits.FromUniUnits( m_Planet.Radius );
+			float height = ( float )UniUnits.RenderUnits.FromUniUnits( UniUnits.Metres.ToUniUnits( 10000 ) );
+
+			m_Gen.SetHeightRange( radius, radius + height );
 			m_Gen.GenerateVertices( origin, uStep, vStep, res, res, firstVertex, sizeof( TerrainVertex ), 0, 12 );
+
+			Point3 centre = origin + ( uStep * res / 2 ) + ( vStep * res / 2 );
+			return ( centre.ToVector3( ) * radius ).ToPoint3( );
 		}
 
 		#endregion

@@ -72,7 +72,8 @@ namespace Poc1
 				for ( int col = 0; col < width4; ++col )
 				{
 					//	TODO: AP: Could move face switch to outer loop
-					__m128 value = _mm_mul_ps( CubeFaceFractal( m_Gen, face, uuuu, vvvv, m_XOffset, m_ZOffset ), _mm_set1_ps( 255.0f ) );
+					__m128 value = CubeFaceFractal( m_Gen, face, uuuu, vvvv, m_XOffset, m_ZOffset );
+					value = _mm_mul_ps( _mm_mul_ps( value, value ), _mm_set1_ps( 255.0f ) );
 					__m128 cutMask = _mm_cmpgt_ps( value, m_CloudCutoff );
 					value = _mm_and_ps( cutMask, value );
 
@@ -82,6 +83,7 @@ namespace Poc1
 					unsigned char b1 = ( unsigned char )( res[ 2 ] );
 					unsigned char b2 = ( unsigned char )( res[ 1 ] );
 					unsigned char b3 = ( unsigned char )( res[ 0 ] );
+					b0 = b1 = b2 = b3 = 0xf0;
 					
 					switch ( format )
 					{

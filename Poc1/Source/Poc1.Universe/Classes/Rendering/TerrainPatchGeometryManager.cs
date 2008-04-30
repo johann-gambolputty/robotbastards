@@ -40,7 +40,7 @@ namespace Poc1.Universe.Classes.Rendering
 				m_LodLevels[ level ] = newLod;
 
 				int numLevelVertices = NumberOfLevelVertices( level );
-				int poolSize = LodLevelPoolSize;
+				int poolSize = LodLevelPoolSize * ( level + 1 );
 				for ( int poolIndex = 0; poolIndex < poolSize; ++poolIndex )
 				{
 					newLod.VbPool.Add( curVertexIndex );
@@ -121,8 +121,10 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#endregion
 
-		private const int LodLevelPoolSize = 64;
-		private const int MaxLodLevels = 4;
+		public const int LowestLodLevel = MaxLodLevels - 1;
+
+		private const int LodLevelPoolSize = 32;
+		private const int MaxLodLevels = 5;
 		private readonly static int MaxSize = ( int )Functions.Pow( 2, MaxLodLevels + 1 );
 
 		private readonly IVertexBuffer m_VertexBuffer;
@@ -146,7 +148,5 @@ namespace Poc1.Universe.Classes.Rendering
 		}
 
 		#endregion
-
-
 	}
 }

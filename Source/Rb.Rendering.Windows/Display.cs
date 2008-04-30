@@ -10,6 +10,13 @@ namespace Rb.Rendering.Windows
 	public partial class Display : UserControl
 	{
 		#region	Control designer properties
+
+		[Description( "Cursor handling flag" )]
+		public bool AllowArrowKeyInputs
+		{
+			get { return m_AllowArrowKeyInputs; }
+			set { m_AllowArrowKeyInputs = value; }
+		}
 		
 		/// <summary>
 		/// Sets the colour depth of the control
@@ -108,6 +115,15 @@ namespace Rb.Rendering.Windows
 				m_RenderingTimer.Enabled	= true;
 				m_RenderingTimer.Start( );
 			}
+		}
+
+		protected override bool IsInputKey( Keys keyData )
+		{
+			if ( !m_AllowArrowKeyInputs )
+			{
+				return base.IsInputKey( keyData );
+			}
+			return ( keyData == Keys.Up ) || ( keyData == Keys.Left ) || ( keyData == Keys.Right ) || ( keyData == Keys.Down );
 		}
 
 		/// <summary>
@@ -296,6 +312,7 @@ namespace Rb.Rendering.Windows
 		private bool							m_AlreadyInvalidated	= false;
 		private readonly List< Viewer > 		m_Viewers				= new List< Viewer >( );
 		private readonly Timer					m_RenderingTimer;
+		private bool							m_AllowArrowKeyInputs;
 
 		/// <summary>
 		/// Creates setup data from the render factory, if it's available

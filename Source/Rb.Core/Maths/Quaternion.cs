@@ -15,6 +15,35 @@ namespace Rb.Core.Maths
 	{
 		//	TODO: AP: ...
 
+		#region Builders
+
+		/// <summary>
+		/// Creates a quaternion from an axis and an angle
+		/// </summary>
+		public static Quaternion FromAxisAngle( Vector3 axis, float angleInRadians )
+		{
+			float halfAngle = angleInRadians / 2.0f;
+			float sinHalfAngle = Functions.Sin( halfAngle );
+			float cosHalfAngle = Functions.Cos( halfAngle );
+
+			// Calculate the x, y and z of the quaternion
+			float x = axis.X * sinHalfAngle;
+			float y = axis.Y * sinHalfAngle;
+			float z = axis.Z * sinHalfAngle;
+	
+			return new Quaternion( x, y, z, cosHalfAngle );
+		}
+
+		/// <summary>
+		/// Creates a quaternion from a matrix
+		/// </summary>
+		public static Quaternion FromMatrix( Matrix44 matrix )
+		{
+			return new Quaternion( matrix );
+		}
+
+		#endregion
+
 		#region Constructors
 
 		/// <summary>
@@ -203,6 +232,23 @@ namespace Rb.Core.Maths
 				lhs.m_Z * rhs.m_Z;
 
 			return new Quaternion( x, y, z, w );
+		}
+		
+		public Quaternion MakeInverse( )
+		{
+			float norm = X * X + Y * Y + Z * Z + W * W;
+			if ( norm > 0 )
+			{
+				float invNorm = 1.0f / norm;
+				return new Quaternion
+				(
+					X * -invNorm,
+					Y * -invNorm,
+					Z * -invNorm,
+					W * invNorm
+				);
+			}
+			return new Quaternion();
 		}
 
 		#endregion

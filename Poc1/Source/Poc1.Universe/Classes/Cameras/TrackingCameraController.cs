@@ -59,8 +59,8 @@ namespace Poc1.Universe.Classes.Cameras
 
 						UniPoint3 newLookAt = m_Camera.LookAtPoint;
 
-						newLookAt += m_Camera.Frame.TransposedXAxis * UniUnits.FromMetres( deltaX );
-						newLookAt += m_Camera.Frame.TransposedYAxis * UniUnits.FromMetres( deltaY );
+						newLookAt += m_Camera.Frame.TransposedXAxis * UniUnits.Metres.ToUniUnits( deltaX );
+						newLookAt += m_Camera.Frame.TransposedYAxis * UniUnits.Metres.ToUniUnits( deltaY );
 
 						m_Camera.LookAtPoint = newLookAt;
 						break;

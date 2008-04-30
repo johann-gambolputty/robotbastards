@@ -51,9 +51,9 @@ namespace Poc1.Universe.Classes
 			double x = Math.Sin( m_Angle ) * m_Radius;
 			double z = Math.Cos( m_Angle ) * m_Radius;
 
-			entity.Transform.Position.X = m_Centre.Transform.Position.X + UniUnits.FromMetres( x );
+			entity.Transform.Position.X = m_Centre.Transform.Position.X + UniUnits.Metres.ToUniUnits( x );
 			entity.Transform.Position.Y = m_Centre.Transform.Position.Y;
-			entity.Transform.Position.Z = m_Centre.Transform.Position.Z + UniUnits.FromMetres( z );
+			entity.Transform.Position.Z = m_Centre.Transform.Position.Z + UniUnits.Metres.ToUniUnits( z );
 
 			m_LastUpdate = updateTime;
 		}

@@ -274,13 +274,13 @@ namespace Poc1.Universe.OpenGl
 				IUniCamera curCam = UniCamera.Current;
 				UniTransform transform = planet.Transform;
 				double scale = 1.0 / 100000.0;
-				float x = ( float )( UniUnits.ToMetres( transform.Position.X - curCam.Position.X ) * scale );
-				float y = ( float )( UniUnits.ToMetres( transform.Position.Y - curCam.Position.Y ) * scale );
-				float z = ( float )( UniUnits.ToMetres( transform.Position.Z - curCam.Position.Z ) * scale );
+				float x = ( float )( UniUnits.Metres.FromUniUnits( transform.Position.X - curCam.Position.X ) * scale );
+				float y = ( float )( UniUnits.Metres.FromUniUnits( transform.Position.Y - curCam.Position.Y ) * scale );
+				float z = ( float )( UniUnits.Metres.FromUniUnits( transform.Position.Z - curCam.Position.Z ) * scale );
 
 				Graphics.Renderer.SetTransform( TransformType.LocalToWorld, new Point3( x, y, z ), transform.XAxis, transform.YAxis, transform.ZAxis );
 
-				float radius = ( float )( ( UniUnits.ToMetres( planet.Radius ) * scale ) / TerrainPatch.PlanetRadius );
+				float radius = ( float )( ( UniUnits.Metres.FromUniUnits( planet.Radius ) * scale ) / TerrainPatch.PlanetRadius );
 				Graphics.Renderer.Scale( TransformType.LocalToWorld, radius, radius, radius );
 			}
 

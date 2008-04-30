@@ -94,10 +94,23 @@ namespace Poc1.Universe.Classes.Rendering
 		}
 
 		/// <summary>
+		/// Releases patch geometry
+		/// </summary>
+		public void ReleaseGeometry( ITerrainPatchGeometryManager geometryManager )
+		{
+			if ( m_Geometry != null )
+			{
+				geometryManager.ReleaseGeometry( m_Geometry );
+				m_Geometry = null;
+			}
+		}
+
+		/// <summary>
 		/// Called prior to Build(). Allocates memory from the geometry manager
 		/// </summary>
 		public void PreBuild( ITerrainPatchGeometryManager geometryManager )
 		{
+			ReleaseGeometry( geometryManager );
 			m_Geometry = geometryManager.CreateGeometry( m_Lod );
 		}
 
@@ -106,7 +119,8 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		public unsafe void Build( IPlanetTerrain planetTerrain )
 		{
-			m_Geometry.SetIndexBuffer( PrimitiveType.TriList, BuildIndexBuffer( ) );
+			int[] indices = BuildIndexBuffer( );
+			m_Geometry.SetIndexBuffer( PrimitiveType.TriList, indices );
 			try
 			{
 				int res = m_Geometry.Resolution;
@@ -115,7 +129,7 @@ namespace Poc1.Universe.Classes.Rendering
 				
 				Vector3 uStep = m_PatchXDir * ( m_PatchWidth / ( res - 1 ) );
 				Vector3 vStep = m_PatchZDir * ( m_PatchHeight / ( res - 1 ) );
-				planetTerrain.GenerateTerrainPatchVertices( m_TopLeft, uStep, vStep, res, firstVertex );
+				m_Centre = planetTerrain.GenerateTerrainPatchVertices( m_TopLeft, uStep, vStep, res, firstVertex );
 			}
 			finally
 			{
@@ -166,7 +180,6 @@ namespace Poc1.Universe.Classes.Rendering
 		}
 
 		#endregion
-
 
 		#region Private Members
 
@@ -262,6 +275,7 @@ namespace Poc1.Universe.Classes.Rendering
 			{
 				return false;
 			}
+			return false;
 
 			if ( LodLevel <= neighbour.LodLevel )
 			{

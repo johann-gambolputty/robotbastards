@@ -63,11 +63,11 @@ namespace Poc1.Universe.Classes.Cameras
 		/// </summary>
 		public double Radius
 		{
-			get { return UniUnits.ToMetres( m_Radius ); }
+			get { return UniUnits.Metres.FromUniUnits(m_Radius); }
 			set
 			{
 				m_UpdateFrame |= ( m_Radius != value );
-				m_Radius = UniUnits.FromMetres( value );
+				m_Radius = UniUnits.Metres.ToUniUnits( value );
 			}
 		}
 

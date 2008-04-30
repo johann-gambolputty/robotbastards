@@ -69,7 +69,8 @@ namespace Poc1.GameClient
 			//	Load the game controls
 			try
 			{
-				CommandInputTemplateMap gameControlsMap = ( CommandInputTemplateMap )AssetManager.Instance.Load( "Input/TestTrackingCameraInputs.components.xml" );
+			//	CommandInputTemplateMap gameControlsMap = ( CommandInputTemplateMap )AssetManager.Instance.Load( "Input/TestTrackingCameraInputs.components.xml" );
+				CommandInputTemplateMap gameControlsMap = ( CommandInputTemplateMap )AssetManager.Instance.Load( "Input/HeadCameraInputs.components.xml" );
 
 				foreach ( Viewer viewer in gameDisplay.Viewers )
 				{
@@ -87,7 +88,7 @@ namespace Poc1.GameClient
 		{
 			SolarSystem system = new SolarSystem( );
 
-			SpherePlanet planet = new SpherePlanet( null, "TEST0", 800000.0 );
+			SpherePlanet planet = new SpherePlanet( null, "TEST0", 80000.0 );
 		//	SpherePlanet moon = new SpherePlanet( new CircularOrbit( planet, 1500000.0, TimeSpan.FromSeconds( 60 ) ), "TEST1", 300000.0f );
 			//SpherePlanet moon1 = new SpherePlanet( new CircularOrbit( moon, 500000.0, TimeSpan.FromSeconds( 60 ) ), "TEST2", 100000.0f );
 			//moon.Moons.Add( moon1 );
@@ -111,7 +112,7 @@ namespace Poc1.GameClient
 			profileViewer1.RootSection = GameProfiles.Game;
 			m_ProfileViewer1Content = m_DockingManager.Contents.Add( profileViewer1, "Profile Viewer 1" );
 			m_DockingManager.AddContentWithState( m_ProfileViewer1Content, State.Floating );
-		//	m_DockingManager.HideContent( m_ProfileViewer1Content );
+			m_DockingManager.HideContent( m_ProfileViewer1Content );
 
 			ProfileViewer profileViewer2 = new ProfileViewer( );
 			profileViewer2.RootSection = GameProfiles.Game;

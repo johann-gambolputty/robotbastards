@@ -433,7 +433,7 @@ namespace Rb.Core.Maths
 			float b5 = mat[ 10 ] * mat[ 15 ] - mat[ 11 ] * mat[ 14 ];
 
 			float det = a0 * b5 - a1 * b4 + a2 * b3 + a3 * b2 - a4 * b1 + a5 * b0;
-			if ( ( det > -0.00001f ) && ( det < 0.00001f ) )
+			if ( ( det > -0.000001f ) && ( det < 0.000001f ) )
 			{
 				//	Maybe store zero matrix instead?
 				throw new ApplicationException( "Tried to take the inverse of a matrix with determinant of zero" );

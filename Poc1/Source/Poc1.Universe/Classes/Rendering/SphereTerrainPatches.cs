@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Rendering;
@@ -8,6 +9,7 @@ using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
+using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc1.Universe.Classes.Rendering
 {
@@ -27,6 +29,7 @@ namespace Poc1.Universe.Classes.Rendering
 			IEffect effect = ( IEffect )AssetManager.Instance.Load( "Effects/Planets/terrestrialPlanetTerrain.cgfx" );
 			TechniqueSelector selector = new TechniqueSelector( effect, "DefaultTechnique" );
 
+			m_Terrain = terrain;
 			m_PlanetTerrainTechnique = selector;
 
 			float hDim = 1;
@@ -43,7 +46,7 @@ namespace Poc1.Universe.Classes.Rendering
 					new Point3( -hDim, +hDim, +hDim ),
 				};
 			int res = 3;
-			int defaultLodLevel = 0;
+			int defaultLodLevel = TerrainPatchGeometryManager.LowestLodLevel;
 			CubeSide[] sides = new CubeSide[ ]
 				{
 					new CubeSide( res, cubePoints[ 0 ], cubePoints[ 1 ], cubePoints[ 3 ], defaultLodLevel, true ),	//	-z
@@ -51,7 +54,7 @@ namespace Poc1.Universe.Classes.Rendering
 					new CubeSide( res, cubePoints[ 4 ], cubePoints[ 5 ], cubePoints[ 0 ], defaultLodLevel, true ),	//	+y
 					new CubeSide( res, cubePoints[ 6 ], cubePoints[ 7 ], cubePoints[ 2 ], defaultLodLevel, true ),	//	-y
 					new CubeSide( res, cubePoints[ 0 ], cubePoints[ 3 ], cubePoints[ 4 ], defaultLodLevel, true ),	//	-x
-					new CubeSide( res, cubePoints[ 5 ], cubePoints[ 6 ], cubePoints[ 1 ], defaultLodLevel, true )		//	+x
+					new CubeSide( res, cubePoints[ 5 ], cubePoints[ 6 ], cubePoints[ 1 ], defaultLodLevel, true )	//	+x
 				};
 
 			foreach ( CubeSide side in sides )
@@ -128,19 +131,17 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <param name="planetTerrainTexture">Planet terrain texture, temporarily used for texturing patches</param>
 		public void Render( IRenderContext context, SpherePlanet planet, ITexture planetTerrainTexture )
 		{
+			UpdateLod( planet, UniCamera.Current );
+
 			Graphics.Renderer.PushTransform( TransformType.LocalToWorld );
 			{
 				IUniCamera curCam = UniCamera.Current;
 				UniTransform transform = planet.Transform;
-				double scale = 1.0 / 100000.0;
-				float x = ( float )( UniUnits.ToMetres( transform.Position.X - curCam.Position.X ) * scale );
-				float y = ( float )( UniUnits.ToMetres( transform.Position.Y - curCam.Position.Y ) * scale );
-				float z = ( float )( UniUnits.ToMetres( transform.Position.Z - curCam.Position.Z ) * scale );
+				float x = ( float )( UniUnits.RenderUnits.FromUniUnits( transform.Position.X - curCam.Position.X ) );
+				float y = ( float )( UniUnits.RenderUnits.FromUniUnits( transform.Position.Y - curCam.Position.Y ) );
+				float z = ( float )( UniUnits.RenderUnits.FromUniUnits( transform.Position.Z - curCam.Position.Z ) );
 
 				Graphics.Renderer.SetTransform( TransformType.LocalToWorld, new Point3( x, y, z ), transform.XAxis, transform.YAxis, transform.ZAxis );
-
-				float radius = ( float )( ( UniUnits.ToMetres( planet.Radius ) * scale ) / SphereTerrain.PlanetStandardRadius );
-				Graphics.Renderer.Scale( TransformType.LocalToWorld, radius, radius, radius );
 			}
 
 			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainSampler" ].Set( planetTerrainTexture );
@@ -150,6 +151,8 @@ namespace Poc1.Universe.Classes.Rendering
 			m_GeometryManager.EndPatchRendering( );
 
 			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
+
+			DisplayTopDistances( planet, UniCamera.Current, 20 );
 		}
 
 		#region Private Members
@@ -288,9 +291,96 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#endregion
 
+		private readonly IPlanetTerrain m_Terrain;
 		private readonly ITechnique m_PlanetTerrainTechnique;
 		private readonly List<TerrainPatch> m_Patches = new List<TerrainPatch>( );
 		private readonly ITerrainPatchGeometryManager m_GeometryManager = new TerrainPatchGeometryManager( );
+
+		private static double AccurateDistance( Point3 pt0, Point3 pt1 )
+		{
+			double x = pt1.X - pt0.X;
+			double y = pt1.Y - pt0.Z;
+			double z = pt1.Z - pt0.Z;
+
+			return Math.Sqrt( x * x + y * y + z * z );
+		}
+
+		private bool UpdatePatchLod( TerrainPatch patch, Point3 localPos )
+		{
+			int level = 4;
+			double dist = AccurateDistance( patch.Centre, localPos );
+			if ( dist < 10000 )
+			{
+				level = 0;
+			}
+			else if ( dist < 12000 )
+			{
+				level = 1;
+			}
+			else if ( dist < 14000 )
+			{
+				level = 2;
+			}
+			else if ( dist < 16000 )
+			{
+				level = 3;
+			}
+
+			level = 4;
+			if ( patch.LodLevel != level )
+			{
+				patch.LodLevel = level;
+				patch.ReleaseGeometry( m_GeometryManager );
+				return true;
+			}
+			return false;
+		}
+
+		private void DisplayTopDistances( IEntity planet, IUniCamera camera, int n )
+		{
+			Point3 localPos = UniUnits.RenderUnits.MakeRelativePoint( planet.Transform.Position, camera.Position );
+
+			TerrainPatch[] patches = m_Patches.ToArray( );
+			Array.Sort
+			(
+				patches,
+				delegate( TerrainPatch p0, TerrainPatch p1 )
+				{
+					double p0dist = AccurateDistance( p0.Centre, localPos );
+					double p1dist = AccurateDistance( p1.Centre, localPos );
+					return p0dist > p1dist ? 1 : ( p0dist < p1dist ? -1 : 0 );
+				}
+			);
+			IFont font = Graphics.Fonts.SmallDebugFont;
+			for ( int i = 0; i < n; ++i )
+			{
+				double dist = UniUnits.RenderUnits.ToMetres( AccurateDistance( patches[ i ].Centre, localPos ) );
+				font.Write( 0, ( i * font.MaximumHeight ) + Graphics.Fonts.DebugFont.MaximumHeight, Color.White, "Patch {0}: {1}", i, dist );
+			}
+		}
+
+		private void UpdateLod( IEntity planet, IUniCamera camera )
+		{
+			Point3 localPos = UniUnits.RenderUnits.MakeRelativePoint( planet.Transform.Position, camera.Position );
+
+			//	TODO: AP: LOD determination can happen at a slower rate than patch rendering (maybe even in a separate thread)
+			List<TerrainPatch> changedPatches = new List<TerrainPatch>( );
+			foreach ( TerrainPatch patch in m_Patches )
+			{
+				if ( UpdatePatchLod( patch, localPos ) )
+				{
+					changedPatches.Add( patch );
+				}
+			}
+			foreach ( TerrainPatch patch in changedPatches )
+			{
+				patch.PreBuild( m_GeometryManager );
+			}
+			foreach ( TerrainPatch patch in changedPatches )
+			{
+				patch.Build( m_Terrain );
+			}
+		}
 
 		/// <summary>
 		/// Renders all the visible patches

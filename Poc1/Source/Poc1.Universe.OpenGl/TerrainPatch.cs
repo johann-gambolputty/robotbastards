@@ -7,9 +7,6 @@ namespace Poc1.Universe.OpenGl
 {
 	internal class TerrainPatch
 	{
-		public const float PatchWidth = 32;
-		public const float PatchHeight = PatchWidth;
-
 		public const float PlanetRadius = 32;
 
 		private Point3 m_TopLeft;

@@ -3,19 +3,40 @@
 
   <object type="Rb.Rendering.Viewer" assembly="Rb.Rendering">
 
+    <!--
     <object type="Poc1.Universe.Classes.Cameras.PointTrackingCamera" assembly="Poc1.Universe" property="Camera">
 
       <float value="0.7" property="T"/>
-      <double value="2000000" property="Radius"/>
+      <double value="200000" property="Radius"/>
 
       <float value="0.5" property="PerspectiveZNear"/>
-      <float value="10000" property="PerspectiveZFar"/>
+      <float value="1000000" property="PerspectiveZFar"/>
 
-      <!-- Camera controller -->
       <object type="Poc1.Universe.Classes.Cameras.TrackingCameraController" assembly="Poc1.Universe">
 
         <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
           <type value="Poc1.Universe.Classes.Cameras.TrackingCameraController+Commands" assembly="Poc1.Universe" property="CommandListEnumType"/>
+          <dynProperty value="user" property="User"/>
+        </object>
+
+      </object>
+    </object>
+    -->
+    <object type="Poc1.Universe.Classes.Cameras.HeadCamera" assembly="Poc1.Universe" property="Camera">
+
+      <float value="0.5" property="PerspectiveZNear"/>
+      <float value="1000000" property="PerspectiveZFar"/>
+
+      <object type="Poc1.Universe.UniPoint3" property="Position">
+        <long value="0" property="X"/>
+        <long value="0" property="Y"/>
+        <long value="-200000000" property="Z"/>
+      </object>
+
+      <object type="Poc1.Universe.Classes.Cameras.HeadCameraController" assembly="Poc1.Universe">
+
+        <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
+          <type value="Poc1.Universe.Classes.Cameras.HeadCameraController+Commands" assembly="Poc1.Universe" property="CommandListEnumType"/>
           <dynProperty value="user" property="User"/>
         </object>
 
