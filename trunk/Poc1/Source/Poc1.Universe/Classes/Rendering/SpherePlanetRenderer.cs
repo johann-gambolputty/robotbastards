@@ -24,7 +24,7 @@ namespace Poc1.Universe.Classes.Rendering
 		public SpherePlanetRenderer( SpherePlanet planet )
 		{
 			m_Planet = planet;
-			m_Terrain = new SphereTerrain( );
+			m_Terrain = new SphereTerrain( planet );
 			m_TerrainPatches = new SphereTerrainPatches( m_Terrain );
 			
 			////	Load in flat planet effect
@@ -49,7 +49,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 			//	Generate cached sphere for rendering the planet
 			Graphics.Draw.StartCache( );
-			Graphics.Draw.Sphere( null, Point3.Origin, UniCamera.ToAstroRenderUnits( Planet.Radius ), 40, 40 );
+			Graphics.Draw.Sphere( null, Point3.Origin, ( float )UniUnits.AstroRenderUnits.FromUniUnits( Planet.Radius ), 40, 40 );
 			m_PlanetGeometry = Graphics.Draw.StopCache( );
 		}
 

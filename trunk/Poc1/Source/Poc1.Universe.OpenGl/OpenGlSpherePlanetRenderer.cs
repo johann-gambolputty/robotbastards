@@ -133,7 +133,7 @@ namespace Poc1.Universe.OpenGl
 
 		private float PlanetRenderRadius
 		{
-			get { return UniCamera.ToAstroRenderUnits( Planet.Radius ); }
+			get { return ( float )UniUnits.AstroRenderUnits.FromUniUnits( Planet.Radius ); }
 		}
 
 		public void UvSpherePoint( float x, float y, float z )

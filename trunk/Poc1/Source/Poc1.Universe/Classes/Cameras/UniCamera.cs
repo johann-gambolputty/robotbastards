@@ -25,12 +25,6 @@ namespace Poc1.Universe.Classes.Cameras
 			}
 		}
 
-		public const double UniUnitsToAstroRenderUnits = 0.00001;
-
-		public static float ToAstroRenderUnits( long uniUnits )
-		{
-			return ( float )( UniUnits.ToMetres( uniUnits ) * UniUnitsToAstroRenderUnits );
-		}
 		
 		/// <summary>
 		/// Pushes a rendering transform suitable for astronomical distances
@@ -47,9 +41,9 @@ namespace Poc1.Universe.Classes.Cameras
 		public static void SetAstroRenderTransform( TransformType transformType, UniTransform transform )
 		{
 			IUniCamera curCam = Current;
-			float x = ToAstroRenderUnits( transform.Position.X - curCam.Position.X );
-			float y = ToAstroRenderUnits( transform.Position.Y - curCam.Position.Y );
-			float z = ToAstroRenderUnits( transform.Position.Z - curCam.Position.Z );
+			float x = ( float )UniUnits.AstroRenderUnits.FromUniUnits( transform.Position.X - curCam.Position.X );
+			float y = ( float )UniUnits.AstroRenderUnits.FromUniUnits( transform.Position.Y - curCam.Position.Y );
+			float z = ( float )UniUnits.AstroRenderUnits.FromUniUnits( transform.Position.Z - curCam.Position.Z );
 
 			Graphics.Renderer.SetTransform( transformType, new Point3( x, y, z ), transform.XAxis, transform.YAxis, transform.ZAxis );
 		}
@@ -69,9 +63,9 @@ namespace Poc1.Universe.Classes.Cameras
 		public static void SetRenderTransform( TransformType transformType, UniTransform transform )
 		{
 			IUniCamera curCam = Current;
-			float x = ( float )UniUnits.ToMetres( transform.Position.X - curCam.Position.X );
-			float y = ( float )UniUnits.ToMetres( transform.Position.Y - curCam.Position.Y );
-			float z = ( float )UniUnits.ToMetres( transform.Position.Z - curCam.Position.Z );
+			float x = ( float )UniUnits.Metres.FromUniUnits( transform.Position.X - curCam.Position.X );
+			float y = ( float )UniUnits.Metres.FromUniUnits( transform.Position.Y - curCam.Position.Y );
+			float z = ( float )UniUnits.Metres.FromUniUnits( transform.Position.Z - curCam.Position.Z );
 
 			Graphics.Renderer.SetTransform( transformType, new Point3( x, y, z ), transform.XAxis, transform.YAxis, transform.ZAxis );
 		}
@@ -190,6 +184,17 @@ namespace Poc1.Universe.Classes.Cameras
 		protected void SetViewFrame( Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
 		{
 			m_InvLocalView.Set( Point3.Origin, xAxis, yAxis, zAxis );
+			m_LocalView.Copy( m_InvLocalView );
+			m_LocalView.Transpose( );
+		}
+
+		/// <summary>
+		/// Sets the camera view frame from a quaternion
+		/// </summary>
+		protected void SetViewFrame( Quaternion orientation )
+		{
+			orientation.ToMatrix( m_InvLocalView );
+			m_InvLocalView.Invert( );
 			m_LocalView.Copy( m_InvLocalView );
 			m_LocalView.Transpose( );
 		}

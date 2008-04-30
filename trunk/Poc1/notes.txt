@@ -61,3 +61,16 @@
 	- Add sample rate up/down spinner
 
 - stuff
+	- Biome
+		- http://en.wikipedia.org/wiki/Biome
+		- A biome is a climatically and geographically defined area of ecologically similar communities of plants,
+		  animals, and soil organisms, often referred to as ecosystems.
+
+	- Earth
+		- Equatorial radius: 6,378.1km
+		- Polar radius: 6,371.0km
+		- Rotational speed at equator: 465.11 m/s
+
+	- Moon
+		- Equatorial radius: 1,737.10 km
+		- Rotational speed at equator: 4.627 m/s

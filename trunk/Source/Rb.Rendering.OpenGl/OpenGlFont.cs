@@ -309,7 +309,7 @@ namespace Rb.Rendering.OpenGl
 
 				if ( chars[ charIndex ] < 256 )
 				{
-					int xPadding = 3;
+					 int xPadding = ( int )( font.Size / 3 );
 					int yPadding = 0;
 					m_CharacterData[ chars[ charIndex ] ] = new CharacterData
 						(

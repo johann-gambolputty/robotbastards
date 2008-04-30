@@ -313,6 +313,14 @@ namespace Rb.Core.Maths
 		#region	Operations
 
 		/// <summary>
+		/// Creates a point from this vector
+		/// </summary>
+		public Point3 ToPoint3( )
+		{
+			return new Point3( X, Y, Z );
+		}
+
+		/// <summary>
 		/// Converts this point to a string
 		/// </summary>
 		public override string ToString( )

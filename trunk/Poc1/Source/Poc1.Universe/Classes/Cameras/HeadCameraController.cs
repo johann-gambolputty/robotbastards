@@ -16,21 +16,110 @@ namespace Poc1.Universe.Classes.Cameras
 			Forwards,
 
 			[CommandDescription( "Backwards", "Moves backwards" )]
-			ZoomOut,
+			Backwards,
 
 			[CommandDescription( "Zoom", "Changes the camera zoom" )]
 			Zoom,
 
-			[CommandDescription( "Pan", "Pans the camera" )]
-			Pan,
+			[CommandDescription( "Pitch Up", "Pitches the camera up" )]
+			PitchUp,
 
-			[CommandDescription( "Rotate", "Rotates the camera" )]
-			Rotate
+			[CommandDescription( "Pitch Down", "Pitches the camera down" )]
+			PitchDown,
+
+			[CommandDescription( "Roll Clockwise", "Rolls the camera clockwise" )]
+			RollClockwise,
+
+			[CommandDescription( "Roll AntiClockwise", "Spins the camera anti-clockwise" )]
+			RollAnticlockwise,
+
+			[CommandDescription( "Yaw left", "Turns the camera left" )]
+			YawLeft,
+			
+			[CommandDescription( "Yaw right", "Turns the camera right" )]
+			YawRight,
+				
+			[CommandDescription( "Turn", "Turns the camera (affects yaw and pitch)" )]
+			Turn
 		}
 
+		/// <summary>
+		/// Handles camera commands
+		/// </summary>
 		[Dispatch]
 		public void HandleCommand( CommandMessage msg )
 		{
+			switch ( ( Commands )msg.CommandId )
+			{
+				case Commands.Forwards :
+					m_Camera.Position -= m_Camera.InverseFrame.ZAxis * 100000;
+					break;
+
+				case Commands.Backwards:
+					m_Camera.Position += m_Camera.InverseFrame.ZAxis * 100000;
+					break;
+
+				case Commands.PitchUp :
+					m_Camera.ChangePitch( 0.1f );
+					break;
+
+				case Commands.PitchDown:
+					m_Camera.ChangePitch( -0.1f );
+					break;
+
+				case Commands.YawLeft:
+					m_Camera.ChangeYaw( 0.1f );
+					break;
+					
+				case Commands.YawRight:
+					m_Camera.ChangeYaw( -0.1f );
+					break;
+
+				case Commands.RollClockwise :
+					m_Camera.ChangeRoll( 0.1f );
+					break;
+
+				case Commands.RollAnticlockwise :
+					m_Camera.ChangeRoll( -0.1f );
+					break;
+
+				case Commands.Turn:
+					CursorCommandMessage cursorMsg = (CursorCommandMessage)msg;
+					float deltaX = ( cursorMsg.X - cursorMsg.LastX ) * 0.01f;
+					float deltaY = ( cursorMsg.Y - cursorMsg.LastY ) * 0.01f;
+
+					m_Camera.ChangeYaw( deltaX );
+					m_Camera.ChangePitch( deltaY );
+					break;
+			}
 		}
+		
+		#region IChild Members
+
+		/// <summary>
+		/// Called when this object is added to a parent object. Assumes that parent is of type <see cref="PointTrackingCamera"/>
+		/// </summary>
+		public override void AddedToParent( object parent )
+		{
+			base.AddedToParent( parent );
+			m_Camera = ( HeadCamera )parent;
+		}
+
+		/// <summary>
+		/// Called when this object is removed from a parent object
+		/// </summary>
+		public override void RemovedFromParent( object parent )
+		{
+			base.RemovedFromParent( parent );
+			m_Camera = null;
+		}
+
+		#endregion
+
+		#region Private Members
+
+		private HeadCamera m_Camera;
+
+		#endregion
 	}
 }
