@@ -108,7 +108,7 @@ namespace Poc1.Universe.Classes.Rendering
 			{
 				//	A very gradual blend between the 2 active cloud textures is required - any faster
 				//	and there's a noticeable jump, when the new texture is completed
-				m_Blend = Utils.Min( m_Blend + 0.04f, 1.0f );
+				m_Blend = Utils.Min( m_Blend + 0.01f, 1.0f );
 				if ( m_Blend < 1.0f )
 				{
 					return;

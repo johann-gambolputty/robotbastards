@@ -60,8 +60,9 @@ const float MaxAngle = 0.6f;
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
 	float shade = ( dot( input.m_Normal, SunNormal ) + 1 ) / 2;
-	float t = shade < MinAngle ? 0.0f : ( shade > MaxAngle ? 1.0f :  ( ( shade - MinAngle ) / ( MaxAngle - MinAngle ) ) );	
-	shade = 0.4f + 0.9f * t;
+	shade *= shade;
+//	float t = shade < MinAngle ? 0.0f : ( shade > MaxAngle ? 1.0f :  ( ( shade - MinAngle ) / ( MaxAngle - MinAngle ) ) );	
+//	shade = 0.4f + 0.9f * t;
 	
 	float3 cloudNormal = normalize( mul( CloudTransform, float4( input.m_Normal, 1 ) ).xyz );
 
@@ -83,7 +84,7 @@ technique DefaultTechnique
 		LightingEnable			= false;
 		DepthMask				= false;
 		ShadeModel				= Smooth;
-		FrontFace				= CCW;
+		FrontFace				= CW;
 		DepthTestEnable			= false;
 		CullFaceEnable			= true;
 		BlendEnable				= true;

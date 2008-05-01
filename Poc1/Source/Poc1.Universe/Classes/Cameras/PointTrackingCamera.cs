@@ -103,7 +103,7 @@ namespace Poc1.Universe.Classes.Cameras
 		/// </summary>
 		public void UpdateFrame( )
 		{
-			Vector3 zAxis = new Vector3
+			Vector3 xAxis = new Vector3
 				(
 					( Functions.Cos( m_S ) * Functions.Sin( m_T ) ),
 					( Functions.Cos( m_T ) ),
@@ -117,7 +117,7 @@ namespace Poc1.Universe.Classes.Cameras
 					-( Functions.Sin( m_S ) * Functions.Cos( m_T ) )
 				);
 
-			Vector3 xAxis = Vector3.Cross( zAxis, yAxis );
+			Vector3 zAxis = Vector3.Cross( xAxis, yAxis );
 			Position.Copy( m_LookAt );
 			Position.Add( zAxis * m_Radius );
 			m_UpdateFrame = false;

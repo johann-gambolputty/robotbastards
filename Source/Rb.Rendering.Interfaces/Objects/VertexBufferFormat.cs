@@ -207,7 +207,7 @@ namespace Rb.Rendering.Interfaces.Objects
 				{
 					continue;
 				}
-				format.Add( new FieldDescriptor( attributes[ 0 ].VertexField, field.FieldType ) );
+				format.Add( new FieldDescriptor( attributes[ 0 ].Semantic, field.FieldType ) );
 			}
 			try
 			{

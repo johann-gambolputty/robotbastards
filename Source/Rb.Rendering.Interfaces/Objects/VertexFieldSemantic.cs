@@ -10,6 +10,8 @@ namespace Rb.Rendering.Interfaces.Objects
 		Normal,
 		Diffuse,
 		Specular,
+		Tangent,
+		BiNormal,
 		Blend0,
 		Blend1,
 		Blend2,

@@ -48,6 +48,9 @@
 	- Interesting thumbnail provider code:
 		- http://www.gamedev.net/community/forums/mod/journal/journal.asp?jn=273102
 
+	- Normal mapping in HLSL
+		- http://dotnet.org.za/pieterg/archive/2005/07/29/40407.aspx
+
 - Profiling code pretty much done
 	- Add bits to controls
 	- Save profile logs

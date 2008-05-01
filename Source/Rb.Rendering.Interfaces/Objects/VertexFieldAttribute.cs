@@ -10,20 +10,24 @@ namespace Rb.Rendering.Interfaces.Objects
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		/// <param name="field">The vertex field</param>
-		public VertexFieldAttribute( VertexFieldSemantic field )
+		/// <param name="semantic">The vertex field semantic tag</param>
+		public VertexFieldAttribute( VertexFieldSemantic semantic )
 		{
-			m_Field = field;
+			m_Semantic = semantic;
 		}
 
 		/// <summary>
 		/// Gets the associated vertex field
 		/// </summary>
-		public VertexFieldSemantic VertexField
+		public VertexFieldSemantic Semantic
 		{
-			get { return m_Field; }
+			get { return m_Semantic; }
 		}
 
-		private readonly VertexFieldSemantic m_Field;
+		#region Private Members
+
+		private readonly VertexFieldSemantic m_Semantic; 
+
+		#endregion
 	}
 }

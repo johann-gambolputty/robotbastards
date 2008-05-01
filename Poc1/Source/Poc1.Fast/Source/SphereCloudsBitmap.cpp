@@ -17,7 +17,7 @@ namespace Poc1
 
 				SphereCloudsBitmapImpl( )
 				{
-					m_Gen.Setup( 1.8f, 1.6f, 8 );
+					m_Gen.Setup( 2.5f, 1.6f, 8 );
 				}
 
 				void Setup( const float xOffset, const float zOffset, const float cloudCutoff, const float cloudBorder )

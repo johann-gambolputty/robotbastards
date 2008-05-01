@@ -45,7 +45,7 @@ namespace Poc1.Universe.Classes.Rendering
 					new Point3( +hDim, +hDim, +hDim ),
 					new Point3( -hDim, +hDim, +hDim ),
 				};
-			int res = 3;
+			int res = 9;
 			int defaultLodLevel = TerrainPatchGeometryManager.LowestLodLevel;
 			CubeSide[] sides = new CubeSide[ ]
 				{
@@ -307,26 +307,30 @@ namespace Poc1.Universe.Classes.Rendering
 
 		private bool UpdatePatchLod( TerrainPatch patch, Point3 localPos )
 		{
-			int level = 4;
+			int level = TerrainPatchGeometryManager.LowestLodLevel;
 			double dist = AccurateDistance( patch.Centre, localPos );
-			if ( dist < 10000 )
+			if ( dist < 3000 )
 			{
 				level = 0;
 			}
-			else if ( dist < 12000 )
+			else if ( dist < 5000 )
 			{
 				level = 1;
 			}
-			else if ( dist < 14000 )
+			else if ( dist < 8000 )
 			{
 				level = 2;
 			}
-			else if ( dist < 16000 )
+			else if ( dist < 15000 )
 			{
 				level = 3;
 			}
+			else if ( dist < 18000 )
+			{
+				level = 4;
+			}
 
-			level = 4;
+		//	level = 2;
 			if ( patch.LodLevel != level )
 			{
 				patch.LodLevel = level;

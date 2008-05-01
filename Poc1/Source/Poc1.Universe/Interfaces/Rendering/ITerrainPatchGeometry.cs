@@ -1,4 +1,5 @@
 
+using System;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Interfaces.Rendering
@@ -6,7 +7,7 @@ namespace Poc1.Universe.Interfaces.Rendering
 	/// <summary>
 	/// Interface for a patch's geometry at a given level of detail
 	/// </summary>
-	public unsafe interface ITerrainPatchGeometry
+	public unsafe interface ITerrainPatchGeometry : IDisposable
 	{
 		/// <summary>
 		/// Gets the level of detail of this patch (0=highest)
@@ -41,7 +42,7 @@ namespace Poc1.Universe.Interfaces.Rendering
 		/// Locks the vertex buffer
 		/// </summary>
 		/// <param name="read">If true, vertex buffer is locked for reading</param>
-		/// <param name="read">If true, vertex buffer is locked for writing</param>
+		/// <param name="write">If true, vertex buffer is locked for writing</param>
 		/// <returns>Returns a pointer into the vertex buffer</returns>
 		TerrainVertex* LockVertexBuffer( bool read, bool write );
 

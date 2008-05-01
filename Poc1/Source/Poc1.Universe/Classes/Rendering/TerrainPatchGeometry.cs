@@ -17,17 +17,12 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		/// <param name="lodLevel">Patch geometry level of detail</param>
 		/// <param name="res">Resolution of this patch</param>
-		/// <param name="vertexBuffer">Vertex buffer</param>
-		/// <param name="firstVertexIndex">Index of the first vertex in the vertex buffer used by this object</param>
-		/// <param name="numVertices">Number of vertices in the vertex buffer used by this object</param>
-		public TerrainPatchGeometry( int lodLevel, int res, IVertexBuffer vertexBuffer, int firstVertexIndex, int numVertices )
+		/// <param name="handle">Manager vertex buffer handle</param>
+		public TerrainPatchGeometry( int lodLevel, int res, ManagedVertexBuffer.VbHandle handle )
 		{
 			m_Lod = lodLevel;
 			m_Resolution = res;
-			m_VertexBuffer = vertexBuffer;
-			m_FirstVertexIndex = firstVertexIndex;
-			m_VertexCount = numVertices;
-
+			m_VbHandle = handle;
 			m_IndexBuffer = Graphics.Factory.CreateIndexBuffer( );
 		}
 
@@ -35,17 +30,22 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#region Public Members
 
-		/// <summary>
-		/// Gets the index of the first vertex used by this patch
-		/// </summary>
-		public int FirstVertexIndex
+		public ManagedVertexBuffer.VbHandle VbHandle
 		{
-			get { return m_FirstVertexIndex; }
+			get { return m_VbHandle; }
 		}
 
 		#endregion
 
 		#region ITerrainPatchGeometry Members
+
+		/// <summary>
+		/// Gets the index of the first vertex used by this patch
+		/// </summary>
+		public int FirstVertexIndex
+		{
+			get { return m_VbHandle.FirstVertexIndex; }
+		}
 
 		/// <summary>
 		/// Gets the level of detail forthis patch
@@ -78,9 +78,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <returns>Returns a pointer into the vertex buffer</returns>
 		public TerrainVertex* LockVertexBuffer( bool read, bool write )
 		{
-			UnlockVertexBuffer( );
-			m_VertexBufferLock = m_VertexBuffer.Lock( m_FirstVertexIndex, m_VertexCount, read, write );
-			return ( TerrainVertex* )m_VertexBufferLock.Bytes;
+			return ( TerrainVertex* )m_VbHandle.Lock( read, write );
 		}
 
 		/// <summary>
@@ -88,11 +86,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		public void UnlockVertexBuffer( )
 		{
-			if ( m_VertexBufferLock != null )
-			{
-				m_VertexBufferLock.Dispose( );
-				m_VertexBufferLock = null;
-			}
+			m_VbHandle.Unlock( );
 		}
 
 		/// <summary>
@@ -104,19 +98,29 @@ namespace Poc1.Universe.Classes.Rendering
 		}
 
 		#endregion
+		
+		#region IDisposable Members
+
+		/// <summary>
+		/// Disposes of this object
+		/// </summary>
+		public void Dispose( )
+		{
+			m_VbHandle.Dispose( );
+		}
+
+		#endregion
 
 		#region Private Members
 
 		private readonly int m_Lod;
 		private readonly int m_Resolution;
-		private readonly int m_FirstVertexIndex;
-		private readonly int m_VertexCount;
+		private readonly ManagedVertexBuffer.VbHandle m_VbHandle;
 		private PrimitiveType m_PrimitiveType;
 		private readonly IIndexBuffer m_IndexBuffer;
-		private readonly IVertexBuffer m_VertexBuffer;
-		private IVertexBufferLock m_VertexBufferLock;
 
 		#endregion
+
 
 	}
 }
