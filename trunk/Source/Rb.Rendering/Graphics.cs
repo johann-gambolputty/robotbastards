@@ -158,6 +158,7 @@ namespace Rb.Rendering
 		public static IRenderer Renderer
 		{
 			get { return ms_Renderer; }
+			set { ms_Renderer = value; }
 		}
 
 		/// <summary>
@@ -166,6 +167,7 @@ namespace Rb.Rendering
 		public static IEffectDataSources EffectDataSources
 		{
 			get { return ms_EffectDataSources; }
+			set { ms_EffectDataSources = value; }
 		}
 
 		/// <summary>
@@ -174,6 +176,7 @@ namespace Rb.Rendering
 		public static IGraphicsFactory Factory
 		{
 			get { return ms_Factory; }
+			set { ms_Factory = value; }
 		}
 
 		#region Private members

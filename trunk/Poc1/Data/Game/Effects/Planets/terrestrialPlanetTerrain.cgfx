@@ -29,7 +29,6 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 	FragmentShaderInput output;
 
 	output.m_Position = mul( ModelViewProjectionMatrix, input.m_Position );
-//	output.m_Normal = normalize( mul( InverseTransposeModelMatrix, normal ).xyz );
 	output.m_SphereNormal = normalize( mul( InverseTransposeModelMatrix, normalize( input.m_Position ) ).xyz );
 	output.m_Normal = normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
 
@@ -37,13 +36,17 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 }
 
 float3 SunNormal = float3( 1, 0, 0 );
-const float MinAngle = 0.0f;
-const float MaxAngle = 1.0f;
+const float MinAngle = 0.5f;
+const float MaxAngle = 0.6f;
 const float Dark = 0.0f;
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
 	float shade = ( dot( input.m_Normal, SunNormal ) + 1 ) / 2;
+	shade *= shade;
+//	float t = shade < MinAngle ? 0.0f : ( shade > MaxAngle ? 1.0f :  ( ( shade - MinAngle ) / ( MaxAngle - MinAngle ) ) );	
+//	shade = 0.4f + 0.9f * t;
+
 	return texCUBE( TerrainSampler, -input.m_SphereNormal ) * shade;
 }
 
@@ -54,7 +57,24 @@ technique DefaultTechnique
 		LightingEnable			= false;
 		DepthMask				= true;
 		ShadeModel				= Smooth;
-		FrontFace				= CCW;
+		FrontFace				= CW;
+		DepthTestEnable			= true;
+		CullFaceEnable			= true;
+		BlendEnable				= false;
+		PolygonMode				= int2( Front, Fill );
+		VertexProgram			= compile arbvp1 VertexShader( );
+		FragmentProgram			= compile arbfp1 FragmentShader( );
+	}
+}
+
+technique WireFrameTechnique
+{
+	pass
+	{
+		LightingEnable			= false;
+		DepthMask				= true;
+		ShadeModel				= Smooth;
+		FrontFace				= CW;
 		DepthTestEnable			= true;
 		CullFaceEnable			= true;
 		BlendEnable				= false;
@@ -69,7 +89,7 @@ technique DefaultTechnique
 		LightingEnable			= true;
 		DepthMask				= true;
 		ShadeModel				= Smooth;
-		FrontFace				= CCW;
+		FrontFace				= CW;
 		DepthTestEnable			= true;
 		CullFaceEnable			= true;
 		BlendEnable				= false;

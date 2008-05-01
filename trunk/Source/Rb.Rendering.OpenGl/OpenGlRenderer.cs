@@ -841,7 +841,6 @@ namespace Rb.Rendering.OpenGl
 
 		#endregion
 
-
 		#region	Local to world transforms
 
 		/// <summary>

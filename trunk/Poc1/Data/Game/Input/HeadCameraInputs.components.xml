@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rb cacheable="true">
+
+  <object type="Rb.Interaction.CommandInputTemplateMap" assembly="Rb.Interaction">
+
+    <serialise>
+      <commandList enum="Poc1.Universe.Classes.Cameras.HeadCameraController+Commands" assembly="Poc1.Universe">
+        <command name="PitchUp">
+          <input key="Up" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="PitchDown">
+          <input key="Down" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="YawLeft">
+          <input key="Left" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="YawRight">
+          <input key="Right" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="RollClockwise">
+          <input key="E" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="RollAnticlockwise">
+          <input key="Q" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Turn">
+          <input button="Middle" type="Rb.Interaction.Windows.MouseCursorInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="SlipLeft">
+          <input key="A" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="SlipRight">
+          <input key="D" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Forwards">
+          <input key="W" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+        <command name="Backwards">
+          <input key="S" type="Rb.Interaction.Windows.KeyInputTemplate" assembly="Rb.Interaction.Windows"/>
+        </command>
+      </commandList>
+    </serialise>
+
+  </object>
+</rb>

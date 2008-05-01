@@ -38,9 +38,27 @@ namespace Poc1.Universe.Classes.Cameras
 			
 			[CommandDescription( "Yaw right", "Turns the camera right" )]
 			YawRight,
+
+			[CommandDescription( "Slip left", "Slips the camera left")]
+			SlipLeft,
+
+			[CommandDescription( "Slip right", "Slips the camera right" )]
+			SlipRight,
 				
 			[CommandDescription( "Turn", "Turns the camera (affects yaw and pitch)" )]
 			Turn
+		}
+
+		public float MaxForwardSpeed
+		{
+			get { return m_MaxForwardSpeed; }
+			set { m_MaxForwardSpeed = value; }
+		}
+
+		public float MaxSlipSpeed
+		{
+			get { return m_MaxSlipSpeed; }
+			set { m_MaxSlipSpeed = value; }
 		}
 
 		/// <summary>
@@ -52,19 +70,19 @@ namespace Poc1.Universe.Classes.Cameras
 			switch ( ( Commands )msg.CommandId )
 			{
 				case Commands.Forwards :
-					m_Camera.Position -= m_Camera.InverseFrame.ZAxis * 100000;
+					m_Camera.Position -= m_Camera.InverseFrame.ZAxis * MaxForwardSpeed;
 					break;
 
 				case Commands.Backwards:
-					m_Camera.Position += m_Camera.InverseFrame.ZAxis * 100000;
+					m_Camera.Position += m_Camera.InverseFrame.ZAxis * MaxForwardSpeed;
 					break;
 
 				case Commands.PitchUp :
-					m_Camera.ChangePitch( 0.1f );
+					m_Camera.ChangePitch( -0.1f );
 					break;
 
 				case Commands.PitchDown:
-					m_Camera.ChangePitch( -0.1f );
+					m_Camera.ChangePitch( 0.1f );
 					break;
 
 				case Commands.YawLeft:
@@ -76,11 +94,11 @@ namespace Poc1.Universe.Classes.Cameras
 					break;
 
 				case Commands.RollClockwise :
-					m_Camera.ChangeRoll( 0.1f );
+					m_Camera.ChangeRoll( -0.1f );
 					break;
 
 				case Commands.RollAnticlockwise :
-					m_Camera.ChangeRoll( -0.1f );
+					m_Camera.ChangeRoll( 0.1f );
 					break;
 
 				case Commands.Turn:
@@ -88,8 +106,16 @@ namespace Poc1.Universe.Classes.Cameras
 					float deltaX = ( cursorMsg.X - cursorMsg.LastX ) * 0.01f;
 					float deltaY = ( cursorMsg.Y - cursorMsg.LastY ) * 0.01f;
 
-					m_Camera.ChangeYaw( deltaX );
-					m_Camera.ChangePitch( deltaY );
+					m_Camera.ChangeYaw( -deltaX );
+					m_Camera.ChangePitch( -deltaY );
+					break;
+
+				case Commands.SlipLeft:
+					m_Camera.Position -= m_Camera.InverseFrame.XAxis * MaxSlipSpeed;
+					break;
+
+				case Commands.SlipRight:
+					m_Camera.Position += m_Camera.InverseFrame.XAxis * MaxSlipSpeed;
 					break;
 			}
 		}
@@ -119,6 +145,8 @@ namespace Poc1.Universe.Classes.Cameras
 		#region Private Members
 
 		private HeadCamera m_Camera;
+		private float m_MaxSlipSpeed = 100000;
+		private float m_MaxForwardSpeed = 100000;
 
 		#endregion
 	}

@@ -45,7 +45,7 @@ namespace Poc1.Universe.Classes.Rendering
 			}
 
 			//	Generate cloud textures
-			m_CloudGenerator = new SphereCloudsGenerator( 128 );
+			m_CloudGenerator = new SphereCloudsGenerator( 256 );
 
 			//	Generate cached sphere for rendering the planet
 			Graphics.Draw.StartCache( );

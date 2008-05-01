@@ -30,7 +30,7 @@
       <object type="Poc1.Universe.UniPoint3" property="Position">
         <long value="0" property="X"/>
         <long value="0" property="Y"/>
-        <long value="-200000000" property="Z"/>
+        <long value="150000000" property="Z"/>
       </object>
 
       <object type="Poc1.Universe.Classes.Cameras.HeadCameraController" assembly="Poc1.Universe">

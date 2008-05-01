@@ -43,6 +43,22 @@ namespace Rb.Rendering.Interfaces.Objects
 		#endregion
 
 		/// <summary>
+		/// Returns the number of vertices allocated to this buffer
+		/// </summary>
+		int Count
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Gets the size of a single vertex
+		/// </summary>
+		int VertexSizeInBytes
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Draws the contents of the vertex buffer directly
 		/// </summary>
 		void Draw( PrimitiveType primType );

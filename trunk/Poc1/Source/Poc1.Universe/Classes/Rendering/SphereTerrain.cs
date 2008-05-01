@@ -67,7 +67,7 @@ namespace Poc1.Universe.Classes.Rendering
 		public unsafe Point3 GenerateTerrainPatchVertices( Point3 origin, Vector3 uStep, Vector3 vStep, int res, TerrainVertex* firstVertex)
 		{
 			float radius = ( float )UniUnits.RenderUnits.FromUniUnits( m_Planet.Radius );
-			float height = ( float )UniUnits.RenderUnits.FromUniUnits( UniUnits.Metres.ToUniUnits( 10000 ) );
+			float height = ( float )UniUnits.RenderUnits.FromUniUnits( UniUnits.Metres.ToUniUnits( 12000 ) );
 
 			m_Gen.SetHeightRange( radius, radius + height );
 			m_Gen.GenerateVertices( origin, uStep, vStep, res, res, firstVertex, sizeof( TerrainVertex ), 0, 12 );

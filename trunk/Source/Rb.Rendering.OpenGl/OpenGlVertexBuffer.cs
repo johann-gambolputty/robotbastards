@@ -54,6 +54,22 @@ namespace Rb.Rendering.OpenGl
 		#endregion
 
 		/// <summary>
+		/// Returns the number of vertices allocated to this buffer
+		/// </summary>
+		public int Count
+		{
+			get { return m_Size; }
+		}
+
+		/// <summary>
+		/// Gets the size of a single vertex
+		/// </summary>
+		public int VertexSizeInBytes
+		{
+			get { return m_Stride; }
+		}
+
+		/// <summary>
 		/// Draws the contents of the vertex buffer directly
 		/// </summary>
 		public void Draw( PrimitiveType primType )
@@ -131,17 +147,17 @@ namespace Rb.Rendering.OpenGl
 				get { return m_Count; }
 			}
 
-			public unsafe byte* Bytes
+			public byte* Bytes
 			{
 				get { return m_Bytes; }
 			}
 
-			public unsafe void Write<T>( int offset, IEnumerable<T> vertices )
+			public void Write<T>( int offset, IEnumerable<T> vertices )
 			{
 				throw new Exception( "The method or operation is not implemented." );
 			}
 
-			public unsafe System.IO.Stream ToStream( )
+			public System.IO.Stream ToStream( )
 			{
 				throw new Exception( "The method or operation is not implemented." );
 			}
@@ -244,6 +260,7 @@ namespace Rb.Rendering.OpenGl
 		private int m_Stride;
 		private int m_Handle;
 		private FieldInfo[] m_Fields;
+		private int m_Size;
 
 		/// <summary>
 		/// Maps a <see cref="VertexFieldElementTypeId"/> value to its associated GL value
@@ -267,22 +284,24 @@ namespace Rb.Rendering.OpenGl
 		{
 			switch ( field )
 			{
-				case VertexFieldSemantic.Position: return Gl.GL_VERTEX_ARRAY;
-				case VertexFieldSemantic.Normal: return Gl.GL_NORMAL_ARRAY;
-				case VertexFieldSemantic.Diffuse:
-				case VertexFieldSemantic.Specular: return Gl.GL_COLOR_ARRAY;
-				case VertexFieldSemantic.Blend0:
-				case VertexFieldSemantic.Blend1:
-				case VertexFieldSemantic.Blend2:
-				case VertexFieldSemantic.Blend3: return Gl.GL_WEIGHT_ARRAY_ARB;
-				case VertexFieldSemantic.Texture0:
-				case VertexFieldSemantic.Texture1:
-				case VertexFieldSemantic.Texture2:
-				case VertexFieldSemantic.Texture3:
-				case VertexFieldSemantic.Texture4:
-				case VertexFieldSemantic.Texture5:
-				case VertexFieldSemantic.Texture6:
-				case VertexFieldSemantic.Texture7: return Gl.GL_TEXTURE_COORD_ARRAY;
+				case VertexFieldSemantic.Position	: return Gl.GL_VERTEX_ARRAY;
+				case VertexFieldSemantic.Normal		: return Gl.GL_NORMAL_ARRAY;
+				case VertexFieldSemantic.Diffuse	:
+				case VertexFieldSemantic.Specular	: return Gl.GL_COLOR_ARRAY;
+				case VertexFieldSemantic.Tangent	: return Gl.GL_TANGENT_ARRAY_EXT;
+				case VertexFieldSemantic.BiNormal	: return Gl.GL_BINORMAL_ARRAY_EXT;
+				case VertexFieldSemantic.Blend0		:
+				case VertexFieldSemantic.Blend1		:
+				case VertexFieldSemantic.Blend2		:
+				case VertexFieldSemantic.Blend3		: return Gl.GL_WEIGHT_ARRAY_ARB;
+				case VertexFieldSemantic.Texture0	:
+				case VertexFieldSemantic.Texture1	:
+				case VertexFieldSemantic.Texture2	:
+				case VertexFieldSemantic.Texture3	:
+				case VertexFieldSemantic.Texture4	:
+				case VertexFieldSemantic.Texture5	:
+				case VertexFieldSemantic.Texture6	:
+				case VertexFieldSemantic.Texture7	: return Gl.GL_TEXTURE_COORD_ARRAY;
 			}
 			throw new NotImplementedException( string.Format( "No mapping for field \"{0}\" to opengl client state ", field ) );
 		}
@@ -305,6 +324,7 @@ namespace Rb.Rendering.OpenGl
 		private unsafe void CreateVertexBuffer( VertexBufferFormat format, int numVertices, byte[] memory )
 		{
 			DestroyBuffer( );
+			m_Size = numVertices;
 
 			format.ValidateFormat( );
 

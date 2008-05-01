@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuditedGraphicsFactory.cs" />
     <Compile Include="Cameras\Camera3.cs" />
     <Compile Include="Cameras\CameraBase.cs" />
     <Compile Include="Cameras\MultiCamera.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Lights\LightGroup.cs" />
     <Compile Include="Lights\PointLight.cs" />
     <Compile Include="Lights\SpotLight.cs" />
+    <Compile Include="ManagedVertexBuffer.cs" />
     <Compile Include="MaterialBase.cs" />
     <Compile Include="PassList.cs" />
     <Compile Include="RenderContext.cs" />
@@ -121,8 +123,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\DefaultShadowMapDepthTexture.cgfx" />
-    <None Include="Resources\DefaultShadowMapTexture.cgfx" />
+    <Folder Include="Textures\Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

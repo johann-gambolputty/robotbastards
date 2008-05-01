@@ -96,7 +96,7 @@ namespace Rb.Rendering.Interfaces.Objects
 					continue;
 				}
 
-				VertexFieldSemantic semantic = attributes[ 0 ].VertexField;
+				VertexFieldSemantic semantic = attributes[ 0 ].Semantic;
 
 				//	It does - add it to the fields list
 				fields.Add( field );

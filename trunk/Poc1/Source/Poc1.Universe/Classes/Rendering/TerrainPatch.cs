@@ -275,8 +275,6 @@ namespace Poc1.Universe.Classes.Rendering
 			{
 				return false;
 			}
-			return false;
-
 			if ( LodLevel <= neighbour.LodLevel )
 			{
 				//	Current patch has higher detail than neighbour patch

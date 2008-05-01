@@ -129,8 +129,8 @@ namespace Rb.Rendering
 			Graphics.Renderer.SetViewport( x, y, w, h );
 
 			renderer.ClearDepth( 1.0f );
-			renderer.ClearColourToVerticalGradient( Color.DarkSeaGreen, Color.LightSeaGreen );
-		//	renderer.ClearColour( Color.DarkSeaGreen );
+		//	renderer.ClearColourToVerticalGradient( Color.DarkSeaGreen, Color.LightSeaGreen );
+			renderer.ClearColour( Color.DarkSeaGreen );
 
             m_Context.RenderTime = TinyTime.CurrentTime;
 
