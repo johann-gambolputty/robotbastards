@@ -45,6 +45,7 @@
     <Compile Include="Objects\BlendState.cs" />
     <Compile Include="Objects\Cameras\ICamera.cs" />
     <Compile Include="Objects\Cameras\ICamera3.cs" />
+    <Compile Include="Objects\Cameras\IProjectionCamera.cs" />
     <Compile Include="Objects\EffectRenderStateBinding.cs" />
     <Compile Include="Objects\FontData.cs" />
     <Compile Include="Objects\ICubeMapTextureSampler.cs" />

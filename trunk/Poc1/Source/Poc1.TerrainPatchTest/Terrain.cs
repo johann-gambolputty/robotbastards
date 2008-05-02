@@ -15,8 +15,8 @@ namespace Poc1.TerrainPatchTest
 			m_Res = res;
 			m_Heights = new float[ res, res ];
 
-			float width = 13;
-			float height = 13;
+			float width = 9;
+			float height = 9;
 
 			Bitmap bmp = new Bitmap( res, res, PixelFormat.Format24bppRgb );
 
@@ -28,7 +28,8 @@ namespace Poc1.TerrainPatchTest
 				float x = 2.35f;
 				for ( int col = 0; col < res; ++col, x += incX )
 				{
-					float h = Fractals.SimpleFractal( x, 0.35f, z, 1.3f, 8, 0.8f, Fractals.Noise3dBasis );
+				//	float h = Fractals.SimpleFractal( x, 0.35f, z, 1.3f, 8, 0.8f, Fractals.Noise3dBasis );
+					float h = Fractals.RidgedFractal( x, 0.35f, z, 1.3f, 8, 0.8f, Fractals.Noise3dBasis );
 					m_Heights[ col, row ] = h;
 					byte hC = ( byte )( h * 255.0f );
 					bmp.SetPixel( col, row, Color.FromArgb( hC, hC, hC ) );

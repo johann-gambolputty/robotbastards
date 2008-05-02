@@ -44,6 +44,7 @@ namespace Poc1.TerrainPatchTest
 			this.display1.Size = new System.Drawing.Size(292, 266);
 			this.display1.StencilBits = ((byte)(0));
 			this.display1.TabIndex = 0;
+			this.display1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.display1_KeyUp);
 			// 
 			// MainForm
 			// 

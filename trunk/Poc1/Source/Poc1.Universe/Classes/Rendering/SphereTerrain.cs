@@ -64,13 +64,35 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <param name="res">Patch resolution</param>
 		/// <param name="firstVertex">Patch vertices</param>
 		/// <returns>Centre point of the patch, in render unit space</returns>
-		public unsafe Point3 GenerateTerrainPatchVertices( Point3 origin, Vector3 uStep, Vector3 vStep, int res, TerrainVertex* firstVertex)
+		public unsafe Point3 GenerateTerrainPatchVertices( Point3 origin, Vector3 uStep, Vector3 vStep, int res, TerrainVertex* firstVertex )
 		{
 			float radius = ( float )UniUnits.RenderUnits.FromUniUnits( m_Planet.Radius );
 			float height = ( float )UniUnits.RenderUnits.FromUniUnits( UniUnits.Metres.ToUniUnits( 12000 ) );
 
 			m_Gen.SetHeightRange( radius, radius + height );
 			m_Gen.GenerateVertices( origin, uStep, vStep, res, res, firstVertex, sizeof( TerrainVertex ), 0, 12 );
+
+			Point3 centre = origin + ( uStep * res / 2 ) + ( vStep * res / 2 );
+			return ( centre.ToVector3( ) * radius ).ToPoint3( );
+		}
+
+		/// <summary>
+		/// Generates vertices for a patch. Calculates maximum error between this patch and next higher detail patch
+		/// </summary>
+		/// <param name="origin">Patch origin</param>
+		/// <param name="uStep">Offset between row vertices</param>
+		/// <param name="vStep">Offset between column vertices</param>
+		/// <param name="res">Patch resolution</param>
+		/// <param name="firstVertex">Patch vertices</param>
+		/// <param name="error">Maximum error value between this patch and higher level patch</param>
+		/// <returns>Centre point of the patch, in render unit space</returns>
+		public unsafe Point3 GenerateTerrainPatchVertices( Point3 origin, Vector3 uStep, Vector3 vStep, int res, TerrainVertex* firstVertex, out float error)
+		{
+			float radius = ( float )UniUnits.RenderUnits.FromUniUnits( m_Planet.Radius );
+			float height = ( float )UniUnits.RenderUnits.FromUniUnits( UniUnits.Metres.ToUniUnits( 12000 ) );
+
+			m_Gen.SetHeightRange( radius, radius + height );
+			m_Gen.GenerateVertices( origin, uStep, vStep, res, res, firstVertex, sizeof( TerrainVertex ), 0, 12, out error );
 
 			Point3 centre = origin + ( uStep * res / 2 ) + ( vStep * res / 2 );
 			return ( centre.ToVector3( ) * radius ).ToPoint3( );

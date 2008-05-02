@@ -44,7 +44,10 @@ namespace Poc1
 				void GenerateTexture( const CubeMapFace face, const PixelFormat format, const int width, const int height, const int stride, unsigned char* pixels );
 
 				///	\brief	Generates terrain vertex points and normals
-				void GenerateVertices( Point3^ origin, Vector3^ xAxis, Vector3^ zAxis, const int width, const int height, void* vertices, const int stride, const int positionOffset, const int normalOffset );
+				void GenerateVertices( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, void* vertices, const int stride, const int positionOffset, const int normalOffset );
+
+				///	\brief	Generates terrain vertex points and normals. Calculates maximum patch error
+				void GenerateVertices( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, void* vertices, const int stride, const int positionOffset, const int normalOffset, [System::Runtime::InteropServices::Out]float% error );
 
 			private :
 

@@ -210,5 +210,6 @@ namespace Poc1.Universe.Classes.Cameras
 		private float m_PerspectiveZFar = 1000.0f;
 
 		#endregion
+
 	}
 }

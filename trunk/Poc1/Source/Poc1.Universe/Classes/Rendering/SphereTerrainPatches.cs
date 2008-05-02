@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Rendering;
@@ -9,6 +8,7 @@ using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
+using Rb.Rendering.Interfaces.Objects.Cameras;
 using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc1.Universe.Classes.Rendering
@@ -27,7 +27,8 @@ namespace Poc1.Universe.Classes.Rendering
 		public SphereTerrainPatches( IPlanetTerrain terrain )
 		{
 			IEffect effect = ( IEffect )AssetManager.Instance.Load( "Effects/Planets/terrestrialPlanetTerrain.cgfx" );
-			TechniqueSelector selector = new TechniqueSelector( effect, "DefaultTechnique" );
+		//	TechniqueSelector selector = new TechniqueSelector( effect, "DefaultTechnique" );
+			TechniqueSelector selector = new TechniqueSelector( effect, "WireFrameTechnique" );
 
 			m_Terrain = terrain;
 			m_PlanetTerrainTechnique = selector;
@@ -45,8 +46,8 @@ namespace Poc1.Universe.Classes.Rendering
 					new Point3( +hDim, +hDim, +hDim ),
 					new Point3( -hDim, +hDim, +hDim ),
 				};
-			int res = 9;
-			int defaultLodLevel = TerrainPatchGeometryManager.LowestLodLevel;
+			int res = 15;
+			int defaultLodLevel = TerrainPatchGeometryManager.LowestDetailLodLevel;
 			CubeSide[] sides = new CubeSide[ ]
 				{
 					new CubeSide( res, cubePoints[ 0 ], cubePoints[ 1 ], cubePoints[ 3 ], defaultLodLevel, true ),	//	-z
@@ -131,7 +132,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <param name="planetTerrainTexture">Planet terrain texture, temporarily used for texturing patches</param>
 		public void Render( IRenderContext context, SpherePlanet planet, ITexture planetTerrainTexture )
 		{
-			UpdateLod( planet, UniCamera.Current );
+			UpdateLod( planet, UniCamera.Current, Graphics.Renderer.ViewportHeight );
 
 			Graphics.Renderer.PushTransform( TransformType.LocalToWorld );
 			{
@@ -151,8 +152,6 @@ namespace Poc1.Universe.Classes.Rendering
 			m_GeometryManager.EndPatchRendering( );
 
 			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
-
-			DisplayTopDistances( planet, UniCamera.Current, 20 );
 		}
 
 		#region Private Members
@@ -225,7 +224,7 @@ namespace Poc1.Universe.Classes.Rendering
 					patch.PreBuild( builder );
 				}
 			}
-
+			
 			/// <summary>
 			/// Builds all terrain patches in this side
 			/// </summary>
@@ -305,65 +304,20 @@ namespace Poc1.Universe.Classes.Rendering
 			return Math.Sqrt( x * x + y * y + z * z );
 		}
 
-		private bool UpdatePatchLod( TerrainPatch patch, Point3 localPos )
+		private bool UpdatePatchLod( TerrainPatch patch, Point3 localPos, IProjectionCamera camera, float viewportHeight )
 		{
-			int level = TerrainPatchGeometryManager.LowestLodLevel;
 			double dist = AccurateDistance( patch.Centre, localPos );
-			if ( dist < 3000 )
+			if ( !patch.UpdateLod( camera, viewportHeight, ( float )dist ) )
 			{
-				level = 0;
-			}
-			else if ( dist < 5000 )
-			{
-				level = 1;
-			}
-			else if ( dist < 8000 )
-			{
-				level = 2;
-			}
-			else if ( dist < 15000 )
-			{
-				level = 3;
-			}
-			else if ( dist < 18000 )
-			{
-				level = 4;
+				return false;
 			}
 
-		//	level = 2;
-			if ( patch.LodLevel != level )
-			{
-				patch.LodLevel = level;
-				patch.ReleaseGeometry( m_GeometryManager );
-				return true;
-			}
-			return false;
+			//	Pre-release the geometry, so the PreBuild() step has space to work with
+			patch.ReleaseGeometry( m_GeometryManager );
+			return true;
 		}
 
-		private void DisplayTopDistances( IEntity planet, IUniCamera camera, int n )
-		{
-			Point3 localPos = UniUnits.RenderUnits.MakeRelativePoint( planet.Transform.Position, camera.Position );
-
-			TerrainPatch[] patches = m_Patches.ToArray( );
-			Array.Sort
-			(
-				patches,
-				delegate( TerrainPatch p0, TerrainPatch p1 )
-				{
-					double p0dist = AccurateDistance( p0.Centre, localPos );
-					double p1dist = AccurateDistance( p1.Centre, localPos );
-					return p0dist > p1dist ? 1 : ( p0dist < p1dist ? -1 : 0 );
-				}
-			);
-			IFont font = Graphics.Fonts.SmallDebugFont;
-			for ( int i = 0; i < n; ++i )
-			{
-				double dist = UniUnits.RenderUnits.ToMetres( AccurateDistance( patches[ i ].Centre, localPos ) );
-				font.Write( 0, ( i * font.MaximumHeight ) + Graphics.Fonts.DebugFont.MaximumHeight, Color.White, "Patch {0}: {1}", i, dist );
-			}
-		}
-
-		private void UpdateLod( IEntity planet, IUniCamera camera )
+		private void UpdateLod( IEntity planet, IUniCamera camera, float viewportHeight )
 		{
 			Point3 localPos = UniUnits.RenderUnits.MakeRelativePoint( planet.Transform.Position, camera.Position );
 
@@ -371,7 +325,7 @@ namespace Poc1.Universe.Classes.Rendering
 			List<TerrainPatch> changedPatches = new List<TerrainPatch>( );
 			foreach ( TerrainPatch patch in m_Patches )
 			{
-				if ( UpdatePatchLod( patch, localPos ) )
+				if ( UpdatePatchLod( patch, localPos, camera, viewportHeight ) )
 				{
 					changedPatches.Add( patch );
 				}

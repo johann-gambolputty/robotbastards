@@ -29,6 +29,9 @@ namespace Poc1
 				///	\brief	Generates terrain vertex points and normals
 				virtual void GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, void* vertices, const int stride, const int positionOffset, const int normalOffset ) = 0;
 
+				///	\brief	Generates terrain vertex points and normals. Gets maximum patch error
+				virtual void GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, void* vertices, const int stride, const int positionOffset, const int normalOffset, float& maxError ) = 0;
+
 				///	\brief	Generates a cube map texture face
 				virtual void GenerateTexture( const USphereTerrainTypeSelector& selector, const UCubeMapFace face, const UPixelFormat format, const int width, const int height, const int stride, unsigned char* pixels ) = 0;
 		};
@@ -69,6 +72,9 @@ namespace Poc1
 				///	\brief	Generates terrain vertex points and normals
 				virtual void GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, void* vertices, const int stride, const int positionOffset, const int normalOffset );
 
+				///	\brief	Generates terrain vertex points and normals
+				virtual void GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, void* vertices, const int stride, const int positionOffset, const int normalOffset, float& maxError );
+
 				///	\brief	Generates a cube map texture face
 				virtual void GenerateTexture( const USphereTerrainTypeSelector& selector, const UCubeMapFace face, const UPixelFormat format, const int width, const int height, const int stride, unsigned char* pixels );
 
@@ -86,7 +92,14 @@ namespace Poc1
 
 				///	\brief	Fills a line in the fp cache with positions
 				void FillPositionCacheLine( const int w4, float* line, __m128 xxxx, __m128 yyyy, __m128 zzzz, const __m128& colXInc, const __m128& colYInc, const __m128& colZInc );
+				
+				///	\brief	Fills a line in the fp cache with positions and base height values
+				void FillPositionHeightCacheLine( const int w4, float* line, __m128 xxxx, __m128 yyyy, __m128 zzzz, const __m128& colXInc, const __m128& colYInc, const __m128& colZInc );
 
+				///	\brief	Determines the maximum error between two arrays filled with height data
+				static float GetMaximumError( const int count, const float* heights0 );
+
+				///	\brief	Calculates a normal from stuff
 				inline static void CalculateNormal( float* n, const int prev, const int next, const float* centre, const float* xSrc, const float* ySrc, const float* zSrc, const float* uXSrc, const float* uYSrc, const float* uZSrc, const float* dXSrc, const float* dYSrc, const float* dZSrc )
 				{
 					const UVector3 left	( xSrc [ prev  ] - centre[ 0 ], ySrc [ prev ] - centre[ 1 ], zSrc [ prev ] - centre[ 2 ] );
@@ -177,6 +190,62 @@ namespace Poc1
 				yyyy = _mm_add_ps( yyyy, colYInc );
 				zzzz = _mm_add_ps( zzzz, colZInc );
 			}
+		}
+
+		template < typename DisplaceType >
+		inline void SseSphereTerrainGeneratorT< DisplaceType >::FillPositionHeightCacheLine( const int w4, float* line, __m128 xxxx, __m128 yyyy, __m128 zzzz, const __m128& colXInc, const __m128& colYInc, const __m128& colZInc )
+		{
+			__m128 tmpXxxx, tmpYyyy, tmpZzzz;
+			float* curPos = line;
+			for ( int index = 0; index < w4; ++index )
+			{
+				tmpXxxx = xxxx;
+				tmpYyyy = yyyy;
+				tmpZzzz = zzzz;
+
+				Normalize( tmpXxxx, tmpYyyy, tmpZzzz );
+				__m128 heights = m_Displacer.Displace( tmpXxxx, tmpYyyy, tmpZzzz );
+				heights = m_Displacer.MapToHeightRange( heights );
+
+				//	Store heights alongside positions, to avoid cache hit
+				_mm_store_ps( curPos, tmpXxxx ); curPos += 4;
+				_mm_store_ps( curPos, tmpYyyy ); curPos += 4;
+				_mm_store_ps( curPos, tmpZzzz ); curPos += 4;
+				_mm_store_ps( curPos, heights ); curPos += 4;
+
+				xxxx = _mm_add_ps( xxxx, colXInc );
+				yyyy = _mm_add_ps( yyyy, colYInc );
+				zzzz = _mm_add_ps( zzzz, colZInc );
+			}
+		}
+
+		template < typename DisplaceType >
+		inline float SseSphereTerrainGeneratorT< DisplaceType >::GetMaximumError( const int count, const float* heights0 )
+		{
+			//	TODO: AP: This is incomplete - it only calculates errors for vertices between x step positions
+			float maxError = 0;
+			for ( int i = 0; i < count; ++i )
+			{
+				const float currHeight0 = heights0[ 0 ];
+				const float currHeight1 = heights0[ 2 ];
+				const float currHeight2 = heights0[ 16 ];
+
+				const float xEstHeight0 = ( currHeight0 + currHeight1 ) / 2;
+				const float xEstHeight1 = ( currHeight1 + currHeight2 ) / 2;
+
+				const float xActHeight0 = heights0[ 1 ];
+				const float xActHeight1 = heights0[ 3 ];
+
+				const float xError0 = abs( xActHeight0 - xEstHeight0 );
+				const float xError1 = abs( xActHeight1 - xEstHeight1 );
+				const float xError = xError0 > xError1 ? xError0 : xError1;
+
+				maxError = xError > maxError ? xError : maxError;
+
+				heights0 += 16;
+			}
+
+			return maxError;
 		}
 
 		template < typename DisplaceType >
@@ -310,6 +379,141 @@ namespace Poc1
 		}
 
 		template < typename DisplaceType >
+		inline void SseSphereTerrainGeneratorT< DisplaceType >::GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, void* vertices, const int stride, const int positionOffset, const int normalOffset, float& error )
+		{
+			//	Same as GenerateVertices() without error, except that the resolution is doubled
+			//	TODO: AP: Makes assumptions about relationship between resolutions
+			xStep[ 0 ] /= 2; xStep[ 1 ] /= 2; xStep[ 2 ] /= 2;
+			zStep[ 0 ] /= 2; zStep[ 1 ] /= 2; zStep[ 2 ] /= 2;
+			width = ( width * 2 ) - 1;
+			height = ( height * 2 ) - 1;
+
+			//	Get start x, y and z positions for the first 4 vertices in the first row
+			//	NOTE: AP: Vectors are apparently reversed, so memory access is more natural (xyzw comes out as [ w, z, y, x ] normally)
+			__m128 startXxxx = _mm_set_ps( origin[ 0 ] - xStep[ 0 ], origin[ 0 ] - xStep[ 0 ] * 2, origin[ 0 ] - xStep[ 0 ] * 3, origin[ 0 ] - xStep[ 0 ] * 4 );
+			__m128 startYyyy = _mm_set_ps( origin[ 1 ] - xStep[ 1 ], origin[ 1 ] - xStep[ 1 ] * 2, origin[ 1 ] - xStep[ 1 ] * 3, origin[ 1 ] - xStep[ 1 ] * 4 );
+			__m128 startZzzz = _mm_set_ps( origin[ 2 ] - xStep[ 2 ], origin[ 2 ] - xStep[ 2 ] * 2, origin[ 2 ] - xStep[ 2 ] * 3, origin[ 2 ] - xStep[ 2 ] * 4 );
+
+			//	Determine vectors for incrementing x, y and z positions in the column loop
+			const __m128 colXInc = _mm_set1_ps( xStep[ 0 ] * 4 );
+			const __m128 colYInc = _mm_set1_ps( xStep[ 1 ] * 4 );
+			const __m128 colZInc = _mm_set1_ps( xStep[ 2 ] * 4 );
+
+			//	Determine vectors for incrementing x, y and z positions in the row loop
+			const __m128 rowXInc = _mm_set1_ps( zStep[ 0 ] );
+			const __m128 rowYInc = _mm_set1_ps( zStep[ 1 ] );
+			const __m128 rowZInc = _mm_set1_ps( zStep[ 2 ] );
+
+			startXxxx = _mm_sub_ps( startXxxx, rowXInc );
+			startYyyy = _mm_sub_ps( startYyyy, rowYInc );
+			startZzzz = _mm_sub_ps( startZzzz, rowZInc );
+
+			//	Create a cache for storing vertex positions
+			int fullWidth = width + 8;
+			fullWidth = ( fullWidth % 4 == 0 ) ? fullWidth : fullWidth + ( 4 - ( fullWidth % 4 ) );
+			const int cacheSize = fullWidth * 4;	//	NOTE: AP: x4, not x3, because we need to store heights also
+			SetFpCacheSize( cacheSize );
+			const int fullWidthDiv4 = fullWidth / 4;
+			float** cacheLines = m_FpCacheLines;
+
+			int prevCacheLine = 0;
+			int curCacheLine = 1;
+			int nextCacheLine = 2;
+
+			//	Fill the cache with positions and heights from the first 3 vertex rows
+			FillPositionHeightCacheLine( fullWidthDiv4, cacheLines[ 0 ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
+			startXxxx = _mm_add_ps( startXxxx, rowXInc );
+			startYyyy = _mm_add_ps( startYyyy, rowYInc );
+			startZzzz = _mm_add_ps( startZzzz, rowZInc );
+
+			FillPositionHeightCacheLine( fullWidthDiv4, cacheLines[ 1 ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
+			startXxxx = _mm_add_ps( startXxxx, rowXInc );
+			startYyyy = _mm_add_ps( startYyyy, rowYInc );
+			startZzzz = _mm_add_ps( startZzzz, rowZInc );
+
+			FillPositionHeightCacheLine( fullWidthDiv4, cacheLines[ 2 ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
+
+			//	Point to the positions and normals in the first 4 vertices
+			unsigned char* vertexBytes = ( unsigned char* )vertices;
+			float* p0 = ( float* )( vertexBytes + positionOffset );
+			float* p1 = ( float* )( vertexBytes + positionOffset + stride );
+			float* n0 = ( float* )( vertexBytes + normalOffset );
+			float* n1 = ( float* )( vertexBytes + normalOffset + stride );
+			const int widthDiv4 = width / 4;
+			const int widthMod4 = width % 4;
+			const int vertexStride = stride / 2;
+			const int vertexLastStride = ( stride / 4 ) * widthMod4;
+
+			error = 0;
+
+			for ( int row = 0; row < height; ++row )
+			{
+				float rowError = GetMaximumError( widthDiv4, cacheLines[ curCacheLine ] + 28 );
+				error = rowError > error ? rowError : error;
+
+				if ( ( row % 2 ) == 0 )
+				{
+					const float* uXSrc = cacheLines[ prevCacheLine ] + 16;
+					const float* uYSrc = cacheLines[ prevCacheLine ] + 20;
+					const float* uZSrc = cacheLines[ prevCacheLine ] + 24;
+					
+					const float* xSrc = cacheLines[ curCacheLine ] + 16;
+					const float* ySrc = cacheLines[ curCacheLine ] + 20;
+					const float* zSrc = cacheLines[ curCacheLine ] + 24;
+					
+					const float* dXSrc = cacheLines[ nextCacheLine ] + 16;
+					const float* dYSrc = cacheLines[ nextCacheLine ] + 20;
+					const float* dZSrc = cacheLines[ nextCacheLine ] + 24;
+
+					//	Only get positions and normals from every second row (because its working at double resolution)
+					for ( int col = 0; col < widthDiv4; ++col )
+					{
+						//	Store positions
+						p0[ 0 ] = xSrc[ 0 ]; p1[ 0 ] = xSrc[ 2 ];
+						p0[ 1 ] = ySrc[ 0 ]; p1[ 1 ] = ySrc[ 2 ];
+						p0[ 2 ] = zSrc[ 0 ]; p1[ 2 ] = zSrc[ 2 ];
+
+						//	Calculate vertex normals
+						CalculateNormal( n0, -13, 2, p0, xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
+						CalculateNormal( n1, -2, 14, p1, xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
+
+						//	Move vertex pointers on
+						p0 += vertexStride; p1 += vertexStride;
+						n0 += vertexStride; n1 += vertexStride;
+
+						//	Move cache pointers on
+						xSrc += 16; ySrc += 16; zSrc += 16;
+						uXSrc += 16; uYSrc += 16; uZSrc += 16;
+						dXSrc += 16; dYSrc += 16; dZSrc += 16;
+					}
+					if ( widthMod4 > 0 )
+					{
+						p0[ 0 ] = xSrc[ 0 ]; p0[ 1 ] = ySrc[ 0 ]; p0[ 2 ] = zSrc[ 0 ];
+						CalculateNormal( n0, -13, 2, p0, xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
+						if ( widthMod4 > 1 )
+						{
+							p1[ 0 ] = xSrc[ 1 ]; p1[ 1 ] = ySrc[ 1 ]; p1[ 2 ] = zSrc[ 1 ];
+							CalculateNormal( n1, -2, 14, p1, xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
+						}
+						p0 += vertexLastStride; p1 += vertexLastStride;
+						n0 += vertexLastStride; n1 += vertexLastStride;
+					}
+				}
+
+				prevCacheLine = curCacheLine;
+				curCacheLine = nextCacheLine;
+				nextCacheLine = ( nextCacheLine + 1 ) % 3;
+				startXxxx = _mm_add_ps( startXxxx, rowXInc );
+				startYyyy = _mm_add_ps( startYyyy, rowYInc );
+				startZzzz = _mm_add_ps( startZzzz, rowZInc );
+				if ( row < ( height - 1 ) )
+				{
+					FillPositionHeightCacheLine( fullWidthDiv4, cacheLines[ nextCacheLine ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
+				}
+			}
+		}
+
+		template < typename DisplaceType >
 		inline void SseSphereTerrainGeneratorT< DisplaceType >::FillHeightCacheLine( const int w4, float* line, const UCubeMapFace face, __m128 uuuu, const __m128& vvvv, const __m128& uuuuInc, float* latitudes )
 		{
 			bool storeLatitides = ( latitudes != 0 );
@@ -355,7 +559,7 @@ namespace Poc1
 
 			FillHeightCacheLine( heightCacheSizeDiv4, cacheLines[ 1 ], face, uuuuStart, vvvv, uuuuInc, 0 );
 			vvvv = _mm_add_ps( vvvv, vvvvInc );
-			
+
 			FillHeightCacheLine( heightCacheSizeDiv4, cacheLines[ 2 ], face, uuuuStart, vvvv, uuuuInc, &latitudes[ 0 ] );
 			vvvv = _mm_add_ps( vvvv, vvvvInc );
 

@@ -29,6 +29,12 @@ namespace Poc1
 					m_HeightRange = _mm_sub_ps( m_MaxHeight, m_MinHeight );
 				}
 
+				///	\brief	Maps 4 normalized height values into the height range of this displacer
+				__m128 MapToHeightRange( const __m128 heights ) const
+				{
+					return _mm_add_ps( m_MinHeight, _mm_mul_ps( heights, m_HeightRange ) );
+				}
+
 			protected :
 
 				__m128 m_MinHeight;
@@ -36,11 +42,6 @@ namespace Poc1
 				__m128 m_MaxHeight;
 				__m128 m_HeightRange;
 
-				///	\brief	Maps 4 normalized height values into the height range of this displacer
-				__m128 MapToHeightRange( const __m128 heights ) const
-				{
-					return _mm_add_ps( m_MinHeight, _mm_mul_ps( heights, m_HeightRange ) );
-				}
 		};
 
 		///	\brief	SseSphereTerrainGenerator Displacer type. Does not perturb input positions

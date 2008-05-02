@@ -72,12 +72,22 @@ namespace Poc1.Universe.Classes.Rendering
 			m_ManagedVb.End( );
 		}
 
+		#region Public LOD values
+
+		public const int MaxLodLevels = 5;
+		public const int LowestDetailLodLevel = MaxLodLevels - 1;
+		
+		public static int GetLevelResolution( int level )
+		{
+			return ( int )Functions.Pow( 2, 2 + ( MaxLodLevels - level ) ) ;
+		}
+
+		#endregion
+
 		#region Private Members
 
-		public const int LowestLodLevel = MaxLodLevels - 1;
-
+		public const float LodErrorThreshold = 3.0f;
 		private const int LodLevelPoolSize = 32;
-		private const int MaxLodLevels = 5;
 		private readonly static int MaxSize = ( int )Functions.Pow( 2, MaxLodLevels + 1 );
 
 		private readonly ManagedVertexBuffer m_ManagedVb = new ManagedVertexBuffer( );
