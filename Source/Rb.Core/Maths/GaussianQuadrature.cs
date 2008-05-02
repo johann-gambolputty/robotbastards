@@ -7,7 +7,7 @@ namespace Rb.Core.Maths
 	public class GaussianQuadrature : Integral
 	{
 		/// <summary>
-		/// Calculates the integral of 1d function "function" over the interval [min..max]
+		/// Calculates the integral of a 1d function over the interval [min..max]
 		/// </summary>
 		public static float Integrate( float min, float max, FunctionDelegate function )
 		{

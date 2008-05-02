@@ -317,6 +317,8 @@ namespace Rb.Rendering
 
 			m_FreeList.Clear( );
 			m_FreeList.Add( new FreeRange( start, m_Vb.Count - start ) );
+
+			GraphicsLog.Info( "Compaction complete - {0} vertices free", m_Vb.Count - start );
 		}
 
 

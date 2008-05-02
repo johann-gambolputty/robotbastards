@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Poc1.Universe.Interfaces.Rendering;
 using Rb.Core.Maths;
 using Rb.Rendering.Interfaces.Objects;
+using Rb.Rendering.Interfaces.Objects.Cameras;
 
 namespace Poc1.Universe.Classes.Rendering
 {
@@ -10,6 +11,19 @@ namespace Poc1.Universe.Classes.Rendering
 	/// </summary>
 	internal class TerrainPatch
 	{
+
+		#region Construction
+
+		public TerrainPatch( )
+		{
+			for ( int i = 0; i < m_LodErrors.Length; ++i )
+			{
+				m_LodErrors[ i ] = float.MaxValue;
+			}
+		}
+
+		#endregion
+
 		#region Public Members
 
 		/// <summary>
@@ -17,8 +31,8 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		public int LodLevel
 		{
-			get { return m_Lod; }
-			set { m_Lod = value; }
+			get { return m_LodLevel; }
+			set { m_LodLevel = value; }
 		}
 
 		/// <summary>
@@ -104,6 +118,27 @@ namespace Poc1.Universe.Classes.Rendering
 				m_Geometry = null;
 			}
 		}
+		
+		/// <summary>
+		/// Updates level of detail
+		/// </summary>
+		public bool UpdateLod( IProjectionCamera camera, float viewportHeight, float distToPatch )
+		{
+			System.Diagnostics.Debug.Assert( m_LodErrors[ m_LodLevel ] != float.MaxValue );
+
+			float errorDist = DistanceFromError( camera, viewportHeight, m_LodErrors[ m_LodLevel ] );
+			if ( distToPatch < errorDist )
+			{
+				return IncreaseDetail( );
+			}
+
+			errorDist = DistanceFromError( camera, viewportHeight, m_LodErrors[ m_LodLevel + 1 ] );
+			if ( distToPatch > errorDist )
+			{
+				return ReduceDetail( );
+			}
+			return false;
+		}
 
 		/// <summary>
 		/// Called prior to Build(). Allocates memory from the geometry manager
@@ -111,7 +146,7 @@ namespace Poc1.Universe.Classes.Rendering
 		public void PreBuild( ITerrainPatchGeometryManager geometryManager )
 		{
 			ReleaseGeometry( geometryManager );
-			m_Geometry = geometryManager.CreateGeometry( m_Lod );
+			m_Geometry = geometryManager.CreateGeometry( m_LodLevel );
 		}
 
 		/// <summary>
@@ -129,7 +164,15 @@ namespace Poc1.Universe.Classes.Rendering
 				
 				Vector3 uStep = m_PatchXDir * ( m_PatchWidth / ( res - 1 ) );
 				Vector3 vStep = m_PatchZDir * ( m_PatchHeight / ( res - 1 ) );
-				m_Centre = planetTerrain.GenerateTerrainPatchVertices( m_TopLeft, uStep, vStep, res, firstVertex );
+
+				if ( m_LodErrors[ m_LodLevel ] == float.MaxValue )
+				{
+					m_Centre = planetTerrain.GenerateTerrainPatchVertices(m_TopLeft, uStep, vStep, res, firstVertex, out m_LodErrors[ m_LodLevel ] );
+				}
+				else
+				{
+					m_Centre = planetTerrain.GenerateTerrainPatchVertices( m_TopLeft, uStep, vStep, res, firstVertex );
+				}
 			}
 			finally
 			{
@@ -193,13 +236,14 @@ namespace Poc1.Universe.Classes.Rendering
 		private float					m_PatchHeight;
 		private bool					m_Visible;
 
-		private int						m_Lod = 3;
+		private int						m_LodLevel = TerrainPatchGeometryManager.LowestDetailLodLevel;
 		private TerrainPatch 			m_LeftPatch;
 		private TerrainPatch 			m_TopPatch;
 		private TerrainPatch 			m_RightPatch;
 		private TerrainPatch 			m_BottomPatch;
-
 		private ITerrainPatchGeometry	m_Geometry;
+
+		private readonly float[]		m_LodErrors = new float[ TerrainPatchGeometryManager.MaxLodLevels + 1 ];
 		
 		/// <summary>
 		/// Gets the resolution of this patch
@@ -227,9 +271,9 @@ namespace Poc1.Universe.Classes.Rendering
 		{
 			switch ( side )
 			{
-				case Side.Left: return Side.Right;
-				case Side.Top: return Side.Bottom;
-				case Side.Right: return Side.Left;
+				case Side.Left	: return Side.Right;
+				case Side.Top	: return Side.Bottom;
+				case Side.Right	: return Side.Left;
 				case Side.Bottom: return Side.Top;
 			}
 
@@ -355,6 +399,41 @@ namespace Poc1.Universe.Classes.Rendering
 			}
 
 			return indices.ToArray( );
+		}
+		
+		private bool IncreaseDetail( )
+		{
+			if ( m_LodLevel <= 0 )
+			{
+				return false;
+			}
+			--m_LodLevel;
+			return true;
+		}
+		
+		private bool ReduceDetail( )
+		{
+			if ( m_LodLevel >= TerrainPatchGeometryManager.LowestDetailLodLevel )
+			{
+				return false;
+			}
+			++m_LodLevel;
+			return true;
+		}
+		
+		private static float DistanceFromError( IProjectionCamera camera, float viewportHeight, float error )
+		{
+			//	Extract frustum from projection matrix:
+			//	http://www.opengl.org/resources/faq/technical/transformations.htm
+			//	http://www.opengl.org/discussion_boards/ubbthreads.php?ubb=showflat&Number=209274
+			float near = camera.PerspectiveZNear;
+			float top = Functions.Tan( camera.PerspectiveFovDegrees * Constants.DegreesToRadians * 0.5f ) * near;
+			float a = near / top;
+			float t = ( TerrainPatchGeometryManager.LodErrorThreshold * 2 ) / viewportHeight;
+			float c = a / t;
+			float d = error * c;
+
+			return d;
 		}
 
 		#endregion

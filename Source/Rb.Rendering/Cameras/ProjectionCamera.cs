@@ -1,12 +1,12 @@
-
 using Rb.Rendering.Interfaces;
+using Rb.Rendering.Interfaces.Objects.Cameras;
 
 namespace Rb.Rendering.Cameras
 {
 	/// <summary>
 	/// Base class for 3d cameras
 	/// </summary>
-	public abstract class ProjectionCamera : Camera3
+	public abstract class ProjectionCamera : Camera3, IProjectionCamera
 	{
 
 		/// <summary>

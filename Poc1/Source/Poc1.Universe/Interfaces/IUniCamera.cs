@@ -6,7 +6,7 @@ namespace Poc1.Universe.Interfaces
 	/// <summary>
 	/// Universe camera
 	/// </summary>
-	public interface IUniCamera : ICamera
+	public interface IUniCamera : ICamera, IProjectionCamera
 	{
 		/// <summary>
 		/// Gets the position of the camera
