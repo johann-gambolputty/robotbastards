@@ -13,8 +13,9 @@ namespace Poc1.TerrainPatchTest
 
 		public QuadPatchTree( Terrain terrain )
 		{
+			terrain.SetTerrainArea( Width, Height );
 			m_Vertices = new QuadPatchVertices( );
-			m_Root = new QuadPatch( null, terrain, m_Vertices, Color.Black, -Width / 2, -Height / 2, Width, Height, Width, Height );
+			m_Root = new QuadPatch( terrain, m_Vertices, Color.Black, -Width / 2, -Height / 2, Width, Height );
 		}
 
 		public float CameraDistanceToPatch

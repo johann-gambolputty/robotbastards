@@ -304,17 +304,10 @@ namespace Poc1.Universe.Classes.Rendering
 			return Math.Sqrt( x * x + y * y + z * z );
 		}
 
-		private bool UpdatePatchLod( TerrainPatch patch, Point3 localPos, IProjectionCamera camera, float viewportHeight )
+		private void UpdatePatchLod( TerrainPatch patch, Point3 localPos, IProjectionCamera camera, float viewportHeight, List< TerrainPatch > changedPatches )
 		{
 			double dist = AccurateDistance( patch.Centre, localPos );
-			if ( !patch.UpdateLod( camera, viewportHeight, ( float )dist ) )
-			{
-				return false;
-			}
-
-			//	Pre-release the geometry, so the PreBuild() step has space to work with
-			patch.ReleaseGeometry( m_GeometryManager );
-			return true;
+			patch.UpdateLod( camera, viewportHeight, ( float )dist, m_GeometryManager, changedPatches );
 		}
 
 		private void UpdateLod( IEntity planet, IUniCamera camera, float viewportHeight )
@@ -325,10 +318,7 @@ namespace Poc1.Universe.Classes.Rendering
 			List<TerrainPatch> changedPatches = new List<TerrainPatch>( );
 			foreach ( TerrainPatch patch in m_Patches )
 			{
-				if ( UpdatePatchLod( patch, localPos, camera, viewportHeight ) )
-				{
-					changedPatches.Add( patch );
-				}
+				UpdatePatchLod( patch, localPos, camera, viewportHeight, changedPatches );
 			}
 			foreach ( TerrainPatch patch in changedPatches )
 			{
