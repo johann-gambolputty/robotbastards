@@ -11,7 +11,6 @@ namespace Poc1.Universe.Classes.Rendering
 	/// </summary>
 	internal class TerrainPatch
 	{
-
 		#region Construction
 
 		public TerrainPatch( )
@@ -122,22 +121,24 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <summary>
 		/// Updates level of detail
 		/// </summary>
-		public bool UpdateLod( IProjectionCamera camera, float viewportHeight, float distToPatch )
+		public void UpdateLod( IProjectionCamera camera, float viewportHeight, float distToPatch, ITerrainPatchGeometryManager terrainManager, List< TerrainPatch > changedPatches )
 		{
 			System.Diagnostics.Debug.Assert( m_LodErrors[ m_LodLevel ] != float.MaxValue );
 
 			float errorDist = DistanceFromError( camera, viewportHeight, m_LodErrors[ m_LodLevel ] );
 			if ( distToPatch < errorDist )
 			{
-				return IncreaseDetail( );
+				IncreaseDetail( changedPatches );
+				ReleaseGeometry( terrainManager );
+				return;
 			}
 
 			errorDist = DistanceFromError( camera, viewportHeight, m_LodErrors[ m_LodLevel + 1 ] );
 			if ( distToPatch > errorDist )
 			{
-				return ReduceDetail( );
+				ReduceDetail( changedPatches );
+				ReleaseGeometry( terrainManager );
 			}
-			return false;
 		}
 
 		/// <summary>
@@ -145,8 +146,11 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		public void PreBuild( ITerrainPatchGeometryManager geometryManager )
 		{
-			ReleaseGeometry( geometryManager );
-			m_Geometry = geometryManager.CreateGeometry( m_LodLevel );
+			if ( m_RebuildVertices )
+			{
+				ReleaseGeometry( geometryManager );
+				m_Geometry = geometryManager.CreateGeometry( m_LodLevel );
+			}
 		}
 
 		/// <summary>
@@ -154,29 +158,37 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		public unsafe void Build( IPlanetTerrain planetTerrain )
 		{
-			int[] indices = BuildIndexBuffer( );
-			m_Geometry.SetIndexBuffer( PrimitiveType.TriList, indices );
-			try
+			if ( m_RebuildIndices )
 			{
-				int res = m_Geometry.Resolution;
-
-				TerrainVertex* firstVertex = m_Geometry.LockVertexBuffer( false, true );
-				
-				Vector3 uStep = m_PatchXDir * ( m_PatchWidth / ( res - 1 ) );
-				Vector3 vStep = m_PatchZDir * ( m_PatchHeight / ( res - 1 ) );
-
-				if ( m_LodErrors[ m_LodLevel ] == float.MaxValue )
-				{
-					m_Centre = planetTerrain.GenerateTerrainPatchVertices(m_TopLeft, uStep, vStep, res, firstVertex, out m_LodErrors[ m_LodLevel ] );
-				}
-				else
-				{
-					m_Centre = planetTerrain.GenerateTerrainPatchVertices( m_TopLeft, uStep, vStep, res, firstVertex );
-				}
+				int[] indices = BuildIndexBuffer( );
+				m_Geometry.SetIndexBuffer( PrimitiveType.TriList, indices );
+				m_RebuildIndices = false;
 			}
-			finally
+			if ( m_RebuildVertices )
 			{
-				m_Geometry.UnlockVertexBuffer( );
+				try
+				{
+					int res = m_Geometry.Resolution;
+
+					TerrainVertex* firstVertex = m_Geometry.LockVertexBuffer( false, true );
+
+					Vector3 uStep = m_PatchXDir * ( m_PatchWidth / ( res - 1 ) );
+					Vector3 vStep = m_PatchZDir * ( m_PatchHeight / ( res - 1 ) );
+
+					if ( m_LodErrors[ m_LodLevel ] == float.MaxValue )
+					{
+						m_Centre = planetTerrain.GenerateTerrainPatchVertices( m_TopLeft, uStep, vStep, res, firstVertex, out m_LodErrors[ m_LodLevel ] );
+					}
+					else
+					{
+						m_Centre = planetTerrain.GenerateTerrainPatchVertices( m_TopLeft, uStep, vStep, res, firstVertex );
+					}
+				}
+				finally
+				{
+					m_RebuildVertices = false;
+					m_Geometry.UnlockVertexBuffer( );
+				}
 			}
 		}
 
@@ -235,6 +247,9 @@ namespace Poc1.Universe.Classes.Rendering
 		private float					m_PatchWidth;
 		private float					m_PatchHeight;
 		private bool					m_Visible;
+
+		private bool 					m_RebuildVertices = true;
+		private bool 					m_RebuildIndices = true;
 
 		private int						m_LodLevel = TerrainPatchGeometryManager.LowestDetailLodLevel;
 		private TerrainPatch 			m_LeftPatch;
@@ -400,24 +415,42 @@ namespace Poc1.Universe.Classes.Rendering
 
 			return indices.ToArray( );
 		}
-		
-		private bool IncreaseDetail( )
+
+		private bool IncreaseDetail( List<TerrainPatch> changedPatches )
 		{
 			if ( m_LodLevel <= 0 )
 			{
 				return false;
 			}
 			--m_LodLevel;
+			if ( !m_RebuildVertices && !m_RebuildIndices )
+			{
+				changedPatches.Add( this );
+			}
+			m_RebuildVertices = m_RebuildIndices = true;
+			ForceNeighbourRebuild( m_LeftPatch, changedPatches );
+			ForceNeighbourRebuild( m_RightPatch, changedPatches );
+			ForceNeighbourRebuild( m_TopPatch, changedPatches );
+			ForceNeighbourRebuild( m_BottomPatch, changedPatches );
 			return true;
 		}
 		
-		private bool ReduceDetail( )
+		private bool ReduceDetail( List< TerrainPatch > changedPatches )
 		{
 			if ( m_LodLevel >= TerrainPatchGeometryManager.LowestDetailLodLevel )
 			{
 				return false;
 			}
 			++m_LodLevel;
+			if ( !m_RebuildVertices && !m_RebuildIndices )
+			{
+				changedPatches.Add( this );
+			}
+			m_RebuildVertices = m_RebuildIndices = true;
+			ForceNeighbourRebuild( m_LeftPatch, changedPatches );
+			ForceNeighbourRebuild( m_RightPatch, changedPatches );
+			ForceNeighbourRebuild( m_TopPatch, changedPatches );
+			ForceNeighbourRebuild( m_BottomPatch, changedPatches );
 			return true;
 		}
 		
@@ -434,6 +467,18 @@ namespace Poc1.Universe.Classes.Rendering
 			float d = error * c;
 
 			return d;
+		}
+
+		private static void ForceNeighbourRebuild( TerrainPatch neighbour, List<TerrainPatch> changedPatches )
+		{
+			if ( neighbour != null ) //&& ( neighbour.m_Level <= m_Level ) )
+			{
+				if ( !neighbour.m_RebuildIndices  )
+				{
+					changedPatches.Add( neighbour );
+					neighbour.m_RebuildIndices = true;
+				}
+			}
 		}
 
 		#endregion

@@ -17,15 +17,10 @@ namespace Poc1.TerrainPatchTest
 
 		#region Public Construction
 
-		public QuadPatch( QuadPatch parent, Terrain terrain, QuadPatchVertices vertices, Color patchColour, float x, float z, float w, float d, float maxWidth, float maxHeight )
+		public QuadPatch( Terrain terrain, QuadPatchVertices vertices, Color patchColour, float x, float z, float w, float d )
 		{
-			m_Parent = parent;
-
 			m_Rs.FaceRenderMode = PolygonRenderMode.Lines;
 			m_Rs.Colour = patchColour;
-
-			m_MaxWidth = maxWidth;
-			m_MaxHeight = maxHeight;
 
 			m_Terrain = terrain;
 			m_Vertices = vertices;
@@ -39,6 +34,14 @@ namespace Poc1.TerrainPatchTest
 
 			m_BuildVertices = true;
 			m_BuildIndices = true;
+		}
+
+		public void Link( QuadPatch left, QuadPatch right, QuadPatch up, QuadPatch down )
+		{
+			m_Left = left;
+			m_Right = right;
+			m_Up = up;
+			m_Down = down;
 		}
 
 		#endregion
@@ -133,9 +136,10 @@ namespace Poc1.TerrainPatchTest
 
 		#region Private Members
 
-		private readonly float m_MaxWidth;
-		private readonly float m_MaxHeight;
-		private readonly QuadPatch m_Parent;
+		private QuadPatch m_Left;
+		private QuadPatch m_Right;
+		private QuadPatch m_Up;
+		private QuadPatch m_Down;
 		private readonly Terrain m_Terrain;
 		private readonly QuadPatchVertices m_Vertices;
 		private readonly IRenderState m_Rs = Graphics.Factory.CreateRenderState( );
@@ -150,6 +154,11 @@ namespace Poc1.TerrainPatchTest
 		private bool m_BuildVertices;
 		private bool m_BuildIndices;
 
+		private const int TopLeftChild = 0;
+		private const int TopRightChild = 1;
+		private const int BottomLeftChild = 2;
+		private const int BottomRightChild = 3;
+
 		private void IncreaseDetail( )
 		{
 			m_Vertices.Deallocate( m_VbIndex );
@@ -159,13 +168,21 @@ namespace Poc1.TerrainPatchTest
 
 			try
 			{
-				m_Children = new QuadPatch[ 4 ]
-					{
-						new QuadPatch( this, m_Terrain, m_Vertices, Color.Red, m_X, m_Z, hW, hD, m_MaxWidth, m_MaxHeight ),
-						new QuadPatch( this, m_Terrain, m_Vertices, Color.Black, m_X + hW, m_Z, hW, hD, m_MaxWidth, m_MaxHeight ),
-						new QuadPatch( this, m_Terrain, m_Vertices, Color.Black, m_X, m_Z + hD, hW, hD, m_MaxWidth, m_MaxHeight ),
-						new QuadPatch( this, m_Terrain, m_Vertices, Color.Red, m_X + hW, m_Z + hD, hW, hD, m_MaxWidth, m_MaxHeight )
-					};
+				QuadPatch tl = new QuadPatch( m_Terrain, m_Vertices, Color.Red, m_X, m_Z, hW, hD );
+				QuadPatch tr = new QuadPatch( m_Terrain, m_Vertices, Color.Black, m_X + hW, m_Z, hW, hD );
+				QuadPatch bl = new QuadPatch( m_Terrain, m_Vertices, Color.Black, m_X, m_Z + hD, hW, hD );
+				QuadPatch br = new QuadPatch( m_Terrain, m_Vertices, Color.Red, m_X + hW, m_Z + hD, hW, hD );
+
+				tl.Link( m_Left, tr, m_Up, bl );
+				tr.Link( tl, m_Right, m_Up, br );
+				bl.Link( m_Left, br, tl, m_Down );
+				br.Link( bl, m_Right, tr, m_Down );
+
+				m_Children = new QuadPatch[ 4 ];
+				m_Children[ TopLeftChild ] = tl;
+				m_Children[ TopRightChild ] = tr;
+				m_Children[ BottomLeftChild ] = bl;
+				m_Children[ BottomRightChild ] = br;
 			}
 			catch ( OutOfMemoryException )
 			{
@@ -223,8 +240,6 @@ namespace Poc1.TerrainPatchTest
 
 		private unsafe float BuildVertices( IProjectionCamera camera )
 		{
-			float maxWidth = m_MaxWidth;
-			float maxHeight = m_MaxHeight;
 			float maxError = 0;
 			using ( IVertexBufferLock vbLock = m_Vertices.VertexBuffer.Lock( m_VbIndex, PatchArea, false, true ) )
 			{
@@ -237,19 +252,14 @@ namespace Poc1.TerrainPatchTest
 					float x = m_X;
 					for ( int col = 0; col < PatchResolution; ++col, x += incX )
 					{
-						float nX = ( x / maxWidth ) + 0.5f;
-						float nY = ( z / maxHeight ) + 0.5f;
-						float nXInc = incX / maxWidth;
-						float nYInc = incZ / maxHeight;
-
-						float curHeight = m_Terrain.GetHeight( nX, nY );
-						float nextHeightX = m_Terrain.GetHeight( nX + nXInc, nY );
-						float nextHeightY = m_Terrain.GetHeight( nX, nY + nYInc );
+						float curHeight = m_Terrain.GetHeight( x, z );
+						float nextHeightX = m_Terrain.GetHeight( x + incX, z );
+						float nextHeightY = m_Terrain.GetHeight( x, z + incZ );
 
 						float estXHeight = ( curHeight + nextHeightX ) / 2;
 						float estYHeight = ( curHeight + nextHeightY ) / 2;
-						float xError = Math.Abs( m_Terrain.GetHeight( nX + nXInc / 2, nY ) - estXHeight );
-						float yError = Math.Abs( m_Terrain.GetHeight( nX, nY + nYInc / 2 ) - estYHeight );
+						float xError = Math.Abs( m_Terrain.GetHeight( x + incX / 2, z ) - estXHeight );
+						float yError = Math.Abs( m_Terrain.GetHeight( x, z + incZ / 2 ) - estYHeight );
 						float error = Utils.Max( xError, yError );
 						maxError = error > maxError ? error : maxError;
 

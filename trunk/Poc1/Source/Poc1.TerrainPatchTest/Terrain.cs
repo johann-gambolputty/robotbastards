@@ -38,14 +38,25 @@ namespace Poc1.TerrainPatchTest
 			bmp.Save( "Terrain.bmp", ImageFormat.Bmp );
 		}
 
+		public void SetTerrainArea( float width, float height )
+		{
+			m_Width = width;
+			m_Height = height;
+		}
+
 		public float GetHeight( float x, float y )
 		{
+			x = ( x / m_Width ) + 0.5f;
+			y = ( y / m_Height ) + 0.5f;
+
 			int iX = Utils.Clamp( ( int )( x * m_Res ), 0, m_Res - 1 );
 			int iY = Utils.Clamp( ( int )( y * m_Res ), 0, m_Res - 1 );
 
 			return m_Heights[ iX, iY ] * 20;
 		}
 
+		private float m_Width;
+		private float m_Height;
 		private readonly int m_Res;
 		private readonly float[,] m_Heights;
 	}
