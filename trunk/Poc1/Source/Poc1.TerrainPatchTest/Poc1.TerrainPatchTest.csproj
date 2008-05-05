@@ -79,6 +79,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="QuadPatch.cs" />
+    <Compile Include="QuadPatchTree.cs" />
+    <Compile Include="QuadPatchVertices.cs" />
     <Compile Include="Terrain.cs" />
   </ItemGroup>
   <ItemGroup>

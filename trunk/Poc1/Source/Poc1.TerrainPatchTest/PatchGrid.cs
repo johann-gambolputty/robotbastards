@@ -12,7 +12,8 @@ namespace Poc1.TerrainPatchTest
 
 		public PatchGrid( Terrain terrain, int gridWidth, int gridHeight )
 		{
-			int highestRes = Patch.GetLevelResolution( Patch.HighestDetailLod ) * 2;
+			int highestRes = Patch.GetLevelResolution( Patch.HighestDetailLod );
+			highestRes *= highestRes;
 
 			VertexBufferFormat format = new VertexBufferFormat( );
 			format.Add( VertexFieldSemantic.Position, VertexFieldElementTypeId.Float32, 3 );
@@ -38,7 +39,7 @@ namespace Poc1.TerrainPatchTest
 					Color c = ( ( col + row ) % 2 ) == 0 ? Color.Black : Color.White;
 
 					m_Patches[ col, row ] = new Patch( terrain, vbOffset, x, z, PatchWidth, PatchDepth, maxWidth, maxHeight, c );
-					vbOffset += ( highestRes * highestRes );
+					vbOffset += highestRes;
 				}
 			}
 
@@ -124,7 +125,7 @@ namespace Poc1.TerrainPatchTest
 
 		#region Private Members
 
-		private float m_CameraDistanceToPatch = 60.0f;
+		private float m_CameraDistanceToPatch = 360.0f;
 		private bool m_UseCameraDist;
 		private readonly Patch[,] m_Patches;
 		private readonly IVertexBuffer m_Vb;
