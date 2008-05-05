@@ -107,7 +107,7 @@ namespace Poc1.TerrainPatchTest
 		}
 
 		public const int HighestDetailLod = 0;
-		public const int LowestDetailLod = 5;
+		public const int LowestDetailLod = 4;
 		private const float ErrorThreshold = 3.0f;
 
 		private readonly int m_VbOffset;

@@ -53,6 +53,14 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="TerrainTypeDistributionControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TerrainTypeDistributionControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TerrainTypeEditorControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TerrainTypeEditorControl.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -65,6 +73,18 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="TerrainTypeDistributionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TerrainTypeDistributionControl.Designer.cs">
+      <DependentUpon>TerrainTypeDistributionControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TerrainTypeEditorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TerrainTypeEditorControl.Designer.cs">
+      <DependentUpon>TerrainTypeEditorControl.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
