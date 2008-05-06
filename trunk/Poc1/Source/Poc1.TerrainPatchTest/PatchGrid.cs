@@ -15,6 +15,7 @@ namespace Poc1.TerrainPatchTest
 			int highestRes = Patch.GetLevelResolution( Patch.HighestDetailLod );
 			highestRes *= highestRes;
 
+
 			VertexBufferFormat format = new VertexBufferFormat( );
 			format.Add( VertexFieldSemantic.Position, VertexFieldElementTypeId.Float32, 3 );
 			m_Vb = RbGraphics.Factory.CreateVertexBuffer( );
@@ -29,6 +30,8 @@ namespace Poc1.TerrainPatchTest
 			float maxWidth = gridWidth * PatchWidth;
 			float maxHeight = gridWidth * PatchDepth;
 
+			terrain.SetTerrainArea( maxWidth, maxHeight );
+
 			int vbOffset = 0;
 
 			for ( int row = 0; row < gridHeight; ++row, z += zInc )
@@ -38,7 +41,7 @@ namespace Poc1.TerrainPatchTest
 				{
 					Color c = ( ( col + row ) % 2 ) == 0 ? Color.Black : Color.White;
 
-					m_Patches[ col, row ] = new Patch( terrain, vbOffset, x, z, PatchWidth, PatchDepth, maxWidth, maxHeight, c );
+					m_Patches[ col, row ] = new Patch( terrain, vbOffset, x, z, PatchWidth, PatchDepth, c );
 					vbOffset += highestRes;
 				}
 			}

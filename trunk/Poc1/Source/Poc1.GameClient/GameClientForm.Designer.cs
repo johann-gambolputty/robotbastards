@@ -119,7 +119,7 @@ namespace Poc1.GameClient
 			this.Controls.Add(this.mainMenu);
 			this.MainMenuStrip = this.mainMenu;
 			this.Name = "GameClientForm";
-			this.Text = "Space... ";
+			this.Text = "PUNI Client";
 			this.Load += new System.EventHandler(this.GameClientForm_Load);
 			this.Shown += new System.EventHandler(this.GameClientForm_Shown);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GameClientForm_FormClosing);

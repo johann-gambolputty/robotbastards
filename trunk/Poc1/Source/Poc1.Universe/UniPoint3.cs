@@ -46,6 +46,17 @@ namespace Poc1.Universe
 			m_Z = src.m_Z;
 		}
 
+		/// <summary>
+		/// Converts this point to a string
+		/// </summary>
+		public string ToRenderUnitString( )
+		{
+			double x = UniUnits.RenderUnits.FromUniUnits( X );
+			double y = UniUnits.RenderUnits.FromUniUnits( Y );
+			double z = UniUnits.RenderUnits.FromUniUnits( Z );
+			return string.Format( "({0:F2},{1:F2},{2:F2})", x, y, z );
+		}
+		
 		public override int GetHashCode( )
 		{
 			//	Absolutely rubbish hash

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Poc1.Universe.Interfaces.Rendering;
 using Rb.Core.Maths;
+using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Interfaces.Objects.Cameras;
 
@@ -124,20 +125,22 @@ namespace Poc1.Universe.Classes.Rendering
 		public void UpdateLod( IProjectionCamera camera, float viewportHeight, float distToPatch, ITerrainPatchGeometryManager terrainManager, List< TerrainPatch > changedPatches )
 		{
 			System.Diagnostics.Debug.Assert( m_LodErrors[ m_LodLevel ] != float.MaxValue );
-
+			
 			float errorDist = DistanceFromError( camera, viewportHeight, m_LodErrors[ m_LodLevel ] );
+
+			m_DistToPatch = distToPatch;
+			m_RaiseDetailDist = errorDist;
+
 			if ( distToPatch < errorDist )
 			{
-				IncreaseDetail( changedPatches );
-				ReleaseGeometry( terrainManager );
+				IncreaseDetail( terrainManager, changedPatches );
 				return;
 			}
 
 			errorDist = DistanceFromError( camera, viewportHeight, m_LodErrors[ m_LodLevel + 1 ] );
 			if ( distToPatch > errorDist )
 			{
-				ReduceDetail( changedPatches );
-				ReleaseGeometry( terrainManager );
+				ReduceDetail( terrainManager, changedPatches );
 			}
 		}
 
@@ -233,6 +236,29 @@ namespace Poc1.Universe.Classes.Rendering
 			}
 			m_Geometry.Draw( );
 		}
+		
+		/// <summary>
+		/// Renders debug information for this patch
+		/// </summary>
+		public void DebugRender( )
+		{
+			if ( !Visible )
+			{
+				return;
+			}
+
+			Graphics.Fonts.DebugFont.Write( m_Centre.X, m_Centre.Y, m_Centre.Z, FontAlignment.TopRight, System.Drawing.Color.White, "{0:F2}({1:F2}, {2:F2}, {3:F2})", m_DistToPatch, m_Centre.X, m_Centre.Y, m_Centre.Z );
+			Graphics.Draw.Billboard( ms_Brush, m_Centre, 100.0f, 100.0f );
+		}
+
+		private readonly static DrawBase.IBrush ms_Brush;
+
+		static TerrainPatch( )
+		{
+			ms_Brush = Graphics.Draw.NewBrush( System.Drawing.Color.Blue );
+			ms_Brush.State.DepthTest = false;
+			ms_Brush.State.DepthWrite = false;
+		}
 
 		#endregion
 
@@ -259,6 +285,9 @@ namespace Poc1.Universe.Classes.Rendering
 		private ITerrainPatchGeometry	m_Geometry;
 
 		private readonly float[]		m_LodErrors = new float[ TerrainPatchGeometryManager.MaxLodLevels + 1 ];
+
+		private float m_DistToPatch;
+		private float m_RaiseDetailDist;
 		
 		/// <summary>
 		/// Gets the resolution of this patch
@@ -334,11 +363,12 @@ namespace Poc1.Universe.Classes.Rendering
 			{
 				return false;
 			}
-			if ( LodLevel <= neighbour.LodLevel )
+			if ( m_LodLevel <= neighbour.m_LodLevel )
 			{
 				//	Current patch has higher detail than neighbour patch
 				return false;
 			}
+
 			int index;
 			int nextIndexOffset;
 			int neighbourIndex;
@@ -347,29 +377,56 @@ namespace Poc1.Universe.Classes.Rendering
 			GetSideVars( side, out index, out nextIndexOffset, 1 );
 			neighbour.GetSideVars( OppositeSide( side ), out neighbourIndex, out neighbourNextIndexOffset, 0 );
 
-			int startError = ( int )Functions.Pow( 2, LodLevel - neighbour.LodLevel );
+			bool clockwise = ( side == Side.Right ) || ( side == Side.Top );
+
+			int startError = ( int )Functions.Pow( 2, m_LodLevel - neighbour.m_LodLevel );
 			int error = startError;
 			for ( int count = 1; count < neighbour.Resolution; ++count )
 			{
 				if ( error == 0 )
 				{
-					indices.Add( neighbourIndex );
 					indices.Add( index );
-					indices.Add( index + nextIndexOffset );
+					if ( clockwise )
+					{
+						indices.Add( neighbourIndex );
+						indices.Add( index + nextIndexOffset );
+					}
+					else
+					{
+						indices.Add( index + nextIndexOffset );
+						indices.Add( neighbourIndex );
+					}
 
 					index += nextIndexOffset;
 					error = startError;
 				}
-				indices.Add( neighbourIndex );
 				indices.Add( index );
-				indices.Add( neighbourIndex + neighbourNextIndexOffset );
+
+				if ( clockwise )
+				{
+					indices.Add( neighbourIndex );
+					indices.Add( neighbourIndex + neighbourNextIndexOffset );
+				}
+				else
+				{
+					indices.Add( neighbourIndex + neighbourNextIndexOffset );
+					indices.Add( neighbourIndex );
+				}
 
 				neighbourIndex += neighbourNextIndexOffset;
 				--error;
 			}
-			indices.Add( neighbourIndex );
 			indices.Add( index );
-			indices.Add( index + nextIndexOffset );
+			if ( clockwise )
+			{
+				indices.Add( neighbourIndex );
+				indices.Add( index + nextIndexOffset );
+			}
+			else
+			{
+				indices.Add( index + nextIndexOffset );
+				indices.Add( neighbourIndex );
+			}
 
 			return true;
 		}
@@ -416,12 +473,13 @@ namespace Poc1.Universe.Classes.Rendering
 			return indices.ToArray( );
 		}
 
-		private bool IncreaseDetail( List<TerrainPatch> changedPatches )
+		private void IncreaseDetail( ITerrainPatchGeometryManager terrainManager, ICollection<TerrainPatch> changedPatches )
 		{
 			if ( m_LodLevel <= 0 )
 			{
-				return false;
+				return;
 			}
+			ReleaseGeometry( terrainManager );
 			--m_LodLevel;
 			if ( !m_RebuildVertices && !m_RebuildIndices )
 			{
@@ -432,15 +490,15 @@ namespace Poc1.Universe.Classes.Rendering
 			ForceNeighbourRebuild( m_RightPatch, changedPatches );
 			ForceNeighbourRebuild( m_TopPatch, changedPatches );
 			ForceNeighbourRebuild( m_BottomPatch, changedPatches );
-			return true;
 		}
-		
-		private bool ReduceDetail( List< TerrainPatch > changedPatches )
+
+		private void ReduceDetail( ITerrainPatchGeometryManager terrainManager, ICollection<TerrainPatch> changedPatches)
 		{
 			if ( m_LodLevel >= TerrainPatchGeometryManager.LowestDetailLodLevel )
 			{
-				return false;
+				return;
 			}
+			ReleaseGeometry( terrainManager );
 			++m_LodLevel;
 			if ( !m_RebuildVertices && !m_RebuildIndices )
 			{
@@ -451,7 +509,6 @@ namespace Poc1.Universe.Classes.Rendering
 			ForceNeighbourRebuild( m_RightPatch, changedPatches );
 			ForceNeighbourRebuild( m_TopPatch, changedPatches );
 			ForceNeighbourRebuild( m_BottomPatch, changedPatches );
-			return true;
 		}
 		
 		private static float DistanceFromError( IProjectionCamera camera, float viewportHeight, float error )
@@ -469,7 +526,7 @@ namespace Poc1.Universe.Classes.Rendering
 			return d;
 		}
 
-		private static void ForceNeighbourRebuild( TerrainPatch neighbour, List<TerrainPatch> changedPatches )
+		private static void ForceNeighbourRebuild( TerrainPatch neighbour, ICollection<TerrainPatch> changedPatches )
 		{
 			if ( neighbour != null ) //&& ( neighbour.m_Level <= m_Level ) )
 			{

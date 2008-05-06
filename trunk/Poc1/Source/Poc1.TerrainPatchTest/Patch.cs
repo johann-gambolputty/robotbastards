@@ -13,19 +13,20 @@ namespace Poc1.TerrainPatchTest
 	/// </summary>
 	internal class Patch
 	{
-		public Patch( Terrain terrain, int vbOffset, float x, float z, float w, float d, float maxWidth, float maxHeight, Color c )
+		public Patch( Terrain terrain, int vbOffset, float x, float z, float w, float d, Color c )
 		{
 			m_VbOffset = vbOffset;
 			m_X = x;
 			m_Z = z;
 			m_Width = w;
 			m_Depth = d;
-			m_MaxWidth = maxWidth;
-			m_MaxHeight = maxHeight;
 			m_Terrain = terrain;
 
-			m_Rs.FaceRenderMode = PolygonRenderMode.Lines;
-			m_Rs.Colour = c;
+			m_RsFilled.Colour = c;
+
+			m_RsLines.FaceRenderMode = PolygonRenderMode.Lines;
+			m_RsLines.Colour = Color.Red;
+			m_RsLines.DepthOffset = -1.0f;
 
 			for ( int i = 0; i < m_IncreaseDetailDistances.Length; ++i )
 			{
@@ -96,9 +97,13 @@ namespace Poc1.TerrainPatchTest
 
 		public void Render( )
 		{
-			m_Rs.Begin( );
+			m_RsFilled.Begin( );
 			m_Ib.Draw( PrimitiveType.TriList );
-			m_Rs.End( );
+			m_RsFilled.End( );
+			
+			m_RsLines.Begin( );
+			m_Ib.Draw( PrimitiveType.TriList );
+			m_RsLines.End( );
 		}
 
 		public static int GetLevelResolution( int level )
@@ -115,8 +120,6 @@ namespace Poc1.TerrainPatchTest
 		private readonly float m_Z;
 		private readonly float m_Width;
 		private readonly float m_Depth;
-		private readonly float m_MaxWidth;
-		private readonly float m_MaxHeight;
 		private readonly Terrain m_Terrain;
 		private int m_Level = -1;
 		private readonly float[] m_IncreaseDetailDistances = new float[ LowestDetailLod + 2 ];
@@ -131,7 +134,8 @@ namespace Poc1.TerrainPatchTest
 
 		private int m_Res;
 
-		private readonly IRenderState m_Rs = Graphics.Factory.CreateRenderState( );
+		private readonly IRenderState m_RsFilled = Graphics.Factory.CreateRenderState();
+		private readonly IRenderState m_RsLines = Graphics.Factory.CreateRenderState();
 		private readonly IIndexBuffer m_Ib = Graphics.Factory.CreateIndexBuffer( );
 
 		private enum Side
@@ -328,8 +332,6 @@ namespace Poc1.TerrainPatchTest
 		private unsafe float BuildVertices( Terrain terrain, IVertexBuffer vb )
 		{
 			int res = m_Res;
-			float maxWidth = m_MaxWidth;
-			float maxHeight = m_MaxHeight;
 
 			float maxError = 0;
 			using ( IVertexBufferLock vbLock = vb.Lock( m_VbOffset, res * res, false, true ) )
@@ -345,19 +347,14 @@ namespace Poc1.TerrainPatchTest
 					float x = m_X;
 					for ( int col = 0; col < res; ++col, x += incX )
 					{
-						float nX = ( x / maxWidth ) + 0.5f;
-						float nY = ( z / maxHeight ) + 0.5f;
-						float nXInc = incX / maxWidth;
-						float nYInc = incZ / maxHeight;
+						float curHeight = m_Terrain.GetHeight(x, z);
+						float nextHeightX = m_Terrain.GetHeight(x + incX, z);
+						float nextHeightY = m_Terrain.GetHeight(x, z + incZ);
 
-						float curHeight		= terrain.GetHeight( nX, nY );
-						float nextHeightX	= terrain.GetHeight( nX + nXInc, nY );
-						float nextHeightY	= terrain.GetHeight( nX, nY + nYInc );
-
-						float estXHeight = ( curHeight + nextHeightX ) / 2;
-						float estYHeight = ( curHeight + nextHeightY ) / 2;
-						float xError = Math.Abs( terrain.GetHeight( nX + nXInc / 2, nY ) - estXHeight );
-						float yError = Math.Abs( terrain.GetHeight( nX, nY + nYInc / 2 ) - estYHeight );
+						float estXHeight = (curHeight + nextHeightX) / 2;
+						float estYHeight = (curHeight + nextHeightY) / 2;
+						float xError = Math.Abs(m_Terrain.GetHeight(x + incX / 2, z) - estXHeight);
+						float yError = Math.Abs(m_Terrain.GetHeight(x, z + incZ / 2) - estYHeight);
 						float error = Utils.Max( xError, yError );
 						maxError = error > maxError ? error : maxError;
 

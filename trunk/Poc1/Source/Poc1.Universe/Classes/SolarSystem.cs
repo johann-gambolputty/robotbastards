@@ -82,7 +82,7 @@ namespace Poc1.Universe.Classes
 		/// <summary>
 		/// The distance threshold that terrain rendering starts at for the closest planet
 		/// </summary>
-		private const double TerrainRenderingDistance = 190000000;
+		private const double TerrainRenderingDistance = 220000000;
 
 		/// <summary>
 		/// Planet to camera distance comparison, used by the render method for sorting planets in back to front order
