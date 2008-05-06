@@ -16,16 +16,19 @@ namespace Poc1.Universe.Classes.Rendering
 	/// <summary>
 	/// Manages creation and rendering of terrain patches for spherical planets
 	/// </summary>
-	public class SphereTerrainPatches
+	public class SphereTerrainPatches : IRenderable
 	{
 		#region Construction
+
 
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		/// <param name="terrain">Planet terrain manager, used to generate patch vertices</param>
-		public SphereTerrainPatches( IPlanetTerrain terrain )
+		public SphereTerrainPatches( IPlanet planet, IPlanetTerrain terrain, ICubeMapTexture planetTexture )
 		{
+			m_Planet = planet;
+			m_PlanetTexture = planetTexture;
+
 			IEffect effect = ( IEffect )AssetManager.Instance.Load( "Effects/Planets/terrestrialPlanetTerrain.cgfx" );
 			TechniqueSelector selector = new TechniqueSelector( effect, "DefaultTechnique" );
 		//	TechniqueSelector selector = new TechniqueSelector( effect, "WireFrameTechnique" );
@@ -128,16 +131,14 @@ namespace Poc1.Universe.Classes.Rendering
 		/// Renders the planet's visible terrain patches
 		/// </summary>
 		/// <param name="context">Rendering context</param>
-		/// <param name="planet">Planet being rendered</param>
-		/// <param name="planetTerrainTexture">Planet terrain texture, temporarily used for texturing patches</param>
-		public void Render( IRenderContext context, SpherePlanet planet, ITexture planetTerrainTexture )
+		public void Render( IRenderContext context )
 		{
-			UpdateLod( planet, UniCamera.Current, Graphics.Renderer.ViewportHeight );
+			UpdateLod( UniCamera.Current, Graphics.Renderer.ViewportHeight );
 
 			Graphics.Renderer.PushTransform( TransformType.LocalToWorld );
 			{
 				IUniCamera curCam = UniCamera.Current;
-				UniTransform transform = planet.Transform;
+				UniTransform transform = m_Planet.Transform;
 				float x = ( float )( UniUnits.RenderUnits.FromUniUnits( transform.Position.X - curCam.Position.X ) );
 				float y = ( float )( UniUnits.RenderUnits.FromUniUnits( transform.Position.Y - curCam.Position.Y ) );
 				float z = ( float )( UniUnits.RenderUnits.FromUniUnits( transform.Position.Z - curCam.Position.Z ) );
@@ -145,7 +146,7 @@ namespace Poc1.Universe.Classes.Rendering
 				Graphics.Renderer.SetTransform( TransformType.LocalToWorld, new Point3( x, y, z ), transform.XAxis, transform.YAxis, transform.ZAxis );
 			}
 
-			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainSampler" ].Set( planetTerrainTexture );
+			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainSampler" ].Set( m_PlanetTexture );
 
 			m_GeometryManager.BeginPatchRendering( );
 			context.ApplyTechnique( m_PlanetTerrainTechnique, RenderPatches );
@@ -159,7 +160,7 @@ namespace Poc1.Universe.Classes.Rendering
 			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 
 			Graphics.Fonts.DebugFont.Write( 0, 15, System.Drawing.Color.White, "Camera Pos: {0}", UniCamera.Current.Position.ToRenderUnitString( ) );
-			Graphics.Fonts.DebugFont.Write( 0, 30, System.Drawing.Color.White, "Planet Pos: {0}", planet.Transform.Position.ToRenderUnitString( ) );
+			Graphics.Fonts.DebugFont.Write( 0, 30, System.Drawing.Color.White, "Planet Pos: {0}", m_Planet.Transform.Position.ToRenderUnitString( ) );
 		}
 
 		#region Private Members
@@ -176,11 +177,6 @@ namespace Poc1.Universe.Classes.Rendering
 			/// </summary>
 			public CubeSide( int res, Point3 topLeft, Point3 topRight, Point3 bottomLeft, int defaultPatchLodLevel, bool defaultVisibility )
 			{
-				//if ( ( res % 2 ) == 0 )
-				//{
-				//    throw new ArgumentException( "Cube side resolution must be odd" );
-				//}
-
 				m_Resolution = res;
 				m_Patches = new TerrainPatch[ res, res ];
 
@@ -298,6 +294,8 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#endregion
 
+		private readonly IPlanet m_Planet;
+		private readonly ICubeMapTexture m_PlanetTexture;
 		private readonly IPlanetTerrain m_Terrain;
 		private readonly ITechnique m_PlanetTerrainTechnique;
 		private readonly List<TerrainPatch> m_Patches = new List<TerrainPatch>( );
@@ -318,9 +316,9 @@ namespace Poc1.Universe.Classes.Rendering
 			patch.UpdateLod( camera, viewportHeight, ( float )dist, m_GeometryManager, changedPatches );
 		}
 
-		private void UpdateLod( IEntity planet, IUniCamera camera, float viewportHeight )
+		private void UpdateLod( IUniCamera camera, float viewportHeight )
 		{
-			Point3 localPos = UniUnits.RenderUnits.MakeRelativePoint( planet.Transform.Position, camera.Position );
+			Point3 localPos = UniUnits.RenderUnits.MakeRelativePoint( m_Planet.Transform.Position, camera.Position );
 
 			//	TODO: AP: LOD determination can happen at a slower rate than patch rendering (maybe even in a separate thread)
 			List<TerrainPatch> changedPatches = new List<TerrainPatch>( );

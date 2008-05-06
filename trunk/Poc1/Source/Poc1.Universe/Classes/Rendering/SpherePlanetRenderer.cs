@@ -25,7 +25,6 @@ namespace Poc1.Universe.Classes.Rendering
 		{
 			m_Planet = planet;
 			m_Terrain = new SphereTerrain( planet );
-			m_TerrainPatches = new SphereTerrainPatches( m_Terrain );
 			
 			////	Load in flat planet effect
 			IEffect flatEffect = ( IEffect )AssetManager.Instance.Load( "Effects/Planets/terrestrialPlanet.cgfx" );
@@ -36,13 +35,17 @@ namespace Poc1.Universe.Classes.Rendering
 			m_CloudTechnique = new TechniqueSelector( cloudEffect, "DefaultTechnique" );
 			
 			//	Generate planet terrain texture
-			m_PlanetTexture = m_Terrain.CreatePlanetTexture( 256 );
+			m_PlanetTexture = m_Terrain.CreatePlanetTexture( 1024 );
 
 			int index = 0;
 			foreach ( Bitmap bmp in m_PlanetTexture.ToBitmaps( ) )
 			{
 			    bmp.Save( m_Planet.Name + " Planet Texture " + index++ + ".jpg", ImageFormat.Jpeg );
 			}
+
+
+		///	m_TerrainPatches = new SphereTerrainPatches( planet, m_Terrain, m_PlanetTexture );
+			m_TerrainPatches = new SphereTerrainQuadPatches( planet, m_Terrain, m_PlanetTexture );
 
 			//	Generate cloud textures
 			m_CloudGenerator = new SphereCloudsGenerator( 256 );
@@ -75,7 +78,7 @@ namespace Poc1.Universe.Classes.Rendering
 			{
 				
 				GameProfiles.Game.Rendering.PlanetRendering.TerrainRendering.Begin( );
-				m_TerrainPatches.Render( context, Planet, m_PlanetTexture );
+				m_TerrainPatches.Render( context );
 				GameProfiles.Game.Rendering.PlanetRendering.TerrainRendering.End( );
 			}
 			else
@@ -120,7 +123,7 @@ namespace Poc1.Universe.Classes.Rendering
 		private float m_CloudAngle;
 		private readonly Matrix44 m_CloudOffsetTransform = new Matrix44( );
 		private readonly SphereTerrain m_Terrain;
-		private readonly SphereTerrainPatches m_TerrainPatches;
+		private readonly IRenderable m_TerrainPatches;
 		private readonly SpherePlanet m_Planet;
 
 		#endregion
