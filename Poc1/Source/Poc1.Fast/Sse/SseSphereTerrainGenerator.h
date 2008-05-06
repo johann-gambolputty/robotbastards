@@ -180,7 +180,7 @@ namespace Poc1
 				tmpZzzz = zzzz;
 
 				//	Disable normalize to remove sphere mapping
-			//	Normalize( tmpXxxx, tmpYyyy, tmpZzzz );
+				Normalize( tmpXxxx, tmpYyyy, tmpZzzz );
 				m_Displacer.Displace( tmpXxxx, tmpYyyy, tmpZzzz );
 
 				_mm_store_ps( curPos, tmpXxxx ); curPos += 4;
@@ -205,7 +205,7 @@ namespace Poc1
 				tmpZzzz = zzzz;
 
 				//	Disable normalize to remove sphere mapping
-			//	Normalize( tmpXxxx, tmpYyyy, tmpZzzz );
+				Normalize( tmpXxxx, tmpYyyy, tmpZzzz );
 				__m128 heights = m_Displacer.Displace( tmpXxxx, tmpYyyy, tmpZzzz );
 				heights = m_Displacer.MapToHeightRange( heights );
 

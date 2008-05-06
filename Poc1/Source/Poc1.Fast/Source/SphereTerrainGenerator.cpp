@@ -19,7 +19,7 @@ namespace Poc1
 					{
 						SseSphereTerrainGeneratorT< SseRidgedFractalDisplacer >* impl = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseRidgedFractalDisplacer >( );
 						impl->GetDisplacer( ).GetFractal( ).GetNoise( ).SetNewSeed( seed );
-						impl->GetDisplacer( ).GetFractal( ).Setup( 6.0f, 1.5f, 12 );
+						impl->GetDisplacer( ).GetFractal( ).Setup( 6.0f, 16.0f, 12 );
 						m_pImpl = impl;
 						break;
 					}
@@ -78,13 +78,19 @@ namespace Poc1
 
 			temperate.m_Distributions[ forest ].Build
 				(
-					UTerrainDistributionBuilder( ).Add( 0, 0 ).AddSharp( 0.45f, 1.0f ).AddSharp( 0.7f, 0 ),
+					UTerrainDistributionBuilder( ).Add( 0, 0 ).AddSharp( 0.45f, 1.0f ).AddSharp( 0.87f, 0 ),
+					defaultSlopes
+				);
+
+			temperate.m_Distributions[ rock ].Build
+				(
+					UTerrainDistributionBuilder( ).Add( 0, 0 ).AddSharp( 0.80f, 1.0f ).AddSharp( 0.90f, 0 ),
 					defaultSlopes
 				);
 
 			temperate.m_Distributions[ snow ].Build
 				(
-					UTerrainDistributionBuilder( ).Add( 0, 0 ).Add( 0.6f, 1.0f ).Add( 1, 1 ),
+					UTerrainDistributionBuilder( ).Add( 0, 0 ).Add( 0.85f, 1.0f ).Add( 1, 1 ),
 					defaultSlopes
 				);
 		}

@@ -51,6 +51,9 @@
 	- Normal mapping in HLSL
 		- http://dotnet.org.za/pieterg/archive/2005/07/29/40407.aspx
 
+	- Chunked LOD
+		- http://www.tulrich.com/geekstuff/sig-notes.pdf
+
 - Profiling code pretty much done
 	- Add bits to controls
 	- Save profile logs

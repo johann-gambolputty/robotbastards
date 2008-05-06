@@ -40,9 +40,9 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <returns>Returns a new ITerrainPatchGeometry object for the specified level of detail</returns>
 		public ITerrainPatchGeometry CreateGeometry( int lod )
 		{
-			int res = GetLevelSize(lod);
+			int res = GetLevelSize( lod );
 			int numVertices = NumberOfLevelVertices( lod );
-			ManagedVertexBuffer.VbHandle handle = m_ManagedVb.CreateHandle(numVertices);
+			ManagedVertexBuffer.VbHandle handle = m_ManagedVb.CreateHandle( numVertices );
 
 			return new TerrainPatchGeometry( lod, res, handle );
 		}
@@ -87,7 +87,7 @@ namespace Poc1.Universe.Classes.Rendering
 		#region Private Members
 
 		public const float LodErrorThreshold = 3.0f;
-		private const int LodLevelPoolSize = 32;
+		private const int LodLevelPoolSize = 64;
 		private readonly static int MaxSize = ( int )Functions.Pow( 2, MaxLodLevels + 1 );
 
 		private readonly ManagedVertexBuffer m_ManagedVb = new ManagedVertexBuffer( );

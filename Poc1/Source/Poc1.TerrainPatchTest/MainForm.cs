@@ -13,8 +13,8 @@ namespace Poc1.TerrainPatchTest
 			MouseWheel += MainForm_MouseWheel;
 		}
 
-	//	private PatchGrid m_Patches;
-		private QuadPatchTree m_Patches;
+		private PatchGrid m_Patches;
+	//	private QuadPatchTree m_Patches;
 		private readonly SphereCamera m_Camera = new SphereCamera( 0, 0.3f, 250 );
 
 		private void MainForm_MouseWheel( object sender, MouseEventArgs e )
@@ -47,8 +47,8 @@ namespace Poc1.TerrainPatchTest
 		{
 			m_Camera.PerspectiveZNear = 0.1f;
 
-		//	m_Patches = new PatchGrid( new Terrain( 256 ), 5, 5 );
-			m_Patches = new QuadPatchTree( new Terrain( 256 ) );
+			m_Patches = new PatchGrid( new Terrain( 256 ), 5, 5 );
+		//	m_Patches = new QuadPatchTree( new Terrain( 256 ) );
 			Viewer viewer = new Viewer( );
 			viewer.Camera = m_Camera;
 			viewer.Renderable = m_Patches;

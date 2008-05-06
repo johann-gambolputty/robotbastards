@@ -27,13 +27,13 @@ namespace Poc1.Universe.Classes.Rendering
 		public SphereTerrainPatches( IPlanetTerrain terrain )
 		{
 			IEffect effect = ( IEffect )AssetManager.Instance.Load( "Effects/Planets/terrestrialPlanetTerrain.cgfx" );
-		//	TechniqueSelector selector = new TechniqueSelector( effect, "DefaultTechnique" );
-			TechniqueSelector selector = new TechniqueSelector( effect, "WireFrameTechnique" );
+			TechniqueSelector selector = new TechniqueSelector( effect, "DefaultTechnique" );
+		//	TechniqueSelector selector = new TechniqueSelector( effect, "WireFrameTechnique" );
 
 			m_Terrain = terrain;
 			m_PlanetTerrainTechnique = selector;
 
-			float hDim = 1;
+			float hDim = 3200;
 			Point3[] cubePoints = new Point3[]
 				{
 					new Point3( -hDim, -hDim, -hDim ),
@@ -150,8 +150,16 @@ namespace Poc1.Universe.Classes.Rendering
 			m_GeometryManager.BeginPatchRendering( );
 			context.ApplyTechnique( m_PlanetTerrainTechnique, RenderPatches );
 			m_GeometryManager.EndPatchRendering( );
+			
+			//foreach ( TerrainPatch patch in m_Patches )
+			//{
+			//    patch.DebugRender( );
+			//}
 
 			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
+
+			Graphics.Fonts.DebugFont.Write( 0, 15, System.Drawing.Color.White, "Camera Pos: {0}", UniCamera.Current.Position.ToRenderUnitString( ) );
+			Graphics.Fonts.DebugFont.Write( 0, 30, System.Drawing.Color.White, "Planet Pos: {0}", planet.Transform.Position.ToRenderUnitString( ) );
 		}
 
 		#region Private Members
@@ -168,10 +176,10 @@ namespace Poc1.Universe.Classes.Rendering
 			/// </summary>
 			public CubeSide( int res, Point3 topLeft, Point3 topRight, Point3 bottomLeft, int defaultPatchLodLevel, bool defaultVisibility )
 			{
-				if ( ( res % 2 ) == 0 )
-				{
-					throw new ArgumentException( "Cube side resolution must be odd" );
-				}
+				//if ( ( res % 2 ) == 0 )
+				//{
+				//    throw new ArgumentException( "Cube side resolution must be odd" );
+				//}
 
 				m_Resolution = res;
 				m_Patches = new TerrainPatch[ res, res ];
@@ -298,7 +306,7 @@ namespace Poc1.Universe.Classes.Rendering
 		private static double AccurateDistance( Point3 pt0, Point3 pt1 )
 		{
 			double x = pt1.X - pt0.X;
-			double y = pt1.Y - pt0.Z;
+			double y = pt1.Y - pt0.Y;
 			double z = pt1.Z - pt0.Z;
 
 			return Math.Sqrt( x * x + y * y + z * z );

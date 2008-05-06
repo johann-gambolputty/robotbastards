@@ -4,6 +4,7 @@ using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces;
+using Rb.Rendering.Interfaces.Objects.Cameras;
 
 namespace Poc1.Universe.Classes.Cameras
 {
@@ -211,5 +212,19 @@ namespace Poc1.Universe.Classes.Cameras
 
 		#endregion
 
+
+		#region ICamera3 Members
+
+		public Point3 Unproject( int x, int y, float depth )
+		{
+			throw new NotImplementedException( );
+		}
+
+		Ray3 ICamera3.PickRay( int x, int y )
+		{
+			throw new NotImplementedException( );
+		}
+
+		#endregion
 	}
 }
