@@ -49,6 +49,9 @@ namespace Poc1
 				///	\brief	Generates terrain vertex points and normals. Calculates maximum patch error
 				void GenerateVertices( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, void* vertices, const int stride, const int positionOffset, const int normalOffset, [System::Runtime::InteropServices::Out]float% error );
 
+				///	\brief	Determines the maximum patch error
+				float GetMaximumPatchError( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, const int subdivisions );
+
 			private :
 
 				SseSphereTerrainGenerator* m_pImpl;

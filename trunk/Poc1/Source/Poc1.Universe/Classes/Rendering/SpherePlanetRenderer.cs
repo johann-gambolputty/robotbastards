@@ -35,7 +35,7 @@ namespace Poc1.Universe.Classes.Rendering
 			m_CloudTechnique = new TechniqueSelector( cloudEffect, "DefaultTechnique" );
 			
 			//	Generate planet terrain texture
-			m_PlanetTexture = m_Terrain.CreatePlanetTexture( 1024 );
+			m_PlanetTexture = m_Terrain.CreatePlanetTexture( 256 );
 
 			int index = 0;
 			foreach ( Bitmap bmp in m_PlanetTexture.ToBitmaps( ) )

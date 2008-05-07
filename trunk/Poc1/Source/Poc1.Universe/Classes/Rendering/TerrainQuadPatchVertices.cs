@@ -6,23 +6,24 @@ using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Classes.Rendering
 {
-	class QuadPatchVertices
+	class TerrainQuadPatchVertices
 	{
 		public const int PoolSize = 64;
 
-		public QuadPatchVertices( )
+		public TerrainQuadPatchVertices( )
 		{
 			VertexBufferFormat format = new VertexBufferFormat( );
 			format.Add( VertexFieldSemantic.Position, VertexFieldElementTypeId.Float32, 3 );
+			format.Add( VertexFieldSemantic.Normal, VertexFieldElementTypeId.Float32, 3 );
 
 			m_Vb = Graphics.Factory.CreateVertexBuffer( );
-			m_Vb.Create( format, QuadPatch.VertexArea * PoolSize );
+			m_Vb.Create( format, TerrainQuadPatch.VertexArea * PoolSize );
 
 			int vertexIndex = 0;
 			for ( int i = 0; i < PoolSize; ++i )
 			{
 				m_FreeList.Add( vertexIndex );
-				vertexIndex += QuadPatch.VertexArea;
+				vertexIndex += TerrainQuadPatch.VertexArea;
 			}
 		}
 
@@ -49,7 +50,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#region Private Members
 
-		private IVertexBuffer m_Vb;
+		private readonly IVertexBuffer m_Vb;
 		public readonly List<int> m_FreeList = new List<int>( );
 
 		#endregion

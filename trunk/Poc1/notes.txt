@@ -54,6 +54,9 @@
 	- Chunked LOD
 		- http://www.tulrich.com/geekstuff/sig-notes.pdf
 
+	- Vertex attrib pointers (rather than specific client arrays)
+		- http://www.opengl.org/sdk/docs/man/xhtml/glVertexAttribPointer.xml
+
 - Profiling code pretty much done
 	- Add bits to controls
 	- Save profile logs
