@@ -32,6 +32,9 @@ namespace Poc1
 				///	\brief	Generates terrain vertex points and normals. Gets maximum patch error
 				virtual void GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, void* vertices, const int stride, const int positionOffset, const int normalOffset, float& maxError ) = 0;
 
+				///	\brief	Determines the error on a patch
+				virtual float GetMaximumPatchError( const float* origin, const float* xStep, const float* zStep, const int width, const int height, const int subdivisions ) const = 0;
+
 				///	\brief	Generates a cube map texture face
 				virtual void GenerateTexture( const USphereTerrainTypeSelector& selector, const UCubeMapFace face, const UPixelFormat format, const int width, const int height, const int stride, unsigned char* pixels ) = 0;
 		};
@@ -74,6 +77,9 @@ namespace Poc1
 
 				///	\brief	Generates terrain vertex points and normals
 				virtual void GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, void* vertices, const int stride, const int positionOffset, const int normalOffset, float& maxError );
+
+				///	\brief	Determines the error on a patch
+				virtual float GetMaximumPatchError( const float* origin, const float* xStep, const float* zStep, const int width, const int height, const int subdivisions ) const;
 
 				///	\brief	Generates a cube map texture face
 				virtual void GenerateTexture( const USphereTerrainTypeSelector& selector, const UCubeMapFace face, const UPixelFormat format, const int width, const int height, const int stride, unsigned char* pixels );
@@ -511,6 +517,136 @@ namespace Poc1
 				if ( row < ( height - 1 ) )
 				{
 					FillPositionHeightCacheLine( fullWidthDiv4, cacheLines[ nextCacheLine ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
+				}
+			}
+		}
+
+		template < typename DisplaceType >
+		inline float SseSphereTerrainGeneratorT< DisplaceType >::GetMaximumPatchError( const float* origin, const float* xStep, const float* zStep, const int width, const int height, const int subdivisions ) const
+		{
+			//	Get start x, y and z positions for the first 4 vertices in the first row
+			//	NOTE: AP: Vectors are apparently reversed, so memory access is more natural (xyzw comes out as [ w, z, y, x ] normally)
+			__m128 startXxxx = _mm_set_ps( origin[ 0 ] - xStep[ 0 ], origin[ 0 ] - xStep[ 0 ] * 2, origin[ 0 ] - xStep[ 0 ] * 3, origin[ 0 ] - xStep[ 0 ] * 4 );
+			__m128 startYyyy = _mm_set_ps( origin[ 1 ] - xStep[ 1 ], origin[ 1 ] - xStep[ 1 ] * 2, origin[ 1 ] - xStep[ 1 ] * 3, origin[ 1 ] - xStep[ 1 ] * 4 );
+			__m128 startZzzz = _mm_set_ps( origin[ 2 ] - xStep[ 2 ], origin[ 2 ] - xStep[ 2 ] * 2, origin[ 2 ] - xStep[ 2 ] * 3, origin[ 2 ] - xStep[ 2 ] * 4 );
+
+			//	Determine vectors for incrementing x, y and z positions in the column loop
+			const __m128 colXInc = _mm_set1_ps( xStep[ 0 ] * 4 );
+			const __m128 colYInc = _mm_set1_ps( xStep[ 1 ] * 4 );
+			const __m128 colZInc = _mm_set1_ps( xStep[ 2 ] * 4 );
+
+			//	Determine vectors for incrementing x, y and z positions in the row loop
+			const __m128 rowXInc = _mm_set1_ps( zStep[ 0 ] );
+			const __m128 rowYInc = _mm_set1_ps( zStep[ 1 ] );
+			const __m128 rowZInc = _mm_set1_ps( zStep[ 2 ] );
+
+			startXxxx = _mm_sub_ps( startXxxx, rowXInc );
+			startYyyy = _mm_sub_ps( startYyyy, rowYInc );
+			startZzzz = _mm_sub_ps( startZzzz, rowZInc );
+
+			//	Create a cache for storing vertex positions
+			int fullWidth = width + 8;
+			fullWidth = ( fullWidth % 4 == 0 ) ? fullWidth : fullWidth + ( 4 - ( fullWidth % 4 ) );
+			const int cacheSize = fullWidth * 3;
+			SetFpCacheSize( cacheSize );
+			const int fullWidthDiv4 = fullWidth / 4;
+			float** cacheLines = m_FpCacheLines;
+
+			int prevCacheLine = 0;
+			int curCacheLine = 1;
+			int nextCacheLine = 2;
+
+			//	Fill the cache with positions from the first 3 vertex rows
+			FillPositionCacheLine( fullWidthDiv4, cacheLines[ 0 ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
+			startXxxx = _mm_add_ps( startXxxx, rowXInc );
+			startYyyy = _mm_add_ps( startYyyy, rowYInc );
+			startZzzz = _mm_add_ps( startZzzz, rowZInc );
+
+			FillPositionCacheLine( fullWidthDiv4, cacheLines[ 1 ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
+			startXxxx = _mm_add_ps( startXxxx, rowXInc );
+			startYyyy = _mm_add_ps( startYyyy, rowYInc );
+			startZzzz = _mm_add_ps( startZzzz, rowZInc );
+
+			FillPositionCacheLine( fullWidthDiv4, cacheLines[ 2 ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
+
+			//	Point to the positions and normals in the first 4 vertices
+			unsigned char* vertexBytes = ( unsigned char* )vertices;
+			float* p0 = ( float* )( vertexBytes + positionOffset );
+			float* p1 = ( float* )( vertexBytes + positionOffset + stride );
+			float* p2 = ( float* )( vertexBytes + positionOffset + stride * 2 );
+			float* p3 = ( float* )( vertexBytes + positionOffset + stride * 3 );
+			float* n0 = ( float* )( vertexBytes + normalOffset );
+			float* n1 = ( float* )( vertexBytes + normalOffset + stride );
+			float* n2 = ( float* )( vertexBytes + normalOffset + stride * 2 );
+			float* n3 = ( float* )( vertexBytes + normalOffset + stride * 3 );
+			const int widthDiv4 = width / 4;
+			const int widthMod4 = width % 4;
+			const int vertexStride = stride;
+			const int vertexLastStride = ( stride / 4 ) * widthMod4;
+
+			for ( int row = 0; row < height; ++row )
+			{
+				const float* uXSrc = cacheLines[ prevCacheLine ] + 12;
+				const float* uYSrc = cacheLines[ prevCacheLine ] + 16;
+				const float* uZSrc = cacheLines[ prevCacheLine ] + 20;
+				
+				const float* xSrc = cacheLines[ curCacheLine ] + 12;
+				const float* ySrc = cacheLines[ curCacheLine ] + 16;
+				const float* zSrc = cacheLines[ curCacheLine ] + 20;
+				
+				const float* dXSrc = cacheLines[ nextCacheLine ] + 12;
+				const float* dYSrc = cacheLines[ nextCacheLine ] + 16;
+				const float* dZSrc = cacheLines[ nextCacheLine ] + 20;
+
+				for ( int col = 0; col < widthDiv4; ++col )
+				{
+					//	Store positions
+					p0[ 0 ] = xSrc[ 0 ]; p1[ 0 ] = xSrc[ 1 ]; p2[ 0 ] = xSrc[ 2 ]; p3[ 0 ] = xSrc[ 3 ];
+					p0[ 1 ] = ySrc[ 0 ]; p1[ 1 ] = ySrc[ 1 ]; p2[ 1 ] = ySrc[ 2 ]; p3[ 1 ] = ySrc[ 3 ];
+					p0[ 2 ] = zSrc[ 0 ]; p1[ 2 ] = zSrc[ 1 ]; p2[ 2 ] = zSrc[ 2 ]; p3[ 2 ] = zSrc[ 3 ];
+
+					//	Calculate vertex normals
+					CalculateNormal( n0, -9, 1, p0, xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
+					CalculateNormal( n1, -1, 1, p1, xSrc + 1, ySrc + 1, zSrc + 1, uXSrc + 1, uYSrc + 1, uZSrc + 1, dXSrc + 1, dYSrc + 1, dZSrc + 1 );
+					CalculateNormal( n2, -1, 1, p2, xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
+					CalculateNormal( n3, -1, 9, p3, xSrc + 3, ySrc + 3, zSrc + 3, uXSrc + 3, uYSrc + 3, uZSrc + 3, dXSrc + 3, dYSrc + 3, dZSrc + 3 );
+
+					//	Move vertex pointers on
+					p0 += vertexStride; p1 += vertexStride; p2 += vertexStride; p3 += vertexStride;
+					n0 += vertexStride; n1 += vertexStride; n2 += vertexStride; n3 += vertexStride;
+
+					//	Move cache pointers on
+					xSrc += 12; ySrc += 12; zSrc += 12;
+					uXSrc += 12; uYSrc += 12; uZSrc += 12;
+					dXSrc += 12; dYSrc += 12; dZSrc += 12;
+				}
+				if ( widthMod4 > 0 )
+				{
+					p0[ 0 ] = xSrc[ 0 ]; p0[ 1 ] = ySrc[ 0 ]; p0[ 2 ] = zSrc[ 0 ];
+					CalculateNormal( n0, -9, 1, p0, xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
+					if ( widthMod4 > 1 )
+					{
+						p1[ 0 ] = xSrc[ 1 ]; p1[ 1 ] = ySrc[ 1 ]; p1[ 2 ] = zSrc[ 1 ];
+						CalculateNormal( n1, -1, 1, p1, xSrc + 1, ySrc + 1, zSrc + 1, uXSrc + 1, uYSrc + 1, uZSrc + 1, dXSrc + 1, dYSrc + 1, dZSrc + 1 );
+						if ( widthMod4 > 2 )
+						{
+							p2[ 0 ] = xSrc[ 2 ]; p2[ 1 ] = ySrc[ 2 ]; p2[ 2 ] = zSrc[ 2 ];
+							CalculateNormal( n2, -1, 1, p2, xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
+						}
+					}
+					p0 += vertexLastStride; p1 += vertexLastStride; p2 += vertexLastStride; p3 += vertexLastStride;
+					n0 += vertexLastStride; n1 += vertexLastStride; n2 += vertexLastStride; n3 += vertexLastStride;
+				}
+
+				prevCacheLine = curCacheLine;
+				curCacheLine = nextCacheLine;
+				nextCacheLine = ( nextCacheLine + 1 ) % 3;
+				startXxxx = _mm_add_ps( startXxxx, rowXInc );
+				startYyyy = _mm_add_ps( startYyyy, rowYInc );
+				startZzzz = _mm_add_ps( startZzzz, rowZInc );
+				if ( row < ( height - 1 ) )
+				{
+					FillPositionCacheLine( fullWidthDiv4, cacheLines[ nextCacheLine ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
 				}
 			}
 		}

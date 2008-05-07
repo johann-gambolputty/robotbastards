@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
@@ -20,13 +19,13 @@ namespace Poc1.Universe.Classes.Rendering
 			m_PlanetTexture = planetTexture;
 
 			IEffect effect = ( IEffect )AssetManager.Instance.Load( "Effects/Planets/terrestrialPlanetTerrain.cgfx" );
-			TechniqueSelector selector = new TechniqueSelector( effect, "DefaultTechnique" );
-			//	TechniqueSelector selector = new TechniqueSelector( effect, "WireFrameTechnique" );
+			//TechniqueSelector selector = new TechniqueSelector( effect, "DefaultTechnique" );
+			TechniqueSelector selector = new TechniqueSelector( effect, "WireFrameTechnique" );
 
 			m_Terrain = terrain;
 			m_PlanetTerrainTechnique = selector;
 
-			float hDim = 3200;
+			float hDim = 1;
 			Point3[] cubePoints = new Point3[]
 				{
 					new Point3( -hDim, -hDim, -hDim ),
@@ -40,15 +39,14 @@ namespace Poc1.Universe.Classes.Rendering
 					new Point3( -hDim, +hDim, +hDim ),
 				};
 			int res = 1;
-			int defaultLodLevel = TerrainPatchGeometryManager.LowestDetailLodLevel;
 			CubeSide[] sides = new CubeSide[]
 				{
-					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 0 ], cubePoints[ 1 ], cubePoints[ 3 ], defaultLodLevel, true ),	//	-z
-					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 7 ], cubePoints[ 6 ], cubePoints[ 4 ], defaultLodLevel, true ),	//	+z
-					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 4 ], cubePoints[ 5 ], cubePoints[ 0 ], defaultLodLevel, true ),	//	+y
-					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 6 ], cubePoints[ 7 ], cubePoints[ 2 ], defaultLodLevel, true ),	//	-y
-					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 0 ], cubePoints[ 3 ], cubePoints[ 4 ], defaultLodLevel, true ),	//	-x
-					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 5 ], cubePoints[ 6 ], cubePoints[ 1 ], defaultLodLevel, true )	//	+x
+					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 7 ], cubePoints[ 6 ], cubePoints[ 4 ] ),	//	+z
+					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 0 ], cubePoints[ 1 ], cubePoints[ 3 ] ),	//	-z
+					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 4 ], cubePoints[ 5 ], cubePoints[ 0 ] ),	//	+y
+					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 6 ], cubePoints[ 7 ], cubePoints[ 2 ] ),	//	-y
+					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 5 ], cubePoints[ 6 ], cubePoints[ 1 ] ),	//	+x
+					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 0 ], cubePoints[ 3 ], cubePoints[ 4 ] ),	//	-x
 				};
 		}
 
@@ -57,7 +55,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		public void Render( IRenderContext context )
 		{
-			UpdateLod( UniCamera.Current, Graphics.Renderer.ViewportHeight );
+			UpdateLod( UniCamera.Current );
 
 			Graphics.Renderer.PushTransform( TransformType.LocalToWorld );
 			{
@@ -72,9 +70,9 @@ namespace Poc1.Universe.Classes.Rendering
 
 			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainSampler" ].Set( m_PlanetTexture );
 
-			m_GeometryManager.BeginPatchRendering( );
+			m_Vertices.VertexBuffer.Begin( );
 			context.ApplyTechnique( m_PlanetTerrainTechnique, RenderPatches );
-			m_GeometryManager.EndPatchRendering( );
+			m_Vertices.VertexBuffer.End( );
 
 			//foreach ( TerrainPatch patch in m_Patches )
 			//{
@@ -92,12 +90,12 @@ namespace Poc1.Universe.Classes.Rendering
 
 		private class CubeSide
 		{
-			public CubeSide( ICollection<QuadPatch> allPatches, QuadPatchVertices vertices, int res, Point3 topLeft, Point3 topRight, Point3 bottomLeft, int defaultPatchLodLevel, bool defaultVisibility )
+			public CubeSide( ICollection<TerrainQuadPatch> allPatches, TerrainQuadPatchVertices vertices, int res, Point3 topLeft, Point3 topRight, Point3 bottomLeft )
 			{
-				Vector3 xAxis = ( topRight - topLeft ).MakeNormal( );
-				Vector3 yAxis = ( bottomLeft - topLeft ).MakeNormal( );
-				Vector3 xInc = ( topRight - topLeft ) / res;
-				Vector3 yInc = ( bottomLeft - topLeft ) / res;
+				Vector3 xAxis = ( topRight - topLeft );
+				Vector3 yAxis = ( bottomLeft - topLeft );
+				Vector3 xInc = xAxis / res;
+				Vector3 yInc = yAxis / res;
 				Point3 rowStart = topLeft;
 
 				for ( int row = 0; row < res; ++row )
@@ -107,7 +105,7 @@ namespace Poc1.Universe.Classes.Rendering
 					{
 						System.Drawing.Color colour = ( col + row ) % 2 == 0 ? System.Drawing.Color.Red : System.Drawing.Color.Black;
 
-						QuadPatch newPatch = new QuadPatch( vertices, colour, curPos, xAxis, yAxis );
+						TerrainQuadPatch newPatch = new TerrainQuadPatch( vertices, colour, curPos, xAxis, yAxis );
 						allPatches.Add( newPatch );
 						m_Patches.Add( newPatch );
 
@@ -117,42 +115,29 @@ namespace Poc1.Universe.Classes.Rendering
 				}
 			}
 
-			private List<QuadPatch> m_Patches = new List<QuadPatch>( );
+			private readonly List<TerrainQuadPatch> m_Patches = new List<TerrainQuadPatch>( );
 		}
 
 		#endregion
 
 		#region Private Members
 
-		private readonly IPlanet m_Planet;
-		private readonly ICubeMapTexture m_PlanetTexture;
-		private readonly QuadPatchVertices m_Vertices = new QuadPatchVertices( );
-		private readonly IPlanetTerrain m_Terrain;
-		private readonly ITechnique m_PlanetTerrainTechnique;
-		private readonly List<QuadPatch> m_Patches = new List<QuadPatch>( );
-		private readonly ITerrainPatchGeometryManager m_GeometryManager = new TerrainPatchGeometryManager( );
+		private readonly IPlanet			m_Planet;
+		private readonly ICubeMapTexture	m_PlanetTexture;
+		private readonly TerrainQuadPatchVertices	m_Vertices = new TerrainQuadPatchVertices( );
+		private readonly IPlanetTerrain		m_Terrain;
+		private readonly ITechnique			m_PlanetTerrainTechnique;
+		private readonly List<TerrainQuadPatch>	m_Patches = new List<TerrainQuadPatch>( );
 
-		private static double AccurateDistance( Point3 pt0, Point3 pt1 )
-		{
-			double x = pt1.X - pt0.X;
-			double y = pt1.Y - pt0.Y;
-			double z = pt1.Z - pt0.Z;
-
-			return Math.Sqrt( x * x + y * y + z * z );
-		}
-
-		private void UpdateLod( IUniCamera camera, float viewportHeight )
+		private void UpdateLod( IUniCamera camera )
 		{
 			Point3 localPos = UniUnits.RenderUnits.MakeRelativePoint( m_Planet.Transform.Position, camera.Position );
 
-			//	TODO: AP: LOD determination can happen at a slower rate than patch rendering (maybe even in a separate thread)
-			List<QuadPatch> changedPatches = new List<QuadPatch>( );
-			foreach ( QuadPatch patch in m_Patches )
+			foreach ( TerrainQuadPatch patch in m_Patches )
 			{
-				double dist = AccurateDistance( patch.PatchCentre, localPos );
-				patch.UpdateLod( camera, viewportHeight, ( float )dist, changedPatches );
+				patch.UpdateLod( localPos );
 			}
-			foreach ( QuadPatch patch in changedPatches )
+			foreach ( TerrainQuadPatch patch in m_Patches )
 			{
 				patch.Update( camera, m_Terrain );
 			}
@@ -164,7 +149,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <param name="context">Rendering context</param>
 		private void RenderPatches( IRenderContext context )
 		{
-			foreach ( QuadPatch patch in m_Patches )
+			foreach ( TerrainQuadPatch patch in m_Patches )
 			{
 				patch.Render( );
 			}

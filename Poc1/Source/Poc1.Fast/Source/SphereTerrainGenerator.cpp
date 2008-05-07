@@ -136,6 +136,15 @@ namespace Poc1
 			m_pImpl->GenerateVertices( originArr, xStepArr, zStepArr, width, height, vertices, stride, positionOffset, normalOffset, err );
 			error = err;
 		}
+
+		float SphereTerrainGenerator::GetMaximumPatchError( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, const int subdivisions )
+		{
+			float originArr[] = { origin->X, origin->Y, origin->Z };
+			float xStepArr[] = { xStep->X, xStep->Y, xStep->Z };
+			float zStepArr[] = { zStep->X, zStep->Y, zStep->Z };
+
+			return m_pImpl->GetMaximumPatchError( originArr, xStepArr, zStepArr, width, height, subdivisions );
+		}
 		
 		//	---------------------------------------------------------------------------------------
 	};

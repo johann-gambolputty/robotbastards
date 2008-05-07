@@ -1,0 +1,44 @@
+::Cube Maps
+- spherical coordinates are -not- a good parameterization of a sphere when generating noise (though 2d noise would be
+sufficient, using s,t coordinates as inputs)
+	- Obvious really :(
+
+::SSE implementation of noise and fractal code
+
+- C# code was surprisingly quick, only initially 2x slower than initial SSE2 implementation (expected > 4x slower)
+	- Probably both underestimation of C# + poor SSE2 usage
+	- Bigger speed boosts apparent after re-working SSE2 and encompassing more of the outer generation loop in unmanaged code
+		- Cuts down on loads from memory to simd registers in inner loops
+- Lookup tables appeared to work OK in perm code, to much surprise. They actually provided a slight speed increase (probably
+small measurement error. But still...).
+- Managed/unmanaged SSE C++ is a bit of a pain - no intrinsics/aligned data in managed code.
+	- So, allocate an unmanaged object containing SSE2 noodles, using _aligned_malloc + placement new
+	- Not so bad - forces use of Private Implementation idiom
+
+::Clouds
+- Implemented for marble rendering mode by setting up a separate thread that generates a cubemap (c2) using a ridged fractal
+with some fiddly bits. While generation is taking place, the main rendering thread is slowly blending between two older
+cube maps (c0 and c1). When the new cube map is complete, the rendering thread waits until it has got to the end of the blend,
+c1 replaces c0, c2 replaces c1, and the generation thread starts creating a new cloud texture in c0.
+
+- "Shadow" is cast on the ground in marble rendering mode, by looking up the alpha in the cloud cube map.
+
+- Generation uses new SSE2 fast fractal code.
+
+::Patches
+- Currently working with a regular grid of patches
+	- Works OK. Fairly easy to fix up patch seams
+	- Variable size patches requires a memory manager sitting on top of the terrain vertex buffer
+		- Requires a compaction pass if the vb memory gets fragmented. Haven't got this working yet, because it
+		  requires all patches to rebuild their index buffers.
+- Looking at quad-tree
+	- Fixed patch size means terrain vb memory manager is a simple free list - no compaction needed
+	- "Feels better" - adaptive nature of quad tree means that it can theoretically handle any size of planet.
+		- Regular grid would have to have size as some function of planet radius
+	- Harder to fix patch seams. May just use skirts/flanges for now.
+	- Not sure how this will impact number of DiP calls. At least with a regular grid, there was a fixed number of DiP calls.
+
+- Add water
+	- Just add a fixed radius sphere for now
+	- Water opacity can be calculated by rendering scene depth without water into render target
+	- This scene depth map could also render atmospheric 'slabs' for atmospheric shader

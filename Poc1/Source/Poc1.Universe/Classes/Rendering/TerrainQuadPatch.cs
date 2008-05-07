@@ -10,7 +10,10 @@ using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc1.Universe.Classes.Rendering
 {
-	class QuadPatch
+	//	TODO: AP: Error metric (half root error per tier)
+	//	
+
+	class TerrainQuadPatch
 	{
 		public const int VertexResolution = 17;
 		public const int VertexArea = VertexResolution * VertexResolution;
@@ -20,21 +23,9 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#region Public Construction
 
-		public QuadPatch( QuadPatchVertices vertices, Color patchColour, Point3 origin, Vector3 uAxis, Vector3 vAxis )
+		public TerrainQuadPatch( TerrainQuadPatchVertices vertices, Color patchColour, Point3 origin, Vector3 uAxis, Vector3 vAxis ) :
+			this( vertices, patchColour, origin, uAxis, vAxis, float.MaxValue )
 		{
-			m_Rs.FaceRenderMode = PolygonRenderMode.Lines;
-			m_Rs.Colour = patchColour;
-
-			m_Vertices = vertices;
-			m_Origin = origin;
-			m_UAxis = uAxis;
-			m_VAxis = vAxis;
-
-			m_IncreaseDetailDistance = float.MaxValue;
-			m_VbIndex = vertices.Allocate( );
-
-			m_BuildVertices = true;
-			m_BuildIndices = true;
 		}
 
 		#endregion
@@ -48,11 +39,20 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#endregion
 
-		#region Public LOD updates
-
-		public void UpdateLod( IProjectionCamera camera, float viewportHeight, float distance, ICollection<QuadPatch> changedPatches )
+		#region Updates and rendering
+		
+		/// <summary>
+		/// Updates the level of detail of this patch. 
+		/// </summary>
+		public void UpdateLod( Point3 cameraPos )
 		{
-			if ( distance < m_IncreaseDetailDistance )
+			if ( m_IncreaseDetailDistance == float.MaxValue )
+			{
+				//	Detail up distance has not been calculated for this patch yet - exit
+				return;
+			}
+			float distanceToPatch = AccurateDistance( cameraPos, PatchCentre );
+			if ( distanceToPatch < m_IncreaseDetailDistance )
 			{
 				if ( m_Children == null )
 				{
@@ -60,13 +60,13 @@ namespace Poc1.Universe.Classes.Rendering
 				}
 				else
 				{
-					foreach ( QuadPatch childPatch in m_Children )
+					foreach ( TerrainQuadPatch childPatch in m_Children )
 					{
-						childPatch.UpdateLod( camera, viewportHeight, distance, changedPatches );
+						childPatch.UpdateLod( cameraPos );
 					}
 				}
 			}
-			else if ( distance > m_IncreaseDetailDistance )
+			else if ( distanceToPatch > m_IncreaseDetailDistance )
 			{
 				if ( m_Children != null )
 				{
@@ -75,15 +75,14 @@ namespace Poc1.Universe.Classes.Rendering
 			}
 		}
 
-		#endregion
-
-		#region Updates and rendering
-
+		/// <summary>
+		/// Updates this patch
+		/// </summary>
 		public void Update( IProjectionCamera camera, IPlanetTerrain terrain )
 		{
 			if ( m_Children != null )
 			{
-				foreach ( QuadPatch childPatch in m_Children )
+				foreach ( TerrainQuadPatch childPatch in m_Children )
 				{
 					childPatch.Update( camera, terrain );
 				}
@@ -103,13 +102,14 @@ namespace Poc1.Universe.Classes.Rendering
 			}
 		}
 
+		/// <summary>
+		/// Renders this patch
+		/// </summary>
 		public void Render( )
 		{
 			if ( m_Children == null )
 			{
-				m_Rs.Begin( );
 				m_Ib.Draw( PrimitiveType.TriList );
-				m_Rs.End( );
 			}
 			else
 			{
@@ -124,16 +124,16 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#region Private Members
 
-		private readonly QuadPatchVertices m_Vertices;
-		private readonly IRenderState m_Rs = Graphics.Factory.CreateRenderState( );
+		private readonly TerrainQuadPatchVertices m_Vertices;
 		private readonly IIndexBuffer m_Ib = Graphics.Factory.CreateIndexBuffer( );
 		private readonly Point3 m_Origin;
 		private readonly Vector3 m_UAxis;
 		private readonly Vector3 m_VAxis;
 		private Point3 m_Centre;
+		private float m_PatchError;
 		private float m_IncreaseDetailDistance;
 		private int m_VbIndex;
-		private QuadPatch[] m_Children;
+		private TerrainQuadPatch[] m_Children;
 		private bool m_BuildVertices;
 		private bool m_BuildIndices;
 
@@ -143,15 +143,16 @@ namespace Poc1.Universe.Classes.Rendering
 
 			Vector3 uOffset = m_UAxis * 0.5f;
 			Vector3 vOffset = m_VAxis * 0.5f;
+			float error = m_PatchError / 2;
 
 			try
 			{
-				QuadPatch tl = new QuadPatch( m_Vertices, Color.Red, m_Origin - uOffset - vOffset, m_UAxis, m_VAxis );
-				QuadPatch tr = new QuadPatch( m_Vertices, Color.Black, m_Origin + uOffset - vOffset, m_UAxis, m_VAxis );
-				QuadPatch bl = new QuadPatch( m_Vertices, Color.Black, m_Origin - uOffset + vOffset, m_UAxis, m_VAxis );
-				QuadPatch br = new QuadPatch( m_Vertices, Color.Red, m_Origin - uOffset + vOffset, m_UAxis, m_VAxis );
+				TerrainQuadPatch tl = new TerrainQuadPatch( m_Vertices, Color.Red, m_Origin, uOffset, vOffset, error );
+				TerrainQuadPatch tr = new TerrainQuadPatch( m_Vertices, Color.Black, m_Origin + uOffset, uOffset, vOffset, error );
+				TerrainQuadPatch bl = new TerrainQuadPatch( m_Vertices, Color.Black, m_Origin + vOffset, uOffset, vOffset, error );
+				TerrainQuadPatch br = new TerrainQuadPatch( m_Vertices, Color.Red, m_Origin + uOffset + vOffset, uOffset, vOffset, error );
 
-				m_Children = new QuadPatch[] { tl, tr, bl, br };
+				m_Children = new TerrainQuadPatch[] { tl, tr, bl, br };
 			}
 			catch ( OutOfMemoryException )
 			{
@@ -207,19 +208,29 @@ namespace Poc1.Universe.Classes.Rendering
 			m_Ib.Create( indices.ToArray( ), true );
 		}
 
-		private unsafe float BuildVertices( IProjectionCamera camera, IPlanetTerrain terrain )
+		private unsafe void BuildVertices( IProjectionCamera camera, IPlanetTerrain terrain )
 		{
-			float maxError = 0;
 			using ( IVertexBufferLock vbLock = m_Vertices.VertexBuffer.Lock( m_VbIndex, VertexArea, false, true ) )
 			{
 				TerrainVertex* firstVertex = ( TerrainVertex* )vbLock.Bytes;
 
-				Vector3 uStep = m_UAxis;
-				Vector3 vStep = m_VAxis;
+				//Vector3 uStep = m_UAxis / ( VertexResolution - 1 );
+				//Vector3 vStep = m_VAxis / ( VertexResolution - 1 );
 
-				m_Centre = terrain.GenerateTerrainPatchVertices( m_Origin, uStep, vStep, VertexResolution, firstVertex );
+				Vector3 uStep = m_UAxis / ( VertexResolution );
+				Vector3 vStep = m_VAxis / ( VertexResolution );	//	Leave a border for debugging
+				
+				if ( m_PatchError == float.MaxValue )
+				{
+				    m_Centre = terrain.GenerateTerrainPatchVertices( m_Origin, uStep, vStep, VertexResolution, firstVertex, out m_PatchError );
+				}
+				else
+				{
+				    m_Centre = terrain.GenerateTerrainPatchVertices( m_Origin, uStep, vStep, VertexResolution, firstVertex );
+				}
+
+				m_IncreaseDetailDistance = DistanceFromError( camera, m_PatchError );
 			}
-			return DistanceFromError( camera, maxError );
 		}
 
 		private static float DistanceFromError( IProjectionCamera camera, float error )
@@ -237,6 +248,28 @@ namespace Poc1.Universe.Classes.Rendering
 			return d;
 		}
 
+		private static float AccurateDistance( Point3 pos0, Point3 pos1 )
+		{
+			double x = pos0.X - pos1.X;
+			double y = pos0.Y - pos1.Y;
+			double z = pos0.Z - pos1.Z;
+			return ( float )Math.Sqrt( x * x + y * y + z * z );
+		}
+
+		private TerrainQuadPatch( TerrainQuadPatchVertices vertices, Color patchColour, Point3 origin, Vector3 uAxis, Vector3 vAxis, float patchError )
+		{
+			m_Vertices = vertices;
+			m_Origin = origin;
+			m_UAxis = uAxis;
+			m_VAxis = vAxis;
+
+			m_PatchError = patchError;
+			m_IncreaseDetailDistance = float.MaxValue;
+			m_VbIndex = vertices.Allocate( );
+
+			m_BuildVertices = true;
+			m_BuildIndices = true;
+		}
 
 		#endregion
 
