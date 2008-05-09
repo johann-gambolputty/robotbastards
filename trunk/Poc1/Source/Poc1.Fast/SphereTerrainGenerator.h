@@ -1,5 +1,7 @@
 #pragma once
 
+#include "UTerrainVertex.h"
+
 //	Erk...
 using namespace System::Drawing::Imaging;
 using namespace Rb::Rendering::Interfaces::Objects;
@@ -44,10 +46,10 @@ namespace Poc1
 				void GenerateTexture( const CubeMapFace face, const PixelFormat format, const int width, const int height, const int stride, unsigned char* pixels );
 
 				///	\brief	Generates terrain vertex points and normals
-				void GenerateVertices( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, void* vertices, const int stride, const int positionOffset, const int normalOffset );
+				void GenerateVertices( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, float uvRes, void* vertices );
 
 				///	\brief	Generates terrain vertex points and normals. Calculates maximum patch error
-				void GenerateVertices( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, void* vertices, const int stride, const int positionOffset, const int normalOffset, [System::Runtime::InteropServices::Out]float% error );
+				void GenerateVertices( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, void* vertices, [System::Runtime::InteropServices::Out]float% error );
 
 				///	\brief	Determines the maximum patch error
 				float GetMaximumPatchError( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, const int subdivisions );

@@ -71,7 +71,6 @@ namespace Rb.Rendering.Textures
 		/// </summary>
 		/// <param name="stream">Stream containing an image</param>
 		/// <param name="generateMipMaps">If true, then mipmaps are generated for the created texture</param>
-		/// <param name="usage">How the texture is used</param>
 		/// <returns>Returns the created texture</returns>
 		public static ITexture2d Load( Stream stream, bool generateMipMaps )
 		{

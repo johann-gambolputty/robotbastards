@@ -117,23 +117,23 @@ namespace Poc1
 			m_pImpl->GenerateTexture( *m_Selector, GetUCubeMapFace( face ), GetUPixelFormat( format ), width,  height, stride, pixels );
 		}
 
-		void SphereTerrainGenerator::GenerateVertices( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, void* vertices, const int stride, const int positionOffset, const int normalOffset )
+		void SphereTerrainGenerator::GenerateVertices( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, float uvRes, void* vertices )
 		{
 			float originArr[] = { origin->X, origin->Y, origin->Z };
 			float xStepArr[] = { xStep->X, xStep->Y, xStep->Z };
 			float zStepArr[] = { zStep->X, zStep->Y, zStep->Z };
 
-			m_pImpl->GenerateVertices( originArr, xStepArr, zStepArr, width, height, vertices, stride, positionOffset, normalOffset );
+			m_pImpl->GenerateVertices( originArr, xStepArr, zStepArr, width, height, uvRes, ( UTerrainVertex* )vertices );
 		}
 
-		void SphereTerrainGenerator::GenerateVertices( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, void* vertices, const int stride, const int positionOffset, const int normalOffset, [System::Runtime::InteropServices::Out]float% error )
+		void SphereTerrainGenerator::GenerateVertices( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, void* vertices, [System::Runtime::InteropServices::Out]float% error )
 		{
 			float originArr[] = { origin->X, origin->Y, origin->Z };
 			float xStepArr[] = { xStep->X, xStep->Y, xStep->Z };
 			float zStepArr[] = { zStep->X, zStep->Y, zStep->Z };
 
 			float err;
-			m_pImpl->GenerateVertices( originArr, xStepArr, zStepArr, width, height, vertices, stride, positionOffset, normalOffset, err );
+			m_pImpl->GenerateVertices( originArr, xStepArr, zStepArr, width, height, ( UTerrainVertex* )vertices, err );
 			error = err;
 		}
 

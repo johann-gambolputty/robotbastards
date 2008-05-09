@@ -1,5 +1,3 @@
-
-using System;
 using System.Collections.Generic;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
@@ -8,22 +6,23 @@ namespace Poc1.Universe.Classes.Rendering
 {
 	class TerrainQuadPatchVertices
 	{
-		public const int PoolSize = 64;
+		public const int PoolSize = 512;
 
 		public TerrainQuadPatchVertices( )
 		{
 			VertexBufferFormat format = new VertexBufferFormat( );
 			format.Add( VertexFieldSemantic.Position, VertexFieldElementTypeId.Float32, 3 );
 			format.Add( VertexFieldSemantic.Normal, VertexFieldElementTypeId.Float32, 3 );
+			format.Add( VertexFieldSemantic.Texture0, VertexFieldElementTypeId.Float32, 2 );
 
 			m_Vb = Graphics.Factory.CreateVertexBuffer( );
-			m_Vb.Create( format, TerrainQuadPatch.VertexArea * PoolSize );
+			m_Vb.Create( format, TerrainQuadPatch.TotalVerticesPerPatch * PoolSize );
 
 			int vertexIndex = 0;
 			for ( int i = 0; i < PoolSize; ++i )
 			{
 				m_FreeList.Add( vertexIndex );
-				vertexIndex += TerrainQuadPatch.VertexArea;
+				vertexIndex += TerrainQuadPatch.TotalVerticesPerPatch;
 			}
 		}
 
@@ -31,7 +30,8 @@ namespace Poc1.Universe.Classes.Rendering
 		{
 			if ( m_FreeList.Count == 0 )
 			{
-				throw new OutOfMemoryException( "QuadPatch vertex buffer ran out of free space" );
+				GraphicsLog.Warning( "QuadPatch vertex buffer ran out of free space" );
+				return -1;
 			}
 			int result = m_FreeList[ 0 ];
 			m_FreeList.RemoveAt( 0 );

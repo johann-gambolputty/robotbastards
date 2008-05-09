@@ -145,8 +145,8 @@ namespace Poc1.Universe.Classes.Cameras
 		#region Private Members
 
 		private HeadCamera m_Camera;
-		private float m_MaxSlipSpeed = 100000;
-		private float m_MaxForwardSpeed = 100000;
+		private float m_MaxSlipSpeed = 300000;
+		private float m_MaxForwardSpeed = 300000;
 
 		#endregion
 	}

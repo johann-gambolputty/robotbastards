@@ -7,7 +7,7 @@ namespace Poc1.TerrainPatchTest
 {
 	class QuadPatchVertices
 	{
-		public const int PoolSize = 64;
+		public const int PoolSize = 256;
 
 		public QuadPatchVertices( )
 		{

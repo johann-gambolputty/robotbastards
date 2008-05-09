@@ -76,7 +76,6 @@ namespace Poc1.Universe.Classes.Rendering
 
 			if ( Planet.EnableTerrainRendering )
 			{
-				
 				GameProfiles.Game.Rendering.PlanetRendering.TerrainRendering.Begin( );
 				m_TerrainPatches.Render( context );
 				GameProfiles.Game.Rendering.PlanetRendering.TerrainRendering.End( );

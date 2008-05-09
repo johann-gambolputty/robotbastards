@@ -81,7 +81,7 @@ namespace Rb.Rendering.OpenGl
 				}
 				else
 				{
-					width += m_CharacterData[ curCh ].Width;
+					width += m_CharacterData[ curCh ].Width + 1;
 					height = Utils.Max( m_CharacterData[ curCh ].Height, height );
 				}
 			}

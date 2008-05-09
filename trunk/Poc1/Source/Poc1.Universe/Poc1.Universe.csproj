@@ -63,6 +63,7 @@
     <Compile Include="Classes\StarBox.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DebugInfo.cs" />
     <Compile Include="GameProfiles.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Interfaces\IOrbit.cs" />

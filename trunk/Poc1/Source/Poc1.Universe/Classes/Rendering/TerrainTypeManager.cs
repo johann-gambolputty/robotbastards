@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using Poc1.Universe.Interfaces.Rendering;
 
 namespace Poc1.Universe.Classes.Rendering
@@ -9,10 +10,58 @@ namespace Poc1.Universe.Classes.Rendering
 	/// </summary>
 	public class TerrainTypeManager : ITerrainTypeManager
 	{
+
+		/// <summary>
+		/// Creates a bitmap, with 
+		/// </summary>
+		public unsafe Bitmap ToBitmap()
+		{
+			Bitmap bmp = new Bitmap( 256, 256, PixelFormat.Format24bppRgb );
+
+			BitmapData bmpData = bmp.LockBits( new Rectangle( 0, 0, bmp.Width, bmp.Height ), ImageLockMode.WriteOnly, bmp.PixelFormat );
+
+			byte* curPixel = ( byte* )bmpData.Scan0;
+			for ( int elevation = 0; elevation < bmp.Height; ++elevation )
+			{
+				for ( int slope = 0; slope < bmp.Width; ++slope )
+				{
+					byte result = ( byte )GetTerrainType( elevation, slope, 0 );
+
+					curPixel[ 0 ] = result;
+					curPixel[ 1 ] = result;
+					curPixel[ 2 ] = result;
+
+					curPixel += 3;
+				}
+			}
+
+			bmp.UnlockBits( bmpData );
+			
+			return bmp;
+		}
+
+		private int GetTerrainType( int elevation, int slope, int latitude )
+		{
+			int result = 0;
+			float best = TerrainTypes[ result ].Distribution.GetSample( elevation, slope, latitude );
+			for ( int typeIndex = 1; typeIndex < TerrainTypes.Length; ++typeIndex )
+			{
+				TerrainDistribution distro = TerrainTypes[typeIndex].Distribution;
+				float value = distro.GetSample( elevation, slope, latitude );
+				if ( value > best )
+				{
+					best = value;
+					result = typeIndex;
+				}
+			}
+			return result;
+		}
+
+
 		/// <summary>
 		/// Creates a simple default terrain type manager
 		/// </summary>
-		public static TerrainTypeManager CreateDefault( )
+		public static TerrainTypeManager CreateDefault()
 		{
 			TerrainTypeManager manager = new TerrainTypeManager( );
 

@@ -264,6 +264,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\UTerrainVertex.h"
+				>
+			</File>
+			<File
 				RelativePath=".\UVector3.h"
 				>
 			</File>

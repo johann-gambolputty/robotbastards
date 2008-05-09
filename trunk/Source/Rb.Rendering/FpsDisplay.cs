@@ -24,9 +24,7 @@ namespace Rb.Rendering
 		{
 			m_Counter.Update( );
 
-			//	Display the FPS
-			IFont font = Graphics.Fonts.DebugFont;
-			font.Write( 0, 0, m_Colour, "FPS: {0}", m_Counter.AverageFps.ToString( "G4" ) );
+			DebugText.Write( "FPS: {0:F2}", m_Counter.AverageFps );
 		}
 
 		#region Private Members

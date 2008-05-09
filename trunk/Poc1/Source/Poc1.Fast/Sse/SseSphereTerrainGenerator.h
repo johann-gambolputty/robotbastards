@@ -1,6 +1,7 @@
 #pragma once
 #pragma managed(push, off)
 
+#include "UTerrainVertex.h"
 #include "USphereTerrainTypeSelector.h"
 #include "SseUtils.h"
 #include "SseSphereTerrainDisplacers.h"
@@ -27,10 +28,10 @@ namespace Poc1
 				virtual const SseSphereTerrainDisplacer& GetBaseDisplacer( ) const = 0;
 
 				///	\brief	Generates terrain vertex points and normals
-				virtual void GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, void* vertices, const int stride, const int positionOffset, const int normalOffset ) = 0;
+				virtual void GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, float uvRes, UTerrainVertex* vertices ) = 0;
 
 				///	\brief	Generates terrain vertex points and normals. Gets maximum patch error
-				virtual void GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, void* vertices, const int stride, const int positionOffset, const int normalOffset, float& maxError ) = 0;
+				virtual void GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, UTerrainVertex* vertices, float& maxError ) = 0;
 
 				///	\brief	Determines the error on a patch
 				virtual float GetMaximumPatchError( const float* origin, const float* xStep, const float* zStep, const int width, const int height, const int subdivisions ) const = 0;
@@ -73,10 +74,10 @@ namespace Poc1
 				virtual const SseSphereTerrainDisplacer& GetBaseDisplacer( ) const;
 
 				///	\brief	Generates terrain vertex points and normals
-				virtual void GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, void* vertices, const int stride, const int positionOffset, const int normalOffset );
+				virtual void GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, float uvRes, UTerrainVertex* vertices );
 
 				///	\brief	Generates terrain vertex points and normals
-				virtual void GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, void* vertices, const int stride, const int positionOffset, const int normalOffset, float& maxError );
+				virtual void GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, UTerrainVertex* vertices, float& maxError );
 
 				///	\brief	Determines the error on a patch
 				virtual float GetMaximumPatchError( const float* origin, const float* xStep, const float* zStep, const int width, const int height, const int subdivisions ) const;
@@ -106,14 +107,14 @@ namespace Poc1
 				static float GetMaximumError( const int count, const float* heights0 );
 
 				///	\brief	Calculates a normal from stuff
-				inline static void CalculateNormal( float* n, const int prev, const int next, const float* centre, const float* xSrc, const float* ySrc, const float* zSrc, const float* uXSrc, const float* uYSrc, const float* uZSrc, const float* dXSrc, const float* dYSrc, const float* dZSrc )
+				inline static void CalculateNormal( UTerrainVertex* v, const int prev, const int next, const float* xSrc, const float* ySrc, const float* zSrc, const float* uXSrc, const float* uYSrc, const float* uZSrc, const float* dXSrc, const float* dYSrc, const float* dZSrc )
 				{
-					const UVector3 left	( xSrc [ prev  ] - centre[ 0 ], ySrc [ prev ] - centre[ 1 ], zSrc [ prev ] - centre[ 2 ] );
-					const UVector3 right( xSrc [ next  ] - centre[ 0 ], ySrc [ next ] - centre[ 1 ], zSrc [ next ] - centre[ 2 ] );
-					const UVector3 up	( uXSrc[  0  ] - centre[ 0 ], uYSrc[  0 ] - centre[ 1 ], uZSrc[  0 ] - centre[ 2 ] );
-					const UVector3 lUp	( uXSrc[ prev  ] - centre[ 0 ], uYSrc[ prev ] - centre[ 1 ], uZSrc[ prev ] - centre[ 2 ] );
-					const UVector3 down	( dXSrc[  0  ] - centre[ 0 ], dYSrc[  0 ] - centre[ 1 ], dZSrc[  0 ] - centre[ 2 ] );
-					const UVector3 rDown( dXSrc[ next  ] - centre[ 0 ], dYSrc[ next ] - centre[ 1 ], dZSrc[ next ] - centre[ 2 ] );
+					const UVector3 left	( xSrc [ prev  ] - v->X( ), ySrc [ prev ] - v->Y( ), zSrc [ prev ] - v->Z( ) );
+					const UVector3 right( xSrc [ next  ] - v->X( ), ySrc [ next ] - v->Y( ), zSrc [ next ] - v->Z( ) );
+					const UVector3 up	( uXSrc[  0  ] - v->X( ), uYSrc[  0 ] - v->Y( ), uZSrc[  0 ] - v->Z( ) );
+					const UVector3 lUp	( uXSrc[ prev  ] - v->X( ), uYSrc[ prev ] - v->Y( ), uZSrc[ prev ] - v->Z( ) );
+					const UVector3 down	( dXSrc[  0  ] - v->X( ), dYSrc[  0 ] - v->Y( ), dZSrc[  0 ] - v->Z( ) );
+					const UVector3 rDown( dXSrc[ next  ] - v->X( ), dYSrc[ next ] - v->Y( ), dZSrc[ next ] - v->Z( ) );
 
 					UVector3 acc;
 					acc.Add( UVector3::Cross( lUp, left ) );
@@ -124,9 +125,7 @@ namespace Poc1
 					acc.Add( UVector3::Cross( left, down ) );
 					acc.Normalise( );
 
-					n[ 0 ] = acc.m_X;
-					n[ 1 ] = acc.m_Y;
-					n[ 2 ] = acc.m_Z;
+					v->SetNormal( acc.m_X, acc.m_Y, acc.m_Z );
 				}
 		};
 		
@@ -257,7 +256,7 @@ namespace Poc1
 		}
 
 		template < typename DisplaceType >
-		inline void SseSphereTerrainGeneratorT< DisplaceType >::GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, void* vertices, const int stride, const int positionOffset, const int normalOffset )
+		inline void SseSphereTerrainGeneratorT< DisplaceType >::GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, float uvRes, UTerrainVertex* vertices )
 		{
 			//	Get start x, y and z positions for the first 4 vertices in the first row
 			//	NOTE: AP: Vectors are apparently reversed, so memory access is more natural (xyzw comes out as [ w, z, y, x ] normally)
@@ -305,21 +304,21 @@ namespace Poc1
 			FillPositionCacheLine( fullWidthDiv4, cacheLines[ 2 ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
 
 			//	Point to the positions and normals in the first 4 vertices
-			unsigned char* vertexBytes = ( unsigned char* )vertices;
-			float* p0 = ( float* )( vertexBytes + positionOffset );
-			float* p1 = ( float* )( vertexBytes + positionOffset + stride );
-			float* p2 = ( float* )( vertexBytes + positionOffset + stride * 2 );
-			float* p3 = ( float* )( vertexBytes + positionOffset + stride * 3 );
-			float* n0 = ( float* )( vertexBytes + normalOffset );
-			float* n1 = ( float* )( vertexBytes + normalOffset + stride );
-			float* n2 = ( float* )( vertexBytes + normalOffset + stride * 2 );
-			float* n3 = ( float* )( vertexBytes + normalOffset + stride * 3 );
+			UTerrainVertex* v0 = vertices;
+			UTerrainVertex* v1 = vertices + 1;
+			UTerrainVertex* v2 = vertices + 2;
+			UTerrainVertex* v3 = vertices + 3;
+
 			const int widthDiv4 = width / 4;
 			const int widthMod4 = width % 4;
-			const int vertexStride = stride;
-			const int vertexLastStride = ( stride / 4 ) * widthMod4;
 
-			for ( int row = 0; row < height; ++row )
+			float uInc = uvRes / ( float )( width - 1 );
+			float vInc = uvRes / ( float )( height - 1 );
+			float v = 0;
+			__m128 uuuuInc = _mm_set1_ps( uInc * 4 );
+			_CRT_ALIGN( 16 ) float uArr[ 4 ];
+
+			for ( int row = 0; row < height; ++row, v += vInc )
 			{
 				const float* uXSrc = cacheLines[ prevCacheLine ] + 12;
 				const float* uYSrc = cacheLines[ prevCacheLine ] + 16;
@@ -333,44 +332,65 @@ namespace Poc1
 				const float* dYSrc = cacheLines[ nextCacheLine ] + 16;
 				const float* dZSrc = cacheLines[ nextCacheLine ] + 20;
 
+				__m128 uuuu = _mm_set_ps( 0, uInc, uInc * 2, uInc * 3 );
+
 				for ( int col = 0; col < widthDiv4; ++col )
 				{
 					//	Store positions
-					p0[ 0 ] = xSrc[ 0 ]; p1[ 0 ] = xSrc[ 1 ]; p2[ 0 ] = xSrc[ 2 ]; p3[ 0 ] = xSrc[ 3 ];
-					p0[ 1 ] = ySrc[ 0 ]; p1[ 1 ] = ySrc[ 1 ]; p2[ 1 ] = ySrc[ 2 ]; p3[ 1 ] = ySrc[ 3 ];
-					p0[ 2 ] = zSrc[ 0 ]; p1[ 2 ] = zSrc[ 1 ]; p2[ 2 ] = zSrc[ 2 ]; p3[ 2 ] = zSrc[ 3 ];
+					v0->SetPosition( xSrc[ 0 ], ySrc[ 0 ], zSrc[ 0 ] );
+					v1->SetPosition( xSrc[ 1 ], ySrc[ 1 ], zSrc[ 1 ] );
+					v2->SetPosition( xSrc[ 2 ], ySrc[ 2 ], zSrc[ 2 ] );
+					v3->SetPosition( xSrc[ 3 ], ySrc[ 3 ], zSrc[ 3 ] );
+
+					_mm_store_ps( uArr, uuuu );
+
+					v0->SetTerrainUv( uArr[ 0 ], v );
+					v1->SetTerrainUv( uArr[ 1 ], v );
+					v2->SetTerrainUv( uArr[ 2 ], v );
+					v3->SetTerrainUv( uArr[ 3 ], v );
 
 					//	Calculate vertex normals
-					CalculateNormal( n0, -9, 1, p0, xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
-					CalculateNormal( n1, -1, 1, p1, xSrc + 1, ySrc + 1, zSrc + 1, uXSrc + 1, uYSrc + 1, uZSrc + 1, dXSrc + 1, dYSrc + 1, dZSrc + 1 );
-					CalculateNormal( n2, -1, 1, p2, xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
-					CalculateNormal( n3, -1, 9, p3, xSrc + 3, ySrc + 3, zSrc + 3, uXSrc + 3, uYSrc + 3, uZSrc + 3, dXSrc + 3, dYSrc + 3, dZSrc + 3 );
+					CalculateNormal( v0, -9, 1, xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
+					CalculateNormal( v1, -1, 1, xSrc + 1, ySrc + 1, zSrc + 1, uXSrc + 1, uYSrc + 1, uZSrc + 1, dXSrc + 1, dYSrc + 1, dZSrc + 1 );
+					CalculateNormal( v2, -1, 1, xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
+					CalculateNormal( v3, -1, 9, xSrc + 3, ySrc + 3, zSrc + 3, uXSrc + 3, uYSrc + 3, uZSrc + 3, dXSrc + 3, dYSrc + 3, dZSrc + 3 );
 
 					//	Move vertex pointers on
-					p0 += vertexStride; p1 += vertexStride; p2 += vertexStride; p3 += vertexStride;
-					n0 += vertexStride; n1 += vertexStride; n2 += vertexStride; n3 += vertexStride;
+					v0 += 4;
+					v1 += 4;
+					v2 += 4;
+					v3 += 4;
 
 					//	Move cache pointers on
 					xSrc += 12; ySrc += 12; zSrc += 12;
 					uXSrc += 12; uYSrc += 12; uZSrc += 12;
 					dXSrc += 12; dYSrc += 12; dZSrc += 12;
+
+					uuuu = _mm_add_ps( uuuu, uuuuInc );
 				}
 				if ( widthMod4 > 0 )
 				{
-					p0[ 0 ] = xSrc[ 0 ]; p0[ 1 ] = ySrc[ 0 ]; p0[ 2 ] = zSrc[ 0 ];
-					CalculateNormal( n0, -9, 1, p0, xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
+					_mm_store_ps( uArr, uuuu );
+
+					v0->SetPosition( xSrc[ 0 ], ySrc[ 0 ], zSrc[ 0 ] );
+					v0->SetTerrainUv( uArr[ 0 ], v );
+					CalculateNormal( v0, -9, 1, xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
 					if ( widthMod4 > 1 )
 					{
-						p1[ 0 ] = xSrc[ 1 ]; p1[ 1 ] = ySrc[ 1 ]; p1[ 2 ] = zSrc[ 1 ];
-						CalculateNormal( n1, -1, 1, p1, xSrc + 1, ySrc + 1, zSrc + 1, uXSrc + 1, uYSrc + 1, uZSrc + 1, dXSrc + 1, dYSrc + 1, dZSrc + 1 );
+						v1->SetPosition( xSrc[ 1 ], ySrc[ 1 ], zSrc[ 1 ] );
+						v1->SetTerrainUv( uArr[ 1 ], v );
+						CalculateNormal( v1, -1, 1, xSrc + 1, ySrc + 1, zSrc + 1, uXSrc + 1, uYSrc + 1, uZSrc + 1, dXSrc + 1, dYSrc + 1, dZSrc + 1 );
 						if ( widthMod4 > 2 )
 						{
-							p2[ 0 ] = xSrc[ 2 ]; p2[ 1 ] = ySrc[ 2 ]; p2[ 2 ] = zSrc[ 2 ];
-							CalculateNormal( n2, -1, 1, p2, xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
+							v2->SetPosition( xSrc[ 2 ], ySrc[ 2 ], zSrc[ 2 ] );
+							v2->SetTerrainUv( uArr[ 2 ], v );
+							CalculateNormal( v2, -1, 1, xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
 						}
 					}
-					p0 += vertexLastStride; p1 += vertexLastStride; p2 += vertexLastStride; p3 += vertexLastStride;
-					n0 += vertexLastStride; n1 += vertexLastStride; n2 += vertexLastStride; n3 += vertexLastStride;
+					v0 += widthMod4;
+					v1 += widthMod4;
+					v2 += widthMod4;
+					v3 += widthMod4;
 				}
 
 				prevCacheLine = curCacheLine;
@@ -387,7 +407,7 @@ namespace Poc1
 		}
 
 		template < typename DisplaceType >
-		inline void SseSphereTerrainGeneratorT< DisplaceType >::GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, void* vertices, const int stride, const int positionOffset, const int normalOffset, float& error )
+		inline void SseSphereTerrainGeneratorT< DisplaceType >::GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, UTerrainVertex* vertices, float& error )
 		{
 			//	Same as GenerateVertices() without error, except that the resolution is doubled
 			//	TODO: AP: Makes assumptions about relationship between resolutions
@@ -442,15 +462,10 @@ namespace Poc1
 			FillPositionHeightCacheLine( fullWidthDiv4, cacheLines[ 2 ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
 
 			//	Point to the positions and normals in the first 4 vertices
-			unsigned char* vertexBytes = ( unsigned char* )vertices;
-			float* p0 = ( float* )( vertexBytes + positionOffset );
-			float* p1 = ( float* )( vertexBytes + positionOffset + stride );
-			float* n0 = ( float* )( vertexBytes + normalOffset );
-			float* n1 = ( float* )( vertexBytes + normalOffset + stride );
+			UTerrainVertex* v0 = vertices;
+			UTerrainVertex* v1 = vertices + 1;
 			const int widthDiv4 = width / 4;
 			const int widthMod4 = width % 4;
-			const int vertexStride = stride / 2;
-			const int vertexLastStride = ( stride / 4 ) * widthMod4;
 
 			error = 0;
 
@@ -477,17 +492,16 @@ namespace Poc1
 					for ( int col = 0; col < widthDiv4; ++col )
 					{
 						//	Store positions
-						p0[ 0 ] = xSrc[ 0 ]; p1[ 0 ] = xSrc[ 2 ];
-						p0[ 1 ] = ySrc[ 0 ]; p1[ 1 ] = ySrc[ 2 ];
-						p0[ 2 ] = zSrc[ 0 ]; p1[ 2 ] = zSrc[ 2 ];
+						v0->SetPosition( xSrc[ 0 ], ySrc[ 0 ], zSrc[ 0 ] );
+						v1->SetPosition( xSrc[ 1 ], ySrc[ 1 ], zSrc[ 1 ] );
 
 						//	Calculate vertex normals
-						CalculateNormal( n0, -13, 2, p0, xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
-						CalculateNormal( n1, -2, 14, p1, xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
+						CalculateNormal( v0, -13, 2, xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
+						CalculateNormal( v1, -2, 14, xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
 
 						//	Move vertex pointers on
-						p0 += vertexStride; p1 += vertexStride;
-						n0 += vertexStride; n1 += vertexStride;
+						v0 += 2;
+						v1 += 2;
 
 						//	Move cache pointers on
 						xSrc += 16; ySrc += 16; zSrc += 16;
@@ -496,15 +510,15 @@ namespace Poc1
 					}
 					if ( widthMod4 > 0 )
 					{
-						p0[ 0 ] = xSrc[ 0 ]; p0[ 1 ] = ySrc[ 0 ]; p0[ 2 ] = zSrc[ 0 ];
-						CalculateNormal( n0, -13, 2, p0, xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
+						v0->SetPosition( xSrc[ 0 ], ySrc[ 0 ], zSrc[ 0 ] );
+						CalculateNormal( v0, -13, 2, xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
 						if ( widthMod4 > 1 )
 						{
-							p1[ 0 ] = xSrc[ 1 ]; p1[ 1 ] = ySrc[ 1 ]; p1[ 2 ] = zSrc[ 1 ];
-							CalculateNormal( n1, -2, 14, p1, xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
+							v1->SetPosition( xSrc[ 1 ], ySrc[ 1 ], zSrc[ 1 ] );
+							CalculateNormal( v1, -2, 14, xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
 						}
-						p0 += vertexLastStride; p1 += vertexLastStride;
-						n0 += vertexLastStride; n1 += vertexLastStride;
+						v0 += widthMod4;
+						v1 += widthMod4;
 					}
 				}
 
@@ -524,131 +538,8 @@ namespace Poc1
 		template < typename DisplaceType >
 		inline float SseSphereTerrainGeneratorT< DisplaceType >::GetMaximumPatchError( const float* origin, const float* xStep, const float* zStep, const int width, const int height, const int subdivisions ) const
 		{
-			//	Get start x, y and z positions for the first 4 vertices in the first row
-			//	NOTE: AP: Vectors are apparently reversed, so memory access is more natural (xyzw comes out as [ w, z, y, x ] normally)
-			__m128 startXxxx = _mm_set_ps( origin[ 0 ] - xStep[ 0 ], origin[ 0 ] - xStep[ 0 ] * 2, origin[ 0 ] - xStep[ 0 ] * 3, origin[ 0 ] - xStep[ 0 ] * 4 );
-			__m128 startYyyy = _mm_set_ps( origin[ 1 ] - xStep[ 1 ], origin[ 1 ] - xStep[ 1 ] * 2, origin[ 1 ] - xStep[ 1 ] * 3, origin[ 1 ] - xStep[ 1 ] * 4 );
-			__m128 startZzzz = _mm_set_ps( origin[ 2 ] - xStep[ 2 ], origin[ 2 ] - xStep[ 2 ] * 2, origin[ 2 ] - xStep[ 2 ] * 3, origin[ 2 ] - xStep[ 2 ] * 4 );
-
-			//	Determine vectors for incrementing x, y and z positions in the column loop
-			const __m128 colXInc = _mm_set1_ps( xStep[ 0 ] * 4 );
-			const __m128 colYInc = _mm_set1_ps( xStep[ 1 ] * 4 );
-			const __m128 colZInc = _mm_set1_ps( xStep[ 2 ] * 4 );
-
-			//	Determine vectors for incrementing x, y and z positions in the row loop
-			const __m128 rowXInc = _mm_set1_ps( zStep[ 0 ] );
-			const __m128 rowYInc = _mm_set1_ps( zStep[ 1 ] );
-			const __m128 rowZInc = _mm_set1_ps( zStep[ 2 ] );
-
-			startXxxx = _mm_sub_ps( startXxxx, rowXInc );
-			startYyyy = _mm_sub_ps( startYyyy, rowYInc );
-			startZzzz = _mm_sub_ps( startZzzz, rowZInc );
-
-			//	Create a cache for storing vertex positions
-			int fullWidth = width + 8;
-			fullWidth = ( fullWidth % 4 == 0 ) ? fullWidth : fullWidth + ( 4 - ( fullWidth % 4 ) );
-			const int cacheSize = fullWidth * 3;
-			SetFpCacheSize( cacheSize );
-			const int fullWidthDiv4 = fullWidth / 4;
-			float** cacheLines = m_FpCacheLines;
-
-			int prevCacheLine = 0;
-			int curCacheLine = 1;
-			int nextCacheLine = 2;
-
-			//	Fill the cache with positions from the first 3 vertex rows
-			FillPositionCacheLine( fullWidthDiv4, cacheLines[ 0 ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
-			startXxxx = _mm_add_ps( startXxxx, rowXInc );
-			startYyyy = _mm_add_ps( startYyyy, rowYInc );
-			startZzzz = _mm_add_ps( startZzzz, rowZInc );
-
-			FillPositionCacheLine( fullWidthDiv4, cacheLines[ 1 ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
-			startXxxx = _mm_add_ps( startXxxx, rowXInc );
-			startYyyy = _mm_add_ps( startYyyy, rowYInc );
-			startZzzz = _mm_add_ps( startZzzz, rowZInc );
-
-			FillPositionCacheLine( fullWidthDiv4, cacheLines[ 2 ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
-
-			//	Point to the positions and normals in the first 4 vertices
-			unsigned char* vertexBytes = ( unsigned char* )vertices;
-			float* p0 = ( float* )( vertexBytes + positionOffset );
-			float* p1 = ( float* )( vertexBytes + positionOffset + stride );
-			float* p2 = ( float* )( vertexBytes + positionOffset + stride * 2 );
-			float* p3 = ( float* )( vertexBytes + positionOffset + stride * 3 );
-			float* n0 = ( float* )( vertexBytes + normalOffset );
-			float* n1 = ( float* )( vertexBytes + normalOffset + stride );
-			float* n2 = ( float* )( vertexBytes + normalOffset + stride * 2 );
-			float* n3 = ( float* )( vertexBytes + normalOffset + stride * 3 );
-			const int widthDiv4 = width / 4;
-			const int widthMod4 = width % 4;
-			const int vertexStride = stride;
-			const int vertexLastStride = ( stride / 4 ) * widthMod4;
-
-			for ( int row = 0; row < height; ++row )
-			{
-				const float* uXSrc = cacheLines[ prevCacheLine ] + 12;
-				const float* uYSrc = cacheLines[ prevCacheLine ] + 16;
-				const float* uZSrc = cacheLines[ prevCacheLine ] + 20;
-				
-				const float* xSrc = cacheLines[ curCacheLine ] + 12;
-				const float* ySrc = cacheLines[ curCacheLine ] + 16;
-				const float* zSrc = cacheLines[ curCacheLine ] + 20;
-				
-				const float* dXSrc = cacheLines[ nextCacheLine ] + 12;
-				const float* dYSrc = cacheLines[ nextCacheLine ] + 16;
-				const float* dZSrc = cacheLines[ nextCacheLine ] + 20;
-
-				for ( int col = 0; col < widthDiv4; ++col )
-				{
-					//	Store positions
-					p0[ 0 ] = xSrc[ 0 ]; p1[ 0 ] = xSrc[ 1 ]; p2[ 0 ] = xSrc[ 2 ]; p3[ 0 ] = xSrc[ 3 ];
-					p0[ 1 ] = ySrc[ 0 ]; p1[ 1 ] = ySrc[ 1 ]; p2[ 1 ] = ySrc[ 2 ]; p3[ 1 ] = ySrc[ 3 ];
-					p0[ 2 ] = zSrc[ 0 ]; p1[ 2 ] = zSrc[ 1 ]; p2[ 2 ] = zSrc[ 2 ]; p3[ 2 ] = zSrc[ 3 ];
-
-					//	Calculate vertex normals
-					CalculateNormal( n0, -9, 1, p0, xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
-					CalculateNormal( n1, -1, 1, p1, xSrc + 1, ySrc + 1, zSrc + 1, uXSrc + 1, uYSrc + 1, uZSrc + 1, dXSrc + 1, dYSrc + 1, dZSrc + 1 );
-					CalculateNormal( n2, -1, 1, p2, xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
-					CalculateNormal( n3, -1, 9, p3, xSrc + 3, ySrc + 3, zSrc + 3, uXSrc + 3, uYSrc + 3, uZSrc + 3, dXSrc + 3, dYSrc + 3, dZSrc + 3 );
-
-					//	Move vertex pointers on
-					p0 += vertexStride; p1 += vertexStride; p2 += vertexStride; p3 += vertexStride;
-					n0 += vertexStride; n1 += vertexStride; n2 += vertexStride; n3 += vertexStride;
-
-					//	Move cache pointers on
-					xSrc += 12; ySrc += 12; zSrc += 12;
-					uXSrc += 12; uYSrc += 12; uZSrc += 12;
-					dXSrc += 12; dYSrc += 12; dZSrc += 12;
-				}
-				if ( widthMod4 > 0 )
-				{
-					p0[ 0 ] = xSrc[ 0 ]; p0[ 1 ] = ySrc[ 0 ]; p0[ 2 ] = zSrc[ 0 ];
-					CalculateNormal( n0, -9, 1, p0, xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
-					if ( widthMod4 > 1 )
-					{
-						p1[ 0 ] = xSrc[ 1 ]; p1[ 1 ] = ySrc[ 1 ]; p1[ 2 ] = zSrc[ 1 ];
-						CalculateNormal( n1, -1, 1, p1, xSrc + 1, ySrc + 1, zSrc + 1, uXSrc + 1, uYSrc + 1, uZSrc + 1, dXSrc + 1, dYSrc + 1, dZSrc + 1 );
-						if ( widthMod4 > 2 )
-						{
-							p2[ 0 ] = xSrc[ 2 ]; p2[ 1 ] = ySrc[ 2 ]; p2[ 2 ] = zSrc[ 2 ];
-							CalculateNormal( n2, -1, 1, p2, xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
-						}
-					}
-					p0 += vertexLastStride; p1 += vertexLastStride; p2 += vertexLastStride; p3 += vertexLastStride;
-					n0 += vertexLastStride; n1 += vertexLastStride; n2 += vertexLastStride; n3 += vertexLastStride;
-				}
-
-				prevCacheLine = curCacheLine;
-				curCacheLine = nextCacheLine;
-				nextCacheLine = ( nextCacheLine + 1 ) % 3;
-				startXxxx = _mm_add_ps( startXxxx, rowXInc );
-				startYyyy = _mm_add_ps( startYyyy, rowYInc );
-				startZzzz = _mm_add_ps( startZzzz, rowZInc );
-				if ( row < ( height - 1 ) )
-				{
-					FillPositionCacheLine( fullWidthDiv4, cacheLines[ nextCacheLine ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
-				}
-			}
+			//	TODO: AP: ...
+			return 0;
 		}
 
 		template < typename DisplaceType >
