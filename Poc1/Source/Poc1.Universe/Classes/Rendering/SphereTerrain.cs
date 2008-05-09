@@ -22,7 +22,6 @@ namespace Poc1.Universe.Classes.Rendering
 			m_Planet = planet;
 		}
 
-		private readonly SpherePlanet m_Planet;
 
 		/// <summary>
 		/// Generates the terrain cube map texture for this planet
@@ -62,16 +61,17 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <param name="uStep">Offset between row vertices</param>
 		/// <param name="vStep">Offset between column vertices</param>
 		/// <param name="res">Patch resolution</param>
+		/// <param name="uvRes">UV coordinate resolution over entire patch</param>
 		/// <param name="firstVertex">Patch vertices</param>
 		/// <returns>Centre point of the patch, in render unit space</returns>
-		public unsafe Point3 GenerateTerrainPatchVertices( Point3 origin, Vector3 uStep, Vector3 vStep, int res, TerrainVertex* firstVertex )
+		public unsafe Point3 GenerateTerrainPatchVertices( Point3 origin, Vector3 uStep, Vector3 vStep, int res, float uvRes, TerrainVertex* firstVertex )
 		{
 			float radius = ( float )UniUnits.RenderUnits.FromUniUnits( m_Planet.Radius );
 			float height = ( float )UniUnits.RenderUnits.FromUniUnits( UniUnits.Metres.ToUniUnits( 4000 ) );
 
 			m_Gen.SetHeightRange( radius, radius + height );
-			m_Gen.GenerateVertices( origin, uStep, vStep, res, res, firstVertex, sizeof( TerrainVertex ), 0, 12 );
-
+			m_Gen.GenerateVertices( origin, uStep, vStep, res, res, uvRes, firstVertex );
+			
 			Point3 centre = origin + ( uStep * res / 2 ) + ( vStep * res / 2 );
 			return ( centre.ToVector3( ).MakeNormal( ) * radius ).ToPoint3( );
 		}
@@ -83,16 +83,19 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <param name="uStep">Offset between row vertices</param>
 		/// <param name="vStep">Offset between column vertices</param>
 		/// <param name="res">Patch resolution</param>
+		/// <param name="uvRes">UV coordinate resolution over entire patch</param>
 		/// <param name="firstVertex">Patch vertices</param>
 		/// <param name="error">Maximum error value between this patch and higher level patch</param>
 		/// <returns>Centre point of the patch, in render unit space</returns>
-		public unsafe Point3 GenerateTerrainPatchVertices( Point3 origin, Vector3 uStep, Vector3 vStep, int res, TerrainVertex* firstVertex, out float error)
+		public unsafe Point3 GenerateTerrainPatchVertices( Point3 origin, Vector3 uStep, Vector3 vStep, int res, float uvRes, TerrainVertex* firstVertex, out float error )
 		{
 			float radius = ( float )UniUnits.RenderUnits.FromUniUnits( m_Planet.Radius );
 			float height = ( float )UniUnits.RenderUnits.FromUniUnits( UniUnits.Metres.ToUniUnits( 4000 ) );
 
 			m_Gen.SetHeightRange( radius, radius + height );
-			m_Gen.GenerateVertices( origin, uStep, vStep, res, res, firstVertex, sizeof( TerrainVertex ), 0, 12, out error );
+			m_Gen.GenerateVertices( origin, uStep, vStep, res, res, firstVertex, out error );
+
+			GenerateTextureCoordinates( res, firstVertex, uvRes );
 
 			Point3 centre = origin + ( uStep * res / 2 ) + ( vStep * res / 2 );
 			return ( centre.ToVector3( ).MakeNormal( ) * radius ).ToPoint3( );
@@ -102,6 +105,27 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#region Private Members
 
+		private unsafe static void GenerateTextureCoordinates( int res, TerrainVertex* firstVertex, float uvRes )
+		{
+			//	TODO: AP: Add to fast version...
+			float toUv = uvRes / ( res - 1 );
+			TerrainVertex* vert = firstVertex;
+			for ( int row = 0; row < res; ++row )
+			{
+				for ( int col = 0; col < res; ++col, ++vert )
+				{
+					vert->TerrainUv = new Point2( col * toUv, row * toUv );
+				}
+			}
+
+		}
+
+
+		private readonly SpherePlanet m_Planet;
+
+		/// <summary>
+		/// Gets the current time in ticks. Used to seed the PNG in the terrain generator
+		/// </summary>
 		private static uint TimeSeed
 		{
 			get

@@ -58,6 +58,19 @@ namespace Poc1.Universe.Interfaces.Rendering
 		}
 
 		/// <summary>
+		/// Gets/sets the vertex terrain UV coordinate
+		/// </summary>
+		public Point2 TerrainUv
+		{
+			get { return new Point2( m_U, m_V ); }
+			set
+			{
+				m_U = value.X;
+				m_V = value.Y;
+			}
+		}
+
+		/// <summary>
 		/// Gets/sets vertex x coordinate
 		/// </summary>
 		public float X
@@ -121,6 +134,9 @@ namespace Poc1.Universe.Interfaces.Rendering
 		private float m_NormalX;
 		private float m_NormalY;
 		private float m_NormalZ;
+
+		private float m_U;
+		private float m_V;
 
 		#endregion
 	}

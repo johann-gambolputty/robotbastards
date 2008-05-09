@@ -12,6 +12,15 @@ namespace Rb.Rendering.Textures
 	/// </summary>
 	public class TextureLoader : AssetLoader
 	{
+		public class TextureLoadParameters : LoadParameters
+		{
+			public bool GenerateMipMaps
+			{
+				get { return ( bool )Properties[ GenerateMipMapsPropertyName ]; }
+				set { Properties[ GenerateMipMapsPropertyName ] = value; }
+			}
+		}
+
 		/// <summary>
 		/// Name of the property in the load parameters, that sets mipmap generation when true
 		/// </summary>
@@ -40,10 +49,10 @@ namespace Rb.Rendering.Textures
 		/// <returns>Returns default load parameters</returns>
 		public override LoadParameters CreateDefaultParameters( bool addAllProperties )
 		{
-			LoadParameters parameters = new LoadParameters( );
+			TextureLoadParameters parameters = new TextureLoadParameters( );
 			if ( addAllProperties )
 			{
-				parameters.Properties.Add( GenerateMipMapsPropertyName, false );
+				parameters.GenerateMipMaps = false;
 			}
 			return parameters;
 		}

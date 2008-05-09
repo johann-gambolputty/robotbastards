@@ -36,6 +36,7 @@ namespace Poc1.GameClient
 			this.profileWindow2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.logWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.gameDisplay = new Rb.Rendering.Windows.Display();
+			this.debugInfoWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.mainMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -70,7 +71,8 @@ namespace Poc1.GameClient
 			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.profileWindow1ToolStripMenuItem,
             this.profileWindow2ToolStripMenuItem,
-            this.logWindowToolStripMenuItem});
+            this.logWindowToolStripMenuItem,
+            this.debugInfoWindowToolStripMenuItem});
 			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
 			this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
 			this.viewToolStripMenuItem.Text = "&View";
@@ -78,21 +80,21 @@ namespace Poc1.GameClient
 			// profileWindow1ToolStripMenuItem
 			// 
 			this.profileWindow1ToolStripMenuItem.Name = "profileWindow1ToolStripMenuItem";
-			this.profileWindow1ToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.profileWindow1ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.profileWindow1ToolStripMenuItem.Text = "&Profile Window 1";
 			this.profileWindow1ToolStripMenuItem.Click += new System.EventHandler(this.profileWindow1ToolStripMenuItem_Click);
 			// 
 			// profileWindow2ToolStripMenuItem
 			// 
 			this.profileWindow2ToolStripMenuItem.Name = "profileWindow2ToolStripMenuItem";
-			this.profileWindow2ToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.profileWindow2ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.profileWindow2ToolStripMenuItem.Text = "Profile Window 2";
 			this.profileWindow2ToolStripMenuItem.Click += new System.EventHandler(this.profileWindow2ToolStripMenuItem_Click);
 			// 
 			// logWindowToolStripMenuItem
 			// 
 			this.logWindowToolStripMenuItem.Name = "logWindowToolStripMenuItem";
-			this.logWindowToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.logWindowToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.logWindowToolStripMenuItem.Text = "&Log Window";
 			this.logWindowToolStripMenuItem.Click += new System.EventHandler(this.logWindowToolStripMenuItem_Click);
 			// 
@@ -109,6 +111,13 @@ namespace Poc1.GameClient
 			this.gameDisplay.Size = new System.Drawing.Size(493, 424);
 			this.gameDisplay.StencilBits = ((byte)(0));
 			this.gameDisplay.TabIndex = 0;
+			// 
+			// debugInfoWindowToolStripMenuItem
+			// 
+			this.debugInfoWindowToolStripMenuItem.Name = "debugInfoWindowToolStripMenuItem";
+			this.debugInfoWindowToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.debugInfoWindowToolStripMenuItem.Text = "&Debug Info Window";
+			this.debugInfoWindowToolStripMenuItem.Click += new System.EventHandler(this.debugInfoWindowToolStripMenuItem_Click);
 			// 
 			// GameClientForm
 			// 
@@ -140,6 +149,7 @@ namespace Poc1.GameClient
 		private System.Windows.Forms.ToolStripMenuItem profileWindow1ToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem profileWindow2ToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem logWindowToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem debugInfoWindowToolStripMenuItem;
 	}
 }
 

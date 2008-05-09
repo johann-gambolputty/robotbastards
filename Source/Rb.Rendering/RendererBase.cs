@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using Rb.Core.Maths;
+using Rb.Core.Utils;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Interfaces.Objects.Cameras;
@@ -27,11 +28,26 @@ namespace Rb.Rendering
 
 		#region Frames
 
+
+		/// <summary>
+		/// Event, invoked by <see cref="Begin"/>
+		/// </summary>
+		public event ActionDelegates.Action FrameStart;
+
+		/// <summary>
+		/// Event, invoked by <see cref="End"/>
+		/// </summary>
+		public event ActionDelegates.Action FrameEnd;
+
 		/// <summary>
 		/// Sets up to render the next frame
 		/// </summary>
 		public virtual void Begin( )
 		{
+			if ( FrameStart != null )
+			{
+				FrameStart( );
+			}
 		}
 
 		/// <summary>
@@ -39,6 +55,10 @@ namespace Rb.Rendering
 		/// </summary>
 		public virtual void End( )
 		{
+			if ( FrameEnd != null )
+			{
+				FrameEnd( );
+			}
 		}
 
 		#endregion

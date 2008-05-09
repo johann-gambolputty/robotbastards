@@ -29,6 +29,7 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Drawing.Design;
+using System.Reflection;
 
 namespace Rb.Core.Components
 {
@@ -375,6 +376,75 @@ namespace Rb.Core.Components
 			get { return type; }
 			set { type = value; }
 		}
+	}
+
+	/// <summary>
+	/// Extended property specifier for property bags
+	/// </summary>
+	public class ExPropertySpec : PropertySpec
+	{
+		/// <summary>
+		/// Creates this property specifier
+		/// </summary>
+		/// <param name="property">Underlying object property</param>
+		public ExPropertySpec(PropertyInfo property)
+			:
+			base(property.Name, property.PropertyType, GetPropertyCategory(property), GetPropertyDescription(property))
+		{
+			m_Property = property;
+		}
+
+		#region Access
+
+		/// <summary>
+		/// Sets the value of an extended property
+		/// </summary>
+		public static void SetValue(object sender, PropertySpecEventArgs e)
+		{
+			((ExPropertySpec)e.Property).Property.SetValue(null, e.Value, null);
+		}
+
+		/// <summary>
+		/// Gets the value of an extended property
+		/// </summary>
+		public static void GetValue(object sender, PropertySpecEventArgs e)
+		{
+			e.Value = ((ExPropertySpec)e.Property).Property.GetValue(e, null);
+		}
+
+		#endregion
+
+		#region Private members
+
+		/// <summary>
+		/// The underlying object property
+		/// </summary>
+		private PropertyInfo Property
+		{
+			get { return m_Property; }
+		}
+
+		private readonly PropertyInfo m_Property;
+
+		/// <summary>
+		/// Gets the category that a property belongs to
+		/// </summary>
+		private static string GetPropertyCategory(ICustomAttributeProvider property)
+		{
+			CategoryAttribute[] categoryAttrs = (CategoryAttribute[])property.GetCustomAttributes(typeof(CategoryAttribute), false);
+			return categoryAttrs.Length > 0 ? categoryAttrs[0].Category : "";
+		}
+
+		/// <summary>
+		/// Gets the description of a property
+		/// </summary>
+		private static string GetPropertyDescription(PropertyInfo property)
+		{
+			DescriptionAttribute[] descriptionAttrs = (DescriptionAttribute[])property.GetCustomAttributes(typeof(DescriptionAttribute), false);
+			return descriptionAttrs.Length > 0 ? descriptionAttrs[0].Description : property.PropertyType.Name;
+		}
+
+		#endregion
 	}
 
 	/// <summary>

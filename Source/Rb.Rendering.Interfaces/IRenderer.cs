@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using Rb.Core.Maths;
+using Rb.Core.Utils;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Interfaces.Objects.Cameras;
 using Rb.Rendering.Interfaces.Objects.Lights;
@@ -22,6 +23,16 @@ namespace Rb.Rendering.Interfaces
 		#endregion
 
 		#region Frames
+
+		/// <summary>
+		/// Event, invoked by <see cref="Begin"/>
+		/// </summary>
+		event ActionDelegates.Action FrameStart;
+
+		/// <summary>
+		/// Event, invoked by <see cref="End"/>
+		/// </summary>
+		event ActionDelegates.Action FrameEnd;
 
 		/// <summary>
 		/// Sets up to render the next frame

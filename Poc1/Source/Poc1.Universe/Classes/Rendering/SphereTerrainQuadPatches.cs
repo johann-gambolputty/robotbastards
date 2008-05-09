@@ -7,6 +7,7 @@ using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
+using Rb.Rendering.Textures;
 
 namespace Poc1.Universe.Classes.Rendering
 {
@@ -19,8 +20,11 @@ namespace Poc1.Universe.Classes.Rendering
 			m_PlanetTexture = planetTexture;
 
 			IEffect effect = ( IEffect )AssetManager.Instance.Load( "Effects/Planets/terrestrialPlanetTerrain.cgfx" );
-			//TechniqueSelector selector = new TechniqueSelector( effect, "DefaultTechnique" );
-			TechniqueSelector selector = new TechniqueSelector( effect, "WireFrameTechnique" );
+			TechniqueSelector selector = new TechniqueSelector( effect, "DefaultTechnique" );
+
+			TextureLoader.TextureLoadParameters loadParameters = new TextureLoader.TextureLoadParameters( );
+			loadParameters.GenerateMipMaps = true;
+			m_TerrainTypesTexture = ( ITexture2d )AssetManager.Instance.Load( "Textures/Terrain0/grass13a.jpg", loadParameters );
 
 			m_Terrain = terrain;
 			m_PlanetTerrainTechnique = selector;
@@ -42,12 +46,20 @@ namespace Poc1.Universe.Classes.Rendering
 			CubeSide[] sides = new CubeSide[]
 				{
 					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 7 ], cubePoints[ 6 ], cubePoints[ 4 ] ),	//	+z
-					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 0 ], cubePoints[ 1 ], cubePoints[ 3 ] ),	//	-z
-					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 4 ], cubePoints[ 5 ], cubePoints[ 0 ] ),	//	+y
-					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 6 ], cubePoints[ 7 ], cubePoints[ 2 ] ),	//	-y
-					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 5 ], cubePoints[ 6 ], cubePoints[ 1 ] ),	//	+x
-					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 0 ], cubePoints[ 3 ], cubePoints[ 4 ] ),	//	-x
+					//new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 0 ], cubePoints[ 1 ], cubePoints[ 3 ] ),	//	-z
+					//new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 4 ], cubePoints[ 5 ], cubePoints[ 0 ] ),	//	+y
+					//new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 6 ], cubePoints[ 7 ], cubePoints[ 2 ] ),	//	-y
+					//new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 5 ], cubePoints[ 6 ], cubePoints[ 1 ] ),	//	+x
+					//new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 0 ], cubePoints[ 3 ], cubePoints[ 4 ] ),	//	-x
 				};
+
+#if DEBUG
+			DebugInfo.PropertyChanged +=
+				delegate
+				{
+					selector.Select( DebugInfo.ShowPatchWireframe ? "WireFrameTechnique" : "DefaultTechnique" );
+				};
+#endif
 		}
 
 		/// <summary>
@@ -69,6 +81,7 @@ namespace Poc1.Universe.Classes.Rendering
 			}
 
 			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainSampler" ].Set( m_PlanetTexture );
+			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainTextureSampler" ].Set( m_TerrainTypesTexture );
 
 			m_Vertices.VertexBuffer.Begin( );
 			context.ApplyTechnique( m_PlanetTerrainTechnique, RenderPatches );
@@ -81,10 +94,9 @@ namespace Poc1.Universe.Classes.Rendering
 
 			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 
-			Graphics.Fonts.DebugFont.Write( 0, 15, System.Drawing.Color.White, "Camera Pos: {0}", UniCamera.Current.Position.ToRenderUnitString( ) );
-			Graphics.Fonts.DebugFont.Write( 0, 30, System.Drawing.Color.White, "Planet Pos: {0}", m_Planet.Transform.Position.ToRenderUnitString( ) );
+			DebugText.Write( "Camera Pos: {0}", UniCamera.Current.Position.ToRenderUnitString( ) );
+			DebugText.Write( "Planet Pos: {0}", m_Planet.Transform.Position.ToRenderUnitString( ) );
 		}
-
 
 		#region CubeSide Private Class
 
@@ -122,12 +134,15 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#region Private Members
 
-		private readonly IPlanet			m_Planet;
-		private readonly ICubeMapTexture	m_PlanetTexture;
+		private readonly ITexture2d					m_TerrainTypesTexture;
+
+		private readonly IPlanet					m_Planet;
+		private readonly ICubeMapTexture			m_PlanetTexture;
 		private readonly TerrainQuadPatchVertices	m_Vertices = new TerrainQuadPatchVertices( );
-		private readonly IPlanetTerrain		m_Terrain;
-		private readonly ITechnique			m_PlanetTerrainTechnique;
-		private readonly List<TerrainQuadPatch>	m_Patches = new List<TerrainQuadPatch>( );
+		private readonly IPlanetTerrain				m_Terrain;
+		private readonly TechniqueSelector			m_PlanetTerrainTechnique;
+		private readonly List<TerrainQuadPatch>		m_Patches = new List<TerrainQuadPatch>( );
+
 
 		private void UpdateLod( IUniCamera camera )
 		{
@@ -152,6 +167,14 @@ namespace Poc1.Universe.Classes.Rendering
 			foreach ( TerrainQuadPatch patch in m_Patches )
 			{
 				patch.Render( );
+			}
+
+			if ( DebugInfo.ShowPatchInfo )
+			{
+				foreach ( TerrainQuadPatch patch in m_Patches )
+				{
+					patch.DebugRender( );
+				}
 			}
 		}
 

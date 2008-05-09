@@ -7,6 +7,7 @@ using Poc1.GameClient.Properties;
 using Poc1.Universe;
 using Poc1.Universe.Classes;
 using Rb.Assets;
+using Rb.Core.Components;
 using Rb.Interaction;
 using Rb.Log;
 using Rb.Log.Controls.Vs;
@@ -42,17 +43,43 @@ namespace Poc1.GameClient
 			m_DockingManager.AddContentWithState( m_ProfileViewer2Content, State.Floating );
 			m_DockingManager.HideContent( m_ProfileViewer2Content );
 
+			PropertyGrid debugInfoProperties = CreateDebugInfoPropertyGrid( );
+			m_DebugInfoContent = m_DockingManager.Contents.Add(debugInfoProperties, "Debug Info");
+			m_DockingManager.AddContentWithState( m_DebugInfoContent, State.Floating );
+			m_DockingManager.HideContent( m_DebugInfoContent );
+
 			m_LogDisplayContent = m_DockingManager.Contents.Add( m_LogDisplay, "Log" );
 			m_DockingManager.AddContentWithState( m_LogDisplayContent, State.DockBottom );
 		}
+
 
 		private readonly Control m_LogDisplay = new VsLogListView( );
 		private readonly Content m_LogDisplayContent;
 		private readonly Content m_ProfileViewer1Content;
 		private readonly Content m_ProfileViewer2Content;
+		private readonly Content m_DebugInfoContent;
 		private readonly DockingManager m_DockingManager;
 		private readonly CommandUser m_User = new CommandUser( );
 		private SolarSystem m_SolarSystem;
+		
+		private static PropertyGrid CreateDebugInfoPropertyGrid( )
+		{
+			//	Can't just bung the a DebugInfo object into a property grid - it's all static properties
+			//	Create a property bag containing those properties instead
+			PropertyBag debugInfo = new PropertyBag( );
+
+			foreach ( PropertyInfo property in typeof( DebugInfo ).GetProperties( BindingFlags.Static | BindingFlags.Public ) )
+			{
+				debugInfo.Properties.Add( new ExPropertySpec( property ) );
+			}
+			debugInfo.SetValue += ExPropertySpec.SetValue;
+			debugInfo.GetValue += ExPropertySpec.GetValue;
+
+			PropertyGrid debugInfoPropertyGrid = new PropertyGrid( );
+			debugInfoPropertyGrid.SelectedObject = debugInfo;
+
+			return debugInfoPropertyGrid;
+		}
 
 		private void GameClientForm_Shown( object sender, EventArgs e )
 		{
@@ -163,6 +190,14 @@ namespace Poc1.GameClient
 		private void exitToolStripMenuItem_Click( object sender, EventArgs e )
 		{
 			Close( );
+		}
+
+		private void debugInfoWindowToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if ( !m_DebugInfoContent.Visible )
+			{
+				m_DockingManager.ShowContent( m_DebugInfoContent );
+			}
 		}
 	}
 }

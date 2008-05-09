@@ -39,7 +39,7 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
-		/// Cleans up all the rendering resource that DisposeRenderingResource() were unable to deal with immediately
+		/// Cleans up all the rendering resource that <see cref="DisposeRenderingResource"/> were unable to deal with immediately
 		/// </summary>
 		/// <remarks>
 		/// Called at the end of every frame, and once by Dispose
@@ -59,6 +59,13 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Calls Dispose on an OpenGL rendering resource (if it implements IDisposable).
 		/// </summary>
+		/// <remarks>
+		/// OpenGL resources, like textures, can only be destroyed in the thread that created them, which
+		/// in turn must be the main rendering thread.
+		/// This calls Dispose() on the specified object, if the current thread is the main rendering thread.
+		/// If it isn't the main rendering thread, then the object is moved to a disposable list, to be properly
+		/// disposed of when End() is next called (<see cref="CleanUpRenderingResources"/>).
+		/// </remarks>
 		public void DisposeRenderingResource( object resource )
 		{
 			IDisposable disposable = resource as IDisposable;
@@ -102,17 +109,11 @@ namespace Rb.Rendering.OpenGl
 		#region Frames
 
 		/// <summary>
-		/// Sets up to render the next frame
-		/// </summary>
-		public override void Begin( )
-		{
-		}
-
-		/// <summary>
 		/// Cleans up after rendering the frame
 		/// </summary>
 		public override void End( )
 		{
+			base.End( );
 			CleanUpRenderingResources( );
 		}
 

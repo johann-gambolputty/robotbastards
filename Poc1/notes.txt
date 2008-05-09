@@ -57,6 +57,10 @@
 	- Vertex attrib pointers (rather than specific client arrays)
 		- http://www.opengl.org/sdk/docs/man/xhtml/glVertexAttribPointer.xml
 
+	- TerrAnim8tor
+		- (Tan8 UV mapping for terrain textures)
+		- http://www.biederman.net/leslie/tutorials/Terranim8or/terrain/terrain3.htm
+
 - Profiling code pretty much done
 	- Add bits to controls
 	- Save profile logs

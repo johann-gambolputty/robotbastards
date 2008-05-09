@@ -229,8 +229,8 @@ namespace Rb.Rendering.Windows
 		/// </summary>
 		protected virtual void EndPaint( )
 		{
-			m_Setup.EndPaint( this );
 			Graphics.Renderer.End( );
+			m_Setup.EndPaint( this );
 			if ( OnEndPaint != null )
 			{
 				OnEndPaint( this, null );
