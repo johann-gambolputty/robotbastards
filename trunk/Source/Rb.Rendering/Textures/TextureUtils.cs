@@ -11,6 +11,19 @@ namespace Rb.Rendering.Textures
 	/// </summary>
 	public static class TextureUtils
 	{
+		#region Texture creation from bitmap shortcuts 
+
+		public static ITexture2d FromBitmap( Bitmap bmp, bool generateMipMaps )
+		{
+			ITexture2d texture = Graphics.Factory.CreateTexture2d( );
+			texture.Load( bmp, generateMipMaps );
+
+			return texture;
+		}
+
+		#endregion
+
+
 		#region Existing 2d texture loads
 
 		/// <summary>

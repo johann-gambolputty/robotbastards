@@ -8,6 +8,7 @@ using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
+using Rb.Rendering.Textures;
 using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc1.Universe.Classes.Rendering
@@ -43,9 +44,11 @@ namespace Poc1.Universe.Classes.Rendering
 			    bmp.Save( m_Planet.Name + " Planet Texture " + index++ + ".jpg", ImageFormat.Jpeg );
 			}
 
+			//	Generate terrain type texture
+			m_TerrainTypes = TerrainTypeManager.CreateDefault( );
 
 		///	m_TerrainPatches = new SphereTerrainPatches( planet, m_Terrain, m_PlanetTexture );
-			m_TerrainPatches = new SphereTerrainQuadPatches( planet, m_Terrain, m_PlanetTexture );
+			m_TerrainPatches = new SphereTerrainQuadPatches( planet, m_TerrainTypes, m_Terrain );
 
 			//	Generate cloud textures
 			m_CloudGenerator = new SphereCloudsGenerator( 256 );
@@ -112,21 +115,6 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#endregion
 
-		#region Private Members
-
-		private readonly SphereCloudsGenerator m_CloudGenerator;
-		private readonly ICubeMapTexture m_PlanetTexture;
-		private readonly ITechnique m_PlanetTechnique;
-		private readonly ITechnique m_CloudTechnique;
-		private readonly IRenderable m_PlanetGeometry;
-		private float m_CloudAngle;
-		private readonly Matrix44 m_CloudOffsetTransform = new Matrix44( );
-		private readonly SphereTerrain m_Terrain;
-		private readonly IRenderable m_TerrainPatches;
-		private readonly SpherePlanet m_Planet;
-
-		#endregion
-
 		#region IDisposable Members
 
 		/// <summary>
@@ -139,5 +127,23 @@ namespace Poc1.Universe.Classes.Rendering
 		}
 
 		#endregion
+
+		#region Private Members
+
+		private readonly TerrainTypeManager m_TerrainTypes;
+		private readonly SphereCloudsGenerator m_CloudGenerator;
+		private readonly ICubeMapTexture m_PlanetTexture;
+		private readonly ITechnique m_PlanetTechnique;
+		private readonly ITechnique m_CloudTechnique;
+		private readonly IRenderable m_PlanetGeometry;
+		private readonly Matrix44 m_CloudOffsetTransform = new Matrix44( );
+		private readonly SphereTerrain m_Terrain;
+		private readonly IRenderable m_TerrainPatches;
+		private readonly SpherePlanet m_Planet;
+
+		private float m_CloudAngle;
+
+		#endregion
+
 	}
 }

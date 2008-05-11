@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
+using System.Drawing;
+using Poc1.Tools.TerrainTextures.Core;
 
 namespace Poc1.Tools.TerrainTextures
 {
@@ -47,6 +44,50 @@ namespace Poc1.Tools.TerrainTextures
 		public MainForm( )
 		{
 			InitializeComponent( );
+			AddTypeControls( );
+		}
+
+		private void AddTypeControls( )
+		{
+			TerrainTypeEditorControl newControl = new TerrainTypeEditorControl( );
+			newControl.Enabled = false;
+			newControl.RemoveControl += TerrainTypeEditorControl_RemoveControl;
+			terrainTypeControlsLayoutPanel.Controls.Add( newControl );
+		}
+
+		private void TerrainTypeEditorControl_RemoveControl( TerrainTypeEditorControl control )
+		{
+			terrainTypeControlsLayoutPanel.Controls.Remove( control );
+		}
+
+		private void exitToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			Close( );
+		}
+
+		private void terrainTypeControlsLayoutPanel_MouseClick( object sender, MouseEventArgs e )
+		{
+			TerrainTypeEditorControl control = terrainTypeControlsLayoutPanel.GetChildAtPoint( e.Location ) as TerrainTypeEditorControl;
+			if ( control == null )
+			{
+				return;
+			}
+			if ( !control.Enabled )
+			{
+				control.Enabled = true;
+
+				AddTypeControls( );
+			}
+		}
+
+		private void MainForm_Load( object sender, EventArgs e )
+		{
+			if ( DesignMode )
+			{
+				return;
+			}
+
+			samplePanel.BackgroundImage = TerrainBitmapBuilder.Build( samplePanel.Width, samplePanel.Height );
 		}
 	}
 }

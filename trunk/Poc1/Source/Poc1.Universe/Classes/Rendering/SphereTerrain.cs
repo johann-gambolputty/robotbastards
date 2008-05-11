@@ -120,7 +120,6 @@ namespace Poc1.Universe.Classes.Rendering
 
 		}
 
-
 		private readonly SpherePlanet m_Planet;
 
 		/// <summary>

@@ -10,6 +10,10 @@ namespace Poc1
 		class UVector3
 		{
 			public :
+
+				static const UVector3 XAxis;
+				static const UVector3 YAxis;
+				static const UVector3 ZAxis;
 				
 				float m_X, m_Y, m_Z;
 
@@ -60,6 +64,11 @@ namespace Poc1
 					m_X *= rcpLen;
 					m_Y *= rcpLen;
 					m_Z *= rcpLen;
+				}
+
+				static float Dot( const UVector3& lhs, const UVector3& rhs )
+				{
+					return ( lhs.m_X * rhs.m_X + lhs.m_Y * rhs.m_Y + lhs.m_Z * rhs.m_Z ); 
 				}
 
 				static const UVector3 Cross( const UVector3& lhs, const UVector3& rhs )

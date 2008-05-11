@@ -4,29 +4,30 @@ using Rb.Core.Maths;
 namespace Poc1.Universe.Classes.Rendering
 {
 	/// <summary>
-	/// Used to model density functions based on terrain elevation, latitude and slope
+	/// Used to model density functions based on terrain elevation and slope
 	/// </summary>
 	/// <remarks>
 	/// Used for defining terrain type and vegetation distributions in different biomes
 	/// </remarks>
 	public class TerrainDistribution
 	{
+		public const int DistributionSamples = 256;
+
 		/// <summary>
 		/// Creates a default terrain distribution
 		/// </summary>
 		public TerrainDistribution( )
 		{
 			m_Elevations = new float[] { 1 };
-			m_Latitudes = new float[] { 1 };
 			m_Slopes = new float[] { 1 };
 		}
 
 		/// <summary>
 		/// Creates a terrain distribution
 		/// </summary>
-		public TerrainDistribution( Sample[] elevations, Sample[] latitudes, Sample[] slopes )
+		public TerrainDistribution( Sample[] elevations, Sample[] slopes )
 		{
-			Setup( elevations, latitudes, slopes );
+			Setup( elevations, slopes );
 		}
 
 		public struct Sample
@@ -45,9 +46,8 @@ namespace Poc1.Universe.Classes.Rendering
 		/// Sets up this terrain distribution
 		/// </summary>
 		/// <param name="elevations">Elevation densities</param>
-		/// <param name="latitudes">Latitude densities</param>
 		/// <param name="slopes">Slope densities</param>
-		public void Setup( Sample[] elevations, Sample[] latitudes, Sample[] slopes )
+		public void Setup( Sample[] elevations, Sample[] slopes )
 		{
 			if ( elevations == null )
 			{
@@ -56,14 +56,6 @@ namespace Poc1.Universe.Classes.Rendering
 			if ( elevations.Length == 0 )
 			{
 				throw new ArgumentException( "Elevations array must contain 1 or more values" );
-			}
-			if ( latitudes == null )
-			{
-				throw new ArgumentNullException( "latitudes" );
-			}
-			if ( latitudes.Length == 0 )
-			{
-				throw new ArgumentException( "Latitudes array must contain 1 or more values" );
 			}
 			if ( slopes == null )
 			{
@@ -74,31 +66,35 @@ namespace Poc1.Universe.Classes.Rendering
 				throw new ArgumentException( "Slopes array must contain 1 or more values" );
 			}
 
-			m_Elevations = CreateUniformSampleArray( elevations, 256 );
-			m_Latitudes = CreateUniformSampleArray( latitudes, 256 );
-			m_Slopes = CreateUniformSampleArray( slopes, 256 );
+			m_Elevations = CreateUniformSampleArray( elevations, DistributionSamples );
+			m_Slopes = CreateUniformSampleArray( slopes, DistributionSamples );
 		}
 
 		/// <summary>
 		/// Samples the distribution function
 		/// </summary>
 		/// <param name="e">Normalised elevation</param>
-		/// <param name="l">Normalised latitude</param>
 		/// <param name="s">Normalised slope</param>
-		/// <returns>Returns the value of the density function at (e,l,s)</returns>
-		public float GetSample( float e, float l, float s )
+		/// <returns>Returns the value of the density function at (e,s)</returns>
+		public float GetSample( float e, float s )
 		{
 			float eD = GetValue( m_Elevations, e );
-			float lD = GetValue( m_Latitudes, l );
 			float sD = GetValue( m_Slopes, s );
 
-			return eD * lD * sD;
+			return eD * sD;
+		}
+
+		/// <summary>
+		/// Samples the distribution function
+		/// </summary>
+		public float GetSample( int e, int s )
+		{
+			return m_Elevations[ e ] * m_Slopes[ s ];
 		}
 
 		#region Private Members
 
 		private float[] m_Elevations;
-		private float[] m_Latitudes;
 		private float[] m_Slopes;
 
 		private static float[] CreateUniformSampleArray( Sample[] samples, int count )

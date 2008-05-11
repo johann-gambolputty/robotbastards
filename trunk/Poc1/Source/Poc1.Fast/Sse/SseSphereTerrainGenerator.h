@@ -104,10 +104,10 @@ namespace Poc1
 				void FillPositionHeightCacheLine( const int w4, float* line, __m128 xxxx, __m128 yyyy, __m128 zzzz, const __m128& colXInc, const __m128& colYInc, const __m128& colZInc );
 
 				///	\brief	Determines the maximum error between two arrays filled with height data
-				static float GetMaximumError( const int count, const float* heights0 );
+				float GetMaximumError( const int count, const float* heights0 );
 
 				///	\brief	Calculates a normal from stuff
-				inline static void CalculateNormal( UTerrainVertex* v, const int prev, const int next, const float* xSrc, const float* ySrc, const float* zSrc, const float* uXSrc, const float* uYSrc, const float* uZSrc, const float* dXSrc, const float* dYSrc, const float* dZSrc )
+				inline static void CalculateNormal( UTerrainVertex* v, const int prev, const int next, const float height, const float* xSrc, const float* ySrc, const float* zSrc, const float* uXSrc, const float* uYSrc, const float* uZSrc, const float* dXSrc, const float* dYSrc, const float* dZSrc )
 				{
 					const UVector3 left	( xSrc [ prev  ] - v->X( ), ySrc [ prev ] - v->Y( ), zSrc [ prev ] - v->Z( ) );
 					const UVector3 right( xSrc [ next  ] - v->X( ), ySrc [ next ] - v->Y( ), zSrc [ next ] - v->Z( ) );
@@ -126,6 +126,14 @@ namespace Poc1
 					acc.Normalise( );
 
 					v->SetNormal( acc.m_X, acc.m_Y, acc.m_Z );
+
+					UVector3 yAxis( v->X( ), v->Y( ), v->Z( ) );
+					yAxis.Normalise( );
+
+					//	Slope of 0 is flat, slope of 1 is vertical
+					const float slope = UVector3::Dot( yAxis, acc );
+
+					v->SetTerrainParameters( slope, height );
 				}
 		};
 		
@@ -212,7 +220,7 @@ namespace Poc1
 				//	Disable normalize to remove sphere mapping
 				Normalize( tmpXxxx, tmpYyyy, tmpZzzz );
 				__m128 heights = m_Displacer.Displace( tmpXxxx, tmpYyyy, tmpZzzz );
-				heights = m_Displacer.MapToHeightRange( heights );
+			//	heights = m_Displacer.MapToHeightRange( heights );
 
 				//	Store heights alongside positions, to avoid cache hit
 				_mm_store_ps( curPos, tmpXxxx ); curPos += 4;
@@ -252,7 +260,7 @@ namespace Poc1
 				heights0 += 16;
 			}
 
-			return maxError;
+			return m_Displacer.MapErrorToHeightRange( maxError );
 		}
 
 		template < typename DisplaceType >
@@ -281,7 +289,7 @@ namespace Poc1
 			//	Create a cache for storing vertex positions
 			int fullWidth = width + 8;
 			fullWidth = ( fullWidth % 4 == 0 ) ? fullWidth : fullWidth + ( 4 - ( fullWidth % 4 ) );
-			const int cacheSize = fullWidth * 3;
+			const int cacheSize = fullWidth * 4; // NOTE: AP: x4, not x3, because we need to store heights also
 			SetFpCacheSize( cacheSize );
 			const int fullWidthDiv4 = fullWidth / 4;
 			float** cacheLines = m_FpCacheLines;
@@ -291,17 +299,17 @@ namespace Poc1
 			int nextCacheLine = 2;
 
 			//	Fill the cache with positions from the first 3 vertex rows
-			FillPositionCacheLine( fullWidthDiv4, cacheLines[ 0 ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
+			FillPositionHeightCacheLine( fullWidthDiv4, cacheLines[ 0 ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
 			startXxxx = _mm_add_ps( startXxxx, rowXInc );
 			startYyyy = _mm_add_ps( startYyyy, rowYInc );
 			startZzzz = _mm_add_ps( startZzzz, rowZInc );
 
-			FillPositionCacheLine( fullWidthDiv4, cacheLines[ 1 ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
+			FillPositionHeightCacheLine( fullWidthDiv4, cacheLines[ 1 ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
 			startXxxx = _mm_add_ps( startXxxx, rowXInc );
 			startYyyy = _mm_add_ps( startYyyy, rowYInc );
 			startZzzz = _mm_add_ps( startZzzz, rowZInc );
 
-			FillPositionCacheLine( fullWidthDiv4, cacheLines[ 2 ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
+			FillPositionHeightCacheLine( fullWidthDiv4, cacheLines[ 2 ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
 
 			//	Point to the positions and normals in the first 4 vertices
 			UTerrainVertex* v0 = vertices;
@@ -320,19 +328,20 @@ namespace Poc1
 
 			for ( int row = 0; row < height; ++row, v += vInc )
 			{
-				const float* uXSrc = cacheLines[ prevCacheLine ] + 12;
-				const float* uYSrc = cacheLines[ prevCacheLine ] + 16;
-				const float* uZSrc = cacheLines[ prevCacheLine ] + 20;
+				const float* uXSrc = cacheLines[ prevCacheLine ] + 16;
+				const float* uYSrc = cacheLines[ prevCacheLine ] + 20;
+				const float* uZSrc = cacheLines[ prevCacheLine ] + 24;
 				
-				const float* xSrc = cacheLines[ curCacheLine ] + 12;
-				const float* ySrc = cacheLines[ curCacheLine ] + 16;
-				const float* zSrc = cacheLines[ curCacheLine ] + 20;
+				const float* xSrc = cacheLines[ curCacheLine ] + 16;
+				const float* ySrc = cacheLines[ curCacheLine ] + 20;
+				const float* zSrc = cacheLines[ curCacheLine ] + 24;
+				const float* hSrc = cacheLines[ curCacheLine ] + 28;
 				
-				const float* dXSrc = cacheLines[ nextCacheLine ] + 12;
-				const float* dYSrc = cacheLines[ nextCacheLine ] + 16;
-				const float* dZSrc = cacheLines[ nextCacheLine ] + 20;
+				const float* dXSrc = cacheLines[ nextCacheLine ] + 16;
+				const float* dYSrc = cacheLines[ nextCacheLine ] + 20;
+				const float* dZSrc = cacheLines[ nextCacheLine ] + 24;
 
-				__m128 uuuu = _mm_set_ps( 0, uInc, uInc * 2, uInc * 3 );
+				__m128 uuuu = _mm_set_ps( uInc * 3, uInc * 2, uInc, 0 );
 
 				for ( int col = 0; col < widthDiv4; ++col )
 				{
@@ -350,10 +359,10 @@ namespace Poc1
 					v3->SetTerrainUv( uArr[ 3 ], v );
 
 					//	Calculate vertex normals
-					CalculateNormal( v0, -9, 1, xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
-					CalculateNormal( v1, -1, 1, xSrc + 1, ySrc + 1, zSrc + 1, uXSrc + 1, uYSrc + 1, uZSrc + 1, dXSrc + 1, dYSrc + 1, dZSrc + 1 );
-					CalculateNormal( v2, -1, 1, xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
-					CalculateNormal( v3, -1, 9, xSrc + 3, ySrc + 3, zSrc + 3, uXSrc + 3, uYSrc + 3, uZSrc + 3, dXSrc + 3, dYSrc + 3, dZSrc + 3 );
+					CalculateNormal( v0, -13, 1, hSrc[ 0 ], xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
+					CalculateNormal( v1, -1, 1, hSrc[ 1 ], xSrc + 1, ySrc + 1, zSrc + 1, uXSrc + 1, uYSrc + 1, uZSrc + 1, dXSrc + 1, dYSrc + 1, dZSrc + 1 );
+					CalculateNormal( v2, -1, 1, hSrc[ 2 ], xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
+					CalculateNormal( v3, -1, 13, hSrc[ 3 ], xSrc + 3, ySrc + 3, zSrc + 3, uXSrc + 3, uYSrc + 3, uZSrc + 3, dXSrc + 3, dYSrc + 3, dZSrc + 3 );
 
 					//	Move vertex pointers on
 					v0 += 4;
@@ -362,9 +371,9 @@ namespace Poc1
 					v3 += 4;
 
 					//	Move cache pointers on
-					xSrc += 12; ySrc += 12; zSrc += 12;
-					uXSrc += 12; uYSrc += 12; uZSrc += 12;
-					dXSrc += 12; dYSrc += 12; dZSrc += 12;
+					xSrc += 16; ySrc += 16; zSrc += 16; hSrc += 16;
+					uXSrc += 16; uYSrc += 16; uZSrc += 16;
+					dXSrc += 16; dYSrc += 16; dZSrc += 16;
 
 					uuuu = _mm_add_ps( uuuu, uuuuInc );
 				}
@@ -374,17 +383,17 @@ namespace Poc1
 
 					v0->SetPosition( xSrc[ 0 ], ySrc[ 0 ], zSrc[ 0 ] );
 					v0->SetTerrainUv( uArr[ 0 ], v );
-					CalculateNormal( v0, -9, 1, xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
+					CalculateNormal( v0, -13, 1, hSrc[ 0 ], xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
 					if ( widthMod4 > 1 )
 					{
 						v1->SetPosition( xSrc[ 1 ], ySrc[ 1 ], zSrc[ 1 ] );
 						v1->SetTerrainUv( uArr[ 1 ], v );
-						CalculateNormal( v1, -1, 1, xSrc + 1, ySrc + 1, zSrc + 1, uXSrc + 1, uYSrc + 1, uZSrc + 1, dXSrc + 1, dYSrc + 1, dZSrc + 1 );
+						CalculateNormal( v1, -1, 1, hSrc[ 1 ], xSrc + 1, ySrc + 1, zSrc + 1, uXSrc + 1, uYSrc + 1, uZSrc + 1, dXSrc + 1, dYSrc + 1, dZSrc + 1 );
 						if ( widthMod4 > 2 )
 						{
 							v2->SetPosition( xSrc[ 2 ], ySrc[ 2 ], zSrc[ 2 ] );
 							v2->SetTerrainUv( uArr[ 2 ], v );
-							CalculateNormal( v2, -1, 1, xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
+							CalculateNormal( v2, -1, 1, hSrc[ 2 ], xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
 						}
 					}
 					v0 += widthMod4;
@@ -401,7 +410,7 @@ namespace Poc1
 				startZzzz = _mm_add_ps( startZzzz, rowZInc );
 				if ( row < ( height - 1 ) )
 				{
-					FillPositionCacheLine( fullWidthDiv4, cacheLines[ nextCacheLine ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
+					FillPositionHeightCacheLine( fullWidthDiv4, cacheLines[ nextCacheLine ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
 				}
 			}
 		}
@@ -483,6 +492,7 @@ namespace Poc1
 					const float* xSrc = cacheLines[ curCacheLine ] + 16;
 					const float* ySrc = cacheLines[ curCacheLine ] + 20;
 					const float* zSrc = cacheLines[ curCacheLine ] + 24;
+					const float* hSrc = cacheLines[ curCacheLine ] + 28;
 					
 					const float* dXSrc = cacheLines[ nextCacheLine ] + 16;
 					const float* dYSrc = cacheLines[ nextCacheLine ] + 20;
@@ -493,29 +503,29 @@ namespace Poc1
 					{
 						//	Store positions
 						v0->SetPosition( xSrc[ 0 ], ySrc[ 0 ], zSrc[ 0 ] );
-						v1->SetPosition( xSrc[ 1 ], ySrc[ 1 ], zSrc[ 1 ] );
+						v1->SetPosition( xSrc[ 2 ], ySrc[ 2 ], zSrc[ 2 ] );
 
 						//	Calculate vertex normals
-						CalculateNormal( v0, -13, 2, xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
-						CalculateNormal( v1, -2, 14, xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
+						CalculateNormal( v0, -13, 2, hSrc[ 0 ], xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
+						CalculateNormal( v1, -2, 14, hSrc[ 2 ], xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
 
 						//	Move vertex pointers on
 						v0 += 2;
 						v1 += 2;
 
 						//	Move cache pointers on
-						xSrc += 16; ySrc += 16; zSrc += 16;
+						xSrc += 16; ySrc += 16; zSrc += 16; hSrc += 16;
 						uXSrc += 16; uYSrc += 16; uZSrc += 16;
 						dXSrc += 16; dYSrc += 16; dZSrc += 16;
 					}
 					if ( widthMod4 > 0 )
 					{
 						v0->SetPosition( xSrc[ 0 ], ySrc[ 0 ], zSrc[ 0 ] );
-						CalculateNormal( v0, -13, 2, xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
+						CalculateNormal( v0, -13, 2, hSrc[ 0 ], xSrc, ySrc, zSrc, uXSrc, uYSrc, uZSrc, dXSrc, dYSrc, dZSrc );
 						if ( widthMod4 > 1 )
 						{
 							v1->SetPosition( xSrc[ 1 ], ySrc[ 1 ], zSrc[ 1 ] );
-							CalculateNormal( v1, -2, 14, xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
+							CalculateNormal( v1, -2, 14, hSrc[ 2 ], xSrc + 2, ySrc + 2, zSrc + 2, uXSrc + 2, uYSrc + 2, uZSrc + 2, dXSrc + 2, dYSrc + 2, dZSrc + 2 );
 						}
 						v0 += widthMod4;
 						v1 += widthMod4;
