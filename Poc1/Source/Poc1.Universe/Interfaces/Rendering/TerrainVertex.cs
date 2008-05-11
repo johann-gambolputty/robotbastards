@@ -9,6 +9,23 @@ namespace Poc1.Universe.Interfaces.Rendering
 	[StructLayout( LayoutKind.Sequential, Pack = 0 )]
 	public struct TerrainVertex
 	{
+		public unsafe void CopyTo( TerrainVertex* vertex, Vector3 offset )
+		{
+			vertex->m_X = m_X + offset.X;
+			vertex->m_Y = m_Y + offset.Y;
+			vertex->m_Z = m_Z + offset.Z;
+
+			vertex->m_NormalX = m_NormalX;
+			vertex->m_NormalY = m_NormalY;
+			vertex->m_NormalZ = m_NormalZ;
+
+			vertex->m_U = m_U;
+			vertex->m_V = m_V;
+
+			vertex->m_Slope = m_Slope;
+			vertex->m_Elevation = m_Elevation;
+		}
+
 		/// <summary>
 		/// Sets the vertex position
 		/// </summary>
@@ -124,6 +141,17 @@ namespace Poc1.Universe.Interfaces.Rendering
 			set { m_NormalZ = value; }
 		}
 
+		public float Slope
+		{
+			get { return m_Slope; }
+			set { m_Slope = value; }
+		}
+
+		public float Elevation
+		{
+			get { return m_Elevation; }
+			set { m_Elevation = value; }
+		}
 
 		#region Private Members
 
@@ -137,6 +165,9 @@ namespace Poc1.Universe.Interfaces.Rendering
 
 		private float m_U;
 		private float m_V;
+
+		private float m_Slope;
+		private float m_Elevation;
 
 		#endregion
 	}

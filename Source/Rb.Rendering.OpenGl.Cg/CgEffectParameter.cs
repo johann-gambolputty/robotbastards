@@ -65,9 +65,7 @@ namespace Rb.Rendering.OpenGl.Cg
 			{
 				int texHandle = ( ( IOpenGlTexture )tex ).TextureHandle;
 				Tao.Cg.CgGl.cgGLSetManageTextureParameters( context, true );
-				Tao.Cg.CgGl.cgGLEnableTextureParameter( parameter );
-				TaoCg.cgSetSamplerState( parameter );
-				Tao.Cg.CgGl.cgGLSetTextureParameter( parameter, texHandle );
+				Tao.Cg.CgGl.cgGLSetupSampler( parameter, texHandle );
 			}
 		}
 

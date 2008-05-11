@@ -14,6 +14,7 @@ namespace Poc1.Universe.Classes.Rendering
 			format.Add( VertexFieldSemantic.Position, VertexFieldElementTypeId.Float32, 3 );
 			format.Add( VertexFieldSemantic.Normal, VertexFieldElementTypeId.Float32, 3 );
 			format.Add( VertexFieldSemantic.Texture0, VertexFieldElementTypeId.Float32, 2 );
+			format.Add( VertexFieldSemantic.Texture1, VertexFieldElementTypeId.Float32, 2 );
 
 			m_Vb = Graphics.Factory.CreateVertexBuffer( );
 			m_Vb.Create( format, TerrainQuadPatch.TotalVerticesPerPatch * PoolSize );

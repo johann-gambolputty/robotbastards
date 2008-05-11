@@ -27,6 +27,9 @@ namespace Poc1
 					m_SeaLevel = _mm_set1_ps( seaLevel );
 					m_MaxHeight = _mm_set1_ps( maxHeight );
 					m_HeightRange = _mm_sub_ps( m_MaxHeight, m_MinHeight );
+
+					m_MinHeightF = minHeight;
+					m_HeightRangeF = maxHeight - minHeight;
 				}
 
 				///	\brief	Maps 4 normalized height values into the height range of this displacer
@@ -35,8 +38,16 @@ namespace Poc1
 					return _mm_add_ps( m_MinHeight, _mm_mul_ps( heights, m_HeightRange ) );
 				}
 
+				///	\brief	Maps a single normalized height value into the height range of this displacer (does not add minimum height)
+				float MapErrorToHeightRange( float height ) const
+				{
+					return m_HeightRangeF * height;
+				}
+
 			protected :
 
+				float m_MinHeightF;
+				float m_HeightRangeF;
 				__m128 m_MinHeight;
 				__m128 m_SeaLevel;
 				__m128 m_MaxHeight;

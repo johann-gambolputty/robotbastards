@@ -23,7 +23,7 @@ namespace Poc1
 				void SetTerrainUv( float u, float v );
 
 				///	\brief	Sets the terrain parameters of the vertex
-				void SetTerrainParameters( float slope, float altitude, float latitude );
+				void SetTerrainParameters( float slope, float elevation );
 
 			private :
 
@@ -38,9 +38,8 @@ namespace Poc1
 				float m_U;
 				float m_V;
 
-				//float m_Slope;
-				//float m_Altitude;
-				//float m_Latitude;
+				float m_Slope;
+				float m_Elevation;
 
 		}; //UTerrainVertex
 
@@ -66,11 +65,10 @@ namespace Poc1
 			m_V = v;
 		}
 
-		inline void UTerrainVertex::SetTerrainParameters( float slope, float altitude, float latitude )
+		inline void UTerrainVertex::SetTerrainParameters( float slope, float elevation )
 		{
-			//m_Slope = slope;
-			//m_Altitude = altitude;
-			//m_Latitude = latitude;
+			m_Slope = slope;
+			m_Elevation = elevation;
 		}
 	};
 };

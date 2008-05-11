@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Rendering;
@@ -8,23 +10,29 @@ using Rb.Rendering;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Textures;
+using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc1.Universe.Classes.Rendering
 {
 	class SphereTerrainQuadPatches : IRenderable
 	{
 
-		public SphereTerrainQuadPatches( IPlanet planet, IPlanetTerrain terrain, ICubeMapTexture planetTexture )
+		public SphereTerrainQuadPatches( IPlanet planet, TerrainTypeManager terrainTypes, IPlanetTerrain terrain )
 		{
+			Bitmap terrainTypesBitmap = terrainTypes.ToBitmap( );
+			terrainTypesBitmap.Save( planet.Name + " TerrainTypes.bmp", ImageFormat.Bmp );
+			m_TerrainTypesTexture = TextureUtils.FromBitmap( terrainTypesBitmap, false );
+
 			m_Planet = planet;
-			m_PlanetTexture = planetTexture;
 
 			IEffect effect = ( IEffect )AssetManager.Instance.Load( "Effects/Planets/terrestrialPlanetTerrain.cgfx" );
 			TechniqueSelector selector = new TechniqueSelector( effect, "DefaultTechnique" );
 
 			TextureLoader.TextureLoadParameters loadParameters = new TextureLoader.TextureLoadParameters( );
 			loadParameters.GenerateMipMaps = true;
-			m_TerrainTypesTexture = ( ITexture2d )AssetManager.Instance.Load( "Textures/Terrain0/grass13a.jpg", loadParameters );
+			m_TerrainPackTexture = ( ITexture2d )AssetManager.Instance.Load( "Textures/Terrain Packs/TerrainPack0.jpg", loadParameters );
+
+			m_NoiseTexture = ( ITexture2d )AssetManager.Instance.Load( "Textures/Terrain Packs/Noise.jpg" );
 
 			m_Terrain = terrain;
 			m_PlanetTerrainTechnique = selector;
@@ -46,11 +54,11 @@ namespace Poc1.Universe.Classes.Rendering
 			CubeSide[] sides = new CubeSide[]
 				{
 					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 7 ], cubePoints[ 6 ], cubePoints[ 4 ] ),	//	+z
-					//new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 0 ], cubePoints[ 1 ], cubePoints[ 3 ] ),	//	-z
-					//new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 4 ], cubePoints[ 5 ], cubePoints[ 0 ] ),	//	+y
-					//new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 6 ], cubePoints[ 7 ], cubePoints[ 2 ] ),	//	-y
-					//new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 5 ], cubePoints[ 6 ], cubePoints[ 1 ] ),	//	+x
-					//new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 0 ], cubePoints[ 3 ], cubePoints[ 4 ] ),	//	-x
+					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 0 ], cubePoints[ 1 ], cubePoints[ 3 ] ),	//	-z
+					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 4 ], cubePoints[ 5 ], cubePoints[ 0 ] ),	//	+y
+					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 6 ], cubePoints[ 7 ], cubePoints[ 2 ] ),	//	-y
+					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 5 ], cubePoints[ 6 ], cubePoints[ 1 ] ),	//	+x
+					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 0 ], cubePoints[ 3 ], cubePoints[ 4 ] ),	//	-x
 				};
 
 #if DEBUG
@@ -80,17 +88,21 @@ namespace Poc1.Universe.Classes.Rendering
 				Graphics.Renderer.SetTransform( TransformType.LocalToWorld, new Point3( x, y, z ), transform.XAxis, transform.YAxis, transform.ZAxis );
 			}
 
-			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainSampler" ].Set( m_PlanetTexture );
-			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainTextureSampler" ].Set( m_TerrainTypesTexture );
+			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainPackTexture" ].Set( m_TerrainPackTexture );
+			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainTypeTexture" ].Set( m_TerrainTypesTexture );
+			m_PlanetTerrainTechnique.Effect.Parameters[ "NoiseTexture" ].Set( m_NoiseTexture );
 
 			m_Vertices.VertexBuffer.Begin( );
 			context.ApplyTechnique( m_PlanetTerrainTechnique, RenderPatches );
 			m_Vertices.VertexBuffer.End( );
 
-			//foreach ( TerrainPatch patch in m_Patches )
-			//{
-			//    patch.DebugRender( );
-			//}
+			if ( DebugInfo.ShowPatchInfo )
+			{
+				foreach ( TerrainQuadPatch patch in m_Patches )
+				{
+					patch.DebugRender( );
+				}
+			}
 
 			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 
@@ -115,7 +127,7 @@ namespace Poc1.Universe.Classes.Rendering
 					Point3 curPos = rowStart;
 					for ( int col = 0; col < res; ++col )
 					{
-						System.Drawing.Color colour = ( col + row ) % 2 == 0 ? System.Drawing.Color.Red : System.Drawing.Color.Black;
+						Color colour = ( col + row ) % 2 == 0 ? Color.Red : Color.Black;
 
 						TerrainQuadPatch newPatch = new TerrainQuadPatch( vertices, colour, curPos, xAxis, yAxis );
 						allPatches.Add( newPatch );
@@ -135,9 +147,9 @@ namespace Poc1.Universe.Classes.Rendering
 		#region Private Members
 
 		private readonly ITexture2d					m_TerrainTypesTexture;
-
+		private readonly ITexture2d					m_TerrainPackTexture;
+		private readonly ITexture2d					m_NoiseTexture;
 		private readonly IPlanet					m_Planet;
-		private readonly ICubeMapTexture			m_PlanetTexture;
 		private readonly TerrainQuadPatchVertices	m_Vertices = new TerrainQuadPatchVertices( );
 		private readonly IPlanetTerrain				m_Terrain;
 		private readonly TechniqueSelector			m_PlanetTerrainTechnique;
@@ -167,14 +179,6 @@ namespace Poc1.Universe.Classes.Rendering
 			foreach ( TerrainQuadPatch patch in m_Patches )
 			{
 				patch.Render( );
-			}
-
-			if ( DebugInfo.ShowPatchInfo )
-			{
-				foreach ( TerrainQuadPatch patch in m_Patches )
-				{
-					patch.DebugRender( );
-				}
 			}
 		}
 

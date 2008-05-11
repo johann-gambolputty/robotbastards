@@ -191,6 +191,11 @@ namespace Rb.Rendering.OpenGl
 			{
 				FieldInfo field = m_Fields[ fieldIndex ];
 
+				if ( field.m_Texture != 0 )
+				{
+					Gl.glClientActiveTexture( field.m_Texture );
+				}
+
 				//	TODO: AP: Can we move this client state enable to the constructor?
 				Gl.glEnableClientState( field.m_State );
 				switch ( field.m_State )
@@ -229,6 +234,10 @@ namespace Rb.Rendering.OpenGl
 			for ( int fieldIndex = 0; fieldIndex < m_Fields.Length; ++fieldIndex )
 			{
 				//	TODO: AP: Can we remove this client state disable altogether?
+				if ( m_Fields[ fieldIndex ].m_Texture != 0 )
+				{
+					Gl.glClientActiveTexture( m_Fields[ fieldIndex ].m_Texture );
+				}
 				Gl.glDisableClientState( m_Fields[ fieldIndex ].m_State );
 			}
 		}
@@ -255,6 +264,7 @@ namespace Rb.Rendering.OpenGl
 			public int		m_Type;
 			public short	m_NumElements;
 			public short	m_Size;
+			public int		m_Texture;
 		}
 
 		private int m_Stride;
@@ -306,6 +316,22 @@ namespace Rb.Rendering.OpenGl
 			throw new NotImplementedException( string.Format( "No mapping for field \"{0}\" to opengl client state ", field ) );
 		}
 
+		private static int GetGlClientActiveTexture( VertexFieldSemantic field )
+		{
+			switch ( field )
+			{
+				case VertexFieldSemantic.Texture0: return Gl.GL_TEXTURE0;
+				case VertexFieldSemantic.Texture1: return Gl.GL_TEXTURE1;
+				case VertexFieldSemantic.Texture2: return Gl.GL_TEXTURE2;
+				case VertexFieldSemantic.Texture3: return Gl.GL_TEXTURE3;
+				case VertexFieldSemantic.Texture4: return Gl.GL_TEXTURE4;
+				case VertexFieldSemantic.Texture5: return Gl.GL_TEXTURE5;
+				case VertexFieldSemantic.Texture6: return Gl.GL_TEXTURE6;
+				case VertexFieldSemantic.Texture7: return Gl.GL_TEXTURE7;
+			}
+			return 0;
+		}
+
 		/// <summary>
 		/// Vertex buffer destruction
 		/// </summary>
@@ -345,6 +371,7 @@ namespace Rb.Rendering.OpenGl
 				info.m_Type = GetGlFieldElementType( desc.ElementType );
 				info.m_Size = ( short )desc.FieldSizeInBytes;
 				info.m_State = GetGlFieldSemantic( desc.Field );
+				info.m_Texture = GetGlClientActiveTexture( desc.Field );
 				m_Fields[ fieldIndex++ ] = info;
 			}
 

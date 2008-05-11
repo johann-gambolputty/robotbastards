@@ -64,6 +64,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -86,6 +87,15 @@
     <Compile Include="TerrainTypeEditorControl.Designer.cs">
       <DependentUpon>TerrainTypeEditorControl.cs</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Poc1.Tools.TerrainTextures.Core\Poc1.Tools.TerrainTextures.Core.csproj">
+      <Project>{F34331DC-90A9-4C51-B7F9-34B3B96965BD}</Project>
+      <Name>Poc1.Tools.TerrainTextures.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Delete.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -26,7 +26,7 @@ namespace Poc1.Universe.Classes.Rendering
 		#region Public Construction
 
 		public TerrainQuadPatch( TerrainQuadPatchVertices vertices, Color patchColour, Point3 origin, Vector3 uAxis, Vector3 vAxis ) :
-			this( vertices, patchColour, origin, uAxis, vAxis, float.MaxValue, 16.0f )
+			this( vertices, patchColour, origin, uAxis, vAxis, float.MaxValue, 128.0f )
 		{
 		}
 
@@ -341,12 +341,12 @@ namespace Poc1.Universe.Classes.Rendering
 
 		private unsafe static void CreateSkirtVertices( TerrainVertex* srcVertex, int srcOffset, TerrainVertex* dstVertex )
 		{
-			float skirtSize = 200;
+			float skirtSize = 100;
 			for ( int i = 0; i < VertexResolution; ++i )
 			{
 				Vector3 offset = srcVertex->Position.ToVector3( ).MakeNormal( ) * -skirtSize;
-				dstVertex->Position = srcVertex->Position + offset;
-				dstVertex->Normal = srcVertex->Normal;
+				srcVertex->CopyTo( dstVertex, offset );
+
 				srcVertex += srcOffset;
 				++dstVertex;
 			}

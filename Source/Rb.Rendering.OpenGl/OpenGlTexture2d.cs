@@ -394,24 +394,23 @@ namespace Rb.Rendering.OpenGl
 				case PixelFormat.Format1bppIndexed 		:	break;
 				case PixelFormat.Format24bppRgb			:
 				{
-				//	glFormat			= Gl.GL_BGR_EXT;
-					glFormat			= Gl.GL_RGB;
+					glFormat			= Gl.GL_BGR_EXT;
 					glInternalFormat	= Gl.GL_RGB;
 					glType				= Gl.GL_UNSIGNED_BYTE;
 					return format;
 				}
 				case PixelFormat.Format32bppArgb		:
 				{
+					glFormat			= Gl.GL_ABGR_EXT;	//	NOTE: AP: Think this is correct...
 					glInternalFormat	= Gl.GL_RGBA;
-					glFormat			= Gl.GL_RGBA;
 					glType				= Gl.GL_UNSIGNED_BYTE;
 					return format;
 				}
 				case PixelFormat.Format32bppPArgb		:	break;
 				case PixelFormat.Format32bppRgb			:
 				{
+					glFormat			= Gl.GL_ABGR_EXT;
 					glInternalFormat	= Gl.GL_RGBA;
-					glFormat			= Gl.GL_BGRA_EXT;
 					glType				= Gl.GL_UNSIGNED_BYTE;
 					return format;
 				}
