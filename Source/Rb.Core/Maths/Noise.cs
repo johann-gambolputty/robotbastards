@@ -66,7 +66,7 @@ namespace Rb.Core.Maths
 			float i2 = v3 + ( v4 - v3 ) * fX;
 
 			float r = i1 + ( i2 - i1 ) * fY;
-			return ( r / 0.8f ); // TODO: AP: Handy-wavy experimental normalization values
+			return ( r / 0.7f ); // TODO: AP: Handy-wavy experimental normalization values
 		}
 
 		/// <summary>
@@ -81,9 +81,9 @@ namespace Rb.Core.Maths
 			x -= ( float )Math.Floor( x );                                // FIND RELATIVE X,Y,Z
 			y -= ( float )Math.Floor( y );                                // OF POINT IN CUBE.
 			z -= ( float )Math.Floor( z );
-			float u = fade( x ),                                // COMPUTE FADE CURVES
-				   v = fade( y ),                                // FOR EACH OF X,Y,Z.
-				   w = fade( z );
+			float u = Fade( x ),                                // COMPUTE FADE CURVES
+				   v = Fade( y ),                                // FOR EACH OF X,Y,Z.
+				   w = Fade( z );
 			int A = Perm( X ) + Y,
 				AA = Perm( A ) + Z,
 				AB = Perm( A + 1 ) + Z,      // HASH COORDINATES OF
@@ -91,19 +91,19 @@ namespace Rb.Core.Maths
 				BA = Perm( B ) + Z,
 				BB = Perm( B + 1 ) + Z;      // THE 8 CUBE CORNERS,
 
-			float res = lerp( w,
-							lerp( v,
-								lerp( u,
+			float res = Lerp( w,
+							Lerp( v,
+								Lerp( u,
 									grad( Perm( AA ), x, y, z ),
 									grad( Perm( BA ), x - 1, y, z ) ), // BLENDED
-								lerp( u,
+								Lerp( u,
 									grad( Perm( AB ), x, y - 1, z ),  // RESULTS
 									grad( Perm( BB ), x - 1, y - 1, z ) ) ),// FROM  8
-							lerp( v,
-								lerp( u,
+							Lerp( v,
+								Lerp( u,
 									grad( Perm( AA + 1 ), x, y, z - 1 ),
 									grad( Perm( BA + 1 ), x - 1, y, z - 1 ) ), // OF CUBE
-								lerp( u,
+								Lerp( u,
 									grad( Perm( AB + 1 ), x, y - 1, z - 1 ),
 									grad( Perm( BB + 1 ), x - 1, y - 1, z - 1 ) ) ) );
 
@@ -128,7 +128,7 @@ namespace Rb.Core.Maths
 		private readonly int[] m_Perms = new int[ 512 ];
 		private readonly static Noise ms_Instance = new Noise( );
 
-		private static float fade( float t )
+		private static float Fade( float t )
 		{
 			return t * t * t * ( t * ( t * 6 - 15 ) + 10 );
 
@@ -136,7 +136,7 @@ namespace Rb.Core.Maths
 		//	return ( 3 * t2 ) - 2 * t2 * t;
 		}
 
-		private static float lerp( float t, float a, float b )
+		private static float Lerp( float t, float a, float b )
 		{
 			return a + t * ( b - a );
 		}
@@ -149,7 +149,6 @@ namespace Rb.Core.Maths
 			     //v = h < 4 ? y : z;
 			return ( ( h & 1 ) == 0 ? u : -u ) + ( ( h & 2 ) == 0 ? v : -v );
 		}
-
 
 		private static float SmoothNoise( int iX, int iY )
 		{

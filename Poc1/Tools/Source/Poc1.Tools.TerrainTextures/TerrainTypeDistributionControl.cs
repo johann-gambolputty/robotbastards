@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -8,6 +9,8 @@ namespace Poc1.Tools.TerrainTextures
 {
 	public partial class TerrainTypeDistributionControl : UserControl
 	{
+		public event EventHandler DistributionChanged;
+
 		public TerrainTypeDistributionControl( )
 		{
 			InitializeComponent( );
@@ -22,10 +25,16 @@ namespace Poc1.Tools.TerrainTextures
 			m_Blends.Colors[ 3 ] = dark; m_Blends.Positions[ 3 ] = 1;
 
 			m_GridColour = dark;
+		}
 
-			m_ControlPoints.Add( new ControlPoint( 0, 0 ) );
-			m_ControlPoints.Add( new ControlPoint( 0.5f, 0.5f ) );
-			m_ControlPoints.Add( new ControlPoint( 1, 1 ) );
+		public IDistribution Distribution
+		{
+			get { return m_Distribution; }
+			set
+			{
+				m_Distribution = value;
+				OnDistributionChanged( );
+			}
 		}
 
 		private static int GraphX
@@ -48,8 +57,12 @@ namespace Poc1.Tools.TerrainTextures
 			get { return Height - 4; }
 		}
 
+		private IList<ControlPoint> ControlPoints
+		{
+			get { return Distribution.ControlPoints; }
+		}
+
 		private IDistribution m_Distribution = new LinearDistribution( );
-		private readonly List<ControlPoint> m_ControlPoints = new List<ControlPoint>( );
 		private readonly ColorBlend m_Blends;
 		private readonly Color m_GridColour;
 		private int m_SelectedCpIndex = -1;
@@ -100,30 +113,30 @@ namespace Poc1.Tools.TerrainTextures
 			float yOffset = GraphY;
 			float graphHeight = GraphHeight;
 			Pen graphPen = Pens.Red;
-			float v0 = yOffset + graphHeight - m_Distribution.Sample( m_ControlPoints, 0 ) * graphHeight;
+			float v0 = yOffset + graphHeight - Distribution.Sample( 0 ) * graphHeight;
 			float t = 0;
 			float tInc = 1.0f / ( GraphWidth - 1 );
 			for ( int sample = 0; sample < GraphWidth; ++sample, t += tInc )
 			{
-				float v1 = yOffset + graphHeight - m_Distribution.Sample( m_ControlPoints, t ) * graphHeight;
+				float v1 = yOffset + graphHeight - Distribution.Sample( t ) * graphHeight;
 				e.Graphics.DrawLine( graphPen, sample + GraphX, v0, sample + GraphX + 1, v1 );
 				v0 = v1;
 			}
 
-			for ( int cpIndex = 0; cpIndex < m_ControlPoints.Count; ++cpIndex )
+			for ( int cpIndex = 0; cpIndex < ControlPoints.Count; ++cpIndex )
 			{
 				Brush brush = Brushes.Blue;
 				if ( cpIndex == m_SelectedCpIndex )
 				{
 					brush = Brushes.Red;
 				}
-				else if ( cpIndex == 0 || cpIndex == m_ControlPoints.Count - 1 )
+				else if ( cpIndex == 0 || cpIndex == ControlPoints.Count - 1 )
 				{
 					brush = Brushes.Green;	
 				}
 
-				float x = GraphX + m_ControlPoints[ cpIndex ].Position * GraphWidth;
-				float y = yOffset + graphHeight - m_ControlPoints[ cpIndex ].Value * graphHeight;
+				float x = GraphX + ControlPoints[ cpIndex ].Position * GraphWidth;
+				float y = yOffset + graphHeight - ControlPoints[ cpIndex ].Value * graphHeight;
 
 				e.Graphics.FillEllipse( brush, x - 3, y - 3, 6, 6 );
 			}
@@ -136,30 +149,30 @@ namespace Poc1.Tools.TerrainTextures
 				float fX = ( e.X - GraphX ) / ( float )GraphWidth;
 				float fY = ( ( GraphHeight - e.Y ) - GraphY ) / ( float )GraphHeight;
 
-				for ( int cpIndex = 0; cpIndex < m_ControlPoints.Count; ++cpIndex )
+				for ( int cpIndex = 0; cpIndex < ControlPoints.Count; ++cpIndex )
 				{
-					if ( fX < m_ControlPoints[ cpIndex ].Position )
+					if ( fX < ControlPoints[ cpIndex ].Position )
 					{
-						m_ControlPoints.Insert( cpIndex, new ControlPoint( fX, fY ) );
-						Invalidate( );
+						ControlPoints.Insert( cpIndex, new ControlPoint( fX, fY ) );
+						OnDistributionChanged( );
 						return;
 					}
 				}
-				m_ControlPoints.Add( new ControlPoint( fX, fY ) );
-				Invalidate( );
+				ControlPoints.Add( new ControlPoint( fX, fY ) );
+				OnDistributionChanged( );
 				return;
 			}
 
-			for ( int cpIndex = 0; cpIndex < m_ControlPoints.Count; ++cpIndex )
+			for ( int cpIndex = 0; cpIndex < ControlPoints.Count; ++cpIndex )
 			{
-				float cpX = GraphX + m_ControlPoints[ cpIndex ].Position * GraphWidth;
-				float cpY = GraphY + GraphHeight - m_ControlPoints[ cpIndex ].Value * GraphHeight;
+				float cpX = GraphX + ControlPoints[ cpIndex ].Position * GraphWidth;
+				float cpY = GraphY + GraphHeight - ControlPoints[ cpIndex ].Value * GraphHeight;
 
 				float sqrDist = ( e.X - cpX ) * ( e.X - cpX ) + ( e.Y - cpY ) * ( e.Y - cpY );
 				if ( sqrDist <= 9.0f )
 				{
 					m_SelectedCpIndex = m_MovingCpIndex = cpIndex;
-					Invalidate( );
+					OnDistributionChanged( );
 					return;
 				}
 			}
@@ -180,19 +193,28 @@ namespace Poc1.Tools.TerrainTextures
 			deltaX /= GraphWidth;
 			deltaY /= GraphHeight;
 
-			float min = ( m_MovingCpIndex == 0 ) ? 0 : ( m_ControlPoints[ m_MovingCpIndex - 1 ].Position );
-			float max = ( m_MovingCpIndex == m_ControlPoints.Count - 1 ) ? 1 : ( m_ControlPoints[ m_MovingCpIndex + 1 ].Position );
+			float min = ( m_MovingCpIndex == 0 ) ? 0 : ( ControlPoints[ m_MovingCpIndex - 1 ].Position );
+			float max = ( m_MovingCpIndex == ControlPoints.Count - 1 ) ? 1 : ( ControlPoints[ m_MovingCpIndex + 1 ].Position );
 			min += 0.001f;
 			max -= 0.001f;
 
-			float pos = m_ControlPoints[ m_MovingCpIndex ].Position + deltaX;
+			float pos = ControlPoints[ m_MovingCpIndex ].Position + deltaX;
 			pos = ( pos < min ? min : ( pos > max ) ? max : pos );
 
-			m_ControlPoints[ m_MovingCpIndex ].Position = pos;
-			m_ControlPoints[ m_MovingCpIndex ].Value -= deltaY;
+			ControlPoints[ m_MovingCpIndex ].Position = pos;
+			ControlPoints[ m_MovingCpIndex ].Value -= deltaY;
 
 			m_LastMousePos = e.Location;
 
+			OnDistributionChanged( );
+		}
+
+		private void OnDistributionChanged( )
+		{
+			if ( DistributionChanged != null )
+			{
+				DistributionChanged( this, null );
+			}
 			Invalidate( );
 		}
 
@@ -205,11 +227,11 @@ namespace Poc1.Tools.TerrainTextures
 		{
 			if ( e.KeyCode == Keys.Delete )
 			{
-				if ( m_SelectedCpIndex != -1 && m_ControlPoints.Count > 2 )
+				if ( m_SelectedCpIndex != -1 && ControlPoints.Count > 2 )
 				{
-					m_ControlPoints.RemoveAt( m_SelectedCpIndex );
+					ControlPoints.RemoveAt( m_SelectedCpIndex );
 					m_SelectedCpIndex = -1;
-					Invalidate( );
+					OnDistributionChanged( );
 				}
 			}
 		}

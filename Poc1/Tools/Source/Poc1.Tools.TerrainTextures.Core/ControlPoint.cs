@@ -1,6 +1,9 @@
 
+using System;
+
 namespace Poc1.Tools.TerrainTextures.Core
 {
+	[Serializable]
 	public class ControlPoint
 	{
 		public ControlPoint( float position, float value )
