@@ -1,34 +1,40 @@
-
+using System;
 using System.Collections.Generic;
 
 namespace Poc1.Tools.TerrainTextures.Core
 {
+	[Serializable]
 	public class LinearDistribution : IDistribution
 	{
 		public IList<ControlPoint> ControlPoints
 		{
 			get { return m_ControlPoints; }
 		}
-		public float Sample( IList<ControlPoint> points, float t )
+
+		public float Sample( float t )
 		{
-			if ( t <= points[ 0 ].Position )
+			if ( m_ControlPoints.Count == 0 )
 			{
-				return points[ 0 ].Value;
+				return 0;
 			}
-			for ( int i = 0; i < points.Count - 1; ++i )
+			if ( t <= m_ControlPoints[ 0 ].Position )
 			{
-				if ( t <= points[ i + 1 ].Position )
+				return m_ControlPoints[ 0 ].Value;
+			}
+			for ( int i = 0; i < m_ControlPoints.Count - 1; ++i )
+			{
+				if ( t <= m_ControlPoints[ i + 1 ].Position )
 				{
-					float minLocalT = points[ i ].Position;
-					float maxLocalT = points[ i + 1 ].Position;
+					float minLocalT = m_ControlPoints[ i ].Position;
+					float maxLocalT = m_ControlPoints[ i + 1 ].Position;
 
 					float localT = ( t - minLocalT ) / ( maxLocalT - minLocalT );
-					return ( points[ i ].Value * ( 1 - localT ) + points[ i + 1 ].Value * localT );
+					return ( m_ControlPoints[ i ].Value * ( 1 - localT ) + m_ControlPoints[ i + 1 ].Value * localT );
 				}
 			}
-			return points[ points.Count - 1 ].Value;
+			return m_ControlPoints[ m_ControlPoints.Count - 1 ].Value;
 		}
 
-		private IList<ControlPoint> ControlPoints = new List<COntrol
+		private readonly IList<ControlPoint> m_ControlPoints = new List<ControlPoint>( );
 	}
 }
