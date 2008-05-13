@@ -48,7 +48,7 @@ namespace Poc1.Universe.Classes.Rendering
 			m_TerrainTypes = TerrainTypeManager.CreateDefault( );
 
 		///	m_TerrainPatches = new SphereTerrainPatches( planet, m_Terrain, m_PlanetTexture );
-			m_TerrainPatches = new SphereTerrainQuadPatches( planet, m_TerrainTypes, m_Terrain );
+			m_TerrainPatches = new SphereTerrainQuadPatches( planet, m_Terrain );
 
 			//	Generate cloud textures
 			m_CloudGenerator = new SphereCloudsGenerator( 256 );

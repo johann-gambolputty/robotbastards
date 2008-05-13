@@ -11,9 +11,9 @@ namespace Poc1
 		{
 			public :
 
-				static const UVector3 XAxis;
-				static const UVector3 YAxis;
-				static const UVector3 ZAxis;
+				//static const UVector3 XAxis;
+				//static const UVector3 YAxis;
+				//static const UVector3 ZAxis;
 				
 				float m_X, m_Y, m_Z;
 

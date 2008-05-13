@@ -19,7 +19,7 @@ namespace Poc1
 					{
 						SseSphereTerrainGeneratorT< SseRidgedFractalDisplacer >* impl = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseRidgedFractalDisplacer >( );
 						impl->GetDisplacer( ).GetFractal( ).GetNoise( ).SetNewSeed( seed );
-						impl->GetDisplacer( ).GetFractal( ).Setup( 6.0f, 8.0f, 12 );
+						impl->GetDisplacer( ).GetFractal( ).Setup( 2.1f, 5.0f, 12 );
 						m_pImpl = impl;
 						break;
 					}

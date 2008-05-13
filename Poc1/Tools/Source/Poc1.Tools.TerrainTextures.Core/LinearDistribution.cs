@@ -3,14 +3,25 @@ using System.Collections.Generic;
 
 namespace Poc1.Tools.TerrainTextures.Core
 {
+	/// <summary>
+	/// Piecewise linear function
+	/// </summary>
 	[Serializable]
 	public class LinearDistribution : IDistribution
 	{
+		/// <summary>
+		/// Function control points
+		/// </summary>
 		public IList<ControlPoint> ControlPoints
 		{
 			get { return m_ControlPoints; }
 		}
 
+		/// <summary>
+		/// Samples the distribution function
+		/// </summary>
+		/// <param name="t">Normalized position</param>
+		/// <returns>Function value at t</returns>
 		public float Sample( float t )
 		{
 			if ( m_ControlPoints.Count == 0 )
@@ -35,6 +46,10 @@ namespace Poc1.Tools.TerrainTextures.Core
 			return m_ControlPoints[ m_ControlPoints.Count - 1 ].Value;
 		}
 
+		#region Private Members
+
 		private readonly IList<ControlPoint> m_ControlPoints = new List<ControlPoint>( );
+
+		#endregion
 	}
 }

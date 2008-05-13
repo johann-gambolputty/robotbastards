@@ -28,22 +28,23 @@ namespace Poc1.Tools.TerrainTextures
 		/// </summary>
 		private void InitializeComponent( )
 		{
-			this.SuspendLayout( );
+			this.SuspendLayout();
 			// 
 			// TerrainTypeDistributionControl
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.Transparent;
 			this.DoubleBuffered = true;
 			this.Name = "TerrainTypeDistributionControl";
-			this.Size = new System.Drawing.Size( 265, 125 );
-			this.Paint += new System.Windows.Forms.PaintEventHandler( this.TerrainTypeDistributionControl_Paint );
-			this.MouseMove += new System.Windows.Forms.MouseEventHandler( this.TerrainTypeDistributionControl_MouseMove );
-			this.KeyUp += new System.Windows.Forms.KeyEventHandler( this.TerrainTypeDistributionControl_KeyUp );
-			this.MouseDown += new System.Windows.Forms.MouseEventHandler( this.TerrainTypeDistributionControl_MouseDown );
-			this.MouseUp += new System.Windows.Forms.MouseEventHandler( this.TerrainTypeDistributionControl_MouseUp );
-			this.ResumeLayout( false );
+			this.Size = new System.Drawing.Size(265, 125);
+			this.Paint += new System.Windows.Forms.PaintEventHandler(this.TerrainTypeDistributionControl_Paint);
+			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TerrainTypeDistributionControl_MouseMove);
+			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.TerrainTypeDistributionControl_KeyUp);
+			this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TerrainTypeDistributionControl_MouseDown);
+			this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TerrainTypeDistributionControl_MouseUp);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TerrainTypeDistributionControl_KeyDown);
+			this.ResumeLayout(false);
 
 		}
 

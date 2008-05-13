@@ -8,9 +8,32 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Poc1.Tools.TerrainTextures.Core
 {
+	/// <summary>
+	/// A set of terrain types
+	/// </summary>
 	[Serializable]
 	public class TerrainTypeSet
 	{
+		/// <summary>
+		/// Gets the list of terrain types in this set
+		/// </summary>
+		public List<TerrainType> TerrainTypes
+		{
+			get { return m_TerrainTypes; }
+		}
+
+		/// <summary>
+		/// Gets/sets the name of this type set
+		/// </summary>
+		public string Name
+		{
+			get { return m_Name; }
+			set { m_Name = value; }
+		}
+
+		/// <summary>
+		/// Clones this set
+		/// </summary>
 		public TerrainTypeSet Clone( )
 		{
 			TerrainTypeSet clone = new TerrainTypeSet( );
@@ -21,11 +44,9 @@ namespace Poc1.Tools.TerrainTextures.Core
 			return clone;
 		}
 
-		public List<TerrainType> TerrainTypes
-		{
-			get { return m_TerrainTypes; }
-		}
-
+		/// <summary>
+		/// Saves this set to a file
+		/// </summary>
 		public void Save( string path )
 		{
 			using ( FileStream fs = new FileStream( path, FileMode.Create, FileAccess.Write ) )
@@ -34,12 +55,18 @@ namespace Poc1.Tools.TerrainTextures.Core
 			}
 		}
 
+		/// <summary>
+		/// Saves this set to a destination stream
+		/// </summary>
 		public void Save( Stream dest )
 		{
 			IFormatter formatter = new BinaryFormatter( );
 			formatter.Serialize( dest, this );
 		}
 
+		/// <summary>
+		/// Loads a new terrain type set from a file
+		/// </summary>
 		public static TerrainTypeSet Load( string path )
 		{
 			using ( FileStream fs = new FileStream( path, FileMode.Open, FileAccess.Read ) )
@@ -48,17 +75,85 @@ namespace Poc1.Tools.TerrainTextures.Core
 			}
 		}
 
+		/// <summary>
+		/// Loads a new terrain type set from a source stream
+		/// </summary>
 		public static TerrainTypeSet Load( Stream src )
 		{
 			IFormatter formatter = new BinaryFormatter( );
 			return ( TerrainTypeSet )formatter.Deserialize( src );
 		}
 
-		public unsafe Bitmap CreateTerrainPackBitmap( )
+		public const int TerrainTileSize = 256;
+		public const int MaxPackBitmapSize = 1024;
+		public const int PackBitmapTileResolution = MaxPackBitmapSize / TerrainTileSize;
+		public const int MaxTerrainTiles = PackBitmapTileResolution * PackBitmapTileResolution;
+
+		/// <summary>
+		/// Exports this terrain type set
+		/// </summary>
+		public void Export( string directory )
 		{
-			return null;
+			string name = string.IsNullOrEmpty( Name ) ? "Default" : Name;
+			Export( directory, name );
 		}
 
+		/// <summary>
+		/// Exports this terrain type set
+		/// </summary>
+		public void Export( string directory, string baseName )
+		{
+			Bitmap packBitmap = CreateTerrainPackBitmap( );
+			Bitmap distBitmap = CreateDistributionBitmap( );
+
+			packBitmap.Save( Path.Combine( directory, baseName + " Pack.jpg" ), ImageFormat.Jpeg );
+			distBitmap.Save( Path.Combine( directory, baseName + " Distribution.bmp" ), ImageFormat.Bmp );
+		}
+
+		/// <summary>
+		/// Packs all terrain type textures into a single uber-texture. Textures are laid out to match expectations
+		/// in the terrain fragment shader (x == index / N, y == index % N, N=pack texture size / individual texture size).
+		/// </summary>
+		public Bitmap CreateTerrainPackBitmap( )
+		{
+			long totalArea = TerrainTileSize * TerrainTileSize * TerrainTypes.Count;
+			int packSize = TerrainTileSize;
+			for (; ( packSize * packSize ) < totalArea; packSize *= 2 ) { }
+			if ( packSize > MaxPackBitmapSize )
+			{
+				throw new InvalidOperationException( string.Format( "Exceeded maximum pack bitmap size (required {0})", packSize ) );
+			}
+			Bitmap packBitmap = new Bitmap( packSize, packSize, PixelFormat.Format24bppRgb );
+
+			using ( Graphics packBitmapGraphics = Graphics.FromImage( packBitmap ) )
+			{
+				int x = 0;
+				int y = 0;
+				for ( int typeIndex = 0; typeIndex < TerrainTypes.Count; ++typeIndex )
+				{
+					TerrainType type = TerrainTypes[ typeIndex ];
+					if ( type.Texture != null )
+					{
+						packBitmapGraphics.DrawImage( type.Texture, new Rectangle( x, y, TerrainTileSize, TerrainTileSize ) );
+					}
+					x += TerrainTileSize;
+					if ( x >= packSize )
+					{
+						x = 0;
+						y += TerrainTileSize;
+					}
+				}
+			}
+
+			return packBitmap;
+		}
+
+		/// <summary>
+		/// Creates an r8g8b8 bitmap that encodes the distribution of all types in the set over all altitudes and slopes.
+		/// The index of the prevalent type at a given (altitude,slope) pair is encoded in the red channel. Green
+		/// and blue channels contain the type index, mapped to the range 0..255, for better visualiation.
+		/// Bitmap is indexed by x==slope, y==altitude
+		/// </summary>
 		public unsafe Bitmap CreateDistributionBitmap( )
 		{
 			Bitmap bmp = new Bitmap( 256, 256, PixelFormat.Format24bppRgb );
@@ -81,9 +176,9 @@ namespace Poc1.Tools.TerrainTextures.Core
 
 					//	TODO: AP: Add noise to slope/altitude
 
-					curPixel[ 0 ] = ( byte )typeIndex;
+					curPixel[ 2 ] = ( byte )typeIndex;
 					curPixel[ 1 ] = scaledTypeIndex;
-					curPixel[ 2 ] = unchecked( ( byte )( 255 - scaledTypeIndex ) );
+					curPixel[ 0 ] = unchecked( ( byte )( 255 - scaledTypeIndex ) );
 				}
 			}
 
@@ -92,13 +187,18 @@ namespace Poc1.Tools.TerrainTextures.Core
 			return bmp;
 		}
 
+		/// <summary>
+		/// Gets the prevalent type in the set, at a given slope and altitude
+		/// </summary>
 		public TerrainType GetType( float altitude, float slope )
 		{
 			return ( TerrainTypes.Count == 0 ) ? null : TerrainTypes[ GetTypeIndex( altitude, slope ) ];
 		}
 
+
 		#region Private Members
 
+		private string m_Name;
 		private readonly List<TerrainType> m_TerrainTypes = new List<TerrainType>(); 
 		
 		public int GetTypeIndex( float altitude, float slope )

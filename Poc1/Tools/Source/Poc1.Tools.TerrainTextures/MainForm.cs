@@ -1,9 +1,10 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Imaging;
+using System.IO;
 using System.Windows.Forms;
 using Poc1.Tools.TerrainTextures.Core;
+using Poc1.Tools.TerrainTextures.Properties;
 
 namespace Poc1.Tools.TerrainTextures
 {
@@ -81,6 +82,81 @@ namespace Poc1.Tools.TerrainTextures
 		private const int SampleWidth = 256;
 		private const int SampleHeight = 256;
 		private bool m_SampleIsDirty;
+		
+		#region Exports and saves
+
+		private string m_SavePath;
+		private string m_ExportDirectory;
+
+		private void SaveAs( )
+		{
+			SaveFileDialog dialog = new SaveFileDialog();
+			dialog.Filter = "Terrain Type Set (*.tts)|*.TTS|All Files (*.*)|*.*";
+			dialog.DefaultExt = "tts";
+			if ( dialog.ShowDialog( this ) != DialogResult.OK )
+			{
+				return;
+			}
+			Save( dialog.FileName );
+		}
+
+		private void Save( )
+		{
+			if ( m_SavePath == null )
+			{
+				SaveAs( );
+			}
+			else
+			{
+				Save( m_SavePath );
+			}
+		}
+
+		private void Save( string path )
+		{
+			try
+			{
+				m_TerrainTypes.Save( path );
+			}
+			catch
+			{
+				MessageBox.Show( "Failed to save terrain types to file" );
+			}
+			m_SavePath = path;
+		}
+
+		private void ExportTo( )
+		{
+			FolderBrowserDialog folderDialog = new FolderBrowserDialog( );
+			folderDialog.Description = Resources.ChooseExportFolder;
+			folderDialog.SelectedPath = string.IsNullOrEmpty( m_ExportDirectory ) ? Directory.GetCurrentDirectory( ) : m_ExportDirectory;
+			if ( folderDialog.ShowDialog( this ) != DialogResult.OK )
+			{
+				return;
+			}
+			m_ExportDirectory = folderDialog.SelectedPath;
+			Export( m_ExportDirectory );
+		}
+
+		private void Export( )
+		{
+			if ( string.IsNullOrEmpty( m_ExportDirectory ) )
+			{
+				ExportTo( );
+			}
+			else
+			{
+				Export( m_ExportDirectory );
+			}
+		}
+
+		private void Export( string directory )
+		{
+			m_TerrainTypes.Export( directory );
+		}
+
+
+		#endregion
 
 		private void UpdateSample( )
 		{
@@ -169,44 +245,6 @@ namespace Poc1.Tools.TerrainTextures
 			SaveAs( );
 		}
 
-		private string m_SavePath;
-
-		private void SaveAs( )
-		{
-			SaveFileDialog dialog = new SaveFileDialog();
-			dialog.Filter = "Terrain Type Set (*.tts)|*.TTS|All Files (*.*)|*.*";
-			dialog.DefaultExt = "tts";
-			if ( dialog.ShowDialog( this ) != DialogResult.OK )
-			{
-				return;
-			}
-			Save( dialog.FileName );
-		}
-
-		private void Save( )
-		{
-			if ( m_SavePath == null )
-			{
-				SaveAs( );
-			}
-			else
-			{
-				Save( m_SavePath );
-			}
-		}
-
-		private void Save( string path )
-		{
-			try
-			{
-				m_TerrainTypes.Save( path );
-			}
-			catch
-			{
-				MessageBox.Show( "Failed to save terrain types to file" );
-			}
-			m_SavePath = path;
-		}
 
 		private void saveToolStripMenuItem_Click( object sender, EventArgs e )
 		{
@@ -232,6 +270,7 @@ namespace Poc1.Tools.TerrainTextures
 				MessageBox.Show( "Failed to open terrain types file" );
 				return;
 			}
+			m_SavePath = path;
 
 			terrainTypeControlsLayoutPanel.Controls.Clear( );
 
@@ -254,12 +293,12 @@ namespace Poc1.Tools.TerrainTextures
 
 		private void exportToToolStripMenuItem_Click( object sender, EventArgs e )
 		{
-			m_TerrainTypes.CreateDistributionBitmap( ).Save( "test.bmp", ImageFormat.Bmp );
+			ExportTo( );
 		}
 
 		private void exportToolStripMenuItem_Click( object sender, EventArgs e )
 		{
-			m_TerrainTypes.CreateDistributionBitmap( ).Save( "test.bmp", ImageFormat.Bmp );
+			Export( );
 		}
 	}
 }

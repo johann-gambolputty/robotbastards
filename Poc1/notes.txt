@@ -87,3 +87,23 @@
 	- Moon
 		- Equatorial radius: 1,737.10 km
 		- Rotational speed at equator: 4.627 m/s
+
+- TODO
+	- Terrain
+		- Geomorphing
+		- Pop slope/altitude determination in fragment shader (it's done at a vertex level - interpolation helps but seems wrong)
+		- Local terrain function sampling to determine high-quality normals even for coarse patches
+	- Assets
+		- Design to Game builds
+		- Game assets aware of changes to design objects
+			- Perhaps with a service that monitors the design folders?
+			- Needs following commands:
+				- "Rebuild All"
+				- "Build All" (only updates game assets with an earlier timestamp that design assets)
+				- "ReBuild" (builds a single named asset)
+				- "Build" (builds a single asset)
+
+- DONE
+	
+
+		

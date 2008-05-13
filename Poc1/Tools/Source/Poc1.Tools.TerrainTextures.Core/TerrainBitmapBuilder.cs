@@ -5,19 +5,28 @@ using Rb.Core.Maths;
 
 namespace Poc1.Tools.TerrainTextures.Core
 {
+	/// <summary>
+	/// Builds bitmaps to display terrain type sets
+	/// </summary>
 	public class TerrainBitmapBuilder
 	{
 		public TerrainBitmapBuilder( )
 		{
 			m_InvWH = 1.0f / ( m_Width * m_Height );
 		}
-
+		
+		/// <summary>
+		/// Sets/gets apply lighting flag. If true, then the next Build() call will bake in lighting
+		/// </summary>
 		public bool ApplyLighting
 		{
 			get { return m_Lighting; }
 			set { m_Lighting = value; }
 		}
 
+		/// <summary>
+		/// Forces the next Build() call to create a new height map
+		/// </summary>
 		public void UpdateHeights( )
 		{
 			m_Noise = new Noise( TimeSeed );
@@ -25,11 +34,9 @@ namespace Poc1.Tools.TerrainTextures.Core
 			m_LightMap = null;
 		}
 
-		private static int TimeSeed
-		{
-			get { return ( int )DateTime.Now.Ticks; }
-		}
-
+		/// <summary>
+		/// Builds a bitmap of the specified dimensions, using a terrain type set to colour the underlying heightmap
+		/// </summary>
 		public unsafe Bitmap Build( int width, int height, TerrainTypeSet terrainTypes )
 		{
 			if ( terrainTypes.TerrainTypes.Count == 0 )
@@ -68,6 +75,9 @@ namespace Poc1.Tools.TerrainTextures.Core
 			return bmp;
 		}
 
+		/// <summary>
+		/// Builds a bitmap of the specified dimensions, using the height or light map
+		/// </summary>
 		public unsafe Bitmap Build( int width, int height )
 		{
 			Bitmap bmp = new Bitmap( width, height, PixelFormat.Format24bppRgb );
@@ -95,7 +105,9 @@ namespace Poc1.Tools.TerrainTextures.Core
 			bmp.UnlockBits( bmpData );
 			return bmp;
 		}
-		
+
+		#region Private Members
+
 		private readonly float m_StartX = 23.7f;
 		private readonly float m_StartY = 23.7f;
 		private readonly float m_Width = 16.2f;
@@ -107,6 +119,9 @@ namespace Poc1.Tools.TerrainTextures.Core
 		private float[,] m_SlopeMap;
 		private float[,] m_LightMap;
 
+		/// <summary>
+		/// Gets the height map, creating it if necessary
+		/// </summary>
 		private float[,] GetHeights( int width, int height )
 		{
 			if ( m_HeightMap != null )
@@ -121,6 +136,9 @@ namespace Poc1.Tools.TerrainTextures.Core
 			return m_HeightMap;
 		}
 
+		/// <summary>
+		/// Gets the light map, creating it if necessary
+		/// </summary>
 		private float[,] GetLighting( int width, int height )
 		{
 			if ( m_LightMap != null )
@@ -138,6 +156,9 @@ namespace Poc1.Tools.TerrainTextures.Core
 			return m_LightMap;
 		}
 		
+		/// <summary>
+		/// Gets the slope map, creating it if necessary
+		/// </summary>
 		private float[,] GetSlopes( int width, int height )
 		{
 			if ( m_SlopeMap != null )
@@ -155,8 +176,14 @@ namespace Poc1.Tools.TerrainTextures.Core
 			return m_SlopeMap;
 		}
 
+		/// <summary>
+		/// Basis function for <see cref="Tiled2dFunction"/>
+		/// </summary>
 		private delegate float Basis2dFunction( float x, float y );
 
+		/// <summary>
+		/// Tiles a 2d function
+		/// </summary>
 		private float Tiled2dFunction( float x, float y, Basis2dFunction basis )
 		{
 			x = Utils.Wrap( x, m_StartX, m_StartX + m_Width );
@@ -178,6 +205,9 @@ namespace Poc1.Tools.TerrainTextures.Core
 			return ( v0 + v1 + v2 + v3 ) * m_InvWH;
 		}
 
+		/// <summary>
+		/// Creates lighting and slope maps
+		/// </summary>
 		private void CreateLightAndSlopeMaps( float[,] lightMap, float[,] slopeMap, Vector3 lightDir )
 		{
 			int width = lightMap.GetLength( 0 );
@@ -188,7 +218,7 @@ namespace Poc1.Tools.TerrainTextures.Core
 			int lastRow = height - 1;
 
 			float[,] heights = GetHeights( width, height );
-
+			float maxSlope = float.MinValue;
 			for ( int row = 0; row < height; ++row )
 			{
 				for (int col = 0; col < width; ++col )
@@ -212,11 +242,19 @@ namespace Poc1.Tools.TerrainTextures.Core
 
 					float nDp = ( acc.Dot( lightDir ) + 1.0f ) / 2.0f;
 					lightMap[ col, row ] = nDp;
-					slopeMap[col, row] = 1.0f - acc.Dot( Vector3.YAxis );
+					float slope = 1.0f - acc.Dot( Vector3.YAxis );
+					maxSlope = Utils.Max( maxSlope, slope );
+
+					//	Let's say that slope never goes above 0.8...
+					slope = Utils.Min( slope, 0.8f ) / 0.8f;
+					slopeMap[ col, row ] = slope;
 				}
 			}
 		}
 
+		/// <summary>
+		/// Creates a heightmap
+		/// </summary>
 		private float[,] CreateHeightMap( int width, int height )
 		{
 			//	TODO: AP: Can wrap better by caching results in separate map
@@ -240,5 +278,15 @@ namespace Poc1.Tools.TerrainTextures.Core
 
 			return heights;
 		}
+
+		/// <summary>
+		/// Generates a seed value for noise setup constructor, based on the current time
+		/// </summary>
+		private static int TimeSeed
+		{
+			get { return ( int )DateTime.Now.Ticks; }
+		}
+
+		#endregion
 	}
 }

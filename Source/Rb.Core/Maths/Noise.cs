@@ -66,7 +66,7 @@ namespace Rb.Core.Maths
 			float i2 = v3 + ( v4 - v3 ) * fX;
 
 			float r = i1 + ( i2 - i1 ) * fY;
-			return ( r / 0.7f ); // TODO: AP: Handy-wavy experimental normalization values
+			return ( r / 0.5f );
 		}
 
 		/// <summary>

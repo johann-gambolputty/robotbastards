@@ -82,7 +82,7 @@ float4 FragmentShader( FragmentShaderInput input ) : COLOR
 
 	float type = ( int )( tex2D( TerrainTypeTexture, input.m_SlopeElevation ).r * 256.0f );
 	
-	float2 offsetToTile = float2( ( int )( type * InvTileRes ), fmod( type, TileRes ) );
+	float2 offsetToTile = float2( fmod( type, TileRes ), ( int )( type * InvTileRes ) );
 	float2 tileUv = offsetToTile + frac( input.m_TerrainUv );
 	tileUv *= float2( InvTileRes, InvTileRes );
 	float4 diffuse = tex2D( TerrainPackTexture, tileUv ) * shade;

@@ -68,6 +68,7 @@ namespace Poc1.Tools.TerrainTextures
 		private int m_SelectedCpIndex = -1;
 		private int m_MovingCpIndex = -1;
 		private Point m_LastMousePos;
+		private bool m_MoveAllControlPoints;
 
 		private const int HorizontalSubdivisions = 8;
 		private const int VerticalSubdivisions = 8;
@@ -193,16 +194,33 @@ namespace Poc1.Tools.TerrainTextures
 			deltaX /= GraphWidth;
 			deltaY /= GraphHeight;
 
-			float min = ( m_MovingCpIndex == 0 ) ? 0 : ( ControlPoints[ m_MovingCpIndex - 1 ].Position );
-			float max = ( m_MovingCpIndex == ControlPoints.Count - 1 ) ? 1 : ( ControlPoints[ m_MovingCpIndex + 1 ].Position );
-			min += 0.001f;
-			max -= 0.001f;
+			if ( m_MoveAllControlPoints )
+			{
+				if ( m_MovingCpIndex != 0 && m_MovingCpIndex != ControlPoints.Count - 1 )
+				{
+					for ( int cpIndex = 1; cpIndex < ControlPoints.Count - 1; ++cpIndex )
+					{
+						float min = ControlPoints[ cpIndex - 1 ].Position + 0.0001f;
+						float max = ControlPoints[ cpIndex + 1 ].Position - 0.0001f;
 
-			float pos = ControlPoints[ m_MovingCpIndex ].Position + deltaX;
-			pos = ( pos < min ? min : ( pos > max ) ? max : pos );
+						float pos = ControlPoints[ cpIndex ].Position + deltaX;
+						pos = ( pos < min ? min : ( pos > max ) ? max : pos );
+						ControlPoints[ cpIndex ].Position = pos;
+						ControlPoints[ cpIndex ].Value -= deltaY;
+					}
+				}
+			}
+			else
+			{
+				float min = ( m_MovingCpIndex == 0 ) ? 0 : ( ControlPoints[ m_MovingCpIndex - 1 ].Position + 0.0001f );
+				float max = ( m_MovingCpIndex == ControlPoints.Count - 1 ) ? 1 : ( ControlPoints[ m_MovingCpIndex + 1 ].Position - 0.0001f );
 
-			ControlPoints[ m_MovingCpIndex ].Position = pos;
-			ControlPoints[ m_MovingCpIndex ].Value -= deltaY;
+				float pos = ControlPoints[ m_MovingCpIndex ].Position + deltaX;
+				pos = ( pos < min ? min : ( pos > max ) ? max : pos );
+
+				ControlPoints[ m_MovingCpIndex ].Position = pos;
+				ControlPoints[ m_MovingCpIndex ].Value -= deltaY;
+			}
 
 			m_LastMousePos = e.Location;
 
@@ -225,6 +243,7 @@ namespace Poc1.Tools.TerrainTextures
 
 		private void TerrainTypeDistributionControl_KeyUp( object sender, KeyEventArgs e )
 		{
+			m_MoveAllControlPoints = false;
 			if ( e.KeyCode == Keys.Delete )
 			{
 				if ( m_SelectedCpIndex != -1 && ControlPoints.Count > 2 )
@@ -234,6 +253,11 @@ namespace Poc1.Tools.TerrainTextures
 					OnDistributionChanged( );
 				}
 			}
+		}
+
+		private void TerrainTypeDistributionControl_KeyDown( object sender, KeyEventArgs e )
+		{
+			m_MoveAllControlPoints = ( e.KeyCode == Keys.ShiftKey );
 		}
 	}
 }

@@ -213,10 +213,6 @@
 				RelativePath=".\Source\USphereTerrainTypeSelector.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\Source\UVector3.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
