@@ -4,27 +4,42 @@ using System.Runtime.Serialization;
 
 namespace Poc1.Tools.TerrainTextures.Core
 {
+	/// <summary>
+	/// Terrain type
+	/// </summary>
 	[Serializable]
 	public class TerrainType
 	{
+		/// <summary>
+		/// Distribution of terrain type over altitude
+		/// </summary>
 		public IDistribution AltitudeDistribution
 		{
 			get { return m_AltitudeDistribution; }
 			set { m_AltitudeDistribution = value; }
 		}
 
+		/// <summary>
+		/// Distribution of terrain type over slope
+		/// </summary>
 		public IDistribution SlopeDistribution
 		{
 			get { return m_SlopeDistribution; }
 			set { m_SlopeDistribution = value; }
 		}
 
+		/// <summary>
+		/// Terrain type name
+		/// </summary>
 		public string Name
 		{
 			get { return m_Name; }
 			set { m_Name = value; }
 		}
 
+		/// <summary>
+		/// Loads a bitmap into the terrain type texture
+		/// </summary>
 		public void LoadBitmap( string path )
 		{
 			Bitmap bmp = new Bitmap( path );
@@ -33,30 +48,49 @@ namespace Poc1.Tools.TerrainTextures.Core
 			m_AverageColour = AverageBitmapColour( m_Texture );
 		}
 
+		/// <summary>
+		/// Gets the terrain type texture
+		/// </summary>
+		/// <seealso cref="LoadBitmap"/>
 		public Bitmap Texture
 		{
 			get { return m_Texture; }
 		}
 
+		/// <summary>
+		/// Average colour of the 
+		/// </summary>
 		public Color AverageColour
 		{
 			get { return m_AverageColour; }
 		}
 
+		/// <summary>
+		/// Clones this terrain type
+		/// </summary>
 		public TerrainType Clone( )
 		{
 			TerrainType clone = new TerrainType( );
-			clone.Name = m_Name;
-			clone.m_Texture = m_Texture;
-			clone.m_AverageColour = m_AverageColour;
+			clone.Name						= m_Name;
+			clone.m_Texture					= m_Texture;
+			clone.m_TexturePath				= m_TexturePath;
+			clone.m_AverageColour			= m_AverageColour;
+			clone.m_AltitudeDistribution	= m_AltitudeDistribution;
+			clone.m_SlopeDistribution		= m_SlopeDistribution;
 			return clone;
 		}
 
+		/// <summary>
+		/// Returns the multiple of the values of the altitude and slope distributions
+		/// </summary>
 		public float GetScore( float altitude, float slope )
 		{
 			return m_AltitudeDistribution.Sample( altitude ) * m_SlopeDistribution.Sample( slope );
 		}
 
+		/// <summary>
+		/// Called when this type is deserialized. Loads the type texture bitmap
+		/// </summary>
 		[OnDeserialized]
 		public void OnDeserialized( StreamingContext context )
 		{

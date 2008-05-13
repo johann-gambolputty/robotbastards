@@ -17,12 +17,8 @@ namespace Poc1.Universe.Classes.Rendering
 	class SphereTerrainQuadPatches : IRenderable
 	{
 
-		public SphereTerrainQuadPatches( IPlanet planet, TerrainTypeManager terrainTypes, IPlanetTerrain terrain )
+		public SphereTerrainQuadPatches( IPlanet planet, IPlanetTerrain terrain )
 		{
-			Bitmap terrainTypesBitmap = terrainTypes.ToBitmap( );
-			terrainTypesBitmap.Save( planet.Name + " TerrainTypes.bmp", ImageFormat.Bmp );
-			m_TerrainTypesTexture = TextureUtils.FromBitmap( terrainTypesBitmap, false );
-
 			m_Planet = planet;
 
 			IEffect effect = ( IEffect )AssetManager.Instance.Load( "Effects/Planets/terrestrialPlanetTerrain.cgfx" );
@@ -30,7 +26,8 @@ namespace Poc1.Universe.Classes.Rendering
 
 			TextureLoader.TextureLoadParameters loadParameters = new TextureLoader.TextureLoadParameters( );
 			loadParameters.GenerateMipMaps = true;
-			m_TerrainPackTexture = ( ITexture2d )AssetManager.Instance.Load( "Textures/Terrain Packs/TerrainPack0.jpg", loadParameters );
+			m_TerrainPackTexture = ( ITexture2d )AssetManager.Instance.Load( "Textures/Terrain Packs/Default Pack.jpg", loadParameters );
+			m_TerrainTypesTexture = ( ITexture2d )AssetManager.Instance.Load( "Textures/Terrain Packs/Default Distribution.bmp" );
 
 			m_NoiseTexture = ( ITexture2d )AssetManager.Instance.Load( "Textures/Terrain Packs/Noise.jpg" );
 

@@ -94,7 +94,12 @@ namespace Poc1
 				///	\brief	Maps 4 (x,y,z) vectors onto the minimum distance of this displacer.
 				inline __m128 Displace( __m128& xxxx, __m128& yyyy, __m128& zzzz ) const
 				{
-					__m128 heights = m_Fractal.GetValue( xxxx, yyyy, zzzz );
+					__m128 dddd = _mm_set1_ps( 6.0f );
+					__m128 iXxxx = _mm_mul_ps( xxxx, dddd );
+					__m128 iYyyy = _mm_mul_ps( yyyy, dddd );
+					__m128 iZzzz = _mm_mul_ps( zzzz, dddd );
+				//	__m128 heights = m_Fractal.GetValue( xxxx, yyyy, zzzz );
+					__m128 heights = m_Fractal.GetValue( iXxxx, iYyyy, iZzzz );
 					const __m128 actualHeights = MapToHeightRange( heights );
 					xxxx = _mm_mul_ps( xxxx, actualHeights );
 					yyyy = _mm_mul_ps( yyyy, actualHeights );

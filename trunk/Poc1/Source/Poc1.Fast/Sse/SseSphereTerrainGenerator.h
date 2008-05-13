@@ -106,6 +106,41 @@ namespace Poc1
 				///	\brief	Determines the maximum error between two arrays filled with height data
 				float GetMaximumError( const int count, const float* heights0 );
 
+				/*
+				inline __m128 AccNormal( __m128 xxxx, __m128 yyyy, __m128 zzzz, __m128 sXxxx, __m128 sYyyy, __m128 sZzzz, __m128 posXxxx, __m128 posYyyy, __m128 posZzzz )
+				{
+					__m128 diffXxxx = _mm_sub_ps( sXxxx, xxxx );
+					__m128 diffYyyy = _mm_sub_ps( sYyyy, yyyy );
+					__m128 diffZzzz = _mm_sub_ps( sZzzz, zzzz );
+
+					Normalize( sXxxx, sYyyy, sZzzz );
+					m_Displacer.Displace( sXxxx, sYyyy, sZzzz );
+
+
+				}
+
+				inline void SetVertices( UTerrainVertex* v0, UTerrainVertex* v1, UTerrainVertex* v2, UTerrainVertex* v3, __m128 xxxx, __m128 yyyy, __m128 zzzz, __m128 srXxxx, __m128 srYyyy, __m128 srZzzz, __m128 suXxxx, __m128 suYyyy, __m128 suZzzz )
+				{
+					__m128 normXxxx = xxxx;
+					__m128 normYyyy = yyyy;
+					__m128 normZzzz = zzzz;
+					Normalize( normXxxx, normYyyy, normZzzz );
+
+					__m128 posXxxx = normXxxx;
+					__m128 posYyyy = normYyyy;
+					__m128 posZzzz = normZzzz;
+
+					//	TODO: AP: Scale up heights (they'll do for now, though)
+					__m128 heights = m_Displacer.Displace( posXxxx, posYyyy, posZzzz );
+
+					//	Shift position left slightly
+					__m128 normal = AccNormal( xxxx, yyyy, zzzz, _mm_sub_ps( xxxx, srXxxx ), _mm_sub_ps( yyyy, srYyyy ), _mm_sub_ps( zzzz, srZzzz ), posXxxx, posYyyy, posZzzz );
+
+					Normalize( sXxxx, sYyyy, sZzzz );
+					m_Displacer.Displace( sXxxx, sYyyy, sZzzz );
+				}
+				*/
+
 				///	\brief	Calculates a normal from stuff
 				inline static void CalculateNormal( UTerrainVertex* v, const int prev, const int next, const float height, const float* xSrc, const float* ySrc, const float* zSrc, const float* uXSrc, const float* uYSrc, const float* uZSrc, const float* dXSrc, const float* dYSrc, const float* dZSrc )
 				{
@@ -131,7 +166,7 @@ namespace Poc1
 					yAxis.Normalise( );
 
 					//	Slope of 0 is flat, slope of 1 is vertical
-					const float slope = UVector3::Dot( yAxis, acc );
+					float slope = 1.0f - UVector3::Dot( yAxis, acc ) / 0.3f;
 
 					v->SetTerrainParameters( slope, height );
 				}
@@ -266,6 +301,90 @@ namespace Poc1
 		template < typename DisplaceType >
 		inline void SseSphereTerrainGeneratorT< DisplaceType >::GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, float uvRes, UTerrainVertex* vertices )
 		{
+			/*
+			//	Get start x, y and z positions for the first 4 vertices in the first row
+			//	NOTE: AP: Vectors are apparently reversed, so memory access is more natural (xyzw comes out as [ w, z, y, x ] normally)
+			__m128 startXxxx = _mm_set_ps( origin[ 0 ] - xStep[ 0 ], origin[ 0 ] - xStep[ 0 ] * 2, origin[ 0 ] - xStep[ 0 ] * 3, origin[ 0 ] - xStep[ 0 ] * 4 );
+			__m128 startYyyy = _mm_set_ps( origin[ 1 ] - xStep[ 1 ], origin[ 1 ] - xStep[ 1 ] * 2, origin[ 1 ] - xStep[ 1 ] * 3, origin[ 1 ] - xStep[ 1 ] * 4 );
+			__m128 startZzzz = _mm_set_ps( origin[ 2 ] - xStep[ 2 ], origin[ 2 ] - xStep[ 2 ] * 2, origin[ 2 ] - xStep[ 2 ] * 3, origin[ 2 ] - xStep[ 2 ] * 4 );
+
+			//	Determine vectors for incrementing x, y and z positions in the column loop
+			const __m128 colXInc = _mm_set1_ps( xStep[ 0 ] * 4 );
+			const __m128 colYInc = _mm_set1_ps( xStep[ 1 ] * 4 );
+			const __m128 colZInc = _mm_set1_ps( xStep[ 2 ] * 4 );
+
+			//	Determine vectors for incrementing x, y and z positions in the row loop
+			const __m128 rowXInc = _mm_set1_ps( zStep[ 0 ] );
+			const __m128 rowYInc = _mm_set1_ps( zStep[ 1 ] );
+			const __m128 rowZInc = _mm_set1_ps( zStep[ 2 ] );
+
+			startXxxx = _mm_sub_ps( startXxxx, rowXInc );
+			startYyyy = _mm_sub_ps( startYyyy, rowYInc );
+			startZzzz = _mm_sub_ps( startZzzz, rowZInc );
+
+			//	Point to the positions and normals in the first 4 vertices
+			UTerrainVertex* v0 = vertices;
+			UTerrainVertex* v1 = vertices + 1;
+			UTerrainVertex* v2 = vertices + 2;
+			UTerrainVertex* v3 = vertices + 3;
+
+			__m128 shift = _mm_set_ps( 0.01f );
+			
+			const int widthDiv4 = width / 4;
+			const int widthMod4 = width % 4;
+			float uInc = uvRes / ( float )( width - 1 );
+			float vInc = uvRes / ( float )( height - 1 );
+			float v = 0;
+			__m128 uuuuInc = _mm_set1_ps( uInc * 4 );
+			_CRT_ALIGN( 16 ) float uArr[ 4 ], xArr[ 4 ], yArr[ 4 ], zArr[ 4 ];
+
+			for ( int row = 0; row < height; ++row, v += vInc )
+			{
+				__m128 uuuu = _mm_set_ps( uInc * 3, uInc * 2, uInc, 0 );
+				__m128 xxxx = startXxxx;
+				__m128 yyyy = startYyyy;
+				__m128 zzzz = startZzzz;
+				for ( int col = 0; col < widthDiv4; ++col )
+				{
+					__m128 normXxxx = xxxx;
+					__m128 normYyyy = yyyy;
+					__m128 normZzzz = zzzz;
+					Normalize( tmpXxxx, tmpYyyy, tmpZzzz );
+					__m128 heights = m_Displacer.Displace( tmpXxxx, tmpYyyy, tmpZzzz );
+
+					_mm_store_ps( xArr, xxxx );
+					_mm_store_ps( yArr, yyyy );
+					_mm_store_ps( zArr, zzzz );
+					_mm_store_ps( uArr, uuuu );
+
+					__m128 slXxxx = _mm_sub_ps( xxxx, shift );
+					__m128 srXxxx = _mm_add_ps( xxxx, shift );
+					__m128 slYyyy = _mm_sub_ps( yyyy, shift );
+					__m128 srYyyy = _mm_add_ps( yyyy, shift );
+					__m128 slZzzz = _mm_sub_ps( zzzz, shift );
+					__m128 srZzzz = _mm_add_ps( zzzz, shift );
+
+					v0->SetTerrainUv( uArr[ 0 ], v );
+					v1->SetTerrainUv( uArr[ 1 ], v );
+					v2->SetTerrainUv( uArr[ 2 ], v );
+					v3->SetTerrainUv( uArr[ 3 ], v );
+
+					//	Move vertex pointers on
+					v0 += 4; v1 += 4; v2 += 4; v3 += 4;
+					xxxx = _mm_add_ps( xxxx, colXInc );
+					yyyy = _mm_add_ps( yyyy, colYInc );
+					zzzz = _mm_add_ps( zzzz, colZInc );
+					uuuu = _mm_add_ps( uuuu, uuuuInc );
+				}
+				if ( widthMod4 > 0 )
+				{
+					v0 += widthMod4;
+					v1 += widthMod4;
+					v2 += widthMod4;
+					v3 += widthMod4;
+				}
+			}
+			/*/
 			//	Get start x, y and z positions for the first 4 vertices in the first row
 			//	NOTE: AP: Vectors are apparently reversed, so memory access is more natural (xyzw comes out as [ w, z, y, x ] normally)
 			__m128 startXxxx = _mm_set_ps( origin[ 0 ] - xStep[ 0 ], origin[ 0 ] - xStep[ 0 ] * 2, origin[ 0 ] - xStep[ 0 ] * 3, origin[ 0 ] - xStep[ 0 ] * 4 );
@@ -413,6 +532,7 @@ namespace Poc1
 					FillPositionHeightCacheLine( fullWidthDiv4, cacheLines[ nextCacheLine ], startXxxx, startYyyy, startZzzz, colXInc, colYInc, colZInc );
 				}
 			}
+			//*/
 		}
 
 		template < typename DisplaceType >
