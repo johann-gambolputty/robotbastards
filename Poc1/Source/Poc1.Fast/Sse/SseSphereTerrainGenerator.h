@@ -166,9 +166,10 @@ namespace Poc1
 					yAxis.Normalise( );
 
 					//	Slope of 0 is flat, slope of 1 is vertical
-					float slope = 1.0f - UVector3::Dot( yAxis, acc ) / 0.3f;
+					float slope = 1.0f - UVector3::Dot( yAxis, acc );
+					slope /= 0.5f;
 
-					v->SetTerrainParameters( slope, height );
+					v->SetTerrainParameters( height, slope );
 				}
 		};
 		
@@ -228,7 +229,7 @@ namespace Poc1
 				tmpZzzz = zzzz;
 
 				//	Disable normalize to remove sphere mapping
-				Normalize( tmpXxxx, tmpYyyy, tmpZzzz );
+				SetLength( tmpXxxx, tmpYyyy, tmpZzzz, m_Displacer.GetSphereRadius( ) );
 				m_Displacer.Displace( tmpXxxx, tmpYyyy, tmpZzzz );
 
 				_mm_store_ps( curPos, tmpXxxx ); curPos += 4;
@@ -253,9 +254,16 @@ namespace Poc1
 				tmpZzzz = zzzz;
 
 				//	Disable normalize to remove sphere mapping
-				Normalize( tmpXxxx, tmpYyyy, tmpZzzz );
+			//	Normalize( tmpXxxx, tmpYyyy, tmpZzzz );
+				SetLength( tmpXxxx, tmpYyyy, tmpZzzz, m_Displacer.GetSphereRadius( ) );
 				__m128 heights = m_Displacer.Displace( tmpXxxx, tmpYyyy, tmpZzzz );
-			//	heights = m_Displacer.MapToHeightRange( heights );
+			
+				//	Uncomment following to clamp the points to the sphere
+			//	tmpXxxx = xxxx;
+			//	tmpYyyy = yyyy;
+			//	tmpZzzz = zzzz;
+			//	SetLength( tmpXxxx, tmpYyyy, tmpZzzz, _mm_mul_ps( m_Displacer.GetSphereRadius( ), m_Displacer.GetMinimumHeight( ) ) );
+
 
 				//	Store heights alongside positions, to avoid cache hit
 				_mm_store_ps( curPos, tmpXxxx ); curPos += 4;

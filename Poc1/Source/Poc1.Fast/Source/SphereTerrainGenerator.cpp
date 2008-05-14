@@ -19,7 +19,7 @@ namespace Poc1
 					{
 						SseSphereTerrainGeneratorT< SseRidgedFractalDisplacer >* impl = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseRidgedFractalDisplacer >( );
 						impl->GetDisplacer( ).GetFractal( ).GetNoise( ).SetNewSeed( seed );
-						impl->GetDisplacer( ).GetFractal( ).Setup( 2.1f, 5.0f, 12 );
+						impl->GetDisplacer( ).GetFractal( ).Setup( 3.1f, 1.1f, 10 );
 						m_pImpl = impl;
 						break;
 					}
@@ -109,7 +109,7 @@ namespace Poc1
 
 		void SphereTerrainGenerator::SetHeightRange( const float minHeight, const float maxHeight )
 		{
-			m_pImpl->GetBaseDisplacer( ).Setup( minHeight, ( minHeight + maxHeight ) / 2, maxHeight );
+			m_pImpl->GetBaseDisplacer( ).Setup( minHeight, ( minHeight + maxHeight ) / 2, maxHeight, 6.0f );
 		}
 
 		void SphereTerrainGenerator::GenerateTexture( const CubeMapFace face, const PixelFormat format, const int width, const int height, const int stride, unsigned char* pixels )

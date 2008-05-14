@@ -123,6 +123,8 @@ namespace Poc1.Tools.TerrainTextures.Core
 			{
 				throw new InvalidOperationException( string.Format( "Exceeded maximum pack bitmap size (required {0})", packSize ) );
 			}
+			//	TODO: AP: Forced to max size so fragment shader works correctly (lazy)
+			packSize = MaxPackBitmapSize;
 			Bitmap packBitmap = new Bitmap( packSize, packSize, PixelFormat.Format24bppRgb );
 
 			using ( Graphics packBitmapGraphics = Graphics.FromImage( packBitmap ) )

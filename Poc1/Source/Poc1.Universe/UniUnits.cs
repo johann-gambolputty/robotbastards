@@ -35,10 +35,9 @@ namespace Poc1.Universe
 		/// </summary>
 		public static class RenderUnits
 		{
-			public const double MulToUnits = Metres.MulToUnits * 10;
-			public const double MulFromUnits = 1.0 / MulToUnits;
-
-			public const float MulToMetresF = ( float )( MulToUnits / Metres.MulToUnits );
+			public const double MulToUnits		= Metres.MulToUnits * 10;
+			public const double MulFromUnits	= 1.0 / MulToUnits;
+			public const float MulToMetresF		= ( float )( MulToUnits / Metres.MulToUnits );
 			
 			public static double ToMetres( double renderUnits )
 			{
