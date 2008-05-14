@@ -17,7 +17,7 @@ namespace Poc1
 
 				SphereCloudsBitmapImpl( )
 				{
-					m_Gen.Setup( 2.5f, 1.6f, 8 );
+					m_Gen.Setup( 3.5f, 1.6f, 8 );
 				}
 
 				void Setup( const float xOffset, const float zOffset, const float cloudCutoff, const float cloudBorder )
@@ -46,18 +46,21 @@ namespace Poc1
 		{
 			__m128 xxxx, yyyy, zzzz;
 			CubeFacePosition( face, uuuu, vvvv, xxxx, yyyy, zzzz );
-			Normalize( xxxx, yyyy, zzzz );
+			SetLength( xxxx, yyyy, zzzz, 3.0f );
 			return fractal.GetValue( _mm_add_ps( xxxx, xOffset ), yyyy, _mm_add_ps( zzzz, zOffset ) );
 		}
 
 		void SphereCloudsBitmapImpl::GenerateCloudsFace( const UCubeMapFace face, const UPixelFormat format, const int width, const int height, const int stride, unsigned char* pixels )
 		{
-			float incU = 2.0f / float( width - 1 );
-			float incV = 2.0f / float( height - 1 );
-			__m128 vvvv = _mm_set1_ps( -1 );
+			float fRes = 2.0f;
+			float hfRes = fRes / 2;
+
+			float incU = fRes / float( width - 1 );
+			float incV = fRes / float( height - 1 );
+			__m128 vvvv = _mm_set1_ps( -hfRes );
 			__m128 vvvvInc = _mm_set1_ps( incV );
 
-			__m128 uuuuStart = _mm_add_ps( _mm_set1_ps( -1 ), _mm_set_ps( 0, incU, incU * 2, incU * 3 ) );
+			__m128 uuuuStart = _mm_add_ps( _mm_set1_ps( -hfRes ), _mm_set_ps( 0, incU, incU * 2, incU * 3 ) );
 			__m128 uuuuInc = _mm_set1_ps( incU * 4 );
 
 			_CRT_ALIGN( 16 ) float res[ 4 ] = { 0, 0, 0, 0 };
@@ -83,8 +86,7 @@ namespace Poc1
 					unsigned char b1 = ( unsigned char )( res[ 2 ] );
 					unsigned char b2 = ( unsigned char )( res[ 1 ] );
 					unsigned char b3 = ( unsigned char )( res[ 0 ] );
-					b0 = b1 = b2 = b3 = 0xf0;
-					
+
 					switch ( format )
 					{
 						case FormatR8G8B8A8 :
@@ -94,10 +96,10 @@ namespace Poc1
 								__m128 alpha = _mm_or_ps( _mm_and_ps( borderMask, _mm_set1_ps( 255.0f ) ), _mm_andnot_ps( borderMask, fadeValue ) );
 								alpha = _mm_and_ps( cutMask, alpha );
 								_mm_store_ps( alphaValues, alpha );
-								const unsigned char a0 = ( unsigned char )( alphaValues[ 3 ] );
-								const unsigned char a1 = ( unsigned char )( alphaValues[ 2 ] );
-								const unsigned char a2 = ( unsigned char )( alphaValues[ 1 ] );
-								const unsigned char a3 = ( unsigned char )( alphaValues[ 0 ] );
+								unsigned char a0 = ( unsigned char )( alphaValues[ 3 ] );
+								unsigned char a1 = ( unsigned char )( alphaValues[ 2 ] );
+								unsigned char a2 = ( unsigned char )( alphaValues[ 1 ] );
+								unsigned char a3 = ( unsigned char )( alphaValues[ 0 ] );
 
 								curPixel[ 0 ] = curPixel[ 1 ] = curPixel[ 2 ] = b0; curPixel[ 3 ] = a0;
 								curPixel[ 4 ] = curPixel[ 5 ] = curPixel[ 6 ] = b1; curPixel[ 7 ] = a1;
@@ -106,7 +108,7 @@ namespace Poc1
 								curPixel += 16;
 								break;
 							};
-							
+
 						case FormatR8G8B8 :
 							curPixel[ 0 ] = curPixel[ 1 ] = curPixel[ 2 ] = b0;
 							curPixel[ 3 ] = curPixel[ 4 ] = curPixel[ 5 ] = b1;
@@ -147,7 +149,7 @@ namespace Poc1
 		{
 			AlignedDelete( m_pImpl );
 		}
-		
+
 		void SphereCloudsBitmap::Setup( float xOffset, float zOffset, float cloudCutoff, float cloudBorder )
 		{
 			m_pImpl->Setup( xOffset, zOffset, cloudCutoff, cloudBorder );

@@ -26,6 +26,13 @@ namespace Poc1.Universe.Classes.Rendering
 			CreateFaceBitmap( CubeMapFace.PositiveZ );
 			CreateFaceBitmap( CubeMapFace.NegativeZ );
 
+			GetFaceBitmap( CubeMapFace.PositiveX ).Save( "cloud +x.png" );
+			GetFaceBitmap( CubeMapFace.NegativeX ).Save( "cloud -x.png" );
+			GetFaceBitmap( CubeMapFace.PositiveY ).Save( "cloud +y.png" );
+			GetFaceBitmap( CubeMapFace.NegativeY ).Save( "cloud -y.png" );
+			GetFaceBitmap( CubeMapFace.PositiveZ ).Save( "cloud +z.png" );
+			GetFaceBitmap( CubeMapFace.NegativeZ ).Save( "cloud -z.png" );
+
 			for ( int textureIndex = 0; textureIndex < m_Textures.Length; ++textureIndex )
 			{
 				m_Textures[ textureIndex ] = Graphics.Factory.CreateCubeMapTexture( );
@@ -40,6 +47,7 @@ namespace Poc1.Universe.Classes.Rendering
 						true
 					);
 			}
+
 
 			m_UpdateThread = new Thread( UpdateThread );
 			m_UpdateThread.Start( );
@@ -107,7 +115,8 @@ namespace Poc1.Universe.Classes.Rendering
 			using ( GameProfiles.Game.Rendering.PlanetRendering.CloudRendering.CreateGuard( ) )
 			{
 				//	A very gradual blend between the 2 active cloud textures is required - any faster
-				//	and there's a noticeable jump, when the new texture is completed
+				//	and there's a noticeable pause, between m_Blend reaching 1.0 and when the new texture
+				//	is completed.
 				m_Blend = Utils.Min( m_Blend + 0.01f, 1.0f );
 				if ( m_Blend < 1.0f )
 				{

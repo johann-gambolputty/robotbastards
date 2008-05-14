@@ -73,16 +73,16 @@ namespace Poc1.Universe.Classes.Rendering
 		{
 			UpdateLod( UniCamera.Current );
 
-			Graphics.Renderer.PushTransform( TransformType.LocalToWorld );
-			{
-				IUniCamera curCam = UniCamera.Current;
-				UniTransform transform = m_Planet.Transform;
-				float x = ( float )( UniUnits.RenderUnits.FromUniUnits( transform.Position.X - curCam.Position.X ) );
-				float y = ( float )( UniUnits.RenderUnits.FromUniUnits( transform.Position.Y - curCam.Position.Y ) );
-				float z = ( float )( UniUnits.RenderUnits.FromUniUnits( transform.Position.Z - curCam.Position.Z ) );
+			//Graphics.Renderer.PushTransform( TransformType.LocalToWorld );
+			//{
+			//    IUniCamera curCam = UniCamera.Current;
+			//    UniTransform transform = m_Planet.Transform;
+			//    float x = ( float )( UniUnits.RenderUnits.FromUniUnits( transform.Position.X - curCam.Position.X ) );
+			//    float y = ( float )( UniUnits.RenderUnits.FromUniUnits( transform.Position.Y - curCam.Position.Y ) );
+			//    float z = ( float )( UniUnits.RenderUnits.FromUniUnits( transform.Position.Z - curCam.Position.Z ) );
 
-				Graphics.Renderer.SetTransform( TransformType.LocalToWorld, new Point3( x, y, z ), transform.XAxis, transform.YAxis, transform.ZAxis );
-			}
+			//    Graphics.Renderer.SetTransform( TransformType.LocalToWorld, new Point3( x, y, z ), transform.XAxis, transform.YAxis, transform.ZAxis );
+			//}
 
 			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainPackTexture" ].Set( m_TerrainPackTexture );
 			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainTypeTexture" ].Set( m_TerrainTypesTexture );
@@ -99,8 +99,6 @@ namespace Poc1.Universe.Classes.Rendering
 					patch.DebugRender( );
 				}
 			}
-
-			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 
 			DebugText.Write( "Camera Pos: {0}", UniCamera.Current.Position.ToRenderUnitString( ) );
 			DebugText.Write( "Planet Pos: {0}", m_Planet.Transform.Position.ToRenderUnitString( ) );

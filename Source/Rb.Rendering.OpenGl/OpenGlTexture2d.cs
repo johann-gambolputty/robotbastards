@@ -401,7 +401,8 @@ namespace Rb.Rendering.OpenGl
 				}
 				case PixelFormat.Format32bppArgb		:
 				{
-					glFormat			= Gl.GL_ABGR_EXT;	//	NOTE: AP: Think this is correct...
+				//	glFormat			= Gl.GL_ABGR_EXT;	//	NOTE: AP: Think this is correct...
+					glFormat = Gl.GL_RGBA;	//	NOTE: AP: ABGR extension not supported on dev machine! SHIT!
 					glInternalFormat	= Gl.GL_RGBA;
 					glType				= Gl.GL_UNSIGNED_BYTE;
 					return format;
@@ -409,7 +410,8 @@ namespace Rb.Rendering.OpenGl
 				case PixelFormat.Format32bppPArgb		:	break;
 				case PixelFormat.Format32bppRgb			:
 				{
-					glFormat			= Gl.GL_ABGR_EXT;
+					//	glFormat			= Gl.GL_ABGR_EXT;
+					glFormat = Gl.GL_RGBA;	//	NOTE: AP: ABGR extension not supported on dev machine! SHIT!
 					glInternalFormat	= Gl.GL_RGBA;
 					glType				= Gl.GL_UNSIGNED_BYTE;
 					return format;

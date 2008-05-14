@@ -32,6 +32,17 @@
 	- 
 
 - Links:
+	- Not really relevent, but data for the stanford bunny is here:
+		- http://www.codesampler.com/oglsrc/oglsrc_6.htm
+
+	- Megaparticle systems (for cloud rendering?):
+		- http://www.2ld.de/gdc2004/MegaParticlesPaper.pdf
+
+	- Godray discussion:
+		- http://www.ogre3d.org/phpBB2/viewtopic.php?p=283158&sid=ce193664e1d3d7c4af509e6f4e2718c6
+
+	- Bezier patch terrain:
+		- http://www.gamasutra.com/view/feature/3004/dynamic_level_of_detail_terrain_.php?print=1
 
 	- Splatting:
 		- http://www.cbloom.com/3d/techdocs/splatting.txt
@@ -93,6 +104,26 @@
 		- Geomorphing
 		- Pop slope/altitude determination in fragment shader (it's done at a vertex level - interpolation helps but seems wrong)
 		- Local terrain function sampling to determine high-quality normals even for coarse patches
+		- Cloud cover
+		- LOD
+			- Work out why performance degrades over time (think patch LOD popping breaks down)
+			- Cull quad tree nodes (frustum + horizon culling for spherical planets)
+		- Ecosystems
+			- Vegetation
+			- Animal life
+		- Water
+			- Sea
+			- Lakes
+			- Rivers
+		- Cities
+			- Buildings
+			- Roads
+			- Traffic
+			- Pedestrians
+		- Atmospheric shaders
+		- Ring-worlds
+	- Solar system
+		- Orbital paths
 	- Assets
 		- Design to Game builds
 		- Game assets aware of changes to design objects
@@ -102,6 +133,25 @@
 				- "Build All" (only updates game assets with an earlier timestamp that design assets)
 				- "ReBuild" (builds a single named asset)
 				- "Build" (builds a single asset)
+	- Ships
+		- Get basic ship dynamics working
+		- Connectors
+		- Shaders
+		- Simple ship combat
+			- Simple physics model
+		- Internal ship modelling
+
+	- Networking
+		- Extend RUNT
+
+	- Graphics Misc.
+		- Shadows
+		- Particle systems
+
+	- Misc.
+		- Refactoring
+			- Split out fast terrain code into Poc1.Fast.Terrain
+				- Keep Poc1.Fast for shared stuff like aligned allocations
 
 - DONE
 	
