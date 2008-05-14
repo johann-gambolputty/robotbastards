@@ -304,7 +304,7 @@ namespace Poc1.Universe.Classes.Rendering
 				
 				if ( m_PatchError == float.MaxValue )
 				{
-				    m_Centre = terrain.GenerateTerrainPatchVertices( m_Origin, uStep, vStep, VertexResolution, m_UvRes, firstVertex, out m_PatchError );
+					m_Centre = terrain.GenerateTerrainPatchVertices( m_Origin, uStep, vStep, VertexResolution, m_UvRes, firstVertex, out m_PatchError );
 					CreateSkirtVertices( firstVertex );
 				}
 				else

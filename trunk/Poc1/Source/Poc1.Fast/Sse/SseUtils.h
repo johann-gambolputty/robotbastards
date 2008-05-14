@@ -67,6 +67,31 @@ namespace Poc1
 			return _mm_cvtps_epi32( _mm_sub_ps( v, _mm_set1_ps( 0.5f ) ) );
 		}
 
+		inline void SetLength( __m128& xxxx, __m128& yyyy, __m128& zzzz, const __m128& len )
+		{
+			__m128 xxxx2 = _mm_mul_ps( xxxx, xxxx );
+			__m128 yyyy2 = _mm_mul_ps( yyyy, yyyy );
+			__m128 zzzz2 = _mm_mul_ps( zzzz, zzzz );
+			/*
+			__m128 rsqrt = _mm_rsqrt_ps( _mm_add_ps( xxxx2, _mm_add_ps( yyyy2, zzzz2 ) ) );
+			rsqrt = _mm_mul_ps( rsqrt, len );
+			xxxx = _mm_mul_ps( xxxx, rsqrt );
+			yyyy = _mm_mul_ps( yyyy, rsqrt );
+			zzzz = _mm_mul_ps( zzzz, rsqrt );*/
+
+			__m128 sqr = _mm_sqrt_ps( _mm_add_ps( xxxx2, _mm_add_ps( yyyy2, zzzz2 ) ) );
+			sqr = _mm_div_ps( len, sqr );
+			xxxx = _mm_mul_ps( xxxx, sqr );
+			yyyy = _mm_mul_ps( yyyy, sqr );
+			zzzz = _mm_mul_ps( zzzz, sqr );
+		}
+
+		inline void SetLength( __m128& xxxx, __m128& yyyy, __m128& zzzz, const float len )
+		{
+			__m128 llll = _mm_set1_ps( len );
+			SetLength( xxxx, yyyy, zzzz, llll );
+		}
+		
 		///	\brief	Normalizes 4 vectors, stored component-wise in 4 SSE values
 		inline void Normalize( __m128& xxxx, __m128& yyyy, __m128& zzzz )
 		{

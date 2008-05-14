@@ -120,6 +120,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 		}
 
+		private readonly Fast.SphereTerrainGenerator m_Gen = new Fast.SphereTerrainGenerator( Fast.TerrainGeneratorType.Ridged, TimeSeed );
 		private readonly SpherePlanet m_Planet;
 
 		/// <summary>
@@ -132,8 +133,6 @@ namespace Poc1.Universe.Classes.Rendering
 				return ( uint )System.DateTime.Now.Ticks;
 			}
 		}
-
-		private readonly Fast.SphereTerrainGenerator m_Gen = new Fast.SphereTerrainGenerator( Fast.TerrainGeneratorType.Ridged, TimeSeed );
 
 		/// <summary>
 		/// Generates cube map face bitmaps

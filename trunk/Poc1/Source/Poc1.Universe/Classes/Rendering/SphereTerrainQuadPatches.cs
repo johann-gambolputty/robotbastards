@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Rendering;
@@ -34,7 +33,7 @@ namespace Poc1.Universe.Classes.Rendering
 			m_Terrain = terrain;
 			m_PlanetTerrainTechnique = selector;
 
-			float hDim = 1;
+			float hDim = 10;
 			Point3[] cubePoints = new Point3[]
 				{
 					new Point3( -hDim, -hDim, -hDim ),
