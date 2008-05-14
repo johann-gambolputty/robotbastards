@@ -19,10 +19,28 @@ sampler2D NoiseTexture = sampler_state
 {
 	WrapS = Repeat;
 	WrapT = Repeat;
+	MinFilter = Nearest;
+	MagFilter = Nearest;
+};
+/*
+samplerCUBE CloudTexture = sampler_state
+{
+	WrapS = ClampToEdge;
+	WrapT = ClampToEdge;
+	WrapR = ClampToEdge;
 	MinFilter = Linear;
 	MagFilter = Linear;
 };
 
+samplerCUBE NextCloudTexture = sampler_state
+{
+	WrapS = ClampToEdge;
+	WrapT = ClampToEdge;
+	WrapR = ClampToEdge;
+	MinFilter = Linear;
+	MagFilter = Linear;
+};
+*/
 
 struct VertexShaderInput
 {
@@ -44,15 +62,17 @@ struct FragmentShaderInput
 float4x4 ModelViewProjectionMatrix;
 float4x4 InverseTransposeModelMatrix;
 
+//float4x4 CloudTransform = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+
 FragmentShaderInput VertexShader( VertexShaderInput input )
 {
 	FragmentShaderInput output;
 
-	output.m_Position = mul( ModelViewProjectionMatrix, input.m_Position );
-	output.m_SphereNormal = normalize( mul( InverseTransposeModelMatrix, normalize( input.m_Position ) ).xyz );
-	output.m_Normal = normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
-	output.m_TerrainUv = input.m_TerrainUv;
-	output.m_SlopeElevation = input.m_SlopeElevation;
+	output.m_Position		= mul( ModelViewProjectionMatrix, input.m_Position );
+	output.m_SphereNormal	= normalize( mul( InverseTransposeModelMatrix, normalize( input.m_Position ) ).xyz );
+	output.m_Normal			= normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
+	output.m_TerrainUv		= input.m_TerrainUv;
+	output.m_SlopeElevation	= input.m_SlopeElevation;
 
 	return output;
 }
@@ -65,27 +85,41 @@ const float Dark = 0.0f;
 const float TileRes = 4;
 const float InvTileRes = 1.0f / 4.0f;
 
-float2 GetNoise( float2 uv, float range )
+//float2 GetNoise( float2 uv, float range )
+//{
+//	return ( tex2D( NoiseTexture, uv ).rg * range ) - float2( range / 2, range / 2 );
+//}
+
+float4 GetTerrainColour( FragmentShaderInput input )
 {
-	return ( tex2D( NoiseTexture, uv ).rg * range ) - float2( range / 2, range / 2 );
-}
-
-float4 FragmentShader( FragmentShaderInput input ) : COLOR
-{
-	float shade = saturate( dot( input.m_Normal, SunNormal ) );
-	shade *= shade;
-//	float t = shade < MinAngle ? 0.0f : ( shade > MaxAngle ? 1.0f :  ( ( shade - MinAngle ) / ( MaxAngle - MinAngle ) ) );	
-//	shade = 0.4f + 0.9f * t;
-//	return texCUBE( TerrainSampler, -input.m_SphereNormal ) * shade;
-
-//	input.m_SlopeElevation += GetNoise( input.m_SlopeElevation, 0.1f );
-
 	float type = ( int )( tex2D( TerrainTypeTexture, input.m_SlopeElevation ).r * 256.0f );
 	
 	float2 offsetToTile = float2( fmod( type, TileRes ), ( int )( type * InvTileRes ) );
 	float2 tileUv = offsetToTile + frac( input.m_TerrainUv );
 	tileUv *= float2( InvTileRes, InvTileRes );
-	float4 diffuse = tex2D( TerrainPackTexture, tileUv ) * shade;
+	float4 diffuse = tex2D( TerrainPackTexture, tileUv );
+	
+	return diffuse;
+}
+
+/*
+float GetCloudCover( FragmentShaderInput input )
+{
+	float4 cloudNormal = mul( CloudTransform, input.m_SphereNormal );
+	
+	float curCloud = texCUBE( CloudTexture, cloudNormal ).r;
+	float nextCloud = texCUBE( NextCloudTexture, cloudNormal ).r;
+	
+	return ( ( nextCloud * CloudBlend ) + ( curCloud * ( 1 - CloudBlend ) ) );
+}
+*/
+
+float4 FragmentShader( FragmentShaderInput input ) : COLOR
+{
+	float shade = saturate( dot( input.m_Normal, SunNormal ) );
+	shade *= shade;
+
+	float4 diffuse = GetTerrainColour( input ) * shade;
 
 	return diffuse;
 }

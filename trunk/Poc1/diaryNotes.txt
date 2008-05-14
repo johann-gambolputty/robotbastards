@@ -42,3 +42,10 @@ c1 replaces c0, c2 replaces c1, and the generation thread starts creating a new 
 	- Just add a fixed radius sphere for now
 	- Water opacity can be calculated by rendering scene depth without water into render target
 	- This scene depth map could also render atmospheric 'slabs' for atmospheric shader
+	- While we're at it, other POV effects can be rendered into the same render target - e.g. bloom
+
+::More SSE
+	- Discovered what was causing the step effect in high-resolution patches. The reciprocal square root intrinsic 
+	  was causing inaccuracy to creep in as patch u/v steps got smaller. Fixed by calculating the reciprocal
+	  manually (lets me fold in the radius of the sphere that the fractal functions are defined on for free, which
+	  is handy).

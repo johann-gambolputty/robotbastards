@@ -1,4 +1,3 @@
-using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
 using Tao.OpenGl;
 

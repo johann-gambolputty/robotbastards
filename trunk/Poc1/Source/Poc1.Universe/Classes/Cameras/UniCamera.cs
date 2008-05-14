@@ -212,7 +212,6 @@ namespace Poc1.Universe.Classes.Cameras
 
 		#endregion
 
-
 		#region ICamera3 Members
 
 		public Point3 Unproject( int x, int y, float depth )
