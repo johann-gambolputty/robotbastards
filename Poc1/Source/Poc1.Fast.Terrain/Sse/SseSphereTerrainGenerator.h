@@ -151,7 +151,7 @@ namespace Poc1
 						vertex.SetPosition( x.m128_f32[ offset ], y.m128_f32[ offset ], z.m128_f32[ offset ] );
 						vertex.SetNormal( nX.m128_f32[ offset ], nY.m128_f32[ offset ], nZ.m128_f32[ offset ] );
 						vertex.SetTerrainUv( u.m128_f32[ offset ], v );
-						vertex.SetTerrainParameters( s.m128_f32[ offset ], e.m128_f32[ offset ] );
+						vertex.SetTerrainParameters( e.m128_f32[ offset ], s.m128_f32[ offset ] );
 					}
 
 					inline void SetupVertex( UTerrainVertex& vertex, const int offset, const float* x, const float* y, const float* z, const float* nX, const float* nY, const float* nZ, const float* s, const float* e, const float* u, const float v )
@@ -355,35 +355,36 @@ namespace Poc1
 						SetLength( cpXxxx, cpYyyy, cpZzzz, Constants::Fc_1 );
 						
 						__m128 slopes = _mm_sub_ps( Constants::Fc_1, Dot( cpXxxx, cpYyyy, cpZzzz, normalXxxx, normalYyyy, normalZzzz ) );
-						slopes = _mm_div_ps( slopes, _mm_set1_ps( 0.4f ) );
+						slopes = _mm_div_ps( slopes, _mm_set1_ps( 0.3f ) );
+						Clamp( slopes, Constants::Fc_0, Constants::Fc_1 );
 
 						//	TODO: AP: Clamp slopes to 0-1 range
-						//SetupVertex( v0, 0, originXxxx, originYyyy, originZzzz, cpXxxx, cpYyyy, cpZzzz, slopes, heights, uuuu, v );
-						//SetupVertex( v1, 1, originXxxx, originYyyy, originZzzz, cpXxxx, cpYyyy, cpZzzz, slopes, heights, uuuu, v );
-						//SetupVertex( v2, 2, originXxxx, originYyyy, originZzzz, cpXxxx, cpYyyy, cpZzzz, slopes, heights, uuuu, v );
-						//SetupVertex( v3, 3, originXxxx, originYyyy, originZzzz, cpXxxx, cpYyyy, cpZzzz, slopes, heights, uuuu, v );
+						SetupVertex( v0, 0, originXxxx, originYyyy, originZzzz, cpXxxx, cpYyyy, cpZzzz, slopes, heights, uuuu, v );
+						SetupVertex( v1, 1, originXxxx, originYyyy, originZzzz, cpXxxx, cpYyyy, cpZzzz, slopes, heights, uuuu, v );
+						SetupVertex( v2, 2, originXxxx, originYyyy, originZzzz, cpXxxx, cpYyyy, cpZzzz, slopes, heights, uuuu, v );
+						SetupVertex( v3, 3, originXxxx, originYyyy, originZzzz, cpXxxx, cpYyyy, cpZzzz, slopes, heights, uuuu, v );
 						
-						_CRT_ALIGN( 16 ) float arrX[ 4 ], arrY[ 4 ], arrZ[ 4 ];
-						_CRT_ALIGN( 16 ) float arrNx[ 4 ], arrNy[ 4 ], arrNz[ 4 ];
-						_CRT_ALIGN( 16 ) float arrS[ 4 ], arrH[ 4 ];
-						_CRT_ALIGN( 16 ) float arrU[ 4 ];
+						//_CRT_ALIGN( 16 ) float arrX[ 4 ], arrY[ 4 ], arrZ[ 4 ];
+						//_CRT_ALIGN( 16 ) float arrNx[ 4 ], arrNy[ 4 ], arrNz[ 4 ];
+						//_CRT_ALIGN( 16 ) float arrS[ 4 ], arrH[ 4 ];
+						//_CRT_ALIGN( 16 ) float arrU[ 4 ];
 
-						_mm_store_ps( arrX, originXxxx );
-						_mm_store_ps( arrY, originYyyy );
-						_mm_store_ps( arrZ, originZzzz );
-						
-						_mm_store_ps( arrNx, cpXxxx );
-						_mm_store_ps( arrNy, cpYyyy );
-						_mm_store_ps( arrNz, cpZzzz );
+						//_mm_store_ps( arrX, originXxxx );
+						//_mm_store_ps( arrY, originYyyy );
+						//_mm_store_ps( arrZ, originZzzz );
+						//
+						//_mm_store_ps( arrNx, cpXxxx );
+						//_mm_store_ps( arrNy, cpYyyy );
+						//_mm_store_ps( arrNz, cpZzzz );
 
-						_mm_store_ps( arrS, slopes );
-						_mm_store_ps( arrH, heights );
-						_mm_store_ps( arrU, uuuu );
+						//_mm_store_ps( arrS, slopes );
+						//_mm_store_ps( arrH, heights );
+						//_mm_store_ps( arrU, uuuu );
 
-						SetupVertex( v0, 0, arrX, arrY, arrZ, arrNx, arrNy, arrNz, arrS, arrH, arrU, v );
-						SetupVertex( v1, 1, arrX, arrY, arrZ, arrNx, arrNy, arrNz, arrS, arrH, arrU, v );
-						SetupVertex( v2, 2, arrX, arrY, arrZ, arrNx, arrNy, arrNz, arrS, arrH, arrU, v );
-						SetupVertex( v3, 3, arrX, arrY, arrZ, arrNx, arrNy, arrNz, arrS, arrH, arrU, v );
+						//SetupVertex( v0, 0, arrX, arrY, arrZ, arrNx, arrNy, arrNz, arrS, arrH, arrU, v );
+						//SetupVertex( v1, 1, arrX, arrY, arrZ, arrNx, arrNy, arrNz, arrS, arrH, arrU, v );
+						//SetupVertex( v2, 2, arrX, arrY, arrZ, arrNx, arrNy, arrNz, arrS, arrH, arrU, v );
+						//SetupVertex( v3, 3, arrX, arrY, arrZ, arrNx, arrNy, arrNz, arrS, arrH, arrU, v );
 					}
 
 					///	\brief	Calculates a normal from stuff
@@ -412,7 +413,7 @@ namespace Poc1
 
 						//	Slope of 0 is flat, slope of 1 is vertical
 						float slope = 1.0f - UVector3::Dot( yAxis, acc );
-						slope /= 0.5f;
+						slope /= 0.7f;
 						slope = ( slope < 0 ? 0 : slope > 1 ? 1 : slope );
 
 						v->SetTerrainParameters( height, slope );
@@ -586,9 +587,9 @@ namespace Poc1
 
 				//	Get start x, y and z positions for the first 4 vertices in the first row
 				//	NOTE: AP: Vectors are apparently reversed, so memory access is more natural (xyzw comes out as [ w, z, y, x ] normally)
-				__m128 startXxxx = _mm_set_ps( origin[ 0 ] - xStep[ 0 ], origin[ 0 ] - xStep[ 0 ] * 2, origin[ 0 ] - xStep[ 0 ] * 3, origin[ 0 ] - xStep[ 0 ] * 4 );
-				__m128 startYyyy = _mm_set_ps( origin[ 1 ] - xStep[ 1 ], origin[ 1 ] - xStep[ 1 ] * 2, origin[ 1 ] - xStep[ 1 ] * 3, origin[ 1 ] - xStep[ 1 ] * 4 );
-				__m128 startZzzz = _mm_set_ps( origin[ 2 ] - xStep[ 2 ], origin[ 2 ] - xStep[ 2 ] * 2, origin[ 2 ] - xStep[ 2 ] * 3, origin[ 2 ] - xStep[ 2 ] * 4 );
+				__m128 startXxxx = _mm_set_ps( origin[ 0 ] + xStep[ 0 ] * 3, origin[ 0 ] + xStep[ 0 ] * 2, origin[ 0 ] + xStep[ 0 ], origin[ 0 ] );
+				__m128 startYyyy = _mm_set_ps( origin[ 1 ] + xStep[ 1 ] * 3, origin[ 1 ] + xStep[ 1 ] * 2, origin[ 1 ] + xStep[ 1 ], origin[ 1 ] );
+				__m128 startZzzz = _mm_set_ps( origin[ 2 ] + xStep[ 2 ] * 3, origin[ 2 ] + xStep[ 2 ] * 2, origin[ 2 ] + xStep[ 2 ], origin[ 2 ] );
 
 				//	Determine vectors for incrementing x, y and z positions in the column loop
 				const __m128 colXInc = _mm_set1_ps( xStep[ 0 ] * 4 );
@@ -816,9 +817,9 @@ namespace Poc1
 				
 				//	Get start x, y and z positions for the first 4 vertices in the first row
 				//	NOTE: AP: Vectors are apparently reversed, so memory access is more natural (xyzw comes out as [ w, z, y, x ] normally)
-				__m128 startXxxx = _mm_set_ps( origin[ 0 ] - xStep[ 0 ], origin[ 0 ] - xStep[ 0 ] * 2, origin[ 0 ] - xStep[ 0 ] * 3, origin[ 0 ] - xStep[ 0 ] * 4 );
-				__m128 startYyyy = _mm_set_ps( origin[ 1 ] - xStep[ 1 ], origin[ 1 ] - xStep[ 1 ] * 2, origin[ 1 ] - xStep[ 1 ] * 3, origin[ 1 ] - xStep[ 1 ] * 4 );
-				__m128 startZzzz = _mm_set_ps( origin[ 2 ] - xStep[ 2 ], origin[ 2 ] - xStep[ 2 ] * 2, origin[ 2 ] - xStep[ 2 ] * 3, origin[ 2 ] - xStep[ 2 ] * 4 );
+				__m128 startXxxx = _mm_set_ps( origin[ 0 ] + xStep[ 0 ] * 3, origin[ 0 ] + xStep[ 0 ] * 2, origin[ 0 ] + xStep[ 0 ], origin[ 0 ] );
+				__m128 startYyyy = _mm_set_ps( origin[ 1 ] + xStep[ 1 ] * 3, origin[ 1 ] + xStep[ 1 ] * 2, origin[ 1 ] + xStep[ 1 ], origin[ 1 ] );
+				__m128 startZzzz = _mm_set_ps( origin[ 2 ] + xStep[ 2 ] * 3, origin[ 2 ] + xStep[ 2 ] * 2, origin[ 2 ] + xStep[ 2 ], origin[ 2 ] );
 
 				//	Determine vectors for incrementing x, y and z positions in the column loop
 				const __m128 colXInc = _mm_set1_ps( xStep[ 0 ] * 4 );

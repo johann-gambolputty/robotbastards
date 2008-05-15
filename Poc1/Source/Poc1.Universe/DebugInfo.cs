@@ -49,12 +49,26 @@ namespace Poc1.Universe
 			}
 		}
 
+		/// <summary>
+		/// Switches patch slope rendering on or off
+		/// </summary>
+		[Category( "Rendering" )]
+		public static bool ShowTerrainSlopes
+		{
+			get { return ms_ShowTerrainSlopes; }
+			set
+			{
+				ms_ShowTerrainSlopes = value;
+				OnPropertyChanged( );
+			}
+		}
 		#endregion
 
 		#region Private members
 
 		private static bool ms_ShowPatchInfo;
 		private static bool ms_ShowPatchWireframe;
+		private static bool ms_ShowTerrainSlopes;
 
 		/// <summary>
 		/// Raises the DebugInfoChanged event

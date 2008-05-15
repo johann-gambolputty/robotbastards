@@ -41,6 +41,10 @@ namespace Poc1.Universe.Classes.Rendering
 		#endregion
 
 		#region Updates and rendering
+
+		public void RequestComplete( )
+		{
+		}
 		
 		/// <summary>
 		/// Updates the level of detail of this patch. 
@@ -171,6 +175,8 @@ namespace Poc1.Universe.Classes.Rendering
 
 		private void IncreaseDetail( )
 		{
+
+
 			m_Vertices.Deallocate( m_VbIndex );
 
 			Vector3 uOffset = m_UAxis * 0.5f;

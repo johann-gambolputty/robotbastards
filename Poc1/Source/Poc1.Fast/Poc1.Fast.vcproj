@@ -226,10 +226,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SphereCloudsBitmap.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Sse\SseVector.h"
 				>
 			</File>

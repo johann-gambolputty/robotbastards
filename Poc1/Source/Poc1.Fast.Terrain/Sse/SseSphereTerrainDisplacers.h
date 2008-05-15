@@ -123,6 +123,7 @@ namespace Poc1
 
 				SseRidgedFractal m_Fractal;
 		};
+
 	}; //Fast
 }; //Poc1
 

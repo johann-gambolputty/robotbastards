@@ -105,28 +105,40 @@
 - TODO
 	- Terrain
 		- Geomorphing
-		- Pop slope/altitude determination in fragment shader (it's done at a vertex level - interpolation helps but seems wrong)
-		- Local terrain function sampling to determine high-quality normals even for coarse patches
-		- Cloud cover
+		- Pop slope/altitude determination in fragment shader (it's done at a vertex level - can work it out implicitly in frag shader)
+		- Multi-threading to queue up patch creation
+		- Add x/z displacement decorator class
+		- Add noise to terrain type texture
 		- LOD
 			- Work out why performance degrades over time (think patch LOD popping breaks down)
 			- Cull quad tree nodes (frustum + horizon culling for spherical planets)
-		- Ecosystems
-			- Vegetation
-			- Animal life
-		- Water
-			- Sea
-			- Lakes
-			- Rivers
-		- Cities
-			- Buildings
-			- Roads
-			- Traffic
-			- Pedestrians
+	- Planets
 		- Atmospheric shaders
-		- Ring-worlds
+		- Add planetary rings
+		- Restore planet cube map (necessary?)
+		- Fix larger radius planets (lots of z-fighting, no terrain detail)
+		- Add moons back in
+		- Terrain function sphere needs radius dependent on radius of planet (or moons = extra spiky)
+		- Cloud level dependent on planet radius also
+		- Add sun
+		- Keep terrain patches after they are popped
+	- Cloud cover
+		- Volumetric clouds
+	- Ecosystems
+		- Vegetation
+		- Animal life
+	- Water
+		- Sea
+		- Lakes
+		- Rivers
+	- Cities
+		- Buildings
+		- Roads
+		- Traffic
+		- Pedestrians
 	- Solar system
-		- Orbital paths
+		- Ring-worlds
+		- Proper procedural star-spheres
 	- Assets
 		- Design to Game builds
 		- Game assets aware of changes to design objects
@@ -152,11 +164,14 @@
 		- Particle systems
 
 	- Misc.
+
+- DONE
+	- Clamp slope 
+	- Simple cloud cover	
+	- Local terrain function sampling to determine high-quality normals even for coarse patches
+	- Misc.
 		- Refactoring
 			- Split out fast terrain code into Poc1.Fast.Terrain
 				- Keep Poc1.Fast for shared stuff like aligned allocations
-
-- DONE
-	
 
 		

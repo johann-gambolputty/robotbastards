@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using Poc1.Fast;
+using Poc1.Fast.Terrain;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
 using Rb.Rendering;
