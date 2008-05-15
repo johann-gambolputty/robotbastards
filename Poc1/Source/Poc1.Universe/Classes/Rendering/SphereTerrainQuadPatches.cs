@@ -6,10 +6,8 @@ using Poc1.Universe.Interfaces.Rendering;
 using Rb.Assets;
 using Rb.Core.Maths;
 using Rb.Rendering;
-using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Textures;
-using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc1.Universe.Classes.Rendering
 {

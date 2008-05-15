@@ -20,7 +20,7 @@ namespace Poc1.Universe.Classes.Rendering
 		public const int VertexArea = VertexResolution * VertexResolution;
 		public const int TotalVerticesPerPatch = VertexArea + VertexResolution * 4;
 
-		public const float ErrorThreshold = 3;
+		public const float ErrorThreshold = 6;
 
 
 		#region Public Construction
