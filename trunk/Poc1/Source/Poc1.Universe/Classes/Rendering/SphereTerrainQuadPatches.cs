@@ -59,7 +59,18 @@ namespace Poc1.Universe.Classes.Rendering
 			DebugInfo.PropertyChanged +=
 				delegate
 				{
-					selector.Select( DebugInfo.ShowPatchWireframe ? "WireFrameTechnique" : "DefaultTechnique" );
+					if ( DebugInfo.ShowPatchWireframe )
+					{
+						selector.Select( "WireFrameTechnique" );
+					}
+					else if ( DebugInfo.ShowTerrainSlopes )
+					{
+						selector.Select( "ShowSlopesTechnique" );
+					}
+					else
+					{
+						selector.Select( "DefaultTechnique" );
+					}
 				};
 #endif
 		}

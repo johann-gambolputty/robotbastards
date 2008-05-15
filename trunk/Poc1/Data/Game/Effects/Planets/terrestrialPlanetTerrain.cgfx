@@ -9,8 +9,8 @@ sampler2D TerrainPackTexture = sampler_state
 
 sampler2D TerrainTypeTexture = sampler_state
 {
-	WrapS = Repeat;
-	WrapT = Repeat;
+	WrapS = ClampToEdge;
+	WrapT = ClampToEdge;
 	MinFilter = Nearest;
 	MagFilter = Nearest;
 };
@@ -116,11 +116,17 @@ float GetCloudCover( FragmentShaderInput input )
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
-	float shade = saturate( dot( input.m_Normal, SunNormal ) );
+	float shade = ( dot( input.m_Normal, SunNormal ) + 1 ) / 2;
 	shade *= shade;
 
 	float4 diffuse = GetTerrainColour( input ) * shade;
 
+	return diffuse;
+}
+
+float4 DbgSlopeFragmentShader( FragmentShaderInput input ) : COLOR
+{
+	float4 diffuse = input.m_SlopeElevation.yyyy;
 	return diffuse;
 }
 
@@ -139,6 +145,24 @@ technique DefaultTechnique
 		PolygonMode				= int2( Front, Fill );
 		VertexProgram			= compile arbvp1 VertexShader( );
 		FragmentProgram			= compile arbfp1 FragmentShader( );
+	}
+}
+
+technique ShowSlopesTechnique
+{
+	pass
+	{
+		LightingEnable			= false;
+		DepthMask				= true;
+		ShadeModel				= Smooth;
+		FrontFace				= CW;
+		DepthTestEnable			= true;
+		DepthFunc				= Less;
+		CullFaceEnable			= true;
+		BlendEnable				= false;
+		PolygonMode				= int2( Front, Fill );
+		VertexProgram			= compile arbvp1 VertexShader( );
+		FragmentProgram			= compile arbfp1 DbgSlopeFragmentShader( );
 	}
 }
 

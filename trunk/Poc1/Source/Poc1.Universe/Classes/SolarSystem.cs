@@ -27,7 +27,6 @@ namespace Poc1.Universe.Classes
 
 		private readonly IList< ISun >		m_Suns = new List< ISun >( );
 		private readonly List< IPlanet >	m_Planets = new List< IPlanet >( );
-		private IPlanet						m_ClosestPlanetToCamera;
 
 		private void Update( long updateTime )
 		{
@@ -61,28 +60,19 @@ namespace Poc1.Universe.Classes
 			IPlanet[] sortedPlanets = m_Planets.ToArray( );
 			Array.Sort( sortedPlanets, PlanetDistanceComparison );
 
-			if ( m_ClosestPlanetToCamera != null )
-			{
-				m_ClosestPlanetToCamera.EnableTerrainRendering = false;
-			}
-			if ( sortedPlanets.Length > 0 )
-			{
-				m_ClosestPlanetToCamera = sortedPlanets[ sortedPlanets.Length - 1 ];
-				double distanceToCamera = UniCamera.Current.Position.DistanceTo( m_ClosestPlanetToCamera.Transform.Position );
-				m_ClosestPlanetToCamera.EnableTerrainRendering = ( distanceToCamera < TerrainRenderingDistance );
-			}
-
 			foreach ( IPlanet planet in sortedPlanets )
 			{
+				double distanceToCamera = UniCamera.Current.Position.DistanceTo( planet.Transform.Position );
+				planet.EnableTerrainRendering = ( distanceToCamera < TerrainRenderingDistance );
 				planet.Render( context );
 			}
 		}
 
 
 		/// <summary>
-		/// The distance threshold that terrain rendering starts at for the closest planet
+		/// The distance threshold that terrain rendering starts
 		/// </summary>
-		private const double TerrainRenderingDistance = 220000000;
+		private const double TerrainRenderingDistance = 5200000000;
 
 		/// <summary>
 		/// Planet to camera distance comparison, used by the render method for sorting planets in back to front order
