@@ -27,9 +27,7 @@ namespace Poc1
 		__m128 Constants::Fc_0;
 		__m128 Constants::Fc_Neg1;
 
-		static Constants g_Constants; ///< Global constant object. Initialises values
-
-		Constants::Constants( )
+		void Constants::InitializeConstants( )
 		{
 			Ic_FF = _mm_set1_epi32( 0xff );
 			Ic_15 = _mm_set1_epi32( 15 );

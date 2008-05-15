@@ -43,7 +43,6 @@ namespace Poc1
 
 		}; //UTerrainVertex
 
-
 		inline void UTerrainVertex::SetPosition( float x, float y, float z )
 		{
 			m_X = x;

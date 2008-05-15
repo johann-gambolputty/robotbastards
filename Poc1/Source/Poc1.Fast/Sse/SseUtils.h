@@ -67,18 +67,14 @@ namespace Poc1
 			return _mm_cvtps_epi32( _mm_sub_ps( v, _mm_set1_ps( 0.5f ) ) );
 		}
 
+		///	\brief	Sets the length of 4 vectors
 		inline void SetLength( __m128& xxxx, __m128& yyyy, __m128& zzzz, const __m128& len )
 		{
 			__m128 xxxx2 = _mm_mul_ps( xxxx, xxxx );
 			__m128 yyyy2 = _mm_mul_ps( yyyy, yyyy );
 			__m128 zzzz2 = _mm_mul_ps( zzzz, zzzz );
-			/*
-			__m128 rsqrt = _mm_rsqrt_ps( _mm_add_ps( xxxx2, _mm_add_ps( yyyy2, zzzz2 ) ) );
-			rsqrt = _mm_mul_ps( rsqrt, len );
-			xxxx = _mm_mul_ps( xxxx, rsqrt );
-			yyyy = _mm_mul_ps( yyyy, rsqrt );
-			zzzz = _mm_mul_ps( zzzz, rsqrt );*/
 
+			//	NOTE: AP: Don't use reciprocal sqrt - has dubious precision
 			__m128 sqr = _mm_sqrt_ps( _mm_add_ps( xxxx2, _mm_add_ps( yyyy2, zzzz2 ) ) );
 			sqr = _mm_div_ps( len, sqr );
 			xxxx = _mm_mul_ps( xxxx, sqr );
@@ -86,6 +82,7 @@ namespace Poc1
 			zzzz = _mm_mul_ps( zzzz, sqr );
 		}
 
+		///	\brief	Sets the length of 4 vectors
 		inline void SetLength( __m128& xxxx, __m128& yyyy, __m128& zzzz, const float len )
 		{
 			__m128 llll = _mm_set1_ps( len );
@@ -105,6 +102,21 @@ namespace Poc1
 			zzzz = _mm_mul_ps( zzzz, rsqrt );
 		}
 
+		///	\brief	Calculates the dot product of 2 sets of 4 vectors
+		inline __m128 Dot( const __m128& xxxx0, const __m128& yyyy0, const __m128& zzzz0, const __m128& xxxx1, const __m128& yyyy1, const __m128& zzzz1 )
+		{
+			return
+				_mm_add_ps
+				(
+					_mm_mul_ps( xxxx0, xxxx1 ),
+					_mm_add_ps
+					(
+						_mm_mul_ps( yyyy0, yyyy1 ),
+						_mm_mul_ps( zzzz0, zzzz1 )
+					)
+				);
+		}
+
 		///	\brief	Returns the absolute value of a floating point vector
 		inline __m128 Abs( const __m128& val )
 		{
@@ -112,7 +124,7 @@ namespace Poc1
 		}
 
 		///	\brief	Fades floating point values
-		inline static __m128 Fade( __m128 v )
+		inline static __m128 Fade( const __m128& v )
 		{
 			//	6v5-15v4+10v3
 			//	= (v.(6v - 15)).v3

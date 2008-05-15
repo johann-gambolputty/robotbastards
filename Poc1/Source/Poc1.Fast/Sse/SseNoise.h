@@ -1,15 +1,15 @@
 #pragma once
 #pragma managed(push, off)
 
-#include "SseUtils.h"
-
+#include "Sse\SseUtils.h"
+#include "Poc1.Fast.h"
 
 namespace Poc1
 {
 	namespace Fast
 	{
 		///	\brief	Fast noise implementation using SSE SIMD instructions
-		class _CRT_ALIGN(16) SseNoise
+		class FAST_API _CRT_ALIGN(16) SseNoise
 		{
 			public :
 

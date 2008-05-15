@@ -108,6 +108,10 @@
       <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
       <Name>Rb.Rendering</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Poc1.Fast.Terrain\Poc1.Fast.Terrain.vcproj">
+      <Project>{22C72F9C-B313-4366-BBE2-84A649775E75}</Project>
+      <Name>Poc1.Fast.Terrain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Poc1.Fast\Poc1.Fast.vcproj">
       <Project>{2EA4865D-CDBB-4EC3-83A3-4703FE7B7A28}</Project>
       <Name>Poc1.Fast</Name>

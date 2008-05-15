@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="Poc1.Fast"
-	ProjectGUID="{2EA4865D-CDBB-4EC3-83A3-4703FE7B7A28}"
-	RootNamespace="Poc1Fast"
+	Name="Poc1.Fast.Particles"
+	ProjectGUID="{D8C474A5-FBA5-4D56-8753-6C9BE9BB2FA4}"
+	RootNamespace="Poc1FastParticles"
 	Keyword="ManagedCProj"
 	>
 	<Platforms>
@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)bin\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="1"
@@ -41,13 +41,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(ProjectDir)"
-				PreprocessorDefinitions="WIN32;_DEBUG;POC1_FAST_EXPORTS"
+				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4945"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -93,7 +91,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)bin\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="1"
@@ -117,13 +115,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="$(ProjectDir)"
-				PreprocessorDefinitions="WIN32;NDEBUG;POC1_FAST_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4945"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -180,17 +176,9 @@
 			RelativePath="System.XML.dll"
 			AssemblyName="System.Xml, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
 		/>
-		<AssemblyReference
-			RelativePath="System.Drawing.dll"
-			AssemblyName="System.Drawing, Version=2.0.0.0, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
-		/>
 		<ProjectReference
-			ReferencedProjectIdentifier="{EC130734-6F0F-402B-8215-9F133F0ADEE4}"
-			RelativePathToProject="..\Source\Rb.Rendering\Rb.Rendering.csproj"
-		/>
-		<AssemblyReference
-			RelativePath="System.Windows.Forms.dll"
-			AssemblyName="System.Windows.Forms, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
+			ReferencedProjectIdentifier="{2EA4865D-CDBB-4EC3-83A3-4703FE7B7A28}"
+			RelativePathToProject=".\Source\Poc1.Fast\Poc1.Fast.vcproj"
 		/>
 	</References>
 	<Files>
@@ -200,12 +188,28 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\Source\FastNoise.cpp"
+				RelativePath=".\AssemblyInfo.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Source\UVector3.cpp"
+				RelativePath=".\Stdafx.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -214,109 +218,13 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\FastNoise.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Mem.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Poc1.Fast.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SphereCloudsBitmap.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Sse\SseVector.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Stdafx.h"
 				>
 			</File>
-			<File
-				RelativePath=".\UColour.h"
-				>
-			</File>
-			<File
-				RelativePath=".\UEnums.h"
-				>
-			</File>
-			<File
-				RelativePath=".\UVector3.h"
-				>
-			</File>
 		</Filter>
-		<Filter
-			Name="Sse"
-			>
-			<Filter
-				Name="Sse Headers"
-				>
-				<File
-					RelativePath=".\Sse\SseConstants.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Sse\SseNoise.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Sse\SseRidgedFractal.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Sse\SseSimpleFractal.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Sse\SseUtils.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Sse Source"
-				>
-				<File
-					RelativePath=".\Sse\Source\SseConstants.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sse\Source\SseNoise.cpp"
-					>
-				</File>
-			</Filter>
-		</Filter>
-		<File
-			RelativePath=".\AssemblyInfo.cpp"
-			>
-		</File>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>
-		</File>
-		<File
-			RelativePath=".\Stdafx.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="1"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="1"
-				/>
-			</FileConfiguration>
 		</File>
 	</Files>
 	<Globals>

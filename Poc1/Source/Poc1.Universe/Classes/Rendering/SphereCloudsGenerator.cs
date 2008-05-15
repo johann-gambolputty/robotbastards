@@ -2,10 +2,10 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
-using Poc1.Fast;
 using Rb.Core.Maths;
 using Rb.Rendering.Interfaces.Objects;
 using Graphics=Rb.Rendering.Graphics;
+using Poc1.Fast.Terrain;
 
 namespace Poc1.Universe.Classes.Rendering
 {
