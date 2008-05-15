@@ -78,7 +78,6 @@ namespace Poc1.Universe
 			byte* curRow = ( byte* )bmpData.Scan0;
 			Point3 rowPos = RowStart;
 
-
 			long start = TinyTime.CurrentTime;
 			for ( int y = 0; y < bmp.Height; ++y, curRow += bmpData.Stride )
 			{

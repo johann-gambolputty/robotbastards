@@ -58,6 +58,14 @@ namespace Poc1
 					m_Z -= point[ 2 ];
 				}
 
+				void SetLength( const float len )
+				{
+					const float rcpLen = len / sqrtf( m_X * m_X + m_Y * m_Y + m_Z * m_Z );
+					m_X *= rcpLen;
+					m_Y *= rcpLen;
+					m_Z *= rcpLen;
+				}
+
 				void Normalise( )
 				{
 					const float rcpLen = 1.0f / sqrtf( m_X * m_X + m_Y * m_Y + m_Z * m_Z );

@@ -22,7 +22,6 @@ namespace Poc1.Universe.Classes.Rendering
 
 		public const float ErrorThreshold = 6;
 
-
 		#region Public Construction
 
 		public TerrainQuadPatch( TerrainQuadPatchVertices vertices, Color patchColour, Point3 origin, Vector3 uAxis, Vector3 vAxis ) :
@@ -159,7 +158,7 @@ namespace Poc1.Universe.Classes.Rendering
 		private TerrainQuadPatch[] m_Children;
 		private bool m_BuildVertices;
 		private bool m_BuildIndices;
-		private float m_UvRes;
+		private readonly float m_UvRes;
 		
 		private readonly static DrawBase.IBrush ms_Brush;
 
@@ -177,6 +176,7 @@ namespace Poc1.Universe.Classes.Rendering
 			Vector3 uOffset = m_UAxis * 0.5f;
 			Vector3 vOffset = m_VAxis * 0.5f;
 			float error = m_PatchError / 2;
+		//	float error = float.MaxValue;
 			float uvRes = m_UvRes / 2;
 
 			try

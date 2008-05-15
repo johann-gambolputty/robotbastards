@@ -12,12 +12,14 @@ namespace Poc1
 	{
 		SseNoise::SseNoise( )
 		{
+			Constants::InitializeConstants( );
 			InitializePerms( 0 );
 			_MM_SET_ROUNDING_MODE( _MM_ROUND_NEAREST );
 		}
 
 		SseNoise::SseNoise( unsigned int seed )
 		{
+			Constants::InitializeConstants( );
 			InitializePerms( seed );
 			_MM_SET_ROUNDING_MODE( _MM_ROUND_NEAREST );
 		}

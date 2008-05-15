@@ -1,7 +1,7 @@
 #pragma once
 #pragma managed(push, off)
 
-#include "SseRidgedFractal.h"
+#include <Sse\SseRidgedFractal.h>
 
 namespace Poc1
 {

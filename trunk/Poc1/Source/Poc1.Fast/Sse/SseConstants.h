@@ -1,5 +1,7 @@
 #pragma once
 #pragma managed(push, off)
+
+#include "Poc1.Fast.h"
 #include <emmintrin.h>
 
 namespace Poc1
@@ -7,7 +9,7 @@ namespace Poc1
 	namespace Fast
 	{
 		///	\brief	Handy packed integer/floating point constants
-		struct Constants
+		struct FAST_API Constants
 		{
 			//@{
 			///	\name	Packed 32-bit integer values
@@ -37,17 +39,18 @@ namespace Poc1
 
 			//@}
 
-			///	\brief	Constants constructor
+			///	\brief	Constants setup
 			///
-			///	Constants instance constructor initializes the static constant values - must be done in this
-			///	odd way because initalizer code containing intrinsics is not allowed in managed C++ assemblies
+			///	Constants setup initializes the static constant values - must be done explicitly
+			///	because initalizer code containing intrinsics is not allowed in managed C++ assemblies
 			///
 			///	Trying to initialize directly causes the following warning, followed by error:
 			///	warning C4793: 'aligned data types not supported in managed code' : causes native code generation for function '`dynamic initializer for 'Poc1::Fast::Constants::Ic_FF'''
 			///
-			Constants( );
+			///	InitializeConstants() is called by the SseNoise constructor
+			///
+			static void InitializeConstants( );
 		};
-
 	};
 };
 

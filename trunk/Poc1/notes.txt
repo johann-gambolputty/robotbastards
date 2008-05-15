@@ -32,6 +32,9 @@
 	- 
 
 - Links:
+	- Notes on procedural terrain:
+		- http://www.gamedev.net/community/forums/mod/journal/journal.asp?jn=263350&cmonth=8&cyear=2007
+
 	- Not really relevent, but data for the stanford bunny is here:
 		- http://www.codesampler.com/oglsrc/oglsrc_6.htm
 
