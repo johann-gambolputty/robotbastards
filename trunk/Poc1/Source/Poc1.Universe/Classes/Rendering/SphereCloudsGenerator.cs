@@ -150,7 +150,7 @@ namespace Poc1.Universe.Classes.Rendering
 		private readonly ICubeMapTexture[] m_Textures = new ICubeMapTexture[ 3 ];
 		private readonly Bitmap[] m_Faces = new Bitmap[ 6 ];
 		private readonly int m_Resolution;
-		private readonly SphereCloudsBitmap m_Gen = new SphereCloudsBitmap();
+		private readonly SphereCloudsBitmap m_Gen = new SphereCloudsBitmap( );
 		private float m_XOffset = 0;
 		private float m_ZOffset = 0;
 
@@ -181,7 +181,7 @@ namespace Poc1.Universe.Classes.Rendering
 		{
 			float xOffset = Functions.Sin( m_XOffset );
 			float zOffset = Functions.Cos( m_ZOffset );
-			float density = 0.1f + Functions.Cos( m_CloudCoverage ) * 0.2f;
+			float density = 0.3f + Functions.Cos( m_CloudCoverage ) * 0.1f;
 			float cloudCut = density;
 			float cloudBorder = cloudCut + 0.2f;
 			m_Gen.Setup( xOffset, zOffset, cloudCut, cloudBorder );

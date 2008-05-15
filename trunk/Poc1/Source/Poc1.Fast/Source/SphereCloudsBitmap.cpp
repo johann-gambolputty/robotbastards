@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "SphereCloudsBitmap.h"
 #include "Sse/SseRidgedFractal.h"
+#include "Sse/SseSimpleFractal.h"
 #include "Mem.h"
 #include "UEnums.h"
 
@@ -17,7 +18,7 @@ namespace Poc1
 
 				SphereCloudsBitmapImpl( )
 				{
-					m_Gen.Setup( 3.5f, 1.6f, 8 );
+					m_Gen.Setup( 2.5f, 0.8f, 8 );
 				}
 
 				void Setup( const float xOffset, const float zOffset, const float cloudCutoff, const float cloudBorder )
@@ -38,11 +39,20 @@ namespace Poc1
 				__m128 m_CloudCutoff;
 				__m128 m_CloudBorder;
 				__m128 m_CloudBorderDiff;
-				SseRidgedFractal m_Gen;
+			//	SseRidgedFractal m_Gen;
+				SseSimpleFractal m_Gen;
 
 		};
 
 		inline __m128 CubeFaceFractal( const SseRidgedFractal& fractal, const UCubeMapFace face, const __m128& uuuu, const __m128& vvvv, const __m128& xOffset, const __m128& zOffset )
+		{
+			__m128 xxxx, yyyy, zzzz;
+			CubeFacePosition( face, uuuu, vvvv, xxxx, yyyy, zzzz );
+			SetLength( xxxx, yyyy, zzzz, 3.0f );
+			return fractal.GetValue( _mm_add_ps( xxxx, xOffset ), yyyy, _mm_add_ps( zzzz, zOffset ) );
+		}
+
+		inline __m128 CubeFaceFractal( const SseSimpleFractal& fractal, const UCubeMapFace face, const __m128& uuuu, const __m128& vvvv, const __m128& xOffset, const __m128& zOffset )
 		{
 			__m128 xxxx, yyyy, zzzz;
 			CubeFacePosition( face, uuuu, vvvv, xxxx, yyyy, zzzz );
@@ -76,7 +86,8 @@ namespace Poc1
 				{
 					//	TODO: AP: Could move face switch to outer loop
 					__m128 value = CubeFaceFractal( m_Gen, face, uuuu, vvvv, m_XOffset, m_ZOffset );
-					value = _mm_mul_ps( _mm_mul_ps( value, value ), _mm_set1_ps( 255.0f ) );
+				//	value = _mm_mul_ps( _mm_mul_ps( value, value ), _mm_set1_ps( 255.0f ) );
+					value = _mm_mul_ps( value, _mm_set1_ps( 255.0f ) );
 					__m128 cutMask = _mm_cmpgt_ps( value, m_CloudCutoff );
 					value = _mm_and_ps( cutMask, value );
 
