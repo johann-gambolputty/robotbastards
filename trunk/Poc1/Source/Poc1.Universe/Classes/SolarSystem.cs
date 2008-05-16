@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
+using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Classes
@@ -51,6 +52,11 @@ namespace Poc1.Universe.Classes
 		/// <param name="context">Rendering context</param>
 		public void Render( IRenderContext context )
 		{
+			if ( DebugInfo.ShowCameraPosition )
+			{
+				DebugText.Write( "Camera Pos: {0}", UniCamera.Current.Position.ToRenderUnitString( ) );
+			}
+
 			m_SkyBox.Render( context );
 
 			//	Update all the planets

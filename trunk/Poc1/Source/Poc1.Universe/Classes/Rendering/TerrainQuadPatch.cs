@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using Poc1.Universe.Interfaces.Rendering;
 using Rb.Core.Maths;
 using Rb.Rendering;
@@ -11,21 +12,45 @@ using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc1.Universe.Classes.Rendering
 {
-	//	TODO: AP: Error metric (half root error per tier)
-	//	
-
+	/// <summary>
+	/// Quad-tree terrain patch
+	/// </summary>
+	/// <remarks>
+	/// 
+	/// Description of LOD increase/decrease operations:
+	/// 
+	/// Patch detail is increased when the distance from the patch to the camera is less than the error threshold in
+	/// a leaf node.
+	///		if the CachedChildren list exists
+	///			CachedChildren list is moved to the PendingChildren list
+	///		else
+	///			4 child nodes are created and added to the PendingChildren list
+	///		Each child node is marked as "Building"
+	///		Each new child node adds a build request to the TerrainQuadPatchBuilder
+	///		When all 4 child nodes are built, their "Building" flags are set to false, and they inform the parent patch, which moves
+	///		them from the PendingChildren list to the Children list.
+	///
+	///	Patch detail is decreased when the distance from the patch to the camera is greater than the error threshold
+	/// in a non-leaf node.
+	///		If any child below the patch is marked as "Building", then the detail reduction fails.
+	///		Children list is moved to CachedChildren (recursive), making the non-leaf node into a leaf node.
+	///			All children moved in this way release their allocated vertex areas
+	///		The node is marked as "Building".
+	///		The node adds a build request to the TerrainQuadPatchBuilder
+	///		When the node has been build, its "Building" flag is set to false.
+	/// 
+	/// </remarks>
 	class TerrainQuadPatch
 	{
 		public const int VertexResolution = 33;
 		public const int VertexArea = VertexResolution * VertexResolution;
 		public const int TotalVerticesPerPatch = VertexArea + VertexResolution * 4;
-
 		public const float ErrorThreshold = 6;
 
 		#region Public Construction
 
-		public TerrainQuadPatch( TerrainQuadPatchVertices vertices, Color patchColour, Point3 origin, Vector3 uAxis, Vector3 vAxis ) :
-			this( vertices, patchColour, origin, uAxis, vAxis, float.MaxValue, 128.0f )
+		public TerrainQuadPatch( TerrainQuadPatchVertices vertices, Point3 origin, Vector3 uAxis, Vector3 vAxis ) :
+			this( null, vertices, origin, uAxis, vAxis, float.MaxValue, 128.0f )
 		{
 		}
 
@@ -33,23 +58,103 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#region Public Properties
 
+		/// <summary>
+		/// Returns true if this patch has been assigned an region of the terrain vertex buffer
+		/// </summary>
+		public bool HasVertexData
+		{
+			get { return m_VbIndex != -1; }
+		}
+
+		/// <summary>
+		/// Gets the centre of this patch (origin at the planets centre)
+		/// </summary>
 		public Point3 PatchCentre
 		{
 			get { return m_Centre; }
+		}
+
+		/// <summary>
+		/// Gets the local origin of this patch (origin at the planets centre, but scaled down)
+		/// </summary>
+		public Point3 LocalOrigin
+		{
+			get { return m_LocalOrigin; }
+		}
+
+		/// <summary>
+		/// Gets the U axis of this patch
+		/// </summary>
+		public Vector3 UStep
+		{
+			get { return m_LocalUAxis; }
+		}
+
+		/// <summary>
+		/// Gets the V axis of this patch
+		/// </summary>
+		public Vector3 VStep
+		{
+			get { return m_LocalVAxis; }
+		}
+
+		/// <summary>
+		/// Gets the terrain texture resolution of this patch
+		/// </summary>
+		public float UvResolution
+		{
+			get { return m_UvRes; }
+		}
+
+		/// <summary>
+		/// Gets the maximum error of this patch
+		/// </summary>
+		public float PatchError
+		{
+			get { return m_PatchError; }
+			set { m_PatchError = value; }
 		}
 
 		#endregion
 
 		#region Updates and rendering
 
-		public void RequestComplete( )
+		/// <summary>
+		/// Counts the number of nodes, from the set of this node, and all child nodes, that have vertex data
+		/// </summary>
+		public int CountNodesWithVertexData( )
 		{
+			int count = ( HasVertexData ? 1 : 0 );
+			if ( m_Children != null )
+			{
+				foreach ( TerrainQuadPatch patch in m_Children )
+				{
+					count += patch.CountNodesWithVertexData( );
+				}
+			}
+			return count;
 		}
-		
+
+		/// <summary>
+		/// Called by <see cref="TerrainQuadPatchBuilder"/> when it has finished building vertex data for this patch
+		/// </summary>
+		public unsafe void OnBuildComplete( byte* vertexData, Point3 centre, float increaseDetailDistance )
+		{
+			m_Building = false;
+			m_Centre = centre;
+			m_IncreaseDetailDistance = increaseDetailDistance;
+			SetVertexData( vertexData );
+			BuildIndices( );
+			if ( m_Parent != null )
+			{
+				m_Parent.ChildBuildIsComplete( );
+			}
+		}
+
 		/// <summary>
 		/// Updates the level of detail of this patch. 
 		/// </summary>
-		public void UpdateLod( Point3 cameraPos )
+		public void UpdateLod( Point3 cameraPos, IPlanetTerrain terrain, IProjectionCamera camera )
 		{
 			if ( m_IncreaseDetailDistance == float.MaxValue )
 			{
@@ -60,23 +165,23 @@ namespace Poc1.Universe.Classes.Rendering
 			m_DistToPatch = distanceToPatch;
 			if ( distanceToPatch < m_IncreaseDetailDistance )
 			{
-				if ( m_Children == null )
+				if ( IsLeafNode )
 				{
-					IncreaseDetail( );
+					IncreaseDetail( terrain, camera );
 				}
-				else
+				else if ( m_Children != null )
 				{
 					foreach ( TerrainQuadPatch childPatch in m_Children )
 					{
-						childPatch.UpdateLod( cameraPos );
+						childPatch.UpdateLod( cameraPos, terrain, camera );
 					}
 				}
 			}
 			else if ( distanceToPatch > m_IncreaseDetailDistance )
 			{
-				if ( m_Children != null )
+				if ( !IsLeafNode && CanReduceDetail )
 				{
-					ReduceDetail( );
+					ReduceDetail( terrain, camera );
 				}
 			}
 		}
@@ -95,15 +200,10 @@ namespace Poc1.Universe.Classes.Rendering
 			}
 			else
 			{
-				if ( m_BuildVertices )
+				//	Bodge to generate vertices (blocking) on the first frame
+				if ( m_Parent == null && m_VbIndex == -1 && m_IncreaseDetailDistance == float.MaxValue )
 				{
-					BuildVertices( camera, terrain );
-					m_BuildVertices = false;
-				}
-				if ( m_BuildIndices )
-				{
-					BuildIndices( );
-					m_BuildIndices = false;
+					TerrainQuadPatchBuilder.Instance.BuildVertices( this, terrain, camera, ( PatchError == float.MaxValue ) );
 				}
 			}
 		}
@@ -113,11 +213,11 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		public void Render( )
 		{
-			if ( m_Children == null )
+			if ( m_VbIndex != -1 )
 			{
 				m_Ib.Draw( PrimitiveType.TriList );
 			}
-			else
+			else if ( m_Children != null )
 			{
 				for ( int i = 0; i < m_Children.Length; ++i )
 				{
@@ -149,22 +249,56 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#region Private Members
 
-		private readonly TerrainQuadPatchVertices m_Vertices;
-		private readonly IIndexBuffer m_Ib = Graphics.Factory.CreateIndexBuffer( );
-		private readonly Point3 m_Origin;
-		private readonly Vector3 m_UAxis;
-		private readonly Vector3 m_VAxis;
-		private Point3 m_Centre;
-		private float m_PatchError;
-		private float m_DistToPatch;
-		private float m_IncreaseDetailDistance;
-		private int m_VbIndex;
-		private TerrainQuadPatch[] m_Children;
-		private bool m_BuildVertices;
-		private bool m_BuildIndices;
-		private readonly float m_UvRes;
+		private readonly TerrainQuadPatch			m_Parent;
+		private readonly TerrainQuadPatchVertices	m_Vertices;
+		private readonly IIndexBuffer				m_Ib = Graphics.Factory.CreateIndexBuffer( );
+		private readonly Point3						m_LocalOrigin;
+		private readonly Vector3					m_LocalUAxis;
+		private readonly Vector3					m_LocalVAxis;
+		private Point3								m_Centre;
+		private float								m_PatchError;
+		private float								m_DistToPatch;
+		private float								m_IncreaseDetailDistance;
+		private int									m_VbIndex = -1;
+		private bool								m_Building;
+		private TerrainQuadPatch[]					m_Children;
+		private TerrainQuadPatch[]					m_PendingChildren;
+		private TerrainQuadPatch[]					m_CachedChildren;
+		private readonly float						m_UvRes;
 		
 		private readonly static DrawBase.IBrush ms_Brush;
+
+
+		private bool CanReduceDetail
+		{
+			get
+			{
+				if ( m_Building || m_PendingChildren != null )
+				{
+					return false;
+				}
+				if ( m_Children == null )
+				{
+					return true;
+				}
+				foreach ( TerrainQuadPatch childPatch in m_Children )
+				{
+					if ( !childPatch.CanReduceDetail )
+					{
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+		
+		private bool IsLeafNode
+		{
+			get
+			{
+				return ( m_Children == null ) && ( m_PendingChildren == null );
+			}
+		}
 
 		static TerrainQuadPatch( )
 		{
@@ -173,46 +307,74 @@ namespace Poc1.Universe.Classes.Rendering
 			ms_Brush.State.DepthWrite = false;
 		}
 
-		private void IncreaseDetail( )
+		public unsafe void SetVertexData( byte* srcData )
 		{
-
-
-			m_Vertices.Deallocate( m_VbIndex );
-
-			Vector3 uOffset = m_UAxis * 0.5f;
-			Vector3 vOffset = m_VAxis * 0.5f;
-			float error = m_PatchError / 2;
-		//	float error = float.MaxValue;
-			float uvRes = m_UvRes / 2;
-
-			try
+			m_VbIndex = m_Vertices.Allocate( );
+			if ( m_VbIndex == -1 )
 			{
-				TerrainQuadPatch tl = new TerrainQuadPatch( m_Vertices, Color.Red, m_Origin, uOffset, vOffset, error, uvRes );
-				TerrainQuadPatch tr = new TerrainQuadPatch( m_Vertices, Color.Black, m_Origin + uOffset, uOffset, vOffset, error, uvRes );
-				TerrainQuadPatch bl = new TerrainQuadPatch( m_Vertices, Color.Black, m_Origin + vOffset, uOffset, vOffset, error, uvRes );
-				TerrainQuadPatch br = new TerrainQuadPatch( m_Vertices, Color.Red, m_Origin + uOffset + vOffset, uOffset, vOffset, error, uvRes );
-
-				m_Children = new TerrainQuadPatch[] { tl, tr, bl, br };
+				return;
 			}
-			catch ( OutOfMemoryException )
+			using ( IVertexBufferLock vbLock = m_Vertices.VertexBuffer.Lock( m_VbIndex, VertexArea, false, true ) )
 			{
-				m_Children = null;
+				memcpy( vbLock.Bytes, srcData, VertexArea * m_Vertices.VertexBuffer.VertexSizeInBytes );
 			}
 		}
 
-		private void ReduceDetail( )
+		
+		private void ReleaseVertices( )
+		{
+			if ( m_VbIndex != -1 )
+			{
+				m_Vertices.Deallocate( m_VbIndex );
+				m_VbIndex = -1;
+			}
+		}
+
+		private void Build( IPlanetTerrain terrain, IProjectionCamera camera )
+		{
+			m_Building = true;
+			TerrainQuadPatchBuilder.Instance.AddRequest( this, terrain, camera, ( m_PatchError == float.MaxValue ) );
+		}
+
+		private void IncreaseDetail( IPlanetTerrain terrain, IProjectionCamera camera )
+		{
+			if ( m_CachedChildren != null )
+			{
+				//	Child nodes have already been created - they just need new vertex buffers
+				m_PendingChildren = m_CachedChildren;
+				m_CachedChildren = null;
+			}
+			else
+			{
+				Vector3 uOffset = m_LocalUAxis * 0.5f;
+				Vector3 vOffset = m_LocalVAxis * 0.5f;
+				float error = m_PatchError / 2;
+			//	float error = float.MaxValue;
+				float uvRes = m_UvRes / 2;
+
+				TerrainQuadPatch tl = new TerrainQuadPatch( this, m_Vertices, m_LocalOrigin, uOffset, vOffset, error, uvRes );
+				TerrainQuadPatch tr = new TerrainQuadPatch( this, m_Vertices, m_LocalOrigin + uOffset, uOffset, vOffset, error, uvRes );
+				TerrainQuadPatch bl = new TerrainQuadPatch( this, m_Vertices, m_LocalOrigin + vOffset, uOffset, vOffset, error, uvRes );
+				TerrainQuadPatch br = new TerrainQuadPatch( this, m_Vertices, m_LocalOrigin + uOffset + vOffset, uOffset, vOffset, error, uvRes );
+
+				m_PendingChildren = new TerrainQuadPatch[] { tl, tr, bl, br };
+			}
+
+			foreach ( TerrainQuadPatch patch in m_PendingChildren )
+			{
+				patch.Build( terrain, camera );
+			}
+		}
+
+		private void ReduceDetail( IPlanetTerrain terrain, IProjectionCamera camera )
 		{
 			for ( int i = 0; i < m_Children.Length; ++i )
 			{
-				m_Children[ i ].Dispose( );
+				m_Children[ i ].ReleaseVertices( );
 			}
+			m_CachedChildren = m_Children;
 			m_Children = null;
-			m_VbIndex = m_Vertices.Allocate( );
-			if ( m_VbIndex != -1 )
-			{
-				m_BuildVertices = true;
-				m_BuildIndices = true;
-			}
+			Build( terrain, camera );
 		}
 
 		private static void BuildSkirtIndexBuffer( ICollection<int> indices, int srcIndex, int srcIndexOffset, int dstIndex, bool flip )
@@ -296,83 +458,9 @@ namespace Poc1.Universe.Classes.Rendering
 			m_Ib.Create( indices.ToArray( ), true );
 		}
 
-		private unsafe void BuildVertices( IProjectionCamera camera, IPlanetTerrain terrain )
-		{
-			using ( IVertexBufferLock vbLock = m_Vertices.VertexBuffer.Lock( m_VbIndex, VertexArea, false, true ) )
-			{
-				TerrainVertex* firstVertex = ( TerrainVertex* )vbLock.Bytes;
-
-				Vector3 uStep = m_UAxis / ( VertexResolution - 1 );
-				Vector3 vStep = m_VAxis / ( VertexResolution - 1 );
-
-			//	Vector3 uStep = m_UAxis / ( VertexResolution );
-			//	Vector3 vStep = m_VAxis / ( VertexResolution );	//	Leave a border for debugging
-				
-				if ( m_PatchError == float.MaxValue )
-				{
-					m_Centre = terrain.GenerateTerrainPatchVertices( m_Origin, uStep, vStep, VertexResolution, m_UvRes, firstVertex, out m_PatchError );
-					CreateSkirtVertices( firstVertex );
-				}
-				else
-				{
-				    m_Centre = terrain.GenerateTerrainPatchVertices( m_Origin, uStep, vStep, VertexResolution, m_UvRes, firstVertex );
-					CreateSkirtVertices( firstVertex );
-				}
-
-				//	Comment out this line to disable all LOD
-				m_IncreaseDetailDistance = DistanceFromError( camera, m_PatchError );
-			}
-		}
-
-		private unsafe static void CreateSkirtVertices( TerrainVertex* firstVertex )
-		{
-			int vRes = VertexResolution - 1;
-
-			//	First horizontal skirt
-			TerrainVertex* skirtVertex = firstVertex + VertexArea;
-			CreateSkirtVertices( firstVertex, 1, skirtVertex );
-
-			//	First vertical skirt
-			skirtVertex += VertexResolution;
-			CreateSkirtVertices( firstVertex, VertexResolution, skirtVertex );
-			
-			//	Last horizontal skirt
-			skirtVertex += VertexResolution;
-			CreateSkirtVertices( firstVertex + vRes * VertexResolution, 1, skirtVertex );
-			
-			//	Last vertical skirt
-			skirtVertex += VertexResolution;
-			CreateSkirtVertices( firstVertex + vRes, VertexResolution, skirtVertex );
-		}
-
-		private unsafe static void CreateSkirtVertices( TerrainVertex* srcVertex, int srcOffset, TerrainVertex* dstVertex )
-		{
-			float skirtSize = 100;
-			for ( int i = 0; i < VertexResolution; ++i )
-			{
-				Vector3 offset = srcVertex->Position.ToVector3( ).MakeNormal( ) * -skirtSize;
-				srcVertex->CopyTo( dstVertex, offset );
-
-				srcVertex += srcOffset;
-				++dstVertex;
-			}
-		}
-
-		private static float DistanceFromError(IProjectionCamera camera, float error)
-		{
-			//	Extract frustum from projection matrix:
-			//	http://www.opengl.org/resources/faq/technical/transformations.htm
-			//	http://www.opengl.org/discussion_boards/ubbthreads.php?ubb=showflat&Number=209274
-			float near = camera.PerspectiveZNear;
-			float top = Functions.Tan( camera.PerspectiveFovDegrees * Constants.DegreesToRadians * 0.5f ) * near;
-			float a = near / top;
-			float t = ( ErrorThreshold * 2 ) / Graphics.Renderer.ViewportHeight;
-			float c = a / t;
-			float d = error * c;
-
-			return d;
-		}
-
+		/// <summary>
+		/// Calculates distance between 2 points using intermediate double precision values
+		/// </summary>
 		private static float AccurateDistance( Point3 pos0, Point3 pos1 )
 		{
 			double x = pos0.X - pos1.X;
@@ -381,37 +469,50 @@ namespace Poc1.Universe.Classes.Rendering
 			return ( float )Math.Sqrt( x * x + y * y + z * z );
 		}
 
-		private TerrainQuadPatch( TerrainQuadPatchVertices vertices, Color patchColour, Point3 origin, Vector3 uAxis, Vector3 vAxis, float patchError, float uvRes )
+		/// <summary>
+		/// Called by OnBuildComplete, when a child node has been built
+		/// </summary>
+		private void ChildBuildIsComplete( )
 		{
+			if ( m_PendingChildren == null )
+			{
+				//	Child build was caused by a ReduceDetail() call - i.e. the child node that just built, was
+				//	rebuilt in response to its children being destroyed
+				return;
+			}
+			foreach ( TerrainQuadPatch patch in m_PendingChildren )
+			{
+				if ( patch.m_VbIndex == -1 )
+				{
+					return;
+				}
+			}
+			m_Children = m_PendingChildren;
+			m_PendingChildren = null;
+
+			//	All child patches have finished building - we can release the vertices
+			ReleaseVertices( );
+		}
+
+		private TerrainQuadPatch( TerrainQuadPatch parent, TerrainQuadPatchVertices vertices, Point3 origin, Vector3 uAxis, Vector3 vAxis, float patchError, float uvRes )
+		{
+			m_Parent = parent;
 			m_Vertices = vertices;
-			m_Origin = origin;
-			m_UAxis = uAxis;
-			m_VAxis = vAxis;
+			m_LocalOrigin = origin;
+			m_LocalUAxis = uAxis;
+			m_LocalVAxis = vAxis;
 
 			m_PatchError = patchError;
 			m_IncreaseDetailDistance = float.MaxValue;
-			m_VbIndex = vertices.Allocate( );
 			m_UvRes = uvRes;
-
-			if ( m_VbIndex != -1 )
-			{
-				m_BuildVertices = true;
-				m_BuildIndices = true;
-			}
 		}
 
 		#endregion
 
-		#region IDisposable Members
+		#region P/Invoke
 
-		public void Dispose( )
-		{
-			if ( m_VbIndex != -1 )
-			{
-				m_Vertices.Deallocate( m_VbIndex );
-				m_VbIndex = -1;
-			}
-		}
+		[DllImport( "msvcrt.dll" )]
+		private unsafe static extern IntPtr memcpy( void* dest, void* src, int count );
 
 		#endregion
 	}

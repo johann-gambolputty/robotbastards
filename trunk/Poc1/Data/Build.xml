@@ -1,0 +1,21 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<ItemGroup>
+		<TerrainTypeSetFiles Include="Design\Terrain Types\*.tts"/>
+	</ItemGroup>
+	
+	<ItemGroup>
+		<CopyFiles Include="Design\Input\*.components.xml"/>
+	</ItemGroup>
+	
+	<Target Name="Copy Assets">
+		<Message Text="Copying assets..."/>
+		<Copy
+			SourceFiles="@(CopyFiles)"
+			DestinationFiles="@(CopyFiles->'Game\%(RecursiveDir)%(Filename)%(Extension)')"
+		/>
+		<Message Text="... Complete"/>
+	</Target>
+
+</Project>
+
