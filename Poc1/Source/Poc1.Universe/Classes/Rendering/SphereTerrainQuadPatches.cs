@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Drawing;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Rendering;
@@ -31,7 +30,7 @@ namespace Poc1.Universe.Classes.Rendering
 			m_Terrain = terrain;
 			m_PlanetTerrainTechnique = selector;
 
-			float hDim = 10;
+			float hDim = 20;
 			Point3[] cubePoints = new Point3[]
 				{
 					new Point3( -hDim, -hDim, -hDim ),
@@ -98,8 +97,16 @@ namespace Poc1.Universe.Classes.Rendering
 				}
 			}
 
-			DebugText.Write( "Camera Pos: {0}", UniCamera.Current.Position.ToRenderUnitString( ) );
-			DebugText.Write( "Planet Pos: {0}", m_Planet.Transform.Position.ToRenderUnitString( ) );
+			if ( DebugInfo.ShowTerrainLeafNodeCount )
+			{
+				int leafCount = 0;
+				foreach ( TerrainQuadPatch patch in m_Patches )
+				{
+					leafCount += patch.CountNodesWithVertexData( );
+				}
+
+				DebugText.Write( "Terrain leaf nodes: {0}", leafCount );
+			}
 		}
 
 		#region CubeSide Private Class
@@ -119,9 +126,7 @@ namespace Poc1.Universe.Classes.Rendering
 					Point3 curPos = rowStart;
 					for ( int col = 0; col < res; ++col )
 					{
-						Color colour = ( col + row ) % 2 == 0 ? Color.Red : Color.Black;
-
-						TerrainQuadPatch newPatch = new TerrainQuadPatch( vertices, colour, curPos, xAxis, yAxis );
+						TerrainQuadPatch newPatch = new TerrainQuadPatch( vertices, curPos, xAxis, yAxis );
 						allPatches.Add( newPatch );
 						m_Patches.Add( newPatch );
 
@@ -154,7 +159,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 			foreach ( TerrainQuadPatch patch in m_Patches )
 			{
-				patch.UpdateLod( localPos );
+				patch.UpdateLod( localPos, m_Terrain, camera );
 			}
 			foreach ( TerrainQuadPatch patch in m_Patches )
 			{
