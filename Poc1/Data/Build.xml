@@ -1,21 +1,135 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<!-- Asset Build File -->
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<ItemGroup>
-		<TerrainTypeSetFiles Include="Design\Terrain Types\*.tts"/>
-	</ItemGroup>
-	
-	<ItemGroup>
-		<CopyFiles Include="Design\Input\*.components.xml"/>
-	</ItemGroup>
-	
-	<Target Name="Copy Assets">
-		<Message Text="Copying assets..."/>
-		<Copy
-			SourceFiles="@(CopyFiles)"
-			DestinationFiles="@(CopyFiles->'Game\%(RecursiveDir)%(Filename)%(Extension)')"
-		/>
-		<Message Text="... Complete"/>
-	</Target>
+  <PropertyGroup>
+    <ToolsDir>..\Tools\bin\Debug\</ToolsDir>
+    <DesignFolder Condition="'$(Source)'==''">Design</DesignFolder>
+  </PropertyGroup>
 
+  <UsingTask TaskName="Poc1.Tools.BuildTasks.DeleteFromGame" AssemblyFile="$(ToolsDir)Poc1.Tools.BuildTasks.dll"/>
+  <UsingTask TaskName="Poc1.Tools.BuildTasks.CopyToGame" AssemblyFile="$(ToolsDir)Poc1.Tools.BuildTasks.dll"/>
+  <UsingTask TaskName="Poc1.Tools.BuildTasks.BuildTerrainTypes" AssemblyFile="$(ToolsDir)Poc1.Tools.BuildTasks.dll"/>
+
+  <!--       -->
+  <!-- Items -->
+  <!--       -->
+
+  <!-- Terrain type set files are built using the BuildTerrainTypes build task -->
+  <ItemGroup>
+		<TerrainTypeSetFiles Include="$(DesignFolder)\Terrain\*.tts"/>
+	</ItemGroup>
+
+  <ItemGroup>
+    <TerrainTypeSetOutputs Include="@(TerrainTypeSetFiles->'Game\Terrain\%(Filename) Distribution.bmp')"/>
+    <TerrainTypeSetOutputs Include="@(TerrainTypeSetFiles->'Game\Terrain\%(Filename) Pack.jpg')"/>
+  </ItemGroup>
+
+  <!-- Effects files are passed into a C++ pre-processor -->
+  <ItemGroup>
+    <EffectFiles Include="$(DesignFolder)\**\*.cgfx"/>
+  </ItemGroup>
+
+  <!-- Files to copy from design to game -->
+	<ItemGroup>
+		<CopyToGameFiles Include="$(DesignFolder)\Input\*.*"/>
+    <CopyToGameFiles Include="$(DesignFolder)\Viewers\*.*"/>
+    <CopyToGameFiles Include="$(DesignFolder)\Terrain\noise.jpg"/>
+    <CopyToGameFiles Include="$(DesignFolder)\Star Fields\**\*.jpg"/>
+	</ItemGroup>
+
+  <!--               -->
+  <!-- Clean Targets -->
+  <!--               -->
+
+  <Target Name="DeleteEffects">
+    <Message Text="Deleting effects..."/>
+    <Delete Files="Game\%(EffectFiles.RecursiveDir)%(EffectFiles.Filename)%(EffectFiles.Extension)"/>
+    <Message Text="... Complete"/>
+  </Target>
+
+  
+  <Target Name="DeleteCopiedFiles">
+    <Message Text="Deleting copied files..."/>
+    <Message Text="@(TerrainTypeSetOutputs)"/>
+    <Message Text="... Complete"/>
+  </Target>
+
+  <Target Name="DeleteTerrainTypes">
+    <Message Text="Deleting terrain files..."/>
+    <Delete Files="@(TerrainTypeSetOutputs)"/>
+    <Message Text="... Complete"/>
+  </Target>
+
+
+  <!--                 -->
+  <!-- ReBuild Targets -->
+  <!--                 -->
+
+  <Target Name="ForcePreprocessEffects">
+    <Message Text="Preprocessing effects..."/>
+    <Message Text="@(EffectFiles->'Game\%(RecursiveDir)%(Filename)%(Extension)')"/>
+    <MakeDir Directories="Game\%(EffectFiles.RecursiveDir)"/>
+    <Exec Command="cl.exe /E /C %(EffectFiles.Identity) > Game\%(RecursiveDir)%(Filename)%(Extension)"/>
+    <Message Text="... Complete"/>
+  </Target>
+
+  <Target Name="ForceCopyToGame">
+    <Message Text="Copying assets..."/>
+    <Poc1.Tools.BuildTasks.CopyToGame SourceFiles="@(CopyToGameFiles)" SkipIfUnchanged="false">
+      <Output TaskParameter="CopiedFiles" ItemName="CopiedGameFiles"/>
+    </Poc1.Tools.BuildTasks.CopyToGame>
+    <Message Text="@(CopiedGameFiles"/>
+    <Message Text="... Complete"/>
+  </Target>
+
+  <Target Name="RebuildTerrainTypes">
+    <Message Text="Building terrain types..."/>
+    <Poc1.Tools.BuildTasks.BuildTerrainTypes SourceFiles="@(TerrainTypeSetFiles)" OutputDirectory="Game\Terrain"/>
+    <Message Text="...Complete"/>
+  </Target>
+
+  <!--               -->
+  <!-- Build Targets -->
+  <!--               -->
+
+  <Target Name="PreprocessEffects" Inputs="@(EffectFiles)" Outputs="@(EffectFiles->'Game\%(RecursiveDir)%(Filename)%(Extension)')">
+    <Message Text="Preprocessing effects..."/>
+    <Message Text="@(EffectFiles->'Game\%(RecursiveDir)%(Filename)%(Extension)')"/>
+    <MakeDir Directories="Game\%(EffectFiles.RecursiveDir)"/>
+    <Exec Command="cl.exe /E /C %(EffectFiles.Identity) > Game\%(RecursiveDir)%(Filename)%(Extension)"/>
+    <Message Text="... Complete"/>
+  </Target>
+
+  <Target Name="CopyToGame">
+    <Message Text="Copying assets..."/>
+    <Poc1.Tools.BuildTasks.CopyToGame SourceFiles="@(CopyToGameFiles)" SkipIfUnchanged="true">
+      <Output TaskParameter="CopiedFiles" ItemName="CopiedGameFiles"/>
+    </Poc1.Tools.BuildTasks.CopyToGame>
+    <Message Text="%(CopiedGameFiles.Identity)"/>
+    <Message Text="... Complete"/>
+  </Target>
+
+  <Target Name="BuildTerrainTypes" Inputs="@(TerrainTypeSetFiles)" Outputs="@(TerrainTypeSetOutputs)">
+    <Message Text="Building terrain types..."/>
+    <Poc1.Tools.BuildTasks.BuildTerrainTypes SourceFiles="@(TerrainTypeSetFiles)" OutputDirectory="Game\Terrain">
+      <Output TaskParameter="Outputs" ItemName="BuildTerrainTypesOutputs"/>
+    </Poc1.Tools.BuildTasks.BuildTerrainTypes>
+    <Message Text="%(BuildTerrainTypesOutputs.Identity)"/>
+    <Message Text="...Complete"/>
+  </Target>
+
+  <!--              -->
+  <!-- Main Targets -->
+  <!--              -->
+
+  <Target Name="Clean" DependsOnTargets="DeleteEffects;DeleteCopiedFiles;DeleteTerrainTypes">
+  </Target>
+
+  <Target Name="Build" DependsOnTargets="CopyToGame;BuildTerrainTypes;PreprocessEffects">
+  </Target>
+
+  <Target Name="ReBuild" DependsOnTargets="ForceCopyToGame;RebuildTerrainTypes;ForcePreprocessEffects">
+  </Target>
+  
 </Project>
 

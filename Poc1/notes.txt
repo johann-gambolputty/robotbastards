@@ -106,7 +106,6 @@
 	- Terrain
 		- Geomorphing
 		- Pop slope/altitude determination in fragment shader (it's done at a vertex level - can work it out implicitly in frag shader)
-		- Multi-threading to queue up patch creation
 		- Add x/z displacement decorator class
 		- Add noise to terrain type texture
 		- LOD
@@ -121,7 +120,13 @@
 		- Terrain function sphere needs radius dependent on radius of planet (or moons = extra spiky)
 		- Cloud level dependent on planet radius also
 		- Add sun
-		- Keep terrain patches after they are popped
+		- Add light scattering post-process (god-rays)
+		- Crater terrain function for moons
+		- Crater terrain types for moons
+		- Gas-giant shaders
+		- Non-spherical planets
+			- Ring-worlds
+			- Hollow spheres
 	- Cloud cover
 		- Volumetric clouds
 	- Ecosystems
@@ -137,7 +142,6 @@
 		- Traffic
 		- Pedestrians
 	- Solar system
-		- Ring-worlds
 		- Proper procedural star-spheres
 	- Assets
 		- Design to Game builds
@@ -148,6 +152,9 @@
 				- "Build All" (only updates game assets with an earlier timestamp that design assets)
 				- "ReBuild" (builds a single named asset)
 				- "Build" (builds a single asset)
+	- UI
+		- Ship HUD
+		- Try getting WPF to work
 	- Ships
 		- Get basic ship dynamics working
 		- Connectors
@@ -166,6 +173,8 @@
 	- Misc.
 
 - DONE
+	- Multi-threading to queue up patch creation
+	- Keep terrain patches after they are popped
 	- Clamp slope 
 	- Simple cloud cover	
 	- Local terrain function sampling to determine high-quality normals even for coarse patches

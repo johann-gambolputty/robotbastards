@@ -22,10 +22,10 @@ namespace Poc1.Universe.Classes.Rendering
 
 			TextureLoader.TextureLoadParameters loadParameters = new TextureLoader.TextureLoadParameters( );
 			loadParameters.GenerateMipMaps = true;
-			m_TerrainPackTexture = ( ITexture2d )AssetManager.Instance.Load( "Textures/Terrain Packs/Default Pack.jpg", loadParameters );
-			m_TerrainTypesTexture = ( ITexture2d )AssetManager.Instance.Load( "Textures/Terrain Packs/Default Distribution.bmp" );
+			m_TerrainPackTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/defaultSet0 Pack.jpg", loadParameters );
+			m_TerrainTypesTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/defaultSet0 Distribution.bmp" );
 
-			m_NoiseTexture = ( ITexture2d )AssetManager.Instance.Load( "Textures/Terrain Packs/Noise.jpg" );
+			m_NoiseTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/Noise.jpg" );
 
 			m_Terrain = terrain;
 			m_PlanetTerrainTechnique = selector;

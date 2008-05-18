@@ -35,7 +35,7 @@ namespace Poc1.Universe.Classes
 			m_Box = Graphics.Draw.StopCache( );
 
 			ICubeMapTexture texture = Graphics.Factory.CreateCubeMapTexture( );
-			LoadStarBoxTextures( texture, "Textures/StarField0/" );
+			LoadStarBoxTextures( texture, "Star Fields/Default/" );
 
 			int imageIndex = 0;
 			foreach ( Bitmap bmp in texture.ToBitmaps( ) )

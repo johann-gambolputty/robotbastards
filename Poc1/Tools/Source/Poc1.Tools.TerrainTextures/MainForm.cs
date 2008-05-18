@@ -272,6 +272,7 @@ namespace Poc1.Tools.TerrainTextures
 			}
 			m_SavePath = path;
 
+			typeSetNameTextBox.Text = m_TerrainTypes.Name;
 			terrainTypeControlsLayoutPanel.Controls.Clear( );
 
 			foreach ( TerrainType type in m_TerrainTypes.TerrainTypes )
@@ -287,7 +288,8 @@ namespace Poc1.Tools.TerrainTextures
 		{
 			terrainTypeControlsLayoutPanel.Controls.Clear( );
 			AddTypeControls( null );
-			m_TerrainTypes.TerrainTypes.Clear( );
+			m_TerrainTypes = new TerrainTypeSet( );
+			typeSetNameTextBox.Text = string.Empty;
 			UpdateSample( );
 		}
 
@@ -299,6 +301,11 @@ namespace Poc1.Tools.TerrainTextures
 		private void exportToolStripMenuItem_Click( object sender, EventArgs e )
 		{
 			Export( );
+		}
+
+		private void typeSetNameTextBox_TextChanged( object sender, EventArgs e )
+		{
+			m_TerrainTypes.Name = typeSetNameTextBox.Text;
 		}
 	}
 }
