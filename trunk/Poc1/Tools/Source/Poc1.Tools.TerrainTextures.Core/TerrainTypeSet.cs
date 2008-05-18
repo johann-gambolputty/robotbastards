@@ -89,13 +89,30 @@ namespace Poc1.Tools.TerrainTextures.Core
 		public const int PackBitmapTileResolution = MaxPackBitmapSize / TerrainTileSize;
 		public const int MaxTerrainTiles = PackBitmapTileResolution * PackBitmapTileResolution;
 
+		public string BaseName
+		{
+			get { return string.IsNullOrEmpty( Name ) ? "Default" : Name; }
+		}
+
+		public string[] GetExportOutputs( string directory )
+		{
+			return GetExportOutputs( directory, BaseName );
+		}
+
+		public string[] GetExportOutputs( string directory, string baseName )
+		{
+			string packName = Path.Combine( directory, baseName + " Pack.jpg" );
+			string distName = Path.Combine( directory, baseName + " Distribution.bmp" );
+
+			return new string[] { packName, distName };
+		}
+
 		/// <summary>
 		/// Exports this terrain type set
 		/// </summary>
 		public void Export( string directory )
 		{
-			string name = string.IsNullOrEmpty( Name ) ? "Default" : Name;
-			Export( directory, name );
+			Export( directory, BaseName );
 		}
 
 		/// <summary>
@@ -106,8 +123,11 @@ namespace Poc1.Tools.TerrainTextures.Core
 			Bitmap packBitmap = CreateTerrainPackBitmap( );
 			Bitmap distBitmap = CreateDistributionBitmap( );
 
-			packBitmap.Save( Path.Combine( directory, baseName + " Pack.jpg" ), ImageFormat.Jpeg );
-			distBitmap.Save( Path.Combine( directory, baseName + " Distribution.bmp" ), ImageFormat.Bmp );
+			string packName = Path.Combine( directory, baseName + " Pack.jpg" );
+			string distName = Path.Combine( directory, baseName + " Distribution.bmp" );
+
+			packBitmap.Save( packName, ImageFormat.Jpeg );
+			distBitmap.Save( distName, ImageFormat.Bmp );	
 		}
 
 		/// <summary>

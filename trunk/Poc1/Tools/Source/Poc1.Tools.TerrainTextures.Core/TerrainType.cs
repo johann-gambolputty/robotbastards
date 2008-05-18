@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.IO;
 using System.Runtime.Serialization;
 
 namespace Poc1.Tools.TerrainTextures.Core
@@ -96,6 +97,10 @@ namespace Poc1.Tools.TerrainTextures.Core
 		{
 			if ( !string.IsNullOrEmpty( m_TexturePath ) )
 			{
+				if ( !File.Exists( m_TexturePath ) )
+				{
+					m_TexturePath = m_TexturePath.Replace( "Terrain Types\\Images", "Terrain\\Textures" );
+				}
 				LoadBitmap( m_TexturePath );
 			}
 		}

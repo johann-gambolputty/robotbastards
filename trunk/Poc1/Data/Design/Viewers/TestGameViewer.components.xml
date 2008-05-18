@@ -17,6 +17,7 @@
         <object type="Rb.Interaction.CommandInputListener" assembly="Rb.Interaction">
           <type value="Poc1.Universe.Classes.Cameras.TrackingCameraController+Commands" assembly="Poc1.Universe" property="CommandListEnumType"/>
           <dynProperty value="user" property="User"/>
+          
         </object>
 
       </object>

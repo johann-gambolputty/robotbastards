@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc1.Tools.TerrainTextures.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Core", "..\..\Source\Rb.Core\Rb.Core.csproj", "{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc1.Tools.BuildTasks", "Source\Poc1.Tools.BuildTasks\Poc1.Tools.BuildTasks.csproj", "{7CA909BB-8BA2-4949-8228-25D54534E85B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,12 @@ Global
 		{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}.NDoc|Any CPU.Build.0 = NDoc|Any CPU
 		{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CA909BB-8BA2-4949-8228-25D54534E85B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CA909BB-8BA2-4949-8228-25D54534E85B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CA909BB-8BA2-4949-8228-25D54534E85B}.NDoc|Any CPU.ActiveCfg = Release|Any CPU
+		{7CA909BB-8BA2-4949-8228-25D54534E85B}.NDoc|Any CPU.Build.0 = Release|Any CPU
+		{7CA909BB-8BA2-4949-8228-25D54534E85B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CA909BB-8BA2-4949-8228-25D54534E85B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
