@@ -41,11 +41,13 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(ProjectDir)..\Poc1.Fast&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
+				DisableSpecificWarnings="4945"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -115,11 +117,13 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(ProjectDir)..\Poc1.Fast&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
+				DisableSpecificWarnings="4945"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -180,6 +184,14 @@
 			ReferencedProjectIdentifier="{2EA4865D-CDBB-4EC3-83A3-4703FE7B7A28}"
 			RelativePathToProject=".\Source\Poc1.Fast\Poc1.Fast.vcproj"
 		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{8B059AC0-B98F-4D23-9F42-F8273DCB4034}"
+			RelativePathToProject="..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.csproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}"
+			RelativePathToProject="..\Source\Rb.Core\Rb.Core.csproj"
+		/>
 	</References>
 	<Files>
 		<Filter
@@ -189,6 +201,18 @@
 			>
 			<File
 				RelativePath=".\AssemblyInfo.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Simple\Source\InertParticleSystem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\ParticleSystemFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\ParticleSystemManager.cpp"
 				>
 			</File>
 			<File
@@ -217,6 +241,30 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\IDumbPhysicsParticleSystem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IInertParticleSystem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Simple\InertParticleSystem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IParticleSystem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ParticleSystemFactory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ParticleSystemManager.h"
+				>
+			</File>
 			<File
 				RelativePath=".\Stdafx.h"
 				>

@@ -32,6 +32,9 @@
 	- 
 
 - Links:
+	- Rendering WPF into bitmaps (part of the solution...):
+		- http://www.west-wind.com/WebLog/posts/150676.aspx
+
 	- Notes on procedural terrain:
 		- http://www.gamedev.net/community/forums/mod/journal/journal.asp?jn=263350&cmonth=8&cyear=2007
 
@@ -104,13 +107,17 @@
 
 - TODO
 	- Terrain
+		- Vertex indexing error when ReduceDetail() is called on a patch with the new mt terrain builder
 		- Geomorphing
 		- Pop slope/altitude determination in fragment shader (it's done at a vertex level - can work it out implicitly in frag shader)
 		- Add x/z displacement decorator class
 		- Add noise to terrain type texture
-		- LOD
-			- Work out why performance degrades over time (think patch LOD popping breaks down)
-			- Cull quad tree nodes (frustum + horizon culling for spherical planets)
+		- Cull quad tree nodes (frustum + horizon culling for spherical planets)
+		- Now that patches are independent of one another (skirts), can use UniPoint as patch centre (unique transform per patch)
+	- Environment
+		- Volumetric clouds
+		- Vegetation
+		- Animal life
 	- Planets
 		- Atmospheric shaders
 		- Add planetary rings
@@ -127,11 +134,6 @@
 		- Non-spherical planets
 			- Ring-worlds
 			- Hollow spheres
-	- Cloud cover
-		- Volumetric clouds
-	- Ecosystems
-		- Vegetation
-		- Animal life
 	- Water
 		- Sea
 		- Lakes
@@ -144,7 +146,7 @@
 	- Solar system
 		- Proper procedural star-spheres
 	- Assets
-		- Design to Game builds
+		- Add bigfile support
 		- Game assets aware of changes to design objects
 			- Perhaps with a service that monitors the design folders?
 			- Needs following commands:
@@ -155,6 +157,7 @@
 	- UI
 		- Ship HUD
 		- Try getting WPF to work
+		- Profile UI needs fixed scales (adaptive scales is stupid and misleading)
 	- Ships
 		- Get basic ship dynamics working
 		- Connectors
@@ -169,18 +172,18 @@
 	- Graphics Misc.
 		- Shadows
 		- Particle systems
+		- Fullscreen mode
+		- Multimonitor support
 
 	- Misc.
 
 - DONE
-	- Multi-threading to queue up patch creation
-	- Keep terrain patches after they are popped
-	- Clamp slope 
-	- Simple cloud cover	
-	- Local terrain function sampling to determine high-quality normals even for coarse patches
-	- Misc.
-		- Refactoring
-			- Split out fast terrain code into Poc1.Fast.Terrain
-				- Keep Poc1.Fast for shared stuff like aligned allocations
+	- Assets: Design to Game builds
+	- Terrain: Multi-threading to queue up patch creation
+	- Terrain: Keep terrain patches after they are popped
+	- Terrain: Clamp slope 
+	- Environment: Simple cloud cover	
+	- Terrain: Local terrain function sampling to determine high-quality normals even for coarse patches
+	- Misc: Refactoring: Split out fast terrain code into Poc1.Fast.Terrain (keep Poc1.Fast for shared stuff like aligned allocations)
 
 		
