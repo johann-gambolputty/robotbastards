@@ -1,0 +1,8 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <StartAction>Program</StartAction>
+    <StartProgram>C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\msbuild.exe</StartProgram>
+    <StartArguments>C:\Projects\Rb\Poc1\Data\Build.xml</StartArguments>
+    <StartWorkingDirectory>C:\Projects\Rb\Poc1\Data\</StartWorkingDirectory>
+  </PropertyGroup>
+</Project>
