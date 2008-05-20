@@ -107,47 +107,48 @@
 
 - TODO
 	- Terrain
-		- Vertex indexing error when ReduceDetail() is called on a patch with the new mt terrain builder
-		- Geomorphing
-		- Pop slope/altitude determination in fragment shader (it's done at a vertex level - can work it out implicitly in frag shader)
-		- Add x/z displacement decorator class
-		- Add noise to terrain type texture
-		- Cull quad tree nodes (frustum + horizon culling for spherical planets)
-		- Now that patches are independent of one another (skirts), can use UniPoint as patch centre (unique transform per patch)
+		- H: Vertex indexing error when ReduceDetail() is called on a patch with the new mt terrain builder
+		- M: Geomorphing
+		- M: Add noise to terrain type texture
+		- M: Cull quad tree nodes (frustum + horizon culling for spherical planets)
+		- L: Pop slope/altitude determination in fragment shader (it's done at a vertex level - can work it out implicitly in frag shader)
+		- L: Add x/z displacement decorator class
+		- ?: Now that patches are independent of one another (skirts), can use UniPoint as patch centre (unique transform per patch, though)
 	- Environment
-		- Volumetric clouds
-		- Vegetation
-		- Animal life
+		- L: Volumetric clouds
+		- L: Vegetation
+		- L: Animal life
 	- Planets
-		- Atmospheric shaders
-		- Add planetary rings
-		- Restore planet cube map (necessary?)
-		- Fix larger radius planets (lots of z-fighting, no terrain detail)
-		- Add moons back in
-		- Terrain function sphere needs radius dependent on radius of planet (or moons = extra spiky)
-		- Cloud level dependent on planet radius also
-		- Add sun
-		- Add light scattering post-process (god-rays)
-		- Crater terrain function for moons
-		- Crater terrain types for moons
-		- Gas-giant shaders
-		- Non-spherical planets
-			- Ring-worlds
-			- Hollow spheres
+		- H: Large radius planets (>1000km)
+			- H: Fix larger radius planets (lots of z-fighting, no terrain detail)		- H: Terrain function sphere needs radius dependent on radius of planet (or moons = extra spiky)
+			- H: Cloud level dependent on planet radius also
+		- H: Atmospheric shaders
+		- M: Add planetary rings
+		- M: Add moons back in
+		- M: Add sun
+		- M: Add light scattering post-process (god-rays)
+		- L: Crater terrain function for moons
+		- L: Crater terrain types for moons
+		- L: Gas-giant shaders
+		- L: Non-spherical planets
+			- L: Ring-worlds
+			- L: Hollow spheres
+		- ?: Restore planet cube map (necessary?)
 	- Water
-		- Sea
-		- Lakes
-		- Rivers
+		- H: Sea
+		- L: Lakes
+		- L: Rivers
 	- Cities
-		- Buildings
-		- Roads
-		- Traffic
-		- Pedestrians
+		- L: Buildings
+		- L: Roads
+		- L: Traffic
+		- L: Pedestrians
 	- Solar system
-		- Proper procedural star-spheres
+		- M: Proper procedural star-spheres
 	- Assets
-		- Add bigfile support
-		- Game assets aware of changes to design objects
+		- L: Asset build should have a UI (progress bar, output text)
+		- L: Add bigfile support
+		- L: Game assets aware of changes to design objects
 			- Perhaps with a service that monitors the design folders?
 			- Needs following commands:
 				- "Rebuild All"
@@ -155,25 +156,25 @@
 				- "ReBuild" (builds a single named asset)
 				- "Build" (builds a single asset)
 	- UI
-		- Ship HUD
-		- Try getting WPF to work
-		- Profile UI needs fixed scales (adaptive scales is stupid and misleading)
+		- M: Try getting WPF to work
+		- M: Profile UI needs fixed scales (adaptive scales is stupid and misleading)
+		- L: Ship HUD
 	- Ships
-		- Get basic ship dynamics working
-		- Connectors
-		- Shaders
-		- Simple ship combat
-			- Simple physics model
-		- Internal ship modelling
+		- H: Basic ship graphics
+		- H: Get basic ship dynamics working
+		- M: Connectors
+		- M: Shaders
+		- M: Simple ship combat
+		- L: Internal ship modelling
 
 	- Networking
-		- Extend RUNT
+		- H: Extend RUNT
 
 	- Graphics Misc.
-		- Shadows
-		- Particle systems
-		- Fullscreen mode
-		- Multimonitor support
+		- H: Shadows
+		- M: Particle systems
+		- M: Fullscreen mode
+		- L: Multimonitor support
 
 	- Misc.
 

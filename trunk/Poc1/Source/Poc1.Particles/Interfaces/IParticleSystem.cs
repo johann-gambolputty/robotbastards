@@ -13,23 +13,15 @@ namespace Poc1.Particles.Interfaces
 	public interface IParticleSystem : IRenderable
 	{
 		/// <summary>
-		/// Particle system centre
+		/// Particle system frame
 		/// </summary>
-		Point3 Centre
+		Matrix44 Frame
 		{
-			get; set;
+			get;
 		}
 
 		/// <summary>
-		/// The object that sets up the initial state of newly spawned particles
-		/// </summary>
-		ISpawnStateGenerator SpawnStates
-		{
-			get; set;
-		}
-
-		/// <summary>
-		/// Gets/sets the maximum number of particles. The default for this is int.MaxValue (i.e. uncapped)
+		/// Gets/sets the maximum number of particles. The default for this is 256
 		/// </summary>
 		int MaximumNumberOfParticles
 		{
@@ -45,27 +37,63 @@ namespace Poc1.Particles.Interfaces
 		}
 
 		/// <summary>
+		/// Gets/sets the object used to create new particles, and destroy old particles
+		/// </summary>
+		/// <remarks>
+		/// Must be set before any particles are generated during the particle system update
+		/// </remarks>
+		IParticleFactory ParticleFactory
+		{
+			get; set;
+		}
+
+		/// <summary>
 		/// Gets/sets the object used to determine the spawn rate for particles
 		/// </summary>
+		/// <remarks>
+		/// By default, each particle system should have a default spawn rate
+		/// </remarks>
 		ISpawnRate SpawnRate
 		{
 			get; set;
 		}
 
 		/// <summary>
-		/// Gets/sets the minimum age at which particles are destroyed (age measured in updates)
+		/// The object that sets up the initial state of newly spawned particles
 		/// </summary>
-		int MinimumDeathAge
+		/// <remarks>
+		/// If null, no particles will be spawned.
+		/// By default, each particle system should have a default spawner
+		/// </remarks>
+		IParticleSpawner Spawner
 		{
 			get; set;
 		}
 
 		/// <summary>
-		/// Gets/sets the minimum age at which particles are destroyed (age measured in updates)
+		/// The object that updates particle properties.
 		/// </summary>
-		int MaximumDeathAge
+		/// <remarks>
+		/// If null, particles remain inert (i.e. their initial spawn state is not changed over their lifetime).
+		/// By default, this is null
+		/// </remarks>
+		IParticleUpdater Updater
 		{
 			get; set;
 		}
+
+		/// <summary>
+		/// Gets/sets the object that determines the lifespan of particles. 
+		/// </summary>
+		/// <remarks>
+		/// If null, particles will never be destroyed, until <see cref="MaximumNumberOfParticles"/> is reached, 
+		/// at which point any newly spawned particles will replace the eldest particles in the system.
+		/// By default, each particle system should have a default killer.
+		/// </remarks>
+		IParticleKiller Killer
+		{
+			get; set;
+		}
+
 	}
 }

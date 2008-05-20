@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F8D9E178-27FE-4218-BA9E-1FED20449EB9}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{841D6236-761F-4A3D-840C-5745F0833A4C}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Poc1.Particles</RootNamespace>
-    <AssemblyName>Poc1.Particles</AssemblyName>
+    <RootNamespace>Poc1.ParticleSystemBuilder</RootNamespace>
+    <AssemblyName>Poc1.ParticleSystemBuilder</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,31 +30,42 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\InertParticle.cs" />
-    <Compile Include="Classes\ParticleSystem.cs" />
-    <Compile Include="Classes\RandomSpawnRate.cs" />
-    <Compile Include="Classes\SpawnRate.cs" />
-    <Compile Include="Interfaces\IParticleFactory.cs" />
-    <Compile Include="Interfaces\IParticleKiller.cs" />
-    <Compile Include="Interfaces\IParticleUpdater.cs" />
-    <Compile Include="Interfaces\ISpawnRate.cs" />
-    <Compile Include="Interfaces\IParticleSystem.cs" />
-    <Compile Include="Interfaces\IParticleSystemManager.cs" />
-    <Compile Include="Interfaces\IParticleSpawner.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.csproj">
-      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
-      <Name>Rb.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.csproj">
-      <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>
-      <Name>Rb.Rendering.Interfaces</Name>
-    </ProjectReference>
+    <EmbeddedResource Include="MainForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
