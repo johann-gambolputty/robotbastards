@@ -6,13 +6,13 @@ namespace Poc1.Particles.Interfaces
 	public interface IParticleFactory
 	{
 		/// <summary>
-		/// Creates a number of particles
+		/// Creates a single particle
 		/// </summary>
-		object[] CreateParticles( int count );
+		object CreateParticle( );
 
 		/// <summary>
-		/// Destroys a number of particles
+		/// Destroys a single particles
 		/// </summary>
-		void DestroyParticles( System.Collections.IEnumerable particles );
+		void DestroyParticle( object particle );
 	}
 }

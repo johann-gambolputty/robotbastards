@@ -28,6 +28,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MagicLibrary, Version=1.7.0.0, Culture=neutral, PublicKeyToken=3a6eb82f876a49bc">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\ThirdParty\MagicDocking\MagicLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -36,17 +40,43 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BuilderControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BuilderControl.Designer.cs">
+      <DependentUpon>BuilderControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BuilderControlContainer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BuilderControlContainer.Designer.cs">
+      <DependentUpon>BuilderControlContainer.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ParticleControlEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ParticleControlEditor.Designer.cs">
+      <DependentUpon>ParticleControlEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="BuilderControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>BuilderControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ParticleControlEditor.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ParticleControlEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -66,6 +96,32 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Core\Rb.Core.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.NiceControls\Rb.NiceControls.csproj">
+      <Project>{A4E5C0BF-B76D-425D-8439-B07EB6B29444}</Project>
+      <Name>Rb.NiceControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.csproj">
+      <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>
+      <Name>Rb.Rendering.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Rendering.Windows\Rb.Rendering.Windows.csproj">
+      <Project>{39A57BC2-BE73-41A7-BBC2-A9D0C28D5A06}</Project>
+      <Name>Rb.Rendering.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Rendering\Rb.Rendering.csproj">
+      <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
+      <Name>Rb.Rendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Poc1.Particles\Poc1.Particles.csproj">
+      <Project>{F8D9E178-27FE-4218-BA9E-1FED20449EB9}</Project>
+      <Name>Poc1.Particles</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

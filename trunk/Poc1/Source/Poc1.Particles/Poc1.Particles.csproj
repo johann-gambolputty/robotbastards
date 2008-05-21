@@ -34,11 +34,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\InertParticle.cs" />
+    <Compile Include="Classes\NullParticleUpdater.cs" />
+    <Compile Include="Classes\ParticleAgeKiller.cs" />
     <Compile Include="Classes\ParticleSystem.cs" />
+    <Compile Include="Classes\PointParticleSpawner.cs" />
     <Compile Include="Classes\RandomSpawnRate.cs" />
     <Compile Include="Classes\SpawnRate.cs" />
+    <Compile Include="Classes\SpawnRateFunction.cs" />
     <Compile Include="Interfaces\IParticleFactory.cs" />
     <Compile Include="Interfaces\IParticleKiller.cs" />
+    <Compile Include="Interfaces\IParticleRenderer.cs" />
     <Compile Include="Interfaces\IParticleUpdater.cs" />
     <Compile Include="Interfaces\ISpawnRate.cs" />
     <Compile Include="Interfaces\IParticleSystem.cs" />

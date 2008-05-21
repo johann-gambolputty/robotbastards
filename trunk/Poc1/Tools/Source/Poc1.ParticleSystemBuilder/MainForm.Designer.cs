@@ -28,20 +28,39 @@ namespace Poc1.ParticleSystemBuilder
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.psDisplay = new Rb.Rendering.Windows.Display();
 			this.SuspendLayout();
+			// 
+			// psDisplay
+			// 
+			this.psDisplay.AllowArrowKeyInputs = false;
+			this.psDisplay.ColourBits = ((byte)(32));
+			this.psDisplay.ContinuousRendering = true;
+			this.psDisplay.DepthBits = ((byte)(24));
+			this.psDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.psDisplay.Location = new System.Drawing.Point(0, 0);
+			this.psDisplay.Name = "psDisplay";
+			this.psDisplay.RenderInterval = 1;
+			this.psDisplay.Size = new System.Drawing.Size(349, 317);
+			this.psDisplay.StencilBits = ((byte)(0));
+			this.psDisplay.TabIndex = 0;
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(330, 297);
+			this.ClientSize = new System.Drawing.Size(349, 317);
+			this.Controls.Add(this.psDisplay);
 			this.Name = "MainForm";
 			this.Text = "Particle System Builder";
+			this.Shown += new System.EventHandler(this.MainForm_Shown);
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
+
+		private Rb.Rendering.Windows.Display psDisplay;
 	}
 }
 

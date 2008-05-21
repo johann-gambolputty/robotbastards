@@ -95,5 +95,15 @@ namespace Poc1.Particles.Interfaces
 			get; set;
 		}
 
+		/// <summary>
+		/// Gets/sets the object that renders the particle system
+		/// </summary>
+		/// <remarks>
+		/// If null, particles will never be rendered.
+		/// </remarks>
+		IParticleRenderer Renderer
+		{
+			get; set;
+		}
 	}
 }
