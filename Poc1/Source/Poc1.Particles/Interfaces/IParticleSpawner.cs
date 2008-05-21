@@ -12,6 +12,6 @@ namespace Poc1.Particles.Interfaces
 		/// <summary>
 		/// Spawns a given number of particles
 		/// </summary>
-		void SpawnParticles( IParticleFactory factory, int count, System.Collections.ICollection particles );
+		void SpawnParticles( IParticleFactory factory, int count, System.Collections.IList particles );
 	}
 }

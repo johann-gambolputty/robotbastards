@@ -35,6 +35,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Graph\ControlPoint.cs" />
+    <Compile Include="Graph\PiecewiseGraphInputHandler.cs" />
+    <Compile Include="Graph\GraphControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Graph\GraphControl.Designer.cs">
+      <DependentUpon>GraphControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\IGraph.cs" />
+    <Compile Include="Graph\IGraphControl.cs" />
+    <Compile Include="Graph\IGraphInputHandler.cs" />
+    <Compile Include="Graph\IPiecewiseGraph.cs" />
+    <Compile Include="Graph\LineGraph.cs" />
     <Compile Include="NiceComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -42,6 +55,12 @@
       <DependentUpon>NiceComboBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Graph\GraphControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>GraphControl.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

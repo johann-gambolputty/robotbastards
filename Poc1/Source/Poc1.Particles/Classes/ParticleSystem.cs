@@ -7,8 +7,8 @@ namespace Poc1.Particles.Classes
 {
 	/// <summary>
 	/// Handy abstract base class for particle systems
-	/// </summary>
-	public abstract class ParticleSystem : IParticleSystem
+	/// </summary
+	public class ParticleSystem : IParticleSystem
 	{
 		#region IParticleSystem Members
 
@@ -83,6 +83,15 @@ namespace Poc1.Particles.Classes
 			set { m_Killer = value; }
 		}
 
+		/// <summary>
+		/// Gets/sets the object that renders the particle system
+		/// </summary>
+		public IParticleRenderer Renderer
+		{
+			get { return m_Renderer; }
+			set { m_Renderer = value; }
+		}
+
 		#endregion
 
 		#region IRenderable Members
@@ -90,7 +99,14 @@ namespace Poc1.Particles.Classes
 		/// <summary>
 		/// Renders this particle system
 		/// </summary>
-		public abstract void Render( IRenderContext context );
+		public void Render( IRenderContext context )
+		{
+			if ( Renderer == null )
+			{
+				return;
+			}
+			Renderer.RenderParticles( context, m_Particles );
+		}
 
 		#endregion
 
@@ -267,6 +283,7 @@ namespace Poc1.Particles.Classes
 		private ISpawnRate				m_SpawnRate			= ms_DefaultSpawnRate;
 		private IParticleKiller			m_Killer			= ms_DefaultKiller;
 		private IParticleUpdater 		m_Updater			= ms_DefaultUpdater;
+		private IParticleRenderer		m_Renderer;
 
 		private readonly static IParticleFactory	ms_DefaultFactory;
 		private readonly static IParticleSpawner	ms_DefaultSpawner;
