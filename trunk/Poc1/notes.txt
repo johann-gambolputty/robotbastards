@@ -169,12 +169,22 @@
 
 	- Networking
 		- H: Extend RUNT
+@echo ON
+echo Building rendering implementations...
+vsvars32
+msbuild "$(SolutionDir)..\..\source\rb.rendering.implementations\rb.rendering.implementations.csproj" /t:Build /p:Configuration=$(ConfigurationName) /p:CopyTo="$(TargetDir)"
 
 	- Graphics Misc.
 		- H: Shadows
 		- M: Particle systems
+		- M: Move rendering assemblies to separate sub-directories (e.g. bin\OpenGL), rather than making them
+		  explicit references.
+		- M: Make the effect assembly load on-demand (i.e. when the effect manager is referenced)
 		- M: Fullscreen mode
 		- L: Multimonitor support
+
+	- Profiling
+		- H: Patch rendering is slow
 
 	- Misc.
 

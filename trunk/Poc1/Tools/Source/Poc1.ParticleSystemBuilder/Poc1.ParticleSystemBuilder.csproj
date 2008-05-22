@@ -9,12 +9,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Poc1.ParticleSystemBuilder</RootNamespace>
     <AssemblyName>Poc1.ParticleSystemBuilder</AssemblyName>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -22,7 +23,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -45,12 +46,6 @@
     </Compile>
     <Compile Include="BuilderControl.Designer.cs">
       <DependentUpon>BuilderControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="BuilderControlContainer.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="BuilderControlContainer.Designer.cs">
-      <DependentUpon>BuilderControlContainer.cs</DependentUpon>
     </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -131,4 +126,11 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>pushd "$(ProjectDir)..\..\..\..\Source\Rb.Rendering.Implementations\"
+call BuildAndCopy.bat "$(ConfigurationName)" "$(TargetDir)"
+popd</PostBuildEvent>
+  </PropertyGroup>
 </Project>

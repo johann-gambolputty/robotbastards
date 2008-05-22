@@ -10,6 +10,6 @@ namespace Poc1.Particles.Interfaces
 		/// <summary>
 		/// Renders a collection of particles
 		/// </summary>
-		void RenderParticles( IRenderContext context, System.Collections.IEnumerable particles );
+		void RenderParticles( IRenderContext context, IParticleSystem particleSystem, System.Collections.IEnumerable particles );
 	}
 }
