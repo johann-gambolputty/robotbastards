@@ -1,20 +1,25 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+      <DestinationFolder Condition="'$(CopyTo)'!=''">$(CopyTo)</DestinationFolder>
+  </PropertyGroup>
+
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2358F245-118D-43DD-838B-FF196EECFD6B}</ProjectGuid>
+    <ProjectGuid>{9D0E619E-CBE7-4AF0-BEAF-542C65069276}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rb.Rendering.OpenGl.ColladaSectionLoaders</RootNamespace>
-    <AssemblyName>Rb.Rendering.OpenGl.ColladaSectionLoaders</AssemblyName>
+    <RootNamespace>Rb.Rendering.Implementations</RootNamespace>
+    <AssemblyName>Rb.Rendering.Implementations</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\$(Configuration)\Rendering\OpenGl\</OutputPath>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -22,7 +27,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\$(Configuration)\Rendering\OpenGl\</OutputPath>
+    <OutputPath>..\..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -31,36 +36,22 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tao.OpenGl, Version=2.1.0.4, Culture=neutral, PublicKeyToken=1ca010269a4501ef, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\ThirdParty\Tao 2.0\bin\Tao.OpenGl.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MeshSectionLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rb.AssemblySelector\Rb.AssemblySelector.csproj">
-      <Project>{2097B22A-91A5-4CFF-8CCB-846A10523CB9}</Project>
-      <Name>Rb.AssemblySelector</Name>
+    <ProjectReference Include="..\Rb.Rendering.OpenGl.Cg\Rb.Rendering.OpenGl.Cg.csproj">
+      <Project>{C0A53C66-30B1-4891-9E33-31F96D6590D8}</Project>
+      <Name>Rb.Rendering.OpenGl.Cg</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rb.ColladaLoader\Rb.ColladaLoader.csproj">
-      <Project>{3829217F-FEC7-4C1A-832C-CA76EFCCF911}</Project>
-      <Name>Rb.ColladaLoader</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">
-      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
-      <Name>Rb.Core</Name>
+    <ProjectReference Include="..\Rb.Rendering.OpenGl.Windows\Rb.Rendering.OpenGl.Windows.csproj">
+      <Project>{F2F59120-9F01-4910-BB19-16FA628AE56C}</Project>
+      <Name>Rb.Rendering.OpenGl.Windows</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rb.Rendering.OpenGl\Rb.Rendering.OpenGl.csproj">
       <Project>{19DCB365-3040-4431-86E9-29183FA34EF7}</Project>
       <Name>Rb.Rendering.OpenGl</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rb.Rendering\Rb.Rendering.csproj">
-      <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
-      <Name>Rb.Rendering</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -68,7 +59,10 @@
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
   -->
+  <Target Name="CopyTo" Condition="'$(CopyTo)'!=''">
+  	<Message Text="Copying... $(DestinationFolder)"/>
+  </Target>
+  <Target Name="AfterBuild" DependsOnTargets="CopyTo">
+  </Target>
 </Project>

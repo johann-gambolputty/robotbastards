@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -110,12 +111,39 @@ namespace Rb.Rendering
 		#region Initialization
 
 		/// <summary>
+		/// Initializes graphics objects by loading graphics API assemblies specified in the application configuration file
+		/// </summary>
+		/// <remarks>
+		/// If the configuration file does not exist, or the "renderAssembly" app. setting is not available,
+		/// Rb.Rendering.OpenGl is used by default.
+		/// </remarks>
+		public static void InitializeFromConfiguration( )
+		{
+			//	Load the rendering assembly
+			string renderAssemblyName = ConfigurationManager.AppSettings[ "renderAssembly" ];
+			if ( renderAssemblyName == null )
+			{
+				renderAssemblyName = @".\Rendering\OpenGl\Rb.Rendering.OpenGl.dll";
+			}
+			Initialize( renderAssemblyName );
+			LoadCustomTypeAssemblies( Directory.GetCurrentDirectory( ), false );
+		}
+
+		/// <summary>
 		/// Initializes graphics objects by loading a specified assembly, instancing the first type that implements
 		/// <see cref="IGraphicsFactory"/>, and using the result to initialize the other graphics objects
 		/// </summary>
 		public static void Initialize( string assemblyName )
 		{
-			Assembly assembly = AppDomain.CurrentDomain.Load( assemblyName );
+			Assembly assembly;
+			if ( File.Exists( assemblyName ) )
+			{
+				assembly = Assembly.LoadFrom( assemblyName );
+			}
+			else
+			{
+				assembly = AppDomain.CurrentDomain.Load( assemblyName );
+			}
 			IGraphicsFactory factory = GetGraphicsFactoryFromAssembly( assembly );
 			factory.CustomTypes.ScanAssembly( assembly );
 			Initialize( factory );
@@ -198,7 +226,6 @@ namespace Rb.Rendering
 			}
 			
 			throw new ArgumentException( string.Format( "No type in assembly \"{0}\" implemented IGraphicsFactory", assembly.FullName ) );
-			
 		}
 
 		#endregion

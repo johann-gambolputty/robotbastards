@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using Rb.Assets.Interfaces;
 
 namespace Rb.Assets
@@ -18,6 +19,24 @@ namespace Rb.Assets
 			get { return ms_Singleton; }
 		}
  
+		#endregion
+
+		#region Setup
+
+		/// <summary>
+		/// Initializes the asset manager from the asset setup file specified in the application configuration file
+		/// </summary>
+		private static void InitializeFromConfiguration( )
+		{
+			//	Load asset setup
+			string assetSetupPath = ConfigurationManager.AppSettings[ "assetSetupPath" ];
+			if ( assetSetupPath == null )
+			{
+				assetSetupPath = "../assetSetup.xml";
+			}
+			AssetUtils.Setup(assetSetupPath);
+		}
+
 		#endregion
 
 		#region Loaders

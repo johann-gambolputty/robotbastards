@@ -16,6 +16,11 @@ namespace Poc1.ParticleSystemBuilder
 			set { groupBox1.Text = value; }
 		}
 
+		public object ControlObject
+		{
+			get { return m_Control; }
+		}
+
 		public Type[] ControlTypes
 		{
 			get { return m_Types; }

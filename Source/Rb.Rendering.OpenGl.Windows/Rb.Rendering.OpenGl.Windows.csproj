@@ -14,7 +14,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <OutputPath>..\..\bin\$(Configuration)\Rendering\OpenGl\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -22,7 +22,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\Release\</OutputPath>
+    <OutputPath>..\..\bin\$(Configuration)\Rendering\OpenGl\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -64,26 +64,27 @@
     <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Rb.Log\Rb.Log.csproj">
       <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
       <Name>Rb.Log</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.csproj">
       <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>
       <Name>Rb.Rendering.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rb.Rendering.OpenGl\Rb.Rendering.OpenGl.csproj">
-      <Project>{19DCB365-3040-4431-86E9-29183FA34EF7}</Project>
-      <Name>Rb.Rendering.OpenGl</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Rb.Rendering.Windows\Rb.Rendering.Windows.csproj">
       <Project>{39A57BC2-BE73-41A7-BBC2-A9D0C28D5A06}</Project>
       <Name>Rb.Rendering.Windows</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Rb.Rendering\Rb.Rendering.csproj">
       <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
       <Name>Rb.Rendering</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

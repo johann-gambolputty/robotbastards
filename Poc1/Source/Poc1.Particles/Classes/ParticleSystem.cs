@@ -105,7 +105,7 @@ namespace Poc1.Particles.Classes
 			{
 				return;
 			}
-			Renderer.RenderParticles( context, m_Particles );
+			Renderer.RenderParticles( context, this, m_Particles );
 		}
 
 		#endregion

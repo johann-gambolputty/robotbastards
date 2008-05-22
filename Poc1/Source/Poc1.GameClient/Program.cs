@@ -43,13 +43,7 @@ namespace Poc1.GameClient
 		/// </summary>
 		private static void InitializeAssets( )
 		{
-			//	Load asset setup
-			string assetSetupPath = ConfigurationManager.AppSettings[ "assetSetupPath" ];
-			if ( assetSetupPath == null )
-			{
-				assetSetupPath = "../assetSetup.xml";
-			}
-			AssetUtils.Setup( assetSetupPath );
+			AssetManager.InitializeFromConfiguration( );
 		}
 
 		/// <summary>
@@ -57,14 +51,7 @@ namespace Poc1.GameClient
 		/// </summary>
 		private static void InitializeRendering( )
 		{
-			//	Load the rendering assembly
-			string renderAssemblyName = ConfigurationManager.AppSettings[ "renderAssembly" ];
-			if ( renderAssemblyName == null )
-			{
-				renderAssemblyName = "Rb.Rendering.OpenGl";
-			}
-			Graphics.Initialize( renderAssemblyName );
-			Graphics.LoadCustomTypeAssemblies( Directory.GetCurrentDirectory( ), false );
+			Graphics.InitializeFromConfiguration( );
 		}
 
 	}
