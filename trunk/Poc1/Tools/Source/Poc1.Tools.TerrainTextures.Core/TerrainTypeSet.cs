@@ -49,18 +49,25 @@ namespace Poc1.Tools.TerrainTextures.Core
 		/// </summary>
 		public void Save( string path )
 		{
-			using ( FileStream fs = new FileStream( path, FileMode.Create, FileAccess.Write ) )
+			using ( MemoryStream ms = new MemoryStream( ) )
 			{
-				Save( fs );
+				Save( ms, path );
+				File.WriteAllBytes( path, ms.ToArray( ) );
 			}
 		}
 
 		/// <summary>
 		/// Saves this set to a destination stream
 		/// </summary>
-		public void Save( Stream dest )
+		/// <param name="dest">Destination stream</param>
+		/// <param name="savePath">Path to saved stream. Any texture files referenced by terrain types
+		/// are stored as paths relative to the export directory.</param>
+		public void Save( Stream dest, string savePath )
 		{
-			IFormatter formatter = new BinaryFormatter( );
+			string saveDir = Path.GetDirectoryName( savePath );
+			StreamingContext context = new StreamingContext( StreamingContextStates.All, saveDir );
+			IFormatter formatter = new BinaryFormatter( null, context );
+
 			formatter.Serialize( dest, this );
 		}
 
@@ -71,16 +78,17 @@ namespace Poc1.Tools.TerrainTextures.Core
 		{
 			using ( FileStream fs = new FileStream( path, FileMode.Open, FileAccess.Read ) )
 			{
-				return Load( fs );
+				return Load( fs, path );
 			}
 		}
 
 		/// <summary>
 		/// Loads a new terrain type set from a source stream
 		/// </summary>
-		public static TerrainTypeSet Load( Stream src )
+		public static TerrainTypeSet Load( Stream src, string loadPath )
 		{
-			IFormatter formatter = new BinaryFormatter( );
+			string loadDir = Path.GetDirectoryName( loadPath );
+			IFormatter formatter = new BinaryFormatter( null, new StreamingContext( StreamingContextStates.All, loadDir ) );
 			return ( TerrainTypeSet )formatter.Deserialize( src );
 		}
 

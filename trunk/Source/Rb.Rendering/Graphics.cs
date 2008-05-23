@@ -126,7 +126,7 @@ namespace Rb.Rendering
 				renderAssemblyName = @".\Rendering\OpenGl\Rb.Rendering.OpenGl.dll";
 			}
 			Initialize( renderAssemblyName );
-			LoadCustomTypeAssemblies( Directory.GetCurrentDirectory( ), false );
+			LoadCustomTypeAssemblies( Directory.GetCurrentDirectory( ), true );
 		}
 
 		/// <summary>

@@ -204,18 +204,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Simple\Source\InertParticleSystem.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Source\ParticleSystemFactory.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Source\ParticleSystemManager.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Stdafx.cpp"
 				>
 				<FileConfiguration
@@ -242,38 +230,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\IDumbPhysicsParticleSystem.h"
-				>
-			</File>
-			<File
-				RelativePath=".\IInertParticleSystem.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Simple\InertParticleSystem.h"
-				>
-			</File>
-			<File
-				RelativePath=".\IParticleSystem.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ParticleSystemFactory.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ParticleSystemManager.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Stdafx.h"
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\ReadMe.txt"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
