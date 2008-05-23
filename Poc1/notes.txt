@@ -155,6 +155,8 @@
 				- "Build All" (only updates game assets with an earlier timestamp that design assets)
 				- "ReBuild" (builds a single named asset)
 				- "Build" (builds a single asset)
+			- In-game UI
+			- Build/Rebuild menu items
 	- UI
 		- M: Try getting WPF to work
 		- M: Profile UI needs fixed scales (adaptive scales is stupid and misleading)
@@ -187,6 +189,7 @@ msbuild "$(SolutionDir)..\..\source\rb.rendering.implementations\rb.rendering.im
 		- H: Patch rendering is slow
 
 	- Misc.
+		- Remove fast noise test (move to console app. project)
 
 - DONE
 	- Assets: Design to Game builds

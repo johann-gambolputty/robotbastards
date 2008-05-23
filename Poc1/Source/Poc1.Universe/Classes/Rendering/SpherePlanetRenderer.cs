@@ -55,7 +55,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 			Graphics.Draw.StartCache( );
 			long cloudRadius = Planet.Radius + UniUnits.Metres.ToUniUnits( 5000 );
-			Graphics.Draw.Sphere( null, Point3.Origin, ( float )UniUnits.RenderUnits.FromUniUnits( cloudRadius ), 40, 40 );
+			Graphics.Draw.Sphere( null, Point3.Origin, ( float )UniUnits.RenderUnits.FromUniUnits( cloudRadius ), 100, 100 );
 			m_CloudShell = Graphics.Draw.StopCache( );
 		}
 

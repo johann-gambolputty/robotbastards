@@ -20,7 +20,7 @@ namespace Poc1.Universe.Classes.Rendering
 	/// Description of LOD increase/decrease operations:
 	/// 
 	/// Patch detail is increased when the distance from the patch to the camera is less than the error threshold in
-	/// a leaf node.
+	/// a leaf node. The error threshold is the maximum allowable pixel error between two patches.
 	///		if the CachedChildren list exists
 	///			CachedChildren list is moved to the PendingChildren list
 	///		else
@@ -40,7 +40,7 @@ namespace Poc1.Universe.Classes.Rendering
 	///		When the node has been build, its "Building" flag is set to false.
 	/// 
 	/// </remarks>
-	class TerrainQuadPatch
+	class TerrainQuadPatch : ITerrainPatch
 	{
 		public const int VertexResolution = 33;
 		public const int VertexArea = VertexResolution * VertexResolution;
@@ -48,6 +48,8 @@ namespace Poc1.Universe.Classes.Rendering
 		public const float ErrorThreshold = 6;
 
 		#region Public Construction
+
+		//	TODO: AP: UV patch resolution should be a function of patch size, not ply
 
 		public TerrainQuadPatch( TerrainQuadPatchVertices vertices, Point3 origin, Vector3 uAxis, Vector3 vAxis ) :
 			this( null, vertices, origin, uAxis, vAxis, float.MaxValue, 128.0f )
@@ -85,7 +87,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <summary>
 		/// Gets the U axis of this patch
 		/// </summary>
-		public Vector3 UStep
+		public Vector3 LocalUAxis
 		{
 			get { return m_LocalUAxis; }
 		}
@@ -93,9 +95,25 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <summary>
 		/// Gets the V axis of this patch
 		/// </summary>
-		public Vector3 VStep
+		public Vector3 LocalVAxis
 		{
 			get { return m_LocalVAxis; }
+		}
+
+		/// <summary>
+		/// Gets the U step of this patch
+		/// </summary>
+		public Vector3 LocalUStep
+		{
+			get { return m_LocalUAxis / ( VertexResolution - 1 ); }
+		}
+
+		/// <summary>
+		/// Gets the V step of this patch
+		/// </summary>
+		public Vector3 LocalVStep
+		{
+			get { return m_LocalVAxis / ( VertexResolution - 1 ); }
 		}
 
 		/// <summary>
@@ -138,10 +156,9 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <summary>
 		/// Called by <see cref="TerrainQuadPatchBuilder"/> when it has finished building vertex data for this patch
 		/// </summary>
-		public unsafe void OnBuildComplete( byte* vertexData, Point3 centre, float increaseDetailDistance )
+		public unsafe void OnBuildComplete( byte* vertexData, float increaseDetailDistance )
 		{
 			m_Building = false;
-			m_Centre = centre;
 			m_IncreaseDetailDistance = increaseDetailDistance;
 			SetVertexData( vertexData );
 			BuildIndices( );
@@ -161,7 +178,7 @@ namespace Poc1.Universe.Classes.Rendering
 				//	Detail up distance has not been calculated for this patch yet - exit
 				return;
 			}
-			float distanceToPatch = AccurateDistance( cameraPos, PatchCentre );
+			float distanceToPatch = AccurateDistanceToPatch( cameraPos, PatchCentre, m_Radius );
 			m_DistToPatch = distanceToPatch;
 			if ( distanceToPatch < m_IncreaseDetailDistance )
 			{
@@ -235,6 +252,8 @@ namespace Poc1.Universe.Classes.Rendering
 			{
 				Graphics.Fonts.DebugFont.Write( m_Centre.X, m_Centre.Y, m_Centre.Z, FontAlignment.TopRight, Color.White, "{0:F2}/{1:F2}", m_DistToPatch, m_IncreaseDetailDistance );
 				Graphics.Draw.Billboard( ms_Brush, m_Centre, 100.0f, 100.0f );
+
+			//	Graphics.Draw.Sphere( Graphics.Surfaces.Red, m_Centre, ( float )m_Radius );
 			}
 			else
 			{
@@ -264,6 +283,7 @@ namespace Poc1.Universe.Classes.Rendering
 		private TerrainQuadPatch[]					m_Children;
 		private TerrainQuadPatch[]					m_PendingChildren;
 		private TerrainQuadPatch[]					m_CachedChildren;
+		private double								m_Radius;
 		private readonly float						m_UvRes;
 		
 		private readonly static DrawBase.IBrush ms_Brush;
@@ -461,12 +481,12 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <summary>
 		/// Calculates distance between 2 points using intermediate double precision values
 		/// </summary>
-		private static float AccurateDistance( Point3 pos0, Point3 pos1 )
+		private static float AccurateDistanceToPatch( Point3 pos0, Point3 pos1, double patchRadius )
 		{
 			double x = pos0.X - pos1.X;
 			double y = pos0.Y - pos1.Y;
 			double z = pos0.Z - pos1.Z;
-			return ( float )Math.Sqrt( x * x + y * y + z * z );
+			return ( float )( Math.Sqrt( x * x + y * y + z * z ) - patchRadius );
 		}
 
 		/// <summary>
@@ -501,7 +521,7 @@ namespace Poc1.Universe.Classes.Rendering
 			m_LocalOrigin = origin;
 			m_LocalUAxis = uAxis;
 			m_LocalVAxis = vAxis;
-
+			m_Radius = ( uAxis + vAxis ).Length;
 			m_PatchError = patchError;
 			m_IncreaseDetailDistance = float.MaxValue;
 			m_UvRes = uvRes;
@@ -513,6 +533,19 @@ namespace Poc1.Universe.Classes.Rendering
 
 		[DllImport( "msvcrt.dll" )]
 		private unsafe static extern IntPtr memcpy( void* dest, void* src, int count );
+
+		#endregion
+
+		#region ITerrainPatch Members
+
+		/// <summary>
+		/// Sets planet-space parameters
+		/// </summary>
+		public void SetPlanetParameters( Point3 centre, float radius )
+		{
+			m_Centre = centre;
+			m_Radius = radius;
+		}
 
 		#endregion
 	}

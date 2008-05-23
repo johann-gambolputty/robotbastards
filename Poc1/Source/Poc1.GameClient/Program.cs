@@ -1,5 +1,6 @@
 using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using Rb.Assets;
@@ -10,7 +11,7 @@ namespace Poc1.GameClient
 {
 	static class Program
 	{
-		private static void FastTest( )
+		public static void FastTest( )
 		{
 			NoiseTest.TestSlowNoise();
 			//NoiseTest.TestFastNoise( );
@@ -28,6 +29,14 @@ namespace Poc1.GameClient
 		static void Main( )
 		{
 			//FastTest( );
+
+			if ( Environment.CommandLine.Contains( "/buildData" ) )
+			{
+				ProcessStartInfo pStart = new ProcessStartInfo( @"..\..\Data\Build.bat" );
+				pStart.WorkingDirectory = Path.GetFullPath( @"..\..\Data\" );
+				Process p = Process.Start( pStart );
+				p.WaitForExit( );
+			}
 
 			InitializeAssets( );
 			InitializeRendering( );

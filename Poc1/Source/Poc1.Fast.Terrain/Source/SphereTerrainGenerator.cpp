@@ -48,9 +48,9 @@ namespace Poc1
 				m_pImpl->SetSmallestStepSize( x, z );
 			}
 
-			void SphereTerrainGenerator::SetHeightRange( const float minHeight, const float maxHeight )
+			void SphereTerrainGenerator::Setup( const float minHeight, const float maxHeight, const float terrainFunctionRadius )
 			{
-				m_pImpl->GetBaseDisplacer( ).Setup( minHeight, ( minHeight + maxHeight ) / 2, maxHeight, 6.0f );
+				m_pImpl->GetBaseDisplacer( ).Setup( minHeight, ( minHeight + maxHeight ) / 2, maxHeight, terrainFunctionRadius );
 			}
 
 			void SphereTerrainGenerator::GenerateTerrainPropertyCubeMapFace( const CubeMapFace face, const int width, const int height, const int stride, unsigned char* pixels )

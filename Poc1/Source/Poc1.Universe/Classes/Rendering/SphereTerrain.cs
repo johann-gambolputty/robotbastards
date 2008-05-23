@@ -26,7 +26,9 @@ namespace Poc1.Universe.Classes.Rendering
 			m_RenderRadius = radius;
 
 			m_Gen.SetSmallestStepSize( 0.05f, 0.05f );
-			m_Gen.SetHeightRange( radius, radius + height );
+
+			float terrainFunctionRadius = ( float )( ( ( double )planet.Radius ) / 10000000.0f );
+			m_Gen.Setup( radius, radius + height, terrainFunctionRadius );
 		}
 
 		/// <summary>
@@ -61,42 +63,46 @@ namespace Poc1.Universe.Classes.Rendering
 		#region IPlanetTerrain Members
 
 		/// <summary>
+		/// Patches are defined in a local space. This determines the planet-space parameters of a patch
+		/// </summary>
+		public void SetPatchPlanetParameters( ITerrainPatch patch )
+		{
+			Point3 edge = patch.LocalOrigin + ( patch.LocalUAxis / 2 );
+			Point3 centre = edge + ( patch.LocalVAxis / 2 );
+
+			Point3 plEdge = ( edge.ToVector3( ).MakeNormal( ) * m_RenderRadius ).ToPoint3( );
+			Point3 plCentre = ( centre.ToVector3( ).MakeNormal( ) * m_RenderRadius ).ToPoint3( );
+
+			patch.SetPlanetParameters( plCentre, plCentre.DistanceTo( plEdge ) );
+		}
+
+		/// <summary>
 		/// Generates vertices for a patch
 		/// </summary>
-		/// <param name="origin">Patch origin</param>
-		/// <param name="uStep">Offset between row vertices</param>
-		/// <param name="vStep">Offset between column vertices</param>
+		/// <param name="patch">Patch</param>
 		/// <param name="res">Patch resolution</param>
 		/// <param name="uvRes">UV coordinate resolution over entire patch</param>
 		/// <param name="firstVertex">Patch vertices</param>
-		/// <returns>Centre point of the patch, in render unit space</returns>
-		public unsafe Point3 GenerateTerrainPatchVertices( Point3 origin, Vector3 uStep, Vector3 vStep, int res, float uvRes, TerrainVertex* firstVertex )
+		public unsafe void GenerateTerrainPatchVertices( ITerrainPatch patch, int res, float uvRes, TerrainVertex* firstVertex )
 		{
-			m_Gen.GenerateVertices( origin, uStep, vStep, res, res, uvRes, firstVertex );
-			
-			Point3 centre = origin + ( uStep * res / 2 ) + ( vStep * res / 2 );
-			return ( centre.ToVector3( ).MakeNormal( ) * m_RenderRadius ).ToPoint3( );
+			SetPatchPlanetParameters( patch );
+			m_Gen.GenerateVertices( patch.LocalOrigin, patch.LocalUStep, patch.LocalVStep, res, res, uvRes, firstVertex );
 		}
 
 		/// <summary>
 		/// Generates vertices for a patch. Calculates maximum error between this patch and next higher detail patch
 		/// </summary>
-		/// <param name="origin">Patch origin</param>
-		/// <param name="uStep">Offset between row vertices</param>
-		/// <param name="vStep">Offset between column vertices</param>
+		/// <param name="patch">Patch</param>
 		/// <param name="res">Patch resolution</param>
 		/// <param name="uvRes">UV coordinate resolution over entire patch</param>
 		/// <param name="firstVertex">Patch vertices</param>
 		/// <param name="error">Maximum error value between this patch and higher level patch</param>
-		/// <returns>Centre point of the patch, in render unit space</returns>
-		public unsafe Point3 GenerateTerrainPatchVertices( Point3 origin, Vector3 uStep, Vector3 vStep, int res, float uvRes, TerrainVertex* firstVertex, out float error )
+		public unsafe void GenerateTerrainPatchVertices( ITerrainPatch patch, int res, float uvRes, TerrainVertex* firstVertex, out float error )
 		{
-			m_Gen.GenerateVertices( origin, uStep, vStep, res, res, uvRes, firstVertex, out error );
+			SetPatchPlanetParameters( patch );
 
+			m_Gen.GenerateVertices( patch.LocalOrigin, patch.LocalUStep, patch.LocalVStep, res, res, uvRes, firstVertex, out error );
 			GenerateTextureCoordinates( res, firstVertex, uvRes );
-
-			Point3 centre = origin + ( uStep * res / 2 ) + ( vStep * res / 2 );
-			return ( centre.ToVector3( ).MakeNormal( ) * m_RenderRadius ).ToPoint3( );
 		}
 
 		#endregion
