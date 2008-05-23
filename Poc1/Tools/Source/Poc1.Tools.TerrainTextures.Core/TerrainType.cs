@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Runtime.Serialization;
+using Rb.Core.Utils;
 
 namespace Poc1.Tools.TerrainTextures.Core
 {
@@ -90,6 +91,23 @@ namespace Poc1.Tools.TerrainTextures.Core
 		}
 
 		/// <summary>
+		/// Called before this type is serialized. Ensures that the texture path is relative to the export
+		/// path (which must be stored in the <see cref="StreamingContext.Context"/> property)
+		/// </summary>
+		[OnSerializing]
+		public void OnSerializing( StreamingContext context )
+		{
+			if ( context.Context != null )
+			{
+				string saveDir = ( string )context.Context;
+				if ( Path.IsPathRooted( m_TexturePath ) )
+				{
+					m_TexturePath = PathHelpers.MakeRelativePath( saveDir, m_TexturePath );
+				}
+			}
+		}
+
+		/// <summary>
 		/// Called when this type is deserialized. Loads the type texture bitmap
 		/// </summary>
 		[OnDeserialized]
@@ -99,7 +117,16 @@ namespace Poc1.Tools.TerrainTextures.Core
 			{
 				if ( !File.Exists( m_TexturePath ) )
 				{
-					m_TexturePath = m_TexturePath.Replace( "Terrain Types\\Images", "Terrain\\Textures" );
+					if ( !Path.IsPathRooted( m_TexturePath ) )
+					{
+						m_TexturePath = Path.Combine( ( string )context.Context, m_TexturePath );
+					}
+					else
+					{
+						//	Erk... Try to repair earlier broken paths
+						m_TexturePath = m_TexturePath.Replace( "Projects", "Downloads" );
+						m_TexturePath = m_TexturePath.Replace( "Terrain Types\\Images", "Terrain\\Textures" );
+					}
 				}
 				LoadBitmap( m_TexturePath );
 			}

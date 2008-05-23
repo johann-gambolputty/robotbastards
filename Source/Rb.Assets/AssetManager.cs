@@ -26,7 +26,7 @@ namespace Rb.Assets
 		/// <summary>
 		/// Initializes the asset manager from the asset setup file specified in the application configuration file
 		/// </summary>
-		private static void InitializeFromConfiguration( )
+		public static void InitializeFromConfiguration( )
 		{
 			//	Load asset setup
 			string assetSetupPath = ConfigurationManager.AppSettings[ "assetSetupPath" ];
@@ -34,7 +34,7 @@ namespace Rb.Assets
 			{
 				assetSetupPath = "../assetSetup.xml";
 			}
-			AssetUtils.Setup(assetSetupPath);
+			AssetUtils.Setup( assetSetupPath );
 		}
 
 		#endregion
