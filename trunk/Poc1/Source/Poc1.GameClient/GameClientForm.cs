@@ -1,11 +1,14 @@
 using System;
+using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
 using Crownwood.Magic.Common;
 using Crownwood.Magic.Docking;
 using Poc1.GameClient.Properties;
 using Poc1.Universe;
 using Poc1.Universe.Classes;
+using Poc1.Universe.Interfaces;
 using Rb.Assets;
 using Rb.Core.Components;
 using Rb.Interaction;
@@ -50,7 +53,14 @@ namespace Poc1.GameClient
 
 			m_LogDisplayContent = m_DockingManager.Contents.Add( m_LogDisplay, "Log" );
 			m_DockingManager.AddContentWithState( m_LogDisplayContent, State.DockBottom );
+
+			if ( File.Exists( m_ClientSetupFile ) )
+			{
+				m_DockingManager.LoadConfigFromFile( m_ClientSetupFile );
+			}
 		}
+
+		private readonly string m_ClientSetupFile = Path.Combine( Directory.GetCurrentDirectory( ), "ClientSetup.xml" );
 
 
 		private readonly Control m_LogDisplay = new VsLogListView( );
@@ -95,7 +105,8 @@ namespace Poc1.GameClient
 										GameProfiles.Game.Rendering.Reset( );
 			                          };
 
-			m_SolarSystem = CreateSolarSystem( );
+			UniPoint3 initialViewPos = new UniPoint3( );
+			m_SolarSystem = CreateSolarSystem( initialViewPos );
 
 			//	Load the game viewer
 			try
@@ -104,6 +115,7 @@ namespace Poc1.GameClient
 				loadParams.Properties[ "user" ] = m_User;
 				Viewer viewer = ( Viewer )AssetManager.Instance.Load( "Viewers/TestGameViewer.components.xml", loadParams );
 				viewer.Renderable = m_SolarSystem;
+				( ( IUniCamera )viewer.Camera ).Position.Z = initialViewPos.Z;
 
 				gameDisplay.AddViewer( viewer );
 			}
@@ -136,11 +148,12 @@ namespace Poc1.GameClient
 			}
 		}
 
-		private static SolarSystem CreateSolarSystem( )
+		private static SolarSystem CreateSolarSystem( UniPoint3 initialViewPos )
 		{
 			SolarSystem system = new SolarSystem( );
 
-			SpherePlanet planet = new SpherePlanet( null, "TEST0", 80000.0 );
+			SpherePlanet planet = new SpherePlanet( null, "TEST0", 800000.0 );
+			initialViewPos.Z = planet.Radius + UniUnits.Metres.ToUniUnits( 10000 );
 		//	SpherePlanet moon = new SpherePlanet( new CircularOrbit( planet, 150000.0, TimeSpan.FromSeconds( 60 ) ), "TEST1", 3000.0f );
 			//SpherePlanet moon1 = new SpherePlanet( new CircularOrbit( moon, 500000.0, TimeSpan.FromSeconds( 60 ) ), "TEST2", 100000.0f );
 			//moon.Moons.Add( moon1 );
@@ -159,6 +172,8 @@ namespace Poc1.GameClient
 
 		private void GameClientForm_FormClosing( object sender, FormClosingEventArgs e )
 		{
+			m_DockingManager.SaveConfigToFile( m_ClientSetupFile, Encoding.ASCII );
+
 			m_SolarSystem.Dispose( );
 			Graphics.Renderer.Dispose( );
 		}

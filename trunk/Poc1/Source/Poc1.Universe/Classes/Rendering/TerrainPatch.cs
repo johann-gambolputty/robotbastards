@@ -180,11 +180,11 @@ namespace Poc1.Universe.Classes.Rendering
 
 					if ( m_LodErrors[ m_LodLevel ] == float.MaxValue )
 					{
-						m_Centre = planetTerrain.GenerateTerrainPatchVertices( m_TopLeft, uStep, vStep, res, 1.0f, firstVertex, out m_LodErrors[ m_LodLevel ] );
+						planetTerrain.GenerateTerrainPatchVertices( null, res, 1.0f, firstVertex, out m_LodErrors[ m_LodLevel ] );
 					}
 					else
 					{
-						m_Centre = planetTerrain.GenerateTerrainPatchVertices( m_TopLeft, uStep, vStep, res, 1.0f, firstVertex );
+						planetTerrain.GenerateTerrainPatchVertices( null, res, 1.0f, firstVertex );
 					}
 				}
 				finally

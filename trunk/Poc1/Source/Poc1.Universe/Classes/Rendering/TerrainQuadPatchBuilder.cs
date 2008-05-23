@@ -83,9 +83,8 @@ namespace Poc1.Universe.Classes.Rendering
 				set { m_Patch = value; }
 			}
 
-			public void Setup( Point3 centre, float increaseDetailDistance )
+			public void Setup( float increaseDetailDistance )
 			{
-				m_Centre = centre;
 				m_IncreaseDetailDistance = increaseDetailDistance;
 			}
 
@@ -93,12 +92,11 @@ namespace Poc1.Universe.Classes.Rendering
 			{
 				fixed ( byte* vertexData = m_VertexData )
 				{
-					m_Patch.OnBuildComplete( vertexData, m_Centre, m_IncreaseDetailDistance );
+					m_Patch.OnBuildComplete( vertexData, m_IncreaseDetailDistance );
 				}
 			}
 
 			private float m_IncreaseDetailDistance;
-			private Point3 m_Centre;
 			private TerrainQuadPatch m_Patch;
 			private readonly byte[] m_VertexData;
 		}
@@ -218,23 +216,19 @@ namespace Poc1.Universe.Classes.Rendering
 			{
 				TerrainVertex* firstVertex = ( TerrainVertex* )vertexBytes;
 
-				Vector3 uStep = patch.UStep / ( TerrainQuadPatch.VertexResolution - 1 );
-				Vector3 vStep = patch.VStep / ( TerrainQuadPatch.VertexResolution - 1 );
-
-				Point3 centre;
 				if ( calculatePatchError )
 				{
 					float error;
-					centre = terrain.GenerateTerrainPatchVertices( patch.LocalOrigin, uStep, vStep, TerrainQuadPatch.VertexResolution, patch.UvResolution, firstVertex, out error );
+					terrain.GenerateTerrainPatchVertices( patch, TerrainQuadPatch.VertexResolution, patch.UvResolution, firstVertex, out error );
 					CreateSkirtVertices( firstVertex );
-					patch.PatchError = error;
+					patch.PatchError = error * 4;
 				}
 				else
 				{
-					centre = terrain.GenerateTerrainPatchVertices( patch.LocalOrigin, uStep, vStep, TerrainQuadPatch.VertexResolution, patch.UvResolution, firstVertex );
+					terrain.GenerateTerrainPatchVertices( patch, TerrainQuadPatch.VertexResolution, patch.UvResolution, firstVertex );
 					CreateSkirtVertices( firstVertex );
 				}
-				result.Setup( centre, DistanceFromError( camera, patch.PatchError ) );
+				result.Setup( DistanceFromError( camera, patch.PatchError ) );
 			}
 
 			return result;
@@ -263,7 +257,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 		private unsafe static void CreateSkirtVertices( TerrainVertex* srcVertex, int srcOffset, TerrainVertex* dstVertex )
 		{
-			float skirtSize = 100;
+			float skirtSize = 0;
 			for ( int i = 0; i < TerrainQuadPatch.VertexResolution; ++i )
 			{
 				Vector3 offset = srcVertex->Position.ToVector3( ).MakeNormal( ) * -skirtSize;
