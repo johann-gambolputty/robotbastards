@@ -34,6 +34,7 @@
 		<CopyToGameFiles Include="$(DesignFolder)\Input\*.*"/>
     <CopyToGameFiles Include="$(DesignFolder)\Viewers\*.*"/>
     <CopyToGameFiles Include="$(DesignFolder)\Terrain\noise.jpg"/>
+    <CopyToGameFiles Include="$(DesignFolder)\Ocean\*.*"/>
     <CopyToGameFiles Include="$(DesignFolder)\Star Fields\**\*.jpg"/>
 	</ItemGroup>
 
@@ -78,13 +79,16 @@
     <Poc1.Tools.BuildTasks.CopyToGame SourceFiles="@(CopyToGameFiles)" SkipIfUnchanged="false">
       <Output TaskParameter="CopiedFiles" ItemName="CopiedGameFiles"/>
     </Poc1.Tools.BuildTasks.CopyToGame>
-    <Message Text="@(CopiedGameFiles"/>
+    <Message Text="%(CopiedGameFiles.Identity)"/>
     <Message Text="... Complete"/>
   </Target>
 
   <Target Name="RebuildTerrainTypes">
     <Message Text="Building terrain types..."/>
-    <Poc1.Tools.BuildTasks.BuildTerrainTypes SourceFiles="@(TerrainTypeSetFiles)" OutputDirectory="Game\Terrain"/>
+    <Poc1.Tools.BuildTasks.BuildTerrainTypes SourceFiles="@(TerrainTypeSetFiles)" OutputDirectory="Game\Terrain">
+      <Output TaskParameter="Outputs" ItemName="BuildTerrainTypesOutputs"/>
+    </Poc1.Tools.BuildTasks.BuildTerrainTypes>
+    <Message Text="%(BuildTerrainTypesOutputs.Identity)"/>
     <Message Text="...Complete"/>
   </Target>
 

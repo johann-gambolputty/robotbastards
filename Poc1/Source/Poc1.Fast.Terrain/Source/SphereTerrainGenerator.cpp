@@ -12,16 +12,30 @@ namespace Poc1
 		
 			//	---------------------------------------------------- SphereTerrainGenerator Methods
 
-			SphereTerrainGenerator::SphereTerrainGenerator( const TerrainGeneratorType generatorType, const unsigned int seed )
+			SphereTerrainGenerator::SphereTerrainGenerator( const TerrainGeneratorType generatorType, const bool enableGroundDisplacement, const unsigned int seed )
 			{
 				switch ( generatorType )
 				{
 					case TerrainGeneratorType::Ridged	:
 						{
-							SseSphereTerrainGeneratorT< SseRidgedFractalDisplacer >* impl = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseRidgedFractalDisplacer >( );
-							impl->GetDisplacer( ).GetFractal( ).GetNoise( ).SetNewSeed( seed );
-							impl->GetDisplacer( ).GetFractal( ).Setup( 3.1f, 1.1f, 10 );
-							m_pImpl = impl;
+
+							if ( enableGroundDisplacement )
+							{
+								SseSphereTerrainGeneratorT< SseFractalOffsetDisplacer< SseRidgedFractalDisplacer > >* impl;
+								impl = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseFractalOffsetDisplacer< SseRidgedFractalDisplacer > >( );
+								impl->GetDisplacer( ).GetBaseDisplacer( ).GetFractal( ).GetNoise( ).SetNewSeed( seed );
+								impl->GetDisplacer( ).GetBaseDisplacer( ).GetFractal( ).Setup( 4.1f, 0.8f, 12 );
+								impl->GetDisplacer( ).GetFractal( ).GetNoise( ).SetNewSeed( seed );
+								impl->GetDisplacer( ).GetFractal( ).Setup( 2.1f, 1.1f, 4 );
+								m_pImpl = impl;
+							}
+							else
+							{
+								SseSphereTerrainGeneratorT< SseRidgedFractalDisplacer >* impl = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseRidgedFractalDisplacer >( );
+								impl->GetDisplacer( ).GetFractal( ).GetNoise( ).SetNewSeed( seed );
+								impl->GetDisplacer( ).GetFractal( ).Setup( 3.1f, 1.1f, 10 );
+								m_pImpl = impl;
+							}
 							break;
 						}
 					case TerrainGeneratorType::Flat		:

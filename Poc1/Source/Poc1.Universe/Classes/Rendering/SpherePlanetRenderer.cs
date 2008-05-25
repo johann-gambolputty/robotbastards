@@ -1,6 +1,4 @@
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Classes.Rendering;
 using Rb.Assets;
@@ -25,6 +23,11 @@ namespace Poc1.Universe.Classes.Rendering
 		{
 			m_Planet = planet;
 			m_Terrain = new SphereTerrain( planet );
+
+			if ( planet.SeaLevel > 0 )
+			{
+				m_Sea = new SphereSea( planet );
+			}
 			
 			//	Load in flat planet effect
 			IEffect flatEffect = ( IEffect )AssetManager.Instance.Load( "Effects/Planets/terrestrialPlanet.cgfx" );
@@ -35,18 +38,17 @@ namespace Poc1.Universe.Classes.Rendering
 			m_CloudTechnique = new TechniqueSelector( cloudEffect, "DefaultTechnique" );
 			
 			//	Generate planet terrain texture
-			m_PlanetTexture = m_Terrain.CreatePlanetTexture( 256 );
-
-			int index = 0;
-			foreach ( Bitmap bmp in m_PlanetTexture.ToBitmaps( ) )
-			{
-			    bmp.Save( m_Planet.Name + " Planet Texture " + index++ + ".jpg", ImageFormat.Jpeg );
-			}
+		//	m_PlanetTexture = m_Terrain.CreatePlanetTexture( 256 );
+			//int index = 0;
+			//foreach ( Bitmap bmp in m_PlanetTexture.ToBitmaps( ) )
+			//{
+			//    bmp.Save( m_Planet.Name + " Planet Texture " + index++ + ".jpg", ImageFormat.Jpeg );
+			//}
 
 			m_TerrainPatches = new SphereTerrainQuadPatches( planet, m_Terrain );
 
 			//	Generate cloud textures
-			m_CloudGenerator = new SphereCloudsGenerator( 256 );
+			m_CloudGenerator = new SphereCloudsGenerator( 512 );
 
 			//	Generate cached sphere for rendering the planet
 			Graphics.Draw.StartCache( );
@@ -83,6 +85,10 @@ namespace Poc1.Universe.Classes.Rendering
 
 				GameProfiles.Game.Rendering.PlanetRendering.TerrainRendering.Begin( );
 				m_TerrainPatches.Render( context );
+				if ( m_Sea != null )
+				{
+					m_Sea.Render( context );
+				}
 				GameProfiles.Game.Rendering.PlanetRendering.TerrainRendering.End( );
 
 				GameProfiles.Game.Rendering.PlanetRendering.CloudRendering.Begin( );
@@ -134,21 +140,31 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		public void Dispose( )
 		{
-			m_CloudGenerator.Dispose( );
-			m_PlanetTexture.Dispose( );
+			if ( m_CloudGenerator != null )
+			{
+				m_CloudGenerator.Dispose( );
+				m_CloudGenerator = null;
+			}
+
+			if ( m_PlanetTexture != null )
+			{
+				m_PlanetTexture.Dispose( );
+				m_PlanetTexture = null;
+			}
 		}
 
 		#endregion
 
 		#region Private Members
 
-		private readonly SphereCloudsGenerator m_CloudGenerator;
-		private readonly ICubeMapTexture m_PlanetTexture;
+		private SphereCloudsGenerator m_CloudGenerator;
+		private ICubeMapTexture m_PlanetTexture;
 		private readonly ITechnique m_PlanetTechnique;
 		private readonly ITechnique m_CloudTechnique;
 		private readonly IRenderable m_PlanetGeometry;
 		private readonly Matrix44 m_CloudOffsetTransform = new Matrix44( );
 		private readonly SphereTerrain m_Terrain;
+		private readonly SphereSea m_Sea;
 		private readonly IRenderable m_TerrainPatches;
 		private readonly IRenderable m_CloudShell;
 		private readonly SpherePlanet m_Planet;

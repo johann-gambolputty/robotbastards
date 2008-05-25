@@ -1,0 +1,103 @@
+- Terrain types
+	- Dependent on elevation, slope, latitude
+	- Use 2d noise (x,z) to offset type calculation
+	- Each type gets their own contribution value, weighted by (e,s,l) weights
+		- E(p) == elevation
+		- S(p) == slope
+		- L(p) == latitude
+		- Te(e) == Distribution of terrain type at elevation
+		- Ts(e) == Distribution of terrain type at slope
+		- Tl(e) == Distribution of terrain type at latitude
+		- Tc = Te(E(p)).Ts(S(p)).Tl(L(p)).Noise(p)
+		- Partly finished - implemented as TerrainDistribution class
+
+		- Works OK, but would be better if L(p) is removed, and instead add E(p) and S(p)
+		for different latitude bands.
+
+- Patch splat texturing without pixel shader U/V wrapping:
+	- Patch initial visibility:
+		- Determine all terrain types affecting the patch
+		- There should be a maximum of N=4, possibly 6, per patch
+		- If there's more than N terrain types, just use one of the existing terrain types
+		- Munge terrain type byte IDs into an int32
+		- Store this value in the patch (TerrainPackID)
+		- If terrain pack ID is a 64 bit value, can add quantised distance to camera to last 16-32 bits, for free z-sorting
+	- Sort visible patches by TerrainPackID
+	- For each visible patch in sorted list:
+		- If TerrainPackID has changed from previous visible patch:
+			- Load up 
+
+- This same scheme can be used to define terrain packs, with pixel shader u/v wrapping:
+	- 
+	- 
+
+- Links:
+	- Water rendering
+		- http://www.gamedev.net/reference/articles/article2138.asp
+
+	- Linearized Z
+		- http://www.mvps.org/directx/articles/linear_z/linearz.htm
+
+	- Atmosphere rendering based on Nishita's model
+		- http://www.vis.uni-stuttgart.de/~schafhts/HomePage/pubs/wscg07-schafhitzel.pdf
+
+	- Rendering WPF into bitmaps (part of the solution...):
+		- http://www.west-wind.com/WebLog/posts/150676.aspx
+
+	- Notes on procedural terrain:
+		- http://www.gamedev.net/community/forums/mod/journal/journal.asp?jn=263350&cmonth=8&cyear=2007
+
+	- Not really relevent, but data for the stanford bunny is here:
+		- http://www.codesampler.com/oglsrc/oglsrc_6.htm
+
+	- Megaparticle systems (for cloud rendering?):
+		- http://www.2ld.de/gdc2004/MegaParticlesPaper.pdf
+
+	- Godray discussion:
+		- http://www.ogre3d.org/phpBB2/viewtopic.php?p=283158&sid=ce193664e1d3d7c4af509e6f4e2718c6
+
+	- Bezier patch terrain:
+		- http://www.gamasutra.com/view/feature/3004/dynamic_level_of_detail_terrain_.php?print=1
+
+	- Splatting:
+		- http://www.cbloom.com/3d/techdocs/splatting.txt
+
+	- Terrain LOD:
+		- http://number-none.com/product/Unified%20Rendering%20LOD,%20Part%201/index.html
+
+	- Nice terrain textures:
+		- http://www.gamedev.net/community/forums/topic.asp?topic_id=263350
+
+	- SSE problems with noise generation:
+		- http://www.gamedev.net/community/forums/topic.asp?topic_id=469446
+	
+	- Interesting thumbnail provider code:
+		- http://www.gamedev.net/community/forums/mod/journal/journal.asp?jn=273102
+
+	- Normal mapping in HLSL
+		- http://dotnet.org.za/pieterg/archive/2005/07/29/40407.aspx
+
+	- Chunked LOD
+		- http://www.tulrich.com/geekstuff/sig-notes.pdf
+
+	- Vertex attrib pointers (rather than specific client arrays)
+		- http://www.opengl.org/sdk/docs/man/xhtml/glVertexAttribPointer.xml
+
+	- TerrAnim8tor
+		- (Tan8 UV mapping for terrain textures)
+		- http://www.biederman.net/leslie/tutorials/Terranim8or/terrain/terrain3.htm
+
+- stuff
+	- Biome
+		- http://en.wikipedia.org/wiki/Biome
+		- A biome is a climatically and geographically defined area of ecologically similar communities of plants,
+		  animals, and soil organisms, often referred to as ecosystems.
+
+	- Earth
+		- Equatorial radius: 6,378.1km
+		- Polar radius: 6,371.0km
+		- Rotational speed at equator: 465.11 m/s
+
+	- Moon
+		- Equatorial radius: 1,737.10 km
+		- Rotational speed at equator: 4.627 m/s

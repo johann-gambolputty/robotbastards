@@ -128,7 +128,14 @@ namespace Poc1.Tools.TerrainTextures.Core
 						m_TexturePath = m_TexturePath.Replace( "Terrain Types\\Images", "Terrain\\Textures" );
 					}
 				}
-				LoadBitmap( m_TexturePath );
+				try
+				{
+					LoadBitmap( m_TexturePath );
+				}
+				catch ( Exception ex )
+				{
+					throw new ApplicationException( string.Format( "Failed to load texture from path \"{0}\"", m_TexturePath ), ex );
+				}
 			}
 		}
 

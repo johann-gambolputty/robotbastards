@@ -57,6 +57,25 @@ namespace Rb.Rendering
 			public static readonly Draw.ISurface Green	= Draw.NewSurface( Color.Green );
 			public static readonly Draw.ISurface Blue	= Draw.NewSurface( Color.Blue );
 			public static readonly Draw.ISurface Black	= Draw.NewSurface( Color.Black );
+
+
+			public static readonly Draw.ISurface TransparentRed = TransparentSurface( Color.Red );
+			public static readonly Draw.ISurface TransparentBlue = TransparentSurface( Color.Blue );
+			public static readonly Draw.ISurface TransparentGreen = TransparentSurface( Color.Green );
+
+			#region Helpers
+
+			private static Draw.ISurface TransparentSurface( Color colour )
+			{
+				Draw.ISurface surface = Draw.NewSurface( colour );
+				surface.FaceBrush.State.Blend = true;
+				surface.FaceBrush.State.SourceBlend = BlendFactor.One;
+				surface.FaceBrush.State.DestinationBlend = BlendFactor.One;
+
+				return surface;
+			}
+		
+			#endregion
 		}
 
 		#endregion
@@ -138,6 +157,10 @@ namespace Rb.Rendering
 			Assembly assembly;
 			if ( File.Exists( assemblyName ) )
 			{
+#pragma warning disable 0618
+				//	TODO: AP: Find alternative...
+				AppDomain.CurrentDomain.AppendPrivatePath(  Path.GetDirectoryName( assemblyName ) );
+#pragma warning restore 0618
 				assembly = Assembly.LoadFrom( assemblyName );
 			}
 			else

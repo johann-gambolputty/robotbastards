@@ -37,9 +37,31 @@ namespace Poc1.Universe.Classes
 
 		#region IPlanet Members
 
+		/// <summary>
+		/// Gets the description of the orbit of this planet
+		/// </summary>
 		public IOrbit Orbit
 		{
 			get { return m_Orbit; }
+		}
+
+		/// <summary>
+		/// Gets the sea level of this planet. If this is zero, the planet has no seas. Otherwise, it's measured
+		/// as an offset, in metres, from the planet's radius
+		/// </summary>
+		public float SeaLevel
+		{
+			get { return m_SeaLevel; }
+			set { m_SeaLevel = value; }
+		}
+
+		/// <summary>
+		/// Gets the range of heights of the planet's terrain. 
+		/// </summary>
+		public float TerrainHeightRange
+		{
+			get { return m_TerrainHeightRange; }
+			set { m_TerrainHeightRange = value; }
 		}
 
 		/// <summary>
@@ -79,8 +101,9 @@ namespace Poc1.Universe.Classes
 		private readonly IOrbit m_Orbit;
 		private string m_Name;
 		private bool m_EnableTerrainRendering;
+		private float m_SeaLevel = 1500;
+		private float m_TerrainHeightRange = 4000;
 
 		#endregion
-
 	}
 }

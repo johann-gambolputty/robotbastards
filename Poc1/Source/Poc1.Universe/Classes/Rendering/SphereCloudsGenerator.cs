@@ -90,8 +90,8 @@ namespace Poc1.Universe.Classes.Rendering
 				m_UpdatedEvent.WaitOne( );
 
 				GameProfiles.Game.CloudGeneration.Begin( );
-				m_XOffset = Utils.Wrap( m_XOffset + 0.01f, 0, Constants.TwoPi );
-				m_ZOffset = Utils.Wrap( m_ZOffset + 0.015f, 0, Constants.TwoPi );
+				m_XOffset = Utils.Wrap( m_XOffset + 0.002f, 0, Constants.TwoPi );
+				m_ZOffset = Utils.Wrap( m_ZOffset + 0.0025f, 0, Constants.TwoPi );
 
 				//	Simple cloud coverage cycle
 				m_CloudCoverage = Utils.Wrap( m_CloudCoverage + 0.01f, 0, Constants.TwoPi );

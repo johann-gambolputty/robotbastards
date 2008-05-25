@@ -19,6 +19,23 @@ namespace Poc1.Universe.Interfaces
 		}
 
 		/// <summary>
+		/// Gets the sea level of this planet. If this is zero, the planet has no seas. Otherwise, it's measured
+		/// as an offset, in metres, from the planet's radius
+		/// </summary>
+		float SeaLevel
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Gets the range of heights of the planet's terrain
+		/// </summary>
+		float TerrainHeightRange
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Enables/disables the rendering of the terrain of this planet
 		/// </summary>
 		/// <remarks>

@@ -8,6 +8,16 @@ namespace Rb.Rendering.Interfaces.Objects
 	public enum EffectRenderStateBinding
 	{
 		/// <summary>
+		/// Near Z clipping plane value
+		/// </summary>
+		NearZ,
+
+		/// <summary>
+		/// Far Z clipping plane value
+		/// </summary>
+		FarZ,
+
+		/// <summary>
 		/// Parameter bound to the current model matrix
 		/// </summary>
 		ModelMatrix,

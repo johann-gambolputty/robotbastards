@@ -22,12 +22,12 @@ namespace Poc1.Universe.Classes.Rendering
 		{
 			m_Planet = planet;
 			float radius = ( float )UniUnits.RenderUnits.FromUniUnits( m_Planet.Radius );
-			float height = ( float )UniUnits.RenderUnits.FromUniUnits( UniUnits.Metres.ToUniUnits( 4000 ) );
+			float height = ( float )UniUnits.RenderUnits.FromUniUnits( UniUnits.Metres.ToUniUnits( planet.TerrainHeightRange ) );
 			m_RenderRadius = radius;
 
 			m_Gen.SetSmallestStepSize( 0.05f, 0.05f );
 
-			float terrainFunctionRadius = ( float )( ( ( double )planet.Radius ) / 10000000.0f );
+			float terrainFunctionRadius = ( float )( ( ( double )planet.Radius ) / 20000000.0f );
 			m_Gen.Setup( radius, radius + height, terrainFunctionRadius );
 		}
 
@@ -123,7 +123,7 @@ namespace Poc1.Universe.Classes.Rendering
 			}
 		}
 
-		private readonly SphereTerrainGenerator m_Gen = new SphereTerrainGenerator( TerrainGeneratorType.Ridged, TimeSeed );
+		private readonly SphereTerrainGenerator m_Gen = new SphereTerrainGenerator( TerrainGeneratorType.Ridged, true, TimeSeed );
 		private readonly SpherePlanet m_Planet;
 		private readonly float m_RenderRadius;
 

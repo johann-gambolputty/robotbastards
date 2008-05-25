@@ -1,6 +1,7 @@
 #pragma once
 #pragma managed(push, off)
 
+#include <Sse\SseSimpleFractal.h>
 #include <Sse\SseRidgedFractal.h>
 
 namespace Poc1
@@ -33,7 +34,7 @@ namespace Poc1
 				}
 
 				///	\brief	Sets up this displacer
-				void Setup( float minHeight, float seaLevel, float maxHeight, float sphereRadius )
+				virtual void Setup( float minHeight, float seaLevel, float maxHeight, float sphereRadius )
 				{
 					m_Radius = _mm_set1_ps( sphereRadius );
 					m_MinHeight = _mm_set1_ps( minHeight );
@@ -87,6 +88,67 @@ namespace Poc1
 				}
 		};
 
+		///	\brief	Displacer decorator class. Adds x-z displacement to an existing displacer
+		template < typename BaseDisplacer >
+		class SseFractalOffsetDisplacer : public SseSphereTerrainDisplacer
+		{
+			public :
+
+				SseFractalOffsetDisplacer( )
+				{
+				}
+
+
+				SseSimpleFractal& GetFractal( )
+				{
+					return m_Fractal;
+				}
+
+				const SseSimpleFractal& GetFractal( ) const
+				{
+					return m_Fractal;
+				}
+
+				BaseDisplacer& GetBaseDisplacer( )
+				{
+					return m_Base;
+				}
+				
+				const BaseDisplacer& GetBaseDisplacer( ) const
+				{
+					return m_Base;
+				}
+
+				virtual void Setup( float minHeight, float seaLevel, float maxHeight, float sphereRadius )
+				{
+					SseSphereTerrainDisplacer::Setup( minHeight, seaLevel, maxHeight, sphereRadius );
+					m_Base.Setup( minHeight, seaLevel, maxHeight, sphereRadius );
+				}
+				
+				///	\brief	Maps 4 (x,y,z) vectors onto the minimum distance of this displacer.
+				inline __m128 Displace( __m128& xxxx, __m128& yyyy, __m128& zzzz ) const
+				{
+					__m128 dispXxxx = m_Fractal.GetSignedValue( xxxx, yyyy, zzzz );
+					__m128 dispZzzz = m_Fractal.GetSignedValue( xxxx, yyyy, zzzz );
+
+					dispXxxx = _mm_mul_ps( dispXxxx, _mm_set1_ps( 0.3f ) );
+					dispZzzz = _mm_mul_ps( dispZzzz, _mm_set1_ps( 0.3f ) );
+				//	dispZzzz = MapToHeightRange( dispZzzz );
+
+					xxxx = _mm_add_ps( xxxx, dispXxxx );
+					zzzz = _mm_add_ps( zzzz, dispZzzz );
+
+					__m128 heights = m_Base.Displace( xxxx, yyyy, zzzz );
+					return heights;
+				}
+
+			private :
+
+				BaseDisplacer m_Base;
+				SseSimpleFractal m_Fractal;
+
+		}; //SseFractalOffsetDisplacer
+
 		///	\brief	SseSphereTerrainGenerator Displacer type. Uses a ridged fractal to generate input positions
 		class SseRidgedFractalDisplacer : public SseSphereTerrainDisplacer
 		{
@@ -112,6 +174,7 @@ namespace Poc1
 				inline __m128 Displace( __m128& xxxx, __m128& yyyy, __m128& zzzz ) const
 				{
 					__m128 heights = m_Fractal.GetValue( xxxx, yyyy, zzzz );
+
 					__m128 actualHeights = MapToHeightRange( heights );
 					xxxx = _mm_mul_ps( xxxx, actualHeights );
 					yyyy = _mm_mul_ps( yyyy, actualHeights );

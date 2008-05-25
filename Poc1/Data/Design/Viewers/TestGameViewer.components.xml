@@ -26,7 +26,7 @@
     <object type="Poc1.Universe.Classes.Cameras.HeadCamera" assembly="Poc1.Universe" property="Camera">
 
       <float value="1.0" property="PerspectiveZNear"/>
-      <float value="100000" property="PerspectiveZFar"/>
+      <float value="20000" property="PerspectiveZFar"/>
 
       <object type="Poc1.Universe.UniPoint3" property="Position">
         <long value="0" property="X"/>

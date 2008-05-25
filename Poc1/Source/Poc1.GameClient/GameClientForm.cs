@@ -106,7 +106,18 @@ namespace Poc1.GameClient
 			                          };
 
 			UniPoint3 initialViewPos = new UniPoint3( );
-			m_SolarSystem = CreateSolarSystem( initialViewPos );
+
+			try
+			{
+				m_SolarSystem = CreateSolarSystem( initialViewPos );
+			}
+			catch ( Exception ex )
+			{
+				AppLog.Exception( ex, "Error occurred creating the solar system" );
+				ErrorMessageBox.Show( this, Resources.ErrorCreatingSolarSystem, ex );
+				Close( );
+				return;
+			}
 
 			//	Load the game viewer
 			try
@@ -123,6 +134,8 @@ namespace Poc1.GameClient
 			{
 				AppLog.Exception( ex, "Error occurred creating game viewer" );
 				ErrorMessageBox.Show( this, Resources.ErrorCreatingGameViewer, ex );
+				Close( );
+				return;
 			}
 
 			//	Load the game controls
@@ -152,15 +165,15 @@ namespace Poc1.GameClient
 		{
 			SolarSystem system = new SolarSystem( );
 
-			SpherePlanet planet = new SpherePlanet( null, "TEST0", 800000.0 );
+			SpherePlanet planet = new SpherePlanet( null, "TEST0", 80000.0 );
 			initialViewPos.Z = planet.Radius + UniUnits.Metres.ToUniUnits( 10000 );
-		//	SpherePlanet moon = new SpherePlanet( new CircularOrbit( planet, 150000.0, TimeSpan.FromSeconds( 60 ) ), "TEST1", 3000.0f );
+			//SpherePlanet moon = new SpherePlanet( new CircularOrbit( planet, 1600000.0, TimeSpan.FromSeconds( 60 ) ), "TEST1", 30000.0f );
 			//SpherePlanet moon1 = new SpherePlanet( new CircularOrbit( moon, 500000.0, TimeSpan.FromSeconds( 60 ) ), "TEST2", 100000.0f );
 			//moon.Moons.Add( moon1 );
-		//	planet.Moons.Add( moon );
+			//planet.Moons.Add( moon );
 
 			system.Planets.Add( planet );
-		//	system.Planets.Add( moon );
+			//system.Planets.Add( moon );
 			//system.Planets.Add( moon1 );
 
 			return system;
@@ -174,7 +187,11 @@ namespace Poc1.GameClient
 		{
 			m_DockingManager.SaveConfigToFile( m_ClientSetupFile, Encoding.ASCII );
 
-			m_SolarSystem.Dispose( );
+			if ( m_SolarSystem != null )
+			{
+				m_SolarSystem.Dispose( );
+				m_SolarSystem = null;
+			}
 			Graphics.Renderer.Dispose( );
 		}
 

@@ -54,6 +54,16 @@ namespace Poc1.Universe
 		}
 
 		/// <summary>
+		/// Switches terrain patch skirt generation on or off
+		/// </summary>
+		[Category( "Terrain Rendering" )]
+		public static bool DisableTerainSkirts
+		{
+			get { return ms_DisableTerainSkirts; }
+			set { ms_DisableTerainSkirts = value; }
+		}
+
+		/// <summary>
 		/// Switches patch wireframe rendering on or off
 		/// </summary>
 		[Category( "Terrain Rendering" )]
@@ -101,6 +111,7 @@ namespace Poc1.Universe
 		#region Private members
 
 		private static bool ms_ShowCameraPosition;
+		private static bool ms_DisableTerainSkirts;
 
 		private static bool ms_ShowPatchInfo;
 		private static bool ms_ShowPatchWireframe;
