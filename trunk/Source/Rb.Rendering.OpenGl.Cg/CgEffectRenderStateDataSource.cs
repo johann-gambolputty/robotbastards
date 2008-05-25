@@ -36,6 +36,28 @@ namespace Rb.Rendering.OpenGl.Cg
 			IntPtr param = cgParam.Parameter;
 			switch ( m_Binding )
 			{
+				case EffectRenderStateBinding.NearZ:
+					{
+						IProjectionCamera curCam = Graphics.Renderer.Camera as IProjectionCamera;
+						if ( curCam != null )
+						{
+							TaoCg.cgSetParameter1f( param, curCam.PerspectiveZNear );
+						}
+
+						break;
+					}
+
+				case EffectRenderStateBinding.FarZ:
+					{
+						IProjectionCamera curCam = Graphics.Renderer.Camera as IProjectionCamera;
+						if ( curCam != null )
+						{
+							TaoCg.cgSetParameter1f( param, curCam.PerspectiveZFar );
+						}
+
+						break;
+					}
+
 				case EffectRenderStateBinding.ModelMatrix:
 					{
 						Matrix44 modelMatrix = Graphics.Renderer.GetTransform( TransformType.LocalToWorld );

@@ -221,7 +221,7 @@ namespace Poc1.Universe.Classes.Rendering
 					float error;
 					terrain.GenerateTerrainPatchVertices( patch, TerrainQuadPatch.VertexResolution, patch.UvResolution, firstVertex, out error );
 					CreateSkirtVertices( firstVertex );
-					patch.PatchError = error * 4;
+					patch.PatchError = error;
 				}
 				else
 				{
@@ -236,6 +236,11 @@ namespace Poc1.Universe.Classes.Rendering
 
 		private unsafe static void CreateSkirtVertices( TerrainVertex* firstVertex )
 		{
+			if ( DebugInfo.DisableTerainSkirts )
+			{
+				return;
+			}
+
 			int vRes = TerrainQuadPatch.VertexResolution - 1;
 
 			//	First horizontal skirt
@@ -244,7 +249,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 			//	First vertical skirt
 			skirtVertex += TerrainQuadPatch.VertexResolution;
-			CreateSkirtVertices(firstVertex, TerrainQuadPatch.VertexResolution, skirtVertex);
+			CreateSkirtVertices( firstVertex, TerrainQuadPatch.VertexResolution, skirtVertex );
 			
 			//	Last horizontal skirt
 			skirtVertex += TerrainQuadPatch.VertexResolution;
@@ -257,7 +262,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 		private unsafe static void CreateSkirtVertices( TerrainVertex* srcVertex, int srcOffset, TerrainVertex* dstVertex )
 		{
-			float skirtSize = 0;
+			float skirtSize = 100;
 			for ( int i = 0; i < TerrainQuadPatch.VertexResolution; ++i )
 			{
 				Vector3 offset = srcVertex->Position.ToVector3( ).MakeNormal( ) * -skirtSize;

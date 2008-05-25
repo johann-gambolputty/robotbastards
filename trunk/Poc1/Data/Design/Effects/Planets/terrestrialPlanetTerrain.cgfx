@@ -5,6 +5,8 @@ sampler2D TerrainPackTexture = sampler_state
 	WrapT = Repeat;
 	MinFilter = Linear;
 	MagFilter = Linear;
+//	MinFilter = LinearMipMapLinear;
+//	MagFilter = LinearMipMapLinear;
 };
 
 sampler2D TerrainTypeTexture = sampler_state
@@ -19,8 +21,8 @@ sampler2D NoiseTexture = sampler_state
 {
 	WrapS = Repeat;
 	WrapT = Repeat;
-	MinFilter = Nearest;
-	MagFilter = Nearest;
+	MinFilter = Linear;
+	MagFilter = Linear;
 };
 /*
 samplerCUBE CloudTexture = sampler_state
@@ -61,6 +63,7 @@ struct FragmentShaderInput
 
 float4x4 ModelViewProjectionMatrix;
 float4x4 InverseTransposeModelMatrix;
+float FarZ;
 
 //float4x4 CloudTransform = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
 
@@ -85,17 +88,42 @@ const float Dark = 0.0f;
 const float TileRes = 4;
 const float InvTileRes = 1.0f / 4.0f;
 
-//float2 GetNoise( float2 uv, float range )
-//{
-//	return ( tex2D( NoiseTexture, uv ).rg * range ) - float2( range / 2, range / 2 );
-//}
+float2 GetNoise( float2 uv, float range )
+{
+	return ( tex2D( NoiseTexture, uv ).rg * range ) - float2( range / 2, range / 2 );
+}
+
+const float freq = 1.2f;
+const float lac = 0.5f;
+
+float2 Fractal2d( float2 uv )
+{
+	float amp = 1;
+	uv += float2( 4.346f, 4.257f );
+	float2 n = GetNoise( uv, amp );
+	uv *= freq; amp *= lac;
+	n += GetNoise( uv, amp );
+	uv *= freq; amp *= lac;
+	n += GetNoise( uv, amp );
+	uv *= freq; amp *= lac;
+	n += GetNoise( uv, amp );
+
+	return n / 1.9f;
+}
+
+float2 PerturbSe( float2 se, float2 uv )
+{
+	return saturate( se + GetNoise( uv, 0.1f ) );
+}
 
 float4 GetTerrainColour( FragmentShaderInput input )
 {
-	float type = ( int )( tex2D( TerrainTypeTexture, input.m_SlopeElevation ).r * 256.0f );
-	
+	float2 repUv = frac( input.m_TerrainUv );
+	float2 se = PerturbSe( input.m_SlopeElevation, repUv );
+	float type = ( int )( tex2D( TerrainTypeTexture, se ).r * 256.0f );
 	float2 offsetToTile = float2( fmod( type, TileRes ), ( int )( type * InvTileRes ) );
-	float2 tileUv = offsetToTile + frac( input.m_TerrainUv );
+	
+	float2 tileUv = offsetToTile + repUv;
 	tileUv *= float2( InvTileRes, InvTileRes );
 	float4 diffuse = tex2D( TerrainPackTexture, tileUv );
 	
@@ -116,10 +144,10 @@ float GetCloudCover( FragmentShaderInput input )
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
-	float shade = ( dot( input.m_Normal, SunNormal ) + 1 ) / 2;
-	shade *= shade;
+	float shade = ( dot( normalize( input.m_Normal ), SunNormal  ) + 1.0f ) / 2.0f;
+	shade = shade * shade;
 
-	float4 diffuse = GetTerrainColour( input ) * shade;
+	float4 diffuse = GetTerrainColour( input ) * shade.xxxx;
 
 	return diffuse;
 }

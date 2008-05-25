@@ -13,7 +13,7 @@ namespace Poc1.Universe.Classes.Rendering
 	class SphereTerrainQuadPatches : IRenderable
 	{
 
-		public SphereTerrainQuadPatches( IPlanet planet, IPlanetTerrain terrain )
+		public SphereTerrainQuadPatches( SpherePlanet planet, IPlanetTerrain terrain )
 		{
 			m_Planet = planet;
 
@@ -29,6 +29,8 @@ namespace Poc1.Universe.Classes.Rendering
 
 			m_Terrain = terrain;
 			m_PlanetTerrainTechnique = selector;
+
+			float uvRes = ( float )( planet.Radius / 500000.0 );
 
 			float hDim = 20;
 			Point3[] cubePoints = new Point3[]
@@ -46,12 +48,12 @@ namespace Poc1.Universe.Classes.Rendering
 			int res = 1;
 			CubeSide[] sides = new CubeSide[]
 				{
-					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 7 ], cubePoints[ 6 ], cubePoints[ 4 ] ),	//	+z
-					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 0 ], cubePoints[ 1 ], cubePoints[ 3 ] ),	//	-z
-					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 4 ], cubePoints[ 5 ], cubePoints[ 0 ] ),	//	+y
-					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 6 ], cubePoints[ 7 ], cubePoints[ 2 ] ),	//	-y
-					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 5 ], cubePoints[ 6 ], cubePoints[ 1 ] ),	//	+x
-					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 0 ], cubePoints[ 3 ], cubePoints[ 4 ] ),	//	-x
+					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 7 ], cubePoints[ 6 ], cubePoints[ 4 ], uvRes ),	//	+z
+					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 0 ], cubePoints[ 1 ], cubePoints[ 3 ], uvRes ),	//	-z
+					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 4 ], cubePoints[ 5 ], cubePoints[ 0 ], uvRes ),	//	+y
+					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 6 ], cubePoints[ 7 ], cubePoints[ 2 ], uvRes ),	//	-y
+					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 5 ], cubePoints[ 6 ], cubePoints[ 1 ], uvRes ),	//	+x
+					new CubeSide( m_Patches, m_Vertices, res, cubePoints[ 0 ], cubePoints[ 3 ], cubePoints[ 4 ], uvRes ),	//	-x
 				};
 
 #if DEBUG
@@ -91,10 +93,11 @@ namespace Poc1.Universe.Classes.Rendering
 
 			if ( DebugInfo.ShowPatchInfo )
 			{
-				foreach ( TerrainQuadPatch patch in m_Patches )
-				{
-					patch.DebugRender( );
-				}
+				m_Patches[ 0 ].DebugRender( );
+				//foreach ( TerrainQuadPatch patch in m_Patches )
+				//{
+				//    patch.DebugRender( );
+				//}
 			}
 
 			if ( DebugInfo.ShowTerrainLeafNodeCount )
@@ -113,7 +116,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 		private class CubeSide
 		{
-			public CubeSide( ICollection<TerrainQuadPatch> allPatches, TerrainQuadPatchVertices vertices, int res, Point3 topLeft, Point3 topRight, Point3 bottomLeft )
+			public CubeSide( ICollection<TerrainQuadPatch> allPatches, TerrainQuadPatchVertices vertices, int res, Point3 topLeft, Point3 topRight, Point3 bottomLeft, float uvRes )
 			{
 				Vector3 xAxis = ( topRight - topLeft );
 				Vector3 yAxis = ( bottomLeft - topLeft );
@@ -126,7 +129,7 @@ namespace Poc1.Universe.Classes.Rendering
 					Point3 curPos = rowStart;
 					for ( int col = 0; col < res; ++col )
 					{
-						TerrainQuadPatch newPatch = new TerrainQuadPatch( vertices, curPos, xAxis, yAxis );
+						TerrainQuadPatch newPatch = new TerrainQuadPatch( vertices, curPos, xInc, yInc, uvRes );
 						allPatches.Add( newPatch );
 						m_Patches.Add( newPatch );
 

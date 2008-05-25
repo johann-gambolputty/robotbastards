@@ -44,6 +44,7 @@
     <Compile Include="Classes\Cameras\UniCamera.cs" />
     <Compile Include="Classes\CircularOrbit.cs" />
     <Compile Include="Classes\Planet.cs" />
+    <Compile Include="Classes\Rendering\SphereSea.cs" />
     <Compile Include="Classes\Rendering\TerrainQuadPatch.cs" />
     <Compile Include="Classes\Rendering\TerrainQuadPatchBuilder.cs" />
     <Compile Include="Classes\Rendering\TerrainQuadPatchVertices.cs" />

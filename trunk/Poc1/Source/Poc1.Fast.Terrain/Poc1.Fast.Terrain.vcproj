@@ -214,10 +214,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Sse\Source\SseSphereTerrainGenerator.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Stdafx.cpp"
 				>
 				<FileConfiguration
@@ -241,9 +237,21 @@
 		<Filter
 			Name="Sse"
 			>
+			<File
+				RelativePath=".\Sse\SseSphereTerrainDisplacers.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Sse\SseSphereTerrainGenerator.h"
+				>
+			</File>
 			<Filter
 				Name="Sse Source"
 				>
+				<File
+					RelativePath=".\Sse\Source\SseSphereTerrainGenerator.cpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<File
@@ -256,14 +264,6 @@
 		</File>
 		<File
 			RelativePath=".\SphereTerrainGenerator.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Sse\SseSphereTerrainDisplacers.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Sse\SseSphereTerrainGenerator.h"
 			>
 		</File>
 		<File

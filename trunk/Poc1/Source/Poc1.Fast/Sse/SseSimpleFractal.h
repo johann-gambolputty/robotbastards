@@ -17,11 +17,22 @@ namespace Poc1
 				///	\brief	Sets the seed for the noise basis function
 				SseSimpleFractal( const unsigned int seed );
 
+				///	\brief	Gets the noise object
+				SseNoise& GetNoise( );
+				
+				///	\brief	Gets the noise object
+				const SseNoise& GetNoise( ) const;
+
 				///	\brief	Sets up fractal parameters
 				void Setup( const float freq, const float persistence, const int numOctaves );
 
-				///	\brief	Gets 4 fractal values from 4 points
+				///	\brief	Gets 4 fractal values from 4 points. Returns a value in the range [0,1]
 				__m128 GetValue( __m128 xxxx, __m128 yyyy, __m128 zzzz ) const;
+				
+				///	\brief	Gets 4 fractal values from 4 points. Returns a value in the range [-1,1]
+				__m128 GetSignedValue( __m128 xxxx, __m128 yyyy, __m128 zzzz ) const;
+
+
 
 			private :
 
@@ -39,6 +50,16 @@ namespace Poc1
 		inline SseSimpleFractal::SseSimpleFractal( const unsigned int seed ) :
 			m_Noise( seed )
 		{
+		}
+
+		inline SseNoise& SseSimpleFractal::GetNoise( )
+		{
+			return m_Noise;
+		}
+
+		inline const SseNoise& SseSimpleFractal::GetNoise( ) const
+		{
+			return m_Noise;
 		}
 
 		inline void SseSimpleFractal::Setup( const float freq, const float persistence, const int numOctaves )
@@ -71,6 +92,23 @@ namespace Poc1
 			}
 
 			return _mm_div_ps( _mm_add_ps( total, m_Max ), _mm_mul_ps( m_Max, Constants::Fc_2 ) );
+		}
+		
+		inline __m128 SseSimpleFractal::GetSignedValue( __m128 xxxx, __m128 yyyy, __m128 zzzz ) const
+		{
+			__m128 total = Constants::Fc_0;
+			__m128 amp = Constants::Fc_1;
+
+			for ( int octave = 0; octave < m_NumOctaves; ++octave )
+			{
+				total = _mm_add_ps( total, _mm_mul_ps( m_Noise.Noise( xxxx, yyyy, zzzz ), amp ) );
+				amp = _mm_mul_ps( amp,m_Persistence );
+				xxxx = _mm_mul_ps( xxxx, m_Freq );
+				yyyy = _mm_mul_ps( yyyy, m_Freq );
+				zzzz = _mm_mul_ps( zzzz, m_Freq );
+			}
+
+			return _mm_div_ps( total, m_Max );
 		}
 	};
 };

@@ -14,6 +14,15 @@ namespace Rb.Rendering.Textures
 	{
 		public class TextureLoadParameters : LoadParameters
 		{
+			public TextureLoadParameters( )
+			{
+			}
+
+			public TextureLoadParameters( bool generateMipMaps )
+			{
+				GenerateMipMaps = generateMipMaps;
+			}
+
 			public bool GenerateMipMaps
 			{
 				get { return ( bool )Properties[ GenerateMipMapsPropertyName ]; }

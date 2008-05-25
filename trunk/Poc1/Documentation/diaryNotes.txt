@@ -49,3 +49,20 @@ c1 replaces c0, c2 replaces c1, and the generation thread starts creating a new 
 	  was causing inaccuracy to creep in as patch u/v steps got smaller. Fixed by calculating the reciprocal
 	  manually (lets me fold in the radius of the sphere that the fractal functions are defined on for free, which
 	  is handy).
+
+
+::25/05/2008
+Have added "ground displacement" to the terrain generation. This adds a fractal term to the local x and z positions of patch
+vertices. It looks good but there's some important issues:
+1) Patches can't be rendered with vertical skirts anymore (because two patches can join behind the plane of a skirt). This
+leaves either a proper patch crack filling approach, or rendering without screen clears (which probably wouldn't work anyway,
+because the screen is effectively cleared by rendering the star sphere).
+2) Currently, displacement is applied to global x and z axis. Need to change this - bodged it in as a global
+displacement just to have a look at the effect, but it tends to leave local terrain features oriented along the same facings
+depending on where you are on the globe.
+3) It's not totally clear how this should impact the LOD model. The obvious solution is to extrapolate the entire vertex 
+position, rather than the interpolated height, but that could be quite expensive.
+4) Displacement is applied irrespective of local dY. This means that large displacements could occur on flat ground, which
+may look odd, and result in z-fighting.
+
+Also added a rubbishy ocean

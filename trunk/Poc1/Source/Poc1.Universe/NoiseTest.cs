@@ -30,11 +30,12 @@ namespace Poc1.Universe
 	/// </remarks>
 	public class NoiseTest
 	{
-		private const float IncX = 2 / 512.0f;
-		private static readonly Point3 RowStart = new Point3( 1, -1, 1 );
-		private static readonly Vector3 IncCol = new Vector3(0, 0, -IncX);
-		private static readonly Vector3 IncRow = new Vector3(0, 2 / 512.0f, 0);
 		private const int Res = 512;
+		private const float NoiseRes = 16.0f;
+		private const float IncX = NoiseRes / Res;
+		private static readonly Point3 RowStart = new Point3( 3, -3, 1 );
+		private static readonly Vector3 IncCol = new Vector3( IncX, 0, 0 );
+		private static readonly Vector3 IncRow = new Vector3( 0, IncX, 0 );
 
 		public static unsafe void TestSlowNoise( )
 		{
@@ -53,10 +54,12 @@ namespace Poc1.Universe
 				Point3 pt0 = rowPos;
 				for ( int x = 0; x < bmp.Width; ++x )
 				{
+					float n0 = n.GetNoise( pt0.X, pt0.Y, pt0.Z );
+					float n1 = n.GetNoise( pt0.Z + IncCol.Z * 3.5f, pt0.X + IncCol.X * 3.5f, pt0.Y + IncCol.Y * 3.5f );
 					
-					curPixel[ 0 ] = ( byte )( 128 + ( byte )( n.GetNoise( pt0.X, pt0.Y, pt0.Z ) * 127.0f ) );
+					curPixel[ 0 ] = ( byte )( 128 + ( byte )( n0 * 127.0f ) );
 				//	curPixel[ 0 ] = ( byte )( Fractals.RidgedFractal( pt0.X, pt0.Y, pt0.Z, 1.2f, 6, 0.6f, Fractals.Noise3dBasis ) * 255.0f );
-					curPixel[ 1 ] = curPixel[ 0 ];
+					curPixel[ 1 ] = ( byte )( 128 + ( byte )( n1 * 127.0f ) );
 					curPixel[ 2 ] = curPixel[ 0 ];
 
 					curPixel += 3;

@@ -6,7 +6,7 @@ namespace Poc1.Universe.Classes.Rendering
 {
 	class TerrainQuadPatchVertices
 	{
-		public const int PoolSize = 256;
+		public const int PoolSize = 300;
 
 		public TerrainQuadPatchVertices( )
 		{

@@ -1,5 +1,4 @@
 using System;
-using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
@@ -13,11 +12,11 @@ namespace Poc1.GameClient
 	{
 		public static void FastTest( )
 		{
-			NoiseTest.TestSlowNoise();
+			NoiseTest.TestSlowNoise( );
 			//NoiseTest.TestFastNoise( );
 			//NoiseTest.TestFastNoiseSP( );
-			NoiseTest.TestVeryFastNoise();
-			NoiseTest.TestFastSphereCloudsGenerator();
+			//NoiseTest.TestVeryFastNoise();
+			//NoiseTest.TestFastSphereCloudsGenerator();
 
 			MessageBox.Show("Done");
 		}
@@ -28,7 +27,7 @@ namespace Poc1.GameClient
 		[STAThread]
 		static void Main( )
 		{
-			//FastTest( );
+		//	FastTest( );
 
 			if ( Environment.CommandLine.Contains( "/buildData" ) )
 			{
@@ -38,8 +37,8 @@ namespace Poc1.GameClient
 				p.WaitForExit( );
 			}
 
-			InitializeAssets( );
 			InitializeRendering( );
+			InitializeAssets( );
 
 			Application.EnableVisualStyles( );
 			Application.SetCompatibleTextRenderingDefault( false );

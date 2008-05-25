@@ -88,5 +88,15 @@ namespace Poc1.GameClient.Properties {
                 return ResourceManager.GetString("ErrorCreatingGameViewer", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error occurred during solar system creation:
+        ///{0}.
+        /// </summary>
+        internal static string ErrorCreatingSolarSystem {
+            get {
+                return ResourceManager.GetString("ErrorCreatingSolarSystem", resourceCulture);
+            }
+        }
     }
 }

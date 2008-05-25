@@ -51,8 +51,8 @@ namespace Poc1.Universe.Classes.Rendering
 
 		//	TODO: AP: UV patch resolution should be a function of patch size, not ply
 
-		public TerrainQuadPatch( TerrainQuadPatchVertices vertices, Point3 origin, Vector3 uAxis, Vector3 vAxis ) :
-			this( null, vertices, origin, uAxis, vAxis, float.MaxValue, 128.0f )
+		public TerrainQuadPatch( TerrainQuadPatchVertices vertices, Point3 origin, Vector3 uAxis, Vector3 vAxis, float uvRes ) :
+			this( null, vertices, origin, uAxis, vAxis, float.MaxValue, uvRes )
 		{
 		}
 
@@ -166,6 +166,16 @@ namespace Poc1.Universe.Classes.Rendering
 			{
 				m_Parent.ChildBuildIsComplete( );
 			}
+
+			if ( m_Children != null )
+			{
+				for ( int i = 0; i < m_Children.Length; ++i )
+				{
+				    m_Children[ i ].ReleaseVertices( );
+				}
+				m_CachedChildren = m_Children;
+				m_Children = null;
+			}
 		}
 
 		/// <summary>
@@ -253,7 +263,7 @@ namespace Poc1.Universe.Classes.Rendering
 				Graphics.Fonts.DebugFont.Write( m_Centre.X, m_Centre.Y, m_Centre.Z, FontAlignment.TopRight, Color.White, "{0:F2}/{1:F2}", m_DistToPatch, m_IncreaseDetailDistance );
 				Graphics.Draw.Billboard( ms_Brush, m_Centre, 100.0f, 100.0f );
 
-			//	Graphics.Draw.Sphere( Graphics.Surfaces.Red, m_Centre, ( float )m_Radius );
+				Graphics.Draw.Sphere( Graphics.Surfaces.TransparentBlue, m_Centre, ( float )m_Radius );
 			}
 			else
 			{
@@ -336,7 +346,7 @@ namespace Poc1.Universe.Classes.Rendering
 			}
 			using ( IVertexBufferLock vbLock = m_Vertices.VertexBuffer.Lock( m_VbIndex, VertexArea, false, true ) )
 			{
-				memcpy( vbLock.Bytes, srcData, VertexArea * m_Vertices.VertexBuffer.VertexSizeInBytes );
+				memcpy( vbLock.Bytes, srcData, TotalVerticesPerPatch * m_Vertices.VertexBuffer.VertexSizeInBytes );
 			}
 		}
 
@@ -388,12 +398,6 @@ namespace Poc1.Universe.Classes.Rendering
 
 		private void ReduceDetail( IPlanetTerrain terrain, IProjectionCamera camera )
 		{
-			for ( int i = 0; i < m_Children.Length; ++i )
-			{
-				m_Children[ i ].ReleaseVertices( );
-			}
-			m_CachedChildren = m_Children;
-			m_Children = null;
 			Build( terrain, camera );
 		}
 
@@ -459,21 +463,24 @@ namespace Poc1.Universe.Classes.Rendering
 				}
 			}
 
-			//	First horizontal skirt
-			int skirtIndex = m_VbIndex + VertexArea;
-			BuildSkirtIndexBuffer( indices, m_VbIndex, 1, skirtIndex, false );
+			if ( !DebugInfo.DisableTerainSkirts )
+			{
+				//	First horizontal skirt
+				int skirtIndex = m_VbIndex + VertexArea;
+				BuildSkirtIndexBuffer( indices, m_VbIndex, 1, skirtIndex, false );
 
-			//	First vertical skirt
-			skirtIndex += VertexResolution;
-			BuildSkirtIndexBuffer( indices, m_VbIndex, VertexResolution, skirtIndex, true );
+				//	First vertical skirt
+				skirtIndex += VertexResolution;
+				BuildSkirtIndexBuffer( indices, m_VbIndex, VertexResolution, skirtIndex, true );
+				
+				//	Last horizontal skirt
+				skirtIndex += VertexResolution;
+				BuildSkirtIndexBuffer( indices, m_VbIndex + VertexResolution * ( VertexResolution - 1 ), 1, skirtIndex, true );
 
-			//	Last horizontal skirt
-			skirtIndex += VertexResolution;
-			BuildSkirtIndexBuffer( indices, m_VbIndex + VertexResolution * ( VertexResolution - 1 ), 1, skirtIndex, true );
-			
-			//	Last vertical skirt
-			skirtIndex += VertexResolution;
-			BuildSkirtIndexBuffer( indices, m_VbIndex + VertexResolution - 1, VertexResolution, skirtIndex, false );
+				//	Last vertical skirt
+				skirtIndex += VertexResolution;
+				BuildSkirtIndexBuffer( indices, m_VbIndex + VertexResolution - 1, VertexResolution, skirtIndex, false );
+			}
 
 			m_Ib.Create( indices.ToArray( ), true );
 		}

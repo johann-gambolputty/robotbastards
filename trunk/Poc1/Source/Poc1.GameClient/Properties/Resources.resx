@@ -128,4 +128,8 @@
     <value>Error occurred during game viewer creation:
 {0}</value>
   </data>
+  <data name="ErrorCreatingSolarSystem" xml:space="preserve">
+    <value>Error occurred during solar system creation:
+{0}</value>
+  </data>
 </root>
