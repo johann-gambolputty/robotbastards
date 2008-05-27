@@ -21,12 +21,14 @@ namespace Poc1
 
 							if ( enableGroundDisplacement )
 							{
-								SseSphereTerrainGeneratorT< SseFractalOffsetDisplacer< SseRidgedFractalDisplacer > >* impl;
-								impl = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseFractalOffsetDisplacer< SseRidgedFractalDisplacer > >( );
+								const float groundDisplacementInfluence = 0.3f;
+								SseSphereTerrainGeneratorT< SseFractalGroundOffsetDisplacer< SseRidgedFractalDisplacer > >* impl;								impl = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseFractalGroundOffsetDisplacer< SseRidgedFractalDisplacer > >( );
+
 								impl->GetDisplacer( ).GetBaseDisplacer( ).GetFractal( ).GetNoise( ).SetNewSeed( seed );
 								impl->GetDisplacer( ).GetBaseDisplacer( ).GetFractal( ).Setup( 4.1f, 0.8f, 12 );
 								impl->GetDisplacer( ).GetFractal( ).GetNoise( ).SetNewSeed( seed );
 								impl->GetDisplacer( ).GetFractal( ).Setup( 2.1f, 1.1f, 4 );
+								impl->GetDisplacer( ).SetInfluence( groundDisplacementInfluence );
 								m_pImpl = impl;
 							}
 							else

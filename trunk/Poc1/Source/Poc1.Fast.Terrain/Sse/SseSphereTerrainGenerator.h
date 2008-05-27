@@ -132,20 +132,6 @@ namespace Poc1
 					__m128 m_ShiftDownYyyy;
 					__m128 m_ShiftDownZzzz;
 
-					inline void AssignCrossProducts( __m128& cpXxxx, __m128& cpYyyy, __m128& cpZzzz, const __m128& xxxx0, const __m128& yyyy0, const __m128& zzzz0, const __m128& xxxx1, const __m128& yyyy1, const __m128& zzzz1 )
-					{
-						cpXxxx = _mm_sub_ps( _mm_mul_ps( yyyy0, zzzz1 ), _mm_mul_ps( zzzz0, yyyy1 ) );
-						cpYyyy = _mm_sub_ps( _mm_mul_ps( zzzz0, xxxx1 ), _mm_mul_ps( xxxx0, zzzz1 ) );
-						cpZzzz = _mm_sub_ps( _mm_mul_ps( xxxx0, yyyy1 ), _mm_mul_ps( yyyy0, xxxx1 ) );
-					}
-
-					inline void AccumulateCrossProducts( __m128& cpXxxx, __m128& cpYyyy, __m128& cpZzzz, const __m128& xxxx0, const __m128& yyyy0, const __m128& zzzz0, const __m128& xxxx1, const __m128& yyyy1, const __m128& zzzz1 )
-					{
-						cpXxxx = _mm_add_ps( cpXxxx, _mm_sub_ps( _mm_mul_ps( yyyy0, zzzz1 ), _mm_mul_ps( zzzz0, yyyy1 ) ) );
-						cpYyyy = _mm_add_ps( cpYyyy, _mm_sub_ps( _mm_mul_ps( zzzz0, xxxx1 ), _mm_mul_ps( xxxx0, zzzz1 ) ) );
-						cpZzzz = _mm_add_ps( cpZzzz, _mm_sub_ps( _mm_mul_ps( xxxx0, yyyy1 ), _mm_mul_ps( yyyy0, xxxx1 ) ) );
-					}
-
 					inline void SetupVertex( UTerrainVertex& vertex, const int offset, const __m128& x, const __m128& y, const __m128& z, const __m128& nX, const __m128& nY, const __m128& nZ, const __m128& s, const __m128& e, const __m128& u, const float v  )
 					{
 						vertex.SetPosition( x.m128_f32[ offset ], y.m128_f32[ offset ], z.m128_f32[ offset ] );
@@ -264,7 +250,7 @@ namespace Poc1
 						downZzzz = _mm_sub_ps( downZzzz, originZzzz );
 
 						__m128 cpXxxx, cpYyyy, cpZzzz;
-						AssignCrossProducts( cpXxxx, cpYyyy, cpZzzz, upXxxx, upYyyy, upZzzz, leftXxxx, leftYyyy, leftZzzz );
+						GetCrossProducts( cpXxxx, cpYyyy, cpZzzz, upXxxx, upYyyy, upZzzz, leftXxxx, leftYyyy, leftZzzz );
 						AccumulateCrossProducts( cpXxxx, cpYyyy, cpZzzz, rightXxxx, rightYyyy, rightZzzz, upXxxx, upYyyy, upZzzz );
 						AccumulateCrossProducts( cpXxxx, cpYyyy, cpZzzz, downXxxx, downYyyy, downZzzz, rightXxxx, rightYyyy, rightZzzz );
 						AccumulateCrossProducts( cpXxxx, cpYyyy, cpZzzz, leftXxxx, leftYyyy, leftZzzz, downXxxx, downYyyy, downZzzz );
@@ -348,7 +334,7 @@ namespace Poc1
 						downZzzz = _mm_sub_ps( downZzzz, originZzzz );
 
 						__m128 cpXxxx, cpYyyy, cpZzzz;
-						AssignCrossProducts( cpXxxx, cpYyyy, cpZzzz, upXxxx, upYyyy, upZzzz, leftXxxx, leftYyyy, leftZzzz );
+						GetCrossProducts( cpXxxx, cpYyyy, cpZzzz, upXxxx, upYyyy, upZzzz, leftXxxx, leftYyyy, leftZzzz );
 						AccumulateCrossProducts( cpXxxx, cpYyyy, cpZzzz, rightXxxx, rightYyyy, rightZzzz, upXxxx, upYyyy, upZzzz );
 						AccumulateCrossProducts( cpXxxx, cpYyyy, cpZzzz, downXxxx, downYyyy, downZzzz, rightXxxx, rightYyyy, rightZzzz );
 						AccumulateCrossProducts( cpXxxx, cpYyyy, cpZzzz, leftXxxx, leftYyyy, leftZzzz, downXxxx, downYyyy, downZzzz );
