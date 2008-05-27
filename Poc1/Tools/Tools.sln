@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Log", "..\..\Source\Rb.L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Assets", "..\..\Source\Rb.Assets\Rb.Assets.csproj", "{22440804-2D3F-4FEF-AD01-812923F6E04C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc1.PlanetBuilder", "Source\Poc1.PlanetBuilder\Poc1.PlanetBuilder.csproj", "{D954E196-CE07-4AEE-9505-002D4D02A6FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -112,6 +114,12 @@ Global
 		{22440804-2D3F-4FEF-AD01-812923F6E04C}.NDoc|Any CPU.Build.0 = Release|Any CPU
 		{22440804-2D3F-4FEF-AD01-812923F6E04C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22440804-2D3F-4FEF-AD01-812923F6E04C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D954E196-CE07-4AEE-9505-002D4D02A6FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D954E196-CE07-4AEE-9505-002D4D02A6FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D954E196-CE07-4AEE-9505-002D4D02A6FF}.NDoc|Any CPU.ActiveCfg = Release|Any CPU
+		{D954E196-CE07-4AEE-9505-002D4D02A6FF}.NDoc|Any CPU.Build.0 = Release|Any CPU
+		{D954E196-CE07-4AEE-9505-002D4D02A6FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D954E196-CE07-4AEE-9505-002D4D02A6FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
