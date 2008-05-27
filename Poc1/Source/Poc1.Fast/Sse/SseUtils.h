@@ -123,6 +123,23 @@ namespace Poc1
 				);
 		}
 
+		///	\brief	Gets the cross products of two sets of 4 vectors
+		inline void GetCrossProducts( __m128& cpXxxx, __m128& cpYyyy, __m128& cpZzzz, const __m128& xxxx0, const __m128& yyyy0, const __m128& zzzz0, const __m128& xxxx1, const __m128& yyyy1, const __m128& zzzz1 )
+		{
+			cpXxxx = _mm_sub_ps( _mm_mul_ps( yyyy0, zzzz1 ), _mm_mul_ps( zzzz0, yyyy1 ) );
+			cpYyyy = _mm_sub_ps( _mm_mul_ps( zzzz0, xxxx1 ), _mm_mul_ps( xxxx0, zzzz1 ) );
+			cpZzzz = _mm_sub_ps( _mm_mul_ps( xxxx0, yyyy1 ), _mm_mul_ps( yyyy0, xxxx1 ) );
+		}
+		
+		///	\brief	Gets the cross products of two sets of 4 vectors, and adds them to cp---- vectors
+		inline void AccumulateCrossProducts( __m128& cpXxxx, __m128& cpYyyy, __m128& cpZzzz, const __m128& xxxx0, const __m128& yyyy0, const __m128& zzzz0, const __m128& xxxx1, const __m128& yyyy1, const __m128& zzzz1 )
+		{
+			cpXxxx = _mm_add_ps( cpXxxx, _mm_sub_ps( _mm_mul_ps( yyyy0, zzzz1 ), _mm_mul_ps( zzzz0, yyyy1 ) ) );
+			cpYyyy = _mm_add_ps( cpYyyy, _mm_sub_ps( _mm_mul_ps( zzzz0, xxxx1 ), _mm_mul_ps( xxxx0, zzzz1 ) ) );
+			cpZzzz = _mm_add_ps( cpZzzz, _mm_sub_ps( _mm_mul_ps( xxxx0, yyyy1 ), _mm_mul_ps( yyyy0, xxxx1 ) ) );
+		}
+
+
 		///	\brief	Returns the absolute value of a floating point vector
 		inline __m128 Abs( const __m128& val )
 		{

@@ -36,7 +36,7 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
-	float2 uv = float2( input.m_Normal.x, input.m_Normal.z );
+	float2 uv = float2( input.m_Normal.x * 32, input.m_Normal.z * 32 );
 	float4 oceanColour = tex2D( OceanTexture, uv );
 
 	return oceanColour;
