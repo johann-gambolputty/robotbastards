@@ -1,4 +1,3 @@
-using Rb.Core.Maths;
 
 namespace Poc1.Universe.Interfaces.Rendering
 {
@@ -7,12 +6,6 @@ namespace Poc1.Universe.Interfaces.Rendering
 	/// </summary>
 	public unsafe interface IPlanetTerrain
 	{
-
-		/// <summary>
-		/// Patches are defined in a local space. This determines the planet-space parameters of a patch
-		/// </summary>
-		void SetPatchPlanetParameters( ITerrainPatch patch );
-
 		/// <summary>
 		/// Generates vertices for a patch
 		/// </summary>

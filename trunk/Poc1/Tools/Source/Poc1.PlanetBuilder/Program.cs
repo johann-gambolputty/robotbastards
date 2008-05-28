@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
+using Rb.Rendering;
 
 namespace Poc1.PlanetBuilder
 {
@@ -12,9 +12,10 @@ namespace Poc1.PlanetBuilder
 		[STAThread]
 		static void Main()
 		{
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new BuilderForm());
+			Graphics.InitializeFromConfiguration( );
+			Application.EnableVisualStyles( );
+			Application.SetCompatibleTextRenderingDefault( false );
+			Application.Run( new BuilderForm( ) );
 		}
 	}
 }

@@ -4,7 +4,7 @@
 		- H: Force error for patches with > threshold radius
 		- H: Investigate why error does not appear to be totally correct
 		- H: Ground displacement requires connected patches (vertical skirts show up)
-		- M: Ground displacement needs to take place on the plane defined by the tangent on the planet's sphere (currently always x-z)
+		- M: Tangent frame at poles is incorrect
 		- M: Add multi-fractals to the displacer set
 		- M: Geomorphing
 		- M: Add pre-process noise to the terrain texture
@@ -44,7 +44,6 @@
 	- Solar system
 		- M: Proper procedural star-spheres
 	- Assets
-		- H: Catch exceptions thrown by asset loads
 		- L: Asset build should have a UI (progress bar, output text)
 		- L: Add bigfile support
 		- L: Game assets aware of changes to design objects
@@ -83,10 +82,9 @@
 	- Networking
 		- H: Extend RUNT
 	- Tools
-		- H: Fix terrain texture generator to use relative paths
+		- H: Adapt terrain rendering to work with planet builder tool
 		- L: Add MRU file list to terrain texture tool
 	- Graphics Misc.
-		- H: Fix game client to use new rendering library directories
 		- H: Shadows
 		- M: Add support to load rendering library objects from assemblies in the new rendering library layout (can keep
 		  assembly selector, but it's not necessary anymore)
@@ -100,10 +98,17 @@
 		- H: Patch rendering has become slow
 
 	- Misc.
+		- H: Fix rendering assembly post-build step
+		- H: Refactor Poc1.Universe. Create Poc1.Core, Poc1.Terrain, Poc1.Universe
 		- H: Add unit-test directory
 		- M: Remove fast noise test (move to console app. project in tests directory)
 
 - DONE
+	- H: Catch exceptions thrown by asset loads (in solar system construction only...)
+	- H: Fix game client to use new rendering library directories
+	- H: Create Planet Builder
+	- M: Ground displacement needs to take place on the plane defined by the tangent on the planet's sphere (currently always x-z)
+	- H: Fix terrain texture generator to use relative paths
 	- H: Sea
 	- M: Add noise to terrain type texture
 	- L: Add x/z displacement decorator class

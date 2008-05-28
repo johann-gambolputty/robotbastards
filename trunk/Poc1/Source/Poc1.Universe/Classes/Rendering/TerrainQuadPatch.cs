@@ -40,7 +40,7 @@ namespace Poc1.Universe.Classes.Rendering
 	///		When the node has been build, its "Building" flag is set to false.
 	/// 
 	/// </remarks>
-	class TerrainQuadPatch : ITerrainPatch
+	public class TerrainQuadPatch : ITerrainPatch
 	{
 		public const int VertexResolution = 33;
 		public const int VertexArea = VertexResolution * VertexResolution;
