@@ -184,15 +184,19 @@
 		/>
 		<ProjectReference
 			ReferencedProjectIdentifier="{2EA4865D-CDBB-4EC3-83A3-4703FE7B7A28}"
-			RelativePathToProject=".\Source\Poc1.Fast\Poc1.Fast.vcproj"
+			RelativePathToProject="..\Source\Poc1.Fast\Poc1.Fast.vcproj"
 		/>
 		<ProjectReference
 			ReferencedProjectIdentifier="{EC130734-6F0F-402B-8215-9F133F0ADEE4}"
-			RelativePathToProject="..\Source\Rb.Rendering\Rb.Rendering.csproj"
+			RelativePathToProject="..\Rb.Rendering\Rb.Rendering.csproj"
 		/>
 		<AssemblyReference
 			RelativePath="System.Drawing.dll"
 			AssemblyName="System.Drawing, Version=2.0.0.0, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
+		/>
+		<AssemblyReference
+			RelativePath="System.Windows.Forms.dll"
+			AssemblyName="System.Windows.Forms, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
 		/>
 	</References>
 	<Files>
@@ -203,6 +207,10 @@
 			>
 			<File
 				RelativePath=".\AssemblyInfo.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FlatTerrainGenerator.cpp"
 				>
 			</File>
 			<File
@@ -233,6 +241,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\TerrainFunction.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Sse"
@@ -255,6 +267,10 @@
 			</Filter>
 		</Filter>
 		<File
+			RelativePath=".\FlatTerrainGenerator.h"
+			>
+		</File>
+		<File
 			RelativePath=".\ReadMe.txt"
 			>
 		</File>
@@ -268,6 +284,10 @@
 		</File>
 		<File
 			RelativePath=".\Stdafx.h"
+			>
+		</File>
+		<File
+			RelativePath=".\TerrainFunction.h"
 			>
 		</File>
 		<File

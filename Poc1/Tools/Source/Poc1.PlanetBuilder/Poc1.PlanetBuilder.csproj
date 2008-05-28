@@ -14,18 +14,20 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Rb.Rendering, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -90,6 +92,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -106,11 +109,24 @@
     <Compile Include="TerrainFunctionControl.Designer.cs">
       <DependentUpon>TerrainFunctionControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="TerrainMesh.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Core\Rb.Core.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Source\Rb.Rendering.Windows\Rb.Rendering.Windows.csproj">
       <Project>{39A57BC2-BE73-41A7-BBC2-A9D0C28D5A06}</Project>
       <Name>Rb.Rendering.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Poc1.Fast.Terrain\Poc1.Fast.Terrain.vcproj">
+      <Project>{22C72F9C-B313-4366-BBE2-84A649775E75}</Project>
+      <Name>Poc1.Fast.Terrain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Poc1.Universe\Poc1.Universe.csproj">
+      <Project>{5CC992B9-1B66-4ECC-8657-624DA59B3D2D}</Project>
+      <Name>Poc1.Universe</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -121,4 +137,10 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>pushd "$(ProjectDir)..\..\..\.."
+call BuildRenderAssemblies.bat "$(ConfigurationName)" "$(TargetDir)"
+popd
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>

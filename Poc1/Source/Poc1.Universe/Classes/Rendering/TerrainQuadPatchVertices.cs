@@ -4,7 +4,7 @@ using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Classes.Rendering
 {
-	class TerrainQuadPatchVertices
+	public class TerrainQuadPatchVertices
 	{
 		public const int PoolSize = 300;
 

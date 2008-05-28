@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Poc1.ParticleSystemBuilder</RootNamespace>
     <AssemblyName>Poc1.ParticleSystemBuilder</AssemblyName>
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -129,8 +129,9 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>pushd "$(ProjectDir)..\..\..\..\Source\Rb.Rendering.Implementations\"
-call BuildAndCopy.bat "$(ConfigurationName)" "$(TargetDir)"
-popd</PostBuildEvent>
+    <PostBuildEvent>pushd "$(ProjectDir)..\..\..\.."
+call BuildRenderAssemblies.bat "$(ConfigurationName)" "$(TargetDir)"
+popd
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

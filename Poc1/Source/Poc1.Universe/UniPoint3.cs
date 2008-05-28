@@ -10,7 +10,6 @@ namespace Poc1.Universe
 	[DebuggerDisplay( "({X},{Y},{Z})" )]
 	public class UniPoint3
 	{
-
 		public UniPoint3( )
 		{
 			m_X = 0;
