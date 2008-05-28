@@ -70,6 +70,12 @@
     <Compile Include="GroundTextureControl.Designer.cs">
       <DependentUpon>GroundTextureControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="GroundTypeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GroundTypeControl.Designer.cs">
+      <DependentUpon>GroundTypeControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="BuilderControls.resx">
@@ -79,6 +85,14 @@
     <EmbeddedResource Include="BuilderForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>BuilderForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GroundTextureControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>GroundTextureControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GroundTypeControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>GroundTypeControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -116,6 +130,10 @@
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.NiceControls\Rb.NiceControls.csproj">
+      <Project>{A4E5C0BF-B76D-425D-8439-B07EB6B29444}</Project>
+      <Name>Rb.NiceControls</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Source\Rb.Rendering.Windows\Rb.Rendering.Windows.csproj">
       <Project>{39A57BC2-BE73-41A7-BBC2-A9D0C28D5A06}</Project>
       <Name>Rb.Rendering.Windows</Name>
@@ -128,6 +146,17 @@
       <Project>{5CC992B9-1B66-4ECC-8657-624DA59B3D2D}</Project>
       <Name>Poc1.Universe</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Poc1.Tools.TerrainTextures.Core\Poc1.Tools.TerrainTextures.Core.csproj">
+      <Project>{F34331DC-90A9-4C51-B7F9-34B3B96965BD}</Project>
+      <Name>Poc1.Tools.TerrainTextures.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Delete.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\MoveDown.bmp" />
+    <Content Include="Resources\MoveUp.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
