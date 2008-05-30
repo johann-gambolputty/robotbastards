@@ -1,5 +1,5 @@
-using System;
 using Poc1.Particles.Interfaces;
+using System.Collections.Generic;
 
 namespace Poc1.Particles.Classes
 {
@@ -26,16 +26,22 @@ namespace Poc1.Particles.Classes
 		/// <summary>
 		/// Kills particles
 		/// </summary>
-		public void KillParticles( IParticleFactory factory, System.Collections.IEnumerable particles )
+		public void KillParticles( IParticleFactory factory, IEnumerable<IParticle> particles )
 		{
-			throw new NotImplementedException( );
+			foreach ( ParticleBase particle in particles )
+			{
+				if ( particle.Age >= DeathAge )
+				{
+					factory.DestroyParticle( particle );
+				}
+			}
 		}
 
 		#endregion
 
 		#region Private Members
 
-		private int m_DeathAge;
+		private int m_DeathAge = 10;
 
 		#endregion
 
