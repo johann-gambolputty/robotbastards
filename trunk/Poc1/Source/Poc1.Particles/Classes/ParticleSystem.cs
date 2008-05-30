@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Poc1.Particles.Interfaces;
 using Rb.Core.Maths;
 using Rb.Rendering.Interfaces.Objects;
@@ -8,7 +9,7 @@ namespace Poc1.Particles.Classes
 	/// <summary>
 	/// Handy abstract base class for particle systems
 	/// </summary
-	public class ParticleSystem : IParticleSystem
+	public class ParticleSystem : IParticleSystem, IParticleFactory
 	{
 		#region IParticleSystem Members
 
@@ -43,8 +44,7 @@ namespace Poc1.Particles.Classes
 		/// </summary>
 		public IParticleFactory ParticleFactory
 		{
-			get { return m_ParticleFactory; }
-			set { m_ParticleFactory = value; }
+			get { return this; }
 		}
 
 		/// <summary>
@@ -101,6 +101,7 @@ namespace Poc1.Particles.Classes
 		/// </summary>
 		public void Render( IRenderContext context )
 		{
+			Update( );
 			if ( Renderer == null )
 			{
 				return;
@@ -134,6 +135,12 @@ namespace Poc1.Particles.Classes
 			{
 				Updater.Update( this, m_Particles );
 			}
+
+			//	Age all the particles
+			foreach ( ParticleBase particle in m_Particles )
+			{
+				++particle.Age;
+			}
 		}
 
 		#endregion
@@ -142,14 +149,14 @@ namespace Poc1.Particles.Classes
 
 		#region ParticleSet class
 
-		private class ParticleSet : System.Collections.IList
+		private class ParticleSet : IList<IParticle>
 		{
 			public int MaximumSize
 			{
 				get { return m_Particles.Length; }
 				set
 				{
-					object[] particles = new object[ value ];
+					IParticle[] particles = new IParticle[ value ];
 					int max = value < m_Particles.Length ? value : m_Particles.Length;
 					for ( int i = 0; i < max; ++i )
 					{
@@ -168,20 +175,9 @@ namespace Poc1.Particles.Classes
 
 			private int m_Count;
 			private int m_AddPosition;
-			private object[] m_Particles = new object[ 256 ];
+			private IParticle[] m_Particles = new IParticle[ 256 ];
 
 			#region IList Members
-
-			public int Add( object value )
-			{
-				int index = m_AddPosition++;
-				m_Particles[ index ] = value;
-				if ( m_Count < MaximumSize )
-				{
-					++m_Count;
-				}
-				return index;
-			}
 
 			public void Clear( )
 			{
@@ -192,38 +188,9 @@ namespace Poc1.Particles.Classes
 				m_Count = 0;
 			}
 
-			public bool Contains( object value )
-			{
-				return Array.IndexOf( m_Particles, value ) != -1;
-			}
-
-			public int IndexOf( object value )
-			{
-				return Array.IndexOf( m_Particles, value );
-			}
-
-			public void Insert( int index, object value )
-			{
-				throw new NotSupportedException( );
-			}
-
-			public bool IsFixedSize
-			{
-				get { return true; }
-			}
-
 			public bool IsReadOnly
 			{
 				get { return false; }
-			}
-
-			public void Remove( object value )
-			{
-				int index = IndexOf( value );
-				if ( index != -1 )
-				{
-					RemoveAt( index );
-				}
 			}
 
 			public void RemoveAt( int index )
@@ -231,34 +198,14 @@ namespace Poc1.Particles.Classes
 				m_Particles[ index ] = null;
 			}
 
-			public object this[ int index ]
-			{
-				get { return m_Particles[ index ]; }
-				set { m_Particles[ index ] = value; }
-			}
 
 			#endregion
 
 			#region ICollection Members
 
-			public void CopyTo( Array array, int index )
-			{
-				throw new NotSupportedException( );
-			}
-
 			public int Count
 			{
 				get { return m_Count; }
-			}
-
-			public bool IsSynchronized
-			{
-				get { return false; }
-			}
-
-			public object SyncRoot
-			{
-				get { return null; }
 			}
 
 			#endregion
@@ -267,7 +214,90 @@ namespace Poc1.Particles.Classes
 
 			public System.Collections.IEnumerator GetEnumerator( )
 			{
+				return ( ( IList<IParticle> )this ).GetEnumerator( );
+			}
+
+			#endregion
+
+			#region IList<IParticle> Members
+
+			public int IndexOf( IParticle item )
+			{
+				return Array.IndexOf( m_Particles, item );
+			}
+
+			public void Insert( int index, IParticle item )
+			{
 				throw new NotSupportedException( );
+			}
+
+			IParticle IList<IParticle>.this[ int index ]
+			{
+				get { return m_Particles[ index ]; }
+				set { m_Particles[ index ] = value; }
+			}
+
+			#endregion
+
+			#region ICollection<IParticle> Members
+
+			public void Add( IParticle item )
+			{
+				m_Particles[ m_AddPosition ] = item;
+				m_AddPosition = ( m_AddPosition + 1 ) % m_Particles.Length;
+				if ( m_Count < m_Particles.Length )
+				{
+					++m_Count;
+				}
+			}
+
+			public bool Contains( IParticle item )
+			{
+				return Array.IndexOf( m_Particles, item ) != -1;
+			}
+
+			public void CopyTo( IParticle[] array, int arrayIndex )
+			{
+				throw new NotImplementedException( );
+			}
+
+			public bool Remove( IParticle item )
+			{
+				if ( item == null )
+				{
+					return false;
+				}
+				int index = IndexOf( item );
+				if ( index == -1 )
+				{
+					return false;
+				}
+				m_Particles[ index ] = null;
+				--m_Count;
+				return true;
+			}
+
+			#endregion
+
+			#region IEnumerable<IParticle> Members
+
+			IEnumerator<IParticle> IEnumerable<IParticle>.GetEnumerator( )
+			{
+				int current = m_AddPosition == 0 ? m_Particles.Length - 1 : m_AddPosition - 1;
+				int count = 0;
+				for ( int i = 0; i < m_Particles.Length; ++i )
+				{
+					if ( count >= m_Count )
+					{
+						break;
+					}
+					if ( m_Particles[ current ] != null )
+					{
+						++count;
+						yield return m_Particles[ current ];
+					}
+					current = current == 0 ? m_Particles.Length - 1 : current - 1;
+				}
 			}
 
 			#endregion
@@ -275,17 +305,15 @@ namespace Poc1.Particles.Classes
 
 		#endregion
 
-		private readonly ParticleSet	m_Particles			= new ParticleSet( );
+		private readonly ParticleSet	m_Particles		= new ParticleSet();
 		private readonly Matrix44		m_Frame				= new Matrix44( );
 		private bool					m_EnableSpawning	= true;
-		private IParticleFactory 		m_ParticleFactory	= ms_DefaultFactory;
 		private IParticleSpawner		m_Spawner			= ms_DefaultSpawner;
 		private ISpawnRate				m_SpawnRate			= ms_DefaultSpawnRate;
 		private IParticleKiller			m_Killer			= ms_DefaultKiller;
 		private IParticleUpdater 		m_Updater			= ms_DefaultUpdater;
 		private IParticleRenderer		m_Renderer;
 
-		private readonly static IParticleFactory	ms_DefaultFactory;
 		private readonly static IParticleSpawner	ms_DefaultSpawner;
 		private readonly static IParticleUpdater	ms_DefaultUpdater;
 		private readonly static IParticleKiller		ms_DefaultKiller;
@@ -293,7 +321,6 @@ namespace Poc1.Particles.Classes
 
 		static ParticleSystem( )
 		{
-			ms_DefaultFactory	= null;
 			ms_DefaultSpawner	= null;
 			ms_DefaultUpdater	= null;
 			ms_DefaultKiller	= null;
@@ -302,5 +329,28 @@ namespace Poc1.Particles.Classes
 
 		#endregion
 
+
+		#region IParticleFactory Members
+
+		/// <summary>
+		/// Creates a new particle
+		/// </summary>
+		public IParticle CreateParticle( )
+		{
+			ParticleBase particle = new ParticleBase( );
+			particle.Position = Frame.Translation;
+			m_Particles.Add( particle );
+			return particle;
+		}
+
+		/// <summary>
+		/// Destroys an existing particle
+		/// </summary>
+		public void DestroyParticle( IParticle particle )
+		{
+			m_Particles.Remove( particle );
+		}
+
+		#endregion
 	}
 }

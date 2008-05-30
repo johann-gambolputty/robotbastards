@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+
 namespace Poc1.Particles.Interfaces
 {
 	/// <summary>
@@ -9,9 +11,10 @@ namespace Poc1.Particles.Interfaces
 	/// </remarks>
 	public interface IParticleSpawner
 	{
+
 		/// <summary>
 		/// Spawns a given number of particles
 		/// </summary>
-		void SpawnParticles( IParticleFactory factory, int count, System.Collections.IList particles );
+		void SpawnParticles( IParticleFactory factory, int count, IList<IParticle> particles );
 	}
 }

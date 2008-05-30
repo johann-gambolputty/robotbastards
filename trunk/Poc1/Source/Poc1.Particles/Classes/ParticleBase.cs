@@ -1,4 +1,5 @@
 
+using Poc1.Particles.Interfaces;
 using Rb.Core.Maths;
 
 namespace Poc1.Particles.Classes
@@ -6,7 +7,7 @@ namespace Poc1.Particles.Classes
 	/// <summary>
 	/// Simple inert particle
 	/// </summary>
-	public class InertParticle
+	public class ParticleBase : IParticle
 	{
 		public Point3 Position
 		{

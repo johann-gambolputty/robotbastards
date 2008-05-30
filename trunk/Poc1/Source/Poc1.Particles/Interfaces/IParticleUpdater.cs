@@ -1,4 +1,4 @@
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Poc1.Particles.Interfaces
 {
@@ -10,6 +10,6 @@ namespace Poc1.Particles.Interfaces
 		/// <summary>
 		/// Updates all particles
 		/// </summary>
-		void Update( IParticleSystem ps, IEnumerable particles );
+		void Update( IParticleSystem ps, IEnumerable<IParticle> particles );
 	}
 }

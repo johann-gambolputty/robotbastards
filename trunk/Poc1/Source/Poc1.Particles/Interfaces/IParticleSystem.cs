@@ -37,14 +37,11 @@ namespace Poc1.Particles.Interfaces
 		}
 
 		/// <summary>
-		/// Gets/sets the object used to create new particles, and destroy old particles
+		/// Gets the object used to create new particles, and destroy old particles
 		/// </summary>
-		/// <remarks>
-		/// Must be set before any particles are generated during the particle system update
-		/// </remarks>
 		IParticleFactory ParticleFactory
 		{
-			get; set;
+			get;
 		}
 
 		/// <summary>

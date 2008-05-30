@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+
 namespace Poc1.Particles.Interfaces
 {
 	/// <summary>
@@ -9,6 +11,6 @@ namespace Poc1.Particles.Interfaces
 		/// <summary>
 		/// Kills particles
 		/// </summary>
-		void KillParticles( IParticleFactory factory, System.Collections.IEnumerable particles );
+		void KillParticles( IParticleFactory factory, IEnumerable<IParticle> particles );
 	}
 }

@@ -8,11 +8,11 @@ namespace Poc1.Particles.Interfaces
 		/// <summary>
 		/// Creates a single particle
 		/// </summary>
-		object CreateParticle( );
+		IParticle CreateParticle( );
 
 		/// <summary>
 		/// Destroys a single particles
 		/// </summary>
-		void DestroyParticle( object particle );
+		void DestroyParticle( IParticle particle );
 	}
 }
