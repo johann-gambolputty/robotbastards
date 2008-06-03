@@ -40,7 +40,7 @@ namespace Poc1.Universe.Classes.Rendering
 	///		When the node has been build, its "Building" flag is set to false.
 	/// 
 	/// </remarks>
-	public class TerrainQuadPatch : ITerrainPatch
+	public class TerrainQuadPatch : ITerrainPatch, IRenderable
 	{
 		public const int VertexResolution = 33;
 		public const int VertexArea = VertexResolution * VertexResolution;
@@ -238,7 +238,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <summary>
 		/// Renders this patch
 		/// </summary>
-		public void Render( )
+		public void Render( IRenderContext context )
 		{
 			if ( m_VbIndex != -1 )
 			{
@@ -248,7 +248,7 @@ namespace Poc1.Universe.Classes.Rendering
 			{
 				for ( int i = 0; i < m_Children.Length; ++i )
 				{
-					m_Children[ i ].Render( );
+					m_Children[ i ].Render( context );
 				}
 			}
 		}
@@ -350,7 +350,6 @@ namespace Poc1.Universe.Classes.Rendering
 			}
 		}
 
-		
 		private void ReleaseVertices( )
 		{
 			if ( m_VbIndex != -1 )

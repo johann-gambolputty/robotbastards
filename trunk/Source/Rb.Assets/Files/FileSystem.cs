@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
@@ -122,6 +123,10 @@ namespace Rb.Assets.Files
 		{
 			reader.Read( );
 			BaseDirectory = reader.GetAttribute( "value" );
+			if ( !Directory.Exists( BaseDirectory ) )
+			{
+				throw new ApplicationException( string.Format( "Asset base directory \"{0}\" does not exist", BaseDirectory ) );
+			}
 			reader.Skip( );
 		}
 

@@ -1,4 +1,5 @@
 #pragma once
+#pragma managed(push, on)
 
 namespace Poc1
 {
@@ -6,30 +7,67 @@ namespace Poc1
 	{
 		namespace Terrain
 		{
-			public ref class TerrainFunction abstract
+			class TerrainGenerator;
+
+			public enum class TerrainGeometry
+			{
+				Sphere,
+				Plane
+			};
+
+			public enum class TerrainFunctionType
+			{
+				Flat,
+				SimpleFractal,
+				RidgedFractal
+			};
+
+			public ref class TerrainFunction
 			{
 				public :
 
-					property System::String^ Name
+					TerrainFunction( TerrainFunctionType functionType );
+
+					property TerrainFunctionType FunctionType
 					{
-						virtual System::String^ get( ) = 0;
+						TerrainFunctionType get( );
 					}
 
-					virtual System::Object^ CreateParameters( ) = 0;
+					property System::Object^ Parameters
+					{
+						System::Object^ get( );
+					}
+
+					///	\brief	Gets the name of a specified terrain function type
+					static System::String^ Name( TerrainFunctionType functionType );
+
+					///	\brief	Creates a parameters object for a specified terrain function type
+					static System::Object^ CreateParameters( TerrainFunctionType functionType );
+
+					///	\brief	Creates a height-only terrain generator
+					static TerrainGenerator* CreateGenerator( TerrainGeometry geometry, TerrainFunction^ heightFunction );
+
+					///	\brief	Creates a height and ground displacement terrain generator
+					static TerrainGenerator* CreateGenerator( TerrainGeometry geometry, TerrainFunction^ heightFunction, TerrainFunction^ groundFunction );
+
+				private :
+
+					TerrainFunctionType m_FunctionType;
+					System::Object^ m_Parameters;
 			};
 
-			public ref class SimpleFractalTerrainFunction : TerrainFunction
+			inline TerrainFunctionType TerrainFunction::FunctionType::get( )
 			{
-				public :
+				return m_FunctionType;
+			}
 
-					property System::String^ Name
-					{
-						virtual System::String^ get( ) override;
-					}
-
-					virtual System::Object^ CreateParameters( ) override;
-			};
+			inline System::Object^ TerrainFunction::Parameters::get( )
+			{
+				return m_Parameters;
+			}
 
 		}; //Terrain
 	}; //Fast
 }; //Poc1
+
+#pragma managed(pop)

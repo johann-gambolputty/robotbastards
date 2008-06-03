@@ -60,26 +60,22 @@ namespace Poc1.PlanetBuilder
 
 		private void GroundTypeControl_MoveControlUp( GroundTypeControl control )
 		{
-			int initialIndex = groundTypeTableLayoutPanel.Controls.IndexOf( control );
-			if ( initialIndex <= 0 )
+			TableLayoutPanelCellPosition pos = groundTypeTableLayoutPanel.GetCellPosition( control );
+			if ( pos.Row == 0 )
 			{
 				return;
 			}
-
-			TableLayoutPanelCellPosition pos = groundTypeTableLayoutPanel.GetCellPosition( control );
 			--pos.Row;
 			groundTypeTableLayoutPanel.SetCellPosition( control, pos );
 		}
 
 		private void GroundTypeControl_MoveControlDown( GroundTypeControl control )
 		{
-			int initialIndex = groundTypeTableLayoutPanel.Controls.IndexOf( control );
-			if ((initialIndex == -1) || (initialIndex == groundTypeTableLayoutPanel.Controls.Count - 1 ) )
+			TableLayoutPanelCellPosition pos = groundTypeTableLayoutPanel.GetCellPosition( control );
+			if ( pos.Row >= groundTypeTableLayoutPanel.RowCount - 1 )
 			{
 				return;
 			}
-
-			TableLayoutPanelCellPosition pos = groundTypeTableLayoutPanel.GetCellPosition( control );
 			++pos.Row;
 			groundTypeTableLayoutPanel.SetCellPosition( control, pos );
 		}

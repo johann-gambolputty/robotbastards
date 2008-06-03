@@ -11,12 +11,12 @@ namespace Poc1.PlanetBuilder
 		{
 			InitializeComponent( );
 
-			heightFunctionComboBox.Items.Add( NewTerrainFunctionItem< SimpleFractalTerrainFunction >( ) );
-		//	heightFunctionComboBox.Items.Add( NewTerrainFunctionItem< RidgedFractal >( ) );
+			heightFunctionComboBox.Items.Add( NewTerrainFunctionItem( TerrainFunctionType.SimpleFractal ) );
+			heightFunctionComboBox.Items.Add( NewTerrainFunctionItem( TerrainFunctionType.RidgedFractal ) );
 			heightFunctionComboBox.SelectedIndex = 0;
 
-			groundFunctionComboBox.Items.Add( NewTerrainFunctionItem<SimpleFractalTerrainFunction>( ) );
-		//	groundFunctionComboBox.Items.Add( NewTerrainFunctionItem< RidgedFractal >( ) );
+			groundFunctionComboBox.Items.Add( NewTerrainFunctionItem( TerrainFunctionType.SimpleFractal ) );
+			groundFunctionComboBox.Items.Add( NewTerrainFunctionItem( TerrainFunctionType.RidgedFractal ) );
 			groundFunctionComboBox.SelectedIndex = 0;
 		}
 
@@ -24,10 +24,9 @@ namespace Poc1.PlanetBuilder
 
 		#region TerrainFunctionItem Class
 
-		private static TerrainFunctionItem NewTerrainFunctionItem< T >( )
-			where T : TerrainFunction
+		private static TerrainFunctionItem NewTerrainFunctionItem( TerrainFunctionType functionType )
 		{
-			return new TerrainFunctionItem( typeof( T ) );
+			return new TerrainFunctionItem( functionType );
 		}
 
 		/// <summary>
@@ -38,11 +37,10 @@ namespace Poc1.PlanetBuilder
 			/// <summary>
 			/// Type item setup constructor
 			/// </summary>
-			/// <param name="type">Encapsulated type</param>
-			public TerrainFunctionItem( Type type )
+			public TerrainFunctionItem( TerrainFunctionType functionType )
 			{
-				m_TerrainFunction = ( TerrainFunction )Activator.CreateInstance( type );
-				m_Parameters = m_TerrainFunction.CreateParameters( );
+				m_TerrainFunction = functionType;
+				m_Parameters = TerrainFunction.CreateParameters( functionType );
 			}
 
 			/// <summary>
@@ -50,7 +48,7 @@ namespace Poc1.PlanetBuilder
 			/// </summary>
 			public override string ToString( )
 			{
-				return m_TerrainFunction.Name;
+				return TerrainFunction.Name( m_TerrainFunction );
 			}
 
 			/// <summary>
@@ -63,7 +61,7 @@ namespace Poc1.PlanetBuilder
 
 			#region Private Members
 
-			private readonly TerrainFunction m_TerrainFunction;
+			private readonly TerrainFunctionType m_TerrainFunction;
 			private readonly object m_Parameters;
 
 			#endregion

@@ -857,7 +857,7 @@ namespace Rb.Rendering.OpenGl
 		
 
 		private readonly Matrix44[] m_LocalToWorldStack = new Matrix44[ 8 ];
-		private int m_TopOfLocalToWorldStack	= 0;
+		private int m_TopOfLocalToWorldStack = 0;
 
 		#endregion
 
@@ -880,6 +880,27 @@ namespace Rb.Rendering.OpenGl
 		#endregion
 
 		#region	ModelView transform
+
+		//	TODO: AP: REMOVEME (required for now for cg effect render state bindings
+		//public override Interfaces.Objects.Cameras.ICamera Camera
+		//{
+		//    set
+		//    {
+		//        base.Camera = value;
+
+		//        if ( value != null )
+		//        {
+		//            Gl.glMatrixMode( Gl.GL_MODELVIEW_MATRIX );
+		//            Gl.glLoadIdentity( );
+
+		//            Cameras.FlightCamera cam = ( Cameras.FlightCamera )value;
+		//            Glu.gluLookAt( cam.Position.X, cam.Position.Y, cam.Position.Z, 0, 0, 0, 0, 1, 0 );
+
+		//            Matrix44 tmp = new Matrix44( );
+		//            Gl.glGetFloatv( Gl.GL_MODELVIEW_MATRIX, tmp.Elements );
+		//        }
+		//    }
+		//}
 
 		/// <summary>
 		/// Updates the local to view matrix

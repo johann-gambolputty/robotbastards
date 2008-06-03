@@ -29,6 +29,9 @@ namespace Poc1
 				///	\brief	Gets 4 fractal values from 4 points
 				__m128 GetValue( __m128 xxxx, __m128 yyyy, __m128 zzzz ) const;
 
+				///	\brief	Gets 4 fractal values from 4 points
+				__m128 GetSignedValue( __m128 xxxx, __m128 yyyy, __m128 zzzz ) const;
+
 			private :
 
 				SseNoise	m_Noise;
@@ -104,6 +107,11 @@ namespace Poc1
 			}
 
 			return _mm_div_ps( result, m_Max );
+		}
+		
+		inline __m128 SseRidgedFractal::GetSignedValue( __m128 xxxx, __m128 yyyy, __m128 zzzz ) const
+		{
+			return _mm_sub_ps( _mm_mul_ps( GetValue( xxxx, yyyy, zzzz ), Constants::Fc_2 ), Constants::Fc_1 );
 		}
 	};
 };

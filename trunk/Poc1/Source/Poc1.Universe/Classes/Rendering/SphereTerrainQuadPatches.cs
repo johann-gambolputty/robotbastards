@@ -178,7 +178,7 @@ namespace Poc1.Universe.Classes.Rendering
 		{
 			foreach ( TerrainQuadPatch patch in m_Patches )
 			{
-				patch.Render( );
+				patch.Render( context );
 			}
 		}
 
