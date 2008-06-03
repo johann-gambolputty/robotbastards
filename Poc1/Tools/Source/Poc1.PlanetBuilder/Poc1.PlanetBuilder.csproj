@@ -52,6 +52,7 @@
     <Compile Include="AtmosphereControl.Designer.cs">
       <DependentUpon>AtmosphereControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="BuilderCameraController.cs" />
     <Compile Include="BuilderControls.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -126,9 +127,25 @@
     <Compile Include="TerrainMesh.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Assets\Rb.Assets.csproj">
+      <Project>{22440804-2D3F-4FEF-AD01-812923F6E04C}</Project>
+      <Name>Rb.Assets</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Source\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Interaction.Windows\Rb.Interaction.Windows.csproj">
+      <Project>{4ECD7CBC-1D3E-4C87-852E-77488B549711}</Project>
+      <Name>Rb.Interaction.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Interaction\Rb.Interaction.csproj">
+      <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
+      <Name>Rb.Interaction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Log\Rb.Log.csproj">
+      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
+      <Name>Rb.Log</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Source\Rb.NiceControls\Rb.NiceControls.csproj">
       <Project>{A4E5C0BF-B76D-425D-8439-B07EB6B29444}</Project>
@@ -152,6 +169,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="Resources\Delete.bmp" />
   </ItemGroup>
   <ItemGroup>

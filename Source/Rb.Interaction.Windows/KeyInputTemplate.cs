@@ -8,7 +8,7 @@ namespace Rb.Interaction.Windows
     /// <summary>
     /// Keyboard input template
     /// </summary>
-    class KeyInputTemplate : InputTemplate, IXmlSerializable
+	public class KeyInputTemplate : InputTemplate, IXmlSerializable
     {
 		/// <summary>
 		/// Setup constructor

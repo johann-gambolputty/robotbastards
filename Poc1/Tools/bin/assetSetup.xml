@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assetManager>
+  <locationManagers>
+    <locationManager type="Rb.Assets.Files.FileSystem" assembly="Rb.Assets">
+      <baseDir value="../../../Data/Game"/>
+    </locationManager>
+  </locationManagers>
+  <loaders>
+    <!--
+    <loader type="Rb.ComponentXmlLoader.Loader" assembly="Rb.ComponentXmlLoader"/>
+    -->
+    <loader type="Rb.Rendering.OpenGl.Cg.CgEffectLoader" assembly="Rb.Rendering.OpenGl.Cg"/>
+    <loader type="Rb.Rendering.Textures.TextureLoader" assembly="Rb.Rendering"/>
+  </loaders>
+</assetManager>
+

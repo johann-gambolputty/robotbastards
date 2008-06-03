@@ -123,7 +123,15 @@ namespace Poc1.Universe.Classes.Rendering
 			}
 		}
 
-		private readonly SphereTerrainGenerator m_Gen = new SphereTerrainGenerator( TerrainGeneratorType.Ridged, true, TimeSeed );
+		private static SphereTerrainGenerator DefaultTerrainGenerator( )
+		{
+			TerrainFunction heightFunction = new TerrainFunction( TerrainFunctionType.RidgedFractal );
+			TerrainFunction groundFunction = new TerrainFunction( TerrainFunctionType.SimpleFractal );
+
+			return new SphereTerrainGenerator( heightFunction, groundFunction );
+		}
+
+		private readonly SphereTerrainGenerator m_Gen = DefaultTerrainGenerator( );
 		private readonly SpherePlanet m_Planet;
 		private readonly float m_RenderRadius;
 

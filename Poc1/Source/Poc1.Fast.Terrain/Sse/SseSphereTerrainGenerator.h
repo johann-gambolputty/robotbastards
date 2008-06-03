@@ -1,7 +1,7 @@
 #pragma once
 #pragma managed(push, off)
 
-#include "UTerrainVertex.h"
+#include "TerrainGenerator.h"
 #include "SseSphereTerrainDisplacers.h"
 
 #include <Sse\SseUtils.h>
@@ -20,27 +20,9 @@ namespace Poc1
 			//	----------------------------------------------------------------------------- Types
 			
 			///	\brief	Base class for fast sphere terrain generators
-			class SseSphereTerrainGenerator
+			class SseSphereTerrainGenerator : public TerrainGenerator
 			{
 				public :
-
-					///	\brief	Sets the smallest possible step size (finest LOD)
-					void SetSmallestStepSize( const float x, const float z );
-
-					///	\brief	Gets the displacer
-					virtual SseSphereTerrainDisplacer& GetBaseDisplacer( ) = 0;
-
-					///	\brief	Gets the displacer
-					virtual const SseSphereTerrainDisplacer& GetBaseDisplacer( ) const = 0;
-
-					///	\brief	Generates terrain vertex points and normals
-					virtual void GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, float uvRes, UTerrainVertex* vertices ) = 0;
-
-					///	\brief	Generates terrain vertex points and normals. Gets maximum patch error
-					virtual void GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, float uvRes, UTerrainVertex* vertices, float& maxError ) = 0;
-
-					///	\brief	Determines the error on a patch
-					virtual float GetMaximumPatchError( const float* origin, const float* xStep, const float* zStep, const int width, const int height, const int subdivisions ) const = 0;
 
 					///	\brief	Generates a cube map texture face that encodes terrain properties
 					///
@@ -52,10 +34,6 @@ namespace Poc1
 					///
 					virtual void GenerateTerrainPropertyCubeMapFace( const UCubeMapFace face, const int width, const int height, const int stride, unsigned char* pixels ) = 0;
 
-				protected :
-
-					float m_SmallestX;
-					float m_SmallestZ;
 			};
 
 
@@ -87,19 +65,16 @@ namespace Poc1
 					const DisplaceType& GetDisplacer( ) const;
 
 					///	\brief	Gets the displacer
-					virtual SseSphereTerrainDisplacer& GetBaseDisplacer( );
+					virtual SseTerrainDisplacer& GetBaseDisplacer( );
 
 					///	\brief	Gets the displacer
-					virtual const SseSphereTerrainDisplacer& GetBaseDisplacer( ) const;
+					virtual const SseTerrainDisplacer& GetBaseDisplacer( ) const;
 
 					///	\brief	Generates terrain vertex points and normals
 					virtual void GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, float uvRes, UTerrainVertex* vertices );
 
 					///	\brief	Generates terrain vertex points and normals
 					virtual void GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, float uvRes, UTerrainVertex* vertices, float& maxError );
-
-					///	\brief	Determines the error on a patch
-					virtual float GetMaximumPatchError( const float* origin, const float* xStep, const float* zStep, const int width, const int height, const int subdivisions ) const;
 
 					///	\brief	Generates a cube map texture face
 					virtual void GenerateTerrainPropertyCubeMapFace( const UCubeMapFace face, const int width, const int height, const int stride, unsigned char* pixels );
@@ -153,7 +128,7 @@ namespace Poc1
 						__m128 originXxxx = xxxx;
 						__m128 originYyyy = yyyy;
 						__m128 originZzzz = zzzz;
-						SetLength( originXxxx, originYyyy, originZzzz, m_Displacer.GetSphereRadius( ) );
+						SetLength( originXxxx, originYyyy, originZzzz, m_Displacer.GetFunctionScale( ) );
 						__m128 heights = m_Displacer.Displace( originXxxx, originYyyy, originZzzz );
 
 						lastHeight = heights.m128_f32[ 2 ];
@@ -171,7 +146,7 @@ namespace Poc1
 							__m128 originXxxx = xxxx;
 							__m128 originYyyy = yyyy;
 							__m128 originZzzz = zzzz;
-							SetLength( originXxxx, originYyyy, originZzzz, m_Displacer.GetSphereRadius( ) );
+							SetLength( originXxxx, originYyyy, originZzzz, m_Displacer.GetFunctionScale( ) );
 							__m128 heights = m_Displacer.Displace( originXxxx, originYyyy, originZzzz );
 
 							const float currHeight0 = lastHeight;
@@ -208,31 +183,31 @@ namespace Poc1
 						__m128 originXxxx = xxxx;
 						__m128 originYyyy = yyyy;
 						__m128 originZzzz = zzzz;
-						SetLength( originXxxx, originYyyy, originZzzz, m_Displacer.GetSphereRadius( ) );
+						SetLength( originXxxx, originYyyy, originZzzz, m_Displacer.GetFunctionScale( ) );
 						__m128 heights = m_Displacer.Displace( originXxxx, originYyyy, originZzzz );
 
 						__m128 leftXxxx = _mm_sub_ps( xxxx, m_ShiftRightXxxx );
 						__m128 leftYyyy = _mm_sub_ps( yyyy, m_ShiftRightYyyy );
 						__m128 leftZzzz = _mm_sub_ps( zzzz, m_ShiftRightZzzz );
-						SetLength( leftXxxx, leftYyyy, leftZzzz, m_Displacer.GetSphereRadius( ) );
+						SetLength( leftXxxx, leftYyyy, leftZzzz, m_Displacer.GetFunctionScale( ) );
 						m_Displacer.Displace( leftXxxx, leftYyyy, leftZzzz );
 
 						__m128 upXxxx = _mm_sub_ps( xxxx, m_ShiftDownXxxx );
 						__m128 upYyyy = _mm_sub_ps( yyyy, m_ShiftDownYyyy );
 						__m128 upZzzz = _mm_sub_ps( zzzz, m_ShiftDownZzzz );
-						SetLength( upXxxx, upYyyy, upZzzz, m_Displacer.GetSphereRadius( ) );
+						SetLength( upXxxx, upYyyy, upZzzz, m_Displacer.GetFunctionScale( ) );
 						m_Displacer.Displace( upXxxx, upYyyy, upZzzz );
 						
 						__m128 rightXxxx = _mm_add_ps( xxxx, m_ShiftRightXxxx );
 						__m128 rightYyyy = _mm_add_ps( yyyy, m_ShiftRightYyyy );
 						__m128 rightZzzz = _mm_add_ps( zzzz, m_ShiftRightZzzz );
-						SetLength( rightXxxx, rightYyyy, rightZzzz, m_Displacer.GetSphereRadius( ) );
+						SetLength( rightXxxx, rightYyyy, rightZzzz, m_Displacer.GetFunctionScale( ) );
 						m_Displacer.Displace( rightXxxx, rightYyyy, rightZzzz );
 
 						__m128 downXxxx = _mm_add_ps( xxxx, m_ShiftDownXxxx );
 						__m128 downYyyy = _mm_add_ps( yyyy, m_ShiftDownYyyy );
 						__m128 downZzzz = _mm_add_ps( zzzz, m_ShiftDownZzzz );
-						SetLength( downXxxx, downYyyy, downZzzz, m_Displacer.GetSphereRadius( ) );
+						SetLength( downXxxx, downYyyy, downZzzz, m_Displacer.GetFunctionScale( ) );
 						m_Displacer.Displace( downXxxx, downYyyy, downZzzz );
 
 						//	Move positions to the origin
@@ -292,31 +267,31 @@ namespace Poc1
 						__m128 originXxxx = xxxx;
 						__m128 originYyyy = yyyy;
 						__m128 originZzzz = zzzz;
-						SetLength( originXxxx, originYyyy, originZzzz, m_Displacer.GetSphereRadius( ) );
+						SetLength( originXxxx, originYyyy, originZzzz, m_Displacer.GetFunctionScale( ) );
 						__m128 heights = m_Displacer.Displace( originXxxx, originYyyy, originZzzz );
 
 						__m128 leftXxxx = _mm_sub_ps( xxxx, m_ShiftRightXxxx );
 						__m128 leftYyyy = _mm_sub_ps( yyyy, m_ShiftRightYyyy );
 						__m128 leftZzzz = _mm_sub_ps( zzzz, m_ShiftRightZzzz );
-						SetLength( leftXxxx, leftYyyy, leftZzzz, m_Displacer.GetSphereRadius( ) );
+						SetLength( leftXxxx, leftYyyy, leftZzzz, m_Displacer.GetFunctionScale( ) );
 						m_Displacer.Displace( leftXxxx, leftYyyy, leftZzzz );
 
 						__m128 upXxxx = _mm_sub_ps( xxxx, m_ShiftDownXxxx );
 						__m128 upYyyy = _mm_sub_ps( yyyy, m_ShiftDownYyyy );
 						__m128 upZzzz = _mm_sub_ps( zzzz, m_ShiftDownZzzz );
-						SetLength( upXxxx, upYyyy, upZzzz, m_Displacer.GetSphereRadius( ) );
+						SetLength( upXxxx, upYyyy, upZzzz, m_Displacer.GetFunctionScale( ) );
 						m_Displacer.Displace( upXxxx, upYyyy, upZzzz );
 						
 						__m128 rightXxxx = _mm_add_ps( xxxx, m_ShiftRightXxxx );
 						__m128 rightYyyy = _mm_add_ps( yyyy, m_ShiftRightYyyy );
 						__m128 rightZzzz = _mm_add_ps( zzzz, m_ShiftRightZzzz );
-						SetLength( rightXxxx, rightYyyy, rightZzzz, m_Displacer.GetSphereRadius( ) );
+						SetLength( rightXxxx, rightYyyy, rightZzzz, m_Displacer.GetFunctionScale( ) );
 						m_Displacer.Displace( rightXxxx, rightYyyy, rightZzzz );
 
 						__m128 downXxxx = _mm_add_ps( xxxx, m_ShiftDownXxxx );
 						__m128 downYyyy = _mm_add_ps( yyyy, m_ShiftDownYyyy );
 						__m128 downZzzz = _mm_add_ps( zzzz, m_ShiftDownZzzz );
-						SetLength( downXxxx, downYyyy, downZzzz, m_Displacer.GetSphereRadius( ) );
+						SetLength( downXxxx, downYyyy, downZzzz, m_Displacer.GetFunctionScale( ) );
 						m_Displacer.Displace( downXxxx, downYyyy, downZzzz );
 
 						//	Move positions to the origin
@@ -424,16 +399,6 @@ namespace Poc1
 			
 			//	---------------------------------------------------------------------------------------
 
-			//	---------------------------------------------- SseSphereTerrainGenerator Inline Methods
-
-			inline void SseSphereTerrainGenerator::SetSmallestStepSize( const float x, const float z )
-			{
-				m_SmallestX = x;
-				m_SmallestZ = z;
-			}
-			
-			//	---------------------------------------------------------------------------------------
-
 			//	--------------------------------------------- SseSphereTerrainGeneratorT Inline Methods
 
 			template < typename DisplaceType >
@@ -449,13 +414,13 @@ namespace Poc1
 			}
 
 			template < typename DisplaceType >
-			inline SseSphereTerrainDisplacer& SseSphereTerrainGeneratorT< DisplaceType >::GetBaseDisplacer( )
+			inline SseTerrainDisplacer& SseSphereTerrainGeneratorT< DisplaceType >::GetBaseDisplacer( )
 			{
 				return m_Displacer;
 			}
 			
 			template < typename DisplaceType >
-			inline const SseSphereTerrainDisplacer& SseSphereTerrainGeneratorT< DisplaceType >::GetBaseDisplacer( ) const
+			inline const SseTerrainDisplacer& SseSphereTerrainGeneratorT< DisplaceType >::GetBaseDisplacer( ) const
 			{
 				return m_Displacer;
 			}
@@ -488,7 +453,7 @@ namespace Poc1
 					tmpZzzz = zzzz;
 
 					//	Disable normalize to remove sphere mapping
-					SetLength( tmpXxxx, tmpYyyy, tmpZzzz, m_Displacer.GetSphereRadius( ) );
+					SetLength( tmpXxxx, tmpYyyy, tmpZzzz, m_Displacer.GetFunctionScale( ) );
 					m_Displacer.Displace( tmpXxxx, tmpYyyy, tmpZzzz );
 
 					_mm_store_ps( curPos, tmpXxxx ); curPos += 4;
@@ -514,14 +479,14 @@ namespace Poc1
 
 					//	Disable normalize to remove sphere mapping
 				//	Normalize( tmpXxxx, tmpYyyy, tmpZzzz );
-					SetLength( tmpXxxx, tmpYyyy, tmpZzzz, m_Displacer.GetSphereRadius( ) );
+					SetLength( tmpXxxx, tmpYyyy, tmpZzzz, m_Displacer.GetFunctionScale( ) );
 					__m128 heights = m_Displacer.Displace( tmpXxxx, tmpYyyy, tmpZzzz );
 				
 					//	Uncomment following to clamp the points to the sphere
 				//	tmpXxxx = xxxx;
 				//	tmpYyyy = yyyy;
 				//	tmpZzzz = zzzz;
-				//	SetLength( tmpXxxx, tmpYyyy, tmpZzzz, _mm_mul_ps( m_Displacer.GetSphereRadius( ), m_Displacer.GetMinimumHeight( ) ) );
+				//	SetLength( tmpXxxx, tmpYyyy, tmpZzzz, _mm_mul_ps( m_Displacer.GetFunctionScale( ), m_Displacer.GetMinimumHeight( ) ) );
 
 
 					//	Store heights alongside positions, to avoid cache hit
@@ -562,7 +527,7 @@ namespace Poc1
 					heights0 += 16;
 				}
 
-				return m_Displacer.MapErrorToHeightRange( maxError );
+				return m_Displacer.MapToHeightScale( maxError );
 			}
 
 			template < typename DisplaceType >
@@ -887,7 +852,7 @@ namespace Poc1
 					startYyyy = _mm_add_ps( startYyyy, rowYInc );
 					startZzzz = _mm_add_ps( startZzzz, rowZInc );
 				}
-				error = m_Displacer.MapErrorToHeightRange( error );
+				error = m_Displacer.MapToHeightScale( error );
 
 				/*/
 				//	Same as GenerateVertices() without error, except that the resolution is doubled
@@ -1016,13 +981,6 @@ namespace Poc1
 					}
 				}
 				//*/
-			}
-
-			template < typename DisplaceType >
-			inline float SseSphereTerrainGeneratorT< DisplaceType >::GetMaximumPatchError( const float* origin, const float* xStep, const float* zStep, const int width, const int height, const int subdivisions ) const
-			{
-				//	TODO: AP: ...
-				return 0;
 			}
 
 			template < typename DisplaceType >

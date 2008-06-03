@@ -26,6 +26,27 @@ namespace Rb.Interaction
 		}
 
 		/// <summary>
+		/// Associates a command with a set of input templates
+		/// </summary>
+		public void Add( Command cmd, IEnumerable<InputTemplate> inputs )
+		{
+			CommandInputTemplates templates = new CommandInputTemplates( cmd );
+			foreach ( InputTemplate input in inputs )
+			{
+				templates.Add( input );
+			}
+			m_Map.Add( templates );
+		}
+
+		/// <summary>
+		/// Associates a command with a set of input templates
+		/// </summary>
+		public void Add( Command cmd, params InputTemplate[] inputs )
+		{
+			Add( cmd, ( IEnumerable<InputTemplate> )inputs );
+		}
+
+		/// <summary>
 		/// Instances all the templates in the map, for the specified context, and adds them to a <see cref="CommandUser"/>
 		/// </summary>
 		/// <param name="context">Input context</param>

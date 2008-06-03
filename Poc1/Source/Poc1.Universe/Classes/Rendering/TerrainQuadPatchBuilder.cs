@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
 using Poc1.Universe.Interfaces.Rendering;
 using Rb.Core.Maths;
 using Rb.Rendering;
@@ -10,7 +12,7 @@ namespace Poc1.Universe.Classes.Rendering
 	/// <summary>
 	/// Builds terrain quad patches in a separate thread
 	/// </summary>
-	internal class TerrainQuadPatchBuilder
+	internal class TerrainQuadPatchBuilder : IDisposable
 	{
 		/// <summary>
 		/// Gets the singleton instance of this class
@@ -67,8 +69,9 @@ namespace Poc1.Universe.Classes.Rendering
 
 		private class RequestResult
 		{
-			public unsafe RequestResult( TerrainQuadPatch patch )
+			public unsafe RequestResult( TerrainQuadPatch patch, IProjectionCamera camera )
 			{
+				m_Camera = camera;
 				m_Patch = patch;
 				m_VertexData = new byte[ TerrainQuadPatch.TotalVerticesPerPatch * sizeof( TerrainVertex ) ];
 			}
@@ -78,25 +81,26 @@ namespace Poc1.Universe.Classes.Rendering
 				get { return m_VertexData; }
 			}
 
+			public IProjectionCamera Camera
+			{
+				set { m_Camera = value; }
+			}
+
 			public TerrainQuadPatch Patch
 			{
 				set { m_Patch = value; }
 			}
 
-			public void Setup( float increaseDetailDistance )
-			{
-				m_IncreaseDetailDistance = increaseDetailDistance;
-			}
-
 			public unsafe void BuildPatch( )
 			{
+				float increaseDetailDistance = DistanceFromError( m_Camera, m_Patch.PatchError );
 				fixed ( byte* vertexData = m_VertexData )
 				{
-					m_Patch.OnBuildComplete( vertexData, m_IncreaseDetailDistance );
+					m_Patch.OnBuildComplete( vertexData, increaseDetailDistance );
 				}
 			}
 
-			private float m_IncreaseDetailDistance;
+			private IProjectionCamera m_Camera;
 			private TerrainQuadPatch m_Patch;
 			private readonly byte[] m_VertexData;
 		}
@@ -150,19 +154,20 @@ namespace Poc1.Universe.Classes.Rendering
 		private readonly static TerrainQuadPatchBuilder ms_Instance = new TerrainQuadPatchBuilder( );
 		private readonly List<Request> m_RequestList = new List<Request>( );
 		private readonly List<RequestResult> m_FreeResults = new List<RequestResult>();
-		private readonly BackgroundWorker m_Worker;
+		private BackgroundWorker m_Worker;
 
-		private RequestResult GetNewResult( TerrainQuadPatch patch )
+		private RequestResult GetNewResult( TerrainQuadPatch patch, IProjectionCamera camera )
 		{
 			lock ( m_FreeResults )
 			{
 				if ( m_FreeResults.Count == 0 )
 				{
-					return new RequestResult( patch );
+					return new RequestResult( patch, camera );
 				}
 				RequestResult result = m_FreeResults[ 0 ];
 				m_FreeResults.RemoveAt( 0 );
 				result.Patch = patch;
+				result.Camera = camera;
 				return result;
 			}
 		}
@@ -198,6 +203,7 @@ namespace Poc1.Universe.Classes.Rendering
 		private void RequestComplete( object sender, RunWorkerCompletedEventArgs args )
 		{
 			RequestResult completed = ( RequestResult )args.Result;
+
 			completed.BuildPatch( );
 			ReleaseResult( completed );
 			if ( m_RequestList.Count > 0 )
@@ -211,7 +217,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		private unsafe RequestResult HandleBuildVertices( TerrainQuadPatch patch, IPlanetTerrain terrain, IProjectionCamera camera, bool calculatePatchError )
 		{
-			RequestResult result = GetNewResult( patch );
+			RequestResult result = GetNewResult( patch, camera );
 			fixed ( byte* vertexBytes = result.VertexData )
 			{
 				TerrainVertex* firstVertex = ( TerrainVertex* )vertexBytes;
@@ -228,7 +234,6 @@ namespace Poc1.Universe.Classes.Rendering
 					terrain.GenerateTerrainPatchVertices( patch, TerrainQuadPatch.VertexResolution, patch.UvResolution, firstVertex );
 					CreateSkirtVertices( firstVertex );
 				}
-				result.Setup( DistanceFromError( camera, patch.PatchError ) );
 			}
 
 			return result;
@@ -270,6 +275,23 @@ namespace Poc1.Universe.Classes.Rendering
 
 				srcVertex += srcOffset;
 				++dstVertex;
+			}
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose( )
+		{
+			lock ( m_RequestList )
+			{
+				m_RequestList.Clear( );
+			}
+			if ( m_Worker != null )
+			{
+				m_Worker.Dispose( );
+				m_Worker = null;
 			}
 		}
 

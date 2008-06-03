@@ -12,30 +12,33 @@ namespace Poc1
 		
 			//	---------------------------------------------------- SphereTerrainGenerator Methods
 
-			SphereTerrainGenerator::SphereTerrainGenerator( const TerrainGeneratorType generatorType, const bool enableGroundDisplacement, const unsigned int seed )
+			SphereTerrainGenerator::SphereTerrainGenerator( TerrainFunction^ heightFunction )
 			{
+				/*
 				switch ( generatorType )
 				{
 					case TerrainGeneratorType::Ridged	:
 						{
-
 							if ( enableGroundDisplacement )
 							{
 								const float groundDisplacementInfluence = 0.3f;
-								SseSphereTerrainGeneratorT< SseFractalGroundOffsetDisplacer< SseRidgedFractalDisplacer > >* impl;								impl = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseFractalGroundOffsetDisplacer< SseRidgedFractalDisplacer > >( );
+								typedef SseFull3dDisplacer< SseSimpleFractal, SseRidgedFractal > DisplacerType;
+								SseSphereTerrainGeneratorT< DisplacerType >* impl;
+								impl = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< DisplacerType >( );
 
-								impl->GetDisplacer( ).GetBaseDisplacer( ).GetFractal( ).GetNoise( ).SetNewSeed( seed );
-								impl->GetDisplacer( ).GetBaseDisplacer( ).GetFractal( ).Setup( 4.1f, 0.8f, 12 );
-								impl->GetDisplacer( ).GetFractal( ).GetNoise( ).SetNewSeed( seed );
-								impl->GetDisplacer( ).GetFractal( ).Setup( 2.1f, 1.1f, 4 );
+								impl->GetDisplacer( ).GetBaseDisplacer( ).GetFunction( ).GetNoise( ).SetNewSeed( seed );
+								impl->GetDisplacer( ).GetBaseDisplacer( ).GetFunction( ).Setup( 4.1f, 0.8f, 12 );
+								impl->GetDisplacer( ).GetFunction( ).GetNoise( ).SetNewSeed( seed );
+								impl->GetDisplacer( ).GetFunction( ).Setup( 2.1f, 1.1f, 4 );
 								impl->GetDisplacer( ).SetInfluence( groundDisplacementInfluence );
 								m_pImpl = impl;
 							}
 							else
 							{
-								SseSphereTerrainGeneratorT< SseRidgedFractalDisplacer >* impl = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseRidgedFractalDisplacer >( );
-								impl->GetDisplacer( ).GetFractal( ).GetNoise( ).SetNewSeed( seed );
-								impl->GetDisplacer( ).GetFractal( ).Setup( 3.1f, 1.1f, 10 );
+								typedef SseFunction3dDisplacer< SseRidgedFractal > DisplacerType;
+								SseSphereTerrainGeneratorT< DisplacerType >* impl = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< DisplacerType >( );
+								impl->GetDisplacer( ).GetFunction( ).GetNoise( ).SetNewSeed( seed );
+								impl->GetDisplacer( ).GetFunction( ).Setup( 3.1f, 1.1f, 10 );
 								m_pImpl = impl;
 							}
 							break;
@@ -44,9 +47,16 @@ namespace Poc1
 					case TerrainGeneratorType::Simple	:
 					case TerrainGeneratorType::Voronoi	:
 					default								:
-						m_pImpl = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseFlatSphereTerrainDisplacer >( );
+						m_pImpl = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseFlatTerrainDisplacer >( );
 						break;
 				}
+				*/
+				m_pImpl = ( SseSphereTerrainGenerator* )TerrainFunction::CreateGenerator( TerrainGeometry::Sphere, heightFunction );
+			}
+
+			SphereTerrainGenerator::SphereTerrainGenerator( TerrainFunction^ heightFunction, TerrainFunction^ groundFunction )
+			{
+				m_pImpl = ( SseSphereTerrainGenerator* )TerrainFunction::CreateGenerator( TerrainGeometry::Sphere, heightFunction, groundFunction );
 			}
 
 			SphereTerrainGenerator::!SphereTerrainGenerator( )
@@ -93,17 +103,8 @@ namespace Poc1
 				m_pImpl->GenerateVertices( originArr, xStepArr, zStepArr, width, height, uvRes, ( UTerrainVertex* )vertices, err );
 				error = err;
 			}
-
-			float SphereTerrainGenerator::GetMaximumPatchError( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, const int subdivisions )
-			{
-				float originArr[] = { origin->X, origin->Y, origin->Z };
-				float xStepArr[] = { xStep->X, xStep->Y, xStep->Z };
-				float zStepArr[] = { zStep->X, zStep->Y, zStep->Z };
-
-				return m_pImpl->GetMaximumPatchError( originArr, xStepArr, zStepArr, width, height, subdivisions );
-			}
 			
 			//	-----------------------------------------------------------------------------------
-		};
-	};
-};
+		}; //Fast
+	}; //Terrain
+}; //Poc1

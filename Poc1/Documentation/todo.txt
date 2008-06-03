@@ -4,6 +4,7 @@
 		- H: Force error for patches with > threshold radius
 		- H: Investigate why error does not appear to be totally correct
 		- H: Ground displacement requires connected patches (vertical skirts show up)
+		- M: Sphere terrain displacer base class can be renamed as SseTerrainDisplacer - it works for all underlying geometries
 		- M: Tangent frame at poles is incorrect
 		- M: Add multi-fractals to the displacer set
 		- M: Geomorphing
@@ -86,6 +87,8 @@
 		- L: Add MRU file list to terrain texture tool
 	- Graphics Misc.
 		- H: Shadows
+		- H: Add inverse frame to camera interface
+		- M: Make camera part of the rendering context
 		- M: Add support to load rendering library objects from assemblies in the new rendering library layout (can keep
 		  assembly selector, but it's not necessary anymore)
 		- M: Particle systems

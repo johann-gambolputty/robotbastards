@@ -1,7 +1,8 @@
 using System.Windows.Forms;
-using Poc1.Universe.Classes.Cameras;
-using Poc1.Universe.Classes.Rendering;
+using Rb.Core.Maths;
+using Rb.Interaction;
 using Rb.Rendering;
+using Rb.Rendering.Cameras;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Interfaces.Objects.Cameras;
 
@@ -16,9 +17,11 @@ namespace Poc1.PlanetBuilder
 
 		private IRenderable m_TerrainMesh;
 
-		private static ICamera CreateCamera( )
+		private static ICamera CreateCamera( InputContext context, CommandUser user )
 		{
-			HeadCamera camera = new HeadCamera( );
+			FlightCamera camera = new FlightCamera( );
+			camera.Position = new Point3( 0, 0, -5 );
+			camera.AddChild( new BuilderCameraController( context, user ) );
 			return camera;
 		}
 
@@ -31,7 +34,7 @@ namespace Poc1.PlanetBuilder
 					return m_TerrainMesh;
 				}
 
-				m_TerrainMesh = null;
+				m_TerrainMesh = new TerrainMesh( 2048, 64, 2048 );
 
 				return m_TerrainMesh;
 			}
@@ -40,10 +43,15 @@ namespace Poc1.PlanetBuilder
 		private void BuilderForm_Shown( object sender, System.EventArgs e )
 		{
 			Viewer viewer = new Viewer( );
-			viewer.Camera = CreateCamera( );
 			viewer.Renderable = TerrainMesh;
 
 			testDisplay.AddViewer( viewer );
+
+
+			InputContext context = new InputContext( viewer );
+			CommandUser user = new CommandUser( );
+
+			viewer.Camera = CreateCamera( context, user );
 		}
 	}
 }

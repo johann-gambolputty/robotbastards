@@ -22,6 +22,21 @@ namespace Rb.Interaction
 		}
 
 		/// <summary>
+		/// Finds a command in the list by its ID
+		/// </summary>
+		public Command FindByCommandId( int id )
+		{
+			foreach ( Command cmd in this )
+			{
+				if ( cmd.Id == id )
+				{
+					return cmd;
+				}
+			}
+			return null;
+		}
+
+		/// <summary>
 		/// Finds a command in the list by its name
 		/// </summary>
 		/// <param name="name">Command name</param>
@@ -99,6 +114,11 @@ namespace Rb.Interaction
         {
             get { return m_Name; }
 		}
+
+    	public Command this[ string name ]
+    	{
+			get { return FindByName( name ); }
+    	}
 
 		#endregion
 

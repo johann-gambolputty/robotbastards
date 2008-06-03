@@ -66,7 +66,7 @@ namespace Rb.Rendering
 		private ICamera m_Camera;
 
 		//	TODO: AP: REMOVEME (required for now for cg effect render state bindings
-		public ICamera Camera
+		public virtual ICamera Camera
 		{
 			get { return m_Camera; }
 			set { m_Camera = value; }
