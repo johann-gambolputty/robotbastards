@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using System.Drawing;
 using Poc1.Particles.Interfaces;
@@ -12,13 +11,18 @@ namespace Poc1.Particles.Classes
 	{
 		#region IParticleRenderer Members
 
-		public void RenderParticles( IRenderContext context, IParticleSystem particleSystem, IEnumerable<IParticle> particles )
+		/// <summary>
+		/// Renders a collection of particles
+		/// </summary>
+		public void RenderParticles( IRenderContext context, IParticleSystem particleSystem )
 		{
 			Graphics.Draw.Sphere( Graphics.Surfaces.Red, particleSystem.Frame.Translation, ParticleSize );
 
-			foreach ( IParticle particle in particles )
+			ParticleFieldIterator posIter = new ParticleFieldIterator( particleSystem, ParticleBase.Position );
+
+			for ( int particleIndex = 0; particleIndex < particleSystem.NumParticles; ++particleIndex )
 			{
-				Graphics.Draw.Billboard( ms_ParticleBrush, particle.Position, ParticleSize, ParticleSize );
+				Graphics.Draw.Billboard( ms_ParticleBrush, posIter.GetPosition( ), ParticleSize, ParticleSize );
 			}
 		}
 

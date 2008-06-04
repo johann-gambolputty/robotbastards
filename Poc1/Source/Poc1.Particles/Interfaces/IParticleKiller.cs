@@ -11,6 +11,6 @@ namespace Poc1.Particles.Interfaces
 		/// <summary>
 		/// Kills particles
 		/// </summary>
-		void KillParticles( IParticleFactory factory, IEnumerable<IParticle> particles );
+		void KillParticles( IParticleSystem particles );
 	}
 }

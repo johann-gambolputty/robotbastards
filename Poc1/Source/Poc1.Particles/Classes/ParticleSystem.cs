@@ -9,7 +9,7 @@ namespace Poc1.Particles.Classes
 	/// <summary>
 	/// Handy abstract base class for particle systems
 	/// </summary
-	public class ParticleSystem : IParticleSystem, IParticleFactory
+	public class ParticleSystem : IParticleSystem
 	{
 		#region IParticleSystem Members
 
@@ -22,15 +22,6 @@ namespace Poc1.Particles.Classes
 		}
 
 		/// <summary>
-		/// Gets/sets the maximum number of particles. The default for this is 256
-		/// </summary>
-		public int MaximumNumberOfParticles
-		{
-			get { return m_Particles.MaximumSize; }
-			set { m_Particles.MaximumSize = value; }
-		}
-
-		/// <summary>
 		/// Enables/disables particle spawning.
 		/// </summary>
 		public bool EnableSpawning
@@ -40,11 +31,11 @@ namespace Poc1.Particles.Classes
 		}
 
 		/// <summary>
-		/// Gets/sets the object used to create new particles, and destroy old particles
+		/// Gets the buffer containing all the particles in this system
 		/// </summary>
-		public IParticleFactory ParticleFactory
+		public IParticleBuffer Buffer
 		{
-			get { return this; }
+			get { return m_Buffer; }
 		}
 
 		/// <summary>
@@ -106,7 +97,7 @@ namespace Poc1.Particles.Classes
 			{
 				return;
 			}
-			Renderer.RenderParticles( context, this, m_Particles );
+			Renderer.RenderParticles( context, this );
 		}
 
 		#endregion
@@ -125,11 +116,11 @@ namespace Poc1.Particles.Classes
 			if ( Spawner != null )
 			{
 				int count = SpawnRate == null ? 0 : SpawnRate.GetNumberOfParticlesToSpawn( );
-				Spawner.SpawnParticles( ParticleFactory, count, m_Particles );
+				Spawner.SpawnParticles( this, count );
 			}
 			if ( Killer != null )
 			{
-				Killer.KillParticles( ParticleFactory, m_Particles );
+				Killer.KillParticles( this );
 			}
 			if ( Updater != null )
 			{
@@ -147,172 +138,14 @@ namespace Poc1.Particles.Classes
 
 		#region Private Members
 
-		#region ParticleSet class
-
-		private class ParticleSet : IList<IParticle>
-		{
-			public int MaximumSize
-			{
-				get { return m_Particles.Length; }
-				set
-				{
-					IParticle[] particles = new IParticle[ value ];
-					int max = value < m_Particles.Length ? value : m_Particles.Length;
-					for ( int i = 0; i < max; ++i )
-					{
-						if ( m_Particles[ i ] != null )
-						{
-							particles[ i ] = m_Particles[ i ];
-						}
-					}
-					m_Particles = particles;
-					if ( m_Count > value )
-					{
-						m_Count = value;
-					}
-				}
-			}
-
-			private int m_Count;
-			private int m_AddPosition;
-			private IParticle[] m_Particles = new IParticle[ 256 ];
-
-			#region IList Members
-
-			public void Clear( )
-			{
-				for ( int i = 0; i < m_Particles.Length; ++i )
-				{
-					m_Particles[ i ] = null;
-				}
-				m_Count = 0;
-			}
-
-			public bool IsReadOnly
-			{
-				get { return false; }
-			}
-
-			public void RemoveAt( int index )
-			{
-				m_Particles[ index ] = null;
-			}
-
-
-			#endregion
-
-			#region ICollection Members
-
-			public int Count
-			{
-				get { return m_Count; }
-			}
-
-			#endregion
-
-			#region IEnumerable Members
-
-			public System.Collections.IEnumerator GetEnumerator( )
-			{
-				return ( ( IList<IParticle> )this ).GetEnumerator( );
-			}
-
-			#endregion
-
-			#region IList<IParticle> Members
-
-			public int IndexOf( IParticle item )
-			{
-				return Array.IndexOf( m_Particles, item );
-			}
-
-			public void Insert( int index, IParticle item )
-			{
-				throw new NotSupportedException( );
-			}
-
-			IParticle IList<IParticle>.this[ int index ]
-			{
-				get { return m_Particles[ index ]; }
-				set { m_Particles[ index ] = value; }
-			}
-
-			#endregion
-
-			#region ICollection<IParticle> Members
-
-			public void Add( IParticle item )
-			{
-				m_Particles[ m_AddPosition ] = item;
-				m_AddPosition = ( m_AddPosition + 1 ) % m_Particles.Length;
-				if ( m_Count < m_Particles.Length )
-				{
-					++m_Count;
-				}
-			}
-
-			public bool Contains( IParticle item )
-			{
-				return Array.IndexOf( m_Particles, item ) != -1;
-			}
-
-			public void CopyTo( IParticle[] array, int arrayIndex )
-			{
-				throw new NotImplementedException( );
-			}
-
-			public bool Remove( IParticle item )
-			{
-				if ( item == null )
-				{
-					return false;
-				}
-				int index = IndexOf( item );
-				if ( index == -1 )
-				{
-					return false;
-				}
-				m_Particles[ index ] = null;
-				--m_Count;
-				return true;
-			}
-
-			#endregion
-
-			#region IEnumerable<IParticle> Members
-
-			IEnumerator<IParticle> IEnumerable<IParticle>.GetEnumerator( )
-			{
-				int current = m_AddPosition == 0 ? m_Particles.Length - 1 : m_AddPosition - 1;
-				int count = 0;
-				for ( int i = 0; i < m_Particles.Length; ++i )
-				{
-					if ( count >= m_Count )
-					{
-						break;
-					}
-					if ( m_Particles[ current ] != null )
-					{
-						++count;
-						yield return m_Particles[ current ];
-					}
-					current = current == 0 ? m_Particles.Length - 1 : current - 1;
-				}
-			}
-
-			#endregion
-		}
-
-		#endregion
-
-		private readonly ParticleSet	m_Particles		= new ParticleSet();
-		private readonly Matrix44		m_Frame				= new Matrix44( );
-		private bool					m_EnableSpawning	= true;
-		private IParticleSpawner		m_Spawner			= ms_DefaultSpawner;
-		private ISpawnRate				m_SpawnRate			= ms_DefaultSpawnRate;
-		private IParticleKiller			m_Killer			= ms_DefaultKiller;
-		private IParticleUpdater 		m_Updater			= ms_DefaultUpdater;
-		private IParticleRenderer		m_Renderer;
+		private readonly Matrix44			m_Frame				= new Matrix44( );
+		private bool						m_EnableSpawning	= true;
+		private IParticleSpawner			m_Spawner			= ms_DefaultSpawner;
+		private ISpawnRate					m_SpawnRate			= ms_DefaultSpawnRate;
+		private IParticleKiller				m_Killer			= ms_DefaultKiller;
+		private IParticleUpdater 			m_Updater			= ms_DefaultUpdater;
+		private IParticleRenderer			m_Renderer;
+		private readonly IParticleBuffer	m_Buffer			= new ParticleBuffer( );
 
 		private readonly static IParticleSpawner	ms_DefaultSpawner;
 		private readonly static IParticleUpdater	ms_DefaultUpdater;
@@ -329,28 +162,5 @@ namespace Poc1.Particles.Classes
 
 		#endregion
 
-
-		#region IParticleFactory Members
-
-		/// <summary>
-		/// Creates a new particle
-		/// </summary>
-		public IParticle CreateParticle( )
-		{
-			ParticleBase particle = new ParticleBase( );
-			particle.Position = Frame.Translation;
-			m_Particles.Add( particle );
-			return particle;
-		}
-
-		/// <summary>
-		/// Destroys an existing particle
-		/// </summary>
-		public void DestroyParticle( IParticle particle )
-		{
-			m_Particles.Remove( particle );
-		}
-
-		#endregion
 	}
 }

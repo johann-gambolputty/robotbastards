@@ -21,14 +21,6 @@ namespace Poc1.Particles.Interfaces
 		}
 
 		/// <summary>
-		/// Gets/sets the maximum number of particles. The default for this is 256
-		/// </summary>
-		int MaximumNumberOfParticles
-		{
-			get; set;
-		}
-
-		/// <summary>
 		/// Enables/disables particle spawning.
 		/// </summary>
 		bool EnableSpawning
@@ -37,9 +29,9 @@ namespace Poc1.Particles.Interfaces
 		}
 
 		/// <summary>
-		/// Gets the object used to create new particles, and destroy old particles
+		/// Gets the buffer containing all the particles in this system
 		/// </summary>
-		IParticleFactory ParticleFactory
+		IParticleBuffer Buffer
 		{
 			get;
 		}
@@ -83,7 +75,7 @@ namespace Poc1.Particles.Interfaces
 		/// Gets/sets the object that determines the lifespan of particles. 
 		/// </summary>
 		/// <remarks>
-		/// If null, particles will never be destroyed, until <see cref="MaximumNumberOfParticles"/> is reached, 
+		/// If null, particles will never be destroyed, until <see cref="IParticleBuffer.MaximumNumberOfParticles"/> is reached, 
 		/// at which point any newly spawned particles will replace the eldest particles in the system.
 		/// By default, each particle system should have a default killer.
 		/// </remarks>
