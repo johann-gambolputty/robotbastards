@@ -18,6 +18,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -26,6 +27,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -37,14 +39,14 @@
     <Compile Include="Classes\ParticleBase.cs" />
     <Compile Include="Classes\NullParticleUpdater.cs" />
     <Compile Include="Classes\ParticleAgeKiller.cs" />
+    <Compile Include="Classes\ParticleBuffer.cs" />
     <Compile Include="Classes\ParticleDebugRenderer.cs" />
     <Compile Include="Classes\ParticleSystem.cs" />
     <Compile Include="Classes\PointParticleSpawner.cs" />
     <Compile Include="Classes\RandomSpawnRate.cs" />
     <Compile Include="Classes\SpawnRate.cs" />
     <Compile Include="Classes\SpawnRateFunction.cs" />
-    <Compile Include="Interfaces\IParticle.cs" />
-    <Compile Include="Interfaces\IParticleFactory.cs" />
+    <Compile Include="Interfaces\IParticleBuffer.cs" />
     <Compile Include="Interfaces\IParticleKiller.cs" />
     <Compile Include="Interfaces\IParticleRenderer.cs" />
     <Compile Include="Interfaces\IParticleUpdater.cs" />

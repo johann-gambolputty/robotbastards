@@ -9,8 +9,8 @@ namespace Poc1.Particles.Interfaces
 	public interface IParticleRenderer
 	{
 		/// <summary>
-		/// Renders a collection of particles
+		/// Renders a particle system
 		/// </summary>
-		void RenderParticles( IRenderContext context, IParticleSystem particleSystem, IEnumerable<IParticle> particles );
+		void RenderParticles( IRenderContext context, IParticleSystem particleSystem );
 	}
 }

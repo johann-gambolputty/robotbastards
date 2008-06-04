@@ -26,14 +26,12 @@ namespace Poc1.Particles.Classes
 		/// <summary>
 		/// Kills particles
 		/// </summary>
-		public void KillParticles( IParticleFactory factory, IEnumerable<IParticle> particles )
+		public void KillParticles( IParticleSystem particles )
 		{
-			foreach ( ParticleBase particle in particles )
+			ParticleFieldIterator iter = new ParticleFieldIterator( particles.Buffer, ParticleBase.Age );
+			for ( int i = 0; i < particles.Buffer.NumActiveParticles; ++i )
 			{
-				if ( particle.Age >= DeathAge )
-				{
-					factory.DestroyParticle( particle );
-				}
+				iter.GetPosition( );
 			}
 		}
 

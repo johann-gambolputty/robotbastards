@@ -11,10 +11,9 @@ namespace Poc1.Particles.Interfaces
 	/// </remarks>
 	public interface IParticleSpawner
 	{
-
 		/// <summary>
 		/// Spawns a given number of particles
 		/// </summary>
-		void SpawnParticles( IParticleFactory factory, int count, IList<IParticle> particles );
+		void SpawnParticles( IParticleSystem particles, int count );
 	}
 }
