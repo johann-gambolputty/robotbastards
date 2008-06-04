@@ -1,4 +1,5 @@
 #pragma once
+#include "TerrainFunction.h"
 
 #pragma managed( push, on )
 
@@ -16,7 +17,7 @@ namespace Poc1
 
 		namespace Terrain
 		{
-			public ref class FractalTerrainParameters
+			public ref class FractalTerrainParameters : public TerrainFunctionParameters
 			{
 				public :
 

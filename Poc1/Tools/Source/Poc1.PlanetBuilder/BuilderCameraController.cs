@@ -105,11 +105,11 @@ namespace Poc1.PlanetBuilder
 					break;
 
 				case Commands.PitchUp:
-					m_Camera.ChangePitch( -0.1f );
+					m_Camera.ChangePitch( 0.1f );
 					break;
 
 				case Commands.PitchDown:
-					m_Camera.ChangePitch( 0.1f );
+					m_Camera.ChangePitch( -0.1f );
 					break;
 
 				case Commands.YawLeft:

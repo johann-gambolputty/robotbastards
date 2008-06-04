@@ -14,8 +14,24 @@ namespace Poc1
 		{
 			//	----------------------------------------------------------------------------- Types
 
+			///	\brief	Base class for sphere geometry displacers. Provides functions required by SseTerrainGenerator
+			class SseSphereTerrainDisplacer : public SseTerrainDisplacer
+			{
+				public :
+
+					inline void GetUpVector( __m128& xxxx, __m128& yyyy, __m128& zzzz )
+					{
+						SetLength( xxxx, yyyy, zzzz, Constants::Fc_1 );
+					}
+
+					inline void MapToDisplacementSpace( __m128& xxxx, __m128& yyyy, __m128& zzzz )
+					{
+						SetLength( xxxx, yyyy, zzzz, GetFunctionScale( ) );
+					}
+			};
+
 			///	\brief	SseSphereTerrainGenerator Displacer type. Does not perturb input positions
-			class SseFlatSphereTerrainDisplacer : public SseTerrainDisplacer
+			class SseFlatSphereTerrainDisplacer : public SseSphereTerrainDisplacer
 			{
 				public :
 
@@ -31,7 +47,7 @@ namespace Poc1
 
 			///	\brief	Displacer decorator class. Adds x-z displacement to an existing displacer
 			template < typename BaseDisplacer, typename FunctionType >
-			class _CRT_ALIGN( 16 ) SseSphereFunction3dGroundOffsetDisplacer : public SseTerrainDisplacer
+			class _CRT_ALIGN( 16 ) SseSphereFunction3dGroundOffsetDisplacer : public SseSphereTerrainDisplacer
 			{
 				public :
 
@@ -39,6 +55,7 @@ namespace Poc1
 					{
 						m_XOffset = _mm_set1_ps( 3.14f );
 						m_ZOffset = _mm_set1_ps( 6.28f );
+						m_Influence = _mm_set1_ps( 0.1f );
 					}
 
 					///	\brief	Sets the influence of this displacer. 0 means no influence, 1 means that offsets
@@ -130,7 +147,7 @@ namespace Poc1
 
 			///	\brief	SseSphereTerrainGenerator Displacer type. Uses a function taking 4 3d input vectors to generate 4 heights
 			template < typename FunctionType >
-			class _CRT_ALIGN( 16 ) SseSphereFunction3dDisplacer : public SseTerrainDisplacer
+			class _CRT_ALIGN( 16 ) SseSphereFunction3dDisplacer : public SseSphereTerrainDisplacer
 			{
 				public :
 

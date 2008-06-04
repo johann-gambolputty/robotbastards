@@ -123,26 +123,29 @@ namespace Poc1.Universe.Classes.Rendering
 			}
 		}
 
-		private static SphereTerrainGenerator DefaultTerrainGenerator( )
+		private static TerrainGenerator DefaultTerrainGenerator( )
 		{
 			TerrainFunction heightFunction = new TerrainFunction( TerrainFunctionType.RidgedFractal );
 			TerrainFunction groundFunction = new TerrainFunction( TerrainFunctionType.SimpleFractal );
 
-			return new SphereTerrainGenerator( heightFunction, groundFunction );
+			( ( FractalTerrainParameters )heightFunction.Parameters ).Seed = TimeSeed;
+			( ( FractalTerrainParameters )groundFunction.Parameters ).Seed = TimeSeed;
+
+			return new TerrainGenerator( TerrainGeometry.Sphere, heightFunction, groundFunction );
 		}
 
-		private readonly SphereTerrainGenerator m_Gen = DefaultTerrainGenerator( );
+		private readonly TerrainGenerator m_Gen = DefaultTerrainGenerator( );
 		private readonly SpherePlanet m_Planet;
 		private readonly float m_RenderRadius;
 
 		/// <summary>
 		/// Gets the current time in ticks. Used to seed the PNG in the terrain generator
 		/// </summary>
-		private static uint TimeSeed
+		private static int TimeSeed
 		{
 			get
 			{
-				return ( uint )System.DateTime.Now.Ticks;
+				return ( int )System.DateTime.Now.Ticks;
 			}
 		}
 

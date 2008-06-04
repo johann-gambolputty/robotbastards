@@ -51,7 +51,7 @@ namespace Poc1.PlanetBuilder
 			// 
 			// testDisplay
 			// 
-			this.testDisplay.AllowArrowKeyInputs = false;
+			this.testDisplay.AllowArrowKeyInputs = true;
 			this.testDisplay.ColourBits = ( ( byte )( 32 ) );
 			this.testDisplay.ContinuousRendering = true;
 			this.testDisplay.DepthBits = ( ( byte )( 24 ) );

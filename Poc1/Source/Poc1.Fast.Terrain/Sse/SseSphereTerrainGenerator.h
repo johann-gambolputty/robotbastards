@@ -1,11 +1,9 @@
 #pragma once
 #pragma managed(push, off)
 
-#include "TerrainGenerator.h"
+#include "SseTerrainGenerator.h"
 #include "SseSphereTerrainDisplacers.h"
 
-#include <Sse\SseUtils.h>
-#include <UVector3.h>
 #include <UColour.h>
 
 #include <math.h>
@@ -20,7 +18,7 @@ namespace Poc1
 			//	----------------------------------------------------------------------------- Types
 			
 			///	\brief	Base class for fast sphere terrain generators
-			class SseSphereTerrainGenerator : public TerrainGenerator
+			class SseSphereTerrainGenerator : public SseTerrainGenerator
 			{
 				public :
 
@@ -106,22 +104,6 @@ namespace Poc1
 					__m128 m_ShiftDownXxxx;
 					__m128 m_ShiftDownYyyy;
 					__m128 m_ShiftDownZzzz;
-
-					inline void SetupVertex( UTerrainVertex& vertex, const int offset, const __m128& x, const __m128& y, const __m128& z, const __m128& nX, const __m128& nY, const __m128& nZ, const __m128& s, const __m128& e, const __m128& u, const float v  )
-					{
-						vertex.SetPosition( x.m128_f32[ offset ], y.m128_f32[ offset ], z.m128_f32[ offset ] );
-						vertex.SetNormal( nX.m128_f32[ offset ], nY.m128_f32[ offset ], nZ.m128_f32[ offset ] );
-						vertex.SetTerrainUv( u.m128_f32[ offset ], v );
-						vertex.SetTerrainParameters( e.m128_f32[ offset ], s.m128_f32[ offset ] );
-					}
-
-					inline void SetupVertex( UTerrainVertex& vertex, const int offset, const float* x, const float* y, const float* z, const float* nX, const float* nY, const float* nZ, const float* s, const float* e, const float* u, const float v )
-					{
-						vertex.SetPosition( x[ offset ], y[ offset ], z[ offset ] );
-						vertex.SetNormal( nX[ offset ], nY[ offset ], nZ[ offset ] );
-						vertex.SetTerrainUv( u[ offset ], v );
-						vertex.SetTerrainParameters( s[ offset ], e[ offset ] );
-					}
 
 					inline void GetInitialErrorHeights( const __m128& xxxx, const __m128& yyyy, const __m128& zzzz, float& lastHeight, float& lastIntHeight )
 					{
@@ -379,22 +361,6 @@ namespace Poc1
 
 						v->SetTerrainParameters( height, slope );
 					}
-
-					inline void AssignShiftVectors( const float* xStep, const float* zStep )
-					{
-						UVector3 xStepVec( xStep );
-						UVector3 zStepVec( zStep );
-						xStepVec.SetLength( m_SmallestX );
-						zStepVec.SetLength( m_SmallestZ );
-
-						m_ShiftRightXxxx 	= _mm_set1_ps( xStepVec.m_X );
-						m_ShiftRightYyyy 	= _mm_set1_ps( xStepVec.m_Y );
-						m_ShiftRightZzzz 	= _mm_set1_ps( xStepVec.m_Z );
-						m_ShiftDownXxxx	 	= _mm_set1_ps( zStepVec.m_X );
-						m_ShiftDownYyyy		= _mm_set1_ps( zStepVec.m_Y );
-						m_ShiftDownZzzz		= _mm_set1_ps( zStepVec.m_Z );
-					}
-
 			};
 			
 			//	---------------------------------------------------------------------------------------
@@ -552,8 +518,6 @@ namespace Poc1
 				const __m128 rowYInc = _mm_set1_ps( zStep[ 1 ] );
 				const __m128 rowZInc = _mm_set1_ps( zStep[ 2 ] );
 				
-
-
 				//	Point to the positions and normals in the first 4 vertices
 				UTerrainVertex* v0 = vertices;
 				UTerrainVertex* v1 = vertices + 1;

@@ -3,49 +3,200 @@
 #include "FractalTerrainParameters.h"
 #include "Mem.h"
 #include "Sse\SseSphereTerrainGenerator.h"
+#include "Sse\SsePlaneTerrainGenerator.h"
+
+///	\page	Adding new terrain function types
+///
+///	1) Implement the function in a function class (see e.g SseSimpleFractal)
+///	2) Add to the TerrainFunctionType enum
+///	3) If the function requires a parameters class, create on (see e.g. FractalTerrainParameters)
+///		3.1) Be sure to add a Setup() call that sets up the function class (see e.g. FractalTerrainParameters::Setup(SseSimpleFractal&))
+///	4) Associate the function class and the parameters by overloading the FunctionTypes class (see TerrainFunction.cpp for details)
+///	5) Add support for the new function in the switch statement of TerrainGeneratorFactory<>::Create()
+///	6) Add support for the new function in the switch statement of CreateTerrainGenerator()
+///	Done!
+///
+
+///	\page	Adding new terrain geometry types
+///
+///	1) Implement the geometry generator class (see e.g. SseSphereTerrainGeneratorT)
+///	2) Add displacer classes (see e.g. SseFlatSphereTerrainDisplacer). There should be a flat displacer, a
+///		height function displacer, and a ground function displacer.
+///	3) Add to the TerrainGeometry enum
+///	4) Associate the new geometry enum value with the displacer types using the GeometryTypes class (see TerrainFunction.cpp for details)
+///	5) Add support for the new geometry type in the switch statements of CreateTerrainGenerator()
+///	Done!
+///
 
 namespace Poc1
 {
 	namespace Fast
 	{
 		namespace Terrain
-		{
-			template < typename HeightFunction, typename ParametersType >
-			SseSphereTerrainGeneratorT< SseSphereFunction3dDisplacer< HeightFunction > >* CreateSphereFunction( ParametersType^ params )
+		{	
+			template < TerrainGeometry >
+			struct GeometryTypes
 			{
-				SseSphereTerrainGeneratorT< SseSphereFunction3dDisplacer< HeightFunction > >* result;
-				result = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseSphereFunction3dDisplacer< HeightFunction > >( );
-				params->Setup( result->GetDisplacer( ).GetFunction( ) );
-				return result;
-			}
-			
-			template < typename HeightFunction, typename HeightParametersType, typename GroundFunction, typename GroundParametersType >
-			SseSphereTerrainGeneratorT< SseSphereFull3dDisplacer< GroundFunction, HeightFunction > >* CreateSphereFunction( HeightParametersType^ heightParams, GroundParametersType^ groundParams )
-			{
-				SseSphereTerrainGeneratorT< SseSphereFull3dDisplacer< GroundFunction, HeightFunction > >* result;
-				result = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseSphereFull3dDisplacer< GroundFunction, HeightFunction > >( );
-				groundParams->Setup( result->GetDisplacer( ).GetFunction( ) );
-				heightParams->Setup( result->GetDisplacer( ).GetBaseDisplacer( ).GetFunction( ) );
-				return result;
-			}
+			};
 
-			template < typename HeightFunction, typename HeightParametersType >
-			TerrainGenerator* CreateSphereFunction( HeightParametersType^ heightParameters, TerrainFunctionType groundFunction, System::Object^ groundParameters )
+			template < >
+			struct GeometryTypes< TerrainGeometry::Sphere >
 			{
-				switch ( groundFunction )
+				typedef SseFlatSphereTerrainDisplacer FlatDisplacer;
+
+				template < typename FunctionClass >
+				struct HeightDisplacer
 				{
-					case TerrainFunctionType::SimpleFractal :
-						return CreateSphereFunction< HeightFunction, HeightParametersType, SseSimpleFractal >( heightParameters, ( FractalTerrainParameters^ )groundParameters );
-						
-					case TerrainFunctionType::RidgedFractal :
-						return CreateSphereFunction< HeightFunction, HeightParametersType, SseRidgedFractal >( heightParameters, ( FractalTerrainParameters^ )groundParameters );
+					typedef SseSphereFunction3dDisplacer< FunctionClass > Type;
+				};
+				
+				template < typename FunctionClass, typename BaseDisplacer >
+				struct GroundDisplacer
+				{
+					typedef SseSphereFunction3dGroundOffsetDisplacer< BaseDisplacer, FunctionClass > Type;
+				};
+
+				template < typename Displacer >
+				struct TerrainGenerator
+				{
+					typedef SseSphereTerrainGeneratorT< Displacer > Type;
+				};
+			};
+			
+			template < >
+			struct GeometryTypes< TerrainGeometry::Plane >
+			{
+				typedef SseFlatPlaneTerrainDisplacer FlatDisplacer;
+
+				template < typename FunctionClass >
+				struct HeightDisplacer
+				{
+					typedef SseSphereFunction3dDisplacer< FunctionClass > Type;
+				};
+				
+				template < typename FunctionClass, typename BaseDisplacer >
+				struct GroundDisplacer
+				{
+					typedef SseSphereFunction3dGroundOffsetDisplacer< BaseDisplacer, FunctionClass > Type;
+				};
+
+				template < typename Displacer >
+				struct TerrainGenerator
+				{
+					typedef SsePlaneTerrainGeneratorT< Displacer > Type;
+				};
+			};
+
+			template < TerrainFunctionType FunctionType >
+			struct FunctionTypes
+			{
+			};
+			
+			template < >
+			struct FunctionTypes< TerrainFunctionType::Flat >
+			{
+			};
+			
+			template < >
+			struct FunctionTypes< TerrainFunctionType::SimpleFractal >
+			{
+				typedef SseSimpleFractal			ClassType;
+				typedef FractalTerrainParameters	ParametersType;
+			};
+			
+			template < >
+			struct FunctionTypes< TerrainFunctionType::RidgedFractal >
+			{
+				typedef SseRidgedFractal			ClassType;
+				typedef FractalTerrainParameters	ParametersType;
+			};
+
+			template < TerrainGeometry Geometry >
+			struct TerrainGeneratorFactory : public GeometryTypes< Geometry >
+			{
+				static UTerrainGenerator* Create( )
+				{
+					return new ( Aligned( 16 ) ) TerrainGenerator< FlatDisplacer >::Type( );
 				}
-				throw gcnew System::NotImplementedException( );
-			//	SseSphereTerrainGeneratorT< SseFull3dDisplacer< GroundFunction, HeightFunction > >* result;
-			//	result = new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseFull3dDisplacer< GroundFunction, HeightFunction > >( );
-			//	groundParams->Setup( result->GetDisplacer( ).GetFunction( ) );
-			//	heightParams->Setup( result->GetDisplacer( ).GetBaseDisplacer( ).GetFunction( ) );
-			//	return result;
+
+				template < TerrainFunctionType HeightFunctionType >
+				static UTerrainGenerator* Create( TerrainFunctionParameters^ heightParams )
+				{
+					typedef FunctionTypes< HeightFunctionType >::ClassType HClass;
+					typedef FunctionTypes< HeightFunctionType >::ParametersType HParamsType;
+					typedef TerrainGenerator< HeightDisplacer< HClass >::Type >::Type GeneratorType;
+
+					GeneratorType* generator = new ( Aligned( 16 ) ) GeneratorType( );
+					( ( HParamsType^ )heightParams )->Setup( generator->GetDisplacer( ).GetFunction( ) );
+
+					return generator;
+				}
+				
+				template < TerrainFunctionType HeightFunctionType, TerrainFunctionType GroundFunctionType >
+				static UTerrainGenerator* Create( TerrainFunctionParameters^ heightParams, TerrainFunctionParameters^ groundParams )
+				{
+					typedef FunctionTypes< HeightFunctionType >::ClassType HClass;
+					typedef FunctionTypes< HeightFunctionType >::ParametersType HParamsType;
+					
+					typedef FunctionTypes< GroundFunctionType >::ClassType GClass;
+					typedef FunctionTypes< GroundFunctionType >::ParametersType GParamsType;
+
+					typedef HeightDisplacer< HClass >::Type HeightDisplacerType;
+					typedef GroundDisplacer< GClass, HeightDisplacerType >::Type GroundDisplacerType;
+					typedef TerrainGenerator< GroundDisplacerType >::Type GeneratorType;
+
+					GeneratorType* generator = new ( Aligned( 16 ) ) GeneratorType( );
+
+					( ( HParamsType^ )heightParams )->Setup( generator->GetDisplacer( ).GetBaseDisplacer( ).GetFunction( ) );
+					( ( GParamsType^ )groundParams )->Setup( generator->GetDisplacer( ).GetFunction( ) );
+
+					return generator;
+				}
+				
+				template < TerrainFunctionType HeightFunctionType >
+				static UTerrainGenerator* Create( TerrainFunctionParameters^ heightParams, TerrainFunction^ groundFunction )
+				{
+					switch ( groundFunction->FunctionType )
+					{
+						case TerrainFunctionType::Flat			: return Create< HeightFunctionType >( heightParams );
+						case TerrainFunctionType::SimpleFractal	: return Create< HeightFunctionType, TerrainFunctionType::SimpleFractal >( heightParams, groundFunction->Parameters );
+						case TerrainFunctionType::RidgedFractal	: return Create< HeightFunctionType, TerrainFunctionType::RidgedFractal >( heightParams, groundFunction->Parameters );
+					}
+
+					throw gcnew System::NotSupportedException( "Unsupported ground function type" );
+				}
+			};
+
+			UTerrainGenerator* CreateTerrainGenerator( TerrainGeometry geometry, TerrainFunction^ heightFunction, TerrainFunction^ groundFunction )
+			{
+				TerrainFunctionType functionType = ( heightFunction == nullptr ) ? TerrainFunctionType::Flat : heightFunction->FunctionType;
+				switch ( functionType )
+				{
+					case TerrainFunctionType::Flat :
+						switch ( geometry )
+						{
+							case TerrainGeometry::Sphere	: return TerrainGeneratorFactory< TerrainGeometry::Sphere >::Create( );
+							case TerrainGeometry::Plane		: return TerrainGeneratorFactory< TerrainGeometry::Plane >::Create( );
+						}
+						throw gcnew System::NotSupportedException( "Geometry type not supported for flat terrain" );
+
+					case TerrainFunctionType::SimpleFractal :
+						switch ( geometry )
+						{
+							case TerrainGeometry::Sphere	: return TerrainGeneratorFactory< TerrainGeometry::Sphere >::Create< TerrainFunctionType::SimpleFractal >( heightFunction->Parameters, groundFunction );
+							case TerrainGeometry::Plane		: return TerrainGeneratorFactory< TerrainGeometry::Plane >::Create< TerrainFunctionType::SimpleFractal >( heightFunction->Parameters, groundFunction );
+						}
+						throw gcnew System::NotSupportedException( "Geometry type not supported for simple fractals" );
+
+					case TerrainFunctionType::RidgedFractal	:
+						switch ( geometry )
+						{
+							case TerrainGeometry::Sphere	: return TerrainGeneratorFactory< TerrainGeometry::Sphere >::Create< TerrainFunctionType::RidgedFractal >( heightFunction->Parameters, groundFunction );
+							case TerrainGeometry::Plane		: return TerrainGeneratorFactory< TerrainGeometry::Plane >::Create< TerrainFunctionType::RidgedFractal >( heightFunction->Parameters, groundFunction );
+						}
+						throw gcnew System::NotSupportedException( "Geometry type not supported for ridged fractals" );
+				}
+				throw gcnew System::NotSupportedException( "Height function type not supported" );
 			}
 
 
@@ -65,72 +216,41 @@ namespace Poc1
 				throw gcnew System::NotImplementedException( );
 			}
 
-			System::Object^ TerrainFunction::CreateParameters( TerrainFunctionType functionType )
+			TerrainFunctionParameters^ TerrainFunction::CreateParameters( TerrainFunctionType functionType )
 			{
 				switch ( functionType )
 				{
+					case TerrainFunctionType::Flat : return nullptr;
 					case TerrainFunctionType::SimpleFractal : return gcnew FractalTerrainParameters( );
 					case TerrainFunctionType::RidgedFractal : return gcnew FractalTerrainParameters( );
 				}
 				throw gcnew System::NotImplementedException( );
 			}
 
-			TerrainGenerator* TerrainFunction::CreateGenerator( TerrainGeometry geometry, TerrainFunction^ heightFunction )
+			UTerrainGenerator* TerrainFunction::CreateGenerator( TerrainGeometry geometry, TerrainFunction^ heightFunction )
 			{
-				switch ( geometry )
+				if ( heightFunction == nullptr )
 				{
-					case TerrainGeometry::Plane :
-						{
-							switch ( heightFunction->FunctionType )
-							{
-								case TerrainFunctionType::Flat :
-								case TerrainFunctionType::SimpleFractal : 
-								case TerrainFunctionType::RidgedFractal : break;
-							}
-							throw gcnew System::NotImplementedException( );
-						};
-					case TerrainGeometry::Sphere :
-						{
-							switch ( heightFunction->FunctionType )
-							{
-								case TerrainFunctionType::Flat :
-									return new ( Aligned( 16 ) ) SseSphereTerrainGeneratorT< SseFlatSphereTerrainDisplacer >( );
-								case TerrainFunctionType::SimpleFractal : return CreateSphereFunction< SseSimpleFractal >( ( FractalTerrainParameters^ )heightFunction->Parameters );
-								case TerrainFunctionType::RidgedFractal : return CreateSphereFunction< SseRidgedFractal >( ( FractalTerrainParameters^ )heightFunction->Parameters );
-							}
-						};
+					throw gcnew System::ArgumentNullException( "heightFunction" );
 				}
-
-				return 0;
+				return CreateTerrainGenerator( geometry, heightFunction, nullptr );
 			}
 
-			TerrainGenerator* TerrainFunction::CreateGenerator( TerrainGeometry geometry, TerrainFunction^ heightFunction, TerrainFunction^ groundFunction )
+			UTerrainGenerator* TerrainFunction::CreateGenerator( TerrainGeometry geometry, TerrainFunction^ heightFunction, TerrainFunction^ groundFunction )
 			{
-				switch ( geometry )
+				if ( groundFunction == nullptr )
 				{
-					case TerrainGeometry::Plane :
-						{
-							switch ( heightFunction->FunctionType )
-							{
-								case TerrainFunctionType::SimpleFractal : 
-								case TerrainFunctionType::RidgedFractal : break;
-							}
-							throw gcnew System::NotImplementedException( );
-						};
-					case TerrainGeometry::Sphere :
-						{
-							switch ( heightFunction->FunctionType )
-							{
-								case TerrainFunctionType::SimpleFractal :
-									return CreateSphereFunction< SseSimpleFractal >( ( FractalTerrainParameters^ )heightFunction->Parameters, groundFunction->FunctionType, groundFunction->Parameters );
-								case TerrainFunctionType::RidgedFractal :
-									return CreateSphereFunction< SseRidgedFractal >( ( FractalTerrainParameters^ )heightFunction->Parameters, groundFunction->FunctionType, groundFunction->Parameters );
-							}
-							throw gcnew System::NotImplementedException( );
-						};
+					return CreateGenerator( geometry, heightFunction );
 				}
-
-				return 0;
+				if ( heightFunction == nullptr )
+				{
+					throw gcnew System::ArgumentNullException( "heightFunction" );
+				}
+				if ( groundFunction == nullptr )
+				{
+					return CreateTerrainGenerator( geometry, heightFunction, nullptr );
+				}
+				return CreateTerrainGenerator( geometry, heightFunction, groundFunction );
 			}
 		};
 	};

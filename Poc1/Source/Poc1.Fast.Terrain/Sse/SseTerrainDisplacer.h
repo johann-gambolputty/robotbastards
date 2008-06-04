@@ -1,4 +1,5 @@
 #pragma once
+#include <emmintrin.h>
 
 namespace Poc1
 {

@@ -222,10 +222,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Source\SphereTerrainGenerator.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Stdafx.cpp"
 				>
 				<FileConfiguration
@@ -249,12 +245,20 @@
 				RelativePath=".\Source\TerrainFunction.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\Source\TerrainGenerator.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Sse"
 			>
 			<File
 				RelativePath=".\Sse\SsePlaneTerrainDisplacers.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Sse\SsePlaneTerrainGenerator.h"
 				>
 			</File>
 			<File
@@ -269,6 +273,10 @@
 				RelativePath=".\Sse\SseTerrainDisplacer.h"
 				>
 			</File>
+			<File
+				RelativePath=".\Sse\SseTerrainGenerator.h"
+				>
+			</File>
 			<Filter
 				Name="Sse Source"
 				>
@@ -278,10 +286,6 @@
 				</File>
 			</Filter>
 		</Filter>
-		<File
-			RelativePath=".\FlatTerrainGenerator.h"
-			>
-		</File>
 		<File
 			RelativePath=".\FractalTerrainParameters.h"
 			>
@@ -295,10 +299,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\SphereTerrainGenerator.h"
-			>
-		</File>
-		<File
 			RelativePath=".\Stdafx.h"
 			>
 		</File>
@@ -308,6 +308,10 @@
 		</File>
 		<File
 			RelativePath=".\TerrainGenerator.h"
+			>
+		</File>
+		<File
+			RelativePath=".\UTerrainGenerator.h"
 			>
 		</File>
 		<File

@@ -11,7 +11,6 @@ namespace Poc1
 	{
 		namespace Terrain
 		{
-
 			void FractalTerrainParameters::Setup( SseSimpleFractal& fractal )
 			{
 				if ( Seed != -1 )
