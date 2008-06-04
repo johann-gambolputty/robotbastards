@@ -1,5 +1,5 @@
 #pragma once
-#pragma managed(push, on)
+#pragma managed( push, on )
 
 namespace Poc1
 {
@@ -7,7 +7,12 @@ namespace Poc1
 	{
 		namespace Terrain
 		{
-			class TerrainGenerator;
+			#pragma managed( off )
+
+			class UTerrainGenerator;
+			class SseTerrainDisplacer;
+
+			#pragma managed( on )
 
 			public enum class TerrainGeometry
 			{
@@ -22,38 +27,46 @@ namespace Poc1
 				RidgedFractal
 			};
 
+			///	\brief	Base class for terrain function parameter classes
+			public ref class TerrainFunctionParameters
+			{
+			};
+
+			///	\brief	Terrain function object
 			public ref class TerrainFunction
 			{
 				public :
 
 					TerrainFunction( TerrainFunctionType functionType );
 
+					///	\brief	Gets the function type
 					property TerrainFunctionType FunctionType
 					{
 						TerrainFunctionType get( );
 					}
 
-					property System::Object^ Parameters
+					///	\brief	Gets the function parameters
+					property TerrainFunctionParameters^ Parameters
 					{
-						System::Object^ get( );
+						TerrainFunctionParameters^ get( );
 					}
 
 					///	\brief	Gets the name of a specified terrain function type
 					static System::String^ Name( TerrainFunctionType functionType );
 
 					///	\brief	Creates a parameters object for a specified terrain function type
-					static System::Object^ CreateParameters( TerrainFunctionType functionType );
+					static TerrainFunctionParameters^ CreateParameters( TerrainFunctionType functionType );
 
 					///	\brief	Creates a height-only terrain generator
-					static TerrainGenerator* CreateGenerator( TerrainGeometry geometry, TerrainFunction^ heightFunction );
+					static UTerrainGenerator* CreateGenerator( TerrainGeometry geometry, TerrainFunction^ heightFunction );
 
 					///	\brief	Creates a height and ground displacement terrain generator
-					static TerrainGenerator* CreateGenerator( TerrainGeometry geometry, TerrainFunction^ heightFunction, TerrainFunction^ groundFunction );
+					static UTerrainGenerator* CreateGenerator( TerrainGeometry geometry, TerrainFunction^ heightFunction, TerrainFunction^ groundFunction );
 
 				private :
 
 					TerrainFunctionType m_FunctionType;
-					System::Object^ m_Parameters;
+					TerrainFunctionParameters^ m_Parameters;
 			};
 
 			inline TerrainFunctionType TerrainFunction::FunctionType::get( )
@@ -61,7 +74,7 @@ namespace Poc1
 				return m_FunctionType;
 			}
 
-			inline System::Object^ TerrainFunction::Parameters::get( )
+			inline  TerrainFunctionParameters^ TerrainFunction::Parameters::get( )
 			{
 				return m_Parameters;
 			}

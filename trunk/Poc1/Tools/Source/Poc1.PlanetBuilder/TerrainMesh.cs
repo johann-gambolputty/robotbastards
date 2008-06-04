@@ -1,14 +1,12 @@
 using System;
 using Poc1.Fast.Terrain;
 using Poc1.Universe;
-using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Rendering;
 using Poc1.Universe.Classes.Rendering;
 using Rb.Assets;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
-using Poc1.Universe.Classes.Cameras;
 using Rb.Rendering.Interfaces.Objects.Cameras;
 using Rb.Rendering.Textures;
 
@@ -36,8 +34,7 @@ namespace Poc1.PlanetBuilder
 
 			m_NoiseTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/Noise.jpg" );
 
-
-			Point3 origin = new Point3( -width / 2, 0, -depth / 2 );
+			Point3 origin = new Point3( -width / 2, 1024, -depth / 2 );
 			Vector3 xAxis = new Vector3( width, 0, 0 );
 			Vector3 zAxis = new Vector3( 0, 0, depth );
 
@@ -91,11 +88,11 @@ namespace Poc1.PlanetBuilder
 		public void Render( IRenderContext context )
 		{
 			IProjectionCamera camera = ( IProjectionCamera )Graphics.Renderer.Camera;
-			Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin, 0.2f );
-			Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin + Vector3.XAxis, 0.2f );
-			Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin + Vector3.YAxis, 0.2f );
-			Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin + Vector3.ZAxis, 0.2f );
-			return;
+			//Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin, 0.2f );
+			//Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin + Vector3.XAxis, 0.2f );
+			//Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin + Vector3.YAxis, 0.2f );
+			//Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin + Vector3.ZAxis, 0.2f );
+
 			m_TerrainTechnique.Effect.Parameters[ "TerrainPackTexture" ].Set( m_TerrainPackTexture );
 			m_TerrainTechnique.Effect.Parameters[ "TerrainTypeTexture" ].Set( m_TerrainTypesTexture );
 			m_TerrainTechnique.Effect.Parameters[ "NoiseTexture" ].Set( m_NoiseTexture );
@@ -104,8 +101,20 @@ namespace Poc1.PlanetBuilder
 			m_RootPatch.Update( camera, this );
 
 			m_Vertices.VertexBuffer.Begin( );
-			context.ApplyTechnique( m_TerrainTechnique, m_RootPatch );
+		//	context.ApplyTechnique( m_TerrainTechnique, m_RootPatch );
+			m_RState.Begin( );
+			m_RootPatch.Render( context );
+			m_RState.End( );
 			m_Vertices.VertexBuffer.End( );
+		}
+
+		private readonly IRenderState m_RState = CreateTestRenderState( );
+		private static IRenderState CreateTestRenderState( )
+		{
+			IRenderState rs = Graphics.Factory.CreateRenderState( );
+			rs.Colour = System.Drawing.Color.Blue;
+			rs.FaceRenderMode = PolygonRenderMode.Lines;
+			return rs;
 		}
 
 		#endregion
@@ -120,16 +129,22 @@ namespace Poc1.PlanetBuilder
 		private readonly float m_MaxHeight;
 		private readonly TerrainQuadPatchVertices m_Vertices;
 		private readonly TerrainQuadPatch m_RootPatch;
-		private SphereTerrainGenerator m_Gen = DefaultTerrainGenerator( );
+		private TerrainGenerator m_Gen = DefaultTerrainGenerator( );
 
-		private static SphereTerrainGenerator DefaultTerrainGenerator( )
+		private static TerrainGenerator DefaultTerrainGenerator( )
 		{
-			TerrainFunction heightFunction = new TerrainFunction( TerrainFunctionType.RidgedFractal );
-			TerrainFunction groundFunction = new TerrainFunction( TerrainFunctionType.SimpleFractal );
+			TerrainFunction heightFunction = new TerrainFunction( TerrainFunctionType.Flat );
+			TerrainFunction groundFunction = null; // new TerrainFunction( TerrainFunctionType.SimpleFractal );
 
-			return new SphereTerrainGenerator( heightFunction, groundFunction );
+			TerrainGenerator gen = new TerrainGenerator( TerrainGeometry.Plane, heightFunction, groundFunction );
+
+			gen.SetSmallestStepSize( 0.05f, 0.05f );
+			gen.Setup( 100, 200, 5 );
+
+			DebugInfo.DisableTerainSkirts = true;
+
+			return gen;
 		}
-
 
 		/// <summary>
 		/// Gets the current time in ticks. Used to seed the PNG in the terrain generator
