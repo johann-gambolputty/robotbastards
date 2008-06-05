@@ -1,6 +1,4 @@
 
-using System.Collections.Generic;
-
 namespace Poc1.Particles.Interfaces
 {
 	/// <summary>
@@ -9,7 +7,7 @@ namespace Poc1.Particles.Interfaces
 	/// <remarks>
 	/// Provides some standard spawn states for new particles. 
 	/// </remarks>
-	public interface IParticleSpawner
+	public interface IParticleSpawner : IParticleSystemComponent
 	{
 		/// <summary>
 		/// Spawns a given number of particles

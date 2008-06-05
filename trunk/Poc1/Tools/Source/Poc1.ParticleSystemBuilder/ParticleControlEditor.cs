@@ -5,6 +5,9 @@ namespace Poc1.ParticleSystemBuilder
 {
 	public partial class ParticleControlEditor : UserControl
 	{
+		public event Action<object> SelectedControlChanged;
+
+
 		public ParticleControlEditor( )
 		{
 			InitializeComponent( );
@@ -19,6 +22,24 @@ namespace Poc1.ParticleSystemBuilder
 		public object ControlObject
 		{
 			get { return m_Control; }
+		}
+
+		public void Setup( Type[] controlTypes, Type defaultType )
+		{
+			ControlTypes = controlTypes;
+			DefaultControlType = defaultType;
+		}
+
+		public Type DefaultControlType
+		{
+			set
+			{
+				m_DefaultType = value;
+				if ( m_DefaultType != null )
+				{
+					typeComboBox.SelectedItem = FindWrapper( m_DefaultType );
+				}
+			}
 		}
 
 		public Type[] ControlTypes
@@ -40,9 +61,14 @@ namespace Poc1.ParticleSystemBuilder
 				{
 					typeComboBox.SelectedIndex = 0;
 				}
+				if ( m_DefaultType != null )
+				{
+					typeComboBox.SelectedItem = FindWrapper( m_DefaultType );
+				}
 			}
 		}
 
+		private Type m_DefaultType;
 		private Type[] m_Types;
 		private object m_Control;
 
@@ -66,12 +92,33 @@ namespace Poc1.ParticleSystemBuilder
 			private readonly Type m_Type;
 		}
 
+		private TypeWrapper FindWrapper( Type type )
+		{
+			foreach ( TypeWrapper wrapper in typeComboBox.Items )
+			{
+				if ( wrapper.AssociatedType == type )
+				{
+					return wrapper;
+				}
+			}
+			return null;
+		}
+
 		private void typeComboBox_SelectedIndexChanged( object sender, EventArgs e )
 		{
+			if ( typeComboBox.SelectedItem == null )
+			{
+				return;
+			}
 			Type selectedType = ( ( TypeWrapper )typeComboBox.SelectedItem ).AssociatedType;
 			m_Control = Activator.CreateInstance( selectedType );
 
 			controlPropertyGrid.SelectedObject = m_Control;
+
+			if ( SelectedControlChanged != null )
+			{
+				SelectedControlChanged( m_Control );
+			}
 		}
 	}
 }

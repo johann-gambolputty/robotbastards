@@ -51,7 +51,7 @@ namespace Poc1.Particles.Classes
 		/// </summary>
 		public int GetNumberOfParticlesToSpawn( )
 		{
-			throw new System.NotImplementedException( );
+			return 0;
 		}
 
 		#endregion

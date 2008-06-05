@@ -36,20 +36,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\BlunderbussParticleSpawner.cs" />
     <Compile Include="Classes\ParticleBase.cs" />
     <Compile Include="Classes\NullParticleUpdater.cs" />
     <Compile Include="Classes\ParticleAgeKiller.cs" />
-    <Compile Include="Classes\ParticleBuffer.cs" />
+    <Compile Include="Classes\SerialParticleBuffer.cs" />
     <Compile Include="Classes\ParticleDebugRenderer.cs" />
     <Compile Include="Classes\ParticleSystem.cs" />
     <Compile Include="Classes\PointParticleSpawner.cs" />
     <Compile Include="Classes\RandomSpawnRate.cs" />
+    <Compile Include="Classes\SerialParticleFieldIterator.cs" />
+    <Compile Include="Classes\SimplePhysicsUpdater.cs" />
     <Compile Include="Classes\SpawnRate.cs" />
     <Compile Include="Classes\SpawnRateFunction.cs" />
     <Compile Include="Interfaces\IParticleBuffer.cs" />
     <Compile Include="Interfaces\IParticleKiller.cs" />
     <Compile Include="Interfaces\IParticleRenderer.cs" />
+    <Compile Include="Interfaces\IParticleSystemComponent.cs" />
     <Compile Include="Interfaces\IParticleUpdater.cs" />
+    <Compile Include="Interfaces\ISerialParticleBuffer.cs" />
     <Compile Include="Interfaces\ISpawnRate.cs" />
     <Compile Include="Interfaces\IParticleSystem.cs" />
     <Compile Include="Interfaces\IParticleSystemManager.cs" />
