@@ -75,9 +75,9 @@ namespace Poc1
 				m_pImpl->SetSmallestStepSize( x, z );
 			}
 
-			void TerrainGenerator::Setup( const float minHeight, const float maxHeight, const float terrainFunctionRadius )
+			void TerrainGenerator::Setup( const float patchScale, const float minHeight, const float maxHeight, const float terrainFunctionRadius )
 			{
-				m_pImpl->GetBaseDisplacer( ).Setup( minHeight, ( minHeight + maxHeight ) / 2, maxHeight, terrainFunctionRadius );
+				m_pImpl->GetBaseDisplacer( ).Setup( patchScale, minHeight, ( minHeight + maxHeight ) / 2, maxHeight, terrainFunctionRadius );
 			}
 
 			void TerrainGenerator::GenerateTerrainPropertyCubeMapFace( const CubeMapFace face, const int width, const int height, const int stride, unsigned char* pixels )

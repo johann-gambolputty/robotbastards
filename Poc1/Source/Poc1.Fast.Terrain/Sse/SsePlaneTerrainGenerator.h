@@ -22,6 +22,9 @@ namespace Poc1
 			{
 				public :
 
+					///	\brief	Sets the source dimensions (the scale used to define the initial patch dimensions)
+					void SetSourceDimensions( const float width, const float height );
+
 					///	\brief	Gets the object used to displace vertices from the sphere surface
 					DisplaceType& GetDisplacer( );
 

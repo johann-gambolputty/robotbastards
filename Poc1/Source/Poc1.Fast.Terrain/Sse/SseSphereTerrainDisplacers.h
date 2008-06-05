@@ -47,11 +47,11 @@ namespace Poc1
 
 			///	\brief	Displacer decorator class. Adds x-z displacement to an existing displacer
 			template < typename BaseDisplacer, typename FunctionType >
-			class _CRT_ALIGN( 16 ) SseSphereFunction3dGroundOffsetDisplacer : public SseSphereTerrainDisplacer
+			class _CRT_ALIGN( 16 ) SseSphereFunction3dGroundDisplacer : public SseSphereTerrainDisplacer
 			{
 				public :
 
-					SseSphereFunction3dGroundOffsetDisplacer( )
+					SseSphereFunction3dGroundDisplacer( )
 					{
 						m_XOffset = _mm_set1_ps( 3.14f );
 						m_ZOffset = _mm_set1_ps( 6.28f );
@@ -91,10 +91,10 @@ namespace Poc1
 					}
 
 					///	\brief	Sets up this function object
-					virtual void Setup( float minHeight, float seaLevel, float maxHeight, float sphereRadius )
+					virtual void Setup( float patchScale, float minHeight, float seaLevel, float maxHeight, float sphereRadius )
 					{
-						SseTerrainDisplacer::Setup( minHeight, seaLevel, maxHeight, sphereRadius );
-						m_Base.Setup( minHeight, seaLevel, maxHeight, sphereRadius );
+						SseTerrainDisplacer::Setup( patchScale, minHeight, seaLevel, maxHeight, sphereRadius );
+						m_Base.Setup( patchScale, minHeight, seaLevel, maxHeight, sphereRadius );
 					}
 					
 					///	\brief	Maps 4 (x,y,z) vectors onto the minimum distance of this displacer.
@@ -182,7 +182,7 @@ namespace Poc1
 			
 			///	\brief	Helper class
 			template < typename GroundFunction, typename HeightFunction >
-			class SseSphereFull3dDisplacer : public SseSphereFunction3dGroundOffsetDisplacer< SseSphereFunction3dDisplacer< HeightFunction >, GroundFunction >
+			class SseSphereFull3dDisplacer : public SseSphereFunction3dGroundDisplacer< SseSphereFunction3dDisplacer< HeightFunction >, GroundFunction >
 			{
 			};
 		}; //Terrain
