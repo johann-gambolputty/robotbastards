@@ -53,7 +53,7 @@ namespace Poc1
 				template < typename FunctionClass, typename BaseDisplacer >
 				struct GroundDisplacer
 				{
-					typedef SseSphereFunction3dGroundOffsetDisplacer< BaseDisplacer, FunctionClass > Type;
+					typedef SseSphereFunction3dGroundDisplacer< BaseDisplacer, FunctionClass > Type;
 				};
 
 				template < typename Displacer >
@@ -71,13 +71,13 @@ namespace Poc1
 				template < typename FunctionClass >
 				struct HeightDisplacer
 				{
-					typedef SseSphereFunction3dDisplacer< FunctionClass > Type;
+					typedef SsePlaneFunction3dDisplacer< FunctionClass > Type;
 				};
 				
 				template < typename FunctionClass, typename BaseDisplacer >
 				struct GroundDisplacer
 				{
-					typedef SseSphereFunction3dGroundOffsetDisplacer< BaseDisplacer, FunctionClass > Type;
+					typedef SsePlaneFunction3dGroundDisplacer< BaseDisplacer, FunctionClass > Type;
 				};
 
 				template < typename Displacer >
@@ -156,6 +156,10 @@ namespace Poc1
 				template < TerrainFunctionType HeightFunctionType >
 				static UTerrainGenerator* Create( TerrainFunctionParameters^ heightParams, TerrainFunction^ groundFunction )
 				{
+					if ( groundFunction == nullptr )
+					{
+						return Create< HeightFunctionType >( heightParams );
+					}
 					switch ( groundFunction->FunctionType )
 					{
 						case TerrainFunctionType::Flat			: return Create< HeightFunctionType >( heightParams );

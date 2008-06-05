@@ -15,7 +15,7 @@ namespace Poc1
 					///	\brief	Sets up reasonable defaults
 					SseTerrainDisplacer( )
 					{
-						Setup( 1.0f, 2.0f, 3.0f, 6.0f );
+						Setup( 64, 1.0f, 2.0f, 3.0f, 6.0f );
 					}
 
 					///	\brief Gets the scale of the displacement function input (e.g. sphere radius)
@@ -31,9 +31,10 @@ namespace Poc1
 					}
 
 					///	\brief	Sets up this displacer
-					virtual void Setup( float minHeight, float seaLevel, float maxHeight, float functionScale )
+					virtual void Setup( float patchScale, float minHeight, float seaLevel, float maxHeight, float functionScale )
 					{
 						m_Scale = _mm_set1_ps( functionScale );
+						m_PatchScaleToFunctionScale = _mm_div_ps( m_Scale, _mm_set1_ps( patchScale ) );
 						m_MinHeight = _mm_set1_ps( minHeight );
 						m_SeaLevel = _mm_set1_ps( seaLevel );
 						m_MaxHeight = _mm_set1_ps( maxHeight );
@@ -62,6 +63,7 @@ namespace Poc1
 
 					float m_MinHeightF;
 					float m_HeightRangeF;
+					__m128 m_PatchScaleToFunctionScale;
 					__m128 m_Scale;
 					__m128 m_MinHeight;
 					__m128 m_SeaLevel;

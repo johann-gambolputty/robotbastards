@@ -39,7 +39,7 @@ namespace Poc1
 					void SetSmallestStepSize( const float x, const float z );
 
 					///	\brief	Sets the minimum and maximum heights that can be generated, and the radius of the terrain function
-					void Setup( const float minHeight, const float maxHeight, const float terrainFunctionRadius );
+					void Setup( const float patchScale, const float minHeight, const float maxHeight, const float terrainFunctionRadius );
 
 					///	\brief	Generates a side of a cube map texture used to render this terrain in marble mode
 					///
