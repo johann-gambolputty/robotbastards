@@ -1,11 +1,18 @@
 using System;
+using System.Collections.Generic;
 
 namespace Poc1.Particles.Interfaces
 {
+	public enum ParticleFieldType
+	{
+		Int32,
+		Float32
+	}
+
 	/// <summary>
 	/// Interface defining creation and management of dynamic particle fields
 	/// </summary>
-	public unsafe interface IParticleBuffer
+	public interface IParticleBuffer
 	{
 		/// <summary>
 		/// Gets the stride, in bytes, between particle field values in the buffer
@@ -24,16 +31,6 @@ namespace Poc1.Particles.Interfaces
 		}
 
 		/// <summary>
-		/// Adds a particle to the buffer. Returns the index of the particle
-		/// </summary>
-		void AddParticle( );
-
-		/// <summary>
-		/// Removes a particle from the buffer. The index of the particle is in the range [0,NumActiveParticles)
-		/// </summary>
-		void RemoveParticle( int particleIndex );
-
-		/// <summary>
 		/// Gets the number of particles in the 
 		/// </summary>
 		int NumActiveParticles
@@ -48,24 +45,36 @@ namespace Poc1.Particles.Interfaces
 		/// The length of the returned array may not be equal to the number of active particles. Use
 		/// <see cref="NumActiveParticles"/> instead.
 		/// </remarks>
-		int[] ActiveParticleBufferIndexes
+		IList<int> ActiveParticleBufferIndexes
 		{
 			get;
 		}
 
 		/// <summary>
+		/// Adds a particle to the buffer. Returns the index of the particle
+		/// </summary>
+		int AddParticle( );
+
+
+		/// <summary>
+		/// Prepares the buffer prior to update. Returns an optional disposable object that can be used to unprepare the buffer post-update
+		/// </summary>
+		IDisposable Prepare( );
+
+		/// <summary>
+		/// Marks a particle for removal from the buffer. The index of the particle is in the range [0,NumActiveParticles)
+		/// </summary>
+		void MarkParticleForRemoval( int particleIndex );
+
+		/// <summary>
+		/// Removes all particles from the buffer that were marked by <see cref="MarkParticleForRemoval"/>
+		/// </summary>
+		void RemoveMarkedParticles( );
+
+		/// <summary>
 		/// Adds a field to the particle definition
 		/// </summary>
-		void AddField( string name, Type type, int numElements );
+		void AddField( string name, ParticleFieldType type, int numElements, object defaultValue );
 
-		/// <summary>
-		/// Pins the buffer, and returns a disposable object that unpins it. This must be done before calling GetField()
-		/// </summary>
-		IDisposable Pin( );
-
-		/// <summary>
-		/// Gets a pointer to the first value of the named field stored in the buffer
-		/// </summary>
-		byte* GetField( string name );
 	}
 }

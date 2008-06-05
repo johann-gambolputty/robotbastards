@@ -1,4 +1,3 @@
-using System;
 using Poc1.Particles.Interfaces;
 
 namespace Poc1.Particles.Classes

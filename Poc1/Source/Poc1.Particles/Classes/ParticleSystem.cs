@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Poc1.Particles.Interfaces;
 using Rb.Core.Maths;
 using Rb.Rendering.Interfaces.Objects;
@@ -53,7 +51,7 @@ namespace Poc1.Particles.Classes
 		public IParticleSpawner Spawner
 		{
 			get { return m_Spawner; }
-			set { m_Spawner = value; }
+			set { m_Spawner = Attach( value ); }
 		}
 
 		/// <summary>
@@ -62,7 +60,7 @@ namespace Poc1.Particles.Classes
 		public IParticleUpdater Updater
 		{
 			get { return m_Updater; }
-			set { m_Updater = value; }
+			set { m_Updater = Attach( value ); }
 		}
 
 		/// <summary>
@@ -71,7 +69,7 @@ namespace Poc1.Particles.Classes
 		public IParticleKiller Killer
 		{
 			get { return m_Killer; }
-			set { m_Killer = value; }
+			set { m_Killer = Attach( value ); }
 		}
 
 		/// <summary>
@@ -80,7 +78,7 @@ namespace Poc1.Particles.Classes
 		public IParticleRenderer Renderer
 		{
 			get { return m_Renderer; }
-			set { m_Renderer = value; }
+			set { m_Renderer = Attach( value ); }
 		}
 
 		#endregion
@@ -109,28 +107,24 @@ namespace Poc1.Particles.Classes
 		/// </summary>
 		protected virtual void Update( )
 		{
-			if ( !EnableSpawning )
+			using ( Buffer.Prepare( ) )
 			{
-				return;
-			}
-			if ( Spawner != null )
-			{
-				int count = SpawnRate == null ? 0 : SpawnRate.GetNumberOfParticlesToSpawn( );
-				Spawner.SpawnParticles( this, count );
-			}
-			if ( Killer != null )
-			{
-				Killer.KillParticles( this );
-			}
-			if ( Updater != null )
-			{
-				Updater.Update( this, m_Particles );
-			}
-
-			//	Age all the particles
-			foreach ( ParticleBase particle in m_Particles )
-			{
-				++particle.Age;
+				if ( EnableSpawning )
+				{
+					if ( ( Spawner != null ) && ( Buffer.MaximumNumberOfParticles > 0 ) )
+					{
+						int count = SpawnRate == null ? 0 : SpawnRate.GetNumberOfParticlesToSpawn( );
+						Spawner.SpawnParticles( this, count );
+					}
+				}
+				if ( Killer != null )
+				{
+					Killer.KillParticles( this );
+				}
+				if ( Updater != null )
+				{
+					Updater.Update( this );
+				}
 			}
 		}
 
@@ -140,24 +134,20 @@ namespace Poc1.Particles.Classes
 
 		private readonly Matrix44			m_Frame				= new Matrix44( );
 		private bool						m_EnableSpawning	= true;
-		private IParticleSpawner			m_Spawner			= ms_DefaultSpawner;
-		private ISpawnRate					m_SpawnRate			= ms_DefaultSpawnRate;
-		private IParticleKiller				m_Killer			= ms_DefaultKiller;
-		private IParticleUpdater 			m_Updater			= ms_DefaultUpdater;
+		private readonly IParticleBuffer	m_Buffer			= new SerialParticleBuffer( 256 );
+		private IParticleSpawner			m_Spawner;
+		private ISpawnRate					m_SpawnRate;
+		private IParticleKiller				m_Killer;
+		private IParticleUpdater 			m_Updater;
 		private IParticleRenderer			m_Renderer;
-		private readonly IParticleBuffer	m_Buffer			= new ParticleBuffer( );
 
-		private readonly static IParticleSpawner	ms_DefaultSpawner;
-		private readonly static IParticleUpdater	ms_DefaultUpdater;
-		private readonly static IParticleKiller		ms_DefaultKiller;
-		private readonly static ISpawnRate			ms_DefaultSpawnRate;
-
-		static ParticleSystem( )
+		private T Attach<T>( T component ) where T : class, IParticleSystemComponent
 		{
-			ms_DefaultSpawner	= null;
-			ms_DefaultUpdater	= null;
-			ms_DefaultKiller	= null;
-			ms_DefaultSpawnRate = new RandomSpawnRate( 1 );
+			if ( component != null )
+			{
+				component.Attach( this );
+			}
+			return component;
 		}
 
 		#endregion

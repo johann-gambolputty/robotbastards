@@ -18,12 +18,26 @@ namespace Poc1.Particles.Classes
 		{
 			Graphics.Draw.Sphere( Graphics.Surfaces.Red, particleSystem.Frame.Translation, ParticleSize );
 
-			ParticleFieldIterator posIter = new ParticleFieldIterator( particleSystem, ParticleBase.Position );
+			ISerialParticleBuffer sBuffer = ( ISerialParticleBuffer )particleSystem.Buffer;
+			SerialParticleFieldIterator posIter = new SerialParticleFieldIterator( sBuffer, ParticleBase.Position );
 
-			for ( int particleIndex = 0; particleIndex < particleSystem.NumParticles; ++particleIndex )
+			for ( int particleIndex = 0; particleIndex < sBuffer.NumActiveParticles; ++particleIndex )
 			{
-				Graphics.Draw.Billboard( ms_ParticleBrush, posIter.GetPosition( ), ParticleSize, ParticleSize );
+				posIter.MoveNext( );
+				Graphics.Draw.Billboard( ms_ParticleBrush, posIter.Point3Value, ParticleSize, ParticleSize );
 			}
+		}
+
+		#endregion
+
+		#region IParticleSystemComponent Members
+
+		/// <summary>
+		/// Called when this component is attached to a particle system
+		/// </summary>
+		public void Attach( IParticleSystem particles )
+		{
+			particles.Buffer.AddField( ParticleBase.Position, ParticleFieldType.Float32, 3, 0.0f );
 		}
 
 		#endregion

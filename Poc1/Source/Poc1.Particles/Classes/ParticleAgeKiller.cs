@@ -1,5 +1,4 @@
 using Poc1.Particles.Interfaces;
-using System.Collections.Generic;
 
 namespace Poc1.Particles.Classes
 {
@@ -28,11 +27,29 @@ namespace Poc1.Particles.Classes
 		/// </summary>
 		public void KillParticles( IParticleSystem particles )
 		{
-			ParticleFieldIterator iter = new ParticleFieldIterator( particles.Buffer, ParticleBase.Age );
+			SerialParticleFieldIterator iter = new SerialParticleFieldIterator( ( ISerialParticleBuffer )particles.Buffer, ParticleBase.Age );
 			for ( int i = 0; i < particles.Buffer.NumActiveParticles; ++i )
 			{
-				iter.GetPosition( );
+				iter.MoveNext( );
+				++iter.IntValue;
+				if ( iter.IntValue > m_DeathAge )
+				{
+					particles.Buffer.MarkParticleForRemoval( i );
+				}
 			}
+			particles.Buffer.RemoveMarkedParticles( );
+		}
+
+		#endregion
+
+		#region IParticleSystemComponent Members
+
+		/// <summary>
+		/// Called when this component is attached to a particle system
+		/// </summary>
+		public void Attach( IParticleSystem particles )
+		{
+			particles.Buffer.AddField( ParticleBase.Age, ParticleFieldType.Int32, 1, 0 );
 		}
 
 		#endregion

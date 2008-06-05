@@ -21,6 +21,36 @@ namespace Rb.Core.Utils
 			return null;
 		}
 
+		public static Type[] FindTypesImplementingInterface( IEnumerable< Type > types, Type interfaceType )
+		{
+			List<Type> results = new List<Type>( );
+			foreach ( Type type in types )
+			{
+				if ( type.GetInterface( interfaceType.Name ) != null )
+				{
+					results.Add( type );
+				}
+			}
+			return results.ToArray( );
+		}
+
+		
+		public static Type[] FindTypesImplementingInterface( Type interfaceType )
+		{
+			List<Type> results = new List<Type>( );
+			foreach ( Assembly curAssembly in AppDomain.CurrentDomain.GetAssemblies( ) )
+			{
+				foreach ( Type type in curAssembly.GetTypes( ) )
+				{
+					if ( type.GetInterface( interfaceType.Name ) != null )
+					{
+						results.Add( type );
+					}
+				}
+			}
+			return results.ToArray( );
+		}
+
 		/// <summary>
 		/// Looks for a named type in all the currently loaded assemblies
 		/// </summary>
