@@ -35,13 +35,18 @@ namespace Poc1
 					{
 						m_Scale = _mm_set1_ps( functionScale );
 						m_PatchScaleToFunctionScale = _mm_div_ps( m_Scale, _mm_set1_ps( patchScale ) );
+
 						m_MinHeight = _mm_set1_ps( minHeight );
 						m_SeaLevel = _mm_set1_ps( seaLevel );
 						m_MaxHeight = _mm_set1_ps( maxHeight );
-						m_HeightRange = _mm_div_ps( _mm_sub_ps( m_MaxHeight, m_MinHeight ), m_Scale );
+						m_HeightRange = _mm_sub_ps( m_MaxHeight, m_MinHeight );
 
-						m_MinHeight = _mm_div_ps( m_MinHeight, m_Scale );
-						m_MaxHeight = _mm_div_ps( m_MaxHeight, m_Scale );
+						if ( PreMultiplyHeightRange( ) )
+						{
+							m_HeightRange = _mm_div_ps( m_HeightRange, m_Scale );
+							m_MinHeight = _mm_div_ps( m_MinHeight, m_Scale );
+							m_MaxHeight = _mm_div_ps( m_MaxHeight, m_Scale );
+						}
 
 						m_MinHeightF = minHeight;
 						m_HeightRangeF = maxHeight - minHeight;
@@ -70,6 +75,13 @@ namespace Poc1
 					__m128 m_MaxHeight;
 					__m128 m_HeightRange;
 
+					///	\brief	Returns true if the height ranges for this displacer should be divided through by the function scale
+					///
+					///	This is handy for sphere geometries, because the (x,y,z) patch positions can be projected
+					///	directly onto the function sphere, then displaced back onto the target sphere by the
+					///	height range mapping.
+					///
+					virtual bool PreMultiplyHeightRange( ) { return false; }
 			};
 
 		};

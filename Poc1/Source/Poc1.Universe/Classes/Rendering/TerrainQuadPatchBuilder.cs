@@ -12,7 +12,7 @@ namespace Poc1.Universe.Classes.Rendering
 	/// <summary>
 	/// Builds terrain quad patches in a separate thread
 	/// </summary>
-	internal class TerrainQuadPatchBuilder : IDisposable
+	public class TerrainQuadPatchBuilder : IDisposable
 	{
 		/// <summary>
 		/// Gets the singleton instance of this class
@@ -20,6 +20,22 @@ namespace Poc1.Universe.Classes.Rendering
 		public static TerrainQuadPatchBuilder Instance
 		{
 			get { return ms_Instance; }
+		}
+
+		/// <summary>
+		/// Clears all requests
+		/// </summary>
+		public void Clear( )
+		{
+			lock ( m_RequestList )
+			{
+				m_RequestList.Clear( );
+			}
+			//	Wait for the current request to complete
+			while ( m_Worker.IsBusy )
+			{
+				Thread.Sleep( 10 );
+			}
 		}
 
 		/// <summary>
@@ -203,8 +219,8 @@ namespace Poc1.Universe.Classes.Rendering
 		private void RequestComplete( object sender, RunWorkerCompletedEventArgs args )
 		{
 			RequestResult completed = ( RequestResult )args.Result;
-
 			completed.BuildPatch( );
+
 			ReleaseResult( completed );
 			if ( m_RequestList.Count > 0 )
 			{

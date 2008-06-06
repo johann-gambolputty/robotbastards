@@ -22,7 +22,7 @@ namespace Poc1.PlanetBuilder
 		/// <param name="depth">Mesh depth</param>
 		public TerrainMesh( float width, float maxHeight, float depth )
 		{
-			m_MaxHeight = maxHeight;
+			m_Gen = DefaultTerrainGenerator( width, maxHeight );
 
 			IEffect effect = ( IEffect )AssetManager.Instance.Load( "Effects/Planets/terrestrialPlanetTerrain.cgfx" );
 			m_TerrainTechnique = new TechniqueSelector( effect, "DefaultTechnique" );
@@ -34,14 +34,29 @@ namespace Poc1.PlanetBuilder
 
 			m_NoiseTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/Noise.jpg" );
 
-			Point3 origin = new Point3( -width / 2, 1024, -depth / 2 );
+			Point3 origin = new Point3( -width / 2, 0, -depth / 2 );
 			Vector3 xAxis = new Vector3( width, 0, 0 );
 			Vector3 zAxis = new Vector3( 0, 0, depth );
+			
+			m_MeshOrigin = origin;
+			m_MeshXAxis = xAxis;
+			m_MeshZAxis = zAxis;
 
-			m_Vertices = new TerrainQuadPatchVertices( );
-			m_RootPatch = new TerrainQuadPatch( m_Vertices, origin, xAxis, zAxis, 256.0f );
+			RegenerateMesh( );
 		}
 
+		public void RegenerateMesh( )
+		{
+			if ( m_RootPatch != null )
+			{
+				m_RootPatch = null;
+				TerrainQuadPatchBuilder.Instance.Clear( );
+				GC.Collect( );
+			}
+			m_Vertices = new TerrainQuadPatchVertices( );
+			m_RootPatch = new TerrainQuadPatch( m_Vertices, m_MeshOrigin, m_MeshXAxis, m_MeshZAxis, 256.0f );
+
+		}
 
 		#region IPlanetTerrain Members
 
@@ -88,23 +103,23 @@ namespace Poc1.PlanetBuilder
 		public void Render( IRenderContext context )
 		{
 			IProjectionCamera camera = ( IProjectionCamera )Graphics.Renderer.Camera;
-			//Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin, 0.2f );
-			//Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin + Vector3.XAxis, 0.2f );
-			//Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin + Vector3.YAxis, 0.2f );
-			//Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin + Vector3.ZAxis, 0.2f );
+			Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin, 0.2f );
+			Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin + Vector3.XAxis, 0.2f );
+			Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin + Vector3.YAxis, 0.2f );
+			Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin + Vector3.ZAxis, 0.2f );
+
+			m_RootPatch.UpdateLod( ( ( ICamera3 )camera ).Frame.Translation, this, camera );
+			m_RootPatch.Update( camera, this );
 
 			m_TerrainTechnique.Effect.Parameters[ "TerrainPackTexture" ].Set( m_TerrainPackTexture );
 			m_TerrainTechnique.Effect.Parameters[ "TerrainTypeTexture" ].Set( m_TerrainTypesTexture );
 			m_TerrainTechnique.Effect.Parameters[ "NoiseTexture" ].Set( m_NoiseTexture );
 
-			m_RootPatch.UpdateLod( ( ( ICamera3 )camera ).Frame.Translation, this, camera );
-			m_RootPatch.Update( camera, this );
-
 			m_Vertices.VertexBuffer.Begin( );
-		//	context.ApplyTechnique( m_TerrainTechnique, m_RootPatch );
-			m_RState.Begin( );
-			m_RootPatch.Render( context );
-			m_RState.End( );
+			context.ApplyTechnique( m_TerrainTechnique, m_RootPatch );
+		//	m_RState.Begin( );
+		//	m_RootPatch.Render( context );
+		//	m_RState.End( );
 			m_Vertices.VertexBuffer.End( );
 		}
 
@@ -125,22 +140,25 @@ namespace Poc1.PlanetBuilder
 		private readonly ITexture2d m_TerrainPackTexture;
 		private readonly ITexture2d m_TerrainTypesTexture;
 		private readonly ITexture2d m_NoiseTexture;
-		private readonly UniPoint3 m_Centre = new UniPoint3( );
-		private readonly float m_MaxHeight;
-		private readonly TerrainQuadPatchVertices m_Vertices;
-		private readonly TerrainQuadPatch m_RootPatch;
-		private TerrainGenerator m_Gen = DefaultTerrainGenerator( );
+		private TerrainQuadPatchVertices m_Vertices;
+		private TerrainQuadPatch m_RootPatch;
+		private TerrainGenerator m_Gen;
+		private readonly Point3 m_MeshOrigin;
+		private readonly Vector3 m_MeshXAxis;
+		private readonly Vector3 m_MeshZAxis;
 
-		private static TerrainGenerator DefaultTerrainGenerator( )
+
+		private static TerrainGenerator DefaultTerrainGenerator( float patchScale, float maxHeight )
 		{
-			TerrainFunction heightFunction = new TerrainFunction( TerrainFunctionType.Flat );
-			TerrainFunction groundFunction = null; // new TerrainFunction( TerrainFunctionType.SimpleFractal );
+			TerrainFunction heightFunction = new TerrainFunction( TerrainFunctionType.SimpleFractal );
+			TerrainFunction groundFunction = new TerrainFunction( TerrainFunctionType.SimpleFractal );
 
 			TerrainGenerator gen = new TerrainGenerator( TerrainGeometry.Plane, heightFunction, groundFunction );
 
 			gen.SetSmallestStepSize( 0.05f, 0.05f );
-			gen.Setup( 100, 200, 5 );
+			gen.Setup( patchScale, 0, maxHeight, 10 );
 
+			//	TODO: AP: Remove hack
 			DebugInfo.DisableTerainSkirts = true;
 
 			return gen;

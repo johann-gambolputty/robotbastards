@@ -23,9 +23,6 @@ namespace Poc1
 
 					inline void MapToDisplacementSpace( __m128& xxxx, __m128& yyyy, __m128& zzzz )
 					{
-						xxxx = _mm_mul_ps( xxxx, m_PatchScaleToFunctionScale );
-						yyyy = _mm_mul_ps( yyyy, m_PatchScaleToFunctionScale );
-						zzzz = _mm_mul_ps( zzzz, m_PatchScaleToFunctionScale );
 					}
 			};
 
@@ -98,8 +95,11 @@ namespace Poc1
 					///	\brief	Maps 4 (x,y,z) vectors onto the minimum distance of this displacer.
 					inline __m128 Displace( __m128& xxxx, __m128& yyyy, __m128& zzzz ) const
 					{
-						__m128 dispXxxx = m_Function.GetSignedValue( xxxx, yyyy, zzzz );
-						__m128 dispZzzz = m_Function.GetSignedValue( _mm_add_ps( xxxx, m_XOffset ), yyyy, _mm_add_ps( zzzz, m_ZOffset ) );
+						__m128 fXxxx = _mm_mul_ps( xxxx, m_PatchScaleToFunctionScale );
+						__m128 fYyyy = _mm_mul_ps( yyyy, m_PatchScaleToFunctionScale );
+						__m128 fZzzz = _mm_mul_ps( zzzz, m_PatchScaleToFunctionScale );
+						__m128 dispXxxx = m_Function.GetSignedValue( fXxxx, fYyyy, fZzzz );
+						__m128 dispZzzz = m_Function.GetSignedValue( _mm_add_ps( fXxxx, m_XOffset ), fYyyy, _mm_add_ps( fZzzz, m_ZOffset ) );
 						dispXxxx = _mm_mul_ps( dispXxxx, m_Influence );
 						dispZzzz = _mm_mul_ps( dispZzzz, m_Influence );
 
@@ -144,7 +144,11 @@ namespace Poc1
 					///	\brief	Maps 4 (x,y,z) vectors onto the minimum distance of this displacer.
 					inline __m128 Displace( __m128& xxxx, __m128& yyyy, __m128& zzzz ) const
 					{
-						__m128 heights = m_Function.GetValue( xxxx, yyyy, zzzz );
+						//	TODO: AP: This gets done twice if there's a ground displacer decorating this height displacer
+						__m128 fXxxx = _mm_mul_ps( xxxx, m_PatchScaleToFunctionScale );
+						__m128 fYyyy = _mm_mul_ps( yyyy, m_PatchScaleToFunctionScale );
+						__m128 fZzzz = _mm_mul_ps( zzzz, m_PatchScaleToFunctionScale );
+						__m128 heights = m_Function.GetValue( fXxxx, fYyyy, fZzzz );
 						yyyy = _mm_add_ps( yyyy, MapToHeightRange( heights ) );
 						return heights;
 					}
