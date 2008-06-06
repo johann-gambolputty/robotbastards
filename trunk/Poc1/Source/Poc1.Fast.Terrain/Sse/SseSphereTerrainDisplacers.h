@@ -28,6 +28,11 @@ namespace Poc1
 					{
 						SetLength( xxxx, yyyy, zzzz, GetFunctionScale( ) );
 					}
+
+				protected :
+					
+					///	\brief	Returns true if the height ranges for this displacer should be divided through by the function scale
+					virtual bool PreMultiplyHeightRange( ) { return true; }
 			};
 
 			///	\brief	SseSphereTerrainGenerator Displacer type. Does not perturb input positions

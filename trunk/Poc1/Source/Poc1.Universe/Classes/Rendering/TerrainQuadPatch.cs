@@ -192,7 +192,6 @@ namespace Poc1.Universe.Classes.Rendering
 			m_DistToPatch = distanceToPatch;
 			if ( distanceToPatch < m_IncreaseDetailDistance )
 			{
-				return;
 				if ( IsLeafNode )
 				{
 					IncreaseDetail( terrain, camera );

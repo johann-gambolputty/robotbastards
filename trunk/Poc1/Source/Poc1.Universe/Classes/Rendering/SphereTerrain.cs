@@ -28,7 +28,9 @@ namespace Poc1.Universe.Classes.Rendering
 			m_Gen.SetSmallestStepSize( 0.05f, 0.05f );
 
 			float terrainFunctionRadius = ( float )( ( ( double )planet.Radius ) / 20000000.0f );
-			m_Gen.Setup( radius, radius + height, terrainFunctionRadius );
+
+			// NOTE: AP: Patch scale is irrelevant, because vertices are projected onto the function sphere anyway
+			m_Gen.Setup( 1024, radius, radius + height, terrainFunctionRadius );
 		}
 
 		/// <summary>

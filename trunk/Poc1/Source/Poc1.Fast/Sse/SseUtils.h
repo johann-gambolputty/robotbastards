@@ -94,6 +94,16 @@ namespace Poc1
 			__m128 llll = _mm_set1_ps( len );
 			SetLength( xxxx, yyyy, zzzz, llll );
 		}
+
+		inline __m128 GetLengths( const __m128& xxxx, const __m128& yyyy, const __m128& zzzz )
+		{
+			__m128 xxxx2 = _mm_mul_ps( xxxx, xxxx );
+			__m128 yyyy2 = _mm_mul_ps( yyyy, yyyy );
+			__m128 zzzz2 = _mm_mul_ps( zzzz, zzzz );
+			
+			//	NOTE: AP: Don't use reciprocal sqrt - has dubious precision
+			return _mm_sqrt_ps( _mm_add_ps( xxxx2, _mm_add_ps( yyyy2, zzzz2 ) ) );
+		}
 		
 		///	\brief	Normalizes 4 vectors, stored component-wise in 4 SSE values
 		inline void Normalize( __m128& xxxx, __m128& yyyy, __m128& zzzz )

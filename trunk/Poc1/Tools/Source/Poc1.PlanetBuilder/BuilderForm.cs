@@ -20,7 +20,9 @@ namespace Poc1.PlanetBuilder
 		private static ICamera CreateCamera( InputContext context, CommandUser user )
 		{
 			FlightCamera camera = new FlightCamera( );
-			camera.Position = new Point3( 0, 0, -5 );
+			camera.PerspectiveZNear = 1.0f;
+			camera.PerspectiveZFar = 2000.0f;
+			camera.Position = new Point3( 0, -220, 0 );
 			camera.AddChild( new BuilderCameraController( context, user ) );
 			return camera;
 		}
@@ -34,7 +36,7 @@ namespace Poc1.PlanetBuilder
 					return m_TerrainMesh;
 				}
 
-				m_TerrainMesh = new TerrainMesh( 2048, 64, 2048 );
+				m_TerrainMesh = new TerrainMesh( 2048, 200, 2048 );
 
 				return m_TerrainMesh;
 			}

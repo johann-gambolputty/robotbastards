@@ -87,6 +87,13 @@ namespace Poc1.PlanetBuilder
 			set { m_MaxSlipSpeed = value; }
 		}
 
+		public float MaxTurnSpeed
+		{
+			get { return m_MaxTurnSpeed; }
+			set { m_MaxTurnSpeed = value; }
+		}
+
+
 		/// <summary>
 		/// Handles camera commands
 		/// </summary>
@@ -105,27 +112,27 @@ namespace Poc1.PlanetBuilder
 					break;
 
 				case Commands.PitchUp:
-					m_Camera.ChangePitch( 0.1f );
+					m_Camera.ChangePitch( -MaxTurnSpeed );
 					break;
 
 				case Commands.PitchDown:
-					m_Camera.ChangePitch( -0.1f );
+					m_Camera.ChangePitch( MaxTurnSpeed );
 					break;
 
 				case Commands.YawLeft:
-					m_Camera.ChangeYaw( -0.1f );
+					m_Camera.ChangeYaw( MaxTurnSpeed );
 					break;
 
 				case Commands.YawRight:
-					m_Camera.ChangeYaw( 0.1f );
+					m_Camera.ChangeYaw( -MaxTurnSpeed );
 					break;
 
 				case Commands.RollClockwise:
-					m_Camera.ChangeRoll( 0.1f );
+					m_Camera.ChangeRoll( -MaxTurnSpeed );
 					break;
 
 				case Commands.RollAnticlockwise:
-					m_Camera.ChangeRoll( -0.1f );
+					m_Camera.ChangeRoll( MaxTurnSpeed );
 					break;
 
 				case Commands.Turn:
@@ -174,6 +181,7 @@ namespace Poc1.PlanetBuilder
 		private FlightCamera m_Camera;
 		private float m_MaxSlipSpeed = 1;
 		private float m_MaxForwardSpeed = 1;
+		private float m_MaxTurnSpeed = 0.08f;
 
 		#endregion
 
