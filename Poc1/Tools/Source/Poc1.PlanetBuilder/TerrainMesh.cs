@@ -45,6 +45,9 @@ namespace Poc1.PlanetBuilder
 			RegenerateMesh( );
 		}
 
+		/// <summary>
+		/// Regenerates this mesh
+		/// </summary>
 		public void RegenerateMesh( )
 		{
 			if ( m_RootPatch != null )
@@ -102,11 +105,11 @@ namespace Poc1.PlanetBuilder
 		/// <param name="context">Rendering context</param>
 		public void Render( IRenderContext context )
 		{
+			if ( m_RootPatch == null )
+			{
+				return;
+			}
 			IProjectionCamera camera = ( IProjectionCamera )Graphics.Renderer.Camera;
-			Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin, 0.2f );
-			Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin + Vector3.XAxis, 0.2f );
-			Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin + Vector3.YAxis, 0.2f );
-			Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin + Vector3.ZAxis, 0.2f );
 
 			m_RootPatch.UpdateLod( ( ( ICamera3 )camera ).Frame.Translation, this, camera );
 			m_RootPatch.Update( camera, this );

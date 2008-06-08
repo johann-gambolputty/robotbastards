@@ -82,12 +82,18 @@ namespace Poc1.PlanetBuilder
 
 		private void heightFunctionComboBox_SelectedIndexChanged( object sender, EventArgs e )
 		{
-			heightFunctionPropertyGrid.SelectedObject = ( ( TerrainFunctionItem )heightFunctionComboBox.SelectedItem ).TerrainFunctionParameters;
+		//	heightFunctionPropertyGrid.SelectedObject = ( ( TerrainFunctionItem )heightFunctionComboBox.SelectedItem ).TerrainFunctionParameters;
+			heightFunctionPropertyGrid.SelectedObject = heightFunctionComboBox.SelectedItem;
 		}
 
 		private void groundFunctionComboBox_SelectedIndexChanged( object sender, EventArgs e )
 		{
 			groundFunctionPropertyGrid.SelectedObject = ( ( TerrainFunctionItem )groundFunctionComboBox.SelectedItem ).TerrainFunctionParameters;
+		}
+
+		private static void regenerateMeshButton_Click( object sender, EventArgs e )
+		{
+			BuilderState.Instance.TerrainMesh.RegenerateMesh( );
 		}
 	}
 }

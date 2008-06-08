@@ -35,11 +35,11 @@ namespace Poc1.PlanetBuilder
 			this.regenerateMeshButton = new System.Windows.Forms.Button( );
 			this.splitter1 = new System.Windows.Forms.Splitter( );
 			this.panel1 = new System.Windows.Forms.Panel( );
+			this.groundOffsetEnableCheckBox = new System.Windows.Forms.CheckBox( );
 			this.groundOffsetFunctionGroupBox = new System.Windows.Forms.GroupBox( );
 			this.groundFunctionPropertyGrid = new System.Windows.Forms.PropertyGrid( );
 			this.label2 = new System.Windows.Forms.Label( );
 			this.groundFunctionComboBox = new System.Windows.Forms.ComboBox( );
-			this.groundOffsetEnableCheckBox = new System.Windows.Forms.CheckBox( );
 			this.heightFunctionGroupBox.SuspendLayout( );
 			this.panel1.SuspendLayout( );
 			this.groundOffsetFunctionGroupBox.SuspendLayout( );
@@ -100,6 +100,7 @@ namespace Poc1.PlanetBuilder
 			this.regenerateMeshButton.TabIndex = 2;
 			this.regenerateMeshButton.Text = "Regenerate Mesh";
 			this.regenerateMeshButton.UseVisualStyleBackColor = true;
+			this.regenerateMeshButton.Click += new System.EventHandler( regenerateMeshButton_Click );
 			// 
 			// splitter1
 			// 
@@ -119,6 +120,16 @@ namespace Poc1.PlanetBuilder
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size( 217, 169 );
 			this.panel1.TabIndex = 4;
+			// 
+			// groundOffsetEnableCheckBox
+			// 
+			this.groundOffsetEnableCheckBox.AutoSize = true;
+			this.groundOffsetEnableCheckBox.Location = new System.Drawing.Point( 6, 1 );
+			this.groundOffsetEnableCheckBox.Name = "groundOffsetEnableCheckBox";
+			this.groundOffsetEnableCheckBox.Size = new System.Drawing.Size( 15, 14 );
+			this.groundOffsetEnableCheckBox.TabIndex = 6;
+			this.groundOffsetEnableCheckBox.UseVisualStyleBackColor = true;
+			this.groundOffsetEnableCheckBox.CheckedChanged += new System.EventHandler( this.groundOffsetEnableCheckBox_CheckedChanged );
 			// 
 			// groundOffsetFunctionGroupBox
 			// 
@@ -166,16 +177,6 @@ namespace Poc1.PlanetBuilder
 			this.groundFunctionComboBox.Size = new System.Drawing.Size( 150, 21 );
 			this.groundFunctionComboBox.TabIndex = 3;
 			this.groundFunctionComboBox.SelectedIndexChanged += new System.EventHandler( this.groundFunctionComboBox_SelectedIndexChanged );
-			// 
-			// groundOffsetEnableCheckBox
-			// 
-			this.groundOffsetEnableCheckBox.AutoSize = true;
-			this.groundOffsetEnableCheckBox.Location = new System.Drawing.Point( 6, 1 );
-			this.groundOffsetEnableCheckBox.Name = "groundOffsetEnableCheckBox";
-			this.groundOffsetEnableCheckBox.Size = new System.Drawing.Size( 15, 14 );
-			this.groundOffsetEnableCheckBox.TabIndex = 6;
-			this.groundOffsetEnableCheckBox.UseVisualStyleBackColor = true;
-			this.groundOffsetEnableCheckBox.CheckedChanged += new System.EventHandler( this.groundOffsetEnableCheckBox_CheckedChanged );
 			// 
 			// TerrainFunctionControl
 			// 

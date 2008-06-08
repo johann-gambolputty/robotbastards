@@ -65,6 +65,7 @@
     <Compile Include="BuilderForm.Designer.cs">
       <DependentUpon>BuilderForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="BuilderState.cs" />
     <Compile Include="GroundTextureControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

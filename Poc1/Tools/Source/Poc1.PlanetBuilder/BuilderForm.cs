@@ -15,8 +15,6 @@ namespace Poc1.PlanetBuilder
 			InitializeComponent( );
 		}
 
-		private IRenderable m_TerrainMesh;
-
 		private static ICamera CreateCamera( InputContext context, CommandUser user )
 		{
 			FlightCamera camera = new FlightCamera( );
@@ -27,25 +25,10 @@ namespace Poc1.PlanetBuilder
 			return camera;
 		}
 
-		private IRenderable TerrainMesh
-		{
-			get
-			{
-				if ( m_TerrainMesh != null )
-				{
-					return m_TerrainMesh;
-				}
-
-				m_TerrainMesh = new TerrainMesh( 2048, 200, 2048 );
-
-				return m_TerrainMesh;
-			}
-		}
-
 		private void BuilderForm_Shown( object sender, System.EventArgs e )
 		{
 			Viewer viewer = new Viewer( );
-			viewer.Renderable = TerrainMesh;
+			viewer.Renderable = BuilderState.Instance.TerrainMesh;
 
 			testDisplay.AddViewer( viewer );
 
