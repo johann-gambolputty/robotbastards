@@ -30,6 +30,26 @@ namespace Poc1
 			///	\brief	Base class for terrain function parameter classes
 			public ref class TerrainFunctionParameters
 			{
+				public :
+
+					TerrainFunctionParameters( )
+					{
+						m_Scale = 8.0f;
+					}
+
+					///	\brief	Sets up a terrain displacer using these function parameters
+					void SetupDisplacer( SseTerrainDisplacer& displacer );
+
+					///	\brief	Function scale
+					property float Scale
+					{
+						float get( ) { return m_Scale; }
+						void set( const float scale ) { m_Scale = scale; }
+					}
+
+				private :
+
+					float m_Scale;
 			};
 
 			///	\brief	Terrain function object

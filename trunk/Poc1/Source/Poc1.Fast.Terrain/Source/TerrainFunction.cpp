@@ -34,6 +34,9 @@ namespace Poc1
 	{
 		namespace Terrain
 		{	
+			
+			//	---------------------------------------------------------------------------------------------
+
 			template < TerrainGeometry >
 			struct GeometryTypes
 			{
@@ -171,6 +174,9 @@ namespace Poc1
 				}
 			};
 
+			
+			//	---------------------------------------------------------------------------------------------
+
 			UTerrainGenerator* CreateTerrainGenerator( TerrainGeometry geometry, TerrainFunction^ heightFunction, TerrainFunction^ groundFunction )
 			{
 				TerrainFunctionType functionType = ( heightFunction == nullptr ) ? TerrainFunctionType::Flat : heightFunction->FunctionType;
@@ -203,6 +209,19 @@ namespace Poc1
 				throw gcnew System::NotSupportedException( "Height function type not supported" );
 			}
 
+			//	---------------------------------------------------------------------------------------------
+			
+			//	---------------------------------------------------------------------------------------------
+
+			void TerrainFunctionParameters::SetupDisplacer( SseTerrainDisplacer& displacer )
+			{
+				displacer.Setup( );
+			}
+			
+			//	---------------------------------------------------------------------------------------------
+			
+			//	---------------------------------------------------------------------------------------------
+
 
 			TerrainFunction::TerrainFunction( TerrainFunctionType functionType )
 			{
@@ -224,9 +243,9 @@ namespace Poc1
 			{
 				switch ( functionType )
 				{
-					case TerrainFunctionType::Flat : return nullptr;
-					case TerrainFunctionType::SimpleFractal : return gcnew FractalTerrainParameters( );
-					case TerrainFunctionType::RidgedFractal : return gcnew FractalTerrainParameters( );
+					case TerrainFunctionType::Flat			: return nullptr;
+					case TerrainFunctionType::SimpleFractal	: return gcnew FractalTerrainParameters( );
+					case TerrainFunctionType::RidgedFractal	: return gcnew FractalTerrainParameters( );
 				}
 				throw gcnew System::NotImplementedException( );
 			}
@@ -256,6 +275,8 @@ namespace Poc1
 				}
 				return CreateTerrainGenerator( geometry, heightFunction, groundFunction );
 			}
-		};
-	};
-};
+			
+			//	---------------------------------------------------------------------------------------------
+		}; //Terrain
+	}; //Fast
+}; //Poc1

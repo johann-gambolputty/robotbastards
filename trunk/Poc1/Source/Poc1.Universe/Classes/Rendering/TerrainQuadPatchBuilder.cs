@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
+using System.Windows.Forms;
 using Poc1.Universe.Interfaces.Rendering;
 using Rb.Core.Maths;
 using Rb.Rendering;
@@ -34,7 +35,10 @@ namespace Poc1.Universe.Classes.Rendering
 			//	Wait for the current request to complete
 			while ( m_Worker.IsBusy )
 			{
-				Thread.Sleep( 10 );
+				Thread.Sleep( 0 );
+
+				//	TODO: AP: A bodge. Remove this. Change from BackgroundWorker, which requires Application.DoEvents to work.
+				Application.DoEvents( );
 			}
 		}
 
