@@ -1,4 +1,5 @@
 using Poc1.Particles.Interfaces;
+using Rb.Core.Maths;
 
 namespace Poc1.Particles.Classes
 {
@@ -13,6 +14,15 @@ namespace Poc1.Particles.Classes
 			set { m_Friction = value; }
 		}
 
+		/// <summary>
+		/// Gets the gravity coefficient (0=no gravity, 1=standard gravity)
+		/// </summary>
+		public float Gravity
+		{
+			get { return m_Gravity; }
+			set { m_Gravity = value; }
+		}
+
 		#region IParticleUpdater Members
 
 		/// <summary>
@@ -24,6 +34,8 @@ namespace Poc1.Particles.Classes
 			SerialParticleFieldIterator posIter = new SerialParticleFieldIterator( sBuffer, ParticleBase.Position );
 			SerialParticleFieldIterator velIter = new SerialParticleFieldIterator( sBuffer, ParticleBase.Velocity );
 
+			Vector3 g = Vector3.YAxis * -Gravity;
+
 			float fr = 1.0f - Friction;
 			for ( int particleIndex = 0; particleIndex < sBuffer.NumActiveParticles; ++particleIndex )
 			{
@@ -31,6 +43,7 @@ namespace Poc1.Particles.Classes
 				velIter.MoveNext( );
 
 				posIter.Point3Value += velIter.Vector3Value;
+				posIter.Point3Value += g;
 				velIter.Vector3Value *= fr;
 			}
 		}
@@ -53,6 +66,7 @@ namespace Poc1.Particles.Classes
 		#region Private Members
 
 		private float m_Friction = 0.5f;
+		private float m_Gravity = 0.0f;
 
 		#endregion
 	}

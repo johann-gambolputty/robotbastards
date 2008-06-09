@@ -10,6 +10,21 @@ namespace Rb.Rendering
     [Serializable]
     public class RenderableList : List< IRenderable >, IRenderable
     {
+		/// <summary>
+		/// Default constructor. List is empty
+		/// </summary>
+		public RenderableList( )
+		{
+		}
+
+		/// <summary>
+		/// Setup constructor. Fills list with specified items
+		/// </summary>
+		public RenderableList( params IRenderable[] items ) :
+			base( items )
+		{
+		}
+
         #region IRenderable Members
 
         /// <summary>

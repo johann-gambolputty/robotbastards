@@ -1,5 +1,16 @@
 
 - TODO
+	- Particle Systems
+		- H: Add composite components
+		- H: Add UI for composite components
+		- H: Fix blunderbuss angle to degrees
+		- M: Add particle field descriptor. Replace ParticleBase strings with standard field descriptors
+		- M: Add some proper renderers, updaters and spawners
+		- M: Add SSE2 parallel particle buffers
+		- M: Add profiling for particle systems
+		- L: Add uber-buffer/GPU-only particle systems
+		- L: Add support for loading assemblies containing particle components in dynamically
+		- L: Add ground grid as a frame of reference
 	- Terrain
 		- H: Force error for patches with > threshold radius
 		- H: Investigate why error does not appear to be totally correct
@@ -20,7 +31,7 @@
 	- Planets
 		- H: Large radius planets (>1000km)
 			- H: Fix larger radius planets (lots of z-fighting, no terrain detail)
-			- H: combine terrain/marble rendering using z clipping planes (take a look at PPSM)
+			- H: combine terrain/marble rendering using z clipping planes (take a look at PSM)
 		- H: Atmospheric shaders
 		- M: Add planetary rings
 		- M: Add moons back in
@@ -83,12 +94,17 @@
 	- Networking
 		- H: Extend RUNT
 	- Tools
-		- H: Adapt terrain rendering to work with planet builder tool
-		- L: Add MRU file list to terrain texture tool
+		- Planet Builder
+			- H: Adapt terrain rendering to work with planet builder tool
+		- Particle Builder
+			- H: Change rubbish particle system setup window
+			- M: Add switch between parallel/serial implementations
+			- M: Add profiling viewers
+			- L: Add shadow rendering
 	- Graphics Misc.
 		- H: Shadows
 		- H: Add inverse frame to camera interface
-		- M: Make camera part of the rendering context
+		- M: Make camera part of the rendering context (reconcile with global camera in renderer)
 		- M: Add support to load rendering library objects from assemblies in the new rendering library layout (can keep
 		  assembly selector, but it's not necessary anymore)
 		- M: Particle systems
@@ -98,7 +114,6 @@
 		- L: Multimonitor support
 
 	- Profiling
-		- H: Patch rendering has become slow
 
 	- Misc.
 		- H: Fix rendering assembly post-build step
@@ -106,7 +121,12 @@
 		- H: Add unit-test directory
 		- M: Remove fast noise test (move to console app. project in tests directory)
 
+- DISCARD
+	- L: Add MRU file list to terrain texture tool (texture tool is amalgamated into planet builder tool)
+
 - DONE
+	- H: Fix blunderbuss spawner - randomise direction vector within cone
+	- H: Patch rendering has become slow
 	- H: Catch exceptions thrown by asset loads (in solar system construction only...)
 	- H: Fix game client to use new rendering library directories
 	- H: Create Planet Builder

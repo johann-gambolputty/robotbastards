@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows.Forms;
 using Poc1.Particles.Classes;
 using Poc1.Particles.Interfaces;
@@ -58,11 +60,26 @@ namespace Poc1.ParticleSystemBuilder
 
 		static void UpdateTypes( )
 		{
-			ms_SpawnRateTypes = AppDomainUtils.FindTypesImplementingInterface( typeof( ISpawnRate ) );
-			ms_SpawnerTypes = AppDomainUtils.FindTypesImplementingInterface( typeof( IParticleSpawner ) );
-			ms_UpdaterTypes = AppDomainUtils.FindTypesImplementingInterface( typeof( IParticleUpdater ) );
-			ms_KillerTypes = AppDomainUtils.FindTypesImplementingInterface( typeof( IParticleKiller ) );
-			ms_RendererTypes = AppDomainUtils.FindTypesImplementingInterface( typeof( IParticleRenderer ) );
+			ms_SpawnRateTypes = GetComponentTypes( typeof( ISpawnRate ) );
+			ms_SpawnerTypes = GetComponentTypes( typeof( IParticleSpawner ) );
+			ms_UpdaterTypes = GetComponentTypes( typeof( IParticleUpdater ) );
+			ms_KillerTypes = GetComponentTypes( typeof( IParticleKiller ) );
+			ms_RendererTypes = GetComponentTypes( typeof( IParticleRenderer ) );
+		}
+
+		private static Type[] GetComponentTypes( Type componentType )
+		{
+			Type[] types = AppDomainUtils.FindTypesImplementingInterface( componentType );
+			List<Type> filtered = new List<Type>( );
+			foreach ( Type type in types )
+			{
+				object[] attributes = type.GetCustomAttributes( typeof( BrowsableAttribute ), true );
+				if ( ( attributes.Length == 0 ) || ( ( ( BrowsableAttribute )attributes[ 0 ] ).Browsable ) )
+				{
+					filtered.Add( type );
+				}
+			}
+			return filtered.ToArray( );
 		}
 
 		static BuilderControl( )
