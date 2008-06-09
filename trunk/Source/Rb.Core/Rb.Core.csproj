@@ -115,6 +115,7 @@
     <Compile Include="Maths\Rectangle.cs" />
     <Compile Include="Maths\Sphere3.cs" />
     <Compile Include="Maths\Curve.cs" />
+    <Compile Include="Maths\SphericalCoordinates.cs" />
     <Compile Include="Maths\SplineControlPoint.cs" />
     <Compile Include="Maths\SplineControlPoints.cs" />
     <Compile Include="Maths\CurveFrame.cs" />

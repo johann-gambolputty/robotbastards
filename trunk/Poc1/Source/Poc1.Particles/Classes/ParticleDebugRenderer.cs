@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Drawing;
 using Poc1.Particles.Interfaces;
 using Rb.Rendering;
@@ -9,6 +8,15 @@ namespace Poc1.Particles.Classes
 {
 	public class ParticleDebugRenderer : IParticleRenderer
 	{
+		/// <summary>
+		/// Gets/sets the rendered size of the particles 
+		/// </summary>
+		public float ParticleSize
+		{
+			get { return m_ParticleSize; }
+			set { m_ParticleSize = value; }
+		}
+
 		#region IParticleRenderer Members
 
 		/// <summary>
@@ -16,8 +24,6 @@ namespace Poc1.Particles.Classes
 		/// </summary>
 		public void RenderParticles( IRenderContext context, IParticleSystem particleSystem )
 		{
-			Graphics.Draw.Sphere( Graphics.Surfaces.Red, particleSystem.Frame.Translation, ParticleSize );
-
 			ISerialParticleBuffer sBuffer = ( ISerialParticleBuffer )particleSystem.Buffer;
 			SerialParticleFieldIterator posIter = new SerialParticleFieldIterator( sBuffer, ParticleBase.Position );
 
@@ -44,18 +50,21 @@ namespace Poc1.Particles.Classes
 
 		#region Private Members
 
-		private const float ParticleSize = 0.1f;
+		private float m_ParticleSize = 0.1f;
 
 		private readonly static DrawBase.IBrush ms_ParticleBrush;
 
 		static ParticleDebugRenderer( )
 		{
-			ms_ParticleBrush = Graphics.Draw.NewBrush( Color.Aqua );
+			ms_ParticleBrush = Graphics.Draw.NewBrush( Color.Firebrick );
 			ms_ParticleBrush.State.Blend = true;
 			ms_ParticleBrush.State.SourceBlend = BlendFactor.One;
 			ms_ParticleBrush.State.DestinationBlend = BlendFactor.One;
+			ms_ParticleBrush.State.DepthTest = true;
+			ms_ParticleBrush.State.DepthWrite = true;
 		}
 
 		#endregion
+
 	}
 }

@@ -114,16 +114,19 @@ namespace Rb.Rendering.OpenGl
 
 			if ( DepthOffset != 0 )
 			{
-				//	TODO: Assumes depth offsets will only be used for line rendering (can be used for decals, etc.)
+				Gl.glEnable( Gl.GL_POLYGON_OFFSET_POINT );
 				Gl.glEnable( Gl.GL_POLYGON_OFFSET_LINE );
-				Gl.glPolygonOffset( DepthOffset, DepthOffset );
+				Gl.glEnable( Gl.GL_POLYGON_OFFSET_FILL );
+				Gl.glPolygonOffset( DepthOffset, DepthBias );
 			}
 			else
 			{
+				Gl.glDisable( Gl.GL_POLYGON_OFFSET_POINT );
 				Gl.glDisable( Gl.GL_POLYGON_OFFSET_LINE );
+				Gl.glDisable( Gl.GL_POLYGON_OFFSET_FILL );
 			}
 
-			Gl.glColor3ub( Colour.R, Colour.G, Colour.B );
+			Gl.glColor4ub( Colour.R, Colour.G, Colour.B, Colour.A );
 		}
 
 		/// <summary>
@@ -186,6 +189,7 @@ namespace Rb.Rendering.OpenGl
 
 		private bool				m_Lighting				= false;
 		private float				m_DepthOffset			= 0;
+		private float				m_DepthBias				= 0;
 		private PassDepthTest		m_PassDepthTest			= PassDepthTest.LessOrEqual;
 		private bool 				m_DepthTest				= true;
 		private bool 				m_DepthWrite			= true;
@@ -246,6 +250,12 @@ namespace Rb.Rendering.OpenGl
 		{
 			get { return m_DepthOffset; }
 			set { m_DepthOffset = value; }
+		}
+		
+		public float DepthBias
+		{
+			get { return m_DepthBias; }
+			set { m_DepthBias = value; }
 		}
 
 		public PassDepthTest PassDepthTest

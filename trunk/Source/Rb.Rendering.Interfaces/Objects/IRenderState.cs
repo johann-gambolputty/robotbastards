@@ -26,6 +26,14 @@ namespace Rb.Rendering.Interfaces.Objects
 		#region Depth
 
 		/// <summary>
+		/// Gets/sets the depth bias
+		/// </summary>
+		float DepthBias
+		{
+			get; set;
+		}
+
+		/// <summary>
 		/// Gets/sets the depth offset
 		/// </summary>
 		float DepthOffset

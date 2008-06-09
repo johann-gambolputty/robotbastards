@@ -2,42 +2,130 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc1.Tools.TerrainTextures", "Source\Poc1.Tools.TerrainTextures\Poc1.Tools.TerrainTextures.csproj", "{A73F1D6A-4FED-479E-9C6B-BEFAA1E90768}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc1.Tools.TerrainTextures.Core", "Source\Poc1.Tools.TerrainTextures.Core\Poc1.Tools.TerrainTextures.Core.csproj", "{F34331DC-90A9-4C51-B7F9-34B3B96965BD}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Core", "..\..\Source\Rb.Core\Rb.Core.csproj", "{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc1.Tools.BuildTasks", "Source\Poc1.Tools.BuildTasks\Poc1.Tools.BuildTasks.csproj", "{7CA909BB-8BA2-4949-8228-25D54534E85B}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.NiceControls", "..\..\Source\Rb.NiceControls\Rb.NiceControls.csproj", "{A4E5C0BF-B76D-425D-8439-B07EB6B29444}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc1.ParticleSystemBuilder", "Source\Poc1.ParticleSystemBuilder\Poc1.ParticleSystemBuilder.csproj", "{841D6236-761F-4A3D-840C-5745F0833A4C}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc1.Particles", "..\Source\Poc1.Particles\Poc1.Particles.csproj", "{F8D9E178-27FE-4218-BA9E-1FED20449EB9}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Rendering.Interfaces", "..\..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.csproj", "{8B059AC0-B98F-4D23-9F42-F8273DCB4034}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Rendering", "..\..\Source\Rb.Rendering\Rb.Rendering.csproj", "{EC130734-6F0F-402B-8215-9F133F0ADEE4}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Rendering.Windows", "..\..\Source\Rb.Rendering.Windows\Rb.Rendering.Windows.csproj", "{39A57BC2-BE73-41A7-BBC2-A9D0C28D5A06}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.AssemblySelector", "..\..\Source\Rb.AssemblySelector\Rb.AssemblySelector.csproj", "{2097B22A-91A5-4CFF-8CCB-846A10523CB9}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Log", "..\..\Source\Rb.Log\Rb.Log.csproj", "{55C5FE75-D492-41DE-B355-4D2681ADA1A0}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Assets", "..\..\Source\Rb.Assets\Rb.Assets.csproj", "{22440804-2D3F-4FEF-AD01-812923F6E04C}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc1.PlanetBuilder", "Source\Poc1.PlanetBuilder\Poc1.PlanetBuilder.csproj", "{D954E196-CE07-4AEE-9505-002D4D02A6FF}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc1.Universe", "..\Source\Poc1.Universe\Poc1.Universe.csproj", "{5CC992B9-1B66-4ECC-8657-624DA59B3D2D}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Poc1.Fast", "..\Source\Poc1.Fast\Poc1.Fast.vcproj", "{2EA4865D-CDBB-4EC3-83A3-4703FE7B7A28}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Poc1.Fast.Terrain", "..\Source\Poc1.Fast.Terrain\Poc1.Fast.Terrain.vcproj", "{22C72F9C-B313-4366-BBE2-84A649775E75}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Interaction", "..\..\Source\Rb.Interaction\Rb.Interaction.csproj", "{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Interaction.Windows", "..\..\Source\Rb.Interaction.Windows\Rb.Interaction.Windows.csproj", "{4ECD7CBC-1D3E-4C87-852E-77488B549711}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Rendering.Shadows", "..\..\Source\Rb.Rendering.Shadows\Rb.Rendering.Shadows.csproj", "{ED325582-3C2F-494E-87EA-FC4C121DA368}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Tools.Cameras", "..\..\Tools\Source\Rb.Tools.Cameras\Rb.Tools.Cameras.csproj", "{E5646C43-AAD3-4EFD-835C-93DB9290E5C7}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -337,6 +425,36 @@ Global
 		{4ECD7CBC-1D3E-4C87-852E-77488B549711}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{4ECD7CBC-1D3E-4C87-852E-77488B549711}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4ECD7CBC-1D3E-4C87-852E-77488B549711}.Release|Win32.ActiveCfg = Release|Any CPU
+		{ED325582-3C2F-494E-87EA-FC4C121DA368}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED325582-3C2F-494E-87EA-FC4C121DA368}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED325582-3C2F-494E-87EA-FC4C121DA368}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{ED325582-3C2F-494E-87EA-FC4C121DA368}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{ED325582-3C2F-494E-87EA-FC4C121DA368}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{ED325582-3C2F-494E-87EA-FC4C121DA368}.NDoc|Any CPU.ActiveCfg = Release|Any CPU
+		{ED325582-3C2F-494E-87EA-FC4C121DA368}.NDoc|Any CPU.Build.0 = Release|Any CPU
+		{ED325582-3C2F-494E-87EA-FC4C121DA368}.NDoc|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{ED325582-3C2F-494E-87EA-FC4C121DA368}.NDoc|Mixed Platforms.Build.0 = Release|Any CPU
+		{ED325582-3C2F-494E-87EA-FC4C121DA368}.NDoc|Win32.ActiveCfg = Release|Any CPU
+		{ED325582-3C2F-494E-87EA-FC4C121DA368}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED325582-3C2F-494E-87EA-FC4C121DA368}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED325582-3C2F-494E-87EA-FC4C121DA368}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{ED325582-3C2F-494E-87EA-FC4C121DA368}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{ED325582-3C2F-494E-87EA-FC4C121DA368}.Release|Win32.ActiveCfg = Release|Any CPU
+		{E5646C43-AAD3-4EFD-835C-93DB9290E5C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5646C43-AAD3-4EFD-835C-93DB9290E5C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5646C43-AAD3-4EFD-835C-93DB9290E5C7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E5646C43-AAD3-4EFD-835C-93DB9290E5C7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E5646C43-AAD3-4EFD-835C-93DB9290E5C7}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{E5646C43-AAD3-4EFD-835C-93DB9290E5C7}.NDoc|Any CPU.ActiveCfg = Release|Any CPU
+		{E5646C43-AAD3-4EFD-835C-93DB9290E5C7}.NDoc|Any CPU.Build.0 = Release|Any CPU
+		{E5646C43-AAD3-4EFD-835C-93DB9290E5C7}.NDoc|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E5646C43-AAD3-4EFD-835C-93DB9290E5C7}.NDoc|Mixed Platforms.Build.0 = Release|Any CPU
+		{E5646C43-AAD3-4EFD-835C-93DB9290E5C7}.NDoc|Win32.ActiveCfg = Release|Any CPU
+		{E5646C43-AAD3-4EFD-835C-93DB9290E5C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5646C43-AAD3-4EFD-835C-93DB9290E5C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5646C43-AAD3-4EFD-835C-93DB9290E5C7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E5646C43-AAD3-4EFD-835C-93DB9290E5C7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E5646C43-AAD3-4EFD-835C-93DB9290E5C7}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

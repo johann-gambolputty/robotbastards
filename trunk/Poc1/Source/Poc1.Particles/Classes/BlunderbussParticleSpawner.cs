@@ -1,4 +1,3 @@
-
 using System;
 using Poc1.Particles.Interfaces;
 using Rb.Core.Maths;
@@ -50,6 +49,17 @@ namespace Poc1.Particles.Classes
 		/// </summary>
 		public unsafe void SpawnParticles( IParticleSystem particles, int count )
 		{
+			float s, t;
+			SphericalCoordinates.FromNormalizedVector( Direction, out s, out t );
+
+			float sAngle = ( float )( m_Rnd.NextDouble( ) * Angle ) - Angle / 2;
+			float tAngle = ( float )( m_Rnd.NextDouble( ) * Angle ) - Angle / 2;
+
+			s = Utils.Wrap( s + sAngle, 0, Constants.TwoPi );
+			t = Utils.Wrap( t + tAngle, 0, Constants.Pi );
+
+			Vector3 direction = SphericalCoordinates.ToVector( s, t );
+
 			ISerialParticleBuffer sBuffer = ( ISerialParticleBuffer )particles.Buffer;
 			for ( int i = 0; i < count; ++i )
 			{
@@ -60,7 +70,7 @@ namespace Poc1.Particles.Classes
 				pos[ 2 ] = particles.Frame.Translation.Z;
 
 				float speed = m_MinSpeed + ( float )( m_Rnd.NextDouble( ) * ( m_MaxSpeed - m_MinSpeed ) );
-				Vector3 vec = Direction * speed;	//TODO: AP: Perturb by random amount around m_Angle
+				Vector3 vec = direction * speed;
 
 				float* vel = ( float* )sBuffer.GetField( ParticleBase.Velocity, particleIndex );
 				vel[ 0 ] = vec.X;
@@ -87,9 +97,9 @@ namespace Poc1.Particles.Classes
 
 		private static readonly Random m_Rnd = new Random( );
 		private Vector3 m_Direction = Vector3.XAxis;
-		private float m_Angle;
-		private float m_MinSpeed = 0;
-		private float m_MaxSpeed = 1;
+		private float m_Angle		= 5.0f;
+		private float m_MinSpeed	= 0;
+		private float m_MaxSpeed	= 1;
 
 		#endregion
 

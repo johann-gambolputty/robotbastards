@@ -766,8 +766,10 @@ namespace Rb.Rendering.OpenGl
 				return;
 			}
 
-			Vector3 xVec = camera.Frame.XAxis * width / 2;
-			Vector3 yVec = camera.Frame.YAxis * height / 2;
+			Matrix44 frame = camera.Frame;
+
+			Vector3 xVec = frame.XAxis * width / 2;
+			Vector3 yVec = frame.ZAxis * height / 2;
 
 			Point3 tL = centre - xVec - yVec;
 			Point3 tR = centre + xVec - yVec;

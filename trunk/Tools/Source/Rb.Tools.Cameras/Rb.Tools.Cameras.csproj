@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F8D9E178-27FE-4218-BA9E-1FED20449EB9}</ProjectGuid>
+    <ProjectGuid>{E5646C43-AAD3-4EFD-835C-93DB9290E5C7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Poc1.Particles</RootNamespace>
-    <AssemblyName>Poc1.Particles</AssemblyName>
+    <RootNamespace>Rb.Tools.Cameras</RootNamespace>
+    <AssemblyName>Rb.Tools.Cameras</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -18,7 +18,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -27,46 +26,29 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\BlunderbussParticleSpawner.cs" />
-    <Compile Include="Classes\ParticleBase.cs" />
-    <Compile Include="Classes\NullParticleUpdater.cs" />
-    <Compile Include="Classes\ParticleAgeKiller.cs" />
-    <Compile Include="Classes\ParticleCompositeUpdater.cs" />
-    <Compile Include="Classes\SerialParticleBuffer.cs" />
-    <Compile Include="Classes\ParticleDebugRenderer.cs" />
-    <Compile Include="Classes\ParticleSystem.cs" />
-    <Compile Include="Classes\PointParticleSpawner.cs" />
-    <Compile Include="Classes\RandomSpawnRate.cs" />
-    <Compile Include="Classes\SerialParticleFieldIterator.cs" />
-    <Compile Include="Classes\SimplePhysicsUpdater.cs" />
-    <Compile Include="Classes\SimpleSpriteRenderer.cs" />
-    <Compile Include="Classes\SpawnRate.cs" />
-    <Compile Include="Classes\SpawnRateFunction.cs" />
-    <Compile Include="Interfaces\IParticleBuffer.cs" />
-    <Compile Include="Interfaces\IParticleKiller.cs" />
-    <Compile Include="Interfaces\IParticleRenderer.cs" />
-    <Compile Include="Interfaces\IParticleSystemComponent.cs" />
-    <Compile Include="Interfaces\IParticleUpdater.cs" />
-    <Compile Include="Interfaces\ISerialParticleBuffer.cs" />
-    <Compile Include="Interfaces\ISpawnRate.cs" />
-    <Compile Include="Interfaces\IParticleSystem.cs" />
-    <Compile Include="Interfaces\IParticleSystemManager.cs" />
-    <Compile Include="Interfaces\IParticleSpawner.cs" />
+    <Compile Include="SphereCameraController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Interaction.Windows\Rb.Interaction.Windows.csproj">
+      <Project>{4ECD7CBC-1D3E-4C87-852E-77488B549711}</Project>
+      <Name>Rb.Interaction.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Interaction\Rb.Interaction.csproj">
+      <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
+      <Name>Rb.Interaction</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.csproj">
       <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>
