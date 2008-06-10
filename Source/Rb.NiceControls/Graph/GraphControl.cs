@@ -177,7 +177,7 @@ namespace Rb.NiceControls.Graph
 		public PointF GraphToClient( float x, float y )
 		{
 			float cX = GraphLeftMargin + ( x * GraphWidth );
-			float cY = GraphBottomMargin + ( y * GraphHeight );
+			float cY = GraphBottomMargin + ( ( 1 - y ) * GraphHeight );
 			return new PointF( cX, cY );
 		}
 
@@ -239,6 +239,12 @@ namespace Rb.NiceControls.Graph
 			}
 		}
 
+		private void GraphControl_Load( object sender, System.EventArgs e )
+		{
+			DoubleBuffered = true;
+		}
+
 		#endregion
+
 	}
 }

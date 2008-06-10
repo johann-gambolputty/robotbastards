@@ -2,10 +2,10 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Poc1.Particles.Interfaces;
 using Rb.Core.Maths;
+using Rb.Core.Utils;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Interfaces.Objects.Cameras;
-using Rb.Rendering.Platform;
 
 namespace Poc1.Particles.Classes
 {
@@ -35,7 +35,7 @@ namespace Poc1.Particles.Classes
 		/// Gets/sets the texture used to render the particles
 		/// </summary>
 		[TypeConverter( typeof( ExpandableObjectConverter ) )]
-		[Editor( typeof( Texture2dUITypeEditor ), typeof( System.Drawing.Design.UITypeEditor ) )]
+		[Editor( typeof( CustomUITypeEditor<ITexture2d> ), typeof( System.Drawing.Design.UITypeEditor ) )]
 		[Description( "The texture used when rendering the particles" )]
 		public ITexture2d Texture
 		{

@@ -57,11 +57,6 @@ namespace Poc1.PlanetBuilder
 			m_Gen = gen;
 		}
 
-		public TerrainGenerator Generator
-		{
-			get { return m_Gen; }
-		}
-
 		/// <summary>
 		/// Regenerates this mesh
 		/// </summary>

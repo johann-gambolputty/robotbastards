@@ -127,9 +127,11 @@
     <Compile Include="Utils\AppDomainUtils.cs" />
     <Compile Include="Utils\BinaryReaderHelpers.cs" />
     <Compile Include="Utils\Clock.cs" />
+    <Compile Include="Utils\CustomUITypeEditor.cs" />
     <Compile Include="Utils\DispatchMap.cs" />
     <Compile Include="Utils\ExpandableStructConverter.cs" />
     <Compile Include="Utils\FunctionDelegates.cs" />
+    <Compile Include="Utils\CustomUITypeEditorAttribute.cs" />
     <Compile Include="Utils\InvokeQueue.cs" />
     <Compile Include="Utils\LibraryBuilder.cs" />
     <Compile Include="Utils\PathHelpers.cs" />
@@ -137,6 +139,7 @@
     <Compile Include="Utils\ProfileSection.cs" />
     <Compile Include="Utils\StringHelpers.cs" />
     <Compile Include="Utils\TinyTime.cs" />
+    <Compile Include="Utils\UITypeEditorFactory.cs" />
     <Compile Include="Utils\WeakDelegate.cs" />
     <Compile Include="Utils\XmlHelpers.cs" />
   </ItemGroup>
