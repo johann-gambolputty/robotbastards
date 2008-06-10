@@ -73,6 +73,10 @@ namespace Poc1.ParticleSystemBuilder
 			List<Type> filtered = new List<Type>( );
 			foreach ( Type type in types )
 			{
+				if ( type.IsAbstract || type.IsInterface )
+				{
+					continue;
+				}
 				object[] attributes = type.GetCustomAttributes( typeof( BrowsableAttribute ), true );
 				if ( ( attributes.Length == 0 ) || ( ( ( BrowsableAttribute )attributes[ 0 ] ).Browsable ) )
 				{

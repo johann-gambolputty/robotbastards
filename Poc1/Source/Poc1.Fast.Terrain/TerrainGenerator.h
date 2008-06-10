@@ -38,8 +38,8 @@ namespace Poc1
 					///	\brief	Sets the magnitude of smallest x and z steps that can be passed to GenerateVertices
 					void SetSmallestStepSize( const float x, const float z );
 
-					///	\brief	Sets the minimum and maximum heights that can be generated, and the radius of the terrain function
-					void Setup( const float patchScale, const float minHeight, const float maxHeight, const float terrainFunctionRadius );
+					///	\brief	Sets the minimum and maximum heights that can be generated
+					void Setup( const float patchScale, const float minHeight, const float maxHeight );
 
 					///	\brief	Generates a side of a cube map texture used to render this terrain in marble mode
 					///

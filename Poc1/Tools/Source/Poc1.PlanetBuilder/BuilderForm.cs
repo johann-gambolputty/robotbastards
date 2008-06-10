@@ -3,7 +3,6 @@ using Rb.Core.Maths;
 using Rb.Interaction;
 using Rb.Rendering;
 using Rb.Rendering.Cameras;
-using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Interfaces.Objects.Cameras;
 
 namespace Poc1.PlanetBuilder
@@ -19,7 +18,7 @@ namespace Poc1.PlanetBuilder
 		{
 			FlightCamera camera = new FlightCamera( );
 			camera.PerspectiveZNear = 1.0f;
-			camera.PerspectiveZFar = 2000.0f;
+			camera.PerspectiveZFar = 4000.0f;
 			camera.Position = new Point3( 0, -220, 0 );
 			camera.AddChild( new BuilderCameraController( context, user ) );
 			return camera;
@@ -31,7 +30,6 @@ namespace Poc1.PlanetBuilder
 			viewer.Renderable = BuilderState.Instance.TerrainMesh;
 
 			testDisplay.AddViewer( viewer );
-
 
 			InputContext context = new InputContext( viewer );
 			CommandUser user = new CommandUser( );

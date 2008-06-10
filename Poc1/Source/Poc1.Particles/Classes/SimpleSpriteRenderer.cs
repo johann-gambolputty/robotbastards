@@ -9,7 +9,7 @@ namespace Poc1.Particles.Classes
 	/// </summary>
 	public class SimpleSpriteRenderer : IParticleRenderer
 	{
-		SimpleSpriteRenderer( )
+		public SimpleSpriteRenderer( )
 		{
 		}
 

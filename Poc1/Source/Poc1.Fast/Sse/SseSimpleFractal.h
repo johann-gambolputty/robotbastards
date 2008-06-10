@@ -85,7 +85,7 @@ namespace Poc1
 			for ( int octave = 0; octave < m_NumOctaves; ++octave )
 			{
 				total = _mm_add_ps( total, _mm_mul_ps( m_Noise.Noise( xxxx, yyyy, zzzz ), amp ) );
-				amp = _mm_mul_ps( amp,m_Persistence );
+				amp = _mm_mul_ps( amp, m_Persistence );
 				xxxx = _mm_mul_ps( xxxx, m_Freq );
 				yyyy = _mm_mul_ps( yyyy, m_Freq );
 				zzzz = _mm_mul_ps( zzzz, m_Freq );

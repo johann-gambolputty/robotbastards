@@ -15,7 +15,8 @@ namespace Poc1
 					///	\brief	Sets up reasonable defaults
 					SseTerrainDisplacer( )
 					{
-						Setup( 64, 1.0f, 2.0f, 3.0f, 6.0f );
+						SetFunctionScale( 6.0f );
+						Setup( 64, 1.0f, 3.0f );
 					}
 
 					///	\brief Gets the scale of the displacement function input (e.g. sphere radius)
@@ -30,14 +31,26 @@ namespace Poc1
 						return m_MinHeight;
 					}
 
-					///	\brief	Sets up this displacer
-					virtual void Setup( float patchScale, float minHeight, float seaLevel, float maxHeight, float functionScale )
+					///	\brief	Changes the function scale. Must be called before Setup(), for premultiplied displacers
+					void SetFunctionScale( float functionScale )
 					{
+						m_ScaleF = functionScale;
 						m_Scale = _mm_set1_ps( functionScale );
+					}
+
+					///	\brief	Sets the output scale
+					void SetOutputScale( float outputScale )
+					{
+						m_OutputScale = _mm_set1_ps( outputScale );
+					}
+
+					///	\brief	Sets up this displacer. SetFunctionScale() must be called first or pre-multiplied displacers
+					virtual void Setup( float patchScale, float minHeight, float maxHeight )
+					{
+						//	TODO: AP: Try pre-multiplying the height range by output scale... would save a multiply
 						m_PatchScaleToFunctionScale = _mm_div_ps( m_Scale, _mm_set1_ps( patchScale ) );
 
 						m_MinHeight = _mm_set1_ps( minHeight );
-						m_SeaLevel = _mm_set1_ps( seaLevel );
 						m_MaxHeight = _mm_set1_ps( maxHeight );
 						m_HeightRange = _mm_sub_ps( m_MaxHeight, m_MinHeight );
 
@@ -66,12 +79,13 @@ namespace Poc1
 
 				protected :
 
+					float m_ScaleF;
 					float m_MinHeightF;
 					float m_HeightRangeF;
-					__m128 m_PatchScaleToFunctionScale;
+					__m128 m_OutputScale;
 					__m128 m_Scale;
+					__m128 m_PatchScaleToFunctionScale;
 					__m128 m_MinHeight;
-					__m128 m_SeaLevel;
 					__m128 m_MaxHeight;
 					__m128 m_HeightRange;
 

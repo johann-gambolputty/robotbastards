@@ -130,6 +130,8 @@ namespace Poc1
 					typedef TerrainGenerator< HeightDisplacer< HClass >::Type >::Type GeneratorType;
 
 					GeneratorType* generator = new ( Aligned( 16 ) ) GeneratorType( );
+					
+					heightParams->Setup( generator->GetDisplacer( ) );
 					( ( HParamsType^ )heightParams )->Setup( generator->GetDisplacer( ).GetFunction( ) );
 
 					return generator;
@@ -149,6 +151,9 @@ namespace Poc1
 					typedef TerrainGenerator< GroundDisplacerType >::Type GeneratorType;
 
 					GeneratorType* generator = new ( Aligned( 16 ) ) GeneratorType( );
+
+					heightParams->Setup( generator->GetDisplacer( ).GetBaseDisplacer( ) );
+					groundParams->Setup( generator->GetDisplacer( ) );
 
 					( ( HParamsType^ )heightParams )->Setup( generator->GetDisplacer( ).GetBaseDisplacer( ).GetFunction( ) );
 					( ( GParamsType^ )groundParams )->Setup( generator->GetDisplacer( ).GetFunction( ) );
@@ -210,16 +215,17 @@ namespace Poc1
 			}
 
 			//	---------------------------------------------------------------------------------------------
-			
+
 			//	---------------------------------------------------------------------------------------------
 
-			void TerrainFunctionParameters::SetupDisplacer( SseTerrainDisplacer& displacer )
+			void TerrainFunctionParameters::Setup( SseTerrainDisplacer& displacer )
 			{
-				displacer.Setup( );
+				displacer.SetFunctionScale( FunctionScale );
+				displacer.SetOutputScale( OutputScale );
 			}
-			
+				
 			//	---------------------------------------------------------------------------------------------
-			
+
 			//	---------------------------------------------------------------------------------------------
 
 
