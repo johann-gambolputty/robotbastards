@@ -25,12 +25,13 @@ namespace Poc1.Universe.Classes.Rendering
 			float height = ( float )UniUnits.RenderUnits.FromUniUnits( UniUnits.Metres.ToUniUnits( planet.TerrainHeightRange ) );
 			m_RenderRadius = radius;
 
-			m_Gen.SetSmallestStepSize( 0.05f, 0.05f );
-
 			float terrainFunctionRadius = ( float )( ( ( double )planet.Radius ) / 20000000.0f );
 
+			m_Gen = DefaultTerrainGenerator( terrainFunctionRadius );
+			m_Gen.SetSmallestStepSize( 0.05f, 0.05f );
+
 			// NOTE: AP: Patch scale is irrelevant, because vertices are projected onto the function sphere anyway
-			m_Gen.Setup( 1024, radius, radius + height, terrainFunctionRadius );
+			m_Gen.Setup( 1024, radius, radius + height );
 		}
 
 		/// <summary>
@@ -125,10 +126,13 @@ namespace Poc1.Universe.Classes.Rendering
 			}
 		}
 
-		private static TerrainGenerator DefaultTerrainGenerator( )
+		private static TerrainGenerator DefaultTerrainGenerator( float functionScale )
 		{
 			TerrainFunction heightFunction = new TerrainFunction( TerrainFunctionType.RidgedFractal );
+			heightFunction.Parameters.FunctionScale = functionScale;
+
 			TerrainFunction groundFunction = new TerrainFunction( TerrainFunctionType.SimpleFractal );
+			heightFunction.Parameters.FunctionScale = functionScale;
 
 			( ( FractalTerrainParameters )heightFunction.Parameters ).Seed = TimeSeed;
 			( ( FractalTerrainParameters )groundFunction.Parameters ).Seed = TimeSeed;
@@ -136,7 +140,7 @@ namespace Poc1.Universe.Classes.Rendering
 			return new TerrainGenerator( TerrainGeometry.Sphere, heightFunction, groundFunction );
 		}
 
-		private readonly TerrainGenerator m_Gen = DefaultTerrainGenerator( );
+		private readonly TerrainGenerator m_Gen;
 		private readonly SpherePlanet m_Planet;
 		private readonly float m_RenderRadius;
 

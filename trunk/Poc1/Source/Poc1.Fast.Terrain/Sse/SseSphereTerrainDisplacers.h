@@ -96,10 +96,10 @@ namespace Poc1
 					}
 
 					///	\brief	Sets up this function object
-					virtual void Setup( float patchScale, float minHeight, float seaLevel, float maxHeight, float sphereRadius )
+					virtual void Setup( float patchScale, float minHeight, float maxHeight )
 					{
-						SseTerrainDisplacer::Setup( patchScale, minHeight, seaLevel, maxHeight, sphereRadius );
-						m_Base.Setup( patchScale, minHeight, seaLevel, maxHeight, sphereRadius );
+						SseTerrainDisplacer::Setup( patchScale, minHeight, maxHeight );
+						m_Base.Setup( patchScale, minHeight, maxHeight );
 					}
 					
 					///	\brief	Maps 4 (x,y,z) vectors onto the minimum distance of this displacer.

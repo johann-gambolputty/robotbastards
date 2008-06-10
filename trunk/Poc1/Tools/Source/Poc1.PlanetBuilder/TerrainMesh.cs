@@ -22,6 +22,7 @@ namespace Poc1.PlanetBuilder
 		/// <param name="depth">Mesh depth</param>
 		public TerrainMesh( float width, float maxHeight, float depth )
 		{
+			m_PatchScale = width;
 			m_Gen = DefaultTerrainGenerator( width, maxHeight );
 
 			IEffect effect = ( IEffect )AssetManager.Instance.Load( "Effects/Planets/terrestrialPlanetTerrain.cgfx" );
@@ -43,6 +44,22 @@ namespace Poc1.PlanetBuilder
 			m_MeshZAxis = zAxis;
 
 			RegenerateMesh( );
+		}
+
+		public void SetupMesh( float maxHeight, TerrainFunction heightFunction, TerrainFunction groundFunction )
+		{
+			TerrainGenerator gen = new TerrainGenerator( TerrainGeometry.Plane, heightFunction, groundFunction );
+			gen.SetSmallestStepSize( 0.05f, 0.05f );
+
+			//	TODO: AP: Mesh setup 
+			gen.Setup( m_PatchScale, 0, maxHeight );
+
+			m_Gen = gen;
+		}
+
+		public TerrainGenerator Generator
+		{
+			get { return m_Gen; }
 		}
 
 		/// <summary>
@@ -126,19 +143,11 @@ namespace Poc1.PlanetBuilder
 			m_Vertices.VertexBuffer.End( );
 		}
 
-		private readonly IRenderState m_RState = CreateTestRenderState( );
-		private static IRenderState CreateTestRenderState( )
-		{
-			IRenderState rs = Graphics.Factory.CreateRenderState( );
-			rs.Colour = System.Drawing.Color.Blue;
-			rs.FaceRenderMode = PolygonRenderMode.Lines;
-			return rs;
-		}
-
 		#endregion
 
 		#region Private Members
 
+		private readonly float m_PatchScale;
 		private readonly TechniqueSelector m_TerrainTechnique;
 		private readonly ITexture2d m_TerrainPackTexture;
 		private readonly ITexture2d m_TerrainTypesTexture;
@@ -154,12 +163,14 @@ namespace Poc1.PlanetBuilder
 		private static TerrainGenerator DefaultTerrainGenerator( float patchScale, float maxHeight )
 		{
 			TerrainFunction heightFunction = new TerrainFunction( TerrainFunctionType.SimpleFractal );
+			heightFunction.Parameters.OutputScale = 1.0f;
 			TerrainFunction groundFunction = new TerrainFunction( TerrainFunctionType.SimpleFractal );
+			heightFunction.Parameters.OutputScale = 0.5f;
 
 			TerrainGenerator gen = new TerrainGenerator( TerrainGeometry.Plane, heightFunction, groundFunction );
 
 			gen.SetSmallestStepSize( 0.05f, 0.05f );
-			gen.Setup( patchScale, 0, maxHeight, 10 );
+			gen.Setup( patchScale, 0, maxHeight );
 
 			//	TODO: AP: Remove hack
 			DebugInfo.DisableTerainSkirts = true;

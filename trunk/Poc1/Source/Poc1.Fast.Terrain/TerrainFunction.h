@@ -35,21 +35,31 @@ namespace Poc1
 					TerrainFunctionParameters( )
 					{
 						m_Scale = 8.0f;
+						m_OutputScale = 1.0f;
 					}
-
-					///	\brief	Sets up a terrain displacer using these function parameters
-					void SetupDisplacer( SseTerrainDisplacer& displacer );
 
 					///	\brief	Function scale
-					property float Scale
+					property float FunctionScale
 					{
 						float get( ) { return m_Scale; }
-						void set( const float scale ) { m_Scale = scale; }
+						void set( float scale ) { m_Scale = scale; }
 					}
+
+					///	\brief	Result scaling factor
+					property float OutputScale
+					{
+						float get( ) { return m_OutputScale; }
+						void set( float scale ) { m_OutputScale = scale; }
+					}
+
+
+					///	\brief	Sets up a terrain displacer
+					void Setup( SseTerrainDisplacer& displacer );
 
 				private :
 
 					float m_Scale;
+					float m_OutputScale;
 			};
 
 			///	\brief	Terrain function object

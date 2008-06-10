@@ -39,8 +39,7 @@ namespace Poc1.PlanetBuilder
 			/// </summary>
 			public TerrainFunctionItem( TerrainFunctionType functionType )
 			{
-				m_TerrainFunction = functionType;
-				m_Parameters = TerrainFunction.CreateParameters( functionType );
+				m_Function = new TerrainFunction( functionType );
 			}
 
 			/// <summary>
@@ -48,21 +47,28 @@ namespace Poc1.PlanetBuilder
 			/// </summary>
 			public override string ToString( )
 			{
-				return TerrainFunction.Name( m_TerrainFunction );
+				return TerrainFunction.Name( m_Function.FunctionType );
 			}
 
 			/// <summary>
-			/// Gets the stored type
+			/// Gets the stored terrain function's parameters
 			/// </summary>
-			public object TerrainFunctionParameters
+			public TerrainFunctionParameters Parameters
 			{
-				get { return m_Parameters; }
+				get { return m_Function.Parameters; }
+			}
+
+			/// <summary>
+			/// Gets the stored terrain function
+			/// </summary>
+			public TerrainFunction Function
+			{
+				get { return m_Function; }
 			}
 
 			#region Private Members
 
-			private readonly TerrainFunctionType m_TerrainFunction;
-			private readonly object m_Parameters;
+			private readonly TerrainFunction m_Function;
 
 			#endregion
 		}
@@ -80,20 +86,51 @@ namespace Poc1.PlanetBuilder
 
 		#endregion
 
+		private TerrainFunction CurrentHeightFunction
+		{
+			get
+			{
+				TerrainFunctionItem functionItem = ( ( TerrainFunctionItem )heightFunctionComboBox.SelectedItem );
+				if ( functionItem == null )
+				{
+					return null;
+				}
+				return functionItem.Function;
+			}
+		}
+
+		private TerrainFunction CurrentGroundFunction
+		{
+			get
+			{
+				if ( !groundOffsetEnableCheckBox.Checked )
+				{
+					return null;
+				}
+				TerrainFunctionItem functionItem = ( ( TerrainFunctionItem )groundFunctionComboBox.SelectedItem );
+				if ( functionItem == null )
+				{
+					return null;
+				}
+				return functionItem.Function;
+			}
+		}
+
 		private void heightFunctionComboBox_SelectedIndexChanged( object sender, EventArgs e )
 		{
-		//	heightFunctionPropertyGrid.SelectedObject = ( ( TerrainFunctionItem )heightFunctionComboBox.SelectedItem ).TerrainFunctionParameters;
-			heightFunctionPropertyGrid.SelectedObject = heightFunctionComboBox.SelectedItem;
+			heightFunctionPropertyGrid.SelectedObject = ( ( TerrainFunctionItem )heightFunctionComboBox.SelectedItem ).Parameters;
 		}
 
 		private void groundFunctionComboBox_SelectedIndexChanged( object sender, EventArgs e )
 		{
-			groundFunctionPropertyGrid.SelectedObject = ( ( TerrainFunctionItem )groundFunctionComboBox.SelectedItem ).TerrainFunctionParameters;
+			groundFunctionPropertyGrid.SelectedObject = ( ( TerrainFunctionItem )groundFunctionComboBox.SelectedItem ).Parameters;
 		}
 
-		private static void regenerateMeshButton_Click( object sender, EventArgs e )
+		private void regenerateMeshButton_Click( object sender, EventArgs e )
 		{
-			BuilderState.Instance.TerrainMesh.RegenerateMesh( );
+			TerrainMesh mesh = BuilderState.Instance.TerrainMesh;
+			mesh.SetupMesh( 200, CurrentHeightFunction, CurrentGroundFunction );
+			mesh.RegenerateMesh( );
 		}
 	}
 }
