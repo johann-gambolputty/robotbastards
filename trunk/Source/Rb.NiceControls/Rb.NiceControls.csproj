@@ -35,6 +35,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FunctionDescriptor.cs" />
+    <Compile Include="GraphEditorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GraphEditorControl.Designer.cs">
+      <DependentUpon>GraphEditorControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GraphUITypeEditor.cs" />
     <Compile Include="Graph\ControlPoint.cs" />
     <Compile Include="Graph\PiecewiseGraphInputHandler.cs" />
     <Compile Include="Graph\GraphControl.cs">
@@ -54,13 +62,24 @@
     <Compile Include="NiceComboBox.designer.cs">
       <DependentUpon>NiceComboBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="PiecewiseLinearFunctionDescriptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="GraphEditorControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>GraphEditorControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Graph\GraphControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>GraphControl.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

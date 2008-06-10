@@ -28,16 +28,17 @@ namespace Rb.NiceControls.Graph
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.SuspendLayout();
+			this.SuspendLayout( );
 			// 
 			// GraphControl
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Name = "GraphControl";
-			this.Size = new System.Drawing.Size(221, 129);
-			this.Paint += new System.Windows.Forms.PaintEventHandler(this.GraphControl_Paint);
-			this.ResumeLayout(false);
+			this.Size = new System.Drawing.Size( 221, 129 );
+			this.Load += new System.EventHandler( this.GraphControl_Load );
+			this.Paint += new System.Windows.Forms.PaintEventHandler( this.GraphControl_Paint );
+			this.ResumeLayout( false );
 
 		}
 

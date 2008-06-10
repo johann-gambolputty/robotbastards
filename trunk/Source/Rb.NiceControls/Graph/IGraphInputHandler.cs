@@ -1,7 +1,9 @@
-using System.Windows.Forms;
 
 namespace Rb.NiceControls.Graph
 {
+	/// <summary>
+	/// Graph input handler
+	/// </summary>
 	public interface IGraphInputHandler
 	{
 		/// <summary>

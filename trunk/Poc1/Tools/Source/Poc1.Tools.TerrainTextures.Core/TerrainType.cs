@@ -1,7 +1,10 @@
 using System;
+using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.IO;
 using System.Runtime.Serialization;
+using Rb.Core.Maths;
 using Rb.Core.Utils;
 
 namespace Poc1.Tools.TerrainTextures.Core
@@ -12,6 +15,16 @@ namespace Poc1.Tools.TerrainTextures.Core
 	[Serializable]
 	public class TerrainType
 	{
+
+		private Functions.FunctionDelegate m_AltitudeDist;
+
+		[Editor( typeof( CustomUITypeEditor<Functions.FunctionDelegate> ), typeof( UITypeEditor ) )]
+		public Functions.FunctionDelegate AltitudeDist
+		{
+			get { return m_AltitudeDist; }
+			set { m_AltitudeDist = value; }
+		}
+
 		/// <summary>
 		/// Distribution of terrain type over altitude
 		/// </summary>

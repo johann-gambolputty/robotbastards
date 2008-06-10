@@ -83,38 +83,43 @@ namespace Rb.NiceControls.Graph
 		{
 			float yOffset = bounds.Bottom;
 			float graphHeight = bounds.Height;
-			Pen graphPen = Pens.Red;
-			float v0 = yOffset + graphHeight - Sample( 0 ) * graphHeight;
-			float t = 0;
-			float tInc = 1.0f / ( bounds.Width - 1 );
-			for ( int sample = 0; sample < bounds.Width; ++sample, t += tInc )
+			using ( Pen graphPen = new Pen( Color.Red, 1.5f ) )
 			{
-				float v1 = yOffset + graphHeight - Sample( t ) * graphHeight;
-				graphics.DrawLine( graphPen, sample + bounds.Left, v0, sample + bounds.Left + 1, v1 );
-				v0 = v1;
+				float y0 = yOffset - Sample( 0 ) * graphHeight;
+				float t = 0;
+				float tInc = 1.0f / ( bounds.Width - 1 );
+				for ( int sample = 0; sample < bounds.Width; ++sample, t += tInc )
+				{
+					float y1 = yOffset - Sample( t ) * graphHeight;
+					float x0 = sample + bounds.Left;
+					float x1 = x0 + 1;
+					graphics.DrawLine( graphPen, x0, y0, x1, y1 );
+				//	graphics.FillEllipse( Brushes.Azure, x0 - 1, y0 - 1, 2, 2 );
+					y0 = y1;
+				}
 			}
 
-			//for ( int cpIndex = 0; cpIndex < ControlPoints.Count; ++cpIndex )
-			//{
-			//    Brush brush = Brushes.Blue;
-			//    if ( cpIndex == m_SelectedCpIndex )
-			//    {
-			//        brush = Brushes.Red;
-			//    }
-			//    else if ( cpIndex == 0 || cpIndex == ControlPoints.Count - 1 )
-			//    {
-			//        brush = Brushes.Green;	
-			//    }
 
-			//    float x = GraphX + ControlPoints[ cpIndex ].Position * GraphWidth;
-			//    float y = yOffset + graphHeight - ControlPoints[ cpIndex ].Value * graphHeight;
+			for ( int cpIndex = 0; cpIndex < ControlPoints.Count; ++cpIndex )
+			{
+				Brush brush = Brushes.Blue;
+				//if ( cpIndex == m_SelectedCpIndex )
+				//{
+				//    brush = Brushes.Red;
+				//}
+				//else if ( cpIndex == 0 || cpIndex == ControlPoints.Count - 1 )
+				//{
+				//    brush = Brushes.Green;	
+				//}
 
-			//    e.Graphics.FillEllipse( brush, x - 3, y - 3, 6, 6 );
-			//}
+				float x = bounds.Left + ControlPoints[ cpIndex ].Position * bounds.Width;
+				float y = yOffset - ControlPoints[ cpIndex ].Value * graphHeight;
+				graphics.FillEllipse( brush, x - 3, y - 3, 6, 6 );
+			}
 		}
 
 		#endregion
-		
+
 		#region Private Members
 
 		private readonly List<ControlPoint> m_ControlPoints = new List<ControlPoint>( );

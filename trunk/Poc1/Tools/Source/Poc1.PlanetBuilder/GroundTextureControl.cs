@@ -127,6 +127,8 @@ namespace Poc1.PlanetBuilder
 		{
 			control.Selected = true;
 			m_SelectedControls.Add( control );
+
+			selectionPropertyGrid.SelectedObject = control.TerrainType;
 		}
 
 		private bool IsSelected( GroundTypeControl control )

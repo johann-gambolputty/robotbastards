@@ -74,7 +74,6 @@
     <Compile Include="ManagedVertexBuffer.cs" />
     <Compile Include="MaterialBase.cs" />
     <Compile Include="PassList.cs" />
-    <Compile Include="Platform\Texture2dUITypeEditor.cs" />
     <Compile Include="RenderContext.cs" />
     <Compile Include="RendererBase.cs" />
     <Compile Include="Technique.cs" />

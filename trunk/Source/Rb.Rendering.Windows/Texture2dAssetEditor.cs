@@ -4,6 +4,7 @@ using System.Drawing.Design;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 using Rb.Assets;
+using Rb.Core.Utils;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Textures;
 using Rb.Rendering.Windows.Properties;
@@ -13,6 +14,7 @@ namespace Rb.Rendering.Windows
 	/// <summary>
 	/// UI editor for textures
 	/// </summary>
+	[CustomUITypeEditor( typeof( ITexture2d ) )]
 	public class Texture2dAssetEditor : UITypeEditor
 	{
         public override UITypeEditorEditStyle GetEditStyle( ITypeDescriptorContext context )
