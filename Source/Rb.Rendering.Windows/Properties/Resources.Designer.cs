@@ -66,5 +66,14 @@ namespace Rb.Rendering.Windows.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error loading texture asset &quot;{0}&quot;.
+        /// </summary>
+        internal static string TextureAssetLoadError {
+            get {
+                return ResourceManager.GetString("TextureAssetLoadError", resourceCulture);
+            }
+        }
     }
 }

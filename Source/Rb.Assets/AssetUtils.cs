@@ -24,18 +24,9 @@ namespace Rb.Assets
 			uri = Path.GetFullPath( uri );
 
 			XmlTextReader reader;
-			try
-			{
-				reader = new XmlTextReader( uri );
-				reader.WhitespaceHandling = WhitespaceHandling.Significant;
-				reader.ReadStartElement( "assetManager" );
-			}
-			catch ( Exception ex )
-			{
-				AssetsLog.Exception( ex, "Failed to create XML reader" );
-				return;
-			}
-
+			reader = new XmlTextReader( uri );
+			reader.WhitespaceHandling = WhitespaceHandling.Significant;
+			reader.ReadStartElement( "assetManager" );
 			ReadLocationManagers( Locations.Instance, uri, reader );
 			ReadLoaders( AssetManager.Instance, uri, reader );
 		}

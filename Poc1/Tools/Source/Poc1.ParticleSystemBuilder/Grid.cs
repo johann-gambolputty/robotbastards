@@ -5,6 +5,9 @@ using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc1.ParticleSystemBuilder
 {
+	/// <summary>
+	/// Draws a grid on the x-z plane
+	/// </summary>
 	public class Grid : IRenderable
 	{
 		/// <summary>
@@ -25,7 +28,7 @@ namespace Poc1.ParticleSystemBuilder
 			brush.State.DepthWrite = true;
 			brush.State.DepthOffset = 1.0f;
 
-			Draw.IPen pen = Graphics.Draw.NewPen( Color.FromArgb( 100, Color.White ), 1.5f );
+			Draw.IPen pen = Graphics.Draw.NewPen( Color.FromArgb( 100, Color.White ) );
 			pen.State.Blend = true;
 			pen.State.SourceBlend = BlendFactor.SrcAlpha;
 			pen.State.DestinationBlend = BlendFactor.OneMinusSrcAlpha;

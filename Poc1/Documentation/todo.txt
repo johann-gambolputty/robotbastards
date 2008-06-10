@@ -1,21 +1,22 @@
 
 - TODO
 	- Particle Systems
+		- H: Use per second units. Change rendering/update to cope
 		- H: Add composite components
 		- H: Add UI for composite components
 		- H: Fix blunderbuss angle to degrees
+		- H: Particle system serialization
+		- H: Move particle system library and tools to RB.
 		- M: Add particle field descriptor. Replace ParticleBase strings with standard field descriptors
 		- M: Add some proper renderers, updaters and spawners
 		- M: Add SSE2 parallel particle buffers
 		- M: Add profiling for particle systems
 		- L: Add uber-buffer/GPU-only particle systems
 		- L: Add support for loading assemblies containing particle components in dynamically
-		- L: Add ground grid as a frame of reference
 	- Terrain
 		- H: Force error for patches with > threshold radius
 		- H: Investigate why error does not appear to be totally correct
 		- H: Ground displacement requires connected patches (vertical skirts show up)
-		- M: Sphere terrain displacer base class can be renamed as SseTerrainDisplacer - it works for all underlying geometries
 		- M: Tangent frame at poles is incorrect
 		- M: Add multi-fractals to the displacer set
 		- M: Geomorphing
@@ -95,9 +96,14 @@
 		- H: Extend RUNT
 	- Tools
 		- Planet Builder
-			- H: Adapt terrain rendering to work with planet builder tool
+			- H: Add terrain type builder tab
+			- H: Add atmosphere tab
 		- Particle Builder
+			- H: Set up particle system setup window from input particle sytem
+			- M: Create decent initial particle system
 			- H: Change rubbish particle system setup window
+			- H: Finish function editor
+			- M: Add alpha channel to particle texture
 			- M: Add switch between parallel/serial implementations
 			- M: Add profiling viewers
 			- L: Add shadow rendering
@@ -116,15 +122,21 @@
 	- Profiling
 
 	- Misc.
+		- H: Add UITypeEditor factory
 		- H: Fix rendering assembly post-build step
 		- H: Refactor Poc1.Universe. Create Poc1.Core, Poc1.Terrain, Poc1.Universe
 		- H: Add unit-test directory
+		- M: Add derived EditorAttribute for setting up texture UI type editor (asset handle creation, mip-mapping)
 		- M: Remove fast noise test (move to console app. project in tests directory)
 
 - DISCARD
 	- L: Add MRU file list to terrain texture tool (texture tool is amalgamated into planet builder tool)
 
 - DONE
+	- H: Add planar terrain geometry type for PlanetBuilder tool
+	- M: Sphere terrain displacer base class can be renamed as SseTerrainDisplacer - it works for all underlying geometries
+	- H: Adapt terrain rendering to work with planet builder tool
+	- L: Add ground grid as a frame of reference
 	- H: Fix blunderbuss spawner - randomise direction vector within cone
 	- H: Patch rendering has become slow
 	- H: Catch exceptions thrown by asset loads (in solar system construction only...)

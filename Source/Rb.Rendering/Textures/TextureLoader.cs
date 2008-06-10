@@ -90,11 +90,6 @@ namespace Rb.Rendering.Textures
 			return texture;
 		}
 
-		/// <summary>
-		/// Gets the name of the dynamic property in <see cref="LoadParameters"/> used to store the texture usage (<see cref="TextureUsage"/>)
-		/// </summary>
-		public const string UsagePropertyName = "usage";
-
 		private static readonly string[] ms_Extensions = new string[]
 			{
 				"jpg",

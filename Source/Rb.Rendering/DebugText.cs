@@ -7,6 +7,11 @@ namespace Rb.Rendering
 	/// <summary>
 	/// Collects lines of debug text, rendering them at the end of each frame
 	/// </summary>
+	/// <remarks>
+	/// Text added via the <see cref="Write"/> method gets stored in a list. When <see cref="Render()"/> 
+	/// is called, all the lines are rendered to the screen using the debug font, and the line list
+	/// is cleared.
+	/// </remarks>
 	public static class DebugText
 	{
 		#region Public Members

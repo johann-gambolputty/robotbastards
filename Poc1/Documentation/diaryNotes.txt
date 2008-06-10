@@ -65,4 +65,9 @@ position, rather than the interpolated height, but that could be quite expensive
 4) Displacement is applied irrespective of local dY. This means that large displacements could occur on flat ground, which
 may look odd, and result in z-fighting.
 
-Also added a rubbishy ocean
+Also added a rubbishy ocean.
+
+::09/06/2008
+Refactored ground and height displacement stuff, and added planar terrain geometry, so terrain setups can be tested in the
+new planet builder tool. This app. will also be used to test out atmospheric shaders, and terrain types. Have also added a
+particle system builder. 

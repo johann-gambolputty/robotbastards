@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using Rb.Assets.Files;
 using Rb.Assets.Interfaces;
 
 namespace Rb.Assets
@@ -34,7 +35,15 @@ namespace Rb.Assets
 			{
 				assetSetupPath = "../assetSetup.xml";
 			}
-			AssetUtils.Setup( assetSetupPath );
+			try
+			{
+				AssetUtils.Setup( assetSetupPath );
+			}
+			catch ( Exception ex )
+			{
+				AssetsLog.Exception( ex, string.Format( "Failed to setup asset manager from asset setup file \"{0}\"", assetSetupPath ) );
+				throw;
+			}
 		}
 
 		#endregion

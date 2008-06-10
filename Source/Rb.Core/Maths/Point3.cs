@@ -1,13 +1,21 @@
 using System;
+using System.Collections;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace Rb.Core.Maths
 {
 	/// <summary>
-	/// A Point3 is a point in world space. Units are the same as Vector3
+	/// A point in 3d space. Uses single precision floats.
 	/// </summary>
+	/// <remarks>
+	/// Uses a really dubious hack in the index operator - avoid if possible
+	/// </remarks>
 	[DebuggerDisplay("({X},{Y},{Z})")]
+	[TypeConverter(typeof(Point3TypeConverter))]
 	[Serializable]
+	[StructLayout( LayoutKind.Sequential )]
 	public struct Point3
 	{
 		/// <summary>
@@ -64,7 +72,7 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public unsafe override int GetHashCode()
 		{
-			//	Is this a good hash? who knows? fast, though :)
+			//	Not a good hash. fast, though :)
 			float res = m_X + m_Y + m_Z;
 			return *( int* )&res;
 		}
@@ -211,6 +219,22 @@ namespace Rb.Core.Maths
 			return Functions.Sqrt( SqrDistanceTo( pt ) );
 		}
 
+		#region Point3TypeConverter
+
+		public class Point3TypeConverter : ExpandableObjectConverter
+		{
+			public override bool GetCreateInstanceSupported( ITypeDescriptorContext context )
+			{
+				return true;
+			}
+
+			public override object CreateInstance( ITypeDescriptorContext context, IDictionary propertyValues)
+			{
+				return new Vector3( ( float )propertyValues[ "X" ], ( float )propertyValues[ "Y" ], ( float )propertyValues[ "Z" ] );
+			}
+		}
+
+		#endregion
 
 		private float	m_X;
 		private float	m_Y;
