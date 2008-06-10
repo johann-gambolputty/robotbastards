@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using Poc1.Particles.Interfaces;
 using Rb.Core.Maths;
 
@@ -12,6 +13,7 @@ namespace Poc1.Particles.Classes
 		/// <summary>
 		/// Gets/sets the normalized direction vector that particles can be spawned around.
 		/// </summary>
+		[Description( "The initial direction vector of spawned particles" )]
 		public Vector3 Direction
 		{
 			get { return m_Direction; }
@@ -21,6 +23,7 @@ namespace Poc1.Particles.Classes
 		/// <summary>
 		/// Gets/sets the angle (in degrees) around the direction vector that particles can be spawned in.
 		/// </summary>
+		[Description( "The angle (in degrees) around the direction vector that particles can be spawned in." )]
 		public float Angle
 		{
 			get { return m_Angle; }
@@ -52,8 +55,10 @@ namespace Poc1.Particles.Classes
 			float s, t;
 			SphericalCoordinates.FromNormalizedVector( Direction, out s, out t );
 
-			float sAngle = ( float )( m_Rnd.NextDouble( ) * Angle ) - Angle / 2;
-			float tAngle = ( float )( m_Rnd.NextDouble( ) * Angle ) - Angle / 2;
+			float angleRad = Constants.DegreesToRadians * Angle;
+
+			float sAngle = ( float )( m_Rnd.NextDouble( ) * angleRad ) - angleRad / 2;
+			float tAngle = ( float )( m_Rnd.NextDouble( ) * angleRad ) - angleRad / 2;
 
 			s = Utils.Wrap( s + sAngle, 0, Constants.TwoPi );
 			t = Utils.Wrap( t + tAngle, 0, Constants.Pi );

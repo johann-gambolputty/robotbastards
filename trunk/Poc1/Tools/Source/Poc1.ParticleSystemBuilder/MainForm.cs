@@ -16,8 +16,6 @@ namespace Poc1.ParticleSystemBuilder
 	{
 		public MainForm( )
 		{
-			Graphics.InitializeFromConfiguration( );
-
 			InitializeComponent( );
 
 			psDisplay.OnBeginPaint += psDisplay_OnBeginPaint;
@@ -30,7 +28,8 @@ namespace Poc1.ParticleSystemBuilder
 			IParticleSystem ps = new ParticleSystem( );
 			m_ParticleSystems.Add( new ParticleSystemEmitter( ps ) );
 
-			BuilderControl psBuilder = new BuilderControl( );
+		//	BuilderControl psBuilder = new BuilderControl( );
+			ParticleSystemEditor psBuilder = new ParticleSystemEditor( );
 			psBuilder.ParticleSystem = ps;
 			Content psBuilderContent = m_DockingManager.Contents.Add( psBuilder, "Particle System Builder" );
 			m_DockingManager.AddContentWithState( psBuilderContent, State.DockLeft );
@@ -59,7 +58,7 @@ namespace Poc1.ParticleSystemBuilder
 			psDisplay.AddViewer( viewer );
 
 			viewer.Camera = CreateCamera( new InputContext( viewer ), new CommandUser( ) );
-			viewer.Renderable = new RenderableList( m_ParticleSystems, new Grid( 8, 4 ) );
+			viewer.Renderable = new RenderableList( m_ParticleSystems, new Grid( 8, 8 ) );
 		}
 
 		private const float PsY = 2.0f;

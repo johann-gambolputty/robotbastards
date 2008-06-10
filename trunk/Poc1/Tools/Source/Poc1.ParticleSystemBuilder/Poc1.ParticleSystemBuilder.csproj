@@ -47,6 +47,12 @@
     <Compile Include="BuilderControl.Designer.cs">
       <DependentUpon>BuilderControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="CompositeComponentControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CompositeComponentControl.Designer.cs">
+      <DependentUpon>CompositeComponentControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Grid.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -54,11 +60,17 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ParticleControlEditor.cs">
+    <Compile Include="ComponentControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ParticleControlEditor.Designer.cs">
-      <DependentUpon>ParticleControlEditor.cs</DependentUpon>
+    <Compile Include="ComponentControl.Designer.cs">
+      <DependentUpon>ComponentControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ParticleSystemEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ParticleSystemEditor.Designer.cs">
+      <DependentUpon>ParticleSystemEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="ParticleSystemEmitter.cs" />
     <Compile Include="Program.cs" />
@@ -67,13 +79,21 @@
       <SubType>Designer</SubType>
       <DependentUpon>BuilderControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CompositeComponentControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>CompositeComponentControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ParticleControlEditor.resx">
+    <EmbeddedResource Include="ComponentControl.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>ParticleControlEditor.cs</DependentUpon>
+      <DependentUpon>ComponentControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ParticleSystemEditor.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ParticleSystemEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -83,6 +103,14 @@
     <EmbeddedResource Include="RenderControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>RenderControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SpawnerControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SpawnerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UpdaterControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>UpdaterControl.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -104,8 +132,24 @@
       <DependentUpon>RenderControl.cs</DependentUpon>
     </Compile>
     <Compile Include="RenderMethod.cs" />
+    <Compile Include="SpawnerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SpawnerControl.Designer.cs">
+      <DependentUpon>SpawnerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UpdaterControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UpdaterControl.Designer.cs">
+      <DependentUpon>UpdaterControl.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Assets\Rb.Assets.csproj">
+      <Project>{22440804-2D3F-4FEF-AD01-812923F6E04C}</Project>
+      <Name>Rb.Assets</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Source\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>

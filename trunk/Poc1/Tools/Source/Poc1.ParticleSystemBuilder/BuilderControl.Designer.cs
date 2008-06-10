@@ -28,11 +28,11 @@ namespace Poc1.ParticleSystemBuilder
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.renderControlEditor = new Poc1.ParticleSystemBuilder.ParticleControlEditor();
-			this.killerControlEditor = new Poc1.ParticleSystemBuilder.ParticleControlEditor();
-			this.updateControlEditor = new Poc1.ParticleSystemBuilder.ParticleControlEditor();
-			this.spawnControlEditor = new Poc1.ParticleSystemBuilder.ParticleControlEditor();
-			this.spawnRateControlEditor = new Poc1.ParticleSystemBuilder.ParticleControlEditor();
+			this.renderControlEditor = new Poc1.ParticleSystemBuilder.ComponentControl();
+			this.killerControlEditor = new Poc1.ParticleSystemBuilder.ComponentControl();
+			this.updateControlEditor = new Poc1.ParticleSystemBuilder.ComponentControl();
+			this.spawnControlEditor = new Poc1.ParticleSystemBuilder.ComponentControl();
+			this.spawnRateControlEditor = new Poc1.ParticleSystemBuilder.ComponentControl();
 			this.SuspendLayout();
 			// 
 			// renderControlEditor
@@ -104,11 +104,11 @@ namespace Poc1.ParticleSystemBuilder
 
 		#endregion
 
-		private ParticleControlEditor renderControlEditor;
-		private ParticleControlEditor killerControlEditor;
-		private ParticleControlEditor updateControlEditor;
-		private ParticleControlEditor spawnControlEditor;
-		private ParticleControlEditor spawnRateControlEditor;
+		private ComponentControl renderControlEditor;
+		private ComponentControl killerControlEditor;
+		private ComponentControl updateControlEditor;
+		private ComponentControl spawnControlEditor;
+		private ComponentControl spawnRateControlEditor;
 
 
 

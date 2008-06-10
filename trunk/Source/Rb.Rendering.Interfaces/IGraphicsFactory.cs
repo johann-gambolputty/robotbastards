@@ -1,3 +1,4 @@
+using System.Drawing.Design;
 using Rb.Core.Utils;
 using Rb.Rendering.Interfaces.Objects;
 
@@ -100,7 +101,6 @@ namespace Rb.Rendering.Interfaces
 		/// Creates an index buffer
 		/// </summary>
 		IIndexBuffer CreateIndexBuffer( );
-
 
 		#endregion
 

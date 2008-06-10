@@ -40,7 +40,10 @@
     <Compile Include="Classes\ParticleBase.cs" />
     <Compile Include="Classes\NullParticleUpdater.cs" />
     <Compile Include="Classes\ParticleAgeKiller.cs" />
+    <Compile Include="Classes\ParticleCompositeKiller.cs" />
+    <Compile Include="Classes\ParticleCompositeRenderer.cs" />
     <Compile Include="Classes\ParticleCompositeUpdater.cs" />
+    <Compile Include="Classes\ParticleSystemCompositeComponent.cs" />
     <Compile Include="Classes\SerialParticleBuffer.cs" />
     <Compile Include="Classes\ParticleDebugRenderer.cs" />
     <Compile Include="Classes\ParticleSystem.cs" />
@@ -55,6 +58,7 @@
     <Compile Include="Interfaces\IParticleKiller.cs" />
     <Compile Include="Interfaces\IParticleRenderer.cs" />
     <Compile Include="Interfaces\IParticleSystemComponent.cs" />
+    <Compile Include="Interfaces\IParticleSystemCompositeComponent.cs" />
     <Compile Include="Interfaces\IParticleUpdater.cs" />
     <Compile Include="Interfaces\ISerialParticleBuffer.cs" />
     <Compile Include="Interfaces\ISpawnRate.cs" />

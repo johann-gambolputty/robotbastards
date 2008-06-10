@@ -1,13 +1,18 @@
 using System;
+using System.Collections;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace Rb.Core.Maths
 {
 	/// <summary>
 	/// 3 element floating point vector
     /// </summary>
-    [DebuggerDisplay("({X},{Y},{Z})")]
+    [DebuggerDisplay( "({X},{Y},{Z})" )]
+	[TypeConverter( typeof( Vector3TypeConverter ) )]
 	[Serializable]
+	[StructLayout( LayoutKind.Sequential )]
 	public struct Vector3
 	{
 		#region	Vector constants
@@ -415,5 +420,21 @@ namespace Rb.Core.Maths
 
 		#endregion
 
+		#region Vector3TypeConverter
+
+		public class Vector3TypeConverter : ExpandableObjectConverter
+		{
+			public override bool GetCreateInstanceSupported( ITypeDescriptorContext context )
+			{
+				return true;
+			}
+
+			public override object CreateInstance( ITypeDescriptorContext context, IDictionary propertyValues)
+			{
+				return new Vector3( ( float )propertyValues[ "X" ], ( float )propertyValues[ "Y" ], ( float )propertyValues[ "Z" ] );
+			}
+		}
+
+		#endregion
 	}
 }

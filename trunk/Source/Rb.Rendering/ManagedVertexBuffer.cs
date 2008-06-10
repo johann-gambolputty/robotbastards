@@ -219,7 +219,6 @@ namespace Rb.Rendering
 
 		#endregion
 
-
 		#region Private Members
 
 		private readonly IVertexBuffer m_Vb = Graphics.Factory.CreateVertexBuffer( );
