@@ -2,7 +2,7 @@
 namespace Rb.Core.Maths
 {
 	/// <summary>
-	/// Contains functions for using spherical coordinates
+	/// Contains spherical coordinates functions
 	/// </summary>
 	public static class SphericalCoordinates
 	{
@@ -25,6 +25,9 @@ namespace Rb.Core.Maths
 			return new Vector3( x, y, z );
 		}
 
+		/// <summary>
+		/// Gets (s,t) spherical coordinate from a normalized vector
+		/// </summary>
 		public static Vector2 FromNormalizedVector( Vector3 src )
 		{
 			float s, t;
@@ -32,6 +35,9 @@ namespace Rb.Core.Maths
 			return new Vector2( s, t );
 		}
 
+		/// <summary>
+		/// Gets (s,t) spherical coordinate from a normalized vector
+		/// </summary>
 		public static void FromNormalizedVector( Vector3 src, out float s, out float t )
 		{
 			s = Functions.Atan( src.Z / src.X );

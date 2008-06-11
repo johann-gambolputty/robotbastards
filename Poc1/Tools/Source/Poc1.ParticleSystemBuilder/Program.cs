@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Windows.Forms;
 using Rb.Assets;
 using Rb.Rendering;
@@ -13,6 +14,9 @@ namespace Poc1.ParticleSystemBuilder
 		[STAThread]
 		static void Main( )
 		{
+			//	Bodge in these assemblies. Required for factories
+			Assembly.Load("Rb.NiceControls");
+
 			try
 			{
 				Graphics.InitializeFromConfiguration( );

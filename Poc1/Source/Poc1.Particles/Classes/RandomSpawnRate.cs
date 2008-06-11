@@ -26,7 +26,7 @@ namespace Poc1.Particles.Classes
 		/// <summary>
 		/// Returns the number of particles to spawn on this update step
 		/// </summary>
-		public override int GetNumberOfParticlesToSpawn( )
+		public override int GetNumberOfParticlesToSpawn( float updateTime )
 		{
 			return m_Random.Next( MinimumRate, MaximumRate );
 		}

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Poc1.Tools.TerrainTextures.Core;
+using Rb.Core.Maths;
 
 namespace Poc1.PlanetBuilder
 {
@@ -17,7 +18,11 @@ namespace Poc1.PlanetBuilder
 		#region Private Members
 		
 		private readonly List<GroundTypeControl> m_SelectedControls = new List<GroundTypeControl>( );
-		private TerrainTypeSet m_TerrainTypes = new TerrainTypeSet( );
+
+		private static TerrainTypeSet TerrainTypes
+		{
+			get { return TerrainTypeTextureBuilder.Instance.TerrainTypes; }
+		}
 
 		private void AddTypeControls( TerrainType terrainType )
 		{
@@ -27,6 +32,7 @@ namespace Poc1.PlanetBuilder
 			{
 				newControl.TerrainType = terrainType;
 			}
+			newControl.Anchor |= AnchorStyles.Right;
 			newControl.ControlSelected += GroundTypeControl_Selected;
 			newControl.MoveControlUp += GroundTypeControl_MoveControlUp;
 			newControl.MoveControlDown += GroundTypeControl_MoveControlDown;
@@ -82,7 +88,7 @@ namespace Poc1.PlanetBuilder
 
 		private void GroundTypeControl_RemoveControl( GroundTypeControl control )
 		{
-			m_TerrainTypes.TerrainTypes.Remove( control.TerrainType );
+			TerrainTypes.Remove( control.TerrainType );
 			groundTypeTableLayoutPanel.Controls.Remove( control );
 			Deselect( control );
 		//	UpdateSample( );
@@ -99,7 +105,7 @@ namespace Poc1.PlanetBuilder
 			{
 				control.Enabled = true;
 				control.TerrainType = new TerrainType( );
-				m_TerrainTypes.TerrainTypes.Add( control.TerrainType );
+				TerrainTypes.Add( control.TerrainType );
 			//	UpdateSample( );
 
 				AddTypeControls( null );
@@ -119,8 +125,15 @@ namespace Poc1.PlanetBuilder
 
 		private void Deselect( GroundTypeControl control )
 		{
+			control.TerrainType.AltitudeDistribution.ParametersChanged -= OnTerrainTypeDistributionsChanged;
+			control.TerrainType.SlopeDistribution.ParametersChanged -= OnTerrainTypeDistributionsChanged;
 			control.Selected = false;
 			m_SelectedControls.Remove( control );
+		}
+
+		private static void OnTerrainTypeDistributionsChanged( IFunction1d function )
+		{
+			TerrainTypeTextureBuilder.Instance.Rebuild( true, false );
 		}
 
 		private void Select( GroundTypeControl control )
@@ -128,7 +141,20 @@ namespace Poc1.PlanetBuilder
 			control.Selected = true;
 			m_SelectedControls.Add( control );
 
-			selectionPropertyGrid.SelectedObject = control.TerrainType;
+			if ( control.TerrainType.AltitudeDistribution == null )
+			{
+				control.TerrainType.AltitudeDistribution = new LineFunction1d( );
+			}
+			if ( control.TerrainType.SlopeDistribution == null )
+			{
+				control.TerrainType.SlopeDistribution = new LineFunction1d( );
+			}
+
+			control.TerrainType.AltitudeDistribution.ParametersChanged += OnTerrainTypeDistributionsChanged;
+			control.TerrainType.SlopeDistribution.ParametersChanged += OnTerrainTypeDistributionsChanged;
+
+			altitudeGraphEditorControl.Function = control.TerrainType.AltitudeDistribution;
+			slopeGraphEditorControl.Function = control.TerrainType.SlopeDistribution;
 		}
 
 		private bool IsSelected( GroundTypeControl control )

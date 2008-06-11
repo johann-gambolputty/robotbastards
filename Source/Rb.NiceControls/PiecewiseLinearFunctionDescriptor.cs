@@ -7,7 +7,7 @@ namespace Rb.NiceControls
 	public class PiecewiseLinearFunctionDescriptor : FunctionDescriptor
 	{
 		public PiecewiseLinearFunctionDescriptor( ) :
-			base( "Piecewise Linear Function" )
+			base( "Piecewise Linear", new LineFunction1d( ) )
 		{
 		}
 
@@ -22,10 +22,10 @@ namespace Rb.NiceControls
 		/// <summary>
 		/// Creates a control for this function
 		/// </summary>
-		public override Control CreateControl( IFunction1d function )
+		public override Control CreateControl( )
 		{
 			GraphControl control = new GraphControl( );
-			control.Graph = new LineGraph( );
+			control.Graph = new PiecewiseGraphInputHandler( ( PiecewiseLinearFunction1d  )Function );
 			return control;
 		}
 	}

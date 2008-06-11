@@ -9,6 +9,8 @@ namespace Poc1.Particles.Interfaces
 		/// <summary>
 		/// Updates all particles
 		/// </summary>
-		void Update( IParticleSystem ps );
+		/// <param name="ps">Particle system to update</param>
+		/// <param name="updateTime">Time since the last update, in seconds</param>
+		void Update( IParticleSystem ps, float updateTime );
 	}
 }

@@ -30,8 +30,8 @@ namespace Poc1.Tools.TerrainTextures
 				typeNameTextBox.Text = m_TerrainType.Name;
 				texturePanel.BackgroundImage = m_TerrainType.Texture;
 
-				elevationControl.Distribution = m_TerrainType.AltitudeDistribution;
-				slopeControl.Distribution = m_TerrainType.SlopeDistribution;
+			//	elevationControl.Distribution = m_TerrainType.AltitudeDistribution;
+			//	slopeControl.Distribution = m_TerrainType.SlopeDistribution;
 			}
 		}
 

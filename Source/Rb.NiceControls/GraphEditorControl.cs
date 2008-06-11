@@ -12,6 +12,8 @@ namespace Rb.NiceControls
 
 			graphTypeComboBox.Items.Add( new PiecewiseLinearFunctionDescriptor( ) );
 			graphTypeComboBox.SelectedIndex = 0;
+
+			Function = new LineFunction1d( );
 		}
 
 		public IFunction1d Function
@@ -23,24 +25,47 @@ namespace Rb.NiceControls
 				{
 					throw new ArgumentNullException( "value" );
 				}
-				m_Function = value;
-				
+				foreach ( FunctionDescriptor descriptor in graphTypeComboBox.Items )
+				{
+					if ( descriptor.SupportsFunction( value ) )
+					{
+						m_Function = value;
+						descriptor.Function = value;
+						if ( graphTypeComboBox.SelectedItem != descriptor )
+						{
+							graphTypeComboBox.SelectedItem = descriptor;
+						}
+						else
+						{
+							CreateControl( descriptor );
+						}
+						return;
+					}
+				}
+				throw new NotSupportedException( string.Format( "Function type \"{0}\" is not supported", value.GetType( ) ) );
 			}
 		}
 
 		private IFunction1d m_Function;
 		private Control m_FunctionControl;
 
-		private void graphTypeComboBox_SelectedIndexChanged( object sender, EventArgs e )
+		private void CreateControl( FunctionDescriptor descriptor )
 		{
-			if ( graphTypeComboBox.SelectedItem == null )
+			if ( m_FunctionControl != null )
 			{
 				graphPanel.Controls.Remove( m_FunctionControl );
-				return;
 			}
-			m_FunctionControl = ( ( FunctionDescriptor )graphTypeComboBox.SelectedItem ).CreateControl( );
-			m_FunctionControl.Dock = DockStyle.Fill;
-			graphPanel.Controls.Add( m_FunctionControl );
+			if ( descriptor != null )
+			{
+				m_FunctionControl = descriptor.CreateControl( );
+				m_FunctionControl.Dock = DockStyle.Fill;
+				graphPanel.Controls.Add( m_FunctionControl );
+			}
+		}
+
+		private void graphTypeComboBox_SelectedIndexChanged( object sender, EventArgs e )
+		{
+			CreateControl( ( FunctionDescriptor )graphTypeComboBox.SelectedItem );
 		}
 	}
 }

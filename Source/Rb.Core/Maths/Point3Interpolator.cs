@@ -2,7 +2,7 @@
 namespace Rb.Core.Maths
 {
 	/// <summary>
-	/// Stores two points and provides a method for interpolating between them
+	/// Stores two points and provides methods for interpolating between them
 	/// </summary>
 	public class Point3Interpolator
 	{

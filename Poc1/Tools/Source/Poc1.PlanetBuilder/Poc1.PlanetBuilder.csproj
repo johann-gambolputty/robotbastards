@@ -126,6 +126,7 @@
       <DependentUpon>TerrainFunctionControl.cs</DependentUpon>
     </Compile>
     <Compile Include="TerrainMesh.cs" />
+    <Compile Include="TerrainTypeTextureBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Source\Rb.Assets\Rb.Assets.csproj">

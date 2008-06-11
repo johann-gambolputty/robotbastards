@@ -7,6 +7,22 @@ using Rb.Core.Utils;
 
 namespace Rb.NiceControls
 {
+	/// <summary>
+	/// A type editor for IFunction1d parameters
+	/// </summary>
+	/// <remarks>
+	/// Example:
+	/// <code>
+	/// class MyClass
+	/// {
+	///		[Editor( typeof( GraphUITypeEditor ) )]
+	///		public IFunction1d Function
+	///		{
+	///			get {...} set {...}
+	///		}
+	/// }
+	/// </code>
+	/// </remarks>
 	[CustomUITypeEditor( typeof( IFunction1d ) )]
 	public class GraphUITypeEditor : UITypeEditor
 	{
@@ -19,14 +35,10 @@ namespace Rb.NiceControls
 		{
 			IWindowsFormsEditorService edSvc = ( IWindowsFormsEditorService )provider.GetService( typeof( IWindowsFormsEditorService ) );
 
-			GraphEditorControl control;
-			if ( value == null )
+			GraphEditorControl control = new GraphEditorControl( );
+			if ( value != null )
 			{
-				control = new GraphEditorControl( );
-			}
-			else
-			{
-				control = new GraphEditorControl( );
+				control.Function = ( IFunction1d )value;
 			}
 			edSvc.DropDownControl( control );
 

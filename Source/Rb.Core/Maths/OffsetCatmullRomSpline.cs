@@ -2,7 +2,7 @@
 namespace Rb.Core.Maths
 {
 	/// <summary>
-	/// Summary description for OffsetCatmullRomSpline.
+	/// A catmull-rom spline with a fixed offset
 	/// </summary>
 	public class OffsetCatmullRomSpline : Curve
 	{

@@ -11,26 +11,26 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public override float GetValue( float t )
 		{
-			if ( ControlPoints.Count == 0 )
+			if ( NumControlPoints == 0 )
 			{
 				return 0;
 			}
-			if ( t <= ControlPoints[ 0 ].Position )
+			if ( t <= this[ 0 ].Position )
 			{
-				return ControlPoints[ 0 ].Value;
+				return this[ 0 ].Value;
 			}
-			for ( int i = 0; i < ControlPoints.Count - 1; ++i )
+			for ( int i = 0; i < NumControlPoints - 1; ++i )
 			{
-				if ( t <= ControlPoints[ i + 1 ].Position )
+				if ( t <= this[ i + 1 ].Position )
 				{
-					float minLocalT = ControlPoints[ i ].Position;
-					float maxLocalT = ControlPoints[ i + 1 ].Position;
+					float minLocalT = this[ i ].Position;
+					float maxLocalT = this[ i + 1 ].Position;
 
 					float localT = ( t - minLocalT ) / ( maxLocalT - minLocalT );
-					return ( ControlPoints[ i ].Value * ( 1 - localT ) + ControlPoints[ i + 1 ].Value * localT );
+					return ( this[ i ].Value * ( 1 - localT ) + this[ i + 1 ].Value * localT );
 				}
 			}
-			return ControlPoints[ ControlPoints.Count - 1 ].Value;
+			return this[ NumControlPoints - 1 ].Value;
 		}
 	}
 }

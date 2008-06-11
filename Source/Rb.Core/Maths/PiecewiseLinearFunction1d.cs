@@ -56,20 +56,90 @@ namespace Rb.Core.Maths
 		 
 		#endregion
 
+		public override string ToString( )
+		{
+			return "Piecewise Linear Function";
+		}
+
+		/// <summary>
+		/// Returns the number of control points
+		/// </summary>
+		public int NumControlPoints
+		{
+			get { return m_ControlPoints.Count; }
+		}
+
+		/// <summary>
+		/// Gets/sets an indexed control point
+		/// </summary>
+		public ControlPoint this[ int index ]
+		{
+			get { return m_ControlPoints[ index ]; }
+			set
+			{
+				m_ControlPoints[ index ] = value;
+				OnParametersChanged( );
+			}
+		}
+
 		/// <summary>
 		/// Gets the list of control points defining this function
 		/// </summary>
-		public List<ControlPoint> ControlPoints
+		public IEnumerable<ControlPoint> ControlPoints
 		{
 			get { return m_ControlPoints; }
+		}
+
+		/// <summary>
+		/// Adds a control point to the end of the control point list
+		/// </summary>
+		public void AddControlPoint( ControlPoint cp )
+		{
+			m_ControlPoints.Add( cp );
+			OnParametersChanged( );
+		}
+
+		/// <summary>
+		/// Inserts a control point into the control point list
+		/// </summary>
+		public void InsertControlPoint( int index, ControlPoint cp )
+		{
+			m_ControlPoints.Insert( index, cp );
+			OnParametersChanged( );
+		}
+		
+		/// <summary>
+		/// Removes a control point from the control point list
+		/// </summary>
+		public void RemoveControlPoint( int index )
+		{
+			m_ControlPoints.RemoveAt( index );
+			OnParametersChanged( );
 		}
 
 		#region IFunction1d Members
 
 		/// <summary>
+		/// Event, invoked when the parameters of this function are changed
+		/// </summary>
+		public event Action<IFunction1d> ParametersChanged;
+
+		/// <summary>
 		/// Gets a value for this function at a specified point
 		/// </summary>
 		public abstract float GetValue( float t );
+
+		#endregion
+
+		#region Protected Members
+
+		protected void OnParametersChanged( )
+		{
+			if ( ParametersChanged != null )
+			{
+				ParametersChanged( this );
+			}
+		}
 
 		#endregion
 

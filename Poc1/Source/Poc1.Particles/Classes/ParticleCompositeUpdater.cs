@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.ComponentModel;
 using Poc1.Particles.Interfaces;
 
@@ -12,11 +11,11 @@ namespace Poc1.Particles.Classes
 	{
 		#region IParticleUpdater Members
 
-		public void Update( IParticleSystem ps )
+		public void Update( IParticleSystem ps, float updateTime )
 		{
 			foreach ( IParticleUpdater updater in Components )
 			{
-				updater.Update( ps );
+				updater.Update( ps, updateTime );
 			}
 		}
 

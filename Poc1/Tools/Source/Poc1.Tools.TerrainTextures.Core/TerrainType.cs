@@ -1,7 +1,5 @@
 using System;
-using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Design;
 using System.IO;
 using System.Runtime.Serialization;
 using Rb.Core.Maths;
@@ -15,32 +13,22 @@ namespace Poc1.Tools.TerrainTextures.Core
 	[Serializable]
 	public class TerrainType
 	{
-
-		private IFunction1d m_AltitudeDist;
-
-		[Editor( typeof( CustomUITypeEditor<IFunction1d> ), typeof( UITypeEditor ) )]
-		public IFunction1d AltitudeDist
+		/// <summary>
+		/// Distribution of terrain type over altitude
+		/// </summary>
+		public IFunction1d AltitudeDistribution
 		{
 			get { return m_AltitudeDist; }
 			set { m_AltitudeDist = value; }
 		}
 
 		/// <summary>
-		/// Distribution of terrain type over altitude
-		/// </summary>
-		public IDistribution AltitudeDistribution
-		{
-			get { return m_AltitudeDistribution; }
-			set { m_AltitudeDistribution = value; }
-		}
-
-		/// <summary>
 		/// Distribution of terrain type over slope
 		/// </summary>
-		public IDistribution SlopeDistribution
+		public IFunction1d SlopeDistribution
 		{
-			get { return m_SlopeDistribution; }
-			set { m_SlopeDistribution = value; }
+			get { return m_SlopeDist; }
+			set { m_SlopeDist = value; }
 		}
 
 		/// <summary>
@@ -86,12 +74,12 @@ namespace Poc1.Tools.TerrainTextures.Core
 		public TerrainType Clone( )
 		{
 			TerrainType clone = new TerrainType( );
-			clone.Name						= m_Name;
-			clone.m_Texture					= m_Texture;
-			clone.m_TexturePath				= m_TexturePath;
-			clone.m_AverageColour			= m_AverageColour;
-			clone.m_AltitudeDistribution	= m_AltitudeDistribution;
-			clone.m_SlopeDistribution		= m_SlopeDistribution;
+			clone.Name				= m_Name;
+			clone.m_Texture			= m_Texture;
+			clone.m_TexturePath		= m_TexturePath;
+			clone.m_AverageColour	= m_AverageColour;
+			clone.m_AltitudeDist	= m_AltitudeDist;
+			clone.m_SlopeDist		= m_SlopeDist;
 			return clone;
 		}
 
@@ -100,7 +88,7 @@ namespace Poc1.Tools.TerrainTextures.Core
 		/// </summary>
 		public float GetScore( float altitude, float slope )
 		{
-			return m_AltitudeDistribution.Sample( altitude ) * m_SlopeDistribution.Sample( slope );
+			return m_AltitudeDist.GetValue( altitude ) * m_SlopeDist.GetValue( slope );
 		}
 
 		/// <summary>
@@ -154,10 +142,11 @@ namespace Poc1.Tools.TerrainTextures.Core
 
 		#region Private Members
 
-		private IDistribution m_AltitudeDistribution = CreateDefaultDistribution( );
-		private IDistribution m_SlopeDistribution = CreateDefaultDistribution( );
 		private string m_Name;
 		private string m_TexturePath;
+
+		private IFunction1d m_AltitudeDist = CreateDefaultFunction( );
+		private IFunction1d m_SlopeDist = CreateDefaultFunction( );
 
 		[NonSerialized]
 		private Bitmap m_Texture;
@@ -165,12 +154,12 @@ namespace Poc1.Tools.TerrainTextures.Core
 		[NonSerialized]
 		private Color m_AverageColour;
 
-		private static IDistribution CreateDefaultDistribution( )
+		private static IFunction1d CreateDefaultFunction( )
 		{
-			IDistribution distribution = new LinearDistribution( );
-			distribution.ControlPoints.Add( new ControlPoint( 0, 1 ) );
-			distribution.ControlPoints.Add( new ControlPoint( 1, 1 ) );
-			return distribution;
+			PiecewiseLinearFunction1d function = new LineFunction1d( );
+			function.AddControlPoint( new PiecewiseLinearFunction1d.ControlPoint( 0, 1 ) );
+			function.AddControlPoint( new PiecewiseLinearFunction1d.ControlPoint( 1, 1 ) );
+			return function;
 		}
 
 		private static Color AverageBitmapColour( Bitmap bmp )

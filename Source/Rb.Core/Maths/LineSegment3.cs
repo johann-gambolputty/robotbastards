@@ -1,10 +1,12 @@
+
 using System;
 
 namespace Rb.Core.Maths
 {
 	/// <summary>
-	/// Summary description for Line3.
+	/// 3d line segment
 	/// </summary>
+	[Serializable]
 	public class LineSegment3
 	{
 		#region	Construction and setup

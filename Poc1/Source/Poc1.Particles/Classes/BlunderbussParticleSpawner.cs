@@ -93,6 +93,7 @@ namespace Poc1.Particles.Classes
 		/// </summary>
 		public void Attach( IParticleSystem particles )
 		{
+			particles.Buffer.AddField( ParticleBase.Position, ParticleFieldType.Float32, 3, 0.0f );
 			particles.Buffer.AddField( ParticleBase.Velocity, ParticleFieldType.Float32, 3, 0.0f );
 		}
 

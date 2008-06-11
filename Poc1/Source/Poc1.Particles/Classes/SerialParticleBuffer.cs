@@ -210,8 +210,11 @@ namespace Poc1.Particles.Classes
 			{
 				throw new InvalidOperationException( "Tried to access a field before the buffer was rebuilt" );
 			}
-
-			FieldInfo field = m_Fields[ name ];
+			FieldInfo field;
+			if ( !m_Fields.TryGetValue( name, out field ) )
+			{
+				throw new ArgumentException( string.Format( "Field \"{0}\" does not exist - all fields must be specified in the Attach() method of particle system components", name ), "name" );
+			}
 			byte* result;
 			fixed( byte* bufferBytes = m_Buffer )	//	Not necessary, because m_Buffer is pinned, but gets around compiler error
 			{
