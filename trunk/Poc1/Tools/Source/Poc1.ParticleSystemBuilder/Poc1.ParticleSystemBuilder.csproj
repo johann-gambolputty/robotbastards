@@ -101,16 +101,8 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="RenderControl.resx">
-      <SubType>Designer</SubType>
       <DependentUpon>RenderControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SpawnerControl.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>SpawnerControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdaterControl.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>UpdaterControl.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -132,18 +124,6 @@
       <DependentUpon>RenderControl.cs</DependentUpon>
     </Compile>
     <Compile Include="RenderMethod.cs" />
-    <Compile Include="SpawnerControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="SpawnerControl.Designer.cs">
-      <DependentUpon>SpawnerControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UpdaterControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UpdaterControl.Designer.cs">
-      <DependentUpon>UpdaterControl.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Source\Rb.Assets\Rb.Assets.csproj">

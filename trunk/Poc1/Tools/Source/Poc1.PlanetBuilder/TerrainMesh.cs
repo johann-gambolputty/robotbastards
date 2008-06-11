@@ -8,7 +8,6 @@ using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Interfaces.Objects.Cameras;
-using Rb.Rendering.Textures;
 
 namespace Poc1.PlanetBuilder
 {
@@ -28,10 +27,10 @@ namespace Poc1.PlanetBuilder
 			IEffect effect = ( IEffect )AssetManager.Instance.Load( "Effects/Planets/terrestrialPlanetTerrain.cgfx" );
 			m_TerrainTechnique = new TechniqueSelector( effect, "DefaultTechnique" );
 
-			TextureLoader.TextureLoadParameters loadParameters = new TextureLoader.TextureLoadParameters( );
-			loadParameters.GenerateMipMaps = true;
-			m_TerrainPackTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/defaultSet0 Pack.jpg", loadParameters );
-			m_TerrainTypesTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/defaultSet0 Distribution.bmp" );
+			//TextureLoader.TextureLoadParameters loadParameters = new TextureLoader.TextureLoadParameters( );
+			//loadParameters.GenerateMipMaps = true;
+			//m_TerrainPackTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/defaultSet0 Pack.jpg", loadParameters );
+			//m_TerrainTypesTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/defaultSet0 Distribution.bmp" );
 
 			m_NoiseTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/Noise.jpg" );
 
@@ -126,8 +125,11 @@ namespace Poc1.PlanetBuilder
 			m_RootPatch.UpdateLod( ( ( ICamera3 )camera ).Frame.Translation, this, camera );
 			m_RootPatch.Update( camera, this );
 
-			m_TerrainTechnique.Effect.Parameters[ "TerrainPackTexture" ].Set( m_TerrainPackTexture );
-			m_TerrainTechnique.Effect.Parameters[ "TerrainTypeTexture" ].Set( m_TerrainTypesTexture );
+			ITexture2d lookupTexture = TerrainTypeTextureBuilder.Instance.LookupTexture;
+			ITexture2d packTexture = TerrainTypeTextureBuilder.Instance.PackTexture;
+
+			m_TerrainTechnique.Effect.Parameters[ "TerrainPackTexture" ].Set( packTexture );
+			m_TerrainTechnique.Effect.Parameters[ "TerrainTypeTexture" ].Set( lookupTexture );
 			m_TerrainTechnique.Effect.Parameters[ "NoiseTexture" ].Set( m_NoiseTexture );
 
 			m_Vertices.VertexBuffer.Begin( );
@@ -144,8 +146,6 @@ namespace Poc1.PlanetBuilder
 
 		private readonly float m_PatchScale;
 		private readonly TechniqueSelector m_TerrainTechnique;
-		private readonly ITexture2d m_TerrainPackTexture;
-		private readonly ITexture2d m_TerrainTypesTexture;
 		private readonly ITexture2d m_NoiseTexture;
 		private TerrainQuadPatchVertices m_Vertices;
 		private TerrainQuadPatch m_RootPatch;

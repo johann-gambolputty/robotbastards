@@ -5,6 +5,10 @@ namespace Rb.NiceControls.Graph
 {
 	public interface IGraphControl
 	{
+		/// <summary>
+		/// Event, invoked when the graph changes
+		/// </summary>
+		event System.EventHandler GraphChanged;
 		
 		/// <summary>
 		/// Maps a client y coordinate to a graph y coordinate
@@ -33,5 +37,10 @@ namespace Rb.NiceControls.Graph
 		{
 			get;
 		}
+
+		/// <summary>
+		/// Invokes the GraphChanged event, and invalidated the control
+		/// </summary>
+		void OnGraphChanged( );
 	}
 }

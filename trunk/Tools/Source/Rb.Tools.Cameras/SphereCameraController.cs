@@ -82,6 +82,15 @@ namespace Rb.Tools.Cameras
 		}
 
 		/// <summary>
+		/// Gets/sets the panning speed of the camera
+		/// </summary>
+		public float PanSpeed
+		{
+			get { return m_PanSpeed; }
+			set { m_PanSpeed = value; }
+		}
+
+		/// <summary>
 		/// Handles command messages, from the <see cref="Commands"/> enum
 		/// </summary>
         [Dispatch]
@@ -97,8 +106,8 @@ namespace Rb.Tools.Cameras
                 case Commands.Pan :
                     {
                         CursorCommandMessage cursorMsg = ( CursorCommandMessage )msg;
-                        float deltaX = cursorMsg.X - cursorMsg.LastX;
-                        float deltaY = cursorMsg.Y - cursorMsg.LastY;
+						float deltaX = PanSpeed * ( cursorMsg.X - cursorMsg.LastX );
+                        float deltaY = PanSpeed * ( cursorMsg.Y - cursorMsg.LastY );
 
                         Point3 newLookAt = Camera.LookAt;
 
@@ -121,6 +130,7 @@ namespace Rb.Tools.Cameras
             }
         }
 
+		private float m_PanSpeed = 0.1f;
 		private SphereCamera m_Camera;
 	}
 }

@@ -3,7 +3,7 @@ using Rb.Core.Maths;
 
 namespace Poc1.Particles.Classes
 {
-	class SimplePhysicsUpdater : IParticleUpdater
+	public class SimplePhysicsUpdater : IParticleUpdater
 	{
 		/// <summary>
 		/// Bodgy friction coefficient (0 = no friction/resistance, 1 = particles stop immediately)
@@ -15,7 +15,7 @@ namespace Poc1.Particles.Classes
 		}
 
 		/// <summary>
-		/// Gets the gravity coefficient (0=no gravity, 1=standard gravity)
+		/// Gets the gravity coefficient (0=no gravity, 1=standard gravity). Value is magnitude of acceleration vector (m/s-2)
 		/// </summary>
 		public float Gravity
 		{
@@ -28,13 +28,13 @@ namespace Poc1.Particles.Classes
 		/// <summary>
 		/// Updates all particles
 		/// </summary>
-		public void Update( IParticleSystem ps )
+		public void Update( IParticleSystem ps, float updateTime )
 		{
 			ISerialParticleBuffer sBuffer = ( ISerialParticleBuffer )ps.Buffer;
 			SerialParticleFieldIterator posIter = new SerialParticleFieldIterator( sBuffer, ParticleBase.Position );
 			SerialParticleFieldIterator velIter = new SerialParticleFieldIterator( sBuffer, ParticleBase.Velocity );
 
-			Vector3 g = Vector3.YAxis * -Gravity;
+			Vector3 g = Vector3.YAxis * -Gravity * updateTime;
 
 			float fr = 1.0f - Friction;
 			for ( int particleIndex = 0; particleIndex < sBuffer.NumActiveParticles; ++particleIndex )
@@ -65,7 +65,7 @@ namespace Poc1.Particles.Classes
 
 		#region Private Members
 
-		private float m_Friction = 0.5f;
+		private float m_Friction = 0.2f;
 		private float m_Gravity = 0.0f;
 
 		#endregion

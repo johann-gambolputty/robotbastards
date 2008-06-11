@@ -38,7 +38,6 @@
   <ItemGroup>
     <Compile Include="Classes\BlunderbussParticleSpawner.cs" />
     <Compile Include="Classes\ParticleBase.cs" />
-    <Compile Include="Classes\NullParticleUpdater.cs" />
     <Compile Include="Classes\ParticleAgeKiller.cs" />
     <Compile Include="Classes\ParticleCompositeKiller.cs" />
     <Compile Include="Classes\ParticleCompositeRenderer.cs" />

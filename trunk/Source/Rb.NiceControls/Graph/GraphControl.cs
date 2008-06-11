@@ -142,6 +142,11 @@ namespace Rb.NiceControls.Graph
 		#region IGraphControl Members
 
 		/// <summary>
+		/// Event, invoked when the graph changes
+		/// </summary>
+		public event System.EventHandler GraphChanged;
+		
+		/// <summary>
 		/// Maps a client y coordinate to a graph y coordinate
 		/// </summary>
 		public float ClientXToGraphX( int x )
@@ -183,6 +188,18 @@ namespace Rb.NiceControls.Graph
 		public Control BaseControl
 		{
 			get { return this; }
+		}
+
+		/// <summary>
+		/// Invokes the GraphChanged event, and invalidated the control
+		/// </summary>
+		public void OnGraphChanged( )
+		{
+			if ( GraphChanged != null )
+			{
+				GraphChanged( this, null );
+			}
+			Invalidate( );
 		}
 
 		#endregion

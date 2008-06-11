@@ -1,5 +1,6 @@
 using Poc1.Particles.Interfaces;
 using Rb.Core.Maths;
+using Rb.Core.Utils;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Particles.Classes
@@ -90,7 +91,7 @@ namespace Poc1.Particles.Classes
 		/// </summary>
 		public void Render( IRenderContext context )
 		{
-			Update( );
+			Update( context.RenderTime );
 			if ( Renderer == null )
 			{
 				return;
@@ -105,15 +106,21 @@ namespace Poc1.Particles.Classes
 		/// <summary>
 		/// Updates this particle system
 		/// </summary>
-		protected virtual void Update( )
+		protected virtual void Update( long updateTimeInTicks )
 		{
+			float updateTime = 0;
+			if ( m_LastUpdate != -1 )
+			{
+				updateTime = ( float )TinyTime.ToSeconds( updateTimeInTicks - m_LastUpdate );
+			}
+
 			using ( Buffer.Prepare( ) )
 			{
 				if ( EnableSpawning )
 				{
 					if ( ( Spawner != null ) && ( Buffer.MaximumNumberOfParticles > 0 ) )
 					{
-						int count = SpawnRate == null ? 0 : SpawnRate.GetNumberOfParticlesToSpawn( );
+						int count = SpawnRate == null ? 0 : SpawnRate.GetNumberOfParticlesToSpawn( updateTime );
 						Spawner.SpawnParticles( this, count );
 					}
 				}
@@ -123,15 +130,17 @@ namespace Poc1.Particles.Classes
 				}
 				if ( Updater != null )
 				{
-					Updater.Update( this );
+					Updater.Update( this, updateTime );
 				}
 			}
+			m_LastUpdate = updateTimeInTicks;
 		}
 
 		#endregion
 
 		#region Private Members
 
+		private long						m_LastUpdate		= -1;
 		private readonly Matrix44			m_Frame				= new Matrix44( );
 		private bool						m_EnableSpawning	= true;
 		private readonly IParticleBuffer	m_Buffer			= new SerialParticleBuffer( 256 );

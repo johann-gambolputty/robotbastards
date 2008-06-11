@@ -39,7 +39,7 @@ namespace Poc1.Tools.TerrainTextures.Core
 		/// </summary>
 		public unsafe Bitmap Build( int width, int height, TerrainTypeSet terrainTypes )
 		{
-			if ( terrainTypes.TerrainTypes.Count == 0 )
+			if ( terrainTypes.TerrainTypeCount == 0 )
 			{
 				return Build( width, height );
 			}

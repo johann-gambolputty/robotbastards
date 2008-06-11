@@ -23,6 +23,12 @@ namespace Poc1.Universe.Classes.Rendering
 			get { return ms_Instance; }
 		}
 
+
+		~TerrainQuadPatchBuilder( )
+		{
+			Dispose( );
+		}
+
 		/// <summary>
 		/// Clears all requests
 		/// </summary>

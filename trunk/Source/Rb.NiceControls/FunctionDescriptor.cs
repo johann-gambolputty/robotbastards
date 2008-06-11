@@ -14,9 +14,31 @@ namespace Rb.NiceControls
 		/// Sets up the descriptor
 		/// </summary>
 		/// <param name="name">Name of the function</param>
-		public FunctionDescriptor( string name )
+		/// <param name="defaultFunction">The default function used by the descriptor</param>
+		public FunctionDescriptor( string name, IFunction1d defaultFunction )
 		{
 			m_Name = name;
+			m_Function = defaultFunction;
+		}
+
+		/// <summary>
+		/// Gets/sets the associated function
+		/// </summary>
+		public IFunction1d Function
+		{
+			get { return m_Function; }
+			set
+			{
+				if ( value == null )
+				{
+					throw new ArgumentNullException( "value" );
+				}
+				if ( !SupportsFunction( value ) )
+				{
+					throw new ArgumentException( "Unsupported function type " + value.GetType( ), "value" );
+				}
+				m_Function = value;
+			}
 		}
 
 		/// <summary>
@@ -43,13 +65,14 @@ namespace Rb.NiceControls
 		/// <summary>
 		/// Creates a control for this function
 		/// </summary>
-		public virtual Control CreateControl( IFunction1d function )
+		public virtual Control CreateControl( )
 		{
 			return null;
 		}
 
 		#region Private Members
 
+		private IFunction1d m_Function;
 		private readonly string m_Name;
 
 		#endregion

@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Poc1.Particles.Interfaces;
 
 namespace Poc1.Particles.Classes
@@ -24,8 +25,9 @@ namespace Poc1.Particles.Classes
 		}
 
 		/// <summary>
-		/// Gets/sets the minimum number of particles that can be generated each update
+		/// Gets/sets the minimum spawn rate
 		/// </summary>
+		[Description( "The minimum number of particles that are spawned each update" )]
 		public int MinimumRate
 		{
 			get { return m_MinimumRate; }
@@ -33,8 +35,9 @@ namespace Poc1.Particles.Classes
 		}
 
 		/// <summary>
-		/// Gets/sets the maximum number of particles that can be generated each update
+		/// Gets/sets the maximum spawn rate
 		/// </summary>
+		[Description( "The maximum number of particles that are spawned each update" )]
 		public int MaximumRate
 		{
 			get { return m_MaximumRate; }
@@ -45,6 +48,7 @@ namespace Poc1.Particles.Classes
 		/// Sets the minimum and maximum rates to a single value (i.e. a fixed number of particles
 		/// will be generated each update)
 		/// </summary>
+		[Browsable( false )]
 		public int Rate
 		{
 			set { m_MinimumRate = m_MaximumRate = value; }
@@ -55,7 +59,7 @@ namespace Poc1.Particles.Classes
 		/// <summary>
 		/// Returns the number of particles to spawn on this update step
 		/// </summary>
-		public abstract int GetNumberOfParticlesToSpawn( );
+		public abstract int GetNumberOfParticlesToSpawn( float udpateTime );
 
 		#endregion
 

@@ -49,9 +49,6 @@ namespace Poc1.PlanetBuilder
 
 		}
 
-		private Color m_UnselectedColour;
-		private Color m_SelectedColour;
-
 		/// <summary>
 		/// Gets/sets the control selected flag. Selecting the control darkens the control background
 		/// </summary>
@@ -89,9 +86,6 @@ namespace Poc1.PlanetBuilder
 
 				nameTextBox.Text = m_TerrainType.Name;
 				texturePanel.BackgroundImage = m_TerrainType.Texture;
-
-			//	elevationControl.Distribution = m_TerrainType.AltitudeDistribution;
-			//	slopeControl.Distribution = m_TerrainType.SlopeDistribution;
 			}
 		}
 
@@ -99,6 +93,9 @@ namespace Poc1.PlanetBuilder
 
 		private bool m_Selected;
 		private TerrainType m_TerrainType = new TerrainType( );
+		private Color m_UnselectedColour;
+		private Color m_SelectedColour;
+
 
 		private void OnTerrainTypeChanged( )
 		{
@@ -131,6 +128,8 @@ namespace Poc1.PlanetBuilder
 			m_TerrainType.LoadBitmap( openDlg.FileName );
 			texturePanel.BackgroundImage = m_TerrainType.Texture;
 			OnTerrainTypeChanged( );
+
+			TerrainTypeTextureBuilder.Instance.Rebuild( false, true );
 		}
 
 		private void moveUpButton_Click( object sender, EventArgs e )
@@ -160,7 +159,7 @@ namespace Poc1.PlanetBuilder
 		private void GroundTypeControl_Load( object sender, EventArgs e )
 		{
 			m_UnselectedColour = BackColor;
-			m_SelectedColour = Color.DarkSalmon;
+			m_SelectedColour = Color.FromArgb( m_UnselectedColour.R / 2, m_UnselectedColour.G / 2, m_UnselectedColour.B / 2 );
 		}
 
 		private void GroundTypeControl_MouseClick( object sender, MouseEventArgs e )

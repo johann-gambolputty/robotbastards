@@ -190,7 +190,7 @@ namespace Poc1.Tools.TerrainTextures
 
 		private void TerrainTypeEditorControl_RemoveControl( TerrainTypeEditorControl control )
 		{
-			m_TerrainTypes.TerrainTypes.Remove( control.TerrainType );
+			m_TerrainTypes.Remove( control.TerrainType );
 			terrainTypeControlsLayoutPanel.Controls.Remove( control );
 			UpdateSample( );
 		}
@@ -211,7 +211,7 @@ namespace Poc1.Tools.TerrainTextures
 			{
 				control.Enabled = true;
 				control.TerrainType = new TerrainType( );
-				m_TerrainTypes.TerrainTypes.Add( control.TerrainType );
+				m_TerrainTypes.Add( control.TerrainType );
 				UpdateSample( );
 
 				AddTypeControls( null );

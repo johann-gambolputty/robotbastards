@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using Rb.Assets.Files;
 using Rb.Assets.Interfaces;
 
 namespace Rb.Assets
@@ -124,7 +123,7 @@ namespace Rb.Assets
 		/// <returns>Returns the loaded asset</returns>
 		public object Load( string path )
 		{
-			ISource loc = Locations.Instance.GetLocation( path );
+			ISource loc = Locations.NewLocation( path );
 			return Load( loc );
 		}
 
@@ -136,7 +135,7 @@ namespace Rb.Assets
 		/// <returns>Returns the loaded asset</returns>
 		public object Load( string path, LoadParameters parameters )
 		{
-			ISource loc = Locations.Instance.GetLocation( path );
+			ISource loc = Locations.NewLocation( path );
 			return Load( loc, parameters );
 		}
 
@@ -160,7 +159,7 @@ namespace Rb.Assets
 		{
 			if ( source == null )
 			{
-				throw new ArgumentNullException( "source" );
+				throw new ArgumentNullException( "source", "Asset source was null - check that location exists" );
 			}
 
 			foreach ( IAssetLoader loader in m_Loaders )

@@ -14,12 +14,47 @@ namespace Poc1.Tools.TerrainTextures.Core
 	[Serializable]
 	public class TerrainTypeSet
 	{
+		public event Action<TerrainType> TerrainTypeAdded;
+		public event Action<TerrainType> TerrainTypeRemoved;
+
 		/// <summary>
 		/// Gets the list of terrain types in this set
 		/// </summary>
-		public List<TerrainType> TerrainTypes
+		public IEnumerable<TerrainType> TerrainTypes
 		{
 			get { return m_TerrainTypes; }
+		}
+
+		/// <summary>
+		/// Gets the number of terrain types in the set
+		/// </summary>
+		public int TerrainTypeCount
+		{
+			get { return m_TerrainTypes.Count; }
+		}
+
+		/// <summary>
+		/// Adds a terrain type to the set. Invokes the <see cref="TerrainTypeAdded"/> event
+		/// </summary>
+		public void Add( TerrainType type )
+		{
+			m_TerrainTypes.Add( type );
+			if ( TerrainTypeAdded != null )
+			{
+				TerrainTypeAdded( type );
+			}
+		}
+
+		/// <summary>
+		/// Removes a terrain type to the set. Invokes the <see cref="TerrainTypeRemoved"/> event
+		/// </summary>
+		public void Remove( TerrainType type )
+		{
+			m_TerrainTypes.Remove( type );
+			if ( TerrainTypeRemoved != null )
+			{
+				TerrainTypeRemoved( type );
+			}
 		}
 
 		/// <summary>
@@ -144,7 +179,7 @@ namespace Poc1.Tools.TerrainTextures.Core
 		/// </summary>
 		public Bitmap CreateTerrainPackBitmap( )
 		{
-			long totalArea = TerrainTileSize * TerrainTileSize * TerrainTypes.Count;
+			long totalArea = TerrainTileSize * TerrainTileSize * TerrainTypeCount;
 			int packSize = TerrainTileSize;
 			for (; ( packSize * packSize ) < totalArea; packSize *= 2 ) { }
 			if ( packSize > MaxPackBitmapSize )
@@ -159,9 +194,9 @@ namespace Poc1.Tools.TerrainTextures.Core
 			{
 				int x = 0;
 				int y = 0;
-				for ( int typeIndex = 0; typeIndex < TerrainTypes.Count; ++typeIndex )
+				for ( int typeIndex = 0; typeIndex < TerrainTypeCount; ++typeIndex )
 				{
-					TerrainType type = TerrainTypes[ typeIndex ];
+					TerrainType type = m_TerrainTypes[ typeIndex ];
 					if ( type.Texture != null )
 					{
 						packBitmapGraphics.DrawImage( type.Texture, new Rectangle( x, y, TerrainTileSize, TerrainTileSize ) );
@@ -188,7 +223,7 @@ namespace Poc1.Tools.TerrainTextures.Core
 		{
 			Bitmap bmp = new Bitmap( 256, 256, PixelFormat.Format24bppRgb );
 
-			if ( TerrainTypes.Count == 0 )
+			if ( TerrainTypeCount == 0 )
 			{
 				return bmp;
 			}
@@ -202,7 +237,7 @@ namespace Poc1.Tools.TerrainTextures.Core
 				for ( int col = 0; col < bmp.Width; ++col, curPixel += 3 )
 				{
 					float typeIndex = GetTypeIndex( col / 255.0f, altitude );
-					byte scaledTypeIndex = ( byte )( typeIndex * ( 255.0f / TerrainTypes.Count ) );
+					byte scaledTypeIndex = ( byte )( typeIndex * ( 255.0f / TerrainTypeCount ) );
 
 					//	TODO: AP: Add noise to slope/altitude
 
@@ -222,7 +257,7 @@ namespace Poc1.Tools.TerrainTextures.Core
 		/// </summary>
 		public TerrainType GetType( float altitude, float slope )
 		{
-			return ( TerrainTypes.Count == 0 ) ? null : TerrainTypes[ GetTypeIndex( altitude, slope ) ];
+			return ( TerrainTypeCount == 0 ) ? null : m_TerrainTypes[ GetTypeIndex( altitude, slope ) ];
 		}
 
 
@@ -234,11 +269,11 @@ namespace Poc1.Tools.TerrainTextures.Core
 		public int GetTypeIndex( float altitude, float slope )
 		{
 			int best = 0;
-			float bestScore = TerrainTypes[ 0 ].GetScore( altitude, slope );
+			float bestScore = m_TerrainTypes[ 0 ].GetScore( altitude, slope );
 
-			for ( int index = 1; index < TerrainTypes.Count; ++index )
+			for ( int index = 1; index < TerrainTypeCount; ++index )
 			{
-				float score = TerrainTypes[ index ].GetScore( altitude, slope );
+				float score = m_TerrainTypes[ index ].GetScore( altitude, slope );
 				if ( score > bestScore )
 				{
 					best = index;

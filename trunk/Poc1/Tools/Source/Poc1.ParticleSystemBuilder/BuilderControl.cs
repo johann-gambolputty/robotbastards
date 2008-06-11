@@ -21,7 +21,7 @@ namespace Poc1.ParticleSystemBuilder
 			spawnControlEditor.Setup( ms_SpawnerTypes, typeof( PointParticleSpawner ) );
 			spawnControlEditor.SelectedControlChanged += delegate( object controller ) { ParticleSystem.Spawner = ( IParticleSpawner )controller; };
 
-			updateControlEditor.Setup( ms_UpdaterTypes, typeof( NullParticleUpdater ) );
+			updateControlEditor.Setup( ms_UpdaterTypes, typeof( SimplePhysicsUpdater ) );
 			updateControlEditor.SelectedControlChanged += delegate( object controller ) { ParticleSystem.Updater = ( IParticleUpdater )controller; };
 
 			killerControlEditor.Setup( ms_KillerTypes, typeof( ParticleAgeKiller ) );
