@@ -7,7 +7,7 @@ using Rb.Core.Utils;
 
 namespace Rb.NiceControls
 {
-	[CustomUITypeEditor( typeof( Functions.FunctionDelegate ) )]
+	[CustomUITypeEditor( typeof( IFunction1d ) )]
 	public class GraphUITypeEditor : UITypeEditor
 	{
 		public override UITypeEditorEditStyle GetEditStyle( ITypeDescriptorContext context )
@@ -19,9 +19,18 @@ namespace Rb.NiceControls
 		{
 			IWindowsFormsEditorService edSvc = ( IWindowsFormsEditorService )provider.GetService( typeof( IWindowsFormsEditorService ) );
 
-			edSvc.DropDownControl( new GraphEditorControl( ) );
+			GraphEditorControl control;
+			if ( value == null )
+			{
+				control = new GraphEditorControl( );
+			}
+			else
+			{
+				control = new GraphEditorControl( );
+			}
+			edSvc.DropDownControl( control );
 
-			return base.EditValue( context, provider, value );
+			return control.Function;
 		}
 
 		public override bool IsDropDownResizable

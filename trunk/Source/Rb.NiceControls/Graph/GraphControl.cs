@@ -21,8 +21,6 @@ namespace Rb.NiceControls.Graph
 			m_Blends.Colors[ 3 ] = dark; m_Blends.Positions[ 3 ] = 1;
 
 			m_GridColour = dark;
-
-			Graph = new LineGraph( );
 		}
 
 		#region Graph margins and dimensions
@@ -107,19 +105,18 @@ namespace Rb.NiceControls.Graph
 		/// <summary>
 		/// Gets/sets the graph being edited by this control
 		/// </summary>
-		public IGraph Graph
+		public IGraphInputHandler Graph
 		{
-			get { return m_Graph; }
+			get { return m_InputHandler; }
 			set
 			{
 				if ( m_InputHandler != null )
 				{
 					m_InputHandler.Detach( this );
 				}
-				m_Graph = value;
-				if ( m_Graph != null )
+				m_InputHandler = value;
+				if ( m_InputHandler != null )
 				{
-					m_InputHandler = m_Graph.CreateInputHandler( );
 					m_InputHandler.Attach( this );
 				}
 			}
@@ -138,7 +135,6 @@ namespace Rb.NiceControls.Graph
 		private int 				m_GraphBottomMargin			= 2;
 		private readonly ColorBlend	m_Blends;
 		private readonly Color		m_GridColour;
-		private IGraph				m_Graph;
 		private IGraphInputHandler	m_InputHandler;
 
 		#endregion
@@ -232,10 +228,10 @@ namespace Rb.NiceControls.Graph
 			{
 				return;
 			}
-			if ( m_Graph != null )
+			if ( m_InputHandler != null )
 			{
 				Rectangle graphBounds = new Rectangle( GraphLeftMargin, GraphRightMargin, GraphWidth, GraphHeight );
-				m_Graph.Render( graphBounds, e.Graphics );
+				m_InputHandler.Render( graphBounds, e.Graphics );
 			}
 		}
 
