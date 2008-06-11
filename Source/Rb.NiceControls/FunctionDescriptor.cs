@@ -1,12 +1,14 @@
 
+using System;
 using System.Windows.Forms;
+using Rb.Core.Maths;
 
 namespace Rb.NiceControls
 {
 	/// <summary>
 	/// Base class describing a function
 	/// </summary>
-	public class FunctionDescriptor
+	public abstract class FunctionDescriptor
 	{
 		/// <summary>
 		/// Sets up the descriptor
@@ -34,9 +36,14 @@ namespace Rb.NiceControls
 		}
 
 		/// <summary>
+		/// Returns true if the specified function is supported
+		/// </summary>
+		public abstract bool SupportsFunction( IFunction1d function );
+
+		/// <summary>
 		/// Creates a control for this function
 		/// </summary>
-		public virtual Control CreateControl( )
+		public virtual Control CreateControl( IFunction1d function )
 		{
 			return null;
 		}

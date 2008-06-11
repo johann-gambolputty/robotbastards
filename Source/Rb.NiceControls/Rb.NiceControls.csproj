@@ -43,7 +43,6 @@
       <DependentUpon>GraphEditorControl.cs</DependentUpon>
     </Compile>
     <Compile Include="GraphUITypeEditor.cs" />
-    <Compile Include="Graph\ControlPoint.cs" />
     <Compile Include="Graph\PiecewiseGraphInputHandler.cs" />
     <Compile Include="Graph\GraphControl.cs">
       <SubType>UserControl</SubType>
@@ -51,11 +50,8 @@
     <Compile Include="Graph\GraphControl.Designer.cs">
       <DependentUpon>GraphControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Graph\IGraph.cs" />
     <Compile Include="Graph\IGraphControl.cs" />
     <Compile Include="Graph\IGraphInputHandler.cs" />
-    <Compile Include="Graph\IPiecewiseGraph.cs" />
-    <Compile Include="Graph\LineGraph.cs" />
     <Compile Include="NiceComboBox.cs">
       <SubType>Component</SubType>
     </Compile>

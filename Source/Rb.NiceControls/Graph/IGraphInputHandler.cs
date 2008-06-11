@@ -1,3 +1,4 @@
+using System.Drawing;
 
 namespace Rb.NiceControls.Graph
 {
@@ -15,5 +16,10 @@ namespace Rb.NiceControls.Graph
 		/// Detaches this input handler to a control
 		/// </summary>
 		void Detach( IGraphControl control );
+
+		/// <summary>
+		/// Renders this graph
+		/// </summary>
+		void Render( Rectangle bounds, Graphics graphics );
 	}
 }

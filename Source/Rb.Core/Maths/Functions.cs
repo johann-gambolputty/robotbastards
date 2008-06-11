@@ -4,8 +4,6 @@ namespace Rb.Core.Maths
 {
 	public static class Functions
 	{
-		public delegate float FunctionDelegate( float input );
-
 		public static float Pow( float x, float p )
 		{
 			return ( float )Math.Pow( x, p );

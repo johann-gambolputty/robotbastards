@@ -1,4 +1,6 @@
+using System;
 using System.Windows.Forms;
+using Rb.Core.Maths;
 
 namespace Rb.NiceControls
 {
@@ -12,9 +14,24 @@ namespace Rb.NiceControls
 			graphTypeComboBox.SelectedIndex = 0;
 		}
 
+		public IFunction1d Function
+		{
+			get { return m_Function; }
+			set
+			{
+				if ( value == null )
+				{
+					throw new ArgumentNullException( "value" );
+				}
+				m_Function = value;
+				
+			}
+		}
+
+		private IFunction1d m_Function;
 		private Control m_FunctionControl;
 
-		private void graphTypeComboBox_SelectedIndexChanged( object sender, System.EventArgs e )
+		private void graphTypeComboBox_SelectedIndexChanged( object sender, EventArgs e )
 		{
 			if ( graphTypeComboBox.SelectedItem == null )
 			{

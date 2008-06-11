@@ -16,10 +16,10 @@ namespace Poc1.Tools.TerrainTextures.Core
 	public class TerrainType
 	{
 
-		private Functions.FunctionDelegate m_AltitudeDist;
+		private IFunction1d m_AltitudeDist;
 
-		[Editor( typeof( CustomUITypeEditor<Functions.FunctionDelegate> ), typeof( UITypeEditor ) )]
-		public Functions.FunctionDelegate AltitudeDist
+		[Editor( typeof( CustomUITypeEditor<IFunction1d> ), typeof( UITypeEditor ) )]
+		public IFunction1d AltitudeDist
 		{
 			get { return m_AltitudeDist; }
 			set { m_AltitudeDist = value; }

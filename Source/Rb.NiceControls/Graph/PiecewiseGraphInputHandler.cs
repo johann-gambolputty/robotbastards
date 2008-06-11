@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -7,10 +8,13 @@ namespace Rb.NiceControls.Graph
 {
 	public class PiecewiseGraphInputHandler : IGraphInputHandler
 	{
-
-		public PiecewiseGraphInputHandler( IPiecewiseGraph graph )
+		public PiecewiseGraphInputHandler( PiecewiseLinearFunction1d function )
 		{
-			m_Graph = graph;
+			if ( function == null )
+			{
+				throw new ArgumentNullException( "function" );
+			}
+			m_Function = function;
 		}
 
 		#region IGraphInputHandler Members
@@ -32,19 +36,57 @@ namespace Rb.NiceControls.Graph
 			m_GraphControl = null;
 		}
 
+		public void Render( System.Drawing.Rectangle bounds, Graphics graphics )
+		{
+			float yOffset = bounds.Bottom;
+			float graphHeight = bounds.Height;
+			using ( Pen graphPen = new Pen( Color.Red, 1.5f ) )
+			{
+				float y0 = yOffset - m_Function.GetValue( 0 ) * graphHeight;
+				float t = 0;
+				float tInc = 1.0f / ( bounds.Width - 1 );
+				for ( int sample = 0; sample < bounds.Width; ++sample, t += tInc )
+				{
+					float y1 = yOffset - m_Function.GetValue( t ) * graphHeight;
+					float x0 = sample + bounds.Left;
+					float x1 = x0 + 1;
+					graphics.DrawLine( graphPen, x0, y0, x1, y1 );
+					y0 = y1;
+				}
+			}
+
+
+			for ( int cpIndex = 0; cpIndex < ControlPoints.Count; ++cpIndex )
+			{
+				Brush brush = Brushes.Blue;
+				//if ( cpIndex == m_SelectedCpIndex )
+				//{
+				//    brush = Brushes.Red;
+				//}
+				//else if ( cpIndex == 0 || cpIndex == ControlPoints.Count - 1 )
+				//{
+				//    brush = Brushes.Green;	
+				//}
+
+				float x = bounds.Left + ControlPoints[ cpIndex ].Position * bounds.Width;
+				float y = yOffset - ControlPoints[ cpIndex ].Value * graphHeight;
+				graphics.FillEllipse( brush, x - 3, y - 3, 6, 6 );
+			}
+		}
+
 		#endregion
 
 		#region Private Members
 
+		private readonly PiecewiseLinearFunction1d m_Function;
 		private IGraphControl m_GraphControl;
-		private readonly IPiecewiseGraph m_Graph;
 		private Point m_LastMousePos;
 		private int m_SelectedCpIndex = -1;
 		private int m_MovingCpIndex = -1;
 
-		private List<ControlPoint> ControlPoints
+		private List<PiecewiseLinearFunction1d.ControlPoint> ControlPoints
 		{
-			get { return m_Graph.ControlPoints; }
+			get { return m_Function.ControlPoints; }
 		}
 
 		#endregion
@@ -58,17 +100,12 @@ namespace Rb.NiceControls.Graph
 
 		private void InsertControlPoint( int index, PointF pt )
 		{
-			m_Graph.ControlPoints.Insert( index, new ControlPoint( pt.X, pt.Y ) );
+			m_Function.ControlPoints.Insert( index, new PiecewiseLinearFunction1d.ControlPoint( pt.X, pt.Y ) );
 			InvalidateControl( );
 		}
 
 		private void AddNewControlPoint( Point controlLocation )
 		{
-			if ( m_Graph.FixedControlPointCount )
-			{
-				return;
-			}
-
 			PointF graphPt = m_GraphControl.ClientToGraph( controlLocation );
 
 			int cpIndex = 0;
@@ -121,8 +158,11 @@ namespace Rb.NiceControls.Graph
 			float pos = ControlPoints[ m_MovingCpIndex ].Position;
 			float maxPos = m_MovingCpIndex == ControlPoints.Count - 1 ? 1 : ControlPoints[ m_MovingCpIndex + 1 ].Position - 0.01f;
 
-			ControlPoints[ m_MovingCpIndex ].Position = Utils.Clamp( pos + deltaX, minPos, maxPos );
-			ControlPoints[ m_MovingCpIndex ].Value += deltaY;
+			PiecewiseLinearFunction1d.ControlPoint cp = new PiecewiseLinearFunction1d.ControlPoint( );
+			cp.Position = Utils.Clamp( pos + deltaX, minPos, maxPos );
+			cp.Value = ControlPoints[ m_MovingCpIndex ].Value + deltaY;
+
+			ControlPoints[ m_MovingCpIndex ] = cp;
 
 			m_LastMousePos = e.Location;
 			InvalidateControl( );
