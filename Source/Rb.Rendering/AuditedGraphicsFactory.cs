@@ -86,6 +86,11 @@ namespace Rb.Rendering
 		{
 			return Add( m_Impl.CreateTexture2d( ) );
 		}
+		
+		public ITexture2d CreateTexture3d( )
+		{
+			return Add( m_Impl.CreateTexture3d( ) );
+		}
 
 		public ICubeMapTexture CreateCubeMapTexture( )
 		{

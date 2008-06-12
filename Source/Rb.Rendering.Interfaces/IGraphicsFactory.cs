@@ -1,4 +1,3 @@
-using System.Drawing.Design;
 using Rb.Core.Utils;
 using Rb.Rendering.Interfaces.Objects;
 
@@ -60,6 +59,11 @@ namespace Rb.Rendering.Interfaces
 		/// Creates a 2d texture
 		/// </summary>
 		ITexture2d CreateTexture2d( );
+		
+		/// <summary>
+		/// Creates a 3d texture
+		/// </summary>
+		ITexture2d CreateTexture3d( );
 
 		/// <summary>
 		/// Creates a cube map texture

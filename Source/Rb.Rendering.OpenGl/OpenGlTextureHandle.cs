@@ -16,6 +16,19 @@ namespace Rb.Rendering.OpenGl
 			m_Handle = handle;
 		}
 
+		/// <summary>
+		/// Creates a texture handle
+		/// </summary>
+		public static int CreateHandle( )
+		{
+			//	Generate a texture name
+			int[] handles = new int[ 1 ];
+			Gl.glGenTextures( 1, handles );
+			int textureHandle = handles[ 0 ];
+
+			return textureHandle;
+		}
+
 		#region IDisposable Members
 
 		public void Dispose( )
