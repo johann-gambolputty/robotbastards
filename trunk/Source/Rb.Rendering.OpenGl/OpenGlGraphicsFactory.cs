@@ -72,6 +72,14 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
+		/// Creates a 3d texture
+		/// </summary>
+		public ITexture2d CreateTexture3d( )
+		{
+			throw new NotImplementedException( );
+		}
+
+		/// <summary>
 		/// Creates a cube map texture
 		/// </summary>
 		public ICubeMapTexture CreateCubeMapTexture( )

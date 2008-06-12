@@ -293,10 +293,10 @@ namespace Poc1.Universe.Classes.Rendering
 
 		private unsafe static void CreateSkirtVertices( TerrainVertex* srcVertex, int srcOffset, TerrainVertex* dstVertex )
 		{
-			float skirtSize = 100;
+			float skirtSize = -10;
 			for ( int i = 0; i < TerrainQuadPatch.VertexResolution; ++i )
 			{
-				Vector3 offset = srcVertex->Position.ToVector3( ).MakeNormal( ) * -skirtSize;
+				Vector3 offset = srcVertex->Normal * skirtSize;
 				srcVertex->CopyTo( dstVertex, offset );
 
 				srcVertex += srcOffset;

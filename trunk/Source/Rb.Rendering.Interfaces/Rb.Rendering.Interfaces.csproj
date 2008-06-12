@@ -67,6 +67,7 @@
     <Compile Include="Objects\ITexture.cs" />
     <Compile Include="Objects\ITexture2d.cs" />
     <Compile Include="Objects\ITexture2dSampler.cs" />
+    <Compile Include="Objects\ITexture3d.cs" />
     <Compile Include="Objects\IVertexBuffer.cs" />
     <Compile Include="Objects\IVertexBufferLock.cs" />
     <Compile Include="Objects\Lights\ILight.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Objects\PolygonRenderMode.cs" />
     <Compile Include="Objects\PolygonShadeMode.cs" />
     <Compile Include="Objects\RenderDelegate.cs" />
+    <Compile Include="Objects\Texture3dData.cs" />
     <Compile Include="Objects\TextureFilter.cs" />
     <Compile Include="Objects\TextureFormat.cs" />
     <Compile Include="Objects\TextureMode.cs" />

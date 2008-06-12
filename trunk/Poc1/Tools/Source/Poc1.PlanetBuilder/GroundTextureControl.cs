@@ -1,7 +1,11 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Forms;
+using Poc1.PlanetBuilder.Properties;
 using Poc1.Tools.TerrainTextures.Core;
 using Rb.Core.Maths;
+using Rb.Log;
 
 namespace Poc1.PlanetBuilder
 {
@@ -17,14 +21,142 @@ namespace Poc1.PlanetBuilder
 
 		#region Private Members
 
+		private string m_ExportDirectory;
 		private string m_SavePath;
 		private readonly List<GroundTypeControl> m_SelectedControls = new List<GroundTypeControl>( );
 
-		private static TerrainTypeSet TerrainTypes
+		#region Save and Export Methods
+		
+		private void SaveAs( )
 		{
-			get { return TerrainTypeTextureBuilder.Instance.TerrainTypes; }
+			SaveFileDialog dialog = new SaveFileDialog( );
+			dialog.Filter = "Terrain Type Set (*.tts)|*.TTS|All Files (*.*)|*.*";
+			dialog.DefaultExt = "tts";
+			if ( dialog.ShowDialog( this ) != DialogResult.OK )
+			{
+				return;
+			}
+			Save( dialog.FileName );
 		}
 
+		private void Save( )
+		{
+			if ( string.IsNullOrEmpty( m_SavePath ) )
+			{
+				SaveAs( );
+			}
+			else
+			{
+				Save( m_SavePath );
+			}
+		}
+
+		private void Save( string path )
+		{
+			try
+			{
+				TerrainTypeTextureBuilder.Instance.TerrainTypes.Save( path );
+			}
+			catch
+			{
+				MessageBox.Show( "Failed to save terrain types to file" );
+			}
+			m_SavePath = path;
+		}
+		
+		private void ExportTo( )
+		{
+			FolderBrowserDialog folderDialog = new FolderBrowserDialog( );
+			folderDialog.Description = Resources.ChooseExportFolder;
+			folderDialog.SelectedPath = string.IsNullOrEmpty( m_ExportDirectory ) ? Directory.GetCurrentDirectory( ) : m_ExportDirectory;
+			if ( folderDialog.ShowDialog( this ) != DialogResult.OK )
+			{
+				return;
+			}
+			m_ExportDirectory = folderDialog.SelectedPath;
+			Export( m_ExportDirectory );
+		}
+
+		private void Export( )
+		{
+			if ( string.IsNullOrEmpty( m_ExportDirectory ) )
+			{
+				ExportTo( );
+			}
+			else
+			{
+				Export( m_ExportDirectory );
+			}
+		}
+
+		private void Export( string directory )
+		{
+			TerrainTypes.Export( directory );
+		}
+
+		#endregion
+
+		#region Selected Controls
+		
+		private void Deselect( GroundTypeControl control )
+		{
+			control.TerrainType.AltitudeDistribution.ParametersChanged -= OnTerrainTypeDistributionsChanged;
+			control.TerrainType.SlopeDistribution.ParametersChanged -= OnTerrainTypeDistributionsChanged;
+			control.Selected = false;
+			m_SelectedControls.Remove( control );
+		}
+
+		private void Select( GroundTypeControl control )
+		{
+			control.Selected = true;
+			m_SelectedControls.Add( control );
+
+			if ( control.TerrainType.AltitudeDistribution == null )
+			{
+				control.TerrainType.AltitudeDistribution = new LineFunction1d( );
+			}
+			if ( control.TerrainType.SlopeDistribution == null )
+			{
+				control.TerrainType.SlopeDistribution = new LineFunction1d( );
+			}
+
+			control.TerrainType.AltitudeDistribution.ParametersChanged += OnTerrainTypeDistributionsChanged;
+			control.TerrainType.SlopeDistribution.ParametersChanged += OnTerrainTypeDistributionsChanged;
+
+			altitudeGraphEditorControl.Function = control.TerrainType.AltitudeDistribution;
+			slopeGraphEditorControl.Function = control.TerrainType.SlopeDistribution;
+		}
+
+		private bool IsSelected( GroundTypeControl control )
+		{
+			return m_SelectedControls.Contains( control );
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Gets/sets the current terrain type set. Alias for the terrain type set stored in the <see cref="TerrainTypeTextureBuilder"/> singleton.
+		/// </summary>
+		private TerrainTypeSet TerrainTypes
+		{
+			get { return TerrainTypeTextureBuilder.Instance.TerrainTypes; }
+			set
+			{
+				TerrainTypeTextureBuilder.Instance.TerrainTypes = value;
+				groundTypeTableLayoutPanel.Controls.Clear( );
+				
+				foreach ( TerrainType type in value.TerrainTypes )
+				{
+					AddTypeControls( type );
+				}
+
+				AddTypeControls( null );
+			}
+		}
+
+		/// <summary>
+		/// Adds a <see cref="GroundTypeControl"/> for a given terrain type
+		/// </summary>
 		private void AddTypeControls( TerrainType terrainType )
 		{
 			GroundTypeControl newControl = new GroundTypeControl( );
@@ -49,9 +181,7 @@ namespace Poc1.PlanetBuilder
 		
 		private static void GroundTypeControl_TerrainTypeChanged( TerrainType terrainType )
 		{
-		//	UpdateSample( );
 		}
-
 
 		private void GroundTypeControl_Selected( GroundTypeControl control )
 		{
@@ -92,7 +222,6 @@ namespace Poc1.PlanetBuilder
 			TerrainTypes.Remove( control.TerrainType );
 			groundTypeTableLayoutPanel.Controls.Remove( control );
 			Deselect( control );
-		//	UpdateSample( );
 		}
 
 		private void groundTypeTableLayoutPanel_MouseClick( object sender, MouseEventArgs e )
@@ -107,7 +236,6 @@ namespace Poc1.PlanetBuilder
 				control.Enabled = true;
 				control.TerrainType = new TerrainType( );
 				TerrainTypes.Add( control.TerrainType );
-			//	UpdateSample( );
 
 				AddTypeControls( null );
 			}
@@ -124,84 +252,18 @@ namespace Poc1.PlanetBuilder
 			}
 		}
 
-		private void Deselect( GroundTypeControl control )
-		{
-			control.TerrainType.AltitudeDistribution.ParametersChanged -= OnTerrainTypeDistributionsChanged;
-			control.TerrainType.SlopeDistribution.ParametersChanged -= OnTerrainTypeDistributionsChanged;
-			control.Selected = false;
-			m_SelectedControls.Remove( control );
-		}
-
 		private static void OnTerrainTypeDistributionsChanged( IFunction1d function )
 		{
 			TerrainTypeTextureBuilder.Instance.Rebuild( true, false );
 		}
-
-		private void Select( GroundTypeControl control )
+		
+		private void newToolStripMenuItem_Click( object sender, EventArgs e )
 		{
-			control.Selected = true;
-			m_SelectedControls.Add( control );
-
-			if ( control.TerrainType.AltitudeDistribution == null )
-			{
-				control.TerrainType.AltitudeDistribution = new LineFunction1d( );
-			}
-			if ( control.TerrainType.SlopeDistribution == null )
-			{
-				control.TerrainType.SlopeDistribution = new LineFunction1d( );
-			}
-
-			control.TerrainType.AltitudeDistribution.ParametersChanged += OnTerrainTypeDistributionsChanged;
-			control.TerrainType.SlopeDistribution.ParametersChanged += OnTerrainTypeDistributionsChanged;
-
-			altitudeGraphEditorControl.Function = control.TerrainType.AltitudeDistribution;
-			slopeGraphEditorControl.Function = control.TerrainType.SlopeDistribution;
+			m_SavePath = string.Empty;
+			TerrainTypes = new TerrainTypeSet( );
 		}
 
-		private bool IsSelected( GroundTypeControl control )
-		{
-			return m_SelectedControls.Contains( control );
-		}
-
-		private void SaveAs( )
-		{
-			SaveFileDialog dialog = new SaveFileDialog( );
-			dialog.Filter = "Terrain Type Set (*.tts)|*.TTS|All Files (*.*)|*.*";
-			dialog.DefaultExt = "tts";
-			if ( dialog.ShowDialog( this ) != DialogResult.OK )
-			{
-				return;
-			}
-			Save( dialog.FileName );
-		}
-
-		private void Save( )
-		{
-			if ( m_SavePath == null )
-			{
-				SaveAs( );
-			}
-			else
-			{
-				Save( m_SavePath );
-			}
-		}
-
-		private void Save( string path )
-		{
-			try
-			{
-				TerrainTypeTextureBuilder.Instance.TerrainTypes.Save( path );
-			}
-			catch
-			{
-				MessageBox.Show( "Failed to save terrain types to file" );
-			}
-			m_SavePath = path;
-		}
-
-
-		private void loadButton_Click( object sender, System.EventArgs e )
+		private void openToolStripMenuItem_Click( object sender, EventArgs e )
 		{
 			OpenFileDialog dialog = new OpenFileDialog( );
 			dialog.Filter = "Terrain Type Set (*.tts)|*.TTS|All Files (*.*)|*.*";
@@ -216,43 +278,36 @@ namespace Poc1.PlanetBuilder
 			{
 				newTypeSet = TerrainTypeSet.Load( path );
 			}
-			catch
+			catch ( Exception ex )
 			{
+				AppLog.Exception( ex, "Failed to load terrain type set from \"{0}\"", path );
 				MessageBox.Show( "Failed to open terrain types file" );
 				return;
 			}
-			TerrainTypeTextureBuilder.Instance.TerrainTypes = newTypeSet;
+			TerrainTypes = newTypeSet;
 			m_SavePath = path;
-			groundTypeTableLayoutPanel.Controls.Clear( );
-
-			foreach ( TerrainType type in newTypeSet.TerrainTypes )
-			{
-				AddTypeControls( type );
-			}
-
-			AddTypeControls( null );
 		}
 
-		private void saveButton_Click( object sender, System.EventArgs e )
+		private void saveToolStripMenuItem_Click( object sender, EventArgs e )
 		{
 			Save( );
 		}
 
-		private void saveAsButton_Click( object sender, System.EventArgs e )
+		private void saveAsToolStripMenuItem_Click( object sender, EventArgs e )
 		{
 			SaveAs( );
 		}
 
-		private void exportButton_Click( object sender, System.EventArgs e )
+		private void exportToolStripMenuItem_Click( object sender, EventArgs e )
 		{
-
+			Export( );
 		}
 
-		private void exportAsButton_Click( object sender, System.EventArgs e )
+		private void exportToToolStripMenuItem_Click( object sender, EventArgs e )
 		{
-
+			ExportTo( );
 		}
+
 		#endregion
-
 	}
 }

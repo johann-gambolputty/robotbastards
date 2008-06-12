@@ -168,7 +168,7 @@ namespace Poc1.PlanetBuilder
 			gen.Setup( patchScale, 0, maxHeight );
 
 			//	TODO: AP: Remove hack
-			DebugInfo.DisableTerainSkirts = true;
+		//	DebugInfo.DisableTerainSkirts = true;
 
 			return gen;
 		}

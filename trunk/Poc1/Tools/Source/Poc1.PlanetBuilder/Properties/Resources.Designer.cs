@@ -60,6 +60,15 @@ namespace Poc1.PlanetBuilder.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a folder to export the terrain type set to:.
+        /// </summary>
+        internal static string ChooseExportFolder {
+            get {
+                return ResourceManager.GetString("ChooseExportFolder", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap Delete {
             get {
                 object obj = ResourceManager.GetObject("Delete", resourceCulture);

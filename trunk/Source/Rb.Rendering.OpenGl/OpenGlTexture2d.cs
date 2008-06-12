@@ -198,7 +198,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Creates the texture
 		/// </summary>
-		private unsafe void Create( int target, int imageTarget, int width, int stride, int height, int glInternalFormat, int glFormat, int glType, bool generateMipMaps, IntPtr bytes )
+		private void Create( int target, int imageTarget, int width, int stride, int height, int glInternalFormat, int glFormat, int glType, bool generateMipMaps, IntPtr bytes )
 		{
 			DestroyCurrent( );
 
