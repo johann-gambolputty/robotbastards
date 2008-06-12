@@ -16,7 +16,8 @@ namespace Poc1.PlanetBuilder
 
 
 		#region Private Members
-		
+
+		private string m_SavePath;
 		private readonly List<GroundTypeControl> m_SelectedControls = new List<GroundTypeControl>( );
 
 		private static TerrainTypeSet TerrainTypes
@@ -162,8 +163,96 @@ namespace Poc1.PlanetBuilder
 			return m_SelectedControls.Contains( control );
 		}
 
-		#endregion
+		private void SaveAs( )
+		{
+			SaveFileDialog dialog = new SaveFileDialog( );
+			dialog.Filter = "Terrain Type Set (*.tts)|*.TTS|All Files (*.*)|*.*";
+			dialog.DefaultExt = "tts";
+			if ( dialog.ShowDialog( this ) != DialogResult.OK )
+			{
+				return;
+			}
+			Save( dialog.FileName );
+		}
 
+		private void Save( )
+		{
+			if ( m_SavePath == null )
+			{
+				SaveAs( );
+			}
+			else
+			{
+				Save( m_SavePath );
+			}
+		}
+
+		private void Save( string path )
+		{
+			try
+			{
+				TerrainTypeTextureBuilder.Instance.TerrainTypes.Save( path );
+			}
+			catch
+			{
+				MessageBox.Show( "Failed to save terrain types to file" );
+			}
+			m_SavePath = path;
+		}
+
+
+		private void loadButton_Click( object sender, System.EventArgs e )
+		{
+			OpenFileDialog dialog = new OpenFileDialog( );
+			dialog.Filter = "Terrain Type Set (*.tts)|*.TTS|All Files (*.*)|*.*";
+			if ( dialog.ShowDialog( this ) != DialogResult.OK )
+			{
+				return;
+			}
+			string path = dialog.FileName;
+
+			TerrainTypeSet newTypeSet;
+			try
+			{
+				newTypeSet = TerrainTypeSet.Load( path );
+			}
+			catch
+			{
+				MessageBox.Show( "Failed to open terrain types file" );
+				return;
+			}
+			TerrainTypeTextureBuilder.Instance.TerrainTypes = newTypeSet;
+			m_SavePath = path;
+			groundTypeTableLayoutPanel.Controls.Clear( );
+
+			foreach ( TerrainType type in newTypeSet.TerrainTypes )
+			{
+				AddTypeControls( type );
+			}
+
+			AddTypeControls( null );
+		}
+
+		private void saveButton_Click( object sender, System.EventArgs e )
+		{
+			Save( );
+		}
+
+		private void saveAsButton_Click( object sender, System.EventArgs e )
+		{
+			SaveAs( );
+		}
+
+		private void exportButton_Click( object sender, System.EventArgs e )
+		{
+
+		}
+
+		private void exportAsButton_Click( object sender, System.EventArgs e )
+		{
+
+		}
+		#endregion
 
 	}
 }
