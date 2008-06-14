@@ -20,13 +20,43 @@ namespace Rb.NiceControls
 		}
 
 		/// <summary>
+		/// Adds this function to an existing control (created by a function of the same type)
+		/// </summary>
+		public override void AddToControl( Control control )
+		{
+			GraphControl graph = ( GraphControl )control;
+			graph.AddGraph( CreateInputHandler( ) );
+		}
+
+		/// <summary>
+		/// Removes this function from an existing control (created by a function of the same type)
+		/// </summary>
+		public override void RemoveFromControl( Control control )
+		{
+			GraphControl graph = ( GraphControl )control;
+			graph.RemoveFunction( Function );
+		}
+
+		/// <summary>
 		/// Creates a control for this function
 		/// </summary>
 		public override Control CreateControl( )
 		{
 			GraphControl control = new GraphControl( );
-			control.Graph = new PiecewiseGraphInputHandler( ( PiecewiseLinearFunction1d  )Function );
+			control.AddGraph( CreateInputHandler( ) );
 			return control;
 		}
+
+		#region Private Members
+
+		/// <summary>
+		/// Creates an input handler for the function, that can be added to graph controls
+		/// </summary>
+		private IGraphInputHandler CreateInputHandler( )
+		{
+			return new PiecewiseGraphInputHandler( ( PiecewiseLinearFunction1d )Function );
+		} 
+
+		#endregion
 	}
 }

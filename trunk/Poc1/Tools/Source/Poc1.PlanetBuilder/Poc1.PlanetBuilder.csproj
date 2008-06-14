@@ -78,6 +78,12 @@
     <Compile Include="GroundTypeControl.Designer.cs">
       <DependentUpon>GroundTypeControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="OceanControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OceanControl.Designer.cs">
+      <DependentUpon>OceanControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="BuilderControls.resx">
@@ -95,6 +101,10 @@
     <EmbeddedResource Include="GroundTypeControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>GroundTypeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OceanControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>OceanControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

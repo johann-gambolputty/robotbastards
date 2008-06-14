@@ -6,6 +6,7 @@ using Poc1.PlanetBuilder.Properties;
 using Poc1.Tools.TerrainTextures.Core;
 using Rb.Core.Maths;
 using Rb.Log;
+using Rb.NiceControls.Graph;
 
 namespace Poc1.PlanetBuilder
 {
@@ -100,6 +101,8 @@ namespace Poc1.PlanetBuilder
 		
 		private void Deselect( GroundTypeControl control )
 		{
+			altitudeGraphControl.RemoveFunction( control.TerrainType.AltitudeDistribution );
+			slopeGraphControl.RemoveFunction( control.TerrainType.SlopeDistribution );
 			control.TerrainType.AltitudeDistribution.ParametersChanged -= OnTerrainTypeDistributionsChanged;
 			control.TerrainType.SlopeDistribution.ParametersChanged -= OnTerrainTypeDistributionsChanged;
 			control.Selected = false;
@@ -123,8 +126,11 @@ namespace Poc1.PlanetBuilder
 			control.TerrainType.AltitudeDistribution.ParametersChanged += OnTerrainTypeDistributionsChanged;
 			control.TerrainType.SlopeDistribution.ParametersChanged += OnTerrainTypeDistributionsChanged;
 
-			altitudeGraphEditorControl.Function = control.TerrainType.AltitudeDistribution;
-			slopeGraphEditorControl.Function = control.TerrainType.SlopeDistribution;
+			IGraphInputHandler altitudeHandler = GraphInputHandler.CreateHandlerForFunction( control.TerrainType.AltitudeDistribution );
+			IGraphInputHandler slopeHandler = GraphInputHandler.CreateHandlerForFunction( control.TerrainType.SlopeDistribution );
+
+			altitudeGraphControl.AddGraph( altitudeHandler );
+			slopeGraphControl.AddGraph( slopeHandler );
 		}
 
 		private bool IsSelected( GroundTypeControl control )

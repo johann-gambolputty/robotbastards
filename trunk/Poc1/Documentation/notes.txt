@@ -1,3 +1,8 @@
+- Biome system
+	- Design different biome types (e.g "Shoreline", "Arctic", "Desert", etc.)
+		- A point can only be influenced by the two most prominent biomes.
+		- 
+
 - Terrain types
 	- Dependent on elevation, slope, latitude
 	- Use 2d noise (x,z) to offset type calculation

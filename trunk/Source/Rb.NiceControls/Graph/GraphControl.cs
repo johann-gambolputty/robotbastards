@@ -1,6 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using Rb.Core.Maths;
+using Rectangle=System.Drawing.Rectangle;
 
 namespace Rb.NiceControls.Graph
 {
@@ -103,24 +107,90 @@ namespace Rb.NiceControls.Graph
 		#endregion
 
 		/// <summary>
-		/// Gets/sets the graph being edited by this control
+		/// Gets/sets multiple graphs flag
 		/// </summary>
-		public IGraphInputHandler Graph
+		public bool AllowMultipleGraphs
 		{
-			get { return m_InputHandler; }
-			set
+			get { return m_AllowMultipleGraphs; }
+			set { m_AllowMultipleGraphs = value; }
+		}
+
+		/// <summary>
+		/// Returns the set of graph input handlers attached to this control
+		/// </summary>
+		public IEnumerable<IGraphInputHandler> GraphInputHandlers
+		{
+			get { return m_Handlers; }
+		}
+
+		/// <summary>
+		/// Removes all graphs from the control
+		/// </summary>
+		public void ClearGraphs( )
+		{
+			foreach ( IGraphInputHandler handler in m_Handlers )
 			{
-				if ( m_InputHandler != null )
+				handler.Detach( this );
+			}
+			m_Handlers.Clear( );
+			Invalidate( );
+		}
+
+		/// <summary>
+		/// Adds a graph input handler to the control
+		/// </summary>
+		public void AddGraph( IGraphInputHandler handler )
+		{
+			if ( handler == null )
+			{
+				throw new ArgumentNullException( "handler" );
+			}
+			if ( !AllowMultipleGraphs )
+			{
+				ClearGraphs( );
+			}
+			handler.Attach( this );
+			m_Handlers.Add( handler );
+			Invalidate( );
+		}
+
+		/// <summary>
+		/// Removes a function from the control (must be wrapped in a <see cref="GraphInputHandler"/>)
+		/// </summary>
+		public void RemoveFunction( IFunction1d function )
+		{
+			for ( int handlerIndex = 0; handlerIndex < m_Handlers.Count; )
+			{
+				GraphInputHandler gHandler = m_Handlers[ handlerIndex ] as GraphInputHandler;
+				if ( ( gHandler != null ) && ( gHandler.Function == function ) )
 				{
-					m_InputHandler.Detach( this );
+					m_Handlers.RemoveAt( handlerIndex );
 				}
-				m_InputHandler = value;
-				if ( m_InputHandler != null )
+				else
 				{
-					m_InputHandler.Attach( this );
+					++handlerIndex;
 				}
 			}
+			Invalidate( );
 		}
+
+		/// <summary>
+		/// Removes a graph input handler from the control
+		/// </summary>
+		public void RemoveGraph( IGraphInputHandler handler )
+		{
+			if ( handler == null )
+			{
+				throw new ArgumentNullException( "handler" );
+			}
+			if ( m_Handlers.Contains( handler ) )
+			{
+				handler.Detach( this );
+				m_Handlers.Remove( handler );
+				Invalidate( );
+			}
+		}
+
 
 		#endregion
 
@@ -135,7 +205,10 @@ namespace Rb.NiceControls.Graph
 		private int 				m_GraphBottomMargin			= 2;
 		private readonly ColorBlend	m_Blends;
 		private readonly Color		m_GridColour;
-		private IGraphInputHandler	m_InputHandler;
+		private bool				m_AllowMultipleGraphs;
+		private readonly List<IGraphInputHandler> m_Handlers = new List<IGraphInputHandler>( );
+
+
 
 		#endregion
 
@@ -144,7 +217,7 @@ namespace Rb.NiceControls.Graph
 		/// <summary>
 		/// Event, invoked when the graph changes
 		/// </summary>
-		public event System.EventHandler GraphChanged;
+		public event EventHandler GraphChanged;
 		
 		/// <summary>
 		/// Maps a client y coordinate to a graph y coordinate
@@ -245,14 +318,14 @@ namespace Rb.NiceControls.Graph
 			{
 				return;
 			}
-			if ( m_InputHandler != null )
+			Rectangle graphBounds = new Rectangle( GraphLeftMargin, GraphRightMargin, GraphWidth, GraphHeight );
+			foreach ( IGraphInputHandler handler in m_Handlers )
 			{
-				Rectangle graphBounds = new Rectangle( GraphLeftMargin, GraphRightMargin, GraphWidth, GraphHeight );
-				m_InputHandler.Render( graphBounds, e.Graphics );
+				handler.Render( graphBounds, e.Graphics );
 			}
 		}
 
-		private void GraphControl_Load( object sender, System.EventArgs e )
+		private void GraphControl_Load( object sender, EventArgs e )
 		{
 			DoubleBuffered = true;
 		}

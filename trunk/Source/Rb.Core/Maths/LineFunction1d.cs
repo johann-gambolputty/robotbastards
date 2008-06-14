@@ -1,9 +1,12 @@
 
+using System;
+
 namespace Rb.Core.Maths
 {
 	/// <summary>
 	/// Implements PiecewiseLinearFunction1d. Calculates straight line segments between the function control points
 	/// </summary>
+	[Serializable]
 	public class LineFunction1d : PiecewiseLinearFunction1d
 	{
 		/// <summary>

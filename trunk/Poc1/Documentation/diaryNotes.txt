@@ -71,3 +71,12 @@ Also added a rubbishy ocean.
 Refactored ground and height displacement stuff, and added planar terrain geometry, so terrain setups can be tested in the
 new planet builder tool. This app. will also be used to test out atmospheric shaders, and terrain types. Have also added a
 particle system builder. 
+
+::14/06/2008
+Started thinking about a biome system. It would be handy to be able to classify a "shoreline" biome, that gets used whenever
+conditions are right (close to water, shallow slopes, certain latitude band). Biomes could be classified by latitude (e.g.
+Arctic, Desert, Temperate). This information could be put into some sort of lookup texture and calculated entirely in a pixel
+shader. It's quite a big change to integrate biomes into the toolchain, though :-/
+The skirts on terrain patches have been changed from being offset by fixed direction, to the direction of the vertex normal above
+the skirt. This allows ground displacement to work without connected patches, although you still occassionally see the odd fin
+sticking out of the ground, which is annoying.

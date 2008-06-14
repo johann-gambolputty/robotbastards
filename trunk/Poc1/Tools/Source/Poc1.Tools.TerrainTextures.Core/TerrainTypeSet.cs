@@ -14,8 +14,23 @@ namespace Poc1.Tools.TerrainTextures.Core
 	[Serializable]
 	public class TerrainTypeSet
 	{
-		public event Action<TerrainType> TerrainTypeAdded;
-		public event Action<TerrainType> TerrainTypeRemoved;
+		/// <summary>
+		/// Event, invoked when a terrain type is added to the set
+		/// </summary>
+		public event Action<TerrainType> TerrainTypeAdded
+		{
+			add { m_TerrainTypeAdded += value; }
+			remove { m_TerrainTypeAdded -= value; }
+		}
+
+		/// <summary>
+		/// Event, invoked when a terrain type is removed from the set
+		/// </summary>
+		public event Action<TerrainType> TerrainTypeRemoved
+		{
+			add { m_TerrainTypeRemoved += value; }
+			remove { m_TerrainTypeRemoved -= value; }
+		}
 
 		/// <summary>
 		/// Gets the list of terrain types in this set
@@ -39,9 +54,9 @@ namespace Poc1.Tools.TerrainTextures.Core
 		public void Add( TerrainType type )
 		{
 			m_TerrainTypes.Add( type );
-			if ( TerrainTypeAdded != null )
+			if ( m_TerrainTypeAdded != null )
 			{
-				TerrainTypeAdded( type );
+				m_TerrainTypeAdded( type );
 			}
 		}
 
@@ -51,9 +66,9 @@ namespace Poc1.Tools.TerrainTextures.Core
 		public void Remove( TerrainType type )
 		{
 			m_TerrainTypes.Remove( type );
-			if ( TerrainTypeRemoved != null )
+			if ( m_TerrainTypeRemoved != null )
 			{
-				TerrainTypeRemoved( type );
+				m_TerrainTypeRemoved( type );
 			}
 		}
 
@@ -262,6 +277,12 @@ namespace Poc1.Tools.TerrainTextures.Core
 
 
 		#region Private Members
+
+		[NonSerialized]
+		private Action<TerrainType> m_TerrainTypeAdded;
+
+		[NonSerialized]
+		private Action<TerrainType> m_TerrainTypeRemoved;
 
 		private string m_Name;
 		private readonly List<TerrainType> m_TerrainTypes = new List<TerrainType>(); 

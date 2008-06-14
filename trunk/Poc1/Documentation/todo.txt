@@ -10,7 +10,6 @@
 		- L: Add uber-buffer/GPU-only particle systems
 		- L: Add support for loading assemblies containing particle components in dynamically
 	- Terrain
-		- H: Terrain skirts should be generated in the direction of vertex normals. This should allow them to work with ground displacement
 		- H: Force error for patches with > threshold radius
 		- H: Investigate why error does not appear to be totally correct
 		- M: Normalized heights returned from ground offset displacers are wrong.
@@ -24,6 +23,7 @@
 		- L: Pop slope/altitude determination in fragment shader (it's done at a vertex level - can work it out implicitly in frag shader)
 		- L: Add terrain pack resolution parameter to terrain shader
 	- Environment
+		- H: Design Biome system for terrain and texture selection
 		- L: Volumetric clouds
 		- L: Vegetation
 		- L: Animal life
@@ -103,13 +103,18 @@
 		- Planet Builder
 			- H: Add support for loading/saving/exporting atmosphere setup
 			- H: Add atmosphere tab
+			- H: Add sea tab
+			- H: Ground terrain graphs should have a "sea level" line
 			- M: Allow multiple graphs to be displayed on a single graph control
+			- L: Add "clear selection", "invert selection" options to ground terrain type tab
+			- L: Add wireframe render mode to planet builder
 			- L: Default terrain function setup should be reflected in the initial control setup
 			- L: Add support for loading/saving terrain function setup
 			- L: Add legend to graph control (should appear on hover over graph line)
 		- Particle Builder
 			- H: Add PS load/save code.
-			- H: Set up particle system setup window from input particle sytem
+			- H: Set up particle system component setup window from input particle sytem
+			- H: Add particle system setup (max. number of particles, class, etc.)
 			- M: The "Add" drop-down in composite component editor is too short when it contains only 1 item
 			- M: Add Trigger updater
 			- M: Create decent initial particle system
@@ -118,12 +123,12 @@
 			- M: Add profiling viewers
 			- L: Add shadow rendering
 	- Graphics Misc.
-		- H: Add support for 3d textures
 		- H: Shadows
 		- H: Add inverse frame to camera interface
 		- M: Make camera part of the rendering context (reconcile with global camera in renderer)
 		- M: Add support to load rendering library objects from assemblies in the new rendering library layout (can keep
 		  assembly selector, but it's not necessary anymore)
+		- H: Graph control should invalidate when graphs are added/removed
 		- M: Particle systems
 		- M: Make the effect assembly load on-demand (i.e. when the effect manager is referenced)
 		- M: Add configuration options for effect assembly (or perhaps make this data-driven, so when a CG file is loaded, use CG libraries?)
@@ -140,6 +145,7 @@
 		- H: Add support for multiple functions displayed on a single graph control
 		- H: Refactor Poc1.Universe. Create Poc1.Core, Poc1.Terrain, Poc1.Universe
 		- H: Add unit-test directory
+		- M: Add support for control point selection (+ deletion) in graph controls
 		- M: Add support for spline, sawtooth, sine wave, bias and gain functions in the graph editor
 		- M: Add derived EditorAttribute for setting up texture UI type editor (asset handle creation, mip-mapping)
 		- M: Remove fast noise test (move to console app. project in tests directory)
@@ -152,6 +158,8 @@
 	- H: Ground displacement requires connected patches, or slightly different skirt rendering (vertical skirts show up) (see new vertex normal skirts)
 
 - DONE
+	- H: Terrain skirts should be generated in the direction of vertex normals. This should allow them to work with ground displacement
+	- H: Add support for 3d textures
 	- H: Add support for loading/saving terrain type setup
 	- H: Fix destruction issue with TerrainQuadPatchBuilder
 	- H: Add terrain type builder tab
