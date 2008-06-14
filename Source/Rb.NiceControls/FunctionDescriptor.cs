@@ -63,6 +63,20 @@ namespace Rb.NiceControls
 		public abstract bool SupportsFunction( IFunction1d function );
 
 		/// <summary>
+		/// Adds this function to an existing control (created by a function of the same type)
+		/// </summary>
+		public virtual void AddToControl( Control control )
+		{
+		}
+
+		/// <summary>
+		/// Removes this function from an existing control (created by a function of the same type)
+		/// </summary>
+		public virtual void RemoveFromControl( Control control )
+		{
+		}
+
+		/// <summary>
 		/// Creates a control for this function
 		/// </summary>
 		public virtual Control CreateControl( )

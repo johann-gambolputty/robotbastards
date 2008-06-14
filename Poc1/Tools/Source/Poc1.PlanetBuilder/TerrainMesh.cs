@@ -1,6 +1,5 @@
 using System;
 using Poc1.Fast.Terrain;
-using Poc1.Universe;
 using Poc1.Universe.Interfaces.Rendering;
 using Poc1.Universe.Classes.Rendering;
 using Rb.Assets;
@@ -48,7 +47,7 @@ namespace Poc1.PlanetBuilder
 		public void SetupMesh( float maxHeight, TerrainFunction heightFunction, TerrainFunction groundFunction )
 		{
 			TerrainGenerator gen = new TerrainGenerator( TerrainGeometry.Plane, heightFunction, groundFunction );
-			gen.SetSmallestStepSize( 0.05f, 0.05f );
+			gen.SetSmallestStepSize( 0.001f, 0.001f );
 
 			//	TODO: AP: Mesh setup 
 			gen.Setup( m_PatchScale, 0, maxHeight );

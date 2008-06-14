@@ -82,7 +82,7 @@ namespace Poc1.Tools.Atmosphere
 			float heightInc = ( outerRadius - innerRadius ) / ( heightSamples - 1 );
 
 			float[] bCoeffLut = new float[ sunAngleSamples ];
-			BuildAttenuationCoefficientLookupTable( sunAngleLut );
+			BuildAttenuationCoefficientLookupTable( bCoeffLut );
 
 			for ( int viewAngleSample = 0; viewAngleSample < viewAngleSamples; ++viewAngleSample, viewAngle += viewAngleInc )
 			{
@@ -105,7 +105,7 @@ namespace Poc1.Tools.Atmosphere
 		/// Computes the scattering term for a given sun angle, viewer orientation, and height. Stores
 		/// the result in a 3-component voxel
 		/// </summary>
-		private unsafe	static void ComputeScattering( Vector3 viewDir, float bCoeff, float height, byte* voxel )
+		private unsafe static void ComputeScattering( Vector3 viewDir, float bCoeff, float height, byte* voxel )
 		{
 			//	Iv(t) = Is(t) (K.Fr(s)/t^4) E(i=0..k) p.exp(-Tl-Tv)
 

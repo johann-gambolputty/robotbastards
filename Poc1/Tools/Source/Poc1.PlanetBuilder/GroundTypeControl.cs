@@ -85,7 +85,7 @@ namespace Poc1.PlanetBuilder
 				m_TerrainType = value;
 
 				nameTextBox.Text = m_TerrainType.Name;
-				texturePanel.BackgroundImage = m_TerrainType.Texture;
+				texturePanel.BackgroundImage = m_TerrainType.Texture == null ? null : ( Bitmap )m_TerrainType.Texture.Clone( );
 			}
 		}
 
@@ -126,7 +126,7 @@ namespace Poc1.PlanetBuilder
 			}
 
 			m_TerrainType.LoadBitmap( openDlg.FileName );
-			texturePanel.BackgroundImage = m_TerrainType.Texture;
+			texturePanel.BackgroundImage = m_TerrainType.Texture == null ? null : ( Bitmap )m_TerrainType.Texture.Clone( );
 			OnTerrainTypeChanged( );
 
 			TerrainTypeTextureBuilder.Instance.Rebuild( false, true );

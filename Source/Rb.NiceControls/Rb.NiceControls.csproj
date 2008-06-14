@@ -43,6 +43,7 @@
       <DependentUpon>GraphEditorControl.cs</DependentUpon>
     </Compile>
     <Compile Include="GraphUITypeEditor.cs" />
+    <Compile Include="Graph\GraphInputHandler.cs" />
     <Compile Include="Graph\PiecewiseGraphInputHandler.cs" />
     <Compile Include="Graph\GraphControl.cs">
       <SubType>UserControl</SubType>

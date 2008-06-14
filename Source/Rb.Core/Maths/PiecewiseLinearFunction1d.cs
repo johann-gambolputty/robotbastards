@@ -7,6 +7,7 @@ namespace Rb.Core.Maths
 	/// <summary>
 	/// Abstract base class for piecewise linear functions
 	/// </summary>
+	[Serializable]
 	public abstract class PiecewiseLinearFunction1d : IFunction1d
 	{
 		#region ControlPoint Struct
@@ -122,7 +123,11 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Event, invoked when the parameters of this function are changed
 		/// </summary>
-		public event Action<IFunction1d> ParametersChanged;
+		public event Action<IFunction1d> ParametersChanged
+		{
+			add { m_ParametersChanged += value; }
+			remove { m_ParametersChanged -= value; }
+		}
 
 		/// <summary>
 		/// Gets a value for this function at a specified point
@@ -135,9 +140,9 @@ namespace Rb.Core.Maths
 
 		protected void OnParametersChanged( )
 		{
-			if ( ParametersChanged != null )
+			if ( m_ParametersChanged != null )
 			{
-				ParametersChanged( this );
+				m_ParametersChanged( this );
 			}
 		}
 
@@ -145,8 +150,11 @@ namespace Rb.Core.Maths
 
 		#region Private Members
 
-		private readonly List<ControlPoint> m_ControlPoints = new List<ControlPoint>( ); 
-		
+		private readonly List<ControlPoint> m_ControlPoints = new List<ControlPoint>( );
+
+		[NonSerialized]
+		private Action<IFunction1d> m_ParametersChanged;
+
 		#endregion
 	}
 }
