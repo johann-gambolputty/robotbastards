@@ -19,7 +19,8 @@ namespace Rb.Rendering.Interfaces.Objects
 		/// <param name="format"></param>
 		/// <param name="numVertices"></param>
 		/// <remarks>
-		/// Buffer must be filled using <see cref="Lock"/> prior to use
+		/// Buffer must be filled using <see cref="Lock(bool,bool)"/> or <see cref="Lock(int,int,bool,bool)"/> 
+		/// prior to use.
 		/// </remarks>
 		void Create( VertexBufferFormat format, int numVertices );
 
@@ -62,6 +63,14 @@ namespace Rb.Rendering.Interfaces.Objects
 		/// Draws the contents of the vertex buffer directly
 		/// </summary>
 		void Draw( PrimitiveType primType );
+
+		/// <summary>
+		/// Locks the entire vertex buffer
+		/// </summary>
+		/// <param name="read">If true, lock provides read access to the buffer</param>
+		/// <param name="write">If true, lock provides write access to the buffer</param>
+		/// <returns>Returns a lock object that provides access to the buffer</returns>
+		IVertexBufferLock Lock( bool read, bool write );
 
 		/// <summary>
 		/// Locks a region of the vertex buffer
