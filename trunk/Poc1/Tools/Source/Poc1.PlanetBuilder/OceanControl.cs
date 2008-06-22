@@ -1,9 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Poc1.PlanetBuilder
@@ -13,6 +8,19 @@ namespace Poc1.PlanetBuilder
 		public OceanControl( )
 		{
 			InitializeComponent( );
+		}
+
+		public float SeaLevel
+		{
+			get
+			{
+				float range = seaLevelTrackBar.Maximum - seaLevelTrackBar.Minimum;
+				return ( seaLevelTrackBar.Value - seaLevelTrackBar.Minimum ) / range;
+			}
+		}
+
+		private void seaLevelTrackBar_Scroll( object sender, EventArgs e )
+		{
 		}
 	}
 }

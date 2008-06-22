@@ -9,12 +9,12 @@ namespace Poc1.Universe.Classes.Rendering
 	/// <summary>
 	/// Renders the sea for a sphere planet
 	/// </summary>
-	public class SphereSea
+	public class SphereOcean
 	{
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		public SphereSea( SpherePlanet planet )
+		public SphereOcean( SpherePlanet planet )
 		{
 			m_Texture = ( ITexture )AssetManager.Instance.Load( "Ocean/ocean0.jpg", new TextureLoader.TextureLoadParameters( true ) );
 

@@ -26,7 +26,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 			if ( planet.SeaLevel > 0 )
 			{
-				m_Sea = new SphereSea( planet );
+				m_Sea = new SphereOcean( planet );
 			}
 			
 			//	Load in flat planet effect
@@ -164,7 +164,7 @@ namespace Poc1.Universe.Classes.Rendering
 		private readonly IRenderable m_PlanetGeometry;
 		private readonly Matrix44 m_CloudOffsetTransform = new Matrix44( );
 		private readonly SphereTerrain m_Terrain;
-		private readonly SphereSea m_Sea;
+		private readonly SphereOcean m_Sea;
 		private readonly IRenderable m_TerrainPatches;
 		private readonly IRenderable m_CloudShell;
 		private readonly SpherePlanet m_Planet;
