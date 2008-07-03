@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Poc1.Universe.Interfaces;
+using Poc1.Universe.Interfaces.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Classes
@@ -44,6 +45,27 @@ namespace Poc1.Universe.Classes
 		{
 			get { return m_Orbit; }
 		}
+
+		/// <summary>
+		/// Gets the planetary atmosphere model
+		/// </summary>
+		public abstract IPlanetAtmosphereModel Atmosphere
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Gets the planetary terrain model
+		/// </summary>
+		public abstract IPlanetTerrainModel Terrain
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Regenerates the 
+		/// </summary>
+		public abstract void RegenerateTerrain( );
 
 		/// <summary>
 		/// Gets the sea level of this planet. If this is zero, the planet has no seas. Otherwise, it's measured
@@ -101,7 +123,7 @@ namespace Poc1.Universe.Classes
 		private readonly IOrbit m_Orbit;
 		private string m_Name;
 		private bool m_EnableTerrainRendering;
-		private float m_SeaLevel = 1500;
+		private float m_SeaLevel = 0;
 		private float m_TerrainHeightRange = 4000;
 
 		#endregion

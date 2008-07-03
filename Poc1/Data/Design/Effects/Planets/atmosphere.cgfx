@@ -1,0 +1,21 @@
+
+
+
+technique DefaultTechnique
+{
+	pass
+	{
+		LightingEnable			= false;
+		DepthMask				= true;
+		ShadeModel				= Smooth;
+		FrontFace				= CW;
+		DepthTestEnable			= true;
+		DepthFunc				= Less;
+		CullFaceEnable			= true;
+		BlendEnable				= false;
+		PolygonMode				= int2( Front, Fill );
+	//	VertexProgram			= compile arbvp1 VertexShader( );
+	//	FragmentProgram			= compile arbfp1 FragmentShader( );
+	}
+}
+

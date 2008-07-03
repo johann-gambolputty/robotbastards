@@ -159,7 +159,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <summary>
 		/// Builds this patch
 		/// </summary>
-		public unsafe void Build( IPlanetTerrain planetTerrain )
+		public unsafe void Build( IPlanetTerrainModel planetTerrain )
 		{
 			if ( m_RebuildIndices )
 			{

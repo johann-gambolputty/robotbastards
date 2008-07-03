@@ -1,10 +1,14 @@
 using Rb.Core.Maths;
 using Rb.Rendering;
+using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Classes.Rendering
 {
-	class PlaneSea
+	/// <summary>
+	/// Ocean renderer using planar geometry
+	/// </summary>
+	public class PlaneOceanRenderer : OceanRenderer
 	{
 		/// <summary>
 		/// Creates the sea mesh
@@ -12,16 +16,14 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <param name="width">Mesh width</param>
 		/// <param name="depth">Mesh depth</param>
 		/// <param name="res">Mesh resolution</param>
-		public unsafe PlaneSea( float width, float depth, int res )
+		public unsafe PlaneOceanRenderer( float width, float depth, int res ) :
+			base( "Effects/Planets/planeOcean.cgfx" )
 		{
-			VertexBufferFormat vbFormat = new VertexBufferFormat( );
-			vbFormat.Add( VertexFieldSemantic.Position, VertexFieldElementTypeId.Float32, 3 );
-			vbFormat.Add( VertexFieldSemantic.Normal, VertexFieldElementTypeId.Float32, 3 );
-
+			VertexBufferFormat vbFormat = CreateOceanVertexBufferFormat( );
 			m_Vertices = Graphics.Factory.CreateVertexBuffer( );
 			m_Vertices.Create( vbFormat, res * res );
 
-			using ( IVertexBufferLock vbLock = m_Vertices.Lock( false, false ) )
+			using ( IVertexBufferLock vbLock = m_Vertices.Lock( false, true ) )
 			{
 				GenerateMeshVertices( ( Vertex* )vbLock.Bytes, width, depth, res );
 			}
@@ -31,7 +33,7 @@ namespace Poc1.Universe.Classes.Rendering
 		}
 
 		/// <summary>
-		/// Gets/sets the 
+		/// Gets/sets the sea level
 		/// </summary>
 		public float SeaLevel
 		{
@@ -39,57 +41,46 @@ namespace Poc1.Universe.Classes.Rendering
 			set { m_SeaLevel = value; }
 		}
 
-		#region Private Members
-
-		#region Vertex Struct
-
-		private struct Vertex
+		public override void Render( IRenderContext context )
 		{
+			Graphics.Renderer.PushTransform( TransformType.LocalToWorld );
+			Graphics.Renderer.Translate( TransformType.LocalToWorld, 0, SeaLevel, 0 );
 
-			public Point3 Position
-			{
-				set
-				{
-					m_X = value.X;
-					m_Y = value.Y;
-					m_Z = value.Z;
-				}
-			}
+			base.Render( context );
 
-			public Vector3 Normal
-			{
-				set
-				{
-					m_Nx = value.X;
-					m_Ny = value.Y;
-					m_Nz = value.Z;
-				}
-			}
-
-			private float m_X;
-			private float m_Y;
-			private float m_Z;
-			private float m_Nx;
-			private float m_Ny;
-			private float m_Nz;
+			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 		}
 
+		#region Protected Members
+
+		/// <summary>
+		/// Renders ocean geometry
+		/// </summary>
+		/// <param name="context">Rendering context</param>
+		protected override void RenderOcean( IRenderContext context )
+		{
+			m_Vertices.Begin( );
+			m_Indices.Draw( PrimitiveType.TriList );
+			m_Vertices.End( );
+		}
+		
 		#endregion
 
-		private float m_SeaLevel;
+		#region Private Members
+
+		private float m_SeaLevel = 100;
 		private readonly IVertexBuffer m_Vertices;
 		private readonly IIndexBuffer m_Indices;
 
-
 		private static ushort[] CreateMeshIndices( int res )
 		{
-			ushort[] indices = new ushort[ res * res * 6 ];
-
 			int triRes = res - 1;
+			ushort[] indices = new ushort[ triRes * triRes * 6 ];
+
 			int index = 0;
-			ushort baseIndex = 0;
 			for ( int row = 0; row < triRes; ++row )
 			{
+				ushort baseIndex = unchecked( ( ushort )( row * res ) );
 				for ( int col = 0; col < triRes; ++col, ++baseIndex )
 				{
 					indices[ index++ ] = baseIndex;
@@ -119,7 +110,7 @@ namespace Poc1.Universe.Classes.Rendering
 				float x = -width / 2;
 				for ( int col = 0; col < res; ++col, x += incX, ++curVertex )
 				{
-					curVertex->Position = new Point3( x, 0, z );
+					curVertex->Position = new Point3( x, 32, z );
 					curVertex->Normal = Vector3.YAxis;
 				}
 			}

@@ -74,6 +74,7 @@ namespace Poc1.PlanetBuilder
 			this.Name = "BuilderForm";
 			this.Text = "Planet Builder";
 			this.Shown += new System.EventHandler( this.BuilderForm_Shown );
+			this.Closing += new System.ComponentModel.CancelEventHandler( BuilderForm_Closing );
 			this.ResumeLayout( false );
 
 		}

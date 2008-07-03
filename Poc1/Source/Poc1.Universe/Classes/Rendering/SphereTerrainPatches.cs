@@ -20,11 +20,10 @@ namespace Poc1.Universe.Classes.Rendering
 	{
 		#region Construction
 
-
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		public SphereTerrainPatches( IPlanet planet, IPlanetTerrain terrain, ICubeMapTexture planetTexture )
+		public SphereTerrainPatches( IPlanet planet, IPlanetTerrainModel terrain, ICubeMapTexture planetTexture )
 		{
 			m_Planet = planet;
 			m_PlanetTexture = planetTexture;
@@ -232,7 +231,7 @@ namespace Poc1.Universe.Classes.Rendering
 			/// <summary>
 			/// Builds all terrain patches in this side
 			/// </summary>
-			public void Build( IPlanetTerrain terrain )
+			public void Build( IPlanetTerrainModel terrain )
 			{
 				foreach ( TerrainPatch patch in TerrainPatches )
 				{
@@ -296,7 +295,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 		private readonly IPlanet m_Planet;
 		private readonly ICubeMapTexture m_PlanetTexture;
-		private readonly IPlanetTerrain m_Terrain;
+		private readonly IPlanetTerrainModel m_Terrain;
 		private readonly ITechnique m_PlanetTerrainTechnique;
 		private readonly List<TerrainPatch> m_Patches = new List<TerrainPatch>( );
 		private readonly ITerrainPatchGeometryManager m_GeometryManager = new TerrainPatchGeometryManager( );

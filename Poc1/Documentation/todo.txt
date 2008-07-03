@@ -10,8 +10,11 @@
 		- L: Add uber-buffer/GPU-only particle systems
 		- L: Add support for loading assemblies containing particle components in dynamically
 	- Terrain
+		- H: Function resolution should be multiplied by a fraction of the radius of spherical terrain
+		- H: Slope function threshold is inaccurate
 		- H: Force error for patches with > threshold radius
 		- H: Investigate why error does not appear to be totally correct
+		- M: Terrain output should be properly within the output range
 		- M: Normalized heights returned from ground offset displacers are wrong.
 		- M: Would be great to have terrain functions and terrain types defined by some function of latitude
 		- M: Tangent frame at poles is incorrect
@@ -28,6 +31,8 @@
 		- L: Vegetation
 		- L: Animal life
 	- Planets
+		- H: Make model/renderer pattern for clouds
+		- H: Move to model/renderer pattern for planet atmosphere, ocean, and terrain
 		- H: Large radius planets (>1000km)
 			- H: Fix larger radius planets (lots of z-fighting, no terrain detail)
 			- H: combine terrain/marble rendering using z clipping planes (take a look at PSM)
@@ -61,6 +66,9 @@
 	- Solar system
 		- M: Proper procedural star-spheres
 	- Assets
+		- H: Asset handle reload should evict the asset from the asset cache
+		- M: Asset build should not exit if one step fails
+		- L: Asset cache interface should be based on ISource rather than integer keys
 		- L: Asset build should have a UI (progress bar, output text)
 		- L: Add bigfile support
 		- L: Game assets aware of changes to design objects
@@ -103,9 +111,10 @@
 		- Planet Builder
 			- H: Add support for loading/saving/exporting atmosphere setup
 			- H: Add atmosphere tab
-			- H: Add sea tab
 			- H: Ground terrain graphs should have a "sea level" line
 			- M: Allow multiple graphs to be displayed on a single graph control
+			- L: Add "Flat" option to height function
+			- L: Add star sphere
 			- L: Add "clear selection", "invert selection" options to ground terrain type tab
 			- L: Add wireframe render mode to planet builder
 			- L: Default terrain function setup should be reflected in the initial control setup
@@ -124,7 +133,9 @@
 			- L: Add shadow rendering
 	- Graphics Misc.
 		- H: Shadows
+		- H: Technique selector should take an asset path (transparently reset technique when effect is reloaded)
 		- H: Add inverse frame to camera interface
+		- H: Make UniCamera work the same as standard cameras
 		- M: Make camera part of the rendering context (reconcile with global camera in renderer)
 		- M: Add support to load rendering library objects from assemblies in the new rendering library layout (can keep
 		  assembly selector, but it's not necessary anymore)
@@ -133,6 +144,8 @@
 		- M: Make the effect assembly load on-demand (i.e. when the effect manager is referenced)
 		- M: Add configuration options for effect assembly (or perhaps make this data-driven, so when a CG file is loaded, use CG libraries?)
 		- M: Fullscreen mode
+		- L: Add vertex component generation options to graphics draw.isurface
+		- L: Add validation to technique selector
 		- L: Building the rendering assemblies using the batch file apparently causes a spurious empty "Rendering" directory to be created.
 		- L: Multimonitor support
 		- L: Refactor opengl texture support routines (move from OpenGlTexture2d)
@@ -142,7 +155,6 @@
 
 	- Misc.
 		- H: Change name from Poc1 to actual project name! (big job...)
-		- H: Add support for multiple functions displayed on a single graph control
 		- H: Refactor Poc1.Universe. Create Poc1.Core, Poc1.Terrain, Poc1.Universe
 		- H: Add unit-test directory
 		- M: Add support for control point selection (+ deletion) in graph controls
@@ -158,6 +170,13 @@
 	- H: Ground displacement requires connected patches, or slightly different skirt rendering (vertical skirts show up) (see new vertex normal skirts)
 
 - DONE
+	- H: Spherical terrain should be affected by changing ground texture setup
+	- H: Add terrain type and pack textures to terrain model interface
+	- H: Use sphere geometry instead of planar
+	- H: Add dispose call to quad patch builder on form close
+	- H: Multiple graph selection on graph controls is broken
+	- H: Add support for multiple functions displayed on a single graph control
+	- H: Add ocean tab
 	- H: Terrain skirts should be generated in the direction of vertex normals. This should allow them to work with ground displacement
 	- H: Add support for 3d textures
 	- H: Add support for loading/saving terrain type setup

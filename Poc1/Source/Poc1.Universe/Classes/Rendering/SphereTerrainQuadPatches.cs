@@ -13,7 +13,7 @@ namespace Poc1.Universe.Classes.Rendering
 	class SphereTerrainQuadPatches : IRenderable
 	{
 
-		public SphereTerrainQuadPatches( SpherePlanet planet, IPlanetTerrain terrain )
+		public SphereTerrainQuadPatches( SpherePlanet planet, IPlanetTerrainModel terrain )
 		{
 			m_Planet = planet;
 
@@ -22,8 +22,6 @@ namespace Poc1.Universe.Classes.Rendering
 
 			TextureLoader.TextureLoadParameters loadParameters = new TextureLoader.TextureLoadParameters( );
 			loadParameters.GenerateMipMaps = true;
-			m_TerrainPackTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/defaultSet0 Pack.jpg", loadParameters );
-			m_TerrainTypesTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/defaultSet0 Distribution.bmp" );
 
 			m_NoiseTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/Noise.jpg" );
 
@@ -83,8 +81,11 @@ namespace Poc1.Universe.Classes.Rendering
 		{
 			UpdateLod( UniCamera.Current );
 
-			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainPackTexture" ].Set( m_TerrainPackTexture );
-			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainTypeTexture" ].Set( m_TerrainTypesTexture );
+			ITexture2d packTexture = m_Planet.Terrain.TerrainPackTexture;
+			ITexture2d typesTexture = m_Planet.Terrain.TerrainTypesTexture;
+
+			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainPackTexture" ].Set( packTexture );
+			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainTypeTexture" ].Set( typesTexture );
 			m_PlanetTerrainTechnique.Effect.Parameters[ "NoiseTexture" ].Set( m_NoiseTexture );
 
 			m_Vertices.VertexBuffer.Begin( );
@@ -94,10 +95,6 @@ namespace Poc1.Universe.Classes.Rendering
 			if ( DebugInfo.ShowPatchInfo )
 			{
 				m_Patches[ 0 ].DebugRender( );
-				//foreach ( TerrainQuadPatch patch in m_Patches )
-				//{
-				//    patch.DebugRender( );
-				//}
 			}
 
 			if ( DebugInfo.ShowTerrainLeafNodeCount )
@@ -146,12 +143,10 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#region Private Members
 
-		private readonly ITexture2d					m_TerrainTypesTexture;
-		private readonly ITexture2d					m_TerrainPackTexture;
 		private readonly ITexture2d					m_NoiseTexture;
 		private readonly IPlanet					m_Planet;
 		private readonly TerrainQuadPatchVertices	m_Vertices = new TerrainQuadPatchVertices( );
-		private readonly IPlanetTerrain				m_Terrain;
+		private readonly IPlanetTerrainModel		m_Terrain;
 		private readonly TechniqueSelector			m_PlanetTerrainTechnique;
 		private readonly List<TerrainQuadPatch>		m_Patches = new List<TerrainQuadPatch>( );
 

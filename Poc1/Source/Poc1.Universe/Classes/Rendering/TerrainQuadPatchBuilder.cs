@@ -51,7 +51,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <summary>
 		/// Builds vertices for a terrain patch
 		/// </summary>
-		public void BuildVertices( TerrainQuadPatch patch, IPlanetTerrain terrain, IProjectionCamera camera, bool calculatePatchError )
+		public void BuildVertices( TerrainQuadPatch patch, IPlanetTerrainModel terrain, IProjectionCamera camera, bool calculatePatchError )
 		{
 			RequestResult result = HandleBuildVertices( patch, terrain, camera, calculatePatchError );
 			result.BuildPatch( );
@@ -76,7 +76,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <summary>
 		/// Adds a request to generate vertices for 4 child patches of a given patch
 		/// </summary>
-		public void AddRequest( TerrainQuadPatch patch, IPlanetTerrain terrain, IProjectionCamera camera, bool calculatePatchError )
+		public void AddRequest( TerrainQuadPatch patch, IPlanetTerrainModel terrain, IProjectionCamera camera, bool calculatePatchError )
 		{
 			lock ( m_RequestList )
 			{
@@ -137,7 +137,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 		private class Request
 		{
-			public Request( TerrainQuadPatch patch, IPlanetTerrain terrain, IProjectionCamera camera, bool calculatePatchError )
+			public Request( TerrainQuadPatch patch, IPlanetTerrainModel terrain, IProjectionCamera camera, bool calculatePatchError )
 			{
 				m_Patch = patch;
 				m_Terrain = terrain;
@@ -145,7 +145,7 @@ namespace Poc1.Universe.Classes.Rendering
 				m_CalculatePatchError = calculatePatchError;
 			}
 
-			public IPlanetTerrain Terrain
+			public IPlanetTerrainModel Terrain
 			{
 				get { return m_Terrain; }
 			}
@@ -168,7 +168,7 @@ namespace Poc1.Universe.Classes.Rendering
 			#region Private Members
 
 			private readonly TerrainQuadPatch m_Patch;
-			private readonly IPlanetTerrain m_Terrain;
+			private readonly IPlanetTerrainModel m_Terrain;
 			private readonly bool m_CalculatePatchError;
 			private readonly IProjectionCamera m_Camera;
 
@@ -241,7 +241,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <summary>
 		/// Builds vertices for a terrain patch
 		/// </summary>
-		private unsafe RequestResult HandleBuildVertices( TerrainQuadPatch patch, IPlanetTerrain terrain, IProjectionCamera camera, bool calculatePatchError )
+		private unsafe RequestResult HandleBuildVertices( TerrainQuadPatch patch, IPlanetTerrainModel terrain, IProjectionCamera camera, bool calculatePatchError )
 		{
 			RequestResult result = GetNewResult( patch, camera );
 			fixed ( byte* vertexBytes = result.VertexData )

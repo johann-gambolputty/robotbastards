@@ -10,7 +10,7 @@ using Rb.Rendering.Interfaces.Objects.Cameras;
 
 namespace Poc1.PlanetBuilder
 {
-	public class TerrainMesh : IPlanetTerrain, IRenderable
+	public class TerrainMesh : IPlanetTerrainModel, IRenderable
 	{
 		/// <summary>
 		/// Terrain mesh setup constructor
@@ -44,17 +44,6 @@ namespace Poc1.PlanetBuilder
 			RegenerateMesh( );
 		}
 
-		public void SetupMesh( float maxHeight, TerrainFunction heightFunction, TerrainFunction groundFunction )
-		{
-			TerrainGenerator gen = new TerrainGenerator( TerrainGeometry.Plane, heightFunction, groundFunction );
-			gen.SetSmallestStepSize( 0.001f, 0.001f );
-
-			//	TODO: AP: Mesh setup 
-			gen.Setup( m_PatchScale, 0, maxHeight );
-
-			m_Gen = gen;
-		}
-
 		/// <summary>
 		/// Regenerates this mesh
 		/// </summary>
@@ -74,6 +63,24 @@ namespace Poc1.PlanetBuilder
 		#region IPlanetTerrain Members
 
 		/// <summary>
+		/// Gets/sets the terrain types texture
+		/// </summary>
+		public ITexture2d TerrainTypesTexture
+		{
+			get { return m_TerrainTypesTexture; }
+			set { m_TerrainTypesTexture = value; }
+		}
+
+		/// <summary>
+		/// Gets/sets the terrain pack texture
+		/// </summary>
+		public ITexture2d TerrainPackTexture
+		{
+			get { return m_TerrainPackTexture; }
+			set { m_TerrainPackTexture = value; }
+		}
+
+		/// <summary>
 		/// Patches are defined in a local space. This determines the planet-space parameters of a patch
 		/// </summary>
 		public void SetPatchPlanetParameters( ITerrainPatch patch )
@@ -85,6 +92,17 @@ namespace Poc1.PlanetBuilder
 			Point3 plCentre = centre;// ( centre.ToVector3( ).MakeNormal( ) * m_RenderRadius ).ToPoint3( );
 
 			patch.SetPlanetParameters( plCentre, plCentre.DistanceTo( plEdge ) );
+		}
+
+		public void SetupTerrain( float maxHeight, TerrainFunction heightFunction, TerrainFunction groundFunction )
+		{
+			TerrainGenerator gen = new TerrainGenerator( TerrainGeometry.Plane, heightFunction, groundFunction );
+			gen.SetSmallestStepSize( 0.001f, 0.001f );
+
+			//	TODO: AP: Mesh setup 
+			gen.Setup( m_PatchScale, 0, maxHeight );
+
+			m_Gen = gen;
 		}
 
 		/// <summary>
@@ -124,8 +142,8 @@ namespace Poc1.PlanetBuilder
 			m_RootPatch.UpdateLod( ( ( ICamera3 )camera ).Frame.Translation, this, camera );
 			m_RootPatch.Update( camera, this );
 
-			ITexture2d lookupTexture = TerrainTypeTextureBuilder.Instance.LookupTexture;
-			ITexture2d packTexture = TerrainTypeTextureBuilder.Instance.PackTexture;
+			ITexture2d lookupTexture = TerrainTypesTexture; // TerrainTypeTextureBuilder.Instance.LookupTexture;
+			ITexture2d packTexture = TerrainPackTexture; // TerrainTypeTextureBuilder.Instance.PackTexture;
 
 			m_TerrainTechnique.Effect.Parameters[ "TerrainPackTexture" ].Set( packTexture );
 			m_TerrainTechnique.Effect.Parameters[ "TerrainTypeTexture" ].Set( lookupTexture );
@@ -143,6 +161,8 @@ namespace Poc1.PlanetBuilder
 
 		#region Private Members
 
+		private ITexture2d m_TerrainTypesTexture;
+		private ITexture2d m_TerrainPackTexture;
 		private readonly float m_PatchScale;
 		private readonly TechniqueSelector m_TerrainTechnique;
 		private readonly ITexture2d m_NoiseTexture;

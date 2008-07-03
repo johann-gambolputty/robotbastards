@@ -1,6 +1,8 @@
 
 using System;
 using System.Collections.Generic;
+using Poc1.Fast.Terrain;
+using Poc1.Universe.Interfaces.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Interfaces
@@ -19,12 +21,33 @@ namespace Poc1.Universe.Interfaces
 		}
 
 		/// <summary>
-		/// Gets the sea level of this planet. If this is zero, the planet has no seas. Otherwise, it's measured
+		/// Gets the planetary atmosphere model
+		/// </summary>
+		IPlanetAtmosphereModel Atmosphere
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Gets the planetary terrain model
+		/// </summary>
+		IPlanetTerrainModel Terrain
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Regenerates the planet's terrain mesh.
+		/// </summary>
+		void RegenerateTerrain( );
+
+		/// <summary>
+		/// Gets/sets the sea level of this planet. If this is zero, the planet has no seas. Otherwise, it's measured
 		/// as an offset, in metres, from the planet's radius
 		/// </summary>
 		float SeaLevel
 		{
-			get;
+			get; set;
 		}
 
 		/// <summary>

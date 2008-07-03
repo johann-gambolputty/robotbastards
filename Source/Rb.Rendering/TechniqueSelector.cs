@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Rb.Assets;
+using Rb.Assets.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Rb.Rendering
@@ -42,6 +44,25 @@ namespace Rb.Rendering
         {
             Technique = technique;
         }
+
+		/// <summary>
+		/// Loads the effect from an effect file and selects the named technique
+		/// </summary>
+		public TechniqueSelector( string uri, string name, bool reloadOnChangeToSource ) :
+			this( Locations.NewLocation( uri ), name, reloadOnChangeToSource )
+		{
+		}
+
+		/// <summary>
+		/// Loads the effect from an effect file and selects the named technique
+		/// </summary>
+		public TechniqueSelector( ISource effectSource, string name, bool reloadOnChangeToSource )
+		{
+			EffectAssetHandle effect = new EffectAssetHandle( effectSource, reloadOnChangeToSource );
+			effect.OnReload += delegate { Select( m_Technique.Name ); }; 
+			Effect = effect;
+			Select( name );
+		}
 
 		/// <summary>
 		/// Serialization constructor
@@ -96,7 +117,6 @@ namespace Rb.Rendering
                 m_Technique = value;
                 if ( ( m_Technique != null ) && ( ( m_Effect == null ) || ( !m_Effect.Techniques.Values.Contains( m_Technique ) ) ) )
                 {
-					//	Technique isn't null, and effect is
                     m_Effect = m_Technique.Effect;
                 }
             }

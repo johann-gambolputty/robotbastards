@@ -18,6 +18,15 @@ namespace Rb.Assets.Base
 	public class AssetHandle
 	{
 		/// <summary>
+		/// Event, invoked when the asset is reloaded
+		/// </summary>
+		public event Action<ISource> OnReload
+		{
+			add { m_OnReload += value; }
+			remove { m_OnReload -= value; }
+		}
+
+		/// <summary>
 		/// No source - call <see cref="AssetHandle.SetSource"/> prior to accessing <see cref="AssetHandle.Asset"/>
 		/// </summary>
 		public AssetHandle( )
@@ -102,6 +111,9 @@ namespace Rb.Assets.Base
 		[NonSerialized]
 		private bool m_LoadFailed;
 
+		[NonSerialized]
+		private Action<ISource> m_OnReload;
+
 		/// <summary>
 		/// Loads the asset
 		/// </summary>
@@ -124,7 +136,15 @@ namespace Rb.Assets.Base
 		/// </summary>
 		private void ReloadAsset( ISource source )
 		{
+			if ( m_Asset != null )
+			{
+				AssetManager.Instance.RemoveAssetFromCache( source );
+			}
 			m_Asset = null;
+			if ( m_OnReload != null )
+			{
+				m_OnReload( source );
+			}
 		}
 
 		#endregion

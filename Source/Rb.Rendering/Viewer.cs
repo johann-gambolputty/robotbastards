@@ -13,6 +13,11 @@ namespace Rb.Rendering
     public class Viewer : IDisposable
     {
 		/// <summary>
+		/// Event, invoked prior to rendering the viewer <see cref="Renderable"/> object
+		/// </summary>
+		public event RenderDelegate PreRender;
+
+		/// <summary>
 		/// The underlying control
 		/// </summary>
     	public object Control
@@ -119,6 +124,10 @@ namespace Rb.Rendering
 		/// </summary>
         public void Render( )
         {
+			if ( PreRender != null )
+			{
+				PreRender( m_Context );
+			}
 			IRenderer renderer = Graphics.Renderer;
 			Rectangle oldRect = renderer.Viewport;
 
