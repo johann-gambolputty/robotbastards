@@ -43,6 +43,24 @@ namespace Rb.Assets.Base
             return weakRef.Target;
         }
 
+
+		/// <summary>
+		/// Removes an asset from the cache
+		/// </summary>
+		/// <param name="key">Asset key</param>
+		/// <returns>Returns true if the cache contained the key, and it was successfully removed</returns>
+		public bool Remove( int key )
+		{
+			WeakReference weakRef;
+			if ( !m_Cache.TryGetValue( key, out weakRef ) )
+			{
+				return false;
+			}
+			weakRef.Target = null;
+			m_Cache.Remove( key );
+			return true;
+		}
+
         /// <summary>
         /// Clears the cache
         /// </summary>

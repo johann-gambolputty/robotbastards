@@ -128,9 +128,8 @@ namespace Poc1.PlanetBuilder
 
 		private void regenerateMeshButton_Click( object sender, EventArgs e )
 		{
-			TerrainMesh mesh = BuilderState.Instance.TerrainMesh;
-			mesh.SetupMesh( 200, CurrentHeightFunction, CurrentGroundFunction );
-			mesh.RegenerateMesh( );
+			BuilderState.Instance.Planet.Terrain.SetupTerrain( BuilderState.TerrainMaxHeight, CurrentHeightFunction, CurrentGroundFunction );
+			BuilderState.Instance.Planet.RegenerateTerrain( );
 		}
 	}
 }

@@ -1,10 +1,12 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using Poc1.Universe.Interfaces.Rendering;
+using Rb.Assets;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
+using Rb.Rendering.Textures;
 using RbGraphics = Rb.Rendering.Graphics;
 using Poc1.Fast.Terrain;
 
@@ -13,12 +15,12 @@ namespace Poc1.Universe.Classes.Rendering
 	/// <summary>
 	/// Planetary terrain for spherical planets
 	/// </summary>
-	public class SphereTerrain : IPlanetTerrain
+	public class SphereTerrainModel : IPlanetTerrainModel
 	{
 		/// <summary>
 		/// Sets the planet
 		/// </summary>
-		public SphereTerrain( SpherePlanet planet )
+		public SphereTerrainModel( SpherePlanet planet )
 		{
 			m_Planet = planet;
 			float radius = ( float )UniUnits.RenderUnits.FromUniUnits( m_Planet.Radius );
@@ -27,8 +29,14 @@ namespace Poc1.Universe.Classes.Rendering
 
 			float terrainFunctionRadius = ( float )( ( ( double )planet.Radius ) / 20000000.0f );
 
-			m_Gen = DefaultTerrainGenerator( terrainFunctionRadius );
-			m_Gen.SetSmallestStepSize( 0.05f, 0.05f );
+			//	
+			TextureLoader.TextureLoadParameters loadParameters = new TextureLoader.TextureLoadParameters( );
+			loadParameters.GenerateMipMaps = true;
+			m_TerrainPackTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/defaultSet0 Pack.jpg", loadParameters );
+			m_TerrainTypesTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/defaultSet0 Distribution.bmp" );
+
+			//	Create the default terrain generator
+			m_Gen = FlatTerrainGenerator( ); // DefaultTerrainGenerator( terrainFunctionRadius );
 
 			// NOTE: AP: Patch scale is irrelevant, because vertices are projected onto the function sphere anyway
 			m_Gen.Setup( 1024, radius, radius + height );
@@ -66,6 +74,24 @@ namespace Poc1.Universe.Classes.Rendering
 		#region IPlanetTerrain Members
 
 		/// <summary>
+		/// Gets/sets the terrain types texture
+		/// </summary>
+		public ITexture2d TerrainTypesTexture
+		{
+			get { return m_TerrainTypesTexture; }
+			set { m_TerrainTypesTexture = value; }
+		}
+
+		/// <summary>
+		/// Gets/sets the terrain pack texture
+		/// </summary>
+		public ITexture2d TerrainPackTexture
+		{
+			get { return m_TerrainPackTexture; }
+			set { m_TerrainPackTexture = value; }
+		}
+
+		/// <summary>
 		/// Patches are defined in a local space. This determines the planet-space parameters of a patch
 		/// </summary>
 		public void SetPatchPlanetParameters( ITerrainPatch patch )
@@ -77,6 +103,23 @@ namespace Poc1.Universe.Classes.Rendering
 			Point3 plCentre = ( centre.ToVector3( ).MakeNormal( ) * m_RenderRadius ).ToPoint3( );
 
 			patch.SetPlanetParameters( plCentre, plCentre.DistanceTo( plEdge ) );
+		}
+
+		/// <summary>
+		/// Sets up the terrain functions
+		/// </summary>
+		/// <param name="maxHeight">Maximum height of the terrain</param>
+		/// <param name="heightFunction">The terrain height function</param>
+		/// <param name="groundFunction">The terrain ground offset function</param>
+		public void SetupTerrain( float maxHeight, TerrainFunction heightFunction, TerrainFunction groundFunction )
+		{
+			float radius = ( float )UniUnits.RenderUnits.FromUniUnits( m_Planet.Radius );
+			float height = ( float )UniUnits.RenderUnits.FromUniUnits( UniUnits.Metres.ToUniUnits( m_Planet.TerrainHeightRange ) );
+
+			// NOTE: AP: Patch scale is irrelevant, because vertices are projected onto the function sphere anyway
+			m_Gen = new TerrainGenerator( TerrainGeometry.Sphere, heightFunction, groundFunction );
+			m_Gen.Setup( 1024, radius, radius + height );
+			m_Gen.SetSmallestStepSize( MinimumStepSize, MinimumStepSize );
 		}
 
 		/// <summary>
@@ -112,6 +155,14 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#region Private Members
 
+		private ITexture2d				m_TerrainTypesTexture;
+		private ITexture2d				m_TerrainPackTexture;
+		private TerrainGenerator		m_Gen;
+		private readonly SpherePlanet	m_Planet;
+		private readonly float			m_RenderRadius;
+
+		private const float				MinimumStepSize = 0.01f;
+
 		private unsafe static void GenerateTextureCoordinates( int res, TerrainVertex* firstVertex, float uvRes )
 		{
 			//	TODO: AP: Add to fast version...
@@ -126,6 +177,15 @@ namespace Poc1.Universe.Classes.Rendering
 			}
 		}
 
+		private static TerrainGenerator FlatTerrainGenerator( )
+		{
+			TerrainFunction heightFunction = new TerrainFunction( TerrainFunctionType.Flat );
+			TerrainGenerator gen = new TerrainGenerator( TerrainGeometry.Sphere, heightFunction );
+			gen.SetSmallestStepSize( MinimumStepSize, MinimumStepSize );
+
+			return gen;
+		}
+
 		private static TerrainGenerator DefaultTerrainGenerator( float functionScale )
 		{
 			TerrainFunction heightFunction = new TerrainFunction( TerrainFunctionType.RidgedFractal );
@@ -137,12 +197,11 @@ namespace Poc1.Universe.Classes.Rendering
 			( ( FractalTerrainParameters )heightFunction.Parameters ).Seed = TimeSeed;
 			( ( FractalTerrainParameters )groundFunction.Parameters ).Seed = TimeSeed;
 
-			return new TerrainGenerator( TerrainGeometry.Sphere, heightFunction, groundFunction );
-		}
+			TerrainGenerator gen = new TerrainGenerator( TerrainGeometry.Sphere, heightFunction, groundFunction );
+			gen.SetSmallestStepSize( MinimumStepSize, MinimumStepSize );
 
-		private readonly TerrainGenerator m_Gen;
-		private readonly SpherePlanet m_Planet;
-		private readonly float m_RenderRadius;
+			return gen;
+		}
 
 		/// <summary>
 		/// Gets the current time in ticks. Used to seed the PNG in the terrain generator

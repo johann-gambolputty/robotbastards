@@ -181,7 +181,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <summary>
 		/// Updates the level of detail of this patch. 
 		/// </summary>
-		public void UpdateLod( Point3 cameraPos, IPlanetTerrain terrain, IProjectionCamera camera )
+		public void UpdateLod( Point3 cameraPos, IPlanetTerrainModel terrain, IProjectionCamera camera )
 		{
 			if ( m_IncreaseDetailDistance == float.MaxValue )
 			{
@@ -216,7 +216,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <summary>
 		/// Updates this patch
 		/// </summary>
-		public void Update( IProjectionCamera camera, IPlanetTerrain terrain )
+		public void Update( IProjectionCamera camera, IPlanetTerrainModel terrain )
 		{
 			if ( m_Children != null )
 			{
@@ -359,13 +359,13 @@ namespace Poc1.Universe.Classes.Rendering
 			}
 		}
 
-		private void Build( IPlanetTerrain terrain, IProjectionCamera camera )
+		private void Build( IPlanetTerrainModel terrain, IProjectionCamera camera )
 		{
 			m_Building = true;
 			TerrainQuadPatchBuilder.Instance.AddRequest( this, terrain, camera, ( m_PatchError == float.MaxValue ) );
 		}
 
-		private void IncreaseDetail( IPlanetTerrain terrain, IProjectionCamera camera )
+		private void IncreaseDetail( IPlanetTerrainModel terrain, IProjectionCamera camera )
 		{
 			if ( m_CachedChildren != null )
 			{
@@ -395,7 +395,7 @@ namespace Poc1.Universe.Classes.Rendering
 			}
 		}
 
-		private void ReduceDetail( IPlanetTerrain terrain, IProjectionCamera camera )
+		private void ReduceDetail( IPlanetTerrainModel terrain, IProjectionCamera camera )
 		{
 			Build( terrain, camera );
 		}

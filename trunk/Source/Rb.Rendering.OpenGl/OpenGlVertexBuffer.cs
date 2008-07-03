@@ -78,6 +78,20 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
+		/// Locks the entire vertex buffer
+		/// </summary>
+		/// <param name="read">If true, lock provides read access to the buffer</param>
+		/// <param name="write">If true, lock provides write access to the buffer</param>
+		/// <returns>Returns a lock object that provides access to the buffer</returns>
+		/// <remarks>
+		/// Dispose of the lock object to commit the changes to the buffer
+		/// </remarks>
+		public IVertexBufferLock Lock( bool read, bool write )
+		{
+			return new BufferLock( m_Handle, 0, m_Stride, Count, read, write);
+		}
+
+		/// <summary>
 		/// Locks a region of the vertex buffer
 		/// </summary>
 		/// <param name="firstIndex">Index of the first vertex in the buffer to lock</param>

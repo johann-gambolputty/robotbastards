@@ -49,12 +49,18 @@ namespace Poc1.Universe.Classes.Cameras
 			Turn
 		}
 
+		/// <summary>
+		/// Gets/sets the maximum forward speed of the camera
+		/// </summary>
 		public float MaxForwardSpeed
 		{
 			get { return m_MaxForwardSpeed; }
 			set { m_MaxForwardSpeed = value; }
 		}
 
+		/// <summary>
+		/// Gets/sets the maximum slip speed of the camera
+		/// </summary>
 		public float MaxSlipSpeed
 		{
 			get { return m_MaxSlipSpeed; }

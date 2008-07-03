@@ -1,0 +1,63 @@
+
+sampler2D OceanTexture = sampler_state
+{
+	WrapS = Repeat;
+	WrapT = Repeat;
+	MinFilter = Linear;
+	MagFilter = Linear;
+//	MinFilter = LinearMipMapLinear;
+//	MagFilter = LinearMipMapLinear;
+};
+
+
+struct VertexShaderInput
+{
+	float4 m_Position : POSITION;
+	float4 m_Normal : NORMAL;
+};
+
+struct FragmentShaderInput
+{
+	float4 m_Position : POSITION;
+	float3 m_Normal;
+};
+
+float4x4 ModelViewProjectionMatrix;
+float4x4 InverseTransposeModelMatrix;
+
+FragmentShaderInput VertexShader( VertexShaderInput input )
+{
+	FragmentShaderInput output;
+
+	output.m_Position	= mul( ModelViewProjectionMatrix, input.m_Position );
+	output.m_Normal		= normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
+	return output;
+}
+
+float4 FragmentShader( FragmentShaderInput input ) : COLOR
+{
+	float2 uv = float2( input.m_Normal.x * 32, input.m_Normal.z * 32 );
+	float4 oceanColour = tex2D( OceanTexture, uv );
+
+	return oceanColour;
+}
+
+technique DefaultTechnique
+{
+	pass
+	{
+		LightingEnable			= false;
+		DepthFunc				= Less;
+		DepthMask				= true;
+		ShadeModel				= Smooth;
+		FrontFace				= CW;
+		DepthTestEnable			= true;
+		CullFaceEnable			= false;
+		BlendEnable				= false;
+		VertexProgram			= compile arbvp1 VertexShader( );
+		FragmentProgram			= compile arbfp1 FragmentShader( );
+		PolygonMode				= int2( Front, Line );
+	}
+}
+
+

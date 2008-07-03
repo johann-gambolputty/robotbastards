@@ -3,10 +3,8 @@ sampler2D OceanTexture = sampler_state
 {
 	WrapS = Repeat;
 	WrapT = Repeat;
-	MinFilter = Linear;
-	MagFilter = Linear;
-//	MinFilter = LinearMipMapLinear;
-//	MagFilter = LinearMipMapLinear;
+	MinFilter = LinearMipMapLinear;
+	MagFilter = LinearMipMapLinear;
 };
 
 
@@ -20,6 +18,7 @@ struct FragmentShaderInput
 {
 	float4 m_Position : POSITION;
 	float3 m_Normal;
+	float2 m_Uv : TEX0;
 };
 
 float4x4 ModelViewProjectionMatrix;
@@ -31,13 +30,13 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 
 	output.m_Position	= mul( ModelViewProjectionMatrix, input.m_Position );
 	output.m_Normal		= normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
+	output.m_Uv			= float2( input.m_Position.x, input.m_Position.z ) / 256;
 	return output;
 }
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
-	float2 uv = float2( input.m_Normal.x * 32, input.m_Normal.z * 32 );
-	float4 oceanColour = tex2D( OceanTexture, uv );
+	float4 oceanColour = tex2D( OceanTexture, input.m_Uv );
 
 	return oceanColour;
 }
@@ -56,6 +55,7 @@ technique DefaultTechnique
 		BlendEnable				= false;
 		VertexProgram			= compile arbvp1 VertexShader( );
 		FragmentProgram			= compile arbfp1 FragmentShader( );
+
 	}
 }
 

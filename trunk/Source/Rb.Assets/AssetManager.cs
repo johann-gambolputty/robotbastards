@@ -81,6 +81,25 @@ namespace Rb.Assets
 			return null;
 		}
 		
+
+		#endregion
+
+		#region Caching
+
+		/// <summary>
+		/// Removes an asset from a given source from the cache
+		/// </summary>
+		public void RemoveAssetFromCache( ISource asset )
+		{
+			foreach ( IAssetLoader loader in Loaders )
+			{
+				if ( ( loader.Cache != null ) && ( loader.Cache.Remove( asset.GetHashCode( ) ) ) )
+				{
+					return;
+				}
+			}
+		}
+
 		/// <summary>
 		/// Clears all asset caches
 		/// </summary>

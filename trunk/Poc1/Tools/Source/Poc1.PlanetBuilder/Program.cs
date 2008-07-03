@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using Rb.Assets;
@@ -16,6 +18,24 @@ namespace Poc1.PlanetBuilder
 		{
 			//	Bodge in these assemblies. Required for factories
 			Assembly.Load( "Rb.NiceControls" );
+
+			if ( !Environment.CommandLine.Contains( "/noDataBuild" ) )
+			{
+				try
+				{
+					string relBuildDir = @"..\..\..\Data\";
+					string relBuildPath = relBuildDir + "Build.bat";
+					string buildPath = Path.GetFullPath( relBuildPath );
+					ProcessStartInfo pStart = new ProcessStartInfo( buildPath );
+					pStart.WorkingDirectory = Path.GetFullPath( relBuildDir );
+					Process p = Process.Start( pStart );
+					p.WaitForExit( );
+				}
+				catch ( Exception ex )
+				{
+					MessageBox.Show( string.Format( "Error running data build step ({0})", ex.Message ) );
+				}
+			}
 
 			try
 			{

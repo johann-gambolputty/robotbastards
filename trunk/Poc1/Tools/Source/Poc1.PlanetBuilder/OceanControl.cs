@@ -15,12 +15,13 @@ namespace Poc1.PlanetBuilder
 			get
 			{
 				float range = seaLevelTrackBar.Maximum - seaLevelTrackBar.Minimum;
-				return ( seaLevelTrackBar.Value - seaLevelTrackBar.Minimum ) / range;
+				return BuilderState.TerrainMaxHeight * ( ( seaLevelTrackBar.Value - seaLevelTrackBar.Minimum ) / range );
 			}
 		}
 
 		private void seaLevelTrackBar_Scroll( object sender, EventArgs e )
 		{
+			BuilderState.Instance.Planet.SeaLevel = SeaLevel;
 		}
 	}
 }

@@ -32,20 +32,24 @@ namespace Poc1.PlanetBuilder
 			this.groundTextureTabPage = new System.Windows.Forms.TabPage();
 			this.terrainFunctionTabPage = new System.Windows.Forms.TabPage();
 			this.atmosphereTabPage = new System.Windows.Forms.TabPage();
+			this.oceanTabPage = new System.Windows.Forms.TabPage();
 			this.groundTextureControl = new Poc1.PlanetBuilder.GroundTextureControl();
 			this.terrainFunctionControl = new Poc1.PlanetBuilder.TerrainFunctionControl();
 			this.atmosphereControl = new Poc1.PlanetBuilder.AtmosphereControl();
+			this.oceanControl = new Poc1.PlanetBuilder.OceanControl();
 			this.builderControlsTabControl.SuspendLayout();
 			this.groundTextureTabPage.SuspendLayout();
 			this.terrainFunctionTabPage.SuspendLayout();
 			this.atmosphereTabPage.SuspendLayout();
+			this.oceanTabPage.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// builderControlsTabControl
 			// 
 			this.builderControlsTabControl.Controls.Add(this.groundTextureTabPage);
 			this.builderControlsTabControl.Controls.Add(this.terrainFunctionTabPage);
-			this.builderControlsTabControl.Controls.Add(this.atmosphereTabPage);
+			this.builderControlsTabControl.Controls.Add( this.atmosphereTabPage );
+			this.builderControlsTabControl.Controls.Add( this.oceanTabPage );
 			this.builderControlsTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.builderControlsTabControl.Location = new System.Drawing.Point(0, 0);
 			this.builderControlsTabControl.Name = "builderControlsTabControl";
@@ -86,6 +90,17 @@ namespace Poc1.PlanetBuilder
 			this.atmosphereTabPage.Text = "Atmosphere";
 			this.atmosphereTabPage.UseVisualStyleBackColor = true;
 			// 
+			// oceanTabPage
+			// 
+			this.oceanTabPage.Controls.Add( this.oceanControl );
+			this.oceanTabPage.Location = new System.Drawing.Point( 4, 22 );
+			this.oceanTabPage.Name = "oceanTabPage";
+			this.oceanTabPage.Padding = new System.Windows.Forms.Padding( 3 );
+			this.oceanTabPage.Size = new System.Drawing.Size( 252, 301 );
+			this.oceanTabPage.TabIndex = 2;
+			this.oceanTabPage.Text = "ocean";
+			this.oceanTabPage.UseVisualStyleBackColor = true;
+			// 
 			// groundTextureControl
 			// 
 			this.groundTextureControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -110,6 +125,14 @@ namespace Poc1.PlanetBuilder
 			this.atmosphereControl.Size = new System.Drawing.Size(246, 295);
 			this.atmosphereControl.TabIndex = 0;
 			// 
+			// oceanControl
+			// 
+			this.oceanControl.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.oceanControl.Location = new System.Drawing.Point( 3, 3 );
+			this.oceanControl.Name = "oceanControl";
+			this.oceanControl.Size = new System.Drawing.Size( 246, 295 );
+			this.oceanControl.TabIndex = 0;
+			// 
 			// BuilderControls
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -131,8 +154,10 @@ namespace Poc1.PlanetBuilder
 		private System.Windows.Forms.TabPage groundTextureTabPage;
 		private System.Windows.Forms.TabPage terrainFunctionTabPage;
 		private System.Windows.Forms.TabPage atmosphereTabPage;
+		private System.Windows.Forms.TabPage oceanTabPage;
 		private GroundTextureControl groundTextureControl;
 		private TerrainFunctionControl terrainFunctionControl;
 		private AtmosphereControl atmosphereControl;
+		private OceanControl oceanControl;
 	}
 }

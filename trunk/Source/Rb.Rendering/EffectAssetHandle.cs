@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Rb.Assets;
 using Rb.Assets.Base;
 using Rb.Assets.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
@@ -18,6 +19,14 @@ namespace Rb.Rendering
 		/// No source - set <see cref="AssetHandle.Source"/> prior to accessing <see cref="AssetHandle.Asset"/>, or calling any IEffect members
 		/// </summary>
 		public EffectAssetHandle( )
+		{
+		}
+
+		/// <summary>
+		/// Sets the source of the asset. Does not load the asset until <see cref="AssetHandle.Asset"/> is first accessed
+		/// </summary>
+		public EffectAssetHandle( string uri, bool trackChangesToSource ) :
+			base( Locations.NewLocation( uri ), trackChangesToSource )
 		{
 		}
 

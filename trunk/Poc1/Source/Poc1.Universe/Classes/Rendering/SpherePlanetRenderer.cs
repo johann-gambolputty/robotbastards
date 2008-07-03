@@ -1,6 +1,7 @@
 using System;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Classes.Rendering;
+using Poc1.Universe.Interfaces.Rendering;
 using Rb.Assets;
 using Rb.Core.Maths;
 using Rb.Rendering;
@@ -22,11 +23,11 @@ namespace Poc1.Universe.Classes.Rendering
 		public SpherePlanetRenderer( SpherePlanet planet )
 		{
 			m_Planet = planet;
-			m_Terrain = new SphereTerrain( planet );
+			m_Terrain = planet.Terrain;
 
 			if ( planet.SeaLevel > 0 )
 			{
-				m_Sea = new SphereOcean( planet );
+				m_Sea = new SphereOceanRenderer( planet );
 			}
 			
 			//	Load in flat planet effect
@@ -46,6 +47,7 @@ namespace Poc1.Universe.Classes.Rendering
 			//}
 
 			m_TerrainPatches = new SphereTerrainQuadPatches( planet, m_Terrain );
+			m_AtmosphereRenderer = new SphereAtmosphereRenderer( planet );
 
 			//	Generate cloud textures
 			m_CloudGenerator = new SphereCloudsGenerator( 512 );
@@ -59,6 +61,15 @@ namespace Poc1.Universe.Classes.Rendering
 			long cloudRadius = Planet.Radius + UniUnits.Metres.ToUniUnits( 5000 );
 			Graphics.Draw.Sphere( null, Point3.Origin, ( float )UniUnits.RenderUnits.FromUniUnits( cloudRadius ), 100, 100 );
 			m_CloudShell = Graphics.Draw.StopCache( );
+		}
+
+		/// <summary>
+		/// Regenerates the terrain
+		/// </summary>
+		public void RegenerateTerrain( )
+		{
+			m_TerrainPatches = new SphereTerrainQuadPatches( m_Planet, m_Terrain );
+			GC.Collect( );
 		}
 
 		/// <summary>
@@ -98,6 +109,8 @@ namespace Poc1.Universe.Classes.Rendering
 				m_CloudTechnique.Effect.Parameters[ "NextCloudTexture" ].Set( m_CloudGenerator.NextCloudTexture );
 				context.ApplyTechnique( m_CloudTechnique, m_CloudShell );
 				GameProfiles.Game.Rendering.PlanetRendering.CloudRendering.End( );
+
+				m_AtmosphereRenderer.Render( context );
 
 				Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 			}
@@ -157,19 +170,19 @@ namespace Poc1.Universe.Classes.Rendering
 
 		#region Private Members
 
-		private SphereCloudsGenerator m_CloudGenerator;
-		private ICubeMapTexture m_PlanetTexture;
-		private readonly ITechnique m_PlanetTechnique;
-		private readonly ITechnique m_CloudTechnique;
-		private readonly IRenderable m_PlanetGeometry;
-		private readonly Matrix44 m_CloudOffsetTransform = new Matrix44( );
-		private readonly SphereTerrain m_Terrain;
-		private readonly SphereOcean m_Sea;
-		private readonly IRenderable m_TerrainPatches;
-		private readonly IRenderable m_CloudShell;
-		private readonly SpherePlanet m_Planet;
-
-		private float m_CloudAngle;
+		private readonly SphereAtmosphereRenderer	m_AtmosphereRenderer;
+		private SphereCloudsGenerator				m_CloudGenerator;
+		private ICubeMapTexture						m_PlanetTexture;
+		private readonly ITechnique					m_PlanetTechnique;
+		private readonly ITechnique					m_CloudTechnique;
+		private readonly IRenderable				m_PlanetGeometry;
+		private readonly Matrix44					m_CloudOffsetTransform = new Matrix44( );
+		private readonly IPlanetTerrainModel		m_Terrain;
+		private readonly SphereOceanRenderer		m_Sea;
+		private IRenderable							m_TerrainPatches;
+		private readonly IRenderable				m_CloudShell;
+		private readonly SpherePlanet				m_Planet;
+		private float								m_CloudAngle;
 
 		#endregion
 

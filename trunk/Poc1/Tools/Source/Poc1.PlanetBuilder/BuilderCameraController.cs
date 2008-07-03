@@ -1,10 +1,9 @@
-
 using System.Windows.Forms;
+using Poc1.Universe.Classes.Cameras;
 using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
 using Rb.Interaction;
-using Rb.Rendering.Cameras;
 using Rb.Interaction.Windows;
 
 namespace Poc1.PlanetBuilder
@@ -100,15 +99,15 @@ namespace Poc1.PlanetBuilder
 		[Dispatch]
 		public void HandleCommand( CommandMessage msg )
 		{
-			Matrix44 movementFrame = m_Camera.Frame;
+			Matrix44 movementFrame = m_Camera.InverseFrame;
 			switch ( ( Commands )msg.CommandId )
 			{
 				case Commands.Forwards:
-					m_Camera.Position += movementFrame.ZAxis * MaxForwardSpeed;
+					m_Camera.Position.Add( movementFrame.ZAxis * -MaxForwardSpeed );
 					break;
 
 				case Commands.Backwards:
-					m_Camera.Position -= movementFrame.ZAxis * MaxForwardSpeed;
+					m_Camera.Position.Add( movementFrame.ZAxis * MaxForwardSpeed );
 					break;
 
 				case Commands.PitchUp:
@@ -145,11 +144,11 @@ namespace Poc1.PlanetBuilder
 					break;
 
 				case Commands.SlipLeft:
-					m_Camera.Position += movementFrame.XAxis * MaxSlipSpeed;
+					m_Camera.Position -= movementFrame.XAxis * MaxSlipSpeed;
 					break;
 
 				case Commands.SlipRight:
-					m_Camera.Position -= movementFrame.XAxis * MaxSlipSpeed;
+					m_Camera.Position += movementFrame.XAxis * MaxSlipSpeed;
 					break;
 			}
 		}
@@ -162,7 +161,7 @@ namespace Poc1.PlanetBuilder
 		public override void AddedToParent( object parent )
 		{
 			base.AddedToParent( parent );
-			m_Camera = ( FlightCamera )parent;
+			m_Camera = ( HeadCamera )parent;
 		}
 
 		/// <summary>
@@ -178,9 +177,9 @@ namespace Poc1.PlanetBuilder
 
 		#region Private Members
 
-		private FlightCamera m_Camera;
-		private float m_MaxSlipSpeed = 1;
-		private float m_MaxForwardSpeed = 1;
+		private HeadCamera m_Camera;
+		private float m_MaxSlipSpeed = 300000;
+		private float m_MaxForwardSpeed = 300000;
 		private float m_MaxTurnSpeed = 0.08f;
 
 		#endregion

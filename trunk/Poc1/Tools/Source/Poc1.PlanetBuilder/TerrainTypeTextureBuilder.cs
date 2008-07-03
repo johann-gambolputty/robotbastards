@@ -138,12 +138,18 @@ namespace Poc1.PlanetBuilder
 			{
 				m_LookupTexture.Load( m_LookupBitmap, false );
 				m_LookupBitmap.Dispose( );
+
+				BuilderState.Instance.Planet.Terrain.TerrainTypesTexture = m_LookupTexture;
+
 				m_LookupBitmap = null;
 				--m_LookupTextureRebuildRequests;
 			}
 			if ( m_PackTextureRebuildRequests > 0 )
 			{
 				m_PackTexture.Load( m_PackBitmap, false );
+
+				BuilderState.Instance.Planet.Terrain.TerrainPackTexture = m_PackTexture;
+
 				m_PackBitmap.Dispose( );
 				m_PackBitmap = null;
 				--m_PackTextureRebuildRequests;

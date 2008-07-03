@@ -80,7 +80,7 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 	return output;
 }
 
-float3 SunNormal = float3( 0, 0, 1 );
+float3 SunNormal = float3( 1, 0, 0 );
 const float MinAngle = 0.5f;
 const float MaxAngle = 0.6f;
 const float Dark = 0.0f;

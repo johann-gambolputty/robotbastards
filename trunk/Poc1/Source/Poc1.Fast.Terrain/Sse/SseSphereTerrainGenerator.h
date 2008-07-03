@@ -98,12 +98,12 @@ namespace Poc1
 					///	\brief	Determines the maximum error between two arrays filled with height data
 					float GetMaximumError( const int count, const float* heights0 );
 
-					__m128 m_ShiftRightXxxx;
-					__m128 m_ShiftRightYyyy;
-					__m128 m_ShiftRightZzzz;
-					__m128 m_ShiftDownXxxx;
-					__m128 m_ShiftDownYyyy;
-					__m128 m_ShiftDownZzzz;
+				//	__m128 m_ShiftRightXxxx;
+				//	__m128 m_ShiftRightYyyy;
+				//	__m128 m_ShiftRightZzzz;
+				//	__m128 m_ShiftDownXxxx;
+				//	__m128 m_ShiftDownYyyy;
+				//	__m128 m_ShiftDownZzzz;
 
 					inline void GetInitialErrorHeights( const __m128& xxxx, const __m128& yyyy, const __m128& zzzz, float& lastHeight, float& lastIntHeight )
 					{

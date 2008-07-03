@@ -164,6 +164,7 @@ namespace Rb.NiceControls.Graph
 				GraphInputHandler gHandler = m_Handlers[ handlerIndex ] as GraphInputHandler;
 				if ( ( gHandler != null ) && ( gHandler.Function == function ) )
 				{
+					gHandler.Detach( this );
 					m_Handlers.RemoveAt( handlerIndex );
 				}
 				else

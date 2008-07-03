@@ -46,13 +46,24 @@ namespace Poc1.Universe
 		}
 
 		/// <summary>
-		/// Converts this point to a string
+		/// Converts this point to a string (render units)
 		/// </summary>
 		public string ToRenderUnitString( )
 		{
 			double x = UniUnits.RenderUnits.FromUniUnits( X );
 			double y = UniUnits.RenderUnits.FromUniUnits( Y );
 			double z = UniUnits.RenderUnits.FromUniUnits( Z );
+			return string.Format( "({0:F2},{1:F2},{2:F2})", x, y, z );
+		}
+
+		/// <summary>
+		/// Converts this point to a string (metres)
+		/// </summary>
+		public string ToMetresString( )
+		{
+			double x = UniUnits.Metres.FromUniUnits( X );
+			double y = UniUnits.Metres.FromUniUnits( Y );
+			double z = UniUnits.Metres.FromUniUnits( Z );
 			return string.Format( "({0:F2},{1:F2},{2:F2})", x, y, z );
 		}
 		
