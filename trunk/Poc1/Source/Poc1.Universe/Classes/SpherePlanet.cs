@@ -16,8 +16,6 @@ namespace Poc1.Universe.Classes
 			m_Radius = UniUnits.Metres.ToUniUnits( radius );
 
 			m_Atmosphere = new SphereAtmosphereModel( );
-			m_Atmosphere.Radius = UniUnits.Metres.ToUniUnits( 5000 );
-
 			m_Terrain = new SphereTerrainModel( this );
 			m_Renderer = new SpherePlanetRenderer( this );
 		}

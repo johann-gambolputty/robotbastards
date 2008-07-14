@@ -1,6 +1,19 @@
+sampler3D AtmosphereLookupTexture = sampler_state
+{
+	WrapS = Clamp;
+	WrapT = Clamp;
+	WrapU = Clamp;
+};
 
 float4x4 ModelViewProjectionMatrix;
 float4x4 InverseTransposeModelMatrix;
+float3 SunToViewVec = float3( 1, 0, 0 );
+float SunToViewAngle;
+
+float3 AtmViewPos;
+float3 AtmViewDir;
+float AtmViewHeight;
+
 
 struct VertexShaderInput
 {
@@ -26,6 +39,13 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
+	float distToPt = distance( input.m_Position.xyz, AtmViewPos );
+	float3 viewVec = normalize( input.m_Position.xyz - AtmViewPos );
+
+	float h = AtmViewHeight;
+	float th = dot( AtmViewPos, viewVec ) / AtmViewHeight;
+	float si = AtmSunToViewAngle;
+
 	return float4( 1, 0, 0, 1 );
 }
 

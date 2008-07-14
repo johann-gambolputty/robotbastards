@@ -75,6 +75,7 @@
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Interfaces\IOrbit.cs" />
     <Compile Include="Interfaces\IPlanet.cs" />
+    <Compile Include="Interfaces\IPlanetModel.cs" />
     <Compile Include="Interfaces\ISun.cs" />
     <Compile Include="Interfaces\IUniCamera.cs" />
     <Compile Include="Interfaces\Rendering\IPlanetAtmosphereModel.cs" />

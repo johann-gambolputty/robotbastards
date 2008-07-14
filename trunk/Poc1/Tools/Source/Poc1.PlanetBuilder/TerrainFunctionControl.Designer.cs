@@ -100,7 +100,7 @@ namespace Poc1.PlanetBuilder
 			this.regenerateMeshButton.TabIndex = 2;
 			this.regenerateMeshButton.Text = "Regenerate Mesh";
 			this.regenerateMeshButton.UseVisualStyleBackColor = true;
-			this.regenerateMeshButton.Click += new System.EventHandler( regenerateMeshButton_Click );
+			this.regenerateMeshButton.Click += new System.EventHandler( this.regenerateMeshButton_Click );
 			// 
 			// splitter1
 			// 
@@ -188,6 +188,7 @@ namespace Poc1.PlanetBuilder
 			this.Controls.Add( this.heightFunctionGroupBox );
 			this.Name = "TerrainFunctionControl";
 			this.Size = new System.Drawing.Size( 217, 331 );
+			this.Load += new System.EventHandler( this.TerrainFunctionControl_Load );
 			this.heightFunctionGroupBox.ResumeLayout( false );
 			this.heightFunctionGroupBox.PerformLayout( );
 			this.panel1.ResumeLayout( false );

@@ -23,13 +23,7 @@ namespace Poc1.PlanetBuilder
 			{
 				try
 				{
-					string relBuildDir = @"..\..\..\Data\";
-					string relBuildPath = relBuildDir + "Build.bat";
-					string buildPath = Path.GetFullPath( relBuildPath );
-					ProcessStartInfo pStart = new ProcessStartInfo( buildPath );
-					pStart.WorkingDirectory = Path.GetFullPath( relBuildDir );
-					Process p = Process.Start( pStart );
-					p.WaitForExit( );
+					AppUtils.BuildAssets( );
 				}
 				catch ( Exception ex )
 				{

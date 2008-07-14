@@ -14,7 +14,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		public SphereAtmosphereRenderer( SpherePlanet planet )
 		{
-			float radius = ( float )UniUnits.AstroRenderUnits.FromUniUnits( planet.Radius + planet.SphereAtmosphere.Radius );
+			float radius = ( float )UniUnits.RenderUnits.FromUniUnits( planet.Radius + planet.SphereAtmosphere.Radius );
 
 			Graphics.Draw.StartCache( );
 			Graphics.Draw.Sphere( null, Point3.Origin, radius, 40, 40 );

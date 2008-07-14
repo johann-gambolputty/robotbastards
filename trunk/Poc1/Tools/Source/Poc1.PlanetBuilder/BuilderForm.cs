@@ -1,5 +1,9 @@
+using System;
+using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 using Poc1.Universe;
+using Poc1.Universe.Classes;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
 using Rb.Interaction;
@@ -15,6 +19,9 @@ namespace Poc1.PlanetBuilder
 			InitializeComponent( );
 		}
 
+		/// <summary>
+		/// Creates the camera used by the main display
+		/// </summary>
 		private static ICamera CreateCamera( InputContext context, CommandUser user )
 		{
 		//	FlightCamera camera = new FlightCamera( );
@@ -27,14 +34,14 @@ namespace Poc1.PlanetBuilder
 			return camera;
 		}
 
-		private void BuilderForm_Shown( object sender, System.EventArgs e )
+		private void BuilderForm_Shown( object sender, EventArgs e )
 		{
 			if ( DesignMode )
 			{
 				return;
 			}
 			Viewer viewer = new Viewer( );
-			viewer.Renderable = new RenderableList( BuilderState.Instance.Planet );
+			viewer.Renderable = new RenderableList( new StarBox( ), BuilderState.Instance.Planet );
 			viewer.PreRender +=
 				delegate
 				{
@@ -49,12 +56,27 @@ namespace Poc1.PlanetBuilder
 			viewer.Camera = CreateCamera( context, user );
 		}
 
-
 		private void BuilderForm_Closing( object sender, System.ComponentModel.CancelEventArgs e )
 		{
 			BuilderState.Instance.Planet = null;	//	Forces dispose of current planet
 			Graphics.Renderer.Dispose( );
 		}
 
+		private void exitToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			Close( );
+		}
+
+		private void buildToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			try
+			{
+				AppUtils.BuildAssets( );
+			}
+			catch ( Exception ex )
+			{
+				MessageBox.Show( this, string.Format( "Error running data build step ({0})", ex.Message ) );
+			}
+		}
 	}
 }

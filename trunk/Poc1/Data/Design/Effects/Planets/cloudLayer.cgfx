@@ -75,7 +75,7 @@ technique DefaultTechnique
 		CullFaceEnable			= false;
 		BlendEnable				= true;
 		BlendFunc				= int2( SrcAlpha, OneMinusSrcAlpha );
-		PolygonMode				= int2( Front, Fill );
+		PolygonMode				= int2( FrontAndBack, Fill );
 		VertexProgram			= compile arbvp1 VertexShader( );
 		FragmentProgram			= compile arbfp1 FragmentShader( );
 	}
