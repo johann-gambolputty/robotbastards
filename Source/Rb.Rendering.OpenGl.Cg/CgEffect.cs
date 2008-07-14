@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
 using Rb.Assets.Interfaces;
@@ -13,7 +15,7 @@ namespace Rb.Rendering.OpenGl.Cg
 	/// <summary>
 	/// A CG effect
 	/// </summary>
-	public class CgEffect : Effect
+	public class CgEffect : Effect, IDisposable
 	{
 		#region Construction
 
@@ -171,21 +173,23 @@ namespace Rb.Rendering.OpenGl.Cg
 		{
 			using ( Stream streamSource = source.Open( ) )
 			{
-				StreamReader reader = new StreamReader( streamSource );
-				string str = reader.ReadToEnd( );
-
-				//	Replace any instances of "#include" with the actual file contents
-				//	(this is because CG doesn't appear to have a search path, and wouldn't be able
-				//	to handle, say, compressed file systems, databases, or other methods of retrieving assets)
-				//	It's a bit shit, because it doesn't handle any other pre-processor directives that might
-				//	affect how includes are handled (not to mention comments)
-				str = InlineAllIncludes( source, str );
-
-			//	File.WriteAllText("c:\\temp\\effectDump.cgfx", str);
-
-				if ( !CreateFromHandle( TaoCg.cgCreateEffect( m_Context, str, null ) ) )
+				using ( StreamReader reader = new StreamReader( streamSource ) )
 				{
-					throw new ApplicationException( string.Format( "Unable to create CG effect from stream \"{0}\"\n{1}", source.Path, TaoCg.cgGetLastListing( m_Context ) ) );
+					string str = reader.ReadToEnd( );
+
+					//	Replace any instances of "#include" with the actual file contents
+					//	(this is because CG doesn't appear to have a search path, and wouldn't be able
+					//	to handle, say, compressed file systems, databases, or other methods of retrieving assets)
+					//	It's a bit shit, because it doesn't handle any other pre-processor directives that might
+					//	affect how includes are handled (not to mention comments)
+					str = InlineAllIncludes( source, str );
+
+					//	File.WriteAllText("c:\\temp\\effectDump.cgfx", str);
+
+					if ( !CreateFromHandle( TaoCg.cgCreateEffect( m_Context, str, null ) ) )
+					{
+						throw new ApplicationException( string.Format( "Unable to create CG effect from stream \"{0}\"\n{1}", source.Path, TaoCg.cgGetLastListing( m_Context ) ) );
+					}
 				}
 			}
 		}
@@ -206,12 +210,12 @@ namespace Rb.Rendering.OpenGl.Cg
 			//	Run through all the techniques in the effect
 			for ( IntPtr curTechnique = TaoCg.cgGetFirstTechnique( m_EffectHandle ); curTechnique != IntPtr.Zero; curTechnique = TaoCg.cgGetNextTechnique( curTechnique ) )
 			{
-				string techniqueName = TaoCg.cgGetTechniqueName( curTechnique );
 				if ( TaoCg.cgValidateTechnique( curTechnique ) == 0 )
 				{
-					GraphicsLog.Warning( "Unable to validate technique \"{0}\" - {1}", techniqueName, TaoCg.cgGetLastListing( m_Context ) );
+					GraphicsLog.Warning( "Unable to validate technique \"{0}\" - {1}", TaoCg.cgGetTechniqueName( curTechnique ), TaoCg.cgGetLastListing( m_Context ) );
 					continue;
 				}
+				string techniqueName = TaoCg.cgGetTechniqueName( curTechnique );
 
 				//	Create a Technique wrapper around the current technique
 				Technique newTechnique = new Technique( techniqueName );
@@ -263,6 +267,19 @@ namespace Rb.Rendering.OpenGl.Cg
 		private readonly IntPtr		m_Context;
 		private IntPtr				m_EffectHandle;
 		private readonly ArrayList	m_Parameters = new ArrayList( );
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose( )
+		{
+			if ( m_EffectHandle != IntPtr.Zero )
+			{
+				TaoCg.cgDestroyEffect( m_EffectHandle );
+				m_EffectHandle = IntPtr.Zero;
+			}
+		}
 
 		#endregion
 	}

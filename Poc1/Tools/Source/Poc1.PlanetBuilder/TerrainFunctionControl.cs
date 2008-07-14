@@ -10,14 +10,6 @@ namespace Poc1.PlanetBuilder
 		public TerrainFunctionControl( )
 		{
 			InitializeComponent( );
-
-			heightFunctionComboBox.Items.Add( NewTerrainFunctionItem( TerrainFunctionType.SimpleFractal ) );
-			heightFunctionComboBox.Items.Add( NewTerrainFunctionItem( TerrainFunctionType.RidgedFractal ) );
-			heightFunctionComboBox.SelectedIndex = 0;
-
-			groundFunctionComboBox.Items.Add( NewTerrainFunctionItem( TerrainFunctionType.SimpleFractal ) );
-			groundFunctionComboBox.Items.Add( NewTerrainFunctionItem( TerrainFunctionType.RidgedFractal ) );
-			groundFunctionComboBox.SelectedIndex = 0;
 		}
 
 		#region Private Members
@@ -130,6 +122,17 @@ namespace Poc1.PlanetBuilder
 		{
 			BuilderState.Instance.Planet.Terrain.SetupTerrain( BuilderState.TerrainMaxHeight, CurrentHeightFunction, CurrentGroundFunction );
 			BuilderState.Instance.Planet.RegenerateTerrain( );
+		}
+
+		private void TerrainFunctionControl_Load( object sender, EventArgs e )
+		{
+			heightFunctionComboBox.Items.Add( NewTerrainFunctionItem( TerrainFunctionType.SimpleFractal ) );
+			heightFunctionComboBox.Items.Add( NewTerrainFunctionItem( TerrainFunctionType.RidgedFractal ) );
+			heightFunctionComboBox.SelectedIndex = 0;
+
+			groundFunctionComboBox.Items.Add( NewTerrainFunctionItem( TerrainFunctionType.SimpleFractal ) );
+			groundFunctionComboBox.Items.Add( NewTerrainFunctionItem( TerrainFunctionType.RidgedFractal ) );
+			groundFunctionComboBox.SelectedIndex = 0;
 		}
 	}
 }

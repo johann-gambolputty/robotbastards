@@ -34,7 +34,7 @@ namespace Rb.Assets.Files
 		/// </summary>
 		public Stream Open( )
 		{
-			return File.OpenRead( Path );
+			return new FileStream( Path, FileMode.Open, FileAccess.Read, FileShare.Read );
 		}
 
 		#endregion

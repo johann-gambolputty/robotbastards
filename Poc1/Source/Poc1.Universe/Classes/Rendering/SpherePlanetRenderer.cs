@@ -50,7 +50,7 @@ namespace Poc1.Universe.Classes.Rendering
 			m_AtmosphereRenderer = new SphereAtmosphereRenderer( planet );
 
 			//	Generate cloud textures
-			m_CloudGenerator = new SphereCloudsGenerator( 512 );
+			m_CloudGenerator = new SphereCloudsGenerator( 64 );
 
 			//	Generate cached sphere for rendering the planet
 			Graphics.Draw.StartCache( );
@@ -102,6 +102,8 @@ namespace Poc1.Universe.Classes.Rendering
 				}
 				GameProfiles.Game.Rendering.PlanetRendering.TerrainRendering.End( );
 
+				m_AtmosphereRenderer.Render( context );
+
 				GameProfiles.Game.Rendering.PlanetRendering.CloudRendering.Begin( );
 				m_CloudTechnique.Effect.Parameters[ "CloudBlend" ].Set( m_CloudGenerator.Blend );
 				m_CloudTechnique.Effect.Parameters[ "CloudTransform" ].Set( m_CloudOffsetTransform );
@@ -109,8 +111,6 @@ namespace Poc1.Universe.Classes.Rendering
 				m_CloudTechnique.Effect.Parameters[ "NextCloudTexture" ].Set( m_CloudGenerator.NextCloudTexture );
 				context.ApplyTechnique( m_CloudTechnique, m_CloudShell );
 				GameProfiles.Game.Rendering.PlanetRendering.CloudRendering.End( );
-
-				m_AtmosphereRenderer.Render( context );
 
 				Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 			}

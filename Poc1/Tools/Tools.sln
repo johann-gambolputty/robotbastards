@@ -45,6 +45,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Tools.Cameras", "..\..\T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc1.Tools.Atmosphere", "Source\Poc1.Tools.Atmosphere\Poc1.Tools.Atmosphere.csproj", "{69F536AC-32E9-4930-8B6A-A14223298222}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.World", "..\..\Source\Rb.World\Rb.World.csproj", "{46980366-998B-4178-87B7-B04DD3B21979}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Network", "..\..\Source\Rb.Network\Rb.Network.csproj", "{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{F295C866-E52E-49BD-978D-A07DEB5FB640}"
+	ProjectSection(SolutionItems) = preProject
+		..\Documentation\diaryNotes.txt = ..\Documentation\diaryNotes.txt
+		..\Documentation\notes.txt = ..\Documentation\notes.txt
+		..\Documentation\todo.txt = ..\Documentation\todo.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -388,6 +399,36 @@ Global
 		{69F536AC-32E9-4930-8B6A-A14223298222}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{69F536AC-32E9-4930-8B6A-A14223298222}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{69F536AC-32E9-4930-8B6A-A14223298222}.Release|Win32.ActiveCfg = Release|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.NDoc|Any CPU.ActiveCfg = NDoc|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.NDoc|Any CPU.Build.0 = NDoc|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.NDoc|Mixed Platforms.ActiveCfg = NDoc|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.NDoc|Mixed Platforms.Build.0 = NDoc|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.NDoc|Win32.ActiveCfg = NDoc|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{46980366-998B-4178-87B7-B04DD3B21979}.Release|Win32.ActiveCfg = Release|Any CPU
+		{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}.NDoc|Any CPU.ActiveCfg = NDoc|Any CPU
+		{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}.NDoc|Any CPU.Build.0 = NDoc|Any CPU
+		{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}.NDoc|Mixed Platforms.ActiveCfg = NDoc|Any CPU
+		{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}.NDoc|Mixed Platforms.Build.0 = NDoc|Any CPU
+		{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}.NDoc|Win32.ActiveCfg = NDoc|Any CPU
+		{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

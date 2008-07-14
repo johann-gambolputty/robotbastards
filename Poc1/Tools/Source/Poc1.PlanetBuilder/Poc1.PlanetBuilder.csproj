@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppUtils.cs" />
     <Compile Include="AtmosphereControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -115,6 +116,10 @@
       <SubType>Designer</SubType>
       <DependentUpon>TerrainFunctionControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UnhandledExceptionForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>UnhandledExceptionForm.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -137,6 +142,12 @@
     </Compile>
     <Compile Include="TerrainMesh.cs" />
     <Compile Include="TerrainTypeTextureBuilder.cs" />
+    <Compile Include="UnhandledExceptionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UnhandledExceptionForm.Designer.cs">
+      <DependentUpon>UnhandledExceptionForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Source\Rb.Assets\Rb.Assets.csproj">

@@ -44,6 +44,17 @@ namespace Poc1.Tools.Atmosphere
 		}
 
 		/// <summary>
+		/// Molecular density scale
+		/// </summary>
+		public float KScale
+		{
+			get { return m_KScale; }
+			set { m_KScale = value; }
+		}
+
+
+
+		/// <summary>
 		/// Builds a 3D lookup texture
 		/// </summary>
 		/// <param name="viewAngleSamples">Width of the 3d texture. Corresponds to viewing angle</param>
@@ -67,7 +78,8 @@ namespace Poc1.Tools.Atmosphere
 		private float m_OuterRadius = 10000;
 
 		/// <summary>
-		/// Builds a 3D lookup texture
+		/// Builds a 3D lookup texture containing the in-scattering values for a parameterization of
+		/// the view frame and sun position.
 		/// </summary>
 		/// <param name="viewAngleSamples">Width of the 3d texture. Corresponds to viewing angle</param>
 		/// <param name="sunAngleSamples">Height of the 3d texture. Corresponds to angle to the sun</param>
@@ -102,7 +114,7 @@ namespace Poc1.Tools.Atmosphere
 		}
 
 		/// <summary>
-		/// Computes the scattering term for a given sun angle, viewer orientation, and height. Stores
+		/// Computes the in-scattering term for a given sun angle, viewer orientation, and height. Stores
 		/// the result in a 3-component voxel
 		/// </summary>
 		private unsafe static void ComputeScattering( Vector3 viewDir, float bCoeff, float height, byte* voxel )
@@ -140,9 +152,11 @@ namespace Poc1.Tools.Atmosphere
 			//		x = 5/u + 125/729u^3 + (64/27 - 325/243u^2 + 1250/2187u^4)^1/2
 			//		u = haze factor and wavelength (0.7-0.85)
 
-			float bR = ComputeScattering( RWavelength, viewDir, bCoeff * InvRWavelength4, height );
-			float bG = ComputeScattering( GWavelength, viewDir, bCoeff * InvGWavelength4, height );
-			float bB = ComputeScattering( BWavelength, viewDir, bCoeff * InvBWavelength4, height );
+			//	Calculate non-wavelength-dependent coefficients
+
+			float bR = RSunIntensity * ComputeScattering( RWavelength, viewDir, bCoeff * InvRWavelength4, height, pCoeff );
+			float bG = GSunIntensity * ComputeScattering( GWavelength, viewDir, bCoeff * InvGWavelength4, height, pCoeff );
+			float bB = BSunIntensity * ComputeScattering( BWavelength, viewDir, bCoeff * InvBWavelength4, height, pCoeff );
 
 			voxel[ 0 ] = ( byte )Utils.Clamp( bR * 255.0f, 0, 255 );
 			voxel[ 1 ] = ( byte )Utils.Clamp( bG * 255.0f, 0, 255 );
@@ -152,20 +166,47 @@ namespace Poc1.Tools.Atmosphere
 		/// <summary>
 		/// Computes the scattering term for a given sun angle, viewer orientation, height and wavelength.
 		/// </summary>
-		private static float ComputeScattering( float wavelength, Vector3 viewDir, float phaseCoeff, float height )
+		private static float ComputeScattering( float wavelength, Vector3 viewDir, Vector3 sunDir, float phaseCoeff, float height )
 		{
 			float Fr = phaseCoeff * wavelength;
 
+			Point3 pos = new Point3( 0, height, 0 );
+			Vector3 step = viewDir;
+			float sum = 0;
+			float norm = 1.0f / AttenuationSamples;
 			for ( int i = 0; i < AttenuationSamples; ++i )
 			{
+				pos += step;
+				float h = pos.SqrDistanceTo( Point3.Origin );
+				float pCoeff = Functions.Exp( h * InvH0 );
+
+				float inScatterToSun = ComputeOpticalDepth( pos, sunDir, AttenuationSamples );
+				float inScatterToViewer = ComputeOpticalDepth( pos, -step, AttenuationSamples );
+
+				sum += ( pCoeff ) * norm;
 			}
 
 			return K * Fr;
 		}
 
+		/// <summary>
+		/// Calculates the average atmospheric density along a ray
+		/// </summary>
+		private static float ComputeOpticalDepth( Point3 pt, Vector3 step, int sampleCount )
+		{
+			return 0;
+		}
+
+
+		private float m_KScale = 1.0f;
+
 		private const int AttenuationSamples = 100;
 
-		private const float InvH0 = 1.0f / 7994.0f;
+		private const float RSunIntensity = 1.0f;
+		private const float GSunIntensity = 1.0f;
+		private const float BSunIntensity = 1.0f;
+
+		private const float InvH0 = -1.0f / 7994.0f;
 		private const float K = 0;
 		private const float RWavelength = 650;
 		private const float GWavelength = 610;
@@ -178,14 +219,17 @@ namespace Poc1.Tools.Atmosphere
 		/// <summary>
 		/// Builds a lookup table that stores the coefficient in the phase function that is based on the viewer's angle to the sun
 		/// </summary>
-		private static void BuildAttenuationCoefficientLookupTable( float[] table )
+		/// <remarks>
+		/// Stores the result of K.Fr(om)
+		/// </remarks>
+		private void BuildAttenuationCoefficientLookupTable( float[] table )
 		{
 			float sunAngleInc = Constants.TwoPi / ( table.Length - 1 );
 			float sunAngle = 0;
 			for ( int sunAngleSample = 0; sunAngleSample < table.Length; ++sunAngleSample, sunAngle += sunAngleInc )
 			{
 				float cosSunAngle = Functions.Cos( sunAngle );
-				float bCoeff = BMul * ( 2 + 0.5f * ( cosSunAngle * cosSunAngle ) );
+				float bCoeff = KScale * BMul * ( 2 + 0.5f * ( cosSunAngle * cosSunAngle ) );
 				table[ sunAngleSample ] = bCoeff;
 			}
 		}
