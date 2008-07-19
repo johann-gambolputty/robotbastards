@@ -12,6 +12,8 @@ namespace Poc1.Universe.Interfaces
 	/// </summary>
 	public interface IPlanet : IEntity, IRenderable, IDisposable
 	{
+		#region Models
+
 		/// <summary>
 		/// Gets the description of the orbit of this planet
 		/// </summary>
@@ -58,6 +60,19 @@ namespace Poc1.Universe.Interfaces
 			get;
 		}
 
+
+		/// <summary>
+		/// Gets a list of moons that orbit this planet
+		/// </summary>
+		IList<IPlanet> Moons
+		{
+			get;
+		}
+
+		#endregion
+
+		#region Rendering
+
 		/// <summary>
 		/// Enables/disables the rendering of the terrain of this planet
 		/// </summary>
@@ -70,11 +85,13 @@ namespace Poc1.Universe.Interfaces
 		}
 
 		/// <summary>
-		/// Gets a list of moons that orbit this planet
+		/// Gets the planet atmosphere renderer
 		/// </summary>
-		IList<IPlanet> Moons
+		IAtmosphereRenderer AtmosphereRenderer
 		{
 			get;
 		}
+
+		#endregion
 	}
 }

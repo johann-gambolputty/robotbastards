@@ -18,6 +18,16 @@ namespace Rb.Rendering
 	{
 		#region Setup
 
+		/// <summary>
+		/// Dumps information about the renderer to the graphics log
+		/// </summary>
+		public virtual void DumpInfo( )
+		{
+		}
+
+		/// <summary>
+		/// Sets up the renderer
+		/// </summary>
 		public virtual void Setup( )
 		{
 			m_Textures = new ITexture[ MaxTextureUnits ];

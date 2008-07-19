@@ -63,7 +63,7 @@ namespace Rb.Rendering.Interfaces
 		/// <summary>
 		/// Creates a 3d texture
 		/// </summary>
-		ITexture2d CreateTexture3d( );
+		ITexture3d CreateTexture3d( );
 
 		/// <summary>
 		/// Creates a cube map texture

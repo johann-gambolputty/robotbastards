@@ -104,13 +104,13 @@ namespace Poc1.Universe.Classes.Rendering
 
 				m_AtmosphereRenderer.Render( context );
 
-				GameProfiles.Game.Rendering.PlanetRendering.CloudRendering.Begin( );
-				m_CloudTechnique.Effect.Parameters[ "CloudBlend" ].Set( m_CloudGenerator.Blend );
-				m_CloudTechnique.Effect.Parameters[ "CloudTransform" ].Set( m_CloudOffsetTransform );
-				m_CloudTechnique.Effect.Parameters[ "CloudTexture" ].Set( m_CloudGenerator.CurrentCloudTexture );
-				m_CloudTechnique.Effect.Parameters[ "NextCloudTexture" ].Set( m_CloudGenerator.NextCloudTexture );
-				context.ApplyTechnique( m_CloudTechnique, m_CloudShell );
-				GameProfiles.Game.Rendering.PlanetRendering.CloudRendering.End( );
+				//GameProfiles.Game.Rendering.PlanetRendering.CloudRendering.Begin( );
+				//m_CloudTechnique.Effect.Parameters[ "CloudBlend" ].Set( m_CloudGenerator.Blend );
+				//m_CloudTechnique.Effect.Parameters[ "CloudTransform" ].Set( m_CloudOffsetTransform );
+				//m_CloudTechnique.Effect.Parameters[ "CloudTexture" ].Set( m_CloudGenerator.CurrentCloudTexture );
+				//m_CloudTechnique.Effect.Parameters[ "NextCloudTexture" ].Set( m_CloudGenerator.NextCloudTexture );
+				//context.ApplyTechnique( m_CloudTechnique, m_CloudShell );
+				//GameProfiles.Game.Rendering.PlanetRendering.CloudRendering.End( );
 
 				Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 			}
@@ -142,6 +142,14 @@ namespace Poc1.Universe.Classes.Rendering
 
 			m_CloudAngle = Utils.Wrap( m_CloudAngle + Constants.DegreesToRadians * 0.001f, 0, Constants.TwoPi );
 			m_CloudOffsetTransform.SetXRotation( m_CloudAngle );
+		}
+
+		/// <summary>
+		/// Gets the atmosphere renderer
+		/// </summary>
+		public SphereAtmosphereRenderer AtmosphereRenderer
+		{
+			get { return m_AtmosphereRenderer; }
 		}
 
 		#endregion

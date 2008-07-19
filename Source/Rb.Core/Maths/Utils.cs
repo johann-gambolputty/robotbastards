@@ -95,6 +95,14 @@ namespace Rb.Core.Maths
 		}
 
 		/// <summary>
+		/// Clamps a floating point value to the range [min,max]
+		/// </summary>
+		public static double Clamp( double value, double min, double max )
+		{
+			return value < min ? min : ( value > max ? max : value );
+		}
+
+		/// <summary>
 		/// Returns the minimum of two floating point values
 		/// </summary>
 		public static float Min( float val1, float val2 )

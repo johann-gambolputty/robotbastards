@@ -136,6 +136,10 @@ namespace Rb.Rendering.OpenGl
 		{
 		}
 
+		/// <summary>
+		/// Enables or disables a specified texture unit, based on m_TextureUnits flags
+		/// </summary>
+		/// <param name="unit">Texture unit to enable</param>
 		private void EnableTextureUnit( int unit )
 		{
 			Gl.glActiveTextureARB( Gl.GL_TEXTURE0_ARB + unit );
@@ -149,6 +153,9 @@ namespace Rb.Rendering.OpenGl
 			}
 		}
 
+		/// <summary>
+		/// Gets the GL blend factor value from a <see cref="BlendFactor"/> value
+		/// </summary>
 		private static int GetBlendFactor( BlendFactor factor )
 		{
 			switch ( factor )

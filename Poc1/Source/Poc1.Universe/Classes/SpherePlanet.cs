@@ -52,6 +52,13 @@ namespace Poc1.Universe.Classes
 			get { return m_Atmosphere; }
 		}
 
+		/// <summary>
+		/// Gets the planet atmosphere renderer
+		/// </summary>
+		public override IAtmosphereRenderer AtmosphereRenderer
+		{
+			get { return m_Renderer.AtmosphereRenderer; }
+		}
 
 		/// <summary>
 		/// Regenerates the planet's terrain

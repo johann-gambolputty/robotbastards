@@ -517,7 +517,7 @@ namespace Rb.Rendering.OpenGl
 				//	Handle colour textures
 
 				//	Get texture memory
-				int bytesPerPixel = TextureFormatInfo.GetBitSize( Format ) / 8;
+				int bytesPerPixel = TextureFormatInfo.GetSizeInBytes( Format );
 				byte[] textureMemory = new byte[ Width * Height * bytesPerPixel ];
 				Gl.glGetTexImage( Gl.GL_TEXTURE_2D, 0, m_GlFormat, m_GlType, textureMemory );
 

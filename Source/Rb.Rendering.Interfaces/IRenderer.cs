@@ -16,9 +16,9 @@ namespace Rb.Rendering.Interfaces
 		#region Setup
 
 		/// <summary>
-		/// Sets up the renderer
+		/// Dumps information about the renderer to the graphics log
 		/// </summary>
-		void Setup( );
+		void DumpInfo( );
 
 		#endregion
 

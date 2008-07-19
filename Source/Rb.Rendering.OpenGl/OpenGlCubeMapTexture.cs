@@ -198,7 +198,7 @@ namespace Rb.Rendering.OpenGl
 		private unsafe Bitmap GetFaceBitmap( int imageTarget )
 		{
 			//	Get texture memory
-			int bytesPerPixel = TextureFormatInfo.GetBitSize( Format ) / 8;
+			int bytesPerPixel = TextureFormatInfo.GetSizeInBytes( Format );
 
 			byte[] textureMemory = new byte[ m_Width * m_Height * bytesPerPixel ];
 

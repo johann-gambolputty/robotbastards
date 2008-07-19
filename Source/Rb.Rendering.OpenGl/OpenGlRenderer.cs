@@ -39,6 +39,31 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
+		/// Dumps information about this renderer to the graphics info log
+		/// </summary>
+		public override void DumpInfo( )
+		{
+			base.DumpInfo( );
+
+			//	Show the extensions
+			string extensions = Gl.glGetString( Gl.GL_EXTENSIONS );
+			GraphicsLog.Info( extensions.Replace( ' ', '\n' ) );
+
+			//	Write some important caps to the info
+			int[] result = new int[ 1 ];
+			Gl.glGetIntegerv( Gl.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, result );
+			GraphicsLog.Info( "Max texture units: " + result );
+		}
+
+		/// <summary>
+		/// Gets the current GL error string
+		/// </summary>
+		public static string GetCurrentGlError( )
+		{
+			return Glu.gluErrorString( Gl.glGetError( ) );
+		}
+
+		/// <summary>
 		/// Cleans up all the rendering resource that <see cref="DisposeRenderingResource"/> were unable to deal with immediately
 		/// </summary>
 		/// <remarks>
@@ -81,27 +106,6 @@ namespace Rb.Rendering.OpenGl
 			{
 				disposable.Dispose( );
 			}
-		}
-
-		/// <summary>
-		/// Loads all supported OpenGL extensions
-		/// </summary>
-		public static void LoadExtensions( )
-		{
-			//	Show the extensions
-			string extensions = Gl.glGetString( Gl.GL_EXTENSIONS );
-			GraphicsLog.Info( extensions.Replace( ' ', '\n' ) );
-
-			//	Write some important caps to the info
-			int[] result = new int[ 1 ];
-			Gl.glGetIntegerv( Gl.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, result );
-			GraphicsLog.Info( "Max texture units: " + result );
-
-			//	Hinty-hinty
-			Gl.glHint( Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST );
-
-			//	Add a default renderstate
-			Graphics.Renderer.PushRenderState( Graphics.Factory.CreateRenderState( ) );
 		}
 
 		#endregion

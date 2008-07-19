@@ -61,6 +61,24 @@ namespace Poc1.PlanetBuilder.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Build.
+        /// </summary>
+        internal static string Build {
+            get {
+                return ResourceManager.GetString("Build", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        internal static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose a folder to export the terrain type set to:.
         /// </summary>
         internal static string ChooseExportFolder {
