@@ -1,6 +1,4 @@
 using System;
-using System.Diagnostics;
-using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using Rb.Assets;
@@ -51,6 +49,8 @@ namespace Poc1.PlanetBuilder
 					return;
 				}
 			}
+
+
 
 			Application.EnableVisualStyles( );
 			Application.SetCompatibleTextRenderingDefault( false );

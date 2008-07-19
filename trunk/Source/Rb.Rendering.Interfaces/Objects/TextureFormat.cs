@@ -37,7 +37,7 @@ namespace Rb.Rendering.Interfaces.Objects
 		/// <param name="format">Format to query</param>
 		/// <returns>Returns the number of bits required by a single texel in the given format</returns>
 		/// <exception cref="ArgumentException">Thrown if format is unrecognised</exception>
-		public static int GetBitSize( TextureFormat format )
+		public static int GetSizeInBits( TextureFormat format )
 		{
 			switch ( format )
 			{
@@ -61,6 +61,14 @@ namespace Rb.Rendering.Interfaces.Objects
 			}
 
 			throw new ArgumentException( string.Format( "Unknown texture format \"{0}\"", format ), "format" );
+		}
+
+		/// <summary>
+		/// Gets the size of a texture format texel in bytes
+		/// </summary>
+		public static int GetSizeInBytes( TextureFormat format )
+		{
+			return GetSizeInBits( format ) / 8;
 		}
 	}
 

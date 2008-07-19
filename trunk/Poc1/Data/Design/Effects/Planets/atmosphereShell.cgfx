@@ -2,14 +2,15 @@ sampler3D AtmosphereLookupTexture = sampler_state
 {
 	WrapS = Clamp;
 	WrapT = Clamp;
-	WrapU = Clamp;
+	WrapR = Clamp;
+	MinFilter = Nearest;
+	MagFilter = Nearest;
 };
 
 float4x4 ModelViewProjectionMatrix;
 float4x4 InverseTransposeModelMatrix;
-float3 SunToViewVec = float3( 1, 0, 0 );
-float SunToViewAngle;
 
+float3 SunDir = float3( 1, 0, 0 );
 float3 AtmViewPos;
 float3 AtmViewDir;
 float AtmViewHeight;
@@ -24,35 +25,35 @@ struct VertexShaderInput
 struct FragmentShaderInput
 {
 	float4 m_Position : POSITION;
-	float3 m_Normal;
+	float3 m_WorldPos : TEXCOORD0;
 };
 
 FragmentShaderInput VertexShader( VertexShaderInput input )
 {
 	FragmentShaderInput output;
 
-	output.m_Position	= mul( ModelViewProjectionMatrix, input.m_Position );
-	output.m_Normal		= normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
+	output.m_Position = mul( ModelViewProjectionMatrix, input.m_Position );
+	output.m_WorldPos = input.m_Position.xyz;
 
 	return output;
 }
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
-	float distToPt = distance( input.m_Position.xyz, AtmViewPos );
-	float3 viewVec = normalize( input.m_Position.xyz - AtmViewPos );
+	float3 viewVec = normalize( input.m_WorldPos.xyz - AtmViewPos );
 
 	float h = AtmViewHeight;
-	float th = dot( AtmViewPos, viewVec ) / AtmViewHeight;
-	float si = AtmSunToViewAngle;
+	float th = ( ( dot( AtmViewPos, viewVec ) / AtmViewHeight ) + 1 ) / 2;
+	float si = ( dot( viewVec, SunDir ) + 1 ) / 2;
 
-	return float4( 1, 0, 0, 1 );
+	return tex3D( AtmosphereLookupTexture, float3( h, th, si ) );
 }
 
 technique DefaultTechnique
 {
 	pass
 	{
+	//	Texture3DEnable[0]		= true;
 		LightingEnable			= false;
 		DepthMask				= true;
 		ShadeModel				= Smooth;

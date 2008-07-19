@@ -1,6 +1,4 @@
 using System;
-using System.Diagnostics;
-using System.IO;
 using System.Windows.Forms;
 using Poc1.Universe;
 using Poc1.Universe.Classes;
@@ -40,6 +38,7 @@ namespace Poc1.PlanetBuilder
 			{
 				return;
 			}
+
 			Viewer viewer = new Viewer( );
 			viewer.Renderable = new RenderableList( new StarBox( ), BuilderState.Instance.Planet );
 			viewer.PreRender +=

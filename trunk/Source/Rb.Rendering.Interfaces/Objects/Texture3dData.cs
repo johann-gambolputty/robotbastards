@@ -62,7 +62,7 @@ namespace Rb.Rendering.Interfaces.Objects
 			m_Height = height;
 			m_Depth = depth;
 			m_Format = format;
-			m_Data = new byte[ width * height * depth ];
+			m_Data = new byte[ width * height * depth * TextureFormatInfo.GetSizeInBytes( format ) ];
 		}
 
 		#region Private Members

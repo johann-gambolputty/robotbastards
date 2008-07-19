@@ -146,9 +146,6 @@ namespace Rb.Rendering.OpenGl.Windows
 
 				// Force A Reset On The Working Set Size
 				//Kernel.SetProcessWorkingSetSize( Process.GetCurrentProcess( ).Handle, -1, -1 );
-
-				//	Load extensions
-				//OpenGlRenderer.LoadExtensions( );
 			}
 			else
 			{
@@ -156,6 +153,7 @@ namespace Rb.Rendering.OpenGl.Windows
 			}
 
 			WriteInfo( );
+			Graphics.Renderer.DumpInfo( );
 
 		}
 

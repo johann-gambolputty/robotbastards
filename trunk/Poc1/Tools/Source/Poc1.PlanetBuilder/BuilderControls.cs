@@ -8,5 +8,10 @@ namespace Poc1.PlanetBuilder
 		{
 			InitializeComponent( );
 		}
+
+		private void BuilderControls_Load( object sender, System.EventArgs e )
+		{
+			atmosphereTabPage.Select( );
+		}
 	}
 }

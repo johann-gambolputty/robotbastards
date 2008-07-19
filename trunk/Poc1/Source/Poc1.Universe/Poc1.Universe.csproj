@@ -78,9 +78,11 @@
     <Compile Include="Interfaces\IPlanetModel.cs" />
     <Compile Include="Interfaces\ISun.cs" />
     <Compile Include="Interfaces\IUniCamera.cs" />
+    <Compile Include="Interfaces\Rendering\IAtmosphereRenderer.cs" />
     <Compile Include="Interfaces\Rendering\IPlanetAtmosphereModel.cs" />
     <Compile Include="Interfaces\Rendering\IPlanetOcean.cs" />
     <Compile Include="Interfaces\Rendering\IPlanetTerrainModel.cs" />
+    <Compile Include="Interfaces\Rendering\ISphereAtmosphereRenderer.cs" />
     <Compile Include="Interfaces\Rendering\ITerrainPatch.cs" />
     <Compile Include="Interfaces\Rendering\ITerrainPatchGeometry.cs" />
     <Compile Include="Interfaces\Rendering\ITerrainPatchGeometryManager.cs" />

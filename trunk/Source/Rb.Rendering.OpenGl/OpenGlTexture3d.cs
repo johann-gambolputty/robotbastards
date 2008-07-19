@@ -78,7 +78,8 @@ namespace Rb.Rendering.OpenGl
 
 			int target = Gl.GL_TEXTURE_3D;
 			int border = 0;
-			
+
+			Gl.glEnable( target );
 			Gl.glBindTexture( target, m_Handle );
 			fixed ( void* bytes = data.Bytes )
 			{

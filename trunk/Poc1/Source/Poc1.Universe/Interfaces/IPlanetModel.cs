@@ -4,6 +4,7 @@ using Rb.Core.Maths;
 
 namespace Poc1.Universe.Interfaces
 {
+	/*
 	/// <summary>
 	/// Planet terrain model
 	/// </summary>
@@ -168,4 +169,5 @@ namespace Poc1.Universe.Interfaces
 			get; set;
 		}
 	}
+	 */
 }

@@ -113,6 +113,7 @@
 			- H: Add atmosphere tab
 			- H: Ground terrain graphs should have a "sea level" line
 			- M: Allow multiple graphs to be displayed on a single graph control
+			- L: Atmosphere control should be dependent on planet geometry
 			- L: Add "Flat" option to height function
 			- L: Add star sphere
 			- L: Add "clear selection", "invert selection" options to ground terrain type tab
@@ -132,6 +133,7 @@
 			- M: Add profiling viewers
 			- L: Add shadow rendering
 	- Graphics Misc.
+		- H: Can't call any GL commands until display is setup (or null reference exceptions in tao)
 		- H: Shadows
 		- H: Technique selector should take an asset path (transparently reset technique when effect is reloaded)
 		- H: Add inverse frame to camera interface

@@ -98,6 +98,14 @@ namespace Poc1.Universe.Classes
 			set { m_EnableTerrainRendering = value; }
 		}
 
+		/// <summary>
+		/// Gets the planet atmosphere renderer
+		/// </summary>
+		public abstract IAtmosphereRenderer AtmosphereRenderer
+		{
+			get;
+		}
+
 		public IList<IPlanet> Moons
 		{
 			get { return m_Moons; }
