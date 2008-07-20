@@ -1,3 +1,4 @@
+using System;
 using Rb.Core.Maths;
 using Rb.Rendering.Interfaces.Objects;
 
@@ -24,6 +25,15 @@ namespace Poc1.Tools.Atmosphere
 		//	Paper that this model is based on:
 		//		http://www.vis.uni-stuttgart.de/~schafhts/HomePage/pubs/wscg07-schafhitzel.pdf
 		//
+
+		/// <summary>
+		/// Gets/sets the scale height fraction.
+		/// /// </summary>
+		public float ScaleHeight
+		{
+			get { return m_H0Fraction; }
+			set { m_H0Fraction = value; }
+		}
 
 		/// <summary>
 		/// Gets/sets the number of samples to take when calculating optical depth integral
@@ -85,8 +95,9 @@ namespace Poc1.Tools.Atmosphere
 
 		#region Private Members
 
-		private float m_InnerRadius = 0;
-		private float m_OuterRadius = 10000;
+		private float m_InnerRadius = 80000;
+		private float m_OuterRadius = 86000;
+
 
 		/// <summary>
 		/// Builds a 3D lookup texture containing the in-scattering values for a parameterization of
@@ -100,14 +111,17 @@ namespace Poc1.Tools.Atmosphere
 		/// <returns>true if build completed (wasn't cancelled)</returns>
 		private unsafe bool BuildLookupTexture( int viewAngleSamples, int sunAngleSamples, int heightSamples, byte* voxels, AtmosphereBuildProgress progress )
 		{
-			m_H0 = InnerRadius + ( OuterRadius - InnerRadius ) * 0.75f;
+			m_H0 = ( OuterRadius - InnerRadius ) * m_H0Fraction;
 			m_InvH0 = -1.0f / m_H0;
 			float innerRadius = InnerRadius;
 			float outerRadius = OuterRadius;
 			float viewAngle = 0;
 			float viewAngleInc = Constants.Pi / ( viewAngleSamples - 1 );
-			float heightInc = ( outerRadius - innerRadius ) / ( heightSamples - 1 );
+			float heightRange = ( outerRadius - innerRadius );
+			float heightInc = ( heightRange - heightRange * 0.05f ) / ( heightSamples - 1 );	//	Push height range in slightly to allow simplification of sphere intersections
 			float sunAngleInc = ( Constants.Pi ) / ( sunAngleSamples - 1 );
+
+			SetComponentScales( );
 
 			for ( int viewAngleSample = 0; viewAngleSample < viewAngleSamples; ++viewAngleSample, viewAngle += viewAngleInc )
 			{
@@ -140,6 +154,8 @@ namespace Poc1.Tools.Atmosphere
 			}
 			return true;
 		}
+
+		private readonly float[] m_RayleighCoefficients = new float[ 3 ];
 
 		/// <summary>
 		/// Computes the in-scattering term for a given sun angle, viewer orientation, and height. Stores
@@ -179,21 +195,25 @@ namespace Poc1.Tools.Atmosphere
 			//
 			//		x = 5/u + 125/729u^3 + (64/27 - 325/243u^2 + 1250/2187u^4)^1/2
 			//		u = haze factor and wavelength (0.7-0.85)
+			float cosSunAngle = Functions.Cos( sunAngle );
 			Sphere3 atmoSphere = new Sphere3( Point3.Origin, OuterRadius ); // ahaha
 			Point3 viewPos = new Point3( 0, height, 0 );
 			Line3Intersection viewRayIntersection = Intersections3.GetRayIntersection( new Ray3( viewPos, viewDir ), atmoSphere );	//	TODO: AP: Use optimised intersection
 			Vector3 sampleStep = ( viewRayIntersection.IntersectionPosition - viewPos ) / ( AttenuationSamples - 1 );
-			
-			float mul = 1.0f / sampleStep.Length;
+
+			//	The summation of attenuation is a Reimann sum approximation of the integral
+			//	of atmospheric density .
+			float mul = sampleStep.Length;
 
 			float[] components = new float[ 3 ];
 			for ( int componentIndex = 0; componentIndex < 3; ++componentIndex )
 			{
-				Point3 samplePos = viewPos;
+				Point3 samplePos = viewPos + sampleStep;
 
-				float invWv4 = m_InvWv4[ componentIndex ];
+				float rC = m_RayleighCoefficients[ componentIndex ];
+				float attenuationCoefficient = rC * Constants.Pi * 4;
 				float accum = 0;
-				for ( int sampleCount = 0; sampleCount < AttenuationSamples; ++sampleCount )
+				for ( int sampleCount = 1; sampleCount < AttenuationSamples; ++sampleCount )
 				{
 					float sampleHeight = samplePos.DistanceTo( Point3.Origin ) - InnerRadius;
 					float pCoeff = Functions.Exp( sampleHeight * m_InvH0 );
@@ -204,33 +224,48 @@ namespace Poc1.Tools.Atmosphere
 						break;
 					}
 
-					float outScatterToSun = ComputeOpticalDepth( samplePos, ( sunRayIntersection.IntersectionPosition - samplePos ) / AttenuationSamples, invWv4 );
-					float outScatterToViewer = ComputeOpticalDepth( samplePos, ( samplePos - viewPos ) / AttenuationSamples, invWv4 );
+					float outScatterToSun = ComputeOpticalDepth( samplePos, ( sunRayIntersection.IntersectionPosition - samplePos ) / ( AttenuationSamples - 1 ), attenuationCoefficient );
+					float outScatterToViewer = ComputeOpticalDepth( samplePos, ( viewPos - samplePos ) / ( AttenuationSamples - 1 ), attenuationCoefficient );
+					float outScatterCoeff = Functions.Exp( -outScatterToViewer - outScatterToSun );
 
-					accum += pCoeff * Functions.Exp( -outScatterToSun - outScatterToViewer ) * mul;
+					accum += pCoeff * outScatterCoeff * mul;
 
 					samplePos += sampleStep;
 				}
-				float cosSunAngle = Functions.Cos( sunAngle );
-				float phase = 0.75f * ( 1 + cosSunAngle * cosSunAngle );	//	TODO: AP: Rayleigh phase function - move to HG Mie
-				float scatter = ( KScale * phase ) * invWv4;
+			//	float phase = RayleighPhaseFunction( cosSunAngle );
+				float phase = HeyneyGreensteinPhaseFunction( cosSunAngle, m_G );
+				float scatter = phase * rC;
 				float res = m_SunColour[ componentIndex ] * scatter * accum;
 				components[ componentIndex ] = res;
 			}
 
-			voxel[ 0 ] = ( byte )Utils.Clamp( components[ 0 ] * 255.0f, 0, 255 );
+			voxel[ 2 ] = ( byte )Utils.Clamp( components[ 0 ] * 255.0f, 0, 255 );
 			voxel[ 1 ] = ( byte )Utils.Clamp( components[ 1 ] * 255.0f, 0, 255 );
-			voxel[ 2 ] = ( byte )Utils.Clamp( components[ 2 ] * 255.0f, 0, 255 );
+			voxel[ 0 ] = ( byte )Utils.Clamp( components[ 2 ] * 255.0f, 0, 255 );
 		}
 
+		private static float RayleighPhaseFunction( float cosSunAngle )
+		{
+			return 0.75f * ( 1 + cosSunAngle * cosSunAngle );
+		}
+
+		private static float HeyneyGreensteinPhaseFunction( float cosSunAngle, float g )
+		{
+			float g2 = g * g;
+			float t0 = ( 3 * ( 1 - g2 ) ) / 2 * ( 2 + g2 );
+			float tden0 = Functions.Pow( 1 + g2 - 2 * g * cosSunAngle, 3.0f / 2.0f );
+			float t1 = ( 1 + cosSunAngle * cosSunAngle ) / tden0;
+			float tRes = t0 * t1;
+			return tRes;
+		}
+		
 		/// <summary>
 		/// Calculates the average atmospheric density along a ray
 		/// </summary>
-		private float ComputeOpticalDepth( Point3 pt, Vector3 step, float invWv4 )
+		private float ComputeOpticalDepth( Point3 pt, Vector3 step, float attenuationCoefficient )
 		{
-			float phase = ( KScale * 4 * Constants.Pi ) * invWv4;
 			float accum = 0;
-			float mul = 1.0f / step.Length;
+			float mul = step.Length;
 			for ( int sampleCount = 0; sampleCount < AttenuationSamples; ++sampleCount )
 			{
 				float ptHeight = pt.DistanceTo( Point3.Origin ) - InnerRadius;
@@ -239,48 +274,40 @@ namespace Poc1.Tools.Atmosphere
 				pt += step;
 			}
 
-			return phase * accum;
+			return attenuationCoefficient * accum;
 		}
 
-		private readonly static float[] m_Wavelengths = new float[ 3 ] { 0.650f, 0.610f, 0.475f };
-		private readonly static float[] m_InvWv4 = new float[ 3 ];
+		private readonly static double[] m_Wavelengths = new double[ 3 ] { 650e-9, 610e-9, 475e-9 };
 
-		private const float BMul = 3 / ( 16 * Constants.Pi );
+		private const double AirIndexOfRefraction = 1.0003;
+		private static readonly double AirNumberDensity = 0.2504e21;
 
+		private float m_G = -0.8f;
+		private float m_H0Fraction = 0.25f;
 		private float m_H0;
 		private float m_InvH0;
 		private float m_KScale = 0.67f;
 		private int m_AttenuationSamples = 10;
 		private float[] m_SunColour = new float[ 3 ]{ 1, 1, 1 };
 
-		/// <summary>
-		/// Initializes static values
-		/// </summary>
-		static AtmosphereBuilder( )
+		private void SetComponentScales( )
 		{
-			for ( int componentIndex = 0; componentIndex < 3; ++componentIndex )
+			for ( int component = 0; component < 3; ++component )
 			{
-				float wv = m_Wavelengths[ componentIndex ];
-				m_InvWv4[ componentIndex ] = 1.0f / ( wv * wv * wv * wv );
-			}
-		}
+			    double iR2 = ( AirIndexOfRefraction * AirIndexOfRefraction ) - 1;
+				double kNum = 2 * Math.PI * Math.PI * iR2 * iR2;
+				double k = kNum / ( 3 * AirNumberDensity );
 
-		/// <summary>
-		/// Builds a lookup table that stores the coefficient in the phase function that is based on the viewer's angle to the sun
-		/// </summary>
-		/// <remarks>
-		/// Stores the result of K.Fr(om)
-		/// </remarks>
-		private void BuildAttenuationCoefficientLookupTable( float[] table )
-		{
-			float sunAngleInc = Constants.TwoPi / ( table.Length - 1 );
-			float sunAngle = 0;
-			for ( int sunAngleSample = 0; sunAngleSample < table.Length; ++sunAngleSample, sunAngle += sunAngleInc )
-			{
-				float cosSunAngle = Functions.Cos( sunAngle );
-				float bCoeff = KScale * BMul * ( 2 + 0.5f * ( cosSunAngle * cosSunAngle ) );
-				table[ sunAngleSample ] = bCoeff;
+			    double wv = m_Wavelengths[ component ];
+			    double wv4 = wv * wv * wv * wv;
+
+				m_RayleighCoefficients[ component ] = ( float )( k / wv4 );
 			}
+
+			//	Values taken from http://patarnott.com/atms749/pdf/RayleighScatteringForAtmos.pdf
+		//	m_RayleighCoefficients[ 0 ] = 0.03539f;
+		//	m_RayleighCoefficients[ 1 ] = 0.06613f;
+		//	m_RayleighCoefficients[ 2 ] = 0.23522f;
 		}
 
 		#endregion

@@ -43,7 +43,7 @@ float4 FragmentShader( FragmentShaderInput input ) : COLOR
 	float3 viewVec = normalize( input.m_WorldPos.xyz - AtmViewPos );
 
 	float h = AtmViewHeight;
-	float th = ( ( dot( AtmViewPos, viewVec ) / AtmViewHeight ) + 1 ) / 2;
+	float th = ( ( dot( AtmViewPos, viewVec ) / length( AtmViewPos ) ) + 1 ) / 2;
 	float si = ( dot( viewVec, SunDir ) + 1 ) / 2;
 
 	return tex3D( AtmosphereLookupTexture, float3( h, th, si ) );
