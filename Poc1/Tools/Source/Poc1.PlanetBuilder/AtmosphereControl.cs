@@ -3,6 +3,9 @@ using System.Windows.Forms;
 using Poc1.PlanetBuilder.Properties;
 using Poc1.Tools.Atmosphere;
 using System.ComponentModel;
+using Poc1.Universe;
+using Poc1.Universe.Classes;
+using Poc1.Universe.Classes.Rendering;
 using Poc1.Universe.Interfaces.Rendering;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
@@ -86,6 +89,10 @@ namespace Poc1.PlanetBuilder
 						}
 					};
 
+				SpherePlanet spherePlanet = ( SpherePlanet )BuilderState.Instance.Planet;
+				SphereAtmosphereModel sphereAtmosphere = ( SphereAtmosphereModel )spherePlanet.Atmosphere;
+				m_Atmosphere.InnerRadius = ( float )UniUnits.Metres.FromUniUnits( spherePlanet.Radius );
+				m_Atmosphere.OuterRadius = ( float )UniUnits.Metres.FromUniUnits( spherePlanet.Radius + sphereAtmosphere.Radius );
 				m_Atmosphere.AttenuationSamples = m_AttenuationSamples;
 				return m_Atmosphere.BuildLookupTexture( m_ViewAngleSamples, m_SunAngleSamples, m_HeightSamples, progress );
 			}

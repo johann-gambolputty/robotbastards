@@ -43,9 +43,13 @@ namespace Poc1.PlanetBuilder
 			this.label7 = new System.Windows.Forms.Label( );
 			this.label6 = new System.Windows.Forms.Label( );
 			this.label5 = new System.Windows.Forms.Label( );
+			this.kScaleUpDown = new System.Windows.Forms.NumericUpDown( );
+			this.h0NumericUpDown = new System.Windows.Forms.NumericUpDown( );
 			this.groupBox1.SuspendLayout( );
 			( ( System.ComponentModel.ISupportInitialize )( this.attenuationUpDown ) ).BeginInit( );
 			this.groupBox2.SuspendLayout( );
+			( ( System.ComponentModel.ISupportInitialize )( this.kScaleUpDown ) ).BeginInit( );
+			( ( System.ComponentModel.ISupportInitialize )( this.h0NumericUpDown ) ).BeginInit( );
 			this.SuspendLayout( );
 			// 
 			// groupBox1
@@ -173,6 +177,8 @@ namespace Poc1.PlanetBuilder
 			// 
 			// groupBox2
 			// 
+			this.groupBox2.Controls.Add( this.h0NumericUpDown );
+			this.groupBox2.Controls.Add( this.kScaleUpDown );
 			this.groupBox2.Controls.Add( this.label7 );
 			this.groupBox2.Controls.Add( this.label6 );
 			this.groupBox2.Controls.Add( this.label5 );
@@ -187,7 +193,7 @@ namespace Poc1.PlanetBuilder
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point( 37, 88 );
+			this.label7.Location = new System.Drawing.Point( 37, 94 );
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size( 59, 13 );
 			this.label7.TabIndex = 2;
@@ -196,7 +202,7 @@ namespace Poc1.PlanetBuilder
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point( 75, 66 );
+			this.label6.Location = new System.Drawing.Point( 75, 68 );
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size( 21, 13 );
 			this.label6.TabIndex = 1;
@@ -211,6 +217,52 @@ namespace Poc1.PlanetBuilder
 			this.label5.TabIndex = 0;
 			this.label5.Text = "K Scale";
 			// 
+			// kScaleUpDown
+			// 
+			this.kScaleUpDown.DecimalPlaces = 2;
+			this.kScaleUpDown.Increment = new decimal( new int[] {
+            1,
+            0,
+            0,
+            65536} );
+			this.kScaleUpDown.Location = new System.Drawing.Point( 99, 40 );
+			this.kScaleUpDown.Maximum = new decimal( new int[] {
+            5,
+            0,
+            0,
+            0} );
+			this.kScaleUpDown.Minimum = new decimal( new int[] {
+            1,
+            0,
+            0,
+            65536} );
+			this.kScaleUpDown.Name = "kScaleUpDown";
+			this.kScaleUpDown.Size = new System.Drawing.Size( 110, 20 );
+			this.kScaleUpDown.TabIndex = 3;
+			this.kScaleUpDown.Value = new decimal( new int[] {
+            1,
+            0,
+            0,
+            65536} );
+			// 
+			// h0NumericUpDown
+			// 
+			this.h0NumericUpDown.DecimalPlaces = 3;
+			this.h0NumericUpDown.Increment = new decimal( new int[] {
+            1,
+            0,
+            0,
+            131072} );
+			this.h0NumericUpDown.Location = new System.Drawing.Point( 99, 66 );
+			this.h0NumericUpDown.Maximum = new decimal( new int[] {
+            10,
+            0,
+            0,
+            0} );
+			this.h0NumericUpDown.Name = "h0NumericUpDown";
+			this.h0NumericUpDown.Size = new System.Drawing.Size( 110, 20 );
+			this.h0NumericUpDown.TabIndex = 4;
+			// 
 			// AtmosphereControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
@@ -224,6 +276,8 @@ namespace Poc1.PlanetBuilder
 			( ( System.ComponentModel.ISupportInitialize )( this.attenuationUpDown ) ).EndInit( );
 			this.groupBox2.ResumeLayout( false );
 			this.groupBox2.PerformLayout( );
+			( ( System.ComponentModel.ISupportInitialize )( this.kScaleUpDown ) ).EndInit( );
+			( ( System.ComponentModel.ISupportInitialize )( this.h0NumericUpDown ) ).EndInit( );
 			this.ResumeLayout( false );
 
 		}
@@ -245,5 +299,7 @@ namespace Poc1.PlanetBuilder
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.NumericUpDown h0NumericUpDown;
+		private System.Windows.Forms.NumericUpDown kScaleUpDown;
 	}
 }
