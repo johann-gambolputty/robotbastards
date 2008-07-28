@@ -45,6 +45,8 @@ namespace Poc1.PlanetBuilder
 				delegate
 				{
 					DebugText.Write( "Camera(m): {0}", ( ( IUniCamera )viewer.Camera ).Position.ToMetresString( ) );
+					DebugText.Write( "Camera Z: {0}", ( ( IUniCamera )viewer.Camera ).Frame.ZAxis );
+					DebugText.Write( "Camera 'Z: {0}", ( ( IUniCamera )viewer.Camera ).InverseFrame.ZAxis );
 				};
 
 			testDisplay.AddViewer( viewer );

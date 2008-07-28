@@ -36,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AtmosphereBuilder.cs" />
+    <Compile Include="AtmosphereBuildParameters.cs" />
     <Compile Include="AtmosphereBuildProgress.cs" />
     <Compile Include="AtmosphereBuildModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

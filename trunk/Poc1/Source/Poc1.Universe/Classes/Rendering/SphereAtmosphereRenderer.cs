@@ -52,17 +52,20 @@ namespace Poc1.Universe.Classes.Rendering
 		public void Render( IRenderContext context )
 		{
 			IUniCamera camera = UniCamera.Current;
-			double height = UniCamera.Current.Position.DistanceTo( m_Planet.Transform.Position ) - m_Planet.Radius;
-			double clampedHeight = Utils.Clamp( height, 0, m_AtmosphereRadius );
-			float normHeight = ( float )( clampedHeight / m_AtmosphereRadius );
-
 			Point3 localPos = UniUnits.RenderUnits.MakeRelativePoint( m_Planet.Transform.Position, camera.Position );
+			float planetRadius = ( float )UniUnits.RenderUnits.FromUniUnits( m_Planet.Radius );
+			float atmosphereRadius = ( float )UniUnits.RenderUnits.FromUniUnits( m_AtmosphereRadius );
+			float height = localPos.DistanceTo( Point3.Origin ) - planetRadius;
+			float clampedHeight = Utils.Clamp( height, 0, atmosphereRadius );
+			float normHeight = clampedHeight / atmosphereRadius;
+		//	normHeight *= 0.000100f;
+			Point3 atmPos = localPos * ;
+
 			Vector3 viewDir = UniCamera.Current.Frame.ZAxis;
 
-			m_Techniques.Effect.Parameters[ "AtmViewPos" ].Set( localPos.X, localPos.Y, localPos.Z );
+			m_Techniques.Effect.Parameters[ "AtmViewPos" ].Set( atmPos.X, atmPos.Y, atmPos.Z );
 			m_Techniques.Effect.Parameters[ "AtmViewDir" ].Set( viewDir.X, viewDir.Y, viewDir.Z );
 			m_Techniques.Effect.Parameters[ "AtmViewHeight" ].Set( normHeight );
-
 
 			if ( m_LookupTexture != null )
 			{
