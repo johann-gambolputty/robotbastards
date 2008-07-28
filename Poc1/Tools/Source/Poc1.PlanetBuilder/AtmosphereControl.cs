@@ -19,39 +19,59 @@ namespace Poc1.PlanetBuilder
 			InitializeComponent( );
 
 			//	Populate texture resolution combo boxes
-			for ( int i = 8; i <= 1024; i *= 2 )
+			for ( int i = 4; i <= 1024; i *= 2 )
 			{
 				heightSamplesComboBox.Items.Add( i );
 				viewAngleSamplesComboBox.Items.Add( i );
 				sunAngleSamplesComboBox.Items.Add( i );
 			}
-			heightSamplesComboBox.SelectedItem = 8;
-			viewAngleSamplesComboBox.SelectedItem = 8;
-			sunAngleSamplesComboBox.SelectedItem = 8;
+			heightSamplesComboBox.SelectedItem = m_AtmosphereBuildParameters.HeightSamples;
+			viewAngleSamplesComboBox.SelectedItem = m_AtmosphereBuildParameters.ViewAngleSamples;
+			sunAngleSamplesComboBox.SelectedItem = m_AtmosphereBuildParameters.SunAngleSamples;
 
-			Atmosphere = new AtmosphereBuilder( );
+			m_AtmosphereBuilder = new AtmosphereBuilder( );
 
-			m_Builder = new BackgroundWorker( );
-			m_Builder.WorkerReportsProgress = true;
-			m_Builder.WorkerSupportsCancellation = true;
-			m_Builder.DoWork += BuildWorkItem;
-			m_Builder.RunWorkerCompleted += WorkItemComplete;
-			m_Builder.ProgressChanged += BuildProgressChanged;
+			mH0UpDown.Value = ( decimal )m_AtmosphereModel.MieDensityScaleHeightFraction;
+			rH0UpDown.Value = ( decimal )m_AtmosphereModel.RayleighDensityScaleHeightFraction;
+			//	TODO: AP: Remove bodges
+			inscatterDistanceFudgeUpDown.Value = ( decimal )m_AtmosphereModel.InscatterDistanceFudgeFactor;
+			outscatterDistanceFudgeUpDown.Value = ( decimal )m_AtmosphereModel.OutscatterDistanceFudgeFactor;
+			outscatterFudgeUpDown.Value = ( decimal )m_AtmosphereModel.OutscatterFudgeFactor;
+			mieFudgeUpDown.Value = ( decimal )m_AtmosphereModel.MieFudgeFactor;
+			rayleighFudgeUpDown.Value = ( decimal )m_AtmosphereModel.RayleighFudgeFactor;
+
+
+			m_Worker = new BackgroundWorker( );
+			m_Worker.WorkerReportsProgress = true;
+			m_Worker.WorkerSupportsCancellation = true;
+			m_Worker.DoWork += BuildWorkItem;
+			m_Worker.RunWorkerCompleted += WorkItemComplete;
+			m_Worker.ProgressChanged += BuildProgressChanged;
 		}
 
 		/// <summary>
 		/// Gets the atmosphere builder
 		/// </summary>
+		[Browsable( false )]
 		public AtmosphereBuilder Atmosphere
 		{
-			get { return m_Atmosphere; }
-			set { m_Atmosphere = value; }
+			get { return m_AtmosphereBuilder; }
+			set
+			{
+				if ( value == null )
+				{
+					throw new ArgumentNullException( "value" );
+				}
+				m_AtmosphereBuilder = value;
+			}
 		}
 
 		#region Private Members
 
-		private AtmosphereBuilder m_Atmosphere;
-		private readonly BackgroundWorker m_Builder;
+		private AtmosphereBuilder m_AtmosphereBuilder;
+		private readonly AtmosphereBuildModel m_AtmosphereModel = new AtmosphereBuildModel( );
+		private readonly AtmosphereBuildParameters m_AtmosphereBuildParameters = new AtmosphereBuildParameters( );
+		private readonly BackgroundWorker m_Worker;
 
 		#region WorkItem class
 
@@ -63,14 +83,11 @@ namespace Poc1.PlanetBuilder
 			/// <summary>
 			/// Setup constructor
 			/// </summary>
-			public WorkItem( BackgroundWorker worker, AtmosphereBuilder atmosphere, int attenuationSamples, int heightSamples, int viewAngleSamples, int sunAngleSamples )
+			public WorkItem( BackgroundWorker worker, AtmosphereBuildModel model, AtmosphereBuildParameters parameters )
 			{
 				m_Worker = worker;
-				m_Atmosphere = atmosphere;
-				m_AttenuationSamples = attenuationSamples;
-				m_HeightSamples = heightSamples;
-				m_ViewAngleSamples = viewAngleSamples;
-				m_SunAngleSamples = sunAngleSamples;
+				m_AtmosphereModel = model;
+				m_AtmosphereBuildParameters = parameters;
 			}
 
 			/// <summary>
@@ -91,19 +108,17 @@ namespace Poc1.PlanetBuilder
 
 				SpherePlanet spherePlanet = ( SpherePlanet )BuilderState.Instance.Planet;
 				SphereAtmosphereModel sphereAtmosphere = ( SphereAtmosphereModel )spherePlanet.Atmosphere;
-				m_Atmosphere.InnerRadius = ( float )UniUnits.Metres.FromUniUnits( spherePlanet.Radius );
-				m_Atmosphere.OuterRadius = ( float )UniUnits.Metres.FromUniUnits( spherePlanet.Radius + sphereAtmosphere.Radius );
-				m_Atmosphere.AttenuationSamples = m_AttenuationSamples;
-				return m_Atmosphere.BuildLookupTexture( m_ViewAngleSamples, m_SunAngleSamples, m_HeightSamples, progress );
+				m_AtmosphereModel.InnerRadius = ( float )UniUnits.Metres.FromUniUnits( spherePlanet.Radius );
+				m_AtmosphereModel.OuterRadius = ( float )UniUnits.Metres.FromUniUnits( spherePlanet.Radius + sphereAtmosphere.Radius );
+				return m_Atmosphere.BuildLookupTexture( m_AtmosphereModel, m_AtmosphereBuildParameters, progress );
 			}
+
 			#region Private Members
 
 			private readonly BackgroundWorker m_Worker;
-			private readonly AtmosphereBuilder m_Atmosphere;
-			private readonly int m_AttenuationSamples;
-			private readonly int m_HeightSamples;
-			private readonly int m_ViewAngleSamples;
-			private readonly int m_SunAngleSamples;
+			private readonly AtmosphereBuilder m_Atmosphere = new AtmosphereBuilder( );
+			private readonly AtmosphereBuildModel m_AtmosphereModel;
+			private readonly AtmosphereBuildParameters m_AtmosphereBuildParameters;
 
 			#endregion
 		}
@@ -143,23 +158,32 @@ namespace Poc1.PlanetBuilder
 
 		private void buildButton_Click( object sender, EventArgs e )
 		{
-			if ( m_Builder.IsBusy )
+			if ( m_Worker.IsBusy )
 			{
-				if ( !m_Builder.CancellationPending )
+				if ( !m_Worker.CancellationPending )
 				{
-					m_Builder.CancelAsync( );
+					m_Worker.CancelAsync( );
 				}
 				return;
 			}
-			int attenuationSamples = ( int )attenuationUpDown.Value;
-			int heightSamples = ( int )heightSamplesComboBox.SelectedItem;
-			int viewAngleSamples = ( int )viewAngleSamplesComboBox.SelectedItem;
-			int sunAngleSamples = ( int )sunAngleSamplesComboBox.SelectedItem;
+
+			//	TODO: AP: Remove bodge
+			m_AtmosphereModel.OutscatterFudgeFactor = ( float )outscatterFudgeUpDown.Value;
+			m_AtmosphereModel.MieFudgeFactor = ( float )mieFudgeUpDown.Value;
+			m_AtmosphereModel.RayleighFudgeFactor = ( float )rayleighFudgeUpDown.Value;
+			m_AtmosphereModel.InscatterDistanceFudgeFactor = ( float )inscatterDistanceFudgeUpDown.Value;
+			m_AtmosphereModel.OutscatterDistanceFudgeFactor = ( float )outscatterDistanceFudgeUpDown.Value;
+			m_AtmosphereModel.MieDensityScaleHeightFraction = ( float )mH0UpDown.Value;
+			m_AtmosphereModel.RayleighDensityScaleHeightFraction = ( float )rH0UpDown.Value;
+			m_AtmosphereBuildParameters.AttenuationSamples = ( int )attenuationUpDown.Value;
+			m_AtmosphereBuildParameters.HeightSamples = ( int )heightSamplesComboBox.SelectedItem;
+			m_AtmosphereBuildParameters.ViewAngleSamples = ( int )viewAngleSamplesComboBox.SelectedItem;
+			m_AtmosphereBuildParameters.SunAngleSamples = ( int )sunAngleSamplesComboBox.SelectedItem;
 
 			buildButton.Text = Resources.Cancel;
 
-			WorkItem item = new WorkItem( m_Builder, m_Atmosphere, attenuationSamples, heightSamples, viewAngleSamples, sunAngleSamples );
-			m_Builder.RunWorkerAsync( item );
+			WorkItem item = new WorkItem( m_Worker, m_AtmosphereModel, m_AtmosphereBuildParameters );
+			m_Worker.RunWorkerAsync( item );
 		}
 
 		#endregion

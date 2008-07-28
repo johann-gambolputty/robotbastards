@@ -109,10 +109,6 @@ namespace Poc1.PlanetBuilder
 			// 
 			// atmosphereControl
 			// 
-			atmosphere1.AttenuationSamples = 10;
-			atmosphere1.InnerRadius = 0F;
-			atmosphere1.KScale = 0.67F;
-			atmosphere1.OuterRadius = 10000F;
 			this.atmosphereControl.Atmosphere = atmosphere1;
 			this.atmosphereControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.atmosphereControl.Location = new System.Drawing.Point( 3, 3 );

@@ -40,16 +40,33 @@ namespace Poc1.PlanetBuilder
 			this.buildProgressBar = new System.Windows.Forms.ProgressBar( );
 			this.buildButton = new System.Windows.Forms.Button( );
 			this.groupBox2 = new System.Windows.Forms.GroupBox( );
+			this.outscatterFudgeUpDown = new System.Windows.Forms.NumericUpDown( );
+			this.mieFudgeUpDown = new System.Windows.Forms.NumericUpDown( );
+			this.label12 = new System.Windows.Forms.Label( );
+			this.rayleighFudgeUpDown = new System.Windows.Forms.NumericUpDown( );
+			this.label10 = new System.Windows.Forms.Label( );
+			this.label11 = new System.Windows.Forms.Label( );
+			this.outscatterDistanceFudgeUpDown = new System.Windows.Forms.NumericUpDown( );
+			this.inscatterDistanceFudgeUpDown = new System.Windows.Forms.NumericUpDown( );
+			this.label9 = new System.Windows.Forms.Label( );
 			this.label7 = new System.Windows.Forms.Label( );
+			this.rH0UpDown = new System.Windows.Forms.NumericUpDown( );
+			this.label8 = new System.Windows.Forms.Label( );
+			this.mH0UpDown = new System.Windows.Forms.NumericUpDown( );
+			this.kScaleUpDown = new System.Windows.Forms.NumericUpDown( );
 			this.label6 = new System.Windows.Forms.Label( );
 			this.label5 = new System.Windows.Forms.Label( );
-			this.kScaleUpDown = new System.Windows.Forms.NumericUpDown( );
-			this.h0NumericUpDown = new System.Windows.Forms.NumericUpDown( );
 			this.groupBox1.SuspendLayout( );
 			( ( System.ComponentModel.ISupportInitialize )( this.attenuationUpDown ) ).BeginInit( );
 			this.groupBox2.SuspendLayout( );
+			( ( System.ComponentModel.ISupportInitialize )( this.outscatterFudgeUpDown ) ).BeginInit( );
+			( ( System.ComponentModel.ISupportInitialize )( this.mieFudgeUpDown ) ).BeginInit( );
+			( ( System.ComponentModel.ISupportInitialize )( this.rayleighFudgeUpDown ) ).BeginInit( );
+			( ( System.ComponentModel.ISupportInitialize )( this.outscatterDistanceFudgeUpDown ) ).BeginInit( );
+			( ( System.ComponentModel.ISupportInitialize )( this.inscatterDistanceFudgeUpDown ) ).BeginInit( );
+			( ( System.ComponentModel.ISupportInitialize )( this.rH0UpDown ) ).BeginInit( );
+			( ( System.ComponentModel.ISupportInitialize )( this.mH0UpDown ) ).BeginInit( );
 			( ( System.ComponentModel.ISupportInitialize )( this.kScaleUpDown ) ).BeginInit( );
-			( ( System.ComponentModel.ISupportInitialize )( this.h0NumericUpDown ) ).BeginInit( );
 			this.SuspendLayout( );
 			// 
 			// groupBox1
@@ -177,45 +194,244 @@ namespace Poc1.PlanetBuilder
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Controls.Add( this.h0NumericUpDown );
-			this.groupBox2.Controls.Add( this.kScaleUpDown );
+			this.groupBox2.Controls.Add( this.outscatterFudgeUpDown );
+			this.groupBox2.Controls.Add( this.mieFudgeUpDown );
+			this.groupBox2.Controls.Add( this.label12 );
+			this.groupBox2.Controls.Add( this.rayleighFudgeUpDown );
+			this.groupBox2.Controls.Add( this.label10 );
+			this.groupBox2.Controls.Add( this.label11 );
+			this.groupBox2.Controls.Add( this.outscatterDistanceFudgeUpDown );
+			this.groupBox2.Controls.Add( this.inscatterDistanceFudgeUpDown );
+			this.groupBox2.Controls.Add( this.label9 );
 			this.groupBox2.Controls.Add( this.label7 );
+			this.groupBox2.Controls.Add( this.rH0UpDown );
+			this.groupBox2.Controls.Add( this.label8 );
+			this.groupBox2.Controls.Add( this.mH0UpDown );
+			this.groupBox2.Controls.Add( this.kScaleUpDown );
 			this.groupBox2.Controls.Add( this.label6 );
 			this.groupBox2.Controls.Add( this.label5 );
 			this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.groupBox2.Location = new System.Drawing.Point( 0, 133 );
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size( 215, 213 );
+			this.groupBox2.Size = new System.Drawing.Size( 215, 399 );
 			this.groupBox2.TabIndex = 1;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Atmosphere Parameters";
 			// 
+			// outscatterFudgeUpDown
+			// 
+			this.outscatterFudgeUpDown.DecimalPlaces = 3;
+			this.outscatterFudgeUpDown.Increment = new decimal( new int[] {
+            20,
+            0,
+            0,
+            0} );
+			this.outscatterFudgeUpDown.Location = new System.Drawing.Point( 99, 213 );
+			this.outscatterFudgeUpDown.Maximum = new decimal( new int[] {
+            10000,
+            0,
+            0,
+            0} );
+			this.outscatterFudgeUpDown.Minimum = new decimal( new int[] {
+            10000,
+            0,
+            0,
+            -2147483648} );
+			this.outscatterFudgeUpDown.Name = "outscatterFudgeUpDown";
+			this.outscatterFudgeUpDown.Size = new System.Drawing.Size( 110, 20 );
+			this.outscatterFudgeUpDown.TabIndex = 16;
+			// 
+			// mieFudgeUpDown
+			// 
+			this.mieFudgeUpDown.DecimalPlaces = 3;
+			this.mieFudgeUpDown.Increment = new decimal( new int[] {
+            20,
+            0,
+            0,
+            0} );
+			this.mieFudgeUpDown.Location = new System.Drawing.Point( 99, 281 );
+			this.mieFudgeUpDown.Maximum = new decimal( new int[] {
+            10000,
+            0,
+            0,
+            0} );
+			this.mieFudgeUpDown.Minimum = new decimal( new int[] {
+            10000,
+            0,
+            0,
+            -2147483648} );
+			this.mieFudgeUpDown.Name = "mieFudgeUpDown";
+			this.mieFudgeUpDown.Size = new System.Drawing.Size( 110, 20 );
+			this.mieFudgeUpDown.TabIndex = 14;
+			// 
+			// label12
+			// 
+			this.label12.Location = new System.Drawing.Point( 6, 211 );
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size( 87, 30 );
+			this.label12.TabIndex = 15;
+			this.label12.Text = "Outscatter Fudge Factor";
+			this.label12.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// rayleighFudgeUpDown
+			// 
+			this.rayleighFudgeUpDown.DecimalPlaces = 3;
+			this.rayleighFudgeUpDown.Increment = new decimal( new int[] {
+            20,
+            0,
+            0,
+            0} );
+			this.rayleighFudgeUpDown.Location = new System.Drawing.Point( 99, 248 );
+			this.rayleighFudgeUpDown.Maximum = new decimal( new int[] {
+            10000,
+            0,
+            0,
+            0} );
+			this.rayleighFudgeUpDown.Minimum = new decimal( new int[] {
+            10000,
+            0,
+            0,
+            -2147483648} );
+			this.rayleighFudgeUpDown.Name = "rayleighFudgeUpDown";
+			this.rayleighFudgeUpDown.Size = new System.Drawing.Size( 110, 20 );
+			this.rayleighFudgeUpDown.TabIndex = 13;
+			// 
+			// label10
+			// 
+			this.label10.Location = new System.Drawing.Point( 6, 244 );
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size( 87, 30 );
+			this.label10.TabIndex = 12;
+			this.label10.Text = "Rayleigh Fudge Factor";
+			this.label10.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// label11
+			// 
+			this.label11.Location = new System.Drawing.Point( 6, 279 );
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size( 87, 30 );
+			this.label11.TabIndex = 11;
+			this.label11.Text = "Mie Fudge Factor";
+			this.label11.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// outscatterDistanceFudgeUpDown
+			// 
+			this.outscatterDistanceFudgeUpDown.DecimalPlaces = 3;
+			this.outscatterDistanceFudgeUpDown.Increment = new decimal( new int[] {
+            20,
+            0,
+            0,
+            0} );
+			this.outscatterDistanceFudgeUpDown.Location = new System.Drawing.Point( 99, 186 );
+			this.outscatterDistanceFudgeUpDown.Maximum = new decimal( new int[] {
+            10000,
+            0,
+            0,
+            0} );
+			this.outscatterDistanceFudgeUpDown.Minimum = new decimal( new int[] {
+            10000,
+            0,
+            0,
+            -2147483648} );
+			this.outscatterDistanceFudgeUpDown.Name = "outscatterDistanceFudgeUpDown";
+			this.outscatterDistanceFudgeUpDown.Size = new System.Drawing.Size( 110, 20 );
+			this.outscatterDistanceFudgeUpDown.TabIndex = 10;
+			// 
+			// inscatterDistanceFudgeUpDown
+			// 
+			this.inscatterDistanceFudgeUpDown.DecimalPlaces = 3;
+			this.inscatterDistanceFudgeUpDown.Increment = new decimal( new int[] {
+            20,
+            0,
+            0,
+            0} );
+			this.inscatterDistanceFudgeUpDown.Location = new System.Drawing.Point( 99, 153 );
+			this.inscatterDistanceFudgeUpDown.Maximum = new decimal( new int[] {
+            10000,
+            0,
+            0,
+            0} );
+			this.inscatterDistanceFudgeUpDown.Minimum = new decimal( new int[] {
+            10000,
+            0,
+            0,
+            -2147483648} );
+			this.inscatterDistanceFudgeUpDown.Name = "inscatterDistanceFudgeUpDown";
+			this.inscatterDistanceFudgeUpDown.Size = new System.Drawing.Size( 110, 20 );
+			this.inscatterDistanceFudgeUpDown.TabIndex = 9;
+			// 
+			// label9
+			// 
+			this.label9.Location = new System.Drawing.Point( 6, 181 );
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size( 87, 30 );
+			this.label9.TabIndex = 8;
+			this.label9.Text = "Outscatter Distance Fudge Factor";
+			this.label9.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
 			// label7
 			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point( 37, 94 );
+			this.label7.Location = new System.Drawing.Point( 6, 147 );
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size( 59, 13 );
-			this.label7.TabIndex = 2;
-			this.label7.Text = "Sun Colour";
+			this.label7.Size = new System.Drawing.Size( 87, 30 );
+			this.label7.TabIndex = 7;
+			this.label7.Text = "Inscatter Distance Fudge Factor";
+			this.label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
-			// label6
+			// rH0UpDown
 			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point( 75, 68 );
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size( 21, 13 );
-			this.label6.TabIndex = 1;
-			this.label6.Text = "H0";
+			this.rH0UpDown.DecimalPlaces = 3;
+			this.rH0UpDown.Increment = new decimal( new int[] {
+            1,
+            0,
+            0,
+            131072} );
+			this.rH0UpDown.Location = new System.Drawing.Point( 99, 115 );
+			this.rH0UpDown.Maximum = new decimal( new int[] {
+            10,
+            0,
+            0,
+            0} );
+			this.rH0UpDown.Minimum = new decimal( new int[] {
+            10,
+            0,
+            0,
+            -2147483648} );
+			this.rH0UpDown.Name = "rH0UpDown";
+			this.rH0UpDown.Size = new System.Drawing.Size( 110, 20 );
+			this.rH0UpDown.TabIndex = 6;
 			// 
-			// label5
+			// label8
 			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point( 49, 42 );
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size( 44, 13 );
-			this.label5.TabIndex = 0;
-			this.label5.Text = "K Scale";
+			this.label8.Location = new System.Drawing.Point( 6, 108 );
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size( 87, 30 );
+			this.label8.TabIndex = 5;
+			this.label8.Text = "Rayleigh Density Height";
+			this.label8.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// mH0UpDown
+			// 
+			this.mH0UpDown.DecimalPlaces = 3;
+			this.mH0UpDown.Increment = new decimal( new int[] {
+            1,
+            0,
+            0,
+            131072} );
+			this.mH0UpDown.Location = new System.Drawing.Point( 99, 78 );
+			this.mH0UpDown.Maximum = new decimal( new int[] {
+            10,
+            0,
+            0,
+            0} );
+			this.mH0UpDown.Minimum = new decimal( new int[] {
+            10,
+            0,
+            0,
+            -2147483648} );
+			this.mH0UpDown.Name = "mH0UpDown";
+			this.mH0UpDown.Size = new System.Drawing.Size( 110, 20 );
+			this.mH0UpDown.TabIndex = 4;
 			// 
 			// kScaleUpDown
 			// 
@@ -245,23 +461,23 @@ namespace Poc1.PlanetBuilder
             0,
             65536} );
 			// 
-			// h0NumericUpDown
+			// label6
 			// 
-			this.h0NumericUpDown.DecimalPlaces = 3;
-			this.h0NumericUpDown.Increment = new decimal( new int[] {
-            1,
-            0,
-            0,
-            131072} );
-			this.h0NumericUpDown.Location = new System.Drawing.Point( 99, 66 );
-			this.h0NumericUpDown.Maximum = new decimal( new int[] {
-            10,
-            0,
-            0,
-            0} );
-			this.h0NumericUpDown.Name = "h0NumericUpDown";
-			this.h0NumericUpDown.Size = new System.Drawing.Size( 110, 20 );
-			this.h0NumericUpDown.TabIndex = 4;
+			this.label6.Location = new System.Drawing.Point( 6, 71 );
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size( 87, 30 );
+			this.label6.TabIndex = 1;
+			this.label6.Text = "Mie Density Height";
+			this.label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point( 49, 42 );
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size( 44, 13 );
+			this.label5.TabIndex = 0;
+			this.label5.Text = "K Scale";
 			// 
 			// AtmosphereControl
 			// 
@@ -270,14 +486,20 @@ namespace Poc1.PlanetBuilder
 			this.Controls.Add( this.groupBox2 );
 			this.Controls.Add( this.groupBox1 );
 			this.Name = "AtmosphereControl";
-			this.Size = new System.Drawing.Size( 215, 346 );
+			this.Size = new System.Drawing.Size( 215, 532 );
 			this.groupBox1.ResumeLayout( false );
 			this.groupBox1.PerformLayout( );
 			( ( System.ComponentModel.ISupportInitialize )( this.attenuationUpDown ) ).EndInit( );
 			this.groupBox2.ResumeLayout( false );
 			this.groupBox2.PerformLayout( );
+			( ( System.ComponentModel.ISupportInitialize )( this.outscatterFudgeUpDown ) ).EndInit( );
+			( ( System.ComponentModel.ISupportInitialize )( this.mieFudgeUpDown ) ).EndInit( );
+			( ( System.ComponentModel.ISupportInitialize )( this.rayleighFudgeUpDown ) ).EndInit( );
+			( ( System.ComponentModel.ISupportInitialize )( this.outscatterDistanceFudgeUpDown ) ).EndInit( );
+			( ( System.ComponentModel.ISupportInitialize )( this.inscatterDistanceFudgeUpDown ) ).EndInit( );
+			( ( System.ComponentModel.ISupportInitialize )( this.rH0UpDown ) ).EndInit( );
+			( ( System.ComponentModel.ISupportInitialize )( this.mH0UpDown ) ).EndInit( );
 			( ( System.ComponentModel.ISupportInitialize )( this.kScaleUpDown ) ).EndInit( );
-			( ( System.ComponentModel.ISupportInitialize )( this.h0NumericUpDown ) ).EndInit( );
 			this.ResumeLayout( false );
 
 		}
@@ -298,8 +520,19 @@ namespace Poc1.PlanetBuilder
 		private System.Windows.Forms.NumericUpDown attenuationUpDown;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.NumericUpDown h0NumericUpDown;
+		private System.Windows.Forms.NumericUpDown mH0UpDown;
 		private System.Windows.Forms.NumericUpDown kScaleUpDown;
+		private System.Windows.Forms.NumericUpDown rH0UpDown;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.NumericUpDown outscatterDistanceFudgeUpDown;
+		private System.Windows.Forms.NumericUpDown inscatterDistanceFudgeUpDown;
+		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.NumericUpDown mieFudgeUpDown;
+		private System.Windows.Forms.NumericUpDown rayleighFudgeUpDown;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.NumericUpDown outscatterFudgeUpDown;
+		private System.Windows.Forms.Label label12;
 	}
 }
