@@ -24,6 +24,9 @@ sampler2D NoiseTexture = sampler_state
 	MinFilter = Linear;
 	MagFilter = Linear;
 };
+
+#include "atmosphereBase.cg"
+
 /*
 samplerCUBE CloudTexture = sampler_state
 {
@@ -59,6 +62,7 @@ struct FragmentShaderInput
 	float3 m_Normal : TEXCOORD1;
 	float2 m_TerrainUv : TEXCOORD2;
 	float2 m_SlopeElevation : TEXCOORD3;
+	float3 m_WorldPos : TEXCOORD4;
 };
 
 float4x4 ModelViewProjectionMatrix;
@@ -76,14 +80,10 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 	output.m_Normal			= normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
 	output.m_TerrainUv		= input.m_TerrainUv;
 	output.m_SlopeElevation	= input.m_SlopeElevation;
+	output.m_WorldPos		= input.m_Position.xyz;
 
 	return output;
 }
-
-float3 SunNormal = float3( 1, 0, 0 );
-const float MinAngle = 0.5f;
-const float MaxAngle = 0.6f;
-const float Dark = 0.0f;
 
 const float TileRes = 4;
 const float InvTileRes = 1.0f / 4.0f;
@@ -144,12 +144,12 @@ float GetCloudCover( FragmentShaderInput input )
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
-	float shade = ( dot( normalize( input.m_Normal ), SunNormal  ) + 1.0f ) / 2.0f;
+	float shade = ( dot( normalize( input.m_Normal ), SunDir  ) + 1.0f ) / 2.0f;
 	shade = shade * shade;
 
 	float4 diffuse = GetTerrainColour( input ) * shade.xxxx;
 
-	return diffuse;
+	return float4( GetScatteredObjectColour( input.m_WorldPos, diffuse.rgb ), 1 );
 }
 
 float4 DbgSlopeFragmentShader( FragmentShaderInput input ) : COLOR

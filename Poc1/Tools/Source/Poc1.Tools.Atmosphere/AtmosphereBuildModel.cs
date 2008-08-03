@@ -98,9 +98,9 @@ namespace Poc1.Tools.Atmosphere
 
 		#region Private Members
 
-		private float m_OutscatterFudgeFactor = 0.0f;
+		private float m_OutscatterFudgeFactor = 0.2f;
 		private float m_InscatterDistanceFudgeFactor = 10;
-		private float m_OutscatterDistanceFudgeFactor = 0.1f;
+		private float m_OutscatterDistanceFudgeFactor = 0.3f;
 		private float m_MieFudge = 0.0f;
 		private float m_RayleighFudge = 1.0f;
 		private float m_MieDensityScaleHeightFraction = 0.9f;

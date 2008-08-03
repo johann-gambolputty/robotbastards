@@ -43,7 +43,7 @@ namespace Poc1.Tools.Atmosphere
 		
 		#region Private Members
 
-		private int m_AttenuationSamples	= 5;
+		private int m_AttenuationSamples	= 8;
 		private int m_HeightSamples			= 16;
 		private int m_SunAngleSamples		= 16;
 		private int m_ViewAngleSamples		= 16;

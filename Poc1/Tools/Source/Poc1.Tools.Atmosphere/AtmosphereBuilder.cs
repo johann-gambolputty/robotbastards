@@ -58,7 +58,7 @@ namespace Poc1.Tools.Atmosphere
 		public unsafe Texture3dData BuildLookupTexture( AtmosphereBuildModel model, AtmosphereBuildParameters parameters, AtmosphereBuildProgress progress )
 		{
 			Texture3dData data = new Texture3dData( );
-			data.Create( parameters.ViewAngleSamples, parameters.SunAngleSamples, parameters.HeightSamples, TextureFormat.R8G8B8 );
+			data.Create( parameters.ViewAngleSamples, parameters.SunAngleSamples, parameters.HeightSamples, TextureFormat.R8G8B8A8 );
 			fixed ( byte* voxels = data.Bytes )
 			{
 				if ( !BuildLookupTexture( model, parameters, voxels, progress ?? new AtmosphereBuildProgress( ) ) )
@@ -103,7 +103,7 @@ namespace Poc1.Tools.Atmosphere
 					for ( int heightSample = 0; heightSample < parameters.HeightSamples; ++heightSample, height += heightInc )
 					{
 						ComputeScattering( viewDir, sunAngle, sunDir, height, voxels );
-						voxels += 3;
+						voxels += 4;
 					}
 				}
 
@@ -120,6 +120,20 @@ namespace Poc1.Tools.Atmosphere
 			return true;
 		}
 
+		public static float HgPhase( float cosAngle, float g )
+		{
+			float g2 = g * g;
+			float t0 = ( 3 * ( 1 - g2 ) ) / 2 * ( 2 + g2 );
+			float tden0 = Functions.Pow( 1 + g2 - 2 * g * cosAngle, 3.0f / 2.0f );
+			float t1 = ( 1 + cosAngle * cosAngle ) / tden0;
+			float tRes = t0 * t1;
+			return tRes;
+		}
+
+		public static float RayleighPhase( float cosAngle )
+		{
+			return 0.75f * ( 1 + cosAngle * cosAngle );
+		}
 
 		
 		/// <summary>
@@ -128,6 +142,7 @@ namespace Poc1.Tools.Atmosphere
 		private bool GetRayIntersection( Point3 origin, Vector3 dir, out Point3 intPt )
 		{
 			Ray3 ray = new Ray3( origin, dir );
+			/*
 			Line3Intersection outerIntersection = Intersections3.GetRayIntersection( ray, m_OuterSphere );
 			if ( outerIntersection == null )
 			{
@@ -136,9 +151,8 @@ namespace Poc1.Tools.Atmosphere
 			}
 			intPt = outerIntersection.IntersectionPosition;
 			return true;
-			/*
+			/*/
 			//	TODO: AP: Optimise ray intersection code (origin is always outside inner sphere, inside outer sphere)
-			 * 
 			Line3Intersection innerIntersection = Intersections3.GetRayIntersection( ray, m_InnerSphere );
 			Line3Intersection outerIntersection = Intersections3.GetRayIntersection( ray, m_OuterSphere );
 			if ( innerIntersection == null )
@@ -159,7 +173,7 @@ namespace Poc1.Tools.Atmosphere
 			}
 			intPt = outerIntersection.IntersectionPosition;
 			return true;
-			 */
+			//*/
 		}
 
 		/// <summary>
@@ -200,7 +214,7 @@ namespace Poc1.Tools.Atmosphere
 			//
 			//		x = 5/u + 125/729u^3 + (64/27 - 325/243u^2 + 1250/2187u^4)^1/2
 			//		u = haze factor and wavelength (0.7-0.85)
-			float cosSunAngle = Functions.Cos( sunAngle );
+		//	float cosSunAngle = Functions.Cos( sunAngle );
 			Point3 viewPos = new Point3( 0, height, 0 );
 
 			Point3 viewEnd;
@@ -209,6 +223,7 @@ namespace Poc1.Tools.Atmosphere
 			//	The summation of attenuation is a Reimann sum approximation of the integral
 			//	of atmospheric density .
 			float viewRayLength = ( viewEnd - viewPos ).Length;
+			Vector3 viewVec = ( viewEnd - viewPos ).MakeNormal( );
 			Vector3 sampleStep = ( viewEnd - viewPos ) / m_AttenuationSamples;
 		//	float mul = ( InscatterDistanceFudgeFactor * viewRayLength ) / m_OuterRadius;
 			float mul = ( m_InscatterDistanceFudgeFactor * sampleStep.Length );
@@ -247,58 +262,21 @@ namespace Poc1.Tools.Atmosphere
 			}
 
 			float[] accum = new float[ 3 ];
+			float avgMie = 0;
 			for ( int component = 0; component < 3; ++component )
 			{
 				float rComponent = rAccum[ component ] * m_RayleighCoefficients[ component ] * m_RayleighFudge;
 				float mComponent = mAccum[ component ] * m_MieCoefficients[ component ] * m_MieFudge;
-				accum[ component ] = rComponent + mComponent;
+
+				avgMie += mComponent;
+				accum[ component ] = rComponent;
 			}
 
-			/*
-			 * float[] components = new float[ 3 ];
-			for ( int componentIndex = 0; componentIndex < 3; ++componentIndex )
-			{
-				Point3 samplePos = viewPos + sampleStep;
-
-				float rC = m_RayleighCoefficients[ componentIndex ];
-				float attenuationCoefficient = rC * Constants.Pi * 4;
-				float accum = 0;
-				for ( int sampleCount = 1; sampleCount < m_AttenuationSamples; ++sampleCount )
-				{
-					Point3 sunPt;
-					if ( !GetRayIntersection( samplePos, sunDir, out sunPt ) )
-					{
-						break;
-					}
-
-					float sampleHeight = samplePos.DistanceTo( Point3.Origin ) - m_InnerRadius;
-					float pCoeff = Functions.Exp( sampleHeight * m_InvH0 );
-
-					Vector3 sunVec = ( sunRayIntersection.IntersectionPosition - samplePos ) / ( m_AttenuationSamples - 1 );
-					Vector3 viewVec = ( viewPos - samplePos ) / ( m_AttenuationSamples - 1 );
-
-					float outScatterToSun = ComputeOpticalDepth( samplePos, sunVec, attenuationCoefficient );
-					float outScatterToViewer = ComputeOpticalDepth( samplePos, viewVec, attenuationCoefficient );
-					float outScatterCoeff = Functions.Exp( -outScatterToViewer - outScatterToSun );
-
-					accum += pCoeff * outScatterCoeff * mul;
-
-					samplePos += sampleStep;
-				}
-			//	float phase = RayleighPhaseFunction( cosSunAngle );
-
-				//	Phase function is calculated in fragment shader
-			//	float res = rC * accum;
-			//	float phase = HeyneyGreensteinPhaseFunction( cosSunAngle, m_G );
-			//	float scatter = phase * rC;
-				float res = m_SunIntensity[ componentIndex ] * rC * accum;
-				components[ componentIndex ] = res;
-			}
-			 */
-
-			voxel[ 2 ] = ( byte )Utils.Clamp( accum[ 0 ] * 255.0f, 0, 255 );
-			voxel[ 1 ] = ( byte )Utils.Clamp( accum[ 1 ] * 255.0f, 0, 255 );
-			voxel[ 0 ] = ( byte )Utils.Clamp( accum[ 2 ] * 255.0f, 0, 255 );
+			//	TODO: AP: Fix stupid backwards textures :( 
+			voxel[ 3 ] = ( byte )Utils.Clamp( accum[ 0 ] * 255.0f, 0, 255 );
+			voxel[ 2 ] = ( byte )Utils.Clamp( accum[ 1 ] * 255.0f, 0, 255 );
+			voxel[ 1 ] = ( byte )Utils.Clamp( accum[ 2 ] * 255.0f, 0, 255 );
+			voxel[ 0 ] = ( byte )Utils.Clamp( avgMie * 255.0f / 3.0f, 0, 255 );
 		}
 		
 		/// <summary>
@@ -379,11 +357,16 @@ namespace Poc1.Tools.Atmosphere
 		/// <summary>
 		/// Sets up stored and derived parameters from an atmosphere model
 		/// </summary>
+		/// <remarks>
+		/// The inner radius is diminished by a constant amount, because otherwise, the quantised
+		/// view directions hit the inner sphere and cause a blue band to appear when the actual
+		/// view direction approaches it.
+		/// </remarks>
 		private void SetupModelAndParameters( AtmosphereBuildParameters parameters, AtmosphereBuildModel model )
 		{
 			m_InnerRadius = model.InnerRadius;
 			m_OuterRadius = model.OuterRadius;
-			m_InnerSphere = new Sphere3( Point3.Origin, m_InnerRadius );
+			m_InnerSphere = new Sphere3( Point3.Origin, m_InnerRadius * 0.9f );	//	NOTE: AP: See remarks
 			m_OuterSphere = new Sphere3( Point3.Origin, m_OuterRadius );
 			m_AttenuationSamples = parameters.AttenuationSamples;
 			float heightRange = ( model.OuterRadius - model.InnerRadius );

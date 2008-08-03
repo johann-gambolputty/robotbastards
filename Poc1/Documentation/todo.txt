@@ -67,6 +67,7 @@
 		- M: Proper procedural star-spheres
 	- Assets
 		- H: Asset handle reload should evict the asset from the asset cache
+		- M: Effect rebuild is only done if cgfx file is edited, not included cg files
 		- M: Asset build should not exit if one step fails
 		- L: Asset cache interface should be based on ISource rather than integer keys
 		- L: Asset build should have a UI (progress bar, output text)
@@ -110,7 +111,6 @@
 	- Tools
 		- Planet Builder
 			- H: Add support for loading/saving/exporting atmosphere setup
-			- H: Add atmosphere tab
 			- H: Ground terrain graphs should have a "sea level" line
 			- M: Allow multiple graphs to be displayed on a single graph control
 			- L: Atmosphere control should be dependent on planet geometry
@@ -172,6 +172,7 @@
 	- H: Ground displacement requires connected patches, or slightly different skirt rendering (vertical skirts show up) (see new vertex normal skirts)
 
 - DONE
+	- H: Add atmosphere tab
 	- H: Spherical terrain should be affected by changing ground texture setup
 	- H: Add terrain type and pack textures to terrain model interface
 	- H: Use sphere geometry instead of planar

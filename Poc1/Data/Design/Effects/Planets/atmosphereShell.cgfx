@@ -1,21 +1,7 @@
-sampler3D AtmosphereLookupTexture = sampler_state
-{
-	WrapS = Clamp;
-	WrapT = Clamp;
-	WrapR = Clamp;
-	MinFilter = Linear;
-	MagFilter = Linear;
-};
+#include "atmosphereBase.cg"
 
 float4x4 ModelViewProjectionMatrix;
 float4x4 InverseTransposeModelMatrix;
-
-float3 SunDir = float3( -1, 0, 0 );
-float3 AtmViewPos;
-float3 AtmViewDir;
-float AtmViewHeight;
-float AtmHgCoeff = -0.90f;
-
 
 struct VertexShaderInput
 {
@@ -38,41 +24,10 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 
 	return output;
 }
-//
-//	O'Neil's version
-//float HeyneyGreensteinPhaseFunction( float cosSunAngle, float g )
-//{
-//	float g2 = g * g;
-//	float t0 = ( 3 * ( 1 - g2 ) ) / 2 * ( 2 + g2 );
-//	float tden0 = pow( 1 + g2 - 2 * g * cosSunAngle, 3.0f / 2.0f );
-//	float t1 = ( 1 + cosSunAngle * cosSunAngle ) / tden0;
-//	float tRes = t0 * t1;
-//	return tRes;
-//}
-//
-
-float HeyneyGreensteinPhaseFunction( float cosSunAngle, float g )
-{
-	g = clamp( g, -1, 1 );
-	float g2 = g * g;
-
-	return ( 1.0f - g2 ) / pow( ( 1.0f + g2 ) - ( 2.0f * g * cosSunAngle ), 1.5f );
-}
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
-	float3 viewVec = normalize( input.m_WorldPos.xyz - AtmViewPos );
-
-	float h0 = length( AtmViewPos );
-	float h = AtmViewHeight;
-	float th = saturate( ( ( dot( AtmViewPos, viewVec ) / h0 ) + 1.0f ) / 2.0f );
-	float posToSunAngle = dot( AtmViewPos, SunDir ) / h0;
-	float viewToSunAngle = dot( viewVec, SunDir );
-	float si = saturate( ( posToSunAngle + 1.0f ) / 2.0f );
-
-	float4 opticalDepth = tex3D( AtmosphereLookupTexture, float3( h, 1 - si, 1 - th ) );
-
-	return opticalDepth;// * HeyneyGreensteinPhaseFunction( viewToSunAngle, AtmHgCoeff );
+	return float4( GetScatteredSkyColour( input.m_WorldPos.xyz ), 1 );
 }
 
 technique DefaultTechnique

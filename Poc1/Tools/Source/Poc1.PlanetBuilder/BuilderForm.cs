@@ -5,6 +5,7 @@ using Poc1.Universe.Classes;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
 using Rb.Interaction;
+using Rb.Log;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects.Cameras;
 
@@ -40,7 +41,20 @@ namespace Poc1.PlanetBuilder
 			}
 
 			Viewer viewer = new Viewer( );
-			viewer.Renderable = new RenderableList( new StarBox( ), BuilderState.Instance.Planet );
+			try
+			{
+				viewer.Renderable = new RenderableList( new StarBox( ), BuilderState.Instance.Planet );
+			}
+			catch ( Exception ex )
+			{
+				//	TODO: AP: Remove exception handler
+				//	This is a bodge of an exception handler. Accessing BuilderState.Instance creates
+				//	the planet, which can throw. So this try-catch assumes that this is the first access...
+				AppLog.Exception( ex, "Error accessing planet instance" );
+				MessageBox.Show( this, string.Format( "Error accessing planet instance ({0})", ex.Message ) );
+				Close( );
+				return;
+			}
 			viewer.PreRender +=
 				delegate
 				{

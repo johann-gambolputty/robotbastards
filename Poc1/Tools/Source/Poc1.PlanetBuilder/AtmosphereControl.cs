@@ -40,7 +40,6 @@ namespace Poc1.PlanetBuilder
 			mieFudgeUpDown.Value = ( decimal )m_AtmosphereModel.MieFudgeFactor;
 			rayleighFudgeUpDown.Value = ( decimal )m_AtmosphereModel.RayleighFudgeFactor;
 
-
 			m_Worker = new BackgroundWorker( );
 			m_Worker.WorkerReportsProgress = true;
 			m_Worker.WorkerSupportsCancellation = true;
@@ -186,6 +185,26 @@ namespace Poc1.PlanetBuilder
 			m_Worker.RunWorkerAsync( item );
 		}
 
+		private void phaseCoeffUpDown_ValueChanged( object sender, EventArgs e )
+		{
+			BuilderState.Instance.Planet.Atmosphere.PhaseCoefficient = ( float )phaseCoeffUpDown.Value;
+		}
+
+		private void phaseWeightUpDown_ValueChanged( object sender, EventArgs e )
+		{
+			BuilderState.Instance.Planet.Atmosphere.PhaseWeight = ( float )phaseWeightUpDown.Value;
+		}
+
 		#endregion
+
+		private void AtmosphereControl_Load( object sender, EventArgs e )
+		{
+			SpherePlanet planet = ( SpherePlanet )BuilderState.Instance.Planet;
+			m_AtmosphereModel.InnerRadius = ( float )UniUnits.RenderUnits.FromUniUnits( planet.Radius );
+			m_AtmosphereModel.OuterRadius = ( float )UniUnits.RenderUnits.FromUniUnits( planet.Radius + planet.SphereAtmosphere.Radius );
+			phaseCoeffUpDown.Value = ( decimal )BuilderState.Instance.Planet.Atmosphere.PhaseCoefficient;
+			phaseWeightUpDown.Value = ( decimal )BuilderState.Instance.Planet.Atmosphere.PhaseWeight;
+		}
+
 	}
 }
