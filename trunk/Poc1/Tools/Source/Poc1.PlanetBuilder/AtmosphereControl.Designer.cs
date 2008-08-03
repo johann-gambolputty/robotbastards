@@ -56,6 +56,11 @@ namespace Poc1.PlanetBuilder
 			this.kScaleUpDown = new System.Windows.Forms.NumericUpDown( );
 			this.label6 = new System.Windows.Forms.Label( );
 			this.label5 = new System.Windows.Forms.Label( );
+			this.groupBox3 = new System.Windows.Forms.GroupBox( );
+			this.phaseWeightUpDown = new System.Windows.Forms.NumericUpDown( );
+			this.phaseCoeffUpDown = new System.Windows.Forms.NumericUpDown( );
+			this.label13 = new System.Windows.Forms.Label( );
+			this.label14 = new System.Windows.Forms.Label( );
 			this.groupBox1.SuspendLayout( );
 			( ( System.ComponentModel.ISupportInitialize )( this.attenuationUpDown ) ).BeginInit( );
 			this.groupBox2.SuspendLayout( );
@@ -67,6 +72,9 @@ namespace Poc1.PlanetBuilder
 			( ( System.ComponentModel.ISupportInitialize )( this.rH0UpDown ) ).BeginInit( );
 			( ( System.ComponentModel.ISupportInitialize )( this.mH0UpDown ) ).BeginInit( );
 			( ( System.ComponentModel.ISupportInitialize )( this.kScaleUpDown ) ).BeginInit( );
+			this.groupBox3.SuspendLayout( );
+			( ( System.ComponentModel.ISupportInitialize )( this.phaseWeightUpDown ) ).BeginInit( );
+			( ( System.ComponentModel.ISupportInitialize )( this.phaseCoeffUpDown ) ).BeginInit( );
 			this.SuspendLayout( );
 			// 
 			// groupBox1
@@ -210,10 +218,10 @@ namespace Poc1.PlanetBuilder
 			this.groupBox2.Controls.Add( this.kScaleUpDown );
 			this.groupBox2.Controls.Add( this.label6 );
 			this.groupBox2.Controls.Add( this.label5 );
-			this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
 			this.groupBox2.Location = new System.Drawing.Point( 0, 133 );
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size( 215, 399 );
+			this.groupBox2.Size = new System.Drawing.Size( 215, 317 );
 			this.groupBox2.TabIndex = 1;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Atmosphere Parameters";
@@ -479,14 +487,102 @@ namespace Poc1.PlanetBuilder
 			this.label5.TabIndex = 0;
 			this.label5.Text = "K Scale";
 			// 
+			// groupBox3
+			// 
+			this.groupBox3.Controls.Add( this.phaseWeightUpDown );
+			this.groupBox3.Controls.Add( this.phaseCoeffUpDown );
+			this.groupBox3.Controls.Add( this.label13 );
+			this.groupBox3.Controls.Add( this.label14 );
+			this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.groupBox3.Location = new System.Drawing.Point( 0, 450 );
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size( 215, 100 );
+			this.groupBox3.TabIndex = 2;
+			this.groupBox3.TabStop = false;
+			this.groupBox3.Text = "Rendering Parameters";
+			// 
+			// phaseWeightUpDown
+			// 
+			this.phaseWeightUpDown.DecimalPlaces = 3;
+			this.phaseWeightUpDown.Increment = new decimal( new int[] {
+            1,
+            0,
+            0,
+            131072} );
+			this.phaseWeightUpDown.Location = new System.Drawing.Point( 99, 65 );
+			this.phaseWeightUpDown.Maximum = new decimal( new int[] {
+            10,
+            0,
+            0,
+            0} );
+			this.phaseWeightUpDown.Minimum = new decimal( new int[] {
+            10,
+            0,
+            0,
+            -2147483648} );
+			this.phaseWeightUpDown.Name = "phaseWeightUpDown";
+			this.phaseWeightUpDown.Size = new System.Drawing.Size( 110, 20 );
+			this.phaseWeightUpDown.TabIndex = 8;
+			this.phaseWeightUpDown.ValueChanged += new System.EventHandler( this.phaseWeightUpDown_ValueChanged );
+			// 
+			// phaseCoeffUpDown
+			// 
+			this.phaseCoeffUpDown.DecimalPlaces = 2;
+			this.phaseCoeffUpDown.Increment = new decimal( new int[] {
+            1,
+            0,
+            0,
+            65536} );
+			this.phaseCoeffUpDown.Location = new System.Drawing.Point( 99, 27 );
+			this.phaseCoeffUpDown.Maximum = new decimal( new int[] {
+            5,
+            0,
+            0,
+            0} );
+			this.phaseCoeffUpDown.Minimum = new decimal( new int[] {
+            5,
+            0,
+            0,
+            -2147483648} );
+			this.phaseCoeffUpDown.Name = "phaseCoeffUpDown";
+			this.phaseCoeffUpDown.Size = new System.Drawing.Size( 110, 20 );
+			this.phaseCoeffUpDown.TabIndex = 7;
+			this.phaseCoeffUpDown.Value = new decimal( new int[] {
+            1,
+            0,
+            0,
+            65536} );
+			this.phaseCoeffUpDown.ValueChanged += new System.EventHandler( this.phaseCoeffUpDown_ValueChanged );
+			// 
+			// label13
+			// 
+			this.label13.AutoSize = true;
+			this.label13.Location = new System.Drawing.Point( 19, 67 );
+			this.label13.Name = "label13";
+			this.label13.Size = new System.Drawing.Size( 74, 13 );
+			this.label13.TabIndex = 6;
+			this.label13.Text = "Phase Weight";
+			this.label13.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// label14
+			// 
+			this.label14.AutoSize = true;
+			this.label14.Location = new System.Drawing.Point( 6, 29 );
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size( 90, 13 );
+			this.label14.TabIndex = 5;
+			this.label14.Text = "Phase Coefficient";
+			// 
 			// AtmosphereControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add( this.groupBox3 );
 			this.Controls.Add( this.groupBox2 );
 			this.Controls.Add( this.groupBox1 );
 			this.Name = "AtmosphereControl";
-			this.Size = new System.Drawing.Size( 215, 532 );
+			this.Size = new System.Drawing.Size( 215, 550 );
+			this.Load += new System.EventHandler( this.AtmosphereControl_Load );
 			this.groupBox1.ResumeLayout( false );
 			this.groupBox1.PerformLayout( );
 			( ( System.ComponentModel.ISupportInitialize )( this.attenuationUpDown ) ).EndInit( );
@@ -500,6 +596,10 @@ namespace Poc1.PlanetBuilder
 			( ( System.ComponentModel.ISupportInitialize )( this.rH0UpDown ) ).EndInit( );
 			( ( System.ComponentModel.ISupportInitialize )( this.mH0UpDown ) ).EndInit( );
 			( ( System.ComponentModel.ISupportInitialize )( this.kScaleUpDown ) ).EndInit( );
+			this.groupBox3.ResumeLayout( false );
+			this.groupBox3.PerformLayout( );
+			( ( System.ComponentModel.ISupportInitialize )( this.phaseWeightUpDown ) ).EndInit( );
+			( ( System.ComponentModel.ISupportInitialize )( this.phaseCoeffUpDown ) ).EndInit( );
 			this.ResumeLayout( false );
 
 		}
@@ -534,5 +634,10 @@ namespace Poc1.PlanetBuilder
 		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.NumericUpDown outscatterFudgeUpDown;
 		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.NumericUpDown phaseWeightUpDown;
+		private System.Windows.Forms.NumericUpDown phaseCoeffUpDown;
+		private System.Windows.Forms.Label label13;
+		private System.Windows.Forms.Label label14;
 	}
 }

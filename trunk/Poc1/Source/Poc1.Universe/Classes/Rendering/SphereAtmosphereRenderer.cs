@@ -59,10 +59,12 @@ namespace Poc1.Universe.Classes.Rendering
 			float clampedHeight = Utils.Clamp( height, 0, atmosphereRadius );
 			float normHeight = clampedHeight / atmosphereRadius;
 		//	normHeight *= 0.000100f;
-			Point3 atmPos = localPos * ;
+			Point3 atmPos = localPos * ( clampedHeight / height );
 
 			Vector3 viewDir = UniCamera.Current.Frame.ZAxis;
 
+			m_Techniques.Effect.Parameters[ "AtmHgCoeff" ].Set( m_Planet.Atmosphere.PhaseCoefficient );
+			m_Techniques.Effect.Parameters[ "AtmPhaseWeight" ].Set( m_Planet.Atmosphere.PhaseWeight );
 			m_Techniques.Effect.Parameters[ "AtmViewPos" ].Set( atmPos.X, atmPos.Y, atmPos.Z );
 			m_Techniques.Effect.Parameters[ "AtmViewDir" ].Set( viewDir.X, viewDir.Y, viewDir.Z );
 			m_Techniques.Effect.Parameters[ "AtmViewHeight" ].Set( normHeight );
