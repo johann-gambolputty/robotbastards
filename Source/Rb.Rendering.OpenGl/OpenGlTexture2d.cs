@@ -57,6 +57,34 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
+		/// Creates the texture from a texture data model
+		/// </summary>
+		/// <param name="data">Texture data</param>
+		public unsafe override void Create( Texture2dData data )
+		{
+			DestroyCurrent( );
+
+			//	Get the GL format of the bitmap, possibly converting it in the process
+			m_Format = CheckTextureFormat( data.Format, out m_InternalGlFormat, out m_GlFormat, out m_GlType );
+			m_Width = data.Width;
+			m_Height = data.Height;
+			m_MipMapped = false;
+			m_Target = Gl.GL_TEXTURE_2D;
+
+			//	Generate a texture name
+			fixed ( int* handleMem = &m_TextureHandle )
+			{
+				Gl.glGenTextures( 1, ( IntPtr )handleMem );
+			}
+			Gl.glBindTexture( m_Target, m_TextureHandle );
+
+			fixed ( void* texels = data.Bytes )
+			{
+				Gl.glTexImage2D( Gl.GL_TEXTURE_2D, 0, m_InternalGlFormat, data.Width, data.Height, 0, m_GlFormat, m_GlType, new IntPtr( texels ) );
+			}
+		}
+
+		/// <summary>
 		/// Creates an empty texture
 		/// </summary>
 		/// <param name="width">Width of the texture in pixels</param>

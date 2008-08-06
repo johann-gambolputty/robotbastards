@@ -30,6 +30,12 @@ namespace Rb.Rendering.Interfaces.Objects
 		/// <param name="height">Height of the texture in pixels</param>
 		/// <param name="format">Format of the texture</param>
 		void Create( int width, int height, TextureFormat format );
+
+		/// <summary>
+		/// Creates from a <see cref="Texture2dData"/> object
+		/// </summary>
+		/// <param name="data">Texture data</param>
+		void Create( Texture2dData data );
 		
 		/// <summary>
 		/// Loads the texture from bitmap data

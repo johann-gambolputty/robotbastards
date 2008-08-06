@@ -34,12 +34,30 @@ namespace Poc1.Universe.Classes.Rendering
 		#region ISphereAtmosphereRenderer Members
 
 		/// <summary>
-		/// Gets/sets the lookup texture used to render this atmosphere model
+		/// Sets the lookup textures required by the atmosphere renderer
 		/// </summary>
-		public ITexture3d LookupTexture
+		/// <param name="scatteringTexture">Lookup table for in- and out-scattering coefficients</param>
+		/// <param name="opticalDepthTexture">Lookup table for optical depth</param>
+		public void SetLookupTextures( ITexture3d scatteringTexture, ITexture2d opticalDepthTexture )
 		{
-			get { return m_LookupTexture; }
-			set { m_LookupTexture = value; }
+			m_ScatteringTexture = scatteringTexture;
+			m_OpticalDepthTexture = opticalDepthTexture;
+		}
+
+		/// <summary>
+		/// Gets the scattering coefficient lookup texture used to render this atmosphere model
+		/// </summary>
+		public ITexture3d ScatteringTexture
+		{
+			get { return m_ScatteringTexture; }
+		}
+
+		/// <summary>
+		/// Gets the optical depth lookup texture used to render this atmosphere model
+		/// </summary>
+		public ITexture2d OpticalDepthTexture
+		{
+			get { return m_OpticalDepthTexture; }
 		}
 
 		#endregion
@@ -69,9 +87,9 @@ namespace Poc1.Universe.Classes.Rendering
 			m_Techniques.Effect.Parameters[ "AtmViewDir" ].Set( viewDir.X, viewDir.Y, viewDir.Z );
 			m_Techniques.Effect.Parameters[ "AtmViewHeight" ].Set( normHeight );
 
-			if ( m_LookupTexture != null )
+			if ( m_ScatteringTexture != null )
 			{
-				m_Techniques.Effect.Parameters[ "AtmosphereLookupTexture" ].Set( m_LookupTexture );
+				m_Techniques.Effect.Parameters[ "ScatteringTexture" ].Set( m_ScatteringTexture );
 			}
 			context.ApplyTechnique( m_Techniques, m_Atmosphere );
 		}
@@ -84,7 +102,8 @@ namespace Poc1.Universe.Classes.Rendering
 		private readonly long				m_AtmosphereRadius;
 		private readonly IRenderable		m_Atmosphere;
 		private readonly TechniqueSelector	m_Techniques;
-		private ITexture3d					m_LookupTexture;
+		private ITexture3d					m_ScatteringTexture;
+		private ITexture2d					m_OpticalDepthTexture;
 
 		private void atmosphereEffect_OnReload( Rb.Assets.Interfaces.ISource obj )
 		{

@@ -55,41 +55,117 @@ namespace Poc1.Tools.Atmosphere
 		/// <param name="parameters">Parameters for the build process</param>
 		/// <param name="progress">Optional progress object</param>
 		/// <returns>Returns a 3d texture data. Returns null if cancel was flagged in the progress object</returns>
-		public unsafe Texture3dData BuildLookupTexture( AtmosphereBuildModel model, AtmosphereBuildParameters parameters, AtmosphereBuildProgress progress )
+		public unsafe AtmosphereBuildOutputs Build( AtmosphereBuildModel model, AtmosphereBuildParameters parameters, AtmosphereBuildProgress progress )
 		{
-			Texture3dData data = new Texture3dData( );
-			data.Create( parameters.ViewAngleSamples, parameters.SunAngleSamples, parameters.HeightSamples, TextureFormat.R8G8B8A8 );
-			fixed ( byte* voxels = data.Bytes )
+			Texture2dData opticalDepthTexture = new Texture2dData( );
+			Texture3dData scatteringTexture = new Texture3dData( );
+			scatteringTexture.Create( parameters.ViewAngleSamples, parameters.SunAngleSamples, parameters.HeightSamples, TextureFormat.R8G8B8A8 );
+
+			SetupModelAndParameters( parameters, model );
+			progress = progress ?? new AtmosphereBuildProgress( );
+
+			fixed ( byte* voxels = scatteringTexture.Bytes )
 			{
-				if ( !BuildLookupTexture( model, parameters, voxels, progress ?? new AtmosphereBuildProgress( ) ) )
+				if ( !BuildScatteringTexture( parameters, voxels, progress ) )
 				{
 					return null;
 				}
 			}
-			return data;
+			if ( progress.Cancel )
+			{
+				return null;
+			}
+
+			opticalDepthTexture.Create( parameters.ViewAngleSamples, parameters.HeightSamples, TextureFormat.R8G8B8 );
+			fixed ( byte* pixels = opticalDepthTexture.Bytes )
+			{
+				if ( !BuildOpticalDepthTexture( parameters, pixels, progress ) )
+				{
+					return null;
+				}				
+			}
+
+			return new AtmosphereBuildOutputs( scatteringTexture, opticalDepthTexture );
 		}
 
 		#region Private Members
 
 		/// <summary>
-		/// Builds a 3D lookup texture containing the in-scattering values for a parameterization of
+		/// Builds a 2D lookup texture containing optical depth for a paramerization of the view frame
+		/// </summary>
+		/// <param name="buildParams">Atmosphere build parameters</param>
+		/// <param name="pixels">Atmosphere texture pixels</param>
+		/// <param name="progress">Progress indicator</param>
+		/// <returns>Returns true if the build completed (wasn't cancelled)</returns>
+		private unsafe bool BuildOpticalDepthTexture( AtmosphereBuildParameters buildParams, byte* pixels, AtmosphereBuildProgress progress )
+		{
+			//	TODO: AP: Because we know that the view to pos angle range will never be > pi, can optimise this later
+			float viewAngleInc = Constants.Pi / ( buildParams.ViewAngleSamples - 1 );
+			float heightRange = ( m_OuterRadius - m_InnerRadius );
+			float heightInc = ( heightRange - heightRange * 0.05f ) / ( buildParams.HeightSamples - 1 );	//	Push height range in slightly to allow simplification of sphere intersections
+
+			float height = m_InnerRadius;
+			for ( int heightSample = 0; heightSample < buildParams.HeightSamples; ++heightSample, height += heightInc )
+			{
+				Point3 pos = new Point3( 0, height, 0 );
+				float viewAngle = 0;
+				Point3 lastAtmInt = pos;
+				for ( int viewSample = 0; viewSample < buildParams.ViewAngleSamples; ++viewSample, viewAngle += viewAngleInc )
+				{
+					Vector3 viewDir = new Vector3( Functions.Sin( viewAngle ), Functions.Cos( viewAngle ), 0 );
+
+					//	NOTE: If ray intersection fails, the previous intersection position is used...
+					Point3 atmInt;
+					if ( !GetRayIntersection( pos, viewDir, out atmInt ) )
+					{
+						atmInt = lastAtmInt;
+					}
+					else
+					{
+						lastAtmInt = atmInt;
+					}
+
+					float oR = ComputeOpticalDepth( pos, ( atmInt - pos ) / m_AttenuationSamples, m_RayleighCoefficients[ 0 ], m_MieCoefficients[ 0 ] );
+					float oG = ComputeOpticalDepth( pos, ( atmInt - pos ) / m_AttenuationSamples, m_RayleighCoefficients[ 1 ], m_MieCoefficients[ 1 ] );
+					float oB = ComputeOpticalDepth( pos, ( atmInt - pos ) / m_AttenuationSamples, m_RayleighCoefficients[ 2 ], m_MieCoefficients[ 2 ] );
+
+					float attR = Functions.Exp( -oR );
+					float attG = Functions.Exp( -oG );
+					float attB = Functions.Exp( -oB );
+
+					pixels[ 0 ] = ( byte )( Utils.Clamp( attR, 0, 1 ) * 255.0f );
+					pixels[ 1 ] = ( byte )( Utils.Clamp( attG, 0, 1 ) * 255.0f );
+					pixels[ 2 ] = ( byte )( Utils.Clamp( attB, 0, 1 ) * 255.0f );
+					pixels += 3;
+				}
+
+				if ( progress != null )
+				{
+					progress.OnSliceCompleted( heightSample / ( float )( buildParams.HeightSamples - 1 ) );
+					if ( progress.Cancel )
+					{
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Builds a 3D lookup texture containing the scattering values for a parameterization of
 		/// the view frame and sun position.
 		/// </summary>
-		/// <param name="model">The atmosphere model</param>
 		/// <param name="parameters">Parameters for the build process</param>
 		/// <param name="progress">Progress object</param>
 		/// <param name="voxels">3d texture voxels</param>
 		/// <returns>true if build completed (wasn't cancelled)</returns>
-		private unsafe bool BuildLookupTexture( AtmosphereBuildModel model, AtmosphereBuildParameters parameters, byte* voxels, AtmosphereBuildProgress progress )
+		private unsafe bool BuildScatteringTexture( AtmosphereBuildParameters parameters, byte* voxels, AtmosphereBuildProgress progress )
 		{
-			SetupModelAndParameters( parameters, model );
 			float viewAngle = 0;
 			float viewAngleInc = Constants.Pi / ( parameters.ViewAngleSamples - 1 );
 			float heightRange = ( m_OuterRadius - m_InnerRadius );
 			float heightInc = ( heightRange - heightRange * 0.05f ) / ( parameters.HeightSamples - 1 );	//	Push height range in slightly to allow simplification of sphere intersections
 			float sunAngleInc = ( Constants.Pi ) / ( parameters.SunAngleSamples - 1 );
-
-			SetComponentScales( );
 
 			for ( int viewAngleSample = 0; viewAngleSample < parameters.ViewAngleSamples; ++viewAngleSample, viewAngle += viewAngleInc )
 			{
@@ -102,7 +178,7 @@ namespace Poc1.Tools.Atmosphere
 					float height = m_InnerRadius;
 					for ( int heightSample = 0; heightSample < parameters.HeightSamples; ++heightSample, height += heightInc )
 					{
-						ComputeScattering( viewDir, sunAngle, sunDir, height, voxels );
+						ComputeScattering( viewDir, sunDir, height, voxels );
 						voxels += 4;
 					}
 				}
@@ -119,22 +195,6 @@ namespace Poc1.Tools.Atmosphere
 			}
 			return true;
 		}
-
-		public static float HgPhase( float cosAngle, float g )
-		{
-			float g2 = g * g;
-			float t0 = ( 3 * ( 1 - g2 ) ) / 2 * ( 2 + g2 );
-			float tden0 = Functions.Pow( 1 + g2 - 2 * g * cosAngle, 3.0f / 2.0f );
-			float t1 = ( 1 + cosAngle * cosAngle ) / tden0;
-			float tRes = t0 * t1;
-			return tRes;
-		}
-
-		public static float RayleighPhase( float cosAngle )
-		{
-			return 0.75f * ( 1 + cosAngle * cosAngle );
-		}
-
 		
 		/// <summary>
 		/// Gets an intersection point between a ray (origin within inner/outer sphere boundary) and the inner and outer spheres
@@ -142,7 +202,7 @@ namespace Poc1.Tools.Atmosphere
 		private bool GetRayIntersection( Point3 origin, Vector3 dir, out Point3 intPt )
 		{
 			Ray3 ray = new Ray3( origin, dir );
-			/*
+			//*
 			Line3Intersection outerIntersection = Intersections3.GetRayIntersection( ray, m_OuterSphere );
 			if ( outerIntersection == null )
 			{
@@ -180,7 +240,7 @@ namespace Poc1.Tools.Atmosphere
 		/// Computes the in-scattering term for a given sun angle, viewer orientation, and height. Stores
 		/// the result in a 3-component voxel
 		/// </summary>
-		private unsafe void ComputeScattering( Vector3 viewDir, float sunAngle, Vector3 sunDir, float height, byte* voxel )
+		private unsafe void ComputeScattering( Vector3 viewDir, Vector3 sunDir, float height, byte* voxel )
 		{
 			//	Iv(t) = Is(t) (K.Fr(s)/t^4) E(i=0..k) p.exp(-Tl-Tv)
 
@@ -222,8 +282,8 @@ namespace Poc1.Tools.Atmosphere
 
 			//	The summation of attenuation is a Reimann sum approximation of the integral
 			//	of atmospheric density .
-			float viewRayLength = ( viewEnd - viewPos ).Length;
-			Vector3 viewVec = ( viewEnd - viewPos ).MakeNormal( );
+		//	float viewRayLength = ( viewEnd - viewPos ).Length;
+		//	Vector3 viewVec = ( viewEnd - viewPos ).MakeNormal( );
 			Vector3 sampleStep = ( viewEnd - viewPos ) / m_AttenuationSamples;
 		//	float mul = ( InscatterDistanceFudgeFactor * viewRayLength ) / m_OuterRadius;
 			float mul = ( m_InscatterDistanceFudgeFactor * sampleStep.Length );
@@ -245,7 +305,7 @@ namespace Poc1.Tools.Atmosphere
 
 				//	Calculate (wavelength-dependent) out-scatter terms
 				Vector3 viewStep = ( viewPos - samplePos ) / m_AttenuationSamples;
-				Vector3 sunStep = ( sunPt - samplePos ) / m_AttenuationSamples; 
+				Vector3 sunStep = ( sunPt - samplePos ) / m_AttenuationSamples;
 				for ( int component = 0; component < 3; ++component )
 				{
 					//	TODO: AP: This should calculate the rayleigh + mie out scatter terms separately, then sum them
@@ -364,6 +424,8 @@ namespace Poc1.Tools.Atmosphere
 		/// </remarks>
 		private void SetupModelAndParameters( AtmosphereBuildParameters parameters, AtmosphereBuildModel model )
 		{
+			SetComponentScales( );
+
 			m_InnerRadius = model.InnerRadius;
 			m_OuterRadius = model.OuterRadius;
 			m_InnerSphere = new Sphere3( Point3.Origin, m_InnerRadius * 0.9f );	//	NOTE: AP: See remarks
