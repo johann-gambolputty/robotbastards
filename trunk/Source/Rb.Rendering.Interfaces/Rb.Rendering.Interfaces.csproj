@@ -77,6 +77,7 @@
     <Compile Include="Objects\PolygonRenderMode.cs" />
     <Compile Include="Objects\PolygonShadeMode.cs" />
     <Compile Include="Objects\RenderDelegate.cs" />
+    <Compile Include="Objects\Texture2dData.cs" />
     <Compile Include="Objects\Texture3dData.cs" />
     <Compile Include="Objects\TextureFilter.cs" />
     <Compile Include="Objects\TextureFormat.cs" />

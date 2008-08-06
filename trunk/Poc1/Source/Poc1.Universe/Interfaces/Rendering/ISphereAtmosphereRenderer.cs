@@ -7,12 +7,28 @@ namespace Poc1.Universe.Interfaces.Rendering
 	/// </summary>
 	public interface ISphereAtmosphereRenderer : IAtmosphereRenderer
 	{
+
 		/// <summary>
-		/// Gets/sets the lookup texture used to render this atmosphere model
+		/// Sets the lookup textures required by the atmosphere renderer
 		/// </summary>
-		ITexture3d LookupTexture
+		/// <param name="scatteringTexture">Lookup table for in- and out-scattering coefficients</param>
+		/// <param name="opticalDepthTexture">Lookup table for optical depth</param>
+		void SetLookupTextures( ITexture3d scatteringTexture, ITexture2d opticalDepthTexture );
+
+		/// <summary>
+		/// Gets the scattering coefficient lookup texture used to render this atmosphere model
+		/// </summary>
+		ITexture3d ScatteringTexture
 		{
-			get; set;
+			get;
+		}
+
+		/// <summary>
+		/// Gets the optical depth lookup texture used to render this atmosphere model
+		/// </summary>
+		ITexture2d OpticalDepthTexture
+		{
+			get;
 		}
 
 	}

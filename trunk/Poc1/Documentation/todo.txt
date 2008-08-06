@@ -133,6 +133,7 @@
 			- M: Add profiling viewers
 			- L: Add shadow rendering
 	- Graphics Misc.
+		- H: Add shader custom build step
 		- H: Can't call any GL commands until display is setup (or null reference exceptions in tao)
 		- H: Shadows
 		- H: Technique selector should take an asset path (transparently reset technique when effect is reloaded)

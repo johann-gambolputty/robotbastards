@@ -28,7 +28,7 @@ sampler2D NoiseTexture = sampler_state
 #include "atmosphereBase.cg"
 
 /*
-samplerCUBE CloudTexture = sampler_state
+samplerCUBE CloudTexture = sampler_state5
 {
 	WrapS = ClampToEdge;
 	WrapT = ClampToEdge;
@@ -144,10 +144,10 @@ float GetCloudCover( FragmentShaderInput input )
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
-	float shade = ( dot( normalize( input.m_Normal ), SunDir  ) + 1.0f ) / 2.0f;
+	float shade = ( -dot( normalize( input.m_Normal ), SunDir  ) + 1.0f ) / 2.0f;
 	shade = shade * shade;
 
-	float4 diffuse = GetTerrainColour( input ) * shade.xxxx;
+	float4 diffuse = GetTerrainColour( input ) * shade;
 
 	return float4( GetScatteredObjectColour( input.m_WorldPos, diffuse.rgb ), 1 );
 }

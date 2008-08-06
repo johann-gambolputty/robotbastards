@@ -92,7 +92,7 @@ namespace Poc1.PlanetBuilder
 			/// <summary>
 			/// Builds the atmosphere lookup texture
 			/// </summary>
-			public Texture3dData Build( )
+			public AtmosphereBuildOutputs Build( )
 			{
 				AtmosphereBuildProgress progress = new AtmosphereBuildProgress( );
 				progress.SliceCompleted +=
@@ -109,7 +109,7 @@ namespace Poc1.PlanetBuilder
 				SphereAtmosphereModel sphereAtmosphere = ( SphereAtmosphereModel )spherePlanet.Atmosphere;
 				m_AtmosphereModel.InnerRadius = ( float )UniUnits.Metres.FromUniUnits( spherePlanet.Radius );
 				m_AtmosphereModel.OuterRadius = ( float )UniUnits.Metres.FromUniUnits( spherePlanet.Radius + sphereAtmosphere.Radius );
-				return m_Atmosphere.BuildLookupTexture( m_AtmosphereModel, m_AtmosphereBuildParameters, progress );
+				return m_Atmosphere.Build( m_AtmosphereModel, m_AtmosphereBuildParameters, progress );
 			}
 
 			#region Private Members
@@ -132,11 +132,17 @@ namespace Poc1.PlanetBuilder
 			buildButton.Text = Resources.Build;
 			buildProgressBar.Value = 0;
 
-			//	Create the atmosphere texture
-			ITexture3d lookupTexture = Graphics.Factory.CreateTexture3d( );
-			lookupTexture.Create( ( Texture3dData )args.Result );
+			AtmosphereBuildOutputs buildOutputs = ( AtmosphereBuildOutputs )args.Result;
 
-			( ( ISphereAtmosphereRenderer )BuilderState.Instance.Planet.AtmosphereRenderer ).LookupTexture = lookupTexture;
+			//	Create the atmosphere lookup textures
+			ITexture3d scatteringTexture = Graphics.Factory.CreateTexture3d( );
+			scatteringTexture.Create( buildOutputs.ScatteringTexture );
+
+			ITexture2d opticalDepthTexture = Graphics.Factory.CreateTexture2d( );
+			opticalDepthTexture.Create( buildOutputs.OpticalDepthTexture );
+
+			ISphereAtmosphereRenderer atmoRenderer = ( ISphereAtmosphereRenderer )BuilderState.Instance.Planet.AtmosphereRenderer;
+			atmoRenderer.SetLookupTextures( scatteringTexture, opticalDepthTexture );
 		}
 
 		/// <summary>

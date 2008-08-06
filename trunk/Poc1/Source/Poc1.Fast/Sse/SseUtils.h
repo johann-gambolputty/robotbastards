@@ -217,8 +217,8 @@ namespace Poc1
 			__m128 xOrZ = _mm_or_ps( _mm_and_ps( hMask, xxxx ), _mm_andnot_ps( hMask, zzzz ) );
 			vvvv = _mm_or_ps( vvvv, _mm_andnot_ps( vMask, xOrZ ) );
 
-			const __m128 hAndOne = _mm_cvtepi32_ps( _mm_and_si128( h, Constants::Ic_2 ) );
-			const __m128 hAndTwo = _mm_cvtepi32_ps( _mm_and_si128( h, Constants::Ic_1 ) );
+			const __m128 hAndOne = _mm_cvtepi32_ps( _mm_and_si128( h, Constants::Ic_1 ) );
+			const __m128 hAndTwo = _mm_cvtepi32_ps( _mm_and_si128( h, Constants::Ic_2 ) );
 			
 			const __m128 val0Mask = _mm_cmpeq_ps( hAndOne, Constants::Fc_0 );
 			const __m128 val0 = _mm_or_ps( _mm_and_ps( val0Mask, uuuu ), _mm_andnot_ps( val0Mask, Neg( uuuu ) ) );

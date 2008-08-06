@@ -59,6 +59,15 @@ namespace Rb.Rendering.Textures
 		}
 
 		/// <summary>
+		/// Creates the texture from a texture data model
+		/// </summary>
+		/// <param name="data">Texture data</param>
+		public void Create( Texture2dData data )
+		{
+			Asset.Create( data );
+		}
+
+		/// <summary>
 		/// Creates an empty texture
 		/// </summary>
 		public void Create( int width, int height, TextureFormat format )

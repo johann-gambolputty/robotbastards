@@ -83,9 +83,11 @@ namespace Poc1.Universe.Classes.Rendering
 
 			ITexture2d packTexture = m_Planet.Terrain.TerrainPackTexture;
 			ITexture2d typesTexture = m_Planet.Terrain.TerrainTypesTexture;
-			ITexture3d atmosphereTexture = ( ( ISphereAtmosphereRenderer )m_Planet.AtmosphereRenderer ).LookupTexture;
+			ITexture3d scatteringTexture = ( ( ISphereAtmosphereRenderer )m_Planet.AtmosphereRenderer ).ScatteringTexture;
+			ITexture2d opticalDepthTexture = ( ( ISphereAtmosphereRenderer )m_Planet.AtmosphereRenderer ).OpticalDepthTexture;
 
-			m_PlanetTerrainTechnique.Effect.Parameters[ "AtmosphereLookupTexture" ].Set( atmosphereTexture );
+			m_PlanetTerrainTechnique.Effect.Parameters[ "ScatteringTexture" ].Set( scatteringTexture );
+			m_PlanetTerrainTechnique.Effect.Parameters[ "OpticalDepthTexture" ].Set( opticalDepthTexture );
 			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainPackTexture" ].Set( packTexture );
 			m_PlanetTerrainTechnique.Effect.Parameters[ "TerrainTypeTexture" ].Set( typesTexture );
 			m_PlanetTerrainTechnique.Effect.Parameters[ "NoiseTexture" ].Set( m_NoiseTexture );

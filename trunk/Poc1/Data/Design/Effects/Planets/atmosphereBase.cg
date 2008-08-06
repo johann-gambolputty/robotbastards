@@ -1,8 +1,16 @@
-sampler3D AtmosphereLookupTexture = sampler_state
+sampler3D ScatteringTexture = sampler_state
 {
 	WrapS = Clamp;
 	WrapT = Clamp;
 	WrapR = Clamp;
+	MinFilter = Linear;
+	MagFilter = Linear;
+};
+
+sampler2D OpticalDepthTexture = sampler_state
+{
+	WrapS = Clamp;
+	WrapT = Clamp;
 	MinFilter = Linear;
 	MagFilter = Linear;
 };
@@ -53,14 +61,16 @@ float3 GetScatteredObjectColour( float3 pt, float3 objColour )
 	float viewToSunAngle = dot( viewVec, SunDir );
 	float si = saturate( ( posToSunAngle + 1.0f ) / 2.0f );
 
-	float4 scatterCoeffs = tex3D( AtmosphereLookupTexture, float3( h, si, 1 - th ) );
+	float4 scatterCoeffs = tex3D( ScatteringTexture, float3( h, si, 1 - th ) );
 	float rayPhase = RayleighPhase( viewToSunAngle );
 	float miePhase = HeyneyGreensteinPhaseFunction( viewToSunAngle, AtmHgCoeff );
 
 	float3 rayScatter = lerp( scatterCoeffs.rgb, scatterCoeffs.rgb * rayPhase, AtmPhaseWeight );
 	float mieScatter = lerp( scatterCoeffs.a, scatterCoeffs.a * miePhase, AtmPhaseWeight );
 
-	return objColour * float3( rayScatter.r + mieScatter, rayScatter.g + mieScatter, rayScatter.b + mieScatter );
+	float3 scatter = saturate( rayScatter + mieScatter );
+
+	return objColour * scatter;
 }
 
 // Gets the colour of a given point on the sky geometry
@@ -78,7 +88,7 @@ float3 GetScatteredSkyColour( float3 pt )
 	float viewToSunAngle = dot( viewVec, SunDir );
 	float si = saturate( ( posToSunAngle + 1.0f ) / 2.0f );
 
-	float4 scatterCoeffs = tex3D( AtmosphereLookupTexture, float3( h, si, 1 - th ) );
+	float4 scatterCoeffs = tex3D( ScatteringTexture, float3( h, si, 1 - th ) );
 	float rayPhase = RayleighPhase( viewToSunAngle );
 	float miePhase = HeyneyGreensteinPhaseFunction( viewToSunAngle, AtmHgCoeff );
 
