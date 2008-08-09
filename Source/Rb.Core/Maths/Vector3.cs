@@ -368,6 +368,14 @@ namespace Rb.Core.Maths
 		}
 
 		/// <summary>
+		/// Creates a copy of this vector with a given length
+		/// </summary>
+		public Vector3 MakeLength( float newLength )
+		{
+			return this * ( newLength / Length );
+		}
+
+		/// <summary>
 		/// Returns the square of the distance from this point to another
 		/// </summary>
 		public float SqrDistanceTo( Vector3 pt )

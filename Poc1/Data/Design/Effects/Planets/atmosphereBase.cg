@@ -18,10 +18,13 @@ sampler2D OpticalDepthTexture = sampler_state
 float3 SunIntensity = float3( 1, 1, 1 );
 float3 SunDir = float3( -1, 0, 0 );
 float3 AtmViewPos;
+float AtmViewPosLength = 0;
 float3 AtmViewDir;
 float AtmViewHeight;
 float AtmHgCoeff = -0.90f;
 float AtmPhaseWeight = 1.0f;
+float AtmInnerRadius = 0;
+float AtmThickness = 1;
 
 //	Rayleigh phase function
 float RayleighPhase( float cosAngle )
@@ -54,23 +57,32 @@ float3 GetScatteredObjectColour( float3 pt, float3 objColour )
 {
 	float3 viewVec = normalize( pt - AtmViewPos );
 
-	float h0 = length( AtmViewPos );
 	float h = AtmViewHeight;
-	float th = saturate( ( ( dot( AtmViewPos, viewVec ) / h0 ) + 1.0f ) / 2.0f );
-	float posToSunAngle = dot( AtmViewPos, SunDir ) / h0;
+	float th = saturate( ( ( dot( AtmViewPos, viewVec ) / AtmViewPosLength ) + 1.0f ) / 2.0f );
+	float posToSunAngle = dot( AtmViewPos, SunDir ) / AtmViewPosLength;
 	float viewToSunAngle = dot( viewVec, SunDir );
 	float si = saturate( ( posToSunAngle + 1.0f ) / 2.0f );
 
-	float4 scatterCoeffs = tex3D( ScatteringTexture, float3( h, si, 1 - th ) );
+	float4 scatterCoeffs = tex3D( ScatteringTexture, float3( h, si, th ) );
 	float rayPhase = RayleighPhase( viewToSunAngle );
 	float miePhase = HeyneyGreensteinPhaseFunction( viewToSunAngle, AtmHgCoeff );
 
+	float gH = length( pt );
+	float gH0 = saturate( ( gH - AtmInnerRadius ) / AtmThickness );
+	float gSi = ( ( dot( pt, SunDir ) / gH ) + 1.0f ) / 2.0f;
+
+	scatterCoeffs -= tex3D( ScatteringTexture, float3( gH0, gSi, th ) );
+
+	float gTh = ( ( dot( pt, viewVec ) / gH ) + 1.0f ) / 2.0f;
+	float3 sunOpticalDepth = tex2D( OpticalDepthTexture, float2( gH0, gSi ) );
+	float3 viewOpticalDepth = tex2D( OpticalDepthTexture, float2( gH0, 1 - gTh ) );
+	float3 opticalDepth = exp( -sunOpticalDepth - viewOpticalDepth );
+	
 	float3 rayScatter = lerp( scatterCoeffs.rgb, scatterCoeffs.rgb * rayPhase, AtmPhaseWeight );
 	float mieScatter = lerp( scatterCoeffs.a, scatterCoeffs.a * miePhase, AtmPhaseWeight );
-
 	float3 scatter = saturate( rayScatter + mieScatter );
-
-	return objColour * scatter;
+//	return saturate( ( opticalDepth * objColour ) + scatter );
+	return saturate( opticalDepth * objColour );
 }
 
 // Gets the colour of a given point on the sky geometry
@@ -81,14 +93,13 @@ float3 GetScatteredSkyColour( float3 pt )
 	//	TODO: AP: Intersect view segment with outer sphere. If segment intersects sphere, set
 	//	the view position to be the intersection point.
 
-	float h0 = length( AtmViewPos );
 	float h = AtmViewHeight;
-	float th = saturate( ( ( dot( AtmViewPos, viewVec ) / h0 ) + 1.0f ) / 2.0f );
-	float posToSunAngle = dot( AtmViewPos, SunDir ) / h0;
+	float th = ( ( dot( AtmViewPos, viewVec ) / AtmViewPosLength ) + 1.0f ) / 2.0f;
+	float posToSunAngle = dot( AtmViewPos, SunDir ) / AtmViewPosLength;
 	float viewToSunAngle = dot( viewVec, SunDir );
-	float si = saturate( ( posToSunAngle + 1.0f ) / 2.0f );
+	float si = ( posToSunAngle + 1.0f ) / 2.0f;
 
-	float4 scatterCoeffs = tex3D( ScatteringTexture, float3( h, si, 1 - th ) );
+	float4 scatterCoeffs = tex3D( ScatteringTexture, float3( h, si, th ) );
 	float rayPhase = RayleighPhase( viewToSunAngle );
 	float miePhase = HeyneyGreensteinPhaseFunction( viewToSunAngle, AtmHgCoeff );
 

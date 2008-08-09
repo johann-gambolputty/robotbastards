@@ -298,7 +298,7 @@ namespace Poc1
 						SetLength( cpXxxx, cpYyyy, cpZzzz, Constants::Fc_1 );
 						
 						__m128 slopes = _mm_sub_ps( Constants::Fc_1, Dot( cpXxxx, cpYyyy, cpZzzz, normalXxxx, normalYyyy, normalZzzz ) );
-						slopes = _mm_div_ps( slopes, _mm_set1_ps( 0.3f ) );
+						slopes = _mm_div_ps( slopes, _mm_set1_ps( 0.6f ) );
 						Clamp( slopes, Constants::Fc_0, Constants::Fc_1 );
 
 						//	TODO: AP: Clamp slopes to 0-1 range

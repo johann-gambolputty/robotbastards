@@ -96,7 +96,7 @@
   <!-- Build Targets -->
   <!--               -->
 
-  <Target Name="PreprocessEffects" Inputs="@(EffectFiles)" Outputs="@(EffectFiles->'Game\%(RecursiveDir)%(Filename)%(Extension)')">
+  <Target Name="PreprocessEffects"><!-- Inputs="@(EffectFiles)" Outputs="@(EffectFiles->'Game\%(RecursiveDir)%(Filename)%(Extension)')"> -->
     <Message Text="Preprocessing effects..."/>
     <Message Text="@(EffectFiles->'Game\%(RecursiveDir)%(Filename)%(Extension)')"/>
     <MakeDir Directories="Game\%(EffectFiles.RecursiveDir)"/>

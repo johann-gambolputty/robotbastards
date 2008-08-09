@@ -50,8 +50,6 @@ namespace Poc1.PlanetBuilder
 				}
 			}
 
-
-
 			Application.EnableVisualStyles( );
 			Application.SetCompatibleTextRenderingDefault( false );
 			Application.Run( new BuilderForm( ) );

@@ -15,21 +15,5 @@ namespace Poc1.Universe.Interfaces.Rendering
 		/// <param name="opticalDepthTexture">Lookup table for optical depth</param>
 		void SetLookupTextures( ITexture3d scatteringTexture, ITexture2d opticalDepthTexture );
 
-		/// <summary>
-		/// Gets the scattering coefficient lookup texture used to render this atmosphere model
-		/// </summary>
-		ITexture3d ScatteringTexture
-		{
-			get;
-		}
-
-		/// <summary>
-		/// Gets the optical depth lookup texture used to render this atmosphere model
-		/// </summary>
-		ITexture2d OpticalDepthTexture
-		{
-			get;
-		}
-
 	}
 }
