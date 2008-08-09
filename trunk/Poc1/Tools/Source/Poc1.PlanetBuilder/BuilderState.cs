@@ -9,7 +9,7 @@ namespace Poc1.PlanetBuilder
 		public const float TerrainWidth = 2048;
 		public const float TerrainMaxHeight = 200;
 		public const float TerrainDepth = 2048;
-		public const double PlanetRadius = 80000;
+		public const double PlanetRadius = 100000;
 
 		public BuilderState( )
 		{

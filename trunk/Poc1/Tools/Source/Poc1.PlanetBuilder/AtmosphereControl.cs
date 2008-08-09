@@ -5,7 +5,7 @@ using Poc1.Tools.Atmosphere;
 using System.ComponentModel;
 using Poc1.Universe;
 using Poc1.Universe.Classes;
-using Poc1.Universe.Classes.Rendering;
+using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Rendering;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
@@ -21,13 +21,9 @@ namespace Poc1.PlanetBuilder
 			//	Populate texture resolution combo boxes
 			for ( int i = 4; i <= 1024; i *= 2 )
 			{
-				heightSamplesComboBox.Items.Add( i );
-				viewAngleSamplesComboBox.Items.Add( i );
-				sunAngleSamplesComboBox.Items.Add( i );
+				resolutionComboBox.Items.Add( i );
 			}
-			heightSamplesComboBox.SelectedItem = m_AtmosphereBuildParameters.HeightSamples;
-			viewAngleSamplesComboBox.SelectedItem = m_AtmosphereBuildParameters.ViewAngleSamples;
-			sunAngleSamplesComboBox.SelectedItem = m_AtmosphereBuildParameters.SunAngleSamples;
+			resolutionComboBox.SelectedItem = m_AtmosphereBuildParameters.HeightSamples;
 
 			m_AtmosphereBuilder = new AtmosphereBuilder( );
 
@@ -105,10 +101,6 @@ namespace Poc1.PlanetBuilder
 						}
 					};
 
-				SpherePlanet spherePlanet = ( SpherePlanet )BuilderState.Instance.Planet;
-				SphereAtmosphereModel sphereAtmosphere = ( SphereAtmosphereModel )spherePlanet.Atmosphere;
-				m_AtmosphereModel.InnerRadius = ( float )UniUnits.Metres.FromUniUnits( spherePlanet.Radius );
-				m_AtmosphereModel.OuterRadius = ( float )UniUnits.Metres.FromUniUnits( spherePlanet.Radius + sphereAtmosphere.Radius );
 				return m_Atmosphere.Build( m_AtmosphereModel, m_AtmosphereBuildParameters, progress );
 			}
 
@@ -131,6 +123,11 @@ namespace Poc1.PlanetBuilder
 		{
 			buildButton.Text = Resources.Build;
 			buildProgressBar.Value = 0;
+
+			if ( args.Result == null )
+			{
+				return;
+			}
 
 			AtmosphereBuildOutputs buildOutputs = ( AtmosphereBuildOutputs )args.Result;
 
@@ -173,6 +170,8 @@ namespace Poc1.PlanetBuilder
 			}
 
 			//	TODO: AP: Remove bodge
+			m_AtmosphereModel.InnerRadiusMetres = ( float )( innerRadiusUpDown.Value * 1000.0m );
+			m_AtmosphereModel.AtmosphereThicknessMetres = ( float )( thicknessUpDown.Value * 1000.0m );
 			m_AtmosphereModel.OutscatterFudgeFactor = ( float )outscatterFudgeUpDown.Value;
 			m_AtmosphereModel.MieFudgeFactor = ( float )mieFudgeUpDown.Value;
 			m_AtmosphereModel.RayleighFudgeFactor = ( float )rayleighFudgeUpDown.Value;
@@ -181,9 +180,9 @@ namespace Poc1.PlanetBuilder
 			m_AtmosphereModel.MieDensityScaleHeightFraction = ( float )mH0UpDown.Value;
 			m_AtmosphereModel.RayleighDensityScaleHeightFraction = ( float )rH0UpDown.Value;
 			m_AtmosphereBuildParameters.AttenuationSamples = ( int )attenuationUpDown.Value;
-			m_AtmosphereBuildParameters.HeightSamples = ( int )heightSamplesComboBox.SelectedItem;
-			m_AtmosphereBuildParameters.ViewAngleSamples = ( int )viewAngleSamplesComboBox.SelectedItem;
-			m_AtmosphereBuildParameters.SunAngleSamples = ( int )sunAngleSamplesComboBox.SelectedItem;
+			m_AtmosphereBuildParameters.HeightSamples = ( int )resolutionComboBox.SelectedItem;
+			m_AtmosphereBuildParameters.ViewAngleSamples = ( int )resolutionComboBox.SelectedItem;
+			m_AtmosphereBuildParameters.SunAngleSamples = ( int )resolutionComboBox.SelectedItem;
 
 			buildButton.Text = Resources.Cancel;
 
@@ -205,11 +204,12 @@ namespace Poc1.PlanetBuilder
 
 		private void AtmosphereControl_Load( object sender, EventArgs e )
 		{
-			SpherePlanet planet = ( SpherePlanet )BuilderState.Instance.Planet;
-			m_AtmosphereModel.InnerRadius = ( float )UniUnits.RenderUnits.FromUniUnits( planet.Radius );
-			m_AtmosphereModel.OuterRadius = ( float )UniUnits.RenderUnits.FromUniUnits( planet.Radius + planet.SphereAtmosphere.Radius );
-			phaseCoeffUpDown.Value = ( decimal )BuilderState.Instance.Planet.Atmosphere.PhaseCoefficient;
-			phaseWeightUpDown.Value = ( decimal )BuilderState.Instance.Planet.Atmosphere.PhaseWeight;
+			IPlanet planet = BuilderState.Instance.Planet;
+			m_AtmosphereModel.InnerRadiusMetres = ( float )UniUnits.Metres.FromUniUnits( ( ( SpherePlanet )planet ).Radius );
+			phaseCoeffUpDown.Value = ( decimal )planet.Atmosphere.PhaseCoefficient;
+			phaseWeightUpDown.Value = ( decimal )planet.Atmosphere.PhaseWeight;
+			innerRadiusUpDown.Value = ( decimal )( m_AtmosphereModel.InnerRadiusMetres / 1000.0 );
+			thicknessUpDown.Value = ( decimal )( m_AtmosphereModel.AtmosphereThicknessMetres / 1000.0 );
 		}
 
 	}

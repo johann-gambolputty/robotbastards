@@ -44,6 +44,41 @@ namespace Poc1.Universe.Classes.Rendering
 			m_OpticalDepthTexture = opticalDepthTexture;
 		}
 
+
+		/// <summary>
+		/// Sets up parameters for ground effects
+		/// </summary>
+		public void SetupAtmosphereEffectParameters( IEffect effect, bool objectRendering )
+		{
+			IUniCamera camera = UniCamera.Current;
+			Point3 localPos = UniUnits.RenderUnits.MakeRelativePoint( m_Planet.Transform.Position, camera.Position );
+			float planetRadius = ( float )UniUnits.RenderUnits.FromUniUnits( m_Planet.Radius );
+			float atmosphereRadius = ( float )UniUnits.RenderUnits.FromUniUnits( m_AtmosphereRadius );
+			float height = localPos.DistanceTo( Point3.Origin ) - planetRadius;
+			float clampedHeight = Utils.Clamp( height, 0, atmosphereRadius );
+			float normHeight = clampedHeight / atmosphereRadius;
+
+			float clampedLength = planetRadius + clampedHeight;
+			Vector3 groundVec = localPos.ToVector3( ).MakeLength( clampedLength );
+			Point3 atmPos = Point3.Origin + groundVec;
+
+			Vector3 viewDir = UniCamera.Current.Frame.ZAxis;
+			effect.Parameters[ "AtmViewPosLength" ].Set( atmPos.DistanceTo( Point3.Origin ) );
+			effect.Parameters[ "AtmHgCoeff" ].Set( m_Planet.Atmosphere.PhaseCoefficient );
+			effect.Parameters[ "AtmPhaseWeight" ].Set( m_Planet.Atmosphere.PhaseWeight );
+			effect.Parameters[ "AtmViewPos" ].Set( atmPos.X, atmPos.Y, atmPos.Z );
+			effect.Parameters[ "AtmViewDir" ].Set( viewDir.X, viewDir.Y, viewDir.Z );
+			effect.Parameters[ "AtmViewHeight" ].Set( normHeight );
+			effect.Parameters[ "ScatteringTexture" ].Set( m_ScatteringTexture );
+			effect.Parameters[ "AtmInnerRadius" ].Set( planetRadius );
+			effect.Parameters[ "AtmThickness" ].Set( atmosphereRadius );
+
+			if ( objectRendering )
+			{
+				effect.Parameters[ "OpticalDepthTexture" ].Set( m_OpticalDepthTexture );
+			}
+		}
+
 		/// <summary>
 		/// Gets the scattering coefficient lookup texture used to render this atmosphere model
 		/// </summary>
@@ -69,28 +104,7 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		public void Render( IRenderContext context )
 		{
-			IUniCamera camera = UniCamera.Current;
-			Point3 localPos = UniUnits.RenderUnits.MakeRelativePoint( m_Planet.Transform.Position, camera.Position );
-			float planetRadius = ( float )UniUnits.RenderUnits.FromUniUnits( m_Planet.Radius );
-			float atmosphereRadius = ( float )UniUnits.RenderUnits.FromUniUnits( m_AtmosphereRadius );
-			float height = localPos.DistanceTo( Point3.Origin ) - planetRadius;
-			float clampedHeight = Utils.Clamp( height, 0, atmosphereRadius );
-			float normHeight = clampedHeight / atmosphereRadius;
-		//	normHeight *= 0.000100f;
-			Point3 atmPos = localPos * ( clampedHeight / height );
-
-			Vector3 viewDir = UniCamera.Current.Frame.ZAxis;
-
-			m_Techniques.Effect.Parameters[ "AtmHgCoeff" ].Set( m_Planet.Atmosphere.PhaseCoefficient );
-			m_Techniques.Effect.Parameters[ "AtmPhaseWeight" ].Set( m_Planet.Atmosphere.PhaseWeight );
-			m_Techniques.Effect.Parameters[ "AtmViewPos" ].Set( atmPos.X, atmPos.Y, atmPos.Z );
-			m_Techniques.Effect.Parameters[ "AtmViewDir" ].Set( viewDir.X, viewDir.Y, viewDir.Z );
-			m_Techniques.Effect.Parameters[ "AtmViewHeight" ].Set( normHeight );
-
-			if ( m_ScatteringTexture != null )
-			{
-				m_Techniques.Effect.Parameters[ "ScatteringTexture" ].Set( m_ScatteringTexture );
-			}
+			SetupAtmosphereEffectParameters( m_Techniques.Effect, false );
 			context.ApplyTechnique( m_Techniques, m_Atmosphere );
 		}
 

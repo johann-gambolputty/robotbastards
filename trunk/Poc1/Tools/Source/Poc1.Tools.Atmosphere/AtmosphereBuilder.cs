@@ -108,15 +108,17 @@ namespace Poc1.Tools.Atmosphere
 			for ( int heightSample = 0; heightSample < buildParams.HeightSamples; ++heightSample, height += heightInc )
 			{
 				Point3 pos = new Point3( 0, height, 0 );
-				float viewAngle = 0;
+				//	Start the view angle at pi, and count down to 0. This is because it is quickest to address
+				//	the 3D texture using the dot of the view vector and the view position, saving a (1-th) operation
+				float viewAngle = Constants.Pi;
 				Point3 lastAtmInt = pos;
-				for ( int viewSample = 0; viewSample < buildParams.ViewAngleSamples; ++viewSample, viewAngle += viewAngleInc )
+				for ( int viewSample = 0; viewSample < buildParams.ViewAngleSamples; ++viewSample, viewAngle -= viewAngleInc )
 				{
 					Vector3 viewDir = new Vector3( Functions.Sin( viewAngle ), Functions.Cos( viewAngle ), 0 );
 
 					//	NOTE: If ray intersection fails, the previous intersection position is used...
 					Point3 atmInt;
-					if ( !GetRayIntersection( pos, viewDir, out atmInt ) )
+					if ( !GetRayPlanetAndAtmosphereIntersection( pos, viewDir, out atmInt ) )
 					{
 						atmInt = lastAtmInt;
 					}
@@ -125,17 +127,18 @@ namespace Poc1.Tools.Atmosphere
 						lastAtmInt = atmInt;
 					}
 
-					float oR = ComputeOpticalDepth( pos, ( atmInt - pos ) / m_AttenuationSamples, m_RayleighCoefficients[ 0 ], m_MieCoefficients[ 0 ] );
-					float oG = ComputeOpticalDepth( pos, ( atmInt - pos ) / m_AttenuationSamples, m_RayleighCoefficients[ 1 ], m_MieCoefficients[ 1 ] );
-					float oB = ComputeOpticalDepth( pos, ( atmInt - pos ) / m_AttenuationSamples, m_RayleighCoefficients[ 2 ], m_MieCoefficients[ 2 ] );
+					Vector3 step = ( atmInt - pos ) / m_AttenuationSamples;
+					float oR = ComputeOpticalDepth( pos, step, m_RayleighCoefficients[ 0 ], m_MieCoefficients[ 0 ] );
+					float oG = ComputeOpticalDepth( pos, step, m_RayleighCoefficients[ 1 ], m_MieCoefficients[ 1 ] );
+					float oB = ComputeOpticalDepth( pos, step, m_RayleighCoefficients[ 2 ], m_MieCoefficients[ 2 ] );
 
 					float attR = Functions.Exp( -oR );
 					float attG = Functions.Exp( -oG );
 					float attB = Functions.Exp( -oB );
 
-					pixels[ 0 ] = ( byte )( Utils.Clamp( attR, 0, 1 ) * 255.0f );
+					pixels[ 2 ] = ( byte )( Utils.Clamp( attR, 0, 1 ) * 255.0f );
 					pixels[ 1 ] = ( byte )( Utils.Clamp( attG, 0, 1 ) * 255.0f );
-					pixels[ 2 ] = ( byte )( Utils.Clamp( attB, 0, 1 ) * 255.0f );
+					pixels[ 0 ] = ( byte )( Utils.Clamp( attB, 0, 1 ) * 255.0f );
 					pixels += 3;
 				}
 
@@ -161,13 +164,13 @@ namespace Poc1.Tools.Atmosphere
 		/// <returns>true if build completed (wasn't cancelled)</returns>
 		private unsafe bool BuildScatteringTexture( AtmosphereBuildParameters parameters, byte* voxels, AtmosphereBuildProgress progress )
 		{
-			float viewAngle = 0;
+			float viewAngle = Constants.Pi;
 			float viewAngleInc = Constants.Pi / ( parameters.ViewAngleSamples - 1 );
 			float heightRange = ( m_OuterRadius - m_InnerRadius );
 			float heightInc = ( heightRange - heightRange * 0.05f ) / ( parameters.HeightSamples - 1 );	//	Push height range in slightly to allow simplification of sphere intersections
 			float sunAngleInc = ( Constants.Pi ) / ( parameters.SunAngleSamples - 1 );
 
-			for ( int viewAngleSample = 0; viewAngleSample < parameters.ViewAngleSamples; ++viewAngleSample, viewAngle += viewAngleInc )
+			for ( int viewAngleSample = 0; viewAngleSample < parameters.ViewAngleSamples; ++viewAngleSample, viewAngle -= viewAngleInc )
 			{
 				Vector3 viewDir = new Vector3( Functions.Sin( viewAngle ), Functions.Cos( viewAngle ), 0 );
 
@@ -195,14 +198,10 @@ namespace Poc1.Tools.Atmosphere
 			}
 			return true;
 		}
-		
-		/// <summary>
-		/// Gets an intersection point between a ray (origin within inner/outer sphere boundary) and the inner and outer spheres
-		/// </summary>
-		private bool GetRayIntersection( Point3 origin, Vector3 dir, out Point3 intPt )
+
+		private bool GetRayAtmosphereIntersection(Point3 origin, Vector3 dir, out Point3 intPt )
 		{
 			Ray3 ray = new Ray3( origin, dir );
-			//*
 			Line3Intersection outerIntersection = Intersections3.GetRayIntersection( ray, m_OuterSphere );
 			if ( outerIntersection == null )
 			{
@@ -210,9 +209,13 @@ namespace Poc1.Tools.Atmosphere
 				return false;
 			}
 			intPt = outerIntersection.IntersectionPosition;
-			return true;
-			/*/
+			return true;	
+		}
+
+		private bool GetRayPlanetAndAtmosphereIntersection( Point3 origin, Vector3 dir, out Point3 intPt )
+		{
 			//	TODO: AP: Optimise ray intersection code (origin is always outside inner sphere, inside outer sphere)
+			Ray3 ray = new Ray3( origin, dir );
 			Line3Intersection innerIntersection = Intersections3.GetRayIntersection( ray, m_InnerSphere );
 			Line3Intersection outerIntersection = Intersections3.GetRayIntersection( ray, m_OuterSphere );
 			if ( innerIntersection == null )
@@ -232,10 +235,9 @@ namespace Poc1.Tools.Atmosphere
 				return true;
 			}
 			intPt = outerIntersection.IntersectionPosition;
-			return true;
-			//*/
+			return true;	
 		}
-
+		
 		/// <summary>
 		/// Computes the in-scattering term for a given sun angle, viewer orientation, and height. Stores
 		/// the result in a 3-component voxel
@@ -278,28 +280,30 @@ namespace Poc1.Tools.Atmosphere
 			Point3 viewPos = new Point3( 0, height, 0 );
 
 			Point3 viewEnd;
-			GetRayIntersection( viewPos, viewDir, out viewEnd );
+			GetRayPlanetAndAtmosphereIntersection( viewPos, viewDir, out viewEnd );
 
 			//	The summation of attenuation is a Reimann sum approximation of the integral
 			//	of atmospheric density .
 		//	float viewRayLength = ( viewEnd - viewPos ).Length;
 		//	Vector3 viewVec = ( viewEnd - viewPos ).MakeNormal( );
 			Vector3 sampleStep = ( viewEnd - viewPos ) / m_AttenuationSamples;
-		//	float mul = ( InscatterDistanceFudgeFactor * viewRayLength ) / m_OuterRadius;
+		//	float mul = ( InscatterDistanceFudgeFactor * viewRayLength ) / m_OuterRadiusMetres;
 			float mul = ( m_InscatterDistanceFudgeFactor * sampleStep.Length );
 			Point3 samplePos = viewPos + sampleStep;
 			float[] mAccum = new float[ 3 ];
 			float[] rAccum = new float[ 3 ];
 			for ( int sampleCount = 1; sampleCount < m_AttenuationSamples; ++sampleCount )
 			{
-				//	Cast a ray to the sun
+				//	Cast a ray to the sun. Don't intersect the planet. This is a cheap way of providing dark nights
 				Point3 sunPt;
-				if ( !GetRayIntersection( samplePos, sunDir, out sunPt ) )
+			//	if ( !GetRayAtmosphereIntersection( samplePos, sunDir, out sunPt ) )
+				if ( !GetRayPlanetAndAtmosphereIntersection( samplePos, sunDir, out sunPt ) )
 				{
 					break;
 				}
 
 				float sampleHeight = samplePos.DistanceTo( Point3.Origin ) - m_InnerRadius;
+				sampleHeight = Utils.Max( sampleHeight, 0 );
 				float pRCoeff = Functions.Exp( sampleHeight * m_InvRH0 ) * mul;
 				float pMCoeff = Functions.Exp( sampleHeight * m_InvMH0 ) * mul;
 
@@ -350,6 +354,7 @@ namespace Poc1.Tools.Atmosphere
 			for ( int sampleCount = 0; sampleCount < m_AttenuationSamples; ++sampleCount )
 			{
 				float ptHeight = pt.DistanceTo( Point3.Origin ) - m_InnerRadius;
+				ptHeight = Utils.Max( ptHeight, 0 );
 				float pmCoeff = Functions.Exp( ptHeight * m_InvMH0 );
 				float prCoeff = Functions.Exp( ptHeight * m_InvRH0 );
 				pmAccum += pmCoeff * mul;
@@ -426,12 +431,12 @@ namespace Poc1.Tools.Atmosphere
 		{
 			SetComponentScales( );
 
-			m_InnerRadius = model.InnerRadius;
-			m_OuterRadius = model.OuterRadius;
-			m_InnerSphere = new Sphere3( Point3.Origin, m_InnerRadius * 0.9f );	//	NOTE: AP: See remarks
+			m_InnerRadius = model.InnerRadiusMetres;
+			m_OuterRadius = model.InnerRadiusMetres + model.AtmosphereThicknessMetres;
+			m_InnerSphere = new Sphere3( Point3.Origin, m_InnerRadius * 0.95f );	//	NOTE: AP: See remarks
 			m_OuterSphere = new Sphere3( Point3.Origin, m_OuterRadius );
 			m_AttenuationSamples = parameters.AttenuationSamples;
-			float heightRange = ( model.OuterRadius - model.InnerRadius );
+			float heightRange = ( m_OuterRadius - m_InnerRadius );
 			m_InvRH0 = -1.0f / ( heightRange * model.RayleighDensityScaleHeightFraction );
 			m_InvMH0 = -1.0f / ( heightRange * model.MieDensityScaleHeightFraction );
 			m_InscatterDistanceFudgeFactor = model.InscatterDistanceFudgeFactor;

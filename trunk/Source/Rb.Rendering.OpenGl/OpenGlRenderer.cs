@@ -73,11 +73,14 @@ namespace Rb.Rendering.OpenGl
 		{
 			if ( Thread.CurrentThread.ManagedThreadId == m_RenderingThreadId )
 			{
-				foreach ( IDisposable disposable in m_Disposables )
+				lock ( m_Disposables )
 				{
-					disposable.Dispose( );
+					foreach ( IDisposable disposable in m_Disposables )
+					{
+						disposable.Dispose( );
+					}
+					m_Disposables.Clear( );
 				}
-				m_Disposables.Clear( );
 			}
 		}
 
@@ -100,7 +103,10 @@ namespace Rb.Rendering.OpenGl
 			}
 			if ( Thread.CurrentThread.ManagedThreadId != m_RenderingThreadId )
 			{
-				m_Disposables.Add( disposable );
+				lock ( m_Disposables )
+				{
+					m_Disposables.Add( disposable );
+				}
 			}
 			else
 			{

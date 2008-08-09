@@ -36,7 +36,7 @@ namespace Poc1.Tools.Atmosphere
 		/// <summary>
 		/// Gets/sets the inner radius (planet radius)
 		/// </summary>
-		public float InnerRadius
+		public float InnerRadiusMetres
 		{
 			get { return m_InnerRadius; }
 			set { m_InnerRadius = value; }
@@ -45,10 +45,10 @@ namespace Poc1.Tools.Atmosphere
 		/// <summary>
 		/// Gets/sets the outer radius (planet + atmosphere radius)
 		/// </summary>
-		public float OuterRadius
+		public float AtmosphereThicknessMetres
 		{
-			get { return m_OuterRadius; }
-			set { m_OuterRadius = value; }
+			get { return m_Thickness; }
+			set { m_Thickness = value; }
 		}
 
 		/// <summary>
@@ -106,8 +106,8 @@ namespace Poc1.Tools.Atmosphere
 		private float m_MieDensityScaleHeightFraction = 0.9f;
 		private float m_RayleighDensityScaleHeightFraction = 0.9f;
 		private readonly float[] m_SunIntensity = new float[ 3 ] { 1, 1, 1 };
-		private float m_InnerRadius = 80000;
-		private float m_OuterRadius = 86000;
+		private float m_InnerRadius = 6000000;
+		private float m_Thickness = 10000;
 
 		#endregion
 
