@@ -6,6 +6,7 @@ using Poc1.Universe.Classes.Cameras;
 using Rb.Assets;
 using Rb.Assets.Interfaces;
 using Rb.Core.Maths;
+using Rb.Rendering;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
 using Graphics=Rb.Rendering.Graphics;
@@ -17,6 +18,7 @@ namespace Poc1.Universe.Classes
 	/// </summary>
 	public class StarBox : IRenderable
 	{
+		private readonly ITechnique m_Technique;
 
 		#region Construction
 
@@ -25,6 +27,10 @@ namespace Poc1.Universe.Classes
 		/// </summary>
 		public StarBox( )
 		{
+
+			EffectAssetHandle effect = new EffectAssetHandle( "Effects/Planets/stars.cgfx", false );
+			m_Technique = new TechniqueSelector( effect, "DefaultTechnique" );
+
 			Draw.ISurface surface = Graphics.Draw.NewSurface( Graphics.Draw.NewBrush( Color.Black ), null );
 			surface.FaceBrush.State.CullFaces = false;
 			surface.FaceBrush.State.DepthWrite = false;
@@ -34,25 +40,22 @@ namespace Poc1.Universe.Classes
 			Graphics.Draw.Sphere( surface, Point3.Origin, 100, 10, 10 );
 			m_Box = Graphics.Draw.StopCache( );
 
-			ICubeMapTexture texture = Graphics.Factory.CreateCubeMapTexture( );
-			LoadStarBoxTextures( texture, "Star Fields/Default/" );
+			m_Texture = Graphics.Factory.CreateCubeMapTexture( );
+			LoadStarBoxTextures( m_Texture, "Star Fields/Default/" );
 
-			int imageIndex = 0;
-			foreach ( Bitmap bmp in texture.ToBitmaps( ) )
-			{
-				bmp.Save( "StarBoxCubeMapFace" + imageIndex++ + ".bmp", ImageFormat.Bmp );
-			}
-
-			m_Sampler = Graphics.Factory.CreateCubeMapTextureSampler( );
-			m_Sampler.Texture = texture;
+			//int imageIndex = 0;
+			//foreach ( Bitmap bmp in m_Texture.ToBitmaps( ) )
+			//{
+			//    bmp.Save( "StarBoxCubeMapFace" + imageIndex++ + ".bmp", ImageFormat.Bmp );
+			//}
 		}
 
 		#endregion
 
 		#region Private Members
 
+		private readonly ICubeMapTexture m_Texture;
 		private readonly IRenderable m_Box;
-		private readonly ICubeMapTextureSampler m_Sampler;
 
 		/// <summary>
 		/// Loads star box textures from a given folder into a cube map texture
@@ -98,9 +101,10 @@ namespace Poc1.Universe.Classes
 		{
 			GameProfiles.Game.Rendering.StarSphereRendering.Begin( );
 			Graphics.Renderer.PushTransform( TransformType.Texture0, UniCamera.Current.InverseFrame );
-			m_Sampler.Begin( );
-			m_Box.Render( context );
-			m_Sampler.End( );
+		//	m_Sampler.Begin( );
+			m_Technique.Effect.Parameters[ "StarsTexture" ].Set( m_Texture );
+			m_Technique.Apply( context, m_Box );
+		//	m_Sampler.End( );
 			Graphics.Renderer.PopTransform( TransformType.Texture0 );
 			GameProfiles.Game.Rendering.StarSphereRendering.End( );
 		}

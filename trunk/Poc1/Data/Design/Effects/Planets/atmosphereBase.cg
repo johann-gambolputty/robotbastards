@@ -82,7 +82,7 @@ float3 GetScatteredObjectColour( float3 pt, float3 objColour )
 	float mieScatter = lerp( scatterCoeffs.a, scatterCoeffs.a * miePhase, AtmPhaseWeight );
 	float3 scatter = saturate( rayScatter + mieScatter );
 //	return saturate( ( opticalDepth * objColour ) + scatter );
-	return saturate( opticalDepth * objColour );
+	return saturate( ( opticalDepth * objColour ) + scatter );
 }
 
 // Gets the colour of a given point on the sky geometry

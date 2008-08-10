@@ -36,6 +36,7 @@ namespace Poc1.PlanetBuilder
 			this.builderControls1 = new Poc1.PlanetBuilder.BuilderControls( );
 			this.splitter1 = new System.Windows.Forms.Splitter( );
 			this.testDisplay = new Rb.Rendering.Windows.Display( );
+			this.menuStrip1.SuspendLayout( );
 			this.SuspendLayout( );
 			// 
 			// menuStrip1
@@ -45,7 +46,7 @@ namespace Poc1.PlanetBuilder
             this.assetsToolStripMenuItem} );
 			this.menuStrip1.Location = new System.Drawing.Point( 0, 0 );
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size( 292, 24 );
+			this.menuStrip1.Size = new System.Drawing.Size( 579, 24 );
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -60,7 +61,7 @@ namespace Poc1.PlanetBuilder
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size( 103, 22 );
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler( this.exitToolStripMenuItem_Click );
 			// 
@@ -75,23 +76,23 @@ namespace Poc1.PlanetBuilder
 			// buildToolStripMenuItem
 			// 
 			this.buildToolStripMenuItem.Name = "buildToolStripMenuItem";
-			this.buildToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+			this.buildToolStripMenuItem.Size = new System.Drawing.Size( 107, 22 );
 			this.buildToolStripMenuItem.Text = "&Build";
 			this.buildToolStripMenuItem.Click += new System.EventHandler( this.buildToolStripMenuItem_Click );
 			// 
 			// builderControls1
 			// 
 			this.builderControls1.Dock = System.Windows.Forms.DockStyle.Left;
-			this.builderControls1.Location = new System.Drawing.Point( 0, 0 );
+			this.builderControls1.Location = new System.Drawing.Point( 0, 24 );
 			this.builderControls1.Name = "builderControls1";
-			this.builderControls1.Size = new System.Drawing.Size( 261, 471 );
+			this.builderControls1.Size = new System.Drawing.Size( 261, 447 );
 			this.builderControls1.TabIndex = 0;
 			// 
 			// splitter1
 			// 
-			this.splitter1.Location = new System.Drawing.Point( 261, 0 );
+			this.splitter1.Location = new System.Drawing.Point( 261, 24 );
 			this.splitter1.Name = "splitter1";
-			this.splitter1.Size = new System.Drawing.Size( 3, 471 );
+			this.splitter1.Size = new System.Drawing.Size( 3, 447 );
 			this.splitter1.TabIndex = 1;
 			this.splitter1.TabStop = false;
 			// 
@@ -102,10 +103,10 @@ namespace Poc1.PlanetBuilder
 			this.testDisplay.ContinuousRendering = true;
 			this.testDisplay.DepthBits = ( ( byte )( 24 ) );
 			this.testDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.testDisplay.Location = new System.Drawing.Point( 264, 0 );
+			this.testDisplay.Location = new System.Drawing.Point( 264, 24 );
 			this.testDisplay.Name = "testDisplay";
 			this.testDisplay.RenderInterval = 1;
-			this.testDisplay.Size = new System.Drawing.Size( 315, 471 );
+			this.testDisplay.Size = new System.Drawing.Size( 315, 447 );
 			this.testDisplay.StencilBits = ( ( byte )( 0 ) );
 			this.testDisplay.TabIndex = 2;
 			// 
@@ -121,9 +122,13 @@ namespace Poc1.PlanetBuilder
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "BuilderForm";
 			this.Text = "Planet Builder";
+			this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
 			this.Shown += new System.EventHandler( this.BuilderForm_Shown );
-			this.Closing += new System.ComponentModel.CancelEventHandler( BuilderForm_Closing );
+			this.Closing += new System.ComponentModel.CancelEventHandler( this.BuilderForm_Closing );
+			this.menuStrip1.ResumeLayout( false );
+			this.menuStrip1.PerformLayout( );
 			this.ResumeLayout( false );
+			this.PerformLayout( );
 
 		}
 
