@@ -25,8 +25,8 @@ namespace Poc1
 					{
 						m_Seed = -1;
 						m_NumOctaves = 8;
-						m_Frequency = 1.1f;
-						m_Lacunarity = 1.2f;
+						m_Frequency = 2.1f;
+						m_Lacunarity = 0.8f;
 					}
 
 					///	\brief	Sets up a simple fractal from these parameters

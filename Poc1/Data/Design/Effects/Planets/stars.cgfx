@@ -1,0 +1,63 @@
+
+samplerCUBE StarsTexture = sampler_state
+{
+	MinFilter = Linear;
+	MagFilter = Linear;
+};
+
+#include "atmosphere.cg"
+
+struct VertexShaderInput
+{
+	float4 m_Position : POSITION;
+	float4 m_Normal : NORMAL;
+};
+
+struct FragmentShaderInput
+{
+	float4 m_Position : POSITION;
+	float3 m_Normal : TEXCOORD0;
+	float3 m_WorldPos : TEXCOORD1;
+};
+
+
+float4x4 ModelViewProjectionMatrix;
+float4x4 InverseTransposeModelMatrix;
+
+
+FragmentShaderInput VertexShader( VertexShaderInput input )
+{
+	FragmentShaderInput output;
+
+	output.m_Position = mul( ModelViewProjectionMatrix, input.m_Position );
+	output.m_Normal = normalize( mul( InverseTransposeModelMatrix, input.m_Normal ) ).xyz;
+	output.m_WorldPos = input.m_Position;
+
+	return output;
+}
+
+float4 FragmentShader( FragmentShaderInput input ) : COLOR
+{
+	float4 starColour = texCUBE( StarsTexture, input.m_Normal.xyz );
+
+	return float4( GetScatteredObjectColour( input.m_Position, starColour.rgb ), 1 );
+}
+
+
+technique DefaultTechnique
+{
+	pass
+	{
+		LightingEnable			= false;
+		DepthMask				= true;
+		ShadeModel				= Smooth;
+		FrontFace				= CW;
+		DepthTestEnable			= false;
+		DepthFunc				= Less;
+		CullFaceEnable			= true;
+		BlendEnable				= false;
+		PolygonMode				= int2( Front, Fill );
+		VertexProgram			= compile arbvp1 VertexShader( );
+		FragmentProgram			= compile arbfp1 FragmentShader( );
+	}
+}

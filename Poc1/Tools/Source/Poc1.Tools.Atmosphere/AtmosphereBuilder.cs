@@ -433,7 +433,7 @@ namespace Poc1.Tools.Atmosphere
 
 			m_InnerRadius = model.InnerRadiusMetres;
 			m_OuterRadius = model.InnerRadiusMetres + model.AtmosphereThicknessMetres;
-			m_InnerSphere = new Sphere3( Point3.Origin, m_InnerRadius * 0.95f );	//	NOTE: AP: See remarks
+			m_InnerSphere = new Sphere3( Point3.Origin, m_InnerRadius * 0.1f );	//	NOTE: AP: See remarks
 			m_OuterSphere = new Sphere3( Point3.Origin, m_OuterRadius );
 			m_AttenuationSamples = parameters.AttenuationSamples;
 			float heightRange = ( m_OuterRadius - m_InnerRadius );
