@@ -1,6 +1,5 @@
 using System;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using Poc1.Universe.Classes.Cameras;
 using Rb.Assets;

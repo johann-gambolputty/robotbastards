@@ -5,7 +5,7 @@ samplerCUBE StarsTexture = sampler_state
 	MagFilter = Linear;
 };
 
-#include "atmosphere.cg"
+//#include "atmosphereBase.cg"
 
 struct VertexShaderInput
 {
@@ -17,7 +17,7 @@ struct FragmentShaderInput
 {
 	float4 m_Position : POSITION;
 	float3 m_Normal : TEXCOORD0;
-	float3 m_WorldPos : TEXCOORD1;
+//	float3 m_WorldPos : TEXCOORD1;
 };
 
 
@@ -31,7 +31,7 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 
 	output.m_Position = mul( ModelViewProjectionMatrix, input.m_Position );
 	output.m_Normal = normalize( mul( InverseTransposeModelMatrix, input.m_Normal ) ).xyz;
-	output.m_WorldPos = input.m_Position;
+//	output.m_WorldPos = input.m_Position;
 
 	return output;
 }
@@ -39,8 +39,8 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
 	float4 starColour = texCUBE( StarsTexture, input.m_Normal.xyz );
-
-	return float4( GetScatteredObjectColour( input.m_Position, starColour.rgb ), 1 );
+	return starColour;
+//	return float4( GetScatteredObjectColour( input.m_WorldPos, starColour.rgb ), 1 );
 }
 
 

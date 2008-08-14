@@ -10,6 +10,9 @@ namespace Poc1.PlanetBuilder
 			InitializeComponent( );
 		}
 
+		/// <summary>
+		/// Gets the height of the ocean
+		/// </summary>
 		public float SeaLevel
 		{
 			get
