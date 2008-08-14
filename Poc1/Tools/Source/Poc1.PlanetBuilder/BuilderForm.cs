@@ -73,7 +73,15 @@ namespace Poc1.PlanetBuilder
 
 		private void BuilderForm_Closing( object sender, System.ComponentModel.CancelEventArgs e )
 		{
-			BuilderState.Instance.Planet = null;	//	Forces dispose of current planet
+			try
+			{
+				BuilderState.Instance.Planet = null;	//	Forces dispose of current planet
+			}
+			catch ( Exception ex )
+			{
+				AppLog.Exception( ex, "Error destroying planet instance" );
+				MessageBox.Show( this, string.Format( "Error destroying planet instance ({0})", ex.Message ) );
+			}
 			Graphics.Renderer.Dispose( );
 		}
 

@@ -27,13 +27,18 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
-	return float4( GetScatteredSkyColour( input.m_WorldPos.xyz ), 1 );
+	float4 colour = float4( GetScatteredSkyColour( input.m_WorldPos.xyz ), 1 );
+	colour.a = min( ( colour.r + colour.g + colour.b ) * 1.5f, 1 );
+	return colour;
 }
 
 technique DefaultTechnique
 {
 	pass
 	{
+		BlendEnable				= true;
+		BlendFunc				= int2( One, OneMinusSrcAlpha );
+
 	//	Texture3DEnable[0]		= true;
 		LightingEnable			= false;
 		DepthMask				= true;
@@ -42,7 +47,6 @@ technique DefaultTechnique
 		DepthTestEnable			= true;
 		DepthFunc				= Less;
 		CullFaceEnable			= true;
-		BlendEnable				= false;
 		PolygonMode				= int2( Back, Fill );
 		VertexProgram			= compile arbvp1 VertexShader( );
 		FragmentProgram			= compile arbfp1 FragmentShader( );

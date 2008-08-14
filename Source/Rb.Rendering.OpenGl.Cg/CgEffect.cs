@@ -94,77 +94,6 @@ namespace Rb.Rendering.OpenGl.Cg
 			}
 		}
 
-		private static readonly Regex ms_IncludeRegex = new Regex
-			(
-				@"\#include ""(?<path>.*)"""
-			);
-
-		private static string OpenIncludePath( ISource source, string path )
-		{
-			IStreamSource includeSource = source.Location.ParentFolder.GetFile( path );
-			if ( includeSource == null )
-			{
-				throw new FileNotFoundException( "Could not find include file", path );
-			}
-			using ( Stream stream = includeSource.Open( ) )
-			{
-				StreamReader reader = new StreamReader( stream );
-				string contents = reader.ReadToEnd( );
-
-				//	Recursively inline all includes
-				contents = InlineAllIncludes( includeSource, contents );
-				return contents;
-			}
-		}
-
-		private static int CountLines( string str, int start, int end )
-		{
-			int lines = 0;
-			for ( int index = start; index < end; ++index )
-			{
-				if ( str[ index ] == '\n' )
-				{
-					++lines;
-				}
-			}
-			return lines;
-		}
-
-		public static string InlineAllIncludes(ISource source, string cgCode)
-		{
-			Match match = ms_IncludeRegex.Match( cgCode );
-			if ( !match.Success )
-			{
-				return cgCode;
-			}
-
-			string sourcePath = source.Path.Replace( @"\", @"\\" );
-
-			StringBuilder sb = new StringBuilder( cgCode.Length );
-			int lastPos = 0;
-			int orgLine = 1;
-			for ( ; match.Success; match = match.NextMatch( ) )
-			{
-				Capture cap = match.Captures[ 0 ];
-				sb.Append( cgCode, lastPos, cap.Index - lastPos );
-				orgLine += CountLines( cgCode, lastPos, cap.Index );
-
-				string path = match.Groups[ "path" ].Value;
-				sb.AppendFormat( "#line 1 \"{0}\"\n", path );
-
-				string includeContents = OpenIncludePath( source, path );
-				sb.Append( includeContents );
-
-				sb.AppendFormat( "#line {0} \"{1}\"\n", orgLine, sourcePath );
-
-				lastPos = cap.Index + cap.Length;
-			}
-
-			sb.Append( cgCode, lastPos, cgCode.Length - lastPos );
-
-			return sb.ToString( );
-		}
-
 		/// <summary>
 		/// Loads this effect from a .cgfx stream
 		/// </summary>
@@ -176,16 +105,6 @@ namespace Rb.Rendering.OpenGl.Cg
 				using ( StreamReader reader = new StreamReader( streamSource ) )
 				{
 					string str = reader.ReadToEnd( );
-
-					//	Replace any instances of "#include" with the actual file contents
-					//	(this is because CG doesn't appear to have a search path, and wouldn't be able
-					//	to handle, say, compressed file systems, databases, or other methods of retrieving assets)
-					//	It's a bit shit, because it doesn't handle any other pre-processor directives that might
-					//	affect how includes are handled (not to mention comments)
-					str = InlineAllIncludes( source, str );
-
-					//	File.WriteAllText("c:\\temp\\effectDump.cgfx", str);
-
 					if ( !CreateFromHandle( TaoCg.cgCreateEffect( m_Context, str, null ) ) )
 					{
 						throw new ApplicationException( string.Format( "Unable to create CG effect from stream \"{0}\"\n{1}", source.Path, TaoCg.cgGetLastListing( m_Context ) ) );
