@@ -289,6 +289,9 @@ namespace Rb.Core.Utils
 
 		#region Sample Public Class
 
+		/// <summary>
+		/// Profile sample class
+		/// </summary>
 		public class Sample
 		{
 			public void Set( long time, int count )

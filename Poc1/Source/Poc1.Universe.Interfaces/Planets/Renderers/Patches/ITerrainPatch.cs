@@ -1,15 +1,28 @@
-using Rb.Core.Maths;
 
-namespace Poc1.Universe.Interfaces.Rendering
+using Rb.Core.Maths;
+using Rb.Rendering.Interfaces.Objects;
+
+namespace Poc1.Universe.Interfaces.Planets.Renderers.Patches
 {
-	public interface ITerrainPatch
+	/// <summary>
+	/// Terrain patch interface
+	/// </summary>
+	public unsafe interface ITerrainPatch : IRenderable
 	{
 		/// <summary>
-		/// Returns the maximum error between the patch geometry and the underlying terrain
+		/// Gets/sets the maximum error between the patch geometry and the underlying terrain
 		/// </summary>
 		float PatchError
 		{
-			get;
+			get; set;
+		}
+
+		/// <summary>
+		/// Gets/sets the UV resolution of the patch
+		/// </summary>
+		float UvResolution
+		{
+			get; set;
 		}
 
 		/// <summary>
@@ -57,5 +70,9 @@ namespace Poc1.Universe.Interfaces.Rendering
 		/// </summary>
 		void SetPlanetParameters( Point3 centre, float radius );
 
+		/// <summary>
+		/// Called when the terrain patch has finished building
+		/// </summary>
+		void OnBuildComplete( byte* vertexData, float increaseDetailDistance );
 	}
 }

@@ -19,11 +19,15 @@ struct VertexShaderInput
 struct FragmentShaderInput
 {
 	float4 m_Position : POSITION;
-	float3 m_Normal;
+	float3 m_Normal : TEXCOORD0;
 };
 
 float4x4 ModelViewProjectionMatrix;
 float4x4 InverseTransposeModelMatrix;
+float4x4 ViewMatrix;
+float3 SunDir = float3( 1, 0, 0 );
+float3 EyePosition;
+float3 EyeZAxis;
 
 FragmentShaderInput VertexShader( VertexShaderInput input )
 {
@@ -36,10 +40,20 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
-	float2 uv = float2( input.m_Normal.x * 32, input.m_Normal.z * 32 );
-	float4 oceanColour = tex2D( OceanTexture, uv );
+	float3 normal = normalize( input.m_Normal );
+	float2 uv = float2( normal.y * 32, normal.z * 32 );
+	float3 oceanColour = tex2D( OceanTexture, uv ).rgb;
 
-	return oceanColour;
+	float3	zAxis		= float3( ViewMatrix[ 2 ] );
+	float3	halfVec		= normalize( SunDir + zAxis );
+	float	diffuse		= dot( normal, SunDir );
+	float	specular	= dot( normal, halfVec );
+
+	float4	lighting	= lit( diffuse, specular, 32 );
+
+	float4	colour		= float4( ( lighting.y * oceanColour ) + ( lighting.z * oceanColour ), 1 );
+
+	return colour;
 }
 
 technique DefaultTechnique
@@ -50,7 +64,7 @@ technique DefaultTechnique
 		DepthFunc				= Less;
 		DepthMask				= true;
 		ShadeModel				= Smooth;
-		FrontFace				= CW;
+		FrontFace				= CCW;
 		DepthTestEnable			= true;
 		CullFaceEnable			= false;
 		BlendEnable				= false;

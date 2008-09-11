@@ -39,7 +39,7 @@ namespace Poc1.PlanetBuilder
 						| System.Windows.Forms.AnchorStyles.Right ) ) );
 			this.seaLevelTrackBar.LargeChange = 20;
 			this.seaLevelTrackBar.Location = new System.Drawing.Point( 0, 16 );
-			this.seaLevelTrackBar.Maximum = 100;
+			this.seaLevelTrackBar.Maximum = 100000;
 			this.seaLevelTrackBar.Name = "seaLevelTrackBar";
 			this.seaLevelTrackBar.Size = new System.Drawing.Size( 150, 45 );
 			this.seaLevelTrackBar.TabIndex = 0;

@@ -77,7 +77,6 @@
     <Compile Include="Interfaces\IPlanet.cs" />
     <Compile Include="Interfaces\IPlanetModel.cs" />
     <Compile Include="Interfaces\ISun.cs" />
-    <Compile Include="Interfaces\IUniCamera.cs" />
     <Compile Include="Interfaces\Rendering\IAtmosphereRenderer.cs" />
     <Compile Include="Interfaces\Rendering\IPlanetAtmosphereModel.cs" />
     <Compile Include="Interfaces\Rendering\IPlanetOcean.cs" />
@@ -88,13 +87,19 @@
     <Compile Include="Interfaces\Rendering\ITerrainPatchGeometryManager.cs" />
     <Compile Include="Interfaces\Rendering\ITerrainType.cs" />
     <Compile Include="Interfaces\Rendering\ITerrainTypeManager.cs" />
-    <Compile Include="Interfaces\Rendering\TerrainVertex.cs" />
     <Compile Include="NoiseTest.cs" />
+    <Compile Include="Planets\Planet.cs" />
+    <Compile Include="Planets\Spherical\Models\SpherePlanetProcTerrainModel.cs" />
+    <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatch.cs" />
+    <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatchBuilder.cs" />
+    <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatchBuildItem.cs" />
+    <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatchConstants.cs" />
+    <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatchVertices.cs" />
+    <Compile Include="Planets\Spherical\Renderers\SpherePlanetAtmosphereRenderer.cs" />
+    <Compile Include="Planets\Spherical\Renderers\SpherePlanetOceanRenderer.cs" />
+    <Compile Include="Planets\Spherical\Renderers\SpherePlanetTerrainPatchRenderer.cs" />
+    <Compile Include="Planets\Spherical\SpherePlanet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UniPoint3.cs" />
-    <Compile Include="UniRay3.cs" />
-    <Compile Include="UniTransform.cs" />
-    <Compile Include="UniUnits.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Source\Rb.Assets\Rb.Assets.csproj">
@@ -129,9 +134,14 @@
       <Project>{2EA4865D-CDBB-4EC3-83A3-4703FE7B7A28}</Project>
       <Name>Poc1.Fast</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Poc1.Universe.Interfaces\Poc1.Universe.Interfaces.csproj">
+      <Project>{7C18549B-2D70-4985-852B-6A285BF4F00A}</Project>
+      <Name>Poc1.Universe.Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Classes.cd" />
+    <Folder Include="Planets\Models\" />
+    <Folder Include="Planets\Renderers\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

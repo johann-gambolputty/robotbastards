@@ -1,0 +1,360 @@
+using Rb.Core.Maths;
+
+namespace Poc1.Universe.Interfaces
+{
+	/// <summary>
+	/// Units
+	/// </summary>
+	public static class Units
+	{
+		/// <summary>
+		/// Unit conversion factors and helper functions
+		/// </summary>
+		public static class Convert
+		{
+			public const double MulUniToMetres = 1.0 / 100.0;
+			public const double MulUniToRender = 1.0 / 1000.0;
+			public const double MulUniToAstroRender = 1.0 / 100000.0;
+
+			public const double MulMetresToUni = 1.0 / MulUniToMetres;
+			public const double MulMetresToRender = MulUniToRender / MulUniToMetres;
+			public const double MulMetresToAstroRender = MulUniToAstroRender / MulUniToMetres;
+
+			public const double MulRenderToUni = 1.0 / MulUniToRender;
+			public const double MulRenderToMetres = MulUniToMetres / MulUniToRender;
+			public const double MulRenderToAstroRender = MulUniToAstroRender / MulUniToRender;
+
+			public const double MulAstroRenderToUni = 1.0 / MulUniToAstroRender;
+			public const double MulAstroRenderToMetres = MulUniToMetres / MulUniToAstroRender;
+			public const double MulAstroRenderToRender = MulUniToRender / MulUniToAstroRender;
+
+			#region Conversions
+
+			public static double UniToMetres( long value )
+			{
+				return value * MulUniToMetres;
+			}
+
+			public static double UniToRender( long value )
+			{
+				return value * MulUniToRender;
+			}
+
+			public static double UniToAstroRender( long value )
+			{
+				return value * MulUniToAstroRender;
+			}
+
+			#endregion
+		}
+
+		/// <summary>
+		/// Universe units. Measures distances within solar systems using fixed point. 1 uni unit is 1 centimetre
+		/// </summary>
+		public struct UniUnits
+		{
+			//	1 uni unit = 1cm
+			//
+			//	1 metre = 1 metre = 100 uni units
+			//	1 render = 10 metres = 1000 uni units
+			//	1 astro render = 1000 metres = 100000 uni units
+			//
+
+			/// <summary>
+			/// Setup constructor
+			/// </summary>
+			public UniUnits( long value )
+			{
+				m_Value = value;
+			}
+
+			/// <summary>
+			/// Gets the value of this object
+			/// </summary>
+			public static implicit operator long ( UniUnits val )
+			{
+				return val.m_Value;
+			}
+
+			#region Conversions
+
+			/// <summary>
+			/// Get the value of this unit measure in uni units
+			/// </summary>
+			public UniUnits ToUniUnits
+			{
+				get { return this; }
+			}
+
+			/// <summary>
+			/// Gets the value of this unit measure to astro render units
+			/// </summary>
+			public AstroRenderUnits ToAstroRenderUnits
+			{
+				get { return new AstroRenderUnits( m_Value * Convert.MulUniToAstroRender ); }
+			}
+
+			/// <summary>
+			/// Gets the value of this unit measure to render units
+			/// </summary>
+			public RenderUnits ToRenderUnits
+			{
+				get { return new RenderUnits( ( float )( m_Value * Convert.MulUniToRender ) ); }
+			}
+
+			/// <summary>
+			/// Gets the value of this unit measure to metres
+			/// </summary>
+			public Metres ToMetres
+			{
+				get { return new Metres( m_Value * Convert.MulUniToMetres ); }
+			}
+
+			#endregion
+
+			#region Private Members
+
+			private long m_Value;
+
+			#endregion
+		}
+
+		/// <summary>
+		/// Rendering units. Measures distances relative to the viewer, using single precision floating point
+		/// </summary>
+		public struct RenderUnits
+		{
+			/// <summary>
+			/// Setup constructor
+			/// </summary>
+			public RenderUnits( float value )
+			{
+				m_Value = value;
+			}
+
+			#region Conversions
+
+			/// <summary>
+			/// Get the value of this unit measure in uni units
+			/// </summary>
+			public UniUnits ToUniUnits
+			{
+				get { return new UniUnits( ( long )( m_Value * Convert.MulRenderToUni ) ); }
+			}
+
+			/// <summary>
+			/// Gets the value of this unit measure to astro render units
+			/// </summary>
+			public AstroRenderUnits ToAstroRenderUnits
+			{
+				get { return new AstroRenderUnits( m_Value * Convert.MulRenderToAstroRender ); }
+			}
+
+			/// <summary>
+			/// Gets the value of this unit measure to render units
+			/// </summary>
+			public RenderUnits ToRenderUnits
+			{
+				get { return this; }
+			}
+
+			/// <summary>
+			/// Gets the value of this unit measure to metres
+			/// </summary>
+			public Metres ToMetres
+			{
+				get { return new Metres( m_Value * Convert.MulRenderToMetres ); }
+			}
+
+			#endregion
+
+			/// <summary>
+			/// Gets the render unit value 
+			/// </summary>
+			public float Value
+			{
+				get { return m_Value; }
+			}
+
+			/// <summary>
+			/// Implicit conversion to float
+			/// </summary>
+			public static implicit operator float( RenderUnits renderUnits )
+			{
+				return renderUnits.Value;
+			}
+
+			/// <summary>
+			/// Makes a point local to an origin point, measured in render units
+			/// </summary>
+			public static Point3 MakeRelativePoint( UniPoint3 origin, UniPoint3 pt )
+			{
+				double x = Convert.UniToRender( pt.X - origin.X );
+				double y = Convert.UniToRender( pt.Y - origin.Y );
+				double z = Convert.UniToRender( pt.Z - origin.Z );
+				return new Point3( ( float )x, ( float )y, ( float )z );	
+			}
+
+			#region Private Members
+
+			private float m_Value; 
+
+			#endregion
+		}
+
+		/// <summary>
+		/// Astro render units.
+		/// </summary>
+		public struct AstroRenderUnits
+		{
+			/// <summary>
+			/// Setup constructor
+			/// </summary>
+			public AstroRenderUnits( double value )
+			{
+				m_Value = value;
+			}
+
+			#region Conversions
+
+			/// <summary>
+			/// Get the value of this unit measure in uni units
+			/// </summary>
+			public UniUnits ToUniUnits
+			{
+				get { return new UniUnits( ( long )( m_Value * Convert.MulAstroRenderToUni ) ); }
+			}
+
+			/// <summary>
+			/// Gets the value of this unit measure to astro render units
+			/// </summary>
+			public AstroRenderUnits ToAstroRenderUnits
+			{
+				get { return this; }
+			}
+
+			/// <summary>
+			/// Gets the value of this unit measure to render units
+			/// </summary>
+			public RenderUnits ToRenderUnits
+			{
+				get { return new RenderUnits( ( float )( m_Value * Convert.MulAstroRenderToRender ) ); }
+			}
+
+			/// <summary>
+			/// Gets the value of this unit measure to metres
+			/// </summary>
+			public Metres ToMetres
+			{
+				get { return new Metres( m_Value * Convert.MulAstroRenderToMetres ); }
+			}
+
+			#endregion
+
+			/// <summary>
+			/// Gets the render unit value 
+			/// </summary>
+			public double Value
+			{
+				get { return m_Value; }
+			}
+
+			/// <summary>
+			/// Implicit conversion to float
+			/// </summary>
+			public static implicit operator double( AstroRenderUnits renderUnits )
+			{
+				return renderUnits.Value;
+			}
+
+			#region Private Members
+
+			private double m_Value; 
+
+			#endregion	
+		}
+		
+		/// <summary>
+		/// Metres. Measures distances within solar systems using double precision floating point
+		/// </summary>
+		public struct Metres
+		{
+			/// <summary>
+			/// Setup constructor
+			/// </summary>
+			public Metres( double value )
+			{
+				m_Value = value;
+			}
+
+			#region Conversions
+
+			/// <summary>
+			/// Get the value of this unit measure in uni units
+			/// </summary>
+			public UniUnits ToUniUnits
+			{
+				get { return new UniUnits( ( long )( m_Value * Convert.MulMetresToUni ) ); }
+			}
+
+			/// <summary>
+			/// Gets the value of this unit measure to astro render units
+			/// </summary>
+			public AstroRenderUnits ToAstroRenderUnits
+			{
+				get { return new AstroRenderUnits( m_Value * Convert.MulMetresToAstroRender ); }
+			}
+
+			/// <summary>
+			/// Gets the value of this unit measure to render units
+			/// </summary>
+			public RenderUnits ToRenderUnits
+			{
+				get { return new RenderUnits( ( float )( m_Value * Convert.MulMetresToRender ) ); }
+			}
+
+			/// <summary>
+			/// Gets the value of this unit measure to metres
+			/// </summary>
+			public Metres ToMetres
+			{
+				get { return this; }
+			}
+
+			#endregion
+
+
+			/// <summary>
+			/// Gets the metres value
+			/// </summary>
+			public double Value
+			{
+				get { return m_Value; }
+			}
+
+			/// <summary>
+			/// Implicit conversion to float double
+			/// </summary>
+			public static implicit operator double( Metres metres )
+			{
+				return metres.Value;
+			}
+
+			/// <summary>
+			/// Addition of two metre values
+			/// </summary>
+			public static Metres operator + ( Metres lhs, double rhs )
+			{
+				return new Metres( lhs.Value + rhs );
+			}
+
+			#region Private Members
+			
+			private double m_Value; 
+
+			#endregion
+		}
+
+
+	}
+}

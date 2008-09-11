@@ -43,6 +43,10 @@
     <Compile Include="TestMessages.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Source\Rb.Assets\Rb.Assets.csproj">
+      <Project>{22440804-2D3F-4FEF-AD01-812923F6E04C}</Project>
+      <Name>Rb.Assets</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Source\Rb.ComponentXmlLoader\Rb.ComponentXmlLoader.csproj">
       <Project>{61B562C4-66D5-4048-B482-858A791249A2}</Project>
       <Name>Rb.ComponentXmlLoader</Name>

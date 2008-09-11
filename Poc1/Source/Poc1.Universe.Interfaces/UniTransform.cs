@@ -1,6 +1,6 @@
 using Rb.Core.Maths;
 
-namespace Poc1.Universe
+namespace Poc1.Universe.Interfaces
 {
 	public class UniTransform
 	{
