@@ -1,7 +1,9 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using NUnit.Framework;
-
+using Rb.Assets.Base;
+using Rb.Assets.Interfaces;
 using Rb.Core.Components;
 using Rb.ComponentXmlLoader;
 
@@ -57,6 +59,14 @@ namespace Rb.ComponentXmlLoader.Tests
         
         private const string GuidString = "{D7743458-D782-4f34-A9E0-082399F12A21}";
 
+		/// <summary>
+		/// Creates a test asset source from a byte array
+		/// </summary>
+		private static ISource MemorySource( byte[] bytes )
+		{
+			return new StreamSource( new MemoryStream( bytes ), new StackFrame( 0, true ).GetFileName( ) );
+		}
+
         [Test]
         public void TestEmpty()
         {
@@ -64,7 +74,7 @@ namespace Rb.ComponentXmlLoader.Tests
             {
                 byte[] contentBytes = System.Text.Encoding.ASCII.GetBytes( "" );
 
-                new Loader( ).Load( new System.IO.MemoryStream( contentBytes ), new StackFrame( 0, true ).GetFileName( ), new ComponentLoadParameters( ) );
+				new Loader( ).Load( MemorySource( contentBytes ), new ComponentLoadParameters( ) );
 
                 Assert.Fail( "Expected empty test to fail and throw an ApplicationException" );
             }
@@ -79,7 +89,7 @@ namespace Rb.ComponentXmlLoader.Tests
             try
             {
                 byte[] contentBytes = System.Text.Encoding.ASCII.GetBytes( @"<?xml version=""1.0"" encoding=""utf-8""?><rb/>" );
-                new Loader( ).Load( new System.IO.MemoryStream( contentBytes ), new StackFrame( 0, true ).GetFileName( ), new ComponentLoadParameters( ) );
+				new Loader( ).Load( MemorySource( contentBytes ), new ComponentLoadParameters( ) );
 
                 Assert.Fail( "Expected no content test to fail and throw an ApplicationException" );
             }
@@ -103,7 +113,7 @@ namespace Rb.ComponentXmlLoader.Tests
                 "";
 
             byte[] contentBytes = System.Text.Encoding.ASCII.GetBytes( content );
-            object result = new Loader( ).Load( new System.IO.MemoryStream( contentBytes ), new StackFrame( 0, true ).GetFileName( ), new ComponentLoadParameters( ) );
+			object result = new Loader( ).Load( MemorySource( contentBytes ), new ComponentLoadParameters( ) );
         
             Assert.AreEqual( ( ( ISupportsDynamicProperties )result ).Properties[ "intValue" ], 10 );
             Assert.AreEqual( ( ( ISupportsDynamicProperties )result ).Properties[ "strValue" ], "badgers" );
@@ -129,7 +139,7 @@ namespace Rb.ComponentXmlLoader.Tests
             Definition = 0;
 
             ComponentLoadParameters parameters = new ComponentLoadParameters( );
-			loader.Load( new System.IO.MemoryStream( contentBytes ), new StackFrame( 0, true ).GetFileName( ), parameters );
+			loader.Load( MemorySource( contentBytes ), parameters );
 
             Assert.IsTrue( parameters.Objects.ContainsKey( id ) );
 
@@ -162,7 +172,7 @@ namespace Rb.ComponentXmlLoader.Tests
 			Definition = 0;
 
 			ComponentLoadParameters parameters = new ComponentLoadParameters( );
-			loader.Load( new System.IO.MemoryStream( contentBytes ), new StackFrame( 0, true ).GetFileName( ), parameters );
+			loader.Load( MemorySource( contentBytes ), parameters );
 
 			Assert.IsTrue( parameters.Objects.ContainsKey( id ) );
 

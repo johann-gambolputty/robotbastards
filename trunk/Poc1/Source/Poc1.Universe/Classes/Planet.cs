@@ -131,7 +131,7 @@ namespace Poc1.Universe.Classes
 		private readonly IOrbit m_Orbit;
 		private string m_Name;
 		private bool m_EnableTerrainRendering;
-		private float m_SeaLevel = 0;
+		private float m_SeaLevel = 100;
 		private float m_TerrainHeightRange = 4000;
 
 		#endregion

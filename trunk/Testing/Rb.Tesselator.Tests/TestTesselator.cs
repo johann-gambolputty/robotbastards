@@ -20,9 +20,10 @@ namespace Rb.Tesselator.Tests
 					new Point2( 0, 10 )
 				};
 
-			Tesselator.Polygons polys = Tesselator.Tesselate( input );
-			Assert.AreEqual( 2, polys.Polys.Length );
-			Assert.AreEqual( 4, polys.Points.Length );
+			Tesselator.PolygonLists polyLists = Tesselator.Tesselate( input );
+			Assert.AreEqual( 1, polyLists.Lists.Length );
+			Assert.AreEqual( 2, polyLists.Lists[ 0 ].NumPrimitives );
+			Assert.AreEqual( 4, polyLists.Lists[ 0 ].Indices.Length );
 		}
 	}
 }

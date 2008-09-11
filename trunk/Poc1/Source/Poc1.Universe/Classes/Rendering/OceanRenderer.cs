@@ -104,6 +104,14 @@ namespace Poc1.Universe.Classes.Rendering
 		/// </summary>
 		protected abstract void RenderOcean( IRenderContext context );
 
+		/// <summary>
+		/// Gets the effect used to render the ocean
+		/// </summary>
+		protected IEffect OceanEffect
+		{
+			get { return m_OceanTechniques.Effect; }
+		}
+
 		#endregion
 
 		#region Private Members

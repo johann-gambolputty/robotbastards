@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using Rb.Core.Maths;
 
-namespace Poc1.Universe
+namespace Poc1.Universe.Interfaces
 {
 	/// <summary>
 	/// A point within the universe (OK, solar system...)
@@ -50,9 +50,9 @@ namespace Poc1.Universe
 		/// </summary>
 		public string ToRenderUnitString( )
 		{
-			double x = UniUnits.RenderUnits.FromUniUnits( X );
-			double y = UniUnits.RenderUnits.FromUniUnits( Y );
-			double z = UniUnits.RenderUnits.FromUniUnits( Z );
+			double x = Units.Convert.UniToRender( X );
+			double y = Units.Convert.UniToRender( Y );
+			double z = Units.Convert.UniToRender( Z );
 			return string.Format( "({0:F2},{1:F2},{2:F2})", x, y, z );
 		}
 
@@ -61,9 +61,9 @@ namespace Poc1.Universe
 		/// </summary>
 		public string ToMetresString( )
 		{
-			double x = UniUnits.Metres.FromUniUnits( X );
-			double y = UniUnits.Metres.FromUniUnits( Y );
-			double z = UniUnits.Metres.FromUniUnits( Z );
+			double x = Units.Convert.UniToMetres( X );
+			double y = Units.Convert.UniToMetres( Y );
+			double z = Units.Convert.UniToMetres( Z );
 			return string.Format( "({0:F2},{1:F2},{2:F2})", x, y, z );
 		}
 		

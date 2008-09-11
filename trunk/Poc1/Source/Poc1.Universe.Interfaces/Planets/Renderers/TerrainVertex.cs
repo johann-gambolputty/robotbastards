@@ -9,6 +9,9 @@ namespace Poc1.Universe.Interfaces.Rendering
 	[StructLayout( LayoutKind.Sequential, Pack = 0 )]
 	public struct TerrainVertex
 	{
+		/// <summary>
+		/// Copies this vertex to another, applying a specified offset to the vertex position
+		/// </summary>
 		public unsafe void CopyTo( TerrainVertex* vertex, Vector3 offset )
 		{
 			vertex->m_X = m_X + offset.X;

@@ -1,3 +1,4 @@
+using Poc1.Universe.Interfaces;
 using Rb.Core.Maths;
 
 namespace Poc1.Universe.Classes.Cameras
