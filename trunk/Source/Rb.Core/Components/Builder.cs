@@ -77,11 +77,11 @@ namespace Rb.Core.Components
         /// </summary>
         public static IBuilder Instance
         {
-            get { return ms_Instance; }
-            set { ms_Instance = value; }
+            get { return s_Instance; }
+            set { s_Instance = value; }
         }
 
-        private static IBuilder ms_Instance = new Builder( );
+        private static IBuilder s_Instance = new Builder( );
 
         #endregion
     }

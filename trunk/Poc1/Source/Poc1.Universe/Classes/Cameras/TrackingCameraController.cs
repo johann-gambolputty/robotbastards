@@ -1,3 +1,4 @@
+using Poc1.Universe.Interfaces;
 using Rb.Core.Components;
 using Rb.Core.Utils;
 using Rb.Interaction;
@@ -59,8 +60,8 @@ namespace Poc1.Universe.Classes.Cameras
 
 						UniPoint3 newLookAt = m_Camera.LookAtPoint;
 
-						newLookAt += m_Camera.Frame.TransposedXAxis * UniUnits.Metres.ToUniUnits( deltaX );
-						newLookAt += m_Camera.Frame.TransposedYAxis * UniUnits.Metres.ToUniUnits( deltaY );
+						newLookAt += m_Camera.Frame.TransposedXAxis * Units.Convert.MetresToUni( deltaX );
+						newLookAt += m_Camera.Frame.TransposedYAxis * Units.Convert.MetresToUni( deltaY );
 
 						m_Camera.LookAtPoint = newLookAt;
 						break;

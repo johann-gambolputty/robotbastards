@@ -94,11 +94,11 @@ namespace Rb.Rendering
 			{
 				get
 				{
-					if ( ms_DebugFont == null )
+					if ( s_DebugFont == null )
 					{
-						ms_DebugFont = Factory.CreateFont( new FontData( "arial", 10 ) );
+						s_DebugFont = Factory.CreateFont( new FontData( "arial", 10 ) );
 					}
-					return ms_DebugFont;
+					return s_DebugFont;
 				}
 			}
 			
@@ -109,18 +109,18 @@ namespace Rb.Rendering
 			{
 				get
 				{
-					if ( ms_SmallDebugFont == null )
+					if ( s_SmallDebugFont == null )
 					{
-						ms_SmallDebugFont = Factory.CreateFont( new FontData( "arial", 10 ) );
+						s_SmallDebugFont = Factory.CreateFont( new FontData( "arial", 10 ) );
 					}
-					return ms_SmallDebugFont;
+					return s_SmallDebugFont;
 				}
 			}
 
 			#region Private Members
 
-			private static IFont ms_DebugFont;
-			private static IFont ms_SmallDebugFont;
+			private static IFont s_DebugFont;
+			private static IFont s_SmallDebugFont;
 
 			#endregion
 		}
@@ -177,10 +177,10 @@ namespace Rb.Rendering
 		/// </summary>
 		public static void Initialize( IGraphicsFactory factory )
 		{
-			ms_Factory = factory;
-			ms_Renderer = factory.CreateRenderer( );
-			ms_Draw = factory.CreateDraw( );
-			ms_EffectDataSources = factory.CreateEffectDataSources( );
+			s_Factory = factory;
+			s_Renderer = factory.CreateRenderer( );
+			s_Draw = factory.CreateDraw( );
+			s_EffectDataSources = factory.CreateEffectDataSources( );
 		}
 
 		/// <summary>
@@ -200,7 +200,7 @@ namespace Rb.Rendering
 		/// </summary>
 		public static IDraw Draw
 		{
-			get { return ms_Draw; }
+			get { return s_Draw; }
 		}
 
 		/// <summary>
@@ -208,8 +208,8 @@ namespace Rb.Rendering
 		/// </summary>
 		public static IRenderer Renderer
 		{
-			get { return ms_Renderer; }
-			set { ms_Renderer = value; }
+			get { return s_Renderer; }
+			set { s_Renderer = value; }
 		}
 
 		/// <summary>
@@ -217,8 +217,8 @@ namespace Rb.Rendering
 		/// </summary>
 		public static IEffectDataSources EffectDataSources
 		{
-			get { return ms_EffectDataSources; }
-			set { ms_EffectDataSources = value; }
+			get { return s_EffectDataSources; }
+			set { s_EffectDataSources = value; }
 		}
 
 		/// <summary>
@@ -226,16 +226,16 @@ namespace Rb.Rendering
 		/// </summary>
 		public static IGraphicsFactory Factory
 		{
-			get { return ms_Factory; }
-			set { ms_Factory = value; }
+			get { return s_Factory; }
+			set { s_Factory = value; }
 		}
 
 		#region Private members
 
-		private static IDraw ms_Draw;
-		private static IRenderer ms_Renderer;
-		private static IGraphicsFactory ms_Factory;
-		private static IEffectDataSources ms_EffectDataSources;
+		private static IDraw s_Draw;
+		private static IRenderer s_Renderer;
+		private static IGraphicsFactory s_Factory;
+		private static IEffectDataSources s_EffectDataSources;
 
 		private static IGraphicsFactory GetGraphicsFactoryFromAssembly( Assembly assembly )
 		{

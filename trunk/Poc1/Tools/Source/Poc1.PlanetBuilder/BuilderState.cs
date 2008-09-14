@@ -1,27 +1,19 @@
-using Poc1.Universe.Classes;
+
 using Poc1.Universe.Interfaces;
+using Poc1.Universe.Interfaces.Planets.Spherical;
+using Poc1.Universe.Planets.Spherical;
+using IPlanet=Poc1.Universe.Interfaces.Planets.IPlanet;
 
 namespace Poc1.PlanetBuilder
 {
 	public class BuilderState
 	{
-
-		public const float TerrainWidth = 2048;
-		public const float TerrainMaxHeight = 2000;
-		public const float TerrainDepth = 2048;
-		public const double PlanetRadius = 100000;
-
-		public BuilderState( )
-		{
-			m_Planet.EnableTerrainRendering = true;
-		}
-
 		/// <summary>
 		/// Gets the builder state singleton
 		/// </summary>
 		public static BuilderState Instance
 		{
-			get { return ms_Instance; }
+			get { return s_Instance; }
 		}
 
 		/// <summary>
@@ -31,6 +23,11 @@ namespace Poc1.PlanetBuilder
 		//{
 		//    get { return m_TerrainMesh; }
 		//}
+
+		public ISpherePlanet SpherePlanet
+		{
+			get { return ( ISpherePlanet )Planet; }
+		}
 
 		public IPlanet Planet
 		{
@@ -45,21 +42,10 @@ namespace Poc1.PlanetBuilder
 			}
 		}
 
-
-		/// <summary>
-		/// Gets the current ocean renderer
-		/// </summary>
-	//	public PlaneOceanRenderer Ocean
-	//	{
-	//		get { return m_Ocean; }
-	//	}
-
 		#region Private Members
 
-		private IPlanet m_Planet = new SpherePlanet( null, "", PlanetRadius );
-	//	private PlaneOceanRenderer m_Ocean = new PlaneOceanRenderer( TerrainWidth, TerrainDepth, 8 );
-	//	private TerrainMesh m_TerrainMesh = new TerrainMesh( TerrainWidth, TerrainMaxHeight, TerrainDepth );
-		private readonly static BuilderState ms_Instance = new BuilderState( );
+		private IPlanet m_Planet = Poc1.Universe.Planets.Spherical.SpherePlanet.DefaultPlanet( new Units.Metres( 100000 ) );
+		private readonly static BuilderState s_Instance = new BuilderState( );
 
 		#endregion
 	}

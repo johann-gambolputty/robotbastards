@@ -25,6 +25,7 @@ float AtmHgCoeff = -0.90f;
 float AtmPhaseWeight = 1.0f;
 float AtmInnerRadius = 0;
 float AtmThickness = 1;
+float AtmMiePhaseWeight = 1;
 
 //	Rayleigh phase function
 float RayleighPhase( float cosAngle )
@@ -33,30 +34,31 @@ float RayleighPhase( float cosAngle )
 }
 
 //	Mie phase function - Modified HG from O'Neil
-float HeyneyGreensteinPhaseFunction( float cosSunAngle, float g )
-{
-	float g2 = g * g;
-	float t0 = ( 3 * ( 1 - g2 ) ) / 2 * ( 2 + g2 );
-	float tden0 = pow( 1 + g2 - 2 * g * cosSunAngle, 3.0f / 2.0f );
-	float t1 = ( 1 + cosSunAngle * cosSunAngle ) / tden0;
-	float tRes = t0 * t1;
-	return tRes;
-}
-
-//	Standard Mie phase function
 //float HeyneyGreensteinPhaseFunction( float cosSunAngle, float g )
 //{
-//	g = clamp( g, -1, 1 );
 //	float g2 = g * g;
-//
-//	return ( 1.0f - g2 ) / pow( ( 1.0f + g2 ) - ( 2.0f * g * cosSunAngle ), 1.5f );
+//	float t0 = ( 3 * ( 1 - g2 ) ) / 2 * ( 2 + g2 );
+//	float tden0 = pow( 1 + g2 - 2 * g * cosSunAngle, 3.0f / 2.0f );
+//	float t1 = ( 1 + cosSunAngle * cosSunAngle ) / tden0;
+//	float tRes = t0 * t1;
+//	return tRes;
 //}
-//
+
+//	Standard Mie phase function
+float HeyneyGreensteinPhaseFunction( float cosSunAngle, float g )
+{
+	g = clamp( g, -1, 1 );
+	float g2 = g * g;
+
+	return ( 1.0f - g2 ) / pow( ( 1.0f + g2 ) - ( 2.0f * g * cosSunAngle ), 1.5f );
+}
+
 
 float3 GetScatteredObjectColour( float3 pt, float3 objColour )
 {
 	float3 viewVec = normalize( pt - AtmViewPos );
 
+	//	Get scattering coefficients for the object (view position to intersection with ground plane)
 	float h = AtmViewHeight;
 	float th = saturate( ( ( dot( AtmViewPos, viewVec ) / AtmViewPosLength ) + 1.0f ) / 2.0f );
 	float posToSunAngle = dot( AtmViewPos, SunDir ) / AtmViewPosLength;
@@ -65,19 +67,23 @@ float3 GetScatteredObjectColour( float3 pt, float3 objColour )
 
 	float4 scatterCoeffs = tex3D( ScatteringTexture, float3( h, si, th ) );
 	float rayPhase = RayleighPhase( viewToSunAngle );
-	float miePhase = HeyneyGreensteinPhaseFunction( viewToSunAngle, AtmHgCoeff );
+	float miePhase = HeyneyGreensteinPhaseFunction( viewToSunAngle, AtmHgCoeff ) * AtmMiePhaseWeight;
 
+	//	Get scattering coefficients for the object (object position to intersection with ground plane)
 	float gH = length( pt );
 	float gH0 = saturate( ( gH - AtmInnerRadius ) / AtmThickness );
 	float gSi = ( ( dot( pt, SunDir ) / gH ) + 1.0f ) / 2.0f;
 
-	scatterCoeffs -= tex3D( ScatteringTexture, float3( gH0, gSi, th ) );
-
+	//	Correct scattering coefficients
 	float gTh = ( ( dot( pt, viewVec ) / gH ) + 1.0f ) / 2.0f;
+	scatterCoeffs -= tex3D( ScatteringTexture, float3( gH0, gSi, gTh ) );
+
+	//	Calculate optical depth for object
 	float3 sunOpticalDepth = tex2D( OpticalDepthTexture, float2( gH0, gSi ) ).rgb;
 	float3 viewOpticalDepth = tex2D( OpticalDepthTexture, float2( gH0, gTh ) ).rgb;
 	float3 opticalDepth = exp( -sunOpticalDepth - viewOpticalDepth );
 	
+	//	Calculate final colour (modified scattering coefficients * optical depth)
 	float3 rayScatter = lerp( scatterCoeffs.rgb, scatterCoeffs.rgb * rayPhase, AtmPhaseWeight );
 	float mieScatter = lerp( scatterCoeffs.a, scatterCoeffs.a * miePhase, AtmPhaseWeight );
 	float3 scatter = saturate( rayScatter + mieScatter );

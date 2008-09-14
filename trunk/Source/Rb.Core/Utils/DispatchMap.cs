@@ -27,14 +27,14 @@ namespace Rb.Core.Utils
         public static DispatchMap Get( Type t )
         {
             DispatchMap map;
-            if ( ms_Maps.ContainsKey( t ) )
+            if ( s_Maps.ContainsKey( t ) )
             {
-				map = ms_Maps[ t ];
+				map = s_Maps[ t ];
 			}
 			else
 			{
                 map = new DispatchMap( t );
-                ms_Maps[ t ] = map;
+                s_Maps[ t ] = map;
             }
             return map;
         }
@@ -47,7 +47,7 @@ namespace Rb.Core.Utils
         public static DispatchMap SafeGet( Type t )
         {
             DispatchMap map;
-            lock ( ms_Maps )
+            lock ( s_Maps )
             {
                 map = Get( t );
             }
@@ -230,7 +230,7 @@ namespace Rb.Core.Utils
             generator.MarkLabel( isNullBranch );                //  Mark the null branch label
         }
 
-        private static readonly Dictionary< Type, DispatchMap > ms_Maps = new Dictionary< Type, DispatchMap >( );
+        private static readonly Dictionary< Type, DispatchMap > s_Maps = new Dictionary< Type, DispatchMap >( );
 
         #endregion
 
@@ -247,10 +247,10 @@ namespace Rb.Core.Utils
         /// </summary>
         public static DispatchMap Instance
         {
-            get { return ms_Instance; }
+            get { return s_Instance; }
         }
 
-        private static DispatchMap ms_Instance = DispatchMap.SafeGet( typeof( T ) );
+        private static DispatchMap s_Instance = DispatchMap.SafeGet( typeof( T ) );
     }
 
 }

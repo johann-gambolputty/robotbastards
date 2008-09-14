@@ -15,7 +15,7 @@ namespace Rb.Interaction
 		/// </summary>
 		public static CommandUserManager Instance
 		{
-			get { return ms_Singleton; }
+			get { return s_Singleton; }
 		}
 
 		/// <summary>
@@ -59,7 +59,7 @@ namespace Rb.Interaction
 
 		private readonly List<CommandUser> m_Users = new List<CommandUser>( );
 		private readonly Clock m_Clock;
-		private static readonly CommandUserManager ms_Singleton = new CommandUserManager( );
+		private static readonly CommandUserManager s_Singleton = new CommandUserManager( );
 
 		/// <summary>
 		/// Called by the update clock. Updates all users

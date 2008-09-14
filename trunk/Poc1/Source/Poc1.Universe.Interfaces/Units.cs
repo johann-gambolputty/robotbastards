@@ -28,7 +28,7 @@ namespace Poc1.Universe.Interfaces
 			public const double MulAstroRenderToMetres = MulUniToMetres / MulUniToAstroRender;
 			public const double MulAstroRenderToRender = MulUniToRender / MulUniToAstroRender;
 
-			#region Conversions
+			#region Uni unit conversions
 
 			public static double UniToMetres( long value )
 			{
@@ -43,6 +43,25 @@ namespace Poc1.Universe.Interfaces
 			public static double UniToAstroRender( long value )
 			{
 				return value * MulUniToAstroRender;
+			}
+
+			#endregion
+
+			#region Metre conversions
+
+			public static long MetresToUni( double value )
+			{
+				return ( long )( value * MulMetresToUni );
+			}
+
+			public static double MetresToRender( double value )
+			{
+				return value * MulMetresToRender;
+			}
+
+			public static double MetresToAstroRender( double value )
+			{
+				return value * MulMetresToAstroRender;
 			}
 
 			#endregion
@@ -340,6 +359,9 @@ namespace Poc1.Universe.Interfaces
 				return metres.Value;
 			}
 
+
+			#region Operators
+			
 			/// <summary>
 			/// Addition of two metre values
 			/// </summary>
@@ -347,6 +369,16 @@ namespace Poc1.Universe.Interfaces
 			{
 				return new Metres( lhs.Value + rhs );
 			}
+
+			/// <summary>
+			/// Multiplication of two metre values
+			/// </summary>
+			public static Metres operator * ( Metres lhs, double rhs )
+			{
+				return new Metres( lhs.Value * rhs );
+			}
+
+			#endregion
 
 			#region Private Members
 			

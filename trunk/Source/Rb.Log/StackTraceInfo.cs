@@ -13,7 +13,7 @@ namespace Rb.Log
         /// <param name="trace">Stack trace string</param>
         public StackTraceInfo( string trace )
         {
-            m_Match = ms_StackTraceExp.Match( trace );
+            m_Match = s_StackTraceExp.Match( trace );
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Rb.Log
         /// <summary>
         /// Stack trace regular expression. Usually in the format " at X in Y: line Z", where X is the function name, Y is the filename, Z is the line number
         /// </summary>
-        private static Regex ms_StackTraceExp = new Regex( @" at (.+) in (.+)\:line ([0-9]+)" );
+        private static Regex s_StackTraceExp = new Regex( @" at (.+) in (.+)\:line ([0-9]+)" );
 
         #endregion
     }

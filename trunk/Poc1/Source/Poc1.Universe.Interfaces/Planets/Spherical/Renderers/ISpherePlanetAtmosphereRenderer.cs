@@ -9,14 +9,6 @@ namespace Poc1.Universe.Interfaces.Planets.Spherical.Renderers
 	public interface ISpherePlanetAtmosphereRenderer : IPlanetAtmosphereRenderer
 	{
 		/// <summary>
-		/// Gets/sets the planet whose atmosphere is rendered by this object
-		/// </summary>
-		ISpherePlanet Planet
-		{
-			get; set;
-		}
-
-		/// <summary>
 		/// Sets the lookup textures required by the atmosphere renderer
 		/// </summary>
 		/// <param name="scatteringTexture">Lookup table for in- and out-scattering coefficients</param>

@@ -37,7 +37,7 @@ namespace Rb.AssemblySelector
         /// </summary>
         public static IdentifierMap Instance
         {
-            get { return ms_Singleton; }
+            get { return s_Singleton; }
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace Rb.AssemblySelector
 
         private readonly AssemblyMap             m_Map           = new AssemblyMap( );
         private readonly IdMap                   m_IdMap         = new IdMap( );
-        private readonly static IdentifierMap    ms_Singleton    = new IdentifierMap( );
+        private readonly static IdentifierMap    s_Singleton    = new IdentifierMap( );
         private readonly static Regex            SelectRegex     = new Regex( @"(?<Named>name=(?<Name>\w+))|(?<Matches>(?<Id>\w+)=(?<Value>\w+))|(?<Exists>\w+)" );
 
 

@@ -12,9 +12,9 @@ namespace Rb.Core.Utils
 	{
 		public CustomUITypeEditor( )
 		{
-			if ( ms_ImplType != null )
+			if ( s_ImplType != null )
 			{
-				m_Impl = ( UITypeEditor )Activator.CreateInstance( ms_ImplType );
+				m_Impl = ( UITypeEditor )Activator.CreateInstance( s_ImplType );
 			}
 		}
 
@@ -67,11 +67,11 @@ namespace Rb.Core.Utils
 		}
 
 		private readonly UITypeEditor m_Impl;
-		private readonly static Type ms_ImplType;
+		private readonly static Type s_ImplType;
 
 		static CustomUITypeEditor( )
 		{
-			ms_ImplType = UITypeEditorFactory.GetCustomUITypeEditorType( typeof( T ) );
+			s_ImplType = UITypeEditorFactory.GetCustomUITypeEditorType( typeof( T ) );
 		}
 	}
 }

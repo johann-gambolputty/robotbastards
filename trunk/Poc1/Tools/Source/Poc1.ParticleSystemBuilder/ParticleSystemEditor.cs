@@ -57,32 +57,32 @@ namespace Poc1.ParticleSystemBuilder
 		}
 
 		private IParticleSystem m_ParticleSystem;
-		private readonly static Type[] ms_SpawnRateTypes;
-		private readonly static Type[] ms_SpawnerTypes;
-		private readonly static Type[] ms_UpdaterTypes;
-		private readonly static Type[] ms_KillerTypes;
-		private readonly static Type[] ms_RendererTypes;
+		private readonly static Type[] s_SpawnRateTypes;
+		private readonly static Type[] s_SpawnerTypes;
+		private readonly static Type[] s_UpdaterTypes;
+		private readonly static Type[] s_KillerTypes;
+		private readonly static Type[] s_RendererTypes;
 
 		static ParticleSystemEditor( )
 		{
-			ms_SpawnRateTypes = GetComponentTypes( typeof( ISpawnRate ) );
-			ms_SpawnerTypes = GetComponentTypes( typeof( IParticleSpawner ) );
-			ms_UpdaterTypes = GetComponentTypes( typeof( IParticleUpdater ) );
-			ms_KillerTypes = GetComponentTypes( typeof( IParticleKiller ) );
-			ms_RendererTypes = GetComponentTypes( typeof( IParticleRenderer ) );
+			s_SpawnRateTypes = GetComponentTypes( typeof( ISpawnRate ) );
+			s_SpawnerTypes = GetComponentTypes( typeof( IParticleSpawner ) );
+			s_UpdaterTypes = GetComponentTypes( typeof( IParticleUpdater ) );
+			s_KillerTypes = GetComponentTypes( typeof( IParticleKiller ) );
+			s_RendererTypes = GetComponentTypes( typeof( IParticleRenderer ) );
 		}
 
 		private void ParticleSystemEditor_Load( object sender, EventArgs e )
 		{
-			spawnRateComponentControl.Setup( ms_SpawnRateTypes, typeof( RandomSpawnRate ) );
+			spawnRateComponentControl.Setup( s_SpawnRateTypes, typeof( RandomSpawnRate ) );
 			spawnRateComponentControl.SelectedControlChanged += delegate( object controller ) { ParticleSystem.SpawnRate = ( ISpawnRate )controller; };
 
-			spawnerComponentControl.Setup( ms_SpawnerTypes, typeof( PointParticleSpawner ) );
+			spawnerComponentControl.Setup( s_SpawnerTypes, typeof( PointParticleSpawner ) );
 			spawnerComponentControl.SelectedControlChanged += delegate( object controller ) { ParticleSystem.Spawner = ( IParticleSpawner )controller; };
 
-			updaterComponentsControl.ComponentTypes = ms_UpdaterTypes;
-			killerComponentsControl.ComponentTypes = ms_KillerTypes;
-			rendererComponentsControl.ComponentTypes = ms_RendererTypes;
+			updaterComponentsControl.ComponentTypes = s_UpdaterTypes;
+			killerComponentsControl.ComponentTypes = s_KillerTypes;
+			rendererComponentsControl.ComponentTypes = s_RendererTypes;
 		}
 	}
 }

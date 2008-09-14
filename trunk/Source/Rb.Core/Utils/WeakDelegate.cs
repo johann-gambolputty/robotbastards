@@ -30,8 +30,18 @@ namespace Rb.Core.Utils
 		/// <param name="original">Original delegate</param>
 		public WeakDelegate( DelegateType original )
 		{
+			if ( original == null )
+			{
+				throw new ArgumentNullException( "original" );
+			}
+			Delegate originalDelegate = original as Delegate;
+			if (originalDelegate == null )
+			{
+				throw new ArgumentException( "Invalid delegate type " + original.GetType( ), "original" );
+			}
+
 			m_Original = original;
-			bool isStatic = ( original as Delegate ).Target == null;
+			bool isStatic = originalDelegate.Target == null;
 
 			if ( !isStatic )
 			{

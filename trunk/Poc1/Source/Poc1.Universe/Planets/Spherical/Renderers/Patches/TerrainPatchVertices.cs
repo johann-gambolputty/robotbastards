@@ -27,6 +27,14 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 			m_Vb = Graphics.Factory.CreateVertexBuffer( );
 			m_Vb.Create( format, TerrainPatchConstants.PatchTotalVertexCount * PoolSize );
 
+			Clear( );
+		}
+
+		/// <summary>
+		/// Clears all vertex allocations (use with care - all patches referencing the vertex buffer must be destroyed)
+		/// </summary>
+		public void Clear( )
+		{
 			int vertexIndex = 0;
 			for ( int i = 0; i < PoolSize; ++i )
 			{

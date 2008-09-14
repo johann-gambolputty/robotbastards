@@ -5,7 +5,7 @@ namespace Poc1.Universe.Interfaces.Planets.Renderers
 	/// <summary>
 	/// Planet atmosphere renderer
 	/// </summary>
-	public interface IPlanetAtmosphereRenderer : IRenderable
+	public interface IPlanetAtmosphereRenderer : IPlanetEnvironmentRenderer
 	{
 		/// <summary>
 		/// Sets up parameters for effects that use atmospheric rendering

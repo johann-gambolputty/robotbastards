@@ -1,5 +1,4 @@
 using Poc1.Universe.Interfaces.Planets.Models;
-using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Interfaces.Planets.Spherical.Models
 {

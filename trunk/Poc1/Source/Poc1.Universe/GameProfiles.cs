@@ -30,6 +30,7 @@ namespace Poc1.Universe
 		{
 			public readonly ProfileSection FlatPlanetRendering;
 			public readonly ProfileSection TerrainRendering;
+			public readonly ProfileSection OceanRendering;
 			public readonly ProfileSection CloudRendering;
 			
 			public PlanetRenderingSection( ProfileSection parent ) :
@@ -37,6 +38,7 @@ namespace Poc1.Universe
 			{
 				FlatPlanetRendering = new ProfileSection( this, "Flat Planet Rendering" );
 				TerrainRendering = new ProfileSection( this, "Terrain Rendering" );
+				OceanRendering = new ProfileSection( this, "Ocean Rendering" );
 				CloudRendering = new ProfileSection( this, "Cloud Rendering" );
 			}
 		}

@@ -6,7 +6,7 @@ using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Classes
 {
-	public class Ship : IEntity, IRenderable
+	public class Ship : IBody, IRenderable
 	{
 		public Ship( )
 		{

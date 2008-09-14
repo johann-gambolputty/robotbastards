@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Rb.Core.Utils
 {
@@ -18,7 +17,7 @@ namespace Rb.Core.Utils
 		/// </summary>
 		public static InvokeQueue Instance
 		{
-			get { return ms_Singleton; }
+			get { return s_Singleton; }
 		}
 
 		/// <summary>
@@ -89,6 +88,6 @@ namespace Rb.Core.Utils
 		private readonly List< CallData > m_Calls = new List< CallData >( );
 
 		[ThreadStatic]
-		private static readonly InvokeQueue ms_Singleton = new InvokeQueue( );
+		private static readonly InvokeQueue s_Singleton = new InvokeQueue( );
 	}
 }

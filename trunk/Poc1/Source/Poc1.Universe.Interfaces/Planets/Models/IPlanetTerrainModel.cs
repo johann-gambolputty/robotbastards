@@ -5,13 +5,8 @@ namespace Poc1.Universe.Interfaces.Planets.Models
 	/// <summary>
 	/// Planetary terrain model
 	/// </summary>
-	public interface IPlanetTerrainModel
+	public interface IPlanetTerrainModel : IPlanetEnvironmentModel
 	{
-		/// <summary>
-		/// Event, invoked when the terrain model changes
-		/// </summary>
-		event System.EventHandler ModelChanged;
-
 		/// <summary>
 		/// Gets/sets the terrain types texture
 		/// </summary>

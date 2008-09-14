@@ -103,7 +103,7 @@ namespace Poc1.Tools.BuildTasks
 		private bool m_SkipIfUnchanged;
 
 
-		private static string ms_ProbeDir;
+		private static string s_ProbeDir;
 
 		static BuildTerrainTypes( )
 		{
@@ -111,14 +111,14 @@ namespace Poc1.Tools.BuildTasks
 			//	msbuild's location, so try to load them from the same directory as this assembly
 			//	was loaded from.
 			string loc = typeof( BuildTerrainTypes ).Assembly.Location;
-			ms_ProbeDir = Path.GetDirectoryName( loc );
+			s_ProbeDir = Path.GetDirectoryName( loc );
 			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 		}
 
 		private static Assembly CurrentDomain_AssemblyResolve( object sender, ResolveEventArgs args )
 		{
 			string name = new AssemblyName( args.Name ).Name + ".dll";
-			string path = Path.Combine( ms_ProbeDir, name );
+			string path = Path.Combine( s_ProbeDir, name );
 			return Assembly.LoadFrom( path );
 		}
 

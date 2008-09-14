@@ -1,5 +1,6 @@
 
 using System.Threading;
+using Rb.Core.Utils;
 
 namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 {
@@ -9,15 +10,31 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 	public class TerrainPatchBuilder
 	{
 		/// <summary>
+		/// Gets the number of build items pending
+		/// </summary>
+		public static int PendingBuildItems
+		{
+			get { return s_PendingBuildItems; }
+		}
+
+		/// <summary>
 		/// Queues up a build item
 		/// </summary>
 		/// <param name="buildItem">Build item to queue</param>
 		public static void QueueWork( TerrainPatchBuildItem buildItem )
 		{
-			WaitCallback callback = delegate { buildItem.Build( ); };
-			ThreadPool.QueueUserWorkItem( callback );
+			Interlocked.Increment( ref s_PendingBuildItems );
+			WaitCallback callback =
+				delegate
+					{
+						buildItem.StartBuild( );
+						s_Marshaller.PostAction( buildItem.FinishBuild );
+						Interlocked.Decrement( ref s_PendingBuildItems );
+					};
+			ExtendedThreadPool.Instance.QueueUserWorkItem( callback );
 		}
 
-
+		private static int s_PendingBuildItems;
+		private static DelegateMarshaller s_Marshaller = new DelegateMarshaller( );
 	}
 }

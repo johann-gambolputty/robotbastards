@@ -1,4 +1,3 @@
-
 using System.Drawing;
 
 namespace Poc1.Universe.Interfaces
@@ -7,7 +6,7 @@ namespace Poc1.Universe.Interfaces
 	/// A sun also constitutes a directional light source (well, it's a point light source, but at astronomical
 	/// distances, light rays are effectively parallel)
 	/// </summary>
-	public interface ISun : IEntity
+	public interface ISun : IBody
 	{
 		/// <summary>
 		/// Gets/sets the colour of the sun
