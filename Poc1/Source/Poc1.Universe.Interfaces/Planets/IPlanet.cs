@@ -1,3 +1,4 @@
+using System;
 using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Renderers;
 using Rb.Rendering.Interfaces.Objects;
@@ -7,8 +8,16 @@ namespace Poc1.Universe.Interfaces.Planets
 	/// <summary>
 	/// Plane interface
 	/// </summary>
-	public interface IPlanet : IRenderable, IBody
+	public interface IPlanet : IRenderable, IBody, IDisposable
 	{
+		/// <summary>
+		/// Gets/sets the planet's orbit
+		/// </summary>
+		IOrbit Orbit
+		{
+			get; set;
+		}
+
 		#region Models
 
 		/// <summary>

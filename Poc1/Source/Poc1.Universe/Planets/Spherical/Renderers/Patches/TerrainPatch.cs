@@ -99,7 +99,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 		/// </summary>
 		public Vector3 LocalUStep
 		{
-			get { return m_LocalUAxis / ( TerrainPatchConstants.PatchWidth - 1 ); }
+			get { return m_LocalUAxis / ( TerrainPatchConstants.PatchResolution - 1 ); }
 		}
 
 		/// <summary>
@@ -107,7 +107,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 		/// </summary>
 		public Vector3 LocalVStep
 		{
-			get { return m_LocalVAxis / ( TerrainPatchConstants.PatchHeight - 1 ); }
+			get { return m_LocalVAxis / ( TerrainPatchConstants.PatchResolution - 1 ); }
 		}
 
 		/// <summary>
@@ -151,12 +151,18 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 		/// <summary>
 		/// Called by <see cref="TerrainPatchBuilder"/> when it has finished building vertex data for this patch
 		/// </summary>
-		public unsafe void OnBuildComplete( byte* vertexData, float increaseDetailDistance )
+		public unsafe void OnBuildComplete( byte* vertexData, float increaseDetailDistance, int[] baseIndices )
 		{
 			m_Building = false;
 			m_IncreaseDetailDistance = increaseDetailDistance;
 			SetVertexData( vertexData );
-			BuildIndices( );
+
+			for ( int index = 0; index < baseIndices.Length; ++index )
+			{
+				baseIndices[ index ] += m_VbIndex;
+			}
+			m_Ib.Create( baseIndices, true );
+
 			if ( m_Parent != null )
 			{
 				m_Parent.ChildBuildIsComplete( );
@@ -225,7 +231,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 				//	Bodge to generate vertices (blocking) on the first frame
 				if ( m_Parent == null && m_VbIndex == -1 && m_IncreaseDetailDistance == float.MaxValue )
 				{
-					TerrainPatchBuildItem builder = new TerrainPatchBuildItem( camera, generator, this, ( PatchError == float.MaxValue ) );
+					TerrainPatchBuildItem builder = TerrainPatchBuildItem.Allocate( camera, generator, this, ( PatchError == float.MaxValue ) );
 					builder.Build( );
 				}
 			}
@@ -257,7 +263,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 			if ( m_Children == null )
 			{
 				Graphics.Fonts.DebugFont.Write( m_Centre.X, m_Centre.Y, m_Centre.Z, FontAlignment.TopRight, Color.White, "{0:F2}/{1:F2}", m_DistToPatch, m_IncreaseDetailDistance );
-				Graphics.Draw.Billboard( ms_Brush, m_Centre, 100.0f, 100.0f );
+				Graphics.Draw.Billboard( s_Brush, m_Centre, 100.0f, 100.0f );
 
 				Graphics.Draw.Sphere( Graphics.Surfaces.TransparentBlue, m_Centre, ( float )m_Radius );
 			}
@@ -292,7 +298,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 		private double							m_Radius;
 		private float							m_UvRes;
 		
-		private readonly static DrawBase.IBrush ms_Brush;
+		private readonly static DrawBase.IBrush s_Brush;
 
 
 		private bool CanReduceDetail
@@ -328,9 +334,9 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 
 		static TerrainPatch( )
 		{
-			ms_Brush = Graphics.Draw.NewBrush( Color.Blue );
-			ms_Brush.State.DepthTest = false;
-			ms_Brush.State.DepthWrite = false;
+			s_Brush = Graphics.Draw.NewBrush( Color.Blue );
+			s_Brush.State.DepthTest = false;
+			s_Brush.State.DepthWrite = false;
 		}
 
 		public unsafe void SetVertexData( byte* srcData )
@@ -340,7 +346,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 			{
 				return;
 			}
-			using ( IVertexBufferLock vbLock = m_Vertices.VertexBuffer.Lock( m_VbIndex, TerrainPatchConstants.PatchArea, false, true ) )
+			using ( IVertexBufferLock vbLock = m_Vertices.VertexBuffer.Lock( m_VbIndex, TerrainPatchConstants.PatchTotalVertexCount, false, true ) )
 			{
 				memcpy( vbLock.Bytes, srcData, TerrainPatchConstants.PatchTotalVertexCount * m_Vertices.VertexBuffer.VertexSizeInBytes );
 			}
@@ -358,7 +364,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 		private void Build( ITerrainPatchGenerator generator, IProjectionCamera camera )
 		{
 			m_Building = true;
-			TerrainPatchBuildItem builder = new TerrainPatchBuildItem( camera, generator, this, ( PatchError == float.MaxValue ) );
+			TerrainPatchBuildItem builder = TerrainPatchBuildItem.Allocate( camera, generator, this, ( PatchError == float.MaxValue ) );
 			TerrainPatchBuilder.QueueWork( builder );
 		}
 
@@ -399,7 +405,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 
 		private static void BuildSkirtIndexBuffer( ICollection<int> indices, int srcIndex, int srcIndexOffset, int dstIndex, bool flip )
 		{
-			int res = TerrainPatchConstants.PatchWidth - 1;
+			int res = TerrainPatchConstants.PatchResolution - 1;
 			for ( int i = 0; i < res; ++i )
 			{
 				indices.Add( srcIndex );
@@ -434,7 +440,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 
 		private void BuildIndices( )
 		{
-			int res = TerrainPatchConstants.PatchWidth;
+			int res = TerrainPatchConstants.PatchResolution;
 			int triRes = res - 1;
 			List<int> indices = new List<int>( triRes * triRes * 6 + triRes * 12 );
 
@@ -466,16 +472,16 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 				BuildSkirtIndexBuffer( indices, m_VbIndex, 1, skirtIndex, false );
 
 				//	First vertical skirt
-				skirtIndex += TerrainPatchConstants.PatchWidth;
-				BuildSkirtIndexBuffer( indices, m_VbIndex, TerrainPatchConstants.PatchWidth, skirtIndex, true );
+				skirtIndex += TerrainPatchConstants.PatchResolution;
+				BuildSkirtIndexBuffer( indices, m_VbIndex, TerrainPatchConstants.PatchResolution, skirtIndex, true );
 				
 				//	Last horizontal skirt
-				skirtIndex += TerrainPatchConstants.PatchWidth;
-				BuildSkirtIndexBuffer( indices, m_VbIndex + TerrainPatchConstants.PatchWidth * ( TerrainPatchConstants.PatchWidth - 1 ), 1, skirtIndex, true );
+				skirtIndex += TerrainPatchConstants.PatchResolution;
+				BuildSkirtIndexBuffer( indices, m_VbIndex + TerrainPatchConstants.PatchResolution * ( TerrainPatchConstants.PatchResolution - 1 ), 1, skirtIndex, true );
 
 				//	Last vertical skirt
-				skirtIndex += TerrainPatchConstants.PatchWidth;
-				BuildSkirtIndexBuffer( indices, m_VbIndex + TerrainPatchConstants.PatchWidth - 1, TerrainPatchConstants.PatchWidth, skirtIndex, false );
+				skirtIndex += TerrainPatchConstants.PatchResolution;
+				BuildSkirtIndexBuffer( indices, m_VbIndex + TerrainPatchConstants.PatchResolution - 1, TerrainPatchConstants.PatchResolution, skirtIndex, false );
 			}
 
 			m_Ib.Create( indices.ToArray( ), true );

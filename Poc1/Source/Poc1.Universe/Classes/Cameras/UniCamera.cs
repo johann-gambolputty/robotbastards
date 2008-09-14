@@ -42,9 +42,9 @@ namespace Poc1.Universe.Classes.Cameras
 		public static void SetAstroRenderTransform( TransformType transformType, UniTransform transform )
 		{
 			IUniCamera curCam = Current;
-			float x = ( float )UniUnits.AstroRenderUnits.FromUniUnits( transform.Position.X - curCam.Position.X );
-			float y = ( float )UniUnits.AstroRenderUnits.FromUniUnits( transform.Position.Y - curCam.Position.Y );
-			float z = ( float )UniUnits.AstroRenderUnits.FromUniUnits( transform.Position.Z - curCam.Position.Z );
+			float x = ( float )Units.Convert.UniToAstroRender( transform.Position.X - curCam.Position.X );
+			float y = ( float )Units.Convert.UniToAstroRender( transform.Position.Y - curCam.Position.Y );
+			float z = ( float )Units.Convert.UniToAstroRender( transform.Position.Z - curCam.Position.Z );
 
 			Graphics.Renderer.SetTransform( transformType, new Point3( x, y, z ), transform.XAxis, transform.YAxis, transform.ZAxis );
 		}
@@ -64,9 +64,9 @@ namespace Poc1.Universe.Classes.Cameras
 		public static void SetRenderTransform( TransformType transformType, UniTransform transform )
 		{
 			IUniCamera curCam = Current;
-			float x = ( float )UniUnits.RenderUnits.FromUniUnits( transform.Position.X - curCam.Position.X );
-			float y = ( float )UniUnits.RenderUnits.FromUniUnits( transform.Position.Y - curCam.Position.Y );
-			float z = ( float )UniUnits.RenderUnits.FromUniUnits( transform.Position.Z - curCam.Position.Z );
+			float x = ( float )Units.Convert.UniToRender( transform.Position.X - curCam.Position.X );
+			float y = ( float )Units.Convert.UniToRender( transform.Position.Y - curCam.Position.Y );
+			float z = ( float )Units.Convert.UniToRender( transform.Position.Z - curCam.Position.Z );
 
 			Graphics.Renderer.SetTransform( transformType, new Point3( x, y, z ), transform.XAxis, transform.YAxis, transform.ZAxis );
 		}

@@ -16,7 +16,7 @@ namespace Rb.Assets
 		/// </summary>
 		public static AssetManager Instance
 		{
-			get { return ms_Singleton; }
+			get { return s_Singleton; }
 		}
  
 		#endregion
@@ -198,7 +198,7 @@ namespace Rb.Assets
 		#region Private stuff
 
 		private readonly List< IAssetLoader > m_Loaders = new List< IAssetLoader >( );
-		private readonly static AssetManager ms_Singleton = new AssetManager( );
+		private readonly static AssetManager s_Singleton = new AssetManager( );
 		
 		#endregion
 	}

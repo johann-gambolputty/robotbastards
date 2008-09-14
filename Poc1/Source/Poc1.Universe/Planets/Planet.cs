@@ -1,3 +1,4 @@
+using System;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets.Models;
@@ -14,6 +15,16 @@ namespace Poc1.Universe.Planets
 	/// </summary>
 	public class Planet : IPlanet
 	{
+		#region IPlanet Members
+
+		/// <summary>
+		/// Gets/sets the planet's orbit
+		/// </summary>
+		public IOrbit Orbit
+		{
+			get { return m_Orbit; }
+			set { m_Orbit = value; }
+		}
 
 		#region Models
 
@@ -23,7 +34,11 @@ namespace Poc1.Universe.Planets
 		public IPlanetAtmosphereModel AtmosphereModel
 		{
 			get { return m_AtmosphereModel; }
-			set { m_AtmosphereModel = value; }
+			set
+			{
+				 m_AtmosphereModel = value;
+				 OnModelAssigned( value );
+			}
 		}
 
 		/// <summary>
@@ -32,7 +47,11 @@ namespace Poc1.Universe.Planets
 		public IPlanetOceanModel OceanModel
 		{
 			get { return m_OceanModel; }
-			set { m_OceanModel = value; }
+			set
+			{
+				m_OceanModel = value;
+				OnModelAssigned( value );
+			}
 		}
 
 		/// <summary>
@@ -41,7 +60,11 @@ namespace Poc1.Universe.Planets
 		public IPlanetCloudModel CloudModel
 		{
 			get { return m_CloudModel; }
-			set { m_CloudModel = value; }
+			set
+			{
+				m_CloudModel = value;
+				OnModelAssigned( value );
+			}
 		}
 
 		/// <summary>
@@ -50,7 +73,11 @@ namespace Poc1.Universe.Planets
 		public IPlanetTerrainModel TerrainModel
 		{
 			get { return m_TerrainModel; }
-			set { m_TerrainModel = value; }
+			set
+			{
+				m_TerrainModel = value;
+				OnModelAssigned( value );
+			}
 		}
 
 		#endregion
@@ -63,7 +90,11 @@ namespace Poc1.Universe.Planets
 		public IPlanetAtmosphereRenderer AtmosphereRenderer
 		{
 			get { return m_AtmosphereRenderer; }
-			set { m_AtmosphereRenderer = value; }
+			set
+			{
+				m_AtmosphereRenderer = value;
+				OnRendererAssigned( value );
+			}
 		}
 
 		/// <summary>
@@ -72,7 +103,11 @@ namespace Poc1.Universe.Planets
 		public IPlanetOceanRenderer OceanRenderer
 		{
 			get { return m_OceanRenderer; }
-			set { m_OceanRenderer = value; }
+			set
+			{
+				m_OceanRenderer = value;
+				OnRendererAssigned( value );
+			}
 		}
 
 		/// <summary>
@@ -81,7 +116,11 @@ namespace Poc1.Universe.Planets
 		public IPlanetCloudRenderer CloudRenderer
 		{
 			get { return m_CloudRenderer; }
-			set { m_CloudRenderer = value; }
+			set
+			{
+				m_CloudRenderer = value;
+				OnRendererAssigned( value );
+			}
 		}
 
 		/// <summary>
@@ -90,14 +129,19 @@ namespace Poc1.Universe.Planets
 		public IPlanetTerrainRenderer TerrainRenderer
 		{
 			get { return m_TerrainRenderer; }
-			set { m_TerrainRenderer = value; }
+			set
+			{
+				m_TerrainRenderer = value;
+				OnRendererAssigned( value );
+			}
 		}
 
 		#endregion
 
+		#endregion
 
 		#region IRenderable Members
-		
+
 		/// <summary>
 		/// Renders the planet
 		/// </summary>
@@ -111,6 +155,10 @@ namespace Poc1.Universe.Planets
 			UniCamera.PushRenderTransform( TransformType.LocalToWorld, Transform );
 
 			//	Render planet
+			if ( m_OceanRenderer != null )
+			{
+				m_OceanRenderer.Render( context );
+			}
 			if ( m_TerrainRenderer != null )
 			{
 				m_TerrainRenderer.Render( context );
@@ -118,6 +166,10 @@ namespace Poc1.Universe.Planets
 			if ( m_CloudRenderer != null )
 			{
 				m_CloudRenderer.Render( context );
+			}
+			if ( m_AtmosphereRenderer != null )
+			{
+				m_AtmosphereRenderer.Render( context );
 			}
 
 			//	Pop transform
@@ -129,7 +181,6 @@ namespace Poc1.Universe.Planets
 
 		#endregion
 
-
 		#region IBody Members
 
 		/// <summary>
@@ -140,11 +191,41 @@ namespace Poc1.Universe.Planets
 			get { return m_Transform; }
 		}
 
+		/// <summary>
+		/// Gets/sets the name of this planet
+		/// </summary>
+		public string Name
+		{
+			get { return m_Name; }
+			set { m_Name = value; }
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		/// <summary>
+		/// Disposes this object
+		/// </summary>
+		public void Dispose( )
+		{
+			Dispose( m_AtmosphereModel as IDisposable );
+			Dispose( m_CloudModel as IDisposable );
+			Dispose( m_OceanModel as IDisposable );
+			Dispose( m_TerrainModel as IDisposable );
+			Dispose( m_AtmosphereRenderer as IDisposable );
+			Dispose( m_CloudRenderer as IDisposable );
+			Dispose( m_TerrainRenderer as IDisposable );
+			Dispose( m_OceanRenderer as IDisposable );
+		}
+
 		#endregion
 
 		#region Private Members
 
+		private string						m_Name;
 		private UniTransform				m_Transform = new UniTransform( );
+		private IOrbit						m_Orbit;
 		private IPlanetAtmosphereModel		m_AtmosphereModel;
 		private IPlanetCloudModel			m_CloudModel;
 		private IPlanetOceanModel			m_OceanModel;
@@ -153,7 +234,40 @@ namespace Poc1.Universe.Planets
 		private IPlanetCloudRenderer		m_CloudRenderer;
 		private IPlanetTerrainRenderer		m_TerrainRenderer;
 		private IPlanetOceanRenderer		m_OceanRenderer;
-		
+
+		/// <summary>
+		/// Called when a model is assigned to this planet
+		/// </summary>
+		private void OnModelAssigned( IPlanetEnvironmentModel model )
+		{
+			if ( model != null )
+			{
+				model.Planet = this;
+			}
+		}
+
+		/// <summary>
+		/// Called when a renderer is assigned to this planet
+		/// </summary>
+		private void OnRendererAssigned( IPlanetEnvironmentRenderer renderer )
+		{
+			if ( renderer != null )
+			{
+				renderer.Planet = this;
+			}
+		}
+
+		/// <summary>
+		/// Disposes of the specified object, if it is not null
+		/// </summary>
+		private static void Dispose( IDisposable disposable )
+		{
+			if ( disposable != null )
+			{
+				disposable.Dispose( );
+			}
+		}
+
 		#endregion
 
 	}

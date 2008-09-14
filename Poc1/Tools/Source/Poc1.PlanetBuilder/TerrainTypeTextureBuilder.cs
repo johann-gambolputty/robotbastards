@@ -19,7 +19,7 @@ namespace Poc1.PlanetBuilder
 		/// </summary>
 		public static TerrainTypeTextureBuilder Instance
 		{
-			get { return ms_Instance; }
+			get { return s_Instance; }
 		}
 
 		public TerrainTypeTextureBuilder( )
@@ -113,7 +113,7 @@ namespace Poc1.PlanetBuilder
 		private readonly ITexture2d m_PackTexture;
 		private Bitmap m_LookupBitmap;
 		private Bitmap m_PackBitmap;
-		private readonly static TerrainTypeTextureBuilder ms_Instance = new TerrainTypeTextureBuilder( ); 
+		private readonly static TerrainTypeTextureBuilder s_Instance = new TerrainTypeTextureBuilder( ); 
 
 		private void OnTerrainTypeCountChanged( TerrainType type )
 		{
@@ -139,7 +139,7 @@ namespace Poc1.PlanetBuilder
 				m_LookupTexture.Load( m_LookupBitmap, false );
 				m_LookupBitmap.Dispose( );
 
-				BuilderState.Instance.Planet.Terrain.TerrainTypesTexture = m_LookupTexture;
+				BuilderState.Instance.Planet.TerrainModel.TerrainTypesTexture = m_LookupTexture;
 
 				m_LookupBitmap = null;
 				--m_LookupTextureRebuildRequests;
@@ -148,7 +148,7 @@ namespace Poc1.PlanetBuilder
 			{
 				m_PackTexture.Load( m_PackBitmap, false );
 
-				BuilderState.Instance.Planet.Terrain.TerrainPackTexture = m_PackTexture;
+				BuilderState.Instance.Planet.TerrainModel.TerrainPackTexture = m_PackTexture;
 
 				m_PackBitmap.Dispose( );
 				m_PackBitmap = null;

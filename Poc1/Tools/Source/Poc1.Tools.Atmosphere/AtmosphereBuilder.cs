@@ -199,7 +199,7 @@ namespace Poc1.Tools.Atmosphere
 			return true;
 		}
 
-		private bool GetRayAtmosphereIntersection(Point3 origin, Vector3 dir, out Point3 intPt )
+		private bool GetRayAtmosphereIntersection( Point3 origin, Vector3 dir, out Point3 intPt )
 		{
 			Ray3 ray = new Ray3( origin, dir );
 			Line3Intersection outerIntersection = Intersections3.GetRayIntersection( ray, m_OuterSphere );

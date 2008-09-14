@@ -27,10 +27,10 @@ namespace Poc1.Universe
 		[Category( "Rendering" )]
 		public static bool ShowCameraPosition
 		{
-			get { return ms_ShowCameraPosition; }
+			get { return s_ShowCameraPosition; }
 			set
 			{
-				ms_ShowCameraPosition = value;
+				s_ShowCameraPosition = value;
 				OnPropertyChanged( );
 			}
 		}
@@ -45,10 +45,10 @@ namespace Poc1.Universe
 		[Category( "Terrain Rendering" )]
 		public static bool ShowPatchInfo
 		{
-			get { return ms_ShowPatchInfo; }
+			get { return s_ShowPatchInfo; }
 			set
 			{
-				ms_ShowPatchInfo = value;
+				s_ShowPatchInfo = value;
 				OnPropertyChanged( );
 			}
 		}
@@ -59,8 +59,8 @@ namespace Poc1.Universe
 		[Category( "Terrain Rendering" )]
 		public static bool DisableTerainSkirts
 		{
-			get { return ms_DisableTerainSkirts; }
-			set { ms_DisableTerainSkirts = value; }
+			get { return s_DisableTerainSkirts; }
+			set { s_DisableTerainSkirts = value; }
 		}
 
 		/// <summary>
@@ -69,10 +69,10 @@ namespace Poc1.Universe
 		[Category( "Terrain Rendering" )]
 		public static bool ShowPatchWireframe
 		{
-			get { return ms_ShowPatchWireframe; }
+			get { return s_ShowPatchWireframe; }
 			set
 			{
-				ms_ShowPatchWireframe = value;
+				s_ShowPatchWireframe = value;
 				OnPropertyChanged( );
 			}
 		}
@@ -83,10 +83,10 @@ namespace Poc1.Universe
 		[Category( "Terrain Rendering" )]
 		public static bool ShowTerrainSlopes
 		{
-			get { return ms_ShowTerrainSlopes; }
+			get { return s_ShowTerrainSlopes; }
 			set
 			{
-				ms_ShowTerrainSlopes = value;
+				s_ShowTerrainSlopes = value;
 				OnPropertyChanged( );
 			}
 		}
@@ -98,10 +98,24 @@ namespace Poc1.Universe
 		[Category( "Terrain Rendering" )]
 		public static bool ShowTerrainLeafNodeCount
 		{
-			get { return ms_ShowTerrainLeafNodeCount; }
+			get { return s_ShowTerrainLeafNodeCount; }
 			set
 			{
-				ms_ShowTerrainLeafNodeCount = value;
+				s_ShowTerrainLeafNodeCount = value;
+				OnPropertyChanged( );
+			}
+		}
+
+		/// <summary>
+		/// Shows the number of terrain build items currently pending
+		/// </summary>
+		[Category( "Terrain Rendering" )]
+		public static bool ShowPendingTerrainBuildItemCount
+		{
+			get { return s_ShowPendingTerrainBuildItemCount; }
+			set
+			{
+				s_ShowPendingTerrainBuildItemCount = value;
 				OnPropertyChanged( );
 			}
 		}
@@ -110,13 +124,15 @@ namespace Poc1.Universe
 
 		#region Private members
 
-		private static bool ms_ShowCameraPosition;
-		private static bool ms_DisableTerainSkirts;
+		private static bool s_ShowCameraPosition;
+		private static bool s_DisableTerainSkirts;
 
-		private static bool ms_ShowPatchInfo;
-		private static bool ms_ShowPatchWireframe;
-		private static bool ms_ShowTerrainSlopes;
-		private static bool ms_ShowTerrainLeafNodeCount;
+
+		private static bool s_ShowPendingTerrainBuildItemCount = true;
+		private static bool s_ShowPatchInfo;
+		private static bool s_ShowPatchWireframe;
+		private static bool s_ShowTerrainSlopes;
+		private static bool s_ShowTerrainLeafNodeCount;
 
 		/// <summary>
 		/// Raises the DebugInfoChanged event

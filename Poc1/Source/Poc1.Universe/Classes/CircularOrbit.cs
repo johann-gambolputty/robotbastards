@@ -13,7 +13,7 @@ namespace Poc1.Universe.Classes
 		/// <param name="centre">Orbital centre</param>
 		/// <param name="radius">Orbital radius</param>
 		/// <param name="year">Time taken for a complete orbit</param>
-		public CircularOrbit( IEntity centre, double radius, TimeSpan year )
+		public CircularOrbit( IBody centre, double radius, TimeSpan year )
 		{
 			m_Centre = centre;
 			m_Radius = radius;
@@ -23,7 +23,7 @@ namespace Poc1.Universe.Classes
 		/// <summary>
 		/// Entity at the centre of the orbit
 		/// </summary>
-		public IEntity Centre
+		public IBody Centre
 		{
 			get { return m_Centre; }
 		}
@@ -43,7 +43,7 @@ namespace Poc1.Universe.Classes
 		/// </summary>
 		/// <param name="entity">Orbiting entity</param>
 		/// <param name="updateTime">Update time, in ticks (<see cref="TinyTime"/>)</param>
-		public void Update( IEntity entity, long updateTime )
+		public void Update( IBody entity, long updateTime )
 		{
 			double angleIncrement = m_AnglePerSecond * TinyTime.ToSeconds( m_LastUpdate, updateTime );
 			m_Angle = Utils.Wrap( m_Angle + angleIncrement, 0, Math.PI * 2.0 );
@@ -51,9 +51,9 @@ namespace Poc1.Universe.Classes
 			double x = Math.Sin( m_Angle ) * m_Radius;
 			double z = Math.Cos( m_Angle ) * m_Radius;
 
-			entity.Transform.Position.X = m_Centre.Transform.Position.X + UniUnits.Metres.ToUniUnits( x );
+			entity.Transform.Position.X = m_Centre.Transform.Position.X + Units.Convert.MetresToUni( x );
 			entity.Transform.Position.Y = m_Centre.Transform.Position.Y;
-			entity.Transform.Position.Z = m_Centre.Transform.Position.Z + UniUnits.Metres.ToUniUnits( z );
+			entity.Transform.Position.Z = m_Centre.Transform.Position.Z + Units.Convert.MetresToUni( z );
 
 			m_LastUpdate = updateTime;
 		}
@@ -62,7 +62,7 @@ namespace Poc1.Universe.Classes
 
 		#region Private Members
 
-		private readonly IEntity m_Centre;
+		private readonly IBody m_Centre;
 		private readonly double m_Radius;
 		private double m_Angle;
 		private readonly double m_AnglePerSecond;

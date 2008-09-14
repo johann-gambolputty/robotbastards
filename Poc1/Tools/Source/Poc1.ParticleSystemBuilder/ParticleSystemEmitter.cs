@@ -36,7 +36,7 @@ namespace Poc1.ParticleSystemBuilder
 		/// </summary>
 		public void Render( IRenderContext context )
 		{
-			Graphics.Draw.Sphere( ms_PsSurface, m_Ps.Frame.Translation, 0.1f );
+			Graphics.Draw.Sphere( s_PsSurface, m_Ps.Frame.Translation, 0.1f );
 			m_Ps.Render( context );
 		}
 
@@ -45,13 +45,13 @@ namespace Poc1.ParticleSystemBuilder
 		#region Private Members
 
 		private readonly IParticleSystem m_Ps;
-		private readonly static DrawBase.ISurface ms_PsSurface;
+		private readonly static DrawBase.ISurface s_PsSurface;
 
 		static ParticleSystemEmitter( )
 		{
-			ms_PsSurface = Graphics.Draw.NewSurface( Color.White );
-			ms_PsSurface.State.DepthTest = true;
-			ms_PsSurface.State.DepthWrite = true;
+			s_PsSurface = Graphics.Draw.NewSurface( Color.White );
+			s_PsSurface.State.DepthTest = true;
+			s_PsSurface.State.DepthWrite = true;
 		}
 		
 		#endregion

@@ -64,13 +64,13 @@ technique DefaultTechnique
 		DepthFunc				= Less;
 		DepthMask				= true;
 		ShadeModel				= Smooth;
-		FrontFace				= CCW;
+		FrontFace				= CW;
 		DepthTestEnable			= true;
-		CullFaceEnable			= false;
+		CullFaceEnable			= true;
 		BlendEnable				= false;
 		VertexProgram			= compile arbvp1 VertexShader( );
 		FragmentProgram			= compile arbfp1 FragmentShader( );
-		PolygonMode				= int2( Front, Line );
+	//	PolygonMode				= int2( FrontAndBack, Line );
 	}
 }
 

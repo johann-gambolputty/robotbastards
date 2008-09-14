@@ -5,8 +5,12 @@ using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Renderers.Patches;
 using Poc1.Universe.Interfaces.Planets.Spherical.Models;
 using Poc1.Universe.Interfaces.Rendering;
+using Rb.Assets;
+using Rb.Core.Maths;
 using Rb.Rendering.Interfaces.Objects;
+using Rb.Rendering.Textures;
 using ITerrainPatch=Poc1.Universe.Interfaces.Planets.Renderers.Patches.ITerrainPatch;
+using IPlanet = Poc1.Universe.Interfaces.Planets.IPlanet;
 using Poc1.Universe.Interfaces.Planets.Spherical;
 
 namespace Poc1.Universe.Planets.Spherical.Models
@@ -17,37 +21,52 @@ namespace Poc1.Universe.Planets.Spherical.Models
 	public class SpherePlanetProcTerrainModel : ISpherePlanetTerrainModel, IPlanetProcTerrainModel, ITerrainPatchGenerator
 	{
 		/// <summary>
-		/// Sets up the model to generate terrain for a particular planet instance
+		/// Default constructor. Loads default terrain textures
 		/// </summary>
-		public SpherePlanetProcTerrainModel( ISpherePlanet planet )
+		public SpherePlanetProcTerrainModel( )
 		{
-			m_Planet = planet;
+			//	Load in default textures
+			TextureLoader.TextureLoadParameters loadParameters = new TextureLoader.TextureLoadParameters( );
+			loadParameters.GenerateMipMaps = true;
+			m_TerrainPackTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/defaultSet0 Pack.jpg", loadParameters );
+			m_TerrainTypesTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/defaultSet0 Distribution.bmp" );
+	
+		}
+
+		/// <summary>
+		/// Gets/sets the associated planet
+		/// </summary>
+		public IPlanet Planet
+		{
+			get { return m_Planet; }
+			set { m_Planet = ( ISpherePlanet )value; }
 		}
 
 		#region IPlanetTerrainModel Members
 
-
+		/// <summary>
+		/// Gets/sets the terrain types texture
+		/// </summary>
 		public ITexture2d TerrainTypesTexture
 		{
-			get
-			{
-				throw new Exception( "The method or operation is not implemented." );
-			}
+			get { return m_TerrainTypesTexture; }
 			set
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				m_TerrainTypesTexture = value;
+				OnModelChanged( );
 			}
 		}
 
+		/// <summary>
+		/// Gets/sets the terrain pack texture
+		/// </summary>
 		public ITexture2d TerrainPackTexture
 		{
-			get
-			{
-				throw new Exception( "The method or operation is not implemented." );
-			}
+			get { return m_TerrainPackTexture; }
 			set
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				m_TerrainPackTexture = value;
+				OnModelChanged( );
 			}
 		}
 
@@ -64,7 +83,8 @@ namespace Poc1.Universe.Planets.Spherical.Models
 		/// <param name="firstVertex">Patch vertices</param>
 		public unsafe void GenerateTerrainPatchVertices( ITerrainPatch patch, int res, float uvRes, TerrainVertex* firstVertex )
 		{
-			m_Gen.GenerateVertices( patch.LocalOrigin, patch.LocalUStep, patch.LocalVStep, res, res, uvRes, firstVertex );
+			SetPatchPlanetParameters( patch );
+			SafeTerrainGenerator.GenerateVertices( patch.LocalOrigin, patch.LocalUStep, patch.LocalVStep, res, res, uvRes, firstVertex );
 		}
 
 		/// <summary>
@@ -77,7 +97,8 @@ namespace Poc1.Universe.Planets.Spherical.Models
 		/// <param name="error">Maximum error value between this patch and higher level patch</param>
 		public unsafe void GenerateTerrainPatchVertices( ITerrainPatch patch, int res, float uvRes, TerrainVertex* firstVertex, out float error )
 		{
-			m_Gen.GenerateVertices( patch.LocalOrigin, patch.LocalUStep, patch.LocalVStep, res, res, uvRes, firstVertex, out error );
+			SetPatchPlanetParameters( patch );
+			SafeTerrainGenerator.GenerateVertices( patch.LocalOrigin, patch.LocalUStep, patch.LocalVStep, res, res, uvRes, firstVertex, out error );
 		}
 
 		#endregion
@@ -87,13 +108,16 @@ namespace Poc1.Universe.Planets.Spherical.Models
 		/// <summary>
 		/// Sets up the terrain functions
 		/// </summary>
-		/// <param name="maxHeight">Maximum height of the terrain</param>
 		/// <param name="heightFunction">The terrain height function</param>
 		/// <param name="groundFunction">The terrain ground offset function</param>
-		public void SetupTerrain( float maxHeight, TerrainFunction heightFunction, TerrainFunction groundFunction )
+		public void SetupTerrain( TerrainFunction heightFunction, TerrainFunction groundFunction )
 		{
+			if ( m_Planet == null )
+			{
+				throw new InvalidOperationException( "Terrain model does not have an associated planet. Cannot setup terrain" );
+			}
 			float radius = m_Planet.Radius.ToRenderUnits;
-			float height = m_Planet.TerrainModel.MaximumHeight.ToRenderUnits;
+			float height = MaximumHeight.ToRenderUnits;
 
 			// NOTE: AP: Patch scale is irrelevant, because vertices are projected onto the function sphere anyway
 			m_Gen = new TerrainGenerator( TerrainGeometry.Sphere, heightFunction, groundFunction );
@@ -138,6 +162,8 @@ namespace Poc1.Universe.Planets.Spherical.Models
 
 		#region Private Members
 
+		private ITexture2d m_TerrainTypesTexture;
+		private ITexture2d m_TerrainPackTexture;
 		private TerrainGenerator m_Gen;
 		private ISpherePlanet m_Planet;
 		private Units.Metres m_MaximumHeight = new Units.Metres( 3000 );
@@ -147,6 +173,48 @@ namespace Poc1.Universe.Planets.Spherical.Models
 		/// this step size, around a central sample, to calculate the terrain normal
 		/// </summary>
 		private const float MinimumStepSize = 0.01f;
+
+		/// <summary>
+		/// Gets the current terrain generator. If there isn't one, a flat terrain generator is created.
+		/// </summary>
+		private TerrainGenerator SafeTerrainGenerator
+		{
+			get
+			{
+				if ( m_Gen == null )
+				{
+					SetupTerrain( new TerrainFunction( TerrainFunctionType.Flat ), null );
+				}
+				return m_Gen;
+			}
+		}
+
+		/// <summary>
+		/// Called when the model is changed
+		/// </summary>
+		private void OnModelChanged( )
+		{
+			if ( ModelChanged != null )
+			{
+				ModelChanged( this, null );
+			}
+		}
+
+		/// <summary>
+		/// Patches are defined in a local space. This determines the planet-space parameters of a patch
+		/// </summary>
+		public void SetPatchPlanetParameters( ITerrainPatch patch )
+		{
+			float radius = m_Planet.Radius.ToRenderUnits;
+
+			Point3 edge = patch.LocalOrigin + ( patch.LocalUAxis / 2 );
+			Point3 centre = edge + ( patch.LocalVAxis / 2 );
+
+			Point3 plEdge = ( edge.ToVector3( ).MakeNormal( ) * radius ).ToPoint3( );
+			Point3 plCentre = ( centre.ToVector3( ).MakeNormal( ) * radius ).ToPoint3( );
+
+			patch.SetPlanetParameters( plCentre, plCentre.DistanceTo( plEdge ) );
+		}
 
 		#endregion
 

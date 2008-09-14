@@ -38,7 +38,7 @@ namespace Poc1.Universe.Classes.Cameras
 		/// If the entity changes position, the camera's frame will not update until the
 		/// next <see cref="PointTrackingCamera.UpdateFrame"/> or <see cref="PointTrackingCamera.Begin"/> call.
 		/// </remarks>
-		public IEntity Entity
+		public IBody Entity
 		{
 			get { return m_Entity; }
 			set
@@ -50,7 +50,7 @@ namespace Poc1.Universe.Classes.Cameras
 
 		#region Private Members
 
-		private IEntity m_Entity;
+		private IBody m_Entity;
 
 		#endregion
 	}

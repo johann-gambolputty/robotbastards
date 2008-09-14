@@ -56,7 +56,7 @@ namespace Rb.Rendering.Shadows
 		/// </summary>
 		public static ITechnique OverrideTechnique
 		{
-			get { return ms_OverrideTechnique; }
+			get { return s_OverrideTechnique; }
 		}
 
 		/// <summary>
@@ -72,8 +72,8 @@ namespace Rb.Rendering.Shadows
 		/// </summary>
 		public static bool DumpShadowBuffer
 		{
-			get { return ms_DumpLights; }
-			set { ms_DumpLights = value; }
+			get { return s_DumpLights; }
+			set { s_DumpLights = value; }
 		}
 
 		#endregion
@@ -94,12 +94,12 @@ namespace Rb.Rendering.Shadows
 			m_DepthTextureUsed = useDepthTexture;
 
 			//	Create a technique that is used to override standard scene rendering techniques (for shadow buffer generation)
-			if ( ms_OverrideTechnique == null )
+			if ( s_OverrideTechnique == null )
 			{
 				byte[] shaderBytes = m_DepthTextureUsed ? Resources.DefaultShadowMapDepthTexture : Resources.DefaultShadowMapTexture;
 				StreamSource source = new StreamSource( shaderBytes, m_DepthTextureUsed ? "shadowMapDepthTexture.cgfx" : "shadowMapTexture.cgfx" );
 				Effect effect = ( Effect )AssetManager.Instance.Load( source );
-				ms_OverrideTechnique = effect.Techniques[ "DefaultTechnique" ];
+				s_OverrideTechnique = effect.Techniques[ "DefaultTechnique" ];
 			}
 
 			//	Create render targets for up to MaxLights lights
@@ -186,8 +186,8 @@ namespace Rb.Rendering.Shadows
 
 		#region Private stuff
 
-		private static ITechnique							ms_OverrideTechnique;
-		private static bool									ms_DumpLights = false;
+		private static ITechnique							s_OverrideTechnique;
+		private static bool									s_DumpLights = false;
 
 		private readonly LightGroup							m_ShadowLights = new LightGroup( );
 		private readonly IRenderTarget[]					m_RenderTargets = new IRenderTarget[ MaxLights ];
@@ -228,7 +228,7 @@ namespace Rb.Rendering.Shadows
 
 			//  Set the global technique to the override technique (this forces all objects to be rendered using the
 			//  override technique, unlesss they support a valid substitute technique), and render away...
-			context.PushGlobalTechnique( ms_OverrideTechnique );
+			context.PushGlobalTechnique( s_OverrideTechnique );
 
 			//	Set near and far Z plane bindings
 			float nearZ = m_NearZ;
@@ -271,7 +271,7 @@ namespace Rb.Rendering.Shadows
 
 
 				//	Save the depth buffer
-				if ( ms_DumpLights )
+				if ( s_DumpLights )
 				{
 					string path = string.Format( "ShadowBuffer{0}.png", numBuffers - 1 );
 					path = System.IO.Path.Combine( System.IO.Directory.GetCurrentDirectory( ), path );
@@ -289,7 +289,7 @@ namespace Rb.Rendering.Shadows
 				}
 			}
 
-			ms_DumpLights = false;
+			s_DumpLights = false;
 
 			context.PopGlobalTechnique( );
 

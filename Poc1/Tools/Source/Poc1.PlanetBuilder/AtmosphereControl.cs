@@ -3,10 +3,8 @@ using System.Windows.Forms;
 using Poc1.PlanetBuilder.Properties;
 using Poc1.Tools.Atmosphere;
 using System.ComponentModel;
-using Poc1.Universe;
-using Poc1.Universe.Classes;
-using Poc1.Universe.Interfaces;
-using Poc1.Universe.Interfaces.Rendering;
+using Poc1.Universe.Interfaces.Planets.Spherical;
+using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 
@@ -138,7 +136,7 @@ namespace Poc1.PlanetBuilder
 			ITexture2d opticalDepthTexture = Graphics.Factory.CreateTexture2d( );
 			opticalDepthTexture.Create( buildOutputs.OpticalDepthTexture );
 
-			ISphereAtmosphereRenderer atmoRenderer = ( ISphereAtmosphereRenderer )BuilderState.Instance.Planet.AtmosphereRenderer;
+			ISpherePlanetAtmosphereRenderer atmoRenderer = BuilderState.Instance.SpherePlanet.SphereAtmosphereRenderer;
 			atmoRenderer.SetLookupTextures( scatteringTexture, opticalDepthTexture );
 		}
 
@@ -192,22 +190,22 @@ namespace Poc1.PlanetBuilder
 
 		private void phaseCoeffUpDown_ValueChanged( object sender, EventArgs e )
 		{
-			BuilderState.Instance.Planet.Atmosphere.PhaseCoefficient = ( float )phaseCoeffUpDown.Value;
+			BuilderState.Instance.Planet.AtmosphereModel.PhaseCoefficient = ( float )phaseCoeffUpDown.Value;
 		}
 
 		private void phaseWeightUpDown_ValueChanged( object sender, EventArgs e )
 		{
-			BuilderState.Instance.Planet.Atmosphere.PhaseWeight = ( float )phaseWeightUpDown.Value;
+			BuilderState.Instance.Planet.AtmosphereModel.PhaseWeight = ( float )phaseWeightUpDown.Value;
 		}
 
 		#endregion
 
 		private void AtmosphereControl_Load( object sender, EventArgs e )
 		{
-			IPlanet planet = BuilderState.Instance.Planet;
-			m_AtmosphereModel.InnerRadiusMetres = ( float )UniUnits.Metres.FromUniUnits( ( ( SpherePlanet )planet ).Radius );
-			phaseCoeffUpDown.Value = ( decimal )planet.Atmosphere.PhaseCoefficient;
-			phaseWeightUpDown.Value = ( decimal )planet.Atmosphere.PhaseWeight;
+			ISpherePlanet planet = ( ISpherePlanet )BuilderState.Instance.Planet;
+			m_AtmosphereModel.InnerRadiusMetres = ( float )planet.Radius.ToMetres;
+			phaseCoeffUpDown.Value = ( decimal )planet.AtmosphereModel.PhaseCoefficient;
+			phaseWeightUpDown.Value = ( decimal )planet.AtmosphereModel.PhaseWeight;
 			innerRadiusUpDown.Value = ( decimal )( m_AtmosphereModel.InnerRadiusMetres / 1000.0 );
 			thicknessUpDown.Value = ( decimal )( m_AtmosphereModel.AtmosphereThicknessMetres / 1000.0 );
 		}

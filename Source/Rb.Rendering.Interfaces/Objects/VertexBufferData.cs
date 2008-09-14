@@ -136,7 +136,7 @@ namespace Rb.Rendering.Interfaces.Objects
 		/// <returns>Converter for source type</returns>
 		public static ElementTypeConverter GetDefaultConverter( Type type )
 		{
-			return ms_DefaultConverters[ type ];
+			return s_DefaultConverters[ type ];
 		}
 		
 		#endregion
@@ -497,7 +497,7 @@ namespace Rb.Rendering.Interfaces.Objects
 
 		#region Private stuff
 
-		private readonly static Dictionary<Type, ElementTypeConverter> ms_DefaultConverters;
+		private readonly static Dictionary<Type, ElementTypeConverter> s_DefaultConverters;
 
 		private readonly VertexBufferFormat m_Format;
 		private readonly FieldValues[] m_FieldArrays = new FieldValues[ Enum.GetValues( typeof( VertexFieldSemantic ) ).Length ];
@@ -508,7 +508,7 @@ namespace Rb.Rendering.Interfaces.Objects
 		/// </summary>
 		private static void AddConverter< SrcType, ElementType >( int numElements, VertexFieldElementTypeId typeId, ElementArrayWriterDelegate< SrcType, ElementType > writer )
 		{
-			ms_DefaultConverters.Add( typeof( SrcType ), new ElementTypeConverter< SrcType, ElementType >( numElements, typeId, writer ) );
+			s_DefaultConverters.Add( typeof( SrcType ), new ElementTypeConverter< SrcType, ElementType >( numElements, typeId, writer ) );
 		}
 		
 		/// <summary>
@@ -516,7 +516,7 @@ namespace Rb.Rendering.Interfaces.Objects
 		/// </summary>
 		static VertexBufferData( )
 		{
-			ms_DefaultConverters = new Dictionary<Type, ElementTypeConverter>( );
+			s_DefaultConverters = new Dictionary<Type, ElementTypeConverter>( );
 			
 			AddConverter<Point2, float>( 2, VertexFieldElementTypeId.Float32, Point2ToFloat32 );
 			AddConverter<Point3, float>( 3, VertexFieldElementTypeId.Float32, Point3ToFloat32 );

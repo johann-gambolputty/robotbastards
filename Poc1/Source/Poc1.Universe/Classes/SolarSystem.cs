@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
+using Poc1.Universe.Interfaces.Planets;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 
@@ -69,7 +70,7 @@ namespace Poc1.Universe.Classes
 			foreach ( IPlanet planet in sortedPlanets )
 			{
 				double distanceToCamera = UniCamera.Current.Position.DistanceTo( planet.Transform.Position );
-				planet.EnableTerrainRendering = ( distanceToCamera < TerrainRenderingDistance );
+			//	planet.EnableTerrainRendering = ( distanceToCamera < TerrainRenderingDistance );
 				planet.Render( context );
 			}
 		}

@@ -44,39 +44,17 @@
     <Compile Include="Classes\Cameras\TrackingCameraController.cs" />
     <Compile Include="Classes\Cameras\UniCamera.cs" />
     <Compile Include="Classes\CircularOrbit.cs" />
-    <Compile Include="Classes\Planet.cs" />
-    <Compile Include="Classes\Rendering\OceanRenderer.cs" />
-    <Compile Include="Classes\Rendering\PlaneOceanRenderer.cs" />
-    <Compile Include="Classes\Rendering\SphereAtmosphereModel.cs" />
-    <Compile Include="Classes\Rendering\SphereAtmosphereRenderer.cs" />
-    <Compile Include="Classes\Rendering\SphereOceanRenderer.cs" />
-    <Compile Include="Classes\Rendering\TerrainQuadPatch.cs" />
-    <Compile Include="Classes\Rendering\TerrainQuadPatchBuilder.cs" />
-    <Compile Include="Classes\Rendering\TerrainQuadPatchVertices.cs" />
     <Compile Include="Classes\Rendering\SphereCloudsGenerator.cs" />
-    <Compile Include="Classes\Rendering\SphereTerrainModel.cs" />
-    <Compile Include="Classes\Rendering\SphereTerrainPatches.cs" />
-    <Compile Include="Classes\Rendering\SphereTerrainQuadPatches.cs" />
     <Compile Include="Classes\Rendering\TerrainDistribution.cs" />
-    <Compile Include="Classes\Rendering\TerrainPatch.cs" />
-    <Compile Include="Classes\Rendering\TerrainPatchGeometry.cs" />
-    <Compile Include="Classes\Rendering\TerrainPatchGeometryManager.cs" />
     <Compile Include="Classes\Rendering\TerrainType.cs" />
     <Compile Include="Classes\Rendering\TerrainTypeManager.cs" />
     <Compile Include="Classes\Ship.cs" />
     <Compile Include="Classes\SolarSystem.cs" />
-    <Compile Include="Classes\Rendering\SpherePlanetRenderer.cs" />
-    <Compile Include="Classes\SpherePlanet.cs" />
     <Compile Include="Classes\StarBox.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DebugInfo.cs" />
     <Compile Include="GameProfiles.cs" />
-    <Compile Include="Interfaces\IEntity.cs" />
-    <Compile Include="Interfaces\IOrbit.cs" />
-    <Compile Include="Interfaces\IPlanet.cs" />
-    <Compile Include="Interfaces\IPlanetModel.cs" />
-    <Compile Include="Interfaces\ISun.cs" />
     <Compile Include="Interfaces\Rendering\IAtmosphereRenderer.cs" />
     <Compile Include="Interfaces\Rendering\IPlanetAtmosphereModel.cs" />
     <Compile Include="Interfaces\Rendering\IPlanetOcean.cs" />
@@ -88,7 +66,10 @@
     <Compile Include="Interfaces\Rendering\ITerrainType.cs" />
     <Compile Include="Interfaces\Rendering\ITerrainTypeManager.cs" />
     <Compile Include="NoiseTest.cs" />
+    <Compile Include="Planets\Models\PlanetAtmosphereModel.cs" />
+    <Compile Include="Planets\Models\PlanetOceanModel.cs" />
     <Compile Include="Planets\Planet.cs" />
+    <Compile Include="Planets\Spherical\Models\SpherePlanetAtmosphereModel.cs" />
     <Compile Include="Planets\Spherical\Models\SpherePlanetProcTerrainModel.cs" />
     <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatch.cs" />
     <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatchBuilder.cs" />
@@ -140,7 +121,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Planets\Models\" />
     <Folder Include="Planets\Renderers\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

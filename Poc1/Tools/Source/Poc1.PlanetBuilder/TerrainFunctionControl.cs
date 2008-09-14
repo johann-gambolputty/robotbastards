@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
-
 using Poc1.Fast.Terrain;
+using Poc1.Universe.Interfaces.Planets.Models;
 
 namespace Poc1.PlanetBuilder
 {
@@ -120,8 +120,9 @@ namespace Poc1.PlanetBuilder
 
 		private void regenerateMeshButton_Click( object sender, EventArgs e )
 		{
-			BuilderState.Instance.Planet.Terrain.SetupTerrain( BuilderState.TerrainMaxHeight, CurrentHeightFunction, CurrentGroundFunction );
-			BuilderState.Instance.Planet.RegenerateTerrain( );
+			IPlanetProcTerrainModel model = ( IPlanetProcTerrainModel )BuilderState.Instance.Planet.TerrainModel;
+			model.SetupTerrain( CurrentHeightFunction, CurrentGroundFunction );
+			BuilderState.Instance.Planet.TerrainRenderer.Refresh( );
 		}
 
 		private void TerrainFunctionControl_Load( object sender, EventArgs e )

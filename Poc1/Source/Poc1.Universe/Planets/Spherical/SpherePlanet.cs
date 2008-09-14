@@ -4,6 +4,9 @@ using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets.Spherical;
 using Poc1.Universe.Interfaces.Planets.Spherical.Models;
 using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
+using Poc1.Universe.Planets.Models;
+using Poc1.Universe.Planets.Spherical.Models;
+using Poc1.Universe.Planets.Spherical.Renderers;
 
 namespace Poc1.Universe.Planets.Spherical
 {
@@ -15,10 +18,20 @@ namespace Poc1.Universe.Planets.Spherical
 		/// <summary>
 		/// Creates a default spherical planet
 		/// </summary>
-		public static ISpherePlanet DefaultPlanet( )
+		public static ISpherePlanet DefaultPlanet( Units.Metres planetRadius )
 		{
 			ISpherePlanet planet = new SpherePlanet( );
-			planet.OceanRenderer = new SpherePlanetOceanRenderer( );
+			planet.Radius = planetRadius;
+
+			//	Models
+			planet.OceanModel			= new PlanetOceanModel( );
+			planet.TerrainModel			= new SpherePlanetProcTerrainModel( );
+			planet.AtmosphereModel		= new SpherePlanetAtmosphereModel( );
+
+			//	Renderers
+			planet.OceanRenderer		= new SpherePlanetOceanRenderer( );
+			planet.TerrainRenderer		= new SpherePlanetTerrainPatchRenderer( );
+			planet.AtmosphereRenderer	= new SpherePlanetAtmosphereRenderer( );
 
 			return planet;
 		}
@@ -38,7 +51,7 @@ namespace Poc1.Universe.Planets.Spherical
 			get { return m_Radius; }
 			set
 			{
-				Radius = value;
+				m_Radius = value;
 				if ( PlanetChanged != null )
 				{
 					PlanetChanged( this, null );

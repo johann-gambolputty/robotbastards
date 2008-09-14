@@ -14,20 +14,20 @@ namespace Poc1.PlanetBuilder
 		/// </summary>
 		public static void BuildAssets( )
 		{
-			string buildPath = Path.Combine( ms_BuildDir, "Build.bat" );
+			string buildPath = Path.Combine( s_BuildDir, "Build.bat" );
 			ProcessStartInfo pStart = new ProcessStartInfo( buildPath );
-			pStart.WorkingDirectory = ms_BuildDir;
+			pStart.WorkingDirectory = s_BuildDir;
 			Process p = Process.Start( pStart );
 			p.WaitForExit( );	
 		}
 
 		#region Private Members
 
-		private static string ms_BuildDir;
+		private static string s_BuildDir;
 
 		static AppUtils( )
 		{
-			ms_BuildDir = Path.GetFullPath( @"..\..\..\Data\" );
+			s_BuildDir = Path.GetFullPath( @"..\..\..\Data\" );
 		}
 
 		#endregion

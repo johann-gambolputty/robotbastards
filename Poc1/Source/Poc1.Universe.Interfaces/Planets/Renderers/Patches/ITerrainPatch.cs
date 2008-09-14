@@ -73,6 +73,6 @@ namespace Poc1.Universe.Interfaces.Planets.Renderers.Patches
 		/// <summary>
 		/// Called when the terrain patch has finished building
 		/// </summary>
-		void OnBuildComplete( byte* vertexData, float increaseDetailDistance );
+		void OnBuildComplete( byte* vertexData, float increaseDetailDistance, int[] baseIndices );
 	}
 }

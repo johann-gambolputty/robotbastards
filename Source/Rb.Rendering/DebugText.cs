@@ -22,18 +22,18 @@ namespace Rb.Rendering
 		public static void Write( string format, params object[] args )
 		{
 			string line = string.Format( format, args );
-			ms_Lines.Add( line );
+			s_Lines.Add( line );
 			int width = Graphics.Fonts.DebugFont.MeasureString( line ).Width;
-			ms_MaxWidth = width > ms_MaxWidth ? width : ms_MaxWidth;
+			s_MaxWidth = width > s_MaxWidth ? width : s_MaxWidth;
 		}
 
 		#endregion
 
 		#region Private Members
 		
-		private readonly static List<string> ms_Lines = new List<string>( );
-		private readonly static DrawBase.IBrush ms_WindowBrush;
-		private static int ms_MaxWidth;
+		private readonly static List<string> s_Lines = new List<string>( );
+		private readonly static DrawBase.IBrush s_WindowBrush;
+		private static int s_MaxWidth;
 
 		static DebugText( )
 		{
@@ -42,28 +42,28 @@ namespace Rb.Rendering
 			brush.State.SourceBlend = BlendFactor.One;
 			brush.State.DestinationBlend = BlendFactor.One;
 
-			ms_WindowBrush = brush;
+			s_WindowBrush = brush;
 
-			Graphics.Renderer.FrameStart += ms_Lines.Clear;
+			Graphics.Renderer.FrameStart += s_Lines.Clear;
 			Graphics.Renderer.FrameEnd += Render;
 		}
 
 		private static void Render( )
 		{
-			if ( ms_Lines.Count == 0 )
+			if ( s_Lines.Count == 0 )
 			{
 				return;
 			}
 
 			Graphics.Renderer.Push2d( );
 			int incY = Graphics.Fonts.DebugFont.MaximumHeight;
-			Graphics.Draw.Rectangle( ms_WindowBrush, 1, 1, 4 + ms_MaxWidth, 3 + ms_Lines.Count * incY );
+			Graphics.Draw.Rectangle( s_WindowBrush, 1, 1, 4 + s_MaxWidth, 3 + s_Lines.Count * incY );
 			Graphics.Renderer.Pop2d( );
 
 			int y = 2;
-			for ( int lineIndex = 0; lineIndex < ms_Lines.Count; ++lineIndex )
+			for ( int lineIndex = 0; lineIndex < s_Lines.Count; ++lineIndex )
 			{
-				Graphics.Fonts.DebugFont.Write( 3, y, Color.White, ms_Lines[ lineIndex ] );
+				Graphics.Fonts.DebugFont.Write( 3, y, Color.White, s_Lines[ lineIndex ] );
 				y += incY;
 			}
 		}

@@ -160,7 +160,7 @@ namespace Poc1
 						__m128 normalXxxx = xxxx;
 						__m128 normalYyyy = yyyy;
 						__m128 normalZzzz = zzzz;
-						SetLength( normalXxxx, normalYyyy, normalZzzz, Constants::Fc_1 );	//	Don't trust that normalize...
+						SetLength( normalXxxx, normalYyyy, normalZzzz, _mm_set1_ps( 1 ) );	//	Don't trust that normalize...
 
 						__m128 originXxxx = xxxx;
 						__m128 originYyyy = yyyy;
@@ -211,9 +211,9 @@ namespace Poc1
 						AccumulateCrossProducts( cpXxxx, cpYyyy, cpZzzz, rightXxxx, rightYyyy, rightZzzz, upXxxx, upYyyy, upZzzz );
 						AccumulateCrossProducts( cpXxxx, cpYyyy, cpZzzz, downXxxx, downYyyy, downZzzz, rightXxxx, rightYyyy, rightZzzz );
 						AccumulateCrossProducts( cpXxxx, cpYyyy, cpZzzz, leftXxxx, leftYyyy, leftZzzz, downXxxx, downYyyy, downZzzz );
-						SetLength( cpXxxx, cpYyyy, cpZzzz, Constants::Fc_1 );
+						SetLength( cpXxxx, cpYyyy, cpZzzz, _mm_set1_ps( 1 ) );
 
-						__m128 slopes = _mm_sub_ps( Constants::Fc_1, Dot( cpXxxx, cpYyyy, cpZzzz, normalXxxx, normalYyyy, normalZzzz ) );
+						__m128 slopes = _mm_sub_ps( _mm_set1_ps( 1 ), Dot( cpXxxx, cpYyyy, cpZzzz, normalXxxx, normalYyyy, normalZzzz ) );
 						slopes = _mm_div_ps( slopes, _mm_set1_ps( 0.4f ) );
 
 						//	TODO: AP: Clamp slopes to 0-1 range
@@ -244,7 +244,7 @@ namespace Poc1
 						__m128 normalXxxx = xxxx;
 						__m128 normalYyyy = yyyy;
 						__m128 normalZzzz = zzzz;
-						SetLength( normalXxxx, normalYyyy, normalZzzz, Constants::Fc_1 );	//	Don't trust that normalize...
+						SetLength( normalXxxx, normalYyyy, normalZzzz, _mm_set1_ps( 1 ) );	//	Don't trust that normalize...
 
 						__m128 originXxxx = xxxx;
 						__m128 originYyyy = yyyy;
@@ -295,11 +295,11 @@ namespace Poc1
 						AccumulateCrossProducts( cpXxxx, cpYyyy, cpZzzz, rightXxxx, rightYyyy, rightZzzz, upXxxx, upYyyy, upZzzz );
 						AccumulateCrossProducts( cpXxxx, cpYyyy, cpZzzz, downXxxx, downYyyy, downZzzz, rightXxxx, rightYyyy, rightZzzz );
 						AccumulateCrossProducts( cpXxxx, cpYyyy, cpZzzz, leftXxxx, leftYyyy, leftZzzz, downXxxx, downYyyy, downZzzz );
-						SetLength( cpXxxx, cpYyyy, cpZzzz, Constants::Fc_1 );
+						SetLength( cpXxxx, cpYyyy, cpZzzz, _mm_set1_ps( 1 ) );
 						
-						__m128 slopes = _mm_sub_ps( Constants::Fc_1, Dot( cpXxxx, cpYyyy, cpZzzz, normalXxxx, normalYyyy, normalZzzz ) );
+						__m128 slopes = _mm_sub_ps( _mm_set1_ps( 1 ), Dot( cpXxxx, cpYyyy, cpZzzz, normalXxxx, normalYyyy, normalZzzz ) );
 						slopes = _mm_div_ps( slopes, _mm_set1_ps( 0.6f ) );
-						Clamp( slopes, Constants::Fc_0, Constants::Fc_1 );
+						Clamp( slopes, _mm_set1_ps( 0 ), _mm_set1_ps( 1 ) );
 
 						//	TODO: AP: Clamp slopes to 0-1 range
 						SetupVertex( v0, 0, originXxxx, originYyyy, originZzzz, cpXxxx, cpYyyy, cpZzzz, slopes, heights, uuuu, v );
@@ -958,7 +958,7 @@ namespace Poc1
 					Normalize( xxxx, yyyy, zzzz );
 					if ( storeLatitides )
 					{
-						_mm_store_ps( latitudes, _mm_sub_ps( Constants::Fc_1, Abs( yyyy ) ) );
+						_mm_store_ps( latitudes, _mm_sub_ps( _mm_set1_ps( 1 ), Abs( yyyy ) ) );
 						latitudes += 4;
 					}
 

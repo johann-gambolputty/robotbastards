@@ -40,7 +40,7 @@ namespace Rb.Assets
 		/// </summary>
 		public static Locations Instance
 		{
-			get { return ms_Singleton; }
+			get { return s_Singleton; }
 		}
 
 		/// <summary>
@@ -149,7 +149,7 @@ namespace Rb.Assets
 		#region Private members
 
 		private readonly List< ILocationManager > m_Systems = new List< ILocationManager >( );
-		private static readonly Locations ms_Singleton = new Locations( );
+		private static readonly Locations s_Singleton = new Locations( );
 
 		#endregion
 	}

@@ -6,6 +6,12 @@
 
 #pragma managed(off)
 
+extern "C" bool __stdcall DllMain( void*, int, void* )
+{
+	Poc1::Fast::Constants::InitializeConstants( );
+	return true;
+}
+
 namespace Poc1
 {
 	namespace Fast

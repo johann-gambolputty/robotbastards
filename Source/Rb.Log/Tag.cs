@@ -217,7 +217,7 @@ namespace Rb.Log
 		/// </summary>
 		public static Tag Root
 		{
-			get { return ms_Root; }
+			get { return s_Root; }
 		}
 
 		/// <summary>
@@ -266,7 +266,7 @@ namespace Rb.Log
 		
 		private Source[ ]		m_Sources		= new Source[ ( int )Severity.Count ];
 		private DebugSource[ ]	m_DebugSources	= new DebugSource[ ( int )Severity.Count ];
-		private static Tag		ms_Root			= new Tag( );
+		private static Tag		s_Root			= new Tag( );
 		private List< Tag >		m_ChildTags		= new List< Tag >( );
 		private string			m_Name;
 		private string			m_FullName;

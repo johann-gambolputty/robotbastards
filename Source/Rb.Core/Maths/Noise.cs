@@ -16,7 +16,7 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public static Noise Instance
 		{
-			get { return ms_Instance; }
+			get { return s_Instance; }
 		}
 
 		/// <summary>
@@ -126,7 +126,7 @@ namespace Rb.Core.Maths
 		//}
 
 		private readonly int[] m_Perms = new int[ 512 ];
-		private readonly static Noise ms_Instance = new Noise( );
+		private readonly static Noise s_Instance = new Noise( );
 
 		private static float Fade( float t )
 		{

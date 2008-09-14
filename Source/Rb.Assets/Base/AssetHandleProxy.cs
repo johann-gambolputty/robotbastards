@@ -73,8 +73,8 @@ namespace Rb.Assets.Base
 
 		#region Private members
 
-		private static readonly Dictionary<Type, Type> ms_ProxyMap = new Dictionary<Type, Type>();
-		private static readonly ModuleBuilder ms_ModuleBuilder;
+		private static readonly Dictionary<Type, Type> s_ProxyMap = new Dictionary<Type, Type>();
+		private static readonly ModuleBuilder s_ModuleBuilder;
 
 		/// <summary>
 		/// Gets a proxy type for a given interface type, creating it if necessary
@@ -88,11 +88,11 @@ namespace Rb.Assets.Base
 
 			//	Does a proxy type already exist for interfaceType?
 			Type proxyType;
-			if ( !ms_ProxyMap.TryGetValue( interfaceType, out proxyType ) )
+			if ( !s_ProxyMap.TryGetValue( interfaceType, out proxyType ) )
 			{
 				//	No - create the proxy type
 				proxyType = CreateProxyType( interfaceType );
-				ms_ProxyMap[ interfaceType ] = proxyType;
+				s_ProxyMap[ interfaceType ] = proxyType;
 			}
 
 			return proxyType;
@@ -106,7 +106,7 @@ namespace Rb.Assets.Base
 			//	Create a new type, derived from AssetHandle, and implementing interfaceType
 			string typeName = interfaceType.Name + "AssetProxy";
 			TypeAttributes attributes = TypeAttributes.Public | TypeAttributes.Class;
-			TypeBuilder builder = ms_ModuleBuilder.DefineType( typeName, attributes, typeof( AssetHandle ), new Type[] { interfaceType } );
+			TypeBuilder builder = s_ModuleBuilder.DefineType( typeName, attributes, typeof( AssetHandle ), new Type[] { interfaceType } );
 
 			builder.AddInterfaceImplementation( interfaceType );
 			
@@ -245,7 +245,7 @@ namespace Rb.Assets.Base
 			AssemblyName asmName = new AssemblyName( "AssetProxies" );
 			AssemblyBuilder asmBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly( asmName, AssemblyBuilderAccess.Run );
 
-			ms_ModuleBuilder = asmBuilder.DefineDynamicModule( "AssetProxiesModule" );
+			s_ModuleBuilder = asmBuilder.DefineDynamicModule( "AssetProxiesModule" );
 
 		}
 

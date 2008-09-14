@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 
 namespace Rb.Core.Utils
@@ -13,7 +12,7 @@ namespace Rb.Core.Utils
 		/// </summary>
 		public static long StartTime
 		{
-			get { return ms_StartTime; }
+			get { return s_StartTime; }
 		}
 
 		/// <summary>
@@ -64,7 +63,7 @@ namespace Rb.Core.Utils
 		/// <returns>Returns the time period in seconds</returns>
 		public static double ToSeconds( long startTime, long curTime )
 		{
-			return ( curTime - startTime ) * ms_RcpFrequency;
+			return ( curTime - startTime ) * s_RcpFrequency;
 		}
 
 		/// <summary>
@@ -75,7 +74,7 @@ namespace Rb.Core.Utils
 		/// <returns>Returns the time period in milliseconds</returns>
 		public static double ToMilliSeconds( long startTime, long curTime )
 		{
-			return ( curTime - startTime ) * ms_RcpMsFrequency;
+			return ( curTime - startTime ) * s_RcpMsFrequency;
 		}
 
 		/// <summary>
@@ -92,17 +91,17 @@ namespace Rb.Core.Utils
 		/// <summary>
 		/// The start time of the tiny clock
 		/// </summary>
-		private static readonly long ms_StartTime	= CurrentTime;
+		private static readonly long s_StartTime	= CurrentTime;
 
 		/// <summary>
 		/// Reciprocal frequency (converts to seconds)
 		/// </summary>
-		private static readonly double ms_RcpFrequency = GetRcpFrequency();
+		private static readonly double s_RcpFrequency = GetRcpFrequency();
 
 		/// <summary>
 		/// Reciprocal frequency (converts to milliseconds)
 		/// </summary>
-		private static readonly double ms_RcpMsFrequency = GetRcpFrequency() * 1000.0f;
+		private static readonly double s_RcpMsFrequency = GetRcpFrequency() * 1000.0f;
 
 		[ DllImport("Kernel32.dll") ]
 		private static extern bool QueryPerformanceCounter( out long lpPerformanceCount );

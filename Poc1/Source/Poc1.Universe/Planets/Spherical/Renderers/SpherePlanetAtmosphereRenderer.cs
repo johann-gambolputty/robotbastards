@@ -5,6 +5,7 @@ using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
+using IPlanet=Poc1.Universe.Interfaces.Planets.IPlanet;
 
 namespace Poc1.Universe.Planets.Spherical.Renderers
 {
@@ -24,15 +25,19 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			m_Techniques = new TechniqueSelector( m_Effect, "DefaultTechnique" );
 		}
 
-		#region IRenderable Members
+		#region ISpherePlanetAtmosphereRenderer Members
 
 		/// <summary>
 		/// Gets/sets the planet this renderer belongs to
 		/// </summary>
-		public ISpherePlanet Planet
+		public IPlanet Planet
 		{
 			get { return m_Planet; }
-			set { m_Planet = value; }
+			set
+			{
+				m_Planet = ( ISpherePlanet )value;
+				m_AtmosphereGeometry = null;
+			}
 		}
 
 		/// <summary>
@@ -51,14 +56,14 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// </summary>
 		public void SetupAtmosphereEffectParameters( IEffect effect, bool objectRendering )
 		{
-			if ( m_Planet == null )
+			if ( m_Planet == null || m_Planet.AtmosphereModel == null )
 			{
 				return;
 			}
 			IUniCamera camera = UniCamera.Current;
-			Point3 localPos = UniUnits.RenderUnits.MakeRelativePoint( m_Planet.Transform.Position, camera.Position );
-			float planetRadius = m_Planet.Radius.RenderUnits;
-			float atmosphereRadius = ( float )UniUnits.RenderUnits.FromUniUnits( m_AtmosphereRadius );
+			Point3 localPos = Units.RenderUnits.MakeRelativePoint( m_Planet.Transform.Position, camera.Position );
+			float planetRadius = m_Planet.Radius.ToRenderUnits;
+			float atmosphereRadius = m_Planet.AtmosphereModel.AtmosphereThickness.ToRenderUnits;
 			float height = localPos.DistanceTo( Point3.Origin ) - planetRadius;
 			float clampedHeight = Utils.Clamp( height, 0, atmosphereRadius );
 			float normHeight = clampedHeight / atmosphereRadius;
@@ -69,14 +74,15 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 
 			Vector3 viewDir = UniCamera.Current.Frame.ZAxis;
 			effect.Parameters[ "AtmViewPosLength" ].Set( atmPos.DistanceTo( Point3.Origin ) );
-			effect.Parameters[ "AtmHgCoeff" ].Set( m_Planet.Atmosphere.PhaseCoefficient );
-			effect.Parameters[ "AtmPhaseWeight" ].Set( m_Planet.Atmosphere.PhaseWeight );
+			effect.Parameters[ "AtmHgCoeff" ].Set( m_Planet.AtmosphereModel.PhaseCoefficient );
+			effect.Parameters[ "AtmPhaseWeight" ].Set( m_Planet.AtmosphereModel.PhaseWeight );
 			effect.Parameters[ "AtmViewPos" ].Set( atmPos.X, atmPos.Y, atmPos.Z );
 			effect.Parameters[ "AtmViewDir" ].Set( viewDir.X, viewDir.Y, viewDir.Z );
 			effect.Parameters[ "AtmViewHeight" ].Set( normHeight );
 			effect.Parameters[ "ScatteringTexture" ].Set( m_ScatteringTexture );
 			effect.Parameters[ "AtmInnerRadius" ].Set( planetRadius );
 			effect.Parameters[ "AtmThickness" ].Set( atmosphereRadius );
+			effect.Parameters[ "AtmMiePhaseWeight" ].Set( m_Planet.AtmosphereModel.MiePhaseWeight );
 
 			if ( objectRendering )
 			{
@@ -94,22 +100,25 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// <param name="context">Rendering context</param>
 		public void Render( IRenderContext context )
 		{
-			if ( m_Planet == null )
+			if ( m_Planet == null || m_Planet.AtmosphereModel == null )
 			{
 				return;
 			}
+
+			SetupAtmosphereEffectParameters( m_Techniques.Effect, false );
+			context.ApplyTechnique( m_Techniques, AtmosphereGeometry );
 		}
 
 		#endregion
 
 		#region Private Members
 
-		private ISpherePlanet m_Planet;
-		private IRenderable m_AtmosphereGeometry;
-		private TechniqueSelector m_Techniques;
-		private ITexture3d m_ScatteringTexture;
-		private ITexture2d m_OpticalDepthTexture;
-		private EffectAssetHandle m_Effect;
+		private ISpherePlanet		m_Planet;
+		private IRenderable			m_AtmosphereGeometry;
+		private TechniqueSelector	m_Techniques;
+		private ITexture3d			m_ScatteringTexture;
+		private ITexture2d			m_OpticalDepthTexture;
+		private EffectAssetHandle	m_Effect;
 
 		/// <summary>
 		/// Gets the atmosphere geometry object
@@ -120,7 +129,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			{
 				if ( m_AtmosphereGeometry == null )
 				{
-					float renderRadius = 0;
+					float renderRadius = m_Planet.Radius.ToRenderUnits + m_Planet.AtmosphereModel.AtmosphereThickness.ToRenderUnits;
 					Graphics.Draw.StartCache( );
 					Graphics.Draw.Sphere( null, Point3.Origin, renderRadius, 40, 40 );
 					m_AtmosphereGeometry = Graphics.Draw.StopCache( );

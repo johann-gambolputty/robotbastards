@@ -15,19 +15,19 @@ namespace Poc1.ParticleSystemBuilder
 		{
 			InitializeComponent( );
 
-			spawnRateControlEditor.Setup( ms_SpawnRateTypes, typeof( RandomSpawnRate ) );
+			spawnRateControlEditor.Setup( s_SpawnRateTypes, typeof( RandomSpawnRate ) );
 			spawnRateControlEditor.SelectedControlChanged += delegate( object controller ) { ParticleSystem.SpawnRate = ( ISpawnRate )controller; };
 
-			spawnControlEditor.Setup( ms_SpawnerTypes, typeof( PointParticleSpawner ) );
+			spawnControlEditor.Setup( s_SpawnerTypes, typeof( PointParticleSpawner ) );
 			spawnControlEditor.SelectedControlChanged += delegate( object controller ) { ParticleSystem.Spawner = ( IParticleSpawner )controller; };
 
-			updateControlEditor.Setup( ms_UpdaterTypes, typeof( SimplePhysicsUpdater ) );
+			updateControlEditor.Setup( s_UpdaterTypes, typeof( SimplePhysicsUpdater ) );
 			updateControlEditor.SelectedControlChanged += delegate( object controller ) { ParticleSystem.Updater = ( IParticleUpdater )controller; };
 
-			killerControlEditor.Setup( ms_KillerTypes, typeof( ParticleAgeKiller ) );
+			killerControlEditor.Setup( s_KillerTypes, typeof( ParticleAgeKiller ) );
 			killerControlEditor.SelectedControlChanged += delegate( object controller ) { ParticleSystem.Killer = ( IParticleKiller )controller; };
 
-			renderControlEditor.Setup( ms_RendererTypes, typeof( ParticleDebugRenderer ) );
+			renderControlEditor.Setup( s_RendererTypes, typeof( ParticleDebugRenderer ) );
 			renderControlEditor.SelectedControlChanged += delegate( object controller ) { ParticleSystem.Renderer = ( IParticleRenderer )controller; };
 		}
 
@@ -52,19 +52,19 @@ namespace Poc1.ParticleSystemBuilder
 
 		private IParticleSystem m_ParticleSystem;
 		
-		private static Type[] ms_SpawnRateTypes;
-		private static Type[] ms_SpawnerTypes;
-		private static Type[] ms_UpdaterTypes;
-		private static Type[] ms_KillerTypes;
-		private static Type[] ms_RendererTypes;
+		private static Type[] s_SpawnRateTypes;
+		private static Type[] s_SpawnerTypes;
+		private static Type[] s_UpdaterTypes;
+		private static Type[] s_KillerTypes;
+		private static Type[] s_RendererTypes;
 
 		static void UpdateTypes( )
 		{
-			ms_SpawnRateTypes = GetComponentTypes( typeof( ISpawnRate ) );
-			ms_SpawnerTypes = GetComponentTypes( typeof( IParticleSpawner ) );
-			ms_UpdaterTypes = GetComponentTypes( typeof( IParticleUpdater ) );
-			ms_KillerTypes = GetComponentTypes( typeof( IParticleKiller ) );
-			ms_RendererTypes = GetComponentTypes( typeof( IParticleRenderer ) );
+			s_SpawnRateTypes = GetComponentTypes( typeof( ISpawnRate ) );
+			s_SpawnerTypes = GetComponentTypes( typeof( IParticleSpawner ) );
+			s_UpdaterTypes = GetComponentTypes( typeof( IParticleUpdater ) );
+			s_KillerTypes = GetComponentTypes( typeof( IParticleKiller ) );
+			s_RendererTypes = GetComponentTypes( typeof( IParticleRenderer ) );
 		}
 
 		private static Type[] GetComponentTypes( Type componentType )

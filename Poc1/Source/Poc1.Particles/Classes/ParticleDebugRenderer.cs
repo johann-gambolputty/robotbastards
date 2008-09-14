@@ -30,7 +30,7 @@ namespace Poc1.Particles.Classes
 			for ( int particleIndex = 0; particleIndex < sBuffer.NumActiveParticles; ++particleIndex )
 			{
 				posIter.MoveNext( );
-				Graphics.Draw.Billboard( ms_ParticleBrush, posIter.Point3Value, ParticleSize, ParticleSize );
+				Graphics.Draw.Billboard( s_ParticleBrush, posIter.Point3Value, ParticleSize, ParticleSize );
 			}
 		}
 
@@ -52,16 +52,16 @@ namespace Poc1.Particles.Classes
 
 		private float m_ParticleSize = 0.1f;
 
-		private readonly static DrawBase.IBrush ms_ParticleBrush;
+		private readonly static DrawBase.IBrush s_ParticleBrush;
 
 		static ParticleDebugRenderer( )
 		{
-			ms_ParticleBrush = Graphics.Draw.NewBrush( Color.Firebrick );
-			ms_ParticleBrush.State.Blend = true;
-			ms_ParticleBrush.State.SourceBlend = BlendFactor.One;
-			ms_ParticleBrush.State.DestinationBlend = BlendFactor.One;
-			ms_ParticleBrush.State.DepthTest = true;
-			ms_ParticleBrush.State.DepthWrite = true;
+			s_ParticleBrush = Graphics.Draw.NewBrush( Color.Firebrick );
+			s_ParticleBrush.State.Blend = true;
+			s_ParticleBrush.State.SourceBlend = BlendFactor.One;
+			s_ParticleBrush.State.DestinationBlend = BlendFactor.One;
+			s_ParticleBrush.State.DepthTest = true;
+			s_ParticleBrush.State.DepthWrite = true;
 		}
 
 		#endregion

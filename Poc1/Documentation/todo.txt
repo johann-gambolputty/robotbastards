@@ -10,6 +10,7 @@
 		- L: Add uber-buffer/GPU-only particle systems
 		- L: Add support for loading assemblies containing particle components in dynamically
 	- Terrain
+		- H: Scattering coefficient correction due to ground plane intersection is not working correctly
 		- H: Function resolution should be multiplied by a fraction of the radius of spherical terrain
 		- H: Slope function threshold is inaccurate
 		- H: Force error for patches with > threshold radius
@@ -21,6 +22,7 @@
 		- M: Add multi-fractals to the displacer set
 		- M: Geomorphing
 		- M: Add pre-process noise to the terrain texture
+		- M: Add lock-free free list for build items
 		- M: Cull quad tree nodes (frustum + horizon culling for spherical planets)
 		- L: Change from BackgroundWorker in terrain quad patch builder, to ThreadPool
 		- L: Pop slope/altitude determination in fragment shader (it's done at a vertex level - can work it out implicitly in frag shader)
@@ -31,8 +33,6 @@
 		- L: Vegetation
 		- L: Animal life
 	- Planets
-		- H: Make model/renderer pattern for clouds
-		- H: Move to model/renderer pattern for planet atmosphere, ocean, and terrain
 		- H: Large radius planets (>1000km)
 			- H: Fix larger radius planets (lots of z-fighting, no terrain detail)
 			- H: combine terrain/marble rendering using z clipping planes (take a look at PSM)
@@ -112,7 +112,6 @@
 		- Planet Builder
 			- H: Add support for loading/saving/exporting atmosphere setup
 			- H: Ground terrain graphs should have a "sea level" line
-			- M: Allow multiple graphs to be displayed on a single graph control
 			- L: Atmosphere control should be dependent on planet geometry
 			- L: Add "Flat" option to height function
 			- L: Add star sphere
@@ -158,8 +157,8 @@
 
 	- Misc.
 		- H: Change name from Poc1 to actual project name! (big job...)
-		- H: Refactor Poc1.Universe. Create Poc1.Core, Poc1.Terrain, Poc1.Universe
 		- H: Add unit-test directory
+		- H: Add lock-free queue for extended thread pool
 		- M: Add support for control point selection (+ deletion) in graph controls
 		- M: Add support for spline, sawtooth, sine wave, bias and gain functions in the graph editor
 		- M: Add derived EditorAttribute for setting up texture UI type editor (asset handle creation, mip-mapping)
@@ -173,6 +172,10 @@
 	- H: Ground displacement requires connected patches, or slightly different skirt rendering (vertical skirts show up) (see new vertex normal skirts)
 
 - DONE
+	- M: Allow multiple graphs to be displayed on a single graph control
+	- H: Refactor Poc1.Universe. Create Poc1.Core, Poc1.Terrain, Poc1.Universe
+	- H: Make model/renderer pattern for clouds
+	- H: Move to model/renderer pattern for planet atmosphere, ocean, and terrain
 	- H: Add atmosphere tab
 	- H: Spherical terrain should be affected by changing ground texture setup
 	- H: Add terrain type and pack textures to terrain model interface

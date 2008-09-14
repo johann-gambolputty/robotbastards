@@ -48,7 +48,7 @@ namespace Rb.Rendering.Textures
 		/// </summary>
 		public override string[] Extensions
 		{
-			get { return ms_Extensions; }
+			get { return s_Extensions; }
 		}
 
 		/// <summary>
@@ -90,7 +90,7 @@ namespace Rb.Rendering.Textures
 			return texture;
 		}
 
-		private static readonly string[] ms_Extensions = new string[]
+		private static readonly string[] s_Extensions = new string[]
 			{
 				"jpg",
 				"jpeg",

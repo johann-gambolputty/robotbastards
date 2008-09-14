@@ -75,7 +75,7 @@ namespace Rb.World.Services
 		/// <returns>Intersection result (null if no intersection occurred)</returns>
         public Line3Intersection GetFirstIntersection( Ray3 ray, RayCastOptions options )
 		{
-			options = options ?? ms_DefaultOptions;
+			options = options ?? s_DefaultOptions;
             Line3Intersection closestIntersection = null;
             foreach ( IRay3Intersector intersector in m_Intersectors )
 			{
@@ -104,7 +104,7 @@ namespace Rb.World.Services
 		/// <returns>Returns an array of all intersections</returns>
 		public Line3Intersection[] GetIntersections( Ray3 ray, RayCastOptions options )
 		{
-			options = options ?? ms_DefaultOptions;
+			options = options ?? s_DefaultOptions;
 			List< Line3Intersection > intersections = new List< Line3Intersection >( 4 );
 			
             foreach ( IRay3Intersector intersector in m_Intersectors )
@@ -127,7 +127,7 @@ namespace Rb.World.Services
 
 		#region Private members
 
-		private readonly static RayCastOptions ms_DefaultOptions = new RayCastOptions( );
+		private readonly static RayCastOptions s_DefaultOptions = new RayCastOptions( );
 		private readonly List< IRay3Intersector > m_Intersectors = new List< IRay3Intersector >( );
 		
 		/// <summary>

@@ -1,16 +1,18 @@
 using System;
 using Poc1.Fast.Terrain;
+using Poc1.Universe.Interfaces.Planets.Renderers.Patches;
 using Poc1.Universe.Interfaces.Rendering;
-using Poc1.Universe.Classes.Rendering;
+using Poc1.Universe.Planets.Spherical.Renderers.Patches;
 using Rb.Assets;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Interfaces.Objects.Cameras;
+using ITerrainPatch=Poc1.Universe.Interfaces.Rendering.ITerrainPatch;
 
 namespace Poc1.PlanetBuilder
 {
-	public class TerrainMesh : IPlanetTerrainModel, IRenderable
+	public class TerrainMesh : IPlanetTerrainModel, IRenderable, ITerrainPatchGenerator
 	{
 		/// <summary>
 		/// Terrain mesh setup constructor
@@ -52,11 +54,10 @@ namespace Poc1.PlanetBuilder
 			if ( m_RootPatch != null )
 			{
 				m_RootPatch = null;
-				TerrainQuadPatchBuilder.Instance.Clear( );
 				GC.Collect( );
 			}
-			m_Vertices = new TerrainQuadPatchVertices( );
-			m_RootPatch = new TerrainQuadPatch( m_Vertices, m_MeshOrigin, m_MeshXAxis, m_MeshZAxis, 256.0f );
+			m_Vertices = new TerrainPatchVertices( );
+			m_RootPatch = new TerrainPatch( m_Vertices, m_MeshOrigin, m_MeshXAxis, m_MeshZAxis, 256.0f );
 
 		}
 
@@ -166,8 +167,8 @@ namespace Poc1.PlanetBuilder
 		private readonly float m_PatchScale;
 		private readonly TechniqueSelector m_TerrainTechnique;
 		private readonly ITexture2d m_NoiseTexture;
-		private TerrainQuadPatchVertices m_Vertices;
-		private TerrainQuadPatch m_RootPatch;
+		private TerrainPatchVertices m_Vertices;
+		private TerrainPatch m_RootPatch;
 		private TerrainGenerator m_Gen;
 		private readonly Point3 m_MeshOrigin;
 		private readonly Vector3 m_MeshXAxis;

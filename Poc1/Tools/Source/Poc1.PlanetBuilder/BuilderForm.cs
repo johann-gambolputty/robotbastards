@@ -1,6 +1,5 @@
 using System;
 using System.Windows.Forms;
-using Poc1.Universe;
 using Poc1.Universe.Classes;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
@@ -27,7 +26,11 @@ namespace Poc1.PlanetBuilder
 			UniCamera camera = new HeadCamera( );
 			camera.PerspectiveZNear = 1.0f;
 			camera.PerspectiveZFar = 10000.0f;
-			camera.Position = new UniPoint3( UniUnits.Metres.ToUniUnits( BuilderState.PlanetRadius + 50 ), 0, 0 );
+
+			Units.Metres cameraPos = BuilderState.Instance.SpherePlanet.Radius;
+			cameraPos += BuilderState.Instance.SpherePlanet.TerrainModel.MaximumHeight;
+
+			camera.Position = new UniPoint3( cameraPos.ToUniUnits, 0, 0 );
 			camera.AddChild( new BuilderCameraController( context, user ) );
 		//	camera.AddChild( new HeadCameraController( context, user ) );
 			return camera;
@@ -43,7 +46,7 @@ namespace Poc1.PlanetBuilder
 			Viewer viewer = new Viewer( );
 			try
 			{
-				viewer.Renderable = new RenderableList( new StarBox( ), BuilderState.Instance.Planet );
+				viewer.Renderable = new RenderableList( new StarBox( ), BuilderState.Instance.Planet );;
 			}
 			catch ( Exception ex )
 			{

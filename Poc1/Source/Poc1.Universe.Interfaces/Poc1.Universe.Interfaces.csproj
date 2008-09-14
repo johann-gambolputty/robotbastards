@@ -32,19 +32,24 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IBody.cs" />
+    <Compile Include="IOrbit.cs" />
+    <Compile Include="ISun.cs" />
     <Compile Include="IUniCamera.cs" />
     <Compile Include="Planets\Models\IPlanetAtmosphereModel.cs" />
     <Compile Include="Planets\Models\IPlanetCloudModel.cs" />
+    <Compile Include="Planets\Models\IPlanetEnvironmentModel.cs" />
     <Compile Include="Planets\Models\IPlanetOceanModel.cs" />
     <Compile Include="Planets\Models\IPlanetProcTerrainModel.cs" />
     <Compile Include="Planets\Models\IPlanetTerrainModel.cs" />
     <Compile Include="Planets\IPlanet.cs" />
     <Compile Include="Planets\Renderers\IPlanetAtmosphereRenderer.cs" />
     <Compile Include="Planets\Renderers\IPlanetCloudRenderer.cs" />
+    <Compile Include="Planets\Renderers\IPlanetEnvironmentRenderer.cs" />
     <Compile Include="Planets\Renderers\IPlanetMarbleRenderer.cs" />
     <Compile Include="Planets\Renderers\IPlanetOceanRenderer.cs" />
     <Compile Include="Planets\Renderers\IPlanetTerrainRenderer.cs" />
