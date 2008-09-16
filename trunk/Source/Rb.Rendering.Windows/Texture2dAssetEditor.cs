@@ -49,7 +49,7 @@ namespace Rb.Rendering.Windows
 
 			try
 			{
-				ITexture2d texture = ( ITexture2d )AssetManager.Instance.Load( openDlg.FileName, new TextureLoader.TextureLoadParameters( true ) );
+				ITexture2d texture = ( ITexture2d )AssetManager.Instance.Load( openDlg.FileName, new TextureImageLoader.TextureLoadParameters( true ) );
 				return texture;
 			}
 			catch ( Exception ex )

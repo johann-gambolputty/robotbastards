@@ -26,7 +26,7 @@ namespace Poc1.Universe.Planets.Spherical.Models
 		public SpherePlanetProcTerrainModel( )
 		{
 			//	Load in default textures
-			TextureLoader.TextureLoadParameters loadParameters = new TextureLoader.TextureLoadParameters( );
+			TextureImageLoader.TextureLoadParameters loadParameters = new TextureImageLoader.TextureLoadParameters( );
 			loadParameters.GenerateMipMaps = true;
 			m_TerrainPackTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/defaultSet0 Pack.jpg", loadParameters );
 			m_TerrainTypesTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/defaultSet0 Distribution.bmp" );

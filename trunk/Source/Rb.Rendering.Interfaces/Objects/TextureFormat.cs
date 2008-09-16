@@ -1,4 +1,5 @@
 using System;
+using System.Drawing.Imaging;
 
 namespace Rb.Rendering.Interfaces.Objects
 {
@@ -31,6 +32,33 @@ namespace Rb.Rendering.Interfaces.Objects
 	/// </summary>
 	public static class TextureFormatInfo
 	{
+		/// <summary>
+		/// Converts a TextureFormat value into a PixelFormat value
+		/// </summary>
+		public static PixelFormat ToPixelFormat( TextureFormat texFormat )
+		{
+			switch ( texFormat )
+			{
+				case TextureFormat.Depth16			:	return PixelFormat.Format16bppGrayScale;
+				case TextureFormat.Depth24			:	break;	//	No mapping
+				case TextureFormat.Depth32			:	break;	//	No mapping
+
+				case TextureFormat.R8G8B8			:	return PixelFormat.Format24bppRgb;
+				case TextureFormat.B8G8R8			:	break;	//	No mapping
+
+				case TextureFormat.R8G8B8X8			:	return PixelFormat.Format32bppRgb;
+				case TextureFormat.B8G8R8X8			:	break;	//	No mapping
+
+				case TextureFormat.R8G8B8A8			:	return PixelFormat.Format32bppRgb;
+				case TextureFormat.B8G8R8A8			:	break;	//	No mapping
+
+				case TextureFormat.A8R8G8B8			:	return PixelFormat.Format32bppArgb;
+				case TextureFormat.A8B8G8R8			:	break;	//	No mapping
+			}
+
+			return PixelFormat.Undefined;
+		}
+
 		/// <summary>
 		/// Gets the size of a given texture format in bits
 		/// </summary>

@@ -279,11 +279,11 @@ namespace Rb.Rendering.Shadows
 					if ( m_DepthTextureUsed )
 					{
 						//	curTarget.SaveDepthBuffer( path );
-						TextureUtils.Save( curTarget.DepthTexture, path );
+						Texture2dUtils.Save( curTarget.DepthTexture, path );
 					}
 					else
 					{
-						TextureUtils.Save( curTarget.Texture, path );
+						Texture2dUtils.Save( curTarget.Texture, path );
 					}
 					GraphicsLog.Verbose( "...Done" );
 				}

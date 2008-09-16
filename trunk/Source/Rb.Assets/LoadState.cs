@@ -72,8 +72,10 @@ namespace Rb.Assets
 			}
 			else
 			{
-				AssetsLog.Info( "Loading asset {0}", m_Source );
-				m_Asset = m_Loader.Load( m_Source, m_Parameters );
+				using ( AssetsLog.EnterTimedScope( "Loading asset " + m_Source ) )
+				{
+					m_Asset = m_Loader.Load( m_Source, m_Parameters );
+				}
 				if ( ( m_Asset != null ) && ( m_Parameters.CanCache ) )
 				{
 					AssetsLog.Verbose( "Caching asset {0}", m_Source );

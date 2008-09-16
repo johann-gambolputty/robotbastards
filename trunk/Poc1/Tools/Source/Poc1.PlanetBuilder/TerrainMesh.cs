@@ -1,5 +1,7 @@
 using System;
 using Poc1.Fast.Terrain;
+using Poc1.Universe.Interfaces;
+using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Renderers.Patches;
 using Poc1.Universe.Interfaces.Rendering;
 using Poc1.Universe.Planets.Spherical.Renderers.Patches;
@@ -8,7 +10,8 @@ using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Interfaces.Objects.Cameras;
-using ITerrainPatch=Poc1.Universe.Interfaces.Rendering.ITerrainPatch;
+using IPlanetTerrainModel=Poc1.Universe.Interfaces.Planets.Models.IPlanetTerrainModel;
+using ITerrainPatch=Poc1.Universe.Interfaces.Planets.Renderers.Patches.ITerrainPatch;
 
 namespace Poc1.PlanetBuilder
 {
@@ -206,5 +209,40 @@ namespace Poc1.PlanetBuilder
 
 		#endregion
 
+
+		#region IPlanetTerrainModel Members
+
+
+		public Units.Metres MaximumHeight
+		{
+			get
+			{
+				throw new Exception( "The method or operation is not implemented." );
+			}
+			set
+			{
+				throw new Exception( "The method or operation is not implemented." );
+			}
+		}
+
+		#endregion
+
+		#region IPlanetEnvironmentModel Members
+
+		public event EventHandler ModelChanged;
+
+		public IPlanet Planet
+		{
+			get
+			{
+				throw new Exception( "The method or operation is not implemented." );
+			}
+			set
+			{
+				throw new Exception( "The method or operation is not implemented." );
+			}
+		}
+
+		#endregion
 	}
 }

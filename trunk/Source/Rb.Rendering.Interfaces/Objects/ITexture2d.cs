@@ -1,4 +1,3 @@
-using System.Drawing;
 
 namespace Rb.Rendering.Interfaces.Objects
 {
@@ -24,27 +23,26 @@ namespace Rb.Rendering.Interfaces.Objects
 		}
 
 		/// <summary>
-		/// Creates an empty texture
+		/// Creates the texture from a single texture data object
 		/// </summary>
-		/// <param name="width">Width of the texture in pixels</param>
-		/// <param name="height">Height of the texture in pixels</param>
-		/// <param name="format">Format of the texture</param>
-		void Create( int width, int height, TextureFormat format );
+		/// <param name="data">Texture data used to create the texture</param>
+		/// <param name="generateMipMaps">Mipmap generation flag</param>
+		void Create( Texture2dData data, bool generateMipMaps );
 
 		/// <summary>
-		/// Creates from a <see cref="Texture2dData"/> object
+		/// Creates the texture from an array of texture data objects, that specify decreasing mipmap levels
 		/// </summary>
-		/// <param name="data">Texture data</param>
-		void Create( Texture2dData data );
-		
-		/// <summary>
-		/// Loads the texture from bitmap data
-		/// </summary>
-		void Load( Bitmap bmp, bool generateMipMaps );
+		/// <param name="data">Texture data used to create the texture and its mipmaps</param>
+		void Create( Texture2dData[] data );
 
 		/// <summary>
-		/// Converts this texture to a bitmap
+		/// Gets texture data from this texture
 		/// </summary>
-		Bitmap ToBitmap( );
+		/// <param name="getMipMaps">If true, texture data for all mipmap levels are retrieved</param>
+		/// <returns>
+		/// Returns texture data extracted from this texture. If getMipMaps is false, only one <see cref="Texture2dData"/>
+		/// object is returned. Otherwise, the array contains a <see cref="Texture2dData"/> object for each mipmap
+		/// level.</returns>
+		Texture2dData[] ToTextureData( bool getMipMaps );
 	}
 }

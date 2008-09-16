@@ -1,4 +1,3 @@
-using System.Drawing;
 using System;
 using System.Runtime.Serialization;
 using Rb.Rendering.Interfaces.Objects;
@@ -9,7 +8,9 @@ namespace Rb.Rendering.Textures
 	/// 2D texture data
 	/// </summary>
 	/// <remarks>
-	/// To apply a texture, use Renderer.BindTexture(), or a TextureSampler2d object
+	/// To apply a texture, use <see cref="Rb.Rendering.Interfaces.IRenderer.BindTexture"/> or a
+	/// <see cref="ITexture2dSampler"/>.
+	/// To create textures from bitmaps, use functions from the <see cref="Texture2dUtils"/> class.
 	/// </remarks>
 	[Serializable]
 	public abstract class Texture2dBase : ISerializable, ITexture2d
@@ -28,16 +29,8 @@ namespace Rb.Rendering.Textures
 		/// </summary>
 		public Texture2dBase( SerializationInfo info, StreamingContext context )
 		{
-			bool mipMapped = ( bool )info.GetValue( "mm", typeof( bool ) );
-			Load( ( Bitmap )info.GetValue( "img", typeof( Bitmap ) ), mipMapped );
-		}
-
-		/// <summary>
-		/// Loads the texture from a bitmap file
-		/// </summary>
-		public Texture2dBase( string path, bool generateMipMaps )
-		{
-			TextureUtils.Load( this, path, generateMipMaps );
+			Texture2dData[] data = ( Texture2dData[] )info.GetValue( "img", typeof( Texture2dData[] ) );
+			Create( data );
 		}
 
 		#endregion
@@ -69,28 +62,27 @@ namespace Rb.Rendering.Textures
 		}
 
 		/// <summary>
-		/// Creates an empty texture
+		/// Creates the texture from a single texture data object
 		/// </summary>
-		/// <param name="width">Width of the texture in pixels</param>
-		/// <param name="height">Height of the texture in pixels</param>
-		/// <param name="format">Format of the texture</param>
-		public abstract void Create( int width, int height, TextureFormat format );
+		/// <param name="data">Texture data used to create the texture</param>
+		/// <param name="generateMipMaps">Mipmap generation flag</param>
+		public abstract void Create( Texture2dData data, bool generateMipMaps );
 
 		/// <summary>
-		/// Creates from a <see cref="Texture2dData"/> object
+		/// Creates the texture from an array of texture data objects, that specify decreasing mipmap levels
 		/// </summary>
-		/// <param name="data">Texture data</param>
-		public abstract void Create( Texture2dData data );
+		/// <param name="data">Texture data used to create the texture and its mipmaps</param>
+		public abstract void Create( Texture2dData[] data );
 
 		/// <summary>
-		/// Loads the texture from bitmap data
+		/// Gets texture data from this texture
 		/// </summary>
-		public abstract void Load( Bitmap bmp, bool generateMipMaps );
-
-		/// <summary>
-		/// Generates an image from the texture
-		/// </summary>
-		public abstract Bitmap ToBitmap( );
+		/// <param name="getMipMaps">If true, texture data for all mipmap levels are retrieved</param>
+		/// <returns>
+		/// Returns texture data extracted from this texture. If getMipMaps is false, only one <see cref="Texture2dData"/>
+		/// object is returned. Otherwise, the array contains a <see cref="Texture2dData"/> object for each mipmap
+		/// level.</returns>
+		public abstract Texture2dData[] ToTextureData( bool getMipMaps );
 
 		/// <summary>
 		/// Binds this texture
@@ -133,8 +125,7 @@ namespace Rb.Rendering.Textures
 		/// </summary>
 		public virtual void GetObjectData( SerializationInfo info, StreamingContext context )
 		{
-			info.AddValue( "img", ToBitmap( ) );
-			info.AddValue( "mm", m_MipMapped );
+			info.AddValue( "img", ToTextureData( true ) );
 		}
 
 		#endregion
