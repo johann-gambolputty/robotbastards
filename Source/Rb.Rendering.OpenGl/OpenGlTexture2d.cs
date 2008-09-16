@@ -60,7 +60,8 @@ namespace Rb.Rendering.OpenGl
 		/// Creates the texture from a texture data model
 		/// </summary>
 		/// <param name="data">Texture data</param>
-		public unsafe override void Create( Texture2dData data )
+		/// <param name="generateMipMaps">Generate mipmaps flag</param>
+		public unsafe override void Create( Texture2dData data, bool generateMipMaps )
 		{
 			DestroyCurrent( );
 
@@ -68,7 +69,7 @@ namespace Rb.Rendering.OpenGl
 			m_Format = CheckTextureFormat( data.Format, out m_InternalGlFormat, out m_GlFormat, out m_GlType );
 			m_Width = data.Width;
 			m_Height = data.Height;
-			m_MipMapped = false;
+			m_MipMapped = generateMipMaps;
 			m_Target = Gl.GL_TEXTURE_2D;
 
 			//	Generate a texture name
@@ -80,26 +81,32 @@ namespace Rb.Rendering.OpenGl
 
 			fixed ( void* texels = data.Bytes )
 			{
-				Gl.glTexImage2D( Gl.GL_TEXTURE_2D, 0, m_InternalGlFormat, data.Width, data.Height, 0, m_GlFormat, m_GlType, new IntPtr( texels ) );
+				if ( generateMipMaps )
+				{
+					Glu.gluBuild2DMipmaps( Gl.GL_TEXTURE_2D, m_InternalGlFormat, data.Width, data.Height, m_GlFormat, m_GlType, new IntPtr( texels ) );
+				}
+				else
+				{
+
+					Gl.glTexImage2D( Gl.GL_TEXTURE_2D, 0, m_InternalGlFormat, data.Width, data.Height, 0, m_GlFormat, m_GlType, new IntPtr( texels ) );
+				}
 			}
 		}
 
 		/// <summary>
-		/// Creates an empty texture
+		/// Creates the texture from a texture data model
 		/// </summary>
-		/// <param name="width">Width of the texture in pixels</param>
-		/// <param name="height">Height of the texture in pixels</param>
-		/// <param name="format">Format of the texture</param>
-		public unsafe override void Create( int width, int height, TextureFormat format )
+		/// <param name="data">Texture data</param>
+		public unsafe override void Create( Texture2dData[] data )
 		{
 			DestroyCurrent( );
 
 			//	Get the GL format of the bitmap, possibly converting it in the process
-			m_Format	= CheckTextureFormat( format, out m_InternalGlFormat, out m_GlFormat, out m_GlType );
-			m_Width		= width;
-			m_Height	= height;
+			m_Format = CheckTextureFormat( data[ 0 ].Format, out m_InternalGlFormat, out m_GlFormat, out m_GlType );
+			m_Width = data[ 0 ].Width;
+			m_Height = data[ 0 ].Height;
 			m_MipMapped = false;
-			m_Target	= Gl.GL_TEXTURE_2D;
+			m_Target = Gl.GL_TEXTURE_2D;
 
 			//	Generate a texture name
 			fixed ( int* handleMem = &m_TextureHandle )
@@ -108,8 +115,17 @@ namespace Rb.Rendering.OpenGl
 			}
 			Gl.glBindTexture( m_Target, m_TextureHandle );
 
-			byte[] nullArray = null;
-			Gl.glTexImage2D( Gl.GL_TEXTURE_2D, 0, m_InternalGlFormat, width, height, 0, m_GlFormat, m_GlType, nullArray );
+			for ( int level = 0; level < data.Length; ++level )
+			{
+				if ( data[ level ].Format != data[ 0 ].Format )
+				{
+					throw new ArgumentException( string.Format( "Data in level {0} has format {1}, should be format {2}", level, data[ level ].Format, data[ 0 ].Format ) );
+				}
+				fixed ( void* texels = data[ level ].Bytes )
+				{
+					Gl.glTexImage2D( Gl.GL_TEXTURE_2D, level, m_InternalGlFormat, data[ level ].Width, data[ level ].Height, 0, m_GlFormat, m_GlType, new IntPtr( texels ) );
+				}
+			}
 		}
 
 		/// <summary>

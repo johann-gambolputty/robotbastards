@@ -8,7 +8,14 @@ namespace Rb.Log
 	/// </summary>
 	public interface IStaticTag
 	{
+		/// <summary>
+		/// Gets the parent log tag
+		/// </summary>
 		Tag ParentTag { get; }
+
+		/// <summary>
+		/// Gets the tag name
+		/// </summary>
 		string TagName { get; }
 	}
 
@@ -72,6 +79,31 @@ namespace Rb.Log
 		public static void DebugError( string msg, params object[ ] args )
 		{
 			s_Root.GetDebugSource( Severity.Error ).Write( 1, msg, args );
+		}
+
+		#endregion
+
+		#region Timed scopes
+
+		/// <summary>
+		/// Creates a <see cref="TimedScope"/>, using the calling method's name as entry and exit message. The
+		/// scope information is written to the verbose source.
+		/// </summary>
+		public static TimedScope EnterTimedScope( )
+		{
+			Source source = GetSource( Severity.Verbose );
+			StackFrame frame = new StackFrame( 1 );
+			return new TimedScope( source, frame.GetMethod( ).Name );
+		}
+
+		/// <summary>
+		/// Creates a <see cref="TimedScope"/>, using a specified name for the scope. The scope information is written
+		/// to the verbose source.
+		/// </summary>
+		public static TimedScope EnterTimedScope( string scopeName )
+		{
+			Source source = GetSource( Severity.Verbose );
+			return new TimedScope( source, scopeName );
 		}
 
 		#endregion

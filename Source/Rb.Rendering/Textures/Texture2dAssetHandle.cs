@@ -62,7 +62,17 @@ namespace Rb.Rendering.Textures
 		/// Creates the texture from a texture data model
 		/// </summary>
 		/// <param name="data">Texture data</param>
-		public void Create( Texture2dData data )
+		/// <param name="generateMipMaps">Generate mipmaps flag</param>
+		public void Create( Texture2dData data, bool generateMipMaps )
+		{
+			Asset.Create( data, generateMipMaps );
+		}
+
+		/// <summary>
+		/// Creates the texture from a texture data model
+		/// </summary>
+		/// <param name="data">Texture data</param>
+		public void Create( Texture2dData[] data )
 		{
 			Asset.Create( data );
 		}

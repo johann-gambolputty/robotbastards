@@ -1,4 +1,6 @@
 
+using System;
+
 namespace Rb.Rendering.Interfaces.Objects
 {
 	/// <summary>
@@ -48,6 +50,27 @@ namespace Rb.Rendering.Interfaces.Objects
 			m_Format = format;
 			m_Data = new byte[ width * height * TextureFormatInfo.GetSizeInBytes( format ) ];
 		}
+
+		/// <summary>
+		/// Creates the texture data
+		/// </summary>
+		public void Create( int width, int height, TextureFormat format, byte[] data )
+		{
+			if ( data != null )
+			{
+				int expectedDataSize = width * height * TextureFormatInfo.GetSizeInBytes( format );
+				if ( data.Length < expectedDataSize )
+				{
+					throw new ArgumentException( string.Format( "Expected texture data array to contain at least {0} bytes of data - only contained {1}", expectedDataSize, data.Length ) );
+				}
+			}
+
+			m_Width = width;
+			m_Height = height;
+			m_Format = format;
+			m_Data = data;
+		}
+
 		#region Private Members
 
 		private TextureFormat m_Format;

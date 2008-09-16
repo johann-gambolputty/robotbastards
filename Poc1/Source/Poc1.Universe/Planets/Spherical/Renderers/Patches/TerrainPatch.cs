@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using Poc1.Universe.Interfaces.Planets.Renderers.Patches;
 using Rb.Core.Maths;
+using Rb.Core.Utils;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Interfaces.Objects.Cameras;
@@ -348,7 +349,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 			}
 			using ( IVertexBufferLock vbLock = m_Vertices.VertexBuffer.Lock( m_VbIndex, TerrainPatchConstants.PatchTotalVertexCount, false, true ) )
 			{
-				memcpy( vbLock.Bytes, srcData, TerrainPatchConstants.PatchTotalVertexCount * m_Vertices.VertexBuffer.VertexSizeInBytes );
+				MsvCrt.memcpy( vbLock.Bytes, srcData, TerrainPatchConstants.PatchTotalVertexCount * m_Vertices.VertexBuffer.VertexSizeInBytes );
 			}
 		}
 
@@ -535,13 +536,6 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 			m_IncreaseDetailDistance = float.MaxValue;
 			m_UvRes = uvRes;
 		}
-
-		#endregion
-
-		#region P/Invoke
-
-		[DllImport( "msvcrt.dll" )]
-		private unsafe static extern IntPtr memcpy( void* dest, void* src, int count );
 
 		#endregion
 

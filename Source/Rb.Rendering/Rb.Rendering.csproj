@@ -81,9 +81,9 @@
     <Compile Include="Textures\Texture2dAssetHandle.cs" />
     <Compile Include="Textures\Texture2dBase.cs" />
     <Compile Include="Textures\Texture2dSamplerBase.cs" />
-    <Compile Include="Textures\TextureLoader.cs" />
+    <Compile Include="Textures\TextureImageLoader.cs" />
     <Compile Include="Textures\TexturePacker.cs" />
-    <Compile Include="Textures\TextureUtils.cs" />
+    <Compile Include="Textures\Texture2dUtils.cs" />
     <Compile Include="Viewer.cs" />
     <Compile Include="Graphics.cs" />
     <Compile Include="GraphicsLog.cs" />
