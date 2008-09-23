@@ -87,12 +87,17 @@ namespace Rb.Rendering.Windows
 		/// <summary>
 		/// Event, invoked when rendering is about to start on the next frame
 		/// </summary>
-		public event EventHandler OnBeginPaint;
+		public event EventHandler OnBeginRender;
+
+		/// <summary>
+		/// Event, invoked when rendering starts
+		/// </summary>
+		public event EventHandler OnRender;
 
 		/// <summary>
 		///	Event, invoked when rendering has completed on the current frame
 		/// </summary>
-		public event EventHandler OnEndPaint;
+		public event EventHandler OnEndRender;
 
 		/// <summary>
 		/// Display construciton
@@ -197,9 +202,9 @@ namespace Rb.Rendering.Windows
 		/// </summary>
 		protected virtual bool BeginPaint( )
 		{
-			if ( OnBeginPaint != null )
+			if ( OnBeginRender != null )
 			{
-				OnBeginPaint( this, null );
+				OnBeginRender( this, null );
 			}
 			Graphics.Renderer.Begin( );
 			return m_Setup.BeginPaint( this );
@@ -222,6 +227,11 @@ namespace Rb.Rendering.Windows
 					viewer.Render( );
 				}
 			}
+
+			if ( OnRender != null )
+			{
+				OnRender( this, null );
+			}
 		}
 
 		/// <summary>
@@ -231,9 +241,9 @@ namespace Rb.Rendering.Windows
 		{
 			Graphics.Renderer.End( );
 			m_Setup.EndPaint( this );
-			if ( OnEndPaint != null )
+			if ( OnEndRender != null )
 			{
-				OnEndPaint( this, null );
+				OnEndRender( this, null );
 			}
 		}
 

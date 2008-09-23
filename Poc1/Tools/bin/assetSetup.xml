@@ -10,7 +10,7 @@
     <loader type="Rb.ComponentXmlLoader.Loader" assembly="Rb.ComponentXmlLoader"/>
     -->
     <loader type="Rb.Rendering.OpenGl.Cg.CgEffectLoader" assembly="Rb.Rendering.OpenGl.Cg"/>
-    <loader type="Rb.Rendering.Textures.TextureLoader" assembly="Rb.Rendering"/>
+    <loader type="Rb.Rendering.Textures.TextureImageLoader" assembly="Rb.Rendering"/>
   </loaders>
 </assetManager>
 

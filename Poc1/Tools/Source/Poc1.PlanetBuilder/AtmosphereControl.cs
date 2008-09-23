@@ -134,7 +134,7 @@ namespace Poc1.PlanetBuilder
 			scatteringTexture.Create( buildOutputs.ScatteringTexture );
 
 			ITexture2d opticalDepthTexture = Graphics.Factory.CreateTexture2d( );
-			opticalDepthTexture.Create( buildOutputs.OpticalDepthTexture );
+			opticalDepthTexture.Create( buildOutputs.OpticalDepthTexture, false );
 
 			ISpherePlanetAtmosphereRenderer atmoRenderer = BuilderState.Instance.SpherePlanet.SphereAtmosphereRenderer;
 			atmoRenderer.SetLookupTextures( scatteringTexture, opticalDepthTexture );

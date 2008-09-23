@@ -1,5 +1,4 @@
 using System;
-using System.Configuration;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -130,46 +129,27 @@ namespace Rb.Rendering
 		#region Initialization
 
 		/// <summary>
-		/// Initializes graphics objects by loading graphics API assemblies specified in the application configuration file
-		/// </summary>
-		/// <remarks>
-		/// If the configuration file does not exist, or the "renderAssembly" app. setting is not available,
-		/// Rb.Rendering.OpenGl is used by default.
-		/// </remarks>
-		public static void InitializeFromConfiguration( )
-		{
-			//	Load the rendering assembly
-			string renderAssemblyName = ConfigurationManager.AppSettings[ "renderAssembly" ];
-			if ( renderAssemblyName == null )
-			{
-				renderAssemblyName = @".\Rendering\OpenGl\Rb.Rendering.OpenGl.dll";
-			}
-			Initialize( renderAssemblyName );
-			LoadCustomTypeAssemblies( Directory.GetCurrentDirectory( ), true );
-		}
-
-		/// <summary>
 		/// Initializes graphics objects by loading a specified assembly, instancing the first type that implements
 		/// <see cref="IGraphicsFactory"/>, and using the result to initialize the other graphics objects
 		/// </summary>
-		public static void Initialize( string assemblyName )
+		public static void Initialize( GraphicsInitialization init )
 		{
 			Assembly assembly;
-			if ( File.Exists( assemblyName ) )
+			if ( File.Exists( init.RenderingAssembly ) )
 			{
 #pragma warning disable 0618
 				//	TODO: AP: Find alternative...
-				AppDomain.CurrentDomain.AppendPrivatePath(  Path.GetDirectoryName( assemblyName ) );
+				AppDomain.CurrentDomain.AppendPrivatePath( Path.GetDirectoryName( init.RenderingAssembly ) );
 #pragma warning restore 0618
-				assembly = Assembly.LoadFrom( assemblyName );
+				assembly = Assembly.LoadFrom( init.RenderingAssembly );
 			}
 			else
 			{
-				assembly = AppDomain.CurrentDomain.Load( assemblyName );
+				assembly = AppDomain.CurrentDomain.Load( init.RenderingAssembly );
 			}
-			IGraphicsFactory factory = GetGraphicsFactoryFromAssembly( assembly );
+			IGraphicsFactory factory = GetGraphicsFactoryFromAssembly( assembly, init );
 			factory.CustomTypes.ScanAssembly( assembly );
-			Initialize( factory );
+			Initialize( factory );	
 		}
 
 		/// <summary>
@@ -180,7 +160,9 @@ namespace Rb.Rendering
 			s_Factory = factory;
 			s_Renderer = factory.CreateRenderer( );
 			s_Draw = factory.CreateDraw( );
-			s_EffectDataSources = factory.CreateEffectDataSources( );
+
+			//	Effect data sources are created lazily, to remove the dependency
+			//	on the effect assembly for applications that don't need it
 		}
 
 		/// <summary>
@@ -215,9 +197,19 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Gets the current effect data source set
 		/// </summary>
+		/// <remarks>
+		/// Lazy loaded
+		/// </remarks>
 		public static IEffectDataSources EffectDataSources
 		{
-			get { return s_EffectDataSources; }
+			get
+			{
+				if ( s_EffectDataSources == null )
+				{
+					s_EffectDataSources = Factory.CreateEffectDataSources( );
+				}
+				return s_EffectDataSources;
+			}
 			set { s_EffectDataSources = value; }
 		}
 
@@ -237,13 +229,13 @@ namespace Rb.Rendering
 		private static IGraphicsFactory s_Factory;
 		private static IEffectDataSources s_EffectDataSources;
 
-		private static IGraphicsFactory GetGraphicsFactoryFromAssembly( Assembly assembly )
+		private static IGraphicsFactory GetGraphicsFactoryFromAssembly( Assembly assembly, GraphicsInitialization init )
 		{
 			foreach ( Type type in assembly.GetTypes( ) )
 			{
 				if ( type.GetInterface( typeof( IGraphicsFactory ).Name ) != null )
 				{
-					IGraphicsFactory factory = ( IGraphicsFactory )Activator.CreateInstance( type );
+					IGraphicsFactory factory = ( IGraphicsFactory )Activator.CreateInstance( type, init );
 					return factory;
 				}
 			}

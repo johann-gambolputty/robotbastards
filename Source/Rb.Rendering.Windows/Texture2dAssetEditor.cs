@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Drawing.Design;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
@@ -49,7 +50,7 @@ namespace Rb.Rendering.Windows
 
 			try
 			{
-				ITexture2d texture = ( ITexture2d )AssetManager.Instance.Load( openDlg.FileName, new TextureImageLoader.TextureLoadParameters( true ) );
+				ITexture2d texture = ( ITexture2d )AssetManager.Instance.Load( openDlg.FileName, new TextureLoadParameters( true ) );
 				return texture;
 			}
 			catch ( Exception ex )
@@ -65,7 +66,8 @@ namespace Rb.Rendering.Windows
 			{
 				return;
 			}
-			e.Graphics.DrawImage( ( ( ITexture2d )e.Value ).ToBitmap( ), e.Bounds );
+			Bitmap bmp = Texture2dUtils.CreateBitmapFromTexture( ( ITexture2d )e.Value );
+			e.Graphics.DrawImage( bmp, e.Bounds );
         }
 
         public override bool GetPaintValueSupported( ITypeDescriptorContext context )

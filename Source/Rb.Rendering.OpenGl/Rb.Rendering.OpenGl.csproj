@@ -68,9 +68,10 @@
     <Compile Include="OpenGlRenderState.cs" />
     <Compile Include="OpenGlRenderTarget.cs" />
     <Compile Include="OpenGlTexture2d.cs" />
+    <Compile Include="OpenGlTexture2dBuilder.cs" />
     <Compile Include="OpenGlTexture3d.cs" />
     <Compile Include="OpenGlTextureHandle.cs" />
-    <Compile Include="OpenGlTextureSampler2d.cs" />
+    <Compile Include="OpenGlTexture2dSampler.cs" />
     <Compile Include="OpenGlVertexArray.cs" />
     <Compile Include="OpenGlVertexBuffer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

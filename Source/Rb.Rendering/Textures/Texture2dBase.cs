@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Runtime.Serialization;
 using Rb.Rendering.Interfaces.Objects;
 
@@ -85,6 +86,23 @@ namespace Rb.Rendering.Textures
 		public abstract Texture2dData[] ToTextureData( bool getMipMaps );
 
 		/// <summary>
+		/// Creates the texture from a single bitmap
+		/// </summary>
+		/// <param name="bmp">Source bitmap</param>
+		/// <param name="generateMipMaps">Mipmap generation flag</param>
+		public abstract void Create( Bitmap bmp, bool generateMipMaps );
+
+		/// <summary>
+		/// Converts this texture to a bitmap
+		/// </summary>
+		/// <param name="getMipMaps">If true, an array of bitmaps are returned, one for each mipmap level</param>
+		/// <returns>
+		/// Returns an array of bitmaps. If getMipMaps is false, only one bitmap is returned. If
+		/// getMipMaps is true, one bitmap is returned for each mipmap level.
+		/// </returns>
+		public abstract Bitmap[] ToBitmap( bool getMipMaps );
+
+		/// <summary>
 		/// Binds this texture
 		/// </summary>
 		/// <param name="unit">Texture unit to bind this texture to</param>
@@ -129,5 +147,6 @@ namespace Rb.Rendering.Textures
 		}
 
 		#endregion
+
 	}
 }

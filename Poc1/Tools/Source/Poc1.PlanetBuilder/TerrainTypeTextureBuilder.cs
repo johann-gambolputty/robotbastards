@@ -136,7 +136,7 @@ namespace Poc1.PlanetBuilder
 		{
 			if ( m_LookupTextureRebuildRequests > 0 )
 			{
-				m_LookupTexture.Load( m_LookupBitmap, false );
+				m_LookupTexture.Create( m_LookupBitmap, false );
 				m_LookupBitmap.Dispose( );
 
 				BuilderState.Instance.Planet.TerrainModel.TerrainTypesTexture = m_LookupTexture;
@@ -146,7 +146,7 @@ namespace Poc1.PlanetBuilder
 			}
 			if ( m_PackTextureRebuildRequests > 0 )
 			{
-				m_PackTexture.Load( m_PackBitmap, false );
+				m_PackTexture.Create( m_PackBitmap, false );
 
 				BuilderState.Instance.Planet.TerrainModel.TerrainPackTexture = m_PackTexture;
 

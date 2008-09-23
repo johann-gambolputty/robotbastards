@@ -20,18 +20,7 @@ namespace Rb.Rendering.Textures
 		public unsafe static Texture2dData CreateTextureDataFromBitmap( Bitmap bmp )
 		{
 			Texture2dData data = new Texture2dData( );
-			TextureFormat format;
-			switch ( bmp.PixelFormat )
-			{
-				case PixelFormat.Format24bppRgb :
-					format = TextureFormat.R8G8B8;
-					break;
-				case PixelFormat.Format32bppArgb :
-					format = TextureFormat.R8G8B8A8;
-					break;
-				default :
-					throw new ArgumentException( string.Format( "Bitmap is not in a supported format ({0})", bmp.PixelFormat ), "bmp" );
-			}
+			TextureFormat format = GetCompatibleTextureFormatFromBitmap( ref bmp );
 			BitmapData bmpData = LockEntireBitmap( bmp );
 			data.Create( bmp.Width, bmp.Height, format );
 			fixed ( byte* dstBytes = data.Bytes )
@@ -47,9 +36,30 @@ namespace Rb.Rendering.Textures
 		/// </summary>
 		public unsafe static Bitmap CreateBitmapFromTextureData( Texture2dData data )
 		{
+			PixelFormat format;
+			switch ( data.Format )
+			{
+				case TextureFormat.Depth16			:	format = PixelFormat.Format16bppGrayScale;	break;
+			//	case TextureFormat.Depth24			:	break;	//	No mapping
+			//	case TextureFormat.Depth32			:	break;	//	No mapping
+
+				case TextureFormat.R8G8B8			:	format = PixelFormat.Format24bppRgb; break;
+			//	case TextureFormat.B8G8R8			:	break;	//	No mapping
+
+				case TextureFormat.R8G8B8X8			:	format = PixelFormat.Format32bppRgb; break;
+			//	case TextureFormat.B8G8R8X8			:	break;	//	No mapping
+
+				case TextureFormat.R8G8B8A8			:	format = PixelFormat.Format32bppRgb; break;
+			//	case TextureFormat.B8G8R8A8			:	break;	//	No mapping
+
+				case TextureFormat.A8R8G8B8			:	format = PixelFormat.Format32bppArgb; break;
+			//	case TextureFormat.A8B8G8R8			:	break;	//	No mapping
+
+				default :
+					throw new NotSupportedException( "Unsupported texture format: " + data.Format );
+			}
 			fixed ( byte* dataBytes = data.Bytes )
 			{
-				PixelFormat format = TextureFormatInfo.ToPixelFormat( data.Format );
 				int stride = data.Width * TextureFormatInfo.GetSizeInBytes( data.Format );
 				Bitmap bmp = new Bitmap( data.Width, data.Height, stride, format, new IntPtr( dataBytes ) );
 				return bmp;
@@ -66,9 +76,8 @@ namespace Rb.Rendering.Textures
 		/// </summary>
 		public static Bitmap CreateBitmapFromTexture( ITexture2d texture )
 		{
-			Texture2dData texData = texture.ToTextureData( false )[ 0 ];
-			return CreateBitmapFromTextureData( texData );
-
+			Bitmap bmp = texture.ToBitmap( false )[ 0 ];
+			return bmp;
 		}
 
 		/// <summary>
@@ -77,7 +86,7 @@ namespace Rb.Rendering.Textures
 		public static ITexture2d CreateTextureFromBitmap( Bitmap bmp, bool generateMipMaps )
 		{
 			ITexture2d texture = Graphics.Factory.CreateTexture2d( );
-			texture.Create( CreateTextureDataFromBitmap( bmp ), generateMipMaps );
+			texture.Create( bmp, generateMipMaps );
 
 			return texture;
 		}
@@ -116,7 +125,7 @@ namespace Rb.Rendering.Textures
 		/// </summary>
 		/// <param name="stream">Stream containing image data</param>
 		/// <param name="generateMipMaps">If true, then mipmaps are generated for the created texture</param>
-		public static ITexture2d LoadTextureFromImageFile( Stream stream, bool generateMipMaps )
+		public static ITexture2d LoadTextureFromImageStream( Stream stream, bool generateMipMaps )
 		{
 			ITexture2d texture = Graphics.Factory.CreateTexture2d( );
 			LoadTextureFromImageStream( texture, stream, generateMipMaps );
@@ -132,8 +141,7 @@ namespace Rb.Rendering.Textures
 		public static void LoadTextureFromImageStream( ITexture2d texture, Stream stream, bool generateMipMaps )
 		{
 			Bitmap bmp = new Bitmap( stream );
-			Texture2dData texData = CreateTextureDataFromBitmap( bmp );
-			texture.Create( texData, generateMipMaps );
+			texture.Create( bmp, generateMipMaps );
 		}
 
 		/// <summary>
@@ -157,8 +165,9 @@ namespace Rb.Rendering.Textures
 		public static void LoadTextureFromImageFile( ITexture2d texture, string path, bool generateMipMaps )
 		{
 			Bitmap bmp = new Bitmap( path );
-			Texture2dData texData = CreateTextureDataFromBitmap( bmp );
-			texture.Create( texData, generateMipMaps );
+		//	Texture2dData texData = CreateTextureDataFromBitmap( bmp );
+		//	texture.Create( texData, generateMipMaps );
+			texture.Create( bmp, generateMipMaps );
 		}
 
 		#endregion
@@ -191,6 +200,45 @@ namespace Rb.Rendering.Textures
 		#endregion
 
 		#region Private Members
+
+		/// <summary>
+		/// Gets the <see cref="TextureFormat"/> from a bitmap. If the bitmap has no compatible texture format,
+		/// its converted to the closest match.
+		/// </summary>
+		private static TextureFormat GetCompatibleTextureFormatFromBitmap( ref Bitmap bmp )
+		{
+			//	Handle direct mappings to GL texture image formats
+			TextureFormat result = TextureFormat.R8G8B8;
+			PixelFormat targetFormat = PixelFormat.Format24bppRgb;
+			switch ( bmp.PixelFormat )
+			{
+				case PixelFormat.Format32bppArgb		:
+				{
+					targetFormat = PixelFormat.Format32bppArgb;
+					result = TextureFormat.A8R8G8B8;
+					break;
+				}
+				case PixelFormat.Format32bppPArgb		:
+				{
+					targetFormat = PixelFormat.Format32bppArgb;
+					result = TextureFormat.A8R8G8B8;
+					break;
+				}
+				case PixelFormat.Format32bppRgb			:
+				{
+					targetFormat = PixelFormat.Format32bppArgb;
+					result = TextureFormat.A8R8G8B8;
+					break;
+				}
+			}
+
+			if ( targetFormat != bmp.PixelFormat )
+			{
+				bmp = bmp.Clone( new Rectangle( 0, 0, bmp.Width, bmp.Height ), targetFormat );
+			}
+
+			return result;
+		}
 
 		/// <summary>
 		/// Locks an entire bitmap for texture creation

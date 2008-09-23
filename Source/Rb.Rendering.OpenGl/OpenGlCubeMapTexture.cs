@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 using Rb.Rendering.Interfaces.Objects;
 using Tao.OpenGl;
 
@@ -16,9 +14,6 @@ namespace Rb.Rendering.OpenGl
 		#region Private Members
 
 		private TextureFormat m_Format = TextureFormat.Undefined;
-		private int m_Width;
-		private int m_Height;
-
 
 		#endregion
 
@@ -97,14 +92,14 @@ namespace Rb.Rendering.OpenGl
 			Gl.glTexParameteri( Gl.GL_TEXTURE_CUBE_MAP, Gl.GL_TEXTURE_WRAP_T, Gl.GL_CLAMP_TO_EDGE );
 			Gl.glTexParameteri( Gl.GL_TEXTURE_CUBE_MAP, Gl.GL_TEXTURE_WRAP_R, Gl.GL_CLAMP_TO_EDGE );
 
-			m_Width = posX.Width;
-			m_Height = posX.Height;
-			m_Format = OpenGlTexture2d.CreateTextureImageFromBitmap( posX, generateMipMaps, Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_X );
-			OpenGlTexture2d.CreateTextureImageFromBitmap( negX, generateMipMaps, Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_X );
-			OpenGlTexture2d.CreateTextureImageFromBitmap( posY, generateMipMaps, Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y );
-			OpenGlTexture2d.CreateTextureImageFromBitmap( negY, generateMipMaps, Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_Y );
-			OpenGlTexture2d.CreateTextureImageFromBitmap( posZ, generateMipMaps, Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z );
-			OpenGlTexture2d.CreateTextureImageFromBitmap( negZ, generateMipMaps, Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_Z );
+			OpenGlTexture2dBuilder.TextureInfo info = OpenGlTexture2dBuilder.CreateTextureImageFromBitmap( Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_X, posX, generateMipMaps );
+			OpenGlTexture2dBuilder.CreateTextureImageFromBitmap( Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_X, negX, generateMipMaps );
+			OpenGlTexture2dBuilder.CreateTextureImageFromBitmap( Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, posY, generateMipMaps );
+			OpenGlTexture2dBuilder.CreateTextureImageFromBitmap( Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_Y, negY, generateMipMaps );
+			OpenGlTexture2dBuilder.CreateTextureImageFromBitmap( Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, posZ, generateMipMaps );
+			OpenGlTexture2dBuilder.CreateTextureImageFromBitmap( Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_Z, negZ, generateMipMaps );
+
+			m_Format = info.TextureFormat;
 
 			Gl.glDisable( Gl.GL_TEXTURE_CUBE_MAP );
 		}
@@ -197,25 +192,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		private unsafe Bitmap GetFaceBitmap( int imageTarget )
 		{
-			//	Get texture memory
-			int bytesPerPixel = TextureFormatInfo.GetSizeInBytes( Format );
-
-			byte[] textureMemory = new byte[ m_Width * m_Height * bytesPerPixel ];
-
-			int internalFormat;
-			int format;
-			int type;
-			OpenGlTexture2d.CheckTextureFormat( m_Format, out internalFormat, out format, out type );
-
-			Gl.glGetTexImage( imageTarget, 0, format, Gl.GL_UNSIGNED_BYTE, textureMemory );
-
-			PixelFormat pixelFormat = OpenGlTexture2d.TextureFormatToPixelFormat( Format );
-			Bitmap bmp = new Bitmap( m_Width, m_Height, pixelFormat );
-			BitmapData bmpData = bmp.LockBits( new Rectangle( 0, 0, m_Width, m_Height ), ImageLockMode.WriteOnly, pixelFormat );
-			Marshal.Copy( textureMemory, 0, bmpData.Scan0, textureMemory.Length );
-			bmp.UnlockBits( bmpData );
-
-			return bmp;
+			return OpenGlTexture2dBuilder.CreateBitmapFromTexture( imageTarget, 0, m_Format );
 		}
 
 		#endregion

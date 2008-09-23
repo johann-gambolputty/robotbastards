@@ -161,7 +161,7 @@ namespace Rb.Rendering.OpenGl
 		private OpenGlVertexArray[]					m_VertexBuffers;
 		private string								m_Name;
         private readonly TechniqueSelector          m_Technique = new TechniqueSelector( );
-		private readonly OpenGlTextureSampler2d[]	m_Textures = new OpenGlTextureSampler2d[ 8 ];
+		private readonly OpenGlTexture2dSampler[]	m_Textures = new OpenGlTexture2dSampler[ 8 ];
 		private int									m_NumTextures;
 
 		#endregion

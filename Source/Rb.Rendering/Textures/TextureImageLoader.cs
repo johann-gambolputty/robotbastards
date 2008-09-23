@@ -3,7 +3,6 @@ using Rb.Assets;
 using Rb.Assets.Base;
 using Rb.Assets.Interfaces;
 using Rb.Core.Components;
-using Rb.Rendering.Interfaces.Objects;
 
 namespace Rb.Rendering.Textures
 {
@@ -12,42 +11,6 @@ namespace Rb.Rendering.Textures
 	/// </summary>
 	public class TextureImageLoader : AssetLoader
 	{
-		/// <summary>
-		/// Texture loading parameters
-		/// </summary>
-		public class TextureLoadParameters : LoadParameters
-		{
-			/// <summary>
-			/// Default constructor. Mipmap generation is off
-			/// </summary>
-			public TextureLoadParameters( )
-			{
-			}
-
-			/// <summary>
-			/// Setup constructor. Sets mipmap generation flag
-			/// </summary>
-			/// <param name="generateMipMaps">Mipmap generation flag</param>
-			public TextureLoadParameters( bool generateMipMaps )
-			{
-				GenerateMipMaps = generateMipMaps;
-			}
-
-			/// <summary>
-			/// Gets/sets the mipmap generation flag
-			/// </summary>
-			public bool GenerateMipMaps
-			{
-				get { return ( bool )Properties[ GenerateMipMapsPropertyName ]; }
-				set { Properties[ GenerateMipMapsPropertyName ] = value; }
-			}
-		}
-
-		/// <summary>
-		/// Name of the property in the load parameters, that enables mipmap generation when true
-		/// </summary>
-		public const string GenerateMipMapsPropertyName = "generateMipMaps";
-
 		/// <summary>
 		/// Gets the asset name
 		/// </summary>
@@ -92,15 +55,12 @@ namespace Rb.Rendering.Textures
 		public override object Load( ISource source, LoadParameters parameters )
 		{
 			parameters.CanCache = true;
-			ITexture2d texture = Graphics.Factory.CreateTexture2d( );
 
 			using ( Stream stream = ( ( IStreamSource )source ).Open( ) )
 			{
-				bool generateMipMaps = DynamicProperties.GetProperty( parameters.Properties, GenerateMipMapsPropertyName, false );
-				Texture2dUtils.Load( texture, stream, generateMipMaps );
+				bool generateMipMaps = DynamicProperties.GetProperty( parameters.Properties, TextureLoadParameters.GenerateMipMapsPropertyName, false );
+				return Texture2dUtils.LoadTextureFromImageStream( stream, generateMipMaps );
 			}
-
-			return texture;
 		}
 
 		#region Private Members

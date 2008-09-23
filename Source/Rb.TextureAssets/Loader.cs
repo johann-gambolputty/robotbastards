@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using Rb.Assets;
@@ -8,6 +7,7 @@ using Rb.Assets.Interfaces;
 using Rb.Core.Components;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
+using Rb.Rendering.Textures;
 
 namespace Rb.TextureAssets
 {
@@ -16,57 +16,6 @@ namespace Rb.TextureAssets
 	/// </summary>
 	public class Loader : AssetLoader
 	{
-		/// <summary>
-		/// Texture loading parameters
-		/// </summary>
-		public class TextureLoadParameters : LoadParameters
-		{
-			/// <summary>
-			/// Default constructor. Mipmap generation is off
-			/// </summary>
-			public TextureLoadParameters( )
-			{
-			}
-
-			/// <summary>
-			/// Setup constructor. Sets mipmap generation flag
-			/// </summary>
-			/// <param name="generateMipMaps">Mipmap generation flag</param>
-			public TextureLoadParameters( bool generateMipMaps )
-			{
-				GenerateMipMaps = generateMipMaps;
-			}
-
-			/// <summary>
-			/// Gets/sets the mipmap generation flag
-			/// </summary>
-			public bool GenerateMipMaps
-			{
-				get { return ( bool )Properties[ GenerateMipMapsPropertyName ]; }
-				set { Properties[ GenerateMipMapsPropertyName ] = value; }
-			}
-
-			/// <summary>
-			/// Gets/sets the flag that forces the loader to return texture data only.
-			/// </summary>
-			public bool ReturnTextureDataOnly
-			{
-				get { return ( bool )Properties[ ReturnTextureDataOnlyName ]; }
-				set { Properties[ ReturnTextureDataOnlyName ] = value; }
-			}
-		}
-
-		/// <summary>
-		/// Name of the property in the load parameters, that enables mipmap generation when true
-		/// </summary>
-		public const string GenerateMipMapsPropertyName = "generateMipMaps";
-
-		/// <summary>
-		/// Name of the property in the load parameters that forces the loader to return texture data, not textures
-		/// </summary>
-		public const string ReturnTextureDataOnlyName = "returnTextureDataOnly";
-
-
 		/// <summary>
 		/// Gets the name of this loader
 		/// </summary>
@@ -111,23 +60,23 @@ namespace Rb.TextureAssets
 		/// </returns>
 		public override unsafe object Load( ISource source, LoadParameters parameters )
 		{
-			bool generateMipMaps = DynamicProperties.GetProperty( parameters.Properties, GenerateMipMapsPropertyName, false );
-			bool returnTextureData = DynamicProperties.GetProperty( parameters.Properties, ReturnTextureDataOnlyName, false );
+			bool generateMipMaps = DynamicProperties.GetProperty( parameters.Properties, TextureLoadParameters.GenerateMipMapsPropertyName, false );
+			bool returnTextureData = DynamicProperties.GetProperty( parameters.Properties, TextureLoadParameters.ReturnTextureDataOnlyName, false );
 			using ( Stream stream = ( ( IStreamSource )source ).Open( ) )
 			{
 				using ( BinaryReader reader = new BinaryReader( stream ) )
 				{
 					int fileId = reader.ReadInt32( );
-					if ( fileId != Header.TextureFileIdentifier )
+					if ( fileId != TextureFileFormatVersion1.TextureFileIdentifier )
 					{
-						throw new FileLoadException( string.Format( "Invalid texture file identifier ({0})", fileId ) );
+						throw new FileLoadException( "Texture file did not begin with texture file identifer" );
 					}
-					int groupId = reader.ReadInt32( );
-					if ( groupId != ( int )GroupIdentifier.HeaderGroup )
+					TextureFileFormatVersion1.Group headerGroup = Read<TextureFileFormatVersion1.Group>( stream );
+					if ( headerGroup.GroupId != GroupIdentifier.TextureHeaderGroup )
 					{
-						throw new FileLoadException( string.Format( "Texture file did not begin with a header group (started with group ID {0})", groupId ) );
+						throw new FileLoadException( string.Format( "Texture file did not begin with a header group (started with group ID {0})", headerGroup.GroupId ) );
 					}
-					Header header = Read<Header>( stream );
+					TextureFileFormatVersion1.Header header = Read<TextureFileFormatVersion1.Header>( stream );
 					if ( header.Dimensions == 2 )
 					{
 						return Load2dTexture( source, reader, header, returnTextureData, generateMipMaps );
@@ -147,7 +96,7 @@ namespace Rb.TextureAssets
 		/// <summary>
 		/// Loads 2d texture data
 		/// </summary>
-		private static object Load2dTexture( ISource source, BinaryReader reader, Header header, bool returnTextureData, bool generateMipMaps )
+		private static object Load2dTexture( ISource source, BinaryReader reader, TextureFileFormatVersion1.Header header, bool returnTextureData, bool generateMipMaps )
 		{
 			Texture2dData[] data = Load2dTextureData( reader, header );
 			if ( returnTextureData )
@@ -170,45 +119,31 @@ namespace Rb.TextureAssets
 		}
 
 		/// <summary>
-		/// Loads a 2d texture group
-		/// </summary>
-		private static void Load2dTextureGroup( BinaryReader reader, Header header, List<Texture2dData> textureDataList )
-		{
-			bool containsSubTexture = reader.ReadBoolean( );
-			if ( containsSubTexture )
-			{
-				Group subTextureGroup = Read<Group>( reader.BaseStream );
-				if ( subTextureGroup.GroupId != GroupIdentifier.Texture2dDataGroup )
-				{
-					throw new FileLoadException( "Expected texture group to satify sub-texture flag" );
-				}
-				Load2dTextureGroup( reader, header, textureDataList );
-			}
-
-			int width = reader.ReadInt32( );
-			int height = reader.ReadInt32( );
-
-			Texture2dData texData = new Texture2dData( );
-			texData.Create( width, height, header.Format );
-
-			reader.Read( texData.Bytes, 0, texData.Bytes.Length );
-
-			textureDataList.Insert( 0, texData );
-		}
-
-		/// <summary>
 		/// Loads 2d texture data from the specified stream
 		/// </summary>
-		private static Texture2dData[] Load2dTextureData( BinaryReader reader, Header header )
+		private static Texture2dData[] Load2dTextureData( BinaryReader reader, TextureFileFormatVersion1.Header header )
 		{
-			Group textureGroup = Read<Group>( reader.BaseStream );
-			if ( textureGroup.GroupId != GroupIdentifier.Texture2dDataGroup )
+			Texture2dData[] textureDataArray = new Texture2dData[ header.TextureDataEntries ];
+			for ( int textureDataCount = 0; textureDataCount < header.TextureDataEntries; ++textureDataCount )
 			{
-				throw new FileLoadException( "Expected texture group" );
+				TextureFileFormatVersion1.Group textureGroup = Read<TextureFileFormatVersion1.Group>( reader.BaseStream );
+				if ( textureGroup.GroupId != GroupIdentifier.Texture2dDataGroup )
+				{
+					throw new FileLoadException( "Expected texture group" );
+				}
+
+				int width = reader.ReadInt32( );
+				int height = reader.ReadInt32( );
+
+				Texture2dData texData = new Texture2dData( );
+				texData.Create( width, height, header.Format );
+
+				reader.Read( texData.Bytes, 0, texData.Bytes.Length );
+
+				textureDataArray[ textureDataCount ] = texData;
 			}
-			List< Texture2dData > dataEntries = new List< Texture2dData >( );
-			Load2dTextureGroup( reader, header, dataEntries );
-			return dataEntries.ToArray( );
+
+			return textureDataArray;
 		}
 
 		#endregion
@@ -218,7 +153,7 @@ namespace Rb.TextureAssets
 		/// <summary>
 		/// Loads a 3d texture from the specified stream
 		/// </summary>
-		private static object Load3dTexture( ISource source, BinaryReader reader, Header header, bool returnTextureData, bool generateMipMaps )
+		private static object Load3dTexture( ISource source, BinaryReader reader, TextureFileFormatVersion1.Header header, bool returnTextureData, bool generateMipMaps )
 		{
 			throw new NotImplementedException( );
 		}

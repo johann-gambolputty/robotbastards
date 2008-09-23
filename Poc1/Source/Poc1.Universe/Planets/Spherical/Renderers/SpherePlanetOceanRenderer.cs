@@ -26,7 +26,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 			m_Technique = new TechniqueSelector( m_Effect, "DefaultTechnique" );
 
-			m_Texture = ( ITexture )AssetManager.Instance.Load( "Ocean/ocean0.jpg", new TextureImageLoader.TextureLoadParameters( true ) );
+			m_Texture = ( ITexture )AssetManager.Instance.Load( "Ocean/ocean0.jpg", new TextureLoadParameters( true ) );
 
 			//	Generate cached sphere for rendering the planet
 			Graphics.Draw.StartCache( );

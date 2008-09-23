@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using Rb.Assets.Base;
 using Rb.Assets.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
@@ -59,49 +60,61 @@ namespace Rb.Rendering.Textures
 		}
 
 		/// <summary>
-		/// Creates the texture from a texture data model
+		/// Creates the texture from a single texture data object
 		/// </summary>
-		/// <param name="data">Texture data</param>
-		/// <param name="generateMipMaps">Generate mipmaps flag</param>
+		/// <param name="data">Texture data used to create the texture</param>
+		/// <param name="generateMipMaps">Mipmap generation flag</param>
 		public void Create( Texture2dData data, bool generateMipMaps )
 		{
-			Asset.Create( data, generateMipMaps );
+			throw new InvalidOperationException( "Can't call Create() on an asset-backed texture" );
 		}
 
 		/// <summary>
-		/// Creates the texture from a texture data model
+		/// Creates the texture from an array of texture data objects, that specify decreasing mipmap levels
 		/// </summary>
-		/// <param name="data">Texture data</param>
+		/// <param name="data">Texture data used to create the texture and its mipmaps</param>
 		public void Create( Texture2dData[] data )
 		{
-			Asset.Create( data );
+			throw new InvalidOperationException( "Can't call Create() on an asset-backed texture" );
 		}
 
 		/// <summary>
-		/// Creates an empty texture
+		/// Gets texture data from this texture
 		/// </summary>
-		public void Create( int width, int height, TextureFormat format )
+		/// <param name="getMipMaps">If true, texture data for all mipmap levels are retrieved</param>
+		/// <returns>
+		/// Returns texture data extracted from this texture. If getMipMaps is false, only one <see cref="Texture2dData"/>
+		/// object is returned. Otherwise, the array contains a <see cref="Texture2dData"/> object for each mipmap
+		/// level.
+		/// </returns>
+		public Texture2dData[] ToTextureData( bool getMipMaps )
 		{
-			Asset.Create( width, height, format );
+			 return Asset.ToTextureData( getMipMaps );
 		}
 
 		/// <summary>
-		/// Loads the texture from bitmap data
+		/// Creates the texture from a single bitmap
 		/// </summary>
-		public void Load( System.Drawing.Bitmap bmp, bool generateMipMap )
+		/// <param name="bmp">Source bitmap</param>
+		/// <param name="generateMipMaps">Mipmap generation flag</param>
+		public void Create( Bitmap bmp, bool generateMipMaps )
 		{
-			Asset.Load( bmp, generateMipMap );
+			throw new InvalidOperationException( "Can't call Create() on an asset-backed texture" );	
 		}
 
 		/// <summary>
 		/// Converts this texture to a bitmap
 		/// </summary>
-		/// <returns>Bitmap</returns>
-		public System.Drawing.Bitmap ToBitmap( )
+		/// <param name="getMipMaps">If true, an array of bitmaps are returned, one for each mipmap level</param>
+		/// <returns>
+		/// Returns an array of bitmaps. If getMipMaps is false, only one bitmap is returned. If
+		/// getMipMaps is true, one bitmap is returned for each mipmap level.
+		/// </returns>
+		public Bitmap[] ToBitmap( bool getMipMaps )
 		{
-			return Asset.ToBitmap( );
+			return Asset.ToBitmap( getMipMaps );
 		}
-		
+
 		/// <summary>
 		/// Binds this texture
 		/// </summary>

@@ -45,6 +45,8 @@ namespace Rb.Rendering.OpenGl
 		{
 			base.DumpInfo( );
 
+			Gl.ReloadFunctions( );
+
 			//	Show the extensions
 			string extensions = Gl.glGetString( Gl.GL_EXTENSIONS );
 			GraphicsLog.Info( extensions.Replace( ' ', '\n' ) );
@@ -52,7 +54,7 @@ namespace Rb.Rendering.OpenGl
 			//	Write some important caps to the info
 			int[] result = new int[ 1 ];
 			Gl.glGetIntegerv( Gl.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, result );
-			GraphicsLog.Info( "Max texture units: " + result );
+			GraphicsLog.Info( "Max texture units: " + result[ 0 ] );
 		}
 
 		/// <summary>

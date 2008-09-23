@@ -17,6 +17,17 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
+		/// Creates a new texture handle, and binds it
+		/// </summary>
+		public static int CreateAndBindHandle( int target )
+		{
+			Gl.glEnable( Gl.GL_TEXTURE_2D );
+			int handle = CreateHandle( );
+			Gl.glBindTexture( target, handle );
+			return handle;
+		}
+
+		/// <summary>
 		/// Creates a texture handle
 		/// </summary>
 		public static int CreateHandle( )
