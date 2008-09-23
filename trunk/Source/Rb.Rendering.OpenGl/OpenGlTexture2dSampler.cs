@@ -9,7 +9,7 @@ namespace Rb.Rendering.OpenGl
 	/// Summary description for OpenGlApplyTexture2d.
 	/// </summary>
 	[Serializable]
-	public class OpenGlTextureSampler2d : Texture2dSamplerBase
+	public class OpenGlTexture2dSampler : Texture2dSamplerBase
 	{
 		/// <summary>
 		/// OpenGl texture access
@@ -54,7 +54,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public override void Begin( )
 		{
-		//	Gl.glEnable( Gl.GL_TEXTURE_2D );
+			Gl.glEnable( Gl.GL_TEXTURE_2D );
 			Graphics.Renderer.BindTexture( Texture );
 
 			int target = OpenGlTexture.Target;

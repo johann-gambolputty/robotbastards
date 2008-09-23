@@ -41,6 +41,21 @@ namespace Rb.Rendering.Interfaces.Objects
 		}
 
 		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public Texture2dData( )
+		{	
+		}
+
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		public Texture2dData( int width, int height, TextureFormat format )
+		{
+			Create( width, height, format );
+		}
+
+		/// <summary>
 		/// Creates the texture data
 		/// </summary>
 		public void Create( int width, int height, TextureFormat format )

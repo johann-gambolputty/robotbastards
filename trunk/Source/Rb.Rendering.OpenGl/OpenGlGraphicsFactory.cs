@@ -12,15 +12,16 @@ namespace Rb.Rendering.OpenGl
 	/// </summary>
 	public class OpenGlGraphicsFactory : LibraryBuilder, IGraphicsFactory
 	{
-		public OpenGlGraphicsFactory( )
+		public OpenGlGraphicsFactory( GraphicsInitialization init )
 		{
 			AutoAssemblyScan = true;
 
 			//	TODO: AP: Remove effect and platform assembly hardcoding
-			string effectAssemblyName = "Rb.Rendering.OpenGl.Cg";
-			string platformAssemblyName = "Rb.Rendering.OpenGl.Windows";
+			m_EffectsAssembly = init.EffectsAssembly;
+			m_PlatformAssembly = init.PlatformAssembly;
 
-			GetFactoryTypes( effectAssemblyName, platformAssemblyName );
+		//	Assembly.Load( init.EffectsAssembly );
+			Assembly.Load( init.PlatformAssembly );
 		}
 
 		/// <summary>
@@ -44,7 +45,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public IDisplaySetup CreateDisplaySetup( )
 		{
-			return ( IDisplaySetup )Activator.CreateInstance( m_DisplaySetupType );
+			return ( IDisplaySetup )Activator.CreateInstance( DisplaySetupType );
 		}
 
 	    /// <summary>
@@ -93,7 +94,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public ITexture2dSampler CreateTexture2dSampler( )
 		{
-			return new OpenGlTextureSampler2d( );
+			return new OpenGlTexture2dSampler( );
 		}
 
 		/// <summary>
@@ -152,7 +153,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public IEffectDataSources CreateEffectDataSources( )
 		{
-			return ( IEffectDataSources )Activator.CreateInstance( m_EffectDataSourcesType );
+			return ( IEffectDataSources )Activator.CreateInstance( EffectDataSourcesType );
 		}
 
 		/// <summary>
@@ -165,13 +166,34 @@ namespace Rb.Rendering.OpenGl
 
 		#region Private Members
 
+		private readonly string m_EffectsAssembly;
+		private readonly string m_PlatformAssembly;
+
 		private Type m_EffectDataSourcesType;
 		private Type m_DisplaySetupType;
 
-		private void GetFactoryTypes( string effectAssemblyName, string platformAssemblyName )
+		private Type EffectDataSourcesType
 		{
-			m_EffectDataSourcesType = GetAssemblyType<IEffectDataSources>( effectAssemblyName );
-			m_DisplaySetupType = GetAssemblyType<IDisplaySetup>( platformAssemblyName );
+			get
+			{
+				if ( m_EffectDataSourcesType == null )
+				{
+					m_EffectDataSourcesType = GetAssemblyType<IEffectDataSources>( m_EffectsAssembly );
+				}
+				return m_EffectDataSourcesType;
+			}
+		}
+
+		private Type DisplaySetupType
+		{
+			get
+			{
+				if ( m_DisplaySetupType == null )
+				{
+					m_DisplaySetupType = GetAssemblyType<IDisplaySetup>( m_PlatformAssembly );
+				}
+				return m_DisplaySetupType;
+			}
 		}
 
 		private static Type GetAssemblyType<T>( string assemblyName )

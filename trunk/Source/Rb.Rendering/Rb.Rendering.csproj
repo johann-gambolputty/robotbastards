@@ -67,6 +67,7 @@
     <Compile Include="FontBase.cs" />
     <Compile Include="FpsCounter.cs" />
     <Compile Include="FpsDisplay.cs" />
+    <Compile Include="GraphicsInitialization.cs" />
     <Compile Include="Lights\Light.cs" />
     <Compile Include="Lights\LightGroup.cs" />
     <Compile Include="Lights\PointLight.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Textures\Texture2dBase.cs" />
     <Compile Include="Textures\Texture2dSamplerBase.cs" />
     <Compile Include="Textures\TextureImageLoader.cs" />
+    <Compile Include="Textures\TextureLoadParameters.cs" />
     <Compile Include="Textures\TexturePacker.cs" />
     <Compile Include="Textures\Texture2dUtils.cs" />
     <Compile Include="Viewer.cs" />

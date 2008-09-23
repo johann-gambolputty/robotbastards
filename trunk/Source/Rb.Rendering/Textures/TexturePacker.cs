@@ -67,7 +67,7 @@ namespace Rb.Rendering.Textures
 		/// <returns>Returns the rectangle in the pack texture where texture is placed. Returns null if no space could be found for texture</returns>
 		public Rectangle Add( ITexture2d texture )
 		{
-			return Add( texture.ToBitmap( ) );
+			return Add( Texture2dUtils.CreateBitmapFromTexture( texture ) );
 		}
 
 		/// <summary>
@@ -76,8 +76,7 @@ namespace Rb.Rendering.Textures
 		/// <param name="generateMipMaps">If true, then the texture gets mip-mapped</param>
 		public void Finish( bool generateMipMaps )
 		{
-			m_Texture = Graphics.Factory.CreateTexture2d( );
-			m_Texture.Load( m_TextureImage, generateMipMaps );
+			m_Texture = Texture2dUtils.CreateTextureFromBitmap( m_TextureImage, generateMipMaps );
 		}
 
 		#region Private stuff

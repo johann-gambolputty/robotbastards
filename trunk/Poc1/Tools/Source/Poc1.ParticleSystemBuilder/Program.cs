@@ -19,7 +19,7 @@ namespace Poc1.ParticleSystemBuilder
 
 			try
 			{
-				Graphics.InitializeFromConfiguration( );
+				Graphics.Initialize( GraphicsInitialization.FromAppConfig( ) );
 			}
 			catch ( Exception ex )
 			{

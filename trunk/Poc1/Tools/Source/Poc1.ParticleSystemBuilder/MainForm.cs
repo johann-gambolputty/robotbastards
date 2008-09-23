@@ -18,7 +18,7 @@ namespace Poc1.ParticleSystemBuilder
 		{
 			InitializeComponent( );
 
-			psDisplay.OnBeginPaint += psDisplay_OnBeginPaint;
+			psDisplay.OnBeginRender += psDisplay_OnBeginPaint;
 
 			//	Create the docking manager
 			m_DockingManager = new DockingManager( this, VisualStyle.IDE );

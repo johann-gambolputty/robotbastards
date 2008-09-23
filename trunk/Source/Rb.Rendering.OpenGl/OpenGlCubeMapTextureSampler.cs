@@ -56,8 +56,8 @@ namespace Rb.Rendering.OpenGl
 			Gl.glEnable( target );
 			Graphics.Renderer.BindTexture( Texture );
 
-			OpenGlTextureSampler2d.ApplyTextureFilter( target, Gl.GL_TEXTURE_MIN_FILTER, MinFilter );
-			OpenGlTextureSampler2d.ApplyTextureFilter( target, Gl.GL_TEXTURE_MAG_FILTER, MagFilter );
+			OpenGlTexture2dSampler.ApplyTextureFilter( target, Gl.GL_TEXTURE_MIN_FILTER, MinFilter );
+			OpenGlTexture2dSampler.ApplyTextureFilter( target, Gl.GL_TEXTURE_MAG_FILTER, MagFilter );
 
 			Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_DECAL );
 

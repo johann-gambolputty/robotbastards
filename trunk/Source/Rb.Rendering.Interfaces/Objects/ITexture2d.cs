@@ -1,4 +1,6 @@
 
+using System.Drawing;
+
 namespace Rb.Rendering.Interfaces.Objects
 {
 	/// <summary>
@@ -22,6 +24,8 @@ namespace Rb.Rendering.Interfaces.Objects
 			get;
 		}
 
+		#region Texture2dData conversions
+
 		/// <summary>
 		/// Creates the texture from a single texture data object
 		/// </summary>
@@ -42,7 +46,31 @@ namespace Rb.Rendering.Interfaces.Objects
 		/// <returns>
 		/// Returns texture data extracted from this texture. If getMipMaps is false, only one <see cref="Texture2dData"/>
 		/// object is returned. Otherwise, the array contains a <see cref="Texture2dData"/> object for each mipmap
-		/// level.</returns>
+		/// level.
+		/// </returns>
 		Texture2dData[] ToTextureData( bool getMipMaps );
+
+		#endregion
+
+		#region Bitmap conversions
+
+		/// <summary>
+		/// Creates the texture from a single bitmap
+		/// </summary>
+		/// <param name="bmp">Source bitmap</param>
+		/// <param name="generateMipMaps">Mipmap generation flag</param>
+		void Create( Bitmap bmp, bool generateMipMaps );
+
+		/// <summary>
+		/// Converts this texture to a bitmap
+		/// </summary>
+		/// <param name="getMipMaps">If true, an array of bitmaps are returned, one for each mipmap level</param>
+		/// <returns>
+		/// Returns an array of bitmaps. If getMipMaps is false, only one bitmap is returned. If
+		/// getMipMaps is true, one bitmap is returned for each mipmap level.
+		/// </returns>
+		Bitmap[] ToBitmap( bool getMipMaps );
+
+		#endregion
 	}
 }

@@ -31,7 +31,7 @@ namespace Poc1.PlanetBuilder
 
 			try
 			{
-				Graphics.InitializeFromConfiguration( );
+				Graphics.Initialize( GraphicsInitialization.FromAppConfig( ) );
 			}
 			catch ( Exception ex )
 			{

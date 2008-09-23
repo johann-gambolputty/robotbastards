@@ -73,8 +73,7 @@ namespace Rb.Rendering.OpenGl
 			m_Format = data.Format;
 			m_Handle = OpenGlTextureHandle.CreateHandle( );
 
-			int internalFormat, format, type;
-			OpenGlTexture2d.CheckTextureFormat( m_Format, out internalFormat, out format, out type );
+			OpenGlTexture2dBuilder.TextureInfo info = OpenGlTexture2dBuilder.CheckTextureFormat( m_Format );
 
 			int target = Gl.GL_TEXTURE_3D;
 			int border = 0;
@@ -83,7 +82,7 @@ namespace Rb.Rendering.OpenGl
 			Gl.glBindTexture( target, m_Handle );
 			fixed ( void* bytes = data.Bytes )
 			{
-				Gl.glTexImage3D( target, 0, internalFormat, m_Width, m_Height, m_Depth, border, format, type, new IntPtr( bytes ) );
+				Gl.glTexImage3D( target, 0, info.GlInternalFormat, m_Width, m_Height, m_Depth, border, info.GlFormat, info.GlType, new IntPtr( bytes ) );
 			}
 		}
 
