@@ -70,6 +70,19 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
+		/// Creates the texture from an array of bitmaps
+		/// </summary>
+		/// <param name="bitmaps">Source bitmap data</param>
+		public override void Create( Bitmap[] bitmaps )
+		{
+			DestroyCurrent( );
+			m_TextureHandle = OpenGlTextureHandle.CreateAndBindHandle( m_Target );
+
+			OpenGlTexture2dBuilder.TextureInfo info = OpenGlTexture2dBuilder.CreateTextureImageFromBitmap( m_Target, bitmaps );
+			m_Format = info.TextureFormat;
+		}
+
+		/// <summary>
 		/// Creates the texture from a texture data model
 		/// </summary>
 		/// <param name="data">Texture data</param>
@@ -79,7 +92,8 @@ namespace Rb.Rendering.OpenGl
 			DestroyCurrent( );
 
 			m_TextureHandle = OpenGlTextureHandle.CreateAndBindHandle( m_Target );
-			OpenGlTexture2dBuilder.CreateTextureImageFromTextureData( m_Target, data, generateMipMaps );
+			OpenGlTexture2dBuilder.TextureInfo info = OpenGlTexture2dBuilder.CreateTextureImageFromTextureData( m_Target, data, generateMipMaps );
+			m_Format = info.TextureFormat;
 		}
 
 		/// <summary>
@@ -153,6 +167,7 @@ namespace Rb.Rendering.OpenGl
 				UnbindThisOnly( disableTexturing );
 			}
 		}
+
 
 		/// <summary>
 		/// Converts this texture to an image

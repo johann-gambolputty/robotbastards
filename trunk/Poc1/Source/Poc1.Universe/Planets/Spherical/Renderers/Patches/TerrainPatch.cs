@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using Poc1.Universe.Interfaces.Planets.Renderers.Patches;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
@@ -402,90 +400,6 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 		private void ReduceDetail( ITerrainPatchGenerator generator, IProjectionCamera camera )
 		{
 			Build( generator, camera );
-		}
-
-		private static void BuildSkirtIndexBuffer( ICollection<int> indices, int srcIndex, int srcIndexOffset, int dstIndex, bool flip )
-		{
-			int res = TerrainPatchConstants.PatchResolution - 1;
-			for ( int i = 0; i < res; ++i )
-			{
-				indices.Add( srcIndex );
-				if ( flip )
-				{
-					indices.Add( srcIndex + srcIndexOffset );
-					indices.Add( dstIndex );
-				}
-				else
-				{
-					indices.Add( dstIndex );
-					indices.Add( srcIndex + srcIndexOffset );
-				}
-
-				indices.Add( dstIndex );
-
-				if ( flip )
-				{
-					indices.Add( srcIndex + srcIndexOffset );
-					indices.Add( dstIndex + 1 );
-				}
-				else
-				{
-					indices.Add( dstIndex + 1 );
-					indices.Add( srcIndex + srcIndexOffset );
-				}
-
-				++dstIndex;
-				srcIndex += srcIndexOffset;
-			}
-		}
-
-		private void BuildIndices( )
-		{
-			int res = TerrainPatchConstants.PatchResolution;
-			int triRes = res - 1;
-			List<int> indices = new List<int>( triRes * triRes * 6 + triRes * 12 );
-
-			//	Add connecting strips to patches of lower levels of detail
-			int endRow = triRes;
-			int endCol = triRes;
-
-			for ( int row = 0; row < endRow; ++row )
-			{
-				int index = m_VbIndex + ( row * res );
-				for ( int col = 0; col < endCol; ++col )
-				{
-					indices.Add( index );
-					indices.Add( index + 1 );
-					indices.Add( index + res );
-
-					indices.Add( index + 1 );
-					indices.Add( index + 1 + res );
-					indices.Add( index + res );
-
-					++index;
-				}
-			}
-
-			if ( !DebugInfo.DisableTerainSkirts )
-			{
-				//	First horizontal skirt
-				int skirtIndex = m_VbIndex + TerrainPatchConstants.PatchArea;
-				BuildSkirtIndexBuffer( indices, m_VbIndex, 1, skirtIndex, false );
-
-				//	First vertical skirt
-				skirtIndex += TerrainPatchConstants.PatchResolution;
-				BuildSkirtIndexBuffer( indices, m_VbIndex, TerrainPatchConstants.PatchResolution, skirtIndex, true );
-				
-				//	Last horizontal skirt
-				skirtIndex += TerrainPatchConstants.PatchResolution;
-				BuildSkirtIndexBuffer( indices, m_VbIndex + TerrainPatchConstants.PatchResolution * ( TerrainPatchConstants.PatchResolution - 1 ), 1, skirtIndex, true );
-
-				//	Last vertical skirt
-				skirtIndex += TerrainPatchConstants.PatchResolution;
-				BuildSkirtIndexBuffer( indices, m_VbIndex + TerrainPatchConstants.PatchResolution - 1, TerrainPatchConstants.PatchResolution, skirtIndex, false );
-			}
-
-			m_Ib.Create( indices.ToArray( ), true );
 		}
 
 		/// <summary>

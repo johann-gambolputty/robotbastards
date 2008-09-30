@@ -36,6 +36,7 @@ namespace Rb.Rendering.OpenGl
 			{
 				m_WorldToViewStack[ stackIndex ] = new Matrix44( );
 			}
+
 		}
 
 		/// <summary>
@@ -44,8 +45,6 @@ namespace Rb.Rendering.OpenGl
 		public override void DumpInfo( )
 		{
 			base.DumpInfo( );
-
-			Gl.ReloadFunctions( );
 
 			//	Show the extensions
 			string extensions = Gl.glGetString( Gl.GL_EXTENSIONS );
@@ -361,9 +360,11 @@ namespace Rb.Rendering.OpenGl
 		{
 			Gl.glMatrixMode( Gl.GL_PROJECTION );
 			Gl.glPushMatrix( );
+			Gl.glLoadIdentity( );
 
 			Gl.glMatrixMode( Gl.GL_MODELVIEW );
 			Gl.glPushMatrix( );
+			Gl.glLoadIdentity( );
 
 			Set2d( );
 		}

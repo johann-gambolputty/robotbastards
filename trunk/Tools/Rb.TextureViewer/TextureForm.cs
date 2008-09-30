@@ -55,18 +55,22 @@ namespace Rb.TextureViewer
 
 			Gl.glVertex2f( 0, 0 );
 			Gl.glTexCoord2f( 0, 0 );
+		//	Gl.glColor3f( 1, 0, 0 );
 		//	Gl.glMultiTexCoord2f( Gl.GL_TEXTURE_2D, 0, 0 );
 
 			Gl.glVertex2f( DisplayRectangle.Width, 0 );
 			Gl.glTexCoord2f( 1, 0 );
+		//	Gl.glColor3f( 0, 1, 0 );
 		//	Gl.glMultiTexCoord2f( Gl.GL_TEXTURE_2D, 1, 0 );
 
 			Gl.glVertex2f( DisplayRectangle.Width, DisplayRectangle.Height );
 			Gl.glTexCoord2f( 1, 1 );
+		//	Gl.glColor3f( 0, 0, 1 );
 		//	Gl.glMultiTexCoord2f( Gl.GL_TEXTURE_2D, 1, 1 );
 
 			Gl.glVertex2f( 0, DisplayRectangle.Height );
 			Gl.glTexCoord2f( 0, 1 );
+		//	Gl.glColor3f( 0, 1, 1 );
 		//	Gl.glMultiTexCoord2f( Gl.GL_TEXTURE_2D, 0, 1 );
 
 			Gl.glEnd( );
@@ -97,7 +101,19 @@ namespace Rb.TextureViewer
 
 			m_Sampler = Graphics.Factory.CreateTexture2dSampler( );
 			m_Sampler.Texture = texture;
-			m_Sampler.Mode = TextureMode.Replace;
+			m_Sampler.Mode = TextureMode.Modulate;
+		}
+
+		private void TextureForm_FormClosing( object sender, FormClosingEventArgs e )
+		{
+			try
+			{
+				m_Sampler.Texture.Dispose( );
+			}
+			catch
+			{
+				return;
+			}
 		}
 
 	}

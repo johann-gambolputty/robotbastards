@@ -31,9 +31,10 @@ namespace Rb.TextureViewer
 			this.mainMenu = new System.Windows.Forms.MenuStrip( );
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
 			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
+			this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator( );
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
-			this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
+			this.openCubeMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
 			this.mainMenu.SuspendLayout( );
 			this.SuspendLayout( );
 			// 
@@ -50,6 +51,7 @@ namespace Rb.TextureViewer
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem,
+            this.openCubeMapToolStripMenuItem,
             this.exportToolStripMenuItem,
             this.toolStripSeparator1,
             this.exitToolStripMenuItem} );
@@ -60,28 +62,35 @@ namespace Rb.TextureViewer
 			// openToolStripMenuItem
 			// 
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
-			this.openToolStripMenuItem.Text = "&Open";
+			this.openToolStripMenuItem.Size = new System.Drawing.Size( 174, 22 );
+			this.openToolStripMenuItem.Text = "&Open...";
 			this.openToolStripMenuItem.Click += new System.EventHandler( this.openToolStripMenuItem_Click );
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size( 149, 6 );
-			// 
-			// exitToolStripMenuItem
-			// 
-			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
-			this.exitToolStripMenuItem.Text = "E&xit";
-			this.exitToolStripMenuItem.Click += new System.EventHandler( this.exitToolStripMenuItem_Click );
 			// 
 			// exportToolStripMenuItem
 			// 
 			this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-			this.exportToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+			this.exportToolStripMenuItem.Size = new System.Drawing.Size( 174, 22 );
 			this.exportToolStripMenuItem.Text = "&Export...";
 			this.exportToolStripMenuItem.Click += new System.EventHandler( this.exportToolStripMenuItem_Click );
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size( 171, 6 );
+			// 
+			// exitToolStripMenuItem
+			// 
+			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size( 174, 22 );
+			this.exitToolStripMenuItem.Text = "E&xit";
+			this.exitToolStripMenuItem.Click += new System.EventHandler( this.exitToolStripMenuItem_Click );
+			// 
+			// openCubeMapToolStripMenuItem
+			// 
+			this.openCubeMapToolStripMenuItem.Name = "openCubeMapToolStripMenuItem";
+			this.openCubeMapToolStripMenuItem.Size = new System.Drawing.Size( 174, 22 );
+			this.openCubeMapToolStripMenuItem.Text = "&Open Cube Map...";
+			this.openCubeMapToolStripMenuItem.Click += new System.EventHandler( this.openCubeMapToolStripMenuItem_Click );
 			// 
 			// MainForm
 			// 
@@ -107,6 +116,7 @@ namespace Rb.TextureViewer
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem openCubeMapToolStripMenuItem;
 	}
 }
 

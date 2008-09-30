@@ -1,4 +1,5 @@
-using System;
+using System.IO;
+using System.Runtime.InteropServices;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Rb.TextureAssets
@@ -16,6 +17,7 @@ namespace Rb.TextureAssets
 		/// <summary>
 		/// Group information
 		/// </summary>
+		[StructLayout( LayoutKind.Sequential, Pack = 0 )]
 		internal struct Group
 		{
 			/// <summary>
@@ -27,18 +29,34 @@ namespace Rb.TextureAssets
 			/// The size of the group in bytes (not including this group header)
 			/// </summary>
 			public long GroupSizeInBytes;
+
+			/// <summary>
+			/// Writes this group to a stream
+			/// </summary>
+			public void Write( BinaryWriter writer )
+			{
+				writer.Write( ( int )GroupId );
+				writer.Write( GroupSizeInBytes );
+			}
+
+			/// <summary>
+			/// Reads a new group from a stream
+			/// </summary>
+			public static Group Read( BinaryReader reader )
+			{
+				Group newGroup = new Group( );
+				newGroup.GroupId = ( GroupIdentifier )reader.ReadInt32( );
+				newGroup.GroupSizeInBytes = reader.ReadInt64( );
+				return newGroup;
+			}
 		}
 
 		/// <summary>
 		/// The header within a texture file
 		/// </summary>
+		[StructLayout( LayoutKind.Sequential, Pack = 0 )]
 		internal struct Header
 		{
-			/// <summary>
-			/// Creation timestamp
-			/// </summary>
-			public DateTime Created;
-
 			/// <summary>
 			/// Dimensions of the texture. Can be 2 or 3
 			/// </summary>
@@ -53,6 +71,28 @@ namespace Rb.TextureAssets
 			/// The number of texture data entries in the file.
 			/// </summary>
 			public int TextureDataEntries;
+
+			/// <summary>
+			/// Writes this group to a stream
+			/// </summary>
+			public void Write( BinaryWriter writer )
+			{
+				writer.Write( Dimensions );
+				writer.Write( ( int )Format );
+				writer.Write( TextureDataEntries );
+			}
+
+			/// <summary>
+			/// Reads a new group from a stream
+			/// </summary>
+			public static Header Read( BinaryReader reader )
+			{
+				Header newHeader = new Header( );
+				newHeader.Dimensions = reader.ReadInt32( );
+				newHeader.Format = ( TextureFormat )reader.ReadInt32( );
+				newHeader.TextureDataEntries = reader.ReadInt32( );
+				return newHeader;
+			}
 		}
 
 		#region Private Members

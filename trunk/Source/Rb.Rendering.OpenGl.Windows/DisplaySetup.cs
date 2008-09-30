@@ -149,12 +149,14 @@ namespace Rb.Rendering.OpenGl.Windows
 			}
 			else
 			{
+				Wgl.wglMakeCurrent( m_DeviceContext, m_RenderContext );
 				Wgl.wglShareLists( ms_LastRenderContext, m_RenderContext );
 			}
 
+
+			Gl.ReloadFunctions( );
 			WriteInfo( );
 			Graphics.Renderer.DumpInfo( );
-
 		}
 
 		/// <summary>

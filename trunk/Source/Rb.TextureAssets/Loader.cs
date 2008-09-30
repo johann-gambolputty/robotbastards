@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using Rb.Assets;
 using Rb.Assets.Base;
 using Rb.Assets.Interfaces;
@@ -71,12 +70,12 @@ namespace Rb.TextureAssets
 					{
 						throw new FileLoadException( "Texture file did not begin with texture file identifer" );
 					}
-					TextureFileFormatVersion1.Group headerGroup = Read<TextureFileFormatVersion1.Group>( stream );
+					TextureFileFormatVersion1.Group headerGroup = TextureFileFormatVersion1.Group.Read( reader );
 					if ( headerGroup.GroupId != GroupIdentifier.TextureHeaderGroup )
 					{
 						throw new FileLoadException( string.Format( "Texture file did not begin with a header group (started with group ID {0})", headerGroup.GroupId ) );
 					}
-					TextureFileFormatVersion1.Header header = Read<TextureFileFormatVersion1.Header>( stream );
+					TextureFileFormatVersion1.Header header = TextureFileFormatVersion1.Header.Read( reader );
 					if ( header.Dimensions == 2 )
 					{
 						return Load2dTexture( source, reader, header, returnTextureData, generateMipMaps );
@@ -126,7 +125,7 @@ namespace Rb.TextureAssets
 			Texture2dData[] textureDataArray = new Texture2dData[ header.TextureDataEntries ];
 			for ( int textureDataCount = 0; textureDataCount < header.TextureDataEntries; ++textureDataCount )
 			{
-				TextureFileFormatVersion1.Group textureGroup = Read<TextureFileFormatVersion1.Group>( reader.BaseStream );
+				TextureFileFormatVersion1.Group textureGroup = TextureFileFormatVersion1.Group.Read( reader );
 				if ( textureGroup.GroupId != GroupIdentifier.Texture2dDataGroup )
 				{
 					throw new FileLoadException( "Expected texture group" );
@@ -148,6 +147,12 @@ namespace Rb.TextureAssets
 
 		#endregion
 
+		#region CubeMap texture loading
+
+
+		
+		#endregion
+
 		#region 3D texture loading
 
 		/// <summary>
@@ -159,18 +164,5 @@ namespace Rb.TextureAssets
 		}
 
 		#endregion
-
-		/// <summary>
-		/// Reads a type directly from a stream
-		/// </summary>
-		private unsafe static T Read<T>( Stream stream ) where T : struct
-		{
-			byte[] buffer = new byte[ Marshal.SizeOf( typeof( T ) ) ];
-			stream.Read( buffer, 0, buffer.Length );
-			fixed ( byte* bufferPtr = buffer )
-			{
-				return ( T )Marshal.PtrToStructure( new IntPtr( bufferPtr ), typeof( T ) );
-			}
-		}
 	}
 }

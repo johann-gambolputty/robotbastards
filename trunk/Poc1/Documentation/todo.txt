@@ -24,7 +24,6 @@
 		- M: Add pre-process noise to the terrain texture
 		- M: Add lock-free free list for build items
 		- M: Cull quad tree nodes (frustum + horizon culling for spherical planets)
-		- L: Change from BackgroundWorker in terrain quad patch builder, to ThreadPool
 		- L: Pop slope/altitude determination in fragment shader (it's done at a vertex level - can work it out implicitly in frag shader)
 		- L: Add terrain pack resolution parameter to terrain shader
 	- Environment
@@ -48,6 +47,9 @@
 			- L: Ring-worlds
 			- L: Hollow spheres
 		- ?: Restore planet cube map (necessary?)
+	- Atmosphere
+		- M: Add serialization for atmosphere build parameters
+		- M: Add atmosphere build task
 	- Water
 		- H: Improve water rendering
 			- Animated bump maps
@@ -69,6 +71,7 @@
 		- H: Asset handle reload should evict the asset from the asset cache
 		- M: Effect rebuild is only done if cgfx file is edited, not included cg files
 		- M: Asset build should not exit if one step fails
+		- L: Add versioning to asset build tasks, so new versions will automatically rebuild design data
 		- L: Asset cache interface should be based on ISource rather than integer keys
 		- L: Asset build should have a UI (progress bar, output text)
 		- L: Add bigfile support
@@ -172,6 +175,7 @@
 	- H: Ground displacement requires connected patches, or slightly different skirt rendering (vertical skirts show up) (see new vertex normal skirts)
 
 - DONE
+	- L: Change from BackgroundWorker in terrain quad patch builder, to ThreadPool
 	- M: Allow multiple graphs to be displayed on a single graph control
 	- H: Refactor Poc1.Universe. Create Poc1.Core, Poc1.Terrain, Poc1.Universe
 	- H: Make model/renderer pattern for clouds
