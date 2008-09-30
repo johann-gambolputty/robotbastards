@@ -62,6 +62,12 @@ namespace Rb.Rendering.Interfaces.Objects
 		void Create( Bitmap bmp, bool generateMipMaps );
 
 		/// <summary>
+		/// Creates the texture from an array of bitmaps
+		/// </summary>
+		/// <param name="bitmaps">Source bitmap data</param>
+		void Create( Bitmap[] bitmaps );
+
+		/// <summary>
 		/// Converts this texture to a bitmap
 		/// </summary>
 		/// <param name="getMipMaps">If true, an array of bitmaps are returned, one for each mipmap level</param>

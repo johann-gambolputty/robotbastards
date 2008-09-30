@@ -147,7 +147,12 @@ namespace Rb.Rendering.OpenGl
 
 			//	Lock the bitmap, and create the texture
 			BitmapData bmpData = LockEntireBitmap( bmp );
-			if ( generateMipMaps )
+			int expectedStride = bmp.Width * ( Image.GetPixelFormatSize( bmp.PixelFormat ) / 8 );
+			if ( bmpData.Stride != expectedStride )
+			{
+				CreateTextureImageLevelFromBitmap( target, 0, bmpData, info, generateMipMaps );
+			}
+			else if ( generateMipMaps )
 			{
 				Glu.gluBuild2DMipmaps( target, info.GlInternalFormat, bmpData.Width, bmpData.Height, info.GlFormat, info.GlType, bmpData.Scan0 );
 			}
@@ -161,10 +166,46 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
+		/// Creates a texture image from an array of bitmaps
+		/// </summary>
+		public static TextureInfo CreateTextureImageFromBitmap( int target, Bitmap[] bitmaps )
+		{
+			if ( bitmaps == null )
+			{
+				throw new ArgumentNullException( "bitmaps" );
+			}
+			if ( bitmaps.Length == 0 )
+			{
+				throw new ArgumentException( "Can't create texture from empty bitmap array", "bitmaps" );
+			}
+
+			PixelFormat levelZeroPixelFormat = bitmaps[ 0 ].PixelFormat;
+			TextureInfo info = CheckBitmapFormat( ref bitmaps[ 0 ] );
+
+			for ( int level = 0; level < bitmaps.Length; ++level )
+			{
+				Bitmap bmp = bitmaps[ level ];
+				if ( bmp.PixelFormat != levelZeroPixelFormat )
+				{
+					GraphicsLog.Warning( "Converting level {0} bitmap to pixel format {1}", level, levelZeroPixelFormat );
+					bmp = bmp.Clone( new Rectangle( 0, 0, bmp.Width, bmp.Height ), levelZeroPixelFormat );
+				}
+
+				CreateTextureImageLevelFromBitmap( target, level, bmp, false );
+			}
+
+			return info;
+		}
+
+		/// <summary>
 		/// Creates a texture image from a texture data object
 		/// </summary>
 		public static unsafe TextureInfo CreateTextureImageFromTextureData( int target, Texture2dData data, bool generateMipMaps )
 		{
+			if ( data == null )
+			{
+				throw new ArgumentNullException( "data" );
+			}
 			TextureInfo info = CheckTextureFormat( data.Format );
 
 			fixed ( void* texels = data.Bytes )
@@ -187,6 +228,14 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public unsafe static TextureInfo CreateTextureImageFromTextureData( int target, Texture2dData[] data )
 		{
+			if ( data == null )
+			{
+				throw new ArgumentNullException( "data" );
+			}
+			if ( data.Length == 0 )
+			{
+				throw new ArgumentException( "Can't create texture from empty texture data array", "data" );
+			}
 			TextureInfo info = CheckTextureFormat( data[ 0 ].Format );
 
 			for ( int level = 0; level < data.Length; ++level )
@@ -310,18 +359,19 @@ namespace Rb.Rendering.OpenGl
 				}
 				case TextureFormat.B8G8R8X8			:
 				{
-						//	TODO: AP: Not right...
-						return new TextureInfo( Gl.GL_RGBA, Gl.GL_RGB, Gl.GL_UNSIGNED_BYTE, format );
+					//	TODO: AP: Not right... change texture format
+					return new TextureInfo( Gl.GL_RGBA, Gl.GL_RGB, Gl.GL_UNSIGNED_BYTE, format );
 				}
 				case TextureFormat.R8G8B8A8			:
 				{
 					//	TODO: AP: Not right...
-					return new TextureInfo( Gl.GL_ABGR_EXT, Gl.GL_RGBA, Gl.GL_UNSIGNED_BYTE, format );
+					//	TODO: AP: GL_ABGR_EXT is not always supported. Need to convert texture data
+					return new TextureInfo( Gl.GL_RGBA, Gl.GL_ABGR_EXT, Gl.GL_UNSIGNED_BYTE, format );
 				}
 				case TextureFormat.A8R8G8B8			:
 				{
 					//	TODO: AP: Not right...
-					return new TextureInfo( Gl.GL_BGRA_EXT, Gl.GL_RGBA, Gl.GL_UNSIGNED_BYTE, format );
+					return new TextureInfo( Gl.GL_RGBA, Gl.GL_BGRA, Gl.GL_UNSIGNED_BYTE, format );
 				}
 				case TextureFormat.A8B8G8R8			:
 				{
@@ -398,13 +448,6 @@ namespace Rb.Rendering.OpenGl
 		private static BitmapData LockEntireBitmap( Bitmap bmp )
 		{
 			BitmapData bmpData = bmp.LockBits( new Rectangle( 0, 0, bmp.Width, bmp.Height ), ImageLockMode.ReadOnly, bmp.PixelFormat );
-
-			int expectedStride = bmp.Width * ( Image.GetPixelFormatSize( bmp.PixelFormat ) / 8 );
-			if ( bmpData.Stride != expectedStride )
-			{
-				//	Argh... we don't quite handle bitmaps with loony strides
-				throw new ArgumentException( string.Format( "Unexpected stride in bitmap (was {0}, expected {1})", bmpData.Stride, expectedStride ) );
-			}
 
 			return bmpData;
 		}
@@ -570,6 +613,80 @@ namespace Rb.Rendering.OpenGl
 			return PixelFormat.Format24bppRgb;
 		}
 		 */
+
+		/// <summary>
+		/// Creates a texture level from a bitmap
+		/// </summary>
+		private static TextureInfo CreateTextureImageLevelFromBitmap( int target, int level, Bitmap bmp, bool generateMipMaps )
+		{
+			TextureInfo info = CheckBitmapFormat( ref bmp );
+
+			//	Lock the bitmap, and create the texture
+			BitmapData bmpData = LockEntireBitmap( bmp );
+			CreateTextureImageLevelFromBitmap( target, level, bmpData, info, generateMipMaps );
+			bmp.UnlockBits( bmpData );
+
+			return info;
+		}
+
+		/// <summary>
+		/// Creates a texture level from a bitmap
+		/// </summary>
+		private static void CreateTextureImageLevelFromBitmap( int target, int level, BitmapData bmpData, TextureInfo info, bool generateMipMaps )
+		{
+			int expectedStride = bmpData.Width * ( Image.GetPixelFormatSize( bmpData.PixelFormat ) / 8 );
+			if ( bmpData.Stride < expectedStride )
+			{
+				throw new ArgumentException( string.Format( "Bitmap had unexpectedly low stride {0} - expected at least {1}", bmpData.Stride, expectedStride ), "bmp" );
+			}
+			if ( bmpData.Stride != expectedStride )
+			{
+				GraphicsLog.Warning( "Bitmap had unexpected stride {0} - copying to scratch memory", expectedStride );
+				CreateTextureImageLevelFromUnpackedBitmap( target, level, info, expectedStride, bmpData, generateMipMaps );
+			}
+			else if ( generateMipMaps )
+			{
+				Glu.gluBuild2DMipmaps( target, info.GlInternalFormat, bmpData.Width, bmpData.Height, info.GlFormat, info.GlType, bmpData.Scan0 );
+			}
+			else
+			{
+				Gl.glTexImage2D( target, level, info.GlInternalFormat, bmpData.Width, bmpData.Height, 0, info.GlFormat, info.GlType, bmpData.Scan0 );
+			}
+		}
+
+		/// <summary>
+		/// Creates a texture image level from an unpacked bitmap (stride is not equal to expected stride)
+		/// </summary>
+		private unsafe static void CreateTextureImageLevelFromUnpackedBitmap( int target, int level, TextureInfo info, int expectedStride, BitmapData bmpData, bool generateMipMaps )
+		{
+			byte[] tempImage = new byte[ expectedStride * bmpData.Height ];
+
+			fixed ( byte* dstBytes = tempImage )
+			{
+				byte* dstPixel = dstBytes;
+				byte* srcBytes = ( byte* )bmpData.Scan0.ToPointer( );
+				for ( int y = 0; y < bmpData.Height; ++y )
+				{
+					byte* srcPixel = srcBytes;
+					for ( int x = 0; x < expectedStride; ++x )
+					{
+						*( dstPixel++ ) = *( srcPixel++ );
+					}
+
+					srcBytes += bmpData.Stride;
+				}
+				if ( generateMipMaps )
+				{
+					Glu.gluBuild2DMipmaps( target, info.GlInternalFormat, bmpData.Width, bmpData.Height, info.GlFormat, info.GlType, new IntPtr( dstBytes ) );
+				}
+				else
+				{
+					Gl.glTexImage2D( target, level, info.GlInternalFormat, bmpData.Width, bmpData.Height, 0, info.GlFormat, info.GlType, new IntPtr( dstBytes ) );
+				}
+			}
+		}
+
+
 		#endregion
 	}
 }

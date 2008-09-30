@@ -66,7 +66,7 @@ namespace Rb.Rendering.Textures
 		/// <param name="generateMipMaps">Mipmap generation flag</param>
 		public void Create( Texture2dData data, bool generateMipMaps )
 		{
-			throw new InvalidOperationException( "Can't call Create() on an asset-backed texture" );
+			throw new InvalidOperationException( "Can't call Create(Texture2dData, bool) on an asset-backed texture" );
 		}
 
 		/// <summary>
@@ -75,7 +75,7 @@ namespace Rb.Rendering.Textures
 		/// <param name="data">Texture data used to create the texture and its mipmaps</param>
 		public void Create( Texture2dData[] data )
 		{
-			throw new InvalidOperationException( "Can't call Create() on an asset-backed texture" );
+			throw new InvalidOperationException( "Can't call Create(Texture2dData[]) on an asset-backed texture" );
 		}
 
 		/// <summary>
@@ -99,7 +99,16 @@ namespace Rb.Rendering.Textures
 		/// <param name="generateMipMaps">Mipmap generation flag</param>
 		public void Create( Bitmap bmp, bool generateMipMaps )
 		{
-			throw new InvalidOperationException( "Can't call Create() on an asset-backed texture" );	
+			throw new InvalidOperationException( "Can't call Create(Bitmap, bool) on an asset-backed texture" );	
+		}
+
+		/// <summary>
+		/// Creates the texture from an array of bitmaps
+		/// </summary>
+		/// <param name="bitmaps">Source bitmap data</param>
+		public void Create( Bitmap[] bitmaps )
+		{
+			throw new InvalidOperationException( "Can't call Create(Bitmap[]) on an asset-backed texture" );	
 		}
 
 		/// <summary>

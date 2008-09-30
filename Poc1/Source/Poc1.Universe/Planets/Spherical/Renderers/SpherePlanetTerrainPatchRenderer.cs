@@ -64,7 +64,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 				return;
 			}
 			m_Vertices.Clear( );
-			float uvRes = ( float )( m_Planet.Radius.ToMetres / 500.0 );
+			float uvRes = ( float )( m_Planet.Radius.ToMetres / 1500.0 );
 			CreateCubePatches( 20, 1, uvRes );
 		}
 

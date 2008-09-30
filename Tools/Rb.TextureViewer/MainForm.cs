@@ -96,5 +96,10 @@ namespace Rb.TextureViewer
 				MessageBox.Show( this, msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );	
 			}
 		}
+
+		private void openCubeMapToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+
+		}
 	}
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.Serialization;
@@ -186,6 +187,57 @@ namespace Poc1.Tools.TerrainTextures.Core
 
 			packBitmap.Save( packName, ImageFormat.Jpeg );
 			distBitmap.Save( distName, ImageFormat.Bmp );	
+		}
+
+		/// <summary>
+		/// Packs all terrain type textures into a single uber-texture. Textures are laid out to match expectations
+		/// in the terrain fragment shader (x == index / N, y == index % N, N=pack texture size / individual texture size).
+		/// </summary>
+		public Bitmap[] CreateTerrainPackBitmapMipMaps( )
+		{
+			long totalArea = TerrainTileSize * TerrainTileSize * TerrainTypeCount;
+			int packSize = TerrainTileSize;
+			for ( ; ( packSize * packSize ) < totalArea; packSize *= 2 ) { }
+			if ( packSize > MaxPackBitmapSize )
+			{
+				throw new InvalidOperationException( string.Format( "Exceeded maximum pack bitmap size (required {0})", packSize ) );
+			}
+			//	TODO: AP: Forced to max size so fragment shader works correctly (lazy)
+			packSize = MaxPackBitmapSize;
+
+			List<Bitmap> bitmaps = new List<Bitmap>( );
+			int sizeDiv = 1;
+			while ( packSize >= 1 )
+			{
+				Bitmap packBitmap = new Bitmap( packSize, packSize, PixelFormat.Format24bppRgb );
+
+				using ( Graphics packBitmapGraphics = Graphics.FromImage( packBitmap ) )
+				{
+					packBitmapGraphics.SmoothingMode = SmoothingMode.HighQuality;
+					int x = 0;
+					int y = 0;
+					for ( int typeIndex = 0; typeIndex < TerrainTypeCount; ++typeIndex )
+					{
+						TerrainType type = m_TerrainTypes[ typeIndex ];
+						int tileSize = TerrainTileSize / sizeDiv;
+						if ( type.Texture != null )
+						{
+							packBitmapGraphics.DrawImage( type.Texture, new Rectangle( x, y, tileSize, tileSize ) );
+						}
+						x += tileSize;
+						if ( x >= packSize )
+						{
+							x = 0;
+							y += tileSize;
+						}
+					}
+				}
+				bitmaps.Add( packBitmap );
+				packSize /= 2;
+				sizeDiv *= 2;
+			}
+
+			return bitmaps.ToArray( );
 		}
 
 		/// <summary>

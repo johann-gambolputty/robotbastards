@@ -55,6 +55,7 @@ namespace Rb.TextureViewer
 			this.Name = "TextureForm";
 			this.Text = "TextureForm";
 			this.Shown += new System.EventHandler( this.TextureForm_Shown );
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.TextureForm_FormClosing );
 			this.ResumeLayout( false );
 
 		}

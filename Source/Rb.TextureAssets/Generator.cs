@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Rb.TextureAssets
@@ -31,7 +30,6 @@ namespace Rb.TextureAssets
 				throw new ArgumentNullException( "stream" );	
 			}
 
-
 			Texture2dData[] textureDataArray = texture.ToTextureData( writeMipMaps );
 
 			using ( BinaryWriter writer = new BinaryWriter( stream ) )
@@ -40,16 +38,14 @@ namespace Rb.TextureAssets
 
 				TextureFileFormatVersion1.Group headerGroup = new TextureFileFormatVersion1.Group( );
 				headerGroup.GroupId = GroupIdentifier.TextureHeaderGroup;
-				headerGroup.GroupSizeInBytes = 0;
-				long startOfHeaderGroup = WriteGroup( writer, headerGroup );
+				long startOfHeaderGroup = BeginGroup( writer, headerGroup );
 
 				//	Write the header
 				TextureFileFormatVersion1.Header header = new TextureFileFormatVersion1.Header( );
-				header.Created = DateTime.Now;
 				header.Dimensions = 2;
 				header.Format = texture.Format;
 				header.TextureDataEntries = textureDataArray.Length;
-				Write( writer, header );
+				header.Write( writer );
 
 				//	Write texture data
 				TextureFileFormatVersion1.Group textureDataGroup = new TextureFileFormatVersion1.Group( );
@@ -57,7 +53,7 @@ namespace Rb.TextureAssets
 				for ( int textureDataIndex = 0; textureDataIndex < textureDataArray.Length; ++textureDataIndex )
 				{
 					//	Write the texture group
-					long startOfTextureGroup = WriteGroup( writer, textureDataGroup );
+					long startOfTextureGroup = BeginGroup( writer, textureDataGroup );
 					Texture2dData textureData = textureDataArray[ textureDataIndex ];
 
 					//	Write texture data
@@ -66,32 +62,28 @@ namespace Rb.TextureAssets
 					writer.Write( textureData.Bytes );
 
 					//	Update the texture group
-					CompleteGroup( writer, startOfTextureGroup );
+					EndGroup( writer, startOfTextureGroup );
 				}
 
 				//	Update group with correct size
-				long endOfHeaderGroup = stream.Length;
-				stream.Seek( startOfHeaderGroup, SeekOrigin.Begin );
-				headerGroup.GroupSizeInBytes = endOfHeaderGroup - startOfHeaderGroup;
-				Write( writer, headerGroup );
+				EndGroup( writer, startOfHeaderGroup );
 			}
 		}
 
 		/// <summary>
 		/// Writes a group with a dummy length value to the binary writer
 		/// </summary>
-		private static long WriteGroup( BinaryWriter writer, TextureFileFormatVersion1.Group group )
+		private static long BeginGroup( BinaryWriter writer, TextureFileFormatVersion1.Group group )
 		{
 			long startOfGroup = writer.BaseStream.Length;
-			writer.Write( ( int )group.GroupId );
-			writer.Write( ( long )0 );
+			group.Write( writer );
 			return startOfGroup;
 		}
 
 		/// <summary>
-		/// Completes a group written by <see cref="WriteGroup"/>
+		/// Completes a group written by <see cref="BeginGroup"/>
 		/// </summary>
-		private static void CompleteGroup( BinaryWriter writer, long startOfGroup )
+		private static void EndGroup( BinaryWriter writer, long startOfGroup )
 		{
 			long endOfGroup = writer.BaseStream.Length;
 
@@ -99,19 +91,6 @@ namespace Rb.TextureAssets
 			writer.Write( endOfGroup - startOfGroup );
 
 			writer.BaseStream.Seek( endOfGroup, SeekOrigin.Begin );
-		}
-
-		/// <summary>
-		/// Writes a simple object to a binary stream
-		/// </summary>
-		private static unsafe void Write<T>( BinaryWriter writer, T obj )
-		{
-			byte[] bytes = new byte[ Marshal.SizeOf( obj ) ];
-			fixed ( byte* mem = bytes )
-			{
-				Marshal.StructureToPtr( obj, new IntPtr( mem ), false );
-				writer.Write( bytes );
-			}
 		}
 	}
 }

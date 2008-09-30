@@ -1,10 +1,10 @@
 
 sampler2D TerrainPackTexture = sampler_state
 {
-	WrapS = Repeat;
-	WrapT = Repeat;
-	MinFilter = Linear;
-	MagFilter = Linear;
+	WrapS = Clamp;
+	WrapT = Clamp;
+	MinFilter = NearestMipMapLinear;
+	MagFilter = NearestMipMapLinear;
 //	MinFilter = LinearMipMapLinear;
 //	MagFilter = LinearMipMapLinear;
 };
@@ -93,12 +93,8 @@ float2 GetNoise( float2 uv, float range )
 	return ( tex2D( NoiseTexture, uv ).rg * range ) - float2( range / 2, range / 2 );
 }
 
-const float freq = 1.2f;
-const float lac = 0.5f;
-
-float2 Fractal2d( float2 uv )
+float2 Fractal2d( float2 uv, float amp, float freq, float lac )
 {
-	float amp = 1;
 	uv += float2( 4.346f, 4.257f );
 	float2 n = GetNoise( uv, amp );
 	uv *= freq; amp *= lac;
@@ -113,12 +109,15 @@ float2 Fractal2d( float2 uv )
 
 float2 PerturbSe( float2 se, float2 uv )
 {
-	return saturate( se + GetNoise( uv, 0.1f ) );
+	float2 offset = ( Fractal2d( uv * 0.01f, 1.0f, 1.2f, 0.5f ) * 2 ) - 1;
+	return clamp( se + offset, 0, 1 );
 }
 
 float4 GetTerrainColour( FragmentShaderInput input )
 {
-	float2 repUv = frac( input.m_TerrainUv );
+	float2 repUvOffset = Fractal2d( input.m_TerrainUv * 0.1f, 0.6f, 1.2f, 0.5f );
+//	float2 repUv = ( frac( input.m_TerrainUv + repUvOffset ) * ( 1 - 2 / 256 ) ) + 1 / 256;
+	float2 repUv = frac( input.m_TerrainUv + repUvOffset ) * 0.99f;
 	float2 se = PerturbSe( input.m_SlopeElevation, repUv );
 	float type = ( int )( tex2D( TerrainTypeTexture, se ).r * 256.0f );
 	float2 offsetToTile = float2( fmod( type, TileRes ), ( int )( type * InvTileRes ) );

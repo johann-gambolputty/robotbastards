@@ -22,6 +22,9 @@ namespace Poc1.PlanetBuilder
 			get { return s_Instance; }
 		}
 
+		/// <summary>
+		/// Default constructor. Creates a background thread to process new texture requests
+		/// </summary>
 		public TerrainTypeTextureBuilder( )
 		{
 			m_Worker = new BackgroundWorker( );
@@ -33,8 +36,13 @@ namespace Poc1.PlanetBuilder
 			TerrainTypes = new TerrainTypeSet( );
 		}
 
+		/// <summary>
+		/// Shuts down the worker thread
+		/// </summary>
 		~TerrainTypeTextureBuilder( )
 		{
+			//	TODO: AP: Need to shut down this background thread explicitly, as it
+			//	handles unmanaged resources
 			while ( m_Worker.IsBusy )
 			{
 				Thread.Sleep( 0 );
@@ -112,7 +120,7 @@ namespace Poc1.PlanetBuilder
 		private readonly ITexture2d m_LookupTexture;
 		private readonly ITexture2d m_PackTexture;
 		private Bitmap m_LookupBitmap;
-		private Bitmap m_PackBitmap;
+		private Bitmap[] m_PackBitmaps;
 		private readonly static TerrainTypeTextureBuilder s_Instance = new TerrainTypeTextureBuilder( ); 
 
 		private void OnTerrainTypeCountChanged( TerrainType type )
@@ -120,6 +128,9 @@ namespace Poc1.PlanetBuilder
 			Rebuild( false, true );
 		}
 
+		/// <summary>
+		/// Process a work request from the worker thread
+		/// </summary>
 		private void ProcessRequest( object sender, DoWorkEventArgs args )
 		{
 			if ( m_LookupTextureRebuildRequests > 0 )
@@ -128,10 +139,13 @@ namespace Poc1.PlanetBuilder
 			}
 			if ( m_PackTextureRebuildRequests > 0 )
 			{
-				m_PackBitmap = m_TerrainTypes.CreateTerrainPackBitmap( );
+				m_PackBitmaps = m_TerrainTypes.CreateTerrainPackBitmapMipMaps( );
 			}
 		}
 
+		/// <summary>
+		/// Called (on the UI thread, most likely), when a work request has been completed
+		/// </summary>
 		private void RequestComplete( object sender, RunWorkerCompletedEventArgs args )
 		{
 			if ( m_LookupTextureRebuildRequests > 0 )
@@ -146,12 +160,21 @@ namespace Poc1.PlanetBuilder
 			}
 			if ( m_PackTextureRebuildRequests > 0 )
 			{
-				m_PackTexture.Create( m_PackBitmap, false );
+				//for ( int level = 0; level < m_PackBitmaps.Length; ++level )
+				//{
+				//    m_PackBitmaps[ level ].Save( "pack" + level + ".png" );
+				//}
+
+				m_PackTexture.Create( m_PackBitmaps );
 
 				BuilderState.Instance.Planet.TerrainModel.TerrainPackTexture = m_PackTexture;
 
-				m_PackBitmap.Dispose( );
-				m_PackBitmap = null;
+				foreach ( Bitmap packBitmapMipMap in m_PackBitmaps )
+				{
+					packBitmapMipMap.Dispose( );
+				}
+
+				m_PackBitmaps = null;
 				--m_PackTextureRebuildRequests;
 			}
 			if ( ( m_LookupTextureRebuildRequests > 0 ) || ( m_PackTextureRebuildRequests > 0 ) )

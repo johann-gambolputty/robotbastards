@@ -32,6 +32,9 @@ namespace Poc1
 					///
 					virtual void GenerateTerrainPropertyCubeMapFace( const UCubeMapFace face, const int width, const int height, const int stride, unsigned char* pixels ) = 0;
 
+				protected :
+
+					static const float MaxSlope;
 			};
 
 
@@ -214,7 +217,7 @@ namespace Poc1
 						SetLength( cpXxxx, cpYyyy, cpZzzz, _mm_set1_ps( 1 ) );
 
 						__m128 slopes = _mm_sub_ps( _mm_set1_ps( 1 ), Dot( cpXxxx, cpYyyy, cpZzzz, normalXxxx, normalYyyy, normalZzzz ) );
-						slopes = _mm_div_ps( slopes, _mm_set1_ps( 0.4f ) );
+						slopes = _mm_div_ps( slopes, _mm_set1_ps( MaxSlope ) );
 
 						//	TODO: AP: Clamp slopes to 0-1 range
 						SetupVertex( v0, 0, originXxxx, originYyyy, originZzzz, cpXxxx, cpYyyy, cpZzzz, slopes, heights, uuuu, v );
@@ -298,10 +301,9 @@ namespace Poc1
 						SetLength( cpXxxx, cpYyyy, cpZzzz, _mm_set1_ps( 1 ) );
 						
 						__m128 slopes = _mm_sub_ps( _mm_set1_ps( 1 ), Dot( cpXxxx, cpYyyy, cpZzzz, normalXxxx, normalYyyy, normalZzzz ) );
-						slopes = _mm_div_ps( slopes, _mm_set1_ps( 0.6f ) );
+						slopes = _mm_div_ps( slopes, _mm_set1_ps( MaxSlope ) );
 						Clamp( slopes, _mm_set1_ps( 0 ), _mm_set1_ps( 1 ) );
 
-						//	TODO: AP: Clamp slopes to 0-1 range
 						SetupVertex( v0, 0, originXxxx, originYyyy, originZzzz, cpXxxx, cpYyyy, cpZzzz, slopes, heights, uuuu, v );
 						SetupVertex( v1, 1, originXxxx, originYyyy, originZzzz, cpXxxx, cpYyyy, cpZzzz, slopes, heights, uuuu, v );
 						SetupVertex( v2, 2, originXxxx, originYyyy, originZzzz, cpXxxx, cpYyyy, cpZzzz, slopes, heights, uuuu, v );
@@ -328,38 +330,6 @@ namespace Poc1
 						//SetupVertex( v1, 1, arrX, arrY, arrZ, arrNx, arrNy, arrNz, arrS, arrH, arrU, v );
 						//SetupVertex( v2, 2, arrX, arrY, arrZ, arrNx, arrNy, arrNz, arrS, arrH, arrU, v );
 						//SetupVertex( v3, 3, arrX, arrY, arrZ, arrNx, arrNy, arrNz, arrS, arrH, arrU, v );
-					}
-
-					///	\brief	Calculates a normal from stuff
-					inline static void CalculateNormal( UTerrainVertex* v, const int prev, const int next, const float height, const float* xSrc, const float* ySrc, const float* zSrc, const float* uXSrc, const float* uYSrc, const float* uZSrc, const float* dXSrc, const float* dYSrc, const float* dZSrc )
-					{
-						const UVector3 left	( xSrc [ prev  ] - v->X( ), ySrc [ prev ] - v->Y( ), zSrc [ prev ] - v->Z( ) );
-						const UVector3 right( xSrc [ next  ] - v->X( ), ySrc [ next ] - v->Y( ), zSrc [ next ] - v->Z( ) );
-						const UVector3 up	( uXSrc[  0  ] - v->X( ), uYSrc[  0 ] - v->Y( ), uZSrc[  0 ] - v->Z( ) );
-						const UVector3 lUp	( uXSrc[ prev  ] - v->X( ), uYSrc[ prev ] - v->Y( ), uZSrc[ prev ] - v->Z( ) );
-						const UVector3 down	( dXSrc[  0  ] - v->X( ), dYSrc[  0 ] - v->Y( ), dZSrc[  0 ] - v->Z( ) );
-						const UVector3 rDown( dXSrc[ next  ] - v->X( ), dYSrc[ next ] - v->Y( ), dZSrc[ next ] - v->Z( ) );
-
-						UVector3 acc;
-						acc.Add( UVector3::Cross( lUp, left ) );
-						acc.Add( UVector3::Cross( up, lUp ) );
-						acc.Add( UVector3::Cross( right, up ) );
-						acc.Add( UVector3::Cross( rDown, right ) );
-						acc.Add( UVector3::Cross( down, rDown ) );
-						acc.Add( UVector3::Cross( left, down ) );
-						acc.Normalise( );
-
-						v->SetNormal( acc.m_X, acc.m_Y, acc.m_Z );
-
-						UVector3 yAxis( v->X( ), v->Y( ), v->Z( ) );
-						yAxis.Normalise( );
-
-						//	Slope of 0 is flat, slope of 1 is vertical
-						float slope = 1.0f - UVector3::Dot( yAxis, acc );
-						slope /= 0.7f;
-						slope = ( slope < 0 ? 0 : slope > 1 ? 1 : slope );
-
-						v->SetTerrainParameters( height, slope );
 					}
 			};
 			
