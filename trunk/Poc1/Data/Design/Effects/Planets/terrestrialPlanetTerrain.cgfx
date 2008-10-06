@@ -58,16 +58,20 @@ struct VertexShaderInput
 struct FragmentShaderInput
 {
 	float4 m_Position : POSITION;
-	float3 m_SphereNormal : TEXCOORD0;
-	float3 m_Normal : TEXCOORD1;
-	float2 m_TerrainUv : TEXCOORD2;
-	float2 m_SlopeElevation : TEXCOORD3;
-	float3 m_WorldPos : TEXCOORD4;
+	float3 m_Normal : TEXCOORD0;
+	float2 m_TerrainUv : TEXCOORD1;
+	float2 m_SlopeElevation : TEXCOORD2;
+	float3 m_WorldPos : TEXCOORD3;
 };
 
+//	Pipeline effect parameters
 float4x4 ModelViewProjectionMatrix;
 float4x4 InverseTransposeModelMatrix;
 float FarZ;
+
+//	Custom effect parameters
+float PlanetRadius = 100000;
+float PlanetMaximumTerrainHeight = 3000;
 
 //float4x4 CloudTransform = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
 
@@ -76,7 +80,7 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 	FragmentShaderInput output;
 
 	output.m_Position		= mul( ModelViewProjectionMatrix, input.m_Position );
-	output.m_SphereNormal	= normalize( mul( InverseTransposeModelMatrix, normalize( input.m_Position ) ).xyz );
+//	output.m_SphereNormal	= normalize( mul( InverseTransposeModelMatrix, normalize( input.m_Position ) ).xyz );
 	output.m_Normal			= normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
 	output.m_TerrainUv		= input.m_TerrainUv;
 	output.m_SlopeElevation	= input.m_SlopeElevation;
@@ -109,24 +113,26 @@ float2 Fractal2d( float2 uv, float amp, float freq, float lac )
 
 float2 PerturbSe( float2 se, float2 uv )
 {
-	float2 offset = ( Fractal2d( uv * 0.01f, 1.0f, 1.2f, 0.5f ) * 2 ) - 1;
+	float2 offset = Fractal2d( uv * 0.01f, 0.3f, 1.2f, 0.5f );
 	return clamp( se + offset, 0, 1 );
 }
 
-float4 GetTerrainColour( FragmentShaderInput input )
+float4 GetTerrainColour( FragmentShaderInput input, float2 se )
 {
-	float2 repUvOffset = Fractal2d( input.m_TerrainUv * 0.1f, 0.6f, 1.2f, 0.5f );
-//	float2 repUv = ( frac( input.m_TerrainUv + repUvOffset ) * ( 1 - 2 / 256 ) ) + 1 / 256;
-	float2 repUv = frac( input.m_TerrainUv + repUvOffset ) * 0.99f;
-	float2 se = PerturbSe( input.m_SlopeElevation, repUv );
-	float type = ( int )( tex2D( TerrainTypeTexture, se ).r * 256.0f );
-	float2 offsetToTile = float2( fmod( type, TileRes ), ( int )( type * InvTileRes ) );
-	
-	float2 tileUv = offsetToTile + repUv;
-	tileUv *= float2( InvTileRes, InvTileRes );
-	float4 diffuse = tex2D( TerrainPackTexture, tileUv );
-	
-	return diffuse;
+	//float2 repUvOffset = Fractal2d( input.m_TerrainUv * 0.1f, 0.3f, 1.2f, 0.5f );
+	//float2 repUv = frac( input.m_TerrainUv + repUvOffset ) * 0.99f;
+	//se = PerturbSe( se, repUv );
+	//float type = ( int )( tex2D( TerrainTypeTexture, se ).r * 256.0f );
+	//float2 offsetToTile = float2( fmod( type, TileRes ), ( int )( type * InvTileRes ) );
+	//
+	//float2 tileUv = offsetToTile + repUv;
+	//tileUv *= float2( InvTileRes, InvTileRes );
+	//float4 diffuse = tex2D( TerrainPackTexture, tileUv );
+	//
+	//return diffuse;
+//	float2 res = Fractal2d( frac( input.m_TerrainUv ), 0.5f, 1.2f, 0.5f ) + 0.5f;
+	float2 res = tex2D( NoiseTexture, input.m_TerrainUv ).rg;
+	return float4( res.x, res.x, res.x, 1 );
 }
 
 /*
@@ -141,12 +147,19 @@ float GetCloudCover( FragmentShaderInput input )
 }
 */
 
+
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
-	float shade = ( -dot( normalize( input.m_Normal ), SunDir  ) + 1.0f ) / 2.0f;
-	shade = shade * shade;
+	float2 se = input.m_SlopeElevation;
+	float height = length( input.m_WorldPos );
 
-	float4 diffuse = GetTerrainColour( input ) * shade;
+	float slope = saturate( dot( input.m_Normal.xyz, input.m_WorldPos.xyz  / height ) / 0.7f );
+	se.x = slope;
+	se.y = height - PlanetRadius;
+	float shade = saturate( -dot( input.m_Normal.xyz, SunDir ) );
+//	shade = shade * shade;
+
+	float4 diffuse = GetTerrainColour( input, se ) * shade;
 
 	return float4( GetScatteredObjectColour( input.m_WorldPos, diffuse.rgb ), 1 );
 }
