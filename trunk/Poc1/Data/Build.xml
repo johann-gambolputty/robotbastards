@@ -9,6 +9,7 @@
   <UsingTask TaskName="Poc1.Tools.BuildTasks.DeleteFromGame" AssemblyFile="$(ToolsDir)Poc1.Tools.BuildTasks.dll"/>
   <UsingTask TaskName="Poc1.Tools.BuildTasks.CopyToGame" AssemblyFile="$(ToolsDir)Poc1.Tools.BuildTasks.dll"/>
   <UsingTask TaskName="Poc1.Tools.BuildTasks.BuildTerrainTypes" AssemblyFile="$(ToolsDir)Poc1.Tools.BuildTasks.dll"/>
+  <UsingTask TaskName="Poc1.Tools.BuildTasks.CreateNoiseBitmap" AssemblyFile="$(ToolsDir)Poc1.Tools.BuildTasks.dll"/>
 
   <!--       -->
   <!-- Items -->
@@ -18,11 +19,21 @@
   <ItemGroup>
 		<TerrainTypeSetFiles Include="$(DesignFolder)\Terrain\*.tts"/>
 	</ItemGroup>
-
+  
   <ItemGroup>
     <TerrainTypeSetOutputs Include="@(TerrainTypeSetFiles->'Game\Terrain\%(Filename) Distribution.bmp')"/>
     <TerrainTypeSetOutputs Include="@(TerrainTypeSetFiles->'Game\Terrain\%(Filename) Pack.jpg')"/>
   </ItemGroup>
+
+  <!-- Noise definition files are passed to the Poc1.Toos.BuildTasks.CreateNoiseBitmap task -->
+  <ItemGroup>
+    <BuildNoiseInputs Include="$(DesignFolder)\Terrain\*.noise.xml"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <BuildNoiseOutputs Include="@(BuildNoiseInputs->'Game\Terrain\%(Filename).jpg')"/>
+  </ItemGroup>
+
 
   <!-- Effects files are passed into a C++ pre-processor -->
   <ItemGroup>
@@ -83,6 +94,17 @@
     <Message Text="... Complete"/>
   </Target>
 
+
+  <Target Name="RebuildNoise">
+    <Message Text="Building noise..."/>
+    <Poc1.Tools.BuildTasks.CreateNoiseBitmap SourceFile="%(BuildNoiseInputs.Identity)">
+      <Output TaskParameter="Output" ItemName="BuildNoiseOutput"/>
+    </Poc1.Tools.BuildTasks.CreateNoiseBitmap>
+    <Message Text="%(BuildNoiseInputs.Identity)"/>
+    <Message Text="...Complete"/>
+  </Target>
+
+
   <Target Name="RebuildTerrainTypes">
     <Message Text="Building terrain types..."/>
     <Poc1.Tools.BuildTasks.BuildTerrainTypes SourceFiles="@(TerrainTypeSetFiles)" OutputDirectory="Game\Terrain">
@@ -113,6 +135,15 @@
     <Message Text="... Complete"/>
   </Target>
 
+  <Target Name="BuildNoise" Inputs="@(BuildNoiseInputs)" Outputs="@(BuildNoiseOutputs)">
+    <Message Text="Building noise..."/>
+    <Poc1.Tools.BuildTasks.CreateNoiseBitmap SourceFile="%(BuildNoiseInputs.Identity)" OutputFile="@(BuildNoiseInputs->'Game\Terrain\%(Filename).jpg')">
+    </Poc1.Tools.BuildTasks.CreateNoiseBitmap>
+    <Message Text="%(BuildNoiseInputs.Identity)=>%(BuildNoiseOutputs.Identity)"/>
+    <Message Text="...Complete"/>
+  </Target>
+
+
   <Target Name="BuildTerrainTypes" Inputs="@(TerrainTypeSetFiles)" Outputs="@(TerrainTypeSetOutputs)">
     <Message Text="Building terrain types..."/>
     <Poc1.Tools.BuildTasks.BuildTerrainTypes SourceFiles="@(TerrainTypeSetFiles)" OutputDirectory="Game\Terrain">
@@ -129,10 +160,10 @@
   <Target Name="Clean" DependsOnTargets="DeleteEffects;DeleteCopiedFiles;DeleteTerrainTypes">
   </Target>
 
-  <Target Name="Build" DependsOnTargets="CopyToGame;BuildTerrainTypes;PreprocessEffects">
+  <Target Name="Build" DependsOnTargets="BuildNoise;CopyToGame;BuildTerrainTypes;PreprocessEffects">
   </Target>
 
-  <Target Name="ReBuild" DependsOnTargets="ForceCopyToGame;RebuildTerrainTypes;ForcePreprocessEffects">
+  <Target Name="ReBuild" DependsOnTargets="RebuildNoise;ForceCopyToGame;RebuildTerrainTypes;ForcePreprocessEffects">
   </Target>
   
 </Project>

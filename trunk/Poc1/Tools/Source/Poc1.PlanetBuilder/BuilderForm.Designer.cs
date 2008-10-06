@@ -122,7 +122,7 @@ namespace Poc1.PlanetBuilder
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "BuilderForm";
 			this.Text = "Planet Builder";
-			this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+			this.WindowState = System.Windows.Forms.FormWindowState.Normal;
 			this.Shown += new System.EventHandler( this.BuilderForm_Shown );
 			this.Closing += new System.ComponentModel.CancelEventHandler( this.BuilderForm_Closing );
 			this.menuStrip1.ResumeLayout( false );

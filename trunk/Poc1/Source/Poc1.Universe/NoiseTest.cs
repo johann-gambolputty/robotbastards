@@ -114,7 +114,7 @@ namespace Poc1.Universe
 			long start = TinyTime.CurrentTime;
 			gen.GenerateFace( CubeMapFace.PositiveX, bmp.PixelFormat, bmp.Width, bmp.Height, bmpData.Stride, ( byte* )bmpData.Scan0);
 
-			GraphicsLog.Info("Time taken to generate fast very noise: {0:F2} seconds", TinyTime.ToSeconds(start, TinyTime.CurrentTime));
+			GraphicsLog.Info( "Time taken to generate very fast noise: {0:F2} seconds", TinyTime.ToSeconds( start, TinyTime.CurrentTime ) );
 
 			bmp.UnlockBits(bmpData);
 			bmp.Save("TestFastSphereCloudsGenerator.bmp", ImageFormat.Bmp);

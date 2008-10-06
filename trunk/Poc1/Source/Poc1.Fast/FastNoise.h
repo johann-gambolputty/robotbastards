@@ -56,6 +56,12 @@ namespace Poc1
 					m_pImpl->GenerateRgbBitmap( width, height, pixels, originArr, xAxisArr, yAxisArr );
 				}
 
+				///	\brief	Fills an R8G8B8 bitmap with noise values (different noise in each channel). Noise is tiled
+				inline void GenerateTiledBitmap( const int width, const int height, const int stride, unsigned char* pixels, const float startX, const float startY, const float noiseWidth, const float noiseHeight )
+				{
+					m_pImpl->GenerateTiledBitmap( width, height, stride, pixels, startX, startY, noiseWidth, noiseHeight );
+				}
+
 				///	\brief	Generates 4 noise values from 4 3d points
 				inline FastNoiseResult Noise( Point3^ pt0, Point3^ pt1, Point3^ pt2, Point3^ pt3 )
 				{

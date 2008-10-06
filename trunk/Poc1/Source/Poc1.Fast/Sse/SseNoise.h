@@ -24,6 +24,9 @@ namespace Poc1
 
 				///	\brief	Fills a bitmap with noise values
 				void GenerateRgbBitmap( const int width, const int height, unsigned char* pixels, const float* origin, const float* incCol, const float* incRow ) const;
+				
+				///	\brief	Fills a bitmap with tiled noise values. Tiles the noise
+				void GenerateTiledBitmap( const int width, const int height, const int stride, unsigned char* pixels, const float startX, const float startY, const float noiseWidth, const float noiseHeight ) const;
 
 				//	TODO: AP: Add SSE detection
 
@@ -34,7 +37,7 @@ namespace Poc1
 				///
 				void Noise( const float* pVec0, const float* pVec1, const float* pVec2, const float* pVec3, float* pResults ) const;
 
-				///	\brief	Generates 4 noise values from 4 input vectors
+				///	\brief	Generates 4 noise values, in the range -1..1 from 4 input vectors
 				__m128 Noise( __m128 xxxx, __m128 yyyy, __m128 zzzz ) const;
 
 			private :
@@ -46,7 +49,6 @@ namespace Poc1
 
 				///	\brief	Generates a permutation of an input vector
 				__m128i Perm( __m128i vec ) const;
-
 		};
 
 		inline __m128i Poc1::Fast::SseNoise::Perm( __m128i vec ) const
@@ -128,6 +130,7 @@ namespace Poc1
 
 			return res;
 		}
+
 	};
 };
 

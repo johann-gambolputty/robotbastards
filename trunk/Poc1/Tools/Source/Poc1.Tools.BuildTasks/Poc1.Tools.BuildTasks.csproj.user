@@ -2,7 +2,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartAction>Program</StartAction>
     <StartProgram>C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\msbuild.exe</StartProgram>
-    <StartArguments>C:\Projects\Rb\Poc1\Data\Build.xml</StartArguments>
+    <StartArguments>Build.xml /t:Build /l:FileLogger,Microsoft.Build.Engine;logfile=BuildOutput.txt</StartArguments>
     <StartWorkingDirectory>C:\Projects\Rb\Poc1\Data\</StartWorkingDirectory>
+    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
   </PropertyGroup>
 </Project>

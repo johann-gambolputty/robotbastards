@@ -32,11 +32,13 @@
     <Reference Include="Microsoft.Build.Utilities" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildTerrainTypes.cs" />
     <Compile Include="CopyToGame.cs" />
+    <Compile Include="CreateNoiseBitmap.cs" />
     <Compile Include="DeleteFromGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
