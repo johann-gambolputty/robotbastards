@@ -193,7 +193,7 @@ namespace Poc1.Tools.TerrainTextures.Core
 			float wrapY = y - m_Height;
 
 			float fX = x - m_StartX;
-			float fY = y - m_StartX;
+			float fY = y - m_StartY;
 			float invX = m_Width - fX;
 			float invY = m_Height - fY;
 

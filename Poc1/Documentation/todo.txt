@@ -10,6 +10,7 @@
 		- L: Add uber-buffer/GPU-only particle systems
 		- L: Add support for loading assemblies containing particle components in dynamically
 	- Terrain
+		- H: Noise and fractal with noise basis does not tile in terrain shader
 		- H: Scattering coefficient correction due to ground plane intersection is not working correctly
 		- H: Function resolution should be multiplied by a fraction of the radius of spherical terrain
 		- H: Slope function threshold is inaccurate

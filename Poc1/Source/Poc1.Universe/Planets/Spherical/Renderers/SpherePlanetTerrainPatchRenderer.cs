@@ -25,7 +25,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// </summary>
 		public SpherePlanetTerrainPatchRenderer( )
 		{
-			m_NoiseTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/Noise.jpg" );
+			m_NoiseTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/TiledNoise.noise.jpg" );
 
 			m_Effect = new EffectAssetHandle( "Effects/Planets/terrestrialPlanetTerrain.cgfx", true );
 			m_Effect.OnReload += Effect_OnReload;
@@ -95,6 +95,8 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 				atmosphereRenderer.SetupAtmosphereEffectParameters( m_Technique.Effect, true );
 			}
 
+			m_Technique.Effect.Parameters[ "PlanetRadius" ].Set( m_Planet.Radius.ToRenderUnits );
+			m_Technique.Effect.Parameters[ "PlanetMaximumTerrainHeight" ].Set( m_Planet.TerrainModel.MaximumHeight.ToRenderUnits );
 			m_Technique.Effect.Parameters[ "TerrainPackTexture" ].Set( packTexture );
 			m_Technique.Effect.Parameters[ "TerrainTypeTexture" ].Set( typesTexture );
 			m_Technique.Effect.Parameters[ "NoiseTexture" ].Set( m_NoiseTexture );
