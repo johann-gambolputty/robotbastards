@@ -4,8 +4,8 @@
   <BitmapHeight>512</BitmapHeight>
   <NoiseX>0</NoiseX>
   <NoiseY>0</NoiseY>
-  <NoiseWidth>10</NoiseWidth>
-  <NoiseHeight>10</NoiseHeight>
+  <NoiseWidth>5</NoiseWidth>
+  <NoiseHeight>5</NoiseHeight>
   <!--
   <TestFilePath>Game/Terrain/Test TiledNoise.noise.png</TestFilePath>
   -->

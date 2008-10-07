@@ -44,8 +44,8 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 
 		//	TODO: AP: UV patch resolution should be a function of patch size, not ply
 
-		public TerrainPatch( TerrainPatchVertices vertices, Point3 origin, Vector3 uAxis, Vector3 vAxis, float uvRes ) :
-			this( null, vertices, origin, uAxis, vAxis, float.MaxValue, uvRes )
+		public TerrainPatch( TerrainPatchVertices vertices, Point3 origin, Vector3 uAxis, Vector3 vAxis, Point2 uv, float uvRes ) :
+			this( null, vertices, origin, uAxis, vAxis, float.MaxValue, uv, uvRes )
 		{
 		}
 
@@ -107,6 +107,14 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 		public Vector3 LocalVStep
 		{
 			get { return m_LocalVAxis / ( TerrainPatchConstants.PatchResolution - 1 ); }
+		}
+
+		/// <summary>
+		/// Gets the top left UV coordinate for this patch
+		/// </summary>
+		public Point2 Uv
+		{
+			get { return m_Uv; }
 		}
 
 		/// <summary>
@@ -295,11 +303,14 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 		private TerrainPatch[]					m_PendingChildren;
 		private TerrainPatch[]					m_CachedChildren;
 		private double							m_Radius;
+		private Point2							m_Uv;
 		private float							m_UvRes;
 		
 		private readonly static DrawBase.IBrush s_Brush;
 
-
+		/// <summary>
+		/// Returns true if this patch can pop its child nodes to reduce detail
+		/// </summary>
 		private bool CanReduceDetail
 		{
 			get
@@ -323,6 +334,9 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 			}
 		}
 		
+		/// <summary>
+		/// Returns true if this patch is a leaf node
+		/// </summary>
 		private bool IsLeafNode
 		{
 			get
@@ -338,6 +352,9 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 			s_Brush.State.DepthWrite = false;
 		}
 
+		/// <summary>
+		/// Copies vertex data from memory to this patch's vertex buffer
+		/// </summary>
 		public unsafe void SetVertexData( byte* srcData )
 		{
 			m_VbIndex = m_Vertices.Allocate( );
@@ -351,6 +368,9 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 			}
 		}
 
+		/// <summary>
+		/// Releases this patch's vertex buffer
+		/// </summary>
 		private void ReleaseVertices( )
 		{
 			if ( m_VbIndex != -1 )
@@ -360,6 +380,9 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 			}
 		}
 
+		/// <summary>
+		/// Queues up a work item to builds this patch's vertex and index buffers
+		/// </summary>
 		private void Build( ITerrainPatchGenerator generator, IProjectionCamera camera )
 		{
 			m_Building = true;
@@ -367,6 +390,9 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 			TerrainPatchBuilder.QueueWork( builder );
 		}
 
+		/// <summary>
+		/// Increases the detail of this paqtch
+		/// </summary>
 		private void IncreaseDetail( ITerrainPatchGenerator generator, IProjectionCamera camera )
 		{
 			if ( m_CachedChildren != null )
@@ -380,13 +406,17 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 				Vector3 uOffset = m_LocalUAxis * 0.5f;
 				Vector3 vOffset = m_LocalVAxis * 0.5f;
 				float error = m_PatchError / 2;
-			//	float error = float.MaxValue;
+				//	float error = float.MaxValue;//	Use this value to force a recalculation of the patch error
 				float uvRes = m_UvRes / 2;
+				Point2 tlUv = m_Uv;
+				Point2 trUv = m_Uv + new Vector2( uvRes, 0 );
+				Point2 brUv = m_Uv + new Vector2( uvRes, uvRes );
+				Point2 blUv = m_Uv + new Vector2( 0, uvRes );
 
-				TerrainPatch tl = new TerrainPatch( this, m_Vertices, m_LocalOrigin, uOffset, vOffset, error, uvRes );
-				TerrainPatch tr = new TerrainPatch( this, m_Vertices, m_LocalOrigin + uOffset, uOffset, vOffset, error, uvRes );
-				TerrainPatch bl = new TerrainPatch( this, m_Vertices, m_LocalOrigin + vOffset, uOffset, vOffset, error, uvRes );
-				TerrainPatch br = new TerrainPatch( this, m_Vertices, m_LocalOrigin + uOffset + vOffset, uOffset, vOffset, error, uvRes );
+				TerrainPatch tl = new TerrainPatch( this, m_Vertices, m_LocalOrigin, uOffset, vOffset, error, tlUv,uvRes );
+				TerrainPatch tr = new TerrainPatch( this, m_Vertices, m_LocalOrigin + uOffset, uOffset, vOffset, error, trUv, uvRes );
+				TerrainPatch bl = new TerrainPatch( this, m_Vertices, m_LocalOrigin + vOffset, uOffset, vOffset, error, blUv, uvRes );
+				TerrainPatch br = new TerrainPatch( this, m_Vertices, m_LocalOrigin + uOffset + vOffset, uOffset, vOffset, error, brUv, uvRes );
 
 				m_PendingChildren = new TerrainPatch[] { tl, tr, bl, br };
 			}
@@ -438,7 +468,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 			ReleaseVertices( );
 		}
 
-		private TerrainPatch( TerrainPatch parent, TerrainPatchVertices vertices, Point3 origin, Vector3 uAxis, Vector3 vAxis, float patchError, float uvRes )
+		private TerrainPatch( TerrainPatch parent, TerrainPatchVertices vertices, Point3 origin, Vector3 uAxis, Vector3 vAxis, float patchError, Point2 uv, float uvRes )
 		{
 			m_Parent = parent;
 			m_Vertices = vertices;
@@ -449,6 +479,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 			m_PatchError = patchError;
 			m_IncreaseDetailDistance = float.MaxValue;
 			m_UvRes = uvRes;
+			m_Uv = uv;
 		}
 
 		#endregion

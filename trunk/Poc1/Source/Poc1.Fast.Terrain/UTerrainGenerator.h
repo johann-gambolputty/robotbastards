@@ -29,10 +29,10 @@ namespace Poc1
 					void SetSmallestStepSize( const float x, const float z );
 
 					///	\brief	Generates terrain vertex points and normals
-					virtual void GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, float uvRes, UTerrainVertex* vertices ) = 0;
+					virtual void GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, const float* uv, float uvRes, UTerrainVertex* vertices ) = 0;
 
 					///	\brief	Generates terrain vertex points and normals. Gets maximum patch error
-					virtual void GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, float uvRes, UTerrainVertex* vertices, float& maxError ) = 0;
+					virtual void GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, const float* uv, float uvRes, UTerrainVertex* vertices, float& maxError ) = 0;
 
 				protected :
 

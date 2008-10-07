@@ -18,6 +18,14 @@ namespace Poc1.Universe.Interfaces.Planets.Renderers.Patches
 		}
 
 		/// <summary>
+		/// Gets the top left UV coordinate of the patch
+		/// </summary>
+		Point2 Uv
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Gets/sets the UV resolution of the patch
 		/// </summary>
 		float UvResolution

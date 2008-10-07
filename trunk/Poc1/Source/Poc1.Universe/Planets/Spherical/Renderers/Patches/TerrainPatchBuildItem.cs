@@ -35,13 +35,13 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 				if ( m_CalculatePatchError )
 				{
 					float error;
-					m_Generator.GenerateTerrainPatchVertices( m_Patch, TerrainPatchConstants.PatchResolution, m_Patch.UvResolution, firstVertex, out error );
+					m_Generator.GenerateTerrainPatchVertices( m_Patch, TerrainPatchConstants.PatchResolution, firstVertex, out error );
 					CreateSkirtVertices( firstVertex );
 					m_Patch.PatchError = error;
 				}
 				else
 				{
-					m_Generator.GenerateTerrainPatchVertices( m_Patch, TerrainPatchConstants.PatchResolution, m_Patch.UvResolution, firstVertex );
+					m_Generator.GenerateTerrainPatchVertices( m_Patch, TerrainPatchConstants.PatchResolution, firstVertex );
 					CreateSkirtVertices( firstVertex );
 				}
 			}

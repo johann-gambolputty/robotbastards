@@ -78,12 +78,11 @@ namespace Poc1.Universe.Planets.Spherical.Models
 		/// </summary>
 		/// <param name="patch">Patch</param>
 		/// <param name="res">Patch resolution</param>
-		/// <param name="uvRes">UV coordinate resolution over entire patch</param>
 		/// <param name="firstVertex">Patch vertices</param>
-		public unsafe void GenerateTerrainPatchVertices( ITerrainPatch patch, int res, float uvRes, TerrainVertex* firstVertex )
+		public unsafe void GenerateTerrainPatchVertices( ITerrainPatch patch, int res, TerrainVertex* firstVertex )
 		{
 			SetPatchPlanetParameters( patch );
-			SafeTerrainGenerator.GenerateVertices( patch.LocalOrigin, patch.LocalUStep, patch.LocalVStep, res, res, uvRes, firstVertex );
+			SafeTerrainGenerator.GenerateVertices( patch.LocalOrigin, patch.LocalUStep, patch.LocalVStep, res, res, patch.Uv, patch.UvResolution, firstVertex );
 		}
 
 		/// <summary>
@@ -91,13 +90,12 @@ namespace Poc1.Universe.Planets.Spherical.Models
 		/// </summary>
 		/// <param name="patch">Patch</param>
 		/// <param name="res">Patch resolution</param>
-		/// <param name="uvRes">UV coordinate resolution over entire patch</param>
 		/// <param name="firstVertex">Patch vertices</param>
 		/// <param name="error">Maximum error value between this patch and higher level patch</param>
-		public unsafe void GenerateTerrainPatchVertices( ITerrainPatch patch, int res, float uvRes, TerrainVertex* firstVertex, out float error )
+		public unsafe void GenerateTerrainPatchVertices( ITerrainPatch patch, int res, TerrainVertex* firstVertex, out float error )
 		{
 			SetPatchPlanetParameters( patch );
-			SafeTerrainGenerator.GenerateVertices( patch.LocalOrigin, patch.LocalUStep, patch.LocalVStep, res, res, uvRes, firstVertex, out error );
+			SafeTerrainGenerator.GenerateVertices( patch.LocalOrigin, patch.LocalUStep, patch.LocalVStep, res, res, patch.Uv, patch.UvResolution, firstVertex, out error );
 		}
 
 		#endregion

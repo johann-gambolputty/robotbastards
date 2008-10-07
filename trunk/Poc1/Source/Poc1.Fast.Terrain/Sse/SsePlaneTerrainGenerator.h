@@ -38,10 +38,10 @@ namespace Poc1
 					virtual const SseTerrainDisplacer& GetBaseDisplacer( ) const;
 
 					///	\brief	Generates terrain vertex points and normals
-					virtual void GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, float uvRes, UTerrainVertex* vertices );
+					virtual void GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, const float* uv, float uvRes, UTerrainVertex* vertices );
 
 					///	\brief	Generates terrain vertex points and normals. Gets maximum patch error
-					virtual void GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, float uvRes, UTerrainVertex* vertices, float& maxError );
+					virtual void GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, const float* uv, float uvRes, UTerrainVertex* vertices, float& maxError );
 
 				private :
 
@@ -207,7 +207,7 @@ namespace Poc1
 			}
 
 			template < typename DisplaceType >
-			void SsePlaneTerrainGeneratorT< DisplaceType >::GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, float uvRes, UTerrainVertex* vertices )
+			void SsePlaneTerrainGeneratorT< DisplaceType >::GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, const float* uv, float uvRes, UTerrainVertex* vertices )
 			{
 				//*
 				AssignShiftVectors( xStep, zStep );
@@ -238,13 +238,13 @@ namespace Poc1
 				const int widthMod4 = width % 4;
 				float uInc = uvRes / ( float )( width - 1 );
 				float vInc = uvRes / ( float )( height - 1 );
-				float v = 0;
+				float v = uv[ 1 ];
 				__m128 uuuuInc = _mm_set1_ps( uInc * 4 );
 				UTerrainVertex dummyVertex;
 
 				for ( int row = 0; row < height; ++row, v += vInc )
 				{
-					__m128 uuuu = _mm_set_ps( uInc * 3, uInc * 2, uInc, 0 );
+					__m128 uuuu = _mm_set_ps( uv[ 0 ] + uInc * 3, uv[ 0 ] + uInc * 2, uv[ 0 ] + uInc, uv[ 0 ] );
 					__m128 xxxx = startXxxx;
 					__m128 yyyy = startYyyy;
 					__m128 zzzz = startZzzz;
@@ -293,7 +293,7 @@ namespace Poc1
 			}
 
 			template < typename DisplaceType >
-			inline void SsePlaneTerrainGeneratorT< DisplaceType >::GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, float uvRes, UTerrainVertex* vertices, float& error )
+			inline void SsePlaneTerrainGeneratorT< DisplaceType >::GenerateVertices( const float* origin, float* xStep, float* zStep, int width, int height, const float* uv, float uvRes, UTerrainVertex* vertices, float& error )
 			{
 				AssignShiftVectors( xStep, zStep );
 
@@ -326,7 +326,7 @@ namespace Poc1
 				float uInc = uvRes / ( float )( width - 1 );
 				float vInc = uvRes / ( float )( height - 1 );
 				const __m128 uuuuInc = _mm_set1_ps( uInc * 4 );
-				float v = 0;
+				float v = uv[ 1 ];
 
 				UTerrainVertex* v0 = vertices;
 				UTerrainVertex* v1 = vertices + 1;
@@ -347,7 +347,7 @@ namespace Poc1
 					}
 					else
 					{
-						__m128 uuuu = _mm_set_ps( uInc * 3, uInc * 2, uInc, 0 );
+						__m128 uuuu = _mm_set_ps( uv[ 0 ] + uInc * 3, uv[ 0 ] + uInc * 2, uv[ 0 ] + uInc, uv[ 0 ] );
 						__m128 xxxx = startXxxx;
 						__m128 yyyy = startYyyy;
 						__m128 zzzz = startZzzz;

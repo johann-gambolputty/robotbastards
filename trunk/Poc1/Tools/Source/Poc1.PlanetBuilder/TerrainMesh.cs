@@ -60,7 +60,7 @@ namespace Poc1.PlanetBuilder
 				GC.Collect( );
 			}
 			m_Vertices = new TerrainPatchVertices( );
-			m_RootPatch = new TerrainPatch( m_Vertices, m_MeshOrigin, m_MeshXAxis, m_MeshZAxis, 256.0f );
+			m_RootPatch = new TerrainPatch( m_Vertices, m_MeshOrigin, m_MeshXAxis, m_MeshZAxis, new Point2( 0, 0 ), 256.0f );
 
 		}
 
@@ -112,19 +112,19 @@ namespace Poc1.PlanetBuilder
 		/// <summary>
 		/// Generates vertices for a patch
 		/// </summary>
-		public unsafe void GenerateTerrainPatchVertices( ITerrainPatch patch, int res, float uvRes, TerrainVertex* firstVertex )
+		public unsafe void GenerateTerrainPatchVertices( ITerrainPatch patch, int res, TerrainVertex* firstVertex )
 		{
 			SetPatchPlanetParameters( patch );
-			m_Gen.GenerateVertices( patch.LocalOrigin, patch.LocalUStep, patch.LocalVStep, res, res, uvRes, firstVertex );
+			m_Gen.GenerateVertices( patch.LocalOrigin, patch.LocalUStep, patch.LocalVStep, res, res, patch.Uv, patch.UvResolution, firstVertex );
 		}
 
 		/// <summary>
 		/// Generates vertices for a patch
 		/// </summary>
-		public unsafe void GenerateTerrainPatchVertices( ITerrainPatch patch, int res, float uvRes, TerrainVertex* firstVertex, out float error )
+		public unsafe void GenerateTerrainPatchVertices( ITerrainPatch patch, int res, TerrainVertex* firstVertex, out float error )
 		{
 			SetPatchPlanetParameters( patch );
-			m_Gen.GenerateVertices( patch.LocalOrigin, patch.LocalUStep, patch.LocalVStep, res, res, uvRes, firstVertex, out error );
+			m_Gen.GenerateVertices( patch.LocalOrigin, patch.LocalUStep, patch.LocalVStep, res, res, patch.Uv, patch.UvResolution, firstVertex, out error );
 		}
 
 		#endregion

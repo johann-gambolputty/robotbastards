@@ -113,26 +113,26 @@ float2 Fractal2d( float2 uv, float amp, float freq, float lac )
 
 float2 PerturbSe( float2 se, float2 uv )
 {
-	float2 offset = Fractal2d( uv * 0.01f, 0.3f, 1.2f, 0.5f );
+	float2 offset = Fractal2d( uv, 0.5f, 1.2f, 0.5f );
 	return clamp( se + offset, 0, 1 );
 }
 
 float4 GetTerrainColour( FragmentShaderInput input, float2 se )
 {
-	//float2 repUvOffset = Fractal2d( input.m_TerrainUv * 0.1f, 0.3f, 1.2f, 0.5f );
-	//float2 repUv = frac( input.m_TerrainUv + repUvOffset ) * 0.99f;
-	//se = PerturbSe( se, repUv );
-	//float type = ( int )( tex2D( TerrainTypeTexture, se ).r * 256.0f );
-	//float2 offsetToTile = float2( fmod( type, TileRes ), ( int )( type * InvTileRes ) );
-	//
-	//float2 tileUv = offsetToTile + repUv;
-	//tileUv *= float2( InvTileRes, InvTileRes );
-	//float4 diffuse = tex2D( TerrainPackTexture, tileUv );
-	//
-	//return diffuse;
-//	float2 res = Fractal2d( frac( input.m_TerrainUv ), 0.5f, 1.2f, 0.5f ) + 0.5f;
-	float2 res = tex2D( NoiseTexture, input.m_TerrainUv ).rg;
-	return float4( res.x, res.x, res.x, 1 );
+	float2 repUvOffset = Fractal2d( input.m_TerrainUv, 0.2f, 0.9f, 0.5f );
+	float2 repUv = frac( input.m_TerrainUv + repUvOffset ) * 0.99f;
+	se = PerturbSe( se, repUv );
+	float type = ( int )( tex2D( TerrainTypeTexture, se ).r * 256.0f );
+	float2 offsetToTile = float2( fmod( type, TileRes ), ( int )( type * InvTileRes ) );
+
+	float2 tileUv = offsetToTile + repUv;
+	tileUv *= float2( InvTileRes, InvTileRes );
+	float4 diffuse = tex2D( TerrainPackTexture, tileUv );
+
+	return diffuse;
+
+//	float2 fr = Fractal2d( input.m_TerrainUv, 1.0f, 1.2f, 0.5f );
+//	return fr.xxxx;
 }
 
 /*
@@ -152,12 +152,11 @@ float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
 	float2 se = input.m_SlopeElevation;
 	float height = length( input.m_WorldPos );
-
-	float slope = saturate( dot( input.m_Normal.xyz, input.m_WorldPos.xyz  / height ) / 0.7f );
-	se.x = slope;
-	se.y = height - PlanetRadius;
+	
+	//float slope = saturate( dot( input.m_Normal.xyz, input.m_WorldPos.xyz  / height ) / 0.7f );
+	//se.x = slope;
+	//se.y = height - PlanetRadius;
 	float shade = saturate( -dot( input.m_Normal.xyz, SunDir ) );
-//	shade = shade * shade;
 
 	float4 diffuse = GetTerrainColour( input, se ) * shade;
 

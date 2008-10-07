@@ -156,7 +156,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 				Point3 curPos = rowStart;
 				for ( int col = 0; col < res; ++col )
 				{
-					TerrainPatch newPatch = new TerrainPatch( m_Vertices, curPos, xInc, yInc, uvRes );
+					TerrainPatch newPatch = new TerrainPatch( m_Vertices, curPos, xInc, yInc, new Point2( 0, 0 ), uvRes );
 					m_Patches.Add( newPatch );
 
 					curPos += xInc;
