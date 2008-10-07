@@ -86,23 +86,25 @@ namespace Poc1
 			//	m_pImpl->GenerateTerrainPropertyCubeMapFace( GetUCubeMapFace( face ), width,  height, stride, pixels );
 			}
 
-			void TerrainGenerator::GenerateVertices( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, float uvRes, void* vertices )
+			void TerrainGenerator::GenerateVertices( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, Point2^ uv, float uvRes, void* vertices )
 			{
 				float originArr[] = { origin->X, origin->Y, origin->Z };
 				float xStepArr[] = { xStep->X, xStep->Y, xStep->Z };
 				float zStepArr[] = { zStep->X, zStep->Y, zStep->Z };
+				float uvArr[] = { uv->X, uv->Y };
 
-				m_pImpl->GenerateVertices( originArr, xStepArr, zStepArr, width, height, uvRes, ( UTerrainVertex* )vertices );
+				m_pImpl->GenerateVertices( originArr, xStepArr, zStepArr, width, height, uvArr, uvRes, ( UTerrainVertex* )vertices );
 			}
 
-			void TerrainGenerator::GenerateVertices( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, float uvRes, void* vertices, [System::Runtime::InteropServices::Out]float% error )
+			void TerrainGenerator::GenerateVertices( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, Point2^ uv, float uvRes, void* vertices, [System::Runtime::InteropServices::Out]float% error )
 			{
 				float originArr[] = { origin->X, origin->Y, origin->Z };
 				float xStepArr[] = { xStep->X, xStep->Y, xStep->Z };
 				float zStepArr[] = { zStep->X, zStep->Y, zStep->Z };
+				float uvArr[] = { uv->X, uv->Y };
 
 				float err;
-				m_pImpl->GenerateVertices( originArr, xStepArr, zStepArr, width, height, uvRes, ( UTerrainVertex* )vertices, err );
+				m_pImpl->GenerateVertices( originArr, xStepArr, zStepArr, width, height, uvArr, uvRes, ( UTerrainVertex* )vertices, err );
 				error = err;
 			}
 			
