@@ -29,6 +29,7 @@ namespace Poc1.Universe.Planets.Spherical
 			planet.AtmosphereModel		= new SpherePlanetAtmosphereModel( );
 
 			//	Renderers
+			planet.MarbleRenderer		= new SpherePlanetMarbleRenderer( new SpherePlanetMarbleTextureBuilder( ) );
 			planet.OceanRenderer		= new SpherePlanetOceanRenderer( );
 			planet.TerrainRenderer		= new SpherePlanetTerrainPatchRenderer( );
 			planet.AtmosphereRenderer	= new SpherePlanetAtmosphereRenderer( );
@@ -109,12 +110,10 @@ namespace Poc1.Universe.Planets.Spherical
 
 		#endregion
 
-
 		#region Private Members
 
 		private Units.Metres m_Radius = new Units.Metres( 100000 );
 
 		#endregion
-
 	}
 }

@@ -119,8 +119,8 @@ float2 PerturbSe( float2 se, float2 uv )
 
 float4 GetTerrainColour( FragmentShaderInput input, float2 se )
 {
-	float2 repUvOffset = Fractal2d( input.m_TerrainUv, 0.2f, 0.9f, 0.5f );
-	float2 repUv = frac( input.m_TerrainUv + repUvOffset ) * 0.99f;
+	float2 repUvOffset = Fractal2d( input.m_TerrainUv, 0.2f, 1.5f, 0.8f );
+	float2 repUv = frac( input.m_TerrainUv * 5 + repUvOffset ) * 0.98f;
 	se = PerturbSe( se, repUv );
 	float type = ( int )( tex2D( TerrainTypeTexture, se ).r * 256.0f );
 	float2 offsetToTile = float2( fmod( type, TileRes ), ( int )( type * InvTileRes ) );
@@ -187,6 +187,8 @@ technique DefaultTechnique
 	}
 }
 
+//	For some reason, adding one or both of these techniques causes an access violation in CgEffect...
+/*
 technique ShowSlopesTechnique
 {
 	pass
@@ -234,3 +236,4 @@ technique WireFrameTechnique
 		PolygonMode				= int2( Front, Line );
 	}
 }
+*/

@@ -130,6 +130,7 @@
     <Compile Include="Utils\AppDomainUtils.cs" />
     <Compile Include="Utils\BinaryReaderHelpers.cs" />
     <Compile Include="Utils\Clock.cs" />
+    <Compile Include="Utils\DisposableHelper.cs" />
     <Compile Include="Utils\MsvCrt.cs" />
     <Compile Include="Utils\CustomUITypeEditor.cs" />
     <Compile Include="Utils\DelegateMarshaller.cs" />

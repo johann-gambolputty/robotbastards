@@ -243,6 +243,9 @@ namespace Rb.Rendering.OpenGl
 			
 			#region IDisposable Members
 
+			/// <summary>
+			/// Deletes the associated display list
+			/// </summary>
 			public void Dispose( )
 			{
 				Gl.glDeleteLists( m_DisplayList, 1 );

@@ -1,4 +1,6 @@
 using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using Poc1.Fast.Terrain;
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets.Models;
@@ -12,6 +14,7 @@ using Rb.Rendering.Textures;
 using ITerrainPatch=Poc1.Universe.Interfaces.Planets.Renderers.Patches.ITerrainPatch;
 using IPlanet = Poc1.Universe.Interfaces.Planets.IPlanet;
 using Poc1.Universe.Interfaces.Planets.Spherical;
+using Rectangle=System.Drawing.Rectangle;
 
 namespace Poc1.Universe.Planets.Spherical.Models
 {
@@ -40,6 +43,24 @@ namespace Poc1.Universe.Planets.Spherical.Models
 			get { return m_Planet; }
 			set { m_Planet = ( ISpherePlanet )value; }
 		}
+
+
+		#region ISpherePlanetTerrainModel Members
+
+		/// <summary>
+		/// Creates a face for the marble texture cube map
+		/// </summary>
+		public unsafe Bitmap CreateMarbleTextureFace( CubeMapFace face, int resolution )
+		{
+			Bitmap bmp = new Bitmap( resolution, resolution, PixelFormat.Format24bppRgb );
+			BitmapData bmpData = bmp.LockBits( new Rectangle( 0, 0, resolution, resolution ), ImageLockMode.WriteOnly, bmp.PixelFormat );
+			byte* pixels = ( byte* )bmpData.Scan0;
+			SafeTerrainGenerator.GenerateTerrainPropertyCubeMapFace( face, resolution, resolution, bmpData.Stride, pixels );
+			bmp.UnlockBits( bmpData );
+			return bmp;
+		}
+
+		#endregion
 
 		#region IPlanetTerrainModel Members
 
@@ -121,10 +142,7 @@ namespace Poc1.Universe.Planets.Spherical.Models
 			m_Gen.Setup( 1024, radius, radius + height );
 			m_Gen.SetSmallestStepSize( MinimumStepSize, MinimumStepSize );
 
-			if ( ModelChanged != null )
-			{
-				ModelChanged( this, null );
-			}
+			OnModelChanged( );
 		}
 
 		#endregion

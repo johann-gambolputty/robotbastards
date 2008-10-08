@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using Rb.Core.Maths;
 using Rb.Rendering;
@@ -88,6 +89,9 @@ namespace Rb.Rendering.OpenGl
 			return new Size( width, height );
 		}
 
+		/// <summary>
+		/// Writes a string to the renderer
+		/// </summary>
 		public override void Write( int x, int y, FontAlignment align, Color colour, string str )
 		{
 			Graphics.Renderer.Push2d( );
@@ -287,8 +291,9 @@ namespace Rb.Rendering.OpenGl
 			for ( ; ( size * size ) < area; size *= 2 ) { }
 
 			//	Set up new image and graphics object to render to it
-			Bitmap img = new Bitmap( size, size, PixelFormat.Format32bppRgb );
+			Bitmap img = new Bitmap( size, size, PixelFormat.Format32bppArgb );
 			graphics = System.Drawing.Graphics.FromImage( img );
+			graphics.SmoothingMode = SmoothingMode.HighQuality;
 			graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
 			StringFormat format = new StringFormat( StringFormatFlags.FitBlackBox );
@@ -309,7 +314,7 @@ namespace Rb.Rendering.OpenGl
 
 				if ( chars[ charIndex ] < 256 )
 				{
-					 int xPadding = ( int )( font.Size / 3 );
+					int xPadding = ( int )( font.Size / 3 );
 					int yPadding = 0;
 					m_CharacterData[ chars[ charIndex ] ] = new CharacterData
 						(
@@ -344,7 +349,7 @@ namespace Rb.Rendering.OpenGl
 				byte* pixel = scanline;
 				for ( int x = 0; x < bmpData.Width; ++x )
 				{
-					pixel[ 3 ] = ( pixel[ 2 ] < 120 ? pixel[ 2 ] : ( byte )255 );
+				//	pixel[ 3 ] = ( pixel[ 2 ] < 120 ? pixel[ 2 ] : ( byte )255 );
 					pixel += 4;
 				}
 				scanline += bmpData.Stride;

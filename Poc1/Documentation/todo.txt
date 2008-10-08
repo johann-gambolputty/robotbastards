@@ -10,10 +10,9 @@
 		- L: Add uber-buffer/GPU-only particle systems
 		- L: Add support for loading assemblies containing particle components in dynamically
 	- Terrain
-		- H: Noise and fractal with noise basis does not tile in terrain shader
+		- H: Build better terrain pack
 		- H: Scattering coefficient correction due to ground plane intersection is not working correctly
 		- H: Function resolution should be multiplied by a fraction of the radius of spherical terrain
-		- H: Slope function threshold is inaccurate
 		- H: Force error for patches with > threshold radius
 		- H: Investigate why error does not appear to be totally correct
 		- M: Terrain output should be properly within the output range
@@ -25,7 +24,7 @@
 		- M: Add pre-process noise to the terrain texture
 		- M: Add lock-free free list for build items
 		- M: Cull quad tree nodes (frustum + horizon culling for spherical planets)
-		- L: Pop slope/altitude determination in fragment shader (it's done at a vertex level - can work it out implicitly in frag shader)
+		- L: Move slope/altitude calculation to fragment shader (it's currently calculated on the CPU per-vertex level)
 		- L: Add terrain pack resolution parameter to terrain shader
 	- Environment
 		- H: Design Biome system for terrain and texture selection
@@ -140,6 +139,7 @@
 		- H: Can't call any GL commands until display is setup (or null reference exceptions in tao)
 		- H: Shadows
 		- H: Technique selector should take an asset path (transparently reset technique when effect is reloaded)
+		- H: Technique selector should automatically fallback past invalid techniques (may require technique annotation)
 		- H: Add inverse frame to camera interface
 		- H: Make UniCamera work the same as standard cameras
 		- M: Make camera part of the rendering context (reconcile with global camera in renderer)
@@ -176,6 +176,8 @@
 	- H: Ground displacement requires connected patches, or slightly different skirt rendering (vertical skirts show up) (see new vertex normal skirts)
 
 - DONE
+	- H: Slope function threshold is inaccurate
+	- H: Noise and fractal with noise basis does not tile in terrain shader
 	- L: Change from BackgroundWorker in terrain quad patch builder, to ThreadPool
 	- M: Allow multiple graphs to be displayed on a single graph control
 	- H: Refactor Poc1.Universe. Create Poc1.Core, Poc1.Terrain, Poc1.Universe

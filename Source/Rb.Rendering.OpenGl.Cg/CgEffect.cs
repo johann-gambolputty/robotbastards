@@ -135,6 +135,7 @@ namespace Rb.Rendering.OpenGl.Cg
 					continue;
 				}
 				string techniqueName = TaoCg.cgGetTechniqueName( curTechnique );
+				GraphicsLog.Verbose( "Validating technique \"{0}\"", techniqueName );
 
 				//	Create a Technique wrapper around the current technique
 				Technique newTechnique = new Technique( techniqueName );
