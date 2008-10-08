@@ -69,6 +69,7 @@ namespace Poc1
 			return _mm_set_epi32( m_Perms[vec.m128i_i32[3]], m_Perms[vec.m128i_i32[2]], m_Perms[vec.m128i_i32[1]], m_Perms[vec.m128i_i32[0]]);
 		}
 
+		///	\brief	Generates 4 noise values in the range [-1..1].
 		inline __m128 Poc1::Fast::SseNoise::Noise( __m128 xxxx, __m128 yyyy, __m128 zzzz ) const
 		{
 			__m128i ixxxx = RoundToInt( xxxx );
@@ -126,7 +127,7 @@ namespace Poc1
 						Lerp( fade0, Grad( AB1, xxxx, lyyyy, lzzzz ), Grad( BB1, lxxxx, lyyyy, lzzzz ) )
 					)
 				); 
-			res = _mm_div_ps( res, _mm_set1_ps( 0.9f ) );
+			res = _mm_div_ps( res, _mm_set1_ps( 0.888f ) );	//	TODO: AP: Factor out crappy scaling factor
 
 			return res;
 		}

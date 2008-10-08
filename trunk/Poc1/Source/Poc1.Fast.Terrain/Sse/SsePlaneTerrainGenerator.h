@@ -37,6 +37,12 @@ namespace Poc1
 					///	\brief	Gets the displacer
 					virtual const SseTerrainDisplacer& GetBaseDisplacer( ) const;
 
+					///	\brief	Generates a cube map face bitmap
+					virtual void GenerateTerrainPropertyCubeMapFace( const UCubeMapFace face, const int width, const int height, const int stride, unsigned char* pixels )
+					{
+						//	TODO: AP: ....
+					}
+
 					///	\brief	Generates terrain vertex points and normals
 					virtual void GenerateVertices( const float* origin, const float* xStep, const float* zStep, const int width, const int height, const float* uv, float uvRes, UTerrainVertex* vertices );
 

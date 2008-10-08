@@ -28,6 +28,23 @@ namespace Poc1
 			Constants::InitializeConstants( );
 			InitializePerms( 0 );
 			_MM_SET_ROUNDING_MODE( _MM_ROUND_NEAREST );
+
+			//float z = 10;
+			//float y = 10;
+			//float incY = 0.1f;
+			//float incX = 0.1f;
+			//__m128 maxNoise = _mm_set1_ps( -10 );
+			//__m128 minNoise = _mm_set1_ps( 10 );
+			//for ( int row = 0; row < 1024; ++row, y += incY )
+			//{
+			//	float x = 10;
+			//	for ( int col = 0; col < 1024 / 2; ++col, x += incX * 4 )
+			//	{
+			//		__m128 noise = Noise( _mm_set_ps( x, x + incX, x + incX * 2, x + incX * 3 ), _mm_set1_ps( y ), _mm_set1_ps( z ) );
+			//		maxNoise = _mm_max_ps( maxNoise, noise );
+			//		minNoise = _mm_min_ps( minNoise, noise );
+			//	}
+			//}
 		}
 
 		SseNoise::SseNoise( unsigned int seed )
@@ -100,7 +117,7 @@ namespace Poc1
 
 			__m128 originXxxx = _mm_set_ps( startX, startX + incX, startX + incX * 2, startX + incX * 3 );
 			__m128 incXxxx = _mm_set_ps( incX * 4, incX * 4, incX * 4, incX * 4 );
-			const __m128 zzzz = _mm_set1_ps( 2 );
+			const __m128 zzzz = _mm_set1_ps( 2.222f );
 
 			__m128 normalize = _mm_div_ps( _mm_set1_ps( 128 ), _mm_set1_ps( noiseWidth * noiseHeight ) );
 			__m128 wwww = _mm_set1_ps( noiseWidth );
@@ -112,11 +129,6 @@ namespace Poc1
 			int w4 = width / 4;
 			for ( int row = 0; row < height; ++row, y += incY )
 			{
-				/*
-				float wrapY = y - m_Height;
-				float fY = y - m_StartY;
-				float invY = m_Height - fY;
-				*/
 				const __m128 wrapYyyy = _mm_set1_ps( y - noiseHeight );
 				const __m128 fYyyy = _mm_set1_ps( y - startY );
 				const __m128 invYyyy = _mm_sub_ps( hhhh, fYyyy );
@@ -127,19 +139,6 @@ namespace Poc1
 					__m128 wrapXxxx = _mm_sub_ps( xxxx, wwww );
 					__m128 fXxxx = _mm_sub_ps( xxxx, _mm_set1_ps( startX ) );
 					__m128 invXxxx= _mm_sub_ps( wwww, fXxxx );
-					/*
-					float wrapX = x - m_Width;
-					float fX = x - m_StartX;
-					float invX = m_Width - fX;
-
-					float v0 = basis( x, y ) * invX * invY;
-					float v1 = basis( wrapX, y ) * fX * invY;
-					float v2 = basis( wrapX, wrapY ) * fX * fY;
-					float v3 = basis( x, wrapY ) * invX * fY;
-
-					return ( v0 + v1 + v2 + v3 ) * m_InvWH;
-					*/
-
 					__m128 n0 = Noise( xxxx, yyyy, zzzz );
 					__m128 n1 = Noise( wrapXxxx, yyyy, zzzz );
 					__m128 n2 = Noise( wrapXxxx, wrapYyyy, zzzz );
@@ -151,7 +150,7 @@ namespace Poc1
 					n3 = _mm_mul_ps( n3, _mm_mul_ps( invXxxx, fYyyy ) );
 
 					const __m128 sumN =_mm_add_ps( _mm_add_ps( n0, n1 ), _mm_add_ps( n2, n3 ) );
-					__m128 tileN = _mm_add_ps( _mm_div_ps( sumN, normalize ), _mm_set1_ps( 128 ) );
+					__m128 tileN = _mm_add_ps( _mm_mul_ps( sumN, normalize ), _mm_set1_ps( 128 ) );
 					tileN = Clamp( tileN, _mm_set1_ps( 0 ), _mm_set1_ps( 256 ) );
 
 					_mm_store_ps( tileNArr, tileN );

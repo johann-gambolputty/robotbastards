@@ -41,6 +41,22 @@ namespace Rb.Core.Utils
 		{
 			m_SynchronizationContext.Post( delegate { action( ); }, null );
 		}
+
+		/// <summary>
+		/// Posts an action with one parameter
+		/// </summary>
+		public void PostAction<P0>( ActionDelegates.Action<P0> action, P0 p0 )
+		{
+			m_SynchronizationContext.Post( delegate { action( p0 ); }, null );
+		}
+
+		/// <summary>
+		/// Posts an action with two parameters
+		/// </summary>
+		public void PostAction<P0, P1>( ActionDelegates.Action<P0, P1> action, P0 p0, P1 p1 )
+		{
+			m_SynchronizationContext.Post( delegate { action( p0, p1 ); }, null );
+		}
 		
 		
 		#region Private Members

@@ -166,6 +166,32 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
+		/// Creates a texture image from a texture data object
+		/// </summary>
+		public static unsafe TextureInfo CreateTextureImageFromTextureData( int target, Texture2dData data, bool generateMipMaps )
+		{
+			if ( data == null )
+			{
+				throw new ArgumentNullException( "data" );
+			}
+			TextureInfo info = CheckTextureFormat( data.Format );
+
+			fixed ( void* texels = data.Bytes )
+			{
+				if ( generateMipMaps )
+				{
+					Glu.gluBuild2DMipmaps( target, info.GlInternalFormat, data.Width, data.Height, info.GlFormat, info.GlType, new IntPtr( texels ) );
+				}
+				else
+				{
+					Gl.glTexImage2D( target, 0, info.GlInternalFormat, data.Width, data.Height, 0, info.GlFormat, info.GlType, new IntPtr( texels ) );
+				}
+			}
+
+			return info;
+		}
+
+		/// <summary>
 		/// Creates a texture image from an array of bitmaps
 		/// </summary>
 		public static TextureInfo CreateTextureImageFromBitmap( int target, Bitmap[] bitmaps )
@@ -192,32 +218,6 @@ namespace Rb.Rendering.OpenGl
 				}
 
 				CreateTextureImageLevelFromBitmap( target, level, bmp, false );
-			}
-
-			return info;
-		}
-
-		/// <summary>
-		/// Creates a texture image from a texture data object
-		/// </summary>
-		public static unsafe TextureInfo CreateTextureImageFromTextureData( int target, Texture2dData data, bool generateMipMaps )
-		{
-			if ( data == null )
-			{
-				throw new ArgumentNullException( "data" );
-			}
-			TextureInfo info = CheckTextureFormat( data.Format );
-
-			fixed ( void* texels = data.Bytes )
-			{
-				if ( generateMipMaps )
-				{
-					Glu.gluBuild2DMipmaps( target, info.GlInternalFormat, data.Width, data.Height, info.GlFormat, info.GlType, new IntPtr( texels ) );
-				}
-				else
-				{
-					Gl.glTexImage2D( target, 0, info.GlInternalFormat, data.Width, data.Height, 0, info.GlFormat, info.GlType, new IntPtr( texels ) );
-				}
 			}
 
 			return info;

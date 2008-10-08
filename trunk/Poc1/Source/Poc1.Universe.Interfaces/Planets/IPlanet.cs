@@ -57,7 +57,15 @@ namespace Poc1.Universe.Interfaces.Planets
 		#region Renderers
 
 		/// <summary>
-		/// Gets the atmosphere renderer
+		/// Gets/sets the planet marble renderer
+		/// </summary>
+		IPlanetMarbleRenderer MarbleRenderer
+		{
+			get; set;
+		}
+
+		/// <summary>
+		/// Gets/sets the atmosphere renderer
 		/// </summary>
 		IPlanetAtmosphereRenderer AtmosphereRenderer
 		{
@@ -65,7 +73,7 @@ namespace Poc1.Universe.Interfaces.Planets
 		}
 
 		/// <summary>
-		/// Gets the ocean renderer
+		/// Gets/sets the ocean renderer
 		/// </summary>
 		IPlanetOceanRenderer OceanRenderer
 		{
@@ -73,7 +81,7 @@ namespace Poc1.Universe.Interfaces.Planets
 		}
 
 		/// <summary>
-		/// Gets the cloud renderer
+		/// Gets/sets the cloud renderer
 		/// </summary>
 		IPlanetCloudRenderer CloudRenderer
 		{
@@ -81,7 +89,7 @@ namespace Poc1.Universe.Interfaces.Planets
 		}
 
 		/// <summary>
-		/// Gets the terrain renderer
+		/// Gets/sets the terrain renderer
 		/// </summary>
 		IPlanetTerrainRenderer TerrainRenderer
 		{

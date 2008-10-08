@@ -48,6 +48,7 @@
     <Compile Include="Classes\Rendering\TerrainDistribution.cs" />
     <Compile Include="Classes\Rendering\TerrainType.cs" />
     <Compile Include="Classes\Rendering\TerrainTypeManager.cs" />
+    <Compile Include="Classes\Rendering\UniRenderManager.cs" />
     <Compile Include="Classes\Ship.cs" />
     <Compile Include="Classes\SolarSystem.cs" />
     <Compile Include="Classes\StarBox.cs">
@@ -77,6 +78,8 @@
     <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatchConstants.cs" />
     <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatchVertices.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetAtmosphereRenderer.cs" />
+    <Compile Include="Planets\Spherical\Renderers\SpherePlanetMarbleRenderer.cs" />
+    <Compile Include="Planets\Spherical\Renderers\SpherePlanetMarbleTextureBuilder.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetOceanRenderer.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetTerrainPatchRenderer.cs" />
     <Compile Include="Planets\Spherical\SpherePlanet.cs" />

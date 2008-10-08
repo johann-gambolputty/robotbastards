@@ -2,6 +2,7 @@
 #include "Mem.h"
 #include "TerrainGenerator.h"
 #include "UTerrainGenerator.h"
+#include "UEnums.h"
 #include "Sse/SseTerrainDisplacer.h"
 
 namespace Poc1
@@ -82,8 +83,7 @@ namespace Poc1
 
 			void TerrainGenerator::GenerateTerrainPropertyCubeMapFace( const CubeMapFace face, const int width, const int height, const int stride, unsigned char* pixels )
 			{
-				//	TODO: AP: reimplement for sphere geometries
-			//	m_pImpl->GenerateTerrainPropertyCubeMapFace( GetUCubeMapFace( face ), width,  height, stride, pixels );
+				m_pImpl->GenerateTerrainPropertyCubeMapFace( GetUCubeMapFace( face ), width,  height, stride, pixels );
 			}
 
 			void TerrainGenerator::GenerateVertices( Point3^ origin, Vector3^ xStep, Vector3^ zStep, const int width, const int height, Point2^ uv, float uvRes, void* vertices )

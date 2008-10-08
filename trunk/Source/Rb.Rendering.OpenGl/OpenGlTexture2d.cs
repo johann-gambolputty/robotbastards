@@ -67,6 +67,7 @@ namespace Rb.Rendering.OpenGl
 			m_TextureHandle = OpenGlTextureHandle.CreateAndBindHandle( m_Target );
 			OpenGlTexture2dBuilder.TextureInfo info = OpenGlTexture2dBuilder.CreateTextureImageFromBitmap( m_Target, bmp, generateMipMaps );
 			m_Format = info.TextureFormat;
+			UpdateDimensions( );
 		}
 
 		/// <summary>
@@ -80,6 +81,7 @@ namespace Rb.Rendering.OpenGl
 
 			OpenGlTexture2dBuilder.TextureInfo info = OpenGlTexture2dBuilder.CreateTextureImageFromBitmap( m_Target, bitmaps );
 			m_Format = info.TextureFormat;
+			UpdateDimensions( );
 		}
 
 		/// <summary>
@@ -94,6 +96,7 @@ namespace Rb.Rendering.OpenGl
 			m_TextureHandle = OpenGlTextureHandle.CreateAndBindHandle( m_Target );
 			OpenGlTexture2dBuilder.TextureInfo info = OpenGlTexture2dBuilder.CreateTextureImageFromTextureData( m_Target, data, generateMipMaps );
 			m_Format = info.TextureFormat;
+			UpdateDimensions( );
 		}
 
 		/// <summary>
@@ -105,7 +108,8 @@ namespace Rb.Rendering.OpenGl
 			DestroyCurrent( );
 
 			m_TextureHandle = OpenGlTextureHandle.CreateAndBindHandle( m_Target );
-			OpenGlTexture2dBuilder.CreateTextureImageFromTextureData( m_Target, data );
+			m_Format = OpenGlTexture2dBuilder.CreateTextureImageFromTextureData( m_Target, data ).TextureFormat;
+			UpdateDimensions( );
 		}
 
 		/// <summary>
@@ -281,6 +285,15 @@ namespace Rb.Rendering.OpenGl
 			{
 				Gl.glDisable( m_Target );
 			}
+		}
+
+		/// <summary>
+		/// Updates the internal dimension fields to those of the current texture (texture must be bound)
+		/// </summary>
+		private void UpdateDimensions( )
+		{
+			m_Width = OpenGlTexture2dBuilder.GetTextureLevelParameterInt32( m_Target, 0, Gl.GL_TEXTURE_WIDTH );
+			m_Height = OpenGlTexture2dBuilder.GetTextureLevelParameterInt32( m_Target, 0, Gl.GL_TEXTURE_HEIGHT );
 		}
 
 		#endregion

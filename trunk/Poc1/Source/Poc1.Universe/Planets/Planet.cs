@@ -3,6 +3,7 @@ using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Renderers;
+using Rb.Core.Utils;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
@@ -85,6 +86,19 @@ namespace Poc1.Universe.Planets
 		#region Renderers
 
 		/// <summary>
+		/// Gets/sets the planet marble renderer
+		/// </summary>
+		public IPlanetMarbleRenderer MarbleRenderer
+		{
+			get { return m_MarbleRenderer; }
+			set
+			{
+				m_MarbleRenderer = value;
+				OnRendererAssigned( value );
+			}
+		}
+
+		/// <summary>
 		/// Gets/sets the atmosphere renderer
 		/// </summary>
 		public IPlanetAtmosphereRenderer AtmosphereRenderer
@@ -151,29 +165,9 @@ namespace Poc1.Universe.Planets
 			//	Start profiling
 			GameProfiles.Game.Rendering.PlanetRendering.Begin( );
 
-			//	Push transform
-			UniCamera.PushRenderTransform( TransformType.LocalToWorld, Transform );
+			RenderMarble( context );
 
-			//	Render planet
-			if ( m_OceanRenderer != null )
-			{
-				m_OceanRenderer.Render( context );
-			}
-			if ( m_TerrainRenderer != null )
-			{
-				m_TerrainRenderer.Render( context );
-			}
-			if ( m_CloudRenderer != null )
-			{
-				m_CloudRenderer.Render( context );
-			}
-			if ( m_AtmosphereRenderer != null )
-			{
-				m_AtmosphereRenderer.Render( context );
-			}
-
-			//	Pop transform
-			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
+			RenderDetail( context );
 
 			//	End profiling
 			GameProfiles.Game.Rendering.PlanetRendering.End( );
@@ -209,14 +203,14 @@ namespace Poc1.Universe.Planets
 		/// </summary>
 		public void Dispose( )
 		{
-			Dispose( m_AtmosphereModel as IDisposable );
-			Dispose( m_CloudModel as IDisposable );
-			Dispose( m_OceanModel as IDisposable );
-			Dispose( m_TerrainModel as IDisposable );
-			Dispose( m_AtmosphereRenderer as IDisposable );
-			Dispose( m_CloudRenderer as IDisposable );
-			Dispose( m_TerrainRenderer as IDisposable );
-			Dispose( m_OceanRenderer as IDisposable );
+			DisposableHelper.Dispose( m_AtmosphereModel );
+			DisposableHelper.Dispose( m_CloudModel );
+			DisposableHelper.Dispose( m_OceanModel );
+			DisposableHelper.Dispose( m_TerrainModel );
+			DisposableHelper.Dispose( m_AtmosphereRenderer );
+			DisposableHelper.Dispose( m_CloudRenderer );
+			DisposableHelper.Dispose( m_TerrainRenderer );
+			DisposableHelper.Dispose( m_OceanRenderer );
 		}
 
 		#endregion
@@ -234,6 +228,59 @@ namespace Poc1.Universe.Planets
 		private IPlanetCloudRenderer		m_CloudRenderer;
 		private IPlanetTerrainRenderer		m_TerrainRenderer;
 		private IPlanetOceanRenderer		m_OceanRenderer;
+		private IPlanetMarbleRenderer		m_MarbleRenderer;
+
+
+		/// <summary>
+		///	Renders planet marble
+		/// </summary>
+		/// <param name="context">Rendering context</param>
+		private void RenderMarble( IRenderContext context )
+		{
+			if ( MarbleRenderer == null )
+			{
+				return;
+			}
+
+			//	Push marble render transform
+			UniCamera.PushAstroRenderTransform( TransformType.LocalToWorld, Transform );
+
+			MarbleRenderer.Render( context );
+
+			//	Pop transform
+			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
+		}
+
+		/// <summary>
+		///	Renders planetary detail
+		/// </summary>
+		/// <param name="context">Rendering context</param>
+		private void RenderDetail( IRenderContext context )
+		{
+			//	Push transform
+			UniCamera.PushRenderTransform( TransformType.LocalToWorld, Transform );
+
+			//	Render planet
+			if ( m_OceanRenderer != null )
+			{
+				m_OceanRenderer.Render( context );
+			}
+			if ( m_TerrainRenderer != null )
+			{
+				m_TerrainRenderer.Render( context );
+			}
+			if ( m_CloudRenderer != null )
+			{
+				m_CloudRenderer.Render( context );
+			}
+			if ( m_AtmosphereRenderer != null )
+			{
+				m_AtmosphereRenderer.Render( context );
+			}
+
+			//	Pop transform
+			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
+		}
 
 		/// <summary>
 		/// Called when a model is assigned to this planet
@@ -254,17 +301,6 @@ namespace Poc1.Universe.Planets
 			if ( renderer != null )
 			{
 				renderer.Planet = this;
-			}
-		}
-
-		/// <summary>
-		/// Disposes of the specified object, if it is not null
-		/// </summary>
-		private static void Dispose( IDisposable disposable )
-		{
-			if ( disposable != null )
-			{
-				disposable.Dispose( );
 			}
 		}
 

@@ -1,5 +1,5 @@
 
-samplerCUBE StarsTexture = sampler_state
+samplerCUBE MarbleTexture = sampler_state
 {
 	MinFilter = Linear;
 	MagFilter = Linear;
@@ -17,34 +17,33 @@ struct FragmentShaderInput
 	float3 m_Normal : TEXCOORD0;
 };
 
-
+//	Pipeline effect parameters
 float4x4 ModelViewProjectionMatrix;
 float4x4 InverseTransposeModelMatrix;
-
+float FarZ;
 
 FragmentShaderInput VertexShader( VertexShaderInput input )
 {
 	FragmentShaderInput output;
 
-	output.m_Position = mul( ModelViewProjectionMatrix, input.m_Position );
-	output.m_Normal = normalize( mul( InverseTransposeModelMatrix, input.m_Normal ) ).xyz;
+	output.m_Position		= mul( ModelViewProjectionMatrix, input.m_Position );
+	output.m_Normal			= normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
 
 	return output;
 }
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
-	float4 starColour = texCUBE( StarsTexture, input.m_Normal.xyz );
-	return starColour;
+	float4 marbleColour = texCUBE( MarbleTexture, input.m_Normal.xyz );
+	return marbleColour;
 }
-
 
 technique DefaultTechnique
 {
 	pass
 	{
 		LightingEnable			= false;
-		DepthMask				= true;
+		DepthMask				= false;
 		ShadeModel				= Smooth;
 		FrontFace				= CW;
 		DepthTestEnable			= false;

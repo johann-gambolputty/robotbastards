@@ -58,6 +58,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc1.Tools.TerrainTextures.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Core", "..\..\Source\Rb.Core\Rb.Core.csproj", "{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Rendering.OpenGl", "..\..\Source\Rb.Rendering.OpenGl\Rb.Rendering.OpenGl.csproj", "{19DCB365-3040-4431-86E9-29183FA34EF7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -446,6 +448,21 @@ Global
 		{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}.Release|Win32.ActiveCfg = Release|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.NDoc|Any CPU.ActiveCfg = NDoc|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.NDoc|Any CPU.Build.0 = NDoc|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.NDoc|Mixed Platforms.ActiveCfg = NDoc|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.NDoc|Mixed Platforms.Build.0 = NDoc|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.NDoc|Win32.ActiveCfg = NDoc|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{19DCB365-3040-4431-86E9-29183FA34EF7}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

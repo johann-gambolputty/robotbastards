@@ -2,10 +2,10 @@
 <NoiseBitmapBuilderParameters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <BitmapWidth>512</BitmapWidth>
   <BitmapHeight>512</BitmapHeight>
-  <NoiseX>0</NoiseX>
-  <NoiseY>0</NoiseY>
-  <NoiseWidth>5</NoiseWidth>
-  <NoiseHeight>5</NoiseHeight>
+  <NoiseX>10.22</NoiseX>
+  <NoiseY>10.22</NoiseY>
+  <NoiseWidth>8</NoiseWidth>
+  <NoiseHeight>8</NoiseHeight>
   <!--
   <TestFilePath>Game/Terrain/Test TiledNoise.noise.png</TestFilePath>
   -->

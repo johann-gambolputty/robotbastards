@@ -95,7 +95,7 @@ namespace Rb.Rendering
 				{
 					if ( s_DebugFont == null )
 					{
-						s_DebugFont = Factory.CreateFont( new FontData( "arial", 10 ) );
+						s_DebugFont = Factory.CreateFont( new FontData( "Courier New", 8 ) );
 					}
 					return s_DebugFont;
 				}
@@ -110,7 +110,7 @@ namespace Rb.Rendering
 				{
 					if ( s_SmallDebugFont == null )
 					{
-						s_SmallDebugFont = Factory.CreateFont( new FontData( "arial", 10 ) );
+						s_SmallDebugFont = Factory.CreateFont( new FontData( "Courier New", 8 ) );
 					}
 					return s_SmallDebugFont;
 				}
