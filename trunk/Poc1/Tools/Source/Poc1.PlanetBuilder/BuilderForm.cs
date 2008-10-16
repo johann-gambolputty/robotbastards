@@ -17,6 +17,8 @@ namespace Poc1.PlanetBuilder
 			InitializeComponent( );
 		}
 
+		private TerrainVisualiserForm m_TerrainVisForm;
+
 		/// <summary>
 		/// Creates the camera used by the main display
 		/// </summary>
@@ -54,7 +56,7 @@ namespace Poc1.PlanetBuilder
 				//	This is a bodge of an exception handler. Accessing BuilderState.Instance creates
 				//	the planet, which can throw. So this try-catch assumes that this is the first access...
 				AppLog.Exception( ex, "Error accessing planet instance" );
-				MessageBox.Show( this, string.Format( "Error accessing planet instance ({0})", ex.Message ) );
+				ShowExceptionForm.Display( this, ex, "Error accessing planet instance ({0})", ex.Message );
 				Close( );
 				return;
 			}
@@ -83,7 +85,7 @@ namespace Poc1.PlanetBuilder
 			catch ( Exception ex )
 			{
 				AppLog.Exception( ex, "Error destroying planet instance" );
-				MessageBox.Show( this, string.Format( "Error destroying planet instance ({0})", ex.Message ) );
+				ShowExceptionForm.Display( this, ex, "Error destroying planet instance ({0})", ex.Message );
 			}
 			Graphics.Renderer.Dispose( );
 		}
@@ -101,8 +103,19 @@ namespace Poc1.PlanetBuilder
 			}
 			catch ( Exception ex )
 			{
-				MessageBox.Show( this, string.Format( "Error running data build step ({0})", ex.Message ) );
+				ShowExceptionForm.Display( this, ex, "Error running data build step ({0})", ex.Message );
 			}
+		}
+
+		private void terrainVisualiserToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			if ( ( m_TerrainVisForm != null ) && ( !m_TerrainVisForm.IsDisposed ) )
+			{
+				return;
+			}
+			m_TerrainVisForm = new TerrainVisualiserForm( );
+			m_TerrainVisForm.Show( this );
+			m_TerrainVisForm.TerrainModel = BuilderState.Instance.Planet.TerrainModel;
 		}
 	}
 }

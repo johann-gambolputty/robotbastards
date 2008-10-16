@@ -242,6 +242,69 @@ namespace Poc1
 						maxError = bigError > maxError ? bigError : maxError;
 					}
 
+					inline void GetHeightsAndSlopes( const __m128& xxxx, const __m128& yyyy, const __m128& zzzz, __m128& heights, __m128& slopes ) const
+					{
+						__m128 normalXxxx = xxxx;
+						__m128 normalYyyy = yyyy;
+						__m128 normalZzzz = zzzz;
+						SetLength( normalXxxx, normalYyyy, normalZzzz, _mm_set1_ps( 1 ) );	//	Don't trust that normalize...
+
+						__m128 originXxxx = xxxx;
+						__m128 originYyyy = yyyy;
+						__m128 originZzzz = zzzz;
+						SetLength( originXxxx, originYyyy, originZzzz, m_Displacer.GetFunctionScale( ) );
+						heights = m_Displacer.Displace( originXxxx, originYyyy, originZzzz );
+
+						__m128 leftXxxx = _mm_sub_ps( originXxxx, m_ShiftRightXxxx );
+						__m128 leftYyyy = _mm_sub_ps( originYyyy, m_ShiftRightYyyy );
+						__m128 leftZzzz = _mm_sub_ps( originZzzz, m_ShiftRightZzzz );
+						SetLength( leftXxxx, leftYyyy, leftZzzz, m_Displacer.GetFunctionScale( ) );
+						m_Displacer.Displace( leftXxxx, leftYyyy, leftZzzz );
+
+						__m128 upXxxx = _mm_sub_ps( originXxxx, m_ShiftDownXxxx );
+						__m128 upYyyy = _mm_sub_ps( originYyyy, m_ShiftDownYyyy );
+						__m128 upZzzz = _mm_sub_ps( originZzzz, m_ShiftDownZzzz );
+						SetLength( upXxxx, upYyyy, upZzzz, m_Displacer.GetFunctionScale( ) );
+						m_Displacer.Displace( upXxxx, upYyyy, upZzzz );
+						
+						__m128 rightXxxx = _mm_add_ps( originXxxx, m_ShiftRightXxxx );
+						__m128 rightYyyy = _mm_add_ps( originYyyy, m_ShiftRightYyyy );
+						__m128 rightZzzz = _mm_add_ps( originZzzz, m_ShiftRightZzzz );
+						SetLength( rightXxxx, rightYyyy, rightZzzz, m_Displacer.GetFunctionScale( ) );
+						m_Displacer.Displace( rightXxxx, rightYyyy, rightZzzz );
+
+						__m128 downXxxx = _mm_add_ps( originXxxx, m_ShiftDownXxxx );
+						__m128 downYyyy = _mm_add_ps( originYyyy, m_ShiftDownYyyy );
+						__m128 downZzzz = _mm_add_ps( originZzzz, m_ShiftDownZzzz );
+						SetLength( downXxxx, downYyyy, downZzzz, m_Displacer.GetFunctionScale( ) );
+						m_Displacer.Displace( downXxxx, downYyyy, downZzzz );
+
+						//	Move positions to the origin
+						leftXxxx = _mm_sub_ps( leftXxxx, originXxxx );
+						leftYyyy = _mm_sub_ps( leftYyyy, originYyyy );
+						leftZzzz = _mm_sub_ps( leftZzzz, originZzzz );
+						upXxxx = _mm_sub_ps( upXxxx, originXxxx );
+						upYyyy = _mm_sub_ps( upYyyy, originYyyy );
+						upZzzz = _mm_sub_ps( upZzzz, originZzzz );
+						rightXxxx = _mm_sub_ps( rightXxxx, originXxxx );
+						rightYyyy = _mm_sub_ps( rightYyyy, originYyyy );
+						rightZzzz = _mm_sub_ps( rightZzzz, originZzzz );
+						downXxxx = _mm_sub_ps( downXxxx, originXxxx );
+						downYyyy = _mm_sub_ps( downYyyy, originYyyy );
+						downZzzz = _mm_sub_ps( downZzzz, originZzzz );
+
+						__m128 cpXxxx, cpYyyy, cpZzzz;
+						GetCrossProducts( cpXxxx, cpYyyy, cpZzzz, upXxxx, upYyyy, upZzzz, leftXxxx, leftYyyy, leftZzzz );
+						AccumulateCrossProducts( cpXxxx, cpYyyy, cpZzzz, rightXxxx, rightYyyy, rightZzzz, upXxxx, upYyyy, upZzzz );
+						AccumulateCrossProducts( cpXxxx, cpYyyy, cpZzzz, downXxxx, downYyyy, downZzzz, rightXxxx, rightYyyy, rightZzzz );
+						AccumulateCrossProducts( cpXxxx, cpYyyy, cpZzzz, leftXxxx, leftYyyy, leftZzzz, downXxxx, downYyyy, downZzzz );
+						SetLength( cpXxxx, cpYyyy, cpZzzz, _mm_set1_ps( 1 ) );
+						
+						slopes = _mm_sub_ps( _mm_set1_ps( 1 ), Dot( cpXxxx, cpYyyy, cpZzzz, normalXxxx, normalYyyy, normalZzzz ) );
+						slopes = _mm_div_ps( slopes, _mm_set1_ps( MaxSlope ) );
+						Clamp( slopes, _mm_set1_ps( 0 ), _mm_set1_ps( 1 ) );
+					}
+
 					inline void SetVertices( UTerrainVertex& v0, UTerrainVertex& v1, UTerrainVertex& v2, UTerrainVertex& v3, const __m128& xxxx, const __m128& yyyy, const __m128& zzzz, const __m128& uuuu, const float v )
 					{
 						__m128 normalXxxx = xxxx;
@@ -308,28 +371,6 @@ namespace Poc1
 						SetupVertex( v1, 1, originXxxx, originYyyy, originZzzz, cpXxxx, cpYyyy, cpZzzz, slopes, heights, uuuu, v );
 						SetupVertex( v2, 2, originXxxx, originYyyy, originZzzz, cpXxxx, cpYyyy, cpZzzz, slopes, heights, uuuu, v );
 						SetupVertex( v3, 3, originXxxx, originYyyy, originZzzz, cpXxxx, cpYyyy, cpZzzz, slopes, heights, uuuu, v );
-						
-						//_CRT_ALIGN( 16 ) float arrX[ 4 ], arrY[ 4 ], arrZ[ 4 ];
-						//_CRT_ALIGN( 16 ) float arrNx[ 4 ], arrNy[ 4 ], arrNz[ 4 ];
-						//_CRT_ALIGN( 16 ) float arrS[ 4 ], arrH[ 4 ];
-						//_CRT_ALIGN( 16 ) float arrU[ 4 ];
-
-						//_mm_store_ps( arrX, originXxxx );
-						//_mm_store_ps( arrY, originYyyy );
-						//_mm_store_ps( arrZ, originZzzz );
-						//
-						//_mm_store_ps( arrNx, cpXxxx );
-						//_mm_store_ps( arrNy, cpYyyy );
-						//_mm_store_ps( arrNz, cpZzzz );
-
-						//_mm_store_ps( arrS, slopes );
-						//_mm_store_ps( arrH, heights );
-						//_mm_store_ps( arrU, uuuu );
-
-						//SetupVertex( v0, 0, arrX, arrY, arrZ, arrNx, arrNy, arrNz, arrS, arrH, arrU, v );
-						//SetupVertex( v1, 1, arrX, arrY, arrZ, arrNx, arrNy, arrNz, arrS, arrH, arrU, v );
-						//SetupVertex( v2, 2, arrX, arrY, arrZ, arrNx, arrNy, arrNz, arrS, arrH, arrU, v );
-						//SetupVertex( v3, 3, arrX, arrY, arrZ, arrNx, arrNy, arrNz, arrS, arrH, arrU, v );
 					}
 			};
 			
@@ -944,11 +985,67 @@ namespace Poc1
 			{
 				float incU 			= 2.0f / float( width - 1 );
 				float incV 			= 2.0f / float( height - 1 );
-				__m128 vvvv			= _mm_set1_ps( -1 - incV );
+				__m128 vvvv			= _mm_set1_ps( -1 );
 				__m128 vvvvInc		= _mm_set1_ps( incV );
-				__m128 uuuuStart	= _mm_set_ps( -1 - incU * 4, -1 - incU * 3, -1 - incU * 2, -1 - incU );
+				__m128 uuuuStart	= _mm_set_ps( -1 , -1 + incU, -1 + incU * 2, -1 + incU * 3 );
 				__m128 uuuuInc		= _mm_set1_ps( incU * 4 );
+				int w4 = width / 4;
+				
+				const int slopeIndex = 2;	//	Red
+				const int heightIndex = 1;	//	Green
+				const int unusedIndex = 0;
 
+				AssignCubeFaceShiftVectors( face );
+
+				unsigned char* rowPixel = pixels;
+				for ( int row = 0; row < height; ++row )
+				{
+					__m128 uuuu = uuuuStart;
+					unsigned char* curPixel = rowPixel;
+					for ( int col = 0; col < w4; ++col )
+					{
+						//	Get the position on the cube face, then project onto unit sphere
+						__m128 xxxx, yyyy, zzzz;
+						CubeFacePosition( face, uuuu, vvvv, xxxx, yyyy, zzzz );
+
+						//	Find heights and slopes at current point
+						__m128 heights, slopes;
+						GetHeightsAndSlopes( xxxx, yyyy, zzzz, heights, slopes );
+
+						//SetLength( xxxx, yyyy, zzzz, _mm_set1_ps( 128 ) );
+						//xxxx = _mm_add_ps( xxxx, _mm_set1_ps( 128 ) );
+						//yyyy = _mm_add_ps( yyyy, _mm_set1_ps( 128 ) );
+						//zzzz = _mm_add_ps( zzzz, _mm_set1_ps( 128 ) );
+
+						//if ( row == 0 || col == 0 || row == height - 1 || col == w4 - 1 )
+						//{
+						//	xxxx = _mm_set1_ps( 0 );
+						//	yyyy = _mm_set1_ps( 0 );
+						//	yyyy = _mm_set1_ps( 0 );
+						//}
+
+						//	Scale up heights and slopes
+						heights = _mm_mul_ps( heights, _mm_set1_ps( 200 ) );
+						slopes = _mm_mul_ps( slopes, _mm_set1_ps( 256 ) );
+
+						//curPixel[ 0 ] = ( unsigned char )xxxx.m128_f32[ 3 ]; curPixel[ 1 ] = ( unsigned char )yyyy.m128_f32[ 3 ]; curPixel[ 2 ] = ( unsigned char )zzzz.m128_f32[ 3 ]; curPixel += 3;
+						//curPixel[ 0 ] = ( unsigned char )xxxx.m128_f32[ 2 ]; curPixel[ 1 ] = ( unsigned char )yyyy.m128_f32[ 2 ]; curPixel[ 2 ] = ( unsigned char )zzzz.m128_f32[ 2 ]; curPixel += 3;
+						//curPixel[ 0 ] = ( unsigned char )xxxx.m128_f32[ 1 ]; curPixel[ 1 ] = ( unsigned char )yyyy.m128_f32[ 1 ]; curPixel[ 2 ] = ( unsigned char )zzzz.m128_f32[ 1 ]; curPixel += 3;
+						//curPixel[ 0 ] = ( unsigned char )xxxx.m128_f32[ 0 ]; curPixel[ 1 ] = ( unsigned char )yyyy.m128_f32[ 0 ]; curPixel[ 2 ] = ( unsigned char )zzzz.m128_f32[ 0 ]; curPixel += 3;
+
+						//	Store in R,G components of pixels (B reserved for latitude later on)
+						curPixel[ slopeIndex ] = ( unsigned char )slopes.m128_f32[ 3 ];  curPixel[ heightIndex ] = ( unsigned char )heights.m128_f32[ 3 ]; curPixel[ unusedIndex ] = 0; curPixel += 3;
+						curPixel[ slopeIndex ] = ( unsigned char )slopes.m128_f32[ 2 ];  curPixel[ heightIndex ] = ( unsigned char )heights.m128_f32[ 2 ]; curPixel[ unusedIndex ] = 0; curPixel += 3;
+						curPixel[ slopeIndex ] = ( unsigned char )slopes.m128_f32[ 1 ];  curPixel[ heightIndex ] = ( unsigned char )heights.m128_f32[ 1 ]; curPixel[ unusedIndex ] = 0; curPixel += 3;
+						curPixel[ slopeIndex ] = ( unsigned char )slopes.m128_f32[ 0 ];  curPixel[ heightIndex ] = ( unsigned char )heights.m128_f32[ 0 ]; curPixel[ unusedIndex ] = 0; curPixel += 3;
+
+						uuuu = _mm_add_ps( uuuu, uuuuInc );
+					}
+					rowPixel += stride;
+					vvvv = _mm_add_ps( vvvv, vvvvInc );
+				}
+
+				/*
 				//	Determine the required size of the height cache
 				//	This is the width + 8 (4 pixels boundary either side), multiplied by 3 (3 rows of samples are
 				//	needed to calculate derivatives)
@@ -987,11 +1084,11 @@ namespace Poc1
 						const UColour b2;// = selector.GetColour( curLatitude[ 1 ], curHeight[ 1 ], 0, 1 );
 						const UColour b3;// = selector.GetColour( curLatitude[ 0 ], curHeight[ 0 ], 0, 1 );
 
-						curPixel[ 0 ]  = b0.R( ); curPixel[ 1 ]  = b0.G( ); curPixel[ 2 ]  = b0.B( );  curPixel[ 3 ]  = 0xff;
-						curPixel[ 4 ]  = b1.R( ); curPixel[ 5 ]  = b1.G( ); curPixel[ 6 ]  = b1.B( );  curPixel[ 7 ]  = 0xff;
-						curPixel[ 8 ]  = b2.R( ); curPixel[ 9 ]  = b2.G( ); curPixel[ 10 ] = b2.B( );  curPixel[ 11 ] = 0xff;
-						curPixel[ 12 ] = b3.R( ); curPixel[ 13 ] = b3.G( ); curPixel[ 14 ] = b3.B( );  curPixel[ 15 ] = 0xff;
-						curPixel += 16;
+						curPixel[ 0 ]  = b0.R( ); curPixel[ 1 ]  = b0.G( ); curPixel[ 2 ]  = b0.B( );
+						curPixel[ 3 ]  = b1.R( ); curPixel[ 4 ]  = b1.G( ); curPixel[ 5 ]  = b1.B( );
+						curPixel[ 6 ]  = b2.R( ); curPixel[ 7 ]  = b2.G( ); curPixel[ 8 ] = b2.B( );
+						curPixel[ 9 ] = b3.R( ); curPixel[ 10 ] = b3.G( ); curPixel[ 11 ] = b3.B( );
+						curPixel += 12;
 					}
 
 					//	Move to next row
@@ -1007,6 +1104,7 @@ namespace Poc1
 				}
 
 				AlignedArrayDelete( latitudes );
+				*/
 			}
 
 			//	-----------------------------------------------------------------------------------

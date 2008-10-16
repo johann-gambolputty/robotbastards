@@ -1190,6 +1190,98 @@ namespace Rb.Rendering.OpenGl
 
 		#endregion
 
+		#region Primitive lists
+
+		/// <summary>
+		/// Starts building a list of primitives
+		/// </summary>
+		/// <param name="primitive">Type of primitive</param>
+		public override void BeginPrimitiveList( PrimitiveType primitive )
+		{
+			switch ( primitive )
+			{
+				case PrimitiveType.TriList :
+					Gl.glBegin( Gl.GL_TRIANGLES );
+					break;
+				case PrimitiveType.TriStrip :
+					Gl.glBegin( Gl.GL_TRIANGLE_STRIP );
+					break;
+				case PrimitiveType.TriFan:
+					Gl.glBegin( Gl.GL_TRIANGLE_FAN );
+					break;
+				case PrimitiveType.QuadList:
+					Gl.glBegin( Gl.GL_QUADS );
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Adds vertex data to the current primitive list. If semantic is <see cref="VertexFieldSemantic.Position"/>,
+		/// then a new vertex is started.
+		/// </summary>
+		public override void AddVertexData( VertexFieldSemantic semantic, float x )
+		{
+			switch ( semantic )
+			{
+				default :
+					throw new ArgumentException( string.Format( "Vertex semantic {0} does not support single values", semantic ), "semantic" );
+			}
+		}
+
+		/// <summary>
+		/// Adds vertex data to the current primitive list. If semantic is <see cref="VertexFieldSemantic.Position"/>,
+		/// then a new vertex is started.
+		/// </summary>
+		public override void AddVertexData( VertexFieldSemantic semantic, float x, float y )
+		{
+			switch ( semantic )
+			{
+				case VertexFieldSemantic.Position :
+					Gl.glVertex2f( x, y );
+					break;
+				case VertexFieldSemantic.Texture0 :
+					Gl.glTexCoord2f( x, y );
+					break;
+				default:
+					throw new ArgumentException( string.Format( "Vertex semantic {0} does not support 2 value vectors", semantic ), "semantic" );
+			}	
+		}
+
+		/// <summary>
+		/// Adds vertex data to the current primitive list. If semantic is <see cref="VertexFieldSemantic.Position"/>,
+		/// then a new vertex is started.
+		/// </summary>
+		public override void AddVertexData( VertexFieldSemantic semantic, float x, float y, float z )
+		{
+			switch ( semantic )
+			{
+				case VertexFieldSemantic.Position:
+					Gl.glVertex3f( x, y, z );
+					break;
+				case VertexFieldSemantic.Normal:
+					Gl.glNormal3f( x, y, z );
+					break;
+				case VertexFieldSemantic.Diffuse:
+					Gl.glColor3f( x, y, z );
+					break;
+				case VertexFieldSemantic.Texture0:
+					Gl.glTexCoord3f( x, y, z );
+					break;
+				default:
+					throw new ArgumentException( string.Format( "Vertex semantic {0} does not support 3 value vectors", semantic ), "semantic" );
+			}
+		}
+
+		/// <summary>
+		/// Ends the current primitive list, drawing it, or storing it in the current cache
+		/// </summary>
+		public override void EndPrimitiveList( )
+		{
+			Gl.glEnd( );
+		}
+
+		#endregion
+
 		#region Private Members
 
 		private static void Begin( IPass pass )

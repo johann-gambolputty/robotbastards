@@ -12,6 +12,6 @@ namespace Poc1.Universe.Interfaces.Planets.Spherical.Models
 		/// <summary>
 		/// Creates a face for the marble texture cube map
 		/// </summary>
-		Bitmap CreateMarbleTextureFace( CubeMapFace face, int resolution );
+		Bitmap CreateMarbleTextureFace( CubeMapFace face, int width, int height );
 	}
 }

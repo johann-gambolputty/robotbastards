@@ -24,6 +24,8 @@ namespace Poc1
 					__m128 m_ShiftDownYyyy;
 					__m128 m_ShiftDownZzzz;
 
+					void AssignCubeFaceShiftVectors( const UCubeMapFace face );
+
 					void AssignShiftVectors( const float* xStep, const float* zStep );
 
 					inline void SetupVertex( UTerrainVertex& vertex, const int offset, const __m128& x, const __m128& y, const __m128& z, const __m128& nX, const __m128& nY, const __m128& nZ, const __m128& s, const __m128& e, const __m128& u, const float v  )
@@ -114,6 +116,33 @@ namespace Poc1
 
 			}; //SseTerrainGenerator
 
+			inline void SseTerrainGenerator::AssignCubeFaceShiftVectors( const UCubeMapFace face )
+			{
+				float xStep[ 3 ] = { 0, 0, 0 };
+				float yStep[ 3 ] = { 0, 0, 0 };
+				switch ( face )
+				{
+					case NegativeX :
+						xStep[ 2 ] = 1; yStep[ 1 ] = -1;
+						break;
+					case PositiveX :
+						xStep[ 2 ] = -1; yStep[ 1 ] = 1;
+						break;
+					case NegativeY :
+						xStep[ 0 ] = 1; yStep[ 2 ] = 1;
+						break;
+					case PositiveY :
+						xStep[ 0 ] = 1; yStep[ 2 ] = 1;
+						break;
+					case NegativeZ :
+						xStep[ 0 ] = 1; yStep[ 1 ] = 1;
+						break;
+					case PositiveZ :
+						xStep[ 0 ] = -1; yStep[ 1 ] = 1;
+						break;
+				}
+				AssignShiftVectors( xStep, yStep );
+			}
 
 			inline void SseTerrainGenerator::AssignShiftVectors( const float* xStep, const float* zStep )
 			{

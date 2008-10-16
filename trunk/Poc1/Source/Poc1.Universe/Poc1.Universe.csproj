@@ -59,7 +59,6 @@
     <Compile Include="Interfaces\Rendering\IAtmosphereRenderer.cs" />
     <Compile Include="Interfaces\Rendering\IPlanetAtmosphereModel.cs" />
     <Compile Include="Interfaces\Rendering\IPlanetOcean.cs" />
-    <Compile Include="Interfaces\Rendering\IPlanetTerrainModel.cs" />
     <Compile Include="Interfaces\Rendering\ISphereAtmosphereRenderer.cs" />
     <Compile Include="Interfaces\Rendering\ITerrainPatch.cs" />
     <Compile Include="Interfaces\Rendering\ITerrainPatchGeometry.cs" />
@@ -69,6 +68,7 @@
     <Compile Include="NoiseTest.cs" />
     <Compile Include="Planets\Models\PlanetAtmosphereModel.cs" />
     <Compile Include="Planets\Models\PlanetOceanModel.cs" />
+    <Compile Include="Planets\Models\PlanetTerrainModelChangedEventArgs.cs" />
     <Compile Include="Planets\Planet.cs" />
     <Compile Include="Planets\Spherical\Models\SpherePlanetAtmosphereModel.cs" />
     <Compile Include="Planets\Spherical\Models\SpherePlanetProcTerrainModel.cs" />

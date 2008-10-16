@@ -530,37 +530,37 @@ namespace Rb.Rendering.Interfaces
 
 		#endregion
 
-		//#region Primitive lists
+		#region Primitive lists
 
-		///// <summary>
-		///// Starts building a list of primitives
-		///// </summary>
-		///// <param name="primitive">Type of primitive</param>
-		//void BeginPrimitiveList( PrimitiveType primitive );
+		/// <summary>
+		/// Starts building a list of primitives
+		/// </summary>
+		/// <param name="primitive">Type of primitive</param>
+		void BeginPrimitiveList( PrimitiveType primitive );
 
-		///// <summary>
-		///// Adds vertex data to the current primitive list. If semantic is <see cref="VertexFieldSemantic.Position"/>,
-		///// then a new vertex is started.
-		///// </summary>
-		//void AddVertexData( VertexFieldSemantic semantic, float x );
+		/// <summary>
+		/// Adds vertex data to the current primitive list. If semantic is <see cref="VertexFieldSemantic.Position"/>,
+		/// then a new vertex is started.
+		/// </summary>
+		void AddVertexData( VertexFieldSemantic semantic, float x );
 
-		///// <summary>
-		///// Adds vertex data to the current primitive list. If semantic is <see cref="VertexFieldSemantic.Position"/>,
-		///// then a new vertex is started.
-		///// </summary>
-		//void AddVertexData( VertexFieldSemantic semantic, float x, float y );
+		/// <summary>
+		/// Adds vertex data to the current primitive list. If semantic is <see cref="VertexFieldSemantic.Position"/>,
+		/// then a new vertex is started.
+		/// </summary>
+		void AddVertexData( VertexFieldSemantic semantic, float x, float y );
 
-		///// <summary>
-		///// Adds vertex data to the current primitive list. If semantic is <see cref="VertexFieldSemantic.Position"/>,
-		///// then a new vertex is started.
-		///// </summary>
-		//void AddVertexData( VertexFieldSemantic semantic, float x, float y, float z );
+		/// <summary>
+		/// Adds vertex data to the current primitive list. If semantic is <see cref="VertexFieldSemantic.Position"/>,
+		/// then a new vertex is started.
+		/// </summary>
+		void AddVertexData( VertexFieldSemantic semantic, float x, float y, float z );
 
-		///// <summary>
-		///// Ends the current primitive list and returns a renderable representation of it
-		///// </summary>
-		//IRenderable EndPrimitiveList( );
+		/// <summary>
+		/// Ends the current primitive list, drawing it, or storing it in the current cache
+		/// </summary>
+		void EndPrimitiveList( );
 
-		//#endregion
+		#endregion
 	}
 }

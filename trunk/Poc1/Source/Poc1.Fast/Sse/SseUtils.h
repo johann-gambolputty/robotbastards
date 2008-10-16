@@ -20,7 +20,7 @@ namespace Poc1
 		{
 			return _mm_max_ps( _mm_min_ps( val, max ), min );
 		}
-
+		
 		///	\brief	Gets the position on a cube map face
 		inline void CubeFacePosition( const UCubeMapFace face, const __m128& uuuu, const __m128& vvvv, __m128& xxxx, __m128& yyyy, __m128& zzzz )
 		{

@@ -1,21 +1,6 @@
+#include "terrain.cg"
+#include "atmosphereBase.cg"
 
-sampler2D TerrainPackTexture = sampler_state
-{
-	WrapS = Clamp;
-	WrapT = Clamp;
-	MinFilter = NearestMipMapLinear;
-	MagFilter = NearestMipMapLinear;
-//	MinFilter = LinearMipMapLinear;
-//	MagFilter = LinearMipMapLinear;
-};
-
-sampler2D TerrainTypeTexture = sampler_state
-{
-	WrapS = ClampToEdge;
-	WrapT = ClampToEdge;
-	MinFilter = Nearest;
-	MagFilter = Nearest;
-};
 
 sampler2D NoiseTexture = sampler_state
 {
@@ -24,8 +9,6 @@ sampler2D NoiseTexture = sampler_state
 	MinFilter = Linear;
 	MagFilter = Linear;
 };
-
-#include "atmosphereBase.cg"
 
 /*
 samplerCUBE CloudTexture = sampler_state5
@@ -89,9 +72,6 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 	return output;
 }
 
-const float TileRes = 4;
-const float InvTileRes = 1.0f / 4.0f;
-
 float2 GetNoise( float2 uv, float range )
 {
 	return ( tex2D( NoiseTexture, uv ).rg * range ) - float2( range / 2, range / 2 );
@@ -99,7 +79,7 @@ float2 GetNoise( float2 uv, float range )
 
 float2 Fractal2d( float2 uv, float amp, float freq, float lac )
 {
-	uv += float2( 4.346f, 4.257f );
+//	uv += float2( 4.346f, 4.257f );
 	float2 n = GetNoise( uv, amp );
 	uv *= freq; amp *= lac;
 	n += GetNoise( uv, amp );
@@ -113,23 +93,25 @@ float2 Fractal2d( float2 uv, float amp, float freq, float lac )
 
 float2 PerturbSe( float2 se, float2 uv )
 {
-	float2 offset = Fractal2d( uv, 0.5f, 1.2f, 0.5f );
+	float2 offset = Fractal2d( uv, 0.2f, 1.2f, 0.5f );
 	return clamp( se + offset, 0, 1 );
 }
 
 float4 GetTerrainColour( FragmentShaderInput input, float2 se )
 {
-	float2 repUvOffset = Fractal2d( input.m_TerrainUv, 0.2f, 1.5f, 0.8f );
-	float2 repUv = frac( input.m_TerrainUv * 5 + repUvOffset ) * 0.98f;
-	se = PerturbSe( se, repUv );
-	float type = ( int )( tex2D( TerrainTypeTexture, se ).r * 256.0f );
-	float2 offsetToTile = float2( fmod( type, TileRes ), ( int )( type * InvTileRes ) );
+	float2 repUv = input.m_TerrainUv * 6;
+	return GetTerrainColour( PerturbSe( se, repUv ), repUv );
+//	float2 repUvOffset = Fractal2d( input.m_TerrainUv, 0.2f, 1.5f, 0.8f );
+	//float2 repUv = 0.01 + frac( input.m_TerrainUv * 6 ) * 0.99f;
+	//se = PerturbSe( se, repUv );
+	//float type = ( int )( tex2D( TerrainTypeTexture, se ).r * 256.0f );
+	//float2 offsetToTile = float2( fmod( type, TileRes ), ( int )( type * InvTileRes ) );
 
-	float2 tileUv = offsetToTile + repUv;
-	tileUv *= float2( InvTileRes, InvTileRes );
-	float4 diffuse = tex2D( TerrainPackTexture, tileUv );
+	//float2 tileUv = offsetToTile + repUv;
+	//tileUv *= float2( InvTileRes, InvTileRes );
+	//float4 diffuse = tex2D( TerrainPackTexture, tileUv );
 
-	return diffuse;
+	//return diffuse;
 
 //	float2 fr = Fractal2d( input.m_TerrainUv, 1.0f, 1.2f, 0.5f );
 //	return fr.xxxx;
@@ -157,7 +139,6 @@ float4 FragmentShader( FragmentShaderInput input ) : COLOR
 	//se.x = slope;
 	//se.y = height - PlanetRadius;
 	float shade = saturate( -dot( input.m_Normal.xyz, SunDir ) );
-
 	float4 diffuse = GetTerrainColour( input, se ) * shade;
 
 	return float4( GetScatteredObjectColour( input.m_WorldPos, diffuse.rgb ), 1 );
@@ -169,6 +150,7 @@ float4 DbgSlopeFragmentShader( FragmentShaderInput input ) : COLOR
 	return diffuse;
 }
 
+//*
 technique DefaultTechnique
 {
 	pass
@@ -183,31 +165,32 @@ technique DefaultTechnique
 		BlendEnable				= false;
 		PolygonMode				= int2( Front, Fill );
 		VertexProgram			= compile arbvp1 VertexShader( );
+	//	FragmentProgram			= compile arbfp1 DbgSlopeFragmentShader( );
 		FragmentProgram			= compile arbfp1 FragmentShader( );
 	}
 }
 
 //	For some reason, adding one or both of these techniques causes an access violation in CgEffect...
-/*
-technique ShowSlopesTechnique
-{
-	pass
-	{
-		LightingEnable			= false;
-		DepthMask				= true;
-		ShadeModel				= Smooth;
-		FrontFace				= CW;
-		DepthTestEnable			= true;
-		DepthFunc				= Less;
-		CullFaceEnable			= true;
-		BlendEnable				= false;
-		PolygonMode				= int2( Front, Fill );
-		VertexProgram			= compile arbvp1 VertexShader( );
-		FragmentProgram			= compile arbfp1 DbgSlopeFragmentShader( );
-	}
-}
+//technique ShowSlopesTechnique
+//{
+//	pass
+//	{
+//		LightingEnable			= false;
+//		DepthMask				= true;
+//		ShadeModel				= Smooth;
+//		FrontFace				= CW;
+//		DepthTestEnable			= true;
+//		DepthFunc				= Less;
+//		CullFaceEnable			= true;
+//		BlendEnable				= false;
+//		PolygonMode				= int2( Front, Fill );
+//		VertexProgram			= compile arbvp1 VertexShader( );
+//		FragmentProgram			= compile arbfp1 DbgSlopeFragmentShader( );
+//	}
+//}
 
-technique WireFrameTechnique
+/*/
+technique DefaultTechnique
 {
 	pass
 	{
@@ -236,4 +219,4 @@ technique WireFrameTechnique
 		PolygonMode				= int2( Front, Line );
 	}
 }
-*/
+//*/

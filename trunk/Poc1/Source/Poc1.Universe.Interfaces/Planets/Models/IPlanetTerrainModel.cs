@@ -34,5 +34,15 @@ namespace Poc1.Universe.Interfaces.Planets.Models
 			get; set;
 		}
 
+		/// <summary>
+		/// Returns true if the model is ready to use
+		/// </summary>
+		/// <remarks>
+		/// Can return false if the model has not been set up yet
+		/// </remarks>
+		bool ReadyToUse
+		{
+			get;
+		}
 	}
 }

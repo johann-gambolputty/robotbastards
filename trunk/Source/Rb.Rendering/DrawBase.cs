@@ -570,6 +570,39 @@ namespace Rb.Rendering
 
 		#endregion
 
+		#region Primitive lists
+
+		/// <summary>
+		/// Starts building a list of primitives
+		/// </summary>
+		/// <param name="primitive">Type of primitive</param>
+		public abstract void BeginPrimitiveList( PrimitiveType primitive );
+
+		/// <summary>
+		/// Adds vertex data to the current primitive list. If semantic is <see cref="VertexFieldSemantic.Position"/>,
+		/// then a new vertex is started.
+		/// </summary>
+		public abstract void AddVertexData( VertexFieldSemantic semantic, float x );
+
+		/// <summary>
+		/// Adds vertex data to the current primitive list. If semantic is <see cref="VertexFieldSemantic.Position"/>,
+		/// then a new vertex is started.
+		/// </summary>
+		public abstract void AddVertexData( VertexFieldSemantic semantic, float x, float y );
+
+		/// <summary>
+		/// Adds vertex data to the current primitive list. If semantic is <see cref="VertexFieldSemantic.Position"/>,
+		/// then a new vertex is started.
+		/// </summary>
+		public abstract void AddVertexData( VertexFieldSemantic semantic, float x, float y, float z );
+
+		/// <summary>
+		/// Ends the current primitive list, drawing it, or storing it in the current cache
+		/// </summary>
+		public abstract void EndPrimitiveList( );
+
+		#endregion
+
 		#endregion
 
 		#region Default parameterizations

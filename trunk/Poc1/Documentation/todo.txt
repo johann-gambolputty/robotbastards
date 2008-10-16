@@ -10,11 +10,16 @@
 		- L: Add uber-buffer/GPU-only particle systems
 		- L: Add support for loading assemblies containing particle components in dynamically
 	- Terrain
+		- M: Add crater terrain
+		- M: Add continent level fractal (low-frequency noise)
+		- H: Alpha blend terrain patches into marble view when rendering both
+		- H: Add terrain patch update and render cutoff when planet is far enough away
 		- H: Build better terrain pack
 		- H: Scattering coefficient correction due to ground plane intersection is not working correctly
 		- H: Function resolution should be multiplied by a fraction of the radius of spherical terrain
 		- H: Force error for patches with > threshold radius
 		- H: Investigate why error does not appear to be totally correct
+		- M: Increase terrain texture UV resolution
 		- M: Terrain output should be properly within the output range
 		- M: Normalized heights returned from ground offset displacers are wrong.
 		- M: Would be great to have terrain functions and terrain types defined by some function of latitude
@@ -24,14 +29,17 @@
 		- M: Add pre-process noise to the terrain texture
 		- M: Add lock-free free list for build items
 		- M: Cull quad tree nodes (frustum + horizon culling for spherical planets)
+		- L: Refactor SseSphereTerrainGenerator
 		- L: Move slope/altitude calculation to fragment shader (it's currently calculated on the CPU per-vertex level)
 		- L: Add terrain pack resolution parameter to terrain shader
 	- Environment
 		- H: Design Biome system for terrain and texture selection
+		- H: Reinstate cloud generation and rendering
 		- L: Volumetric clouds
 		- L: Vegetation
 		- L: Animal life
 	- Planets
+		- H: Change model pattern to take planet reference in interface. Add Initialize() call
 		- H: Large radius planets (>1000km)
 			- H: Fix larger radius planets (lots of z-fighting, no terrain detail)
 			- H: combine terrain/marble rendering using z clipping planes (take a look at PSM)
@@ -85,6 +93,7 @@
 			- In-game UI
 			- Build/Rebuild menu items
 	- UI
+		- H: Add tweakable camera speed
 		- H: Get tweaker variables working
 		- M: Try getting WPF to work
 		- M: Profiling code pretty much done
@@ -113,6 +122,7 @@
 		- H: Add WCF service for meta-server (updates, player storage, ...)
 	- Tools
 		- Planet Builder
+			- H: Add terrain visualisation shader
 			- H: Add support for loading/saving/exporting atmosphere setup
 			- H: Ground terrain graphs should have a "sea level" line
 			- L: Atmosphere control should be dependent on planet geometry
@@ -134,10 +144,11 @@
 			- M: Add switch between parallel/serial implementations
 			- M: Add profiling viewers
 			- L: Add shadow rendering
+			- L: Add FPS display
 	- Graphics Misc.
 		- H: Add shader custom build step
 		- H: Can't call any GL commands until display is setup (or null reference exceptions in tao)
-		- H: Shadows
+		- H: Parallel split map shadows
 		- H: Technique selector should take an asset path (transparently reset technique when effect is reloaded)
 		- H: Technique selector should automatically fallback past invalid techniques (may require technique annotation)
 		- H: Add inverse frame to camera interface
@@ -147,7 +158,6 @@
 		  assembly selector, but it's not necessary anymore)
 		- H: Graph control should invalidate when graphs are added/removed
 		- M: Particle systems
-		- M: Make the effect assembly load on-demand (i.e. when the effect manager is referenced)
 		- M: Add configuration options for effect assembly (or perhaps make this data-driven, so when a CG file is loaded, use CG libraries?)
 		- M: Fullscreen mode
 		- L: Add vertex component generation options to graphics draw.isurface
@@ -156,6 +166,7 @@
 		- L: Multimonitor support
 		- L: Refactor opengl texture support routines (move from OpenGlTexture2d)
 		- L: Add reporting for AuditedGraphicsFactory
+		- L: Not sure I like "VertexShaderInput" and "FragmentShaderInput" structure names
 
 	- Profiling
 
@@ -176,6 +187,8 @@
 	- H: Ground displacement requires connected patches, or slightly different skirt rendering (vertical skirts show up) (see new vertex normal skirts)
 
 - DONE
+	- H: Marble texture rebuild occurs whenever the model changes, which is often when editing terrain textures
+	- M: Make the effect assembly load on-demand (i.e. when the effect manager is referenced)
 	- H: Slope function threshold is inaccurate
 	- H: Noise and fractal with noise basis does not tile in terrain shader
 	- L: Change from BackgroundWorker in terrain quad patch builder, to ThreadPool

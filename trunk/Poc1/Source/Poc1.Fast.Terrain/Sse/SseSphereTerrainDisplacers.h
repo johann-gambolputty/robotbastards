@@ -43,13 +43,22 @@ namespace Poc1
 					///	\brief	Maps 4 (x,y,z) vectors onto the minimum distance of this displacer.
 					inline __m128 Displace( __m128& xxxx, __m128& yyyy, __m128& zzzz ) const
 					{
+						__m128 absVal = xxxx;
+
+						if ( ( absVal.m128_f32[ 0 ] > 0.0f ) && ( absVal.m128_f32[ 0 ] < 0.1f ) )
+						{
+							xxxx = _mm_mul_ps( xxxx, m_MaxHeight );
+							yyyy = _mm_mul_ps( yyyy, m_MaxHeight );
+							zzzz = _mm_mul_ps( zzzz, m_MaxHeight );
+							return _mm_set1_ps( 1 );
+						}
+
 						xxxx = _mm_mul_ps( xxxx, m_MinHeight );
 						yyyy = _mm_mul_ps( yyyy, m_MinHeight );
 						zzzz = _mm_mul_ps( zzzz, m_MinHeight );
-						return _mm_set1_ps( 1 );
+						return _mm_set1_ps( 0.1f );
 					}
 			};
-
 			///	\brief	Displacer decorator class. Adds x-z displacement to an existing displacer
 			template < typename BaseDisplacer, typename FunctionType >
 			class _CRT_ALIGN( 16 ) SseSphereFunction3dGroundDisplacer : public SseSphereTerrainDisplacer

@@ -7,6 +7,7 @@ using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Renderers.Patches;
 using Poc1.Universe.Interfaces.Planets.Spherical.Models;
 using Poc1.Universe.Interfaces.Rendering;
+using Poc1.Universe.Planets.Models;
 using Rb.Assets;
 using Rb.Core.Maths;
 using Rb.Rendering.Interfaces.Objects;
@@ -32,7 +33,6 @@ namespace Poc1.Universe.Planets.Spherical.Models
 			TextureLoadParameters loadParameters = new TextureLoadParameters( true );
 			m_TerrainPackTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/defaultSet0 Pack.jpg", loadParameters );
 			m_TerrainTypesTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/defaultSet0 Distribution.bmp" );
-	
 		}
 
 		/// <summary>
@@ -50,12 +50,16 @@ namespace Poc1.Universe.Planets.Spherical.Models
 		/// <summary>
 		/// Creates a face for the marble texture cube map
 		/// </summary>
-		public unsafe Bitmap CreateMarbleTextureFace( CubeMapFace face, int resolution )
+		public unsafe Bitmap CreateMarbleTextureFace( CubeMapFace face, int width, int height )
 		{
-			Bitmap bmp = new Bitmap( resolution, resolution, PixelFormat.Format24bppRgb );
-			BitmapData bmpData = bmp.LockBits( new Rectangle( 0, 0, resolution, resolution ), ImageLockMode.WriteOnly, bmp.PixelFormat );
+			if ( !ReadyToUse )
+			{
+				throw new InvalidOperationException( "Planet terrain model has not yet been set up - can't generate marble cube map" );
+			}
+			Bitmap bmp = new Bitmap( width, height, PixelFormat.Format24bppRgb );
+			BitmapData bmpData = bmp.LockBits( new Rectangle( 0, 0, width, height ), ImageLockMode.WriteOnly, bmp.PixelFormat );
 			byte* pixels = ( byte* )bmpData.Scan0;
-			SafeTerrainGenerator.GenerateTerrainPropertyCubeMapFace( face, resolution, resolution, bmpData.Stride, pixels );
+			m_Gen.GenerateTerrainPropertyCubeMapFace( face, width, height, bmpData.Stride, pixels );
 			bmp.UnlockBits( bmpData );
 			return bmp;
 		}
@@ -73,7 +77,7 @@ namespace Poc1.Universe.Planets.Spherical.Models
 			set
 			{
 				m_TerrainTypesTexture = value;
-				OnModelChanged( );
+				OnModelChanged( true, false );
 			}
 		}
 
@@ -86,8 +90,19 @@ namespace Poc1.Universe.Planets.Spherical.Models
 			set
 			{
 				m_TerrainPackTexture = value;
-				OnModelChanged( );
+				OnModelChanged( true, false );
 			}
+		}
+
+		/// <summary>
+		/// Returns true if the model is ready to use
+		/// </summary>
+		/// <remarks>
+		/// Can return false if the model has not been set up yet
+		/// </remarks>
+		public bool ReadyToUse
+		{
+			get { return m_Gen != null; }
 		}
 
 		#endregion
@@ -142,7 +157,7 @@ namespace Poc1.Universe.Planets.Spherical.Models
 			m_Gen.Setup( 1024, radius, radius + height );
 			m_Gen.SetSmallestStepSize( MinimumStepSize, MinimumStepSize );
 
-			OnModelChanged( );
+			OnModelChanged( false, true );
 		}
 
 		#endregion
@@ -166,10 +181,7 @@ namespace Poc1.Universe.Planets.Spherical.Models
 			set
 			{
 				m_MaximumHeight = value;
-				if ( ModelChanged != null )
-				{
-					ModelChanged( this, null );
-				}
+				OnModelChanged( false, false );
 			}
 		}
 
@@ -207,11 +219,11 @@ namespace Poc1.Universe.Planets.Spherical.Models
 		/// <summary>
 		/// Called when the model is changed
 		/// </summary>
-		private void OnModelChanged( )
+		private void OnModelChanged( bool texturesChanged, bool geometryChanged)
 		{
 			if ( ModelChanged != null )
 			{
-				ModelChanged( this, null );
+				ModelChanged( this, new PlanetTerrainModelChangedEventArgs( texturesChanged, geometryChanged ) );
 			}
 		}
 

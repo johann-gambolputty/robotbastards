@@ -3,8 +3,10 @@ using Poc1.Universe.Interfaces.Planets.Renderers;
 using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Spherical;
 using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
+using Poc1.Universe.Planets.Models;
 using Rb.Assets;
 using Rb.Core.Maths;
+using Rb.Core.Utils;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 
@@ -42,11 +44,13 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 				m_Planet = ( ISpherePlanet )value;
 
 				m_MarbleTexture = null;
+				m_MarbleTextureDirty = true;
 				m_MarbleTextureBuilding = false;
 				m_Geometry = null;
 				if ( m_Planet != null )
 				{
 					m_Planet.PlanetChanged += OnPlanetChanged;
+					m_Planet.SphereTerrainModel.ModelChanged += OnTerrainModelChanged;
 				}
 			}
 		}
@@ -74,15 +78,15 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			{
 				BuildGeometry( );
 			}
-			if ( m_MarbleTexture == null && !m_MarbleTextureBuilding )
-			{
-				m_TextureBuilder.QueueBuild( m_Planet, OnMarbleTextureBuilt );
-				m_MarbleTextureBuilding = true;
-			}
+			UpdateMarbleTexture( );
 			if ( m_MarbleTexture != null )
 			{
 				m_Technique.Effect.Parameters[ "MarbleTexture" ].Set( m_MarbleTexture );
 			}
+			ITexture2d packTexture = m_Planet.TerrainModel.TerrainPackTexture;
+			ITexture2d typesTexture = m_Planet.TerrainModel.TerrainTypesTexture;
+			m_Technique.Effect.Parameters[ "TerrainPackTexture" ].Set( packTexture );
+			m_Technique.Effect.Parameters[ "TerrainTypeTexture" ].Set( typesTexture );
 			m_Technique.Apply( context, m_Geometry );
 		}
 
@@ -90,11 +94,12 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 
 		#region Private Members
 
-		private ITexture m_MarbleTexture;
-		private bool m_MarbleTextureBuilding;
-		private ISpherePlanet m_Planet;
-		private IRenderable m_Geometry;
-		private readonly TechniqueSelector m_Technique;
+		private ITexture					m_MarbleTexture;
+		private bool						m_MarbleTextureDirty;
+		private bool						m_MarbleTextureBuilding;
+		private ISpherePlanet				m_Planet;
+		private IRenderable					m_Geometry;
+		private readonly TechniqueSelector	m_Technique;
 		private readonly ISpherePlanetMarbleTextureBuilder m_TextureBuilder;
 
 		/// <summary>
@@ -109,6 +114,20 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 				disposableGeometry.Dispose( );
 			}
 			m_Geometry = null;
+		}
+
+		/// <summary>
+		/// Event, invoked when the terrain model changes
+		/// </summary>
+		private void OnTerrainModelChanged( object sender, EventArgs args )
+		{
+			PlanetTerrainModelChangedEventArgs modelChangedArgs = args as PlanetTerrainModelChangedEventArgs;
+			if ( ( modelChangedArgs == null ) || ( modelChangedArgs.GeometryChanged ) )
+			{
+				DisposableHelper.Dispose( m_MarbleTexture );
+				m_MarbleTexture = null;
+				m_MarbleTextureDirty = true;
+			}
 		}
 
 		/// <summary>
@@ -128,6 +147,22 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		{
 			m_MarbleTexture = marbleTexture;
 			m_MarbleTextureBuilding = false;
+		}
+
+		/// <summary>
+		/// Updates the marble texture, if necessary
+		/// </summary>
+		private void UpdateMarbleTexture( )
+		{
+			if ( ( ( m_MarbleTexture == null ) || m_MarbleTextureDirty ) && !m_MarbleTextureBuilding )
+			{
+				if ( m_Planet.SphereTerrainModel.ReadyToUse )
+				{
+					m_MarbleTextureDirty = false;
+					m_MarbleTextureBuilding = true;
+					m_TextureBuilder.QueueBuild( m_Planet, OnMarbleTextureBuilt );
+				}
+			}
 		}
 
 		#endregion
