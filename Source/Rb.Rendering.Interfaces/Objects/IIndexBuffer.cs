@@ -9,7 +9,8 @@ namespace Rb.Rendering.Interfaces.Objects
 	{
 		TriList,
 		TriStrip,
-		TriFan
+		TriFan,
+		QuadList
 	}
 
 	/// <summary>

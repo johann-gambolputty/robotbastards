@@ -120,9 +120,17 @@
       <SubType>Designer</SubType>
       <DependentUpon>TerrainFunctionControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UnhandledExceptionForm.resx">
+    <EmbeddedResource Include="TerrainVisualiserControl.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>UnhandledExceptionForm.cs</DependentUpon>
+      <DependentUpon>TerrainVisualiserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TerrainVisualiserForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TerrainVisualiserForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShowExceptionForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ShowExceptionForm.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -146,11 +154,24 @@
     </Compile>
     <Compile Include="TerrainMesh.cs" />
     <Compile Include="TerrainTypeTextureBuilder.cs" />
-    <Compile Include="UnhandledExceptionForm.cs">
+    <Compile Include="TerrainVisualiserBitmapBuilder.cs" />
+    <Compile Include="TerrainVisualiserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TerrainVisualiserControl.Designer.cs">
+      <DependentUpon>TerrainVisualiserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TerrainVisualiserForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UnhandledExceptionForm.Designer.cs">
-      <DependentUpon>UnhandledExceptionForm.cs</DependentUpon>
+    <Compile Include="TerrainVisualiserForm.Designer.cs">
+      <DependentUpon>TerrainVisualiserForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShowExceptionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShowExceptionForm.Designer.cs">
+      <DependentUpon>ShowExceptionForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

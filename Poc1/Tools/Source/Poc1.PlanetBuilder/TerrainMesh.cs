@@ -244,5 +244,15 @@ namespace Poc1.PlanetBuilder
 		}
 
 		#endregion
+
+		#region IPlanetTerrainModel Members
+
+
+		public bool ReadyToUse
+		{
+			get { throw new Exception( "The method or operation is not implemented." ); }
+		}
+
+		#endregion
 	}
 }

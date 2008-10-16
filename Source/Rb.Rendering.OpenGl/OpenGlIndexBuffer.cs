@@ -108,7 +108,12 @@ namespace Rb.Rendering.OpenGl
 				case PrimitiveType.TriFan :
 					{
 						Gl.glDrawElements( Gl.GL_TRIANGLE_FAN, m_NumIndices, m_Type, IntPtr.Zero );
-						break;	
+						break;
+					}
+				case PrimitiveType.QuadList :
+					{
+						Gl.glDrawElements( Gl.GL_QUADS, m_NumIndices, m_Type, IntPtr.Zero );
+						break;
 					}
 				default :
 					throw new NotImplementedException( "Unhandled primitive type " + primType );
@@ -138,6 +143,11 @@ namespace Rb.Rendering.OpenGl
 				case PrimitiveType.TriFan:
 					{
 						Gl.glDrawElements( Gl.GL_TRIANGLE_FAN, count, m_Type, pOffset );
+						break;
+					}
+				case PrimitiveType.QuadList:
+					{
+						Gl.glDrawElements( Gl.GL_QUADS, count, m_Type, pOffset );
 						break;
 					}
 				default:

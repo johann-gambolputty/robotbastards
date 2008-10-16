@@ -83,6 +83,11 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 				return;
 			}
 
+			if ( DebugInfo.ShowPendingTerrainBuildItemCount )
+			{
+				DebugText.Write( "Pending terrain build items: " + TerrainPatchBuilder.PendingBuildItems );
+			}
+
 			GameProfiles.Game.Rendering.PlanetRendering.TerrainRendering.Begin( );
 
 			UpdatePatches( UniCamera.Current );
@@ -214,10 +219,6 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// <param name="context">Rendering context</param>
 		private void RenderPatches( IRenderContext context )
 		{
-			if ( DebugInfo.ShowPendingTerrainBuildItemCount )
-			{
-				DebugText.Write( "Pending terrain build items: " + TerrainPatchBuilder.PendingBuildItems );
-			}
 			foreach ( TerrainPatch patch in m_Patches )
 			{
 				patch.Render( context );

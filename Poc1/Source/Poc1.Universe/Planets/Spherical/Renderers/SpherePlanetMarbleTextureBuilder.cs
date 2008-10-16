@@ -63,12 +63,14 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		private static Bitmap[] CreateTextureBitmaps( ISpherePlanet planet )
 		{
 			Bitmap[] faceBitmaps = new Bitmap[ 6 ];
-			faceBitmaps[ ( int )CubeMapFace.PositiveX ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveX, 256 );
-			faceBitmaps[ ( int )CubeMapFace.NegativeX ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.NegativeX, 256 );
-			faceBitmaps[ ( int )CubeMapFace.PositiveY ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveY, 256 );
-			faceBitmaps[ ( int )CubeMapFace.NegativeY ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.NegativeY, 256 );
-			faceBitmaps[ ( int )CubeMapFace.PositiveZ ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveZ, 256 );
-			faceBitmaps[ ( int )CubeMapFace.NegativeZ ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.NegativeZ, 256 );
+			int width = 256;
+			int height = 256;
+			faceBitmaps[ ( int )CubeMapFace.PositiveX ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveX, width, height );
+			faceBitmaps[ ( int )CubeMapFace.NegativeX ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.NegativeX, width, height );
+			faceBitmaps[ ( int )CubeMapFace.PositiveY ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveY, width, height );
+			faceBitmaps[ ( int )CubeMapFace.NegativeY ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.NegativeY, width, height );
+			faceBitmaps[ ( int )CubeMapFace.PositiveZ ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveZ, width, height );
+			faceBitmaps[ ( int )CubeMapFace.NegativeZ ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.NegativeZ, width, height );
 
 			foreach ( object cubeMapFace in Enum.GetValues( typeof( CubeMapFace ) ) )
 			{

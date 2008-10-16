@@ -60,6 +60,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Core", "..\..\Source\Rb.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rb.Rendering.OpenGl", "..\..\Source\Rb.Rendering.OpenGl\Rb.Rendering.OpenGl.csproj", "{19DCB365-3040-4431-86E9-29183FA34EF7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poc1.Tools.StarField", "Source\Poc1.Tools.StarField\Poc1.Tools.StarField.csproj", "{711848B9-0412-4E06-8955-59DB45357E66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -463,6 +465,21 @@ Global
 		{19DCB365-3040-4431-86E9-29183FA34EF7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{19DCB365-3040-4431-86E9-29183FA34EF7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{19DCB365-3040-4431-86E9-29183FA34EF7}.Release|Win32.ActiveCfg = Release|Any CPU
+		{711848B9-0412-4E06-8955-59DB45357E66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{711848B9-0412-4E06-8955-59DB45357E66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{711848B9-0412-4E06-8955-59DB45357E66}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{711848B9-0412-4E06-8955-59DB45357E66}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{711848B9-0412-4E06-8955-59DB45357E66}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{711848B9-0412-4E06-8955-59DB45357E66}.NDoc|Any CPU.ActiveCfg = Release|Any CPU
+		{711848B9-0412-4E06-8955-59DB45357E66}.NDoc|Any CPU.Build.0 = Release|Any CPU
+		{711848B9-0412-4E06-8955-59DB45357E66}.NDoc|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{711848B9-0412-4E06-8955-59DB45357E66}.NDoc|Mixed Platforms.Build.0 = Release|Any CPU
+		{711848B9-0412-4E06-8955-59DB45357E66}.NDoc|Win32.ActiveCfg = Release|Any CPU
+		{711848B9-0412-4E06-8955-59DB45357E66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{711848B9-0412-4E06-8955-59DB45357E66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{711848B9-0412-4E06-8955-59DB45357E66}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{711848B9-0412-4E06-8955-59DB45357E66}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{711848B9-0412-4E06-8955-59DB45357E66}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

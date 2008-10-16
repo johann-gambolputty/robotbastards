@@ -36,6 +36,8 @@ namespace Poc1.PlanetBuilder
 			this.builderControls1 = new Poc1.PlanetBuilder.BuilderControls( );
 			this.splitter1 = new System.Windows.Forms.Splitter( );
 			this.testDisplay = new Rb.Rendering.Windows.Display( );
+			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
+			this.terrainVisualiserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
 			this.menuStrip1.SuspendLayout( );
 			this.SuspendLayout( );
 			// 
@@ -43,7 +45,8 @@ namespace Poc1.PlanetBuilder
 			// 
 			this.menuStrip1.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.assetsToolStripMenuItem} );
+            this.assetsToolStripMenuItem,
+            this.viewToolStripMenuItem} );
 			this.menuStrip1.Location = new System.Drawing.Point( 0, 0 );
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size( 579, 24 );
@@ -110,6 +113,21 @@ namespace Poc1.PlanetBuilder
 			this.testDisplay.StencilBits = ( ( byte )( 0 ) );
 			this.testDisplay.TabIndex = 2;
 			// 
+			// viewToolStripMenuItem
+			// 
+			this.viewToolStripMenuItem.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
+            this.terrainVisualiserToolStripMenuItem} );
+			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+			this.viewToolStripMenuItem.Size = new System.Drawing.Size( 41, 20 );
+			this.viewToolStripMenuItem.Text = "&View";
+			// 
+			// terrainVisualiserToolStripMenuItem
+			// 
+			this.terrainVisualiserToolStripMenuItem.Name = "terrainVisualiserToolStripMenuItem";
+			this.terrainVisualiserToolStripMenuItem.Size = new System.Drawing.Size( 166, 22 );
+			this.terrainVisualiserToolStripMenuItem.Text = "&Terrain Visualiser";
+			this.terrainVisualiserToolStripMenuItem.Click += new System.EventHandler( this.terrainVisualiserToolStripMenuItem_Click );
+			// 
 			// BuilderForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
@@ -122,7 +140,6 @@ namespace Poc1.PlanetBuilder
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "BuilderForm";
 			this.Text = "Planet Builder";
-			this.WindowState = System.Windows.Forms.FormWindowState.Normal;
 			this.Shown += new System.EventHandler( this.BuilderForm_Shown );
 			this.Closing += new System.ComponentModel.CancelEventHandler( this.BuilderForm_Closing );
 			this.menuStrip1.ResumeLayout( false );
@@ -143,6 +160,8 @@ namespace Poc1.PlanetBuilder
 		private BuilderControls builderControls1;
 		private System.Windows.Forms.Splitter splitter1;
 		private Rb.Rendering.Windows.Display testDisplay;
+		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem terrainVisualiserToolStripMenuItem;
 	}
 }
 

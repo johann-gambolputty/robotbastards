@@ -252,18 +252,39 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 			int endRow = triRes;
 			int endCol = triRes;
 
+			//   *--*--*
+			//   | /| /|
+			//   *--*--*
+			//   | \| \|
+			//   *--*--*
+
+			//	TODO: AP: Change to strips?
 			for ( int row = 0; row < endRow; ++row )
 			{
+				bool upSlope = ( row % 2 ) != 0;
 				int index = ( row * res );
 				for ( int col = 0; col < endCol; ++col )
 				{
-					indices.Add( index );
-					indices.Add( index + 1 );
-					indices.Add( index + res );
+					if ( upSlope )
+					{
+						indices.Add( index );
+						indices.Add( index + 1 );
+						indices.Add( index + res );
 
-					indices.Add( index + 1 );
-					indices.Add( index + 1 + res );
-					indices.Add( index + res );
+						indices.Add( index + 1 );
+						indices.Add( index + 1 + res );
+						indices.Add( index + res );
+					}
+					else
+					{
+						indices.Add( index );
+						indices.Add( index + 1 );
+						indices.Add( index + res + 1 );
+
+						indices.Add( index );
+						indices.Add( index + 1 + res );
+						indices.Add( index + res );	
+					}
 
 					++index;
 				}

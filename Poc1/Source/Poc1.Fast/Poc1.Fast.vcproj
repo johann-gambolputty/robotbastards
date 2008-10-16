@@ -186,7 +186,7 @@
 		/>
 		<ProjectReference
 			ReferencedProjectIdentifier="{EC130734-6F0F-402B-8215-9F133F0ADEE4}"
-			RelativePathToProject="..\Source\Rb.Rendering\Rb.Rendering.csproj"
+			RelativePathToProject="..\Rb.Rendering\Rb.Rendering.csproj"
 		/>
 		<AssemblyReference
 			RelativePath="System.Windows.Forms.dll"
@@ -201,6 +201,10 @@
 			>
 			<File
 				RelativePath=".\Source\FastNoise.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Sse\Source\SsePlanetFractal.cpp"
 				>
 			</File>
 			<File
@@ -226,7 +230,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Sse\SsePlanetFractal.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Sse\SseVector.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Sse\SseVectorGroup.h"
 				>
 			</File>
 			<File
