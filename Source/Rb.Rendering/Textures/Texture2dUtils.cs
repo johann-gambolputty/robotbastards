@@ -46,9 +46,6 @@ namespace Rb.Rendering.Textures
 				case TextureFormat.R8G8B8			:	format = PixelFormat.Format24bppRgb; break;
 			//	case TextureFormat.B8G8R8			:	break;	//	No mapping
 
-				case TextureFormat.R8G8B8X8			:	format = PixelFormat.Format32bppRgb; break;
-			//	case TextureFormat.B8G8R8X8			:	break;	//	No mapping
-
 				case TextureFormat.R8G8B8A8			:	format = PixelFormat.Format32bppRgb; break;
 			//	case TextureFormat.B8G8R8A8			:	break;	//	No mapping
 

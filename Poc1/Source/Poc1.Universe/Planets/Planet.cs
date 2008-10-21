@@ -1,4 +1,3 @@
-using System;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets.Models;
@@ -261,13 +260,13 @@ namespace Poc1.Universe.Planets
 			UniCamera.PushRenderTransform( TransformType.LocalToWorld, Transform );
 
 			//	Render planet
-			if ( m_OceanRenderer != null )
-			{
-				m_OceanRenderer.Render( context );
-			}
 			if ( m_TerrainRenderer != null )
 			{
 				m_TerrainRenderer.Render( context );
+			}
+			if ( m_OceanRenderer != null )
+			{
+				m_OceanRenderer.Render( context );
 			}
 			if ( m_CloudRenderer != null )
 			{

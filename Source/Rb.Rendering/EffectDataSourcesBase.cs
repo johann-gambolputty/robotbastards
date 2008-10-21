@@ -27,6 +27,11 @@ namespace Rb.Rendering
 		/// </summary>
 		public void BindParameter( IEffectParameter parameter )
 		{
+			if ( parameter == null )
+			{
+				throw new ArgumentNullException( "parameter" );
+			}
+
 			IEffectDataSource source;
 			if ( m_ParameterNameDataSources.TryGetValue( parameter.Name, out source ) )
 			{
@@ -112,7 +117,9 @@ namespace Rb.Rendering
 			get { return m_SemanticNameDataSources; }
 		}
 
-
+		/// <summary>
+		/// Calls the DataSourceAdded event
+		/// </summary>
 		protected void OnDataSourceAdded( IEffectDataSource dataSource )
 		{
 			if ( DataSourceAdded != null )
@@ -121,6 +128,9 @@ namespace Rb.Rendering
 			}
 		}
 
+		/// <summary>
+		/// Calls the DataSourceRemoved event
+		/// </summary>
 		protected void OnDataSourceRemoved( IEffectDataSource dataSource )
 		{
 			if ( DataSourceRemoved != null )

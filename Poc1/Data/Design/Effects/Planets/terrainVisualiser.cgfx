@@ -1,0 +1,88 @@
+#include "terrain.cg"
+
+sampler2D MarbleFaceTexture = sampler_state
+{
+	WrapS = Repeat;
+	WrapT = Repeat;
+	MinFilter = Linear;
+	MagFilter = Linear;
+};
+
+//
+//struct VertexShaderInput
+//{
+//	float4 m_Position : POSITION;
+//};
+//
+//struct FragmentShaderInput
+//{
+//	float4 m_Position : POSITION;
+//};
+
+//	Pipeline effect parameters
+float4x4 ModelViewProjectionMatrix;
+float4x4 InverseTransposeModelMatrix;
+
+//	Technique parameters
+bool ShowSlopes = true;
+bool ShowHeights = true;
+
+void VertexShader( float4 pos : POSITION, float2 uv : TEXCOORD0, out float4 fPos : POSITION, out float2 fUv  : TEXCOORD0 )
+{
+	fPos = mul( ModelViewProjectionMatrix, pos );
+	fUv = uv;
+}
+
+float4 TerrainPropertiesFragmentShader( float4 sPos : POSITION, float2 uv : TEXCOORD0 ) : COLOR
+{
+	float4 val = tex2D( MarbleFaceTexture, uv );
+	float4 result;
+	if ( ShowSlopes )
+	{
+		result = ShowHeights ? float4( val.x, val.y, 0, 1 ) : float4( val.xxx, 1 );
+	}
+	else
+	{
+		result = float4( val.yyy, 1 );
+	}
+
+	return result; 
+}
+
+
+technique ShowTerrainPropertiesTechnique
+{
+	pass
+	{
+		LightingEnable			= false;
+		DepthMask				= true;
+		ShadeModel				= Smooth;
+		FrontFace				= CW;
+		DepthTestEnable			= true;
+		DepthFunc				= Less;
+		CullFaceEnable			= true;
+		BlendEnable				= false;
+		PolygonMode				= int2( Front, Fill );
+		VertexProgram			= compile arbvp1 VertexShader( );
+		FragmentProgram			= compile arbfp1 TerrainPropertiesFragmentShader( );
+	}
+}
+//
+//technique ShowTerrainTypesTechnique
+//{
+//	pass
+//	{
+//		LightingEnable			= false;
+//		DepthMask				= true;
+//		ShadeModel				= Smooth;
+//		FrontFace				= CW;
+//		DepthTestEnable			= true;
+//		DepthFunc				= Less;
+//		CullFaceEnable			= true;
+//		BlendEnable				= false;
+//		PolygonMode				= int2( Front, Fill );
+//		VertexProgram			= compile arbvp1 VertexShader( );
+//	//	FragmentProgram			= compile arbfp1 DbgSlopeFragmentShader( );
+//		FragmentProgram			= compile arbfp1 FragmentShader( );
+//	}
+//}

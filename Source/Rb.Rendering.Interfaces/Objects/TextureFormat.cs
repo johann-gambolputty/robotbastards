@@ -17,9 +17,6 @@ namespace Rb.Rendering.Interfaces.Objects
 		R8G8B8,
 		B8G8R8,
 
-		R8G8B8X8,
-		B8G8R8X8,
-
 		R8G8B8A8,
 		B8G8R8A8,
 
@@ -45,9 +42,6 @@ namespace Rb.Rendering.Interfaces.Objects
 
 				case TextureFormat.R8G8B8			:	return PixelFormat.Format24bppRgb;
 				case TextureFormat.B8G8R8			:	break;	//	No mapping
-
-				case TextureFormat.R8G8B8X8			:	return PixelFormat.Format32bppRgb;
-				case TextureFormat.B8G8R8X8			:	break;	//	No mapping
 
 				case TextureFormat.R8G8B8A8			:	return PixelFormat.Format32bppRgb;
 				case TextureFormat.B8G8R8A8			:	break;	//	No mapping
@@ -77,9 +71,6 @@ namespace Rb.Rendering.Interfaces.Objects
 
 				case TextureFormat.R8G8B8		:	return 24;
 				case TextureFormat.B8G8R8		:	return 24;
-
-				case TextureFormat.R8G8B8X8		:	return 32;
-				case TextureFormat.B8G8R8X8		:	return 32;
 
 				case TextureFormat.R8G8B8A8		:	return 32;
 				case TextureFormat.B8G8R8A8		:	return 32;

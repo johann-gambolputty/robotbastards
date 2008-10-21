@@ -2,6 +2,8 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Poc1.Universe.Interfaces.Planets.Models;
+using Rb.Assets;
+using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 using RbGraphics = Rb.Rendering.Graphics;
 
@@ -12,9 +14,28 @@ namespace Poc1.PlanetBuilder
 		public TerrainVisualiserControl( )
 		{
 			InitializeComponent( );
-			m_Sampler = RbGraphics.Factory.CreateTexture2dSampler( );
-			m_Sampler.Texture = RbGraphics.Factory.CreateTexture2d( );
+			m_Texture = RbGraphics.Factory.CreateTexture2d( );
+
+			IEffect effect = ( IEffect )AssetManager.Instance.Load( @"Effects\Planets\TerrainVisualiser.cgfx" );
+			m_Technique = new TechniqueSelector( effect, "ShowTerrainPropertiesTechnique" );
+
+			terrainDisplay.OnRender += RenderTerrain;
+
+			resolutionComboBox.Items.Add( "Fit to window" );
+			resolutionComboBox.Items.Add( 2048 );
+			resolutionComboBox.Items.Add( 1024 );
+			resolutionComboBox.Items.Add( 512 );
+			resolutionComboBox.Items.Add( 256 );
+			resolutionComboBox.Items.Add( 128 );
+			resolutionComboBox.Items.Add( 64 );
+			resolutionComboBox.Items.Add( 32 );
+			resolutionComboBox.Items.Add( 16 );
+			resolutionComboBox.Items.Add( 8 );
+			resolutionComboBox.Items.Add( 4 );
+			resolutionComboBox.SelectedIndex = 0;
 		}
+
+
 
 		/// <summary>
 		/// Gets/sets the terrain model visualised by this control
@@ -33,17 +54,48 @@ namespace Poc1.PlanetBuilder
 				if ( m_TerrainModel != null )
 				{
 					m_TerrainModel.ModelChanged += TerrainModelChanged;
-					int width = 256;
-					int height = 256;
-					TerrainVisualiserBitmapBuilder.AddRequest( m_TerrainModel, width, height, TerrainModelBitmapBuilt );
+					TerrainModelChanged( this, null );
 				}
 			}
 		}
 
 		#region Private Members
 
-		private ITexture2dSampler m_Sampler;
+		private bool m_TextureBuilding;
+		private bool m_RebuildTexture;
+		private readonly ITexture2d m_Texture;
+		private readonly TechniqueSelector m_Technique;
 		private IPlanetTerrainModel m_TerrainModel;
+
+		/// <summary>
+		/// Gets the selected width in the resolution combo box
+		/// </summary>
+		private int SelectedWidth
+		{
+			get
+			{
+				if ( resolutionComboBox.SelectedItem is string )
+				{
+					return displayPanel.Width;
+				}
+				return ( int )resolutionComboBox.SelectedItem;
+			}
+		}
+
+		/// <summary>
+		/// Gets the selected height in the resolution combo box
+		/// </summary>
+		private int SelectedHeight
+		{
+			get
+			{
+				if ( resolutionComboBox.SelectedItem is string )
+				{
+					return displayPanel.Height;
+				}
+				return ( int )resolutionComboBox.SelectedItem;
+			}
+		}
 
 		#endregion
 
@@ -52,10 +104,21 @@ namespace Poc1.PlanetBuilder
 		/// <summary>
 		/// Renders the terrain
 		/// </summary>
-		private void terrainDisplay_OnRender( object sender, EventArgs e )
+		private void RenderTerrain( IRenderContext context )
 		{
-			m_Sampler.Begin( );
 			RbGraphics.Renderer.Push2d( );
+			m_Technique.Effect.Parameters[ "MarbleFaceTexture" ].Set( m_Texture );
+			m_Technique.Effect.Parameters[ "ShowSlopes" ].Set( showSlopesRadioButton.Checked );
+			m_Technique.Effect.Parameters[ "ShowHeights" ].Set( showHeightsRadioButton.Checked );
+			m_Technique.Apply( context, RenderTerrainBitmap );
+			RbGraphics.Renderer.Pop2d( );
+		}
+
+		/// <summary>
+		/// Renders the terrain bimap
+		/// </summary>
+		private void RenderTerrainBitmap( IRenderContext context )
+		{
 			RbGraphics.Draw.BeginPrimitiveList( PrimitiveType.QuadList );
 			RbGraphics.Draw.AddVertexData( VertexFieldSemantic.Position, 0, 0 );
 			RbGraphics.Draw.AddVertexData( VertexFieldSemantic.Texture0, 0, 0 );
@@ -66,8 +129,6 @@ namespace Poc1.PlanetBuilder
 			RbGraphics.Draw.AddVertexData( VertexFieldSemantic.Position, 0, terrainDisplay.Height );
 			RbGraphics.Draw.AddVertexData( VertexFieldSemantic.Texture0, 0, 1 );
 			RbGraphics.Draw.EndPrimitiveList( );
-			RbGraphics.Renderer.Pop2d( );
-			m_Sampler.End( );
 		}
 
 		/// <summary>
@@ -75,7 +136,31 @@ namespace Poc1.PlanetBuilder
 		/// </summary>
 		private void TerrainModelChanged( object sender, EventArgs args )
 		{
-			TerrainVisualiserBitmapBuilder.AddRequest( m_TerrainModel, displayPanel.Width, displayPanel.Height, TerrainModelBitmapBuilt );
+			if ( m_TextureBuilding )
+			{
+				m_RebuildTexture = true;
+			}
+			else
+			{
+				QueueTextureBuildRequest( );
+			}
+		}
+
+		/// <summary>
+		/// Queues up a request to rebuild the displayed texture
+		/// </summary>
+		private void QueueTextureBuildRequest( )
+		{
+			if ( TerrainModel == null )
+			{
+				return;
+			}
+			if ( m_TextureBuilding )
+			{
+				throw new InvalidOperationException( "Tried to queue up a texture build request when one was already pending" );
+			}
+			m_TextureBuilding = true;
+			TerrainVisualiserBitmapBuilder.AddRequest( m_TerrainModel, SelectedWidth, SelectedHeight, TerrainModelBitmapBuilt );
 		}
 
 		/// <summary>
@@ -83,7 +168,35 @@ namespace Poc1.PlanetBuilder
 		/// </summary>
 		private void TerrainModelBitmapBuilt( Bitmap bmp )
 		{
-			m_Sampler.Texture.Create( bmp, true );
+			m_TextureBuilding = false;
+			m_Texture.Create( bmp, false );
+			if ( m_RebuildTexture )
+			{
+				m_RebuildTexture = false;
+				QueueTextureBuildRequest( );
+			}
+
+			terrainDisplay.Invalidate( );
+		}
+
+		private void resolutionComboBox_SelectedIndexChanged( object sender, EventArgs e )
+		{
+			TerrainModelChanged( sender, e );
+		}
+
+		private void showHeightsRadioButton_CheckedChanged( object sender, EventArgs e )
+		{
+			terrainDisplay.Invalidate( );
+		}
+
+		private void showSlopesRadioButton_CheckedChanged( object sender, EventArgs e )
+		{
+			terrainDisplay.Invalidate( );
+		}
+
+		private void showTerrainTypesRadioButton_CheckedChanged( object sender, EventArgs e )
+		{
+			terrainDisplay.Invalidate( );
 		}
 
 		#endregion

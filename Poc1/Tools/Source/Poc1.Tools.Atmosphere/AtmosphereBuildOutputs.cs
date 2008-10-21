@@ -11,6 +11,7 @@ namespace Poc1.Tools.Atmosphere
 		/// Sets up the build outputs
 		/// </summary>
 		/// <param name="scatteringTexture">Scattering texture data</param>
+		/// <param name="opticalDepthTexture">Optical depth texture data</param>
 		public AtmosphereBuildOutputs( Texture3dData scatteringTexture, Texture2dData opticalDepthTexture )
 		{
 			m_ScatteringTexture = scatteringTexture;

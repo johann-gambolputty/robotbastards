@@ -8,7 +8,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 		/// <summary>
 		/// Width and height resolution of the patch in vertices
 		/// </summary>
-		public const int PatchResolution = 33;
+		public const int PatchResolution = 41;
 
 		/// <summary>
 		/// Area of a patch

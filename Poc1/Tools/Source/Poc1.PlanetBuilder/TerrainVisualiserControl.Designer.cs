@@ -33,6 +33,8 @@ namespace Poc1.PlanetBuilder
 			this.showSlopesRadioButton = new System.Windows.Forms.RadioButton( );
 			this.showHeightsRadioButton = new System.Windows.Forms.RadioButton( );
 			this.displayPanel = new System.Windows.Forms.Panel( );
+			this.label1 = new System.Windows.Forms.Label( );
+			this.resolutionComboBox = new System.Windows.Forms.ComboBox( );
 			this.terrainDisplay = new Rb.Rendering.Windows.Display( );
 			this.groupBox1.SuspendLayout( );
 			this.displayPanel.SuspendLayout( );
@@ -40,13 +42,15 @@ namespace Poc1.PlanetBuilder
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add( this.resolutionComboBox );
+			this.groupBox1.Controls.Add( this.label1 );
 			this.groupBox1.Controls.Add( this.showTerrainTypesRadioButton );
 			this.groupBox1.Controls.Add( this.showSlopesRadioButton );
 			this.groupBox1.Controls.Add( this.showHeightsRadioButton );
 			this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
 			this.groupBox1.Location = new System.Drawing.Point( 0, 0 );
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size( 190, 92 );
+			this.groupBox1.Size = new System.Drawing.Size( 289, 92 );
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Controls";
@@ -61,6 +65,7 @@ namespace Poc1.PlanetBuilder
 			this.showTerrainTypesRadioButton.TabStop = true;
 			this.showTerrainTypesRadioButton.Text = "Show terrain types";
 			this.showTerrainTypesRadioButton.UseVisualStyleBackColor = true;
+			this.showTerrainTypesRadioButton.CheckedChanged += new System.EventHandler( this.showTerrainTypesRadioButton_CheckedChanged );
 			// 
 			// showSlopesRadioButton
 			// 
@@ -72,6 +77,7 @@ namespace Poc1.PlanetBuilder
 			this.showSlopesRadioButton.TabStop = true;
 			this.showSlopesRadioButton.Text = "Show slopes";
 			this.showSlopesRadioButton.UseVisualStyleBackColor = true;
+			this.showSlopesRadioButton.CheckedChanged += new System.EventHandler( this.showSlopesRadioButton_CheckedChanged );
 			// 
 			// showHeightsRadioButton
 			// 
@@ -84,6 +90,7 @@ namespace Poc1.PlanetBuilder
 			this.showHeightsRadioButton.TabStop = true;
 			this.showHeightsRadioButton.Text = "Show heights";
 			this.showHeightsRadioButton.UseVisualStyleBackColor = true;
+			this.showHeightsRadioButton.CheckedChanged += new System.EventHandler( this.showHeightsRadioButton_CheckedChanged );
 			// 
 			// displayPanel
 			// 
@@ -91,8 +98,27 @@ namespace Poc1.PlanetBuilder
 			this.displayPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.displayPanel.Location = new System.Drawing.Point( 0, 92 );
 			this.displayPanel.Name = "displayPanel";
-			this.displayPanel.Size = new System.Drawing.Size( 190, 116 );
+			this.displayPanel.Size = new System.Drawing.Size( 289, 241 );
 			this.displayPanel.TabIndex = 1;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point( 129, 21 );
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size( 60, 13 );
+			this.label1.TabIndex = 3;
+			this.label1.Text = "Resolution:";
+			// 
+			// resolutionComboBox
+			// 
+			this.resolutionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.resolutionComboBox.FormattingEnabled = true;
+			this.resolutionComboBox.Location = new System.Drawing.Point( 195, 18 );
+			this.resolutionComboBox.Name = "resolutionComboBox";
+			this.resolutionComboBox.Size = new System.Drawing.Size( 88, 21 );
+			this.resolutionComboBox.TabIndex = 4;
+			this.resolutionComboBox.SelectedIndexChanged += new System.EventHandler( this.resolutionComboBox_SelectedIndexChanged );
 			// 
 			// terrainDisplay
 			// 
@@ -104,10 +130,9 @@ namespace Poc1.PlanetBuilder
 			this.terrainDisplay.Location = new System.Drawing.Point( 0, 0 );
 			this.terrainDisplay.Name = "terrainDisplay";
 			this.terrainDisplay.RenderInterval = 1;
-			this.terrainDisplay.Size = new System.Drawing.Size( 190, 116 );
+			this.terrainDisplay.Size = new System.Drawing.Size( 289, 241 );
 			this.terrainDisplay.StencilBits = ( ( byte )( 0 ) );
 			this.terrainDisplay.TabIndex = 0;
-			this.terrainDisplay.OnRender += new System.EventHandler( this.terrainDisplay_OnRender );
 			// 
 			// TerrainVisualiserControl
 			// 
@@ -116,7 +141,7 @@ namespace Poc1.PlanetBuilder
 			this.Controls.Add( this.displayPanel );
 			this.Controls.Add( this.groupBox1 );
 			this.Name = "TerrainVisualiserControl";
-			this.Size = new System.Drawing.Size( 190, 208 );
+			this.Size = new System.Drawing.Size( 289, 333 );
 			this.groupBox1.ResumeLayout( false );
 			this.groupBox1.PerformLayout( );
 			this.displayPanel.ResumeLayout( false );
@@ -132,5 +157,7 @@ namespace Poc1.PlanetBuilder
 		private System.Windows.Forms.RadioButton showHeightsRadioButton;
 		private System.Windows.Forms.RadioButton showTerrainTypesRadioButton;
 		private Rb.Rendering.Windows.Display terrainDisplay;
+		private System.Windows.Forms.ComboBox resolutionComboBox;
+		private System.Windows.Forms.Label label1;
 	}
 }

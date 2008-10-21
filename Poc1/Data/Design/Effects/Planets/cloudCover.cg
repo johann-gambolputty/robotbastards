@@ -1,0 +1,31 @@
+
+samplerCUBE CloudTexture = sampler_state
+{
+	WrapS = ClampToEdge;
+	WrapT = ClampToEdge;
+	WrapR = ClampToEdge;
+	MinFilter = Linear;
+	MagFilter = Linear;
+};
+
+samplerCUBE NextCloudTexture = sampler_state
+{
+	WrapS = ClampToEdge;
+	WrapT = ClampToEdge;
+	WrapR = ClampToEdge;
+	MinFilter = Linear;
+	MagFilter = Linear;
+};
+
+float4x4 CloudTransform = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+float CloudBlend = 0;
+
+float GetCloudCover( FragmentShaderInput input )
+{
+	float4 cloudNormal = mul( CloudTransform, input.m_SphereNormal );
+	
+	float curCloud = texCUBE( CloudTexture, cloudNormal ).r;
+	float nextCloud = texCUBE( NextCloudTexture, cloudNormal ).r;
+	
+	return ( ( nextCloud * CloudBlend ) + ( curCloud * ( 1 - CloudBlend ) ) );
+}

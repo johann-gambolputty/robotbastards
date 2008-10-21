@@ -3,7 +3,9 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Rb.Core.Utils;
 using Rb.Rendering;
+using Rb.Rendering.Interfaces.Objects;
 
 namespace Rb.Rendering.Windows
 {
@@ -92,7 +94,7 @@ namespace Rb.Rendering.Windows
 		/// <summary>
 		/// Event, invoked when rendering starts
 		/// </summary>
-		public event EventHandler OnRender;
+		public event RenderDelegate OnRender;
 
 		/// <summary>
 		///	Event, invoked when rendering has completed on the current frame
@@ -215,6 +217,7 @@ namespace Rb.Rendering.Windows
 		/// </summary>
 		protected virtual void Draw( )
 		{
+			m_DefaultRenderContext.RenderTime = TinyTime.CurrentTime;
 			if ( m_Viewers.Count == 0 )
 			{
 				Graphics.Renderer.ClearDepth( 1.0f );
@@ -222,7 +225,7 @@ namespace Rb.Rendering.Windows
 			}
 			else
 			{
-				foreach ( Viewer viewer in Viewers )
+				foreach ( Viewer viewer in m_Viewers )
 				{
 					viewer.Render( );
 				}
@@ -230,7 +233,7 @@ namespace Rb.Rendering.Windows
 
 			if ( OnRender != null )
 			{
-				OnRender( this, null );
+				OnRender( m_DefaultRenderContext );
 			}
 		}
 
@@ -284,9 +287,9 @@ namespace Rb.Rendering.Windows
         /// <summary>
         /// Gets the collection of viewers
         /// </summary>
-	    public IEnumerable< Viewer > Viewers
+	    public Viewer[] Viewers
 	    {
-	        get { return m_Viewers; }
+	        get { return m_Viewers.ToArray( ); }
 	    }
 
         /// <summary>
@@ -313,6 +316,7 @@ namespace Rb.Rendering.Windows
 
         #region	Private stuff
 
+		private readonly RenderContext			m_DefaultRenderContext	= new RenderContext( );
         private byte 							m_StencilBits			= 0;
 		private byte 							m_DepthBits				= 24;
 		private byte 							m_ColourBits			= 32;

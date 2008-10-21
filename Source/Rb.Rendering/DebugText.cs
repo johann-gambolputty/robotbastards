@@ -37,10 +37,11 @@ namespace Rb.Rendering
 
 		static DebugText( )
 		{
-			DrawBase.IBrush brush = Graphics.Draw.NewBrush( Color.DarkBlue, Color.LightBlue );
+			int alpha = 0xb0;
+			DrawBase.IBrush brush = Graphics.Draw.NewBrush( Color.FromArgb( alpha, Color.DarkBlue ), Color.FromArgb( alpha, Color.LightSteelBlue ) );
 			brush.State.Blend = true;
-			brush.State.SourceBlend = BlendFactor.One;
-			brush.State.DestinationBlend = BlendFactor.One;
+			brush.State.SourceBlend = BlendFactor.SrcAlpha;
+			brush.State.DestinationBlend = BlendFactor.OneMinusSrcAlpha;
 
 			s_WindowBrush = brush;
 

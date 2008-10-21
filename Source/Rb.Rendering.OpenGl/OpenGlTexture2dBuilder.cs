@@ -346,21 +346,11 @@ namespace Rb.Rendering.OpenGl
 				}
 				case TextureFormat.R8G8B8			:
 				{
-					return new TextureInfo( Gl.GL_BGR_EXT, Gl.GL_RGB, Gl.GL_UNSIGNED_BYTE, format );
+					return new TextureInfo( Gl.GL_RGB, Gl.GL_BGR_EXT, Gl.GL_UNSIGNED_BYTE, format );
 				}
 				case TextureFormat.B8G8R8			:
 				{
 					return new TextureInfo( Gl.GL_RGB, Gl.GL_RGB, Gl.GL_UNSIGNED_BYTE, format );
-				}
-				case TextureFormat.R8G8B8X8			:
-				{
-					//	TODO: AP: Not right...
-					return new TextureInfo( Gl.GL_ABGR_EXT, Gl.GL_RGB, Gl.GL_UNSIGNED_BYTE, format );
-				}
-				case TextureFormat.B8G8R8X8			:
-				{
-					//	TODO: AP: Not right... change texture format
-					return new TextureInfo( Gl.GL_RGBA, Gl.GL_RGB, Gl.GL_UNSIGNED_BYTE, format );
 				}
 				case TextureFormat.R8G8B8A8			:
 				{
@@ -438,7 +428,7 @@ namespace Rb.Rendering.OpenGl
 				case PixelFormat.PAlpha					:	break;
 			}
 
-			info = new TextureInfo( Gl.GL_BGR_EXT, Gl.GL_BGR_EXT, Gl.GL_UNSIGNED_BYTE, TextureFormat.R8G8B8 );
+			info = new TextureInfo( Gl.GL_RGB, Gl.GL_BGR_EXT, Gl.GL_UNSIGNED_BYTE, TextureFormat.R8G8B8 );
 			return PixelFormat.Format24bppRgb;
 		}
 
