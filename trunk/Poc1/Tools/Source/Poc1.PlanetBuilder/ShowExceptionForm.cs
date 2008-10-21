@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Poc1.PlanetBuilder
@@ -75,5 +76,10 @@ namespace Poc1.PlanetBuilder
 		}
 
 		private Exception m_Exception;
+
+		private void ShowExceptionForm_Load( object sender, EventArgs e )
+		{
+			iconPanel.BackgroundImage = SystemIcons.Error.ToBitmap( );
+		}
 	}
 }

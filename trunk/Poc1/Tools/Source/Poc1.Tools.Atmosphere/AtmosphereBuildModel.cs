@@ -101,13 +101,13 @@ namespace Poc1.Tools.Atmosphere
 		private float m_OutscatterFudgeFactor = 0.2f;
 		private float m_InscatterDistanceFudgeFactor = 10;
 		private float m_OutscatterDistanceFudgeFactor = 0.3f;
-		private float m_MieFudge = 0.0f;
+		private float m_MieFudge = 0.1f;
 		private float m_RayleighFudge = 1.0f;
 		private float m_MieDensityScaleHeightFraction = 0.9f;
 		private float m_RayleighDensityScaleHeightFraction = 0.9f;
 		private readonly float[] m_SunIntensity = new float[ 3 ] { 1, 1, 1 };
 		private float m_InnerRadius = 6000000;
-		private float m_Thickness = 10000;
+		private float m_Thickness = 30000;
 
 		#endregion
 

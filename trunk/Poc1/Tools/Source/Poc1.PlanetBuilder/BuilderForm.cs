@@ -7,6 +7,8 @@ using Rb.Interaction;
 using Rb.Log;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects.Cameras;
+using Rb.Rendering.Interfaces.Objects;
+using Rb.Rendering.RenderGraph;
 
 namespace Poc1.PlanetBuilder
 {
@@ -27,7 +29,7 @@ namespace Poc1.PlanetBuilder
 		//	FlightCamera camera = new FlightCamera( );
 			UniCamera camera = new HeadCamera( );
 			camera.PerspectiveZNear = 1.0f;
-			camera.PerspectiveZFar = 10000.0f;
+			camera.PerspectiveZFar = 15000.0f;
 
 			Units.Metres cameraPos = BuilderState.Instance.SpherePlanet.Radius;
 			cameraPos += BuilderState.Instance.SpherePlanet.TerrainModel.MaximumHeight;
@@ -36,6 +38,30 @@ namespace Poc1.PlanetBuilder
 			camera.AddChild( new BuilderCameraController( context, user ) );
 		//	camera.AddChild( new HeadCameraController( context, user ) );
 			return camera;
+		}
+
+		/// <summary>
+		/// Bodgy class to test render graphs
+		/// </summary>
+		private class TestRenderGraph : IRenderable
+		{
+			public TestRenderGraph( IRenderable renderable )
+			{
+				m_Renderable = renderable;
+				m_Root = new RenderNode( );
+			}
+
+			private readonly IRenderable m_Renderable;
+			private readonly IRenderNode m_Root;
+
+			#region IRenderable Members
+
+			public void Render( IRenderContext context )
+			{
+				
+			}
+
+			#endregion
 		}
 
 		private void BuilderForm_Shown( object sender, EventArgs e )
@@ -48,7 +74,7 @@ namespace Poc1.PlanetBuilder
 			Viewer viewer = new Viewer( );
 			try
 			{
-				viewer.Renderable = new RenderableList( new StarBox( ), BuilderState.Instance.Planet );;
+				viewer.Renderable = new RenderableList( new FpsDisplay( ), new StarBox( ), BuilderState.Instance.Planet );;
 			}
 			catch ( Exception ex )
 			{

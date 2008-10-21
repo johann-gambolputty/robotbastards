@@ -76,7 +76,7 @@ namespace Poc1.Tools.Atmosphere
 				return null;
 			}
 
-			opticalDepthTexture.Create( parameters.ViewAngleSamples, parameters.HeightSamples, TextureFormat.R8G8B8 );
+			opticalDepthTexture.Create( parameters.OpticalDepthResolution, parameters.OpticalDepthResolution, TextureFormat.R8G8B8 );
 			fixed ( byte* pixels = opticalDepthTexture.Bytes )
 			{
 				if ( !BuildOpticalDepthTexture( parameters, pixels, progress ) )
@@ -100,19 +100,21 @@ namespace Poc1.Tools.Atmosphere
 		private unsafe bool BuildOpticalDepthTexture( AtmosphereBuildParameters buildParams, byte* pixels, AtmosphereBuildProgress progress )
 		{
 			//	TODO: AP: Because we know that the view to pos angle range will never be > pi, can optimise this later
-			float viewAngleInc = Constants.Pi / ( buildParams.ViewAngleSamples - 1 );
+			int viewSamples = buildParams.OpticalDepthResolution;
+			int heightSamples = buildParams.OpticalDepthResolution;
+			float viewAngleInc = Constants.Pi / ( viewSamples - 1 );
 			float heightRange = ( m_OuterRadius - m_InnerRadius );
-			float heightInc = ( heightRange - heightRange * 0.05f ) / ( buildParams.HeightSamples - 1 );	//	Push height range in slightly to allow simplification of sphere intersections
+			float heightInc = ( heightRange - heightRange * 0.05f ) / ( heightSamples - 1 );	//	Push height range in slightly to allow simplification of sphere intersections
 
 			float height = m_InnerRadius;
-			for ( int heightSample = 0; heightSample < buildParams.HeightSamples; ++heightSample, height += heightInc )
+			for ( int heightSample = 0; heightSample < heightSamples; ++heightSample, height += heightInc )
 			{
 				Point3 pos = new Point3( 0, height, 0 );
 				//	Start the view angle at pi, and count down to 0. This is because it is quickest to address
-				//	the 3D texture using the dot of the view vector and the view position, saving a (1-th) operation
+				//	the 2D texture using the dot of the view vector and the view position, saving a (1-th) operation
 				float viewAngle = Constants.Pi;
 				Point3 lastAtmInt = pos;
-				for ( int viewSample = 0; viewSample < buildParams.ViewAngleSamples; ++viewSample, viewAngle -= viewAngleInc )
+				for ( int viewSample = 0; viewSample < viewSamples; ++viewSample, viewAngle -= viewAngleInc )
 				{
 					Vector3 viewDir = new Vector3( Functions.Sin( viewAngle ), Functions.Cos( viewAngle ), 0 );
 
@@ -144,7 +146,7 @@ namespace Poc1.Tools.Atmosphere
 
 				if ( progress != null )
 				{
-					progress.OnSliceCompleted( heightSample / ( float )( buildParams.HeightSamples - 1 ) );
+					progress.OnSliceCompleted( heightSample / ( float )( heightSamples - 1 ) );
 					if ( progress.Cancel )
 					{
 						return false;
@@ -433,10 +435,10 @@ namespace Poc1.Tools.Atmosphere
 
 			m_InnerRadius = model.InnerRadiusMetres;
 			m_OuterRadius = model.InnerRadiusMetres + model.AtmosphereThicknessMetres;
-			m_InnerSphere = new Sphere3( Point3.Origin, m_InnerRadius * 0.1f );	//	NOTE: AP: See remarks
+			m_InnerSphere = new Sphere3( Point3.Origin, m_InnerRadius * 0.9f );	//	NOTE: AP: See remarks
 			m_OuterSphere = new Sphere3( Point3.Origin, m_OuterRadius );
 			m_AttenuationSamples = parameters.AttenuationSamples;
-			float heightRange = ( m_OuterRadius - m_InnerRadius );
+			float heightRange = ( m_OuterRadius - 3 );
 			m_InvRH0 = -1.0f / ( heightRange * model.RayleighDensityScaleHeightFraction );
 			m_InvMH0 = -1.0f / ( heightRange * model.MieDensityScaleHeightFraction );
 			m_InscatterDistanceFudgeFactor = model.InscatterDistanceFudgeFactor;

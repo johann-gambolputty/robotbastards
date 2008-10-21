@@ -88,7 +88,7 @@ namespace Poc1.Universe.Planets.Models
 
 		#region Private Members
 
-		private Units.Metres m_AtmosphereThickness = new Units.Metres( 8000 );
+		private Units.Metres m_AtmosphereThickness = new Units.Metres( 20000 );
 		private float m_PhaseWeight = 1.0f;
 		private float m_PhaseCoefficient = -0.9999f;
 		private float m_MiePhaseWeight = 0.0f;

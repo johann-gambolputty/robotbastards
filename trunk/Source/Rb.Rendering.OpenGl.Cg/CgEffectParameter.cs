@@ -131,6 +131,14 @@ namespace Rb.Rendering.OpenGl.Cg
 		}
 
 		/// <summary>
+		/// Sets the value of this parameter to a boolean value
+		/// </summary>
+		public void Set( bool val )
+		{
+			TaoCg.cgSetParameter1i( m_Parameter, val ? 1 : 0 );
+		}
+
+		/// <summary>
 		/// Sets the value of this parameter to a single integer
 		/// </summary>
 		public void Set( int val )

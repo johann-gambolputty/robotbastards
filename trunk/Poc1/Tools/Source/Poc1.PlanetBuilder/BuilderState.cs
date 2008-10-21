@@ -1,7 +1,6 @@
 
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets.Spherical;
-using Poc1.Universe.Planets.Spherical;
 using IPlanet=Poc1.Universe.Interfaces.Planets.IPlanet;
 
 namespace Poc1.PlanetBuilder
@@ -44,7 +43,7 @@ namespace Poc1.PlanetBuilder
 
 		#region Private Members
 
-		private IPlanet m_Planet = Poc1.Universe.Planets.Spherical.SpherePlanet.DefaultPlanet( new Units.Metres( 100000 ) );
+		private IPlanet m_Planet = Poc1.Universe.Planets.Spherical.SpherePlanet.DefaultPlanet( new Units.Metres( 150000 ) );
 		private readonly static BuilderState s_Instance = new BuilderState( );
 
 		#endregion

@@ -21,13 +21,8 @@ namespace Poc1
 			{
 				public :
 
-					FractalTerrainParameters( )
-					{
-						m_Seed = -1;
-						m_NumOctaves = 8;
-						m_Frequency = 2.1f;
-						m_Lacunarity = 0.8f;
-					}
+					///	\brief	Sets up default fractal parameters
+					FractalTerrainParameters( );
 
 					///	\brief	Sets up a simple fractal from these parameters
 					void Setup( SseSimpleFractal& fractal );

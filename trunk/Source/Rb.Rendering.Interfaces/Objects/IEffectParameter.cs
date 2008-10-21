@@ -58,6 +58,11 @@ namespace Rb.Rendering.Interfaces.Objects
 		void Set( ITexture texture );
 
 		/// <summary>
+		/// Sets the value of this parameter to a boolean value
+		/// </summary>
+		void Set( bool val );
+
+		/// <summary>
 		/// Sets the value of this parameter to a single integer
 		/// </summary>
 		void Set( int val );

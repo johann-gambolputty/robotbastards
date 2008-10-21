@@ -40,13 +40,23 @@ namespace Poc1.Tools.Atmosphere
 			get { return m_ViewAngleSamples; }
 			set { m_ViewAngleSamples = value; }
 		}
-		
+
+		/// <summary>
+		/// Gets/sets the resolution of the optical depth texture
+		/// </summary>
+		public int OpticalDepthResolution
+		{
+			get { return m_OpticalDepthResolution; }
+			set { m_OpticalDepthResolution = value; }
+		}
+
 		#region Private Members
 
-		private int m_AttenuationSamples	= 8;
-		private int m_HeightSamples			= 16;
-		private int m_SunAngleSamples		= 16;
-		private int m_ViewAngleSamples		= 16;
+		private int m_AttenuationSamples		= 8;
+		private int m_HeightSamples				= 16;
+		private int m_SunAngleSamples			= 16;
+		private int m_ViewAngleSamples			= 16;
+		private int m_OpticalDepthResolution	= 128;
 
 		#endregion
 

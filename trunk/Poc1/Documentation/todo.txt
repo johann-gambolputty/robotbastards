@@ -12,7 +12,6 @@
 	- Terrain
 		- M: Add crater terrain
 		- M: Add continent level fractal (low-frequency noise)
-		- H: Alpha blend terrain patches into marble view when rendering both
 		- H: Add terrain patch update and render cutoff when planet is far enough away
 		- H: Build better terrain pack
 		- H: Scattering coefficient correction due to ground plane intersection is not working correctly
@@ -56,6 +55,9 @@
 			- L: Hollow spheres
 		- ?: Restore planet cube map (necessary?)
 	- Atmosphere
+		- H: Fix outside atmosphere shading
+		- H: Fix orientation of atmosphere shading for objects
+		- M: Move rayleigh computation to vertex shader if possible
 		- M: Add serialization for atmosphere build parameters
 		- M: Add atmosphere build task
 	- Water
@@ -160,6 +162,9 @@
 		- M: Particle systems
 		- M: Add configuration options for effect assembly (or perhaps make this data-driven, so when a CG file is loaded, use CG libraries?)
 		- M: Fullscreen mode
+		- L: Effect parameters need a type value
+		- L: When effect parameters get a type value, change render nodes to check this when specifying output bindings
+		- L: DelegateRenderable has a crap name
 		- L: Add vertex component generation options to graphics draw.isurface
 		- L: Add validation to technique selector
 		- L: Building the rendering assemblies using the batch file apparently causes a spurious empty "Rendering" directory to be created.
@@ -178,6 +183,7 @@
 		- M: Add support for spline, sawtooth, sine wave, bias and gain functions in the graph editor
 		- M: Add derived EditorAttribute for setting up texture UI type editor (asset handle creation, mip-mapping)
 		- M: Remove fast noise test (move to console app. project in tests directory)
+		- M: Asset live rebuild causes unhandled exception
 		- L: Refactor Muesli
 		- L: Add XML serialization to Muesli
 
@@ -187,6 +193,8 @@
 	- H: Ground displacement requires connected patches, or slightly different skirt rendering (vertical skirts show up) (see new vertex normal skirts)
 
 - DONE
+	- H: Display render event needs to accept rendering context
+	- H: Alpha blend terrain patches into marble view when rendering both
 	- H: Marble texture rebuild occurs whenever the model changes, which is often when editing terrain textures
 	- M: Make the effect assembly load on-demand (i.e. when the effect manager is referenced)
 	- H: Slope function threshold is inaccurate

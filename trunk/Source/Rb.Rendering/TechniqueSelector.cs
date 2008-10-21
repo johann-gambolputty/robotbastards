@@ -14,6 +14,11 @@ namespace Rb.Rendering
 	public class TechniqueSelector : ITechnique, ISerializable
     {
 		/// <summary>
+		/// Event, invoked when the currently selected technique is changed
+		/// </summary>
+		public event EventHandler SelectedTechniqueChanged;
+
+		/// <summary>
 		/// Default constructor
 		/// </summary>
         public TechniqueSelector( )
@@ -82,8 +87,20 @@ namespace Rb.Rendering
 		/// <exception cref="ArgumentException">Thrown if name does not correspond to a technique in the current effect</exception>
         public void Select( string name )
         {
-            m_Technique = Effect.Techniques[ name ];
+            Technique = Effect.Techniques[ name ];
         }
+
+		/// <summary>
+		/// Selects a named technique from the specified effect
+		/// </summary>
+		/// <param name="effect">Effect to select from</param>
+		/// <param name="name">Technique name</param>
+		/// <exception cref="ArgumentException">Thrown if name does not correspond to a technique in the current effect</exception>
+		public void Select( IEffect effect, string name )
+		{
+			Effect = effect;
+			Technique = Effect.Techniques[ name ];
+		}
 		
 		/// <summary>
 		/// Access to the effect that the technique is selected from
@@ -96,12 +113,13 @@ namespace Rb.Rendering
                 m_Effect = value;
 				if ( m_Effect == null )
 				{
-					m_Technique = null;
+					Technique = null;
 				}
 				else
 				{
+					//	Select the first technique in the effect
 					IEnumerator<ITechnique> techEnum = m_Effect.Techniques.Values.GetEnumerator( );
-					m_Technique = techEnum.MoveNext( ) ? techEnum.Current : null;
+					Technique = techEnum.MoveNext( ) ? techEnum.Current : null;
 				}
             }
         }
@@ -115,10 +133,14 @@ namespace Rb.Rendering
             set
             {
                 m_Technique = value;
-                if ( ( m_Technique != null ) && ( ( m_Effect == null ) || ( !m_Effect.Techniques.Values.Contains( m_Technique ) ) ) )
+                if ( m_Technique != null )
                 {
                     m_Effect = m_Technique.Effect;
                 }
+				if ( SelectedTechniqueChanged != null )
+				{
+					SelectedTechniqueChanged( this, null );
+				}
             }
         }
 

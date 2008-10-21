@@ -1,0 +1,55 @@
+
+sampler2D TerrainPackTexture = sampler_state
+{
+	WrapS = Clamp;
+	WrapT = Clamp;
+	MinFilter = LinearMipMapNearest;
+	MagFilter = LinearMipMapNearest;
+//	MinFilter = LinearMipMapLinear;
+//	MagFilter = LinearMipMapLinear;
+};
+
+sampler2D TerrainTypeTexture = sampler_state
+{
+	WrapS = ClampToEdge;
+	WrapT = ClampToEdge;
+	MinFilter = Nearest;
+	MagFilter = Nearest;
+};
+
+const float TileRes = 4;
+const float InvTileRes = 1.0f / 4.0f;
+//
+//float4 GetTerrainColour( float2 slopeElevation, float2 uv )
+//{
+//	float2 repUv = 0.01f + frac( uv ) * 0.98f;
+//	float type = floor( tex2D( TerrainTypeTexture, slopeElevation ).r * 256.0f );
+//	float2 offsetToTile = float2( fmod( type, TileRes ), ( int )( type * InvTileRes ) );
+//
+//	float2 tileUv = offsetToTile + uv;
+//	tileUv *= InvTileRes;
+//
+//	return tex2D( TerrainPackTexture, tileUv );
+//}
+
+float4 GetTerrainColour( float2 se )
+{
+	float type = ( int )( tex2D( TerrainTypeTexture, se ).r * 256.0f );
+	float2 tileUv = float2( fmod( type, TileRes ), ( int )( type * InvTileRes ) ) + float2( 0.5f, 0.5f );
+	tileUv *= float2( InvTileRes, InvTileRes );
+	float4 diffuse = tex2D( TerrainPackTexture, tileUv );
+
+	return diffuse;
+}
+
+float4 GetTerrainColour( float2 uv, float2 se )
+{
+	float2 repUv = frac( uv );
+	float type = ( int )( tex2D( TerrainTypeTexture, se ).r * 256.0f );
+	float2 offsetToTile = float2( fmod( type, TileRes ), ( int )( type * InvTileRes ) );
+
+	float2 tileUv = offsetToTile + repUv;
+	tileUv *= InvTileRes;
+
+	return tex2D( TerrainPackTexture, tileUv );
+}
