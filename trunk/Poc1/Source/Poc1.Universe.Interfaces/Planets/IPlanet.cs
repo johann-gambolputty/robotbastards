@@ -1,14 +1,13 @@
 using System;
 using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Renderers;
-using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Interfaces.Planets
 {
 	/// <summary>
 	/// Plane interface
 	/// </summary>
-	public interface IPlanet : IRenderable, IBody, IDisposable
+	public interface IPlanet : IUniRenderable, IBody, IDisposable
 	{
 		/// <summary>
 		/// Gets/sets the planet's orbit
@@ -21,7 +20,15 @@ namespace Poc1.Universe.Interfaces.Planets
 		#region Models
 
 		/// <summary>
-		/// Gets the atmosphere model
+		/// Gets/sets the planet's ring model
+		/// </summary>
+		IPlanetRingModel RingModel
+		{
+			get; set;
+		}
+
+		/// <summary>
+		/// Gets/sets the atmosphere model
 		/// </summary>
 		IPlanetAtmosphereModel AtmosphereModel
 		{
@@ -29,7 +36,7 @@ namespace Poc1.Universe.Interfaces.Planets
 		}
 
 		/// <summary>
-		/// Gets the ocean model
+		/// Gets/sets the ocean model
 		/// </summary>
 		IPlanetOceanModel OceanModel
 		{
@@ -37,7 +44,7 @@ namespace Poc1.Universe.Interfaces.Planets
 		}
 
 		/// <summary>
-		/// Gets the cloud model
+		/// Gets/sets the cloud model
 		/// </summary>
 		IPlanetCloudModel CloudModel
 		{
@@ -45,7 +52,7 @@ namespace Poc1.Universe.Interfaces.Planets
 		}
 
 		/// <summary>
-		/// Gets the terrain model
+		/// Gets/sets the terrain model
 		/// </summary>
 		IPlanetTerrainModel TerrainModel
 		{
@@ -92,6 +99,14 @@ namespace Poc1.Universe.Interfaces.Planets
 		/// Gets/sets the terrain renderer
 		/// </summary>
 		IPlanetTerrainRenderer TerrainRenderer
+		{
+			get; set;
+		}
+
+		/// <summary>
+		/// Gets/sets the ring renderer
+		/// </summary>
+		IPlanetRingRenderer RingRenderer
 		{
 			get; set;
 		}

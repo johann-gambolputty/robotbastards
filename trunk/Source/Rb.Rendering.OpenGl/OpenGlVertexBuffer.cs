@@ -74,7 +74,25 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public void Draw( PrimitiveType primType )
 		{
-			throw new NotImplementedException( );
+			Begin( );
+			switch ( primType )
+			{
+				case PrimitiveType.TriList:
+					Gl.glDrawArrays( Gl.GL_TRIANGLES, 0, Count );
+					break;
+				case PrimitiveType.TriStrip:
+					Gl.glDrawArrays( Gl.GL_TRIANGLE_STRIP, 0, Count );
+					break;
+				case PrimitiveType.TriFan:
+					Gl.glDrawArrays( Gl.GL_TRIANGLE_FAN, 0, Count );
+					break;
+				case PrimitiveType.QuadList:
+					Gl.glDrawArrays( Gl.GL_QUADS, 0, Count );
+					break;
+				default :
+					throw new NotSupportedException( "Unsupported primitive type " + primType );
+			}
+			End( );
 		}
 
 		/// <summary>

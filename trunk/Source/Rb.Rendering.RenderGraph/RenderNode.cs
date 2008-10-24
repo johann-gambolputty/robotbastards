@@ -23,6 +23,16 @@ namespace Rb.Rendering.RenderGraph
 		#region IRenderNode Members
 
 		/// <summary>
+		/// Event, invoked when an input node is added to this node
+		/// </summary>
+		public event Action<IRenderNode> InputNodeAdded;
+
+		/// <summary>
+		/// Event, invoked when an output node is added to this node
+		/// </summary>
+		public event Action<IRenderNode> OutputNodeAdded;
+
+		/// <summary>
 		/// Gets the ID of this node
 		/// </summary>
 		public int Id
@@ -55,6 +65,22 @@ namespace Rb.Rendering.RenderGraph
 		}
 
 		/// <summary>
+		/// Returns the number of input nodes
+		/// </summary>
+		public int NumInputNodes
+		{
+			get { return m_InputNodes.Count; }
+		}
+
+		/// <summary>
+		/// Returns the number of output nodes
+		/// </summary>
+		public int NumOutputNodes
+		{
+			get { return m_OutputNodes.Count; }
+		}
+
+		/// <summary>
 		/// Adds an output node to this node
 		/// </summary>
 		/// <param name="node">Output node to add</param>
@@ -72,6 +98,10 @@ namespace Rb.Rendering.RenderGraph
 			if ( !m_OutputNodes.Contains( node ) )
 			{
 				m_OutputNodes.Add( node );
+				if ( OutputNodeAdded != null )
+				{
+					OutputNodeAdded( node );
+				}
 			}
 			bool outputContainsThis = false;
 			foreach ( IRenderNode inputNode in node.InputNodes )
@@ -106,6 +136,10 @@ namespace Rb.Rendering.RenderGraph
 			if ( !m_InputNodes.Contains( node ) )
 			{
 				m_InputNodes.Add( node );
+				if ( InputNodeAdded != null )
+				{
+					InputNodeAdded( node );
+				}
 			}
 			bool inputContainsThis = false;
 			foreach ( IRenderNode outputNode in node.OutputNodes )

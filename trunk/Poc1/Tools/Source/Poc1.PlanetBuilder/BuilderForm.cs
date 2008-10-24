@@ -7,8 +7,6 @@ using Rb.Interaction;
 using Rb.Log;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects.Cameras;
-using Rb.Rendering.Interfaces.Objects;
-using Rb.Rendering.RenderGraph;
 
 namespace Poc1.PlanetBuilder
 {
@@ -40,30 +38,6 @@ namespace Poc1.PlanetBuilder
 			return camera;
 		}
 
-		/// <summary>
-		/// Bodgy class to test render graphs
-		/// </summary>
-		private class TestRenderGraph : IRenderable
-		{
-			public TestRenderGraph( IRenderable renderable )
-			{
-				m_Renderable = renderable;
-				m_Root = new RenderNode( );
-			}
-
-			private readonly IRenderable m_Renderable;
-			private readonly IRenderNode m_Root;
-
-			#region IRenderable Members
-
-			public void Render( IRenderContext context )
-			{
-				
-			}
-
-			#endregion
-		}
-
 		private void BuilderForm_Shown( object sender, EventArgs e )
 		{
 			if ( DesignMode )
@@ -74,7 +48,10 @@ namespace Poc1.PlanetBuilder
 			Viewer viewer = new Viewer( );
 			try
 			{
-				viewer.Renderable = new RenderableList( new FpsDisplay( ), new StarBox( ), BuilderState.Instance.Planet );;
+				SolarSystem system = new SolarSystem( );
+				system.Planets.Add( BuilderState.Instance.Planet );
+
+				viewer.Renderable = new RenderableList( new FpsDisplay( ), system );
 			}
 			catch ( Exception ex )
 			{

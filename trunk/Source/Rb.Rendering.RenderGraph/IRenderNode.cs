@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Rb.Rendering.Interfaces.Objects;
 
@@ -9,10 +10,22 @@ namespace Rb.Rendering.RenderGraph
 	public interface IRenderNode
 	{
 		/// <summary>
+		/// Event, invoked when an input node is added to this node
+		/// </summary>
+		event Action<IRenderNode> InputNodeAdded;
+
+		/// <summary>
+		/// Event, invoked when an output node is added to this node
+		/// </summary>
+		event Action<IRenderNode> OutputNodeAdded;
+
+
+		/// <summary>
 		/// Gets the unique, zero-based identifier of this node
 		/// </summary>
 		/// <remarks>
-		/// ID is only unique in the context of the graph that this node is a part of
+		/// ID is only unique in the context of the graph that this node is a part of.
+		/// ID is set by the constructor, or by <see cref="RenderGraph.AddNode"/>.
 		/// </remarks>
 		int Id
 		{
@@ -39,6 +52,22 @@ namespace Rb.Rendering.RenderGraph
 		/// Gets the outputs of this node
 		/// </summary>
 		IEnumerable<IRenderNode> OutputNodes
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Returns the number of input nodes
+		/// </summary>
+		int NumInputNodes
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Returns the number of output nodes
+		/// </summary>
+		int NumOutputNodes
 		{
 			get;
 		}

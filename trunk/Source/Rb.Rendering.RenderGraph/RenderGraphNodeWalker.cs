@@ -17,7 +17,7 @@ namespace Rb.Rendering.RenderGraph
 		/// <remarks>
 		/// A node is only visited once all its input nodes have been visited first.
 		/// </remarks>
-		public static void Walk( IRenderNode[] startNodes, IRenderNodeVisitor visitor, int maxNodeId )
+		public static void Walk( IEnumerable<IRenderNode> startNodes, IRenderNodeVisitor visitor, int maxNodeId )
 		{
 			if ( startNodes == null )
 			{

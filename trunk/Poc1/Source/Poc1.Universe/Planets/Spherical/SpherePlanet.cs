@@ -27,12 +27,14 @@ namespace Poc1.Universe.Planets.Spherical
 			planet.OceanModel			= new PlanetOceanModel( );
 			planet.TerrainModel			= new SpherePlanetProcTerrainModel( );
 			planet.AtmosphereModel		= new SpherePlanetAtmosphereModel( );
+			planet.RingModel			= new SpherePlanetRingModel( planetRadius * 1.5, new Units.Metres( 35000 ) );
 
 			//	Renderers
 			planet.MarbleRenderer		= new SpherePlanetMarbleRenderer( new SpherePlanetMarbleTextureBuilder( ) );
 			planet.OceanRenderer		= new SpherePlanetOceanRenderer( );
 			planet.TerrainRenderer		= new SpherePlanetTerrainPatchRenderer( );
 			planet.AtmosphereRenderer	= new SpherePlanetAtmosphereRenderer( );
+			planet.RingRenderer			= new SpherePlanetRingRenderer( );
 
 			return planet;
 		}
@@ -58,6 +60,14 @@ namespace Poc1.Universe.Planets.Spherical
 					PlanetChanged( this, null );
 				}
 			}
+		}
+
+		/// <summary>
+		/// Gets the sphere planet ring model
+		/// </summary>
+		public ISpherePlanetRingModel SphereRingModel
+		{
+			get { return ( ISpherePlanetRingModel )RingModel; }
 		}
 
 		/// <summary>

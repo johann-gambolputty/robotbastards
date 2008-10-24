@@ -45,6 +45,7 @@
 		<CopyToGameFiles Include="$(DesignFolder)\Input\*.*"/>
     <CopyToGameFiles Include="$(DesignFolder)\Viewers\*.*"/>
     <CopyToGameFiles Include="$(DesignFolder)\Terrain\noise.jpg"/>
+    <CopyToGameFiles Include="$(DesignFolder)\Rings\*.*"/>
     <CopyToGameFiles Include="$(DesignFolder)\Ocean\*.*"/>
     <CopyToGameFiles Include="$(DesignFolder)\Star Fields\**\*.jpg"/>
 	</ItemGroup>

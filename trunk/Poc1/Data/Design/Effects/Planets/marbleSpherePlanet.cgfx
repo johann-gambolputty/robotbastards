@@ -50,10 +50,10 @@ technique DefaultTechnique
 	pass
 	{
 		LightingEnable			= false;
-		DepthMask				= false;
+		DepthMask				= true;
 		ShadeModel				= Smooth;
 		FrontFace				= CW;
-		DepthTestEnable			= false;
+		DepthTestEnable			= true;
 		DepthFunc				= Less;
 		CullFaceEnable			= true;
 		BlendEnable				= false;

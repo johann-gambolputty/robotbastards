@@ -365,13 +365,13 @@ namespace Poc1.Universe.Interfaces
 			/// <summary>
 			/// Addition of two metre values
 			/// </summary>
-			public static Metres operator + ( Metres lhs, double rhs )
+			public static Metres operator + ( Metres lhs, Metres rhs )
 			{
-				return new Metres( lhs.Value + rhs );
+				return new Metres( lhs.Value + rhs.Value );
 			}
 
 			/// <summary>
-			/// Multiplication of two metre values
+			/// Multiplication of a metre value by a scalar
 			/// </summary>
 			public static Metres operator * ( Metres lhs, double rhs )
 			{
