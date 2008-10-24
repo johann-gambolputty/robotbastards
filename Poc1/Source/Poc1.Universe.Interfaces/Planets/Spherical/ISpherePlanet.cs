@@ -25,6 +25,14 @@ namespace Poc1.Universe.Interfaces.Planets.Spherical
 		#region Models
 
 		/// <summary>
+		/// Gets the sphere planet ring model
+		/// </summary>
+		ISpherePlanetRingModel SphereRingModel
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Gets the atmosphere model
 		/// </summary>
 		ISpherePlanetAtmosphereModel SphereAtmosphereModel

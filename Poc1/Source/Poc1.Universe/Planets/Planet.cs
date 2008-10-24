@@ -29,6 +29,19 @@ namespace Poc1.Universe.Planets
 		#region Models
 
 		/// <summary>
+		/// Gets/sets the ring model
+		/// </summary>
+		public IPlanetRingModel RingModel
+		{
+			get { return m_RingModel; }
+			set
+			{
+				m_RingModel = value;
+				OnModelAssigned( value );
+			}
+		}
+
+		/// <summary>
 		/// Gets/sets the atmosphere model
 		/// </summary>
 		public IPlanetAtmosphereModel AtmosphereModel
@@ -149,7 +162,37 @@ namespace Poc1.Universe.Planets
 			}
 		}
 
+		/// <summary>
+		/// Gets/sets the ring renderer
+		/// </summary>
+		public IPlanetRingRenderer RingRenderer
+		{
+			get { return m_RingRenderer; }
+			set
+			{
+				m_RingRenderer = value;
+				OnRendererAssigned( value );
+			}
+		}
+
 		#endregion
+
+		#endregion
+
+		#region IUniRenderable Members
+
+		/// <summary>
+		/// Renders the deep version of this planet
+		/// </summary>
+		/// <param name="context">Rendering context</param>
+		public void DeepRender( IRenderContext context )
+		{
+			//	Start profiling
+			using ( GameProfiles.Game.Rendering.PlanetRendering.CreateGuard( ) )
+			{
+				RenderMarble( context );
+			}
+		}
 
 		#endregion
 
@@ -162,14 +205,10 @@ namespace Poc1.Universe.Planets
 		public virtual void Render( IRenderContext context )
 		{
 			//	Start profiling
-			GameProfiles.Game.Rendering.PlanetRendering.Begin( );
-
-			RenderMarble( context );
-
-			RenderDetail( context );
-
-			//	End profiling
-			GameProfiles.Game.Rendering.PlanetRendering.End( );
+			using ( GameProfiles.Game.Rendering.PlanetRendering.CreateGuard( ) )
+			{
+				RenderDetail( context );
+			}
 		}
 
 		#endregion
@@ -219,15 +258,19 @@ namespace Poc1.Universe.Planets
 		private string						m_Name;
 		private UniTransform				m_Transform = new UniTransform( );
 		private IOrbit						m_Orbit;
+
 		private IPlanetAtmosphereModel		m_AtmosphereModel;
 		private IPlanetCloudModel			m_CloudModel;
 		private IPlanetOceanModel			m_OceanModel;
 		private IPlanetTerrainModel			m_TerrainModel;
+		private IPlanetRingModel			m_RingModel;
+
 		private IPlanetAtmosphereRenderer	m_AtmosphereRenderer;
 		private IPlanetCloudRenderer		m_CloudRenderer;
 		private IPlanetTerrainRenderer		m_TerrainRenderer;
 		private IPlanetOceanRenderer		m_OceanRenderer;
 		private IPlanetMarbleRenderer		m_MarbleRenderer;
+		private IPlanetRingRenderer			m_RingRenderer;
 
 
 		/// <summary>
@@ -244,7 +287,15 @@ namespace Poc1.Universe.Planets
 			//	Push marble render transform
 			UniCamera.PushAstroRenderTransform( TransformType.LocalToWorld, Transform );
 
-			MarbleRenderer.Render( context );
+			if ( MarbleRenderer != null )
+			{
+				MarbleRenderer.Render( context );
+			}
+
+			if ( RingRenderer != null )
+			{
+				RingRenderer.Render( context );
+			}
 
 			//	Pop transform
 			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );

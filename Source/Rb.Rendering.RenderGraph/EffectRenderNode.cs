@@ -57,6 +57,39 @@ namespace Rb.Rendering.RenderGraph
 		}
 
 		/// <summary>
+		/// Helper function to create a render target with a colour buffer
+		/// </summary>
+		/// <param name="width">Buffer width</param>
+		/// <param name="height">Buffer height</param>
+		/// <param name="format">Buffer texture format</param>
+		public void CreateTarget( int width, int height, TextureFormat format )
+		{
+			if ( m_Target != null )
+			{
+				m_Target.Dispose( );
+			}
+			m_Target = Graphics.Factory.CreateRenderTarget( );
+			m_Target.Create( width, height, format, 0, 0, false );
+		}
+
+		/// <summary>
+		/// Helper function to create a render target with a colour buffer and a depth buffer
+		/// </summary>
+		/// <param name="width">Buffer width</param>
+		/// <param name="height">Buffer height</param>
+		/// <param name="format">Buffer texture format</param>
+		/// <param name="depthBits">Number of bits to use in depth buffer</param>
+		public void CreateTarget( int width, int height, TextureFormat format, int depthBits )
+		{
+			if ( m_Target != null )
+			{
+				m_Target.Dispose( );
+			}
+			m_Target = Graphics.Factory.CreateRenderTarget( );
+			m_Target.Create( width, height, format, depthBits, 0, true );
+		}
+
+		/// <summary>
 		/// Runs this node
 		/// </summary>
 		public override void Run( IRenderContext context, IRenderable renderable )

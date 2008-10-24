@@ -56,11 +56,6 @@
     </Compile>
     <Compile Include="DebugInfo.cs" />
     <Compile Include="GameProfiles.cs" />
-    <Compile Include="Interfaces\Rendering\IAtmosphereRenderer.cs" />
-    <Compile Include="Interfaces\Rendering\IPlanetAtmosphereModel.cs" />
-    <Compile Include="Interfaces\Rendering\IPlanetOcean.cs" />
-    <Compile Include="Interfaces\Rendering\ISphereAtmosphereRenderer.cs" />
-    <Compile Include="Interfaces\Rendering\ITerrainPatch.cs" />
     <Compile Include="Interfaces\Rendering\ITerrainPatchGeometry.cs" />
     <Compile Include="Interfaces\Rendering\ITerrainPatchGeometryManager.cs" />
     <Compile Include="Interfaces\Rendering\ITerrainType.cs" />
@@ -68,10 +63,12 @@
     <Compile Include="NoiseTest.cs" />
     <Compile Include="Planets\Models\PlanetAtmosphereModel.cs" />
     <Compile Include="Planets\Models\PlanetOceanModel.cs" />
+    <Compile Include="Planets\Models\PlanetRingModel.cs" />
     <Compile Include="Planets\Models\PlanetTerrainModelChangedEventArgs.cs" />
     <Compile Include="Planets\Planet.cs" />
     <Compile Include="Planets\Spherical\Models\SpherePlanetAtmosphereModel.cs" />
     <Compile Include="Planets\Spherical\Models\SpherePlanetProcTerrainModel.cs" />
+    <Compile Include="Planets\Spherical\Models\SpherePlanetRingModel.cs" />
     <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatch.cs" />
     <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatchBuilder.cs" />
     <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatchBuildItem.cs" />
@@ -81,6 +78,7 @@
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetMarbleRenderer.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetMarbleTextureBuilder.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetOceanRenderer.cs" />
+    <Compile Include="Planets\Spherical\Renderers\SpherePlanetRingRenderer.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetTerrainPatchRenderer.cs" />
     <Compile Include="Planets\Spherical\SpherePlanet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

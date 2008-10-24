@@ -74,20 +74,23 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			{
 				return;
 			}
-			if ( m_Geometry == null )
+			using ( GameProfiles.Game.Rendering.PlanetRendering.FlatPlanetRendering.CreateGuard( ) )
 			{
-				BuildGeometry( );
+				if ( m_Geometry == null )
+				{
+					BuildGeometry( );
+				}
+				UpdateMarbleTexture( );
+				if ( m_MarbleTexture != null )
+				{
+					m_Technique.Effect.Parameters[ "MarbleTexture" ].Set( m_MarbleTexture );
+				}
+				ITexture2d packTexture = m_Planet.TerrainModel.TerrainPackTexture;
+				ITexture2d typesTexture = m_Planet.TerrainModel.TerrainTypesTexture;
+				m_Technique.Effect.Parameters[ "TerrainPackTexture" ].Set( packTexture );
+				m_Technique.Effect.Parameters[ "TerrainTypeTexture" ].Set( typesTexture );
+				m_Technique.Apply( context, m_Geometry );
 			}
-			UpdateMarbleTexture( );
-			if ( m_MarbleTexture != null )
-			{
-				m_Technique.Effect.Parameters[ "MarbleTexture" ].Set( m_MarbleTexture );
-			}
-			ITexture2d packTexture = m_Planet.TerrainModel.TerrainPackTexture;
-			ITexture2d typesTexture = m_Planet.TerrainModel.TerrainTypesTexture;
-			m_Technique.Effect.Parameters[ "TerrainPackTexture" ].Set( packTexture );
-			m_Technique.Effect.Parameters[ "TerrainTypeTexture" ].Set( typesTexture );
-			m_Technique.Apply( context, m_Geometry );
 		}
 
 		#endregion

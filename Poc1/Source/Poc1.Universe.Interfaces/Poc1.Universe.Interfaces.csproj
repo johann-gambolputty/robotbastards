@@ -40,11 +40,13 @@
     <Compile Include="IOrbit.cs" />
     <Compile Include="ISun.cs" />
     <Compile Include="IUniCamera.cs" />
+    <Compile Include="IUniRenderable.cs" />
     <Compile Include="Planets\Models\IPlanetAtmosphereModel.cs" />
     <Compile Include="Planets\Models\IPlanetCloudModel.cs" />
     <Compile Include="Planets\Models\IPlanetEnvironmentModel.cs" />
     <Compile Include="Planets\Models\IPlanetOceanModel.cs" />
     <Compile Include="Planets\Models\IPlanetProcTerrainModel.cs" />
+    <Compile Include="Planets\Models\IPlanetRingModel.cs" />
     <Compile Include="Planets\Models\IPlanetTerrainModel.cs" />
     <Compile Include="Planets\IPlanet.cs" />
     <Compile Include="Planets\Renderers\IPlanetAtmosphereRenderer.cs" />
@@ -52,6 +54,7 @@
     <Compile Include="Planets\Renderers\IPlanetEnvironmentRenderer.cs" />
     <Compile Include="Planets\Renderers\IPlanetMarbleRenderer.cs" />
     <Compile Include="Planets\Renderers\IPlanetOceanRenderer.cs" />
+    <Compile Include="Planets\Renderers\IPlanetRingRenderer.cs" />
     <Compile Include="Planets\Renderers\IPlanetTerrainRenderer.cs" />
     <Compile Include="Planets\Renderers\Patches\ITerrainPatch.cs" />
     <Compile Include="Planets\Renderers\Patches\ITerrainPatchGenerator.cs" />
@@ -59,6 +62,7 @@
     <Compile Include="Planets\Spherical\ISpherePlanet.cs" />
     <Compile Include="Planets\Spherical\Models\ISpherePlanetAtmosphereModel.cs" />
     <Compile Include="Planets\Spherical\Models\ISpherePlanetCloudModel.cs" />
+    <Compile Include="Planets\Spherical\Models\ISpherePlanetRingModel.cs" />
     <Compile Include="Planets\Spherical\Models\ISpherePlanetTerrainModel.cs" />
     <Compile Include="Planets\Spherical\Renderers\ISpherePlanetAtmosphereRenderer.cs" />
     <Compile Include="Planets\Spherical\Renderers\ISpherePlanetCloudRenderer.cs" />

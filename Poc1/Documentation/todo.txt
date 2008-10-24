@@ -43,7 +43,6 @@
 			- H: Fix larger radius planets (lots of z-fighting, no terrain detail)
 			- H: combine terrain/marble rendering using z clipping planes (take a look at PSM)
 		- H: Atmospheric shaders
-		- M: Add planetary rings
 		- M: Add moons back in
 		- M: Add sun
 		- M: Add light scattering post-process (god-rays)
@@ -162,6 +161,8 @@
 		- M: Particle systems
 		- M: Add configuration options for effect assembly (or perhaps make this data-driven, so when a CG file is loaded, use CG libraries?)
 		- M: Fullscreen mode
+		- L: Create a vertex buffer builder object that can create vertex data like the IDraw interface can
+		- L: Render node graph is a bit useless - easy to add nodes outside the influence of the class and screw up start node set
 		- L: Effect parameters need a type value
 		- L: When effect parameters get a type value, change render nodes to check this when specifying output bindings
 		- L: DelegateRenderable has a crap name
@@ -193,6 +194,7 @@
 	- H: Ground displacement requires connected patches, or slightly different skirt rendering (vertical skirts show up) (see new vertex normal skirts)
 
 - DONE
+	- M: Add planetary rings
 	- H: Display render event needs to accept rendering context
 	- H: Alpha blend terrain patches into marble view when rendering both
 	- H: Marble texture rebuild occurs whenever the model changes, which is often when editing terrain textures
