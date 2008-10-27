@@ -27,8 +27,18 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
-	float4 colour = float4( GetScatteredSkyColour( input.m_WorldPos.xyz ), 1 );
-	colour.a = min( ( colour.r + colour.g + colour.b ) * 1.5f, 1 );
+	float4 colour;
+	colour.rgb = GetExternalScatteredSkyColour( input.m_WorldPos.xyz );
+	if ( AtmViewPosLength > AtmOuterRadius )
+	{
+		colour.rgb = GetExternalScatteredSkyColour( input.m_WorldPos.xyz );
+	}
+	else
+	{
+		colour.rgb = GetScatteredSkyColour( input.m_WorldPos.xyz );
+	}
+
+	colour.a = min( ( colour.r + colour.g + colour.b ) * 1.7f, 1 );
 	return colour;
 }
 
@@ -38,10 +48,8 @@ technique DefaultTechnique
 	{
 		BlendEnable				= true;
 		BlendFunc				= int2( One, OneMinusSrcAlpha );
-
-	//	Texture3DEnable[0]		= true;
 		LightingEnable			= false;
-		DepthMask				= true;
+		DepthMask				= false;
 		ShadeModel				= Smooth;
 		FrontFace				= CCW;
 		DepthTestEnable			= true;

@@ -104,7 +104,7 @@ namespace Poc1.Tools.Atmosphere
 			int heightSamples = buildParams.OpticalDepthResolution;
 			float viewAngleInc = Constants.Pi / ( viewSamples - 1 );
 			float heightRange = ( m_OuterRadius - m_InnerRadius );
-			float heightInc = ( heightRange - heightRange * 0.05f ) / ( heightSamples - 1 );	//	Push height range in slightly to allow simplification of sphere intersections
+			float heightInc = ( heightRange * 0.9999f ) / ( heightSamples - 1 );	//	Push height range in slightly to allow simplification of sphere intersections
 
 			float height = m_InnerRadius;
 			for ( int heightSample = 0; heightSample < heightSamples; ++heightSample, height += heightInc )
@@ -120,7 +120,8 @@ namespace Poc1.Tools.Atmosphere
 
 					//	NOTE: If ray intersection fails, the previous intersection position is used...
 					Point3 atmInt;
-					if ( !GetRayPlanetAndAtmosphereIntersection( pos, viewDir, out atmInt ) )
+				//	if ( !GetRayPlanetAndAtmosphereIntersection( pos, viewDir, out atmInt ) )
+					if ( !GetRayAtmosphereIntersection( pos, viewDir, out atmInt ) )
 					{
 						atmInt = lastAtmInt;
 					}
@@ -130,9 +131,9 @@ namespace Poc1.Tools.Atmosphere
 					}
 
 					Vector3 step = ( atmInt - pos ) / m_AttenuationSamples;
-					float oR = ComputeOpticalDepth( pos, step, m_RayleighCoefficients[ 0 ], m_MieCoefficients[ 0 ] );
-					float oG = ComputeOpticalDepth( pos, step, m_RayleighCoefficients[ 1 ], m_MieCoefficients[ 1 ] );
-					float oB = ComputeOpticalDepth( pos, step, m_RayleighCoefficients[ 2 ], m_MieCoefficients[ 2 ] );
+					float oR = CalculateCombinedOutScatter( pos, step, m_RayleighCoefficients[ 0 ], m_MieCoefficients[ 0 ] );
+					float oG = CalculateCombinedOutScatter( pos, step, m_RayleighCoefficients[ 1 ], m_MieCoefficients[ 1 ] );
+					float oB = CalculateCombinedOutScatter( pos, step, m_RayleighCoefficients[ 2 ], m_MieCoefficients[ 2 ] );
 
 					float attR = Functions.Exp( -oR );
 					float attG = Functions.Exp( -oG );
@@ -167,9 +168,9 @@ namespace Poc1.Tools.Atmosphere
 		private unsafe bool BuildScatteringTexture( AtmosphereBuildParameters parameters, byte* voxels, AtmosphereBuildProgress progress )
 		{
 			float viewAngle = Constants.Pi;
-			float viewAngleInc = Constants.Pi / ( parameters.ViewAngleSamples - 1 );
+			float viewAngleInc = Constants.Pi  / ( parameters.ViewAngleSamples - 1 );
 			float heightRange = ( m_OuterRadius - m_InnerRadius );
-			float heightInc = ( heightRange - heightRange * 0.05f ) / ( parameters.HeightSamples - 1 );	//	Push height range in slightly to allow simplification of sphere intersections
+			float heightInc = ( heightRange * 0.9999f ) / ( parameters.HeightSamples - 1 );	//	Push height range in slightly to allow simplification of sphere intersections
 			float sunAngleInc = ( Constants.Pi ) / ( parameters.SunAngleSamples - 1 );
 
 			for ( int viewAngleSample = 0; viewAngleSample < parameters.ViewAngleSamples; ++viewAngleSample, viewAngle -= viewAngleInc )
@@ -239,7 +240,7 @@ namespace Poc1.Tools.Atmosphere
 			intPt = outerIntersection.IntersectionPosition;
 			return true;	
 		}
-		
+
 		/// <summary>
 		/// Computes the in-scattering term for a given sun angle, viewer orientation, and height. Stores
 		/// the result in a 3-component voxel
@@ -282,7 +283,8 @@ namespace Poc1.Tools.Atmosphere
 			Point3 viewPos = new Point3( 0, height, 0 );
 
 			Point3 viewEnd;
-			GetRayPlanetAndAtmosphereIntersection( viewPos, viewDir, out viewEnd );
+		//	GetRayPlanetAndAtmosphereIntersection( viewPos, viewDir, out viewEnd );
+			GetRayAtmosphereIntersection( viewPos, viewDir, out viewEnd );
 
 			//	The summation of attenuation is a Reimann sum approximation of the integral
 			//	of atmospheric density .
@@ -298,8 +300,8 @@ namespace Poc1.Tools.Atmosphere
 			{
 				//	Cast a ray to the sun. Don't intersect the planet. This is a cheap way of providing dark nights
 				Point3 sunPt;
-			//	if ( !GetRayAtmosphereIntersection( samplePos, sunDir, out sunPt ) )
-				if ( !GetRayPlanetAndAtmosphereIntersection( samplePos, sunDir, out sunPt ) )
+				if ( !GetRayAtmosphereIntersection( samplePos, sunDir, out sunPt ) )
+			//	if ( !GetRayPlanetAndAtmosphereIntersection( samplePos, sunDir, out sunPt ) )
 				{
 					break;
 				}
@@ -314,14 +316,18 @@ namespace Poc1.Tools.Atmosphere
 				Vector3 sunStep = ( sunPt - samplePos ) / m_AttenuationSamples;
 				for ( int component = 0; component < 3; ++component )
 				{
-					//	TODO: AP: This should calculate the rayleigh + mie out scatter terms separately, then sum them
 					float bR = m_RayleighCoefficients[ component ];
 					float bM = m_MieCoefficients[ component ];
-					float sunOutScatter = ComputeOpticalDepth( samplePos, sunStep, bR, bM );
-					float viewOutScatter = ComputeOpticalDepth( samplePos, viewStep, bR, bM );
-					float outScatter = Functions.Exp( ( -sunOutScatter - viewOutScatter ) * m_OutscatterFudge );
-					mAccum[ component ] += pMCoeff * outScatter;
-					rAccum[ component ] += pRCoeff * outScatter;
+
+					float sunOutScatterR, sunOutScatterM;
+					float viewOutScatterR, viewOutScatterM;
+
+					CalculateOutScatter( samplePos, sunStep, bR, bM, out sunOutScatterR, out sunOutScatterM );
+					CalculateOutScatter( samplePos, viewStep, bR, bM, out viewOutScatterR, out viewOutScatterM );
+					float outScatterR = Functions.Exp( ( -sunOutScatterR - viewOutScatterR ) * m_OutscatterFudge );
+					float outScatterM = Functions.Exp( ( -sunOutScatterM - viewOutScatterM ) * m_OutscatterFudge );
+					mAccum[ component ] += pMCoeff * outScatterM;
+					rAccum[ component ] += pRCoeff * outScatterR;
 				}
 
 				samplePos += sampleStep;
@@ -344,11 +350,21 @@ namespace Poc1.Tools.Atmosphere
 			voxel[ 1 ] = ( byte )Utils.Clamp( accum[ 2 ] * 255.0f, 0, 255 );
 			voxel[ 0 ] = ( byte )Utils.Clamp( avgMie * 255.0f / 3.0f, 0, 255 );
 		}
+
+		/// <summary>
+		/// Calculates the average atmospheric density along a ray
+		/// </summary>
+		private float CalculateCombinedOutScatter( Point3 pt, Vector3 step, float bR, float bM )
+		{
+			float outScatterR, outScatterM;
+			CalculateOutScatter( pt, step, bR, bM, out outScatterR, out outScatterM );
+			return outScatterR + outScatterM;
+		}
 		
 		/// <summary>
 		/// Calculates the average atmospheric density along a ray
 		/// </summary>
-		private float ComputeOpticalDepth( Point3 pt, Vector3 step, float bR, float bM )
+		private void CalculateOutScatter( Point3 pt, Vector3 step, float bR, float bM, out float outScatterR, out float outScatterM )
 		{
 			float pmAccum = 0;
 			float prAccum = 0;
@@ -364,7 +380,8 @@ namespace Poc1.Tools.Atmosphere
 				pt += step;
 			}
 
-			return bR * prAccum + bM * pmAccum;
+			outScatterR = bR * prAccum;
+			outScatterM = bM * pmAccum;
 		}
 
 		private readonly static double[] m_Wavelengths = new double[ 3 ] { 650e-9, 610e-9, 475e-9 };

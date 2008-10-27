@@ -1,8 +1,8 @@
 sampler3D ScatteringTexture = sampler_state
 {
-	WrapS = Clamp;
-	WrapT = Clamp;
-	WrapR = Clamp;
+	WrapS = ClampToEdge;
+	WrapT = ClampToEdge;
+	WrapR = ClampToEdge;
 	MinFilter = Linear;
 	MagFilter = Linear;
 };
@@ -24,6 +24,7 @@ float AtmViewHeight;
 float AtmHgCoeff = -0.90f;
 float AtmPhaseWeight = 1.0f;
 float AtmInnerRadius = 0;
+float AtmOuterRadius = 0;
 float AtmThickness = 1;
 float AtmMiePhaseWeight = 1;
 
@@ -94,18 +95,61 @@ float3 GetScatteredObjectColour( float3 pt, float3 objColour )
 	return saturate( ( opticalDepth * objColour ) + scatter );
 }
 
+// Simplified ray-sphere intersection.
+// Assumptions: sphere is centered on the origin, pt is relative to the origin, and is -outside- the sphere
+float3 GetRaySphereIntersection( float3 pt, float3 vec, float sphereRadius )
+{
+	float a0 = dot( pt, pt ) - ( sphereRadius * sphereRadius );
+	float a1 = dot( vec, pt );
+	float d = ( a1 * a1 ) - a0;
+	float root = sqrt( d );
+	float t0 = -a1 - root;
+	float t1 = -a1 + root;
+	float closestT = ( t0 < t1 ) ? t0 : t1;
+
+	return pt + vec * closestT;
+}
+
+// Gets the colour of a given point on the sky geometry, seen from a camera position outside the atmosphere
+float3 GetExternalScatteredSkyColour( float3 pt )
+{
+	float3 viewVec = normalize( pt - AtmViewPos );
+	float3 viewPos = GetRaySphereIntersection( AtmViewPos, viewVec, AtmOuterRadius );
+	float viewHeight = length( viewPos );
+
+	float posToSunAngle = dot( viewPos, SunDir ) / viewHeight;
+	float viewToSunAngle = dot( viewVec, SunDir );
+
+	//	TODO: AP: Intersect view segment with outer sphere. If segment intersects sphere, set
+	//	the view position to be the intersection point.
+
+	float h = saturate( ( viewHeight - AtmInnerRadius ) / AtmThickness );
+	float th = ( ( dot( viewPos, viewVec ) / viewHeight ) + 1.0f ) / 2.0f;
+	float si = ( posToSunAngle + 1.0f ) / 2.0f;
+
+	float4 scatterCoeffs = tex3D( ScatteringTexture, float3( h, si, th ) );
+	float rayPhase = RayleighPhase( viewToSunAngle );
+	float miePhase = HeyneyGreensteinPhaseFunction( viewToSunAngle, AtmHgCoeff );
+
+	float3 rayScatter = lerp( scatterCoeffs.rgb, scatterCoeffs.rgb * rayPhase, AtmPhaseWeight );
+	float mieScatter = lerp( scatterCoeffs.a, scatterCoeffs.a * miePhase, AtmPhaseWeight );
+
+	return SunIntensity * float3( rayScatter.r + mieScatter, rayScatter.g + mieScatter, rayScatter.b + mieScatter );
+
+}
+
 // Gets the colour of a given point on the sky geometry
 float3 GetScatteredSkyColour( float3 pt )
 {
 	float3 viewVec = normalize( pt - AtmViewPos );
+	float posToSunAngle = dot( AtmViewPos, SunDir ) / AtmViewPosLength;
+	float viewToSunAngle = dot( viewVec, SunDir );
 
 	//	TODO: AP: Intersect view segment with outer sphere. If segment intersects sphere, set
 	//	the view position to be the intersection point.
 
 	float h = AtmViewHeight;
 	float th = ( ( dot( AtmViewPos, viewVec ) / AtmViewPosLength ) + 1.0f ) / 2.0f;
-	float posToSunAngle = dot( AtmViewPos, SunDir ) / AtmViewPosLength;
-	float viewToSunAngle = dot( viewVec, SunDir );
 	float si = ( posToSunAngle + 1.0f ) / 2.0f;
 
 	float4 scatterCoeffs = tex3D( ScatteringTexture, float3( h, si, th ) );

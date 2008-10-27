@@ -5,7 +5,7 @@ namespace Poc1.Universe.Interfaces
 	/// <summary>
 	/// Uni-renderable object
 	/// </summary>
-	public interface IUniRenderable : IRenderable
+	public interface IUniRenderable
 	{
 		/// <summary>
 		/// Renders the deep version of this object
