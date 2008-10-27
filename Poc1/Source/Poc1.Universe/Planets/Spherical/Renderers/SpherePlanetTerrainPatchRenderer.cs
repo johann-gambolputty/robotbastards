@@ -97,7 +97,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			ISpherePlanetAtmosphereRenderer atmosphereRenderer = m_Planet.SphereAtmosphereRenderer;
 			if ( atmosphereRenderer != null )
 			{
-				atmosphereRenderer.SetupAtmosphereEffectParameters( m_Technique.Effect, true );
+				atmosphereRenderer.SetupAtmosphereEffectParameters( m_Technique.Effect, true, false );
 			}
 
 			m_Technique.Effect.Parameters[ "PlanetRadius" ].Set( m_Planet.Radius.ToRenderUnits );

@@ -1,3 +1,4 @@
+using System;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets.Spherical;
@@ -51,39 +52,35 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			m_OpticalDepthTexture = opticalDepthTexture;
 		}
 
+
 		/// <summary>
-		/// Sets up parameters for ground effects
+		/// Sets up parameters for effects that use atmospheric rendering
 		/// </summary>
-		public void SetupAtmosphereEffectParameters( IEffect effect, bool objectRendering )
+		/// <param name="effect">Effect to set up</param>
+		/// <param name="objectRendering">True if the effect is being used to render an object in the atmosphere</param>
+		/// <param name="deepRender">If true, distances are passed to the effect in astro render units. Otherwise, render units are used.</param>
+		public void SetupAtmosphereEffectParameters( IEffect effect, bool objectRendering, bool deepRender )
 		{
 			if ( m_Planet == null || m_Planet.AtmosphereModel == null )
 			{
 				return;
 			}
 			IUniCamera camera = UniCamera.Current;
-			Point3 localPos = Units.RenderUnits.MakeRelativePoint( m_Planet.Transform.Position, camera.Position );
-			float planetRadius = m_Planet.Radius.ToRenderUnits;
-			float atmosphereRadius = m_Planet.AtmosphereModel.AtmosphereThickness.ToRenderUnits;
-			float height = localPos.DistanceTo( Point3.Origin ) - planetRadius;
-			float clampedHeight = Utils.Clamp( height, 0, atmosphereRadius );
-			float normHeight = clampedHeight / atmosphereRadius;
 
-			float clampedLength = planetRadius + clampedHeight;
-			Vector3 groundVec = localPos.ToVector3( ).MakeLength( clampedLength );
-			Point3 atmPos = Point3.Origin + groundVec;
+			if ( deepRender )
+			{
+				SetupAstroRenderUnitAtmosphereEffectParameters( camera, effect );
+			}
+			else
+			{
+				SetupRenderUnitAtmosphereEffectParameters( camera, effect );	
+			}
 
-			Vector3 viewDir = UniCamera.Current.Frame.ZAxis;
-			effect.Parameters[ "AtmViewPosLength" ].Set( atmPos.DistanceTo( Point3.Origin ) );
+			//	Set up parameters shared between astro and close atmosphere rendering
 			effect.Parameters[ "AtmHgCoeff" ].Set( m_Planet.AtmosphereModel.PhaseCoefficient );
 			effect.Parameters[ "AtmPhaseWeight" ].Set( m_Planet.AtmosphereModel.PhaseWeight );
-			effect.Parameters[ "AtmViewPos" ].Set( atmPos.X, atmPos.Y, atmPos.Z );
-			effect.Parameters[ "AtmViewDir" ].Set( viewDir.X, viewDir.Y, viewDir.Z );
-			effect.Parameters[ "AtmViewHeight" ].Set( normHeight );
 			effect.Parameters[ "ScatteringTexture" ].Set( m_ScatteringTexture );
-			effect.Parameters[ "AtmInnerRadius" ].Set( planetRadius );
-			effect.Parameters[ "AtmThickness" ].Set( atmosphereRadius );
 			effect.Parameters[ "AtmMiePhaseWeight" ].Set( m_Planet.AtmosphereModel.MiePhaseWeight );
-
 			if ( objectRendering )
 			{
 				effect.Parameters[ "OpticalDepthTexture" ].Set( m_OpticalDepthTexture );
@@ -100,12 +97,26 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// <param name="context">Rendering context</param>
 		public void Render( IRenderContext context )
 		{
+			//	Atmosphere has no close rendering component
+			throw new NotSupportedException( "Atmosphere only renders using DeepRender() method" );
+		}
+
+		#endregion
+
+		#region IUniRenderable Members
+
+		/// <summary>
+		/// Renders the atmosphere
+		/// </summary>
+		/// <param name="context">Rendering context</param>
+		public void DeepRender( IRenderContext context )
+		{
 			if ( m_Planet == null || m_Planet.AtmosphereModel == null )
 			{
 				return;
 			}
 
-			SetupAtmosphereEffectParameters( m_Techniques.Effect, false );
+			SetupAtmosphereEffectParameters( m_Techniques.Effect, false, true );
 			context.ApplyTechnique( m_Techniques, AtmosphereGeometry );
 		}
 
@@ -129,9 +140,9 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			{
 				if ( m_AtmosphereGeometry == null )
 				{
-					float renderRadius = m_Planet.Radius.ToRenderUnits + m_Planet.AtmosphereModel.AtmosphereThickness.ToRenderUnits;
+					float renderRadius = ( float )( m_Planet.Radius.ToAstroRenderUnits + m_Planet.AtmosphereModel.AtmosphereThickness.ToAstroRenderUnits );
 					Graphics.Draw.StartCache( );
-					Graphics.Draw.Sphere( null, Point3.Origin, renderRadius, 40, 40 );
+					Graphics.Draw.Sphere( null, Point3.Origin, renderRadius, 60, 60 );
 					m_AtmosphereGeometry = Graphics.Draw.StopCache( );
 				}
 				return m_AtmosphereGeometry;
@@ -146,6 +157,53 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			m_Techniques = new TechniqueSelector( m_Effect.Asset, m_Techniques.Name );
 		}
 
+		private void SetupRenderUnitAtmosphereEffectParameters( IUniCamera camera, IEffect effect )
+		{
+			Point3 localPos = Units.RenderUnits.MakeRelativePoint( m_Planet.Transform.Position, camera.Position );
+			float planetRadius = m_Planet.Radius.ToRenderUnits;
+			float atmosphereRadius = m_Planet.AtmosphereModel.AtmosphereThickness.ToRenderUnits;
+			float height = localPos.DistanceTo( Point3.Origin ) - planetRadius;
+			float clampedHeight = Utils.Clamp( height, 0, atmosphereRadius );
+			float normHeight = clampedHeight / atmosphereRadius;
+
+			float clampedLength = planetRadius + clampedHeight;
+			Vector3 groundVec = localPos.ToVector3( ).MakeLength( clampedLength );
+			Point3 atmPos = Point3.Origin + groundVec;
+
+			Vector3 viewDir = UniCamera.Current.Frame.ZAxis;
+			effect.Parameters[ "AtmViewPosLength" ].Set( atmPos.DistanceTo( Point3.Origin ) );
+			effect.Parameters[ "AtmViewPos" ].Set( atmPos.X, atmPos.Y, atmPos.Z );
+			effect.Parameters[ "AtmViewDir" ].Set( viewDir.X, viewDir.Y, viewDir.Z );
+			effect.Parameters[ "AtmViewHeight" ].Set( normHeight );
+			effect.Parameters[ "AtmInnerRadius" ].Set( planetRadius );
+			effect.Parameters[ "AtmThickness" ].Set( atmosphereRadius );
+			effect.Parameters[ "AtmOuterRadius" ].Set( planetRadius + atmosphereRadius );
+		}
+
+		private void SetupAstroRenderUnitAtmosphereEffectParameters( IUniCamera camera, IEffect effect )
+		{
+			Point3 localPos = Units.AstroRenderUnits.MakeRelativePoint( m_Planet.Transform.Position, camera.Position );
+			float planetRadius = ( float )m_Planet.Radius.ToAstroRenderUnits;
+			float atmosphereRadius = ( float )m_Planet.AtmosphereModel.AtmosphereThickness.ToAstroRenderUnits;
+			float height = localPos.DistanceTo( Point3.Origin ) - planetRadius;
+			float clampedHeight = Utils.Clamp( height, 0, atmosphereRadius );
+			float normHeight = clampedHeight / atmosphereRadius;
+
+		//	float clampedLength = planetRadius + clampedHeight;
+		//	Vector3 groundVec = localPos.ToVector3( ).MakeLength( clampedLength );
+			Point3 atmPos = localPos; // Point3.Origin + groundVec;
+
+			Vector3 viewDir = UniCamera.Current.Frame.ZAxis;
+			effect.Parameters[ "AtmViewPosLength" ].Set( atmPos.DistanceTo( Point3.Origin ) );
+			effect.Parameters[ "AtmViewPos" ].Set( atmPos.X, atmPos.Y, atmPos.Z );
+			effect.Parameters[ "AtmViewDir" ].Set( viewDir.X, viewDir.Y, viewDir.Z );
+			effect.Parameters[ "AtmViewHeight" ].Set( normHeight );
+			effect.Parameters[ "AtmInnerRadius" ].Set( planetRadius );
+			effect.Parameters[ "AtmThickness" ].Set( atmosphereRadius );
+			effect.Parameters[ "AtmOuterRadius" ].Set( planetRadius + atmosphereRadius );
+		}
+
 		#endregion
+
 	}
 }

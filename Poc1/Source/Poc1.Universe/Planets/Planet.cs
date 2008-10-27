@@ -296,6 +296,10 @@ namespace Poc1.Universe.Planets
 			{
 				RingRenderer.Render( context );
 			}
+			if ( AtmosphereRenderer != null )
+			{
+				AtmosphereRenderer.DeepRender( context );
+			}
 
 			//	Pop transform
 			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
@@ -322,10 +326,6 @@ namespace Poc1.Universe.Planets
 			if ( m_CloudRenderer != null )
 			{
 				m_CloudRenderer.Render( context );
-			}
-			if ( m_AtmosphereRenderer != null )
-			{
-				m_AtmosphereRenderer.Render( context );
 			}
 
 			//	Pop transform

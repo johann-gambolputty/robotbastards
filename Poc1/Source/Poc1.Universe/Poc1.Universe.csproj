@@ -62,11 +62,13 @@
     <Compile Include="Interfaces\Rendering\ITerrainTypeManager.cs" />
     <Compile Include="NoiseTest.cs" />
     <Compile Include="Planets\Models\PlanetAtmosphereModel.cs" />
+    <Compile Include="Planets\Models\PlanetCloudModel.cs" />
     <Compile Include="Planets\Models\PlanetOceanModel.cs" />
     <Compile Include="Planets\Models\PlanetRingModel.cs" />
     <Compile Include="Planets\Models\PlanetTerrainModelChangedEventArgs.cs" />
     <Compile Include="Planets\Planet.cs" />
     <Compile Include="Planets\Spherical\Models\SpherePlanetAtmosphereModel.cs" />
+    <Compile Include="Planets\Spherical\Models\SpherePlanetCloudModel.cs" />
     <Compile Include="Planets\Spherical\Models\SpherePlanetProcTerrainModel.cs" />
     <Compile Include="Planets\Spherical\Models\SpherePlanetRingModel.cs" />
     <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatch.cs" />
@@ -75,6 +77,7 @@
     <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatchConstants.cs" />
     <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatchVertices.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetAtmosphereRenderer.cs" />
+    <Compile Include="Planets\Spherical\Renderers\SpherePlanetCloudRenderer.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetMarbleRenderer.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetMarbleTextureBuilder.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetOceanRenderer.cs" />

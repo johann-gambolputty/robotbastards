@@ -1,13 +1,14 @@
 using System;
 using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Renderers;
+using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Interfaces.Planets
 {
 	/// <summary>
 	/// Plane interface
 	/// </summary>
-	public interface IPlanet : IUniRenderable, IBody, IDisposable
+	public interface IPlanet : IRenderable, IUniRenderable, IBody, IDisposable
 	{
 		/// <summary>
 		/// Gets/sets the planet's orbit

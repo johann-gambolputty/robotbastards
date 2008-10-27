@@ -286,6 +286,17 @@ namespace Poc1.Universe.Interfaces
 				return renderUnits.Value;
 			}
 
+			/// <summary>
+			/// Makes a point local to an origin point, measured in render units
+			/// </summary>
+			public static Point3 MakeRelativePoint( UniPoint3 origin, UniPoint3 pt )
+			{
+				double x = Convert.UniToAstroRender( pt.X - origin.X );
+				double y = Convert.UniToAstroRender( pt.Y - origin.Y );
+				double z = Convert.UniToAstroRender( pt.Z - origin.Z );
+				return new Point3( ( float )x, ( float )y, ( float )z );
+			}
+
 			#region Private Members
 
 			private double m_Value; 

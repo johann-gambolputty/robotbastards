@@ -194,7 +194,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Scales the point by a vector
 		/// </summary>
-		public static Point3	operator * ( Point3 pt, Vector3 vec )
+		public static Point3 operator * ( Point3 pt, Vector3 vec )
 		{
 			return new Point3( pt.X * vec.X, pt.Y * vec.Y, pt.Z * vec.Z );
 		}
@@ -202,7 +202,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Gets the squared distance from one point to another
 		/// </summary>
-		public float	SqrDistanceTo( Point3 pt )
+		public float SqrDistanceTo( Point3 pt )
 		{
 			float diffX = ( X - pt.X );
 			float diffY = ( Y - pt.Y );
@@ -214,7 +214,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Gets the distance from on point to another
 		/// </summary>
-		public float	DistanceTo( Point3 pt )
+		public float DistanceTo( Point3 pt )
 		{
 			return Functions.Sqrt( SqrDistanceTo( pt ) );
 		}

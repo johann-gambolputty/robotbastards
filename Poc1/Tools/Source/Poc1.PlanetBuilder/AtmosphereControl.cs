@@ -206,6 +206,10 @@ namespace Poc1.PlanetBuilder
 		{
 			ISpherePlanet planet = ( ISpherePlanet )BuilderState.Instance.Planet;
 			m_AtmosphereModel.InnerRadiusMetres = ( float )planet.Radius.ToMetres;
+			if ( planet.AtmosphereModel != null )
+			{
+				m_AtmosphereModel.AtmosphereThicknessMetres = ( float )planet.AtmosphereModel.AtmosphereThickness;
+			}
 			phaseCoeffUpDown.Value = ( decimal )planet.AtmosphereModel.PhaseCoefficient;
 			phaseWeightUpDown.Value = ( decimal )planet.AtmosphereModel.PhaseWeight;
 			innerRadiusUpDown.Value = ( decimal )( m_AtmosphereModel.InnerRadiusMetres / 1000.0 );

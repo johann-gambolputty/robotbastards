@@ -98,16 +98,16 @@ namespace Poc1.Tools.Atmosphere
 
 		#region Private Members
 
-		private float m_OutscatterFudgeFactor = 0.2f;
-		private float m_InscatterDistanceFudgeFactor = 10;
-		private float m_OutscatterDistanceFudgeFactor = 0.3f;
+		private float m_OutscatterFudgeFactor = 1.0f;
+		private float m_InscatterDistanceFudgeFactor = 1.0f;
+		private float m_OutscatterDistanceFudgeFactor = 1.0f;
 		private float m_MieFudge = 0.1f;
 		private float m_RayleighFudge = 1.0f;
-		private float m_MieDensityScaleHeightFraction = 0.9f;
-		private float m_RayleighDensityScaleHeightFraction = 0.9f;
+		private float m_MieDensityScaleHeightFraction = 0.7f;
+		private float m_RayleighDensityScaleHeightFraction = 0.25f;
 		private readonly float[] m_SunIntensity = new float[ 3 ] { 1, 1, 1 };
 		private float m_InnerRadius = 6000000;
-		private float m_Thickness = 30000;
+		private float m_Thickness = 20000;
 
 		#endregion
 
