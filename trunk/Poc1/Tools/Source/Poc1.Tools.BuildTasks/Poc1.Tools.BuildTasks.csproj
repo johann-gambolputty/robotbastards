@@ -39,6 +39,7 @@
     <Compile Include="BuildTerrainTypes.cs" />
     <Compile Include="CopyToGame.cs" />
     <Compile Include="CreateNoiseBitmap.cs" />
+    <Compile Include="CreateWaveAnimation.cs" />
     <Compile Include="DeleteFromGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -46,6 +47,10 @@
     <ProjectReference Include="..\Poc1.Tools.TerrainTextures.Core\Poc1.Tools.TerrainTextures.Core.csproj">
       <Project>{F34331DC-90A9-4C51-B7F9-34B3B96965BD}</Project>
       <Name>Poc1.Tools.TerrainTextures.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc1.Tools.Waves\Poc1.Tools.Waves.csproj">
+      <Project>{C8DC8F1E-E722-42E0-A433-122BFF0BBD2D}</Project>
+      <Name>Poc1.Tools.Waves</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

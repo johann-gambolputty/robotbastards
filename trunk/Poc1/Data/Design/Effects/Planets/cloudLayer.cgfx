@@ -29,9 +29,10 @@ struct FragmentShaderInput
 	float3 m_Normal;
 };
 
-float CloudBlend = 0;
 float4x4 ModelViewProjectionMatrix;
 float4x4 InverseTransposeModelMatrix;
+
+float CloudBlend = 0;
 float4x4 CloudTransform = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
 
 FragmentShaderInput VertexShader( VertexShaderInput input )

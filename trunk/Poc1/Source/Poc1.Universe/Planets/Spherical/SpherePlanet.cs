@@ -28,6 +28,7 @@ namespace Poc1.Universe.Planets.Spherical
 			planet.TerrainModel			= new SpherePlanetProcTerrainModel( );
 			planet.AtmosphereModel		= new SpherePlanetAtmosphereModel( );
 			planet.RingModel			= new SpherePlanetRingModel( planetRadius * 1.75, new Units.Metres( 50000 ) );
+			planet.CloudModel			= new SpherePlanetCloudModel( );
 
 			//	Renderers
 			planet.MarbleRenderer		= new SpherePlanetMarbleRenderer( new SpherePlanetMarbleTextureBuilder( ) );
@@ -35,6 +36,7 @@ namespace Poc1.Universe.Planets.Spherical
 			planet.TerrainRenderer		= new SpherePlanetTerrainPatchRenderer( );
 			planet.AtmosphereRenderer	= new SpherePlanetAtmosphereRenderer( );
 			planet.RingRenderer			= new SpherePlanetRingRenderer( );
+			planet.CloudRenderer		= new SpherePlanetCloudRenderer( );
 
 			return planet;
 		}

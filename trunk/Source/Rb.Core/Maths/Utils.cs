@@ -2,10 +2,18 @@
 namespace Rb.Core.Maths
 {
 	/// <summary>
-	/// Summary description for Utilities.
+	/// Maths utility functions
 	/// </summary>
 	public class Utils
 	{
+		/// <summary>
+		/// Returns true if an integer value is a power of two
+		/// </summary>
+		public static bool IsPowerOf2( int x )
+		{
+			return ( x & ( x - 1 ) ) == 0;
+		}
+
 		/// <summary>
 		/// Swaps two values
 		/// </summary>

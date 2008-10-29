@@ -1,8 +1,8 @@
 using System;
 using System.Drawing;
-using System.Threading;
 using Poc1.Universe.Interfaces.Planets.Spherical;
 using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
+using Rb.Core.Threading;
 using Rb.Core.Utils;
 using Rb.Rendering.Interfaces.Objects;
 
@@ -20,13 +20,11 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// </summary>
 		public void QueueBuild( ISpherePlanet planet, Action<ITexture> onComplete )
 		{
-			WaitCallback callback =
-				delegate
-				{
-					Bitmap[] faceBitmaps = CreateTextureBitmaps( planet );
-					s_Marshaller.PostAction( FinishBuild, faceBitmaps, onComplete );
-				};
-			ExtendedThreadPool.Instance.QueueUserWorkItem( callback );
+			SourceSinkWorkItem.Builder sourceSink = new SourceSinkWorkItem.Builder( );
+			sourceSink.SetSource<Bitmap[], ISpherePlanet>( CreateTextureBitmaps, planet );
+			sourceSink.SetSink<Action<ITexture>, Bitmap[]>( FinishBuild, onComplete );
+
+			ExtendedThreadPool.Instance.Enqueue( sourceSink.Build( ) );
 		}
 
 		/// <summary>
@@ -83,12 +81,10 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// <summary>
 		/// Creates a texture from the supplied bitmaps
 		/// </summary>
-		private static void FinishBuild( Bitmap[] faceBitmaps, Action<ITexture> onComplete )
+		private static void FinishBuild( Action<ITexture> onComplete, Bitmap[] faceBitmaps )
 		{
 			onComplete( CreateTexture( faceBitmaps ) );
 		}
-
-		private static DelegateMarshaller s_Marshaller = new DelegateMarshaller( );
 
 		#endregion
 	}
