@@ -221,6 +221,10 @@ namespace Poc1.PlanetBuilder
 			}
 			set
 			{
+				if ( ModelChanged != null )
+				{
+					ModelChanged( this, null );
+				}
 				throw new Exception( "The method or operation is not implemented." );
 			}
 		}

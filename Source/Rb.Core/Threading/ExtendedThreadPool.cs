@@ -1,8 +1,9 @@
 using System;
 using System.Threading;
 using System.Collections.Generic;
+using Rb.Core.Utils;
 
-namespace Rb.Core.Utils
+namespace Rb.Core.Threading
 {
 	/// <summary>
 	/// Extended thread pool. Provides callbacks on completion on work items
@@ -36,7 +37,7 @@ namespace Rb.Core.Utils
 			// as we may run into situtations where multiple operations need to be atomic.
 			// We keep track of the threads we've created just for good measure; not actually
 			// needed for any core functionality.
-			m_WaitingCallbacks = new Queue<WaitingCallback>();
+			m_WorkItems = new Queue<IWorkItem>();
 			m_WorkerThreads = new List<Thread>();
 			m_InUseThreads = 0;
 
@@ -61,38 +62,51 @@ namespace Rb.Core.Utils
 		#region Public Methods
 
 		/// <summary>
-		/// Queues a user work item to the thread pool.
+		/// Queues up a new work item
 		/// </summary>
-		/// <param name="callback">
-		/// A WaitCallback representing the delegate to invoke when the thread in the 
-		/// thread pool picks up the work item.
-		/// </param>
-		public void QueueUserWorkItem( WaitCallback callback )
+		/// <param name="action">Work item action</param>
+		public void Enqueue( ActionDelegates.Action action )
 		{
-			// Queue the delegate with no state
-			QueueUserWorkItem( callback, null );
+			Enqueue( new DelegateWorkItem( action, null, null, null ) );
 		}
 
 		/// <summary>
-		/// Queues a user work item to the thread pool.
+		/// Queues up a new work item
 		/// </summary>
-		/// <param name="callback">
-		/// A WaitCallback representing the delegate to invoke when the thread in the 
-		/// thread pool picks up the work item.
-		/// </param>
-		/// <param name="state">
-		/// The object that is passed to the delegate when serviced from the thread pool.
-		/// </param>
-		public void QueueUserWorkItem( WaitCallback callback, object state )
+		/// <param name="action">Work item action</param>
+		/// <param name="p0">Parameter 0 value to pass to action</param>
+		public void Enqueue<P0>( ActionDelegates.Action<P0> action, P0 p0 )
 		{
-			// Create a waiting callback that contains the delegate and its state.
-			// Add it to the processing queue, and signal that data is waiting.
-			WaitingCallback waiting = new WaitingCallback( callback, state );
-			lock( m_WaitingCallbacks )
+			Enqueue( new DelegateWorkItem( action, new object[] { p0 }, null, null ) );
+		}
+
+		/// <summary>
+		/// Queues up a new work item
+		/// </summary>
+		/// <param name="action">Work item action</param>
+		/// <param name="p0">Parameter 0 value to pass to action</param>
+		/// <param name="p1">Parameter 1 value to pass to action</param>
+		public void Enqueue<P0, P1>( ActionDelegates.Action<P0> action, P0 p0, P1 p1 )
+		{
+			Enqueue( new DelegateWorkItem( action, new object[] { p0, p1 }, null, null ) );
+		}
+
+		/// <summary>
+		/// Adds a new work item to the queue
+		/// </summary>
+		/// <param name="workItem">Work item to add</param>
+		/// <exception cref="ArgumentNullException">Thrown if workItem is null</exception>
+		public void Enqueue( IWorkItem workItem )
+		{
+			if ( workItem == null )
 			{
-				m_WaitingCallbacks.Enqueue( waiting );
+				throw new ArgumentNullException( "workItem" );
 			}
-			m_WorkerThreadNeeded.AddOne();
+			lock ( m_WorkItems )
+			{
+				m_WorkItems.Enqueue( workItem );
+			}
+			m_WorkerThreadNeeded.AddOne( );
 		}
 
 		/// <summary>
@@ -100,26 +114,23 @@ namespace Rb.Core.Utils
 		/// </summary>
 		public void EmptyQueue( )
 		{
-			lock ( m_WaitingCallbacks ) 
+			lock ( m_WorkItems ) 
 			{ 
 				// Try to dispose of all remaining state
-				foreach( WaitingCallback callback in m_WaitingCallbacks )
+				foreach( IWorkItem workItem in m_WorkItems )
 				{
-					if ( callback.State is IDisposable )
+					try
 					{
-						try
-						{
-							( ( IDisposable )callback.State ).Dispose( );
-						}
-						catch
-						{
-						}
+						DisposableHelper.Dispose( workItem );
+					}
+					catch
+					{
 					}
 				}
 
 				// Clear all waiting items and reset the number of worker threads currently needed
 				// to be 0 (there is nothing for threads to do)
-				m_WaitingCallbacks.Clear( );
+				m_WorkItems.Clear( );
 				m_WorkerThreadNeeded.Reset( 0 );
 			}
 		}
@@ -142,9 +153,9 @@ namespace Rb.Core.Utils
 		{
 			get
 			{
-				lock( m_WaitingCallbacks )
+				lock( m_WorkItems )
 				{
-					return m_WaitingCallbacks.Count;
+					return m_WorkItems.Count;
 				}
 			}
 		}
@@ -159,9 +170,15 @@ namespace Rb.Core.Utils
 		private readonly static ExtendedThreadPool s_Instance = new ExtendedThreadPool( );
 
 		/// <summary>
+		/// Delegate marshaller is used to call completion callbacks on the main UI thread (or whatever thread was
+		/// responsible for creating this extended thread pool)
+		/// </summary>
+		private readonly DelegateMarshaller m_Marshaller = new DelegateMarshaller( );
+
+		/// <summary>
 		/// Queue of all the callbacks waiting to be executed.
 		/// </summary>
-		private readonly Queue<WaitingCallback> m_WaitingCallbacks;
+		private readonly Queue<IWorkItem> m_WorkItems;
 
 		/// <summary>
 		/// Used to signal that a worker thread is needed for processing.  Note that multiple
@@ -190,21 +207,21 @@ namespace Rb.Core.Utils
 			{
 				// Get the next item in the queue.  If there is nothing there, go to sleep
 				// for a while until we're woken up when a callback is waiting.
-				WaitingCallback callback = null;
-				while ( callback == null )
+				IWorkItem workItem = null;
+				while ( workItem == null )
 				{
 					// Try to get the next callback available.  We need to lock on the 
 					// queue in order to make our count check and retrieval atomic.
-					lock( m_WaitingCallbacks )
+					lock( m_WorkItems )
 					{
-						if ( m_WaitingCallbacks.Count > 0 )
+						if ( m_WorkItems.Count > 0 )
 						{
-							callback = m_WaitingCallbacks.Dequeue( );
+							workItem = m_WorkItems.Dequeue( );
 						}
 					}
 
 					// If we can't get one, go to sleep.
-					if ( callback == null )
+					if ( workItem == null )
 					{
 						m_WorkerThreadNeeded.WaitOne( );
 					}
@@ -215,7 +232,8 @@ namespace Rb.Core.Utils
 				try 
 				{
 					Interlocked.Increment( ref m_InUseThreads );
-					callback.Callback( callback.State );
+					workItem.DoWork( );
+					m_Marshaller.PostAction( workItem.WorkComplete );
 				} 
 				catch
 				{
@@ -232,62 +250,6 @@ namespace Rb.Core.Utils
 
 		#region Private Types
 
-		#region WaitingCallback Class
-
-		/// <summary>
-		/// Used to hold a callback delegate and the state for that delegate.
-		/// </summary>
-		private class WaitingCallback
-		{
-			#region Private Members
-
-			/// <summary>
-			/// Callback delegate for the callback.
-			/// </summary>
-			private WaitCallback m_Callback;
-
-			/// <summary>
-			/// State with which to call the callback delegate.
-			/// </summary>
-			private object m_State;
-
-			#endregion
-
-			#region Construction
-
-			/// <summary>Initialize the callback holding object.</summary>
-			/// <param name="callback">Callback delegate for the callback.</param>
-			/// <param name="state">State with which to call the callback delegate.</param>
-			public WaitingCallback( WaitCallback callback, object state )
-			{
-				m_Callback = callback;
-				m_State = state;
-			}
-
-			#endregion
-
-			#region Properties
-
-			/// <summary>
-			/// Gets the callback delegate for the callback.
-			/// </summary>
-			public WaitCallback Callback
-			{
-				get { return m_Callback; }
-			}
-
-			/// <summary>
-			/// Gets the state with which to call the callback delegate.
-			/// </summary>
-			public object State
-			{
-				get { return m_State; }
-			}
-
-			#endregion
-		} 
-		#endregion
-
 		#region Semaphore Class
 		
 		/// <summary>
@@ -297,13 +259,6 @@ namespace Rb.Core.Utils
 		{
 
 			#region Construction
-
-			/// <summary>
-			///  Initialize the semaphore as a binary semaphore.
-			/// </summary>
-			public Semaphore( ) : this( 1 )
-			{
-			}
 
 			/// <summary>
 			///  Initialize the semaphore as a counting semaphore.

@@ -144,6 +144,14 @@
     <Message Text="...Complete"/>
   </Target>
 
+  <Target Name="BuildWaveAnimation" Inputs="@(BuildWaveAnimationInputs)" Outputs="@(BuildWaveAnimationOutputs)">
+    <Message Text="Building noise..."/>
+    <Poc1.Tools.BuildTasks.CreateWaveAnimation SourceFile="%(BuildWaveAnimationInputs.Identity)" OutputFile="@(BuildNoiseInputs->'Game\Terrain\%(Filename).jpg')">
+    </Poc1.Tools.BuildTasks.CreateWaveAnimation>
+    <Message Text="%(BuildWaveAnimationInputs.Identity)=>%(BuildWaveAnimationOutputs.Identity)"/>
+    <Message Text="...Complete"/>
+  </Target>
+
 
   <Target Name="BuildTerrainTypes" Inputs="@(TerrainTypeSetFiles)" Outputs="@(TerrainTypeSetOutputs)">
     <Message Text="Building terrain types..."/>

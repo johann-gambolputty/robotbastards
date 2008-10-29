@@ -1,8 +1,9 @@
 using System;
 using System.ComponentModel;
 using System.Threading;
+using Rb.Core.Utils;
 
-namespace Rb.Core.Utils
+namespace Rb.Core.Threading
 {
 	/// <summary>
 	/// Abstract base class for marshalling delegate calls across threads
@@ -56,6 +57,14 @@ namespace Rb.Core.Utils
 		public void PostAction<P0, P1>( ActionDelegates.Action<P0, P1> action, P0 p0, P1 p1 )
 		{
 			m_SynchronizationContext.Post( delegate { action( p0, p1 ); }, null );
+		}
+
+		/// <summary>
+		/// Posts an action with any number of parameters
+		/// </summary>
+		public void PostAction( Delegate action, params object[] args )
+		{
+			m_SynchronizationContext.Post( delegate { action.DynamicInvoke( args ); }, null );
 		}
 		
 		

@@ -18,7 +18,6 @@
 		- H: Function resolution should be multiplied by a fraction of the radius of spherical terrain
 		- H: Force error for patches with > threshold radius
 		- H: Investigate why error does not appear to be totally correct
-		- M: Increase terrain texture UV resolution
 		- M: Terrain output should be properly within the output range
 		- M: Normalized heights returned from ground offset displacers are wrong.
 		- M: Would be great to have terrain functions and terrain types defined by some function of latitude
@@ -33,16 +32,18 @@
 		- L: Add terrain pack resolution parameter to terrain shader
 	- Environment
 		- H: Design Biome system for terrain and texture selection
-		- H: Reinstate cloud generation and rendering
 		- L: Volumetric clouds
 		- L: Vegetation
 		- L: Animal life
 	- Planets
+		- H: Refactor model pattern to make sure that renderer-specific model data (e.g. terrain type textures) is moved to a dedicated model interface
 		- H: Change model pattern to take planet reference in interface. Add Initialize() call
 		- H: Large radius planets (>1000km)
 			- H: Fix larger radius planets (lots of z-fighting, no terrain detail)
 			- H: combine terrain/marble rendering using z clipping planes (take a look at PSM)
 		- H: Atmospheric shaders
+		- M: GLSL 3.0 atmosphere shader can do rayleigh computation
+		- M: Move as much calculation as possible out of the per-pixel scattering functions, and into vertex shader
 		- M: Add moons back in
 		- M: Add sun
 		- M: Add light scattering post-process (god-rays)
@@ -56,7 +57,6 @@
 	- Atmosphere
 		- H: Fix outside atmosphere shading
 		- H: Fix orientation of atmosphere shading for objects
-		- M: Move rayleigh computation to vertex shader if possible
 		- M: Add serialization for atmosphere build parameters
 		- M: Add atmosphere build task
 	- Water
@@ -180,6 +180,7 @@
 		- H: Change name from Poc1 to actual project name! (big job...)
 		- H: Add unit-test directory
 		- H: Add lock-free queue for extended thread pool
+		- M: Add delegate to signal task completion, to extended thread pool
 		- M: Add support for control point selection (+ deletion) in graph controls
 		- M: Add support for spline, sawtooth, sine wave, bias and gain functions in the graph editor
 		- M: Add derived EditorAttribute for setting up texture UI type editor (asset handle creation, mip-mapping)
@@ -189,11 +190,14 @@
 		- L: Add XML serialization to Muesli
 
 - DISCARD
+	- M: Move rayleigh computation to vertex shader if possible (requires texture lookup - vs3.0 only. See altered TODO)
 	- L: Add MRU file list to terrain texture tool (texture tool is amalgamated into planet builder tool)
 	- ?: Now that patches are independent of one another (skirts), can use UniPoint as patch centre (unique transform per patch, though) (ground 	displacement breaks skirts)
 	- H: Ground displacement requires connected patches, or slightly different skirt rendering (vertical skirts show up) (see new vertex normal skirts)
 
 - DONE
+	- M: Increase terrain texture UV resolution
+	- H: Reinstate cloud generation and rendering
 	- M: Add planetary rings
 	- H: Display render event needs to accept rendering context
 	- H: Alpha blend terrain patches into marble view when rendering both

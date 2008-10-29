@@ -1,7 +1,6 @@
 using System;
 using System.Xml;
 using NUnit.Framework;
-using Rb.Core.Assets;
 
 namespace Rb.Core.Tests
 {
