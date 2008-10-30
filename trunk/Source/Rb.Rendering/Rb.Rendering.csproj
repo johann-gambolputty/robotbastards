@@ -79,6 +79,7 @@
     <Compile Include="RendererBase.cs" />
     <Compile Include="Technique.cs" />
     <Compile Include="TechniqueSelector.cs" />
+    <Compile Include="Textures\AnimatedTexture2d.cs" />
     <Compile Include="Textures\Texture2dAssetHandle.cs" />
     <Compile Include="Textures\Texture2dBase.cs" />
     <Compile Include="Textures\Texture2dSamplerBase.cs" />

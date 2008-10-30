@@ -115,7 +115,7 @@ float3 GetExternalScatteredSkyColour( float3 pt )
 {
 	float3 viewVec = normalize( pt - AtmViewPos );
 	float3 viewPos = GetRaySphereIntersection( AtmViewPos, viewVec, AtmOuterRadius );
-	float viewHeight = length( viewPos );
+	float viewHeight = AtmOuterRadius;
 
 	float posToSunAngle = dot( viewPos, SunDir ) / viewHeight;
 	float viewToSunAngle = dot( viewVec, SunDir );
@@ -123,7 +123,7 @@ float3 GetExternalScatteredSkyColour( float3 pt )
 	//	TODO: AP: Intersect view segment with outer sphere. If segment intersects sphere, set
 	//	the view position to be the intersection point.
 
-	float h = saturate( ( viewHeight - AtmInnerRadius ) / AtmThickness );
+	float h = 1.0f;
 	float th = ( ( dot( viewPos, viewVec ) / viewHeight ) + 1.0f ) / 2.0f;
 	float si = ( posToSunAngle + 1.0f ) / 2.0f;
 

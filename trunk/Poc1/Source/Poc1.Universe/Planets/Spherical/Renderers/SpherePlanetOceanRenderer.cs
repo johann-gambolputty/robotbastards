@@ -1,3 +1,4 @@
+using Poc1.Tools.Waves;
 using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Renderers;
 using Poc1.Universe.Interfaces.Planets.Spherical;
@@ -8,6 +9,7 @@ using Rb.Rendering;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Textures;
+using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc1.Universe.Classes.Rendering
 {
@@ -26,7 +28,10 @@ namespace Poc1.Universe.Classes.Rendering
 
 			m_Technique = new TechniqueSelector( m_Effect, "DefaultTechnique" );
 
-			m_Texture = ( ITexture )AssetManager.Instance.Load( "Ocean/ocean0.jpg", new TextureLoadParameters( true ) );
+			using ( WaveAnimation animation = ( WaveAnimation )AssetManager.Instance.Load( "Ocean/SimpleWater.waves.bin" ) )
+			{
+				m_WaveAnimation = new AnimatedTexture2d( animation.ToTextures( true ), 5.0f );
+			}
 
 			//	Generate cached sphere for rendering the planet
 			Graphics.Draw.StartCache( );
@@ -61,7 +66,10 @@ namespace Poc1.Universe.Classes.Rendering
 			Graphics.Renderer.PushTransform( TransformType.LocalToWorld );
 			Graphics.Renderer.Scale( TransformType.LocalToWorld, seaLevel, seaLevel, seaLevel );
 
-			m_Technique.Effect.Parameters[ "OceanTexture" ].Set( m_Texture );
+			m_WaveAnimation.UpdateAnimation( context.RenderTime );
+			m_Technique.Effect.Parameters[ "OceanTexture0" ].Set( m_WaveAnimation.SourceTexture );
+			m_Technique.Effect.Parameters[ "OceanTexture1" ].Set( m_WaveAnimation.DestinationTexture );
+			m_Technique.Effect.Parameters[ "OceanTextureT" ].Set( m_WaveAnimation.LocalT );
 
 			context.ApplyTechnique( m_Technique, m_OceanGeometry );
 
@@ -73,10 +81,11 @@ namespace Poc1.Universe.Classes.Rendering
 		#region Private Members
 
 		private ISpherePlanet m_Planet;
-		private readonly ITexture m_Texture;
 		private readonly EffectAssetHandle m_Effect;
 		private TechniqueSelector m_Technique;
 		private readonly IRenderable m_OceanGeometry;
+
+		private AnimatedTexture2d m_WaveAnimation;
 
 		/// <summary>
 		/// Handles reloading ocean renderer effect

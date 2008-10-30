@@ -30,7 +30,14 @@ namespace Poc1.PlanetBuilder
 			camera.PerspectiveZFar = 15000.0f;
 
 			Units.Metres cameraPos = BuilderState.Instance.SpherePlanet.Radius;
-			cameraPos += BuilderState.Instance.SpherePlanet.TerrainModel.MaximumHeight;
+			if ( BuilderState.Instance.SpherePlanet.TerrainModel != null )
+			{
+				cameraPos += BuilderState.Instance.SpherePlanet.TerrainModel.MaximumHeight;
+			}
+			else
+			{
+				cameraPos += new Units.Metres( 1000000 );
+			}
 
 			camera.Position = new UniPoint3( cameraPos.ToUniUnits, 0, 0 );
 			camera.AddChild( new BuilderCameraController( context, user ) );

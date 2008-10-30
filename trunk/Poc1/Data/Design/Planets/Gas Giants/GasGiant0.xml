@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<GasGiantModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <!--
+  <BandColours>
+    <XmlColour R="245" G="245" B="245" />
+    <XmlColour R="250" G="250" B="210" />
+    <XmlColour R="255" G="255" B="252" />
+    <XmlColour R="255" G="69" B="0" />
+  </BandColours>
+  -->
+  <Width>1024</Width>
+  <Height>512</Height>
+  <Pass0XNoiseScale>15.9178944</Pass0XNoiseScale>
+  <Pass0YNoiseScale>15.9178944</Pass0YNoiseScale>
+  <Pass1XNoiseScale>0.31234</Pass1XNoiseScale>
+  <Pass1YNoiseScale>9.1091747</Pass1YNoiseScale>
+  <Pass1XNoiseMultiplier>0.5</Pass1XNoiseMultiplier>
+  <Pass1YNoiseMultiplier>0.5</Pass1YNoiseMultiplier>
+</GasGiantModel>

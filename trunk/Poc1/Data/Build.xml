@@ -10,6 +10,8 @@
   <UsingTask TaskName="Poc1.Tools.BuildTasks.CopyToGame" AssemblyFile="$(ToolsDir)Poc1.Tools.BuildTasks.dll"/>
   <UsingTask TaskName="Poc1.Tools.BuildTasks.BuildTerrainTypes" AssemblyFile="$(ToolsDir)Poc1.Tools.BuildTasks.dll"/>
   <UsingTask TaskName="Poc1.Tools.BuildTasks.CreateNoiseBitmap" AssemblyFile="$(ToolsDir)Poc1.Tools.BuildTasks.dll"/>
+  <UsingTask TaskName="Poc1.Tools.BuildTasks.CreateWaveAnimation" AssemblyFile="$(ToolsDir)Poc1.Tools.BuildTasks.dll"/>
+  <UsingTask TaskName="Poc1.Tools.BuildTasks.CreateGasGiantTexture" AssemblyFile="$(ToolsDir)Poc1.Tools.BuildTasks.dll"/>
 
   <!--       -->
   <!-- Items -->
@@ -34,6 +36,14 @@
     <BuildNoiseOutputs Include="@(BuildNoiseInputs->'Game\Terrain\%(Filename).jpg')"/>
   </ItemGroup>
 
+  <ItemGroup>
+    <WaveAnimationInputs Include="$(DesignFolder)\Ocean\*.waves.xml"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <GasGiantInputs Include="$(DesignFolder)\Planets\Gas Giants\*.xml"/>
+  </ItemGroup>
+  
 
   <!-- Effects files are passed into a C++ pre-processor -->
   <ItemGroup>
@@ -46,9 +56,23 @@
     <CopyToGameFiles Include="$(DesignFolder)\Viewers\*.*"/>
     <CopyToGameFiles Include="$(DesignFolder)\Terrain\noise.jpg"/>
     <CopyToGameFiles Include="$(DesignFolder)\Rings\*.*"/>
-    <CopyToGameFiles Include="$(DesignFolder)\Ocean\*.*"/>
     <CopyToGameFiles Include="$(DesignFolder)\Star Fields\**\*.jpg"/>
 	</ItemGroup>
+  
+  <!--                 -->
+  <!-- Utility Targets -->
+  <!--                 -->
+  <Target Name="CreateWaveAnimationOutputs">
+    <CreateItem Include="@(WaveAnimationInputs->'Game\Ocean\%(Filename).bin')" AdditionalMetadata="Source=%(WaveAnimationInputs.Identity)">
+      <Output TaskParameter="Include" ItemName="WaveAnimationOutputs"/>
+    </CreateItem>
+  </Target>
+
+  <Target Name="CreateGasGiantOutputs">
+    <CreateItem Include="@(GasGiantInputs->'Game\Planets\Gas Giants\%(Filename).jpg')" AdditionalMetadata="Source=%(GasGiantInputs.Identity)">
+      <Output TaskParameter="Include" ItemName="GasGiantOutputs"/>
+    </CreateItem>
+  </Target>
 
   <!--               -->
   <!-- Clean Targets -->
@@ -105,7 +129,20 @@
     <Message Text="...Complete"/>
   </Target>
 
+  <Target Name="RebuildWaveAnimation" DependsOnTargets="CreateWaveAnimationOutputs">
+    <Message Text="Building wave animations..."/>
+    <Poc1.Tools.BuildTasks.CreateWaveAnimation SourceFile="%(WaveAnimationOutputs.Source)" OutputFile="%(WaveAnimationOutputs.Identity)"/>
+    <Message Text="%(WaveAnimationOutputs.Source)=>%(WaveAnimationOutputs.Identity)"/>
+    <Message Text="...Complete"/>
+  </Target>
 
+  <Target Name="RebuildGasGiant">
+    <Message Text="Building wave animations..."/>
+    <Message Text="%(GasGiantOutputs.Source)=>%(GasGiantOutputs.Identity)"/>
+    <Poc1.Tools.BuildTasks.CreateGasGiantTexture SourceFile="%(GasGiantOutputs.Source)" OutputFile="%(GasGiantOutputs.Identity)"/>
+    <Message Text="...Complete"/>
+  </Target>
+  
   <Target Name="RebuildTerrainTypes">
     <Message Text="Building terrain types..."/>
     <Poc1.Tools.BuildTasks.BuildTerrainTypes SourceFiles="@(TerrainTypeSetFiles)" OutputDirectory="Game\Terrain">
@@ -119,6 +156,7 @@
   <!-- Build Targets -->
   <!--               -->
 
+  <!-- Note: removed dependencies, because there's currently no way of expressing cgfx #include dependencies -->
   <Target Name="PreprocessEffects"><!-- Inputs="@(EffectFiles)" Outputs="@(EffectFiles->'Game\%(RecursiveDir)%(Filename)%(Extension)')"> -->
     <Message Text="Preprocessing effects..."/>
     <Message Text="@(EffectFiles->'Game\%(RecursiveDir)%(Filename)%(Extension)')"/>
@@ -129,29 +167,33 @@
 
   <Target Name="CopyToGame">
     <Message Text="Copying assets..."/>
+    <Message Text="%(CopiedGameFiles.Identity)"/>
     <Poc1.Tools.BuildTasks.CopyToGame SourceFiles="@(CopyToGameFiles)" SkipIfUnchanged="true">
       <Output TaskParameter="CopiedFiles" ItemName="CopiedGameFiles"/>
     </Poc1.Tools.BuildTasks.CopyToGame>
-    <Message Text="%(CopiedGameFiles.Identity)"/>
     <Message Text="... Complete"/>
   </Target>
 
   <Target Name="BuildNoise" Inputs="@(BuildNoiseInputs)" Outputs="@(BuildNoiseOutputs)">
     <Message Text="Building noise..."/>
-    <Poc1.Tools.BuildTasks.CreateNoiseBitmap SourceFile="%(BuildNoiseInputs.Identity)" OutputFile="@(BuildNoiseInputs->'Game\Terrain\%(Filename).jpg')">
-    </Poc1.Tools.BuildTasks.CreateNoiseBitmap>
     <Message Text="%(BuildNoiseInputs.Identity)=>%(BuildNoiseOutputs.Identity)"/>
+    <Poc1.Tools.BuildTasks.CreateNoiseBitmap SourceFile="%(BuildNoiseInputs.Identity)" OutputFile="@(BuildNoiseInputs->'Game\Terrain\%(Filename).jpg')"/>
     <Message Text="...Complete"/>
   </Target>
 
-  <Target Name="BuildWaveAnimation" Inputs="@(BuildWaveAnimationInputs)" Outputs="@(BuildWaveAnimationOutputs)">
-    <Message Text="Building noise..."/>
-    <Poc1.Tools.BuildTasks.CreateWaveAnimation SourceFile="%(BuildWaveAnimationInputs.Identity)" OutputFile="@(BuildNoiseInputs->'Game\Terrain\%(Filename).jpg')">
-    </Poc1.Tools.BuildTasks.CreateWaveAnimation>
-    <Message Text="%(BuildWaveAnimationInputs.Identity)=>%(BuildWaveAnimationOutputs.Identity)"/>
+  <Target Name="BuildWaveAnimation" DependsOnTargets="CreateWaveAnimationOutputs" Inputs="@(WaveAnimationInputs)" Outputs="@(WaveAnimationOutputs)">
+    <Message Text="Building wave animations..."/>
+    <Message Text="%(WaveAnimationOutputs.Source)=>%(WaveAnimationOutputs.Identity)"/>
+    <Poc1.Tools.BuildTasks.CreateWaveAnimation SourceFile="%(WaveAnimationOutputs.Source)" OutputFile="%(WaveAnimationOutputs.Identity)"/>
     <Message Text="...Complete"/>
   </Target>
 
+  <Target Name="BuildGasGiant" DependsOnTargets="CreateGasGiantOutputs" Inputs="@(GasGiantInputs)" Outputs="@(GasGiantOutputs)">
+    <Message Text="Building wave animations..."/>
+    <Message Text="%(GasGiantOutputs.Source)=>%(GasGiantOutputs.Identity)"/>
+    <Poc1.Tools.BuildTasks.CreateGasGiantTexture SourceFile="%(GasGiantOutputs.Source)" OutputFile="%(GasGiantOutputs.Identity)"/>
+    <Message Text="...Complete"/>
+  </Target>
 
   <Target Name="BuildTerrainTypes" Inputs="@(TerrainTypeSetFiles)" Outputs="@(TerrainTypeSetOutputs)">
     <Message Text="Building terrain types..."/>
@@ -162,6 +204,7 @@
     <Message Text="...Complete"/>
   </Target>
 
+  
   <!--              -->
   <!-- Main Targets -->
   <!--              -->
@@ -169,10 +212,10 @@
   <Target Name="Clean" DependsOnTargets="DeleteEffects;DeleteCopiedFiles;DeleteTerrainTypes">
   </Target>
 
-  <Target Name="Build" DependsOnTargets="BuildNoise;CopyToGame;BuildTerrainTypes;PreprocessEffects">
+  <Target Name="Build" DependsOnTargets="BuildGasGiant;BuildWaveAnimation;BuildNoise;CopyToGame;BuildTerrainTypes;PreprocessEffects">
   </Target>
 
-  <Target Name="ReBuild" DependsOnTargets="RebuildNoise;ForceCopyToGame;RebuildTerrainTypes;ForcePreprocessEffects">
+  <Target Name="ReBuild" DependsOnTargets="RebuildGasGiant;RebuildWaveAnimation;RebuildNoise;ForceCopyToGame;RebuildTerrainTypes;ForcePreprocessEffects">
   </Target>
   
 </Project>

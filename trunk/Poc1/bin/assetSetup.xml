@@ -9,6 +9,7 @@
     <loader type="Rb.ComponentXmlLoader.Loader" assembly="Rb.ComponentXmlLoader"/>
     <loader type="Rb.Rendering.OpenGl.Cg.CgEffectLoader" assembly="Rb.Rendering.OpenGl.Cg"/>
     <loader type="Rb.Rendering.Textures.TextureLoader" assembly="Rb.Rendering"/>
+    <loader type="Poc1.Tools.Waves.WaveAnimationLoader" assembly="Poc1.Tools.Waves"/>
   </loaders>
 </assetManager>
 

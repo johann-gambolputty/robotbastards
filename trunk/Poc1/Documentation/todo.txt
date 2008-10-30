@@ -36,37 +36,39 @@
 		- L: Vegetation
 		- L: Animal life
 	- Planets
+		- M: Remove texture "pinch" at the poles of gas giants
+		- M: Remove texture "pinch" at the poles of sphere planet oceans
+		- H: Add SunDir data source for effects
 		- H: Refactor model pattern to make sure that renderer-specific model data (e.g. terrain type textures) is moved to a dedicated model interface
 		- H: Change model pattern to take planet reference in interface. Add Initialize() call
 		- H: Large radius planets (>1000km)
 			- H: Fix larger radius planets (lots of z-fighting, no terrain detail)
-			- H: combine terrain/marble rendering using z clipping planes (take a look at PSM)
 		- H: Atmospheric shaders
-		- M: GLSL 3.0 atmosphere shader can do rayleigh computation
+		- M: GLSL 3.0 atmosphere shader can do rayleigh computation per-vertex
 		- M: Move as much calculation as possible out of the per-pixel scattering functions, and into vertex shader
 		- M: Add moons back in
 		- M: Add sun
 		- M: Add light scattering post-process (god-rays)
 		- L: Crater terrain function for moons
 		- L: Crater terrain types for moons
-		- L: Gas-giant shaders
 		- L: Non-spherical planets
 			- L: Ring-worlds
 			- L: Hollow spheres
 		- ?: Restore planet cube map (necessary?)
 	- Atmosphere
+		- H: Rendering of objects outside the atmosphere (generalize terrain model)
 		- H: Fix outside atmosphere shading
 		- H: Fix orientation of atmosphere shading for objects
 		- M: Add serialization for atmosphere build parameters
 		- M: Add atmosphere build task
 	- Water
 		- H: Improve water rendering
-			- Animated bump maps
-			- Ocean swell
-			- Reflections
-			- Foam
-			- Texture selection from depth
-			- Transparency at shallow depths
+			- H: Animated bump maps
+			- H: Ocean swell
+			- M: Reflections
+			- M: Foam
+			- M: Texture/colour selection from depth
+			- M: Transparency at shallow depths
 		- L: Lakes
 		- L: Rivers
 	- Cities
@@ -161,6 +163,7 @@
 		- M: Particle systems
 		- M: Add configuration options for effect assembly (or perhaps make this data-driven, so when a CG file is loaded, use CG libraries?)
 		- M: Fullscreen mode
+		- L: Change WaveAnimation class to more generic TextureAnimation
 		- L: Create a vertex buffer builder object that can create vertex data like the IDraw interface can
 		- L: Render node graph is a bit useless - easy to add nodes outside the influence of the class and screw up start node set
 		- L: Effect parameters need a type value
@@ -194,8 +197,10 @@
 	- L: Add MRU file list to terrain texture tool (texture tool is amalgamated into planet builder tool)
 	- ?: Now that patches are independent of one another (skirts), can use UniPoint as patch centre (unique transform per patch, though) (ground 	displacement breaks skirts)
 	- H: Ground displacement requires connected patches, or slightly different skirt rendering (vertical skirts show up) (see new vertex normal skirts)
+			- H: combine terrain/marble rendering using z clipping planes (take a look at PSM) (just doing alpha blend - looks OK-ish)
 
 - DONE
+	- L: Gas-giant shaders
 	- M: Increase terrain texture UV resolution
 	- H: Reinstate cloud generation and rendering
 	- M: Add planetary rings

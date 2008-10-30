@@ -14,7 +14,7 @@ namespace Poc1.Tools.Waves
 		/// <summary>
 		/// Generates an animation sequence of wave heightmaps
 		/// </summary>
-		public Bitmap[] GenerateHeightmapSequence( WaveAnimationParameters parameters )
+		public WaveAnimation GenerateHeightmapSequence( WaveAnimationParameters parameters )
 		{
 			if ( parameters == null )
 			{
@@ -27,13 +27,13 @@ namespace Poc1.Tools.Waves
 			{
 				results[ i ] = GenerateHeightMap( parameters, parameters.Time * ( ( float )i / ( parameters.Frames - 1 ) ), parameters.Time );
 			}
-			return results;
+			return new WaveAnimation( results );
 		}
 
 		/// <summary>
 		/// Generates an animation sequence of wave normal maps
 		/// </summary>
-		public Bitmap[] GenerateNormalMapSequence( WaveAnimationParameters parameters )
+		public WaveAnimation GenerateNormalMapSequence( WaveAnimationParameters parameters )
 		{
 			if ( parameters == null )
 			{
@@ -46,7 +46,7 @@ namespace Poc1.Tools.Waves
 			{
 				results[ i ] = GenerateNormalMap( parameters, parameters.Time * ( ( float )i / ( parameters.Frames - 1 ) ), parameters.Time );
 			}
-			return results;
+			return new WaveAnimation( results );
 		}
 
 		private ComplexF[] 	m_Map;
