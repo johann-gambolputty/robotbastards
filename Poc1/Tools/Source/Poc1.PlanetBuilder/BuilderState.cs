@@ -44,6 +44,7 @@ namespace Poc1.PlanetBuilder
 		#region Private Members
 
 		private IPlanet m_Planet = Poc1.Universe.Planets.Spherical.SpherePlanet.DefaultPlanet( new Units.Metres( 200000 ) );
+	//	private IPlanet m_Planet = Poc1.Universe.Planets.Spherical.SpherePlanet.DefaultGasGiant( new Units.Metres( 2000000 ) );
 		private readonly static BuilderState s_Instance = new BuilderState( );
 
 		#endregion

@@ -1,10 +1,7 @@
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Xml.Serialization;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using Poc1.Tools.TerrainTextures.Core;
 using Poc1.Tools.Waves;
 
 namespace Poc1.Tools.BuildTasks
@@ -24,7 +21,7 @@ namespace Poc1.Tools.BuildTasks
 		/// <summary>
 		/// Task output files
 		/// </summary>
-		[Required]
+	//	[Required]
 		public ITaskItem OutputFile
 		{
 			get { return m_OutputFile; }
@@ -44,8 +41,36 @@ namespace Poc1.Tools.BuildTasks
 				buildParams = ( WaveAnimationParameters )s_BuildParametersSerializer.Deserialize( stream );
 			}
 
-			Bitmap[] animationBitmaps = new WaveAnimationGenerator( ).GenerateHeightmapSequence( buildParams );
-			bmp.Save( OutputFile.ItemSpec, ImageFormat.Jpeg );
+			//bool dependenciesAreUpToDate = true;
+			//DateTime inputTimestamp = File.GetLastWriteTime( SourceFile.ItemSpec );
+			//for ( int frame = 0; frame < buildParams.Frames; ++frame )
+			//{
+			//    string filename = Path.Combine( OutputDirectory.ItemSpec, frame + ".png" );
+			//    if ( !File.Exists( filename ) || File.GetLastWriteTime( filename ) < inputTimestamp )
+			//    {
+			//        dependenciesAreUpToDate = false;
+			//        break;
+			//    }
+			//}
+			//if ( dependenciesAreUpToDate )
+			//{
+			//    Log.LogMessage( "All dependencies for wave animation \"{0}\" are up to date", SourceFile.ItemSpec );
+			//    return true;
+			//}
+
+		//	Bitmap[] animationBitmaps = new WaveAnimationGenerator( ).GenerateHeightmapSequence( buildParams );
+
+			//if ( !Directory.Exists( OutputDirectory.ItemSpec ) )
+			//{
+			//    Directory.CreateDirectory( OutputDirectory.ItemSpec );
+			//}
+
+			//for ( int frame = 0; frame < animationBitmaps.Length; ++frame )
+			//{
+			//    animationBitmaps[ frame ].Save( Path.Combine( OutputDirectory.ItemSpec, frame + ".png" ), ImageFormat.Png );
+			//}
+			WaveAnimation animation = new WaveAnimationGenerator( ).GenerateHeightmapSequence( buildParams );
+			animation.Save( OutputFile.ItemSpec );
 
 			return true;
 		}

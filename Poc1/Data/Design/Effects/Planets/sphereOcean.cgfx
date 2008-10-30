@@ -1,13 +1,21 @@
 
-sampler2D OceanTexture = sampler_state
+sampler2D OceanTexture0 = sampler_state
 {
 	WrapS = Repeat;
 	WrapT = Repeat;
-	MinFilter = Linear;
-	MagFilter = Linear;
-//	MinFilter = LinearMipMapLinear;
-//	MagFilter = LinearMipMapLinear;
+	MinFilter = LinearMipMapLinear;
+	MagFilter = LinearMipMapLinear;
 };
+
+sampler2D OceanTexture1 = sampler_state
+{
+	WrapS = Repeat;
+	WrapT = Repeat;
+	MinFilter = LinearMipMapLinear;
+	MagFilter = LinearMipMapLinear;
+};
+
+float OceanTextureT = 0;
 
 
 struct VertexShaderInput
@@ -20,6 +28,7 @@ struct FragmentShaderInput
 {
 	float4 m_Position : POSITION;
 	float3 m_Normal : TEXCOORD0;
+	float2 m_Uv : TEXCOORD1;
 };
 
 float4x4 ModelViewProjectionMatrix;
@@ -34,15 +43,21 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 	FragmentShaderInput output;
 
 	output.m_Position	= mul( ModelViewProjectionMatrix, input.m_Position );
-	output.m_Normal		= normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
+
+	float3 norm = normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
+
+	output.m_Normal = norm;
+	output.m_Uv = float2( atan( norm.z / norm.x ), acos( norm.y ) ) * 32;
+
 	return output;
 }
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
 	float3 normal = normalize( input.m_Normal );
-	float2 uv = float2( normal.y * 32, normal.z * 32 );
-	float3 oceanColour = tex2D( OceanTexture, uv ).rgb;
+	float2 uv = input.m_Uv;
+	float3 oceanColour = tex2D( OceanTexture0, uv ).rgb;
+	oceanColour = oceanColour + ( tex2D( OceanTexture1, uv ).rgb - oceanColour ) * OceanTextureT;
 
 	float3	zAxis		= float3( ViewMatrix[ 2 ] );
 	float3	halfVec		= normalize( SunDir + zAxis );

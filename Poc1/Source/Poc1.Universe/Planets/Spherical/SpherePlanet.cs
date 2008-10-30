@@ -15,6 +15,8 @@ namespace Poc1.Universe.Planets.Spherical
 	/// </summary>
 	public class SpherePlanet : Planet, ISpherePlanet
 	{
+		#region Test planet creation
+
 		/// <summary>
 		/// Creates a default spherical planet
 		/// </summary>
@@ -40,6 +42,23 @@ namespace Poc1.Universe.Planets.Spherical
 
 			return planet;
 		}
+
+		/// <summary>
+		/// Creates a default spherical gas giant
+		/// </summary>
+		public static ISpherePlanet DefaultGasGiant( Units.Metres planetRadius )
+		{
+			ISpherePlanet planet = new SpherePlanet( );
+			planet.Radius = planetRadius;
+
+			//	Renderers
+			planet.MarbleRenderer = new SphereGasGiantMarbleRenderer( );
+			planet.RingModel = new SpherePlanetRingModel( planetRadius * 1.75, planetRadius * 0.1 );
+
+			return planet;
+		}
+
+		#endregion
 
 		#region ISpherePlanet Members
 
