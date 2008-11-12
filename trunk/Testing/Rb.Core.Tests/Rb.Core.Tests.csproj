@@ -36,8 +36,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestIObjectSet.cs" />
+    <Compile Include="TestIObjectSetServiceMap.cs" />
+    <Compile Include="TestObjectSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestDispatchMap.cs" />
+    <Compile Include="TestObjectSetTypeMapService.cs" />
+    <Compile Include="Threading\TestSourceSinkWorkItem.cs" />
+    <Compile Include="Utils\TestDelegateHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\Rb.Core\Rb.Core.csproj">

@@ -7,6 +7,7 @@ using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
 using Poc1.Universe.Planets.Models;
 using Poc1.Universe.Planets.Spherical.Models;
 using Poc1.Universe.Planets.Spherical.Renderers;
+using Rb.Core.Threading;
 
 namespace Poc1.Universe.Planets.Spherical
 {
@@ -20,7 +21,7 @@ namespace Poc1.Universe.Planets.Spherical
 		/// <summary>
 		/// Creates a default spherical planet
 		/// </summary>
-		public static ISpherePlanet DefaultPlanet( Units.Metres planetRadius )
+		public static ISpherePlanet DefaultPlanet( IWorkItemQueue workQueue, Units.Metres planetRadius )
 		{
 			ISpherePlanet planet = new SpherePlanet( );
 			planet.Radius = planetRadius;
@@ -30,7 +31,7 @@ namespace Poc1.Universe.Planets.Spherical
 			planet.TerrainModel			= new SpherePlanetProcTerrainModel( );
 			planet.AtmosphereModel		= new SpherePlanetAtmosphereModel( );
 			planet.RingModel			= new SpherePlanetRingModel( planetRadius * 1.75, new Units.Metres( 50000 ) );
-			planet.CloudModel			= new SpherePlanetCloudModel( );
+			planet.CloudModel			= new SpherePlanetCloudModel( workQueue );
 
 			//	Renderers
 			planet.MarbleRenderer		= new SpherePlanetMarbleRenderer( new SpherePlanetMarbleTextureBuilder( ) );

@@ -23,15 +23,14 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 		public static void QueueWork( TerrainPatchBuildItem buildItem )
 		{
 			Interlocked.Increment( ref s_PendingBuildItems );
-			ExtendedThreadPool.Instance.Enqueue
-				(
-					delegate
-						{
-							buildItem.StartBuild( );
-							s_Marshaller.PostAction( buildItem.FinishBuild );
-							Interlocked.Decrement( ref s_PendingBuildItems );
-						}
-				);
+			
+			//delegate
+			//    {
+			//        buildItem.StartBuild( );
+			//        s_Marshaller.PostAction( buildItem.FinishBuild );
+			//        Interlocked.Decrement( ref s_PendingBuildItems );
+			//    }
+			ExtendedThreadPool.Instance.Enqueue( buildItem );
 		}
 
 		private static int s_PendingBuildItems;

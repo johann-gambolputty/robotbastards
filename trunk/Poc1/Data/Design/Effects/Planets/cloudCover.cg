@@ -20,12 +20,12 @@ samplerCUBE NextCloudTexture = sampler_state
 float4x4 CloudTransform = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
 float CloudBlend = 0;
 
-float GetCloudCover( FragmentShaderInput input )
+float4 GetCloudCover( float3 sphereNormal )
 {
-	float4 cloudNormal = mul( CloudTransform, input.m_SphereNormal );
-	
-	float curCloud = texCUBE( CloudTexture, cloudNormal ).r;
-	float nextCloud = texCUBE( NextCloudTexture, cloudNormal ).r;
-	
+	float4 cloudNormal = mul( CloudTransform, float4( sphereNormal, 1 ) );
+
+	float4 curCloud = texCUBE( CloudTexture, cloudNormal );
+	float4 nextCloud = texCUBE( NextCloudTexture, cloudNormal );
+
 	return ( ( nextCloud * CloudBlend ) + ( curCloud * ( 1 - CloudBlend ) ) );
 }

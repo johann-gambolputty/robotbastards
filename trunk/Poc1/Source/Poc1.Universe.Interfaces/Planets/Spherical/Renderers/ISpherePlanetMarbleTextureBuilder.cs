@@ -1,4 +1,5 @@
 using System;
+using Rb.Core.Threading;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Interfaces.Planets.Spherical.Renderers
@@ -11,11 +12,11 @@ namespace Poc1.Universe.Interfaces.Planets.Spherical.Renderers
 		/// <summary>
 		/// Adds the request to build a texture for the specified planet onto a build queue
 		/// </summary>
-		void QueueBuild( ISpherePlanet planet, Action<ITexture> onComplete );
+		void QueueBuild( IWorkItemQueue queue, ISpherePlanet planet, Action<ITexture> onComplete );
 
 		/// <summary>
 		/// Builds a texture. Blocking call.
 		/// </summary>
-		ITexture Build( ISpherePlanet planet );
+		ITexture Build( ISpherePlanet planet, IProgressMonitor progressMonitor );
 	}
 }

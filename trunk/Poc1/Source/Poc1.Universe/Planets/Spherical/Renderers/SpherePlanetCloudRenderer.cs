@@ -51,6 +51,20 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 
 		#endregion
 
+		#region IPlanetCloudRenderer Members
+
+		/// <summary>
+		/// Sets up parameters for effects that use cloud rendering
+		/// </summary>
+		/// <param name="effect">Effect to set up</param>
+		public void SetupCloudEffectParameters( IEffect effect )
+		{
+			effect.Parameters[ "CloudTexture" ].Set( m_SpherePlanet.SphereCloudModel.CloudTexture );
+			effect.Parameters[ "NextCloudTexture" ].Set( m_SpherePlanet.SphereCloudModel.CloudTexture );	//	TODO: AP: ...
+		}
+
+		#endregion
+
 		#region IRenderable Members
 
 		/// <summary>
@@ -67,8 +81,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			{
 				m_CloudSphere = CreateCloudSphere( );
 			}
-			m_Technique.Effect.Parameters[ "CloudTexture" ].Set( m_SpherePlanet.SphereCloudModel.CloudTexture );
-			m_Technique.Effect.Parameters[ "NextCloudTexture" ].Set( m_SpherePlanet.SphereCloudModel.CloudTexture );	//	TODO: AP: ...
+			SetupCloudEffectParameters( m_Technique.Effect );
 			context.ApplyTechnique( m_Technique, m_CloudSphere );
 		}
 

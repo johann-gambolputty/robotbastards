@@ -77,7 +77,8 @@ namespace Rb.Log.Controls
             // 
             // m_MessageColumn
             // 
-            this.m_MessageColumn.Text = "Message";
+			this.m_MessageColumn.Text = "Message";
+			this.m_MessageColumn.Width = 250;
             // 
             // LogListView
             // 

@@ -1,4 +1,5 @@
 
+#include "cloudCover.cg"
 #include "terrain.cg"
 
 samplerCUBE MarbleTexture = sampler_state
@@ -42,7 +43,11 @@ float4 FragmentShader( FragmentShaderInput input ) : COLOR
 	//	Cheat with shading... just use the slope
 	float4 marbleColour = texCUBE( MarbleTexture, -input.m_Normal );
 	float shade = saturate( -dot( input.m_Normal, SunDir ) );
-	return GetTerrainColour( float2( marbleColour.g, marbleColour.r ) ) * shade * ( 1 - marbleColour.r );
+	float4 cloud = GetCloudCover( input.m_Normal );
+	float4 terrainColour = GetTerrainColour( float2( marbleColour.g, marbleColour.r ) ) * ( 1 - marbleColour.r );
+
+	float3 colour = ( terrainColour.rgb * ( 1 - cloud.a ) ) + ( cloud.rgb * cloud.a );
+	return float4( colour * shade, 1 );
 }
 
 technique DefaultTechnique

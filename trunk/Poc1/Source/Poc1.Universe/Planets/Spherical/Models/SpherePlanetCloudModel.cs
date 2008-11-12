@@ -19,14 +19,14 @@ namespace Poc1.Universe.Planets.Spherical.Models
 		/// <summary>
 		/// Default constructor. Builds low-res cloud textures, and kicks off the high-res generation thread
 		/// </summary>
-		public SpherePlanetCloudModel( ) : this( 512 )
+		public SpherePlanetCloudModel( IWorkItemQueue workQueue ) : this( workQueue, 512 )
 		{
 		}
 
 		/// <summary>
 		/// Default constructor. Builds low-res cloud textures, and kicks off the high-res generation thread
 		/// </summary>
-		public SpherePlanetCloudModel( int resolution )
+		public SpherePlanetCloudModel( IWorkItemQueue workQueue, int resolution )
 		{
 			m_CloudTexture = RbGraphics.Factory.CreateCubeMapTexture( );
 
@@ -37,7 +37,7 @@ namespace Poc1.Universe.Planets.Spherical.Models
 			DelegateWorkItem.Builder work = new DelegateWorkItem.Builder( );
 			work.SetDoWork( GenerateBitmaps );
 			work.SetWorkComplete( OnGenerateBitmapsComplete );
-			ExtendedThreadPool.Instance.Enqueue( work.Build( ) );
+			workQueue.Enqueue( work.Build( "" ) );
 		}
 
 		/// <summary>
@@ -116,6 +116,13 @@ namespace Poc1.Universe.Planets.Spherical.Models
 		/// </summary>
 		private void OnGenerateBitmapsComplete( )
 		{
+			GetFaceBitmap( CubeMapFace.PositiveX ).Save( "cloud +x.png" );
+			GetFaceBitmap( CubeMapFace.NegativeX ).Save( "cloud -x.png" );
+			GetFaceBitmap( CubeMapFace.PositiveY ).Save( "cloud +y.png" );
+			GetFaceBitmap( CubeMapFace.NegativeY ).Save( "cloud -y.png" );
+			GetFaceBitmap( CubeMapFace.PositiveZ ).Save( "cloud +z.png" );
+			GetFaceBitmap( CubeMapFace.NegativeZ ).Save( "cloud -z.png" );
+
 			m_CloudTexture.Build
 			(
 				GetFaceBitmap( CubeMapFace.PositiveX ),
@@ -131,7 +138,7 @@ namespace Poc1.Universe.Planets.Spherical.Models
 		/// <summary>
 		/// Called to generate cloud bitmaps
 		/// </summary>
-		private void GenerateBitmaps( )
+		private void GenerateBitmaps( IProgressMonitor progress )
 		{
 			GameProfiles.Game.CloudGeneration.Begin( );
 			m_XOffset = Utils.Wrap( m_XOffset + 0.002f, 0, Constants.TwoPi );
@@ -140,12 +147,14 @@ namespace Poc1.Universe.Planets.Spherical.Models
 			//	Simple cloud coverage cycle
 			m_CloudCoverage = Utils.Wrap( m_CloudCoverage + 0.01f, 0, Constants.TwoPi );
 
-			BuildFaceBitmap( CubeMapFace.PositiveX );
-			BuildFaceBitmap( CubeMapFace.NegativeX );
-			BuildFaceBitmap( CubeMapFace.PositiveY );
-			BuildFaceBitmap( CubeMapFace.NegativeY );
-			BuildFaceBitmap( CubeMapFace.PositiveZ );
+			progress.UpdateProgress( 0 );
+			BuildFaceBitmap( CubeMapFace.PositiveX ); progress.UpdateProgress( 1 / 6.0f  );
+			BuildFaceBitmap( CubeMapFace.NegativeX ); progress.UpdateProgress( 2 / 6.0f );
+			BuildFaceBitmap( CubeMapFace.PositiveY ); progress.UpdateProgress( 3 / 6.0f );
+			BuildFaceBitmap( CubeMapFace.NegativeY ); progress.UpdateProgress( 4 / 6.0f );
+			BuildFaceBitmap( CubeMapFace.PositiveZ ); progress.UpdateProgress( 5 / 6.0f );
 			BuildFaceBitmap( CubeMapFace.NegativeZ );
+			progress.UpdateProgress( 1 );
 
 			GameProfiles.Game.CloudGeneration.End( );
 			GameProfiles.Game.CloudGeneration.Reset( );

@@ -6,6 +6,7 @@ using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
 using Poc1.Universe.Planets.Models;
 using Rb.Assets;
 using Rb.Core.Maths;
+using Rb.Core.Threading;
 using Rb.Core.Utils;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
@@ -81,6 +82,10 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 					BuildGeometry( );
 				}
 				UpdateMarbleTexture( );
+				if ( Planet.CloudRenderer != null )
+				{
+					Planet.CloudRenderer.SetupCloudEffectParameters( m_Technique.Effect );
+				}
 				if ( m_MarbleTexture != null )
 				{
 					m_Technique.Effect.Parameters[ "MarbleTexture" ].Set( m_MarbleTexture );
@@ -163,7 +168,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 				{
 					m_MarbleTextureDirty = false;
 					m_MarbleTextureBuilding = true;
-					m_TextureBuilder.QueueBuild( m_Planet, OnMarbleTextureBuilt );
+					m_TextureBuilder.QueueBuild( ExtendedThreadPool.Instance, m_Planet, OnMarbleTextureBuilt );
 				}
 			}
 		}
