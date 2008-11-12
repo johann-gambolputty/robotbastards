@@ -1,5 +1,7 @@
 
 - TODO
+	- Bob
+		- H: Add build project selection (solar system, particle system)
 	- Particle Systems
 		- H: Particle system serialization
 		- H: Move particle system library and tools to RB.
@@ -18,6 +20,7 @@
 		- H: Function resolution should be multiplied by a fraction of the radius of spherical terrain
 		- H: Force error for patches with > threshold radius
 		- H: Investigate why error does not appear to be totally correct
+		- M: Terrain patch build items should use the IWorkItem interface
 		- M: Terrain output should be properly within the output range
 		- M: Normalized heights returned from ground offset displacers are wrong.
 		- M: Would be great to have terrain functions and terrain types defined by some function of latitude

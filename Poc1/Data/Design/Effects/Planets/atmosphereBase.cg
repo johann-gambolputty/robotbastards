@@ -145,9 +145,6 @@ float3 GetScatteredSkyColour( float3 pt )
 	float posToSunAngle = dot( AtmViewPos, SunDir ) / AtmViewPosLength;
 	float viewToSunAngle = dot( viewVec, SunDir );
 
-	//	TODO: AP: Intersect view segment with outer sphere. If segment intersects sphere, set
-	//	the view position to be the intersection point.
-
 	float h = AtmViewHeight;
 	float th = ( ( dot( AtmViewPos, viewVec ) / AtmViewPosLength ) + 1.0f ) / 2.0f;
 	float si = ( posToSunAngle + 1.0f ) / 2.0f;

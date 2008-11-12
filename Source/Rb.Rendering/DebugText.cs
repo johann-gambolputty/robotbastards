@@ -51,7 +51,7 @@ namespace Rb.Rendering
 
 		private static void Render( )
 		{
-			if ( s_Lines.Count == 0 )
+		//	if ( s_Lines.Count == 0 )
 			{
 				return;
 			}

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Poc1.Universe.Interfaces.Planets.Renderers.Patches;
 using Poc1.Universe.Interfaces.Rendering;
 using Rb.Core.Maths;
+using Rb.Core.Threading;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects.Cameras;
 using ITerrainPatch=Poc1.Universe.Interfaces.Planets.Renderers.Patches.ITerrainPatch;
@@ -18,7 +19,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 	/// free list. This it then fills, using the terrain model to generate the vertex data. Once this operation is
 	/// complete, <see cref="FinishBuild"/> passes the results back to the patch that created the build item.
 	/// </remarks>
-	public class TerrainPatchBuildItem
+	public class TerrainPatchBuildItem : IWorkItem
 	{
 
 		/// <summary>
@@ -357,6 +358,42 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 
 			s_IndexArray = new int[ s_BaseIndexArray.Length ];
 			s_SkirtIndexArray = new int[ s_BaseSkirtIndexArray.Length ];
+		}
+
+		#endregion
+
+		#region IWorkItem Members
+
+		/// <summary>
+		/// Work item name
+		/// </summary>
+		public string Name
+		{
+			get { return "Terrain Patch Build Item"; }
+		}
+
+		/// <summary>
+		/// Builds the terrain patch
+		/// </summary>
+		public void DoWork( IProgressMonitor progress )
+		{
+			StartBuild( );
+		}
+
+		/// <summary>
+		/// Called when work has failed
+		/// </summary>
+		public void WorkFailed( IProgressMonitor progress, System.Exception ex )
+		{
+			//	Should never happen... just eat the exception
+		}
+
+		/// <summary>
+		/// Called when work is complete
+		/// </summary>
+		public void WorkComplete( IProgressMonitor progress )
+		{
+			FinishBuild( );
 		}
 
 		#endregion

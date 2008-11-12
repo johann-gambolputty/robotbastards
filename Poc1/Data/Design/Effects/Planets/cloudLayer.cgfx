@@ -1,21 +1,4 @@
-
-samplerCUBE CloudTexture = sampler_state
-{
-	WrapS = ClampToEdge;
-	WrapT = ClampToEdge;
-	WrapR = ClampToEdge;
-	MinFilter = Linear;
-	MagFilter = Linear;
-};
-
-samplerCUBE NextCloudTexture = sampler_state
-{
-	WrapS = ClampToEdge;
-	WrapT = ClampToEdge;
-	WrapR = ClampToEdge;
-	MinFilter = Linear;
-	MagFilter = Linear;
-};
+#include "cloudCover.cg"
 
 struct VertexShaderInput
 {
@@ -32,15 +15,13 @@ struct FragmentShaderInput
 float4x4 ModelViewProjectionMatrix;
 float4x4 InverseTransposeModelMatrix;
 
-float CloudBlend = 0;
-float4x4 CloudTransform = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
-
 FragmentShaderInput VertexShader( VertexShaderInput input )
 {
 	FragmentShaderInput output;
 
 	output.m_Position	= mul( ModelViewProjectionMatrix, input.m_Position );
 	output.m_Normal		= normalize( mul( CloudTransform, mul( InverseTransposeModelMatrix, input.m_Normal ) ).xyz );
+
 	return output;
 }
 
@@ -55,12 +36,8 @@ float4 FragmentShader( FragmentShaderInput input ) : COLOR
 	shade = 0.4f + 0.9f * t;
 
 	float3 cloudNormal = input.m_Normal;
-	
-	float4 curCloud = texCUBE( CloudTexture, cloudNormal );
-	float4 nextCloud = texCUBE( NextCloudTexture, cloudNormal );
 
-	return ( ( nextCloud * CloudBlend ) + ( curCloud * ( 1 - CloudBlend ) ) );
-//	return float4( ( cloudNormal + float3( 1, 1, 1 ) ) / 2, 1 );
+	return GetCloudCover( cloudNormal );
 }
 
 technique DefaultTechnique

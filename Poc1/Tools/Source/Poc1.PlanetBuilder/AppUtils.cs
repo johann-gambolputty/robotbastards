@@ -8,7 +8,6 @@ namespace Poc1.PlanetBuilder
 	/// </summary>
 	static class AppUtils
 	{
-
 		/// <summary>
 		/// Runs the asset build batch file
 		/// </summary>

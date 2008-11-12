@@ -3,7 +3,6 @@ using System.Drawing;
 using Poc1.Universe.Interfaces.Planets.Spherical;
 using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
 using Rb.Core.Threading;
-using Rb.Core.Utils;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Planets.Spherical.Renderers
@@ -18,21 +17,21 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// <summary>
 		/// Adds the request to build a texture for the specified planet onto a build queue
 		/// </summary>
-		public void QueueBuild( ISpherePlanet planet, Action<ITexture> onComplete )
+		public void QueueBuild( IWorkItemQueue queue, ISpherePlanet planet, Action<ITexture> onComplete )
 		{
-			SourceSinkWorkItem.Builder sourceSink = new SourceSinkWorkItem.Builder( );
-			sourceSink.SetSource<Bitmap[], ISpherePlanet>( CreateTextureBitmaps, planet );
-			sourceSink.SetSink<Action<ITexture>, Bitmap[]>( FinishBuild, onComplete );
+			SourceSinkWorkItem.Builder<Bitmap[]> sourceSink = new SourceSinkWorkItem.Builder<Bitmap[]>( );
+			sourceSink.SetSource( CreateTextureBitmaps, planet );
+			sourceSink.SetSink( FinishBuild, onComplete );
 
-			ExtendedThreadPool.Instance.Enqueue( sourceSink.Build( ) );
+			queue.Enqueue( sourceSink.Build( "Build Marble Texture" ) );
 		}
 
 		/// <summary>
 		/// Builds a texture. Blocking call.
 		/// </summary>
-		public ITexture Build( ISpherePlanet planet )
+		public ITexture Build( ISpherePlanet planet, IProgressMonitor progressMonitor )
 		{
-			return CreateTexture( CreateTextureBitmaps( planet ) );
+			return CreateTexture( CreateTextureBitmaps( progressMonitor, planet ) );
 		}
 
 		#endregion
@@ -58,17 +57,19 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// <summary>
 		/// Creates bitmaps for the texture
 		/// </summary>
-		private static Bitmap[] CreateTextureBitmaps( ISpherePlanet planet )
+		private static Bitmap[] CreateTextureBitmaps( IProgressMonitor progressMonitor, ISpherePlanet planet )
 		{
 			Bitmap[] faceBitmaps = new Bitmap[ 6 ];
 			int width = 256;
 			int height = 256;
-			faceBitmaps[ ( int )CubeMapFace.PositiveX ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveX, width, height );
-			faceBitmaps[ ( int )CubeMapFace.NegativeX ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.NegativeX, width, height );
-			faceBitmaps[ ( int )CubeMapFace.PositiveY ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveY, width, height );
-			faceBitmaps[ ( int )CubeMapFace.NegativeY ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.NegativeY, width, height );
-			faceBitmaps[ ( int )CubeMapFace.PositiveZ ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveZ, width, height );
+			progressMonitor.UpdateProgress( 0 );
+			faceBitmaps[ ( int )CubeMapFace.PositiveX ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveX, width, height ); progressMonitor.UpdateProgress( 1 / 6.0f );
+			faceBitmaps[ ( int )CubeMapFace.NegativeX ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.NegativeX, width, height ); progressMonitor.UpdateProgress( 2 / 6.0f );
+			faceBitmaps[ ( int )CubeMapFace.PositiveY ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveY, width, height ); progressMonitor.UpdateProgress( 3 / 6.0f );
+			faceBitmaps[ ( int )CubeMapFace.NegativeY ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.NegativeY, width, height ); progressMonitor.UpdateProgress( 4 / 6.0f );
+			faceBitmaps[ ( int )CubeMapFace.PositiveZ ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveZ, width, height ); progressMonitor.UpdateProgress( 5 / 6.0f );
 			faceBitmaps[ ( int )CubeMapFace.NegativeZ ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.NegativeZ, width, height );
+			progressMonitor.UpdateProgress( 1 );
 
 			foreach ( object cubeMapFace in Enum.GetValues( typeof( CubeMapFace ) ) )
 			{
@@ -81,7 +82,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// <summary>
 		/// Creates a texture from the supplied bitmaps
 		/// </summary>
-		private static void FinishBuild( Action<ITexture> onComplete, Bitmap[] faceBitmaps )
+		private static void FinishBuild( Bitmap[] faceBitmaps, Action<ITexture> onComplete )
 		{
 			onComplete( CreateTexture( faceBitmaps ) );
 		}

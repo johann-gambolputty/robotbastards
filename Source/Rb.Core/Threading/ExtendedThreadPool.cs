@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 using Rb.Core.Utils;
+using Rb.Log;
 
 namespace Rb.Core.Threading
 {
@@ -11,7 +12,7 @@ namespace Rb.Core.Threading
 	/// <remarks>
 	/// Adapted from http://www.gotdotnet.com/community/usersamples/Default.aspx?query=ManagedThreadPool
 	/// </remarks>
-	public class ExtendedThreadPool
+	public class ExtendedThreadPool : WorkItemQueue
 	{
 		/// <summary>
 		/// Maximum number of threads the thread pool has at its disposal.
@@ -21,7 +22,7 @@ namespace Rb.Core.Threading
 		/// <summary>
 		/// Gets the default singleton instance
 		/// </summary>
-		public static ExtendedThreadPool Instance
+		public static IWorkItemQueue Instance
 		{
 			get { return s_Instance; }
 		}
@@ -67,7 +68,7 @@ namespace Rb.Core.Threading
 		/// <param name="action">Work item action</param>
 		public void Enqueue( ActionDelegates.Action action )
 		{
-			Enqueue( new DelegateWorkItem( action, null, null, null ) );
+			Enqueue( new DelegateWorkItem( "", action, null, null, null, null, null ) );
 		}
 
 		/// <summary>
@@ -77,7 +78,7 @@ namespace Rb.Core.Threading
 		/// <param name="p0">Parameter 0 value to pass to action</param>
 		public void Enqueue<P0>( ActionDelegates.Action<P0> action, P0 p0 )
 		{
-			Enqueue( new DelegateWorkItem( action, new object[] { p0 }, null, null ) );
+			Enqueue( new DelegateWorkItem( "", action, new object[] { p0 }, null, null, null, null ) );
 		}
 
 		/// <summary>
@@ -88,7 +89,7 @@ namespace Rb.Core.Threading
 		/// <param name="p1">Parameter 1 value to pass to action</param>
 		public void Enqueue<P0, P1>( ActionDelegates.Action<P0> action, P0 p0, P1 p1 )
 		{
-			Enqueue( new DelegateWorkItem( action, new object[] { p0, p1 }, null, null ) );
+			Enqueue( new DelegateWorkItem( "", action, new object[] { p0, p1 }, null, null, null, null ) );
 		}
 
 		/// <summary>
@@ -96,7 +97,7 @@ namespace Rb.Core.Threading
 		/// </summary>
 		/// <param name="workItem">Work item to add</param>
 		/// <exception cref="ArgumentNullException">Thrown if workItem is null</exception>
-		public void Enqueue( IWorkItem workItem )
+		public override void Enqueue( IWorkItem workItem )
 		{
 			if ( workItem == null )
 			{
@@ -110,21 +111,23 @@ namespace Rb.Core.Threading
 		}
 
 		/// <summary>
-		/// Empties the work queue of any queued work items.
+		/// Empties the work queue of any queued work items. Calls Dispose() on any IDisposable work items
 		/// </summary>
-		public void EmptyQueue( )
+		public override void EmptyQueue( )
 		{
 			lock ( m_WorkItems ) 
 			{ 
 				// Try to dispose of all remaining state
 				foreach( IWorkItem workItem in m_WorkItems )
 				{
+					Type workItemType = workItem.GetType( );
 					try
 					{
 						DisposableHelper.Dispose( workItem );
 					}
-					catch
+					catch ( Exception ex )
 					{
+						AppLog.Exception( ex, "Error disposing of work item with type " + workItemType );
 					}
 				}
 
@@ -134,6 +137,7 @@ namespace Rb.Core.Threading
 				m_WorkerThreadNeeded.Reset( 0 );
 			}
 		}
+
 		#endregion
 
 		#region Public Properties
@@ -167,7 +171,7 @@ namespace Rb.Core.Threading
 		/// <summary>
 		/// Default singleton instance
 		/// </summary>
-		private readonly static ExtendedThreadPool s_Instance = new ExtendedThreadPool( );
+		private readonly static IWorkItemQueue s_Instance = new ExtendedThreadPool( );
 
 		/// <summary>
 		/// Delegate marshaller is used to call completion callbacks on the main UI thread (or whatever thread was
@@ -202,6 +206,7 @@ namespace Rb.Core.Threading
 		/// </summary>
 		private void ProcessQueuedItems( )
 		{
+			ProgressMonitorWorkItemAdapter progressMonitor = new ProgressMonitorWorkItemAdapter( ProgressMonitors );
 			// Process indefinitely
 			while( true )
 			{
@@ -229,15 +234,16 @@ namespace Rb.Core.Threading
 
 				// We now have a callback.  Execute it.  Make sure to accurately
 				// record how many callbacks are currently executing.
+				progressMonitor.CurrentWorkItem = workItem;
 				try 
 				{
 					Interlocked.Increment( ref m_InUseThreads );
-					workItem.DoWork( );
-					m_Marshaller.PostAction( workItem.WorkComplete );
+					workItem.DoWork( progressMonitor );
+					m_Marshaller.PostAction( workItem.WorkComplete, progressMonitor );
 				} 
-				catch
+				catch ( Exception ex )
 				{
-					// Make sure we don't throw here.  Errors are not our problem.
+					m_Marshaller.PostAction( workItem.WorkFailed, progressMonitor, ex );
 				}
 				finally 
 				{

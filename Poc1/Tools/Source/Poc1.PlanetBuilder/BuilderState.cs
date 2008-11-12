@@ -1,6 +1,7 @@
 
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets.Spherical;
+using Rb.Core.Threading;
 using IPlanet=Poc1.Universe.Interfaces.Planets.IPlanet;
 
 namespace Poc1.PlanetBuilder
@@ -43,9 +44,15 @@ namespace Poc1.PlanetBuilder
 
 		#region Private Members
 
-		private IPlanet m_Planet = Poc1.Universe.Planets.Spherical.SpherePlanet.DefaultPlanet( new Units.Metres( 200000 ) );
+		private IPlanet m_Planet;
 	//	private IPlanet m_Planet = Poc1.Universe.Planets.Spherical.SpherePlanet.DefaultGasGiant( new Units.Metres( 2000000 ) );
 		private readonly static BuilderState s_Instance = new BuilderState( );
+
+		private BuilderState( )
+		{
+			IWorkItemQueue workQueue = ExtendedThreadPool.Instance;
+			m_Planet = Poc1.Universe.Planets.Spherical.SpherePlanet.DefaultPlanet( workQueue, new Units.Metres( 200000 ) );
+		}
 
 		#endregion
 	}
