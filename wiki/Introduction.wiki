@@ -7,3 +7,7 @@ Welcome
 = Details =
 
 The temporary home to robot bastards
+
+
+
+<wiki:gadget url="http://www.ohloh.net/projects/gwt/widgets/project_basic_stats.xml" height="220" border="1" /> 
