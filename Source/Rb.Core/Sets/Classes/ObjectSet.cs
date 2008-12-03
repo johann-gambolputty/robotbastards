@@ -1,5 +1,6 @@
 using System.Collections;
 using Rb.Core.Sets.Interfaces;
+using Rb.Core.Utils;
 
 namespace Rb.Core.Sets.Classes
 {
@@ -61,9 +62,12 @@ namespace Rb.Core.Sets.Classes
 		/// Adds an object to the set
 		/// </summary>
 		/// <param name="obj">Object to add</param>
+		/// <exception cref="System.ArgumentNullException">Thrown if obj is null</exception>
 		public void Add( object obj )
 		{
+			Arguments.CheckNotNull( obj, "obj" );
 			m_Objects.Add( obj );
+			OnObjectAdded( obj );
 		}
 
 		/// <summary>
@@ -72,7 +76,9 @@ namespace Rb.Core.Sets.Classes
 		/// <param name="obj">Object to remove</param>
 		public void Remove( object obj )
 		{
+			Arguments.CheckNotNull( obj, "obj" );
 			m_Objects.Remove( obj );
+			OnObjectRemoved( obj );
 		}
 
 		/// <summary>

@@ -1,4 +1,3 @@
-using System;
 using Poc1.Universe.Interfaces.Planets.Spherical.Models;
 using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
 
@@ -9,11 +8,6 @@ namespace Poc1.Universe.Interfaces.Planets.Spherical
 	/// </summary>
 	public interface ISpherePlanet : IPlanet
 	{
-		/// <summary>
-		/// Called when the planet changes. This does not occur when a model changes.
-		/// </summary>
-		event EventHandler PlanetChanged;
-
 		/// <summary>
 		/// Gets/sets the radius of this planet in metres
 		/// </summary>

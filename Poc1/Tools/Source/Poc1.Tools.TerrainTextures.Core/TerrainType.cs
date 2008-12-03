@@ -157,8 +157,8 @@ namespace Poc1.Tools.TerrainTextures.Core
 		private static IFunction1d CreateDefaultFunction( )
 		{
 			PiecewiseLinearFunction1d function = new LineFunction1d( );
-			function.AddControlPoint( new PiecewiseLinearFunction1d.ControlPoint( 0, 1 ) );
-			function.AddControlPoint( new PiecewiseLinearFunction1d.ControlPoint( 1, 1 ) );
+			function.AddControlPoint( new Point2( 0, 0 ) );
+			function.AddControlPoint( new Point2( 1, 1 ) );
 			return function;
 		}
 

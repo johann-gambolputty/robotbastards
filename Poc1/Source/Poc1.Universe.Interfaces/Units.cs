@@ -131,6 +131,26 @@ namespace Poc1.Universe.Interfaces
 
 			#endregion
 
+			#region Operators
+
+			/// <summary>
+			/// Uni units addition
+			/// </summary>
+			public static UniUnits operator + ( UniUnits lhs, UniUnits rhs )
+			{
+				return new UniUnits( lhs.m_Value + rhs.m_Value );
+			}
+
+			/// <summary>
+			/// Uni units subtraction
+			/// </summary>
+			public static UniUnits operator - ( UniUnits lhs, UniUnits rhs )
+			{
+				return new UniUnits( lhs.m_Value - rhs.m_Value );
+			}
+
+			#endregion
+
 			#region Private Members
 
 			private long m_Value;

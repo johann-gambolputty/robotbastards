@@ -1,0 +1,227 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{98F71271-4E9B-4E1B-9C6A-8765050998E5}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Poc1.Bob</RootNamespace>
+    <AssemblyName>Bob</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MagicLibrary, Version=1.7.0.0, Culture=neutral, PublicKeyToken=3a6eb82f876a49bc">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\ThirdParty\MagicDocking\MagicLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppUtils.cs" />
+    <Compile Include="Controls\Biomes\BiomeManagerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Biomes\BiomeManagerControl.Designer.cs">
+      <DependentUpon>BiomeManagerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Biomes\TerrainTypeGraphComponentControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Biomes\TerrainTypeGraphComponentControl.Designer.cs">
+      <DependentUpon>TerrainTypeGraphComponentControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LoadingScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\LoadingScreen.Designer.cs">
+      <DependentUpon>LoadingScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Biomes\TerrainFrameLookupTextureControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Biomes\TerrainFrameLookupTextureControl.Designer.cs">
+      <DependentUpon>TerrainFrameLookupTextureControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Biomes\TerrainTypeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Biomes\TerrainTypeControl.Designer.cs">
+      <DependentUpon>TerrainTypeControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Planets\PlanetViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Planets\PlanetViewControl.Designer.cs">
+      <DependentUpon>PlanetViewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Terrain\TerrainTypeTextureBuilder.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Controls\Biomes\BiomeManagerControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>BiomeManagerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Biomes\TerrainTypeGraphComponentControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TerrainTypeGraphComponentControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\LoadingScreen.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>LoadingScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MainForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Biomes\TerrainFrameLookupTextureControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TerrainFrameLookupTextureControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Biomes\TerrainTypeControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TerrainTypeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Planets\PlanetViewControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>PlanetViewControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="App.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Assets\Rb.Assets.csproj">
+      <Project>{22440804-2D3F-4FEF-AD01-812923F6E04C}</Project>
+      <Name>Rb.Assets</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Common.Controls.Forms\Rb.Common.Controls.Forms.csproj">
+      <Project>{879D51CE-CD23-4C7E-8640-64562CDED669}</Project>
+      <Name>Rb.Common.Controls.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Common.Controls\Rb.Common.Controls.csproj">
+      <Project>{14AE905B-90DB-4CE3-84C3-F12835236797}</Project>
+      <Name>Rb.Common.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Core\Rb.Core.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Interaction\Rb.Interaction.csproj">
+      <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
+      <Name>Rb.Interaction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Log.Controls.Vs\Rb.Log.Controls.Vs.csproj">
+      <Project>{592DDD2E-6E38-4EB1-AD47-800193530D3B}</Project>
+      <Name>Rb.Log.Controls.Vs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Log.Controls\Rb.Log.Controls.csproj">
+      <Project>{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}</Project>
+      <Name>Rb.Log.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Log\Rb.Log.csproj">
+      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
+      <Name>Rb.Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.NiceControls\Rb.NiceControls.csproj">
+      <Project>{A4E5C0BF-B76D-425D-8439-B07EB6B29444}</Project>
+      <Name>Rb.NiceControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.csproj">
+      <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>
+      <Name>Rb.Rendering.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Rendering.Windows\Rb.Rendering.Windows.csproj">
+      <Project>{39A57BC2-BE73-41A7-BBC2-A9D0C28D5A06}</Project>
+      <Name>Rb.Rendering.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Rendering\Rb.Rendering.csproj">
+      <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
+      <Name>Rb.Rendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Poc1.Universe.Interfaces\Poc1.Universe.Interfaces.csproj">
+      <Project>{7C18549B-2D70-4985-852B-6A285BF4F00A}</Project>
+      <Name>Poc1.Universe.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Poc1.Universe\Poc1.Universe.csproj">
+      <Project>{5CC992B9-1B66-4ECC-8657-624DA59B3D2D}</Project>
+      <Name>Poc1.Universe</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc1.Bob.Core\Poc1.Bob.Core.csproj">
+      <Project>{81D7369B-7D0F-4967-9326-AF894DD5AA3B}</Project>
+      <Name>Poc1.Bob.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc1.Tools.Atmosphere\Poc1.Tools.Atmosphere.csproj">
+      <Project>{69F536AC-32E9-4930-8B6A-A14223298222}</Project>
+      <Name>Poc1.Tools.Atmosphere</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc1.Tools.StarField\Poc1.Tools.StarField.csproj">
+      <Project>{711848B9-0412-4E06-8955-59DB45357E66}</Project>
+      <Name>Poc1.Tools.StarField</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc1.Tools.TerrainTextures.Core\Poc1.Tools.TerrainTextures.Core.csproj">
+      <Project>{F34331DC-90A9-4C51-B7F9-34B3B96965BD}</Project>
+      <Name>Poc1.Tools.TerrainTextures.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc1.Tools.Waves\Poc1.Tools.Waves.csproj">
+      <Project>{C8DC8F1E-E722-42E0-A433-122BFF0BBD2D}</Project>
+      <Name>Poc1.Tools.Waves</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Delete.bmp" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

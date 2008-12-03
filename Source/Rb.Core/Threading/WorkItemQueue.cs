@@ -80,6 +80,14 @@ namespace Rb.Core.Threading
 		public abstract void Enqueue( IWorkItem workItem );
 
 		/// <summary>
+		/// Returns the number of work items in the queue
+		/// </summary>
+		public abstract int NumberOfWorkItemsInQueue
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Empties this queue
 		/// </summary>
 		public abstract void EmptyQueue( );

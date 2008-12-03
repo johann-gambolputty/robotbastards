@@ -10,53 +10,9 @@ namespace Rb.Core.Maths
 	[Serializable]
 	public abstract class PiecewiseLinearFunction1d : IFunction1d
 	{
-		#region ControlPoint Struct
-
 		/// <summary>
-		/// Function control point
+		/// Returns a string representing this object
 		/// </summary>
-		[Serializable]
-		public struct ControlPoint
-		{
-			/// <summary>
-			/// Setup construction
-			/// </summary>
-			/// <param name="position">Control point position (normalized)</param>
-			/// <param name="value">Control point value (normalized)</param>
-			public ControlPoint( float position, float value )
-			{
-				m_Position = position;
-				m_Value = value;
-			}
-
-			/// <summary>
-			/// Sets/gets the normalized value of this control point
-			/// </summary>
-			public float Value
-			{
-				get { return m_Value; }
-				set { m_Value = value < 0 ? 0 : ( value > 1 ? 1 : value ); }
-			}
-
-			/// <summary>
-			/// Sets/gets the normalized position of this control point
-			/// </summary>
-			public float Position
-			{
-				get { return m_Position; }
-				set { m_Position = value < 0 ? 0 : ( value > 1 ? 1 : value ); }
-			}
-
-			#region Private Members
-
-			private float m_Position;
-			private float m_Value;
-
-			#endregion
-		}
-		 
-		#endregion
-
 		public override string ToString( )
 		{
 			return "Piecewise Linear Function";
@@ -73,7 +29,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Gets/sets an indexed control point
 		/// </summary>
-		public ControlPoint this[ int index ]
+		public Point2 this[ int index ]
 		{
 			get { return m_ControlPoints[ index ]; }
 			set
@@ -86,7 +42,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Gets the list of control points defining this function
 		/// </summary>
-		public IEnumerable<ControlPoint> ControlPoints
+		public IEnumerable<Point2> ControlPoints
 		{
 			get { return m_ControlPoints; }
 		}
@@ -94,7 +50,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Adds a control point to the end of the control point list
 		/// </summary>
-		public void AddControlPoint( ControlPoint cp )
+		public void AddControlPoint( Point2 cp )
 		{
 			m_ControlPoints.Add( cp );
 			OnParametersChanged( );
@@ -103,7 +59,7 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Inserts a control point into the control point list
 		/// </summary>
-		public void InsertControlPoint( int index, ControlPoint cp )
+		public void InsertControlPoint( int index, Point2 cp )
 		{
 			m_ControlPoints.Insert( index, cp );
 			OnParametersChanged( );
@@ -116,6 +72,22 @@ namespace Rb.Core.Maths
 		{
 			m_ControlPoints.RemoveAt( index );
 			OnParametersChanged( );
+		}
+
+		/// <summary>
+		/// Finds the index of a control point that is within the distance to point pt
+		/// </summary>
+		public int FindControlPoint( Point2 pt, float distance )
+		{
+			float sqrDist = distance * distance;
+			for ( int cpIndex = 0; cpIndex < m_ControlPoints.Count; ++cpIndex )
+			{
+				if ( pt.SqrDistanceTo( m_ControlPoints[ cpIndex ] ) < sqrDist )
+				{
+					return cpIndex;
+				}
+			}
+			return -1;
 		}
 
 		#region IFunction1d Members
@@ -150,7 +122,7 @@ namespace Rb.Core.Maths
 
 		#region Private Members
 
-		private readonly List<ControlPoint> m_ControlPoints = new List<ControlPoint>( );
+		private readonly List<Point2> m_ControlPoints = new List<Point2>( );
 
 		[NonSerialized]
 		private Action<IFunction1d> m_ParametersChanged;

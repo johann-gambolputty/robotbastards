@@ -111,6 +111,14 @@ namespace Rb.Core.Threading
 		}
 
 		/// <summary>
+		/// Returns the number of work items in the queue
+		/// </summary>
+		public override int NumberOfWorkItemsInQueue
+		{
+			get { return m_WorkItems.Count; }
+		}
+
+		/// <summary>
 		/// Empties the work queue of any queued work items. Calls Dispose() on any IDisposable work items
 		/// </summary>
 		public override void EmptyQueue( )

@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using Rb.Core.Components;
 using Rb.Core.Sets.Interfaces;
 
 namespace Rb.Core.Sets.Classes
@@ -29,15 +29,7 @@ namespace Rb.Core.Sets.Classes
 		/// </summary>
 		public IEnumerable this[ Type type ]
 		{
-			get
-			{
-				ArrayList objects;
-				if ( m_ObjectMap.TryGetValue( type, out objects ) )
-				{
-					return objects;
-				}
-				return new object[ 0 ];
-			}
+			get { return m_TypeMap.GetObjectsOfType( type ); }
 		}
 
 		#region Protected Members
@@ -54,74 +46,14 @@ namespace Rb.Core.Sets.Classes
 
 		#region Private Members
 
-		private readonly Dictionary<Type, ArrayList> m_ObjectMap = new Dictionary<Type, ArrayList>( );
-
-		/// <summary>
-		/// Iterates over all the specific types in an object, and registers the object for each of them
-		/// </summary>
-		private void Add( object obj )
-		{
-			for ( Type baseType = obj.GetType( ); baseType != null; baseType = baseType.BaseType )
-			{
-				Add( baseType, obj );
-			}
-			foreach ( Type interfaceType in obj.GetType( ).GetInterfaces( ) )
-			{
-				Add( interfaceType, obj );
-			}
-		}
-
-		/// <summary>
-		/// Iterates over all the specific types in an object, and unregisters the object for each of them
-		/// </summary>
-		private void Remove( object obj )
-		{
-			for ( Type baseType = obj.GetType( ); baseType != null; baseType = baseType.BaseType )
-			{
-				Remove( baseType, obj );
-			}
-			foreach ( Type interfaceType in obj.GetType( ).GetInterfaces( ) )
-			{
-				Remove( interfaceType, obj );
-			}
-		}
-
-		/// <summary>
-		/// Adds an object to the map
-		/// </summary>
-		/// <param name="type">Specific type to register obj with</param>
-		/// <param name="obj">Object to add</param>
-		private void Add( Type type, object obj )
-		{
-			ArrayList objects;
-			if ( !m_ObjectMap.TryGetValue( type, out objects ) )
-			{
-				objects = new ArrayList( );
-				m_ObjectMap[ type ] = objects;
-			}
-			objects.Add( obj );
-		}
-
-		/// <summary>
-		/// Removes an object to the map
-		/// </summary>
-		/// <param name="type">Specific type that the object is registered with</param>
-		/// <param name="obj">Object being removed</param>
-		private void Remove( Type type, object obj )
-		{
-			ArrayList objects;
-			if ( m_ObjectMap.TryGetValue( type, out objects ) )
-			{
-				objects.Remove( obj );
-			}
-		}
+		private readonly ObjectTypeMap<object> m_TypeMap = new ObjectTypeMap<object>( );
 
 		/// <summary>
 		/// Handles the <see cref="IObjectSet.ObjectAdded"/> event
 		/// </summary>
 		private void OnObjectAdded( IObjectSet set, object obj )
 		{
-			Add( obj );
+			m_TypeMap.Add( obj );
 		}
 
 		/// <summary>
@@ -129,7 +61,7 @@ namespace Rb.Core.Sets.Classes
 		/// </summary>
 		private void OnObjectRemoved( IObjectSet set, object obj )
 		{
-			Remove( obj );
+			m_TypeMap.Remove( obj );
 		}
 
 		#endregion
