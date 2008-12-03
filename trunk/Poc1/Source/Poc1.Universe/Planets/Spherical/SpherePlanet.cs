@@ -1,4 +1,3 @@
-using System;
 using Poc1.Universe.Classes.Rendering;
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets.Spherical;
@@ -23,6 +22,8 @@ namespace Poc1.Universe.Planets.Spherical
 		/// </summary>
 		public static ISpherePlanet DefaultPlanet( IWorkItemQueue workQueue, Units.Metres planetRadius )
 		{
+			workQueue = workQueue ?? ExtendedThreadPool.Instance;
+
 			ISpherePlanet planet = new SpherePlanet( );
 			planet.Radius = planetRadius;
 
@@ -64,11 +65,6 @@ namespace Poc1.Universe.Planets.Spherical
 		#region ISpherePlanet Members
 
 		/// <summary>
-		/// Called when the planet changes. This does not occur when a model changes.
-		/// </summary>
-		public event EventHandler PlanetChanged;
-
-		/// <summary>
 		/// Gets/sets the radius of the planet. If the radius is changed, PlanetChanged is invoked
 		/// </summary>
 		public Units.Metres Radius
@@ -76,10 +72,10 @@ namespace Poc1.Universe.Planets.Spherical
 			get { return m_Radius; }
 			set
 			{
-				m_Radius = value;
-				if ( PlanetChanged != null )
+				if ( m_Radius != value )
 				{
-					PlanetChanged( this, null );
+					m_Radius = value;
+					OnPlanetChanged( );
 				}
 			}
 		}

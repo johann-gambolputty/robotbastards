@@ -1,7 +1,11 @@
+using System;
+using System.Collections.Generic;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
+using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Renderers;
+using Rb.Core.Components;
 using Rb.Core.Utils;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces;
@@ -15,16 +19,88 @@ namespace Poc1.Universe.Planets
 	/// </summary>
 	public class Planet : IPlanet
 	{
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public Planet( )
+		{
+			m_Models = new ObjectTypeMap<IPlanetEnvironmentModel>( ObjectTypeMap.GetAllInterfaceTypes );
+			m_Renderers = new ObjectTypeMap<IPlanetEnvironmentRenderer>( ObjectTypeMap.GetAllInterfaceTypes );
+		}
+
 		#region IPlanet Members
+
+		/// <summary>
+		/// Called when the planet changes
+		/// </summary>
+		public event EventHandler PlanetChanged;
 
 		/// <summary>
 		/// Gets/sets the planet's orbit
 		/// </summary>
+		/// <remarks>
+		/// Raises the PlanetChanged event on set to a different orbit
+		/// </remarks>
 		public IOrbit Orbit
 		{
 			get { return m_Orbit; }
-			set { m_Orbit = value; }
+			set
+			{
+				if ( m_Orbit != value )
+				{
+					m_Orbit = value;
+					OnPlanetChanged( );
+				}
+			}
 		}
+
+		#region Models and Renderers
+
+		/// <summary>
+		/// Gets an environment model (e.g. <see cref="IPlanetRingModel"/>) from the planet
+		/// </summary>
+		/// <typeparam name="T">Environment model</typeparam>
+		/// <returns>Returns the specified environment model</returns>
+		public T Model<T>( ) where T : class, IPlanetEnvironmentModel
+		{
+			return m_Models.GetFirstOfType<T>( );
+		}
+
+		/// <summary>
+		/// Gets an environment renderer (e.g. <see cref="IPlanetMarbleRenderer"/> from the planet
+		/// </summary>
+		/// <typeparam name="T">Environment renderer</typeparam>
+		/// <returns>Returns the specified environment renderer</returns>
+		public T Renderer<T>( ) where T : class, IPlanetEnvironmentRenderer
+		{
+			return m_Renderers.GetFirstOfType<T>( );
+		}
+
+		/// <summary>
+		/// Adds an environment model to the planet
+		/// </summary>
+		/// <param name="model">Model to add</param>
+		public void AddModel( IPlanetEnvironmentModel model )
+		{
+			m_Models.Add( model );
+			OnModelAssigned( model );
+		}
+
+		/// <summary>
+		/// Adds an environment renderer to the planet. Can be retrieved by 
+		/// </summary>
+		/// <param name="renderer">Renderer to add</param>
+		/// <param name="renderOrder">Ordinal determining when the renderer is used during rendering.</param>
+		/// <param name="deepRenderOrder">Ordinal determining when the renderer is used during deep rendering. 0 is first.</param>
+		public void AddRenderer( IPlanetEnvironmentRenderer renderer, PlanetRenderPassOrder renderOrder, PlanetRenderPassOrder deepRenderOrder )
+		{
+			InsertRenderer( renderOrder, renderer, true );
+			InsertRenderer( deepRenderOrder, renderer, false );
+			m_Renderers.Add( renderer );
+			OnRendererAssigned( renderer );
+		}
+
+		#endregion
 
 		#region Models
 
@@ -241,14 +317,40 @@ namespace Poc1.Universe.Planets
 		/// </summary>
 		public void Dispose( )
 		{
-			DisposableHelper.Dispose( m_AtmosphereModel );
-			DisposableHelper.Dispose( m_CloudModel );
-			DisposableHelper.Dispose( m_OceanModel );
-			DisposableHelper.Dispose( m_TerrainModel );
-			DisposableHelper.Dispose( m_AtmosphereRenderer );
-			DisposableHelper.Dispose( m_CloudRenderer );
-			DisposableHelper.Dispose( m_TerrainRenderer );
-			DisposableHelper.Dispose( m_OceanRenderer );
+			foreach ( IPlanetEnvironmentModel model in m_Models )
+			{
+				DisposableHelper.Dispose( model );
+			}
+			foreach ( IPlanetEnvironmentRenderer renderer in m_Renderers )
+			{
+				DisposableHelper.Dispose( renderer );
+			}
+			m_Models.Clear( );
+			m_Renderers.Clear( );
+
+			//DisposableHelper.Dispose( m_AtmosphereModel );
+			//DisposableHelper.Dispose( m_CloudModel );
+			//DisposableHelper.Dispose( m_OceanModel );
+			//DisposableHelper.Dispose( m_TerrainModel );
+			//DisposableHelper.Dispose( m_AtmosphereRenderer );
+			//DisposableHelper.Dispose( m_CloudRenderer );
+			//DisposableHelper.Dispose( m_TerrainRenderer );
+			//DisposableHelper.Dispose( m_OceanRenderer );
+		}
+
+		#endregion
+
+		#region Protected Members
+
+		/// <summary>
+		/// Raises the PlanetChanged event
+		/// </summary>
+		protected void OnPlanetChanged( )
+		{
+			if ( PlanetChanged != null )
+			{
+				PlanetChanged( this, EventArgs.Empty );
+			}
 		}
 
 		#endregion
@@ -258,6 +360,12 @@ namespace Poc1.Universe.Planets
 		private string						m_Name;
 		private UniTransform				m_Transform = new UniTransform( );
 		private IOrbit						m_Orbit;
+		private readonly ObjectTypeMap<IPlanetEnvironmentModel> m_Models;
+		private readonly ObjectTypeMap<IPlanetEnvironmentRenderer> m_Renderers;
+		private readonly List<IPlanetEnvironmentRenderer> m_UnorderedRenderers = new List<IPlanetEnvironmentRenderer>( );
+		private readonly List<IUniRenderable> m_UnorderedUniRenderers = new List<IUniRenderable>( );
+		private readonly List<KeyValuePair<int, IPlanetEnvironmentRenderer>> m_OrderedRenderers = new List<KeyValuePair<int, IPlanetEnvironmentRenderer>>( );
+		private readonly List<KeyValuePair<int, IUniRenderable>> m_OrderedUniRenderers = new List<KeyValuePair<int, IUniRenderable>>( );
 
 		private IPlanetAtmosphereModel		m_AtmosphereModel;
 		private IPlanetCloudModel			m_CloudModel;
@@ -272,6 +380,62 @@ namespace Poc1.Universe.Planets
 		private IPlanetMarbleRenderer		m_MarbleRenderer;
 		private IPlanetRingRenderer			m_RingRenderer;
 
+		/// <summary>
+		/// Inserts a renderer into an ordered list
+		/// </summary>
+		private void InsertRenderer( PlanetRenderPassOrder order, IPlanetEnvironmentRenderer renderer, bool addToUniList )
+		{
+			if ( order == PlanetRenderPassOrder.NotRendered )
+			{
+				return;
+			}
+			if ( addToUniList && !( renderer is IUniRenderable ) )
+			{
+				return;
+			}
+			if ( order == PlanetRenderPassOrder.Unordered )
+			{
+				if ( addToUniList )
+				{
+					m_UnorderedUniRenderers.Add( ( IUniRenderable )renderer );
+				}
+				else
+				{
+					m_UnorderedRenderers.Add( renderer );
+				}
+				return;
+			}
+
+			int orderValue = ( int )order;	//	Only Unordered and NotRendered symbolic values can be less than 0
+			if ( orderValue < 0 )
+			{
+				throw new ArgumentOutOfRangeException( "order" );
+			}
+			if ( addToUniList )
+			{
+				InsertRenderer( orderValue, m_OrderedUniRenderers, ( IUniRenderable )renderer );
+			}
+			else
+			{
+				InsertRenderer( orderValue, m_OrderedRenderers, renderer );	
+			}
+		}
+
+		/// <summary>
+		/// Inserts a renderer into an ordered list
+		/// </summary>
+		private static void InsertRenderer<T>( int order, List<KeyValuePair<int, T>> orderedList, T renderer )
+		{
+			for ( int index = 0; index < orderedList.Count; ++index )
+			{
+				if ( orderedList[ index ].Key >= order )
+				{
+					orderedList.Insert( index, new KeyValuePair<int, T>( order, renderer ) );
+					return;
+				}
+			}
+			orderedList.Add( new KeyValuePair<int, T>( order, renderer ) );
+		}
 
 		/// <summary>
 		///	Renders planet marble
@@ -279,26 +443,31 @@ namespace Poc1.Universe.Planets
 		/// <param name="context">Rendering context</param>
 		private void RenderMarble( IRenderContext context )
 		{
-			if ( MarbleRenderer == null )
-			{
-				return;
-			}
+			//if ( MarbleRenderer == null )
+			//{
+			//    return;
+			//}
 
 			//	Push marble render transform
 			UniCamera.PushAstroRenderTransform( TransformType.LocalToWorld, Transform );
 
-			if ( MarbleRenderer != null )
-			{
-				MarbleRenderer.Render( context );
-			}
+			//if ( MarbleRenderer != null )
+			//{
+			//    MarbleRenderer.Render( context );
+			//}
 
-			if ( RingRenderer != null )
+			//if ( RingRenderer != null )
+			//{
+			//    RingRenderer.Render( context );
+			//}
+			//if ( AtmosphereRenderer != null )
+			//{
+			//    AtmosphereRenderer.DeepRender( context );
+			//}
+
+			foreach ( KeyValuePair<int, IUniRenderable> kvp in m_OrderedUniRenderers )
 			{
-				RingRenderer.Render( context );
-			}
-			if ( AtmosphereRenderer != null )
-			{
-				AtmosphereRenderer.DeepRender( context );
+				kvp.Value.DeepRender( context );
 			}
 
 			//	Pop transform
@@ -355,6 +524,5 @@ namespace Poc1.Universe.Planets
 		}
 
 		#endregion
-
 	}
 }

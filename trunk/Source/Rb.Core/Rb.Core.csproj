@@ -52,6 +52,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandLine\CmdArgAttribute.cs" />
+    <Compile Include="CommandLine\CmdArgIncompleteException.cs" />
+    <Compile Include="CommandLine\CmdArgNotFoundException.cs" />
+    <Compile Include="CommandLine\CommandLineParser.cs" />
     <Compile Include="Components\Builder.cs" />
     <Compile Include="Components\Component.cs" />
     <Compile Include="Components\ComponentHelpers.cs" />
@@ -75,6 +79,7 @@
     <Compile Include="Components\Node.cs" />
     <Compile Include="Components\ObjectMap.cs" />
     <Compile Include="Components\ObjectTemplate.cs" />
+    <Compile Include="Components\ObjectTypeMap.cs" />
     <Compile Include="Components\Parent.cs" />
     <Compile Include="Components\PropertyBag.cs" />
     <Compile Include="Logs.cs" />
@@ -83,6 +88,7 @@
     <Compile Include="Maths\CatmullRomSpline.cs" />
     <Compile Include="Maths\Constants.cs" />
     <Compile Include="Maths\ControlledSpline.cs" />
+    <Compile Include="Maths\Distances2.cs" />
     <Compile Include="Maths\FloatInterpolator.cs" />
     <Compile Include="Maths\Fractals.cs" />
     <Compile Include="Maths\Frame3Interpolator.cs" />
@@ -100,6 +106,7 @@
     <Compile Include="Maths\IShape3.cs" />
     <Compile Include="Maths\Line2Intersection.cs" />
     <Compile Include="Maths\LineFunction1d.cs" />
+    <Compile Include="Maths\LineSegment2.cs" />
     <Compile Include="Maths\LineSegment3.cs" />
     <Compile Include="Maths\Matrix44.cs" />
     <Compile Include="Maths\Noise.cs" />
@@ -138,6 +145,8 @@
     <Compile Include="Sets\Interfaces\IObjectSetFilter.cs" />
     <Compile Include="Sets\Interfaces\IObjectSetService.cs" />
     <Compile Include="Sets\Interfaces\IObjectSetServiceMap.cs" />
+    <Compile Include="Threading\AbstractWorkItem.cs" />
+    <Compile Include="Threading\DeferredWorkItemQueue.cs" />
     <Compile Include="Threading\DelegateWorkItem.cs" />
     <Compile Include="Threading\IProgressMonitor.cs" />
     <Compile Include="Threading\IWorkItem.cs" />
@@ -150,6 +159,7 @@
     <Compile Include="Threading\SourceSinkWorkItem.cs" />
     <Compile Include="Threading\WorkItemQueue.cs" />
     <Compile Include="Utils\AppDomainUtils.cs" />
+    <Compile Include="Utils\Arguments.cs" />
     <Compile Include="Utils\BinaryReaderHelpers.cs" />
     <Compile Include="Utils\Clock.cs" />
     <Compile Include="Utils\DelegateHelpers.cs" />

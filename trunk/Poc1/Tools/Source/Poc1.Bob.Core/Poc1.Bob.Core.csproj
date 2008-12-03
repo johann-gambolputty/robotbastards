@@ -1,0 +1,79 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{81D7369B-7D0F-4967-9326-AF894DD5AA3B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Poc1.Bob.Core</RootNamespace>
+    <AssemblyName>Poc1.Bob.Core</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\Classes\BuilderCameraController.cs" />
+    <Compile Include="Controls\Classes\SimplePlanetController.cs" />
+    <Compile Include="Controls\Interfaces\ISimplePlanetView.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Core\Rb.Core.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Interaction.Windows\Rb.Interaction.Windows.csproj">
+      <Project>{4ECD7CBC-1D3E-4C87-852E-77488B549711}</Project>
+      <Name>Rb.Interaction.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Interaction\Rb.Interaction.csproj">
+      <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
+      <Name>Rb.Interaction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.csproj">
+      <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>
+      <Name>Rb.Rendering.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Poc1.Universe.Interfaces\Poc1.Universe.Interfaces.csproj">
+      <Project>{7C18549B-2D70-4985-852B-6A285BF4F00A}</Project>
+      <Name>Poc1.Universe.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Poc1.Universe\Poc1.Universe.csproj">
+      <Project>{5CC992B9-1B66-4ECC-8657-624DA59B3D2D}</Project>
+      <Name>Poc1.Universe</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interfaces\Terrain\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

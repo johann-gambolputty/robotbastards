@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Rb.Core.Sets.Interfaces;
 using Rb.Core.Sets.Interfaces.Generic;
+using Rb.Core.Utils;
 
 namespace Rb.Core.Sets.Classes.Generic
 {
@@ -63,8 +64,10 @@ namespace Rb.Core.Sets.Classes.Generic
 		/// Adds an object to the set
 		/// </summary>
 		/// <param name="obj">Object to add</param>
+		/// <exception cref="System.ArgumentNullException">Thrown if obj is null</exception>
 		public void Add( T obj )
 		{
+			Arguments.CheckNotNull( obj, "obj" );
 			m_Objects.Add( obj );
 			OnObjectAdded( obj );
 		}
@@ -73,8 +76,10 @@ namespace Rb.Core.Sets.Classes.Generic
 		/// Removes an object from the set
 		/// </summary>
 		/// <param name="obj">Object to remove</param>
+		/// <exception cref="System.ArgumentNullException">Thrown if obj is null</exception>
 		public void Remove( T obj )
 		{
+			Arguments.CheckNotNull( obj, "obj" );
 			m_Objects.Remove( obj );
 			OnObjectRemoved( obj );
 		}

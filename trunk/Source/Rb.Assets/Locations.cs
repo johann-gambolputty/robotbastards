@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Rb.Assets.Interfaces;
+using Rb.Core.Utils;
 
 namespace Rb.Assets
 {
@@ -91,8 +92,11 @@ namespace Rb.Assets
 		/// </summary>
 		/// <param name="path">Location path</param>
 		/// <returns>Returns the specified location, or null if nothing exists at the path</returns>
+		/// <exception cref="ArgumentNullException">Thrown if path is null</exception>
+		/// <exception cref="ArgumentException">Thrown if path is empty</exception>
 		public ILocation GetLocation( string path )
 		{
+			Arguments.CheckNotNullOrEmpty( path, "path" );
 			foreach ( ILocationManager manager in m_Systems )
 			{
 				ILocation location = manager.GetLocation( path );

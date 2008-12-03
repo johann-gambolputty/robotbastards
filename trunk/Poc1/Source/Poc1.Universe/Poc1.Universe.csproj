@@ -61,12 +61,16 @@
     <Compile Include="Interfaces\Rendering\ITerrainType.cs" />
     <Compile Include="Interfaces\Rendering\ITerrainTypeManager.cs" />
     <Compile Include="NoiseTest.cs" />
+    <Compile Include="Planets\Flat\FlatPlanet.cs" />
+    <Compile Include="Planets\Flat\Models\FlatPlanetProcTerrainModel.cs" />
+    <Compile Include="Planets\Flat\Renderers\FlatPlanetTerrainPatchRenderer.cs" />
     <Compile Include="Planets\Models\PlanetAtmosphereModel.cs" />
     <Compile Include="Planets\Models\PlanetCloudModel.cs" />
     <Compile Include="Planets\Models\PlanetOceanModel.cs" />
     <Compile Include="Planets\Models\PlanetRingModel.cs" />
     <Compile Include="Planets\Models\PlanetTerrainModelChangedEventArgs.cs" />
     <Compile Include="Planets\Planet.cs" />
+    <Compile Include="Planets\Renderers\PlanetTerrainPatchRenderer.cs" />
     <Compile Include="Planets\Spherical\Models\SpherePlanetAtmosphereModel.cs" />
     <Compile Include="Planets\Spherical\Models\SpherePlanetCloudModel.cs" />
     <Compile Include="Planets\Spherical\Models\SpherePlanetProcTerrainModel.cs" />
@@ -128,9 +132,6 @@
       <Project>{7C18549B-2D70-4985-852B-6A285BF4F00A}</Project>
       <Name>Poc1.Universe.Interfaces</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Planets\Renderers\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

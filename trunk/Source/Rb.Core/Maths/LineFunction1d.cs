@@ -18,22 +18,22 @@ namespace Rb.Core.Maths
 			{
 				return 0;
 			}
-			if ( t <= this[ 0 ].Position )
+			if ( t <= this[ 0 ].X )
 			{
-				return this[ 0 ].Value;
+				return this[ 0 ].Y;
 			}
 			for ( int i = 0; i < NumControlPoints - 1; ++i )
 			{
-				if ( t <= this[ i + 1 ].Position )
+				if ( t <= this[ i + 1 ].X )
 				{
-					float minLocalT = this[ i ].Position;
-					float maxLocalT = this[ i + 1 ].Position;
+					float minLocalT = this[ i ].X;
+					float maxLocalT = this[ i + 1 ].Y;
 
 					float localT = ( t - minLocalT ) / ( maxLocalT - minLocalT );
-					return ( this[ i ].Value * ( 1 - localT ) + this[ i + 1 ].Value * localT );
+					return ( this[ i ].Y * ( 1 - localT ) + this[ i + 1 ].Y * localT );
 				}
 			}
-			return this[ NumControlPoints - 1 ].Value;
+			return this[ NumControlPoints - 1 ].Y;
 		}
 	}
 }

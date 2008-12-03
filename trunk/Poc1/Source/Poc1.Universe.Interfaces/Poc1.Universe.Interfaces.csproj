@@ -41,6 +41,7 @@
     <Compile Include="ISun.cs" />
     <Compile Include="IUniCamera.cs" />
     <Compile Include="IUniRenderable.cs" />
+    <Compile Include="Planets\Flat\IFlatPlanet.cs" />
     <Compile Include="Planets\Models\IPlanetAtmosphereModel.cs" />
     <Compile Include="Planets\Models\IPlanetCloudModel.cs" />
     <Compile Include="Planets\Models\IPlanetEnvironmentModel.cs" />
@@ -87,6 +88,10 @@
       <Project>{22C72F9C-B313-4366-BBE2-84A649775E75}</Project>
       <Name>Poc1.Fast.Terrain</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Planets\Flat\Model\" />
+    <Folder Include="Planets\Flat\Renderers\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
