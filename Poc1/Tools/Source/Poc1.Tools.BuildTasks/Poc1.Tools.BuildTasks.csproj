@@ -45,6 +45,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Core\Rb.Core.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Poc1.Tools.Atmosphere\Poc1.Tools.Atmosphere.csproj">
       <Project>{69F536AC-32E9-4930-8B6A-A14223298222}</Project>
       <Name>Poc1.Tools.Atmosphere</Name>

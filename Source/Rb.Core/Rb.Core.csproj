@@ -164,6 +164,8 @@
     <Compile Include="Utils\Clock.cs" />
     <Compile Include="Utils\DelegateHelpers.cs" />
     <Compile Include="Utils\DisposableHelper.cs" />
+    <Compile Include="Utils\EnumerableAdapter.cs" />
+    <Compile Include="Utils\Loose.cs" />
     <Compile Include="Utils\MsvCrt.cs" />
     <Compile Include="Utils\CustomUITypeEditor.cs" />
     <Compile Include="Threading\DelegateMarshaller.cs" />

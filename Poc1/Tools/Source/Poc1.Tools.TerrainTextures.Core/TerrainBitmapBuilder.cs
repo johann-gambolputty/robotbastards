@@ -37,7 +37,7 @@ namespace Poc1.Tools.TerrainTextures.Core
 		/// <summary>
 		/// Builds a bitmap of the specified dimensions, using a terrain type set to colour the underlying heightmap
 		/// </summary>
-		public unsafe Bitmap Build( int width, int height, TerrainTypeSet terrainTypes )
+		public unsafe Bitmap Build( int width, int height, TerrainTypeList terrainTypes )
 		{
 			if ( terrainTypes.TerrainTypeCount == 0 )
 			{

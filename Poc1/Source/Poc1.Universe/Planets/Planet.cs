@@ -264,7 +264,7 @@ namespace Poc1.Universe.Planets
 		public void DeepRender( IRenderContext context )
 		{
 			//	Start profiling
-			using ( GameProfiles.Game.Rendering.PlanetRendering.CreateGuard( ) )
+			using ( GameProfiles.Game.Rendering.PlanetRendering.Enter( ) )
 			{
 				RenderMarble( context );
 			}
@@ -281,7 +281,7 @@ namespace Poc1.Universe.Planets
 		public virtual void Render( IRenderContext context )
 		{
 			//	Start profiling
-			using ( GameProfiles.Game.Rendering.PlanetRendering.CreateGuard( ) )
+			using ( GameProfiles.Game.Rendering.PlanetRendering.Enter( ) )
 			{
 				RenderDetail( context );
 			}
@@ -443,32 +443,26 @@ namespace Poc1.Universe.Planets
 		/// <param name="context">Rendering context</param>
 		private void RenderMarble( IRenderContext context )
 		{
-			//if ( MarbleRenderer == null )
-			//{
-			//    return;
-			//}
-
 			//	Push marble render transform
 			UniCamera.PushAstroRenderTransform( TransformType.LocalToWorld, Transform );
 
-			//if ( MarbleRenderer != null )
-			//{
-			//    MarbleRenderer.Render( context );
-			//}
-
-			//if ( RingRenderer != null )
-			//{
-			//    RingRenderer.Render( context );
-			//}
-			//if ( AtmosphereRenderer != null )
-			//{
-			//    AtmosphereRenderer.DeepRender( context );
-			//}
-
-			foreach ( KeyValuePair<int, IUniRenderable> kvp in m_OrderedUniRenderers )
+			if ( MarbleRenderer != null )
 			{
-				kvp.Value.DeepRender( context );
+			    MarbleRenderer.Render( context );
 			}
+			if ( RingRenderer != null )
+			{
+			    RingRenderer.Render( context );
+			}
+			if ( AtmosphereRenderer != null )
+			{
+			    AtmosphereRenderer.DeepRender( context );
+			}
+
+			//foreach ( KeyValuePair<int, IUniRenderable> kvp in m_OrderedUniRenderers )
+			//{
+			//    kvp.Value.DeepRender( context );
+			//}
 
 			//	Pop transform
 			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );

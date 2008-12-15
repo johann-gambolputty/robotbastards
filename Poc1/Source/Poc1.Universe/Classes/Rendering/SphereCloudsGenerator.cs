@@ -112,7 +112,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 		public void Update( )
 		{
-			using ( GameProfiles.Game.Rendering.PlanetRendering.CloudRendering.CreateGuard( ) )
+			using ( GameProfiles.Game.Rendering.PlanetRendering.CloudRendering.Enter( ) )
 			{
 				//	A very gradual blend between the 2 active cloud textures is required - any faster
 				//	and there's a noticeable pause, between m_Blend reaching 1.0 and when the new texture

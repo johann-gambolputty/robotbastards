@@ -20,7 +20,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// </summary>
 		public SpherePlanetRingRenderer( )
 		{
-			ITexture2d texture = ( ITexture2d )AssetManager.Instance.Load( "Rings\\ring0.jpg" );
+			ITexture2d texture = ( ITexture2d )AssetManager.Instance.Load( "Rings\\ring1.jpg" );
 			m_Texture = Graphics.Factory.CreateTexture2dSampler( );
 			m_Texture.Texture = texture;
 

@@ -46,16 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KeyInput.cs" />
-    <Compile Include="KeyInputTemplate.cs" />
-    <Compile Include="MouseButtonInput.cs" />
-    <Compile Include="MouseButtonInputTemplate.cs" />
-    <Compile Include="MouseCursorInput.cs" />
-    <Compile Include="MouseCursorInputTemplate.cs" />
-    <Compile Include="MouseScrollDeltaInput.cs" />
-    <Compile Include="MouseScrollDeltaInputTemplate.cs" />
-    <Compile Include="MouseScrollInput.cs" />
-    <Compile Include="MouseScrollInputTemplate.cs" />
+    <Compile Include="ApplicationIdleHandler.cs" />
+    <Compile Include="CommandControlInputSource.cs" />
+    <Compile Include="InputBindings\CommandKeyInputBindingMonitor.cs" />
+    <Compile Include="InputBindings\CommandMouseButtonInputBindingMonitor.cs" />
+    <Compile Include="InputBindings\CommandMouseWheelInputBindingMonitor.cs" />
+    <Compile Include="InputBindings\CommandInputBindingMonitorFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -33,7 +33,7 @@ namespace Poc1.PlanetBuilder
 			m_LookupTexture = RbGraphics.Factory.CreateTexture2d( );
 			m_PackTexture = RbGraphics.Factory.CreateTexture2d( );
 			
-			TerrainTypes = new TerrainTypeSet( );
+			TerrainTypes = new TerrainTypeList( );
 		}
 
 		/// <summary>
@@ -89,7 +89,7 @@ namespace Poc1.PlanetBuilder
 		/// <summary>
 		/// Gets/sets the terrain type set used generate the textures
 		/// </summary>
-		public TerrainTypeSet TerrainTypes
+		public TerrainTypeList TerrainTypes
 		{
 			get { return m_TerrainTypes; }
 			set
@@ -115,7 +115,7 @@ namespace Poc1.PlanetBuilder
 
 		private int m_LookupTextureRebuildRequests;
 		private int m_PackTextureRebuildRequests;
-		private TerrainTypeSet m_TerrainTypes;
+		private TerrainTypeList m_TerrainTypes;
 		private readonly BackgroundWorker m_Worker;
 		private readonly ITexture2d m_LookupTexture;
 		private readonly ITexture2d m_PackTexture;

@@ -16,6 +16,14 @@ namespace Rb.Common.Controls.Graphs.Classes
 		public delegate string ValueToStringDelegate( float value );
 
 		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public GraphAxisDisplay( ) :
+			this( string.Empty )
+		{
+		}
+
+		/// <summary>
 		/// Setup constructor
 		/// </summary>
 		/// <param name="title">Axis title</param>
@@ -105,6 +113,9 @@ namespace Rb.Common.Controls.Graphs.Classes
 			set { m_ZeroLinePen = value; }
 		}
 
+		/// <summary>
+		/// Gets/sets the grid line step for this axis
+		/// </summary>
 		public float LineStep
 		{
 			get { return m_LineStep; }

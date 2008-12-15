@@ -2,6 +2,7 @@
 - TODO
 	- Bob
 		- H: Add build project selection (solar system, particle system)
+		- H: Extract interfaces for classes in tool assemblies - make them part of MVC pattern in bob
 	- Particle Systems
 		- H: Particle system serialization
 		- H: Move particle system library and tools to RB.

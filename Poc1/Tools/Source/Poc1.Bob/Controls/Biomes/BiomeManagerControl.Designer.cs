@@ -1,3 +1,5 @@
+
+
 namespace Poc1.Bob.Controls.Biomes
 {
 	partial class BiomeManagerControl
@@ -28,91 +30,81 @@ namespace Poc1.Bob.Controls.Biomes
 		/// </summary>
 		private void InitializeComponent( )
 		{
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel( );
-			this.splitter1 = new System.Windows.Forms.Splitter( );
-			this.prettyTabControl1 = new Rb.Common.Controls.Tabs.PrettyTabControl( );
+			this.biomeTabControl = new System.Windows.Forms.TabControl( );
 			this.texturingTabPage = new System.Windows.Forms.TabPage( );
 			this.vegetationTabPage = new System.Windows.Forms.TabPage( );
-			this.prettyTabControl1.SuspendLayout( );
+			this.biomeTextureControl1 = new Poc1.Bob.Controls.Biomes.BiomeTerrainTextureViewControl( );
+			this.biomeTabControl.SuspendLayout( );
+			this.texturingTabPage.SuspendLayout( );
+			this.vegetationTabPage.SuspendLayout( );
 			this.SuspendLayout( );
 			// 
-			// tableLayoutPanel1
+			// biomeTabControl
 			// 
-			this.tableLayoutPanel1.ColumnCount = 1;
-			this.tableLayoutPanel1.ColumnStyles.Add( new System.Windows.Forms.ColumnStyle( System.Windows.Forms.SizeType.Percent, 50F ) );
-			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Left;
-			this.tableLayoutPanel1.Location = new System.Drawing.Point( 0, 0 );
-			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 1;
-			this.tableLayoutPanel1.RowStyles.Add( new System.Windows.Forms.RowStyle( System.Windows.Forms.SizeType.Percent, 50F ) );
-			this.tableLayoutPanel1.Size = new System.Drawing.Size( 200, 280 );
-			this.tableLayoutPanel1.TabIndex = 0;
-			// 
-			// splitter1
-			// 
-			this.splitter1.Location = new System.Drawing.Point( 200, 0 );
-			this.splitter1.Name = "splitter1";
-			this.splitter1.Size = new System.Drawing.Size( 3, 280 );
-			this.splitter1.TabIndex = 1;
-			this.splitter1.TabStop = false;
-			// 
-			// prettyTabControl1
-			// 
-			this.prettyTabControl1.Alignment = System.Windows.Forms.TabAlignment.Left;
-			this.prettyTabControl1.Controls.Add( this.texturingTabPage );
-			this.prettyTabControl1.Controls.Add( this.vegetationTabPage );
-			this.prettyTabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.prettyTabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
-			this.prettyTabControl1.ItemSize = new System.Drawing.Size( 30, 100 );
-			this.prettyTabControl1.Location = new System.Drawing.Point( 203, 0 );
-			this.prettyTabControl1.Multiline = true;
-			this.prettyTabControl1.Name = "prettyTabControl1";
-			this.prettyTabControl1.SelectedIndex = 0;
-			this.prettyTabControl1.Size = new System.Drawing.Size( 433, 280 );
-			this.prettyTabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-			this.prettyTabControl1.TabIndex = 2;
+			this.biomeTabControl.Controls.Add( this.texturingTabPage );
+			this.biomeTabControl.Controls.Add( this.vegetationTabPage );
+			this.biomeTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.biomeTabControl.Location = new System.Drawing.Point( 0, 0 );
+			this.biomeTabControl.Name = "biomeTabControl";
+			this.biomeTabControl.SelectedIndex = 0;
+			this.biomeTabControl.Size = new System.Drawing.Size( 396, 528 );
+			this.biomeTabControl.TabIndex = 2;
+			this.biomeTabControl.Alignment = System.Windows.Forms.TabAlignment.Left;
+			this.biomeTabControl.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
+			this.biomeTabControl.ItemSize = new System.Drawing.Size( 30, 100 );
+			this.biomeTabControl.Multiline = true;
+			this.biomeTabControl.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+			this.biomeTabControl.DrawItem += new System.Windows.Forms.DrawItemEventHandler( this.biomeTabControl_DrawItem );
 			// 
 			// texturingTabPage
 			// 
+			this.texturingTabPage.Controls.Add( this.biomeTextureControl1 );
 			this.texturingTabPage.Location = new System.Drawing.Point( 104, 4 );
 			this.texturingTabPage.Name = "texturingTabPage";
 			this.texturingTabPage.Padding = new System.Windows.Forms.Padding( 3 );
-			this.texturingTabPage.Size = new System.Drawing.Size( 325, 272 );
+			this.texturingTabPage.Size = new System.Drawing.Size( 288, 520 );
 			this.texturingTabPage.TabIndex = 0;
 			this.texturingTabPage.Text = "Texturing";
 			this.texturingTabPage.UseVisualStyleBackColor = true;
+
 			// 
 			// vegetationTabPage
 			// 
 			this.vegetationTabPage.Location = new System.Drawing.Point( 104, 4 );
 			this.vegetationTabPage.Name = "vegetationTabPage";
 			this.vegetationTabPage.Padding = new System.Windows.Forms.Padding( 3 );
-			this.vegetationTabPage.Size = new System.Drawing.Size( 325, 272 );
-			this.vegetationTabPage.TabIndex = 1;
+			this.vegetationTabPage.Size = new System.Drawing.Size( 288, 520 );
+			this.vegetationTabPage.TabIndex = 0;
 			this.vegetationTabPage.Text = "Vegetation";
 			this.vegetationTabPage.UseVisualStyleBackColor = true;
+			// 
+			// biomeTextureControl1
+			// 
+			this.biomeTextureControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.biomeTextureControl1.Location = new System.Drawing.Point( 3, 3 );
+			this.biomeTextureControl1.Name = "biomeTextureControl1";
+			this.biomeTextureControl1.Size = new System.Drawing.Size( 282, 514 );
+			this.biomeTextureControl1.TabIndex = 0;
 			// 
 			// BiomeManagerControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add( this.prettyTabControl1 );
-			this.Controls.Add( this.splitter1 );
-			this.Controls.Add( this.tableLayoutPanel1 );
+			this.Controls.Add( this.biomeTabControl );
 			this.Name = "BiomeManagerControl";
-			this.Size = new System.Drawing.Size( 636, 280 );
-			this.prettyTabControl1.ResumeLayout( false );
+			this.Size = new System.Drawing.Size( 396, 528 );
+			this.biomeTabControl.ResumeLayout( false );
+			this.texturingTabPage.ResumeLayout( false );
 			this.ResumeLayout( false );
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-		private System.Windows.Forms.Splitter splitter1;
-		private Rb.Common.Controls.Tabs.PrettyTabControl prettyTabControl1;
+		private System.Windows.Forms.TabControl biomeTabControl;
 		private System.Windows.Forms.TabPage texturingTabPage;
 		private System.Windows.Forms.TabPage vegetationTabPage;
+		private BiomeTerrainTextureViewControl biomeTextureControl1;
 
 
 	}

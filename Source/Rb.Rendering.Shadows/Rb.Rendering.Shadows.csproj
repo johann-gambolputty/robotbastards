@@ -63,10 +63,6 @@
       <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
       <Name>Rb.Rendering</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rb.World\Rb.World.csproj">
-      <Project>{46980366-998B-4178-87B7-B04DD3B21979}</Project>
-      <Name>Rb.World</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

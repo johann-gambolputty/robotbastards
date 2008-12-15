@@ -1,9 +1,8 @@
-using System.Windows.Forms;
 using Rb.Core.Components;
 using Rb.Core.Maths;
-using Rb.Core.Utils;
-using Rb.Interaction;
-using Rb.Interaction.Windows;
+using Rb.Interaction.Classes;
+using Rb.Interaction.Classes.InputBindings;
+using Rb.Interaction.Interfaces;
 using Rb.Rendering.Cameras;
 
 namespace Rb.Tools.Cameras
@@ -13,45 +12,54 @@ namespace Rb.Tools.Cameras
 	/// </summary>
 	public class SphereCameraController : Component
 	{
-		/// <summary>
-		/// Camera commands
-		/// </summary>
-		public enum Commands
-		{
-			[CommandDescription("Rotate", "Rotates the camera")]
-			Rotate,
 
-			[CommandDescription("Pan", "Pans the camera")]
-			Pan,
-
-			[CommandDescription("Zoom", "Zooms the camera in and out")]
-			Zoom
-		}
+		#region Commands
 
 		/// <summary>
-		/// Default constructor. Caller must set up a mapping from user inputs to controller commands, using the HandleCameraCommand method
+		/// Controller command list
 		/// </summary>
-		public SphereCameraController( )
-		{
-		}
+		public readonly static CommandList Commands;
 
 		/// <summary>
-		/// Camera controller setup constructor. Creates a default input mapping to controller commands
+		/// Controller rotation command
 		/// </summary>
-		public SphereCameraController( InputContext context, CommandUser user )
+		public readonly static Command Rotate;
+
+		/// <summary>
+		/// Controller pan command
+		/// </summary>
+		public readonly static Command Pan;
+
+		/// <summary>
+		/// Controller zoom command
+		/// </summary>
+		public readonly static Command Zoom;
+
+		#endregion
+
+		/// <summary>
+		/// Setup constructor. Sets the user that controls the camera
+		/// </summary>
+		public SphereCameraController( ICommandUser user )
 		{
-			CommandList commands = CommandListManager.Instance.FindOrCreateFromEnum( typeof( Commands ) );
-			
-			CommandInputTemplateMap templateMap = new CommandInputTemplateMap( );
-			templateMap.Add( commands.FindByCommandId( ( int )Commands.Zoom ), new MouseScrollDeltaInputTemplate( MouseButtons.None, 0.1f ) );
-			templateMap.Add( commands.FindByCommandId( ( int )Commands.Pan ), new MouseCursorInputTemplate( MouseButtons.Left ) );
-			templateMap.Add( commands.FindByCommandId( ( int )Commands.Rotate ), new MouseCursorInputTemplate( MouseButtons.Right ) );
-
-			templateMap.BindToInput( context, user );
-
-			user.AddActiveListener( commands, HandleCameraCommand );
+			user.CommandTriggered += HandleCameraCommand;
 		}
-
+		
+		/// <summary>
+		/// Gets default input bindings for the <see cref="Command"/> command list
+		/// </summary>
+		public static CommandInputBinding[] DefaultInputBindings
+		{
+			get
+			{
+				return new CommandInputBinding[]
+				{
+					new CommandMouseWheelInputBinding( Zoom ),
+					new CommandMouseButtonInputBinding( Pan, MouseButtons.Left, BinaryInputState.Down ),
+					new CommandMouseButtonInputBinding( Rotate, MouseButtons.Right, BinaryInputState.Held )
+				};
+			}
+		}
 
 		/// <summary>
 		/// Called when this object is added to a parent component
@@ -90,47 +98,49 @@ namespace Rb.Tools.Cameras
 			set { m_PanSpeed = value; }
 		}
 
+		#region Private Members
+
 		/// <summary>
 		/// Handles command messages, from the <see cref="Commands"/> enum
 		/// </summary>
-        [Dispatch]
-        public void HandleCameraCommand( CommandMessage msg )
+        private void HandleCameraCommand( CommandTriggerData data )
         {
-            switch ( ( Commands )msg.CommandId )
-            {
-                case Commands.Zoom :
-                    {
-                        Camera.Zoom += ( ( ScalarCommandMessage )msg ).Value;
-                        break;
-                    }
-                case Commands.Pan :
-                    {
-                        CursorCommandMessage cursorMsg = ( CursorCommandMessage )msg;
-						float deltaX = PanSpeed * ( cursorMsg.X - cursorMsg.LastX );
-                        float deltaY = PanSpeed * ( cursorMsg.Y - cursorMsg.LastY );
+			if ( data .Command == Zoom )
+			{
+				Camera.Zoom += ( ( CommandScalarInputState )data.InputState ).Value;	
+			}
+			else if ( data.Command == Pan )
+			{
+				CommandPointInputState cursorMsg = ( CommandPointInputState )data.InputState;
+				Vector2 delta = cursorMsg.Delta * PanSpeed;
 
-                        Point3 newLookAt = Camera.LookAt;
+				Point3 newLookAt = Camera.LookAt;
 
-						newLookAt += Camera.Frame.XAxis * deltaX;
-						newLookAt += Camera.Frame.YAxis * deltaY;
+				newLookAt += Camera.Frame.XAxis * delta.X;
+				newLookAt += Camera.Frame.YAxis * delta.Y;
 
-                        Camera.LookAt = newLookAt;
-                        break;
-                    }
-                case Commands.Rotate :
-                    {
-                        CursorCommandMessage cursorMsg = ( CursorCommandMessage )msg;
-                        float deltaX = cursorMsg.X - cursorMsg.LastX;
-                        float deltaY = cursorMsg.Y - cursorMsg.LastY;
-                        Camera.S += deltaX * 0.01f;
-                        Camera.T -= deltaY * 0.01f;
-
-                        break;
-                    }
-            }
+				Camera.LookAt = newLookAt;
+			}
+			else if ( data.Command == Rotate )
+			{
+				CommandPointInputState cursorMsg = ( CommandPointInputState )data.InputState;
+				Vector2 delta = cursorMsg.Delta * PanSpeed;
+                Camera.S += delta.X * 0.01f;
+                Camera.T -= delta.Y * 0.01f;
+			}
         }
 
 		private float m_PanSpeed = 0.1f;
 		private SphereCamera m_Camera;
+
+		static SphereCameraController( )
+		{
+			Commands = new CommandList( "sphereCameraCommands", "Spherical Camera Commands", CommandRegistry.Instance );
+			Rotate = Commands.NewCommand( "rotate", "Rotate", "Rotates the camera" );
+			Pan = Commands.NewCommand( "pan", "Pan", "Pans the camera" );
+			Zoom = Commands.NewCommand( "zoom", "Zoom", "Zooms the camera in and out" );
+		}
+
+		#endregion
 	}
 }

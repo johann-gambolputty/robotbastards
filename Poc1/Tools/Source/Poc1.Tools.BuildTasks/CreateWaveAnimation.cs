@@ -69,7 +69,7 @@ namespace Poc1.Tools.BuildTasks
 			//{
 			//    animationBitmaps[ frame ].Save( Path.Combine( OutputDirectory.ItemSpec, frame + ".png" ), ImageFormat.Png );
 			//}
-			WaveAnimation animation = new WaveAnimationGenerator( ).GenerateHeightmapSequence( buildParams );
+			WaveAnimation animation = new WaveAnimationGenerator( ).GenerateHeightmapSequence( buildParams, null );
 			animation.Save( OutputFile.ItemSpec );
 
 			return true;

@@ -42,6 +42,39 @@ namespace Rb.Common.Controls.Forms.Graphs
 		}
 
 		/// <summary>
+		/// Gets the X axis setup
+		/// </summary>
+		[Browsable( true )]
+		[TypeConverter( typeof( ExpandableStructConverter ) )]
+		public GraphAxisDisplay XAxis
+		{
+			get { return m_XAxis; }
+			set { m_XAxis = value; }
+		}
+
+		/// <summary>
+		/// Gets the Y axis setup
+		/// </summary>
+		[Browsable( true )]
+		[TypeConverter( typeof( ExpandableStructConverter ) )]
+		public GraphAxisDisplay YAxis
+		{
+			get { return m_YAxis; }
+			set { m_YAxis = value; }
+		}
+
+		/// <summary>
+		/// Gets/sets the data area/control size relation flag. If enabled, the data area resizes when the control resizes
+		/// </summary>
+		[Browsable( true )]
+		[Description( "If enabled, the data area resizes when the control resizes" )]
+		public bool RelateControlSizeToDataArea
+		{
+			get { return m_RelateControlSizeToDataArea; }
+			set { m_RelateControlSizeToDataArea = value; }
+		}
+
+		/// <summary>
 		/// Gets/sets the data window
 		/// </summary>
 		[Browsable( true )]
@@ -141,6 +174,7 @@ namespace Rb.Common.Controls.Forms.Graphs
 
 		#region Private Members
 
+		private bool							m_RelateControlSizeToDataArea;
 		private readonly List<GraphComponent>	m_GraphComponents	= new List<GraphComponent>( );
 		private Pen								m_BorderPen			= new Pen( Color.FromArgb( 0xa0, 0x00, 0x00, 0xa0 ), 2.0f );
 		private Pen								m_GridPen			= new Pen( Color.FromArgb( 0x20, 0x00, 0x00, 0xa0 ), 1.0f );
@@ -462,9 +496,12 @@ namespace Rb.Common.Controls.Forms.Graphs
 			m_Transform.DataBounds = new RectangleF( src.X, src.Y, DefaultDataWindow.Width, DefaultDataWindow.Height );
 			Invalidate( );
 		}
-
 		private void GraphControl_Resize( object sender, EventArgs e )
 		{
+			if ( !RelateControlSizeToDataArea )
+			{
+				return;
+			}
 			//	Change the size of the data area, by the change in size of the display area
 			Rectangle oldDisplayArea = m_Transform.DrawBounds;
 			Rectangle currentDisplayArea = DataDisplayArea;

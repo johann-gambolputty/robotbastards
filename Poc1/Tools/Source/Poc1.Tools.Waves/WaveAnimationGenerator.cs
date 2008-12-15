@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using Exocortex.DSP;
 using Rb.Core.Maths;
+using Rb.Core.Threading;
 
 namespace Poc1.Tools.Waves
 {
@@ -14,18 +15,21 @@ namespace Poc1.Tools.Waves
 		/// <summary>
 		/// Generates an animation sequence of wave heightmaps
 		/// </summary>
-		public WaveAnimation GenerateHeightmapSequence( WaveAnimationParameters parameters )
+		public WaveAnimation GenerateHeightmapSequence( WaveAnimationParameters parameters, IProgressMonitor progress )
 		{
 			if ( parameters == null )
 			{
 				throw new ArgumentNullException( "parameters" );
 			}
+			progress = progress ?? ProgressMonitor.Null;
+			float progressPerFrame = 1.0f / parameters.Frames;
+
 			m_Map = null;
 			m_InvMap = null;
 			Bitmap[] results = new Bitmap[ parameters.Frames ];
 			for ( int i = 0; i < parameters.Frames; ++i )
 			{
-				results[ i ] = GenerateHeightMap( parameters, parameters.Time * ( ( float )i / ( parameters.Frames - 1 ) ), parameters.Time );
+				results[ i ] = GenerateHeightMap( parameters, parameters.Time * ( ( float )i / ( parameters.Frames - 1 ) ), parameters.Time, progress, i * progressPerFrame, progressPerFrame );
 			}
 			return new WaveAnimation( results );
 		}
@@ -139,7 +143,7 @@ namespace Poc1.Tools.Waves
 		/// <summary>
 		/// Generates a height map at a given time step
 		/// </summary>
-		private Bitmap GenerateHeightMap( WaveAnimationParameters parameters, float t, float maxT )
+		private Bitmap GenerateHeightMap( WaveAnimationParameters parameters, float t, float maxT, IProgressMonitor progress, float curProgress, float progressPerFrame )
 		{
 			int width = parameters.Width;
 			int height = parameters.Height;
@@ -157,6 +161,7 @@ namespace Poc1.Tools.Waves
 					byte h = ( byte )( Math.Max( 0, Math.Min( 256, 128 + resMap[ x + y * width ].Re ) ) );
 					bmp.SetPixel( x, y, Color.FromArgb( h, h, h ) );
 				}
+				progress.UpdateProgress( curProgress + progressPerFrame * ( y / ( float )( height - 1 ) ) );
 			}
 
 			return bmp;
