@@ -143,7 +143,7 @@ namespace Poc1.PlanetBuilder
 		/// <summary>
 		/// Gets/sets the current terrain type set. Alias for the terrain type set stored in the <see cref="TerrainTypeTextureBuilder"/> singleton.
 		/// </summary>
-		private TerrainTypeSet TerrainTypes
+		private TerrainTypeList TerrainTypes
 		{
 			get { return TerrainTypeTextureBuilder.Instance.TerrainTypes; }
 			set
@@ -266,7 +266,7 @@ namespace Poc1.PlanetBuilder
 		private void newToolStripMenuItem_Click( object sender, EventArgs e )
 		{
 			m_SavePath = string.Empty;
-			TerrainTypes = new TerrainTypeSet( );
+			TerrainTypes = new TerrainTypeList( );
 		}
 
 		private void openToolStripMenuItem_Click( object sender, EventArgs e )
@@ -279,10 +279,10 @@ namespace Poc1.PlanetBuilder
 			}
 			string path = dialog.FileName;
 
-			TerrainTypeSet newTypeSet;
+			TerrainTypeList newTypeSet;
 			try
 			{
-				newTypeSet = TerrainTypeSet.Load( path );
+				newTypeSet = TerrainTypeList.Load( path );
 			}
 			catch ( Exception ex )
 			{

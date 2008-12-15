@@ -7,6 +7,37 @@ namespace Rb.Core.Utils
 	/// <summary>
 	/// Profiling section
 	/// </summary>
+	/// <remarks>
+	/// Example:
+	/// Define a set of nested sections:
+	/// <code>
+	/// public class GameSection : ProfileSection
+	/// {
+	///		public readonly RenderingSection Rendering = new RenderingSection( );
+	///		public readonly ProfileSection AI = new ProfileSection( );
+	/// 
+	///		public readonly static GameSection Root = new GameSection( );
+	/// }
+	/// public class RenderingSection : ProfileSection
+	/// {
+	///		public readonly ProfileSection Culling = new ProfileSection( );
+	///		public readonly ProfileSection TransparencySort = new ProfileSection( );
+	/// }
+	/// </code>
+	/// 
+	/// Use <see cref="Begin"/> and <see cref="End"/> to delimit code that contributes to a profiled area, for
+	/// example:
+	/// <code>
+	/// using ( GameSection.Root.Rendering.Culling.Enter( ) ) // (equivalent to calling Begin()...End())
+	/// {
+	///		//	..	cull stuff ..
+	/// }
+	/// GameSection.Root.AI.Begin();
+	/// //	.. do AI stuff ..
+	/// GameSection.Root.AI.End();
+	/// </code>
+	/// If profiling over multiple frames, call <see cref="Reset"/> after every frame.
+	/// </remarks>
 	public class ProfileSection
 	{
 		#region Guard Class
@@ -14,15 +45,6 @@ namespace Rb.Core.Utils
 		/// <summary>
 		/// Profile section Begin/End guard class
 		/// </summary>
-		/// <remarks>
-		/// Use like this:
-		/// <code>
-		/// using ( ProfileSection.Guard guard = new ProfileSection.Guard( MyProfileSections.Ai ) )
-		/// {
-		///		//	Do AI noodles
-		/// }
-		/// </code>
-		/// </remarks>
 		public class Guard : IDisposable
 		{
 			/// <summary>
@@ -211,7 +233,7 @@ namespace Rb.Core.Utils
 		/// <summary>
 		/// Creates a guard object for this profile
 		/// </summary>
-		public Guard CreateGuard( )
+		public Guard Enter( )
 		{
 			return new Guard( this );
 		}

@@ -31,14 +31,15 @@ namespace Poc1.Bob.Controls
 			this.mainMenu = new System.Windows.Forms.MenuStrip( );
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
-			this.mainDisplay = new Rb.Rendering.Windows.Display( );
+			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
 			this.mainMenu.SuspendLayout( );
 			this.SuspendLayout( );
 			// 
 			// mainMenu
 			// 
 			this.mainMenu.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem} );
+            this.fileToolStripMenuItem,
+            this.viewToolStripMenuItem} );
 			this.mainMenu.Location = new System.Drawing.Point( 0, 0 );
 			this.mainMenu.Name = "mainMenu";
 			this.mainMenu.Size = new System.Drawing.Size( 464, 24 );
@@ -60,31 +61,24 @@ namespace Poc1.Bob.Controls
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler( this.exitToolStripMenuItem_Click );
 			// 
-			// mainDisplay
+			// viewToolStripMenuItem
 			// 
-			this.mainDisplay.AllowArrowKeyInputs = false;
-			this.mainDisplay.ColourBits = ( ( byte )( 32 ) );
-			this.mainDisplay.ContinuousRendering = true;
-			this.mainDisplay.DepthBits = ( ( byte )( 24 ) );
-			this.mainDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.mainDisplay.Location = new System.Drawing.Point( 0, 24 );
-			this.mainDisplay.Name = "mainDisplay";
-			this.mainDisplay.RenderInterval = 1;
-			this.mainDisplay.Size = new System.Drawing.Size( 464, 380 );
-			this.mainDisplay.StencilBits = ( ( byte )( 0 ) );
-			this.mainDisplay.TabIndex = 1;
+			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+			this.viewToolStripMenuItem.Size = new System.Drawing.Size( 41, 20 );
+			this.viewToolStripMenuItem.Text = "&View";
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size( 464, 404 );
-			this.Controls.Add( this.mainDisplay );
 			this.Controls.Add( this.mainMenu );
+			this.IsMdiContainer = true;
 			this.MainMenuStrip = this.mainMenu;
 			this.Name = "MainForm";
 			this.Text = "Bob";
 			this.Load += new System.EventHandler( this.MainForm_Load );
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.MainForm_FormClosing );
 			this.mainMenu.ResumeLayout( false );
 			this.mainMenu.PerformLayout( );
 			this.ResumeLayout( false );
@@ -97,7 +91,7 @@ namespace Poc1.Bob.Controls
 		private System.Windows.Forms.MenuStrip mainMenu;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-		private Rb.Rendering.Windows.Display mainDisplay;
+		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
 	}
 }
 

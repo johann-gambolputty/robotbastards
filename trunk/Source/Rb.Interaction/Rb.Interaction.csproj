@@ -45,27 +45,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command.cs" />
-    <Compile Include="CommandDescriptionAttribute.cs" />
-    <Compile Include="CommandInputListener.cs" />
-    <Compile Include="CommandInputTemplateMap.cs" />
-    <Compile Include="CommandList.cs" />
-    <Compile Include="CommandListManager.cs" />
-    <Compile Include="CommandMessage.cs" />
-    <Compile Include="CommandUserManager.cs" />
-    <Compile Include="CursorCommandMessage.cs" />
-    <Compile Include="CursorInput.cs" />
-    <Compile Include="CursorPickInput.cs" />
-    <Compile Include="IInput.cs" />
-    <Compile Include="Input.cs" />
-    <Compile Include="InputContext.cs" />
-    <Compile Include="InputTemplate.cs" />
-    <Compile Include="InteractionLog.cs" />
-    <Compile Include="PickCommandMessage.cs" />
+    <Compile Include="Classes\CommandBinaryInputBindingMonitor.cs" />
+    <Compile Include="Classes\Command.cs" />
+    <Compile Include="Classes\CommandInputBinding.cs" />
+    <Compile Include="Classes\CommandInputBindingMonitor.cs" />
+    <Compile Include="Classes\CommandPointInputState.cs" />
+    <Compile Include="Classes\CommandScalarInputState.cs" />
+    <Compile Include="Classes\CommandInputSource.cs" />
+    <Compile Include="Classes\CommandInputStateFactory.cs" />
+    <Compile Include="Classes\CommandList.cs" />
+    <Compile Include="Classes\InputBindings\CommandKeyInputBinding.cs" />
+    <Compile Include="Classes\InputBindings\CommandMouseButtonInputBinding.cs" />
+    <Compile Include="Classes\InputBindings\CommandMouseWheelInputBinding.cs" />
+    <Compile Include="Classes\CommandRegistry.cs" />
+    <Compile Include="Classes\CommandSerializationContext.cs" />
+    <Compile Include="Classes\CommandTriggerData.cs" />
+    <Compile Include="Classes\CommandUser.cs" />
+    <Compile Include="Classes\CommandUserRegistry.cs" />
+    <Compile Include="Classes\LocalCommandUserFactory.cs" />
+    <Compile Include="InteractionLog.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="InteractionUpdateTimer.cs" />
+    <Compile Include="Interfaces\ICommandInputBindingMonitor.cs" />
+    <Compile Include="Interfaces\ICommandInputBindingMonitorFactory.cs" />
+    <Compile Include="Interfaces\ICommandInputState.cs" />
+    <Compile Include="Interfaces\ICommandInputStateFactory.cs" />
+    <Compile Include="Interfaces\ICommandUser.cs" />
+    <Compile Include="Interfaces\ICommandUserFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScalarCommandMessage.cs" />
-    <Compile Include="ScalarInput.cs" />
-    <Compile Include="CommandUser.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rb.Core\Rb.Core.csproj">

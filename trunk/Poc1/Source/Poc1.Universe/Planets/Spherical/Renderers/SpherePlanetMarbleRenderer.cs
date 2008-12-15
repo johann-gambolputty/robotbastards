@@ -75,7 +75,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			{
 				return;
 			}
-			using ( GameProfiles.Game.Rendering.PlanetRendering.FlatPlanetRendering.CreateGuard( ) )
+			using ( GameProfiles.Game.Rendering.PlanetRendering.FlatPlanetRendering.Enter( ) )
 			{
 				if ( m_Geometry == null )
 				{

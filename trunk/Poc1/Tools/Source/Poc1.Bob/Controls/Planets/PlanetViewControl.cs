@@ -4,10 +4,10 @@ using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Spherical;
-using Rb.Interaction;
+using Rb.Interaction.Classes;
+using Rb.Interaction.Windows;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects.Cameras;
-using Poc1.Bob.Core.Controls.Classes;
 
 namespace Poc1.Bob.Controls.Planets
 {
@@ -86,13 +86,13 @@ namespace Poc1.Bob.Controls.Planets
 		/// <summary>
 		/// Creates the camera used by the main display
 		/// </summary>
-		private static ICamera CreateCamera( InputContext context, CommandUser user )
+		private static ICamera CreateCamera( )
 		{
 			//	FlightCamera camera = new FlightCamera( );
-			UniCamera camera = new HeadCamera( );
+			UniCamera camera = new FirstPersonCamera( );
 			camera.PerspectiveZNear = 1.0f;
 			camera.PerspectiveZFar = 15000.0f;
-			camera.AddChild( new BuilderCameraController( context, user ) );
+			camera.AddChild( new FirstPersonCameraController( CommandUser.Default ) );
 			//camera.AddChild( new HeadCameraController( context, user ) );
 			return camera;
 		}
@@ -117,17 +117,16 @@ namespace Poc1.Bob.Controls.Planets
 
 			terrainDisplay.AllowArrowKeyInputs = true;
 
-			InputContext context = new InputContext( viewer );
-			CommandUser user = new CommandUser( );
+			viewer.Camera = CreateCamera( );
 
-			viewer.Camera = CreateCamera( context, user );
-			user.AddActiveListener( CommandListManager.Instance.FindOrCreateFromEnum( typeof( BuilderCameraController.Commands ) ), OnCameraCommandActive );
+			CommandControlInputSource.StartMonitoring( CommandUser.Default, terrainDisplay, FirstPersonCameraCommands.DefaultBindings );
+			CommandUser.Default.CommandTriggered += OnCommandTriggered;
 
 			//	If planet was already assigned prior to Load, add it to all views
 			AddPlanetToViewers( );
 		}
 
-		private void OnCameraCommandActive( CommandMessage msg )
+		private void OnCommandTriggered( CommandTriggerData triggerData )
 		{
 			terrainDisplay.Invalidate( );
 		}

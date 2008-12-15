@@ -57,7 +57,7 @@ namespace Poc1.Tools.BuildTasks
 			List<ITaskItem> outputs = new List<ITaskItem>( );
 			foreach ( ITaskItem srcFile in m_SourceFiles )
 			{
-				TerrainTypeSet set = TerrainTypeSet.Load( srcFile.ItemSpec );
+				TerrainTypeList set = TerrainTypeList.Load( srcFile.ItemSpec );
 
 				string baseName = Path.GetFileNameWithoutExtension( srcFile.ItemSpec );
 

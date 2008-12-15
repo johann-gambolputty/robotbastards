@@ -13,6 +13,13 @@ namespace Rb.Rendering.Windows
 	{
 		#region	Control designer properties
 
+		[Description( "Grabs focus when mouse enters the control" )]
+		public bool FocusOnMouseOver
+		{
+			get { return m_FocusOnMouseOver; }
+			set { m_FocusOnMouseOver = value; }
+		}
+
 		[Description( "Cursor handling flag" )]
 		public bool AllowArrowKeyInputs
 		{
@@ -292,7 +299,7 @@ namespace Rb.Rendering.Windows
 	        get { return m_Viewers.ToArray( ); }
 	    }
 
-        /// <summary>
+		/// <summary>
         /// Adds a viewer
         /// </summary>
         /// <param name="viewer">Viewer to add</param>
@@ -327,6 +334,7 @@ namespace Rb.Rendering.Windows
 		private readonly List< Viewer > 		m_Viewers				= new List< Viewer >( );
 		private readonly Timer					m_RenderingTimer;
 		private bool							m_AllowArrowKeyInputs;
+		private bool							m_FocusOnMouseOver;
 
 		/// <summary>
 		/// Creates setup data from the render factory, if it's available
@@ -341,6 +349,5 @@ namespace Rb.Rendering.Windows
 		}
 
 		#endregion
-
 	}
 }

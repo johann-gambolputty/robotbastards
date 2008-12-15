@@ -32,8 +32,10 @@ namespace Poc1.PlanetBuilder
 			this.groundTypeTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel( );
 			this.splitter1 = new System.Windows.Forms.Splitter( );
 			this.groupBox1 = new System.Windows.Forms.GroupBox( );
+			this.altitudeGraphControl = new Rb.NiceControls.Graph.GraphControl( );
 			this.splitter2 = new System.Windows.Forms.Splitter( );
 			this.groupBox2 = new System.Windows.Forms.GroupBox( );
+			this.slopeGraphControl = new Rb.NiceControls.Graph.GraphControl( );
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip( );
 			this.fileToolStripDropDownButton = new System.Windows.Forms.ToolStripDropDownButton( );
 			this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
@@ -43,8 +45,6 @@ namespace Poc1.PlanetBuilder
 			this.toolStripButton1 = new System.Windows.Forms.ToolStripDropDownButton( );
 			this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
 			this.exportToToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
-			this.altitudeGraphControl = new Rb.NiceControls.Graph.GraphControl( );
-			this.slopeGraphControl = new Rb.NiceControls.Graph.GraphControl( );
 			this.groupBox1.SuspendLayout( );
 			this.groupBox2.SuspendLayout( );
 			this.toolStrip1.SuspendLayout( );
@@ -85,6 +85,21 @@ namespace Poc1.PlanetBuilder
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Altitude Distribution";
 			// 
+			// altitudeGraphControl
+			// 
+			this.altitudeGraphControl.AllowMultipleGraphs = true;
+			this.altitudeGraphControl.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.altitudeGraphControl.GraphBottomMargin = 2;
+			this.altitudeGraphControl.GraphLeftMargin = 2;
+			this.altitudeGraphControl.GraphRightMargin = 2;
+			this.altitudeGraphControl.GraphTopMargin = 2;
+			this.altitudeGraphControl.HorizontalSubdivisions = 10;
+			this.altitudeGraphControl.Location = new System.Drawing.Point( 3, 16 );
+			this.altitudeGraphControl.Name = "altitudeGraphControl";
+			this.altitudeGraphControl.Size = new System.Drawing.Size( 230, 124 );
+			this.altitudeGraphControl.TabIndex = 0;
+			this.altitudeGraphControl.VerticalSubdivisions = 10;
+			// 
 			// splitter2
 			// 
 			this.splitter2.Dock = System.Windows.Forms.DockStyle.Top;
@@ -104,6 +119,21 @@ namespace Poc1.PlanetBuilder
 			this.groupBox2.TabIndex = 4;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Slope Distribution";
+			// 
+			// slopeGraphControl
+			// 
+			this.slopeGraphControl.AllowMultipleGraphs = true;
+			this.slopeGraphControl.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.slopeGraphControl.GraphBottomMargin = 2;
+			this.slopeGraphControl.GraphLeftMargin = 2;
+			this.slopeGraphControl.GraphRightMargin = 2;
+			this.slopeGraphControl.GraphTopMargin = 2;
+			this.slopeGraphControl.HorizontalSubdivisions = 10;
+			this.slopeGraphControl.Location = new System.Drawing.Point( 3, 16 );
+			this.slopeGraphControl.Name = "slopeGraphControl";
+			this.slopeGraphControl.Size = new System.Drawing.Size( 230, 111 );
+			this.slopeGraphControl.TabIndex = 1;
+			this.slopeGraphControl.VerticalSubdivisions = 10;
 			// 
 			// toolStrip1
 			// 
@@ -183,36 +213,6 @@ namespace Poc1.PlanetBuilder
 			this.exportToToolStripMenuItem.Size = new System.Drawing.Size( 144, 22 );
 			this.exportToToolStripMenuItem.Text = "Export &To...";
 			this.exportToToolStripMenuItem.Click += new System.EventHandler( this.exportToToolStripMenuItem_Click );
-			// 
-			// altitudeGraphControl
-			// 
-			this.altitudeGraphControl.AllowMultipleGraphs = true;
-			this.altitudeGraphControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.altitudeGraphControl.GraphBottomMargin = 2;
-			this.altitudeGraphControl.GraphLeftMargin = 2;
-			this.altitudeGraphControl.GraphRightMargin = 2;
-			this.altitudeGraphControl.GraphTopMargin = 2;
-			this.altitudeGraphControl.HorizontalSubdivisions = 10;
-			this.altitudeGraphControl.Location = new System.Drawing.Point( 3, 16 );
-			this.altitudeGraphControl.Name = "altitudeGraphControl";
-			this.altitudeGraphControl.Size = new System.Drawing.Size( 230, 124 );
-			this.altitudeGraphControl.TabIndex = 0;
-			this.altitudeGraphControl.VerticalSubdivisions = 10;
-			// 
-			// slopeGraphControl
-			// 
-			this.slopeGraphControl.AllowMultipleGraphs = true;
-			this.slopeGraphControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.slopeGraphControl.GraphBottomMargin = 2;
-			this.slopeGraphControl.GraphLeftMargin = 2;
-			this.slopeGraphControl.GraphRightMargin = 2;
-			this.slopeGraphControl.GraphTopMargin = 2;
-			this.slopeGraphControl.HorizontalSubdivisions = 10;
-			this.slopeGraphControl.Location = new System.Drawing.Point( 3, 16 );
-			this.slopeGraphControl.Name = "slopeGraphControl";
-			this.slopeGraphControl.Size = new System.Drawing.Size( 230, 111 );
-			this.slopeGraphControl.TabIndex = 1;
-			this.slopeGraphControl.VerticalSubdivisions = 10;
 			// 
 			// GroundTextureControl
 			// 

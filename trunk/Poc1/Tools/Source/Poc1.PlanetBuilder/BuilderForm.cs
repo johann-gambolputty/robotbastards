@@ -4,9 +4,13 @@ using Poc1.Universe.Classes;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
 using Rb.Interaction;
+using Rb.Interaction.Classes;
+using Rb.Interaction.Interfaces;
+using Rb.Interaction.Windows;
 using Rb.Log;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects.Cameras;
+using Rb.Rendering.Windows;
 
 namespace Poc1.PlanetBuilder
 {
@@ -22,10 +26,9 @@ namespace Poc1.PlanetBuilder
 		/// <summary>
 		/// Creates the camera used by the main display
 		/// </summary>
-		private static ICamera CreateCamera( InputContext context, CommandUser user )
+		private ICamera CreateCamera( ICommandUser user )
 		{
-		//	FlightCamera camera = new FlightCamera( );
-			UniCamera camera = new HeadCamera( );
+			UniCamera camera = new FirstPersonCamera( );
 			camera.PerspectiveZNear = 1.0f;
 			camera.PerspectiveZFar = 15000.0f;
 
@@ -40,8 +43,13 @@ namespace Poc1.PlanetBuilder
 			}
 
 			camera.Position = new UniPoint3( cameraPos.ToUniUnits, 0, 0 );
-			camera.AddChild( new BuilderCameraController( context, user ) );
-		//	camera.AddChild( new HeadCameraController( context, user ) );
+			camera.AddChild( new FirstPersonCameraController( user ) );
+
+
+			testDisplay.OnBeginRender += delegate { InteractionUpdateTimer.Instance.OnUpdate( ); };
+
+			CommandControlInputSource.StartMonitoring( user, testDisplay, FirstPersonCameraCommands.DefaultBindings );
+
 			return camera;
 		}
 
@@ -78,12 +86,13 @@ namespace Poc1.PlanetBuilder
 					DebugText.Write( "Camera 'Z: {0}", ( ( IUniCamera )viewer.Camera ).InverseFrame.ZAxis );
 				};
 
+		//	Control focusControl = ActiveControl;
+		//	testDisplay.MouseEnter += delegate { testDisplay.Focus( ); };
+		//	testDisplay.MouseLeave += delegate { testDisplay.Focus( ); };
 			testDisplay.AddViewer( viewer );
 
-			InputContext context = new InputContext( viewer );
-			CommandUser user = new CommandUser( );
-
-			viewer.Camera = CreateCamera( context, user );
+			ICommandUser user = CommandUser.Default;
+			viewer.Camera = CreateCamera( user );
 		}
 
 		private void BuilderForm_Closing( object sender, System.ComponentModel.CancelEventArgs e )

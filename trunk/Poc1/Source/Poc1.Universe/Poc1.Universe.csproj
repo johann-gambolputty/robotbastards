@@ -38,9 +38,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Cameras\EntityTrackingCamera.cs" />
-    <Compile Include="Classes\Cameras\HeadCamera.cs" />
-    <Compile Include="Classes\Cameras\HeadCameraController.cs" />
+    <Compile Include="Classes\Cameras\FirstPersonCameraCommands.cs" />
+    <Compile Include="Classes\Cameras\FirstPersonCamera.cs" />
+    <Compile Include="Classes\Cameras\FirstPersonCameraController.cs" />
     <Compile Include="Classes\Cameras\PointTrackingCamera.cs" />
+    <Compile Include="Classes\Cameras\TrackingCameraCommands.cs" />
     <Compile Include="Classes\Cameras\TrackingCameraController.cs" />
     <Compile Include="Classes\Cameras\UniCamera.cs" />
     <Compile Include="Classes\CircularOrbit.cs" />
@@ -48,7 +50,6 @@
     <Compile Include="Classes\Rendering\TerrainDistribution.cs" />
     <Compile Include="Classes\Rendering\TerrainType.cs" />
     <Compile Include="Classes\Rendering\TerrainTypeManager.cs" />
-    <Compile Include="Classes\Rendering\UniRenderManager.cs" />
     <Compile Include="Classes\Ship.cs" />
     <Compile Include="Classes\SolarSystem.cs" />
     <Compile Include="Classes\StarBox.cs">

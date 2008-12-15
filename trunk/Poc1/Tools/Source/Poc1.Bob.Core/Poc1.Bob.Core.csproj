@@ -14,7 +14,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -22,7 +22,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -30,13 +30,30 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\Classes\BuilderCameraController.cs" />
-    <Compile Include="Controls\Classes\SimplePlanetController.cs" />
-    <Compile Include="Controls\Interfaces\ISimplePlanetView.cs" />
+    <Compile Include="Classes\Biomes\Controllers\BiomeListController.cs" />
+    <Compile Include="Classes\Biomes\Controllers\BiomeManagerController.cs" />
+    <Compile Include="Classes\Biomes\Controllers\BiomeTerrainTextureController.cs" />
+    <Compile Include="Classes\Biomes\Controllers\TerrainTypeListController.cs" />
+    <Compile Include="Classes\Biomes\Models\BiomeListModel.cs" />
+    <Compile Include="Classes\Biomes\Models\BiomeModel.cs" />
+    <Compile Include="Classes\Biomes\TerrainTypeTextureBuilder.cs" />
+    <Compile Include="Classes\Waves\WaveAnimatorController.cs" />
+    <Compile Include="Classes\Workspace.cs" />
+    <Compile Include="Interfaces\Biomes\ISelectedBiomeContext.cs" />
+    <Compile Include="Interfaces\Biomes\Views\IBiomeListView.cs" />
+    <Compile Include="Interfaces\Biomes\Views\IBiomeManagerView.cs" />
+    <Compile Include="Interfaces\Biomes\Views\IBiomeTerrainTextureView.cs" />
+    <Compile Include="Interfaces\Biomes\Views\ITerrainTypeDistributionView.cs" />
+    <Compile Include="Interfaces\Biomes\Views\ITerrainTypeListView.cs" />
+    <Compile Include="Interfaces\Biomes\Views\ITerrainTypeTextureView.cs" />
+    <Compile Include="Interfaces\Biomes\Views\ITerrainTypeView.cs" />
+    <Compile Include="Interfaces\IViewFactory.cs" />
+    <Compile Include="Interfaces\Waves\IWaveAnimatorView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -56,6 +73,10 @@
       <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>
       <Name>Rb.Rendering.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Rendering\Rb.Rendering.csproj">
+      <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
+      <Name>Rb.Rendering</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Poc1.Universe.Interfaces\Poc1.Universe.Interfaces.csproj">
       <Project>{7C18549B-2D70-4985-852B-6A285BF4F00A}</Project>
       <Name>Poc1.Universe.Interfaces</Name>
@@ -64,9 +85,14 @@
       <Project>{5CC992B9-1B66-4ECC-8657-624DA59B3D2D}</Project>
       <Name>Poc1.Universe</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interfaces\Terrain\" />
+    <ProjectReference Include="..\Poc1.Tools.TerrainTextures.Core\Poc1.Tools.TerrainTextures.Core.csproj">
+      <Project>{F34331DC-90A9-4C51-B7F9-34B3B96965BD}</Project>
+      <Name>Poc1.Tools.TerrainTextures.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc1.Tools.Waves\Poc1.Tools.Waves.csproj">
+      <Project>{C8DC8F1E-E722-42E0-A433-122BFF0BBD2D}</Project>
+      <Name>Poc1.Tools.Waves</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -35,6 +35,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DbPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DbPanel.Designer.cs">
+      <DependentUpon>DbPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Graphs\FullGraphControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -74,6 +80,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DbPanel.resx">
+      <DependentUpon>DbPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Graphs\FullGraphControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FullGraphControl.cs</DependentUpon>

@@ -6,6 +6,22 @@ namespace Poc1.Tools.Waves
 	public class WaveAnimationParameters
 	{
 		/// <summary>
+		/// Clones these parameters
+		/// </summary>
+		public WaveAnimationParameters Clone( )
+		{
+			WaveAnimationParameters clone = new WaveAnimationParameters( );
+			clone.Width = Width;
+			clone.Height = Height;
+			clone.Frames = Frames;
+			clone.Time = Time;
+			clone.WindDirectionDegrees = WindDirectionDegrees;
+			clone.WindSpeed = WindSpeed;
+			clone.WaveModifier = WaveModifier;
+			return clone;
+		}
+
+		/// <summary>
 		/// Gets/sets the width of the output bitmaps
 		/// </summary>
 		public int Width
@@ -72,11 +88,11 @@ namespace Poc1.Tools.Waves
 
 		private int		m_Width = 512;
 		private int		m_Height = 512;
-		private int		m_Frames = 64;
+		private int		m_Frames = 32;
 		private float	m_Time = 0.2f;
 		private float	m_WindDirection;
-		private float	m_WindSpeed = 25;
-		private float	m_WaveModifier = 0.0003f;
+		private float	m_WindSpeed = 14;
+		private float	m_WaveModifier = 0.00028f;
 
 		#endregion
 	}

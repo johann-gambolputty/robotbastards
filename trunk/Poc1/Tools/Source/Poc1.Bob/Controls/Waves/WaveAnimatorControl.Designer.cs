@@ -1,0 +1,138 @@
+using Rb.Common.Controls.Forms;
+
+namespace Poc1.Bob.Controls.Waves
+{
+	partial class WaveAnimatorControl
+	{
+		/// <summary> 
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
+
+		/// <summary> 
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose( bool disposing )
+		{
+			if ( disposing && ( components != null ) )
+			{
+				components.Dispose( );
+			}
+			base.Dispose( disposing );
+		}
+
+		#region Component Designer generated code
+
+		/// <summary> 
+		/// Required method for Designer support - do not modify 
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent( )
+		{
+			this.components = new System.ComponentModel.Container( );
+			this.animationPropertyGrid = new System.Windows.Forms.PropertyGrid( );
+			this.regenerateButton = new System.Windows.Forms.Button( );
+			this.progressBar1 = new System.Windows.Forms.ProgressBar( );
+			this.panel1 = new System.Windows.Forms.Panel( );
+			this.animationPanel = new Rb.Common.Controls.Forms.DbPanel( );
+			this.enableAnimationCheckBox = new System.Windows.Forms.CheckBox( );
+			this.animationTimer = new System.Windows.Forms.Timer( this.components );
+			this.panel1.SuspendLayout( );
+			this.SuspendLayout( );
+			// 
+			// animationPropertyGrid
+			// 
+			this.animationPropertyGrid.CommandsVisibleIfAvailable = false;
+			this.animationPropertyGrid.Dock = System.Windows.Forms.DockStyle.Top;
+			this.animationPropertyGrid.Location = new System.Drawing.Point( 0, 0 );
+			this.animationPropertyGrid.Name = "animationPropertyGrid";
+			this.animationPropertyGrid.Size = new System.Drawing.Size( 243, 210 );
+			this.animationPropertyGrid.TabIndex = 0;
+			this.animationPropertyGrid.ToolbarVisible = false;
+			// 
+			// regenerateButton
+			// 
+			this.regenerateButton.Dock = System.Windows.Forms.DockStyle.Top;
+			this.regenerateButton.Location = new System.Drawing.Point( 0, 210 );
+			this.regenerateButton.Name = "regenerateButton";
+			this.regenerateButton.Size = new System.Drawing.Size( 243, 23 );
+			this.regenerateButton.TabIndex = 1;
+			this.regenerateButton.Text = "Regenerate";
+			this.regenerateButton.UseVisualStyleBackColor = true;
+			this.regenerateButton.Click += new System.EventHandler( this.regenerateButton_Click );
+			// 
+			// progressBar1
+			// 
+			this.progressBar1.Dock = System.Windows.Forms.DockStyle.Top;
+			this.progressBar1.Location = new System.Drawing.Point( 0, 233 );
+			this.progressBar1.Name = "progressBar1";
+			this.progressBar1.Size = new System.Drawing.Size( 243, 23 );
+			this.progressBar1.TabIndex = 2;
+			// 
+			// panel1
+			// 
+			this.panel1.Controls.Add( this.animationPanel );
+			this.panel1.Controls.Add( this.enableAnimationCheckBox );
+			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panel1.Location = new System.Drawing.Point( 0, 256 );
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size( 243, 138 );
+			this.panel1.TabIndex = 3;
+			// 
+			// animationPanel
+			// 
+			this.animationPanel.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom )
+						| System.Windows.Forms.AnchorStyles.Left )
+						| System.Windows.Forms.AnchorStyles.Right ) ) );
+			this.animationPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.animationPanel.Location = new System.Drawing.Point( 3, 3 );
+			this.animationPanel.Name = "animationPanel";
+			this.animationPanel.Size = new System.Drawing.Size( 128, 131 );
+			this.animationPanel.TabIndex = 0;
+			// 
+			// enableAnimationCheckBox
+			// 
+			this.enableAnimationCheckBox.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right ) ) );
+			this.enableAnimationCheckBox.AutoSize = true;
+			this.enableAnimationCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.enableAnimationCheckBox.Location = new System.Drawing.Point( 135, 117 );
+			this.enableAnimationCheckBox.Name = "enableAnimationCheckBox";
+			this.enableAnimationCheckBox.Size = new System.Drawing.Size( 105, 17 );
+			this.enableAnimationCheckBox.TabIndex = 1;
+			this.enableAnimationCheckBox.Text = "Pause Animation";
+			this.enableAnimationCheckBox.UseVisualStyleBackColor = true;
+			// 
+			// animationTimer
+			// 
+			this.animationTimer.Enabled = true;
+			this.animationTimer.Interval = 20;
+			this.animationTimer.Tick += new System.EventHandler( this.animationTimer_Tick );
+			// 
+			// OceanAnimatorControl
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add( this.panel1 );
+			this.Controls.Add( this.progressBar1 );
+			this.Controls.Add( this.regenerateButton );
+			this.Controls.Add( this.animationPropertyGrid );
+			this.Name = "OceanAnimatorControl";
+			this.Size = new System.Drawing.Size( 243, 394 );
+			this.panel1.ResumeLayout( false );
+			this.panel1.PerformLayout( );
+			this.ResumeLayout( false );
+
+		}
+
+		#endregion
+
+		private System.Windows.Forms.PropertyGrid animationPropertyGrid;
+		private System.Windows.Forms.Button regenerateButton;
+		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.CheckBox enableAnimationCheckBox;
+		private DbPanel animationPanel;
+		private System.Windows.Forms.ProgressBar progressBar1;
+		private System.Windows.Forms.Timer animationTimer;
+	}
+}

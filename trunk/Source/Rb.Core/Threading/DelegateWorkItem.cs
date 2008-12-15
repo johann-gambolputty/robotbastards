@@ -18,28 +18,31 @@ namespace Rb.Core.Threading
 			/// <summary>
 			/// Sets the worker delegate
 			/// </summary>
-			public void SetDoWork( ActionDelegates.Action<IProgressMonitor> work )
+			public Builder SetDoWork( ActionDelegates.Action<IProgressMonitor> work )
 			{
 				m_Work = work;
 				m_WorkParams = new object[] { null };
+				return this;
 			}
 
 			/// <summary>
 			/// Sets the worker delegate
 			/// </summary>
-			public void SetDoWork<P0>( ActionDelegates.Action<IProgressMonitor, P0> work, P0 p0 )
+			public Builder SetDoWork<P0>( ActionDelegates.Action<IProgressMonitor, P0> work, P0 p0 )
 			{
 				m_Work = work;
 				m_WorkParams = new object[] { null, p0 };
+				return this;
 			}
 
 			/// <summary>
 			/// Sets the worker delegate
 			/// </summary>
-			public void SetDoWork<P0, P1>( ActionDelegates.Action<IProgressMonitor, P0, P1> work, P0 p0, P1 p1 )
+			public Builder SetDoWork<P0, P1>( ActionDelegates.Action<IProgressMonitor, P0, P1> work, P0 p0, P1 p1 )
 			{
 				m_Work = work;
 				m_WorkParams = new object[] { null, p0, p1 };
+				return this;
 			}
 
 			#endregion
@@ -50,10 +53,11 @@ namespace Rb.Core.Threading
 			/// Sets the work failed delegate
 			/// </summary>
 			/// <param name="workFailed">Delegate invoked when the worker delegate throws an exception</param>
-			public void SetWorkFailed( ActionDelegates.Action<Exception> workFailed )
+			public Builder SetWorkFailed( ActionDelegates.Action<Exception> workFailed )
 			{
 				m_WorkFailed = workFailed;
 				m_WorkFailedParams = new object[] { null };
+				return this;
 			}
 
 			/// <summary>
@@ -61,10 +65,11 @@ namespace Rb.Core.Threading
 			/// </summary>
 			/// <param name="workFailed">Delegate invoked when the worker delegate throws an exception</param>
 			/// <param name="p0">First parameter value after the exception, passed to workFailed</param>
-			public void SetWorkFailed<P0>( ActionDelegates.Action<Exception, P0> workFailed, P0 p0 )
+			public Builder SetWorkFailed<P0>( ActionDelegates.Action<Exception, P0> workFailed, P0 p0 )
 			{
 				m_WorkFailed = workFailed;
 				m_WorkFailedParams = new object[] { null, p0 };
+				return this;
 			}
 
 			/// <summary>
@@ -73,10 +78,11 @@ namespace Rb.Core.Threading
 			/// <param name="workFailed">Delegate invoked when the worker delegate throws an exception</param>
 			/// <param name="p0">First parameter value after the exception, passed to workFailed</param>
 			/// <param name="p1">Second parameter value after the exception, passed to workFailed</param>
-			public void SetWorkFailed<P0, P1>( ActionDelegates.Action<Exception, P0, P1> workFailed, P0 p0, P1 p1 )
+			public Builder SetWorkFailed<P0, P1>( ActionDelegates.Action<Exception, P0, P1> workFailed, P0 p0, P1 p1 )
 			{
 				m_WorkFailed = workFailed;
 				m_WorkFailedParams = new object[] { null, p0, p1 };
+				return this;
 			}
 
 			#endregion
@@ -86,31 +92,48 @@ namespace Rb.Core.Threading
 			/// <summary>
 			/// Sets the work complete delegate
 			/// </summary>
-			public void SetWorkComplete( ActionDelegates.Action workComplete )
+			public Builder SetWorkComplete( ActionDelegates.Action workComplete )
 			{
 				m_WorkComplete = workComplete;
 				m_WorkCompleteParams = new object[ 0 ];
+				return this;
 			}
 
 			/// <summary>
 			/// Sets the delegate to call when work is complete
 			/// </summary>
-			public void SetWorkComplete<P0>( ActionDelegates.Action<P0> workComplete, P0 p0 )
+			public Builder SetWorkComplete<P0>( ActionDelegates.Action<P0> workComplete, P0 p0 )
 			{
 				m_WorkComplete = workComplete;
 				m_WorkCompleteParams = new object[] { p0 };
+				return this;
 			}
 
 			/// <summary>
 			/// Sets the sink
 			/// </summary>
-			public void SetWorkComplete<P0, P1>( ActionDelegates.Action<P0, P1> workComplete, P0 p0, P1 p1 )
+			public Builder SetWorkComplete<P0, P1>( ActionDelegates.Action<P0, P1> workComplete, P0 p0, P1 p1 )
 			{
 				m_WorkComplete = workComplete;
 				m_WorkCompleteParams = new object[] { p0, p1 };
+				return this;
 			}
 
 			#endregion
+
+			
+			/// <summary>
+			/// Builds a SourceSinkWorkItem from the current builder setup. The name of the work item is the name of the work delegate
+			/// </summary>
+			/// <exception cref="InvalidOperationException">Thrown if source or sink are null, or sink is invalid</exception>
+			public DelegateWorkItem Build( )
+			{
+				if ( m_Work == null )
+				{
+					throw new InvalidOperationException( "Work delegate cannot be null" );
+				}
+				return Build( m_Work.Method.Name );
+			}
 
 			/// <summary>
 			/// Builds a SourceSinkWorkItem from the current builder setup

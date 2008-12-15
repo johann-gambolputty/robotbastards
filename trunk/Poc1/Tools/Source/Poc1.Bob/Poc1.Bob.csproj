@@ -28,30 +28,54 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MagicLibrary, Version=1.7.0.0, Culture=neutral, PublicKeyToken=3a6eb82f876a49bc">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\ThirdParty\MagicDocking\MagicLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.2.2864.18696, Culture=neutral, PublicKeyToken=d481317c817cec47, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\ThirdParty\WeifenLuo Docking\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppUtils.cs" />
+    <Compile Include="Controls\Atmosphere\AtmosphereControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Atmosphere\AtmosphereControl.Designer.cs">
+      <DependentUpon>AtmosphereControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Biomes\BiomeListViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Biomes\BiomeListViewControl.Designer.cs">
+      <DependentUpon>BiomeListViewControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Biomes\BiomeManagerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\Biomes\BiomeManagerControl.Designer.cs">
       <DependentUpon>BiomeManagerControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Biomes\TerrainTypeGraphComponentControl.cs">
+    <Compile Include="Controls\Biomes\BiomeTerrainTextureViewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Biomes\TerrainTypeGraphComponentControl.Designer.cs">
-      <DependentUpon>TerrainTypeGraphComponentControl.cs</DependentUpon>
+    <Compile Include="Controls\Biomes\BiomeTerrainTextureViewControl.Designer.cs">
+      <DependentUpon>BiomeTerrainTextureViewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Biomes\TerrainTypeListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Biomes\TerrainTypeListControl.Designer.cs">
+      <DependentUpon>TerrainTypeListControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Biomes\TerrainTypeTextureListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Biomes\TerrainTypeTextureListControl.Designer.cs">
+      <DependentUpon>TerrainTypeTextureListControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\LoadingScreen.cs">
       <SubType>UserControl</SubType>
@@ -65,17 +89,23 @@
     <Compile Include="Controls\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Biomes\TerrainFrameLookupTextureControl.cs">
+    <Compile Include="Controls\Biomes\TerrainTypeDistributionControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Biomes\TerrainFrameLookupTextureControl.Designer.cs">
-      <DependentUpon>TerrainFrameLookupTextureControl.cs</DependentUpon>
+    <Compile Include="Controls\Biomes\TerrainTypeDistributionControl.Designer.cs">
+      <DependentUpon>TerrainTypeDistributionControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Biomes\TerrainTypeControl.cs">
+    <Compile Include="Controls\Biomes\TerrainTypeTextureSelectorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Biomes\TerrainTypeControl.Designer.cs">
-      <DependentUpon>TerrainTypeControl.cs</DependentUpon>
+    <Compile Include="Controls\Biomes\TerrainTypeTextureSelectorControl.Designer.cs">
+      <DependentUpon>TerrainTypeTextureSelectorControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Waves\WaveAnimatorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Waves\WaveAnimatorControl.Designer.cs">
+      <DependentUpon>WaveAnimatorControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Planets\PlanetViewControl.cs">
       <SubType>UserControl</SubType>
@@ -83,16 +113,28 @@
     <Compile Include="Controls\Planets\PlanetViewControl.Designer.cs">
       <DependentUpon>PlanetViewControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Terrain\TerrainTypeTextureBuilder.cs" />
+    <Compile Include="Controls\ViewFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Controls\Atmosphere\AtmosphereControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AtmosphereControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Biomes\BiomeListViewControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>BiomeListViewControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\Biomes\BiomeManagerControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>BiomeManagerControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Biomes\TerrainTypeGraphComponentControl.resx">
+    <EmbeddedResource Include="Controls\Biomes\BiomeTerrainTextureViewControl.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>TerrainTypeGraphComponentControl.cs</DependentUpon>
+      <DependentUpon>BiomeTerrainTextureViewControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Biomes\TerrainTypeListControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TerrainTypeListControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\LoadingScreen.resx">
       <SubType>Designer</SubType>
@@ -102,13 +144,17 @@
       <SubType>Designer</SubType>
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Biomes\TerrainFrameLookupTextureControl.resx">
+    <EmbeddedResource Include="Controls\Biomes\TerrainTypeDistributionControl.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>TerrainFrameLookupTextureControl.cs</DependentUpon>
+      <DependentUpon>TerrainTypeDistributionControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Biomes\TerrainTypeControl.resx">
+    <EmbeddedResource Include="Controls\Biomes\TerrainTypeTextureSelectorControl.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>TerrainTypeControl.cs</DependentUpon>
+      <DependentUpon>TerrainTypeTextureSelectorControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Waves\WaveAnimatorControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>WaveAnimatorControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Planets\PlanetViewControl.resx">
       <SubType>Designer</SubType>
@@ -151,6 +197,10 @@
     <ProjectReference Include="..\..\..\..\Source\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Interaction.Windows\Rb.Interaction.Windows.csproj">
+      <Project>{4ECD7CBC-1D3E-4C87-852E-77488B549711}</Project>
+      <Name>Rb.Interaction.Windows</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Source\Rb.Interaction\Rb.Interaction.csproj">
       <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
