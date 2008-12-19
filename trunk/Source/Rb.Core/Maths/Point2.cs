@@ -46,7 +46,7 @@ namespace Rb.Core.Maths
 		/// </summary>
 		public override bool Equals( object obj )
 		{
-			return ( obj is Point3 ) && ( ( Point2 )obj == this );
+			return ( obj is Point2 ) && ( ( Point2 )obj == this );
 		}
 
 		/// <summary>

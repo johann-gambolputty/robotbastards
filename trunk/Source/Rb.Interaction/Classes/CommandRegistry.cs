@@ -23,8 +23,9 @@ namespace Rb.Interaction.Classes
 		/// <param name="cmd">Command to register</param>
 		public void Register( Command cmd )
 		{
-			InteractionLog.Info( "Registering command \"{0}\" ({1})", cmd.NameId, cmd.Id );
 			Arguments.CheckNotNull( cmd, "cmd" );
+
+			InteractionLog.Info( "Registering command \"{0}\" ({1})", cmd.NameId, cmd.Id );
 			CheckCommandIdDoesNotExist( cmd );
 
 			m_Commands[ cmd.Id ] = cmd;

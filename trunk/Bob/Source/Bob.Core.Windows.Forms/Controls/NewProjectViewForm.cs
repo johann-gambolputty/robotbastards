@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Poc1.Bob.Controls.Atmosphere
+namespace Bob.Core.Windows.Forms.Controls
 {
-	public partial class AtmosphereControl : UserControl
+	public partial class NewProjectViewForm : Form
 	{
-		public AtmosphereControl( )
+		public NewProjectViewForm( )
 		{
 			InitializeComponent( );
 		}

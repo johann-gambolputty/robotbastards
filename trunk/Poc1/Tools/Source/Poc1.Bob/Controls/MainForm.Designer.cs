@@ -32,6 +32,7 @@ namespace Poc1.Bob.Controls
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
+			this.mainDockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel( );
 			this.mainMenu.SuspendLayout( );
 			this.SuspendLayout( );
 			// 
@@ -67,11 +68,21 @@ namespace Poc1.Bob.Controls
 			this.viewToolStripMenuItem.Size = new System.Drawing.Size( 41, 20 );
 			this.viewToolStripMenuItem.Text = "&View";
 			// 
+			// mainDockPanel
+			// 
+			this.mainDockPanel.ActiveAutoHideContent = null;
+			this.mainDockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.mainDockPanel.Location = new System.Drawing.Point( 0, 24 );
+			this.mainDockPanel.Name = "mainDockPanel";
+			this.mainDockPanel.Size = new System.Drawing.Size( 464, 380 );
+			this.mainDockPanel.TabIndex = 2;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size( 464, 404 );
+			this.Controls.Add( this.mainDockPanel );
 			this.Controls.Add( this.mainMenu );
 			this.IsMdiContainer = true;
 			this.MainMenuStrip = this.mainMenu;
@@ -92,6 +103,7 @@ namespace Poc1.Bob.Controls
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+		private WeifenLuo.WinFormsUI.Docking.DockPanel mainDockPanel;
 	}
 }
 

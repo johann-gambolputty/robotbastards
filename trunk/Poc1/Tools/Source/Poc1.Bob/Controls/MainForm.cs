@@ -2,13 +2,13 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
-using Crownwood.Magic.Common;
-using Crownwood.Magic.Docking;
 using Poc1.Bob.Core.Classes;
 using Poc1.Bob.Core.Classes.Biomes.Models;
 using Poc1.Tools.Waves;
 using Rb.Log;
 using Rb.Log.Controls.Vs;
+using Rb.Rendering.Windows;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Poc1.Bob.Controls
 {
@@ -18,19 +18,39 @@ namespace Poc1.Bob.Controls
 		{
 			InitializeComponent( );
 
-			//	Create the docking manager
-			m_DockingManager = new DockingManager( this, VisualStyle.IDE );
-			m_DockingManager.InnerControl = mainDisplay;
-			m_DockingManager.OuterControl = this;
-
 			m_LogDisplay = new VsLogListView( );
+			m_ViewFactory = new ViewFactory( new MessageUiProvider( this ) );
+			m_Windows = new WorkspaceWindowInfo[]
+				{
+					new WorkspaceWindowInfo( "Biomes", "&Biome List", delegate { return ( Control )m_ViewFactory.CreateBiomeListView( m_Workspace, new BiomeListModel( ) ); } ),
+					new WorkspaceWindowInfo( "Biomes", "Biome &Terrain Texturing", delegate { return ( Control )m_ViewFactory.CreateBiomeTerrainTextureView( m_Workspace ); } ),
+					new WorkspaceWindowInfo( "Oceans", "&Wave Animator", delegate { return ( Control )m_ViewFactory.CreateWaveAnimatorView( new WaveAnimationParameters( ) ); } ),
+					new WorkspaceWindowInfo( "", "&Planet View", delegate { return ( Control )new Display( ); }, DockState.Document ),
+					new WorkspaceWindowInfo( "", "&Output", delegate { return m_LogDisplay; } )
+				};
 		}
 
-		private readonly Control m_LogDisplay;
-		private readonly DockingManager m_DockingManager;
-		private readonly Workspace m_Workspace = new Workspace( );
-		private readonly ViewFactory m_ViewFactory = new ViewFactory( );
+		#region Private Members
 
+		private readonly Control m_LogDisplay;
+		private readonly WorkspaceWindowInfo[] m_Windows;
+		private readonly Workspace m_Workspace = new Workspace( );
+		private readonly ViewFactory m_ViewFactory;
+
+		/// <summary>
+		/// Returns a dock content object from a string that has been persisted to a layout file
+		/// </summary>
+		private IDockContent DeserializeContent( string persistString )
+		{
+			foreach ( WorkspaceWindowInfo info in m_Windows )
+			{
+				if ( info.Control.GetType( ).Name == persistString )
+				{
+					return info.Content;
+				}
+			}
+			return null;
+		}
 		/// <summary>
 		/// Returns the name of the file used to store layout information
 		/// </summary>
@@ -41,52 +61,64 @@ namespace Poc1.Bob.Controls
 			return Path.Combine( Path.GetDirectoryName( refAsm.Location ), filename );
 		}
 
+
+		#region Event Handlers
+
 		private void exitToolStripMenuItem_Click( object sender, EventArgs e )
 		{
 			Close( );
 		}
 
-		/// <summary>
-		/// Adds a new view window
-		/// </summary>
-		private void AddViewWindow( Control control, string title, State? state )
+		private void OnViewMenuItemClicked( object sender, EventArgs args )
 		{
-			Content content = m_DockingManager.Contents.Add( control, title.Replace( "&", "" ) );
-			if ( state != null )
-			{
-				m_DockingManager.AddContentWithState( content, state.Value );
-			}
-			ToolStripItem menuItem = viewToolStripMenuItem.DropDownItems.Add( title );
-			menuItem.Click +=
-				delegate
-				{
-					if ( content.Visible )
-					{
-						m_DockingManager.HideContent( content );
-					}
-					else
-					{
-						m_DockingManager.ShowContent( content );	
-					}
-				};
+			WorkspaceWindowInfo info = ( WorkspaceWindowInfo )( ( ToolStripItem )sender ).Tag;
+			DockContent content = info.Content;
 
+			if ( content.Visible )
+			{
+				content.Hide( );
+			}
+			else if ( content.VisibleState == DockState.Unknown )
+			{
+				content.Show( mainDockPanel, info.DefaultDockState );
+			}
+			else
+			{
+				content.Show( );
+			}
 		}
 
 		private void MainForm_Load( object sender, EventArgs e )
 		{
-			AddViewWindow( ( Control )m_ViewFactory.CreateBiomeListView( m_Workspace, new BiomeListModel( ) ), "&Biome List", null );
-			AddViewWindow( ( Control )m_ViewFactory.CreateBiomeManagerView( m_Workspace ), "&Biome Manager", null );
-			AddViewWindow( ( Control )m_ViewFactory.CreateWaveAnimatorView( new WaveAnimationParameters( ) ), "&Wave Animation", null );
+			foreach ( WorkspaceWindowInfo window in m_Windows )
+			{
+				ToolStripMenuItem menu = viewToolStripMenuItem;
+				if ( !string.IsNullOrEmpty( window.Group ) )
+				{
+					ToolStripItem[] foundItems = menu.DropDownItems.Find( window.Group, false );
+					if ( foundItems.Length == 0 )
+					{
+						ToolStripMenuItem subMenu = new ToolStripMenuItem( window.Group );
+						subMenu.Name = window.Group;
+						menu.DropDownItems.Add( subMenu );
+						menu = subMenu;
+					}
+					else
+					{
+						menu = ( ToolStripMenuItem )foundItems[ 0 ];
+					}
+				}
 
-			viewToolStripMenuItem.DropDownItems.Add( new ToolStripSeparator( ) );
-
-			AddViewWindow( m_LogDisplay, "&Output", State.DockBottom );
+				ToolStripItem item = menu.DropDownItems.Add( window.MenuName );
+				item.Tag = window;
+				item.Click += OnViewMenuItemClicked;
+			}
 
 			string layoutFile = GetLayoutConfigurationPath( );
 			if ( File.Exists( layoutFile ) )
 			{
 				AppLog.Info( "Reading layout configuration from \"{0}\"", layoutFile );
-				m_DockingManager.LoadConfigFromFile( layoutFile );
+				mainDockPanel.LoadFromXml( layoutFile, DeserializeContent );
 			}
 			else
 			{
@@ -99,12 +131,16 @@ namespace Poc1.Bob.Controls
 			try
 			{
 				string filename = GetLayoutConfigurationPath( );
-				m_DockingManager.SaveConfigToFile( filename );
+				mainDockPanel.SaveAsXml( filename );
 			}
 			catch ( Exception ex )
 			{
 				MessageBox.Show( this, "Error saving layout:\n" + ex, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
+
+		#endregion
+
+		#endregion
 	}
 }

@@ -35,6 +35,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\NewProjectViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\NewProjectViewForm.Designer.cs">
+      <DependentUpon>NewProjectViewForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SmallWorkItemProgressControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -50,6 +56,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\NewProjectViewForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>NewProjectViewForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\SmallWorkItemProgressControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SmallWorkItemProgressControl.cs</DependentUpon>

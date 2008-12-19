@@ -12,6 +12,11 @@ namespace Poc1.Bob.Core.Interfaces
 	public interface IViewFactory
 	{
 		/// <summary>
+		/// Creates a biome terrain texture view
+		/// </summary>
+		IBiomeTerrainTextureView CreateBiomeTerrainTextureView( ISelectedBiomeContext context );
+
+		/// <summary>
 		/// Creates an wave animator view
 		/// </summary>
 		IWaveAnimatorView CreateWaveAnimatorView( WaveAnimationParameters model );
@@ -21,9 +26,5 @@ namespace Poc1.Bob.Core.Interfaces
 		/// </summary>
 		IBiomeListView CreateBiomeListView( ISelectedBiomeContext context, BiomeListModel model );
 
-		/// <summary>
-		/// Creates a biome manager view
-		/// </summary>
-		IBiomeManagerView CreateBiomeManagerView( ISelectedBiomeContext context );
 	}
 }

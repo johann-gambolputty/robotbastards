@@ -3,6 +3,10 @@ namespace Rb.Core.Threading
 	/// <summary>
 	/// Interface for objects that monitor the progress of work items
 	/// </summary>
+	/// <remarks>
+	/// Equivalent to <see cref="IProgressMonitor"/>. Used to monitor progress of work items
+	/// in a queue, rather than just one process.
+	/// </remarks>
 	public interface IWorkItemProgressMonitor
 	{
 		/// <summary>

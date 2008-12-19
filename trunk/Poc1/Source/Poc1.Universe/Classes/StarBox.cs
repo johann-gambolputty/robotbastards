@@ -17,8 +17,6 @@ namespace Poc1.Universe.Classes
 	/// </summary>
 	public class StarBox : IRenderable
 	{
-		private readonly ITechnique m_Technique;
-
 		#region Construction
 
 		/// <summary>
@@ -26,7 +24,6 @@ namespace Poc1.Universe.Classes
 		/// </summary>
 		public StarBox( )
 		{
-
 			EffectAssetHandle effect = new EffectAssetHandle( "Effects/Planets/stars.cgfx", false );
 			m_Technique = new TechniqueSelector( effect, "DefaultTechnique" );
 
@@ -53,6 +50,7 @@ namespace Poc1.Universe.Classes
 
 		#region Private Members
 
+		private readonly ITechnique m_Technique;
 		private readonly ICubeMapTexture m_Texture;
 		private readonly IRenderable m_Box;
 

@@ -34,8 +34,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RenderGraphNodeWalkerTest.cs" />
+    <Compile Include="TestRenderGraphNodeWalker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestIRenderGraphDataSources.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\Rb.Rendering.RenderGraph\Rb.Rendering.RenderGraph.csproj">

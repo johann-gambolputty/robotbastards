@@ -5,6 +5,7 @@ using Poc1.Particles.Classes;
 using Poc1.Particles.Interfaces;
 using Rb.Core.Maths;
 using Rb.Interaction;
+using Rb.Interaction.Classes;
 using Rb.Rendering;
 using Rb.Rendering.Cameras;
 using Rb.Rendering.Interfaces.Objects.Cameras;
@@ -45,10 +46,10 @@ namespace Poc1.ParticleSystemBuilder
 		private readonly RenderableList<ParticleSystemEmitter> m_ParticleSystems = new RenderableList<ParticleSystemEmitter>();
 		private readonly DockingManager m_DockingManager;
 
-		private static ICamera CreateCamera( InputContext context, CommandUser user )
+		private static ICamera CreateCamera( CommandUser user )
 		{
 			SphereCamera camera = new SphereCamera( Constants.HalfPi, Constants.Pi / 4, 10 );
-			camera.AddChild( new SphereCameraController( context, user ) );
+			camera.AddChild( new SphereCameraController( user ) );
 			return camera;
 		}
 
@@ -57,8 +58,8 @@ namespace Poc1.ParticleSystemBuilder
 			Viewer viewer = new Viewer( );
 			psDisplay.AddViewer( viewer );
 
-			viewer.Camera = CreateCamera( new InputContext( viewer ), new CommandUser( ) );
-			viewer.Renderable = new RenderableList( m_ParticleSystems, new Grid( 8, 8 ) );
+			viewer.Camera = CreateCamera( new CommandUser( "me", 0 ) );
+			viewer.Renderable = new RenderableList( new Grid( 8, 8 ), m_ParticleSystems );
 		}
 
 		private const float PsY = 2.0f;

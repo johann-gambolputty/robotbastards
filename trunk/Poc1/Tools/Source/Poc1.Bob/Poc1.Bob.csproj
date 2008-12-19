@@ -41,23 +41,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppUtils.cs" />
-    <Compile Include="Controls\Atmosphere\AtmosphereControl.cs">
+    <Compile Include="Controls\Atmosphere\AtmosphereBuildControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Atmosphere\AtmosphereControl.Designer.cs">
-      <DependentUpon>AtmosphereControl.cs</DependentUpon>
+    <Compile Include="Controls\Atmosphere\AtmosphereBuildControl.Designer.cs">
+      <DependentUpon>AtmosphereBuildControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Biomes\BiomeListViewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\Biomes\BiomeListViewControl.Designer.cs">
       <DependentUpon>BiomeListViewControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Biomes\BiomeManagerControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\Biomes\BiomeManagerControl.Designer.cs">
-      <DependentUpon>BiomeManagerControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Biomes\BiomeTerrainTextureViewControl.cs">
       <SubType>UserControl</SubType>
@@ -101,32 +95,31 @@
     <Compile Include="Controls\Biomes\TerrainTypeTextureSelectorControl.Designer.cs">
       <DependentUpon>TerrainTypeTextureSelectorControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MessageUiProvider.cs" />
     <Compile Include="Controls\Waves\WaveAnimatorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\Waves\WaveAnimatorControl.Designer.cs">
       <DependentUpon>WaveAnimatorControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Planets\PlanetViewControl.cs">
+    <Compile Include="Controls\Rendering\UniCameraViewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Planets\PlanetViewControl.Designer.cs">
-      <DependentUpon>PlanetViewControl.cs</DependentUpon>
+    <Compile Include="Controls\Rendering\UniCameraViewControl.Designer.cs">
+      <DependentUpon>UniCameraViewControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\ViewFactory.cs" />
+    <Compile Include="Controls\WorkspaceWindowInfo.cs">
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Controls\Atmosphere\AtmosphereControl.resx">
+    <EmbeddedResource Include="Controls\Atmosphere\AtmosphereBuildControl.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>AtmosphereControl.cs</DependentUpon>
+      <DependentUpon>AtmosphereBuildControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Biomes\BiomeListViewControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>BiomeListViewControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Biomes\BiomeManagerControl.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>BiomeManagerControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Biomes\BiomeTerrainTextureViewControl.resx">
       <SubType>Designer</SubType>
@@ -156,9 +149,9 @@
       <SubType>Designer</SubType>
       <DependentUpon>WaveAnimatorControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Planets\PlanetViewControl.resx">
+    <EmbeddedResource Include="Controls\Rendering\UniCameraViewControl.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>PlanetViewControl.cs</DependentUpon>
+      <DependentUpon>UniCameraViewControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

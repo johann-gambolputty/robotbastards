@@ -15,7 +15,7 @@ namespace Rb.Interaction.Tests
 		/// Passing null to <see cref="CommandRegistry.Register"/> should throw
 		/// </summary>
 		[Test, ExpectedException( typeof( ArgumentNullException ) )]
-		public void TestRegisterNullUserThrows( )
+		public void TestRegisterNullCommandThrows( )
 		{
 			new CommandRegistry( ).Register( null );
 		}

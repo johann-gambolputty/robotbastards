@@ -34,9 +34,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EffectRenderNode.cs" />
+    <Compile Include="IRenderGraphDataSource.cs" />
+    <Compile Include="IRenderGraphDataSources.cs" />
+    <Compile Include="IRenderGraphDataTarget.cs" />
     <Compile Include="IRenderNode.cs" />
     <Compile Include="IRenderNodeVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RenderGraphDataSources.cs" />
+    <Compile Include="RenderGraphPropertyDataTarget.cs" />
     <Compile Include="RenderGraphNodeWalker.cs" />
     <Compile Include="RenderNode.cs" />
   </ItemGroup>

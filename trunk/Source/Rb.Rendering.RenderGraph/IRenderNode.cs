@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Rb.Rendering.RenderGraph
@@ -25,7 +25,6 @@ namespace Rb.Rendering.RenderGraph
 		/// </summary>
 		/// <remarks>
 		/// ID is only unique in the context of the graph that this node is a part of.
-		/// ID is set by the constructor, or by <see cref="RenderGraph.AddNode"/>.
 		/// </remarks>
 		int Id
 		{
@@ -41,9 +40,17 @@ namespace Rb.Rendering.RenderGraph
 		}
 
 		/// <summary>
+		/// Gets the render targets belonging to this node
+		/// </summary>
+		ReadOnlyCollection<IRenderGraphDataTarget> Targets
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Gets the inputs to this node. A node can't be processed until all its inputs have been processed
 		/// </summary>
-		IEnumerable<IRenderNode> InputNodes
+		ReadOnlyCollection<IRenderNode> InputNodes
 		{
 			get;
 		}
@@ -51,23 +58,15 @@ namespace Rb.Rendering.RenderGraph
 		/// <summary>
 		/// Gets the outputs of this node
 		/// </summary>
-		IEnumerable<IRenderNode> OutputNodes
+		ReadOnlyCollection<IRenderNode> OutputNodes
 		{
 			get;
 		}
 
 		/// <summary>
-		/// Returns the number of input nodes
+		/// Gets the outputs of this node
 		/// </summary>
-		int NumInputNodes
-		{
-			get;
-		}
-
-		/// <summary>
-		/// Returns the number of output nodes
-		/// </summary>
-		int NumOutputNodes
+		IRenderGraphDataSources Outputs
 		{
 			get;
 		}
@@ -83,6 +82,13 @@ namespace Rb.Rendering.RenderGraph
 		/// </summary>
 		/// <param name="node">Input node to add</param>
 		void AddInputNode( IRenderNode node );
+
+		/// <summary>
+		/// Binds a source to a target
+		/// </summary>
+		/// <param name="source">Data source</param>
+		/// <param name="target">Target to bind to. Must belong to this node</param>
+		void Bind( IRenderGraphDataSource source, IRenderGraphDataTarget target );
 
 		/// <summary>
 		/// Runs this render node

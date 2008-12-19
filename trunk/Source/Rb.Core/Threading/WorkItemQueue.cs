@@ -14,10 +14,10 @@ namespace Rb.Core.Threading
 		/// Adds a work item 
 		/// </summary>
 		/// <param name="queue">Item queue</param>
-		/// <param name="work"></param>
+		/// <param name="work">Work delegate</param>
 		public static void Enqueue( IWorkItemQueue queue, ActionDelegates.Action work )
 		{
-			queue.Enqueue( new SimpleDelegateWorkItem( "", work, null ) );
+			queue.Enqueue( new SimpleDelegateWorkItem( "", work, null ), null );
 		}
 
 		/// <summary>
@@ -28,7 +28,7 @@ namespace Rb.Core.Threading
 		/// <param name="p0">Parameter to pass to action</param>
 		public static void Enqueue<P0>( IWorkItemQueue queue, ActionDelegates.Action<P0> work, P0 p0 )
 		{
-			queue.Enqueue( SimpleDelegateWorkItem.Create( "", work, p0 ) );
+			queue.Enqueue( SimpleDelegateWorkItem.Create( "", work, p0 ), null );
 		}
 
 		/// <summary>
@@ -40,7 +40,7 @@ namespace Rb.Core.Threading
 		/// <param name="p1">Parameter to pass to action</param>
 		public static void Enqueue<P0, P1>( IWorkItemQueue queue, ActionDelegates.Action<P0, P1> work, P0 p0, P1 p1 )
 		{
-			queue.Enqueue( SimpleDelegateWorkItem.Create( "", work, p0, p1 ) );
+			queue.Enqueue( SimpleDelegateWorkItem.Create( "", work, p0, p1 ), null );
 		}
 
 		#endregion
@@ -77,7 +77,8 @@ namespace Rb.Core.Threading
 		/// Enqueues a work item
 		/// </summary>
 		/// <param name="workItem">Work item to enqueue</param>
-		public abstract void Enqueue( IWorkItem workItem );
+		/// <param name="monitor">Work item progress monitor. Can be null.</param>
+		public abstract void Enqueue( IWorkItem workItem, IProgressMonitor monitor );
 
 		/// <summary>
 		/// Returns the number of work items in the queue

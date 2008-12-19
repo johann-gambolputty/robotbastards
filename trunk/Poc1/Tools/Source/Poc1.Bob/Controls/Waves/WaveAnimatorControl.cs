@@ -22,7 +22,7 @@ namespace Poc1.Bob.Controls.Waves
 
 		#region Event Handlers
 
-		private void regenerateButton_Click( object sender, EventArgs e )
+		private void buildButton_Click( object sender, EventArgs e )
 		{
 			if ( GenerateAnimation != null )
 			{
@@ -56,8 +56,8 @@ namespace Poc1.Bob.Controls.Waves
 		/// </summary>
 		public bool GenerationEnabled
 		{
-			get { return regenerateButton.Enabled; }
-			set { regenerateButton.Enabled = value; }
+			get { return buildButton.Enabled; }
+			set { buildButton.Enabled = value; }
 		}
 
 		/// <summary>
@@ -91,7 +91,7 @@ namespace Poc1.Bob.Controls.Waves
 		/// <param name="animation">Wave animation to show</param>
 		public void ShowAnimation( WaveAnimation animation )
 		{
-			regenerateButton.Enabled = true;
+			buildButton.Enabled = true;
 			if ( animation.Frames.Length == 0 )
 			{
 				animationPanel.BackgroundImage = null;
