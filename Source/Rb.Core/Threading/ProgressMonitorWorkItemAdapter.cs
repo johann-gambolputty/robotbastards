@@ -1,9 +1,12 @@
 
+using System;
+
 namespace Rb.Core.Threading
 {
 	/// <summary>
 	/// Adapts an <see cref="IProgressMonitor"/> to calls through to an <see cref="IWorkItemProgressMonitor"/>
 	/// </summary>
+	[Obsolete( "This was a helper item for ExtendedThreadPool, that is no longer required" )]
 	public class ProgressMonitorWorkItemAdapter : IProgressMonitor
 	{
 		/// <summary>

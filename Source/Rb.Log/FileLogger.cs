@@ -14,7 +14,7 @@ namespace Rb.Log
 		public FileLogger( string outputFilePath )
 		{
 			DateTime now = DateTime.Now;
-			string directory = string.Format( "Outputs {0}-{1}-{2}", now.Year, now.Month, now.Day );
+			string directory = string.Format( "Logs\\Outputs {0}-{1}-{2}", now.Year, now.Month, now.Day );
 			if ( !System.IO.Directory.Exists( directory ) )
 			{
 				System.IO.Directory.CreateDirectory( directory );

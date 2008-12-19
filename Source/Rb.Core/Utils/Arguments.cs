@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 
 namespace Rb.Core.Utils
 {
@@ -31,6 +32,21 @@ namespace Rb.Core.Utils
 			{
 				throw new ArgumentException( "Argument cannot be an empty string", argName );
 			}
+		}
+
+		/// <summary>
+		/// Checks that a collection is not null (<see cref="ArgumentNullException"/> thrown) or empty (<see cref="ArgumentException"/>)
+		/// </summary>
+		public static void CheckNotNullOrEmpty( ICollection arg, string argName )
+		{
+			if ( arg == null )
+			{
+				throw new ArgumentNullException( argName );
+			}
+			if ( arg.Count == 0 )
+			{
+				throw new ArgumentException( "Argument cannot be an empty string", argName );
+			}	
 		}
 	}
 }

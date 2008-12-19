@@ -30,7 +30,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers.Patches
 			//        s_Marshaller.PostAction( buildItem.FinishBuild );
 			//        Interlocked.Decrement( ref s_PendingBuildItems );
 			//    }
-			ExtendedThreadPool.Instance.Enqueue( buildItem );
+			ExtendedThreadPool.Instance.Enqueue( buildItem, null );
 		}
 
 		private static int s_PendingBuildItems;

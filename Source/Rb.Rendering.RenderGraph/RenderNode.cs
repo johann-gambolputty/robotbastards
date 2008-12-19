@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using Rb.Core.Utils;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Rb.Rendering.RenderGraph
@@ -49,35 +52,44 @@ namespace Rb.Rendering.RenderGraph
 		}
 
 		/// <summary>
+		/// Gets the render targets belonging to this node
+		/// </summary>
+		public virtual ReadOnlyCollection<IRenderGraphDataTarget> Targets
+		{
+			get
+			{
+				List<IRenderGraphDataTarget> targets = new List<IRenderGraphDataTarget>( );
+				foreach ( PropertyDescriptor descriptor in TypeDescriptor.GetProperties( this ) )
+				{
+					targets.Add( new RenderGraphPropertyDataTarget( this, descriptor ) );
+				}
+				return targets.AsReadOnly( );
+			}
+		}
+
+
+		/// <summary>
 		/// Gets the inputs to this node. A node can't be processed until all its inputs have been processed
 		/// </summary>
-		public IEnumerable<IRenderNode> InputNodes
+		public ReadOnlyCollection<IRenderNode> InputNodes
 		{
-			get { return m_InputNodes; }
+			get { return m_InputNodes.AsReadOnly( ); }
 		}
 
 		/// <summary>
 		/// Gets the outputs of this node
 		/// </summary>
-		public IEnumerable<IRenderNode> OutputNodes
+		public ReadOnlyCollection<IRenderNode> OutputNodes
 		{
-			get { return m_OutputNodes; }
+			get { return m_OutputNodes.AsReadOnly( ); }
 		}
 
 		/// <summary>
-		/// Returns the number of input nodes
+		/// Gets the outputs of this node
 		/// </summary>
-		public int NumInputNodes
+		public IRenderGraphDataSources Outputs
 		{
-			get { return m_InputNodes.Count; }
-		}
-
-		/// <summary>
-		/// Returns the number of output nodes
-		/// </summary>
-		public int NumOutputNodes
-		{
-			get { return m_OutputNodes.Count; }
+			get { return m_Outputs; }
 		}
 
 		/// <summary>
@@ -157,6 +169,19 @@ namespace Rb.Rendering.RenderGraph
 		}
 
 		/// <summary>
+		/// Binds a source to a target
+		/// </summary>
+		/// <param name="source">Data source</param>
+		/// <param name="target">Target to bind to. Must belong to this node</param>
+		public void Bind( IRenderGraphDataSource source, IRenderGraphDataTarget target )
+		{
+			Arguments.CheckNotNull( source, "source" );
+			Arguments.CheckNotNull( target, "target" );
+
+			m_Bindings.Add( new Binding( source, target ) );
+		}
+
+		/// <summary>
 		/// Runs this node
 		/// </summary>
 		/// <param name="context">Rendering context</param>
@@ -167,6 +192,14 @@ namespace Rb.Rendering.RenderGraph
 			{
 				return;
 			}
+
+			//	Update all bindings
+			foreach ( Binding binding in m_Bindings )
+			{
+				binding.Update( );
+			}
+
+			//	Render the object
 			renderable.Render( context );
 		}
 
@@ -174,13 +207,44 @@ namespace Rb.Rendering.RenderGraph
 
 		#region Private Members
 
-		private string m_Name;
-		private int m_Id;
-		private readonly List<IRenderNode> m_OutputNodes = new List<IRenderNode>( );
-		private readonly List<IRenderNode> m_InputNodes = new List<IRenderNode>( );
+		#region Binding class
+
+		private class Binding
+		{
+			/// <summary>
+			/// Stores a binding between a render data source and a render data target
+			/// </summary>
+			public Binding( IRenderGraphDataSource source, IRenderGraphDataTarget target )
+			{
+				m_Source = source;
+				m_Target = target;
+			}
+
+			/// <summary>
+			/// Updates the target
+			/// </summary>
+			public void Update( )
+			{
+				m_Source.UpdateTarget( m_Target );
+			}
+
+			#region Private Members
+
+			private readonly IRenderGraphDataSource m_Source;
+			private readonly IRenderGraphDataTarget m_Target;
+
+			#endregion
+		}
 
 		#endregion
 
+		private int m_Id;
+		private string m_Name;
+		private readonly List<IRenderNode> m_OutputNodes = new List<IRenderNode>( );
+		private readonly List<IRenderNode> m_InputNodes = new List<IRenderNode>( );
+		private readonly IRenderGraphDataSources m_Outputs = new RenderGraphDataSources( );
+		private readonly List<Binding> m_Bindings = new List<Binding>( );
 
+		#endregion
 	}
 }

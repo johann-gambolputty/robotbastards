@@ -23,7 +23,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			sourceSink.SetSource( CreateTextureBitmaps, planet );
 			sourceSink.SetSink( FinishBuild, onComplete );
 
-			queue.Enqueue( sourceSink.Build( "Build Marble Texture" ) );
+			queue.Enqueue( sourceSink.Build( "Build Marble Texture" ), null );
 		}
 
 		/// <summary>

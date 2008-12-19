@@ -46,7 +46,6 @@
     <Compile Include="Classes\Cameras\TrackingCameraController.cs" />
     <Compile Include="Classes\Cameras\UniCamera.cs" />
     <Compile Include="Classes\CircularOrbit.cs" />
-    <Compile Include="Classes\Rendering\SphereCloudsGenerator.cs" />
     <Compile Include="Classes\Rendering\TerrainDistribution.cs" />
     <Compile Include="Classes\Rendering\TerrainType.cs" />
     <Compile Include="Classes\Rendering\TerrainTypeManager.cs" />

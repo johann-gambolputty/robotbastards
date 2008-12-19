@@ -18,12 +18,35 @@ namespace Poc1.Bob.Controls
 	public class ViewFactory : IViewFactory
 	{
 		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		/// <param name="uiProvider">Message UI provider. If null, no messages are displayed to the user</param>
+		/// <remarks>
+		/// All views created by this factory use the specified UI provider to display simple
+		/// messages to the user.
+		/// </remarks>
+		public ViewFactory( IMessageUiProvider uiProvider )
+		{
+			m_UiProvider = uiProvider;
+		}
+
+		/// <summary>
+		/// Creates a biome terrain texture view
+		/// </summary>
+		public IBiomeTerrainTextureView CreateBiomeTerrainTextureView( ISelectedBiomeContext context )
+		{
+			IBiomeTerrainTextureView view = new BiomeTerrainTextureViewControl( );
+			new BiomeTerrainTextureController( context, view );
+			return view;
+		}
+
+		/// <summary>
 		/// Creates an wave animator view
 		/// </summary>
 		public IWaveAnimatorView CreateWaveAnimatorView( WaveAnimationParameters model )
 		{
 			IWaveAnimatorView view = new WaveAnimatorControl( );
-			new WaveAnimatorController( view, model );
+			new WaveAnimatorController( m_UiProvider, view, model );
 			return view;
 		}
 
@@ -37,14 +60,11 @@ namespace Poc1.Bob.Controls
 			return view;
 		}
 
-		/// <summary>
-		/// Creates a biome manager view
-		/// </summary>
-		public IBiomeManagerView CreateBiomeManagerView( ISelectedBiomeContext context )
-		{
-			IBiomeManagerView view = new BiomeManagerControl( );
-			new BiomeManagerController( context, view );
-			return view;
-		}
+		#region Private Members
+
+		private readonly IMessageUiProvider m_UiProvider;
+
+		#endregion
+
 	}
 }

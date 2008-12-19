@@ -37,7 +37,7 @@ namespace Poc1.Universe.Planets.Spherical.Models
 			DelegateWorkItem.Builder work = new DelegateWorkItem.Builder( );
 			work.SetDoWork( GenerateBitmaps );
 			work.SetWorkComplete( OnGenerateBitmapsComplete );
-			workQueue.Enqueue( work.Build( "" ) );
+			workQueue.Enqueue( work.Build( "" ), null );
 		}
 
 		/// <summary>

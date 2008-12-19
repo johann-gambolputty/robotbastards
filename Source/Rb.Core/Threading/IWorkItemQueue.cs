@@ -30,8 +30,9 @@ namespace Rb.Core.Threading
 		/// Adds a new work item to the queue
 		/// </summary>
 		/// <param name="workItem">Work item to add</param>
+		/// <param name="monitor">Work item progress monitor. Can be null.</param>
 		/// <exception cref="ArgumentNullException">Thrown if workItem is null</exception>
-		void Enqueue( IWorkItem workItem );
+		void Enqueue( IWorkItem workItem, IProgressMonitor monitor );
 
 		/// <summary>
 		/// Returns the number of work items in the queue

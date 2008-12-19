@@ -82,6 +82,16 @@
     <Compile Include="Components\ObjectTypeMap.cs" />
     <Compile Include="Components\Parent.cs" />
     <Compile Include="Components\PropertyBag.cs" />
+    <Compile Include="Graphs\IGraphDataSource.cs" />
+    <Compile Include="Graphs\IGraphDataSources.cs" />
+    <Compile Include="Graphs\IGraphDataTarget.cs" />
+    <Compile Include="Graphs\IGraphNode.cs" />
+    <Compile Include="Graphs\IGraphNodeVisitor.cs" />
+    <Compile Include="Graphs\GraphDataSources.cs" />
+    <Compile Include="Graphs\GraphNodeWalker.cs" />
+    <Compile Include="Graphs\GraphPropertyDataTarget.cs" />
+    <Compile Include="Graphs\GraphNode.cs" />
+    <Compile Include="Graphs\IGraphProcessContext.cs" />
     <Compile Include="Logs.cs" />
     <Compile Include="Maths\BigPoint3.cs" />
     <Compile Include="Maths\Box2.cs" />
@@ -152,6 +162,7 @@
     <Compile Include="Threading\IWorkItem.cs" />
     <Compile Include="Threading\IWorkItemProgressMonitor.cs" />
     <Compile Include="Threading\IWorkItemQueue.cs" />
+    <Compile Include="Threading\MonitoredWorkItem.cs" />
     <Compile Include="Threading\ProgressMonitor.cs" />
     <Compile Include="Threading\ProgressMonitorWorkItemAdapter.cs" />
     <Compile Include="Threading\SimpleDelegateWorkItem.cs" />
@@ -176,6 +187,7 @@
     <Compile Include="Utils\CustomUITypeEditorAttribute.cs" />
     <Compile Include="Utils\InvokeQueue.cs" />
     <Compile Include="Utils\LibraryBuilder.cs" />
+    <Compile Include="Utils\Pair.cs" />
     <Compile Include="Utils\PathHelpers.cs" />
     <Compile Include="Utils\PolyList.cs" />
     <Compile Include="Utils\ProfileSection.cs" />

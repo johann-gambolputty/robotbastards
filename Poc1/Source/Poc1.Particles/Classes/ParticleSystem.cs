@@ -143,7 +143,7 @@ namespace Poc1.Particles.Classes
 		private long						m_LastUpdate		= -1;
 		private readonly Matrix44			m_Frame				= new Matrix44( );
 		private bool						m_EnableSpawning	= true;
-		private readonly IParticleBuffer	m_Buffer			= new SerialParticleBuffer( 256 );
+		private readonly IParticleBuffer	m_Buffer			= new SerialParticleBuffer( 1024 );
 		private IParticleSpawner			m_Spawner;
 		private ISpawnRate					m_SpawnRate;
 		private IParticleKiller				m_Killer;

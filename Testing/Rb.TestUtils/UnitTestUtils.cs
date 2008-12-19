@@ -5,10 +5,14 @@ using NUnit.Framework;
 
 namespace Rb.TestUtils
 {
-	public class UnitTestUtils
+	/// <summary>
+	/// Handy unit test utilities
+	/// </summary>
+	public static class UnitTestUtils
 	{
+
 		/// <summary>
-		/// Expects a delegate Ato throw an exception of a given type (like nunit's ExpectedExceptionAttribute, but doesn't exit if correct exception is thrown)
+		/// Expects a delegate to throw an exception of a given type (like nunit's ExpectedExceptionAttribute, but doesn't exit if correct exception is thrown)
 		/// </summary>
 		/// <typeparam name="ExceptionType">Expected exception type</typeparam>
 		/// <param name="del">Delegate to call</param>

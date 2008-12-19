@@ -37,7 +37,7 @@ namespace Rb.Core.Utils
 			{
 				foreach ( FieldInfo field in type.GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic ) )
 				{
-					if ( !DeepEquality( field.GetValue( lhs ), field.GetValue( rhs ) ) )
+					if ( !DeepEquality( field.GetValue( lhs ), field.GetValue( rhs ), objectMap ) )
 					{
 						return false;
 					}

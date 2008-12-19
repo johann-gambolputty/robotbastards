@@ -18,8 +18,8 @@ namespace Rb.Interaction.Classes
 		/// <exception cref="ArgumentException">Thrown if user already exists in the registry</exception>
 		public void Register( ICommandUser user )
 		{
-			InteractionLog.Info( "Registering user \"{0}\" ({1})", user.Name, user.Id );
 			Arguments.CheckNotNull( user, "user" );
+			InteractionLog.Info( "Registering user \"{0}\" ({1})", user.Name, user.Id );
 			if ( m_Users.ContainsKey( user.Id ) )
 			{
 				throw new ArgumentException( string.Format( "User (name: {0}, id: {1}) is already registered", user.Name, user.Id ), "user" );

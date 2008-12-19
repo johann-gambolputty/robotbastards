@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Rb.Core.Utils;
 
 namespace Rb.Core.Threading
 {
@@ -23,9 +24,9 @@ namespace Rb.Core.Threading
 		/// </summary>
 		public void Start( )
 		{
-			foreach ( IWorkItem workItem in m_WorkItems )
+			foreach ( Pair<IWorkItem, IProgressMonitor> pair in m_WorkItems )
 			{
-				m_Queue.Enqueue( workItem );
+				m_Queue.Enqueue( pair.Value0, pair.Value1 );
 			}
 			m_WorkItems.Clear( );
 		}
@@ -52,9 +53,9 @@ namespace Rb.Core.Threading
 		/// Adds a work item to the deferred queue. When <see cref="Start()"/> is called, the work items
 		/// will be passed to the internal queue
 		/// </summary>
-		public void Enqueue( IWorkItem workItem )
+		public void Enqueue( IWorkItem workItem, IProgressMonitor monitor )
 		{
-			m_WorkItems.Add( workItem );
+			m_WorkItems.Add( new Pair<IWorkItem, IProgressMonitor>( workItem, monitor ) );
 		}
 
 		/// <summary>
@@ -80,7 +81,7 @@ namespace Rb.Core.Threading
 
 		#region Private Members
 
-		private readonly List<IWorkItem> m_WorkItems = new List<IWorkItem>( );
+		private readonly List<Pair<IWorkItem, IProgressMonitor>> m_WorkItems = new List<Pair<IWorkItem, IProgressMonitor>>( );
 		private readonly IWorkItemQueue m_Queue;
 
 		#endregion

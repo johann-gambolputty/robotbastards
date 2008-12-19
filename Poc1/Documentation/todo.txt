@@ -1,6 +1,8 @@
 
 - TODO
 	- Bob
+		- M: Add serialization of docking layout
+		- H: Switch to dock pane docking layout
 		- H: Add build project selection (solar system, particle system)
 		- H: Extract interfaces for classes in tool assemblies - make them part of MVC pattern in bob
 	- Particle Systems

@@ -27,6 +27,14 @@ namespace Bob.Core.Controls.Interfaces
 		}
 
 		/// <summary>
+		/// Get/sets the amount that this screen is faded out by
+		/// </summary>
+		float Fade
+		{
+			get; set;
+		}
+
+		/// <summary>
 		/// Shows the splash screen
 		/// </summary>
 		/// <remarks>

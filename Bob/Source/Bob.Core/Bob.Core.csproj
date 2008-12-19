@@ -34,7 +34,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\Classes\NewProjectViewController.cs" />
+    <Compile Include="Controls\Interfaces\IMainApplicationWindow.cs" />
+    <Compile Include="Controls\Interfaces\INewProjectView.cs" />
     <Compile Include="Controls\Interfaces\ISplashScreen.cs" />
+    <Compile Include="Controls\IViewFactory.cs" />
+    <Compile Include="Projects\ProjectCommand.cs" />
+    <Compile Include="Projects\ProjectCommandList.cs" />
+    <Compile Include="Projects\ProjectType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -42,9 +49,10 @@
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\Interfaces\Graphs\" />
+    <ProjectReference Include="..\..\..\Source\Rb.Interaction\Rb.Interaction.csproj">
+      <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
+      <Name>Rb.Interaction</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -6,7 +6,7 @@ namespace Rb.Core.Threading
 	/// <summary>
 	/// Work item with a single delegate used for performing work (no failure or completion support)
 	/// </summary>
-	public class SimpleDelegateWorkItem : IWorkItem
+	public class SimpleDelegateWorkItem : AbstractWorkItem
 	{
 		/// <summary>
 		/// Sets up a delegate to perform work, and parameters to pass
@@ -47,7 +47,7 @@ namespace Rb.Core.Threading
 		/// <summary>
 		/// Gets the name of this work item
 		/// </summary>
-		public string Name
+		public override string Name
 		{
 			get { return m_Name; }
 		}
@@ -55,27 +55,11 @@ namespace Rb.Core.Threading
 		/// <summary>
 		/// Does work
 		/// </summary>
-		public void DoWork( IProgressMonitor progress )
+		public override void DoWork( IProgressMonitor progress )
 		{
 			progress.UpdateProgress( 0 );
 			m_Work.DynamicInvoke( m_WorkParams );
 			progress.UpdateProgress( 1 );
-		}
-
-		/// <summary>
-		/// Does nothing
-		/// </summary>
-		public void WorkFailed( IProgressMonitor progress, Exception ex )
-		{
-			progress.WorkFailed( ex );
-		}
-
-		/// <summary>
-		/// Does nothing
-		/// </summary>
-		public void WorkComplete( IProgressMonitor progress )
-		{
-			progress.WorkComplete( );
 		}
 
 		#endregion

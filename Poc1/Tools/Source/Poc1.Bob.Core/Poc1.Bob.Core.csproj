@@ -36,7 +36,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Biomes\Controllers\BiomeListController.cs" />
-    <Compile Include="Classes\Biomes\Controllers\BiomeManagerController.cs" />
     <Compile Include="Classes\Biomes\Controllers\BiomeTerrainTextureController.cs" />
     <Compile Include="Classes\Biomes\Controllers\TerrainTypeListController.cs" />
     <Compile Include="Classes\Biomes\Models\BiomeListModel.cs" />
@@ -46,13 +45,16 @@
     <Compile Include="Classes\Workspace.cs" />
     <Compile Include="Interfaces\Biomes\ISelectedBiomeContext.cs" />
     <Compile Include="Interfaces\Biomes\Views\IBiomeListView.cs" />
-    <Compile Include="Interfaces\Biomes\Views\IBiomeManagerView.cs" />
     <Compile Include="Interfaces\Biomes\Views\IBiomeTerrainTextureView.cs" />
+    <Compile Include="Interfaces\Biomes\Views\ITerrainGeometryView.cs" />
     <Compile Include="Interfaces\Biomes\Views\ITerrainTypeDistributionView.cs" />
     <Compile Include="Interfaces\Biomes\Views\ITerrainTypeListView.cs" />
     <Compile Include="Interfaces\Biomes\Views\ITerrainTypeTextureView.cs" />
     <Compile Include="Interfaces\Biomes\Views\ITerrainTypeView.cs" />
+    <Compile Include="Interfaces\IMessageUiProvider.cs" />
     <Compile Include="Interfaces\IViewFactory.cs" />
+    <Compile Include="Interfaces\Rendering\ICameraView.cs" />
+    <Compile Include="Interfaces\Rendering\IUniCameraView.cs" />
     <Compile Include="Interfaces\Waves\IWaveAnimatorView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -17,7 +17,7 @@ namespace Rb.Core.Threading
 		/// <summary>
 		/// Maximum number of threads the thread pool has at its disposal.
 		/// </summary>
-		public const int MaxWorkerThreads = 2;
+		public const int MaxWorkerThreads = 6;
 
 		/// <summary>
 		/// Gets the default singleton instance
@@ -38,7 +38,7 @@ namespace Rb.Core.Threading
 			// as we may run into situtations where multiple operations need to be atomic.
 			// We keep track of the threads we've created just for good measure; not actually
 			// needed for any core functionality.
-			m_WorkItems = new Queue<IWorkItem>();
+			m_WorkItems = new Queue<MonitoredWorkItem>( );
 			m_WorkerThreads = new List<Thread>();
 			m_InUseThreads = 0;
 
@@ -68,7 +68,7 @@ namespace Rb.Core.Threading
 		/// <param name="action">Work item action</param>
 		public void Enqueue( ActionDelegates.Action action )
 		{
-			Enqueue( new DelegateWorkItem( "", action, null, null, null, null, null ) );
+			Enqueue( new DelegateWorkItem( "", action, null, null, null, null, null ), null );
 		}
 
 		/// <summary>
@@ -78,7 +78,7 @@ namespace Rb.Core.Threading
 		/// <param name="p0">Parameter 0 value to pass to action</param>
 		public void Enqueue<P0>( ActionDelegates.Action<P0> action, P0 p0 )
 		{
-			Enqueue( new DelegateWorkItem( "", action, new object[] { p0 }, null, null, null, null ) );
+			Enqueue( new DelegateWorkItem( "", action, new object[] { p0 }, null, null, null, null ), null );
 		}
 
 		/// <summary>
@@ -89,15 +89,16 @@ namespace Rb.Core.Threading
 		/// <param name="p1">Parameter 1 value to pass to action</param>
 		public void Enqueue<P0, P1>( ActionDelegates.Action<P0> action, P0 p0, P1 p1 )
 		{
-			Enqueue( new DelegateWorkItem( "", action, new object[] { p0, p1 }, null, null, null, null ) );
+			Enqueue( new DelegateWorkItem( "", action, new object[] { p0, p1 }, null, null, null, null ), null );
 		}
 
 		/// <summary>
 		/// Adds a new work item to the queue
 		/// </summary>
 		/// <param name="workItem">Work item to add</param>
+		/// <param name="monitor">Progress monitor for the work item</param>
 		/// <exception cref="ArgumentNullException">Thrown if workItem is null</exception>
-		public override void Enqueue( IWorkItem workItem )
+		public override void Enqueue( IWorkItem workItem, IProgressMonitor monitor )
 		{
 			if ( workItem == null )
 			{
@@ -105,7 +106,7 @@ namespace Rb.Core.Threading
 			}
 			lock ( m_WorkItems )
 			{
-				m_WorkItems.Enqueue( workItem );
+				m_WorkItems.Enqueue( new MonitoredWorkItem( workItem, monitor, ProgressMonitors ) );
 			}
 			m_WorkerThreadNeeded.AddOne( );
 		}
@@ -126,12 +127,12 @@ namespace Rb.Core.Threading
 			lock ( m_WorkItems ) 
 			{ 
 				// Try to dispose of all remaining state
-				foreach( IWorkItem workItem in m_WorkItems )
+				foreach( MonitoredWorkItem monitoredItem in m_WorkItems )
 				{
-					Type workItemType = workItem.GetType( );
+					Type workItemType = monitoredItem.WorkItem.GetType( );
 					try
 					{
-						DisposableHelper.Dispose( workItem );
+						DisposableHelper.Dispose( monitoredItem.WorkItem );
 					}
 					catch ( Exception ex )
 					{
@@ -190,7 +191,7 @@ namespace Rb.Core.Threading
 		/// <summary>
 		/// Queue of all the callbacks waiting to be executed.
 		/// </summary>
-		private readonly Queue<IWorkItem> m_WorkItems;
+		private readonly Queue<MonitoredWorkItem> m_WorkItems;
 
 		/// <summary>
 		/// Used to signal that a worker thread is needed for processing.  Note that multiple
@@ -214,14 +215,13 @@ namespace Rb.Core.Threading
 		/// </summary>
 		private void ProcessQueuedItems( )
 		{
-			ProgressMonitorWorkItemAdapter progressMonitor = new ProgressMonitorWorkItemAdapter( ProgressMonitors );
 			// Process indefinitely
 			while( true )
 			{
 				// Get the next item in the queue.  If there is nothing there, go to sleep
 				// for a while until we're woken up when a callback is waiting.
-				IWorkItem workItem = null;
-				while ( workItem == null )
+				MonitoredWorkItem monitoredItem = null;
+				while ( monitoredItem == null )
 				{
 					// Try to get the next callback available.  We need to lock on the 
 					// queue in order to make our count check and retrieval atomic.
@@ -229,12 +229,12 @@ namespace Rb.Core.Threading
 					{
 						if ( m_WorkItems.Count > 0 )
 						{
-							workItem = m_WorkItems.Dequeue( );
+							monitoredItem = m_WorkItems.Dequeue( );
 						}
 					}
 
 					// If we can't get one, go to sleep.
-					if ( workItem == null )
+					if ( monitoredItem == null )
 					{
 						m_WorkerThreadNeeded.WaitOne( );
 					}
@@ -242,16 +242,15 @@ namespace Rb.Core.Threading
 
 				// We now have a callback.  Execute it.  Make sure to accurately
 				// record how many callbacks are currently executing.
-				progressMonitor.CurrentWorkItem = workItem;
 				try 
 				{
 					Interlocked.Increment( ref m_InUseThreads );
-					workItem.DoWork( progressMonitor );
-					m_Marshaller.PostAction( workItem.WorkComplete, progressMonitor );
+					monitoredItem.WorkItem.DoWork( monitoredItem );
+					m_Marshaller.PostAction( monitoredItem.WorkItem.WorkComplete, monitoredItem );
 				} 
 				catch ( Exception ex )
 				{
-					m_Marshaller.PostAction( workItem.WorkFailed, progressMonitor, ex );
+					m_Marshaller.PostAction( monitoredItem.WorkItem.WorkFailed, monitoredItem, ex );
 				}
 				finally 
 				{
