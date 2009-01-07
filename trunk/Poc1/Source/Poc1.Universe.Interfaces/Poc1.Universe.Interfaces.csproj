@@ -42,6 +42,7 @@
     <Compile Include="IUniCamera.cs" />
     <Compile Include="IUniRenderable.cs" />
     <Compile Include="Planets\Flat\IFlatPlanet.cs" />
+    <Compile Include="Planets\Models\IPlanetModel.cs" />
     <Compile Include="Planets\Models\IPlanetAtmosphereModel.cs" />
     <Compile Include="Planets\Models\IPlanetCloudModel.cs" />
     <Compile Include="Planets\Models\IPlanetEnvironmentModel.cs" />
@@ -50,6 +51,16 @@
     <Compile Include="Planets\Models\IPlanetRingModel.cs" />
     <Compile Include="Planets\Models\IPlanetTerrainModel.cs" />
     <Compile Include="Planets\IPlanet.cs" />
+    <Compile Include="Planets\Models\Templates\IPlanetEnvironmentModelTemplate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Planets\Models\Templates\IPlanetModelTemplate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Planets\Models\Templates\IPlanetModelTemplateBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Planets\Models\Templates\ModelTemplateInstanceContext.cs" />
     <Compile Include="Planets\Renderers\IPlanetAtmosphereRenderer.cs" />
     <Compile Include="Planets\Renderers\IPlanetCloudRenderer.cs" />
     <Compile Include="Planets\Renderers\IPlanetEnvironmentRenderer.cs" />
@@ -63,6 +74,7 @@
     <Compile Include="Planets\Spherical\ISpherePlanet.cs" />
     <Compile Include="Planets\Spherical\Models\ISpherePlanetAtmosphereModel.cs" />
     <Compile Include="Planets\Spherical\Models\ISpherePlanetCloudModel.cs" />
+    <Compile Include="Planets\Spherical\Models\ISpherePlanetModel.cs" />
     <Compile Include="Planets\Spherical\Models\ISpherePlanetRingModel.cs" />
     <Compile Include="Planets\Spherical\Models\ISpherePlanetTerrainModel.cs" />
     <Compile Include="Planets\Spherical\Renderers\ISpherePlanetAtmosphereRenderer.cs" />
@@ -92,6 +104,7 @@
   <ItemGroup>
     <Folder Include="Planets\Flat\Model\" />
     <Folder Include="Planets\Flat\Renderers\" />
+    <Folder Include="Planets\Spherical\Models\Templates\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

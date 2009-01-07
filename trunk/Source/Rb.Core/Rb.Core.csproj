@@ -130,6 +130,7 @@
     </Compile>
     <Compile Include="Maths\Point3Interpolator.cs" />
     <Compile Include="Maths\Quaternion.cs" />
+    <Compile Include="Maths\Range.cs" />
     <Compile Include="Maths\Ray3.cs" />
     <Compile Include="Maths\Line3Intersection.cs" />
     <Compile Include="Maths\Rectangle.cs" />

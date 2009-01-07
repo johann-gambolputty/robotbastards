@@ -41,6 +41,11 @@
     <Compile Include="Classes\Biomes\Models\BiomeListModel.cs" />
     <Compile Include="Classes\Biomes\Models\BiomeModel.cs" />
     <Compile Include="Classes\Biomes\TerrainTypeTextureBuilder.cs" />
+    <Compile Include="Classes\Rendering\UniCameraViewController.cs" />
+    <Compile Include="Classes\Templates\CreateTemplateInstanceController.cs" />
+    <Compile Include="Classes\Templates\SpherePlanetTemplate.cs" />
+    <Compile Include="Classes\Templates\SpherePlanetTemplateGroup.cs" />
+    <Compile Include="Classes\Templates\TemplateSelectorController.cs" />
     <Compile Include="Classes\Waves\WaveAnimatorController.cs" />
     <Compile Include="Classes\Workspace.cs" />
     <Compile Include="Interfaces\Biomes\ISelectedBiomeContext.cs" />
@@ -53,8 +58,16 @@
     <Compile Include="Interfaces\Biomes\Views\ITerrainTypeView.cs" />
     <Compile Include="Interfaces\IMessageUiProvider.cs" />
     <Compile Include="Interfaces\IViewFactory.cs" />
+    <Compile Include="Interfaces\Templates\ICreateTemplateInstanceView.cs" />
     <Compile Include="Interfaces\Rendering\ICameraView.cs" />
     <Compile Include="Interfaces\Rendering\IUniCameraView.cs" />
+    <Compile Include="Interfaces\Templates\Generic\TemplateGroup.cs" />
+    <Compile Include="Interfaces\Templates\Template.cs" />
+    <Compile Include="Interfaces\Templates\ITemplateSelectorView.cs" />
+    <Compile Include="Interfaces\Templates\TemplateBase.cs" />
+    <Compile Include="Interfaces\Templates\TemplateGroup.cs" />
+    <Compile Include="Interfaces\Templates\TemplateGroupContainer.cs" />
+    <Compile Include="Interfaces\Templates\TemplateViewInfo.cs" />
     <Compile Include="Interfaces\Waves\IWaveAnimatorView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -70,6 +83,10 @@
     <ProjectReference Include="..\..\..\..\Source\Rb.Interaction\Rb.Interaction.csproj">
       <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
       <Name>Rb.Interaction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Log\Rb.Log.csproj">
+      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
+      <Name>Rb.Log</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.csproj">
       <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>

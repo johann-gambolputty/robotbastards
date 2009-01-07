@@ -10,6 +10,10 @@ namespace Poc1.Bob.Core.Classes.Waves
 	/// <summary>
 	/// Creates a controller for a wave animator view (<see cref="IWaveAnimatorView"/>)
 	/// </summary>
+	/// <remarks>
+	/// This implements <see cref="IProgressMonitor"/> for a trivial and lazy way to
+	/// communicate wave animation generation progress to the view.
+	/// </remarks>
 	public class WaveAnimatorController : IProgressMonitor
 	{
 		/// <summary>
@@ -45,68 +49,11 @@ namespace Poc1.Bob.Core.Classes.Waves
 			m_UiProvider = uiProvider;
 		}
 
-
-		#region Private Members
-
-		private readonly IMessageUiProvider m_UiProvider;
-		private readonly IWorkItemQueue m_WorkQueue;
-		private readonly IWaveAnimatorView m_View;
-		private readonly DelegateMarshaller m_Marshaller;
-
-		/// <summary>
-		/// Animation generator function
-		/// </summary>
-		private void GenerateAnimationWorker( IProgressMonitor monitor, WaveAnimationParameters model )
-		{
-			WaveAnimationGenerator generator = new WaveAnimationGenerator( );
-			WaveAnimation animation = generator.GenerateHeightmapSequence( model, monitor );
-			m_Marshaller.PostAction( m_View.ShowAnimation, animation );
-		}
-
-		/// <summary>
-		/// Handles work completion
-		/// </summary>
-		private void OnWorkComplete( )
-		{
-			m_View.GenerationEnabled = true;
-		}
-
-		/// <summary>
-		/// Handles work failure
-		/// </summary>
-		private void OnWorkFailed( Exception ex)
-		{
-			m_View.GenerationEnabled = true;
-		}
-
-		/// <summary>
-		/// Generates an animation
-		/// </summary>
-		private void OnGenerateAnimation( )
-		{
-			if ( m_View.Model == null )
-			{
-				return;
-			}
-			m_View.GenerationEnabled = false;
-			DelegateWorkItem.Builder builder = new DelegateWorkItem.Builder( );
-			builder.SetDoWork( GenerateAnimationWorker, m_View.Model.Clone( ) );
-			builder.SetWorkComplete( OnWorkComplete );
-			builder.SetWorkFailed( OnWorkFailed );
-			m_WorkQueue.Enqueue( builder.Build( ), this );
-		}
-
-		#endregion
-
-
-
 		#region IProgressMonitor Members
 
 		/// <summary>
 		/// Sets the progress in the associated view (<see cref="IWaveAnimatorView.WaveAnimationGenerationProgress"/>)
 		/// </summary>
-		/// <param name="progress"></param>
-		/// <returns></returns>
 		public bool UpdateProgress( float progress )
 		{
 			m_Marshaller.PostAction( delegate { m_View.WaveAnimationGenerationProgress = progress; } );
@@ -138,5 +85,58 @@ namespace Poc1.Bob.Core.Classes.Waves
 		}
 
 		#endregion
+
+		#region Private Members
+
+		private readonly IMessageUiProvider m_UiProvider;
+		private readonly IWorkItemQueue m_WorkQueue;
+		private readonly IWaveAnimatorView m_View;
+		private readonly DelegateMarshaller m_Marshaller;
+
+		/// <summary>
+		/// Animation generator function
+		/// </summary>
+		private void GenerateAnimationWorker( IProgressMonitor monitor, WaveAnimationParameters model )
+		{
+			WaveAnimationGenerator generator = new WaveAnimationGenerator( );
+			WaveAnimation animation = generator.GenerateHeightmapSequence( model, monitor );
+			m_Marshaller.PostAction( m_View.ShowAnimation, animation );
+		}
+
+		/// <summary>
+		/// Handles work completion
+		/// </summary>
+		private void OnWorkComplete( )
+		{
+			m_View.GenerationEnabled = true;
+		}
+
+		/// <summary>
+		/// Handles work failure
+		/// </summary>
+		private void OnWorkFailed( Exception ex )
+		{
+			m_View.GenerationEnabled = true;
+		}
+
+		/// <summary>
+		/// Generates an animation
+		/// </summary>
+		private void OnGenerateAnimation( )
+		{
+			if ( m_View.Model == null )
+			{
+				return;
+			}
+			m_View.GenerationEnabled = false;
+			DelegateWorkItem.Builder builder = new DelegateWorkItem.Builder( );
+			builder.SetDoWork( GenerateAnimationWorker, m_View.Model.Clone( ) );
+			builder.SetWorkComplete( OnWorkComplete );
+			builder.SetWorkFailed( OnWorkFailed );
+			m_WorkQueue.Enqueue( builder.Build( ), this );
+		}
+
+		#endregion
+
 	}
 }

@@ -7,7 +7,6 @@ namespace Rb.Core.Maths
 	/// </summary>
 	/// <remarks>
 	/// From http://mrl.nyu.edu/~perlin/paper445.pdf
-	/// 
 	/// </remarks>
 	public class Noise
 	{
@@ -56,17 +55,28 @@ namespace Rb.Core.Maths
 			float fX = x - iX;
 			int iY = ( int )y;
 			float fY = y - iY;
+			iX = iX & 0xff;
+			iY = iY & 0xff;
 
-			float v1 = SmoothNoise( iX, iY );
-			float v2 = SmoothNoise( iX + 1, iY );
-			float v3 = SmoothNoise( iX, iY + 1 );
-			float v4 = SmoothNoise( iX + 1, iY + 1 );
+			float u = Fade( fX );
+			float v = Fade( fY );
 
-			float i1 = v1 + ( v2 - v1 ) * fX;
-			float i2 = v3 + ( v4 - v3 ) * fX;
+			int py0 = Perm( iY ) + iX;
+			int py1 = Perm( iY + 1 ) + iX;
+			int x0y0 = Perm( py0 );
+			int x1y0 = Perm( py0 + 1 );
+			int x1y1 = Perm( py1 + 1 );
+			int x0y1 = Perm( py1 );
 
-			float r = i1 + ( i2 - i1 ) * fY;
-			return ( r / 0.5f );
+			float res =
+				Lerp
+				(
+					v,
+					Lerp( u, Gradient( x0y0, fX, fY ), Gradient( x1y0, fX - 1, fY ) ),
+					Lerp( u, Gradient( x0y1, fX, fY - 1 ), Gradient( x1y1, fX - 1, fY - 1 ) )
+				);
+
+			return res / 0.8f;
 		}
 
 		/// <summary>
@@ -115,7 +125,6 @@ namespace Rb.Core.Maths
 
 		private int Perm( int x )
 		{
-		//	return x;
 		    return m_Perms[ x ];
 		}
 		//private static int Perm( int x )
@@ -128,19 +137,39 @@ namespace Rb.Core.Maths
 		private readonly int[] m_Perms = new int[ 512 ];
 		private readonly static Noise s_Instance = new Noise( );
 
+		/// <summary>
+		/// Fade curve
+		/// </summary>
 		private static float Fade( float t )
 		{
 			return t * t * t * ( t * ( t * 6 - 15 ) + 10 );
-
-		//	float t2 = t * t;
-		//	return ( 3 * t2 ) - 2 * t2 * t;
 		}
 
+		/// <summary>
+		/// Linear interpolation
+		/// </summary>
 		private static float Lerp( float t, float a, float b )
 		{
 			return a + t * ( b - a );
 		}
 
+		/// <summary>
+		/// Gradient selection for 2d noise
+		/// </summary>
+		private static float Gradient( int hash, float x, float y )
+		{
+			switch ( hash & 3 )
+			{
+				case 0: return x;
+				case 1: return -x;
+				case 2: return y;
+			}
+			return -y;
+		}
+
+		/// <summary>
+		/// Gradient selection for 3d noise
+		/// </summary>
 		private static float grad( int hash, float x, float y, float z )
 		{
 			int h = hash & 15;                      // CONVERT LO 4 BITS OF HASH CODE

@@ -5,6 +5,9 @@
 		- H: Switch to dock pane docking layout
 		- H: Add build project selection (solar system, particle system)
 		- H: Extract interfaces for classes in tool assemblies - make them part of MVC pattern in bob
+		- L: Don't rebuild entire template tree when template model changes in template view implementation
+		- L: Fix template icons in template view implementation
+		- L: Add a different default icon for template groups and template group containers
 	- Particle Systems
 		- H: Particle system serialization
 		- H: Move particle system library and tools to RB.
@@ -141,6 +144,7 @@
 			- L: Default terrain function setup should be reflected in the initial control setup
 			- L: Add support for loading/saving terrain function setup
 			- L: Add legend to graph control (should appear on hover over graph line)
+			- L: Graph control should display 2 decimal places of precision always
 		- Particle Builder
 			- H: Add PS load/save code.
 			- H: Set up particle system component setup window from input particle sytem
@@ -192,8 +196,11 @@
 		- M: Remove fast noise test (move to console app. project in tests directory)
 		- M: Asset live rebuild causes unhandled exception
 		- M: Move terrain patch classes out of spherical planet folder
+		- L: Add noise generation type to 2d noise bitmap generator
 		- L: Refactor Muesli
 		- L: Add XML serialization to Muesli
+		- L: On mouse leave, the graph control should stop displaying the mouse cursor position
+		- L: Graph control shows '0' as -1e-5 when the data window is moved
 
 - DISCARD
 	- M: Move rayleigh computation to vertex shader if possible (requires texture lookup - vs3.0 only. See altered TODO)

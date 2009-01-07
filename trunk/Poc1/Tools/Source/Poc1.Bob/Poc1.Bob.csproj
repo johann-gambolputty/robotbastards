@@ -41,6 +41,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppUtils.cs" />
+    <Compile Include="Controls\AboutBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\AboutBox.Designer.cs">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Atmosphere\AtmosphereBuildControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -96,6 +102,18 @@
       <DependentUpon>TerrainTypeTextureSelectorControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\MessageUiProvider.cs" />
+    <Compile Include="Controls\Templates\CreateTemplateInstanceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\Templates\CreateTemplateInstanceForm.Designer.cs">
+      <DependentUpon>CreateTemplateInstanceForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Templates\TemplateSelectorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Templates\TemplateSelectorView.Designer.cs">
+      <DependentUpon>TemplateSelectorView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Waves\WaveAnimatorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -113,6 +131,10 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Controls\AboutBox.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\Atmosphere\AtmosphereBuildControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>AtmosphereBuildControl.cs</DependentUpon>
@@ -144,6 +166,14 @@
     <EmbeddedResource Include="Controls\Biomes\TerrainTypeTextureSelectorControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>TerrainTypeTextureSelectorControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Templates\CreateTemplateInstanceForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>CreateTemplateInstanceForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Templates\TemplateSelectorView.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TemplateSelectorView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Waves\WaveAnimatorControl.resx">
       <SubType>Designer</SubType>
@@ -258,6 +288,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Delete.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\globe.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\otheroptions.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

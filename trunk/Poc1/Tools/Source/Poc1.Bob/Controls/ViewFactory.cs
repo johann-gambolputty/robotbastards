@@ -1,12 +1,15 @@
 
 using Poc1.Bob.Controls.Biomes;
+using Poc1.Bob.Controls.Templates;
 using Poc1.Bob.Controls.Waves;
 using Poc1.Bob.Core.Classes.Biomes.Controllers;
 using Poc1.Bob.Core.Classes.Biomes.Models;
+using Poc1.Bob.Core.Classes.Templates;
 using Poc1.Bob.Core.Classes.Waves;
 using Poc1.Bob.Core.Interfaces;
 using Poc1.Bob.Core.Interfaces.Biomes;
 using Poc1.Bob.Core.Interfaces.Biomes.Views;
+using Poc1.Bob.Core.Interfaces.Templates;
 using Poc1.Bob.Core.Interfaces.Waves;
 using Poc1.Tools.Waves;
 
@@ -28,6 +31,25 @@ namespace Poc1.Bob.Controls
 		public ViewFactory( IMessageUiProvider uiProvider )
 		{
 			m_UiProvider = uiProvider;
+		}
+
+		/// <summary>
+		/// Shows a create template instance view as a modal dialog
+		/// </summary>
+		public void ShowCreateTemplateInstanceView( TemplateGroupContainer rootGroup )
+		{
+			ICreateTemplateInstanceView view = new CreateTemplateInstanceForm( );
+			new CreateTemplateInstanceController( view, rootGroup );
+		}
+
+		/// <summary>
+		/// Creates a template selector view
+		/// </summary>
+		public ITemplateSelectorView CreateTemplateSelectorView( TemplateGroupContainer rootGroup )
+		{
+			ITemplateSelectorView view = new TemplateSelectorView( );
+			new TemplateSelectorController( view, rootGroup );
+			return view;
 		}
 
 		/// <summary>
