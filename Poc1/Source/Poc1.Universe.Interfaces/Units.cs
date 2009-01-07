@@ -1,3 +1,4 @@
+using System;
 using Rb.Core.Maths;
 
 namespace Poc1.Universe.Interfaces
@@ -327,7 +328,7 @@ namespace Poc1.Universe.Interfaces
 		/// <summary>
 		/// Metres. Measures distances within solar systems using double precision floating point
 		/// </summary>
-		public struct Metres
+		public struct Metres : IComparable<Metres>
 		{
 			/// <summary>
 			/// Setup constructor
@@ -414,6 +415,19 @@ namespace Poc1.Universe.Interfaces
 			#region Private Members
 			
 			private double m_Value; 
+
+			#endregion
+
+			#region IComparable<Metres> Members
+
+			/// <summary>
+			/// Compares this value to another. Returns -1 if this is less than other, 0
+			/// if this is equal to other, or 1 if this is greater than other
+			/// </summary>
+			public int CompareTo( Metres other )
+			{
+				return m_Value < other.m_Value ? -1 : ( m_Value > other.m_Value ? 1 : 0 );
+			}
 
 			#endregion
 		}

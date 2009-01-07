@@ -45,7 +45,6 @@ namespace Poc1.Universe.Classes.Cameras
 			}
 		}
 
-
 		#region Private Members
 		
 		static FirstPersonCameraCommands( )

@@ -1,4 +1,4 @@
-
+using Rb.Interaction.Classes;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Interfaces.Objects.Cameras;
 
@@ -15,6 +15,14 @@ namespace Poc1.Bob.Core.Interfaces.Rendering
 		ICamera Camera
 		{
 			get; set;
+		}
+
+		/// <summary>
+		/// Gets the input source for this view
+		/// </summary>
+		CommandInputSource InputSource
+		{
+			get;
 		}
 
 		/// <summary>

@@ -66,15 +66,24 @@
     <Compile Include="Planets\Flat\Renderers\FlatPlanetTerrainPatchRenderer.cs" />
     <Compile Include="Planets\Models\PlanetAtmosphereModel.cs" />
     <Compile Include="Planets\Models\PlanetCloudModel.cs" />
+    <Compile Include="Planets\Models\PlanetModel.cs" />
     <Compile Include="Planets\Models\PlanetOceanModel.cs" />
     <Compile Include="Planets\Models\PlanetRingModel.cs" />
     <Compile Include="Planets\Models\PlanetTerrainModelChangedEventArgs.cs" />
+    <Compile Include="Planets\Models\Templates\PlanetAtmosphereModelTemplate.cs" />
+    <Compile Include="Planets\Models\Templates\PlanetEnvironmentModelTemplate.cs" />
+    <Compile Include="Planets\Models\Templates\PlanetModelTemplate.cs" />
+    <Compile Include="Planets\Models\Templates\PlanetRingModelTemplate.cs" />
     <Compile Include="Planets\Planet.cs" />
     <Compile Include="Planets\Renderers\PlanetTerrainPatchRenderer.cs" />
     <Compile Include="Planets\Spherical\Models\SpherePlanetAtmosphereModel.cs" />
     <Compile Include="Planets\Spherical\Models\SpherePlanetCloudModel.cs" />
+    <Compile Include="Planets\Spherical\Models\SpherePlanetModel.cs" />
     <Compile Include="Planets\Spherical\Models\SpherePlanetProcTerrainModel.cs" />
     <Compile Include="Planets\Spherical\Models\SpherePlanetRingModel.cs" />
+    <Compile Include="Planets\Spherical\Models\Templates\SpherePlanetAtmosphereModelTemplate.cs" />
+    <Compile Include="Planets\Spherical\Models\Templates\SpherePlanetModelTemplate.cs" />
+    <Compile Include="Planets\Spherical\Models\Templates\SpherePlanetRingModelTemplate.cs" />
     <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatch.cs" />
     <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatchBuilder.cs" />
     <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatchBuildItem.cs" />
@@ -132,6 +141,9 @@
       <Project>{7C18549B-2D70-4985-852B-6A285BF4F00A}</Project>
       <Name>Poc1.Universe.Interfaces</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Planets\ModelTemplates\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

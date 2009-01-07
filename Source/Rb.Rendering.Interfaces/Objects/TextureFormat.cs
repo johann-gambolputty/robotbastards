@@ -30,6 +30,52 @@ namespace Rb.Rendering.Interfaces.Objects
 	public static class TextureFormatInfo
 	{
 		/// <summary>
+		/// Returns true if the specified texture format is a true-colour format (stores separate colour channel components)
+		/// </summary>
+		public static bool IsTrueColourFormat( TextureFormat texFormat )
+		{
+			switch ( texFormat )
+			{
+				case TextureFormat.R8G8B8	:
+				case TextureFormat.B8G8R8	:
+				case TextureFormat.R8G8B8A8	:
+				case TextureFormat.B8G8R8A8	:
+				case TextureFormat.A8R8G8B8	:
+				case TextureFormat.A8B8G8R8	:	return true;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Returns true if the specified texture format is a depth format
+		/// </summary>
+		public static bool IsDepthFormat( TextureFormat texFormat )
+		{
+			switch ( texFormat )
+			{
+				case TextureFormat.Depth16:
+				case TextureFormat.Depth24:
+				case TextureFormat.Depth32: return true;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Returns true if the specified texture format supports an alpha channel
+		/// </summary>
+		public static bool HasAlphaChannel( TextureFormat texFormat )
+		{
+			switch ( texFormat )
+			{
+				case TextureFormat.R8G8B8A8:
+				case TextureFormat.B8G8R8A8:
+				case TextureFormat.A8R8G8B8:
+				case TextureFormat.A8B8G8R8: return true;
+			}
+			return false;
+		}
+
+		/// <summary>
 		/// Converts a TextureFormat value into a PixelFormat value
 		/// </summary>
 		public static PixelFormat ToPixelFormat( TextureFormat texFormat )

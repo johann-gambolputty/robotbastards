@@ -3,6 +3,9 @@ using Rb.Core.Maths;
 
 namespace Poc1.Universe.Classes.Cameras
 {
+	/// <summary>
+	/// Extends UniCamera to provide support for an unconstrained first person view
+	/// </summary>
 	public class FirstPersonCamera : UniCamera
 	{
 		/// <summary>
@@ -32,7 +35,7 @@ namespace Poc1.Universe.Classes.Cameras
 		/// <summary>
 		/// Applies the camera transform
 		/// </summary>
-		public override void Begin()
+		public override void Begin( )
 		{
 			SetViewFrame( m_Orientation );
 			base.Begin( );

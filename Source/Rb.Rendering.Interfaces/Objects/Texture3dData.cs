@@ -14,6 +14,21 @@ namespace Rb.Rendering.Interfaces.Objects
 	public class Texture3dData
 	{
 		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public Texture3dData( )
+		{	
+		}
+
+		/// <summary>
+		/// Creates this texture data
+		/// </summary>
+		public Texture3dData( int width, int height, int depth, TextureFormat format )
+		{
+			Create( width, height, depth, format );
+		}
+
+		/// <summary>
 		/// Gets the width of the texture
 		/// </summary>
 		public int Width

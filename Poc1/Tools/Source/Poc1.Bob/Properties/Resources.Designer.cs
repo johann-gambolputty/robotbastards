@@ -66,5 +66,19 @@ namespace Poc1.Bob.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        internal static System.Drawing.Icon templateDefaultIcon {
+            get {
+                object obj = ResourceManager.GetObject("templateDefaultIcon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Icon templateGroupDefaultIcon {
+            get {
+                object obj = ResourceManager.GetObject("templateGroupDefaultIcon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
     }
 }

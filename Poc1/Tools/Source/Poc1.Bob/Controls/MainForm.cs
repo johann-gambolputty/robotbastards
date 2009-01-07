@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using Poc1.Bob.Core.Classes;
 using Poc1.Bob.Core.Classes.Biomes.Models;
+using Poc1.Bob.Core.Interfaces.Templates;
 using Poc1.Tools.Waves;
 using Rb.Log;
 using Rb.Log.Controls.Vs;
@@ -18,6 +19,29 @@ namespace Poc1.Bob.Controls
 		{
 			InitializeComponent( );
 
+			m_Templates = new TemplateGroupContainer
+				(
+					"All Templates", "All Templates",
+					new TemplateGroupContainer
+					(
+						"Planets", "Planet Templates",
+						new TemplateGroup
+						(
+							"Spherical Planets", "Spherical Planet Templates",
+							new TemplateGroup
+							(
+								"Spherical Planet Environments", "Spherical Planet Environment Templates",
+								new TemplateGroup.TemplateInfo( "Atmosphere", "Spherical Planet Atmosphere Template" ),
+								new TemplateGroup.TemplateInfo( "Biomes", "Spherical Planet Biome Template" ),
+								new TemplateGroup.TemplateInfo( "Clouds", "Spherical Planet Cloud Template" ),
+								new TemplateGroup.TemplateInfo( "Oceans", "Spherical Planet Ocean Template" )
+							),
+							new TemplateGroup.TemplateInfo( "Spherical Planet", "Spherical Planet Template" )
+						)
+
+					)
+				);
+
 			m_LogDisplay = new VsLogListView( );
 			m_ViewFactory = new ViewFactory( new MessageUiProvider( this ) );
 			m_Windows = new WorkspaceWindowInfo[]
@@ -26,12 +50,14 @@ namespace Poc1.Bob.Controls
 					new WorkspaceWindowInfo( "Biomes", "Biome &Terrain Texturing", delegate { return ( Control )m_ViewFactory.CreateBiomeTerrainTextureView( m_Workspace ); } ),
 					new WorkspaceWindowInfo( "Oceans", "&Wave Animator", delegate { return ( Control )m_ViewFactory.CreateWaveAnimatorView( new WaveAnimationParameters( ) ); } ),
 					new WorkspaceWindowInfo( "", "&Planet View", delegate { return ( Control )new Display( ); }, DockState.Document ),
-					new WorkspaceWindowInfo( "", "&Output", delegate { return m_LogDisplay; } )
+					new WorkspaceWindowInfo( "", "&Output", delegate { return m_LogDisplay; } ),
+					new WorkspaceWindowInfo( "", "&Templates", delegate { return ( Control )m_ViewFactory.CreateTemplateSelectorView( m_Templates ); } )
 				};
 		}
 
 		#region Private Members
 
+		private readonly TemplateGroupContainer m_Templates;
 		private readonly Control m_LogDisplay;
 		private readonly WorkspaceWindowInfo[] m_Windows;
 		private readonly Workspace m_Workspace = new Workspace( );
@@ -139,7 +165,19 @@ namespace Poc1.Bob.Controls
 			}
 		}
 
+		private void aboutToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			AboutBox about = new AboutBox( );
+			about.Show( this );
+		}
+
+		private void newToolStripMenuItem_Click( object sender, EventArgs e )
+		{
+			m_ViewFactory.ShowCreateTemplateInstanceView( m_Templates );
+		}
+
 		#endregion
+
 
 		#endregion
 	}
