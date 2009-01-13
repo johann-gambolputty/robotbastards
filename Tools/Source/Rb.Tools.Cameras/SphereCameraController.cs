@@ -18,7 +18,7 @@ namespace Rb.Tools.Cameras
 		/// <summary>
 		/// Controller command list
 		/// </summary>
-		public readonly static CommandList Commands;
+		public readonly static CommandGroup Commands;
 
 		/// <summary>
 		/// Controller rotation command
@@ -135,7 +135,7 @@ namespace Rb.Tools.Cameras
 
 		static SphereCameraController( )
 		{
-			Commands = new CommandList( "sphereCameraCommands", "Spherical Camera Commands", CommandRegistry.Instance );
+			Commands = new CommandGroup( "sphereCameraCommands", "Spherical Camera Commands", CommandRegistry.Instance );
 			Rotate = Commands.NewCommand( "rotate", "Rotate", "Rotates the camera" );
 			Pan = Commands.NewCommand( "pan", "Pan", "Pans the camera" );
 			Zoom = Commands.NewCommand( "zoom", "Zoom", "Zooms the camera in and out" );

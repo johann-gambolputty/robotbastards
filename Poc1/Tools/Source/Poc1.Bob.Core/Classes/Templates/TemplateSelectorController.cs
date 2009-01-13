@@ -12,7 +12,7 @@ namespace Poc1.Bob.Core.Classes.Templates
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		/// <param name="view">View</param>
+		/// <param name="view">Selector view</param>
 		/// <param name="rootGroup">Root group (model)</param>
 		/// <exception cref="ArgumentNullException">Thrown if view or root group is null</exception>
 		public TemplateSelectorController( ITemplateSelectorView view, TemplateGroupContainer rootGroup )

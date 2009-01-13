@@ -1,17 +1,14 @@
-
 using Poc1.Bob.Core.Classes.Biomes.Models;
-using Poc1.Bob.Core.Interfaces.Biomes;
+using Rb.Core.Sets.Interfaces;
 using Rb.Core.Utils;
 
 namespace Poc1.Bob.Core.Classes
 {
 	/// <summary>
-	/// Bob workspace
+	/// Workspace service. Keeps track of the currently selected biome
 	/// </summary>
-	public class Workspace : ISelectedBiomeContext
+	public class SelectedBiomeContext : IObjectSetService
 	{
-		#region ISelectedBiomeContext Members
-
 		/// <summary>
 		/// Event raised when the selected biome is changed
 		/// </summary>
@@ -35,8 +32,6 @@ namespace Poc1.Bob.Core.Classes
 				}
 			}
 		}
-
-		#endregion
 
 		#region Private Members
 

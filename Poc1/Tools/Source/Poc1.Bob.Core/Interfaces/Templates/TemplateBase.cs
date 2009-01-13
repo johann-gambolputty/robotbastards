@@ -8,6 +8,23 @@ namespace Poc1.Bob.Core.Interfaces.Templates
 	public abstract class TemplateBase
 	{
 		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public TemplateBase( )
+		{	
+		}
+
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		public TemplateBase( string name, string description, Icon icon )
+		{
+			m_Name = name;
+			m_Description = description;
+			m_Icon = icon;
+		}
+
+		/// <summary>
 		/// Gets/sets the name of the project type
 		/// </summary>
 		public string Name

@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\CommandTriggerDataFactory.cs" />
+    <Compile Include="Classes\Generic\Command.cs" />
     <Compile Include="Classes\CommandBinaryInputBindingMonitor.cs" />
     <Compile Include="Classes\Command.cs" />
     <Compile Include="Classes\CommandInputBinding.cs" />
@@ -53,7 +55,7 @@
     <Compile Include="Classes\CommandScalarInputState.cs" />
     <Compile Include="Classes\CommandInputSource.cs" />
     <Compile Include="Classes\CommandInputStateFactory.cs" />
-    <Compile Include="Classes\CommandList.cs" />
+    <Compile Include="Classes\CommandGroup.cs" />
     <Compile Include="Classes\InputBindings\CommandKeyInputBinding.cs" />
     <Compile Include="Classes\InputBindings\CommandMouseButtonInputBinding.cs" />
     <Compile Include="Classes\InputBindings\CommandMouseWheelInputBinding.cs" />
@@ -71,6 +73,7 @@
     <Compile Include="Interfaces\ICommandInputBindingMonitorFactory.cs" />
     <Compile Include="Interfaces\ICommandInputState.cs" />
     <Compile Include="Interfaces\ICommandInputStateFactory.cs" />
+    <Compile Include="Interfaces\ICommandTriggerDataFactory.cs" />
     <Compile Include="Interfaces\ICommandUser.cs" />
     <Compile Include="Interfaces\ICommandUserFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

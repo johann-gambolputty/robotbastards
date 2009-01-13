@@ -1,5 +1,4 @@
 using Poc1.Bob.Core.Classes.Biomes.Models;
-using Poc1.Bob.Core.Interfaces.Biomes;
 using Poc1.Bob.Core.Interfaces.Biomes.Views;
 using Rb.Core.Utils;
 
@@ -13,11 +12,11 @@ namespace Poc1.Bob.Core.Classes.Biomes.Controllers
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		/// <param name="context">Current context</param>
+		/// <param name="context">Selected biome context</param>
 		/// <param name="model">Model being controlled</param>
 		/// <param name="view">View to watch</param>
 		/// <exception cref="System.ArgumentNullException">Thrown if workspace, model or view are null</exception>
-		public BiomeListController( ISelectedBiomeContext context, BiomeListModel model, IBiomeListView view )
+		public BiomeListController( SelectedBiomeContext context, BiomeListModel model, IBiomeListView view )
 		{
 			Arguments.CheckNotNull( context, "context");
 			Arguments.CheckNotNull( model, "model" );
@@ -33,7 +32,7 @@ namespace Poc1.Bob.Core.Classes.Biomes.Controllers
 		#region Private Members
 
 		private readonly BiomeListModel m_Model;
-		private readonly ISelectedBiomeContext m_Context;
+		private readonly SelectedBiomeContext m_Context;
 
 		/// <summary>
 		/// Called when a biome is selected from the view

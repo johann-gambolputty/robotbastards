@@ -42,9 +42,15 @@ namespace Rb.Interaction.Classes
 		}
 
 		/// <summary>
-		/// Raises the CommandTriggered event
+		/// Raises the <see cref="CommandTriggered"/> event
 		/// </summary>
 		/// <param name="triggerData">Trigger data to pass to the event</param>
+		/// <remarks>
+		/// Warning:
+		/// Calling this does not raise the event <see cref="Command.CommandTriggered"/>, but
+		/// calling <see cref="Command.Trigger"/> will call this method.
+		/// Call <see cref="Command.Trigger"/> by preference
+		/// </remarks>
 		public void OnCommandTriggered( CommandTriggerData triggerData )
 		{
 			Arguments.CheckNotNull( triggerData, "triggerData" );

@@ -86,6 +86,16 @@ namespace Poc1.Bob.Controls.Templates
 		private readonly Dictionary<Icon, int> m_ImageMap = new Dictionary<Icon, int>( );
 
 		/// <summary>
+		/// The default icon for groups
+		/// </summary>
+		private static Icon s_DefaultGroupIcon = Resources.templateGroupDefaultIcon;
+
+		/// <summary>
+		/// The default icon for templates
+		/// </summary>
+		private static Icon s_DefaultTemplateIcon = Resources.templateDefaultIcon;
+
+		/// <summary>
 		/// Updates the view
 		/// </summary>
 		private void UpdateView( )
@@ -122,7 +132,7 @@ namespace Poc1.Bob.Controls.Templates
 		{
 			TreeNode node = new TreeNode( groupContainer.Name );
 			node.Tag = groupContainer;
-			node.ImageIndex = FindOrAddIcon( groupContainer.Icon ?? Resources.templateDefaultIcon );
+			node.SelectedImageIndex = node.ImageIndex = FindOrAddIcon( groupContainer.Icon ?? s_DefaultGroupIcon );
 
 			foreach ( TemplateGroupContainer subGroup in groupContainer.SubGroups )
 			{
@@ -148,7 +158,7 @@ namespace Poc1.Bob.Controls.Templates
 		{
 			TreeNode node = new TreeNode( template.Name );
 			node.Tag = template;
-			node.ImageIndex = FindOrAddIcon( template.Icon ?? Resources.templateDefaultIcon );
+			node.SelectedImageIndex = node.ImageIndex = FindOrAddIcon( template.Icon ?? s_DefaultTemplateIcon );
 			return node;
 		}
 

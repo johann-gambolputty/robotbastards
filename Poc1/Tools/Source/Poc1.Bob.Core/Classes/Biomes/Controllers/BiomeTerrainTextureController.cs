@@ -1,5 +1,4 @@
 using Poc1.Bob.Core.Classes.Biomes.Models;
-using Poc1.Bob.Core.Interfaces.Biomes;
 using Poc1.Bob.Core.Interfaces.Biomes.Views;
 using Poc1.Tools.TerrainTextures.Core;
 using Rb.Core.Utils;
@@ -17,7 +16,7 @@ namespace Poc1.Bob.Core.Classes.Biomes.Controllers
 		/// <param name="context">Selected biome context</param>
 		/// <param name="view">Biome terrain texture view</param>
 		/// <exception cref="System.ArgumentNullException">Thrown if context or view is null</exception>
-		public BiomeTerrainTextureController( ISelectedBiomeContext context, IBiomeTerrainTextureView view )
+		public BiomeTerrainTextureController( SelectedBiomeContext context, IBiomeTerrainTextureView view )
 		{
 			Arguments.CheckNotNull( context, "context" );
 			Arguments.CheckNotNull( view, "view" );

@@ -1,6 +1,8 @@
+using Poc1.Bob.Core.Classes;
 using Poc1.Bob.Core.Classes.Biomes.Models;
-using Poc1.Bob.Core.Interfaces.Biomes;
+using Poc1.Bob.Core.Classes.Templates;
 using Poc1.Bob.Core.Interfaces.Biomes.Views;
+using Poc1.Bob.Core.Interfaces.Templates;
 using Poc1.Bob.Core.Interfaces.Waves;
 using Poc1.Tools.Waves;
 
@@ -12,9 +14,14 @@ namespace Poc1.Bob.Core.Interfaces
 	public interface IViewFactory
 	{
 		/// <summary>
+		/// Shows a create template instance view as a modal dialog
+		/// </summary>
+		void ShowCreateTemplateInstanceView( TemplateInstanceContext instanceContext, TemplateGroupContainer rootGroup );
+
+		/// <summary>
 		/// Creates a biome terrain texture view
 		/// </summary>
-		IBiomeTerrainTextureView CreateBiomeTerrainTextureView( ISelectedBiomeContext context );
+		IBiomeTerrainTextureView CreateBiomeTerrainTextureView( SelectedBiomeContext context );
 
 		/// <summary>
 		/// Creates an wave animator view
@@ -24,7 +31,7 @@ namespace Poc1.Bob.Core.Interfaces
 		/// <summary>
 		/// Creates a biome list view
 		/// </summary>
-		IBiomeListView CreateBiomeListView( ISelectedBiomeContext context, BiomeListModel model );
+		IBiomeListView CreateBiomeListView( SelectedBiomeContext context, BiomeListModel model );
 
 	}
 }

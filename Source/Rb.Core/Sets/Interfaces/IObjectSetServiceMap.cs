@@ -21,6 +21,14 @@ namespace Rb.Core.Sets.Interfaces
 		void RemoveService( IObjectSetService service );
 
 		/// <summary>
+		/// Gets a service attached to this set, by its type. Throws an ArgumentException if the service does not exist
+		/// </summary>
+		/// <typeparam name="T">Type of service to retrieve</typeparam>
+		/// <returns>Returns the typed service</returns>
+		/// <exception cref="System.ArgumentException">Thrown if T is not a valid service</exception>
+		T SafeService<T>( ) where T : class;
+
+		/// <summary>
 		/// Gets a service attached to this set, by its type
 		/// </summary>
 		/// <typeparam name="T">Type of service to retrieve</typeparam>
