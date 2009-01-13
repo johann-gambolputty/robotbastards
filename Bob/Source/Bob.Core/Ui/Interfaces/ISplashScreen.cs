@@ -1,8 +1,7 @@
-
 using System.Drawing;
 using Rb.Core.Threading;
 
-namespace Bob.Core.Controls.Interfaces
+namespace Bob.Core.Ui.Interface
 {
 	/// <summary>
 	/// Splash screen control interface
