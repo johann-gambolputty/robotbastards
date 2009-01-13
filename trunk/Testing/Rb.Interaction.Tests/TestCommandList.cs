@@ -27,7 +27,7 @@ namespace Rb.Interaction.Tests
 		public void TestChildCommandListInvalidConstructorArguments( )
 		{
 			CreateChildListDelegate createList = Create;
-			CommandList parentList = Create( "parent", "parent", CommandRegistry.Instance );
+			CommandGroup parentList = Create( "parent", "parent", CommandRegistry.Instance );
 			UnitTestUtils.ExpectException<ArgumentNullException>( createList, null, "abc", "abc" );
 			UnitTestUtils.ExpectException<ArgumentNullException>( createList, parentList, null, "abc" );
 			UnitTestUtils.ExpectException<ArgumentException>( createList, parentList, string.Empty, "abc" );
@@ -35,17 +35,17 @@ namespace Rb.Interaction.Tests
 
 		#region Private Members
 
-		private delegate CommandList CreateChildListDelegate( CommandList parentList, string name, string locName );
-		private delegate CommandList CreateDelegate( string name, string locName, CommandRegistry registry );
+		private delegate CommandGroup CreateChildListDelegate( CommandGroup parentList, string name, string locName );
+		private delegate CommandGroup CreateDelegate( string name, string locName, CommandRegistry registry );
 
-		private static CommandList Create( CommandList parentList, string name, string locName )
+		private static CommandGroup Create( CommandGroup parentList, string name, string locName )
 		{
-			return new CommandList( parentList, name, locName );
+			return new CommandGroup( parentList, name, locName );
 		}
 
-		private static CommandList Create( string name, string locName, CommandRegistry registry )
+		private static CommandGroup Create( string name, string locName, CommandRegistry registry )
 		{
-			return new CommandList( name, locName, registry );
+			return new CommandGroup( name, locName, registry );
 		}
 
 		#endregion

@@ -22,7 +22,7 @@ namespace Rb.Interaction.Tests
 		{
 			m_Formatter = new BinaryFormatter( null, CommandSerializationContext.ToStreamingContext( m_UserRegistry, m_CommandRegistry ) );
 
-			m_Commands = new CommandList( "testCommands", "", m_CommandRegistry );
+			m_Commands = new CommandGroup( "testCommands", "", m_CommandRegistry );
 			m_Command0 = m_Commands.NewCommand( "cmd0", "", "" );
 
 			m_UserRegistry.Register( m_User );
@@ -95,7 +95,7 @@ namespace Rb.Interaction.Tests
 		private readonly CommandUserRegistry m_UserRegistry = new CommandUserRegistry( );
 		private readonly CommandUser m_User = new CommandUser( "", 1 );
 		private readonly CommandRegistry m_CommandRegistry = new CommandRegistry( );
-		private readonly CommandList m_Commands;
+		private readonly CommandGroup m_Commands;
 		private readonly Command m_Command0;
 
 		/// <summary>

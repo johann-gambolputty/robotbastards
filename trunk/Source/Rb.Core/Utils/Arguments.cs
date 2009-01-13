@@ -9,6 +9,20 @@ namespace Rb.Core.Utils
 	public static class Arguments
 	{
 		/// <summary>
+		/// Checks that arg is not null, and is of type T. Returns arg cast to T
+		/// </summary>
+		public static T CheckedNonNullCast<T>( object arg, string argName ) where T : class
+		{
+			CheckNotNull( arg, argName );
+			T argT = arg as T;
+			if ( argT == null )
+			{
+				throw new ArgumentException( string.Format( "Argument \"{0}\" was not expected type \"{1}\" (was \"{2}\")", argName, typeof( T ), arg.GetType( ) ) );
+			}
+			return argT;
+		}
+
+		/// <summary>
 		/// Checks if an argument is not null. If it is, an <see cref="ArgumentNullException"/> is thrown
 		/// </summary>
 		public static void CheckNotNull( object arg, string argName )

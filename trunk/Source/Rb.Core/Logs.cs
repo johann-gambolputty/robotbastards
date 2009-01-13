@@ -29,4 +29,18 @@ namespace Rb.Core
 			get { return "Components"; }
 		}
 	}
+
+	/// <summary>
+	/// Static log class for object sets
+	/// </summary>
+	/// <example>
+	/// ObjectSetLog.Error( "No tea" );
+	/// </example>
+	public class ObjectSetLog : StaticTag<ObjectSetLog>
+	{
+		public override string TagName
+		{
+			get { return "ObjectSets"; }
+		}
+	}
 }

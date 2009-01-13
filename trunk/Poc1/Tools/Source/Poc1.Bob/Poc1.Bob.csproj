@@ -101,7 +101,6 @@
     <Compile Include="Controls\Biomes\TerrainTypeTextureSelectorControl.Designer.cs">
       <DependentUpon>TerrainTypeTextureSelectorControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\MessageUiProvider.cs" />
     <Compile Include="Controls\Templates\CreateTemplateInstanceForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -203,8 +202,17 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Templates\SpherePlanetDockingTemplate.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Bob\Source\Bob.Core.Windows.Forms\Bob.Core.Windows.Forms.csproj">
+      <Project>{CDD70D03-6889-4436-BE73-886A44328547}</Project>
+      <Name>Bob.Core.Windows.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Bob\Source\Bob.Core\Bob.Core.csproj">
+      <Project>{B199F27E-5406-4DAC-B8BE-E814DA5C0964}</Project>
+      <Name>Bob.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Source\Rb.Assets\Rb.Assets.csproj">
       <Project>{22440804-2D3F-4FEF-AD01-812923F6E04C}</Project>
       <Name>Rb.Assets</Name>

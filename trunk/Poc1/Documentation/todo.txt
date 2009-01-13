@@ -120,6 +120,7 @@
 			- Add pause button
 			- Add labelling to graph lines on mouse hover
 			- Add sample rate up/down spinner
+		- M: Command.Trigger and CommandUser.OnCommandTriggered should be linked (calling one calls the other)
 		- L: Ship HUD
 	- Ships
 		- H: Basic ship graphics

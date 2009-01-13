@@ -12,23 +12,6 @@ namespace Poc1.Bob.Core.Interfaces.Templates
 	public class TemplateGroup : TemplateGroupContainer
 	{
 		/// <summary>
-		/// Helper class for creating a template in the TemplateGroup constructor
-		/// </summary>
-		public class TemplateInfo : TemplateBase
-		{
-			/// <summary>
-			/// Setup constructor
-			/// </summary>
-			/// <param name="name">Template name</param>
-			/// <param name="description">Template description</param>
-			public TemplateInfo( string name, string description )
-			{
-				Name = name;
-				Description = description;
-			}
-		}
-
-		/// <summary>
 		/// Default constructor
 		/// </summary>
 		public TemplateGroup( )
@@ -63,9 +46,9 @@ namespace Poc1.Bob.Core.Interfaces.Templates
 				{
 					SubGroups.Add( ( TemplateGroupContainer )templateBase );
 				}
-				else if ( templateBase is TemplateInfo )
+				else if ( templateBase is Template )
 				{
-					AddTemplate( templateBase.Name, templateBase.Description, templateBase.Icon );
+					m_Templates.Add( ( Template )templateBase );
 				}
 				else
 				{
@@ -85,23 +68,14 @@ namespace Poc1.Bob.Core.Interfaces.Templates
 		/// <summary>
 		/// Adds a new template to the group
 		/// </summary>
-		/// <returns>Returns the new template</returns>
-		/// <exception cref="InvalidOperationException">Thrown if project type creation fails</exception>
-		public Template AddTemplate( string name, string description, Icon icon )
+		/// <param name="template">Template to add</param>
+		/// <exception cref="ArgumentNullException">Thrown if template is null</exception>
+		public void AddTemplate( Template template )
 		{
-			Template template = CreateTemplate( );
-			if ( template == null )
-			{
-				throw new InvalidOperationException( string.Format( "CreateTemplate for template group \"{0}\" returned a null", Name ) );
-			}
-
-			template.Name = name;
-			template.Description = description;
-			template.Icon = icon;
+			Arguments.CheckNotNull( template, "template" );
 			m_Templates.Add( template );
-			return template;
 		}
-		
+
 		/// <summary>
 		/// Removes the specified project type
 		/// </summary>
@@ -111,18 +85,6 @@ namespace Poc1.Bob.Core.Interfaces.Templates
 			Arguments.CheckNotNull( template, "template" );
 			m_Templates.Remove( template );
 		}
-
-		#region Protected Members
-
-		/// <summary>
-		/// Creates a new project type
-		/// </summary>
-		protected virtual Template CreateTemplate( )
-		{
-			return new Template( this );
-		}
-
-		#endregion
 
 		#region Private Members
 

@@ -8,7 +8,7 @@ namespace Poc1.Universe.Classes.Cameras
 	/// </summary>
 	public class FirstPersonCameraCommands
 	{
-		public readonly static CommandList Commands;
+		public readonly static CommandGroup Commands;
 		public readonly static Command Forwards;
 		public readonly static Command Backwards;
 		public readonly static Command PitchUp;
@@ -49,7 +49,7 @@ namespace Poc1.Universe.Classes.Cameras
 		
 		static FirstPersonCameraCommands( )
 		{
-			Commands			= new CommandList( "fpCamCommands", "First Person Camera Commands", CommandRegistry.Instance );
+			Commands			= new CommandGroup( "fpCamCommands", "First Person Camera Commands", CommandRegistry.Instance );
 			Forwards			= Commands.NewCommand( "forwards", "Forwards", "Moves forwards" );
 			Backwards			= Commands.NewCommand( "backwards", "Backwards", "Moves backwards" );
 			PitchUp				= Commands.NewCommand( "pitchUp", "Pitch up", "Pitches the camera up" );

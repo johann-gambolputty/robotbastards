@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Rb.Core.Sets.Interfaces;
 
 namespace Rb.Core.Sets.Classes
@@ -27,6 +28,7 @@ namespace Rb.Core.Sets.Classes
 			{
 				throw new ArgumentException( string.Format( "Service of type {0} contained no registered service types", service.GetType( ) ), "service" );
 			}
+			StringBuilder sb = new StringBuilder( );
 			foreach ( Type serviceType in serviceTypes )
 			{
 				object existingService = Service( serviceType );
@@ -35,7 +37,14 @@ namespace Rb.Core.Sets.Classes
 					throw new ArgumentException( string.Format( "Can't register service object of type {0} - a service of type {1} is already registered under type {2}", service.GetType( ), existingService.GetType( ), serviceType ), "service" );
 				}
 				m_Services.Add( serviceType, service );
+				if ( sb.Length > 0 )
+				{
+					sb.Append( ", " );
+				}
+				sb.Append( serviceType );
 			}
+
+			ObjectSetLog.Info( "Registering service type \"{0}\" with types ({1})", service.GetType( ), sb.ToString( ) );
 		}
 
 		/// <summary>
@@ -58,6 +67,22 @@ namespace Rb.Core.Sets.Classes
 			{
 				m_Services.Remove( serviceType );
 			}
+		}
+
+		/// <summary>
+		/// Gets a service attached to this set, by its type. Throws an ArgumentException if the service does not exist
+		/// </summary>
+		/// <typeparam name="T">Type of service to retrieve</typeparam>
+		/// <returns>Returns the typed service</returns>
+		/// <exception cref="System.ArgumentException">Thrown if T is not a valid service</exception>
+		public T SafeService<T>( ) where T : class
+		{
+			T service = ( T )Service( typeof( T ) );
+			if ( service == null )
+			{
+				throw new ArgumentException( string.Format( "No service type \"{0}\" existed in the service map", typeof( T ) ), "T" );
+			}
+			return service;
 		}
 
 		/// <summary>
@@ -91,7 +116,7 @@ namespace Rb.Core.Sets.Classes
 		private static Type[] GetServiceRegistrationTypes( Type type )
 		{
 			List<Type> registrationTypes = new List<Type>( );
-			for ( Type baseType = type; baseType != null; baseType = type.BaseType )
+			for ( Type baseType = type; baseType != typeof( object ); baseType = type.BaseType )
 			{
 				if ( IsObjectSetServiceType( baseType ) )
 				{
@@ -105,14 +130,16 @@ namespace Rb.Core.Sets.Classes
 					registrationTypes.Add( interfaceType );
 				}
 			}
+			if ( registrationTypes.Count == 0 )
+			{
+				registrationTypes.Add( type );
+			}
 			return registrationTypes.ToArray( );
 		}
 
 		/// <summary>
 		/// Returns true if a type is marked with the ObjectSetServiceAttribute
 		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
 		private static bool IsObjectSetServiceType( Type type )
 		{
 			return type.GetCustomAttributes( typeof( ObjectSetServiceAttribute ), false ).Length > 0;

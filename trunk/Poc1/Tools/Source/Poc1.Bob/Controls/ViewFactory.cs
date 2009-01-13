@@ -1,13 +1,13 @@
-
+using Bob.Core.Ui.Interfaces;
 using Poc1.Bob.Controls.Biomes;
 using Poc1.Bob.Controls.Templates;
 using Poc1.Bob.Controls.Waves;
+using Poc1.Bob.Core.Classes;
 using Poc1.Bob.Core.Classes.Biomes.Controllers;
 using Poc1.Bob.Core.Classes.Biomes.Models;
 using Poc1.Bob.Core.Classes.Templates;
 using Poc1.Bob.Core.Classes.Waves;
 using Poc1.Bob.Core.Interfaces;
-using Poc1.Bob.Core.Interfaces.Biomes;
 using Poc1.Bob.Core.Interfaces.Biomes.Views;
 using Poc1.Bob.Core.Interfaces.Templates;
 using Poc1.Bob.Core.Interfaces.Waves;
@@ -36,10 +36,10 @@ namespace Poc1.Bob.Controls
 		/// <summary>
 		/// Shows a create template instance view as a modal dialog
 		/// </summary>
-		public void ShowCreateTemplateInstanceView( TemplateGroupContainer rootGroup )
+		public void ShowCreateTemplateInstanceView( TemplateInstanceContext instanceContext, TemplateGroupContainer rootGroup )
 		{
 			ICreateTemplateInstanceView view = new CreateTemplateInstanceForm( );
-			new CreateTemplateInstanceController( view, rootGroup );
+			new CreateTemplateInstanceController( instanceContext, view, rootGroup ).Show( );
 		}
 
 		/// <summary>
@@ -55,7 +55,7 @@ namespace Poc1.Bob.Controls
 		/// <summary>
 		/// Creates a biome terrain texture view
 		/// </summary>
-		public IBiomeTerrainTextureView CreateBiomeTerrainTextureView( ISelectedBiomeContext context )
+		public IBiomeTerrainTextureView CreateBiomeTerrainTextureView( SelectedBiomeContext context )
 		{
 			IBiomeTerrainTextureView view = new BiomeTerrainTextureViewControl( );
 			new BiomeTerrainTextureController( context, view );
@@ -75,7 +75,7 @@ namespace Poc1.Bob.Controls
 		/// <summary>
 		/// Creates a biome list view
 		/// </summary>
-		public IBiomeListView CreateBiomeListView( ISelectedBiomeContext context, BiomeListModel model )
+		public IBiomeListView CreateBiomeListView( SelectedBiomeContext context, BiomeListModel model )
 		{
 			IBiomeListView view = new BiomeListViewControl( );
 			new BiomeListController( context, model, view );

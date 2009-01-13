@@ -41,14 +41,20 @@
     <Compile Include="Classes\Biomes\Models\BiomeListModel.cs" />
     <Compile Include="Classes\Biomes\Models\BiomeModel.cs" />
     <Compile Include="Classes\Biomes\TerrainTypeTextureBuilder.cs" />
+    <Compile Include="Classes\Commands\DefaultCommandListener.cs" />
+    <Compile Include="Classes\Commands\DefaultCommands.cs" />
+    <Compile Include="Classes\Commands\PlanetCommands.cs" />
+    <Compile Include="Classes\Commands\TemplateCommandListener.cs" />
+    <Compile Include="Classes\Commands\TemplateCommands.cs" />
     <Compile Include="Classes\Rendering\UniCameraViewController.cs" />
     <Compile Include="Classes\Templates\CreateTemplateInstanceController.cs" />
-    <Compile Include="Classes\Templates\SpherePlanetTemplate.cs" />
-    <Compile Include="Classes\Templates\SpherePlanetTemplateGroup.cs" />
+    <Compile Include="Classes\Templates\Planets\Spherical\SpherePlanetAtmosphereTemplate.cs" />
+    <Compile Include="Classes\Templates\Planets\Spherical\SpherePlanetTemplate.cs" />
+    <Compile Include="Classes\Templates\TemplateInstanceContext.cs" />
     <Compile Include="Classes\Templates\TemplateSelectorController.cs" />
     <Compile Include="Classes\Waves\WaveAnimatorController.cs" />
-    <Compile Include="Classes\Workspace.cs" />
-    <Compile Include="Interfaces\Biomes\ISelectedBiomeContext.cs" />
+    <Compile Include="Classes\SelectedBiomeContext.cs" />
+    <Compile Include="Classes\WorkspaceViewFactory.cs" />
     <Compile Include="Interfaces\Biomes\Views\IBiomeListView.cs" />
     <Compile Include="Interfaces\Biomes\Views\IBiomeTerrainTextureView.cs" />
     <Compile Include="Interfaces\Biomes\Views\ITerrainGeometryView.cs" />
@@ -56,22 +62,27 @@
     <Compile Include="Interfaces\Biomes\Views\ITerrainTypeListView.cs" />
     <Compile Include="Interfaces\Biomes\Views\ITerrainTypeTextureView.cs" />
     <Compile Include="Interfaces\Biomes\Views\ITerrainTypeView.cs" />
-    <Compile Include="Interfaces\IMessageUiProvider.cs" />
+    <Compile Include="Interfaces\Commands\ICommandProvider.cs" />
     <Compile Include="Interfaces\IViewFactory.cs" />
     <Compile Include="Interfaces\Templates\ICreateTemplateInstanceView.cs" />
     <Compile Include="Interfaces\Rendering\ICameraView.cs" />
     <Compile Include="Interfaces\Rendering\IUniCameraView.cs" />
-    <Compile Include="Interfaces\Templates\Generic\TemplateGroup.cs" />
+    <Compile Include="Interfaces\Templates\ITemplateViewContext.cs" />
+    <Compile Include="Interfaces\Templates\ITemplateViewLayoutManager.cs" />
     <Compile Include="Interfaces\Templates\Template.cs" />
     <Compile Include="Interfaces\Templates\ITemplateSelectorView.cs" />
     <Compile Include="Interfaces\Templates\TemplateBase.cs" />
     <Compile Include="Interfaces\Templates\TemplateGroup.cs" />
     <Compile Include="Interfaces\Templates\TemplateGroupContainer.cs" />
-    <Compile Include="Interfaces\Templates\TemplateViewInfo.cs" />
+    <Compile Include="Interfaces\Templates\TemplateInstance.cs" />
     <Compile Include="Interfaces\Waves\IWaveAnimatorView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Bob\Source\Bob.Core\Bob.Core.csproj">
+      <Project>{B199F27E-5406-4DAC-B8BE-E814DA5C0964}</Project>
+      <Name>Bob.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Source\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>

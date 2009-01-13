@@ -22,12 +22,22 @@ namespace Rb.Interaction.Classes
 			m_Context = context;
 		}
 
+		/// <summary>
+		/// Gets/sets the factory used to create CommandTriggerData objects
+		/// </summary>
+		public ICommandTriggerDataFactory CommandTriggerDataFactory
+		{
+			get { return m_CommandTriggerDataFactory; }
+			set { m_CommandTriggerDataFactory = value; }
+		}
+
 		#region Bindings
 
 		/// <summary>
 		/// Event raised when any command bound to this source is triggered by a specified user
 		/// </summary>
 		public event Action<CommandTriggerData> CommandTriggered;
+
 
 		/// <summary>
 		/// Adds a list of input bindings to a control
@@ -102,9 +112,8 @@ namespace Rb.Interaction.Classes
 					ICommandInputState inputState = monitor.CreateInputState( monitor.Binding.InputStateFactory, m_Context );
 					Command cmd = monitor.Binding.Command;
 					ICommandUser user = monitor.User;
-					CommandTriggerData triggerData = new CommandTriggerData( user, cmd, inputState );
+					CommandTriggerData triggerData = m_CommandTriggerDataFactory.Create( user, cmd, inputState );
 					cmd.Trigger( triggerData );
-					user.OnCommandTriggered( triggerData );
 					if ( CommandTriggered != null )
 					{
 						CommandTriggered( triggerData );
@@ -130,6 +139,7 @@ namespace Rb.Interaction.Classes
 		#region Private Members
 
 		private bool m_Started;
+		private ICommandTriggerDataFactory m_CommandTriggerDataFactory = Classes.CommandTriggerDataFactory.Instance;
 		private readonly ICommandInputBindingMonitorFactory m_MonitorFactory;
 		private readonly object m_Context;
 		private readonly List<ICommandInputBindingMonitor> m_AllMonitors = new List<ICommandInputBindingMonitor>( );

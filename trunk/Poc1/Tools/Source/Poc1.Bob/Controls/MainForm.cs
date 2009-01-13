@@ -2,10 +2,19 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using Bob.Core.Commands;
+using Bob.Core.Ui.Interfaces;
+using Bob.Core.Windows.Forms;
+using Bob.Core.Windows.Forms.Ui;
+using Bob.Core.Workspaces.Classes;
+using Bob.Core.Workspaces.Interfaces;
 using Poc1.Bob.Core.Classes;
 using Poc1.Bob.Core.Classes.Biomes.Models;
+using Poc1.Bob.Core.Classes.Commands;
+using Poc1.Bob.Core.Classes.Templates.Planets.Spherical;
 using Poc1.Bob.Core.Interfaces.Templates;
 using Poc1.Tools.Waves;
+using Rb.Interaction.Classes;
 using Rb.Log;
 using Rb.Log.Controls.Vs;
 using Rb.Rendering.Windows;
@@ -13,7 +22,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Poc1.Bob.Controls
 {
-	public partial class MainForm : Form
+	public partial class MainForm : Form, IMainApplicationDisplay
 	{
 		public MainForm( )
 		{
@@ -31,36 +40,71 @@ namespace Poc1.Bob.Controls
 							new TemplateGroup
 							(
 								"Spherical Planet Environments", "Spherical Planet Environment Templates",
-								new TemplateGroup.TemplateInfo( "Atmosphere", "Spherical Planet Atmosphere Template" ),
-								new TemplateGroup.TemplateInfo( "Biomes", "Spherical Planet Biome Template" ),
-								new TemplateGroup.TemplateInfo( "Clouds", "Spherical Planet Cloud Template" ),
-								new TemplateGroup.TemplateInfo( "Oceans", "Spherical Planet Ocean Template" )
+								new SpherePlanetAtmosphereTemplate( )
+								//new Template( "Biomes", "Spherical Planet Biome Template" ),
+								//new Template( "Clouds", "Spherical Planet Cloud Template" ),
+								//new Template( "Oceans", "Spherical Planet Ocean Template" )
 							),
-							new TemplateGroup.TemplateInfo( "Spherical Planet", "Spherical Planet Template" )
+							new SpherePlanetTemplate( )
 						)
-
 					)
 				);
 
+			m_Workspace = new Workspace( this );
+			m_Workspace.Services.AddService( new SelectedBiomeContext( ) );
+			m_MessageUi = new MessageUiProvider( this );
 			m_LogDisplay = new VsLogListView( );
-			m_ViewFactory = new ViewFactory( new MessageUiProvider( this ) );
+			m_ViewFactory = new ViewFactory( m_MessageUi );
 			m_Windows = new WorkspaceWindowInfo[]
 				{
-					new WorkspaceWindowInfo( "Biomes", "&Biome List", delegate { return ( Control )m_ViewFactory.CreateBiomeListView( m_Workspace, new BiomeListModel( ) ); } ),
-					new WorkspaceWindowInfo( "Biomes", "Biome &Terrain Texturing", delegate { return ( Control )m_ViewFactory.CreateBiomeTerrainTextureView( m_Workspace ); } ),
+					new WorkspaceWindowInfo( "Biomes", "&Biome List", delegate { return ( Control )m_ViewFactory.CreateBiomeListView( m_Workspace.Services.SafeService<SelectedBiomeContext>( ), new BiomeListModel( ) ); } ),
+					new WorkspaceWindowInfo( "Biomes", "Biome &Terrain Texturing", delegate { return ( Control )m_ViewFactory.CreateBiomeTerrainTextureView( m_Workspace.Services.SafeService<SelectedBiomeContext>( ) ); } ),
 					new WorkspaceWindowInfo( "Oceans", "&Wave Animator", delegate { return ( Control )m_ViewFactory.CreateWaveAnimatorView( new WaveAnimationParameters( ) ); } ),
 					new WorkspaceWindowInfo( "", "&Planet View", delegate { return ( Control )new Display( ); }, DockState.Document ),
 					new WorkspaceWindowInfo( "", "&Output", delegate { return m_LogDisplay; } ),
 					new WorkspaceWindowInfo( "", "&Templates", delegate { return ( Control )m_ViewFactory.CreateTemplateSelectorView( m_Templates ); } )
 				};
+			m_CommandUi = new MenuCommandUiManager( mainMenu, new WorkspaceCommandTriggerDataFactory( m_Workspace ) );
+			m_CommandUi.AddCommands( DefaultCommands.HelpCommands.Commands );
+			m_CommandUi.AddCommands( DefaultCommands.FileCommands.Commands );
+
+			m_CommandUi.AddCommands( new Command[] { TemplateCommands.NewFromTemplate } );
+
+			DefaultCommandListener defaultListener = new DefaultCommandListener( );
+			defaultListener.StartListening( );
+
+			TemplateCommandListener listener = new TemplateCommandListener( m_ViewFactory, m_Templates );
+			listener.StartListening( );
 		}
+
+		#region IMainApplicationDisplay Members
+
+		/// <summary>
+		/// Gets the command UI manager
+		/// </summary>
+		public ICommandUiManager CommandUi
+		{
+			get { return m_CommandUi; }
+		}
+
+		/// <summary>
+		/// Gets the message UI manager
+		/// </summary>
+		public IMessageUiProvider MessageUi
+		{
+			get { return m_MessageUi; }
+		}
+
+		#endregion
 
 		#region Private Members
 
+		private readonly MessageUiProvider m_MessageUi;
+		private readonly MenuCommandUiManager m_CommandUi;
 		private readonly TemplateGroupContainer m_Templates;
 		private readonly Control m_LogDisplay;
 		private readonly WorkspaceWindowInfo[] m_Windows;
-		private readonly Workspace m_Workspace = new Workspace( );
+		private readonly IWorkspace m_Workspace;
 		private readonly ViewFactory m_ViewFactory;
 
 		/// <summary>
@@ -90,11 +134,6 @@ namespace Poc1.Bob.Controls
 
 		#region Event Handlers
 
-		private void exitToolStripMenuItem_Click( object sender, EventArgs e )
-		{
-			Close( );
-		}
-
 		private void OnViewMenuItemClicked( object sender, EventArgs args )
 		{
 			WorkspaceWindowInfo info = ( WorkspaceWindowInfo )( ( ToolStripItem )sender ).Tag;
@@ -116,29 +155,29 @@ namespace Poc1.Bob.Controls
 
 		private void MainForm_Load( object sender, EventArgs e )
 		{
-			foreach ( WorkspaceWindowInfo window in m_Windows )
-			{
-				ToolStripMenuItem menu = viewToolStripMenuItem;
-				if ( !string.IsNullOrEmpty( window.Group ) )
-				{
-					ToolStripItem[] foundItems = menu.DropDownItems.Find( window.Group, false );
-					if ( foundItems.Length == 0 )
-					{
-						ToolStripMenuItem subMenu = new ToolStripMenuItem( window.Group );
-						subMenu.Name = window.Group;
-						menu.DropDownItems.Add( subMenu );
-						menu = subMenu;
-					}
-					else
-					{
-						menu = ( ToolStripMenuItem )foundItems[ 0 ];
-					}
-				}
+			//foreach ( WorkspaceWindowInfo window in m_Windows )
+			//{
+			//    ToolStripMenuItem menu = viewToolStripMenuItem;
+			//    if ( !string.IsNullOrEmpty( window.Group ) )
+			//    {
+			//        ToolStripItem[] foundItems = menu.DropDownItems.Find( window.Group, false );
+			//        if ( foundItems.Length == 0 )
+			//        {
+			//            ToolStripMenuItem subMenu = new ToolStripMenuItem( window.Group );
+			//            subMenu.Name = window.Group;
+			//            menu.DropDownItems.Add( subMenu );
+			//            menu = subMenu;
+			//        }
+			//        else
+			//        {
+			//            menu = ( ToolStripMenuItem )foundItems[ 0 ];
+			//        }
+			//    }
 
-				ToolStripItem item = menu.DropDownItems.Add( window.MenuName );
-				item.Tag = window;
-				item.Click += OnViewMenuItemClicked;
-			}
+			//    ToolStripItem item = menu.DropDownItems.Add( window.MenuName );
+			//    item.Tag = window;
+			//    item.Click += OnViewMenuItemClicked;
+			//}
 
 			string layoutFile = GetLayoutConfigurationPath( );
 			if ( File.Exists( layoutFile ) )
@@ -165,19 +204,7 @@ namespace Poc1.Bob.Controls
 			}
 		}
 
-		private void aboutToolStripMenuItem_Click( object sender, EventArgs e )
-		{
-			AboutBox about = new AboutBox( );
-			about.Show( this );
-		}
-
-		private void newToolStripMenuItem_Click( object sender, EventArgs e )
-		{
-			m_ViewFactory.ShowCreateTemplateInstanceView( m_Templates );
-		}
-
 		#endregion
-
 
 		#endregion
 	}

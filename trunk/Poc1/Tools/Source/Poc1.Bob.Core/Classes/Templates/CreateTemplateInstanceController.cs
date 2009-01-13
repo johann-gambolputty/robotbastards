@@ -13,36 +13,53 @@ namespace Poc1.Bob.Core.Classes.Templates
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
+		/// <param name="instanceContext">Template instance context</param>
 		/// <param name="view">View to control</param>
 		/// <param name="rootGroup">Template model to view</param>
-		/// <exception cref="ArgumentNullException">Thrown if rootGroup or view are null</exception>
-		public CreateTemplateInstanceController( ICreateTemplateInstanceView view, TemplateGroupContainer rootGroup )
+		/// <exception cref="ArgumentNullException">Thrown if any argument is null</exception>
+		public CreateTemplateInstanceController( TemplateInstanceContext instanceContext, ICreateTemplateInstanceView view, TemplateGroupContainer rootGroup )
 		{
+			Arguments.CheckNotNull( instanceContext, "instanceContext" );
 			Arguments.CheckNotNull( view, "view" );
 			Arguments.CheckNotNull( rootGroup, "rootGroup" );
 
 			AppLog.Info( "Created {0}", GetType( ) );
+
+			m_InstanceContext = instanceContext;
 
 			view.SelectionView.SelectionChanged += OnSelectionChanged;
 			m_View = view;
 
 			//	Create a controller for the selection view
 			new TemplateSelectorController( view.SelectionView, rootGroup );
+		}
 
+		/// <summary>
+		/// Shows the attached view
+		/// </summary>
+		public void Show( )
+		{
 			//	Show the view as a modal dialog
-			if ( view.ShowView( ) )
+			if ( !m_View.ShowView( ) )
 			{
-				AppLog.Info( "Creating new template instance " + view.SelectionView.SelectedTemplateBase );
-				//	Create an instance of the selected template
-				if ( view.SelectionView.SelectedTemplate == null )
-				{
-					throw new InvalidOperationException( "Create template view in invalid state - user clicked OK but no template was selected" );
-				}
+				return;
 			}
+
+			//	Create an instance of the selected template
+			Template selectedTemplate = m_View.SelectionView.SelectedTemplate;
+			if ( selectedTemplate == null )
+			{
+				throw new InvalidOperationException( "Create template view in invalid state - user clicked OK but no template was selected" );
+			}
+
+			AppLog.Info( "Creating new template instance " + m_View.SelectionView.SelectedTemplateBase );
+
+			m_InstanceContext.Instance = selectedTemplate.CreateInstance( m_View.InstanceName );
 		}
 
 		#region Private Members
 
+		private readonly TemplateInstanceContext m_InstanceContext;
 		private readonly ICreateTemplateInstanceView m_View;
 
 		/// <summary>

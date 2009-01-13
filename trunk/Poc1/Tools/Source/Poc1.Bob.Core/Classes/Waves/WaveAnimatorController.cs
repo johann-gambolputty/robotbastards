@@ -1,5 +1,5 @@
 using System;
-using Poc1.Bob.Core.Interfaces;
+using Bob.Core.Ui.Interfaces;
 using Poc1.Bob.Core.Interfaces.Waves;
 using Poc1.Tools.Waves;
 using Rb.Core.Threading;

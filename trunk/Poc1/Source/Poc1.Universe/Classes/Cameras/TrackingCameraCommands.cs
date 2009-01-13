@@ -8,7 +8,7 @@ namespace Poc1.Universe.Classes.Cameras
 	/// </summary>
 	public static class TrackingCameraCommands
 	{
-		public readonly static CommandList Commands;
+		public readonly static CommandGroup Commands;
 		public readonly static Command ZoomIn;
 		public readonly static Command ZoomOut;
 		public readonly static Command Zoom;
@@ -19,7 +19,7 @@ namespace Poc1.Universe.Classes.Cameras
 		
 		static TrackingCameraCommands( )
 		{
-			Commands	= new CommandList( "trackingCamera", "Tracking Camera Commands", CommandRegistry.Instance );
+			Commands	= new CommandGroup( "trackingCamera", "Tracking Camera Commands", CommandRegistry.Instance );
 			Zoom		= Commands.NewCommand( "zoom", "Zoom", "Zooms the camera in and out" );
 			ZoomIn		= Commands.NewCommand( "zoomIn", "Zoom In", "Zooms the camera in" );
 			ZoomOut		= Commands.NewCommand( "zoomOut", "Zoom Out", "Zooms the camera out" );
