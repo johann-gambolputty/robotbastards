@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Rb.Core.Sets.Interfaces;
+using Rb.Core.Utils;
 
 namespace Rb.Core.Sets.Classes
 {
@@ -10,6 +11,20 @@ namespace Rb.Core.Sets.Classes
 	/// </summary>
 	public class ObjectSetServiceMap : IObjectSetServiceMap
 	{
+		/// <summary>
+		/// Adds a service to a service set
+		/// </summary>
+		/// <typeparam name="T">Service type</typeparam>
+		/// <param name="service">New service</param>
+		/// <returns>Returns service</returns>
+		/// <exception cref="ArgumentNullException">Thrown if service is null</exception>
+		public static T AddService<T>( IObjectSetServiceMap serviceMap, T service ) where T : IObjectSetService
+		{
+			Arguments.CheckNotNull( service, "service" );
+			serviceMap.AddService( service );
+			return service;
+		}
+
 		#region IObjectSetServiceMap Members
 
 		/// <summary>

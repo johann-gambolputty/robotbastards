@@ -46,6 +46,7 @@
     <Compile Include="Classes\Commands\PlanetCommands.cs" />
     <Compile Include="Classes\Commands\TemplateCommandListener.cs" />
     <Compile Include="Classes\Commands\TemplateCommands.cs" />
+    <Compile Include="Classes\WorkspaceEx.cs" />
     <Compile Include="Classes\Rendering\UniCameraViewController.cs" />
     <Compile Include="Classes\Templates\CreateTemplateInstanceController.cs" />
     <Compile Include="Classes\Templates\Planets\Spherical\SpherePlanetAtmosphereTemplate.cs" />
@@ -67,8 +68,6 @@
     <Compile Include="Interfaces\Templates\ICreateTemplateInstanceView.cs" />
     <Compile Include="Interfaces\Rendering\ICameraView.cs" />
     <Compile Include="Interfaces\Rendering\IUniCameraView.cs" />
-    <Compile Include="Interfaces\Templates\ITemplateViewContext.cs" />
-    <Compile Include="Interfaces\Templates\ITemplateViewLayoutManager.cs" />
     <Compile Include="Interfaces\Templates\Template.cs" />
     <Compile Include="Interfaces\Templates\ITemplateSelectorView.cs" />
     <Compile Include="Interfaces\Templates\TemplateBase.cs" />

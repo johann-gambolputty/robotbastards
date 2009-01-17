@@ -1,5 +1,4 @@
 using Bob.Core.Commands;
-using Poc1.Bob.Core.Classes.Templates;
 using Poc1.Bob.Core.Interfaces;
 using Poc1.Bob.Core.Interfaces.Templates;
 using Rb.Core.Utils;
@@ -48,8 +47,7 @@ namespace Poc1.Bob.Core.Classes.Commands
 		/// </summary>
 		private void OnNewFromTemplate( WorkspaceCommandTriggerData triggerData )
 		{
-			TemplateInstanceContext context = triggerData.Workspace.Services.SafeService<TemplateInstanceContext>( );
-			m_Factory.ShowCreateTemplateInstanceView( context, m_RootGroup );
+			WorkspaceViewFactory.ShowCreateTemplateInstanceView( ( WorkspaceEx )triggerData.Workspace, m_Factory );
 		}
 
 		#endregion

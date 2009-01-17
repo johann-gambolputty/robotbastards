@@ -1,4 +1,5 @@
-namespace Bob.Core.Ui.Interfaces
+
+namespace Bob.Core.Ui.Interfaces.Views
 {
 	/// <summary>
 	/// View information

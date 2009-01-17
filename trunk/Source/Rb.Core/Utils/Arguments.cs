@@ -9,6 +9,17 @@ namespace Rb.Core.Utils
 	public static class Arguments
 	{
 		/// <summary>
+		/// Checks if an argument is not null. If it is, an <see cref="ArgumentNullException"/> is thrown
+		/// </summary>
+		public static void CheckNotNull( object arg, string argName )
+		{
+			if ( arg == null )
+			{
+				throw new ArgumentNullException( argName );
+			}
+		}
+
+		/// <summary>
 		/// Checks that arg is not null, and is of type T. Returns arg cast to T
 		/// </summary>
 		public static T CheckedNonNullCast<T>( object arg, string argName ) where T : class
@@ -20,17 +31,6 @@ namespace Rb.Core.Utils
 				throw new ArgumentException( string.Format( "Argument \"{0}\" was not expected type \"{1}\" (was \"{2}\")", argName, typeof( T ), arg.GetType( ) ) );
 			}
 			return argT;
-		}
-
-		/// <summary>
-		/// Checks if an argument is not null. If it is, an <see cref="ArgumentNullException"/> is thrown
-		/// </summary>
-		public static void CheckNotNull( object arg, string argName )
-		{
-			if ( arg == null )
-			{
-				throw new ArgumentNullException( argName );
-			}
 		}
 
 		/// <summary>
@@ -60,7 +60,19 @@ namespace Rb.Core.Utils
 			if ( arg.Count == 0 )
 			{
 				throw new ArgumentException( "Argument cannot be an empty string", argName );
-			}	
+			}
+		}
+
+		/// <summary>
+		/// Throws an ArgumentException with a formatted string message
+		/// </summary>
+		/// <param name="paramName">Parameter name</param>
+		/// <param name="format">Exception message format</param>
+		/// <param name="args">Exception message argument</param>
+		/// <exception cref="ArgumentException"/>
+		public static void ThrowArgumentException( string paramName, string format, params object[] args )
+		{
+			throw new ArgumentException( string.Format( format, args ), paramName );
 		}
 	}
 }
