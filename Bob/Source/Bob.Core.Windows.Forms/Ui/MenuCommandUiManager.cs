@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Bob.Core.Commands;
 using Bob.Core.Ui.Interfaces;
 using Rb.Core.Utils;
 using Rb.Interaction.Classes;
@@ -88,9 +89,11 @@ namespace Bob.Core.Windows.Forms
 				}
 				if ( subMenu == null )
 				{
+
+
 					subMenu = new ToolStripMenuItem( groups[ groupIndex ].NameUi );
 					subMenu.Tag = groups[ groupIndex ];
-					menuItems.Insert( 0, subMenu );
+					menuItems.Insert( GetCommandGroupInsertPosition( groups[ groupIndex ], menuItems ), subMenu );
 				}
 				menuItems = subMenu.DropDownItems;
 			}
@@ -99,6 +102,38 @@ namespace Bob.Core.Windows.Forms
 			commandItem.Click += OnCommandItemClicked;
 			menuItems.Insert( 0, commandItem );
 			m_CommandMenuMap.Add( command, commandItem );
+		}
+
+		/// <summary>
+		/// Returns the position in a menu item set that a command group should be inserted at
+		/// </summary>
+		private static int GetCommandGroupInsertPosition( CommandGroup group, ToolStripItemCollection menuItems )
+		{
+			int ordinal = GetCommandGroupOrdinal( group );
+			int index = 0;
+			foreach ( ToolStripMenuItem menuItem in menuItems )
+			{
+				if ( !( menuItem.Tag is CommandGroup ) )
+				{
+					//	TODO: AP: Commands should have ordinals too
+					return index; 
+				}
+				if ( GetCommandGroupOrdinal( ( CommandGroup )menuItem.Tag ) >= ordinal )
+				{
+					return index;
+				}
+				++index;
+			}
+			return index;
+		}
+
+		/// <summary>
+		/// Returns the sortable value of a command group
+		/// </summary>
+		private static int GetCommandGroupOrdinal( CommandGroup group )
+		{
+			WorkspaceCommandGroup workspaceGroup = group as WorkspaceCommandGroup;
+			return workspaceGroup == null ? WorkspaceCommandGroup.LastOrdinal : workspaceGroup.Ordinal;
 		}
 
 		/// <summary>

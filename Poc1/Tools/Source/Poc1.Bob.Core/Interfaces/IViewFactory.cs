@@ -1,3 +1,4 @@
+using Bob.Core.Workspaces.Interfaces;
 using Poc1.Bob.Core.Classes;
 using Poc1.Bob.Core.Classes.Biomes.Models;
 using Poc1.Bob.Core.Classes.Templates;
@@ -16,7 +17,7 @@ namespace Poc1.Bob.Core.Interfaces
 		/// <summary>
 		/// Shows a create template instance view as a modal dialog
 		/// </summary>
-		void ShowCreateTemplateInstanceView( TemplateInstanceContext instanceContext, TemplateGroupContainer rootGroup );
+		void ShowCreateTemplateInstanceView( IWorkspace workspace, TemplateInstanceContext instanceContext, TemplateGroupContainer rootGroup );
 
 		/// <summary>
 		/// Creates a biome terrain texture view

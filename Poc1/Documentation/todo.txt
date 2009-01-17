@@ -1,6 +1,11 @@
 
 - TODO
 	- Bob
+		- H: Template instances should store models correctly (e.g. see SpherePlanetDockingTemplate - hardcoded
+			creation of biome and wave models. Models should be extracted from current template instance)
+		- H: Rename templates. Name clash with model templates
+		- H: Support multiple view managers (e.g. modal dialogs, docking controls).
+		- H: Need a way to retrieve the controls/forms associated with views
 		- M: Add serialization of docking layout
 		- H: Switch to dock pane docking layout
 		- H: Add build project selection (solar system, particle system)

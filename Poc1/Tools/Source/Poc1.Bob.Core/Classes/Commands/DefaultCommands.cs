@@ -72,9 +72,9 @@ namespace Poc1.Bob.Core.Classes.Commands
 
 		static DefaultCommands( )
 		{
-			s_FileCommands = new CommandGroup( "file", "&File", CommandRegistry.Instance );
-			s_ViewCommands = new CommandGroup( "view", "&View", CommandRegistry.Instance );
-			s_HelpCommands = new CommandGroup( "help", "&Help", CommandRegistry.Instance );
+			s_FileCommands = new WorkspaceCommandGroup( 0, "file", "&File", CommandRegistry.Instance );
+			s_ViewCommands = new WorkspaceCommandGroup( "view", "&View", CommandRegistry.Instance );
+			s_HelpCommands = new WorkspaceCommandGroup( "help", "&Help", CommandRegistry.Instance );
 
 			s_FileExit = WorkspaceCommand.NewCommand( s_FileCommands, "exit", "E&xit", "Exits this application" );
 			s_ViewOutput = WorkspaceCommand.NewCommand( s_ViewCommands, "output", "&Output", "Output view" );

@@ -1,5 +1,5 @@
 using System.Windows.Forms;
-using Bob.Core.Ui.Interfaces;
+using Bob.Core.Ui.Interfaces.Views;
 using Bob.Core.Workspaces.Interfaces;
 using Rb.Core.Utils;
 using WeifenLuo.WinFormsUI.Docking;
@@ -33,7 +33,7 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 			Arguments.CheckNotNull( createView, "createView" );
 			m_Name = name;
 			m_CreateView = createView;
-			DefaultDockState = defaultDockState;
+			m_DefaultDockState = defaultDockState;
 		}
 
 		/// <summary>
@@ -52,9 +52,19 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 			get { return m_DefaultDockState; }
 		}
 
+		/// <summary>
+		/// Gets/sets the string used to customised persistence of this view
+		/// </summary>
+		public string DockPersistenceInfo
+		{
+			get { return m_DockPersistenceInfo; }
+			set { m_DockPersistenceInfo = value; }
+		}
+
 
 		#region Private Members
 
+		private string m_DockPersistenceInfo;
 		private readonly string m_Name;
 		private CreateViewDelegate m_CreateView;
 		private DockState m_DefaultDockState;

@@ -35,6 +35,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\WorkspaceCommand.cs" />
+    <Compile Include="Commands\WorkspaceCommandGroup.cs" />
     <Compile Include="Commands\WorkspaceCommandTriggerData.cs" />
     <Compile Include="Commands\WorkspaceCommandTriggerDataFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -42,8 +43,8 @@
     <Compile Include="Ui\Interfaces\IMainApplicationDisplay.cs" />
     <Compile Include="Ui\Interfaces\IMessageUiProvider.cs" />
     <Compile Include="Ui\Interfaces\ISplashScreen.cs" />
-    <Compile Include="Ui\Interfaces\IViewInfo.cs" />
-    <Compile Include="Ui\Interfaces\IViewManager.cs" />
+    <Compile Include="Ui\Interfaces\Views\IViewInfo.cs" />
+    <Compile Include="Ui\Interfaces\Views\IViewManager.cs" />
     <Compile Include="Workspaces\Classes\Workspace.cs" />
     <Compile Include="Workspaces\Interfaces\IWorkspace.cs" />
   </ItemGroup>

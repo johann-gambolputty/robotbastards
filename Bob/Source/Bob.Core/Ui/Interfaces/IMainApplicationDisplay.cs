@@ -1,3 +1,4 @@
+using Bob.Core.Ui.Interfaces.Views;
 
 namespace Bob.Core.Ui.Interfaces
 {
@@ -10,6 +11,14 @@ namespace Bob.Core.Ui.Interfaces
 		/// Gets the command UI manager
 		/// </summary>
 		ICommandUiManager CommandUi
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Gets the view manager
+		/// </summary>
+		IViewManager Views
 		{
 			get;
 		}

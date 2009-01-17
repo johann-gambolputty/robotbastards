@@ -1,4 +1,5 @@
 using System;
+using Bob.Core.Workspaces.Interfaces;
 using Poc1.Bob.Core.Interfaces.Templates;
 using Rb.Core.Utils;
 using Rb.Log;
@@ -13,18 +14,21 @@ namespace Poc1.Bob.Core.Classes.Templates
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
+		/// <param name="workspace">Workspace controller runs in</param>
 		/// <param name="instanceContext">Template instance context</param>
 		/// <param name="view">View to control</param>
 		/// <param name="rootGroup">Template model to view</param>
 		/// <exception cref="ArgumentNullException">Thrown if any argument is null</exception>
-		public CreateTemplateInstanceController( TemplateInstanceContext instanceContext, ICreateTemplateInstanceView view, TemplateGroupContainer rootGroup )
+		public CreateTemplateInstanceController( IWorkspace workspace, TemplateInstanceContext instanceContext, ICreateTemplateInstanceView view, TemplateGroupContainer rootGroup )
 		{
+			Arguments.CheckNotNull( workspace, "workspace" );
 			Arguments.CheckNotNull( instanceContext, "instanceContext" );
 			Arguments.CheckNotNull( view, "view" );
 			Arguments.CheckNotNull( rootGroup, "rootGroup" );
 
 			AppLog.Info( "Created {0}", GetType( ) );
 
+			m_Workspace = workspace;
 			m_InstanceContext = instanceContext;
 
 			view.SelectionView.SelectionChanged += OnSelectionChanged;
@@ -53,12 +57,12 @@ namespace Poc1.Bob.Core.Classes.Templates
 			}
 
 			AppLog.Info( "Creating new template instance " + m_View.SelectionView.SelectedTemplateBase );
-
-			m_InstanceContext.Instance = selectedTemplate.CreateInstance( m_View.InstanceName );
+			m_InstanceContext.SetInstance( m_Workspace, selectedTemplate.CreateInstance( m_View.InstanceName ) );
 		}
 
 		#region Private Members
 
+		private readonly IWorkspace m_Workspace;
 		private readonly TemplateInstanceContext m_InstanceContext;
 		private readonly ICreateTemplateInstanceView m_View;
 

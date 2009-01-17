@@ -1,7 +1,7 @@
 using System;
 using System.Drawing;
 using System.IO;
-using Bob.Core.Ui.Interfaces;
+using Bob.Core.Ui.Interfaces.Views;
 
 namespace Poc1.Bob.Core.Interfaces.Templates
 {

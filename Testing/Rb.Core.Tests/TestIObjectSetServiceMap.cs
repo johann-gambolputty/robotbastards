@@ -2,6 +2,8 @@ using System;
 using NUnit.Framework;
 using Rb.Core.Sets.Classes;
 using Rb.Core.Sets.Interfaces;
+using Rb.Core.Utils;
+using Rb.TestUtils;
 
 namespace Rb.Core.Tests
 {
@@ -29,9 +31,10 @@ namespace Rb.Core.Tests
 			IObjectSetServiceMap map = CreateServiceMap( );
 			map.AddService( service );
 			Assert.AreEqual( service, map.Service<MockObjectSetService>( ) );
+			Assert.AreEqual( service, map.SafeService<MockObjectSetService>( ) );
 			map.RemoveService( service );
 			Assert.IsNull( map.Service<MockObjectSetService>( ) );
-
+			UnitTestUtils.ExpectException<ArgumentException>( new FunctionDelegates.Function<MockObjectSetService>( map.SafeService<MockObjectSetService> ) );
 		}
 
 		/// <summary>

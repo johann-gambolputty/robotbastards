@@ -1,4 +1,5 @@
 using Bob.Core.Ui.Interfaces;
+using Bob.Core.Workspaces.Interfaces;
 using Poc1.Bob.Controls.Biomes;
 using Poc1.Bob.Controls.Templates;
 using Poc1.Bob.Controls.Waves;
@@ -36,10 +37,10 @@ namespace Poc1.Bob.Controls
 		/// <summary>
 		/// Shows a create template instance view as a modal dialog
 		/// </summary>
-		public void ShowCreateTemplateInstanceView( TemplateInstanceContext instanceContext, TemplateGroupContainer rootGroup )
+		public void ShowCreateTemplateInstanceView( IWorkspace workspace, TemplateInstanceContext instanceContext, TemplateGroupContainer rootGroup )
 		{
 			ICreateTemplateInstanceView view = new CreateTemplateInstanceForm( );
-			new CreateTemplateInstanceController( instanceContext, view, rootGroup ).Show( );
+			new CreateTemplateInstanceController( workspace, instanceContext, view, rootGroup ).Show( );
 		}
 
 		/// <summary>
