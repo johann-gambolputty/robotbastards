@@ -1,0 +1,162 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7FD7B8DD-BBED-4AF7-9339-6F823540727E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Poc0.LevelEditor.Core</RootNamespace>
+    <AssemblyName>Poc0.LevelEditor.Core</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'NDoc|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\bin\NDoc\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisRuleAssemblies>C:\Program Files\Microsoft Visual Studio 8\Team Tools\Static Analysis Tools\FxCop\\rules</CodeAnalysisRuleAssemblies>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <DocumentationFile>..\..\bin\NDoc\Poc0.LevelEditor.Core.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Tao.OpenGl, Version=2.1.0.4, Culture=neutral, PublicKeyToken=1ca010269a4501ef, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\bin\ThirdParty\Tao 2.0\bin\Tao.OpenGl.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Csg.cs" />
+    <Compile Include="Geometry\Csg2.cs" />
+    <Compile Include="Geometry\EnvironmentCollisionsBuilder.cs" />
+    <Compile Include="Geometry\FloorProperties.cs" />
+    <Compile Include="Geometry\GeometryProperties.cs" />
+    <Compile Include="Geometry\ILevelGeometryObject.cs" />
+    <Compile Include="Geometry\LevelEdge.cs" />
+    <Compile Include="Geometry\LevelGeometryTesselator.cs" />
+    <Compile Include="Geometry\LevelPolygon.cs" />
+    <Compile Include="Geometry\LevelPolygonGroup.cs" />
+    <Compile Include="Geometry\LevelVertex.cs" />
+    <Compile Include="Geometry\Material.cs" />
+    <Compile Include="Geometry\MaterialSet.cs" />
+    <Compile Include="Geometry\MaterialUITypeEditor.cs" />
+    <Compile Include="Geometry\ObstacleProperties.cs" />
+    <Compile Include="Geometry\WallProperties.cs" />
+    <Compile Include="EditorSceneBuilder.cs" />
+    <Compile Include="RuntimeSceneBuilder.cs" />
+    <Compile Include="UiPolygon.cs" />
+    <Compile Include="Geometry\EnvironmentGraphicsBuilder.cs" />
+    <Compile Include="Objects\PlayerStartEditor.cs" />
+    <Compile Include="Objects\AngleModifier.cs" />
+    <Compile Include="Objects\PositionModifier.cs" />
+    <Compile Include="Objects\SpotlightEditor.cs" />
+    <Compile Include="Rendering\GroundPlaneGrid.cs" />
+    <Compile Include="Geometry\LevelGeometry.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RayCastLayers.cs" />
+    <Compile Include="StaticGeometryData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\Rb.Assets\Rb.Assets.2005.csproj">
+      <Project>{22440804-2D3F-4FEF-AD01-812923F6E04C}</Project>
+      <Name>Rb.Assets</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.2005.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Interaction\Rb.Interaction.2005.csproj">
+      <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
+      <Name>Rb.Interaction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Log\Rb.Log.2005.csproj">
+      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
+      <Name>Rb.Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Muesli\Rb.Muesli.2005.csproj">
+      <Project>{B8CB331A-D8D9-48B6-ACBF-2276EC294427}</Project>
+      <Name>Rb.Muesli</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.2005.csproj">
+      <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>
+      <Name>Rb.Rendering.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering\Rb.Rendering.2005.csproj">
+      <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
+      <Name>Rb.Rendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Tesselator\Rb.Tesselator.2005.csproj">
+      <Project>{7E6047EB-64A1-48ED-8ADF-43F02F593B02}</Project>
+      <Name>Rb.Tesselator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.World\Rb.World.2005.csproj">
+      <Project>{46980366-998B-4178-87B7-B04DD3B21979}</Project>
+      <Name>Rb.World</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Tools\Source\Rb.Tools.LevelEditor.Core\Rb.Tools.LevelEditor.Core.2005.csproj">
+      <Project>{CC99B187-FFD0-43C3-904C-7EA8CBCA9CF3}</Project>
+      <Name>Rb.Tools.LevelEditor.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc0.Core\Poc0.Core.2005.csproj">
+      <Project>{FBEDE7DA-1ADD-424D-9EBE-48179585DE45}</Project>
+      <Name>Poc0.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\GridSquare.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DefaultFloorTexture.bmp" />
+    <Content Include="Resources\DefaultWallTexture.bmp" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

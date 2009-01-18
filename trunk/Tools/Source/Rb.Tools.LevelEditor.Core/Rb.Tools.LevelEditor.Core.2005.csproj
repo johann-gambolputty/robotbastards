@@ -1,0 +1,229 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CC99B187-FFD0-43C3-904C-7EA8CBCA9CF3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Rb.Tools.LevelEditor.Core</RootNamespace>
+    <AssemblyName>Rb.Tools.LevelEditor.Core</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MagicLibrary, Version=1.7.0.0, Culture=neutral, PublicKeyToken=3a6eb82f876a49bc">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\bin\ThirdParty\MagicDocking\MagicLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Actions\ActionList.cs" />
+    <Compile Include="Actions\AddObjectAction.cs" />
+    <Compile Include="Actions\DeleteObjectAction.cs" />
+    <Compile Include="Actions\FaceAction.cs" />
+    <Compile Include="Actions\IAction.cs" />
+    <Compile Include="Actions\IPickAction.cs" />
+    <Compile Include="Actions\MoveAction.cs" />
+    <Compile Include="Actions\UndoStack.cs" />
+    <Compile Include="Cameras\CameraController.cs" />
+    <Compile Include="Cameras\ICameraController.cs" />
+    <Compile Include="Cameras\LookAtCameraController.cs" />
+    <Compile Include="Controls\Forms\EditModesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Forms\EditModesControl.Designer.cs">
+      <DependentUpon>EditModesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Forms\EditorApp.cs" />
+    <Compile Include="Controls\Forms\EditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\Forms\EditorForm.designer.cs">
+      <DependentUpon>EditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Forms\NewObjectControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Forms\NewObjectControl.Designer.cs">
+      <DependentUpon>NewObjectControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Forms\ObjectPropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Forms\ObjectPropertyEditor.Designer.cs">
+      <DependentUpon>ObjectPropertyEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Forms\ObjectUITypeEditor.cs" />
+    <Compile Include="Controls\Forms\ObjectUITypeEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\Forms\ObjectUITypeEditorForm.Designer.cs">
+      <DependentUpon>ObjectUITypeEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Forms\PickDisplay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Forms\SelectionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Forms\SelectionControl.designer.cs">
+      <DependentUpon>SelectionControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Forms\ServicesEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\Forms\ServicesEditorForm.Designer.cs">
+      <DependentUpon>ServicesEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditModes\EditMode.cs" />
+    <Compile Include="EditModes\IEditMode.cs" />
+    <Compile Include="EditModes\SelectEditMode.cs" />
+    <Compile Include="EditorState.cs" />
+    <Compile Include="ErrorMessageBox.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ResourceHelper.cs" />
+    <Compile Include="SceneExporter.cs" />
+    <Compile Include="SceneSerializer.cs" />
+    <Compile Include="Selection\IDelete.cs" />
+    <Compile Include="Selection\IMoveable3.cs" />
+    <Compile Include="Selection\IObjectEditor.cs" />
+    <Compile Include="Selection\IOrientable3.cs" />
+    <Compile Include="Selection\IPickable.cs" />
+    <Compile Include="Selection\IPicker.cs" />
+    <Compile Include="Selection\IPlaceableObjectEditor.cs" />
+    <Compile Include="Selection\ISelectable.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SceneEditState.cs" />
+    <Compile Include="Selection\ISelectionModifier.cs" />
+    <Compile Include="Selection\ObjectEditor.cs" />
+    <Compile Include="Selection\SelectionSet.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\Rb.AssemblySelector\Rb.AssemblySelector.2005.csproj">
+      <Project>{2097B22A-91A5-4CFF-8CCB-846A10523CB9}</Project>
+      <Name>Rb.AssemblySelector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Assets\Rb.Assets.2005.csproj">
+      <Project>{22440804-2D3F-4FEF-AD01-812923F6E04C}</Project>
+      <Name>Rb.Assets</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.ComponentXmlLoader\Rb.ComponentXmlLoader.2005.csproj">
+      <Project>{61B562C4-66D5-4048-B482-858A791249A2}</Project>
+      <Name>Rb.ComponentXmlLoader</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Core.Assets.Windows\Rb.Core.Assets.Windows.2005.csproj">
+      <Project>{4A4B51E0-EE5D-4627-9192-542BA6FA8A7A}</Project>
+      <Name>Rb.Core.Assets.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.2005.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Interaction\Rb.Interaction.2005.csproj">
+      <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
+      <Name>Rb.Interaction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Log.Controls.Vs\Rb.Log.Controls.Vs.2005.csproj">
+      <Project>{592DDD2E-6E38-4EB1-AD47-800193530D3B}</Project>
+      <Name>Rb.Log.Controls.Vs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Log.Controls\Rb.Log.Controls.2005.csproj">
+      <Project>{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}</Project>
+      <Name>Rb.Log.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Log\Rb.Log.2005.csproj">
+      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
+      <Name>Rb.Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Muesli\Rb.Muesli.2005.csproj">
+      <Project>{B8CB331A-D8D9-48B6-ACBF-2276EC294427}</Project>
+      <Name>Rb.Muesli</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.2005.csproj">
+      <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>
+      <Name>Rb.Rendering.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering.Windows\Rb.Rendering.Windows.2005.csproj">
+      <Project>{39A57BC2-BE73-41A7-BBC2-A9D0C28D5A06}</Project>
+      <Name>Rb.Rendering.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering\Rb.Rendering.2005.csproj">
+      <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
+      <Name>Rb.Rendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.World\Rb.World.2005.csproj">
+      <Project>{46980366-998B-4178-87B7-B04DD3B21979}</Project>
+      <Name>Rb.World</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\Forms\EditModesControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>EditModesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Forms\EditorForm.resx">
+      <DependentUpon>EditorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Forms\NewObjectControl.resx">
+      <DependentUpon>NewObjectControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Forms\ObjectPropertyEditor.resx">
+      <DependentUpon>ObjectPropertyEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Forms\ObjectUITypeEditorForm.resx">
+      <DependentUpon>ObjectUITypeEditorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Forms\SelectionControl.resx">
+      <DependentUpon>SelectionControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Forms\ServicesEditorForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ServicesEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

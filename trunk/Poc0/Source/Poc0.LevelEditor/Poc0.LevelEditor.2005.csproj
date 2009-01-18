@@ -1,0 +1,271 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F224FA4B-D756-425B-BC3E-5CDC4E5A5F8B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Poc0.LevelEditor</RootNamespace>
+    <AssemblyName>Poc0.LevelEditor</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'NDoc|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\bin\NDoc\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisRuleAssemblies>C:\Program Files\Microsoft Visual Studio 8\Team Tools\Static Analysis Tools\FxCop\\rules</CodeAnalysisRuleAssemblies>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <DocumentationFile>..\..\bin\NDoc\Poc0.LevelEditor.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MagicLibrary, Version=1.7.0.0, Culture=neutral, PublicKeyToken=3a6eb82f876a49bc">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\bin\ThirdParty\MagicDocking\MagicLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EditModes\EdgeListEditor.cs" />
+    <Compile Include="EditModes\IEditor.cs" />
+    <Compile Include="EditModes\CircleBrushEditor.cs" />
+    <Compile Include="EditModes\Controls\LevelGeometryEditModeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EditModes\Controls\LevelGeometryEditModeControl.Designer.cs">
+      <DependentUpon>LevelGeometryEditModeControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditModes\Controls\ObjectEditModeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EditModes\Controls\ObjectEditModeControl.Designer.cs">
+      <DependentUpon>ObjectEditModeControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditModes\LevelGeometryEditMode.cs" />
+    <Compile Include="EditModes\ObjectEditMode.cs" />
+    <Compile Include="EditModes\PolygonBrushEditor.cs" />
+    <Compile Include="GameViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GameViewForm.Designer.cs">
+      <DependentUpon>GameViewForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MaterialEditorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MaterialEditorControl.Designer.cs">
+      <DependentUpon>MaterialEditorControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MaterialsEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MaterialsEditorForm.Designer.cs">
+      <DependentUpon>MaterialsEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="EditModes\Controls\LevelGeometryEditModeControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>LevelGeometryEditModeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditModes\Controls\ObjectEditModeControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ObjectEditModeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameViewForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>GameViewForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MaterialEditorControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MaterialEditorControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MaterialsEditorForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MaterialsEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="App.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\Rb.AssemblySelector\Rb.AssemblySelector.2005.csproj">
+      <Project>{2097B22A-91A5-4CFF-8CCB-846A10523CB9}</Project>
+      <Name>Rb.AssemblySelector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Assets\Rb.Assets.2005.csproj">
+      <Project>{22440804-2D3F-4FEF-AD01-812923F6E04C}</Project>
+      <Name>Rb.Assets</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.ComponentXmlLoader\Rb.ComponentXmlLoader.2005.csproj">
+      <Project>{61B562C4-66D5-4048-B482-858A791249A2}</Project>
+      <Name>Rb.ComponentXmlLoader</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Core.Assets.Windows\Rb.Core.Assets.Windows.2005.csproj">
+      <Project>{4A4B51E0-EE5D-4627-9192-542BA6FA8A7A}</Project>
+      <Name>Rb.Core.Assets.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.2005.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Interaction.Windows\Rb.Interaction.Windows.2005.csproj">
+      <Project>{4ECD7CBC-1D3E-4C87-852E-77488B549711}</Project>
+      <Name>Rb.Interaction.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Interaction\Rb.Interaction.2005.csproj">
+      <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
+      <Name>Rb.Interaction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Log.Controls.Vs\Rb.Log.Controls.Vs.2005.csproj">
+      <Project>{592DDD2E-6E38-4EB1-AD47-800193530D3B}</Project>
+      <Name>Rb.Log.Controls.Vs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Log.Controls\Rb.Log.Controls.2005.csproj">
+      <Project>{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}</Project>
+      <Name>Rb.Log.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Log\Rb.Log.2005.csproj">
+      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
+      <Name>Rb.Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Muesli\Rb.Muesli.2005.csproj">
+      <Project>{B8CB331A-D8D9-48B6-ACBF-2276EC294427}</Project>
+      <Name>Rb.Muesli</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.2005.csproj">
+      <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>
+      <Name>Rb.Rendering.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering.OpenGl.Cg\Rb.Rendering.OpenGl.Cg.2005.csproj">
+      <Project>{C0A53C66-30B1-4891-9E33-31F96D6590D8}</Project>
+      <Name>Rb.Rendering.OpenGl.Cg</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering.OpenGl.Md3Loader\Rb.Rendering.OpenGl.Md3Loader.2005.csproj">
+      <Project>{0DF278D5-B9D4-4BA0-90DC-E89F04FFC783}</Project>
+      <Name>Rb.Rendering.OpenGl.Md3Loader</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering.OpenGl.Windows\Rb.Rendering.OpenGl.Windows.2005.csproj">
+      <Project>{F2F59120-9F01-4910-BB19-16FA628AE56C}</Project>
+      <Name>Rb.Rendering.OpenGl.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering.OpenGl\Rb.Rendering.OpenGl.2005.csproj">
+      <Project>{19DCB365-3040-4431-86E9-29183FA34EF7}</Project>
+      <Name>Rb.Rendering.OpenGl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering.Shadows\Rb.Rendering.Shadows.2005.csproj">
+      <Project>{ED325582-3C2F-494E-87EA-FC4C121DA368}</Project>
+      <Name>Rb.Rendering.Shadows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering.Windows\Rb.Rendering.Windows.2005.csproj">
+      <Project>{39A57BC2-BE73-41A7-BBC2-A9D0C28D5A06}</Project>
+      <Name>Rb.Rendering.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering\Rb.Rendering.2005.csproj">
+      <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
+      <Name>Rb.Rendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.World\Rb.World.2005.csproj">
+      <Project>{46980366-998B-4178-87B7-B04DD3B21979}</Project>
+      <Name>Rb.World</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Tools\Source\Rb.Tools.LevelEditor.Core\Rb.Tools.LevelEditor.Core.2005.csproj">
+      <Project>{CC99B187-FFD0-43C3-904C-7EA8CBCA9CF3}</Project>
+      <Name>Rb.Tools.LevelEditor.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc0.Core.Rendering.OpenGl\Poc0.Core.Rendering.OpenGl.2005.csproj">
+      <Project>{283867CD-C9C1-4953-8AD7-F7704C8D5913}</Project>
+      <Name>Poc0.Core.Rendering.OpenGl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc0.Core\Poc0.Core.2005.csproj">
+      <Project>{FBEDE7DA-1ADD-424D-9EBE-48179585DE45}</Project>
+      <Name>Poc0.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc0.LevelEditor.Core\Poc0.LevelEditor.Core.2005.csproj">
+      <Project>{7FD7B8DD-BBED-4AF7-9339-6F823540727E}</Project>
+      <Name>Poc0.LevelEditor.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc0.LevelEditor.Rendering.OpenGl\Poc0.LevelEditor.Rendering.OpenGl.2005.csproj">
+      <Project>{CF7F44B9-4EC5-4FA5-ADFE-BAEDE2C0860E}</Project>
+      <Name>Poc0.LevelEditor.Rendering.OpenGl</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AppIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Pause.bmp" />
+    <None Include="Resources\Play.bmp" />
+    <None Include="Resources\Capture.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DesignNotes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Actions\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
