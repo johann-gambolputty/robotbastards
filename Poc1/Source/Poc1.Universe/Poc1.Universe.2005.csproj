@@ -1,0 +1,156 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5CC992B9-1B66-4ECC-8657-624DA59B3D2D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Poc1.Universe</RootNamespace>
+    <AssemblyName>Poc1.Universe</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Classes\Cameras\EntityTrackingCamera.cs" />
+    <Compile Include="Classes\Cameras\FirstPersonCameraCommands.cs" />
+    <Compile Include="Classes\Cameras\FirstPersonCamera.cs" />
+    <Compile Include="Classes\Cameras\FirstPersonCameraController.cs" />
+    <Compile Include="Classes\Cameras\PointTrackingCamera.cs" />
+    <Compile Include="Classes\Cameras\TrackingCameraCommands.cs" />
+    <Compile Include="Classes\Cameras\TrackingCameraController.cs" />
+    <Compile Include="Classes\Cameras\UniCamera.cs" />
+    <Compile Include="Classes\CircularOrbit.cs" />
+    <Compile Include="Classes\Rendering\TerrainDistribution.cs" />
+    <Compile Include="Classes\Rendering\TerrainType.cs" />
+    <Compile Include="Classes\Rendering\TerrainTypeManager.cs" />
+    <Compile Include="Classes\Ship.cs" />
+    <Compile Include="Classes\SolarSystem.cs" />
+    <Compile Include="Classes\StarBox.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DebugInfo.cs" />
+    <Compile Include="GameProfiles.cs" />
+    <Compile Include="Interfaces\Rendering\ITerrainPatchGeometry.cs" />
+    <Compile Include="Interfaces\Rendering\ITerrainPatchGeometryManager.cs" />
+    <Compile Include="Interfaces\Rendering\ITerrainType.cs" />
+    <Compile Include="Interfaces\Rendering\ITerrainTypeManager.cs" />
+    <Compile Include="NoiseTest.cs" />
+    <Compile Include="Planets\Flat\FlatPlanet.cs" />
+    <Compile Include="Planets\Flat\Models\FlatPlanetProcTerrainModel.cs" />
+    <Compile Include="Planets\Flat\Renderers\FlatPlanetTerrainPatchRenderer.cs" />
+    <Compile Include="Planets\Models\PlanetAtmosphereModel.cs" />
+    <Compile Include="Planets\Models\PlanetCloudModel.cs" />
+    <Compile Include="Planets\Models\PlanetModel.cs" />
+    <Compile Include="Planets\Models\PlanetOceanModel.cs" />
+    <Compile Include="Planets\Models\PlanetRingModel.cs" />
+    <Compile Include="Planets\Models\PlanetTerrainModelChangedEventArgs.cs" />
+    <Compile Include="Planets\Models\Templates\PlanetAtmosphereModelTemplate.cs" />
+    <Compile Include="Planets\Models\Templates\PlanetEnvironmentModelTemplate.cs" />
+    <Compile Include="Planets\Models\Templates\PlanetModelTemplate.cs" />
+    <Compile Include="Planets\Models\Templates\PlanetRingModelTemplate.cs" />
+    <Compile Include="Planets\Planet.cs" />
+    <Compile Include="Planets\Renderers\PlanetTerrainPatchRenderer.cs" />
+    <Compile Include="Planets\Spherical\Models\SpherePlanetAtmosphereModel.cs" />
+    <Compile Include="Planets\Spherical\Models\SpherePlanetCloudModel.cs" />
+    <Compile Include="Planets\Spherical\Models\SpherePlanetModel.cs" />
+    <Compile Include="Planets\Spherical\Models\SpherePlanetProcTerrainModel.cs" />
+    <Compile Include="Planets\Spherical\Models\SpherePlanetRingModel.cs" />
+    <Compile Include="Planets\Spherical\Models\Templates\SpherePlanetAtmosphereModelTemplate.cs" />
+    <Compile Include="Planets\Spherical\Models\Templates\SpherePlanetModelTemplate.cs" />
+    <Compile Include="Planets\Spherical\Models\Templates\SpherePlanetRingModelTemplate.cs" />
+    <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatch.cs" />
+    <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatchBuilder.cs" />
+    <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatchBuildItem.cs" />
+    <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatchConstants.cs" />
+    <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatchVertices.cs" />
+    <Compile Include="Planets\Spherical\Renderers\SphereGasGiantMarbleRenderer.cs" />
+    <Compile Include="Planets\Spherical\Renderers\SpherePlanetAtmosphereRenderer.cs" />
+    <Compile Include="Planets\Spherical\Renderers\SpherePlanetCloudRenderer.cs" />
+    <Compile Include="Planets\Spherical\Renderers\SpherePlanetMarbleRenderer.cs" />
+    <Compile Include="Planets\Spherical\Renderers\SpherePlanetMarbleTextureBuilder.cs" />
+    <Compile Include="Planets\Spherical\Renderers\SpherePlanetOceanRenderer.cs" />
+    <Compile Include="Planets\Spherical\Renderers\SpherePlanetRingRenderer.cs" />
+    <Compile Include="Planets\Spherical\Renderers\SpherePlanetTerrainPatchRenderer.cs" />
+    <Compile Include="Planets\Spherical\SpherePlanet.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\Rb.Assets\Rb.Assets.2005.csproj">
+      <Project>{22440804-2D3F-4FEF-AD01-812923F6E04C}</Project>
+      <Name>Rb.Assets</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.2005.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Interaction\Rb.Interaction.2005.csproj">
+      <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
+      <Name>Rb.Interaction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Log\Rb.Log.2005.csproj">
+      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
+      <Name>Rb.Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.2005.csproj">
+      <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>
+      <Name>Rb.Rendering.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering\Rb.Rendering.2005.csproj">
+      <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
+      <Name>Rb.Rendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Tools\Source\Poc1.Tools.Waves\Poc1.Tools.Waves.2005.csproj">
+      <Project>{C8DC8F1E-E722-42E0-A433-122BFF0BBD2D}</Project>
+      <Name>Poc1.Tools.Waves</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc1.Fast.Terrain\Poc1.Fast.Terrain.vcproj">
+      <Project>{22C72F9C-B313-4366-BBE2-84A649775E75}</Project>
+      <Name>Poc1.Fast.Terrain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc1.Fast\Poc1.Fast.vcproj">
+      <Project>{2EA4865D-CDBB-4EC3-83A3-4703FE7B7A28}</Project>
+      <Name>Poc1.Fast</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc1.Universe.Interfaces\Poc1.Universe.Interfaces.2005.csproj">
+      <Project>{7C18549B-2D70-4985-852B-6A285BF4F00A}</Project>
+      <Name>Poc1.Universe.Interfaces</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Planets\ModelTemplates\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

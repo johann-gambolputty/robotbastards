@@ -1,0 +1,142 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Rb.Rendering</RootNamespace>
+    <AssemblyName>Rb.Rendering</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'NDoc|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\bin\NDoc\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisRuleAssemblies>C:\Program Files\Microsoft Visual Studio 8\Team Tools\Static Analysis Tools\FxCop\\rules</CodeAnalysisRuleAssemblies>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <DocumentationFile>..\..\bin\NDoc\Rb.Rendering.XML</DocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AuditedGraphicsFactory.cs" />
+    <Compile Include="Cameras\Camera3.cs" />
+    <Compile Include="Cameras\CameraBase.cs" />
+    <Compile Include="Cameras\MultiCamera.cs" />
+    <Compile Include="Cameras\MultiCamera3.cs" />
+    <Compile Include="Cameras\ProjectionCamera.cs" />
+    <Compile Include="Cameras\FlightCamera.cs" />
+    <Compile Include="Cameras\SphereCamera.cs" />
+    <Compile Include="DebugText.cs" />
+    <Compile Include="DelegateRenderable.cs" />
+    <Compile Include="DrawBase.cs" />
+    <Compile Include="Effect.cs" />
+    <Compile Include="EffectAssetHandle.cs" />
+    <Compile Include="EffectDataSourcesBase.cs" />
+    <Compile Include="FontBase.cs" />
+    <Compile Include="FpsCounter.cs" />
+    <Compile Include="FpsDisplay.cs" />
+    <Compile Include="GraphicsInitialization.cs" />
+    <Compile Include="Lights\Light.cs" />
+    <Compile Include="Lights\LightGroup.cs" />
+    <Compile Include="Lights\PointLight.cs" />
+    <Compile Include="Lights\SpotLight.cs" />
+    <Compile Include="ManagedVertexBuffer.cs" />
+    <Compile Include="MaterialBase.cs" />
+    <Compile Include="PassList.cs" />
+    <Compile Include="RenderContext.cs" />
+    <Compile Include="RendererBase.cs" />
+    <Compile Include="Technique.cs" />
+    <Compile Include="TechniqueSelector.cs" />
+    <Compile Include="Textures\AnimatedTexture2d.cs" />
+    <Compile Include="Textures\Texture2dAssetHandle.cs" />
+    <Compile Include="Textures\Texture2dBase.cs" />
+    <Compile Include="Textures\Texture2dSamplerBase.cs" />
+    <Compile Include="Textures\TextureImageLoader.cs" />
+    <Compile Include="Textures\TextureLoadParameters.cs" />
+    <Compile Include="Textures\TexturePacker.cs" />
+    <Compile Include="Textures\Texture2dUtils.cs" />
+    <Compile Include="Viewer.cs" />
+    <Compile Include="Graphics.cs" />
+    <Compile Include="GraphicsLog.cs" />
+    <Compile Include="RenderableList.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="RenderingLibraryTypeAttribute.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rb.AssemblySelector\Rb.AssemblySelector.2005.csproj">
+      <Project>{2097B22A-91A5-4CFF-8CCB-846A10523CB9}</Project>
+      <Name>Rb.AssemblySelector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Assets\Rb.Assets.2005.csproj">
+      <Project>{22440804-2D3F-4FEF-AD01-812923F6E04C}</Project>
+      <Name>Rb.Assets</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Core\Rb.Core.2005.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Log\Rb.Log.2005.csproj">
+      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
+      <Name>Rb.Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.2005.csproj">
+      <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>
+      <Name>Rb.Rendering.Interfaces</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Textures\Resources\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

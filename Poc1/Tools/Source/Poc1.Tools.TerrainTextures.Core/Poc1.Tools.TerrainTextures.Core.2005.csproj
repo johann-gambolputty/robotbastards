@@ -1,0 +1,78 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F34331DC-90A9-4C51-B7F9-34B3B96965BD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Poc1.Tools.TerrainTextures.Core</RootNamespace>
+    <AssemblyName>Poc1.Tools.TerrainTextures.Core</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Tasks" />
+    <Reference Include="Microsoft.Build.Utilities" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ControlPoint.cs" />
+    <Compile Include="LinearDistribution.cs" />
+    <Compile Include="IDistribution.cs" />
+    <Compile Include="Noise3dTextureBuilder.cs" />
+    <Compile Include="Noise3dTextureBuilderParameters.cs" />
+    <Compile Include="NoiseBitmapBuilder.cs" />
+    <Compile Include="NoiseBitmapBuilderParameters.cs" />
+    <Compile Include="NoiseGenerationType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TerrainBitmapBuilder.cs" />
+    <Compile Include="TerrainType.cs" />
+    <Compile Include="TerrainTypeList.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Core\Rb.Core.2005.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.2005.csproj">
+      <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>
+      <Name>Rb.Rendering.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Poc1.Fast\Poc1.Fast.vcproj">
+      <Project>{2EA4865D-CDBB-4EC3-83A3-4703FE7B7A28}</Project>
+      <Name>Poc1.Fast</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

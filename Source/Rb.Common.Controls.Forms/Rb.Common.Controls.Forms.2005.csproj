@@ -1,0 +1,143 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{879D51CE-CD23-4C7E-8640-64562CDED669}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Rb.Common.Controls.Forms</RootNamespace>
+    <AssemblyName>Rb.Common.Controls.Forms</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DbPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DbPanel.Designer.cs">
+      <DependentUpon>DbPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Graphs\FullGraphControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Graphs\FullGraphControl.Designer.cs">
+      <DependentUpon>FullGraphControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Graphs\GraphComponentControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Graphs\GraphComponentControl.Designer.cs">
+      <DependentUpon>GraphComponentControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Graphs\GraphLegendControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Graphs\GraphLegendControl.Designer.cs">
+      <DependentUpon>GraphLegendControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Graphs\GraphControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Graphs\GraphControl.Designer.cs">
+      <DependentUpon>GraphControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Graphs\GraphGraphicsCanvas.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Tabs\PrettyTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Tabs\PrettyTabControl.Designer.cs">
+      <DependentUpon>PrettyTabControl.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DbPanel.resx">
+      <DependentUpon>DbPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Graphs\FullGraphControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FullGraphControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Graphs\GraphComponentControl.resx">
+      <DependentUpon>GraphComponentControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Graphs\GraphLegendControl.resx">
+      <DependentUpon>GraphLegendControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Graphs\GraphControl.resx">
+      <DependentUpon>GraphControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tabs\PrettyTabControl.resx">
+      <DependentUpon>PrettyTabControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rb.Common.Controls\Rb.Common.Controls.2005.csproj">
+      <Project>{14AE905B-90DB-4CE3-84C3-F12835236797}</Project>
+      <Name>Rb.Common.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Core\Rb.Core.2005.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ActualSize.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SmallUp1.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SmallUp.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Zoom.bmp" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

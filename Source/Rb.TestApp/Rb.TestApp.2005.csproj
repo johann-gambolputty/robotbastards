@@ -1,0 +1,172 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A526C855-0E1B-4DDB-8508-3B26F7640682}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Rb.TestApp</RootNamespace>
+    <AssemblyName>Rb.TestApp</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CameraCommands.cs" />
+    <Compile Include="CameraController.cs" />
+    <Compile Include="ControlPanelForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ControlPanelForm.Designer.cs">
+      <DependentUpon>ControlPanelForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FileResourceProviderWithUi.cs" />
+    <Compile Include="HostSetup.cs" />
+    <Compile Include="HostAddressForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HostAddressForm.Designer.cs">
+      <DependentUpon>HostAddressForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ICameraController.cs" />
+    <Compile Include="IResourceProviderUi.cs" />
+    <Compile Include="MultiCameraController.cs" />
+    <Compile Include="SphereCameraController.cs" />
+    <Compile Include="HostForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HostForm.Designer.cs">
+      <DependentUpon>HostForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LogViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LogViewer.Designer.cs">
+      <DependentUpon>LogViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="ControlPanelForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ControlPanelForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HostForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>HostForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HostAddressForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>HostAddressForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LogViewer.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>LogViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="App.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="TestCommands.cs" />
+    <Compile Include="TestCommandHandler.cs" />
+    <Compile Include="TrackObjectSphereCameraController.cs" />
+    <Compile Include="UserSettings.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rb.Core\Rb.Core.2005.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Interaction.Windows\Rb.Interaction.Windows.2005.csproj">
+      <Project>{4ECD7CBC-1D3E-4C87-852E-77488B549711}</Project>
+      <Name>Rb.Interaction.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Interaction\Rb.Interaction.2005.csproj">
+      <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
+      <Name>Rb.Interaction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Log.Controls.Vs\Rb.Log.Controls.Vs.2005.csproj">
+      <Project>{592DDD2E-6E38-4EB1-AD47-800193530D3B}</Project>
+      <Name>Rb.Log.Controls.Vs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Log.Controls\Rb.Log.Controls.2005.csproj">
+      <Project>{AE4AA2A9-8D98-4F63-8ADF-561B3BF14D66}</Project>
+      <Name>Rb.Log.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Log\Rb.Log.2005.csproj">
+      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
+      <Name>Rb.Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Network\Rb.Network.2005.csproj">
+      <Project>{A48EA0E0-8CB6-43F0-A4C0-CAE1544BECF0}</Project>
+      <Name>Rb.Network</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Rendering.Windows\Rb.Rendering.Windows.2005.csproj">
+      <Project>{39A57BC2-BE73-41A7-BBC2-A9D0C28D5A06}</Project>
+      <Name>Rb.Rendering.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.Rendering\Rb.Rendering.2005.csproj">
+      <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
+      <Name>Rb.Rendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rb.World\Rb.World.2005.csproj">
+      <Project>{46980366-998B-4178-87B7-B04DD3B21979}</Project>
+      <Name>Rb.World</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OpenFolder.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EditInformation.bmp" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
