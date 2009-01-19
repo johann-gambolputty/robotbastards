@@ -2,7 +2,7 @@ using Bob.Core.Workspaces.Interfaces;
 using Poc1.Bob.Core.Classes.Biomes.Models;
 using Poc1.Bob.Core.Interfaces;
 using Poc1.Bob.Core.Interfaces.Biomes.Views;
-using Poc1.Bob.Core.Interfaces.Templates;
+using Poc1.Bob.Core.Interfaces.Projects;
 using Poc1.Bob.Core.Interfaces.Waves;
 using Poc1.Tools.Waves;
 
@@ -16,17 +16,17 @@ namespace Poc1.Bob.Core.Classes
 		/// <summary>
 		/// Shows a create template instance view as a modal dialog
 		/// </summary>
-		public static void ShowCreateTemplateInstanceView( WorkspaceEx workspace, IViewFactory viewFactory )
+		public static void ShowCreateProjectView( WorkspaceEx workspace, IViewFactory viewFactory )
 		{
-			ShowCreateTemplateInstanceView( workspace, viewFactory, workspace.TemplateRootGroup );
+			ShowCreateProjectView( workspace, viewFactory, workspace.TemplateRootGroup );
 		}
 
 		/// <summary>
 		/// Shows a create template instance view, for a specific templat group, as a modal dialog
 		/// </summary>
-		public static void ShowCreateTemplateInstanceView( WorkspaceEx workspace, IViewFactory viewFactory, TemplateGroupContainer rootGroup )
+		public static void ShowCreateProjectView( WorkspaceEx workspace, IViewFactory viewFactory, ProjectGroupContainer rootGroup )
 		{
-			viewFactory.ShowCreateTemplateInstanceView( workspace, workspace.TemplateInstanceContext, rootGroup );
+			viewFactory.ShowCreateProjectView( workspace, workspace.ProjectContext, rootGroup );
 		}
 
 		/// <summary>

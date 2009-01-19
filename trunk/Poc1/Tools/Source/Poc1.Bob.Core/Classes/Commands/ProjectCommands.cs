@@ -5,9 +5,9 @@ using Rb.Interaction.Classes;
 namespace Poc1.Bob.Core.Classes.Commands
 {
 	/// <summary>
-	/// Template commands
+	/// Project commands
 	/// </summary>
-	public class TemplateCommands : ICommandProvider
+	public class ProjectCommands : ICommandProvider
 	{
 		#region ICommandProvider Members
 
@@ -20,28 +20,28 @@ namespace Poc1.Bob.Core.Classes.Commands
 			{
 				return new Command[]
 					{
-						NewFromTemplate
+						NewProject
 					};
 			}
 		}
 
 		/// <summary>
-		/// Gets the NewFromTemplate command
+		/// Gets the NewProject command
 		/// </summary>
-		public static WorkspaceCommand NewFromTemplate
+		public static WorkspaceCommand NewProject
 		{
-			get { return s_NewFromTemplate; }
+			get { return s_NewProject; }
 		}
 
 		#endregion
 
 		#region Private Members
 
-		private readonly static WorkspaceCommand s_NewFromTemplate;
+		private readonly static WorkspaceCommand s_NewProject;
 
-		static TemplateCommands( )
+		static ProjectCommands( )
 		{
-			s_NewFromTemplate = WorkspaceCommand.NewCommand( DefaultCommands.FileCommands, "new", "&New From Template", "Creates an instance from a template" );
+			s_NewProject = WorkspaceCommand.NewCommand( DefaultCommands.FileCommands, "newProject", "&New Project", "Creates a new project" );
 		}
 
 		#endregion

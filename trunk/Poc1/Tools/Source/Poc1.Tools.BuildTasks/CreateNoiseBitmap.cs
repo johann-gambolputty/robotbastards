@@ -43,6 +43,12 @@ namespace Poc1.Tools.BuildTasks
 				buildParams = ( NoiseBitmapBuilderParameters )s_BuildParametersSerializer.Deserialize( stream );
 			}
 
+			string outputDirectory = Path.GetDirectoryName( OutputFile.ItemSpec );
+			if ( !Directory.Exists( outputDirectory ) )
+			{
+				Directory.CreateDirectory( outputDirectory );
+			}
+
 			Bitmap bmp = NoiseBitmapBuilder.Build( buildParams );
 			bmp.Save( OutputFile.ItemSpec, ImageFormat.Jpeg );
 
