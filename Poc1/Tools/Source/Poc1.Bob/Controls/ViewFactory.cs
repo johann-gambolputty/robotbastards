@@ -1,16 +1,19 @@
 using Bob.Core.Ui.Interfaces;
 using Bob.Core.Workspaces.Interfaces;
 using Poc1.Bob.Controls.Biomes;
-using Poc1.Bob.Controls.Templates;
+using Poc1.Bob.Controls.Projects;
+using Poc1.Bob.Controls.Rendering;
 using Poc1.Bob.Controls.Waves;
 using Poc1.Bob.Core.Classes;
 using Poc1.Bob.Core.Classes.Biomes.Controllers;
 using Poc1.Bob.Core.Classes.Biomes.Models;
-using Poc1.Bob.Core.Classes.Templates;
+using Poc1.Bob.Core.Classes.Projects;
+using Poc1.Bob.Core.Classes.Rendering;
 using Poc1.Bob.Core.Classes.Waves;
 using Poc1.Bob.Core.Interfaces;
 using Poc1.Bob.Core.Interfaces.Biomes.Views;
-using Poc1.Bob.Core.Interfaces.Templates;
+using Poc1.Bob.Core.Interfaces.Projects;
+using Poc1.Bob.Core.Interfaces.Rendering;
 using Poc1.Bob.Core.Interfaces.Waves;
 using Poc1.Tools.Waves;
 
@@ -35,21 +38,31 @@ namespace Poc1.Bob.Controls
 		}
 
 		/// <summary>
-		/// Shows a create template instance view as a modal dialog
+		/// Shows a create project view as a modal dialog
 		/// </summary>
-		public void ShowCreateTemplateInstanceView( IWorkspace workspace, TemplateInstanceContext instanceContext, TemplateGroupContainer rootGroup )
+		public void ShowCreateProjectView( IWorkspace workspace, ProjectContext context, ProjectGroupContainer rootGroup )
 		{
-			ICreateTemplateInstanceView view = new CreateTemplateInstanceForm( );
-			new CreateTemplateInstanceController( workspace, instanceContext, view, rootGroup ).Show( );
+			ICreateProjectView view = new CreateProjectForm( );
+			new CreateProjectController( workspace, context, view, rootGroup ).Show( );
 		}
 
 		/// <summary>
-		/// Creates a template selector view
+		/// Creates a view with a universe camera
 		/// </summary>
-		public ITemplateSelectorView CreateTemplateSelectorView( TemplateGroupContainer rootGroup )
+		public IUniCameraView CreateUniCameraView( )
 		{
-			ITemplateSelectorView view = new TemplateSelectorView( );
-			new TemplateSelectorController( view, rootGroup );
+			IUniCameraView view = new UniCameraViewControl( );
+			new UniCameraViewController( view );
+			return view;
+		}
+
+		/// <summary>
+		/// Creates a project type selector view
+		/// </summary>
+		public IProjectTypeSelectorView CreateProjectTypeSelectorView( ProjectGroupContainer rootGroup )
+		{
+			IProjectTypeSelectorView view = new ProjectTypeSelectorView( );
+			new ProjectTypeSelectorController( view, rootGroup );
 			return view;
 		}
 

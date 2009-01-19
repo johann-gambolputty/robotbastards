@@ -36,8 +36,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Graphs\TestIRenderGraphDataSources.cs" />
-    <Compile Include="Graphs\TestRenderGraphNodeWalker.cs" />
+    <Compile Include="Graphs\TestGraphNodeWalker.cs" />
+    <Compile Include="Graphs\TestIGraphDataSources.cs" />
     <Compile Include="TestIObjectSet.cs" />
     <Compile Include="TestIObjectSetServiceMap.cs" />
     <Compile Include="TestObjectSet.cs" />

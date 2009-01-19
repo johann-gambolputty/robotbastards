@@ -1,7 +1,7 @@
 using Bob.Core.Ui.Interfaces;
 using Bob.Core.Workspaces.Classes;
-using Poc1.Bob.Core.Classes.Templates;
-using Poc1.Bob.Core.Interfaces.Templates;
+using Poc1.Bob.Core.Classes.Projects;
+using Poc1.Bob.Core.Interfaces.Projects;
 using Rb.Core.Utils;
 
 namespace Poc1.Bob.Core.Classes
@@ -17,11 +17,11 @@ namespace Poc1.Bob.Core.Classes
 		/// <param name="mainDisplay">Main application display</param>
 		/// <param name="rootGroup">Root template group</param>
 		/// <exception cref="System.ArgumentNullException">Thrown if mainDisplay or rootGroup are null</exception>
-		public WorkspaceEx( IMainApplicationDisplay mainDisplay, TemplateGroupContainer rootGroup ) :
+		public WorkspaceEx( IMainApplicationDisplay mainDisplay, ProjectGroupContainer rootGroup ) :
 			base( mainDisplay )
 		{
 			Arguments.CheckNotNull( rootGroup, "rootGroup" );
-			m_TemplateInstanceContext = new TemplateInstanceContext( );
+			m_ProjectContext = new ProjectContext( );
 			m_SelectedBiomeContext = new SelectedBiomeContext( );
 			m_TemplateRootGroup = rootGroup;
 		}
@@ -29,9 +29,9 @@ namespace Poc1.Bob.Core.Classes
 		/// <summary>
 		/// Gets the template instance context
 		/// </summary>
-		public TemplateInstanceContext TemplateInstanceContext
+		public ProjectContext ProjectContext
 		{
-			get { return m_TemplateInstanceContext; }
+			get { return m_ProjectContext; }
 		}
 
 		/// <summary>
@@ -45,16 +45,16 @@ namespace Poc1.Bob.Core.Classes
 		/// <summary>
 		/// Gets the template root group container
 		/// </summary>
-		public TemplateGroupContainer TemplateRootGroup
+		public ProjectGroupContainer TemplateRootGroup
 		{
 			get { return m_TemplateRootGroup; }
 		}
 
 		#region Private Members
 
-		private readonly TemplateInstanceContext m_TemplateInstanceContext;
+		private readonly ProjectContext m_ProjectContext;
 		private readonly SelectedBiomeContext m_SelectedBiomeContext;
-		private readonly TemplateGroupContainer m_TemplateRootGroup;
+		private readonly ProjectGroupContainer m_TemplateRootGroup;
 
 		#endregion
 

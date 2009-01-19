@@ -198,10 +198,6 @@
       <Project>{A4E5C0BF-B76D-425D-8439-B07EB6B29444}</Project>
       <Name>Rb.NiceControls</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Source\Rb.Rendering.RenderGraph\Rb.Rendering.RenderGraph.csproj">
-      <Project>{7E34AF89-2CBB-41B8-83D2-02DFCEA3899F}</Project>
-      <Name>Rb.Rendering.RenderGraph</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Source\Rb.Rendering.Windows\Rb.Rendering.Windows.csproj">
       <Project>{39A57BC2-BE73-41A7-BBC2-A9D0C28D5A06}</Project>
       <Name>Rb.Rendering.Windows</Name>

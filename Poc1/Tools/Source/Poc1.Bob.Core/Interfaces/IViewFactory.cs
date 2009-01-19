@@ -1,9 +1,10 @@
 using Bob.Core.Workspaces.Interfaces;
 using Poc1.Bob.Core.Classes;
 using Poc1.Bob.Core.Classes.Biomes.Models;
-using Poc1.Bob.Core.Classes.Templates;
+using Poc1.Bob.Core.Classes.Projects;
 using Poc1.Bob.Core.Interfaces.Biomes.Views;
-using Poc1.Bob.Core.Interfaces.Templates;
+using Poc1.Bob.Core.Interfaces.Projects;
+using Poc1.Bob.Core.Interfaces.Rendering;
 using Poc1.Bob.Core.Interfaces.Waves;
 using Poc1.Tools.Waves;
 
@@ -17,7 +18,12 @@ namespace Poc1.Bob.Core.Interfaces
 		/// <summary>
 		/// Shows a create template instance view as a modal dialog
 		/// </summary>
-		void ShowCreateTemplateInstanceView( IWorkspace workspace, TemplateInstanceContext instanceContext, TemplateGroupContainer rootGroup );
+		void ShowCreateProjectView( IWorkspace workspace, ProjectContext context, ProjectGroupContainer rootGroup );
+
+		/// <summary>
+		/// Creates a view with a universe camera
+		/// </summary>
+		IUniCameraView CreateUniCameraView( );
 
 		/// <summary>
 		/// Creates a biome terrain texture view
