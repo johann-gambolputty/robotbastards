@@ -20,7 +20,7 @@ namespace Poc1.Bob.Core.Classes.Projects
 		/// <summary>
 		/// Gets the currently selected template instance
 		/// </summary>
-		public Project Instance
+		public Project CurrentProject
 		{
 			get { return m_Instance; }
 		}
@@ -30,7 +30,7 @@ namespace Poc1.Bob.Core.Classes.Projects
 		/// </summary>
 		/// <param name="workspace">Workspace</param>
 		/// <param name="instance">New instance. Can be null</param>
-		public void SetInstance( IWorkspace workspace, Project instance )
+		public void SetCurrentProject( IWorkspace workspace, Project instance )
 		{
 			Arguments.CheckNotNull( workspace, "workspace" );
 			UnlinkCurrentTemplate( workspace );

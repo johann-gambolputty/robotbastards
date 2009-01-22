@@ -1,32 +1,20 @@
-using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using Poc1.Bob.Core.Classes.Biomes.Models;
-using Poc1.Bob.Core.Interfaces.Biomes.Views;
-using Rb.Core.Utils;
 using System.ComponentModel;
+using Rb.Core.Utils;
+using System;
+using System.Collections.Generic;
+using Poc1.Bob.Core.Interfaces.Biomes.Views;
 
 namespace Poc1.Bob.Controls.Biomes
 {
-	public partial class BiomeListViewControl : UserControl, IBiomeListView
+	public partial class BiomeListControl : UserControl, IBiomeListView
 	{
-		/// <summary>
-		/// Default constructor
-		/// </summary>
-		public BiomeListViewControl( )
+		public BiomeListControl( )
 		{
 			InitializeComponent( );
 		}
 
-		/// <summary>
-		/// Setup constructor
-		/// </summary>
-		/// <param name="listModel">Model displayed in this control</param>
-		public BiomeListViewControl( BiomeListModel listModel )
-		{
-			InitializeComponent( );
-			BiomeList = listModel;
-		}
 
 		/// <summary>
 		/// Unbinds this list view from the current model
@@ -44,7 +32,7 @@ namespace Poc1.Bob.Controls.Biomes
 		/// </summary>
 		private void BindModel( )
 		{
-			biomeListView.Items.Clear( );
+			biomeListBox.Items.Clear( );
 			if ( m_ListModel == null )
 			{
 				return;
@@ -52,21 +40,10 @@ namespace Poc1.Bob.Controls.Biomes
 
 			foreach ( BiomeModel model in m_ListModel.Models )
 			{
-				biomeListView.Items.Add( BiomeModelToListViewItem( model ) );
+				biomeListBox.Items.Add( model );
 			}
 
 			m_ListModel.Models.ListChanged += OnListChanged;
-		}
-
-		/// <summary>
-		/// Creates a ListViewItem to represent a biome model
-		/// </summary>
-		private static ListViewItem BiomeModelToListViewItem( BiomeModel model )
-		{
-			ListViewItem item = new ListViewItem( model.Name );
-			item.SubItems.Add( model.Name );
-			item.Tag = model;
-			return item;
 		}
 
 		/// <summary>
@@ -76,12 +53,12 @@ namespace Poc1.Bob.Controls.Biomes
 		{
 			switch ( args.ListChangedType )
 			{
-				case ListChangedType.ItemAdded :
+				case ListChangedType.ItemAdded:
 					BiomeModel model = BiomeList.Models[ args.NewIndex ];
-					biomeListView.Items.Insert( args.NewIndex, BiomeModelToListViewItem( model ) );
+					biomeListBox.Items.Insert( args.NewIndex, model );
 					break;
-				case ListChangedType.ItemDeleted :
-					biomeListView.Items.RemoveAt( args.NewIndex );
+				case ListChangedType.ItemDeleted:
+					biomeListBox.Items.RemoveAt( args.NewIndex );
 					break;
 			}
 		}
@@ -92,6 +69,11 @@ namespace Poc1.Bob.Controls.Biomes
 		/// Event raised when the user requests that a new biome be added to the biome list
 		/// </summary>
 		public event ActionDelegates.Action AddNewBiome;
+
+		/// <summary>
+		/// Event raised when the user requests that a existing biome be added to the biome list
+		/// </summary>
+		public event ActionDelegates.Action<BiomeModel> AddExistingBiome;
 
 		/// <summary>
 		/// Event raised when the user requests the removal of a biome
@@ -127,24 +109,24 @@ namespace Poc1.Bob.Controls.Biomes
 		{
 			get
 			{
-				return biomeListView.SelectedItems.Count > 0 ? ( BiomeModel )biomeListView.SelectedItems[ 0 ].Tag : null;
+				return biomeListBox.SelectedItems.Count > 0 ? ( BiomeModel )biomeListBox.SelectedItem : null;
 			}
 			set
 			{
 				if ( value == null )
 				{
-					biomeListView.SelectedItems.Clear( );
+					biomeListBox.SelectedItems.Clear( );
 					return;
 				}
-				foreach ( ListViewItem item in biomeListView.Items )
+				foreach ( BiomeModel model in biomeListBox.Items )
 				{
-					if ( item.Tag == value )
+					if ( model == value )
 					{
-						item.Selected = true;
+						biomeListBox.SelectedItem = model;
 						break;
 					}
 				}
-				throw new ArgumentException( string.Format( "Biome \"{0}\" did not exist in the list displayed by this control", value.Name ), "value" );
+				throw new ArgumentException( string.Format( "Distribution \"{0}\" did not exist in the list displayed by this control", value.Name ), "value" );
 			}
 		}
 
@@ -164,18 +146,19 @@ namespace Poc1.Bob.Controls.Biomes
 
 		private void removeButton_Click( object sender, EventArgs e )
 		{
-			if ( biomeListView.SelectedItems.Count == 0 )
+			if ( biomeListBox.SelectedItems.Count == 0 )
 			{
 				return;
 			}
-			List<ListViewItem> itemsToRemove = EnumerableAdapter<ListViewItem>.ToList( biomeListView.SelectedItems );
-			foreach ( ListViewItem item in itemsToRemove )
+
+			List<BiomeModel> itemsToRemove = EnumerableAdapter<BiomeModel>.ToList( biomeListBox.SelectedItems );
+			foreach ( BiomeModel model in itemsToRemove )
 			{
 				if ( RemoveBiome != null )
 				{
-					RemoveBiome( ( BiomeModel )item.Tag );
+					RemoveBiome( model );
 				}
-				biomeListView.Items.Remove( item );
+				biomeListBox.Items.Remove( model );
 			}
 		}
 
@@ -189,6 +172,25 @@ namespace Poc1.Bob.Controls.Biomes
 		}
 
 		#endregion
+
+		private void biomeListBox_ItemCheck( object sender, ItemCheckEventArgs e )
+		{
+			BiomeModel model = ( BiomeModel )biomeListBox.Items[ e.Index ];
+			if ( e.NewValue == CheckState.Checked )
+			{
+				if ( AddExistingBiome != null )
+				{
+					AddExistingBiome( model );
+				}
+			}
+			else
+			{
+				if ( RemoveBiome != null )
+				{
+					RemoveBiome( model );
+				}
+			}
+		}
 
 	}
 }

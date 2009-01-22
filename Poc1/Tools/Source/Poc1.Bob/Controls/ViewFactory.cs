@@ -47,6 +47,16 @@ namespace Poc1.Bob.Controls
 		}
 
 		/// <summary>
+		/// Creates a biome distribution view
+		/// </summary>
+		public IBiomeDistributionView CreateBiomeDistributionView( BiomeListLatitudeDistributionModel model )
+		{
+			BiomeDistributionDisplay view = new BiomeDistributionDisplay( );
+			view.Distributions = model;
+			return view;
+		}
+
+		/// <summary>
 		/// Creates a view with a universe camera
 		/// </summary>
 		public IUniCameraView CreateUniCameraView( )
@@ -69,7 +79,7 @@ namespace Poc1.Bob.Controls
 		/// <summary>
 		/// Creates a biome terrain texture view
 		/// </summary>
-		public IBiomeTerrainTextureView CreateBiomeTerrainTextureView( SelectedBiomeContext context )
+		public IBiomeTerrainTextureView CreateBiomeTerrainTextureView( SelectedBiomeContext context, BiomeListModel model )
 		{
 			IBiomeTerrainTextureView view = new BiomeTerrainTextureViewControl( );
 			new BiomeTerrainTextureController( context, view );
@@ -91,7 +101,7 @@ namespace Poc1.Bob.Controls
 		/// </summary>
 		public IBiomeListView CreateBiomeListView( SelectedBiomeContext context, BiomeListModel model )
 		{
-			IBiomeListView view = new BiomeListViewControl( );
+			IBiomeListView view = new BiomeListControl( );
 			new BiomeListController( context, model, view );
 			return view;
 		}

@@ -38,6 +38,8 @@
     <Compile Include="Classes\Biomes\Controllers\BiomeListController.cs" />
     <Compile Include="Classes\Biomes\Controllers\BiomeTerrainTextureController.cs" />
     <Compile Include="Classes\Biomes\Controllers\TerrainTypeListController.cs" />
+    <Compile Include="Classes\Biomes\Models\BiomeListLatitudeDistributionModel.cs" />
+    <Compile Include="Classes\Biomes\Models\BiomeLatitudeRangeDistribution.cs" />
     <Compile Include="Classes\Biomes\Models\BiomeListModel.cs" />
     <Compile Include="Classes\Biomes\Models\BiomeModel.cs" />
     <Compile Include="Classes\Biomes\TerrainTypeTextureBuilder.cs" />
@@ -56,6 +58,9 @@
     <Compile Include="Classes\Waves\WaveAnimatorController.cs" />
     <Compile Include="Classes\SelectedBiomeContext.cs" />
     <Compile Include="Classes\WorkspaceViewFactory.cs" />
+    <Compile Include="Interfaces\Biomes\Models\IBiomeDistribution.cs" />
+    <Compile Include="Interfaces\Biomes\Models\IBiomeListDistributionModel.cs" />
+    <Compile Include="Interfaces\Biomes\Views\IBiomeDistributionView.cs" />
     <Compile Include="Interfaces\Biomes\Views\IBiomeListView.cs" />
     <Compile Include="Interfaces\Biomes\Views\IBiomeTerrainTextureView.cs" />
     <Compile Include="Interfaces\Biomes\Views\ITerrainGeometryView.cs" />

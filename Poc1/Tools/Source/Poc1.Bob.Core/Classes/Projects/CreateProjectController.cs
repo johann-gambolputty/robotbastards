@@ -57,7 +57,7 @@ namespace Poc1.Bob.Core.Classes.Projects
 			}
 
 			AppLog.Info( "Creating new project " + m_View.SelectionView.SelectedProjectNode );
-			m_Context.SetInstance( m_Workspace, selectedProjectType.CreateProject( m_View.ProjectName ) );
+			m_Context.SetCurrentProject( m_Workspace, selectedProjectType.CreateProject( m_View.ProjectName ) );
 		}
 
 		#region Private Members

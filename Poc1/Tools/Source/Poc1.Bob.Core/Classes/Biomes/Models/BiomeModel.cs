@@ -40,32 +40,20 @@ namespace Poc1.Bob.Core.Classes.Biomes.Models
 			get { return m_TerrainTypes; }
 		}
 
-		/// <summary>
-		/// Gets/sets the lowest latitude bound of this biome (0 = pole, 1 = equator)
-		/// </summary>
-		public float LowestLatitude
-		{
-			get { return m_LowestLatitude; }
-			set { m_LowestLatitude = value; }
-		}
-
-		/// <summary>
-		/// Gets/sets the highest latitude bound of this biome (0 = pole, 1 = equator)
-		/// </summary>
-		public float HighestLatitude
-		{
-			get { return m_HighestLatitude; }
-			set { m_HighestLatitude = value; }
-		}
-
 		//	TODO: AP: Add vegetation
+
+		/// <summary>
+		/// Returns the name of this biome
+		/// </summary>
+		public override string ToString( )
+		{
+			return m_Name;
+		}
 
 		#region Private Members
 
 		private string m_Name;
 		private readonly TerrainTypeList m_TerrainTypes = new TerrainTypeList( );
-		private float m_LowestLatitude = 0;
-		private float m_HighestLatitude = 1;
 
 		#endregion
 	}

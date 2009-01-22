@@ -10,6 +10,7 @@
 		- H: Switch to dock pane docking layout
 		- H: Add build project selection (solar system, particle system)
 		- H: Extract interfaces for classes in tool assemblies - make them part of MVC pattern in bob
+		- L: Add error provider to create project form
 		- L: Don't rebuild entire template tree when template model changes in template view implementation
 		- L: Fix template icons in template view implementation
 		- L: Add a different default icon for template groups and template group containers
@@ -22,6 +23,12 @@
 		- M: Add profiling for particle systems
 		- L: Add uber-buffer/GPU-only particle systems
 		- L: Add support for loading assemblies containing particle components in dynamically
+	- Biomes
+		- H: Latitude-based biomes with different terrain geometries can be simulated by interpolating
+			fractal input parameters (rather than fractal outputs). 
+			- H: Do a per-vertex (possibly per-vertex-row, for fixed latitude?) lookup into a table that maps latitude to fractal parameters.
+			- H: Need to change SseRidgedFractal to do the lookup, and store 4 freq/gain/etc. in __m128 values (only 1 stored currently)
+				- H: Refactor, make a decorator class that does the mapping, feeds into inner class (template)
 	- Terrain
 		- M: Add crater terrain
 		- M: Add continent level fractal (low-frequency noise)

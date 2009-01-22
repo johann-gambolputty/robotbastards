@@ -9,6 +9,7 @@ using Poc1.Bob.Core.Interfaces;
 using Poc1.Tools.Waves;
 using Rb.Core.Utils;
 using WeifenLuo.WinFormsUI.Docking;
+using Poc1.Bob.Core.Interfaces.Projects;
 
 namespace Poc1.Bob.Projects
 {
@@ -27,8 +28,9 @@ namespace Poc1.Bob.Projects
 			m_ViewFactory = viewFactory;
 			m_Views = new DockingViewInfo[]
 				{
-					new DockingViewInfo( "Biome List View", CreateBiomeListView ),
-					new DockingViewInfo( "Biome Terrain Texture View", CreateBiomeTerrainTextureView ),
+					new DockingViewInfo( "Distribution Distribution View", CreateBiomeDistributionView ), 
+					new DockingViewInfo( "Distribution List View", CreateBiomeListView ), 
+					new DockingViewInfo( "Distribution Terrain Texture View", CreateBiomeTerrainTextureView ),
 					new DockingViewInfo( "Ocean Template View", CreateOceanTemplateView ), 
 					new DockingViewInfo( "Planet View", CreatePlanetView, DockState.Document )
 				};
@@ -48,6 +50,16 @@ namespace Poc1.Bob.Projects
 		private readonly DockingViewInfo[] m_Views;
 		private readonly BiomeListModel m_BiomeListModel = new BiomeListModel( );
 		private readonly WaveAnimationParameters m_WaveAnimationModel = new WaveAnimationParameters( );
+
+		/// <summary>
+		/// Creates a biome distribution view
+		/// </summary>
+		private Control CreateBiomeDistributionView( IWorkspace workspace )
+		{
+			Project currentProject = ( ( WorkspaceEx )workspace ).ProjectContext.CurrentProject; 
+			BiomeListLatitudeDistributionModel distributions = ( ( SpherePlanetProject )currentProject ).BiomeDistributions;
+			return ( Control )m_ViewFactory.CreateBiomeDistributionView( distributions );
+		}
 
 		/// <summary>
 		/// Creates an ocean template view
@@ -70,7 +82,9 @@ namespace Poc1.Bob.Projects
 		/// </summary>
 		private Control CreateBiomeTerrainTextureView( IWorkspace workspace )
 		{
-			return ( Control )WorkspaceViewFactory.CreateBiomeTerrainTextureView( ( WorkspaceEx )workspace, m_ViewFactory );
+			WorkspaceEx workspaceEx = ( WorkspaceEx )workspace;
+			SpherePlanetProject project = ( SpherePlanetProject )( workspaceEx .ProjectContext.CurrentProject );
+			return ( Control )WorkspaceViewFactory.CreateBiomeTerrainTextureView( m_ViewFactory, workspaceEx.SelectedBiomeContext, project.Biomes );
 		}
 
 		/// <summary>
@@ -80,7 +94,6 @@ namespace Poc1.Bob.Projects
 		{
 			return ( Control )m_ViewFactory.CreateUniCameraView( );
 		}
-
 
 		#endregion
 	}

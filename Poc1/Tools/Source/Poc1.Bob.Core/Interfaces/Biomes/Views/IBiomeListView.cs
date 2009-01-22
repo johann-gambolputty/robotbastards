@@ -14,6 +14,11 @@ namespace Poc1.Bob.Core.Interfaces.Biomes.Views
 		event ActionDelegates.Action AddNewBiome;
 
 		/// <summary>
+		/// Event raised when the user requests that a existing biome be added to the biome list
+		/// </summary>
+		event ActionDelegates.Action<BiomeModel> AddExistingBiome;
+
+		/// <summary>
 		/// Event raised when the user requests the removal of a biome
 		/// </summary>
 		event ActionDelegates.Action<BiomeModel> RemoveBiome;
@@ -22,5 +27,21 @@ namespace Poc1.Bob.Core.Interfaces.Biomes.Views
 		/// Event raised when the user selects a biome
 		/// </summary>
 		event ActionDelegates.Action<BiomeModel> BiomeSelected;
+
+		/// <summary>
+		/// Gets/sets the list of biomes to manage
+		/// </summary>
+		BiomeListModel BiomeList
+		{
+			get; set;
+		}
+
+		/// <summary>
+		/// Gets the currently selected biome
+		/// </summary>
+		BiomeModel SelectedBiome
+		{
+			get; set;
+		}
 	}
 }

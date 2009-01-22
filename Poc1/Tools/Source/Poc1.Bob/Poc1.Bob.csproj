@@ -53,11 +53,23 @@
     <Compile Include="Controls\Atmosphere\AtmosphereBuildControl.Designer.cs">
       <DependentUpon>AtmosphereBuildControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Biomes\BiomeListViewControl.cs">
+    <Compile Include="Controls\Biomes\BiomeDistributionDisplay.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Biomes\BiomeListViewControl.Designer.cs">
-      <DependentUpon>BiomeListViewControl.cs</DependentUpon>
+    <Compile Include="Controls\Biomes\BiomeDistributionDisplay.Designer.cs">
+      <DependentUpon>BiomeDistributionDisplay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Biomes\BiomeDistributionItemControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Biomes\BiomeDistributionItemControl.Designer.cs">
+      <DependentUpon>BiomeDistributionItemControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Biomes\BiomeListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Biomes\BiomeListControl.Designer.cs">
+      <DependentUpon>BiomeListControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Biomes\BiomeTerrainTextureViewControl.cs">
       <SubType>UserControl</SubType>
@@ -138,9 +150,17 @@
       <SubType>Designer</SubType>
       <DependentUpon>AtmosphereBuildControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Biomes\BiomeListViewControl.resx">
+    <EmbeddedResource Include="Controls\Biomes\BiomeDistributionDisplay.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>BiomeListViewControl.cs</DependentUpon>
+      <DependentUpon>BiomeDistributionDisplay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Biomes\BiomeDistributionItemControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>BiomeDistributionItemControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Biomes\BiomeListControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>BiomeListControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Biomes\BiomeTerrainTextureViewControl.resx">
       <SubType>Designer</SubType>
@@ -302,6 +322,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\DefaultProjectGroup.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MoveUp.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MoveUp1.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
