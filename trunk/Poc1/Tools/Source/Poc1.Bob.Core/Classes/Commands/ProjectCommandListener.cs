@@ -1,4 +1,5 @@
 using Bob.Core.Commands;
+using Bob.Core.Workspaces.Interfaces;
 using Poc1.Bob.Core.Interfaces;
 using Rb.Core.Utils;
 
@@ -24,6 +25,7 @@ namespace Poc1.Bob.Core.Classes.Commands
 		public void StartListening( )
 		{
 			ProjectCommands.NewProject.CommandTriggered += OnNewProject;
+			ProjectCommands.CloseProject.CommandTriggered += null;
 		}
 
 		/// <summary>
@@ -32,6 +34,7 @@ namespace Poc1.Bob.Core.Classes.Commands
 		public void StopListening( )
 		{
 			ProjectCommands.NewProject.CommandTriggered -= OnNewProject;
+			ProjectCommands.CloseProject.CommandTriggered -= null;
 		}
 
 		#region Private Members
@@ -44,6 +47,16 @@ namespace Poc1.Bob.Core.Classes.Commands
 		private void OnNewProject( WorkspaceCommandTriggerData triggerData )
 		{
 			WorkspaceViewFactory.ShowCreateProjectView( ( WorkspaceEx )triggerData.Workspace, m_Factory );
+		}
+
+		/// <summary>
+		/// Handles the CloseProject command
+		/// </summary>
+		private void OnCloseProject( WorkspaceCommandTriggerData triggerData )
+		{
+			//	TODO: AP: Need to remove the commands from the UI also
+			IWorkspace workspace = triggerData.Workspace;
+			workspace.MainDisplay.Views.EndLayout( workspace );
 		}
 
 		#endregion

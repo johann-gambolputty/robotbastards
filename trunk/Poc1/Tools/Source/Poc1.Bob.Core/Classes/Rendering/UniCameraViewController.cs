@@ -21,10 +21,10 @@ namespace Poc1.Bob.Core.Classes.Rendering
 			camera.PerspectiveZNear = 1.0f;
 			camera.PerspectiveZFar = 15000.0f;
 
-			//Units.Metres cameraPos = BuilderState.Instance.SpherePlanet.Radius;
-			//if ( BuilderState.Instance.SpherePlanet.TerrainModel != null )
+			//Units.Metres cameraPos = BuilderState.CurrentProject.SpherePlanet.Radius;
+			//if ( BuilderState.CurrentProject.SpherePlanet.TerrainModel != null )
 			//{
-			//    cameraPos += BuilderState.Instance.SpherePlanet.TerrainModel.MaximumHeight;
+			//    cameraPos += BuilderState.CurrentProject.SpherePlanet.TerrainModel.MaximumHeight;
 			//}
 			//else
 			//{

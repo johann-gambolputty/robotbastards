@@ -20,6 +20,7 @@ namespace Poc1.Bob.Core.Classes.Commands
 			{
 				return new Command[]
 					{
+						CloseProject,
 						NewProject
 					};
 			}
@@ -33,15 +34,25 @@ namespace Poc1.Bob.Core.Classes.Commands
 			get { return s_NewProject; }
 		}
 
+		/// <summary>
+		/// Gets the CloseProject command
+		/// </summary>
+		public static WorkspaceCommand CloseProject
+		{
+			get { return s_CloseProject; }
+		}
+
 		#endregion
 
 		#region Private Members
 
 		private readonly static WorkspaceCommand s_NewProject;
+		private readonly static WorkspaceCommand s_CloseProject;
 
 		static ProjectCommands( )
 		{
 			s_NewProject = WorkspaceCommand.NewCommand( DefaultCommands.FileCommands, "newProject", "&New Project", "Creates a new project" );
+			s_CloseProject = WorkspaceCommand.NewCommand( DefaultCommands.FileCommands, "closeProject", "&Close Project", "Closes the current project" );
 		}
 
 		#endregion

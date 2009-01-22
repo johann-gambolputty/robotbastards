@@ -500,6 +500,7 @@ namespace Rb.Common.Controls.Forms.Graphs
 		{
 			if ( !RelateControlSizeToDataArea )
 			{
+				Invalidate( );
 				return;
 			}
 			//	Change the size of the data area, by the change in size of the display area

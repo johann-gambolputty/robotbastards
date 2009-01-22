@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using Rb.Common.Controls.Graphs.Interfaces;
+using System.Drawing.Drawing2D;
 
 namespace Rb.Common.Controls.Graphs.Classes
 {
@@ -10,6 +11,51 @@ namespace Rb.Common.Controls.Graphs.Classes
 	/// </summary>
 	public static class GraphUtils
 	{
+		/// <summary>
+		/// Creates a 2-colour colour blend
+		/// </summary>
+		public static ColorBlend CreateColourBlend( Color c0, float t0, Color c1, float t1 )
+		{
+			ColorBlend blend = new ColorBlend( 2 );
+			blend.Colors[ 0 ] = c0;
+			blend.Colors[ 1 ] = c1;
+			blend.Positions[ 0 ] = t0;
+			blend.Positions[ 1 ] = t1;
+			return blend;
+		}
+
+		/// <summary>
+		/// Creates a 3-colour colour blend
+		/// </summary>
+		public static ColorBlend CreateColourBlend( Color c0, float t0, Color c1, float t1, Color c2, float t2 )
+		{
+			ColorBlend blend = new ColorBlend( 3 );
+			blend.Colors[ 0 ] = c0;
+			blend.Colors[ 1 ] = c1;
+			blend.Colors[ 2 ] = c2;
+			blend.Positions[ 0 ] = t0;
+			blend.Positions[ 1 ] = t1;
+			blend.Positions[ 2 ] = t2;
+			return blend;
+		}
+
+		/// <summary>
+		/// Creates a 4-colour colour blend
+		/// </summary>
+		public static ColorBlend CreateColourBlend( Color c0, float t0, Color c1, float t1, Color c2, float t2, Color c3, float t3 )
+		{
+			ColorBlend blend = new ColorBlend( 4 );
+			blend.Colors[ 0 ] = c0;
+			blend.Colors[ 1 ] = c1;
+			blend.Colors[ 2 ] = c2;
+			blend.Colors[ 3 ] = c3;
+			blend.Positions[ 0 ] = t0;
+			blend.Positions[ 1 ] = t1;
+			blend.Positions[ 2 ] = t2;
+			blend.Positions[ 3 ] = t3;
+			return blend;
+		}
+
 		/// <summary>
 		/// Multiplies a colour by a specified fraction
 		/// </summary>

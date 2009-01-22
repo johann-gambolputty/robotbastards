@@ -32,9 +32,9 @@ namespace Poc1.Bob.Core.Classes
 		/// <summary>
 		/// Creates a biome terrain texture view
 		/// </summary>
-		public static IBiomeTerrainTextureView CreateBiomeTerrainTextureView( WorkspaceEx workspace, IViewFactory viewFactory )
+		public static IBiomeTerrainTextureView CreateBiomeTerrainTextureView( IViewFactory viewFactory, SelectedBiomeContext context, BiomeListModel model )
 		{
-			return viewFactory.CreateBiomeTerrainTextureView( workspace.SelectedBiomeContext );
+			return viewFactory.CreateBiomeTerrainTextureView( context, model );
 		}
 
 		/// <summary>

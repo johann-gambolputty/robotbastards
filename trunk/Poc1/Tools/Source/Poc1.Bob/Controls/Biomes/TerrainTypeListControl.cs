@@ -33,7 +33,6 @@ namespace Poc1.Bob.Controls.Biomes
 			get { return m_TerrainTypes; }
 			set
 			{
-				Arguments.CheckNotNull( value, "value" );
 				UnbindFromTerrainTypeList( );
 				m_TerrainTypes = value;
 				BindToTerrainTypeList( );

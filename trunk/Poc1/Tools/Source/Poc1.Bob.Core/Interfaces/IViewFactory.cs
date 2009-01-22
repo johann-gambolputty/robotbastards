@@ -21,6 +21,11 @@ namespace Poc1.Bob.Core.Interfaces
 		void ShowCreateProjectView( IWorkspace workspace, ProjectContext context, ProjectGroupContainer rootGroup );
 
 		/// <summary>
+		/// Creates a biome distribution view
+		/// </summary>
+		IBiomeDistributionView CreateBiomeDistributionView( BiomeListLatitudeDistributionModel model );
+
+		/// <summary>
 		/// Creates a view with a universe camera
 		/// </summary>
 		IUniCameraView CreateUniCameraView( );
@@ -28,7 +33,7 @@ namespace Poc1.Bob.Core.Interfaces
 		/// <summary>
 		/// Creates a biome terrain texture view
 		/// </summary>
-		IBiomeTerrainTextureView CreateBiomeTerrainTextureView( SelectedBiomeContext context );
+		IBiomeTerrainTextureView CreateBiomeTerrainTextureView( SelectedBiomeContext context, BiomeListModel model );
 
 		/// <summary>
 		/// Creates an wave animator view

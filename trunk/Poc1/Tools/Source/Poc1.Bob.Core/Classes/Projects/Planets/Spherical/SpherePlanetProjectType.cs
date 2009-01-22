@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using Poc1.Bob.Core.Interfaces.Projects;
-using Poc1.Universe.Planets.Spherical.Models.Templates;
 using Rb.Core.Utils;
 
 namespace Poc1.Bob.Core.Classes.Projects.Planets.Spherical

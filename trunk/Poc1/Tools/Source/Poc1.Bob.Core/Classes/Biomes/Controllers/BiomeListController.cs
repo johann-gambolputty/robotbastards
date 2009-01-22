@@ -13,20 +13,26 @@ namespace Poc1.Bob.Core.Classes.Biomes.Controllers
 		/// Setup constructor
 		/// </summary>
 		/// <param name="context">Selected biome context</param>
-		/// <param name="model">Model being controlled</param>
+		/// <param name="biomes">Biome list being controlled</param>
 		/// <param name="view">View to watch</param>
 		/// <exception cref="System.ArgumentNullException">Thrown if workspace, model or view are null</exception>
-		public BiomeListController( SelectedBiomeContext context, BiomeListModel model, IBiomeListView view )
+		public BiomeListController( SelectedBiomeContext context, BiomeListModel biomes, IBiomeListView view )
 		{
 			Arguments.CheckNotNull( context, "context");
-			Arguments.CheckNotNull( model, "model" );
+			Arguments.CheckNotNull( biomes, "biomes" );
 			Arguments.CheckNotNull( view, "view" );
 			m_Context = context;
-			m_Model = model;
+			m_Model = biomes;
+
+			view.BiomeList = biomes;
 
 			view.AddNewBiome += OnAddNewBiome;
+			view.AddExistingBiome += OnAddExistingBiome;
 			view.RemoveBiome += OnRemoveBiome;
 			view.BiomeSelected += OnBiomeSelected;
+
+			BiomeModel biome = biomes.Models.Count > 0 ? biomes.Models[ 0 ] : null;
+			view.SelectedBiome = biome;
 		}
 
 		#region Private Members
@@ -48,7 +54,16 @@ namespace Poc1.Bob.Core.Classes.Biomes.Controllers
 		/// </summary>
 		private void OnAddNewBiome( )
 		{
-			m_Model.Models.Add( new BiomeModel( "New Biome" ) );
+			BiomeModel model = new BiomeModel( "New Biome" );
+			m_Model.Models.Add( model );
+		}
+
+		/// <summary>
+		/// Adds an existing biome to the list model
+		/// </summary>
+		private void OnAddExistingBiome( BiomeModel model )
+		{
+
 		}
 
 		/// <summary>
@@ -57,6 +72,9 @@ namespace Poc1.Bob.Core.Classes.Biomes.Controllers
 		private void OnRemoveBiome( BiomeModel model )
 		{
 			Arguments.CheckNotNull( model, "model" );
+
+			//	TODO: AP: Move this functionality into the biome list model
+			//	Restribute the latitude range
 			m_Model.Models.Remove( model );
 		}
 

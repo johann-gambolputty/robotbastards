@@ -23,15 +23,8 @@ namespace Rb.Common.Controls.Forms.Graphs
 			Color dark = GraphUtils.ScaleColour( Color.LightSteelBlue, 0.9f );
 			Color light = Color.White;
 
-			m_Blends = new ColorBlend( 3 );
-			m_Blends.Colors[ 0 ] = light; m_Blends.Positions[ 0 ] = 0;
-			m_Blends.Colors[ 1 ] = light; m_Blends.Positions[ 1 ] = 0.75f;
-			m_Blends.Colors[ 2 ] = dark;  m_Blends.Positions[ 2 ] = 1;
-
-			m_SelectedBlends = new ColorBlend( 3 );
-			m_SelectedBlends.Colors[ 0 ] = dark;  m_SelectedBlends.Positions[ 0 ] = 0;
-			m_SelectedBlends.Colors[ 1 ] = dark;  m_SelectedBlends.Positions[ 1 ] = 0.75f;
-			m_SelectedBlends.Colors[ 2 ] = light; m_SelectedBlends.Positions[ 2 ] = 1;
+			m_Blends = GraphUtils.CreateColourBlend( light, 0, light, 0.75f, dark, 1 );
+			m_SelectedBlends = GraphUtils.CreateColourBlend( dark, 0, dark, 0.75f, light, 1 );
 		}
 
 		/// <summary>

@@ -28,6 +28,7 @@ namespace Poc1.Bob.Controls.Biomes
 		/// </summary>
 		private void InitializeComponent( )
 		{
+			Poc1.Bob.Core.Classes.Biomes.Models.BiomeListModel biomeListModel1 = new Poc1.Bob.Core.Classes.Biomes.Models.BiomeListModel( );
 			this.slopeDistributionControl = new Poc1.Bob.Controls.Biomes.TerrainTypeDistributionControl( );
 			this.altitudeDistributionControl = new Poc1.Bob.Controls.Biomes.TerrainTypeDistributionControl( );
 			this.terrainTypeTextureListControl1 = new Poc1.Bob.Controls.Biomes.TerrainTypeTextureListControl( );
@@ -36,36 +37,37 @@ namespace Poc1.Bob.Controls.Biomes
 			// slopeDistributionControl
 			// 
 			this.slopeDistributionControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.slopeDistributionControl.Location = new System.Drawing.Point( 0, 336 );
+			this.slopeDistributionControl.Location = new System.Drawing.Point( 0, 362 );
 			this.slopeDistributionControl.Name = "slopeDistributionControl";
-			this.slopeDistributionControl.Size = new System.Drawing.Size( 262, 193 );
+			this.slopeDistributionControl.Size = new System.Drawing.Size( 262, 167 );
 			this.slopeDistributionControl.TabIndex = 2;
 			// 
 			// altitudeDistributionControl
 			// 
 			this.altitudeDistributionControl.Dock = System.Windows.Forms.DockStyle.Top;
-			this.altitudeDistributionControl.Location = new System.Drawing.Point( 0, 157 );
+			this.altitudeDistributionControl.Location = new System.Drawing.Point( 0, 212 );
 			this.altitudeDistributionControl.Name = "altitudeDistributionControl";
-			this.altitudeDistributionControl.Size = new System.Drawing.Size( 262, 179 );
+			this.altitudeDistributionControl.Size = new System.Drawing.Size( 262, 150 );
 			this.altitudeDistributionControl.TabIndex = 1;
 			// 
 			// terrainTypeTextureListControl1
 			// 
 			this.terrainTypeTextureListControl1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.terrainTypeTextureListControl1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.terrainTypeTextureListControl1.Location = new System.Drawing.Point( 0, 0 );
+			this.terrainTypeTextureListControl1.Location = new System.Drawing.Point( 0, 97 );
 			this.terrainTypeTextureListControl1.Name = "terrainTypeTextureListControl1";
-			this.terrainTypeTextureListControl1.Size = new System.Drawing.Size( 262, 157 );
+			this.terrainTypeTextureListControl1.Size = new System.Drawing.Size( 262, 115 );
 			this.terrainTypeTextureListControl1.TabIndex = 0;
+			this.terrainTypeTextureListControl1.TerrainTypes = null;
 			// 
-			// BiomeTerrainTextureControl
+			// BiomeTerrainTextureViewControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add( this.slopeDistributionControl );
 			this.Controls.Add( this.altitudeDistributionControl );
 			this.Controls.Add( this.terrainTypeTextureListControl1 );
-			this.Name = "BiomeTerrainTextureControl";
+			this.Name = "BiomeTerrainTextureViewControl";
 			this.Size = new System.Drawing.Size( 262, 529 );
 			this.ResumeLayout( false );
 
