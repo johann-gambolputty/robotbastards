@@ -8,9 +8,9 @@ using System.Collections.Generic;
 
 namespace Poc1.Bob.Controls.Biomes
 {
-	public partial class BiomeDistributionDisplay : UserControl, IBiomeDistributionView
+	public partial class BiomeLatitudeDistributionDisplay : UserControl, IBiomeDistributionView<BiomeLatitudeRangeDistribution>
 	{
-		public BiomeDistributionDisplay( )
+		public BiomeLatitudeDistributionDisplay( )
 		{
 			InitializeComponent( );
 			DoubleBuffered = true;
@@ -18,11 +18,6 @@ namespace Poc1.Bob.Controls.Biomes
 
 		private void BiomeDistributionDisplay_Paint( object sender, PaintEventArgs e )
 		{
-			if ( Distributions == null )
-			{
-				return;
-			}
-
 			e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
 
 			int radius = Size.Height;
@@ -38,10 +33,6 @@ namespace Poc1.Bob.Controls.Biomes
 				transitionArea.Width -= 1;
 				e.Graphics.FillRectangle( brush, transitionArea );
 			}
-			//using ( SolidBrush brush = new SolidBrush( colour1 ) )
-			//{
-			//    e.Graphics.FillRectangle( brush, StartOfActiveAreaX, 0, Width - StartOfActiveAreaX, Height );
-			//}
 			foreach ( BiomeDistributionItemControl control in m_ItemControls )
 			{
 				int loY = GetBiomeLowLatitudeInPixels( control );
@@ -61,22 +52,56 @@ namespace Poc1.Bob.Controls.Biomes
 					e.Graphics.DrawPath( m_BorderPen, path );
 				}
 			}
-
 		}
 
 		#region IBiomeDistributionView Members
 
 		/// <summary>
-		/// Gets/sets the displayed biome list distribution model
+		/// Adds a distribution model to the view
 		/// </summary>
-		public BiomeListLatitudeDistributionModel Distributions
+		public void AddDistribution( BiomeLatitudeRangeDistribution distribution )
 		{
-			get { return m_Distributions; }
-			set
+			//	Create a control for the distribution
+			BiomeDistributionItemControl control = CreateControlForDistribution( distribution );
+			m_ItemControls.Add( control );
+			Controls.Add( control );
+
+			Rebuild( );
+		}
+
+		/// <summary>
+		/// Removes a distribution model from the view
+		/// </summary>
+		public void RemoveDistribution( BiomeLatitudeRangeDistribution distribution )
+		{
+			foreach ( BiomeDistributionItemControl itemControl in m_ItemControls )
 			{
-				UnlinkCurrentModel( );
-				m_Distributions = value;
-				LinkCurrentModel( );
+				if ( itemControl.Distribution == distribution )
+				{
+					itemControl.MoveDown -= OnMoveBiomeDown;
+					itemControl.MoveUp -= OnMoveBiomeUp;
+
+					m_ItemControls.Remove( itemControl );
+					Controls.Remove( itemControl );
+					Rebuild( );
+					return;
+				}
+			}
+			throw new ArgumentException( string.Format( "Unable to find distrubtion \"{0}\" in control list", distribution.Biome.Name ) );
+		}
+
+		/// <summary>
+		/// Refreshes the distribution
+		/// </summary>
+		public void RefreshDistribution( BiomeLatitudeRangeDistribution distribution )
+		{
+			foreach ( BiomeDistributionItemControl itemControl in m_ItemControls )
+			{
+				if ( itemControl.Distribution == distribution )
+				{
+					itemControl.DisplayName = distribution.Biome.Name;
+					return;
+				}
 			}
 		}
 
@@ -87,9 +112,8 @@ namespace Poc1.Bob.Controls.Biomes
 		private BiomeDistributionItemControl m_Upper;
 		private BiomeDistributionItemControl m_Lower;
 		private int m_LastY = 0;
-		private Pen m_BorderPen = new Pen( Color.Black, 2 );
+		private readonly Pen m_BorderPen = new Pen( Color.Black, 2 );
 		private readonly List<BiomeDistributionItemControl> m_ItemControls = new List<BiomeDistributionItemControl>( );
-		private BiomeListLatitudeDistributionModel m_Distributions;
 
 		/// <summary>
 		/// Creates a path surrounding this control
@@ -138,63 +162,17 @@ namespace Poc1.Bob.Controls.Biomes
 
 			return path;
 		}
-		/// <summary>
-		/// Unlinks the current model to the view
-		/// </summary>
-		private void UnlinkCurrentModel( )
-		{
-			if ( m_Distributions == null )
-			{
-				return;
-			}
-			m_Distributions.DistributionAdded -= OnDistributionChanged;
-			m_Distributions.DistributionRemoved -= OnDistributionChanged;
-		}
-
-		/// <summary>
-		/// Links the current model to the view
-		/// </summary>
-		private void LinkCurrentModel( )
-		{
-			if ( m_Distributions == null )
-			{
-				return;
-			}
-			m_Distributions.DistributionAdded += OnDistributionChanged;
-			m_Distributions.DistributionRemoved += OnDistributionChanged;
-
-			Rebuild( );
-		}
-
-		/// <summary>
-		/// Removes all the controls in a list
-		/// </summary>
-		private void RemoveControls( )
-		{
-			foreach ( BiomeDistributionItemControl control in m_ItemControls )
-			{
-				Controls.Remove( control );
-			}
-			m_ItemControls.Clear( );
-		}
 
 		/// <summary>
 		/// Rebuilds the display dynamic controls
 		/// </summary>
 		private void Rebuild( )
 		{
-			RemoveControls( );
-			if ( Distributions == null || Distributions.Distributions.Count == 0 )
+			//	Enable/disable control movement (TODO: AP: Make this part of the controller?)
+			for ( int controlIndex = 0; controlIndex < m_ItemControls.Count; ++controlIndex )
 			{
-				Invalidate( );
-				return;
-			}
-
-			foreach ( BiomeLatitudeRangeDistribution distribution in Distributions.Distributions )
-			{
-				BiomeDistributionItemControl control = CreateControlForDistribution( distribution );
-				m_ItemControls.Add( control );
-				Controls.Add( control );
+				m_ItemControls[ controlIndex ].EnableMoveDown( controlIndex > 0 );
+				m_ItemControls[ controlIndex ].EnableMoveUp( controlIndex < m_ItemControls.Count - 1 );
 			}
 
 			UpdateItemControlSizes( );
@@ -224,7 +202,7 @@ namespace Poc1.Bob.Controls.Biomes
 		{
 			int y = 0;
 			int width = EndOfControlAreaX;
-			int height = ( int )( DisplayRectangle.Height / ( float )Distributions.NumberOfDistributions );
+			int height = ( int )( DisplayRectangle.Height / ( float )m_ItemControls.Count );
 			foreach ( BiomeDistributionItemControl control in m_ItemControls )
 			{
 				control.SetBounds( 0, y, width, height );
@@ -269,32 +247,40 @@ namespace Poc1.Bob.Controls.Biomes
 		{
 			if ( x < StartOfActiveAreaX )
 			{
+				//	X coordinate is outside active error - early out
 				upper = null;
 				lower = null;
 				return false;
 			}
+			//	Run through all the distribution controls
 			int lastIndex = m_ItemControls.Count - 1;
 			for ( int controlIndex = 0; controlIndex < m_ItemControls.Count; ++controlIndex )
 			{
+				//	Get the latitude range for the current control
 				BiomeDistributionItemControl control = m_ItemControls[ controlIndex ];
 				int lo = GetBiomeLowLatitudeInPixels( control );
 				int hi = GetBiomeHighLatitudeInPixels( control );
 				if ( ( Math.Abs( y - lo ) < 4 ) && ( controlIndex > 0 ) )
 				{
+					//	Y position is close to the low latitude line, and is not the first
+					//	control (can't move lower latitude on first control - must be zero always)
 					upper = m_ItemControls[ controlIndex - 1 ];
 					lower = m_ItemControls[ controlIndex ];
-					return false;
+					return true;
 				}
 				if ( ( Math.Abs( y - hi ) < 4 ) && ( controlIndex < lastIndex ) )
 				{
+					//	Y position is close to the high latitude line, and is not the last
+					//	control (can't move higher latitude on last control - must be one always)
 					upper = m_ItemControls[ controlIndex ];
 					lower = m_ItemControls[ controlIndex + 1 ];
-					return false;
+					return true;
 				}
 			}
+			//	No controls found
 			upper = null;
 			lower = null;
-			return true;
+			return false;
 		}
 
 		/// <summary>
@@ -306,9 +292,15 @@ namespace Poc1.Bob.Controls.Biomes
 			{
 				return;
 			}
-			BiomeLatitudeRangeDistribution tmpDistribution = m_ItemControls[ index ].Distribution;
-			m_ItemControls[ index ].Distribution = m_ItemControls[ swapIndex ].Distribution;
-			m_ItemControls[ swapIndex ].Distribution = tmpDistribution;
+			//BiomeLatitudeRangeDistribution tmpDistribution = m_ItemControls[ index ].Distribution;
+			//m_ItemControls[ index ].Distribution = m_ItemControls[ swapIndex ].Distribution;
+			//m_ItemControls[ swapIndex ].Distribution = tmpDistribution;
+
+			BiomeModel model0 = m_ItemControls[ index ].Distribution.Biome;
+			BiomeModel model1 = m_ItemControls[ swapIndex ].Distribution.Biome;
+
+			m_ItemControls[ index ].Distribution.Biome = model1;
+			m_ItemControls[ swapIndex ].Distribution.Biome = model0;
 		}
 
 
@@ -335,14 +327,6 @@ namespace Poc1.Bob.Controls.Biomes
 		}
 
 		/// <summary>
-		/// Handles the biome list changing
-		/// </summary>
-		private void OnDistributionChanged( BiomeLatitudeRangeDistribution distribution )
-		{
-			Rebuild( );
-		}
-
-		/// <summary>
 		/// Handles control resizing
 		/// </summary>
 		private void BiomeDistributionDisplay_Resize( object sender, EventArgs e )
@@ -361,7 +345,6 @@ namespace Poc1.Bob.Controls.Biomes
 			m_Lower = null;
 			Cursor = Cursors.Arrow;
 		}
-
 
 		/// <summary>
 		/// Handles control mouse move
@@ -389,11 +372,11 @@ namespace Poc1.Bob.Controls.Biomes
 			BiomeDistributionItemControl upper, lower;
 			if ( SelectDistributionsToMove( e.X, e.Y, out upper, out lower ) )
 			{
-				Cursor = Cursors.Arrow;
+				Cursor = Cursors.HSplit;
 			}
 			else
 			{
-				Cursor = Cursors.HSplit;
+				Cursor = Cursors.Arrow;
 			}
 			m_LastY = e.Y;
 		}
@@ -403,14 +386,7 @@ namespace Poc1.Bob.Controls.Biomes
 		/// </summary>
 		private void BiomeDistributionDisplay_MouseDown( object sender, MouseEventArgs e )
 		{
-			if ( SelectDistributionsToMove( e.X, e.Y, out m_Upper, out m_Lower ) )
-			{
-				Cursor = Cursors.HSplit;
-			}
-			else
-			{
-				Cursor = Cursors.Arrow;
-			}
+			SelectDistributionsToMove( e.X, e.Y, out m_Upper, out m_Lower );
 		}
 
 		/// <summary>

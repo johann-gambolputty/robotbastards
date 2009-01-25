@@ -128,7 +128,7 @@ namespace Poc1.Bob.Core.Classes.Biomes.Models
 						if ( m_Distributions.Count == 0 )
 						{
 							//	Distribution list is empty - new distribution covers the entire range
-							m_Distributions.Add( new BiomeLatitudeRangeDistribution( newBiome, 0, 1 ) );
+							AddDistribution( 0, new BiomeLatitudeRangeDistribution( newBiome, 0, 1 ) );
 							return;
 						}
 
@@ -144,13 +144,26 @@ namespace Poc1.Bob.Core.Classes.Biomes.Models
 
 				case ListChangedType.ItemDeleted :
 					{
+						BiomeLatitudeRangeDistribution distribution = m_Distributions[ e.NewIndex ];
+						distribution.DistributionChanged -= OnDistributionChanged;
+
+						if ( m_Distributions.Count > 1 )
+						{
+							int mergeIndex = e.NewIndex == 0 ? 1 : e.NewIndex - 1;
+							m_Distributions[ mergeIndex ].Merge( distribution );
+						}
+						m_Distributions.RemoveAt( e.NewIndex );
+						if ( DistributionRemoved != null )
+						{
+							DistributionRemoved( distribution );
+						}
 						break;
 					}
 			}
 		}
 
 		/// <summary>
-		/// Gets a biome distribution from a biome
+		/// Gets a biome distribution from a biome. Returns null if no distribution is associated with a biome
 		/// </summary>
 		private BiomeLatitudeRangeDistribution GetBiomeModelDistribution( BiomeModel model )
 		{
@@ -162,7 +175,7 @@ namespace Poc1.Bob.Core.Classes.Biomes.Models
 					return distribution;
 				}
 			}
-			throw new ArgumentException( string.Format( "No distribution is associated with biome \"{0}\"", model.Name ) );
+			return null;
 		}
 
 		#endregion

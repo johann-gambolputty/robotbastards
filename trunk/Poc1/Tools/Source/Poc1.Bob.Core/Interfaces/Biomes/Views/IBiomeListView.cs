@@ -9,19 +9,14 @@ namespace Poc1.Bob.Core.Interfaces.Biomes.Views
 	public interface IBiomeListView
 	{
 		/// <summary>
-		/// Event raised when the user requests that a new biome be added to the biome list
+		/// Event raised when the user requests that a new biome be created
 		/// </summary>
-		event ActionDelegates.Action AddNewBiome;
+		event ActionDelegates.Action OnCreateBiome;
 
 		/// <summary>
-		/// Event raised when the user requests that a existing biome be added to the biome list
+		/// Event raised when the user requests that the currently selected biome be added to the biome list
 		/// </summary>
-		event ActionDelegates.Action<BiomeModel> AddExistingBiome;
-
-		/// <summary>
-		/// Event raised when the user requests the removal of a biome
-		/// </summary>
-		event ActionDelegates.Action<BiomeModel> RemoveBiome;
+		event ActionDelegates.Action<BiomeModel> OnAddBiome;
 
 		/// <summary>
 		/// Event raised when the user selects a biome
@@ -29,19 +24,32 @@ namespace Poc1.Bob.Core.Interfaces.Biomes.Views
 		event ActionDelegates.Action<BiomeModel> BiomeSelected;
 
 		/// <summary>
-		/// Gets/sets the list of biomes to manage
+		/// Event raised when the user requests that the currently selected biome be removed from the biome list
 		/// </summary>
-		BiomeListModel BiomeList
-		{
-			get; set;
-		}
+		event ActionDelegates.Action<BiomeModel> OnRemoveBiome;
 
 		/// <summary>
-		/// Gets the currently selected biome
+		/// Event raised when the user requests that the currently selected biome be deleted
 		/// </summary>
-		BiomeModel SelectedBiome
-		{
-			get; set;
-		}
+		event ActionDelegates.Action<BiomeModel> OnDeleteBiome;
+
+
+		/// <summary>
+		/// Adds a biome to the view
+		/// </summary>
+		void AddBiome( BiomeModel model, bool selected );
+
+		/// <summary>
+		/// Removes a biome from the view
+		/// </summary>
+		void RemoveBiome( BiomeModel model );
+
+		/// <summary>
+		/// Selects/deselects a biome
+		/// </summary>
+		/// <param name="model">Biome to select</param>
+		/// <param name="selected">Selection/deselection flag</param>
+		void SelectBiome( BiomeModel model, bool selected );
+
 	}
 }

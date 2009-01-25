@@ -1,6 +1,5 @@
 using System.Windows.Forms;
 using Poc1.Bob.Core.Classes.Biomes.Models;
-using System.ComponentModel;
 using Rb.Core.Utils;
 using System;
 using System.Collections.Generic;
@@ -15,70 +14,25 @@ namespace Poc1.Bob.Controls.Biomes
 			InitializeComponent( );
 		}
 
-
 		/// <summary>
-		/// Unbinds this list view from the current model
+		/// Gets the currently selected biome model
 		/// </summary>
-		private void UnbindModel( )
+		public BiomeModel SelectedBiome
 		{
-			if ( m_ListModel == null )
-			{
-				return;
-			}
-		}
-
-		/// <summary>
-		/// Binds this list view to the current model
-		/// </summary>
-		private void BindModel( )
-		{
-			biomeListBox.Items.Clear( );
-			if ( m_ListModel == null )
-			{
-				return;
-			}
-
-			foreach ( BiomeModel model in m_ListModel.Models )
-			{
-				biomeListBox.Items.Add( model );
-			}
-
-			m_ListModel.Models.ListChanged += OnListChanged;
-		}
-
-		/// <summary>
-		/// Handles changes to the list model
-		/// </summary>
-		private void OnListChanged( object sender, ListChangedEventArgs args )
-		{
-			switch ( args.ListChangedType )
-			{
-				case ListChangedType.ItemAdded:
-					BiomeModel model = BiomeList.Models[ args.NewIndex ];
-					biomeListBox.Items.Insert( args.NewIndex, model );
-					break;
-				case ListChangedType.ItemDeleted:
-					biomeListBox.Items.RemoveAt( args.NewIndex );
-					break;
-			}
+			get { return biomeListBox.SelectedItem as BiomeModel; }
 		}
 
 		#region IBiomeListView Members
 
 		/// <summary>
-		/// Event raised when the user requests that a new biome be added to the biome list
+		/// Event raised when the user requests that a new biome be created
 		/// </summary>
-		public event ActionDelegates.Action AddNewBiome;
+		public event ActionDelegates.Action OnCreateBiome;
 
 		/// <summary>
-		/// Event raised when the user requests that a existing biome be added to the biome list
+		/// Event raised when the user requests that the currently selected biome be added to the biome list
 		/// </summary>
-		public event ActionDelegates.Action<BiomeModel> AddExistingBiome;
-
-		/// <summary>
-		/// Event raised when the user requests the removal of a biome
-		/// </summary>
-		public event ActionDelegates.Action<BiomeModel> RemoveBiome;
+		public event ActionDelegates.Action<BiomeModel> OnAddBiome;
 
 		/// <summary>
 		/// Event raised when the user selects a biome
@@ -86,65 +40,56 @@ namespace Poc1.Bob.Controls.Biomes
 		public event ActionDelegates.Action<BiomeModel> BiomeSelected;
 
 		/// <summary>
-		/// Gets/sets the list of biomes to manage
+		/// Event raised when the user requests that the currently selected biome be removed from the biome list
 		/// </summary>
-		public BiomeListModel BiomeList
+		public event ActionDelegates.Action<BiomeModel> OnRemoveBiome;
+
+		/// <summary>
+		/// Event raised when the user requests that the currently selected biome be deleted
+		/// </summary>
+		public event ActionDelegates.Action<BiomeModel> OnDeleteBiome;
+
+		/// <summary>
+		/// Adds a biome to the view
+		/// </summary>
+		public void AddBiome( BiomeModel model, bool selected )
 		{
-			get { return m_ListModel; }
-			set
-			{
-				if ( m_ListModel != value )
-				{
-					UnbindModel( );
-					m_ListModel = value;
-					BindModel( );
-				}
-			}
+			Arguments.CheckNotNull( model, "model" );
+			int index = biomeListBox.Items.Add( model );
+			biomeListBox.SetItemChecked( index, selected );
 		}
 
 		/// <summary>
-		/// Gets the currently selected biome
+		/// Removes a biome from the view
 		/// </summary>
-		public BiomeModel SelectedBiome
+		public void RemoveBiome( BiomeModel model )
 		{
-			get
-			{
-				return biomeListBox.SelectedItems.Count > 0 ? ( BiomeModel )biomeListBox.SelectedItem : null;
-			}
-			set
-			{
-				if ( value == null )
-				{
-					biomeListBox.SelectedItems.Clear( );
-					return;
-				}
-				foreach ( BiomeModel model in biomeListBox.Items )
-				{
-					if ( model == value )
-					{
-						biomeListBox.SelectedItem = model;
-						break;
-					}
-				}
-				throw new ArgumentException( string.Format( "Distribution \"{0}\" did not exist in the list displayed by this control", value.Name ), "value" );
-			}
+			Arguments.CheckNotNull( model, "model" );
+			biomeListBox.Items.Remove( model );
+		}
+
+		/// <summary>
+		/// Selects/deselects a biome
+		/// </summary>
+		/// <param name="model">Biome to select</param>
+		/// <param name="selected">Selection/deselection flag</param>
+		public void SelectBiome( BiomeModel model, bool selected )
+		{
+			Arguments.CheckNotNull( model, "model" );
+			int index = biomeListBox.Items.IndexOf( model );
+			System.Diagnostics.Debug.Assert( index != -1 );
+
+			biomeListBox.SetItemChecked( index, selected );
 		}
 
 		#endregion
 
 		#region Private Members
 
-		private BiomeListModel m_ListModel;
-
-		private void addButton_Click( object sender, EventArgs e )
-		{
-			if ( AddNewBiome != null )
-			{
-				AddNewBiome( );
-			}
-		}
-
-		private void removeButton_Click( object sender, EventArgs e )
+		/// <summary>
+		/// Deletes the selected biomes
+		/// </summary>
+		private void DeleteSelected( )
 		{
 			if ( biomeListBox.SelectedItems.Count == 0 )
 			{
@@ -154,12 +99,26 @@ namespace Poc1.Bob.Controls.Biomes
 			List<BiomeModel> itemsToRemove = EnumerableAdapter<BiomeModel>.ToList( biomeListBox.SelectedItems );
 			foreach ( BiomeModel model in itemsToRemove )
 			{
-				if ( RemoveBiome != null )
+				if ( OnDeleteBiome != null )
 				{
-					RemoveBiome( model );
+					OnDeleteBiome( model );
 				}
-				biomeListBox.Items.Remove( model );
 			}
+		}
+
+		#region Event Handlers
+
+		private void createButton_Click( object sender, EventArgs e )
+		{
+			if ( OnCreateBiome != null )
+			{
+				OnCreateBiome( );
+			}
+		}
+
+		private void deleteButton_Click( object sender, EventArgs e )
+		{
+			DeleteSelected( );
 		}
 
 		private void biomeListView_SelectedIndexChanged( object sender, EventArgs e )
@@ -171,26 +130,36 @@ namespace Poc1.Bob.Controls.Biomes
 			}
 		}
 
-		#endregion
-
 		private void biomeListBox_ItemCheck( object sender, ItemCheckEventArgs e )
 		{
 			BiomeModel model = ( BiomeModel )biomeListBox.Items[ e.Index ];
 			if ( e.NewValue == CheckState.Checked )
 			{
-				if ( AddExistingBiome != null )
+				if ( OnAddBiome != null )
 				{
-					AddExistingBiome( model );
+					OnAddBiome( model );
 				}
 			}
 			else
 			{
-				if ( RemoveBiome != null )
+				if ( OnRemoveBiome != null )
 				{
-					RemoveBiome( model );
+					OnRemoveBiome( model );
 				}
 			}
 		}
+
+		private void biomeListBox_KeyUp( object sender, KeyEventArgs e )
+		{
+			if ( e.KeyCode == Keys.Delete )
+			{
+				DeleteSelected( );
+			}
+		}
+
+		#endregion
+
+		#endregion
 
 	}
 }

@@ -48,10 +48,10 @@ namespace Poc1.Bob.Core.Classes
 		/// <summary>
 		/// Creates a biome list view
 		/// </summary>
-		public static IBiomeListView CreateBiomeListView( WorkspaceEx workspace, IViewFactory viewFactory, BiomeListModel model )
+		public static IBiomeListView CreateBiomeListView( WorkspaceEx workspace, IViewFactory viewFactory, BiomeListModel allBiomes, BiomeListModel currentBiomes )
 		{
 			//	TODO: AP: ...
-			return viewFactory.CreateBiomeListView( workspace.SelectedBiomeContext, model );
+			return viewFactory.CreateBiomeListView( workspace.SelectedBiomeContext, allBiomes, currentBiomes );
 		}
 
 	}

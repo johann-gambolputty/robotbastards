@@ -35,6 +35,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Biomes\Controllers\BiomeDistributionController.cs" />
     <Compile Include="Classes\Biomes\Controllers\BiomeListController.cs" />
     <Compile Include="Classes\Biomes\Controllers\BiomeTerrainTextureController.cs" />
     <Compile Include="Classes\Biomes\Controllers\TerrainTypeListController.cs" />
@@ -47,7 +48,10 @@
     <Compile Include="Classes\Commands\DefaultCommands.cs" />
     <Compile Include="Classes\Commands\ProjectCommandListener.cs" />
     <Compile Include="Classes\Commands\ProjectCommands.cs" />
+    <Compile Include="Classes\Projects\Planets\PlanetInstanceUpdater.cs" />
+    <Compile Include="Classes\Projects\Planets\PlanetProject.cs" />
     <Compile Include="Classes\Projects\Planets\Spherical\SpherePlanetProject.cs" />
+    <Compile Include="Classes\Rendering\PlanetViewController.cs" />
     <Compile Include="Classes\WorkspaceEx.cs" />
     <Compile Include="Classes\Rendering\UniCameraViewController.cs" />
     <Compile Include="Classes\Projects\CreateProjectController.cs" />
@@ -63,6 +67,7 @@
     <Compile Include="Interfaces\Biomes\Views\IBiomeDistributionView.cs" />
     <Compile Include="Interfaces\Biomes\Views\IBiomeListView.cs" />
     <Compile Include="Interfaces\Biomes\Views\IBiomeTerrainTextureView.cs" />
+    <Compile Include="Interfaces\Biomes\Views\INewBiomeView.cs" />
     <Compile Include="Interfaces\Biomes\Views\ITerrainGeometryView.cs" />
     <Compile Include="Interfaces\Biomes\Views\ITerrainTypeDistributionView.cs" />
     <Compile Include="Interfaces\Biomes\Views\ITerrainTypeListView.cs" />
@@ -70,6 +75,7 @@
     <Compile Include="Interfaces\Biomes\Views\ITerrainTypeView.cs" />
     <Compile Include="Interfaces\Commands\ICommandProvider.cs" />
     <Compile Include="Interfaces\IViewFactory.cs" />
+    <Compile Include="Interfaces\Planets\IPlanetModelTemplateView.cs" />
     <Compile Include="Interfaces\Projects\ICreateProjectView.cs" />
     <Compile Include="Interfaces\Rendering\ICameraView.cs" />
     <Compile Include="Interfaces\Rendering\IUniCameraView.cs" />

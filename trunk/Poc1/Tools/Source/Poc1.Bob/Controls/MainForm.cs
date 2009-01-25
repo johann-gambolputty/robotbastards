@@ -8,14 +8,11 @@ using Bob.Core.Windows.Forms.Ui;
 using Bob.Core.Windows.Forms.Ui.Docking;
 using Bob.Core.Workspaces.Interfaces;
 using Poc1.Bob.Core.Classes;
-using Poc1.Bob.Core.Classes.Biomes.Models;
 using Poc1.Bob.Core.Classes.Commands;
 using Poc1.Bob.Core.Classes.Projects.Planets.Spherical;
 using Poc1.Bob.Core.Interfaces.Projects;
 using Poc1.Bob.Projects;
 using Rb.Interaction.Classes;
-using WeifenLuo.WinFormsUI.Docking;
-using Poc1.Bob.Controls.Biomes;
 
 namespace Poc1.Bob.Controls
 {
@@ -63,22 +60,22 @@ namespace Poc1.Bob.Controls
 			ProjectCommandListener listener = new ProjectCommandListener( m_ViewFactory );
 			listener.StartListening( );
 
-			DockContent content = new DockContent( );
+			//DockContent content = new DockContent( );
 
-			content.Text = "test";
-			BiomeDistributionDisplay control = new BiomeDistributionDisplay( );
-			BiomeListModel biomes = new BiomeListModel( );
-			biomes.Models.Add( new BiomeModel( "arctic" ) );
-			biomes.Models.Add( new BiomeModel( "temperate" ) );
-			biomes.Models.Add( new BiomeModel( "desert" ) );
-			control.Distributions = new BiomeListLatitudeDistributionModel( biomes );
-			content.Controls.Add( control );
-			content.AutoScroll = true;
-			content.HideOnClose = true;
+			//content.Text = "test";
+			//BiomeDistributionDisplay control = new BiomeDistributionDisplay( );
+			//BiomeListModel biomes = new BiomeListModel( );
+			//biomes.Models.Add( new BiomeModel( "arctic" ) );
+			//biomes.Models.Add( new BiomeModel( "temperate" ) );
+			//biomes.Models.Add( new BiomeModel( "desert" ) );
+			//control.Distributions = new BiomeListLatitudeDistributionModel( biomes );
+			//content.Controls.Add( control );
+			//content.AutoScroll = true;
+			//content.HideOnClose = true;
 
-			control.Dock = DockStyle.Fill;
+			//control.Dock = DockStyle.Fill;
 
-			content.Show( mainDockPanel, DockState.Float );
+			//content.Show( mainDockPanel, DockState.Float );
 		}
 
 		#region IMainApplicationDisplay Members

@@ -23,7 +23,7 @@ namespace Poc1.Universe.Planets.Spherical.Models.Templates
 
 		#region Private Members
 
-		private Range<Units.Metres> m_Radius;
+		private Range<Units.Metres> m_Radius = new Range<Units.Metres>( new Units.Metres( 5000 ), new Units.Metres( 10000000 ) );
 
 		#endregion
 
@@ -35,12 +35,12 @@ namespace Poc1.Universe.Planets.Spherical.Models.Templates
 			return new SpherePlanetModel( );
 		}
 
-		/// <summary>
-		/// Builds the planet model
-		/// </summary>
-		protected override void BuildPlanetModel( IPlanetModel planetModel, Poc1.Universe.Interfaces.Planets.Models.Templates.ModelTemplateInstanceContext context )
-		{
-			base.BuildPlanetModel( planetModel, context );
-		}
+		///// <summary>
+		///// Builds the planet model
+		///// </summary>
+		//protected override void BuildPlanetModel( IPlanetModel planetModel, Poc1.Universe.Interfaces.Planets.Models.Templates.ModelTemplateInstanceContext context )
+		//{
+		//    base.BuildPlanetModel( planetModel, context );
+		//}
 	}
 }

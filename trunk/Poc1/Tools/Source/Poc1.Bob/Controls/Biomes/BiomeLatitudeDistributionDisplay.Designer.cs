@@ -1,6 +1,6 @@
 namespace Poc1.Bob.Controls.Biomes
 {
-	partial class BiomeDistributionDisplay
+	partial class BiomeLatitudeDistributionDisplay
 	{
 		/// <summary> 
 		/// Required designer variable.

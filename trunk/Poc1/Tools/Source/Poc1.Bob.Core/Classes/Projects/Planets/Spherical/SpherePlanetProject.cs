@@ -1,5 +1,4 @@
 using Poc1.Bob.Core.Classes.Biomes.Models;
-using Poc1.Bob.Core.Interfaces.Projects;
 using Poc1.Universe.Planets.Spherical.Models.Templates;
 
 namespace Poc1.Bob.Core.Classes.Projects.Planets.Spherical
@@ -7,7 +6,7 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets.Spherical
 	/// <summary>
 	/// Sphere planet project instance
 	/// </summary>
-	public class SpherePlanetProject : Project
+	public class SpherePlanetProject : PlanetProject
 	{
 		/// <summary>
 		/// Setup constructor
@@ -15,25 +14,25 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets.Spherical
 		/// <param name="projectType">Project type that created this project</param>
 		/// <param name="name">Project name</param>
 		public SpherePlanetProject( SpherePlanetProjectType projectType, string name ) :
-			base( projectType, name, null, null )
+			base( projectType, name, new SpherePlanetModelTemplate( ) )
 		{
-			m_BiomeDistributions = new BiomeListLatitudeDistributionModel( m_Biomes );
+			m_BiomeDistributions = new BiomeListLatitudeDistributionModel( m_CurrentBiomes );
 		}
 
 		/// <summary>
-		/// Gets the biome list
+		/// Gets the entire list of biomes that can be used
 		/// </summary>
-		public BiomeListModel Biomes
+		public BiomeListModel AllBiomes
 		{
-			get { return m_Biomes; }
+			get { return m_AllBiomes; }
 		}
 
 		/// <summary>
-		/// Gets the sphere planet template
+		/// Gets the subset of biomes that are being used by this project
 		/// </summary>
-		public SpherePlanetModelTemplate PlanetTemplate
+		public BiomeListModel CurrentBiomes
 		{
-			get { return m_PlanetTemplate; }
+			get { return m_CurrentBiomes; }
 		}
 
 		/// <summary>
@@ -47,10 +46,9 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets.Spherical
 		#region Private Members
 
 		private readonly BiomeListLatitudeDistributionModel m_BiomeDistributions;
-		private readonly BiomeListModel m_Biomes = new BiomeListModel( );
-		private readonly SpherePlanetModelTemplate m_PlanetTemplate = new SpherePlanetModelTemplate( );
+		private readonly BiomeListModel m_AllBiomes = new BiomeListModel( );
+		private readonly BiomeListModel m_CurrentBiomes = new BiomeListModel( );
 
 		#endregion
-
 	}
 }

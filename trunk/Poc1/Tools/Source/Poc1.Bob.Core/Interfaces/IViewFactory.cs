@@ -3,10 +3,14 @@ using Poc1.Bob.Core.Classes;
 using Poc1.Bob.Core.Classes.Biomes.Models;
 using Poc1.Bob.Core.Classes.Projects;
 using Poc1.Bob.Core.Interfaces.Biomes.Views;
+using Poc1.Bob.Core.Interfaces.Planets;
 using Poc1.Bob.Core.Interfaces.Projects;
 using Poc1.Bob.Core.Interfaces.Rendering;
 using Poc1.Bob.Core.Interfaces.Waves;
 using Poc1.Tools.Waves;
+using Poc1.Universe.Interfaces.Planets;
+using Poc1.Universe.Interfaces.Planets.Models;
+using Poc1.Universe.Interfaces.Planets.Models.Templates;
 
 namespace Poc1.Bob.Core.Interfaces
 {
@@ -21,14 +25,24 @@ namespace Poc1.Bob.Core.Interfaces
 		void ShowCreateProjectView( IWorkspace workspace, ProjectContext context, ProjectGroupContainer rootGroup );
 
 		/// <summary>
+		/// Creates a view used to edit the parameters of a planet template
+		/// </summary>
+		IPlanetModelTemplateView CreatePlanetTemplateView( IPlanetModelTemplate template, IPlanetModel instance );
+
+		/// <summary>
+		/// Create a new biome view
+		/// </summary>
+		INewBiomeView CreateNewBiomeView( );
+
+		/// <summary>
 		/// Creates a biome distribution view
 		/// </summary>
 		IBiomeDistributionView CreateBiomeDistributionView( BiomeListLatitudeDistributionModel model );
 
 		/// <summary>
-		/// Creates a view with a universe camera
+		/// Creates a universe view on a planet
 		/// </summary>
-		IUniCameraView CreateUniCameraView( );
+		IUniCameraView CreatePlanetView( IPlanet planet );
 
 		/// <summary>
 		/// Creates a biome terrain texture view
@@ -43,7 +57,7 @@ namespace Poc1.Bob.Core.Interfaces
 		/// <summary>
 		/// Creates a biome list view
 		/// </summary>
-		IBiomeListView CreateBiomeListView( SelectedBiomeContext context, BiomeListModel model );
+		IBiomeListView CreateBiomeListView( SelectedBiomeContext context, BiomeListModel allBiomes, BiomeListModel currentBiomes );
 
 	}
 }

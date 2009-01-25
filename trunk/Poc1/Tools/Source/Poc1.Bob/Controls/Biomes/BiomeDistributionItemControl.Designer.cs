@@ -35,7 +35,8 @@ namespace Poc1.Bob.Controls.Biomes
 			// 
 			// upButton
 			// 
-			this.upButton.Location = new System.Drawing.Point( 14, 22 );
+			this.upButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.upButton.Location = new System.Drawing.Point( 14, 6 );
 			this.upButton.Name = "upButton";
 			this.upButton.Size = new System.Drawing.Size( 24, 16 );
 			this.upButton.TabIndex = 0;
@@ -46,7 +47,7 @@ namespace Poc1.Bob.Controls.Biomes
 			// 
 			this.biomeName.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.biomeName.AutoSize = true;
-			this.biomeName.Location = new System.Drawing.Point( 44, 35 );
+			this.biomeName.Location = new System.Drawing.Point( 44, 19 );
 			this.biomeName.Name = "biomeName";
 			this.biomeName.Size = new System.Drawing.Size( 35, 13 );
 			this.biomeName.TabIndex = 2;
@@ -54,7 +55,8 @@ namespace Poc1.Bob.Controls.Biomes
 			// 
 			// downButton
 			// 
-			this.downButton.Location = new System.Drawing.Point( 14, 44 );
+			this.downButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.downButton.Location = new System.Drawing.Point( 14, 28 );
 			this.downButton.Name = "downButton";
 			this.downButton.Size = new System.Drawing.Size( 24, 16 );
 			this.downButton.TabIndex = 3;
@@ -69,7 +71,7 @@ namespace Poc1.Bob.Controls.Biomes
 			this.Controls.Add( this.biomeName );
 			this.Controls.Add( this.upButton );
 			this.Name = "BiomeDistributionItemControl";
-			this.Size = new System.Drawing.Size( 130, 82 );
+			this.Size = new System.Drawing.Size( 130, 50 );
 			this.ResumeLayout( false );
 			this.PerformLayout( );
 

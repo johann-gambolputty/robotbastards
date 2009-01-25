@@ -20,5 +20,10 @@ namespace Poc1.Bob.Core.Interfaces.Biomes.Models
 		/// a new distribution representing the other area, associated with the specified biome
 		/// </summary>
 		IBiomeDistribution Split( BiomeModel biome );
+
+		/// <summary>
+		/// Merges this distribution with another
+		/// </summary>
+		void Merge( IBiomeDistribution distribution );
 	}
 }

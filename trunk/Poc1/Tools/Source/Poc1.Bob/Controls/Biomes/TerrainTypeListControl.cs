@@ -49,6 +49,8 @@ namespace Poc1.Bob.Controls.Biomes
 			{
 				return;
 			}
+			m_TerrainTypes.TerrainTypeAdded -= OnAddedTerrainType;
+			m_TerrainTypes.TerrainTypeRemoved -= OnRemovedTerrainType;
 		}
 
 		/// <summary>
@@ -68,6 +70,8 @@ namespace Poc1.Bob.Controls.Biomes
 				{
 					throw new InvalidOperationException( "Controls created for terrain types must implement ITerrainTypeView" );
 				}
+				control.Enabled = true;
+				control.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
 				terrainTypeLayoutPanel.Controls.Add( control );
 			}
 			AddNewTerrainTypeControl( new TerrainType( ), false );
@@ -145,7 +149,7 @@ namespace Poc1.Bob.Controls.Biomes
 		/// </summary>
 		protected virtual Control CreateControlForTerrainType( TerrainType terrainType )
 		{
-			TerrainTypeTextureSelectorControl control = new TerrainTypeTextureSelectorControl( );
+			TerrainTypeTextureItemControl control = new TerrainTypeTextureItemControl( );
 			control.TerrainType = terrainType;
 			return control;
 		}
@@ -180,14 +184,15 @@ namespace Poc1.Bob.Controls.Biomes
 			{
 				terrainTypeLayoutPanel.Controls.Add( control );
 			}
-			( ( ITerrainTypeView )control ).RemoveTerrainType +=
-				delegate
-				{
-					terrainTypeLayoutPanel.Controls.Remove( control );
-				};
+			( ( ITerrainTypeView )control ).RemoveTerrainType += OnRemoveTerrainType;
 		}
 
 		#region Event Handlers
+
+		private void OnRemoveTerrainType( ITerrainTypeView view )
+		{
+			terrainTypeLayoutPanel.Controls.Remove( ( Control )view );	
+		}
 
 		private void terrainTypeLayoutPanel_MouseClick( object sender, MouseEventArgs e )
 		{
