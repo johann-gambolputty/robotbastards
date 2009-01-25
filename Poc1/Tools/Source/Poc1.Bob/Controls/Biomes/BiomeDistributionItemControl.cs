@@ -37,8 +37,33 @@ namespace Poc1.Bob.Controls.Biomes
 			set
 			{
 				m_Distribution = value;
-				biomeName.Text = m_Distribution == null ? "" : m_Distribution.Biome.Name;
+				DisplayName = m_Distribution == null ? "" : m_Distribution.Biome.Name;
 			}
+		}
+
+		/// <summary>
+		/// Gets/sets the display name
+		/// </summary>
+		public string DisplayName
+		{
+			get { return biomeName.Text; }
+			set { biomeName.Text = value; }
+		}
+
+		/// <summary>
+		/// Enables/disables the move up button
+		/// </summary>
+		public void EnableMoveUp( bool enable )
+		{
+			downButton.Enabled = enable;
+		}
+
+		/// <summary>
+		/// Enables/disables the move down button
+		/// </summary>
+		public void EnableMoveDown( bool enable )
+		{
+			upButton.Enabled = enable;
 		}
 
 		private readonly static Bitmap s_UpArrow;

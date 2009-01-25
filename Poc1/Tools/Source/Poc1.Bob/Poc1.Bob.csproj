@@ -53,11 +53,11 @@
     <Compile Include="Controls\Atmosphere\AtmosphereBuildControl.Designer.cs">
       <DependentUpon>AtmosphereBuildControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Biomes\BiomeDistributionDisplay.cs">
+    <Compile Include="Controls\Biomes\BiomeLatitudeDistributionDisplay.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Biomes\BiomeDistributionDisplay.Designer.cs">
-      <DependentUpon>BiomeDistributionDisplay.cs</DependentUpon>
+    <Compile Include="Controls\Biomes\BiomeLatitudeDistributionDisplay.Designer.cs">
+      <DependentUpon>BiomeLatitudeDistributionDisplay.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Biomes\BiomeDistributionItemControl.cs">
       <SubType>UserControl</SubType>
@@ -70,6 +70,12 @@
     </Compile>
     <Compile Include="Controls\Biomes\BiomeListControl.Designer.cs">
       <DependentUpon>BiomeListControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Biomes\NewBiomeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\Biomes\NewBiomeForm.Designer.cs">
+      <DependentUpon>NewBiomeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Biomes\BiomeTerrainTextureViewControl.cs">
       <SubType>UserControl</SubType>
@@ -107,11 +113,17 @@
     <Compile Include="Controls\Biomes\TerrainTypeDistributionControl.Designer.cs">
       <DependentUpon>TerrainTypeDistributionControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Biomes\TerrainTypeTextureSelectorControl.cs">
+    <Compile Include="Controls\Biomes\TerrainTypeTextureItemControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Biomes\TerrainTypeTextureSelectorControl.Designer.cs">
-      <DependentUpon>TerrainTypeTextureSelectorControl.cs</DependentUpon>
+    <Compile Include="Controls\Biomes\TerrainTypeTextureItemControl.Designer.cs">
+      <DependentUpon>TerrainTypeTextureItemControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Planet\SpherePlanetModelTemplateViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Planet\SpherePlanetModelTemplateViewControl.Designer.cs">
+      <DependentUpon>SpherePlanetModelTemplateViewControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Projects\CreateProjectForm.cs">
       <SubType>Form</SubType>
@@ -124,6 +136,12 @@
     </Compile>
     <Compile Include="Controls\Projects\ProjectTypeSelectorView.Designer.cs">
       <DependentUpon>ProjectTypeSelectorView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RangeSlider.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\RangeSlider.Designer.cs">
+      <DependentUpon>RangeSlider.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Rendering\UniCameraViewControl.cs">
       <SubType>UserControl</SubType>
@@ -150,9 +168,9 @@
       <SubType>Designer</SubType>
       <DependentUpon>AtmosphereBuildControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Biomes\BiomeDistributionDisplay.resx">
+    <EmbeddedResource Include="Controls\Biomes\BiomeLatitudeDistributionDisplay.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>BiomeDistributionDisplay.cs</DependentUpon>
+      <DependentUpon>BiomeLatitudeDistributionDisplay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Biomes\BiomeDistributionItemControl.resx">
       <SubType>Designer</SubType>
@@ -161,6 +179,10 @@
     <EmbeddedResource Include="Controls\Biomes\BiomeListControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>BiomeListControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Biomes\NewBiomeForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>NewBiomeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Biomes\BiomeTerrainTextureViewControl.resx">
       <SubType>Designer</SubType>
@@ -182,9 +204,13 @@
       <SubType>Designer</SubType>
       <DependentUpon>TerrainTypeDistributionControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Biomes\TerrainTypeTextureSelectorControl.resx">
+    <EmbeddedResource Include="Controls\Biomes\TerrainTypeTextureItemControl.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>TerrainTypeTextureSelectorControl.cs</DependentUpon>
+      <DependentUpon>TerrainTypeTextureItemControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Planet\SpherePlanetModelTemplateViewControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SpherePlanetModelTemplateViewControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Projects\CreateProjectForm.resx">
       <SubType>Designer</SubType>
@@ -193,6 +219,10 @@
     <EmbeddedResource Include="Controls\Projects\ProjectTypeSelectorView.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ProjectTypeSelectorView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\RangeSlider.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>RangeSlider.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Rendering\UniCameraViewControl.resx">
       <DependentUpon>UniCameraViewControl.cs</DependentUpon>

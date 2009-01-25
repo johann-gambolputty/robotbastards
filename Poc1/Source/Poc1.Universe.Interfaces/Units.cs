@@ -391,9 +391,8 @@ namespace Poc1.Universe.Interfaces
 				return metres.Value;
 			}
 
-
 			#region Operators
-			
+
 			/// <summary>
 			/// Addition of two metre values
 			/// </summary>

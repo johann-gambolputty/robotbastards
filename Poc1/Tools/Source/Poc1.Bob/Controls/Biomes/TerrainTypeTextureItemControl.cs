@@ -13,26 +13,26 @@ using Rectangle=System.Drawing.Rectangle;
 
 namespace Poc1.Bob.Controls.Biomes
 {
-	public partial class TerrainTypeTextureSelectorControl : UserControl, ITerrainTypeTextureView
+	public partial class TerrainTypeTextureItemControl : UserControl, ITerrainTypeTextureView
 	{
 		#region Events
 
 		/// <summary>
 		/// Event raised when this control is selected
 		/// </summary>
-		public event Action<TerrainTypeTextureSelectorControl> Selected;
+		public event Action<TerrainTypeTextureItemControl> Selected;
 
 		/// <summary>
 		/// Event raised when the underlying terrain type is modified by this control
 		/// </summary>
-		public event Action<TerrainTypeTextureSelectorControl> Changed;
+		public event Action<TerrainTypeTextureItemControl> Changed;
 		
 		#endregion Events
 
 		/// <summary>
 		/// Sets up this control
 		/// </summary>
-		public TerrainTypeTextureSelectorControl( )
+		public TerrainTypeTextureItemControl( )
 		{
 			InitializeComponent( );
 
@@ -201,7 +201,7 @@ namespace Poc1.Bob.Controls.Biomes
 		{
 			if ( RemoveTerrainType != null )
 			{
-				RemoveTerrainType( );
+				RemoveTerrainType( this );
 			}
 		}
 
@@ -262,7 +262,7 @@ namespace Poc1.Bob.Controls.Biomes
 		/// <summary>
 		/// Event, raised when the user requests that the terrain type be removed
 		/// </summary>
-		public event ActionDelegates.Action RemoveTerrainType;
+		public event ActionDelegates.Action<ITerrainTypeView> RemoveTerrainType;
 
 		/// <summary>
 		/// Gets the terrain type associated with this control

@@ -1,6 +1,6 @@
 namespace Poc1.Bob.Controls.Biomes
 {
-	partial class TerrainTypeTextureSelectorControl
+	partial class TerrainTypeTextureItemControl
 	{
 		/// <summary> 
 		/// Required designer variable.

@@ -1,4 +1,5 @@
 using Poc1.Bob.Core.Classes.Biomes.Models;
+using Poc1.Bob.Core.Interfaces;
 using Poc1.Bob.Core.Interfaces.Biomes.Views;
 using Rb.Core.Utils;
 
@@ -12,32 +13,46 @@ namespace Poc1.Bob.Core.Classes.Biomes.Controllers
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
+		/// <param name="viewFactory">View factory</param>
 		/// <param name="context">Selected biome context</param>
-		/// <param name="biomes">Biome list being controlled</param>
+		/// <param name="completeBiomeList">List of all biomes that can be selected</param>
+		/// <param name="currentBiomeList">Current biome list</param>
 		/// <param name="view">View to watch</param>
 		/// <exception cref="System.ArgumentNullException">Thrown if workspace, model or view are null</exception>
-		public BiomeListController( SelectedBiomeContext context, BiomeListModel biomes, IBiomeListView view )
+		public BiomeListController( IViewFactory viewFactory, SelectedBiomeContext context, BiomeListModel completeBiomeList, BiomeListModel currentBiomeList, IBiomeListView view )
 		{
+			Arguments.CheckNotNull( viewFactory, "viewFactory" );
 			Arguments.CheckNotNull( context, "context");
-			Arguments.CheckNotNull( biomes, "biomes" );
+			Arguments.CheckNotNull( completeBiomeList, "completeBiomeList" );
+			Arguments.CheckNotNull( currentBiomeList, "currentBiomeList" );
 			Arguments.CheckNotNull( view, "view" );
+
+			m_ViewFactory = viewFactory;
 			m_Context = context;
-			m_Model = biomes;
+			m_AllBiomes = completeBiomeList;
+			m_CurrentBiomes = currentBiomeList;
 
-			view.BiomeList = biomes;
+			//	Run through all the available biomes
+			foreach ( BiomeModel model in m_AllBiomes.Models )
+			{
+				//	Add the current biome to the view. Set it as selected if it is in the current biome list
+				view.AddBiome( model, m_CurrentBiomes.Models.IndexOf( model ) != -1 );
+			}
 
-			view.AddNewBiome += OnAddNewBiome;
-			view.AddExistingBiome += OnAddExistingBiome;
-			view.RemoveBiome += OnRemoveBiome;
+			view.OnCreateBiome += OnCreateBiome;
+			view.OnAddBiome += OnAddBiome;
+			view.OnRemoveBiome += OnRemoveBiome;
 			view.BiomeSelected += OnBiomeSelected;
-
-			BiomeModel biome = biomes.Models.Count > 0 ? biomes.Models[ 0 ] : null;
-			view.SelectedBiome = biome;
+			view.OnDeleteBiome += OnDeleteBiome;
+			m_View = view;
 		}
 
 		#region Private Members
 
-		private readonly BiomeListModel m_Model;
+		private readonly IViewFactory m_ViewFactory;
+		private readonly IBiomeListView m_View;
+		private readonly BiomeListModel m_AllBiomes;
+		private readonly BiomeListModel m_CurrentBiomes;
 		private readonly SelectedBiomeContext m_Context;
 
 		/// <summary>
@@ -45,25 +60,40 @@ namespace Poc1.Bob.Core.Classes.Biomes.Controllers
 		/// </summary>
 		private void OnBiomeSelected( BiomeModel biome )
 		{
-			Arguments.CheckNotNull( biome, "biome" );
-			m_Context.SelectedBiome = biome;
+			if ( biome != null )
+			{
+				m_Context.SelectedBiome = biome;
+			}
 		}
 
 		/// <summary>
 		/// Adds a new default biome to the list model
 		/// </summary>
-		private void OnAddNewBiome( )
+		private void OnCreateBiome( )
 		{
-			BiomeModel model = new BiomeModel( "New Biome" );
-			m_Model.Models.Add( model );
+			INewBiomeView newBiomeView = m_ViewFactory.CreateNewBiomeView( );
+			if ( !newBiomeView.ShowView( ) )
+			{
+				return;
+			}
+
+			BiomeModel model = new BiomeModel( newBiomeView.BiomeName );
+			m_AllBiomes.Models.Add( model );
+			m_View.AddBiome( model, true );
 		}
 
 		/// <summary>
 		/// Adds an existing biome to the list model
 		/// </summary>
-		private void OnAddExistingBiome( BiomeModel model )
+		private void OnAddBiome( BiomeModel model )
 		{
-
+			Arguments.CheckNotNull( model, "model" );
+			if ( m_CurrentBiomes.Models.Contains( model ) )
+			{
+				return;
+			}
+			m_CurrentBiomes.Models.Add( model );
+			m_View.SelectBiome( model, true );
 		}
 
 		/// <summary>
@@ -72,10 +102,31 @@ namespace Poc1.Bob.Core.Classes.Biomes.Controllers
 		private void OnRemoveBiome( BiomeModel model )
 		{
 			Arguments.CheckNotNull( model, "model" );
+			if ( !m_CurrentBiomes.Models.Contains( model ) )
+			{
+				return;
+			}
+			m_CurrentBiomes.Models.Remove( model );
+			m_View.SelectBiome( model, false );
+		}
 
-			//	TODO: AP: Move this functionality into the biome list model
-			//	Restribute the latitude range
-			m_Model.Models.Remove( model );
+		/// <summary>
+		/// Deletes a biome from the list model
+		/// </summary>
+		private void OnDeleteBiome( BiomeModel model )
+		{
+			Arguments.CheckNotNull( model, "model" );
+			m_AllBiomes.Models.Remove( model );
+
+			if ( m_CurrentBiomes.Models.Contains( model ) )
+			{
+				m_CurrentBiomes.Models.Remove( model );
+				m_View.RemoveBiome( model );
+			}
+			if ( m_Context.SelectedBiome == model )
+			{
+				m_Context.SelectedBiome = null;
+			}
 		}
 
 		#endregion

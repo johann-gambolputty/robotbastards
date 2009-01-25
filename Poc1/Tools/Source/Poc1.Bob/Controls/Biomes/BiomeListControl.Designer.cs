@@ -29,16 +29,16 @@ namespace Poc1.Bob.Controls.Biomes
 		private void InitializeComponent( )
 		{
 			this.panel1 = new System.Windows.Forms.Panel( );
-			this.removeButton = new System.Windows.Forms.Button( );
-			this.addButton = new System.Windows.Forms.Button( );
+			this.deleteButton = new System.Windows.Forms.Button( );
+			this.createButton = new System.Windows.Forms.Button( );
 			this.biomeListBox = new System.Windows.Forms.CheckedListBox( );
 			this.panel1.SuspendLayout( );
 			this.SuspendLayout( );
 			// 
 			// panel1
 			// 
-			this.panel1.Controls.Add( this.removeButton );
-			this.panel1.Controls.Add( this.addButton );
+			this.panel1.Controls.Add( this.deleteButton );
+			this.panel1.Controls.Add( this.createButton );
 			this.panel1.Controls.Add( this.biomeListBox );
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point( 0, 0 );
@@ -46,27 +46,27 @@ namespace Poc1.Bob.Controls.Biomes
 			this.panel1.Size = new System.Drawing.Size( 175, 215 );
 			this.panel1.TabIndex = 0;
 			// 
-			// removeButton
+			// deleteButton
 			// 
-			this.removeButton.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) );
-			this.removeButton.Location = new System.Drawing.Point( 56, 182 );
-			this.removeButton.Name = "removeButton";
-			this.removeButton.Size = new System.Drawing.Size( 57, 23 );
-			this.removeButton.TabIndex = 5;
-			this.removeButton.Text = "Remove";
-			this.removeButton.UseVisualStyleBackColor = true;
-			this.removeButton.Click += new System.EventHandler( this.removeButton_Click );
+			this.deleteButton.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) );
+			this.deleteButton.Location = new System.Drawing.Point( 69, 182 );
+			this.deleteButton.Name = "deleteButton";
+			this.deleteButton.Size = new System.Drawing.Size( 60, 23 );
+			this.deleteButton.TabIndex = 5;
+			this.deleteButton.Text = "Delete";
+			this.deleteButton.UseVisualStyleBackColor = true;
+			this.deleteButton.Click += new System.EventHandler( this.deleteButton_Click );
 			// 
-			// addButton
+			// createButton
 			// 
-			this.addButton.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) );
-			this.addButton.Location = new System.Drawing.Point( 3, 182 );
-			this.addButton.Name = "addButton";
-			this.addButton.Size = new System.Drawing.Size( 47, 23 );
-			this.addButton.TabIndex = 4;
-			this.addButton.Text = "Add";
-			this.addButton.UseVisualStyleBackColor = true;
-			this.addButton.Click += new System.EventHandler( this.addButton_Click );
+			this.createButton.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) );
+			this.createButton.Location = new System.Drawing.Point( 3, 182 );
+			this.createButton.Name = "createButton";
+			this.createButton.Size = new System.Drawing.Size( 60, 23 );
+			this.createButton.TabIndex = 4;
+			this.createButton.Text = "Create";
+			this.createButton.UseVisualStyleBackColor = true;
+			this.createButton.Click += new System.EventHandler( this.createButton_Click );
 			// 
 			// biomeListBox
 			// 
@@ -80,6 +80,7 @@ namespace Poc1.Bob.Controls.Biomes
 			this.biomeListBox.TabIndex = 3;
 			this.biomeListBox.SelectedIndexChanged += new System.EventHandler( this.biomeListView_SelectedIndexChanged );
 			this.biomeListBox.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler( this.biomeListBox_ItemCheck );
+			this.biomeListBox.KeyUp += new System.Windows.Forms.KeyEventHandler( this.biomeListBox_KeyUp );
 			// 
 			// BiomeListControl
 			// 
@@ -96,8 +97,8 @@ namespace Poc1.Bob.Controls.Biomes
 		#endregion
 
 		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.Button removeButton;
-		private System.Windows.Forms.Button addButton;
+		private System.Windows.Forms.Button deleteButton;
+		private System.Windows.Forms.Button createButton;
 		private System.Windows.Forms.CheckedListBox biomeListBox;
 
 	}

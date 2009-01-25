@@ -1,6 +1,7 @@
 using Bob.Core.Ui.Interfaces;
 using Bob.Core.Workspaces.Interfaces;
 using Poc1.Bob.Controls.Biomes;
+using Poc1.Bob.Controls.Planet;
 using Poc1.Bob.Controls.Projects;
 using Poc1.Bob.Controls.Rendering;
 using Poc1.Bob.Controls.Waves;
@@ -12,10 +13,14 @@ using Poc1.Bob.Core.Classes.Rendering;
 using Poc1.Bob.Core.Classes.Waves;
 using Poc1.Bob.Core.Interfaces;
 using Poc1.Bob.Core.Interfaces.Biomes.Views;
+using Poc1.Bob.Core.Interfaces.Planets;
 using Poc1.Bob.Core.Interfaces.Projects;
 using Poc1.Bob.Core.Interfaces.Rendering;
 using Poc1.Bob.Core.Interfaces.Waves;
 using Poc1.Tools.Waves;
+using Poc1.Universe.Interfaces.Planets;
+using Poc1.Universe.Interfaces.Planets.Models;
+using Poc1.Universe.Interfaces.Planets.Models.Templates;
 
 namespace Poc1.Bob.Controls
 {
@@ -47,22 +52,41 @@ namespace Poc1.Bob.Controls
 		}
 
 		/// <summary>
+		/// Creates a view used to edit the parameters of a planet template
+		/// </summary>
+		public IPlanetModelTemplateView CreatePlanetTemplateView( IPlanetModelTemplate template, IPlanetModel instance )
+		{
+			IPlanetModelTemplateView view = new SpherePlanetModelTemplateViewControl( );
+			view.PlanetModelTemplate = template;
+			view.PlanetModel = instance;
+			return view;
+		}
+
+		/// <summary>
+		/// Create a new biome view
+		/// </summary>
+		public INewBiomeView CreateNewBiomeView( )
+		{
+			return new NewBiomeForm( );
+		}
+
+		/// <summary>
 		/// Creates a biome distribution view
 		/// </summary>
 		public IBiomeDistributionView CreateBiomeDistributionView( BiomeListLatitudeDistributionModel model )
 		{
-			BiomeDistributionDisplay view = new BiomeDistributionDisplay( );
-			view.Distributions = model;
+			BiomeLatitudeDistributionDisplay view = new BiomeLatitudeDistributionDisplay( );
+			new BiomeDistributionController( view, model );
 			return view;
 		}
 
 		/// <summary>
 		/// Creates a view with a universe camera
 		/// </summary>
-		public IUniCameraView CreateUniCameraView( )
+		public IUniCameraView CreatePlanetView( IPlanet planet )
 		{
 			IUniCameraView view = new UniCameraViewControl( );
-			new UniCameraViewController( view );
+			new PlanetViewController( view, planet );
 			return view;
 		}
 
@@ -99,10 +123,10 @@ namespace Poc1.Bob.Controls
 		/// <summary>
 		/// Creates a biome list view
 		/// </summary>
-		public IBiomeListView CreateBiomeListView( SelectedBiomeContext context, BiomeListModel model )
+		public IBiomeListView CreateBiomeListView( SelectedBiomeContext context, BiomeListModel allBiomes, BiomeListModel currentBiomes )
 		{
 			IBiomeListView view = new BiomeListControl( );
-			new BiomeListController( context, model, view );
+			new BiomeListController( this, context, allBiomes, currentBiomes, view );
 			return view;
 		}
 

@@ -21,7 +21,7 @@ namespace Poc1.Bob.Controls.Biomes
 		/// </summary>
 		protected override Control CreateControlForTerrainType( TerrainType terrainType )
 		{
-			TerrainTypeTextureSelectorControl control = new TerrainTypeTextureSelectorControl( );
+			TerrainTypeTextureItemControl control = new TerrainTypeTextureItemControl( );
 			control.TerrainType = terrainType;
 			return control;
 		}

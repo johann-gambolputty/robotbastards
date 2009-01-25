@@ -77,6 +77,12 @@ namespace Poc1.Bob.Core.Classes.Biomes.Models
 		public BiomeModel Biome
 		{
 			get { return m_Biome; }
+			set
+			{
+				Arguments.CheckNotNull( value, "value" );
+				m_Biome = value;
+				OnDistributionChanged( );
+			}
 		}
 
 		/// <summary>
@@ -95,11 +101,21 @@ namespace Poc1.Bob.Core.Classes.Biomes.Models
 			return distribution;
 		}
 
+		/// <summary>
+		/// Merges this distribution with another
+		/// </summary>
+		public void Merge( IBiomeDistribution distribution )
+		{
+			BiomeLatitudeRangeDistribution latDistribution = Arguments.CheckedNonNullCast<BiomeLatitudeRangeDistribution>( distribution, "distribution" );
+			m_MinLatitude = Math.Min( m_MinLatitude, latDistribution.m_MinLatitude );
+			m_MaxLatitude = Math.Max( m_MaxLatitude, latDistribution.m_MaxLatitude );
+		}
+
 		#endregion
 
 		#region Private Members
 
-		private readonly BiomeModel m_Biome;
+		private BiomeModel m_Biome;
 		private float m_MinLatitude;
 		private float m_MaxLatitude;
 

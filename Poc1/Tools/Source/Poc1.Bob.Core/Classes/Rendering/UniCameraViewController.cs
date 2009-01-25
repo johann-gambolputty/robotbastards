@@ -1,5 +1,6 @@
 using Poc1.Bob.Core.Interfaces.Rendering;
 using Poc1.Universe.Classes.Cameras;
+using Rb.Core.Utils;
 using Rb.Interaction.Classes;
 using Rb.Interaction.Interfaces;
 
@@ -14,8 +15,11 @@ namespace Poc1.Bob.Core.Classes.Rendering
 		/// Setup constructor
 		/// </summary>
 		/// <param name="view">Camera view</param>
+		/// <exception cref="System.ArgumentNullException">Thrown if view or planet are null</exception>
 		public UniCameraViewController( IUniCameraView view )
 		{
+			Arguments.CheckNotNull( view, "view" );
+
 			//	Create a camera to add to the view
 			UniCamera camera = new FirstPersonCamera( );
 			camera.PerspectiveZNear = 1.0f;

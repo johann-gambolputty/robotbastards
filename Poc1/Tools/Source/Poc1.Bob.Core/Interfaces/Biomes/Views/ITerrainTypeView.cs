@@ -11,7 +11,7 @@ namespace Poc1.Bob.Core.Interfaces.Biomes.Views
 		/// <summary>
 		/// Event, raised when the user requests that the terrain type be removed
 		/// </summary>
-		event ActionDelegates.Action RemoveTerrainType;
+		event ActionDelegates.Action<ITerrainTypeView> RemoveTerrainType;
 
 		/// <summary>
 		/// Gets/sets the terrain type displayed by this view
