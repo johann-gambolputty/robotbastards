@@ -23,7 +23,7 @@ namespace Poc1.Universe.Planets.Models.Templates
 		/// <summary>
 		/// Creates an instance of this template
 		/// </summary>
-		public abstract IPlanetEnvironmentModel CreateInstance( IPlanetModel planetModel, ModelTemplateInstanceContext context );
+		public abstract void CreateInstance( IPlanetModel planetModel, ModelTemplateInstanceContext context );
 
 		#endregion
 

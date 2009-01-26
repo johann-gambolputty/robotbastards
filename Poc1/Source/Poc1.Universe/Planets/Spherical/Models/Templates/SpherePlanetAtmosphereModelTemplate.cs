@@ -13,11 +13,10 @@ namespace Poc1.Universe.Planets.Spherical.Models.Templates
 		/// <summary>
 		/// Atmosphere model creation
 		/// </summary>
-		public override IPlanetEnvironmentModel CreateInstance( IPlanetModel planetModel, ModelTemplateInstanceContext context )
+		public override void CreateInstance( IPlanetModel planetModel, ModelTemplateInstanceContext context )
 		{
 			SpherePlanetAtmosphereModel model = new SpherePlanetAtmosphereModel( );
-			planetModel.Atmosphere = model;
-			return model;
+			planetModel.AtmosphereModel = model;
 		}
 	}
 }

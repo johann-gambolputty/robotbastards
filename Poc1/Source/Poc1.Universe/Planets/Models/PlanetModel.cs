@@ -1,6 +1,8 @@
-
 using System;
+using System.Collections.Generic;
+using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Models;
+using Rb.Core.Utils;
 
 namespace Poc1.Universe.Planets.Models
 {
@@ -9,6 +11,16 @@ namespace Poc1.Universe.Planets.Models
 	/// </summary>
 	public class PlanetModel : IPlanetModel
 	{
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		public PlanetModel( IPlanet planet )
+		{
+			Arguments.CheckNotNull( planet, "planet" );
+			m_Planet = planet;
+			planet.PlanetModel = this;
+		}
+
 		#region IPlanetModel Members
 
 		/// <summary>
@@ -17,17 +29,26 @@ namespace Poc1.Universe.Planets.Models
 		public event EventHandler ModelChanged;
 
 		/// <summary>
+		/// Gets/sets the planet associated with this model
+		/// </summary>
+		public IPlanet Planet
+		{
+			get { return m_Planet; }
+		}
+
+		/// <summary>
 		/// Gets/sets the planet's ring model
 		/// </summary>
-		public IPlanetRingModel Rings
+		public IPlanetRingModel RingModel
 		{
 			get { return m_Rings; }
 			set
 			{
 				if ( m_Rings != value )
 				{
+					UnlinkModel( m_Rings );
 					m_Rings = value;
-					OnModelChanged( );
+					LinkModel( m_Rings );
 				}
 			}
 		}
@@ -35,14 +56,85 @@ namespace Poc1.Universe.Planets.Models
 		/// <summary>
 		/// Gets/sets the planet's atmosphere model
 		/// </summary>
-		public IPlanetAtmosphereModel Atmosphere
+		public IPlanetAtmosphereModel AtmosphereModel
 		{
 			get { return m_Atmosphere; }
 			set
 			{
-				m_Atmosphere = value;
-				OnModelChanged( );
+				if ( m_Atmosphere != value )
+				{
+					UnlinkModel( m_Atmosphere );
+					m_Atmosphere = value;
+					LinkModel( m_Atmosphere );
+				}
 			}
+		}
+
+		/// <summary>
+		/// Gets/sets the planet's cloud model
+		/// </summary>
+		public IPlanetCloudModel CloudModel
+		{
+			get { return m_Clouds; }
+			set
+			{
+				if ( m_Clouds != value )
+				{
+					UnlinkModel( m_Clouds );
+					m_Clouds = value;
+					LinkModel( m_Clouds );
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets/sets the planet ocean model
+		/// </summary>
+		public IPlanetOceanModel OceanModel
+		{
+			get { return m_Ocean; }
+			set
+			{
+				if ( m_Ocean != value )
+				{
+					UnlinkModel( m_Ocean );
+					m_Ocean = value;
+					LinkModel( m_Ocean );
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets/sets the planet terrain model
+		/// </summary>
+		public IPlanetTerrainModel TerrainModel
+		{
+			get { return m_Terrain; }
+			set
+			{
+				if ( m_Terrain != value )
+				{
+					UnlinkModel( m_Terrain );
+					m_Terrain = value;
+					LinkModel( m_Terrain );
+				}
+			}
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		/// <summary>
+		/// Disposes of this model
+		/// </summary>
+		public virtual void Dispose( )
+		{
+			foreach ( IPlanetEnvironmentModel model in m_Models )
+			{
+				DisposableHelper.Dispose( model );
+			}
+			m_Models.Clear( );
 		}
 
 		#endregion
@@ -72,9 +164,38 @@ namespace Poc1.Universe.Planets.Models
 
 		#region Private Members
 
-		private IPlanetRingModel m_Rings;
-		private IPlanetAtmosphereModel m_Atmosphere;
+		private IPlanet					m_Planet;
+		private IPlanetRingModel		m_Rings;
+		private IPlanetAtmosphereModel	m_Atmosphere;
+		private IPlanetCloudModel		m_Clouds;
+		private IPlanetOceanModel		m_Ocean;
+		private IPlanetTerrainModel		m_Terrain;
+		private readonly List<IPlanetEnvironmentModel> m_Models = new List<IPlanetEnvironmentModel>( );
+
+		/// <summary>
+		/// Unlinks a model
+		/// </summary>
+		private void UnlinkModel( IPlanetEnvironmentModel model )
+		{
+			if ( model != null )
+			{
+				m_Models.Remove( model );
+			}
+		}
+
+		/// <summary>
+		/// Links a model
+		/// </summary>
+		private void LinkModel( IPlanetEnvironmentModel model )
+		{
+			if ( model != null )
+			{
+				m_Models.Add( model );
+				model.Planet = m_Planet;
+			}
+		}
 
 		#endregion
+
 	}
 }

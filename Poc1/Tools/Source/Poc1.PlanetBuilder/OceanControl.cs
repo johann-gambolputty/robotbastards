@@ -19,14 +19,14 @@ namespace Poc1.PlanetBuilder
 			get
 			{
 				float range = seaLevelTrackBar.Maximum - seaLevelTrackBar.Minimum;
-				Units.Metres maximumHeight = BuilderState.Instance.Planet.TerrainModel.MaximumHeight.ToMetres;
+				Units.Metres maximumHeight = BuilderState.Instance.Planet.PlanetModel.TerrainModel.MaximumHeight.ToMetres;
 				return maximumHeight * ( ( seaLevelTrackBar.Value - seaLevelTrackBar.Minimum ) / range );
 			}
 		}
 
 		private void seaLevelTrackBar_Scroll( object sender, EventArgs e )
 		{
-			BuilderState.Instance.Planet.OceanModel.SeaLevel = SeaLevel;
+			BuilderState.Instance.Planet.PlanetModel.OceanModel.SeaLevel = SeaLevel;
 		}
 	}
 }

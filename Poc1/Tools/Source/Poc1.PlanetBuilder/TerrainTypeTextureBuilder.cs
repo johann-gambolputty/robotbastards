@@ -153,7 +153,7 @@ namespace Poc1.PlanetBuilder
 				m_LookupTexture.Create( m_LookupBitmap, false );
 				m_LookupBitmap.Dispose( );
 
-				BuilderState.Instance.Planet.TerrainModel.TerrainTypesTexture = m_LookupTexture;
+				BuilderState.Instance.Planet.PlanetModel.TerrainModel.TerrainTypesTexture = m_LookupTexture;
 
 				m_LookupBitmap = null;
 				--m_LookupTextureRebuildRequests;
@@ -167,7 +167,7 @@ namespace Poc1.PlanetBuilder
 
 				m_PackTexture.Create( m_PackBitmaps );
 
-				BuilderState.Instance.Planet.TerrainModel.TerrainPackTexture = m_PackTexture;
+				BuilderState.Instance.Planet.PlanetModel.TerrainModel.TerrainPackTexture = m_PackTexture;
 
 				foreach ( Bitmap packBitmapMipMap in m_PackBitmaps )
 				{

@@ -51,7 +51,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 				if ( m_Planet != null )
 				{
 					m_Planet.PlanetChanged += OnPlanetChanged;
-					m_Planet.SphereTerrainModel.ModelChanged += OnTerrainModelChanged;
+					m_Planet.PlanetModel.TerrainModel.ModelChanged += OnTerrainModelChanged;
 				}
 			}
 		}
@@ -82,16 +82,16 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 					BuildGeometry( );
 				}
 				UpdateMarbleTexture( );
-				if ( Planet.CloudRenderer != null )
+				if ( Planet.PlanetRenderer.CloudRenderer != null )
 				{
-					Planet.CloudRenderer.SetupCloudEffectParameters( m_Technique.Effect );
+					Planet.PlanetRenderer.CloudRenderer.SetupCloudEffectParameters( m_Technique.Effect );
 				}
 				if ( m_MarbleTexture != null )
 				{
 					m_Technique.Effect.Parameters[ "MarbleTexture" ].Set( m_MarbleTexture );
 				}
-				ITexture2d packTexture = m_Planet.TerrainModel.TerrainPackTexture;
-				ITexture2d typesTexture = m_Planet.TerrainModel.TerrainTypesTexture;
+				ITexture2d packTexture = m_Planet.PlanetModel.TerrainModel.TerrainPackTexture;
+				ITexture2d typesTexture = m_Planet.PlanetModel.TerrainModel.TerrainTypesTexture;
 				m_Technique.Effect.Parameters[ "TerrainPackTexture" ].Set( packTexture );
 				m_Technique.Effect.Parameters[ "TerrainTypeTexture" ].Set( typesTexture );
 				m_Technique.Apply( context, m_Geometry );
@@ -144,7 +144,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		private void BuildGeometry( )
 		{
 			Graphics.Draw.StartCache( );
-			Graphics.Draw.Sphere( null, Point3.Origin, ( float )m_Planet.Radius.ToAstroRenderUnits, 40, 40 );
+			Graphics.Draw.Sphere( null, Point3.Origin, ( float )m_Planet.SpherePlanetModel.Radius.ToAstroRenderUnits, 40, 40 );
 			m_Geometry = Graphics.Draw.StopCache( );
 		}
 
@@ -164,7 +164,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		{
 			if ( ( ( m_MarbleTexture == null ) || m_MarbleTextureDirty ) && !m_MarbleTextureBuilding )
 			{
-				if ( m_Planet.SphereTerrainModel.ReadyToUse )
+				if ( m_Planet.SpherePlanetModel.SphereTerrainModel.ReadyToUse )
 				{
 					m_MarbleTextureDirty = false;
 					m_MarbleTextureBuilding = true;

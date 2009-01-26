@@ -66,6 +66,7 @@
     <Compile Include="Planets\Renderers\IPlanetEnvironmentRenderer.cs" />
     <Compile Include="Planets\Renderers\IPlanetMarbleRenderer.cs" />
     <Compile Include="Planets\Renderers\IPlanetOceanRenderer.cs" />
+    <Compile Include="Planets\Renderers\IPlanetRenderer.cs" />
     <Compile Include="Planets\Renderers\IPlanetRingRenderer.cs" />
     <Compile Include="Planets\Renderers\IPlanetTerrainRenderer.cs" />
     <Compile Include="Planets\Renderers\Patches\ITerrainPatch.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Planets\Spherical\Renderers\ISpherePlanetAtmosphereRenderer.cs" />
     <Compile Include="Planets\Spherical\Renderers\ISpherePlanetCloudRenderer.cs" />
     <Compile Include="Planets\Spherical\Renderers\ISpherePlanetMarbleTextureBuilder.cs" />
+    <Compile Include="Planets\Spherical\Renderers\ISpherePlanetRenderer.cs" />
     <Compile Include="Planets\Spherical\Renderers\ISpherePlanetTerrainRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UniPoint3.cs" />

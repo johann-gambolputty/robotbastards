@@ -37,14 +37,14 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			{
 				if ( m_SpherePlanet != null )
 				{
-					m_SpherePlanet.CloudModel.ModelChanged -= CloudModel_ModelChanged;
+					m_SpherePlanet.PlanetModel.CloudModel.ModelChanged -= CloudModel_ModelChanged;
 				}
 				m_SpherePlanet = ( ISpherePlanet )value;
 				DisposableHelper.Dispose( m_CloudSphere );
 				m_CloudSphere = null;
 				if ( m_SpherePlanet != null )
 				{
-					m_SpherePlanet.CloudModel.ModelChanged += CloudModel_ModelChanged;
+					m_SpherePlanet.PlanetModel.CloudModel.ModelChanged += CloudModel_ModelChanged;
 				}
 			}
 		}
@@ -59,8 +59,8 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// <param name="effect">Effect to set up</param>
 		public void SetupCloudEffectParameters( IEffect effect )
 		{
-			effect.Parameters[ "CloudTexture" ].Set( m_SpherePlanet.SphereCloudModel.CloudTexture );
-			effect.Parameters[ "NextCloudTexture" ].Set( m_SpherePlanet.SphereCloudModel.CloudTexture );	//	TODO: AP: ...
+			effect.Parameters[ "CloudTexture" ].Set( m_SpherePlanet.SpherePlanetModel.SphereCloudModel.CloudTexture );
+			effect.Parameters[ "NextCloudTexture" ].Set( m_SpherePlanet.SpherePlanetModel.SphereCloudModel.CloudTexture );	//	TODO: AP: ...
 		}
 
 		#endregion
@@ -73,7 +73,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// <param name="context">Rendering context</param>
 		public void Render( IRenderContext context )
 		{
-			if ( Planet == null || Planet.CloudModel == null )
+			if ( Planet == null || Planet.PlanetModel.CloudModel == null )
 			{
 				return;
 			}
@@ -98,7 +98,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// </summary>
 		private IRenderable CreateCloudSphere( )
 		{
-			float radius = ( m_SpherePlanet.Radius + Planet.CloudModel.CloudLayerMinHeight ).ToRenderUnits;
+			float radius = ( m_SpherePlanet.SpherePlanetModel.Radius + Planet.PlanetModel.CloudModel.CloudLayerMinHeight ).ToRenderUnits;
 
 			Graphics.Draw.StartCache( );
 			Graphics.Draw.Sphere( null, Point3.Origin, radius, 50, 50 );

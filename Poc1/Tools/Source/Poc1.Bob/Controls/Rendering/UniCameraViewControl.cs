@@ -56,11 +56,11 @@ namespace Poc1.Bob.Controls.Rendering
 						ISpherePlanet spherePlanet = m_Renderable as ISpherePlanet;
 						if ( spherePlanet != null )
 						{
-							height += spherePlanet.Radius.ToUniUnits;
+							height += spherePlanet.SpherePlanetModel.Radius.ToUniUnits;
 						}
-						if ( planet.TerrainModel != null )
+						if ( planet.PlanetModel.TerrainModel != null )
 						{
-							height += planet.TerrainModel.MaximumHeight.ToUniUnits;
+							height += planet.PlanetModel.TerrainModel.MaximumHeight.ToUniUnits;
 						}
 						( ( UniCamera )viewer.Camera ).Position = new UniPoint3( 0, height, 0 );
 					}

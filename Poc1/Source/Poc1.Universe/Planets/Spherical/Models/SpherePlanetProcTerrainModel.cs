@@ -149,7 +149,7 @@ namespace Poc1.Universe.Planets.Spherical.Models
 			{
 				throw new InvalidOperationException( "Terrain model does not have an associated planet. Cannot setup terrain" );
 			}
-			float radius = m_Planet.Radius.ToRenderUnits;
+			float radius = m_Planet.SpherePlanetModel.Radius.ToRenderUnits;
 			float height = MaximumHeight.ToRenderUnits;
 
 			// NOTE: AP: Patch scale is irrelevant, because vertices are projected onto the function sphere anyway
@@ -232,7 +232,7 @@ namespace Poc1.Universe.Planets.Spherical.Models
 		/// </summary>
 		public void SetPatchPlanetParameters( ITerrainPatch patch )
 		{
-			float radius = m_Planet.Radius.ToRenderUnits;
+			float radius = m_Planet.SpherePlanetModel.Radius.ToRenderUnits;
 
 			Point3 edge = patch.LocalOrigin + ( patch.LocalUAxis / 2 );
 			Point3 centre = edge + ( patch.LocalVAxis / 2 );

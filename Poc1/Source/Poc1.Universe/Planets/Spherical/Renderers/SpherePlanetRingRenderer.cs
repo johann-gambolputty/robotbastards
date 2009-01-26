@@ -39,11 +39,11 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			set
 			{
 				m_Planet = ( ISpherePlanet )value;
-				if ( m_Planet.RingModel == null )
+				if ( m_Planet.PlanetModel.RingModel == null )
 				{
 					throw new InvalidOperationException( "Ring renderer requires that a valid ring model" );
 				}
-				m_Planet.RingModel.ModelChanged += OnRingModelChanged;
+				m_Planet.PlanetModel.RingModel.ModelChanged += OnRingModelChanged;
 			}
 		}
 
@@ -104,8 +104,8 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 
 			List<RingVertex> vertices = new List<RingVertex>( );
 
-			float innerRadius = ( float )m_Planet.SphereRingModel.InnerRadius.ToAstroRenderUnits;
-			float outerRadius = ( float )( m_Planet.SphereRingModel.InnerRadius + m_Planet.RingModel.Width ).ToAstroRenderUnits;
+			float innerRadius = ( float )m_Planet.SpherePlanetModel.SphereRingModel.InnerRadius.ToAstroRenderUnits;
+			float outerRadius = ( float )( m_Planet.SpherePlanetModel.SphereRingModel.InnerRadius + m_Planet.PlanetModel.RingModel.Width ).ToAstroRenderUnits;
 			float angle = 0;
 			float angleInc = Constants.TwoPi / ( subdivisionCount - 1 );
 			bool toggle = false;

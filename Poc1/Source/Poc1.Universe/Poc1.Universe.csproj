@@ -75,6 +75,7 @@
     <Compile Include="Planets\Models\Templates\PlanetModelTemplate.cs" />
     <Compile Include="Planets\Models\Templates\PlanetRingModelTemplate.cs" />
     <Compile Include="Planets\Planet.cs" />
+    <Compile Include="Planets\Renderers\PlanetRenderer.cs" />
     <Compile Include="Planets\Renderers\PlanetTerrainPatchRenderer.cs" />
     <Compile Include="Planets\Spherical\Models\SpherePlanetAtmosphereModel.cs" />
     <Compile Include="Planets\Spherical\Models\SpherePlanetCloudModel.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetMarbleRenderer.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetMarbleTextureBuilder.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetOceanRenderer.cs" />
+    <Compile Include="Planets\Spherical\Renderers\SpherePlanetRenderer.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetRingRenderer.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetTerrainPatchRenderer.cs" />
     <Compile Include="Planets\Spherical\SpherePlanet.cs" />

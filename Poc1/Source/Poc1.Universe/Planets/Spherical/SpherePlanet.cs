@@ -4,6 +4,7 @@ using Poc1.Universe.Interfaces.Planets.Spherical;
 using Poc1.Universe.Interfaces.Planets.Spherical.Models;
 using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
 using Poc1.Universe.Planets.Models;
+using Poc1.Universe.Planets.Renderers;
 using Poc1.Universe.Planets.Spherical.Models;
 using Poc1.Universe.Planets.Spherical.Renderers;
 using Rb.Core.Threading;
@@ -25,22 +26,23 @@ namespace Poc1.Universe.Planets.Spherical
 			workQueue = workQueue ?? ExtendedThreadPool.Instance;
 
 			ISpherePlanet planet = new SpherePlanet( );
-			planet.Radius = planetRadius;
 
 			//	Models
-			planet.OceanModel			= new PlanetOceanModel( );
-			planet.TerrainModel			= new SpherePlanetProcTerrainModel( );
-			planet.AtmosphereModel		= new SpherePlanetAtmosphereModel( );
-			planet.RingModel			= new SpherePlanetRingModel( planetRadius * 1.75, new Units.Metres( 50000 ) );
-			planet.CloudModel			= new SpherePlanetCloudModel( workQueue );
+			SpherePlanetModel model = new SpherePlanetModel( planet, planetRadius );
+			model.OceanModel			= new PlanetOceanModel( );
+			model.TerrainModel			= new SpherePlanetProcTerrainModel( );
+			model.AtmosphereModel		= new SpherePlanetAtmosphereModel( );
+			model.RingModel				= new SpherePlanetRingModel( planetRadius * 1.75, new Units.Metres( 50000 ) );
+			model.CloudModel			= new SpherePlanetCloudModel( workQueue );
 
 			//	Renderers
-			planet.MarbleRenderer		= new SpherePlanetMarbleRenderer( new SpherePlanetMarbleTextureBuilder( ) );
-			planet.OceanRenderer		= new SpherePlanetOceanRenderer( );
-			planet.TerrainRenderer		= new SpherePlanetTerrainPatchRenderer( );
-			planet.AtmosphereRenderer	= new SpherePlanetAtmosphereRenderer( );
-			planet.RingRenderer			= new SpherePlanetRingRenderer( );
-			planet.CloudRenderer		= new SpherePlanetCloudRenderer( );
+			PlanetRenderer renderer = new PlanetRenderer( planet );
+			renderer.MarbleRenderer		= new SpherePlanetMarbleRenderer( new SpherePlanetMarbleTextureBuilder( ) );
+			renderer.OceanRenderer		= new SpherePlanetOceanRenderer( );
+			renderer.TerrainRenderer	= new SpherePlanetTerrainPatchRenderer( );
+			renderer.AtmosphereRenderer = new SpherePlanetAtmosphereRenderer( );
+			renderer.RingRenderer		= new SpherePlanetRingRenderer( );
+			renderer.CloudRenderer		= new SpherePlanetCloudRenderer( );
 
 			return planet;
 		}
@@ -51,11 +53,14 @@ namespace Poc1.Universe.Planets.Spherical
 		public static ISpherePlanet DefaultGasGiant( Units.Metres planetRadius )
 		{
 			ISpherePlanet planet = new SpherePlanet( );
-			planet.Radius = planetRadius;
+
+			//	Models
+			ISpherePlanetModel model = new SpherePlanetModel( planet, planetRadius );
+			model.RingModel = new SpherePlanetRingModel( planetRadius * 1.75, planetRadius * 0.1 );
 
 			//	Renderers
-			planet.MarbleRenderer = new SphereGasGiantMarbleRenderer( );
-			planet.RingModel = new SpherePlanetRingModel( planetRadius * 1.75, planetRadius * 0.1 );
+			ISpherePlanetRenderer renderer = new SpherePlanetRenderer( planet );
+			renderer.MarbleRenderer = new SphereGasGiantMarbleRenderer( );
 
 			return planet;
 		}
@@ -81,59 +86,19 @@ namespace Poc1.Universe.Planets.Spherical
 		}
 
 		/// <summary>
-		/// Gets the sphere planet ring model
+		/// Gets the current sphere planet model
 		/// </summary>
-		public ISpherePlanetRingModel SphereRingModel
+		public ISpherePlanetModel SpherePlanetModel
 		{
-			get { return ( ISpherePlanetRingModel )RingModel; }
+			get { return ( ISpherePlanetModel )PlanetModel; }
 		}
 
 		/// <summary>
-		/// Gets the sphere atmosphere model
+		/// Gets the current sphere planet renderer
 		/// </summary>
-		public ISpherePlanetAtmosphereModel SphereAtmosphereModel
+		public ISpherePlanetRenderer SpherePlanetRenderer
 		{
-			get { return ( ISpherePlanetAtmosphereModel )AtmosphereModel; }
-		}
-
-		/// <summary>
-		/// Gets the sphere cloud model
-		/// </summary>
-		public ISpherePlanetCloudModel SphereCloudModel
-		{
-			get { return ( ISpherePlanetCloudModel )CloudModel; }
-		}
-
-		/// <summary>
-		/// Gets the sphere terrain model
-		/// </summary>
-		public ISpherePlanetTerrainModel SphereTerrainModel
-		{
-			get { return ( ISpherePlanetTerrainModel )TerrainModel; }
-		}
-
-		/// <summary>
-		/// Gets the sphere atmosphere renderer
-		/// </summary>
-		public ISpherePlanetAtmosphereRenderer SphereAtmosphereRenderer
-		{
-			get { return ( ISpherePlanetAtmosphereRenderer )AtmosphereRenderer; }
-		}
-
-		/// <summary>
-		/// Gets the sphere cloud renderer
-		/// </summary>
-		public ISpherePlanetCloudRenderer SphereCloudRenderer
-		{
-			get { return ( ISpherePlanetCloudRenderer )CloudRenderer; }
-		}
-
-		/// <summary>
-		/// Gets the sphere terrain renderer
-		/// </summary>
-		public ISpherePlanetTerrainRenderer SphereTerrainRenderer
-		{
-			get { return ( ISpherePlanetTerrainRenderer )TerrainRenderer; }
+			get { return ( ISpherePlanetRenderer )PlanetRenderer; }
 		}
 
 		#endregion

@@ -54,14 +54,14 @@ namespace Poc1.Universe.Classes.Rendering
 		/// <param name="context">Rendering context</param>
 		public void Render( IRenderContext context )
 		{
-			if ( m_Planet == null || m_Planet.OceanModel == null )
+			if ( m_Planet == null || m_Planet.PlanetModel.OceanModel == null )
 			{
 				return;
 			}
 
 			GameProfiles.Game.Rendering.PlanetRendering.OceanRendering.Begin( );
 
-			float seaLevel = ( m_Planet.Radius + m_Planet.OceanModel.SeaLevel ).ToRenderUnits;
+			float seaLevel = ( m_Planet.SpherePlanetModel.Radius + m_Planet.SpherePlanetModel.OceanModel.SeaLevel ).ToRenderUnits;
 			seaLevel /= 10.0f;
 			Graphics.Renderer.PushTransform( TransformType.LocalToWorld );
 			Graphics.Renderer.Scale( TransformType.LocalToWorld, seaLevel, seaLevel, seaLevel );

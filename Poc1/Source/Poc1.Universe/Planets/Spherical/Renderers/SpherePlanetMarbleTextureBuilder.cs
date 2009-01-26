@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using Poc1.Universe.Interfaces.Planets.Spherical;
+using Poc1.Universe.Interfaces.Planets.Spherical.Models;
 using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
 using Rb.Core.Threading;
 using Rb.Rendering.Interfaces.Objects;
@@ -63,12 +64,13 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			int width = 256;
 			int height = 256;
 			progressMonitor.UpdateProgress( 0 );
-			faceBitmaps[ ( int )CubeMapFace.PositiveX ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveX, width, height ); progressMonitor.UpdateProgress( 1 / 6.0f );
-			faceBitmaps[ ( int )CubeMapFace.NegativeX ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.NegativeX, width, height ); progressMonitor.UpdateProgress( 2 / 6.0f );
-			faceBitmaps[ ( int )CubeMapFace.PositiveY ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveY, width, height ); progressMonitor.UpdateProgress( 3 / 6.0f );
-			faceBitmaps[ ( int )CubeMapFace.NegativeY ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.NegativeY, width, height ); progressMonitor.UpdateProgress( 4 / 6.0f );
-			faceBitmaps[ ( int )CubeMapFace.PositiveZ ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveZ, width, height ); progressMonitor.UpdateProgress( 5 / 6.0f );
-			faceBitmaps[ ( int )CubeMapFace.NegativeZ ] = planet.SphereTerrainModel.CreateMarbleTextureFace( CubeMapFace.NegativeZ, width, height );
+			ISpherePlanetTerrainModel terrainModel = planet.SpherePlanetModel.SphereTerrainModel;
+			faceBitmaps[ ( int )CubeMapFace.PositiveX ] = terrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveX, width, height ); progressMonitor.UpdateProgress( 1 / 6.0f );
+			faceBitmaps[ ( int )CubeMapFace.NegativeX ] = terrainModel.CreateMarbleTextureFace( CubeMapFace.NegativeX, width, height ); progressMonitor.UpdateProgress( 2 / 6.0f );
+			faceBitmaps[ ( int )CubeMapFace.PositiveY ] = terrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveY, width, height ); progressMonitor.UpdateProgress( 3 / 6.0f );
+			faceBitmaps[ ( int )CubeMapFace.NegativeY ] = terrainModel.CreateMarbleTextureFace( CubeMapFace.NegativeY, width, height ); progressMonitor.UpdateProgress( 4 / 6.0f );
+			faceBitmaps[ ( int )CubeMapFace.PositiveZ ] = terrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveZ, width, height ); progressMonitor.UpdateProgress( 5 / 6.0f );
+			faceBitmaps[ ( int )CubeMapFace.NegativeZ ] = terrainModel.CreateMarbleTextureFace( CubeMapFace.NegativeZ, width, height );
 			progressMonitor.UpdateProgress( 1 );
 
 			foreach ( object cubeMapFace in Enum.GetValues( typeof( CubeMapFace ) ) )

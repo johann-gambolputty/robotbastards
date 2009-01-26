@@ -84,7 +84,7 @@ namespace Poc1.Universe.Planets.Renderers
 
 			UpdatePatches( UniCamera.Current );
 
-			IPlanetAtmosphereRenderer atmosphereRenderer = Planet.AtmosphereRenderer;
+			IPlanetAtmosphereRenderer atmosphereRenderer = Planet.PlanetRenderer.AtmosphereRenderer;
 			if ( atmosphereRenderer != null )
 			{
 				atmosphereRenderer.SetupAtmosphereEffectParameters( m_Technique.Effect, true, false );
@@ -140,10 +140,10 @@ namespace Poc1.Universe.Planets.Renderers
 		/// </summary>
 		protected virtual void SetupTerrainEffect( IEffect effect )
 		{
-			ITexture2d packTexture = Planet.TerrainModel.TerrainPackTexture;
-			ITexture2d typesTexture = Planet.TerrainModel.TerrainTypesTexture;
+			ITexture2d packTexture = Planet.PlanetModel.TerrainModel.TerrainPackTexture;
+			ITexture2d typesTexture = Planet.PlanetModel.TerrainModel.TerrainTypesTexture;
 
-			effect.Parameters[ "PlanetMaximumTerrainHeight" ].Set( m_Planet.TerrainModel.MaximumHeight.ToRenderUnits );
+			effect.Parameters[ "PlanetMaximumTerrainHeight" ].Set( m_Planet.PlanetModel.TerrainModel.MaximumHeight.ToRenderUnits );
 			effect.Parameters[ "TerrainPackTexture" ].Set( packTexture );
 			effect.Parameters[ "TerrainTypeTexture" ].Set( typesTexture );
 			effect.Parameters[ "NoiseTexture" ].Set( m_NoiseTexture );
@@ -168,7 +168,7 @@ namespace Poc1.Universe.Planets.Renderers
 		{
 			Point3 localPos = Units.RenderUnits.MakeRelativePoint( m_Planet.Transform.Position, camera.Position );
 
-			ITerrainPatchGenerator generator = ( ITerrainPatchGenerator )m_Planet.TerrainModel;
+			ITerrainPatchGenerator generator = ( ITerrainPatchGenerator )m_Planet.PlanetModel.TerrainModel;
 			foreach ( TerrainPatch patch in m_RootPatches )
 			{
 				patch.UpdateLod( localPos, generator, camera );

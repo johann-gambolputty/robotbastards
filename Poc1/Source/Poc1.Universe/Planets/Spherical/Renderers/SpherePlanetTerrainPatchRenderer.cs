@@ -44,7 +44,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			{
 				return;
 			}
-			float uvRes = ( float )( SpherePlanet.Radius.ToMetres / 5000.0 );
+			float uvRes = ( float )( SpherePlanet.SpherePlanetModel.Radius.ToMetres / 5000.0 );
 			CreateCubePatches( 20, 1, uvRes );
 		}
 
@@ -54,7 +54,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		protected override void SetupTerrainEffect( IEffect effect )
 		{
 			base.SetupTerrainEffect( effect );
-			effect.Parameters[ "PlanetRadius" ].Set( SpherePlanet.Radius.ToRenderUnits );
+			effect.Parameters[ "PlanetRadius" ].Set( SpherePlanet.SpherePlanetModel.Radius.ToRenderUnits );
 		}
 		
 		#endregion
