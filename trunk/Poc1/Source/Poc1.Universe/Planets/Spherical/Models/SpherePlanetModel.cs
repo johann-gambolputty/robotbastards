@@ -1,4 +1,5 @@
 using Poc1.Universe.Interfaces;
+using Poc1.Universe.Interfaces.Planets.Spherical;
 using Poc1.Universe.Interfaces.Planets.Spherical.Models;
 using Poc1.Universe.Planets.Models;
 
@@ -12,16 +13,50 @@ namespace Poc1.Universe.Planets.Spherical.Models
 		/// <summary>
 		/// Default constructor (radius of planet defaults to zero)
 		/// </summary>
-		public SpherePlanetModel( )
+		public SpherePlanetModel( ISpherePlanet planet ) :
+			base( planet )
 		{
 		}
 
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		public SpherePlanetModel( Units.Metres radius )
+		public SpherePlanetModel( ISpherePlanet planet, Units.Metres radius ) :
+			base( planet )
 		{
 			m_Radius = radius;
+		}
+
+		/// <summary>
+		/// Gets the sphere planet ring model
+		/// </summary>
+		public ISpherePlanetRingModel SphereRingModel
+		{
+			get { return ( ISpherePlanetRingModel )RingModel; }
+		}
+
+		/// <summary>
+		/// Gets the sphere atmosphere model
+		/// </summary>
+		public ISpherePlanetAtmosphereModel SphereAtmosphereModel
+		{
+			get { return ( ISpherePlanetAtmosphereModel )AtmosphereModel; }
+		}
+
+		/// <summary>
+		/// Gets the sphere cloud model
+		/// </summary>
+		public ISpherePlanetCloudModel SphereCloudModel
+		{
+			get { return ( ISpherePlanetCloudModel )CloudModel; }
+		}
+
+		/// <summary>
+		/// Gets the sphere terrain model
+		/// </summary>
+		public ISpherePlanetTerrainModel SphereTerrainModel
+		{
+			get { return ( ISpherePlanetTerrainModel )TerrainModel; }
 		}
 
 		#region ISpherePlanetModel Members

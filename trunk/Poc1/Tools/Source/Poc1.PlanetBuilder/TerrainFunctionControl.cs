@@ -120,9 +120,9 @@ namespace Poc1.PlanetBuilder
 
 		private void regenerateMeshButton_Click( object sender, EventArgs e )
 		{
-			IPlanetProcTerrainModel model = ( IPlanetProcTerrainModel )BuilderState.Instance.Planet.TerrainModel;
+			IPlanetProcTerrainModel model = ( IPlanetProcTerrainModel )BuilderState.Instance.Planet.PlanetModel.TerrainModel;
 			model.SetupTerrain( CurrentHeightFunction, CurrentGroundFunction );
-			BuilderState.Instance.Planet.TerrainRenderer.Refresh( );
+			BuilderState.Instance.Planet.PlanetRenderer.TerrainRenderer.Refresh( );
 		}
 
 		private void TerrainFunctionControl_Load( object sender, EventArgs e )

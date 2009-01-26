@@ -1,6 +1,8 @@
 
 using Poc1.Universe.Interfaces;
+using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Models;
+using Poc1.Universe.Interfaces.Planets.Spherical;
 using Poc1.Universe.Planets.Models.Templates;
 using Rb.Core.Maths;
 
@@ -30,9 +32,9 @@ namespace Poc1.Universe.Planets.Spherical.Models.Templates
 		/// <summary>
 		/// Creates a sphere planet model instance
 		/// </summary>
-		protected override IPlanetModel CreatePlanetModel( )
+		protected override IPlanetModel CreatePlanetModel( IPlanet planet )
 		{
-			return new SpherePlanetModel( );
+			return new SpherePlanetModel( ( ISpherePlanet )planet );
 		}
 
 		///// <summary>

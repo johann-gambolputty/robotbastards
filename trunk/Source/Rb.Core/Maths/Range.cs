@@ -3,6 +3,28 @@ using System;
 namespace Rb.Core.Maths
 {
 	/// <summary>
+	/// Range static utilities
+	/// </summary>
+	public static class Range
+	{
+		/// <summary>
+		/// Gets a midpoint in a range
+		/// </summary>
+		public static float Mid( Range<float> range, float t )
+		{
+			return range.Minimum + ( range.Maximum - range.Minimum ) * t;
+		}
+
+		/// <summary>
+		/// Gets a midpoint in a range
+		/// </summary>
+		public static double Mid( Range<double> range, double t )
+		{
+			return range.Minimum + ( range.Maximum - range.Minimum ) * t;
+		}
+	}
+
+	/// <summary>
 	/// Stores a pair of values defining a range
 	/// </summary>
 	/// <typeparam name="T">Range type</typeparam>

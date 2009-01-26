@@ -9,76 +9,20 @@ namespace Poc1.Universe.Interfaces.Planets.Spherical
 	public interface ISpherePlanet : IPlanet
 	{
 		/// <summary>
-		/// Gets/sets the radius of this planet in metres
+		/// Gets the current sphere planet model
 		/// </summary>
-		Units.Metres Radius
-		{
-			get; set;
-		}
-
-		#region Models
-
-		/// <summary>
-		/// Gets the sphere planet ring model
-		/// </summary>
-		ISpherePlanetRingModel SphereRingModel
+		ISpherePlanetModel SpherePlanetModel
 		{
 			get;
 		}
 
 		/// <summary>
-		/// Gets the atmosphere model
+		/// Gets the current sphere planet renderer
 		/// </summary>
-		ISpherePlanetAtmosphereModel SphereAtmosphereModel
+		ISpherePlanetRenderer SpherePlanetRenderer
 		{
 			get;
 		}
-
-		/// <summary>
-		/// Gets the cloud model
-		/// </summary>
-		ISpherePlanetCloudModel SphereCloudModel
-		{
-			get;
-		}
-
-		/// <summary>
-		/// Gets the terrain model
-		/// </summary>
-		ISpherePlanetTerrainModel SphereTerrainModel
-		{
-			get;
-		}
-
-		#endregion
-
-		#region Renderers
-
-		/// <summary>
-		/// Gets the atmosphere renderer
-		/// </summary>
-		ISpherePlanetAtmosphereRenderer SphereAtmosphereRenderer
-		{
-			get;
-		}
-
-		/// <summary>
-		/// Gets the cloud renderer
-		/// </summary>
-		ISpherePlanetCloudRenderer SphereCloudRenderer
-		{
-			get;
-		}
-
-		/// <summary>
-		/// Gets the terrain renderer
-		/// </summary>
-		ISpherePlanetTerrainRenderer SphereTerrainRenderer
-		{
-			get;
-		}
-
-		#endregion
 
 	}
 }

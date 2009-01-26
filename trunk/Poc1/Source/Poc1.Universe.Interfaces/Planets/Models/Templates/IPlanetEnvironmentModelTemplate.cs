@@ -9,6 +9,6 @@ namespace Poc1.Universe.Interfaces.Planets.Models.Templates
 		/// <summary>
 		/// Creates an instance of the template
 		/// </summary>
-		IPlanetEnvironmentModel CreateInstance( IPlanetModel planetModel, ModelTemplateInstanceContext context );
+		void CreateInstance( IPlanetModel planetModel, ModelTemplateInstanceContext context );
 	}
 }

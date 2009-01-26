@@ -32,10 +32,10 @@ namespace Poc1.PlanetBuilder
 			camera.PerspectiveZNear = 1.0f;
 			camera.PerspectiveZFar = 15000.0f;
 
-			Units.Metres cameraPos = BuilderState.Instance.SpherePlanet.Radius;
-			if ( BuilderState.Instance.SpherePlanet.TerrainModel != null )
+			Units.Metres cameraPos = BuilderState.Instance.SpherePlanet.SpherePlanetModel.Radius;
+			if ( BuilderState.Instance.SpherePlanet.PlanetModel.TerrainModel != null )
 			{
-				cameraPos += BuilderState.Instance.SpherePlanet.TerrainModel.MaximumHeight;
+				cameraPos += BuilderState.Instance.SpherePlanet.PlanetModel.TerrainModel.MaximumHeight;
 			}
 			else
 			{
@@ -134,7 +134,7 @@ namespace Poc1.PlanetBuilder
 			}
 			m_TerrainVisForm = new TerrainVisualiserForm( );
 			m_TerrainVisForm.Show( this );
-			m_TerrainVisForm.TerrainModel = BuilderState.Instance.Planet.TerrainModel;
+			m_TerrainVisForm.TerrainModel = BuilderState.Instance.Planet.PlanetModel.TerrainModel;
 		}
 	}
 }

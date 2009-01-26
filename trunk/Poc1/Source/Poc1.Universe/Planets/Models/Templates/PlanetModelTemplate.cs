@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Models.Templates;
 using Rb.Core.Utils;
@@ -35,11 +36,13 @@ namespace Poc1.Universe.Planets.Models.Templates
 		/// <summary>
 		/// Creates an instance of a planet model from this template
 		/// </summary>
+		/// <param name="planet">Planet to add the model to</param>
 		/// <param name="context">Instanciation context</param>
-		public IPlanetModel CreateModelInstance( ModelTemplateInstanceContext context )
+		public IPlanetModel CreateModelInstance( IPlanet planet, ModelTemplateInstanceContext context )
 		{
+			Arguments.CheckNotNull( planet, "planet" );
 			//	TODO: AP: SoC: Acts as factory and builder method
-			IPlanetModel model = CreatePlanetModel( );
+			IPlanetModel model = CreatePlanetModel( planet );
 			BuildPlanetModel( model, context );
 			return model;
 		}
@@ -60,7 +63,7 @@ namespace Poc1.Universe.Planets.Models.Templates
 		/// <summary>
 		/// Creates a planet model instance
 		/// </summary>
-		protected abstract IPlanetModel CreatePlanetModel( );
+		protected abstract IPlanetModel CreatePlanetModel( IPlanet planet );
 
 		/// <summary>
 		/// Builds a planet model

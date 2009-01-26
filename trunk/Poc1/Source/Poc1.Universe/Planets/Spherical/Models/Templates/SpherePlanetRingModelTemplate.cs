@@ -1,7 +1,6 @@
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Models.Templates;
-using Poc1.Universe.Interfaces.Planets.Spherical.Models;
 using Poc1.Universe.Planets.Models.Templates;
 using Rb.Core.Maths;
 
@@ -27,17 +26,13 @@ namespace Poc1.Universe.Planets.Spherical.Models.Templates
 		/// <summary>
 		/// Creates the ring model instance
 		/// </summary>
-		public override IPlanetEnvironmentModel CreateInstance( IPlanetModel planetModel, ModelTemplateInstanceContext context )
+		public override void CreateInstance( IPlanetModel planetModel, ModelTemplateInstanceContext context )
 		{
 			//	TODO: AP: SoC: This is a factory method as well as a builder method
-			float radiusMulT = ( float )context.Random.NextDouble( );
-			float radiusMul = InnerRadiusMultiple.Minimum + ( InnerRadiusMultiple.Maximum - InnerRadiusMultiple.Minimum ) * radiusMulT;
-			Units.Metres innerRadius = ( ( ISpherePlanetModel )planetModel ).Radius * radiusMul;
+			double radius = Range.Mid( InnerRadiusMultiple, ( float )context.Random.NextDouble( ) );
+			double width = RingWidth.Minimum + ( RingWidth.Maximum - RingWidth.Minimum ) * context.Random.NextDouble( );
 
-			SpherePlanetRingModel model = new SpherePlanetRingModel( );
-			planetModel.Rings = model;
-
-			return model;
+			planetModel.RingModel = new SpherePlanetRingModel( new Units.Metres( radius ), new Units.Metres( width ) );
 		}
 
 		#region Private Members
