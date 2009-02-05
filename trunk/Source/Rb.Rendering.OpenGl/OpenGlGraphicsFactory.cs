@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using System.Threading;
 using Rb.Core.Utils;
 using Rb.Rendering.Interfaces;
@@ -10,18 +9,14 @@ namespace Rb.Rendering.OpenGl
 	/// <summary>
 	/// Implementation of RenderFactory
 	/// </summary>
-	public class OpenGlGraphicsFactory : LibraryBuilder, IGraphicsFactory
+	public class OpenGlGraphicsFactory : GraphicsFactoryBase, IGraphicsFactory
 	{
-		public OpenGlGraphicsFactory( GraphicsInitialization init )
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		/// <param name="init">Initialization parameters</param>
+		public OpenGlGraphicsFactory( GraphicsInitialization init ) : base( init )
 		{
-			AutoAssemblyScan = true;
-
-			//	TODO: AP: Remove effect and platform assembly hardcoding
-			m_EffectsAssembly = init.EffectsAssembly;
-			m_PlatformAssembly = init.PlatformAssembly;
-
-		//	Assembly.Load( init.EffectsAssembly );
-			Assembly.Load( init.PlatformAssembly );
 		}
 
 		/// <summary>
@@ -164,61 +159,5 @@ namespace Rb.Rendering.OpenGl
 			return new OpenGlDraw( );
 		}
 
-		#region Private Members
-
-		private readonly string m_EffectsAssembly;
-		private readonly string m_PlatformAssembly;
-
-		private Type m_EffectDataSourcesType;
-		private Type m_DisplaySetupType;
-
-		private Type EffectDataSourcesType
-		{
-			get
-			{
-				if ( m_EffectDataSourcesType == null )
-				{
-					m_EffectDataSourcesType = GetAssemblyType<IEffectDataSources>( m_EffectsAssembly );
-				}
-				return m_EffectDataSourcesType;
-			}
-		}
-
-		private Type DisplaySetupType
-		{
-			get
-			{
-				if ( m_DisplaySetupType == null )
-				{
-					m_DisplaySetupType = GetAssemblyType<IDisplaySetup>( m_PlatformAssembly );
-				}
-				return m_DisplaySetupType;
-			}
-		}
-
-		private static Type GetAssemblyType<T>( string assemblyName )
-		{
-			Assembly asm = AppDomain.CurrentDomain.Load( assemblyName );
-			Type result = AppDomainUtils.FindTypeImplementingInterface( asm.GetTypes( ), typeof( T ) );
-			if ( result == null )
-			{
-				throw new ArgumentException( string.Format( "There was no type in assembly \"{0}\" that implemented IEffectDataSources", asm ) );
-			}
-			return result;
-		}
-
-		#endregion
-
-		#region LibraryBuilder Members
-
-		/// <summary>
-		/// Returns true if the specified type has the RenderingLibraryTypeAttribute
-		/// </summary>
-		protected override bool IsLibraryType( Type type )
-		{
-			return type.GetCustomAttributes( typeof( RenderingLibraryTypeAttribute ), true ).Length == 1;
-		}
-
-		#endregion
 	}
 }

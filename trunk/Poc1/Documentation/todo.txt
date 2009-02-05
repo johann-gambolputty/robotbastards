@@ -6,10 +6,12 @@
 		- H: Rename templates. Name clash with model templates
 		- H: Support multiple view managers (e.g. modal dialogs, docking controls).
 		- H: Need a way to retrieve the controls/forms associated with views
-		- M: Add serialization of docking layout
 		- H: Switch to dock pane docking layout
 		- H: Add build project selection (solar system, particle system)
 		- H: Extract interfaces for classes in tool assemblies - make them part of MVC pattern in bob
+		- M: Add serialization of docking layout
+		- M: Fix scroll bar maximum value in range slider control
+		- L: Separate model and template view interfaces and controller classes (combine in a single control)
 		- L: Add error provider to create project form
 		- L: Don't rebuild entire template tree when template model changes in template view implementation
 		- L: Fix template icons in template view implementation
@@ -178,6 +180,7 @@
 		- H: Technique selector should automatically fallback past invalid techniques (may require technique annotation)
 		- H: Add inverse frame to camera interface
 		- H: Make UniCamera work the same as standard cameras
+		- M: Create a dummy zero size window in Graphics.Initialize(), to provide a context to initialize graphics systems
 		- M: Make camera part of the rendering context (reconcile with global camera in renderer)
 		- M: Add support to load rendering library objects from assemblies in the new rendering library layout (can keep
 		  assembly selector, but it's not necessary anymore)

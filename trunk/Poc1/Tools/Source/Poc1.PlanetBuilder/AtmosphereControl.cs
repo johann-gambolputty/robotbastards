@@ -137,7 +137,7 @@ namespace Poc1.PlanetBuilder
 			opticalDepthTexture.Create( buildOutputs.OpticalDepthTexture, false );
 			opticalDepthTexture.ToBitmap( false )[ 0 ].Save( "OpticalDepthTexture.png" );
 
-			ISpherePlanetAtmosphereRenderer atmoRenderer = BuilderState.Instance.SpherePlanet.SpherePlanetRenderer.SphereAtmosphereRenderer;
+			ISpherePlanetAtmosphereRenderer atmoRenderer = BuilderState.Instance.SpherePlanet.PlanetRenderer.SphereAtmosphereRenderer;
 			atmoRenderer.SetLookupTextures( scatteringTexture, opticalDepthTexture );
 		}
 
@@ -204,7 +204,7 @@ namespace Poc1.PlanetBuilder
 		private void AtmosphereControl_Load( object sender, EventArgs e )
 		{
 			ISpherePlanet planet = ( ISpherePlanet )BuilderState.Instance.Planet;
-			m_AtmosphereModel.InnerRadiusMetres = ( float )planet.SpherePlanetModel.Radius.ToMetres;
+			m_AtmosphereModel.InnerRadiusMetres = ( float )planet.PlanetModel.Radius.ToMetres;
 			if ( planet.PlanetModel.AtmosphereModel != null )
 			{
 				m_AtmosphereModel.AtmosphereThicknessMetres = ( float )planet.PlanetModel.AtmosphereModel.AtmosphereThickness;

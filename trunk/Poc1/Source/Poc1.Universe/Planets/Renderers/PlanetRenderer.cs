@@ -16,17 +16,6 @@ namespace Poc1.Universe.Planets.Renderers
 	public class PlanetRenderer : IPlanetRenderer
 	{
 		/// <summary>
-		/// Setup constructor
-		/// </summary>
-		/// <param name="planet">Planet associated with this renderer</param>
-		public PlanetRenderer( IPlanet planet )
-		{
-			Arguments.CheckNotNull( planet, "planet" );
-			m_Planet = planet;
-			planet.PlanetRenderer = this;
-		}
-
-		/// <summary>
 		/// Gets/sets the planet associated with this renderer
 		/// </summary>
 		public IPlanet Planet
@@ -39,6 +28,10 @@ namespace Poc1.Universe.Planets.Renderers
 					return;
 				}
 				m_Planet = value;
+				if ( m_Planet != null && m_Planet.PlanetRenderer != this )
+				{
+					m_Planet.PlanetRenderer = this;
+				}
 				foreach ( IPlanetEnvironmentRenderer renderer in m_Renderers )
 				{
 					renderer.Planet = m_Planet;

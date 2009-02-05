@@ -1,3 +1,4 @@
+using System;
 using Poc1.Bob.Core.Interfaces.Projects;
 using Poc1.Tools.Waves;
 using Poc1.Universe.Interfaces.Planets;
@@ -42,9 +43,13 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets
 		{
 			Arguments.CheckNotNull( template, "template" );
 			Arguments.CheckNotNull( planet, "planet" );
+			if ( planet.PlanetModel == null )
+			{
+				throw new ArgumentNullException( "planet", "Planet needs valid model" );
+			}
 			m_Planet = planet;
 			m_PlanetTemplate = template;
-			m_PlanetModel = template.CreateModelInstance( planet, m_InstanceContext );
+			template.CreateModelInstance( planet.PlanetModel, InstanceContext );
 		}
 
 		/// <summary>
@@ -52,7 +57,7 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets
 		/// </summary>
 		public IPlanetModel PlanetModel
 		{
-			get { return m_PlanetModel; }
+			get { return m_Planet.PlanetModel; }
 		}
 
 		/// <summary>
@@ -63,13 +68,20 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets
 			get { return m_Planet; }
 		}
 
+		/// <summary>
+		/// Gets the instance context used for creating models from templates
+		/// </summary>
+		public ModelTemplateInstanceContext InstanceContext
+		{
+			get { return m_InstanceContext; }
+		}
+
 		#endregion
 
 		#region Private Members
 
 		private readonly ModelTemplateInstanceContext m_InstanceContext = new ModelTemplateInstanceContext( );
 		private readonly IPlanetModelTemplate m_PlanetTemplate;
-		private IPlanetModel m_PlanetModel;
 		private readonly IPlanet m_Planet;
 		private readonly WaveAnimationParameters m_WaveAnimationModel = new WaveAnimationParameters( );
 

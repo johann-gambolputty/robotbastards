@@ -64,7 +64,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			int width = 256;
 			int height = 256;
 			progressMonitor.UpdateProgress( 0 );
-			ISpherePlanetTerrainModel terrainModel = planet.SpherePlanetModel.SphereTerrainModel;
+			ISpherePlanetTerrainModel terrainModel = planet.PlanetModel.SphereTerrainModel;
 			faceBitmaps[ ( int )CubeMapFace.PositiveX ] = terrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveX, width, height ); progressMonitor.UpdateProgress( 1 / 6.0f );
 			faceBitmaps[ ( int )CubeMapFace.NegativeX ] = terrainModel.CreateMarbleTextureFace( CubeMapFace.NegativeX, width, height ); progressMonitor.UpdateProgress( 2 / 6.0f );
 			faceBitmaps[ ( int )CubeMapFace.PositiveY ] = terrainModel.CreateMarbleTextureFace( CubeMapFace.PositiveY, width, height ); progressMonitor.UpdateProgress( 3 / 6.0f );

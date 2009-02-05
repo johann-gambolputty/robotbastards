@@ -104,8 +104,8 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 
 			List<RingVertex> vertices = new List<RingVertex>( );
 
-			float innerRadius = ( float )m_Planet.SpherePlanetModel.SphereRingModel.InnerRadius.ToAstroRenderUnits;
-			float outerRadius = ( float )( m_Planet.SpherePlanetModel.SphereRingModel.InnerRadius + m_Planet.PlanetModel.RingModel.Width ).ToAstroRenderUnits;
+			float innerRadius = ( float )m_Planet.PlanetModel.SphereRingModel.InnerRadius.ToAstroRenderUnits;
+			float outerRadius = ( float )( m_Planet.PlanetModel.SphereRingModel.InnerRadius + m_Planet.PlanetModel.RingModel.Width ).ToAstroRenderUnits;
 			float angle = 0;
 			float angleInc = Constants.TwoPi / ( subdivisionCount - 1 );
 			bool toggle = false;

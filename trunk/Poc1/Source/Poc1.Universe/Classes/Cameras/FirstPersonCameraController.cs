@@ -74,17 +74,19 @@ namespace Poc1.Universe.Classes.Cameras
 
 		#region Private Members
 
+		private float m_SecondsSinceLastUpdate = 1;
+		private long m_LastUpdate;
 		private FirstPersonCamera m_Camera;
 		private float m_MaxSlipSpeed = 3000000;
 		private float m_MaxForwardSpeed = 3000000;
-		private float m_MaxTurnSpeed = 0.7f;
-		private long m_LastUpdate;
+		private float m_MaxTurnSpeed = 0.8f;
 
 		/// <summary>
 		/// Handles update of the interaction system
 		/// </summary>
 		private void OnInteractionUpdate( )
 		{
+			m_SecondsSinceLastUpdate = ( float )TinyTime.ToSeconds( TinyTime.CurrentTime - m_LastUpdate );
 			m_LastUpdate = TinyTime.CurrentTime;
 		}
 
@@ -98,7 +100,7 @@ namespace Poc1.Universe.Classes.Cameras
 				return;
 			}
 
-			float secondsSinceLastUpdate = 0.1f; // ( float )TinyTime.ToSeconds( TinyTime.CurrentTime - m_LastUpdate );
+			float secondsSinceLastUpdate = m_SecondsSinceLastUpdate;
 
 			Matrix44 movementFrame = m_Camera.InverseFrame;
 			if ( triggerData.Command == FirstPersonCameraCommands.Forwards )

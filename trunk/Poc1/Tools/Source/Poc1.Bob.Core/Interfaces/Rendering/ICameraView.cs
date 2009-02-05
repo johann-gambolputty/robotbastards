@@ -1,3 +1,4 @@
+using System;
 using Rb.Interaction.Classes;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Interfaces.Objects.Cameras;
@@ -9,6 +10,15 @@ namespace Poc1.Bob.Core.Interfaces.Rendering
 	/// </summary>
 	public interface ICameraView
 	{
+		/// <summary>
+		/// Event raised when the camera is ready to initialize rendering
+		/// </summary>
+		/// <remarks>
+		/// Rendering resources like effects can only be initialized once a rendering context has been
+		/// created by the underlying Display object used by this view.
+		/// </remarks>
+		event EventHandler InitializeRendering;
+
 		/// <summary>
 		/// Gets/sets the camera used by the view
 		/// </summary>

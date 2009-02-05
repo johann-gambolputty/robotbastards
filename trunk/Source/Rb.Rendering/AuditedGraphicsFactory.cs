@@ -57,6 +57,11 @@ namespace Rb.Rendering
 			get { return m_Impl.ApiName; }
 		}
 
+		public void Initialize( )
+		{
+			m_Impl.Initialize( );
+		}
+
 		public IRenderer CreateRenderer( )
 		{
 			return Add( m_Impl.CreateRenderer( ) );

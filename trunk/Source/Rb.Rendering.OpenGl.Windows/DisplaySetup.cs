@@ -137,9 +137,9 @@ namespace Rb.Rendering.OpenGl.Windows
 
 
 			//	All contexts share the same display list space
-			if ( ms_LastRenderContext == IntPtr.Zero )
+			if ( s_LastRenderContext == IntPtr.Zero )
 			{
-				ms_LastRenderContext = m_RenderContext;
+				s_LastRenderContext = m_RenderContext;
 
 				//	Make it current
 				Wgl.wglMakeCurrent( m_DeviceContext, m_RenderContext );
@@ -150,7 +150,7 @@ namespace Rb.Rendering.OpenGl.Windows
 			else
 			{
 				Wgl.wglMakeCurrent( m_DeviceContext, m_RenderContext );
-				Wgl.wglShareLists( ms_LastRenderContext, m_RenderContext );
+				Wgl.wglShareLists( s_LastRenderContext, m_RenderContext );
 			}
 
 
@@ -192,7 +192,7 @@ namespace Rb.Rendering.OpenGl.Windows
 		private IntPtr			m_WindowHandle;
 		private IntPtr			m_DeviceContext;
 		private IntPtr			m_RenderContext;
-		private static IntPtr	ms_LastRenderContext;
+		private static IntPtr	s_LastRenderContext;
 
 		#endregion
 

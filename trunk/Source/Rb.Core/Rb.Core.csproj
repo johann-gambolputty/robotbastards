@@ -110,6 +110,7 @@
     <Compile Include="Maths\Intersections2.cs" />
     <Compile Include="Maths\Intersections3.cs" />
     <Compile Include="Maths\IRay3Intersector.cs" />
+    <Compile Include="Maths\INumeric.cs" />
     <Compile Include="Maths\IShape2.cs">
       <SubType>Code</SubType>
     </Compile>

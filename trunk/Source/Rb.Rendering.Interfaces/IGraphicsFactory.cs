@@ -20,6 +20,11 @@ namespace Rb.Rendering.Interfaces
 			get;
 		}
 
+		/// <summary>
+		/// Initializes this factory
+		/// </summary>
+		void Initialize( );
+
 		#region Systems
 
 		/// <summary>

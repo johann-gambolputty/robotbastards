@@ -14,11 +14,11 @@ namespace Poc1.Universe.Interfaces.Planets.Models
 		event EventHandler ModelChanged;
 
 		/// <summary>
-		/// Gets the planet associated with this model
+		/// Gets/sets the planet associated with this model
 		/// </summary>
 		IPlanet Planet
 		{
-			get;
+			get; set;
 		}
 
 		/// <summary>

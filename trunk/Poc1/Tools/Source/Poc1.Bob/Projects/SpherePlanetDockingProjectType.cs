@@ -6,6 +6,10 @@ using Poc1.Bob.Core.Classes;
 using Poc1.Bob.Core.Classes.Biomes.Models;
 using Poc1.Bob.Core.Classes.Projects.Planets.Spherical;
 using Poc1.Bob.Core.Interfaces;
+using Poc1.Universe.Interfaces.Planets.Models;
+using Poc1.Universe.Interfaces.Planets.Models.Templates;
+using Poc1.Universe.Planets.Spherical.Models.Templates;
+using Poc1.Universe.Planets.Spherical.Renderers;
 using Rb.Core.Utils;
 using WeifenLuo.WinFormsUI.Docking;
 using Poc1.Bob.Core.Interfaces.Projects;
@@ -30,8 +34,9 @@ namespace Poc1.Bob.Projects
 					new DockingViewInfo( "Biome Distribution View", CreateBiomeDistributionView ), 
 					new DockingViewInfo( "Biome List View", CreateBiomeListView ), 
 					new DockingViewInfo( "Biome Terrain Texture View", CreateBiomeTerrainTextureView ),
-					new DockingViewInfo( "Ocean Template View", CreateOceanTemplateView ), 
-					new DockingViewInfo( "Planet Template View", CreatePlanetTemplateView, DockState.Document ),
+					new DockingViewInfo( "Ocean Template View", CreateOceanTemplateView ),
+					new DockingViewInfo( "Cloud Template View", CreateCloudTemplateView, DockState.Float ),
+					new DockingViewInfo( "Planet Template View", CreatePlanetTemplateView, DockState.Float ),
 					new DockingViewInfo( "Planet Display", CreatePlanetDisplay, DockState.Document )
 				};
 		}
@@ -77,10 +82,47 @@ namespace Poc1.Bob.Projects
 		}
 
 		/// <summary>
+		/// Creates an flat cloud template view
+		/// </summary>
+		private Control CreateCloudTemplateView( IWorkspace workspace )
+		{
+			SpherePlanetProject currentProject = CurrentProject<SpherePlanetProject>( workspace );
+
+			//	TODO: AP: REMOVEME
+			IPlanetCloudModelTemplate cloudModelTemplate = currentProject.PlanetTemplate.GetModelTemplate<IPlanetCloudModelTemplate>( );
+			if ( cloudModelTemplate == null )
+			{
+				cloudModelTemplate = new SpherePlanetCloudModelTemplate( );
+				currentProject.PlanetTemplate.EnvironmentModelTemplates.Add( cloudModelTemplate );
+			}
+
+			IPlanetCloudModel cloudModel = currentProject.PlanetModel.CloudModel;
+			if ( cloudModel == null )
+			{
+				cloudModelTemplate.CreateInstance( currentProject.PlanetModel, currentProject.InstanceContext );
+				currentProject.Planet.PlanetRenderer.CloudRenderer = new SpherePlanetCloudRenderer( );
+			}
+
+			return ( Control )m_ViewFactory.CreateCloudTemplateView( cloudModelTemplate, currentProject.PlanetModel.CloudModel );
+		}
+
+		/// <summary>
 		/// Creates an atmosphere template view control
 		/// </summary>
 		private Control CreateBiomeListView( IWorkspace workspace )
 		{
+			//	Design: 
+			//		Planet template
+			//			|
+			//			+- Biome list template
+			//			+- Biome distribution template
+			//			+- Terrain model template
+			//			+- Cloud template
+			//			+- Ocean template
+			//
+			//	Add Template | Remove Template
+			//	Double click opens a view on the model
+			//
 			SpherePlanetProject currentProject = CurrentProject<SpherePlanetProject>( workspace );
 			return ( Control )WorkspaceViewFactory.CreateBiomeListView( ( WorkspaceEx )workspace, m_ViewFactory, currentProject.AllBiomes, currentProject.CurrentBiomes );
 		}

@@ -46,6 +46,16 @@ namespace Poc1.Universe.Interfaces
 		}
 
 		/// <summary>
+		/// Sets this point
+		/// </summary>
+		public void Set( long x, long y, long z )
+		{
+			m_X = x;
+			m_Y = y;
+			m_Z = z;
+		}
+
+		/// <summary>
 		/// Converts this point to a string (render units)
 		/// </summary>
 		public string ToRenderUnitString( )

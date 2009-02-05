@@ -119,6 +119,24 @@
     <Compile Include="Controls\Biomes\TerrainTypeTextureItemControl.Designer.cs">
       <DependentUpon>TerrainTypeTextureItemControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Planet\Clouds\CloudModelTemplateControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Planet\Clouds\CloudModelTemplateControl.Designer.cs">
+      <DependentUpon>CloudModelTemplateControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Planet\Clouds\FlatCloudModelTemplateControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Planet\Clouds\FlatCloudModelTemplateControl.Designer.cs">
+      <DependentUpon>FlatCloudModelTemplateControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Planet\PlanetTemplateCompositionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Planet\PlanetTemplateCompositionControl.Designer.cs">
+      <DependentUpon>PlanetTemplateCompositionControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Planet\SpherePlanetModelTemplateViewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -207,6 +225,18 @@
     <EmbeddedResource Include="Controls\Biomes\TerrainTypeTextureItemControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>TerrainTypeTextureItemControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Planet\Clouds\CloudModelTemplateControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>CloudModelTemplateControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Planet\Clouds\FlatCloudModelTemplateControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FlatCloudModelTemplateControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Planet\PlanetTemplateCompositionControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>PlanetTemplateCompositionControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Planet\SpherePlanetModelTemplateViewControl.resx">
       <SubType>Designer</SubType>

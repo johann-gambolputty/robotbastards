@@ -140,7 +140,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			{
 				if ( m_AtmosphereGeometry == null )
 				{
-					float renderRadius = ( float )( m_Planet.SpherePlanetModel.Radius.ToAstroRenderUnits + m_Planet.PlanetModel.AtmosphereModel.AtmosphereThickness.ToAstroRenderUnits );
+					float renderRadius = ( float )( m_Planet.PlanetModel.Radius.ToAstroRenderUnits + m_Planet.PlanetModel.AtmosphereModel.AtmosphereThickness.ToAstroRenderUnits );
 					Graphics.Draw.StartCache( );
 					Graphics.Draw.Sphere( null, Point3.Origin, renderRadius, 60, 60 );
 					m_AtmosphereGeometry = Graphics.Draw.StopCache( );
@@ -160,7 +160,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		private void SetupRenderUnitAtmosphereEffectParameters( IUniCamera camera, IEffect effect )
 		{
 			Point3 localPos = Units.RenderUnits.MakeRelativePoint( m_Planet.Transform.Position, camera.Position );
-			float planetRadius = m_Planet.SpherePlanetModel.Radius.ToRenderUnits;
+			float planetRadius = m_Planet.PlanetModel.Radius.ToRenderUnits;
 			float atmosphereRadius = m_Planet.PlanetModel.AtmosphereModel.AtmosphereThickness.ToRenderUnits;
 			float height = localPos.DistanceTo( Point3.Origin ) - planetRadius;
 			float clampedHeight = Utils.Clamp( height, 0, atmosphereRadius );
@@ -183,8 +183,8 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		private void SetupAstroRenderUnitAtmosphereEffectParameters( IUniCamera camera, IEffect effect )
 		{
 			Point3 localPos = Units.AstroRenderUnits.MakeRelativePoint( m_Planet.Transform.Position, camera.Position );
-			float planetRadius = ( float )m_Planet.SpherePlanetModel.Radius.ToAstroRenderUnits;
-			float atmosphereRadius = ( float )m_Planet.SpherePlanetModel.AtmosphereModel.AtmosphereThickness.ToAstroRenderUnits;
+			float planetRadius = ( float )m_Planet.PlanetModel.Radius.ToAstroRenderUnits;
+			float atmosphereRadius = ( float )m_Planet.PlanetModel.AtmosphereModel.AtmosphereThickness.ToAstroRenderUnits;
 			float height = localPos.DistanceTo( Point3.Origin ) - planetRadius;
 			float clampedHeight = Utils.Clamp( height, 0, atmosphereRadius );
 			float normHeight = clampedHeight / atmosphereRadius;

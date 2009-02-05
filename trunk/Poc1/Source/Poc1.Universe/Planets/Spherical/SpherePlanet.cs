@@ -1,13 +1,15 @@
 using Poc1.Universe.Classes.Rendering;
 using Poc1.Universe.Interfaces;
+using Poc1.Universe.Interfaces.Planets.Models;
+using Poc1.Universe.Interfaces.Planets.Renderers;
 using Poc1.Universe.Interfaces.Planets.Spherical;
 using Poc1.Universe.Interfaces.Planets.Spherical.Models;
 using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
 using Poc1.Universe.Planets.Models;
-using Poc1.Universe.Planets.Renderers;
 using Poc1.Universe.Planets.Spherical.Models;
 using Poc1.Universe.Planets.Spherical.Renderers;
 using Rb.Core.Threading;
+using Rb.Core.Utils;
 
 namespace Poc1.Universe.Planets.Spherical
 {
@@ -28,7 +30,8 @@ namespace Poc1.Universe.Planets.Spherical
 			ISpherePlanet planet = new SpherePlanet( );
 
 			//	Models
-			SpherePlanetModel model = new SpherePlanetModel( planet, planetRadius );
+			ISpherePlanetModel model = planet.PlanetModel;
+			model.Radius				= planetRadius;
 			model.OceanModel			= new PlanetOceanModel( );
 			model.TerrainModel			= new SpherePlanetProcTerrainModel( );
 			model.AtmosphereModel		= new SpherePlanetAtmosphereModel( );
@@ -36,7 +39,7 @@ namespace Poc1.Universe.Planets.Spherical
 			model.CloudModel			= new SpherePlanetCloudModel( workQueue );
 
 			//	Renderers
-			PlanetRenderer renderer = new PlanetRenderer( planet );
+			ISpherePlanetRenderer renderer = planet.PlanetRenderer;
 			renderer.MarbleRenderer		= new SpherePlanetMarbleRenderer( new SpherePlanetMarbleTextureBuilder( ) );
 			renderer.OceanRenderer		= new SpherePlanetOceanRenderer( );
 			renderer.TerrainRenderer	= new SpherePlanetTerrainPatchRenderer( );
@@ -55,17 +58,27 @@ namespace Poc1.Universe.Planets.Spherical
 			ISpherePlanet planet = new SpherePlanet( );
 
 			//	Models
-			ISpherePlanetModel model = new SpherePlanetModel( planet, planetRadius );
+			ISpherePlanetModel model = planet.PlanetModel;
+			model.Radius = planetRadius;
 			model.RingModel = new SpherePlanetRingModel( planetRadius * 1.75, planetRadius * 0.1 );
 
 			//	Renderers
-			ISpherePlanetRenderer renderer = new SpherePlanetRenderer( planet );
+			ISpherePlanetRenderer renderer = planet.PlanetRenderer;
 			renderer.MarbleRenderer = new SphereGasGiantMarbleRenderer( );
 
 			return planet;
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public SpherePlanet( )
+		{
+			PlanetModel = new SpherePlanetModel( );
+			PlanetRenderer = new SpherePlanetRenderer( );
+		}
 
 		#region ISpherePlanet Members
 
@@ -88,17 +101,39 @@ namespace Poc1.Universe.Planets.Spherical
 		/// <summary>
 		/// Gets the current sphere planet model
 		/// </summary>
-		public ISpherePlanetModel SpherePlanetModel
+		public new ISpherePlanetModel PlanetModel
 		{
-			get { return ( ISpherePlanetModel )PlanetModel; }
+			get { return ( ISpherePlanetModel )base.PlanetModel; }
+			set { base.PlanetModel = value; }
 		}
 
 		/// <summary>
 		/// Gets the current sphere planet renderer
 		/// </summary>
-		public ISpherePlanetRenderer SpherePlanetRenderer
+		public new ISpherePlanetRenderer PlanetRenderer
 		{
-			get { return ( ISpherePlanetRenderer )PlanetRenderer; }
+			get { return ( ISpherePlanetRenderer )base.PlanetRenderer; }
+			set { base.PlanetRenderer = value; }
+		}
+
+		#endregion
+
+		#region Protected Members
+
+		/// <summary>
+		/// Validates a planet model passed to the <see cref="PlanetModel"/> setter
+		/// </summary>
+		protected override void ValidatePlanetModel( IPlanetModel model )
+		{
+			Arguments.CheckedNonNullCast<ISpherePlanetModel>( model, "model" );
+		}
+
+		/// <summary>
+		/// Validates a planet renderer passed to the <see cref="PlanetRenderer"/> setter
+		/// </summary>
+		protected override void ValidatePlanetRenderer( IPlanetRenderer renderer )
+		{
+			Arguments.CheckedNonNullCast<ISpherePlanetRenderer>( renderer, "renderer" );
 		}
 
 		#endregion

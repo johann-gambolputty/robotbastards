@@ -1,6 +1,7 @@
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Models;
+using Rb.Core.Maths;
 
 namespace Poc1.Universe.Planets.Models
 {
@@ -33,9 +34,31 @@ namespace Poc1.Universe.Planets.Models
 			get { return m_CloudLayerMinHeight; }
 			set
 			{
-				bool changed = m_CloudLayerMinHeight != value;
-				m_CloudLayerMinHeight = value;
-				RaiseModelChanged( changed );
+				if ( m_CloudLayerMinHeight != value )
+				{
+					m_CloudLayerMinHeight = value;
+					OnModelChanged( );
+				}
+			}
+		}
+
+		#endregion
+
+		#region IPlanetCloudModel Members
+
+		/// <summary>
+		/// Gets/sets the cloud coverage range
+		/// </summary>
+		public Range<float> CoverageRange
+		{
+			get { return m_CoverageRange; }
+			set
+			{
+				if ( m_CoverageRange != value )
+				{
+					m_CoverageRange = value;
+					OnModelChanged( );
+				}
 			}
 		}
 
@@ -46,13 +69,9 @@ namespace Poc1.Universe.Planets.Models
 		/// <summary>
 		/// Raises the <see cref="ModelChanged"/> event
 		/// </summary>
-		/// <param name="changed">
-		/// Changed flag. If false, the ModelChanged event is not raised. A convenience to keep property
-		/// setters simpler.
-		/// </param>
-		protected void RaiseModelChanged( bool changed )
+		protected void OnModelChanged( )
 		{
-			if ( changed && ModelChanged != null )
+			if ( ModelChanged != null )
 			{
 				ModelChanged( this, null );
 			}
@@ -62,9 +81,11 @@ namespace Poc1.Universe.Planets.Models
 
 		#region Private Members
 
+		private Range<float> m_CoverageRange = new Range<float>( 0, 1 );
 		private Units.Metres m_CloudLayerMinHeight = new Units.Metres( 7000 );
 		private IPlanet m_Planet;
 
 		#endregion
+
 	}
 }

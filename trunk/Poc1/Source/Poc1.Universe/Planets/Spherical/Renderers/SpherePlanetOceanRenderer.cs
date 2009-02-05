@@ -61,7 +61,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 			GameProfiles.Game.Rendering.PlanetRendering.OceanRendering.Begin( );
 
-			float seaLevel = ( m_Planet.SpherePlanetModel.Radius + m_Planet.SpherePlanetModel.OceanModel.SeaLevel ).ToRenderUnits;
+			float seaLevel = ( m_Planet.PlanetModel.Radius + m_Planet.PlanetModel.OceanModel.SeaLevel ).ToRenderUnits;
 			seaLevel /= 10.0f;
 			Graphics.Renderer.PushTransform( TransformType.LocalToWorld );
 			Graphics.Renderer.Scale( TransformType.LocalToWorld, seaLevel, seaLevel, seaLevel );

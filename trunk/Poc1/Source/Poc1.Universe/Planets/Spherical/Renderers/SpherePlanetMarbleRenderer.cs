@@ -144,7 +144,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		private void BuildGeometry( )
 		{
 			Graphics.Draw.StartCache( );
-			Graphics.Draw.Sphere( null, Point3.Origin, ( float )m_Planet.SpherePlanetModel.Radius.ToAstroRenderUnits, 40, 40 );
+			Graphics.Draw.Sphere( null, Point3.Origin, ( float )m_Planet.PlanetModel.Radius.ToAstroRenderUnits, 40, 40 );
 			m_Geometry = Graphics.Draw.StopCache( );
 		}
 
@@ -164,7 +164,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		{
 			if ( ( ( m_MarbleTexture == null ) || m_MarbleTextureDirty ) && !m_MarbleTextureBuilding )
 			{
-				if ( m_Planet.SpherePlanetModel.SphereTerrainModel.ReadyToUse )
+				if ( m_Planet.PlanetModel.SphereTerrainModel.ReadyToUse )
 				{
 					m_MarbleTextureDirty = false;
 					m_MarbleTextureBuilding = true;
