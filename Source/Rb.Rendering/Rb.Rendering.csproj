@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GraphicsFactoryBase.cs" />
     <Compile Include="AuditedGraphicsFactory.cs" />
     <Compile Include="Cameras\Camera3.cs" />
     <Compile Include="Cameras\CameraBase.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="FpsCounter.cs" />
     <Compile Include="FpsDisplay.cs" />
     <Compile Include="GraphicsInitialization.cs" />
+    <Compile Include="IGraphicsPlatformInitializer.cs" />
     <Compile Include="Lights\Light.cs" />
     <Compile Include="Lights\LightGroup.cs" />
     <Compile Include="Lights\PointLight.cs" />

@@ -1,5 +1,4 @@
 using Poc1.Universe.Interfaces;
-using Poc1.Universe.Interfaces.Planets.Spherical;
 using Poc1.Universe.Interfaces.Planets.Spherical.Models;
 using Poc1.Universe.Planets.Models;
 
@@ -10,23 +9,6 @@ namespace Poc1.Universe.Planets.Spherical.Models
 	/// </summary>
 	public class SpherePlanetModel : PlanetModel, ISpherePlanetModel
 	{
-		/// <summary>
-		/// Default constructor (radius of planet defaults to zero)
-		/// </summary>
-		public SpherePlanetModel( ISpherePlanet planet ) :
-			base( planet )
-		{
-		}
-
-		/// <summary>
-		/// Setup constructor
-		/// </summary>
-		public SpherePlanetModel( ISpherePlanet planet, Units.Metres radius ) :
-			base( planet )
-		{
-			m_Radius = radius;
-		}
-
 		/// <summary>
 		/// Gets the sphere planet ring model
 		/// </summary>
@@ -72,7 +54,7 @@ namespace Poc1.Universe.Planets.Spherical.Models
 				if ( m_Radius != value )
 				{
 					m_Radius = value;
-					OnModelChanged( );
+					OnModelChanged( new RadiusChangedEventArgs( ) );
 				}
 			}
 		}

@@ -1,10 +1,6 @@
 using System;
 using System.Collections;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Security;
-using System.Text;
-using System.Text.RegularExpressions;
 using Rb.Assets.Interfaces;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
@@ -129,7 +125,7 @@ namespace Rb.Rendering.OpenGl.Cg
 			//	Run through all the techniques in the effect
 			for ( IntPtr curTechnique = TaoCg.cgGetFirstTechnique( m_EffectHandle ); curTechnique != IntPtr.Zero; curTechnique = TaoCg.cgGetNextTechnique( curTechnique ) )
 			{
-				if ( TaoCg.cgValidateTechnique( curTechnique ) == 0 )
+				if ( TaoCg.cgValidateTechnique( curTechnique ) == TaoCg.CG_FALSE )
 				{
 					GraphicsLog.Warning( "Unable to validate technique \"{0}\" - {1}", TaoCg.cgGetTechniqueName( curTechnique ), TaoCg.cgGetLastListing( m_Context ) );
 					continue;

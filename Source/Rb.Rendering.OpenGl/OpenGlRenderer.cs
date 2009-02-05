@@ -48,7 +48,10 @@ namespace Rb.Rendering.OpenGl
 
 			//	Show the extensions
 			string extensions = Gl.glGetString( Gl.GL_EXTENSIONS );
-			GraphicsLog.Info( extensions.Replace( ' ', '\n' ) );
+			if ( extensions != null )
+			{
+				GraphicsLog.Info( extensions.Replace( ' ', '\n' ) );
+			}
 
 			//	Write some important caps to the info
 			int[] result = new int[ 1 ];

@@ -56,7 +56,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		{
 			if ( m_Geometry == null )
 			{
-				float radius = ( float )m_Planet.SpherePlanetModel.Radius.ToAstroRenderUnits;
+				float radius = ( float )m_Planet.PlanetModel.Radius.ToAstroRenderUnits;
 				Graphics.Draw.StartCache( );
 				Graphics.Draw.Sphere( null, Point3.Origin, radius, 50, 50 );
 				m_Geometry = Graphics.Draw.StopCache( );

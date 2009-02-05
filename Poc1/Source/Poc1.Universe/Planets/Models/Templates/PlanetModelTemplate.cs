@@ -1,7 +1,6 @@
 
 using System;
 using System.Collections.Generic;
-using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Models.Templates;
 using Rb.Core.Utils;
@@ -34,17 +33,30 @@ namespace Poc1.Universe.Planets.Models.Templates
 		}
 
 		/// <summary>
+		/// Gets a model template of the specified type
+		/// </summary>
+		/// <typeparam name="T">Model template type to retrieve</typeparam>
+		/// <returns>Model template object, or null if no model template of type T exists in this planet template</returns>
+		public T GetModelTemplate<T>( ) where T : class, IPlanetEnvironmentModelTemplate
+		{
+			foreach ( IPlanetEnvironmentModelTemplate template in m_EnvironmentModelTemplates )
+			{
+				if ( template is T )
+				{
+					return ( T )template;
+				}
+			}
+			return null;
+		}
+
+		/// <summary>
 		/// Creates an instance of a planet model from this template
 		/// </summary>
-		/// <param name="planet">Planet to add the model to</param>
+		/// <param name="planetModel">Planet model to setup</param>
 		/// <param name="context">Instanciation context</param>
-		public IPlanetModel CreateModelInstance( IPlanet planet, ModelTemplateInstanceContext context )
+		public void CreateModelInstance( IPlanetModel planetModel, ModelTemplateInstanceContext context )
 		{
-			Arguments.CheckNotNull( planet, "planet" );
-			//	TODO: AP: SoC: Acts as factory and builder method
-			IPlanetModel model = CreatePlanetModel( planet );
-			BuildPlanetModel( model, context );
-			return model;
+			BuildPlanetModel( planetModel, context );
 		}
 
 		#endregion
@@ -59,11 +71,6 @@ namespace Poc1.Universe.Planets.Models.Templates
 		#endregion
 
 		#region Protected Members
-
-		/// <summary>
-		/// Creates a planet model instance
-		/// </summary>
-		protected abstract IPlanetModel CreatePlanetModel( IPlanet planet );
 
 		/// <summary>
 		/// Builds a planet model

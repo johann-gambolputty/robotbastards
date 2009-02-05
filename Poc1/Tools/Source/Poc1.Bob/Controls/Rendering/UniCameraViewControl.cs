@@ -6,6 +6,7 @@ using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Spherical;
 using Rb.Core.Utils;
+using Rb.Interaction;
 using Rb.Interaction.Classes;
 using Rb.Interaction.Windows;
 using Rb.Rendering;
@@ -39,7 +40,7 @@ namespace Poc1.Bob.Controls.Rendering
 		/// </summary>
 		private void AddRenderableToViewers( )
 		{
-			foreach ( Viewer viewer in terrainDisplay.Viewers )
+			foreach ( Viewer viewer in display.Viewers )
 			{
 				if ( viewer.Renderable == m_Renderable )
 				{
@@ -56,7 +57,7 @@ namespace Poc1.Bob.Controls.Rendering
 						ISpherePlanet spherePlanet = m_Renderable as ISpherePlanet;
 						if ( spherePlanet != null )
 						{
-							height += spherePlanet.SpherePlanetModel.Radius.ToUniUnits;
+							height += spherePlanet.PlanetModel.Radius.ToUniUnits;
 						}
 						if ( planet.PlanetModel.TerrainModel != null )
 						{
@@ -87,27 +88,35 @@ namespace Poc1.Bob.Controls.Rendering
 		/// <summary>
 		/// Handles loading this control. Creates a viewer that can render the terrain model
 		/// </summary>
-		private void TerrainSamplerViewControl_Load( object sender, EventArgs e )
+		private void UniCameraViewControl_Load( object sender, EventArgs e )
 		{
 			m_Camera = CreateCamera( );
 
 			Viewer viewer = new Viewer( );
-			terrainDisplay.AddViewer( viewer );
+			display.AddViewer( viewer );
 
-			terrainDisplay.AllowArrowKeyInputs = true;
+			display.AllowArrowKeyInputs = true;
 
 			viewer.Camera = m_Camera;
 
-			CommandControlInputSource.StartMonitoring( CommandUser.Default, terrainDisplay, FirstPersonCameraCommands.DefaultBindings );
+			CommandControlInputSource.StartMonitoring( CommandUser.Default, display, FirstPersonCameraCommands.DefaultBindings );
 			CommandUser.Default.CommandTriggered += OnCommandTriggered;
 
 			//	If planet was already assigned prior to Load, add it to all views
 			AddRenderableToViewers( );
+
+			//	TODO: AP: Horrible bodge to work around InteractionUpdateTimer not working properly without manual intervention
+			display.OnBeginRender += delegate { InteractionUpdateTimer.Instance.OnUpdate( ); };
+
+			if ( InitializeRendering != null )
+			{
+				InitializeRendering( this, EventArgs.Empty );
+			}
 		}
 
 		private void OnCommandTriggered( CommandTriggerData triggerData )
 		{
-			terrainDisplay.Invalidate( );
+			display.Invalidate( );
 		}
 
 		#endregion
@@ -127,6 +136,15 @@ namespace Poc1.Bob.Controls.Rendering
 		#endregion
 
 		#region ICameraView Members
+
+		/// <summary>
+		/// Event raised when the camera is ready to initialize rendering
+		/// </summary>
+		/// <remarks>
+		/// Rendering resources like effects can only be initialized once a rendering context has been
+		/// created by the underlying Display object used by this view.
+		/// </remarks>
+		public event EventHandler InitializeRendering;
 
 		/// <summary>
 		/// Gets/sets the camera used by the view
@@ -162,5 +180,6 @@ namespace Poc1.Bob.Controls.Rendering
 		}
 
 		#endregion
+
 	}
 }

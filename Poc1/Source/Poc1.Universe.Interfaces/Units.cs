@@ -328,7 +328,7 @@ namespace Poc1.Universe.Interfaces
 		/// <summary>
 		/// Metres. Measures distances within solar systems using double precision floating point
 		/// </summary>
-		public struct Metres : IComparable<Metres>
+		public struct Metres : IComparable<Metres>, INumeric<Metres>
 		{
 			/// <summary>
 			/// Setup constructor
@@ -426,6 +426,42 @@ namespace Poc1.Universe.Interfaces
 			public int CompareTo( Metres other )
 			{
 				return m_Value < other.m_Value ? -1 : ( m_Value > other.m_Value ? 1 : 0 );
+			}
+
+			#endregion
+
+			#region INumeric<Metres> Members
+
+			/// <summary>
+			/// Adds this value to another and returns the result
+			/// </summary>
+			public Metres Add( Metres addend )
+			{
+				return new Metres( m_Value + addend.m_Value );
+			}
+
+			/// <summary>
+			/// Subtracts another value from this and returns the result
+			/// </summary>
+			public Metres Subtract( Metres subtrahend )
+			{
+				return new Metres( m_Value - subtrahend.m_Value );
+			}
+
+			/// <summary>
+			/// Divides this value by another and returns the result
+			/// </summary>
+			public Metres Divide( double divisor )
+			{
+				return new Metres( m_Value / divisor );
+			}
+
+			/// <summary>
+			/// Multiplies this value by another and returns the result
+			/// </summary>
+			public Metres Multiply( double multiplier )
+			{
+				return new Metres( m_Value * multiplier );
 			}
 
 			#endregion

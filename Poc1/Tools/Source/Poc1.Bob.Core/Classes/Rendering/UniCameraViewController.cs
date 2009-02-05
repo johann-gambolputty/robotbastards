@@ -20,21 +20,12 @@ namespace Poc1.Bob.Core.Classes.Rendering
 		{
 			Arguments.CheckNotNull( view, "view" );
 
+			m_View = view;
+
 			//	Create a camera to add to the view
 			UniCamera camera = new FirstPersonCamera( );
 			camera.PerspectiveZNear = 1.0f;
 			camera.PerspectiveZFar = 15000.0f;
-
-			//Units.Metres cameraPos = BuilderState.CurrentProject.SpherePlanet.Radius;
-			//if ( BuilderState.CurrentProject.SpherePlanet.TerrainModel != null )
-			//{
-			//    cameraPos += BuilderState.CurrentProject.SpherePlanet.TerrainModel.MaximumHeight;
-			//}
-			//else
-			//{
-			//    cameraPos += new Units.Metres( 1000000 );
-			//}
-			//camera.Position = new UniPoint3( cameraPos.ToUniUnits, 0, 0 );
 			view.Camera = camera;
 
 			//	Bind camera commands to a camera controller
@@ -44,8 +35,21 @@ namespace Poc1.Bob.Core.Classes.Rendering
 			view.InputSource.Start( );
 		}
 
+		#region Protected Members
+
+		/// <summary>
+		/// Gets the view
+		/// </summary>
+		protected IUniCameraView View
+		{
+			get { return m_View; }
+		}
+
+		#endregion
+
 		#region Private Members
 
+		private readonly IUniCameraView m_View;
 		private readonly CommandInputBinding[] m_CameraControlBindings = FirstPersonCameraCommands.DefaultBindings;
 
 		#endregion

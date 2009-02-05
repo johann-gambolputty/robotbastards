@@ -1,3 +1,4 @@
+using System;
 using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Spherical;
 using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
@@ -22,7 +23,14 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			EffectAssetHandle effect = new EffectAssetHandle( "Effects/Planets/cloudLayer.cgfx", true );
 			effect.OnReload += Effect_OnReload;
 
-			m_Technique = new TechniqueSelector( effect, "DefaultTechnique" );
+			try
+			{
+				m_Technique = new TechniqueSelector( effect, "DefaultTechnique" );
+			}
+			catch (Exception ex)
+			{
+				Graphics.Renderer.DumpInfo( );
+			}
 		}
 
 		#region IPlanetEnvironmentRenderer Members
@@ -37,6 +45,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			{
 				if ( m_SpherePlanet != null )
 				{
+					m_SpherePlanet.PlanetModel.ModelChanged -= CloudModel_ModelChanged;
 					m_SpherePlanet.PlanetModel.CloudModel.ModelChanged -= CloudModel_ModelChanged;
 				}
 				m_SpherePlanet = ( ISpherePlanet )value;
@@ -44,6 +53,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 				m_CloudSphere = null;
 				if ( m_SpherePlanet != null )
 				{
+					m_SpherePlanet.PlanetModel.ModelChanged += CloudModel_ModelChanged;
 					m_SpherePlanet.PlanetModel.CloudModel.ModelChanged += CloudModel_ModelChanged;
 				}
 			}
@@ -59,8 +69,8 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// <param name="effect">Effect to set up</param>
 		public void SetupCloudEffectParameters( IEffect effect )
 		{
-			effect.Parameters[ "CloudTexture" ].Set( m_SpherePlanet.SpherePlanetModel.SphereCloudModel.CloudTexture );
-			effect.Parameters[ "NextCloudTexture" ].Set( m_SpherePlanet.SpherePlanetModel.SphereCloudModel.CloudTexture );	//	TODO: AP: ...
+			effect.Parameters[ "CloudTexture" ].Set( m_SpherePlanet.PlanetModel.SphereCloudModel.CloudTexture );
+			effect.Parameters[ "NextCloudTexture" ].Set( m_SpherePlanet.PlanetModel.SphereCloudModel.CloudTexture );	//	TODO: AP: ...
 		}
 
 		#endregion
@@ -98,7 +108,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// </summary>
 		private IRenderable CreateCloudSphere( )
 		{
-			float radius = ( m_SpherePlanet.SpherePlanetModel.Radius + Planet.PlanetModel.CloudModel.CloudLayerMinHeight ).ToRenderUnits;
+			float radius = ( m_SpherePlanet.PlanetModel.Radius + Planet.PlanetModel.CloudModel.CloudLayerMinHeight ).ToRenderUnits;
 
 			Graphics.Draw.StartCache( );
 			Graphics.Draw.Sphere( null, Point3.Origin, radius, 50, 50 );
@@ -117,7 +127,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// <summary>
 		/// Called when the cloud model is changed
 		/// </summary>
-		private void CloudModel_ModelChanged( object sender, System.EventArgs e )
+		private void CloudModel_ModelChanged( object sender, EventArgs e )
 		{
 			DisposableHelper.Dispose( m_CloudSphere );
 			m_CloudSphere = null;

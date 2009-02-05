@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
+using Rb.Core.Utils;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
 
@@ -163,6 +164,8 @@ namespace Rb.Rendering
 
 			//	Effect data sources are created lazily, to remove the dependency
 			//	on the effect assembly for applications that don't need it
+
+			factory.Initialize( );
 		}
 
 		/// <summary>
@@ -191,7 +194,11 @@ namespace Rb.Rendering
 		public static IRenderer Renderer
 		{
 			get { return s_Renderer; }
-			set { s_Renderer = value; }
+			set
+			{
+				Arguments.CheckNotNull( value, "value" );
+				s_Renderer = value;
+			}
 		}
 
 		/// <summary>
@@ -229,6 +236,9 @@ namespace Rb.Rendering
 		private static IGraphicsFactory s_Factory;
 		private static IEffectDataSources s_EffectDataSources;
 
+		/// <summary>
+		/// Finds a type in the specified assembly that implements IGraphicsFactory, and returns an instance of that type
+		/// </summary>
 		private static IGraphicsFactory GetGraphicsFactoryFromAssembly( Assembly assembly, GraphicsInitialization init )
 		{
 			foreach ( Type type in assembly.GetTypes( ) )

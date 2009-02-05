@@ -1,8 +1,10 @@
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace Poc1.Bob.Controls
 {
+	[DefaultEvent( "ValueChanged" )]
 	public partial class RangeSlider : UserControl
 	{
 		/// <summary>
@@ -66,7 +68,7 @@ namespace Poc1.Bob.Controls
 		{
 			get
 			{
-				decimal t = ( valueScrollBar.Value - valueScrollBar.Minimum ) / ( decimal )( valueScrollBar.Maximum - valueScrollBar.Minimum );
+				decimal t = ( valueScrollBar.Value - valueScrollBar.Minimum ) / ScrollBarRange;
 				return MinValue + ( MaxValue - MinValue ) * t;
 			}
 			set
@@ -75,12 +77,20 @@ namespace Poc1.Bob.Controls
 				{
 					return;
 				}
-				decimal t = ( Value - MinValue ) / ( MaxValue - MinValue );
-				valueScrollBar.Value = ( int )( valueScrollBar.Minimum + ( valueScrollBar.Maximum - valueScrollBar.Minimum ) * t );
+				decimal t = ( value - MinValue ) / ( MaxValue - MinValue );
+				valueScrollBar.Value = ( int )( valueScrollBar.Minimum + ScrollBarRange * t );
 			}
 		}
 
 		#region Private Members
+
+		/// <summary>
+		/// Returns the range of the scroll bar
+		/// </summary>
+		private decimal ScrollBarRange
+		{
+			get { return ( valueScrollBar.Maximum - valueScrollBar.Minimum ); }
+		}
 
 		/// <summary>
 		/// Raises the ValueChanged event

@@ -192,7 +192,7 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 			content.Text = dockView.Name;
 			content.Controls.Add( control );
 			content.AutoScroll = true;
-			content.HideOnClose = true;
+		//	content.HideOnClose = true;
 
 			control.Dock = DockStyle.Fill;
 

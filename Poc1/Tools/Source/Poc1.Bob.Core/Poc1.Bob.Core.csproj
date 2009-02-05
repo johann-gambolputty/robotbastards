@@ -48,10 +48,13 @@
     <Compile Include="Classes\Commands\DefaultCommands.cs" />
     <Compile Include="Classes\Commands\ProjectCommandListener.cs" />
     <Compile Include="Classes\Commands\ProjectCommands.cs" />
-    <Compile Include="Classes\Projects\Planets\PlanetInstanceUpdater.cs" />
+    <Compile Include="Classes\Planets\Clouds\CloudModelTemplateViewController.cs" />
+    <Compile Include="Classes\Planets\PlanetTemplateViewController.cs" />
+    <Compile Include="Classes\Planets\SpherePlanetTemplateViewController.cs" />
     <Compile Include="Classes\Projects\Planets\PlanetProject.cs" />
     <Compile Include="Classes\Projects\Planets\Spherical\SpherePlanetProject.cs" />
     <Compile Include="Classes\Rendering\PlanetViewController.cs" />
+    <Compile Include="Classes\Rendering\SpherePlanetViewController.cs" />
     <Compile Include="Classes\WorkspaceEx.cs" />
     <Compile Include="Classes\Rendering\UniCameraViewController.cs" />
     <Compile Include="Classes\Projects\CreateProjectController.cs" />
@@ -75,7 +78,10 @@
     <Compile Include="Interfaces\Biomes\Views\ITerrainTypeView.cs" />
     <Compile Include="Interfaces\Commands\ICommandProvider.cs" />
     <Compile Include="Interfaces\IViewFactory.cs" />
+    <Compile Include="Interfaces\Planets\Clouds\ICloudModelTemplateView.cs" />
+    <Compile Include="Interfaces\Planets\Clouds\IFlatCloudModelTemplateView.cs" />
     <Compile Include="Interfaces\Planets\IPlanetModelTemplateView.cs" />
+    <Compile Include="Interfaces\Planets\ISpherePlanetModelTemplateView.cs" />
     <Compile Include="Interfaces\Projects\ICreateProjectView.cs" />
     <Compile Include="Interfaces\Rendering\ICameraView.cs" />
     <Compile Include="Interfaces\Rendering\IUniCameraView.cs" />

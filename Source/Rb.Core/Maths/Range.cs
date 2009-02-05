@@ -22,6 +22,14 @@ namespace Rb.Core.Maths
 		{
 			return range.Minimum + ( range.Maximum - range.Minimum ) * t;
 		}
+
+		/// <summary>
+		/// Gets the midpoint in a range, where the range type is an INumeric
+		/// </summary>
+		public static T Mid<T>( Range<T> range, double t ) where T : INumeric<T>, IComparable<T>
+		{
+			return range.Minimum.Add( range.Maximum.Subtract( range.Minimum ).Multiply( t ) );
+		}
 	}
 
 	/// <summary>
@@ -120,12 +128,47 @@ namespace Rb.Core.Maths
 			return string.Format( "[{0}..{1}]", m_Minimum, m_Maximum );
 		}
 
+		/// <summary>
+		/// Returns true if obj is a non-null Range{T} equal to this
+		/// </summary>
+		public override bool Equals( object obj )
+		{
+			return ( obj != null ) && ( obj is Range<T> ) && ( this == ( Range<T> )obj );
+		}
+
+		/// <summary>
+		/// Returns the hash code of this object
+		/// </summary>
+		public override int GetHashCode( )
+		{
+			return Minimum.GetHashCode( ) + Maximum.GetHashCode( );
+		}
+
+		#region Overloaded operators
+
+		/// <summary>
+		/// Returns true if lhs != rhs
+		/// </summary>
+		public static bool operator != ( Range<T> lhs, Range<T> rhs )
+		{
+			return ( !lhs.Minimum.Equals( rhs.Minimum ) ) || ( !lhs.Maximum.Equals( rhs.Maximum ) );
+		}
+
+		/// <summary>
+		/// Returns true if lhs == rhs
+		/// </summary>
+		public static bool operator == ( Range<T> lhs, Range<T> rhs )
+		{
+			return ( lhs.Minimum.Equals( rhs.Minimum ) ) && ( lhs.Maximum.Equals( rhs.Maximum ) );
+		}
+
+		#endregion
+
 		#region Private Members
 
 		private T m_Minimum;
 		private T m_Maximum;
 
 		#endregion
-
 	}
 }

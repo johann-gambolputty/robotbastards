@@ -11,16 +11,6 @@ namespace Poc1.Universe.Planets.Models
 	/// </summary>
 	public class PlanetModel : IPlanetModel
 	{
-		/// <summary>
-		/// Setup constructor
-		/// </summary>
-		public PlanetModel( IPlanet planet )
-		{
-			Arguments.CheckNotNull( planet, "planet" );
-			m_Planet = planet;
-			planet.PlanetModel = this;
-		}
-
 		#region IPlanetModel Members
 
 		/// <summary>
@@ -34,6 +24,22 @@ namespace Poc1.Universe.Planets.Models
 		public IPlanet Planet
 		{
 			get { return m_Planet; }
+			set
+			{
+				if ( m_Planet == value )
+				{
+					return;
+				}
+				m_Planet = value;
+				if ( m_Planet != null && m_Planet.PlanetModel != this )
+				{
+					m_Planet.PlanetModel = this;
+				}
+				foreach ( IPlanetEnvironmentModel model in m_Models )
+				{
+					model.Planet = m_Planet;
+				}
+			}
 		}
 
 		/// <summary>
@@ -156,8 +162,8 @@ namespace Poc1.Universe.Planets.Models
 		{
 			if ( ModelChanged != null )
 			{
-				ModelChanged( this, EventArgs.Empty );
-			}	
+				ModelChanged( this, args );
+			}
 		}
 
 		#endregion

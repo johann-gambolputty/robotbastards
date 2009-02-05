@@ -131,6 +131,62 @@ namespace Rb.Rendering.Windows
 			}
 		}
 
+		#region Viewers
+
+		/// <summary>
+		/// Gets the first viewer under the specified cursor position
+		/// </summary>
+		/// <param name="x">Cursor x position</param>
+		/// <param name="y">Cursor y position</param>
+		/// <returns>Returns the first viewer that contains (x,y), or null</returns>
+		public Viewer GetViewerUnderCursor( int x, int y )
+		{
+			float fX = x / ( float )Width;
+			float fY = y / ( float )Height;
+			foreach ( Viewer viewer in m_Viewers )
+			{
+				if ( viewer.ViewRect.Contains( fX, fY ) )
+				{
+					return viewer;
+				}
+			}
+			return null;
+		}
+
+		/// <summary>
+		/// Gets the collection of viewers
+		/// </summary>
+		public Viewer[] Viewers
+		{
+			get { return m_Viewers.ToArray( ); }
+		}
+
+		/// <summary>
+		/// Adds a viewer
+		/// </summary>
+		/// <param name="viewer">Viewer to add</param>
+		public void AddViewer( Viewer viewer )
+		{
+			Arguments.CheckNotNull( viewer, "viewer" );
+			m_Viewers.Add( viewer );
+			viewer.Control = this;
+		}
+
+		/// <summary>
+		/// Removes a viewer
+		/// </summary>
+		/// <param name="viewer">Viewer to remove</param>
+		public void RemoveViewer( Viewer viewer )
+		{
+			Arguments.CheckNotNull( viewer, "viewer" );
+			m_Viewers.Remove( viewer );
+			viewer.Control = null;
+		}
+
+		#endregion
+
+		#region Protected Members
+
 		protected override bool IsInputKey( Keys keyData )
 		{
 			if ( !m_AllowArrowKeyInputs )
@@ -150,51 +206,6 @@ namespace Rb.Rendering.Windows
 				CreateParams cp = base.CreateParams;
 				cp.ClassStyle = cp.ClassStyle | ( m_Setup == null ? 0 : m_Setup.ClassStyles );
 				return cp;
-			}
-		}
-
-		private void Display_Load( object sender, EventArgs e )
-		{
-			if ( m_Setup != null )
-			{
-				m_Setup.Create( this, m_ColourBits, m_DepthBits, m_StencilBits );
-			}
-		}
-
-		private void Display_Paint( object sender, PaintEventArgs e )
-		{
-			if ( m_Setup == null )
-			{
-				if ( DesignMode )
-				{
-					if ( m_DesignImage == null )
-					{
-						m_DesignImage = Properties.Resources.Blessed;
-					}
-
-					e.Graphics.Clear( Color.White );
-
-					if ( m_DesignImage != null )
-					{
-						e.Graphics.DrawImage( m_DesignImage, 0, 0, Width, Height );
-					}
-
-					e.Graphics.DrawRectangle( new Pen( Color.Black, 2 ), 1, 1, Width - 2, Height - 2 );
-				}
-				else
-				{
-					e.Graphics.Clear( Color.White );
-				}
-			}
-			else
-			{
-				if ( BeginPaint( ) )
-				{
-					Draw( );
-					EndPaint( );
-				}
-
-				m_AlreadyInvalidated = false;
 			}
 		}
 
@@ -257,69 +268,7 @@ namespace Rb.Rendering.Windows
 			}
 		}
 
-		/// <summary>
-		/// Rendering timer tick callback. Invalidates the control
-		/// </summary>
-		private void RenderTick( object sender, EventArgs args )
-		{
-			if ( !m_AlreadyInvalidated )
-			{
-				Invalidate( );
-				m_AlreadyInvalidated = true;
-			}
-        }
-
-        #region Viewers
-
-		/// <summary>
-		/// Gets the first viewer under the specified cursor position
-		/// </summary>
-		/// <param name="x">Cursor x position</param>
-		/// <param name="y">Cursor y position</param>
-		/// <returns>Returns the first viewer that contains (x,y), or null</returns>
-		public Viewer GetViewerUnderCursor( int x, int y )
-		{
-			float fX = x / ( float )Width;
-			float fY = y / ( float )Height;
-			foreach ( Viewer viewer in m_Viewers )
-			{
-				if ( viewer.ViewRect.Contains( fX, fY ) )
-				{
-					return viewer;
-				}
-			}
-			return null;
-		}
-
-        /// <summary>
-        /// Gets the collection of viewers
-        /// </summary>
-	    public Viewer[] Viewers
-	    {
-	        get { return m_Viewers.ToArray( ); }
-	    }
-
-		/// <summary>
-        /// Adds a viewer
-        /// </summary>
-        /// <param name="viewer">Viewer to add</param>
-        public void AddViewer( Viewer viewer )
-        {
-            m_Viewers.Add( viewer );
-        	viewer.Control = this;
-        }
-
-        /// <summary>
-        /// Removes a viewer
-        /// </summary>
-        /// <param name="viewer">Viewer to remove</param>
-        public void RemoveViewer( Viewer viewer )
-        {
-            m_Viewers.Remove( viewer );
-        	viewer.Control = null;
-        }
-
-        #endregion
+		#endregion
 
         #region	Private stuff
 
@@ -347,6 +296,67 @@ namespace Rb.Rendering.Windows
 			}
 			return null;
 		}
+
+		#region Event Handlers
+
+		/// <summary>
+		/// Rendering timer tick callback. Invalidates the control
+		/// </summary>
+		private void RenderTick( object sender, EventArgs args )
+		{
+			if ( !m_AlreadyInvalidated )
+			{
+				Invalidate( );
+				m_AlreadyInvalidated = true;
+			}
+		}
+
+		private void Display_Load( object sender, EventArgs e )
+		{
+			if ( m_Setup != null )
+			{
+				m_Setup.Create( this, m_ColourBits, m_DepthBits, m_StencilBits );
+			}
+		}
+
+		private void Display_Paint( object sender, PaintEventArgs e )
+		{
+			if ( m_Setup == null )
+			{
+				if ( DesignMode )
+				{
+					if ( m_DesignImage == null )
+					{
+						m_DesignImage = Properties.Resources.Blessed;
+					}
+
+					e.Graphics.Clear( Color.White );
+
+					if ( m_DesignImage != null )
+					{
+						e.Graphics.DrawImage( m_DesignImage, 0, 0, Width, Height );
+					}
+
+					e.Graphics.DrawRectangle( new Pen( Color.Black, 2 ), 1, 1, Width - 2, Height - 2 );
+				}
+				else
+				{
+					e.Graphics.Clear( Color.White );
+				}
+			}
+			else
+			{
+				if ( BeginPaint( ) )
+				{
+					Draw( );
+					EndPaint( );
+				}
+
+				m_AlreadyInvalidated = false;
+			}
+		}
+
+		#endregion
 
 		#endregion
 	}

@@ -4,12 +4,13 @@ using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Models.Templates;
 using Poc1.Universe.Interfaces.Planets.Spherical.Models;
+using Poc1.Universe.Interfaces.Planets.Spherical.Models.Templates;
 using Poc1.Universe.Planets.Spherical.Models.Templates;
 using Rb.Core.Utils;
 
 namespace Poc1.Bob.Controls.Planet
 {
-	public partial class SpherePlanetModelTemplateViewControl : UserControl, IPlanetModelTemplateView
+	public partial class SpherePlanetModelTemplateViewControl : UserControl, ISpherePlanetModelTemplateView
 	{
 		/// <summary>
 		/// Default constructor
@@ -18,6 +19,15 @@ namespace Poc1.Bob.Controls.Planet
 		{
 			InitializeComponent( );
 		}
+
+		#region ISpherePlanetModelTemplateView Members
+
+		/// <summary>
+		/// Event raised when the model radius slider is moved
+		/// </summary>
+		public event System.Action<Units.Metres> ModelRadiusChanged;
+
+		#endregion
 
 		#region IPlanetModelTemplateView Members
 
@@ -62,15 +72,16 @@ namespace Poc1.Bob.Controls.Planet
 		#region Private Members
 
 		private ISpherePlanetModel m_PlanetModel;
-		private SpherePlanetModelTemplate m_PlanetTemplate;
+		private ISpherePlanetModelTemplate m_PlanetTemplate;
 
 		#region Event Handlers
 
 		private void radiusRangeSlider_ValueChanged( object sender, System.EventArgs e )
 		{
-			if ( m_PlanetModel != null )
+			if ( ModelRadiusChanged != null )
 			{
-				m_PlanetModel.Radius = new Units.Metres( ( double )radiusRangeSlider.Value * 1000.0 );
+				Units.Metres radius = new Units.Metres( ( double )radiusRangeSlider.Value * 1000.0 );
+				ModelRadiusChanged( radius );
 			}
 		}
 
@@ -78,5 +89,6 @@ namespace Poc1.Bob.Controls.Planet
 		#endregion
 
 		#endregion
+
 	}
 }

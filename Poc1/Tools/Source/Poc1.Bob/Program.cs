@@ -8,6 +8,12 @@ namespace Poc1.Bob
 {
 	static class Program
 	{
+		public static object Test( )
+		{
+			object effect = new EffectAssetHandle( "Effects/Planets/cloudLayer.cgfx", false ).Asset;
+			return effect;
+		}
+
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>
@@ -25,6 +31,10 @@ namespace Poc1.Bob
 					MessageBox.Show( string.Format( "Error running data build step ({0})", ex.Message ) );
 				}
 			}
+
+			//	Must come before graphics initialization
+			Application.EnableVisualStyles( );
+			Application.SetCompatibleTextRenderingDefault( false );
 
 			try
 			{
@@ -46,8 +56,6 @@ namespace Poc1.Bob
 					return;
 				}
 			}
-			Application.EnableVisualStyles( );
-			Application.SetCompatibleTextRenderingDefault( false );
 			Application.Run( new MainForm( ) );
 		}
 	}

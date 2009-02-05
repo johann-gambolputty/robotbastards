@@ -28,37 +28,38 @@ namespace Poc1.Bob.Controls.Rendering
 		/// </summary>
 		private void InitializeComponent( )
 		{
-			this.terrainDisplay = new Rb.Rendering.Windows.Display( );
+			this.display = new Rb.Rendering.Windows.Display( );
 			this.SuspendLayout( );
 			// 
-			// terrainDisplay
+			// display
 			// 
-			this.terrainDisplay.AllowArrowKeyInputs = false;
-			this.terrainDisplay.ColourBits = ( ( byte )( 32 ) );
-			this.terrainDisplay.ContinuousRendering = false;
-			this.terrainDisplay.DepthBits = ( ( byte )( 24 ) );
-			this.terrainDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.terrainDisplay.Location = new System.Drawing.Point( 0, 0 );
-			this.terrainDisplay.Name = "terrainDisplay";
-			this.terrainDisplay.RenderInterval = 1;
-			this.terrainDisplay.Size = new System.Drawing.Size( 206, 199 );
-			this.terrainDisplay.StencilBits = ( ( byte )( 0 ) );
-			this.terrainDisplay.TabIndex = 0;
+			this.display.AllowArrowKeyInputs = false;
+			this.display.ColourBits = ( ( byte )( 32 ) );
+			this.display.ContinuousRendering = true;
+			this.display.DepthBits = ( ( byte )( 24 ) );
+			this.display.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.display.FocusOnMouseOver = false;
+			this.display.Location = new System.Drawing.Point( 0, 0 );
+			this.display.Name = "display";
+			this.display.RenderInterval = 1;
+			this.display.Size = new System.Drawing.Size( 206, 199 );
+			this.display.StencilBits = ( ( byte )( 0 ) );
+			this.display.TabIndex = 0;
 			// 
-			// TerrainSamplerViewControl
+			// UniCameraViewControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add( this.terrainDisplay );
-			this.Name = "TerrainSamplerViewControl";
+			this.Controls.Add( this.display );
+			this.Name = "UniCameraViewControl";
 			this.Size = new System.Drawing.Size( 206, 199 );
-			this.Load += new System.EventHandler( this.TerrainSamplerViewControl_Load );
+			this.Load += new System.EventHandler( this.UniCameraViewControl_Load );
 			this.ResumeLayout( false );
 
 		}
 
 		#endregion
 
-		private Rb.Rendering.Windows.Display terrainDisplay;
+		private Rb.Rendering.Windows.Display display;
 	}
 }

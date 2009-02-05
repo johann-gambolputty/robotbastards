@@ -27,7 +27,7 @@ namespace Poc1.Universe.Interfaces.Planets
 		}
 
 		/// <summary>
-		/// Gets/sets the planet model
+		/// Gets the planet model
 		/// </summary>
 		IPlanetModel PlanetModel
 		{
@@ -35,7 +35,7 @@ namespace Poc1.Universe.Interfaces.Planets
 		}
 
 		/// <summary>
-		/// Gets/sets the planet renderer
+		/// Gets the planet renderer
 		/// </summary>
 		IPlanetRenderer PlanetRenderer
 		{

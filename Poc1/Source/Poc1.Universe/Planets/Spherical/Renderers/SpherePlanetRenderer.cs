@@ -1,4 +1,3 @@
-using Poc1.Universe.Interfaces.Planets.Spherical;
 using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
 using Poc1.Universe.Planets.Renderers;
 
@@ -9,15 +8,6 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 	/// </summary>
 	public class SpherePlanetRenderer : PlanetRenderer, ISpherePlanetRenderer
 	{
-		/// <summary>
-		/// Setup constructor
-		/// </summary>
-		/// <param name="planet">Associated planet</param>
-		public SpherePlanetRenderer( ISpherePlanet planet ) :
-			base( planet )
-		{	
-		}
-
 		#region ISpherePlanetRenderer Members
 
 		#region Renderers

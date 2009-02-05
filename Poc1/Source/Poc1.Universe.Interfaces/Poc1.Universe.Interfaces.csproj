@@ -78,6 +78,8 @@
     <Compile Include="Planets\Spherical\Models\ISpherePlanetModel.cs" />
     <Compile Include="Planets\Spherical\Models\ISpherePlanetRingModel.cs" />
     <Compile Include="Planets\Spherical\Models\ISpherePlanetTerrainModel.cs" />
+    <Compile Include="Planets\Models\Templates\IPlanetCloudModelTemplate.cs" />
+    <Compile Include="Planets\Spherical\Models\Templates\ISpherePlanetModelTemplate.cs" />
     <Compile Include="Planets\Spherical\Renderers\ISpherePlanetAtmosphereRenderer.cs" />
     <Compile Include="Planets\Spherical\Renderers\ISpherePlanetCloudRenderer.cs" />
     <Compile Include="Planets\Spherical\Renderers\ISpherePlanetMarbleTextureBuilder.cs" />
@@ -106,7 +108,6 @@
   <ItemGroup>
     <Folder Include="Planets\Flat\Model\" />
     <Folder Include="Planets\Flat\Renderers\" />
-    <Folder Include="Planets\Spherical\Models\Templates\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

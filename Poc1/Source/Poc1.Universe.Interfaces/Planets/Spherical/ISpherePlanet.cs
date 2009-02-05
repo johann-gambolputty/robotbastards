@@ -11,17 +11,17 @@ namespace Poc1.Universe.Interfaces.Planets.Spherical
 		/// <summary>
 		/// Gets the current sphere planet model
 		/// </summary>
-		ISpherePlanetModel SpherePlanetModel
+		new ISpherePlanetModel PlanetModel
 		{
-			get;
+			get; set;
 		}
 
 		/// <summary>
 		/// Gets the current sphere planet renderer
 		/// </summary>
-		ISpherePlanetRenderer SpherePlanetRenderer
+		new ISpherePlanetRenderer PlanetRenderer
 		{
-			get;
+			get; set;
 		}
 
 	}

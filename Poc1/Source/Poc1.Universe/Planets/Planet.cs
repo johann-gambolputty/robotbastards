@@ -13,7 +13,6 @@ namespace Poc1.Universe.Planets
 	/// </summary>
 	public class Planet : IPlanet, IRenderable, IUniRenderable
 	{
-
 		#region IPlanet Members
 
 		/// <summary>
@@ -43,17 +42,17 @@ namespace Poc1.Universe.Planets
 		/// <summary>
 		/// Gets/sets the planet model
 		/// </summary>
-		public IPlanetModel PlanetModel
+		public virtual IPlanetModel PlanetModel
 		{
 			get { return m_Model; }
 			set
 			{
+				ValidatePlanetModel( value );
 				m_Model = value;
 				if ( m_Model != null )
 				{
-					//m_Model.Planet = this;
+					m_Model.Planet = this;
 				}
-				OnPlanetChanged( );
 			}
 		}
 
@@ -65,6 +64,7 @@ namespace Poc1.Universe.Planets
 			get { return m_Renderer; }
 			set
 			{
+				ValidatePlanetRenderer( value );
 				m_Renderer = value;
 				if ( m_Renderer != null )
 				{
@@ -144,6 +144,22 @@ namespace Poc1.Universe.Planets
 		#region Protected Members
 
 		/// <summary>
+		/// Validates a planet model passed to the <see cref="PlanetModel"/> setter
+		/// </summary>
+		protected virtual void ValidatePlanetModel( IPlanetModel model )
+		{
+			Arguments.CheckNotNull( model, "model" );
+		}
+
+		/// <summary>
+		/// Validates a planet renderer passed to the <see cref="PlanetRenderer"/> setter
+		/// </summary>
+		protected virtual void ValidatePlanetRenderer( IPlanetRenderer renderer )
+		{
+			Arguments.CheckNotNull( renderer, "renderer" );
+		}
+
+		/// <summary>
 		/// Raises the PlanetChanged event
 		/// </summary>
 		protected void OnPlanetChanged( )
@@ -163,17 +179,6 @@ namespace Poc1.Universe.Planets
 		private IOrbit			m_Orbit;
 		private IPlanetModel	m_Model;
 		private IPlanetRenderer m_Renderer;
-
-		/// <summary>
-		/// Called when a model is assigned to this planet
-		/// </summary>
-		private void OnModelAssigned( IPlanetEnvironmentModel model )
-		{
-			if ( model != null )
-			{
-				model.Planet = this;
-			}
-		}
 
 		#endregion
 	}

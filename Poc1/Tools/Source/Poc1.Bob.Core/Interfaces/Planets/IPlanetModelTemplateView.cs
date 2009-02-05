@@ -10,6 +10,7 @@ namespace Poc1.Bob.Core.Interfaces.Planets
 	/// </summary>
 	public interface IPlanetModelTemplateView
 	{
+
 		/// <summary>
 		/// Gets/sets the planet model displayed by this view
 		/// </summary>
