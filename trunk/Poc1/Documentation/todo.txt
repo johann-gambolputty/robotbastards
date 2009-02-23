@@ -1,4 +1,16 @@
 
+- PRIORITY
+	- Add planet template composition window, and planet model/renderer composition window
+		- Composition window for model/renderer should be an object graph
+	- Design how rendering classes fit in with a planet-wide rendering graph
+	- Rework planet template/model/renderer windows to pop up when component is selected in composition window
+	- Ocean editor should have an ocean list representing ocean files (like biome list)
+
+	
+- LOWER PRIORITY
+	- Rework planet template/model/renderer windows to contain fixed or dynamic content
+	
+
 - TODO
 	- Bob
 		- H: Template instances should store models correctly (e.g. see SpherePlanetDockingTemplate - hardcoded
@@ -174,7 +186,6 @@
 			- L: Add FPS display
 	- Graphics Misc.
 		- H: Add shader custom build step
-		- H: Can't call any GL commands until display is setup (or null reference exceptions in tao)
 		- H: Parallel split map shadows
 		- H: Technique selector should take an asset path (transparently reset technique when effect is reloaded)
 		- H: Technique selector should automatically fallback past invalid techniques (may require technique annotation)
@@ -188,6 +199,7 @@
 		- M: Particle systems
 		- M: Add configuration options for effect assembly (or perhaps make this data-driven, so when a CG file is loaded, use CG libraries?)
 		- M: Fullscreen mode
+		- L: Refactor out IsSubstituteFor() method from ITechnique
 		- L: Change WaveAnimation class to more generic TextureAnimation
 		- L: Create a vertex buffer builder object that can create vertex data like the IDraw interface can
 		- L: Render node graph is a bit useless - easy to add nodes outside the influence of the class and screw up start node set
@@ -226,6 +238,7 @@
 			- H: combine terrain/marble rendering using z clipping planes (take a look at PSM) (just doing alpha blend - looks OK-ish)
 
 - DONE
+	- H: Can't call any GL commands until display is setup (or null reference exceptions in tao)
 	- L: Add star sphere
 	- L: Refactor opengl texture support routines (move from OpenGlTexture2d)
 	- L: Add vertex component generation options to graphics draw.isurface

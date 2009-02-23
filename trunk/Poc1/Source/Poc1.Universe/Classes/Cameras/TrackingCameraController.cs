@@ -1,5 +1,4 @@
 using Poc1.Universe.Interfaces;
-using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Interaction.Classes;
 using Rb.Interaction.Interfaces;
@@ -12,7 +11,7 @@ namespace Poc1.Universe.Classes.Cameras
 	/// <remarks>
 	/// Cheat: Actually used to control a sphere camera... must be added as a child of a <see cref="PointTrackingCamera"/> object
 	/// </remarks>
-	public class TrackingCameraController : Component
+	public class TrackingCameraController
 	{
 		/// <summary>
 		/// Setup constructor
@@ -23,29 +22,15 @@ namespace Poc1.Universe.Classes.Cameras
 			user.CommandTriggered += HandleCommand;
 		}
 
-
-		#region IChild Members
-
 		/// <summary>
-		/// Called when this object is added to a parent object. Assumes that parent is of type <see cref="PointTrackingCamera"/>
+		/// Gets/sets the camera controlled by this controller
 		/// </summary>
-		public override void AddedToParent( object parent )
+		public PointTrackingCamera Camera
 		{
-			base.AddedToParent( parent );
-			m_Camera = ( PointTrackingCamera )parent;
+			get { return m_Camera; }
+			set { m_Camera = value; }
 		}
-
-		/// <summary>
-		/// Called when this object is removed from a parent object
-		/// </summary>
-		public override void RemovedFromParent( object parent )
-		{
-			base.RemovedFromParent( parent );
-			m_Camera = null;
-		}
-
-		#endregion
-
+		
 		#region Private Members
 
 		private PointTrackingCamera m_Camera;

@@ -23,14 +23,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			EffectAssetHandle effect = new EffectAssetHandle( "Effects/Planets/cloudLayer.cgfx", true );
 			effect.OnReload += Effect_OnReload;
 
-			try
-			{
-				m_Technique = new TechniqueSelector( effect, "DefaultTechnique" );
-			}
-			catch (Exception ex)
-			{
-				Graphics.Renderer.DumpInfo( );
-			}
+			m_Technique = new TechniqueSelector( effect, "DefaultTechnique" );
 		}
 
 		#region IPlanetEnvironmentRenderer Members

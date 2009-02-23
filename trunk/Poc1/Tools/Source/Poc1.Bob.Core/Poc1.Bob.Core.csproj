@@ -82,6 +82,7 @@
     <Compile Include="Interfaces\Planets\Clouds\IFlatCloudModelTemplateView.cs" />
     <Compile Include="Interfaces\Planets\IPlanetModelTemplateView.cs" />
     <Compile Include="Interfaces\Planets\ISpherePlanetModelTemplateView.cs" />
+    <Compile Include="Interfaces\Planets\Terrain\IHomogenousProcTerrainView.cs" />
     <Compile Include="Interfaces\Projects\ICreateProjectView.cs" />
     <Compile Include="Interfaces\Rendering\ICameraView.cs" />
     <Compile Include="Interfaces\Rendering\IUniCameraView.cs" />
@@ -139,6 +140,9 @@
       <Project>{C8DC8F1E-E722-42E0-A433-122BFF0BBD2D}</Project>
       <Name>Poc1.Tools.Waves</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Classes\Planets\Terrain\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -214,6 +214,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LatitudeTerrainFunction.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Source\SphereCloudsBitmap.cpp"
 				>
 			</File>
@@ -284,6 +288,10 @@
 		</Filter>
 		<File
 			RelativePath=".\FractalTerrainParameters.h"
+			>
+		</File>
+		<File
+			RelativePath=".\LatitudeTerrainFunction.h"
 			>
 		</File>
 		<File

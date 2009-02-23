@@ -1,4 +1,3 @@
-using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
 using Rb.Interaction;
@@ -10,17 +9,27 @@ namespace Poc1.Universe.Classes.Cameras
 	/// <summary>
 	/// Controller class for <see cref="FirstPersonCamera"/>
 	/// </summary>
-	public class FirstPersonCameraController : Component
+	public class FirstPersonCameraController
 	{
 		/// <summary>
 		/// Attaches this controller to a user
 		/// </summary>
 		/// <param name="user">User to attach to</param>
-		public FirstPersonCameraController( ICommandUser user )
+		public FirstPersonCameraController( ICommandUser user ) : this( user, null )
+		{
+		}
+
+		/// <summary>
+		/// Attaches this controller to a user
+		/// </summary>
+		/// <param name="user">User to attach to</param>
+		/// <param name="camera">Camera to control. Can be null</param>
+		public FirstPersonCameraController( ICommandUser user, FirstPersonCamera camera )
 		{
 			Arguments.CheckNotNull( user, "user" );
 			user.CommandTriggered += HandleCommand;
 			InteractionUpdateTimer.Instance.Update += OnInteractionUpdate;
+			Camera = camera;
 		}
 
 		/// <summary>
@@ -50,27 +59,14 @@ namespace Poc1.Universe.Classes.Cameras
 			set { m_MaxTurnSpeed = value; }
 		}
 
-		#region IChild Members
-
 		/// <summary>
-		/// Called when this object is added to a parent object. Assumes that parent is of type <see cref="FirstPersonCamera"/>
+		/// Gets/sets the camera controlled by this object
 		/// </summary>
-		public override void AddedToParent( object parent )
+		public FirstPersonCamera Camera
 		{
-			base.AddedToParent( parent );
-			m_Camera = ( FirstPersonCamera )parent;
+			get { return m_Camera; }
+			set { m_Camera = value; }
 		}
-
-		/// <summary>
-		/// Called when this object is removed from a parent object
-		/// </summary>
-		public override void RemovedFromParent( object parent )
-		{
-			base.RemovedFromParent( parent );
-			m_Camera = null;
-		}
-
-		#endregion
 
 		#region Private Members
 

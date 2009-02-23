@@ -7,7 +7,7 @@ namespace Rb.Rendering.Cameras
 	/// <summary>
 	/// Base class for cameras
 	/// </summary>
-	public abstract class CameraBase : Component, ICamera
+	public abstract class CameraBase : Part, ICamera
 	{
 		/// <summary>
 		/// Applies camera transforms to the current renderer

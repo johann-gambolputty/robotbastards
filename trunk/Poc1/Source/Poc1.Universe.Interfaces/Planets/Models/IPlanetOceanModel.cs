@@ -1,5 +1,3 @@
-using System;
-
 namespace Poc1.Universe.Interfaces.Planets.Models
 {
 	/// <summary>

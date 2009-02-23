@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractTechnique.cs" />
     <Compile Include="GraphicsFactoryBase.cs" />
     <Compile Include="AuditedGraphicsFactory.cs" />
     <Compile Include="Cameras\Camera3.cs" />
@@ -79,7 +80,7 @@
     <Compile Include="PassList.cs" />
     <Compile Include="RenderContext.cs" />
     <Compile Include="RendererBase.cs" />
-    <Compile Include="Technique.cs" />
+    <Compile Include="MultiPassTechnique.cs" />
     <Compile Include="TechniqueSelector.cs" />
     <Compile Include="Textures\AnimatedTexture2d.cs" />
     <Compile Include="Textures\Texture2dAssetHandle.cs" />

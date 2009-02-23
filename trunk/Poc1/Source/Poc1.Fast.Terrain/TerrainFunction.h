@@ -52,7 +52,6 @@ namespace Poc1
 						void set( float scale ) { m_OutputScale = scale; }
 					}
 
-
 					///	\brief	Sets up a terrain displacer
 					void Setup( SseTerrainDisplacer& displacer );
 

@@ -10,19 +10,11 @@ namespace Rb.Rendering.Cameras
 	public class MultiCamera : CameraBase
 	{
 		/// <summary>
-		/// Gets the stored cameras
+		/// Returns the list of supported cameras
 		/// </summary>
-		public IEnumerable< CameraBase > Cameras
+		public List<CameraBase> Cameras
 		{
 			get { return m_Cameras; }
-		}
-
-		/// <summary>
-		/// Returns the number of stored cameras
-		/// </summary>
-		public int CameraCount
-		{
-			get { return m_Cameras.Count; }
 		}
 
 		/// <summary>
@@ -79,24 +71,10 @@ namespace Rb.Rendering.Cameras
 			}
 		}
 
-		/// <summary>
-		/// Adds a child object to this camera
-		/// </summary>
-		/// <param name="obj">Child object</param>
-		public override void AddChild( object obj )
-		{
-			base.AddChild( obj );
-			CameraBase camera = obj as CameraBase;
-			if ( camera != null )
-			{
-				m_Cameras.Add( camera );
-			}
-		}
-
 		#region Private stuff
 
-		private List< CameraBase >	m_Cameras = new List< CameraBase >( );
-		private int					m_ActiveCameraIndex;
+		private readonly List<CameraBase> m_Cameras = new List<CameraBase>( );
+		private int m_ActiveCameraIndex;
 
 		#endregion
 	}
