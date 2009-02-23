@@ -219,6 +219,9 @@ namespace Poc1.Bob.Controls.Biomes
 			if ( string.IsNullOrEmpty( TerrainType.Name ) )
 			{
 				TerrainType.Name = System.IO.Path.GetFileNameWithoutExtension( openDlg.FileName );
+				
+				//	TODO: AP: Should be managed by controller
+				nameTextBox.Text = TerrainType.Name;
 			}
 			OnTerrainTypeChanged( );
 		}

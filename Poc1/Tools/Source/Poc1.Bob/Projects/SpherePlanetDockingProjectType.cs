@@ -8,11 +8,11 @@ using Poc1.Bob.Core.Classes.Projects.Planets.Spherical;
 using Poc1.Bob.Core.Interfaces;
 using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Models.Templates;
+using Poc1.Universe.Planets.Spherical.Models;
 using Poc1.Universe.Planets.Spherical.Models.Templates;
 using Poc1.Universe.Planets.Spherical.Renderers;
 using Rb.Core.Utils;
 using WeifenLuo.WinFormsUI.Docking;
-using Poc1.Bob.Core.Interfaces.Projects;
 
 namespace Poc1.Bob.Projects
 {
@@ -36,6 +36,7 @@ namespace Poc1.Bob.Projects
 					new DockingViewInfo( "Biome Terrain Texture View", CreateBiomeTerrainTextureView ),
 					new DockingViewInfo( "Ocean Template View", CreateOceanTemplateView ),
 					new DockingViewInfo( "Cloud Template View", CreateCloudTemplateView, DockState.Float ),
+					new DockingViewInfo( "Procedural Terrain View", CreateProceduralTerrainView ), 
 					new DockingViewInfo( "Planet Template View", CreatePlanetTemplateView, DockState.Float ),
 					new DockingViewInfo( "Planet Display", CreatePlanetDisplay, DockState.Document )
 				};
@@ -57,9 +58,29 @@ namespace Poc1.Bob.Projects
 		/// <summary>
 		/// Helper method for retrieving the current project from a workspace
 		/// </summary>
-		private static T CurrentProject<T>( IWorkspace workspace ) where T : Project
+		private static SpherePlanetProject CurrentProject( IWorkspace workspace )
 		{
-			return ( T )( ( WorkspaceEx )workspace ).ProjectContext.CurrentProject;
+			return ( SpherePlanetProject )( ( WorkspaceEx )workspace ).ProjectContext.CurrentProject;
+		}
+
+		/// <summary>
+		/// Creates an homogenous procedural terrain view
+		/// </summary>
+		private Control CreateProceduralTerrainView( IWorkspace workspace )
+		{
+			SpherePlanetProject currentProject = CurrentProject( workspace );
+			IPlanetProcTerrainTemplate template = currentProject.PlanetTemplate.GetModelTemplate<IPlanetProcTerrainTemplate>( );
+			if ( template == null )
+			{
+				//currentProject.PlanetTemplate.EnvironmentModelTemplates.Add( null );
+			}
+			IPlanetProcTerrainModel model = currentProject.PlanetModel.TerrainModel as IPlanetProcTerrainModel;
+			if ( model == null )
+			{
+				model = new SpherePlanetProcTerrainModel( );
+				currentProject.PlanetModel.TerrainModel = model;
+			}
+			return ( Control )m_ViewFactory.CreateHomogenousProcTerrainTemplateView( template, model );
 		}
 
 		/// <summary>
@@ -67,7 +88,7 @@ namespace Poc1.Bob.Projects
 		/// </summary>
 		private Control CreateBiomeDistributionView( IWorkspace workspace )
 		{
-			SpherePlanetProject currentProject = CurrentProject < SpherePlanetProject>( workspace ); 
+			SpherePlanetProject currentProject = CurrentProject( workspace ); 
 			BiomeListLatitudeDistributionModel distributions = currentProject.BiomeDistributions;
 			return ( Control )m_ViewFactory.CreateBiomeDistributionView( distributions );
 		}
@@ -77,7 +98,7 @@ namespace Poc1.Bob.Projects
 		/// </summary>
 		private Control CreateOceanTemplateView( IWorkspace workspace )
 		{
-			SpherePlanetProject currentProject = CurrentProject<SpherePlanetProject>( workspace );
+			SpherePlanetProject currentProject = CurrentProject( workspace );
 			return ( Control )WorkspaceViewFactory.CreateWaveAnimatorView( workspace, m_ViewFactory, currentProject.WaveAnimationModel );
 		}
 
@@ -86,7 +107,7 @@ namespace Poc1.Bob.Projects
 		/// </summary>
 		private Control CreateCloudTemplateView( IWorkspace workspace )
 		{
-			SpherePlanetProject currentProject = CurrentProject<SpherePlanetProject>( workspace );
+			SpherePlanetProject currentProject = CurrentProject( workspace );
 
 			//	TODO: AP: REMOVEME
 			IPlanetCloudModelTemplate cloudModelTemplate = currentProject.PlanetTemplate.GetModelTemplate<IPlanetCloudModelTemplate>( );
@@ -123,7 +144,7 @@ namespace Poc1.Bob.Projects
 			//	Add Template | Remove Template
 			//	Double click opens a view on the model
 			//
-			SpherePlanetProject currentProject = CurrentProject<SpherePlanetProject>( workspace );
+			SpherePlanetProject currentProject = CurrentProject( workspace );
 			return ( Control )WorkspaceViewFactory.CreateBiomeListView( ( WorkspaceEx )workspace, m_ViewFactory, currentProject.AllBiomes, currentProject.CurrentBiomes );
 		}
 
@@ -142,7 +163,7 @@ namespace Poc1.Bob.Projects
 		/// </summary>
 		private Control CreatePlanetTemplateView( IWorkspace workspace )
 		{
-			SpherePlanetProject currentProject = CurrentProject<SpherePlanetProject>( workspace );
+			SpherePlanetProject currentProject = CurrentProject( workspace );
 			return ( Control )m_ViewFactory.CreatePlanetTemplateView( currentProject.PlanetTemplate, currentProject.PlanetModel );
 		}
 		/// <summary>
@@ -150,7 +171,7 @@ namespace Poc1.Bob.Projects
 		/// </summary>
 		private Control CreatePlanetDisplay( IWorkspace workspace )
 		{
-			SpherePlanetProject currentProject = CurrentProject<SpherePlanetProject>( workspace );
+			SpherePlanetProject currentProject = CurrentProject( workspace );
 			return ( Control )m_ViewFactory.CreatePlanetView( currentProject.Planet );
 		}
 

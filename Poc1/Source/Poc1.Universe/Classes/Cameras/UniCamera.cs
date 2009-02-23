@@ -11,7 +11,7 @@ namespace Poc1.Universe.Classes.Cameras
 	/// <summary>
 	/// Base class implementation of <see cref="IUniCamera"/> interface
 	/// </summary>
-	public class UniCamera : Component, IUniCamera
+	public class UniCamera : Part, IUniCamera
 	{
 		#region Current camera helper operations
 

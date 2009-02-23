@@ -86,7 +86,7 @@ namespace Rb.Rendering
 		/// Starts using this effect
 		/// </summary>
 		/// <remarks>
-		/// Called from Technique.Begin()
+		/// Called from MultiPassTechnique.Begin()
 		/// </remarks>
 		public virtual void Begin( )
 		{
@@ -96,7 +96,7 @@ namespace Rb.Rendering
 		/// Stops using this effect
 		/// </summary>
 		/// <remarks>
-		/// Called from Technique.End()
+		/// Called from MultiPassTechnique.End()
 		/// </remarks>
 		public virtual void End( )
 		{

@@ -9,13 +9,10 @@ namespace Rb.Rendering.Interfaces.Objects
 		/// <summary>
 		/// Gets the name of this technique
 		/// </summary>
-		string Name
-		{
-			get;
-		}
+		string Name { get; }
 
 		/// <summary>
-		/// Access to the effect that this technique belongs to (can be null if no effect owns this technique)
+		/// Gets the effect that this technique belongs to (can be null if no effect owns this technique)
 		/// </summary>
 		IEffect Effect
 		{
@@ -35,6 +32,9 @@ namespace Rb.Rendering.Interfaces.Objects
 		/// <param name="context">Rendering context</param>
 		/// <param name="render">Render delegate</param>
 		void Apply( IRenderContext context, RenderDelegate render );
+
+
+		//	TODO: AP: Refactor this out to another class
 
 		/// <summary>
 		/// Returns true if this technique is a reasonable substitute for the specified technique

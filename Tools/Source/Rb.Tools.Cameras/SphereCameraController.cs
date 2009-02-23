@@ -10,7 +10,7 @@ namespace Rb.Tools.Cameras
 	/// <summary>
 	/// User input controller for sphere cameras
 	/// </summary>
-	public class SphereCameraController : Component
+	public class SphereCameraController
 	{
 
 		#region Commands
@@ -40,9 +40,18 @@ namespace Rb.Tools.Cameras
 		/// <summary>
 		/// Setup constructor. Sets the user that controls the camera
 		/// </summary>
-		public SphereCameraController( ICommandUser user )
+		public SphereCameraController( ICommandUser user ) : this( user, null )
+		{
+		}
+
+
+		/// <summary>
+		/// Setup constructor. Sets the user that controls the camera
+		/// </summary>
+		public SphereCameraController( ICommandUser user, SphereCamera camera )
 		{
 			user.CommandTriggered += HandleCameraCommand;
+			Camera = camera;
 		}
 		
 		/// <summary>
@@ -62,27 +71,8 @@ namespace Rb.Tools.Cameras
 		}
 
 		/// <summary>
-		/// Called when this object is added to a parent component
-		/// </summary>
-		/// <param name="parent">Parent object</param>
-		/// <remarks>
-		/// If this controller is added as a child of a sphere camera, the camera is set automatically if it is not null.
-		/// </remarks>
-		public override void AddedToParent( object parent )
-		{
-			if ( ( parent is SphereCamera ) && ( Camera == null ) )
-			{
-				Camera = ( SphereCamera )parent;
-			}
-			base.AddedToParent( parent );
-		}
-
-		/// <summary>
 		/// Gets/sets the associated camera
 		/// </summary>
-		/// <remarks>
-		/// If this controller is added as a child of a camera, the camera is set automatically if it is not null.
-		/// </remarks>
 		public SphereCamera Camera
 		{
 			get { return m_Camera; }

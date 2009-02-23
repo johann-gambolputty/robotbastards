@@ -51,6 +51,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		#endregion
 
 		#region Protected Members
+
 		protected override void SetupTerrainEffect( IEffect effect )
 		{
 			base.SetupTerrainEffect( effect );

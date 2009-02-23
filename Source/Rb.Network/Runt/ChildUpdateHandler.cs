@@ -10,7 +10,7 @@ namespace Rb.Network.Runt
 	/// The parent object that this handler is added to must support the Components.IUnique 
 	/// and Components.IMessageHandler interfaces
 	/// </remarks>
-	public class ChildUpdateHandler : IChild, IUpdateHandler
+	public class ChildUpdateHandler : IComponent, IUpdateHandler
 	{
 		#region Public properties
 

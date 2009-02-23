@@ -6,7 +6,7 @@ namespace Rb.Rendering.Interfaces.Objects.Cameras
 	/// <summary>
 	/// Camera interface
 	/// </summary>
-	public interface ICamera : IPass, IParent
+	public interface ICamera : IPass, IComposite
 	{
 	}
 }

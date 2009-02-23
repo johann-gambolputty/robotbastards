@@ -119,6 +119,12 @@
     <Compile Include="Controls\Biomes\TerrainTypeTextureItemControl.Designer.cs">
       <DependentUpon>TerrainTypeTextureItemControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Planet\BiomeTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Planet\BiomeTabControl.Designer.cs">
+      <DependentUpon>BiomeTabControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Planet\Clouds\CloudModelTemplateControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -142,6 +148,18 @@
     </Compile>
     <Compile Include="Controls\Planet\SpherePlanetModelTemplateViewControl.Designer.cs">
       <DependentUpon>SpherePlanetModelTemplateViewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Planet\Terrain\BiomeProcTerrainTemplateControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Planet\Terrain\BiomeProcTerrainTemplateControl.Designer.cs">
+      <DependentUpon>BiomeProcTerrainTemplateControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Planet\Terrain\HomogenousProcTerrainTemplateControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Planet\Terrain\HomogenousProcTerrainTemplateControl.Designer.cs">
+      <DependentUpon>HomogenousProcTerrainTemplateControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Projects\CreateProjectForm.cs">
       <SubType>Form</SubType>
@@ -241,6 +259,10 @@
     <EmbeddedResource Include="Controls\Planet\SpherePlanetModelTemplateViewControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SpherePlanetModelTemplateViewControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Planet\Terrain\HomogenousProcTerrainTemplateControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>HomogenousProcTerrainTemplateControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Projects\CreateProjectForm.resx">
       <SubType>Designer</SubType>

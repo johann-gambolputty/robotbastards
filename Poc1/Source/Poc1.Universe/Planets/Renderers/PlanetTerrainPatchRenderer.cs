@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets;
+using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Renderers;
 using Poc1.Universe.Interfaces.Planets.Renderers.Patches;
 using Poc1.Universe.Planets.Spherical.Renderers.Patches;
@@ -22,17 +23,13 @@ namespace Poc1.Universe.Planets.Renderers
 	public class PlanetTerrainPatchRenderer : IPlanetTerrainRenderer
 	{
 		/// <summary>
-		/// Setup constructor. Loads in shared assets used for rendering
+		/// Setup constructor
 		/// </summary>
-		public PlanetTerrainPatchRenderer( string terrainEffectPath )
+		/// <param name="technique">Technique used for rendering patches</param>
+		public PlanetTerrainPatchRenderer( ITechnique technique )
 		{
-			Arguments.CheckNotNullOrEmpty( terrainEffectPath, "terrainEffectPath" );
-			m_NoiseTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/TiledNoise.noise.jpg" );
-
-			m_Effect = new EffectAssetHandle( "Effects/Planets/terrestrialPlanetTerrain.cgfx", true );
-			m_Effect.OnReload += Effect_OnReload;
-			m_Technique = new TechniqueSelector( m_Effect, "DefaultTechnique" );
-			//	m_Technique = new TechniqueSelector( m_Effect, "WireFrameTechnique" );	
+			Arguments.CheckNotNull( technique, "technique" );
+			m_Technique = technique;
 		}
 
 		#region IPlanetTerrainRenderer Members
@@ -90,8 +87,6 @@ namespace Poc1.Universe.Planets.Renderers
 				atmosphereRenderer.SetupAtmosphereEffectParameters( m_Technique.Effect, true, false );
 			}
 
-			SetupTerrainEffect( m_Technique.Effect );
-
 			m_Vertices.VertexBuffer.Begin( );
 			context.ApplyTechnique( m_Technique, RenderPatches );
 			m_Vertices.VertexBuffer.End( );
@@ -135,29 +130,13 @@ namespace Poc1.Universe.Planets.Renderers
 			get { return m_RootPatches; }
 		}
 
-		/// <summary>
-		/// Sets up the terrain rendering effect
-		/// </summary>
-		protected virtual void SetupTerrainEffect( IEffect effect )
-		{
-			ITexture2d packTexture = Planet.PlanetModel.TerrainModel.TerrainPackTexture;
-			ITexture2d typesTexture = Planet.PlanetModel.TerrainModel.TerrainTypesTexture;
-
-			effect.Parameters[ "PlanetMaximumTerrainHeight" ].Set( m_Planet.PlanetModel.TerrainModel.MaximumHeight.ToRenderUnits );
-			effect.Parameters[ "TerrainPackTexture" ].Set( packTexture );
-			effect.Parameters[ "TerrainTypeTexture" ].Set( typesTexture );
-			effect.Parameters[ "NoiseTexture" ].Set( m_NoiseTexture );
-		}
-
 		#endregion
 
 		#region Private Members
 
+		private readonly ITechnique				m_Technique;
 		private readonly TerrainPatchVertices	m_Vertices = new TerrainPatchVertices( );
-		private readonly ITexture2d				m_NoiseTexture;
-		private readonly EffectAssetHandle		m_Effect;
 		private IPlanet							m_Planet;
-		private TechniqueSelector				m_Technique;
 		private readonly List<TerrainPatch>		m_RootPatches = new List<TerrainPatch>( );
 
 		/// <summary>
@@ -177,14 +156,6 @@ namespace Poc1.Universe.Planets.Renderers
 			{
 				patch.Update( camera, generator );
 			}
-		}
-
-		/// <summary>
-		/// Called when the terrain effect is reloaded
-		/// </summary>
-		private void Effect_OnReload( ISource source )
-		{
-			m_Technique = new TechniqueSelector( m_Effect.Asset, m_Technique.Name );
 		}
 
 		/// <summary>

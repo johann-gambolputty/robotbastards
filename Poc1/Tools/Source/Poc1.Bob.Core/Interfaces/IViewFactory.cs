@@ -5,6 +5,7 @@ using Poc1.Bob.Core.Classes.Projects;
 using Poc1.Bob.Core.Interfaces.Biomes.Views;
 using Poc1.Bob.Core.Interfaces.Planets;
 using Poc1.Bob.Core.Interfaces.Planets.Clouds;
+using Poc1.Bob.Core.Interfaces.Planets.Terrain;
 using Poc1.Bob.Core.Interfaces.Projects;
 using Poc1.Bob.Core.Interfaces.Rendering;
 using Poc1.Bob.Core.Interfaces.Waves;
@@ -15,12 +16,6 @@ using Poc1.Universe.Interfaces.Planets.Models.Templates;
 
 namespace Poc1.Bob.Core.Interfaces
 {
-	//	Biome list
-	//		+- Biome distribution
-	//		+- Biome terrain modeling
-	//		+- 
-	//	
-
 	/// <summary>
 	/// Creates a view and its associated controller from a model
 	/// </summary>
@@ -30,6 +25,11 @@ namespace Poc1.Bob.Core.Interfaces
 		/// Shows a create template instance view as a modal dialog
 		/// </summary>
 		void ShowCreateProjectView( IWorkspace workspace, ProjectContext context, ProjectGroupContainer rootGroup );
+
+		/// <summary>
+		/// Creates a view used to edit an homogenous procedural terrain model
+		/// </summary>
+		IHomogenousProcTerrainView CreateHomogenousProcTerrainTemplateView( IPlanetProcTerrainTemplate template, IPlanetProcTerrainModel model );
 
 		/// <summary>
 		/// Creates a view used to edit flat cloud model templates

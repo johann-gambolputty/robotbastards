@@ -4,6 +4,7 @@ using Bob.Core.Workspaces.Interfaces;
 using Poc1.Bob.Controls.Biomes;
 using Poc1.Bob.Controls.Planet;
 using Poc1.Bob.Controls.Planet.Clouds;
+using Poc1.Bob.Controls.Planet.Terrain;
 using Poc1.Bob.Controls.Projects;
 using Poc1.Bob.Controls.Rendering;
 using Poc1.Bob.Controls.Waves;
@@ -19,6 +20,7 @@ using Poc1.Bob.Core.Interfaces;
 using Poc1.Bob.Core.Interfaces.Biomes.Views;
 using Poc1.Bob.Core.Interfaces.Planets;
 using Poc1.Bob.Core.Interfaces.Planets.Clouds;
+using Poc1.Bob.Core.Interfaces.Planets.Terrain;
 using Poc1.Bob.Core.Interfaces.Projects;
 using Poc1.Bob.Core.Interfaces.Rendering;
 using Poc1.Bob.Core.Interfaces.Waves;
@@ -29,6 +31,7 @@ using Poc1.Universe.Interfaces.Planets.Models.Templates;
 using Poc1.Universe.Interfaces.Planets.Spherical;
 using Poc1.Universe.Interfaces.Planets.Spherical.Models;
 using Poc1.Universe.Interfaces.Planets.Spherical.Models.Templates;
+using Rb.Core.Utils;
 
 namespace Poc1.Bob.Controls
 {
@@ -57,6 +60,17 @@ namespace Poc1.Bob.Controls
 		{
 			ICreateProjectView view = new CreateProjectForm( );
 			new CreateProjectController( workspace, context, view, rootGroup ).Show( );
+		}
+
+		/// <summary>
+		/// Creates a view used to edit an homogenous procedural terrain model
+		/// </summary>
+		public IHomogenousProcTerrainView CreateHomogenousProcTerrainTemplateView( IPlanetProcTerrainTemplate template, IPlanetProcTerrainModel model )
+		{
+			Arguments.CheckNotNull( model, "model" );
+			HomogenousProcTerrainTemplateControl control = new HomogenousProcTerrainTemplateControl( );
+			control.Template = template;
+			return control;
 		}
 
 		/// <summary>

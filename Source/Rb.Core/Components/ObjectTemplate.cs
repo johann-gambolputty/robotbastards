@@ -12,7 +12,8 @@ namespace Rb.Core.Components
 	/// A template for building instances of a type
 	/// </summary>
 	[Serializable]
-	public class ObjectTemplate : IParent, ICloneable, ISupportsDynamicProperties, INamed, IInstanceBuilder
+	[Obsolete]
+	public class ObjectTemplate : IComposite, ICloneable, ISupportsDynamicProperties, INamed, IInstanceBuilder
 	{
 		#region Public properties
 
@@ -25,7 +26,7 @@ namespace Rb.Core.Components
 			set
 			{
 				m_Type = value;
-				m_CanAddChildren =	( m_Type.GetInterface( typeof( IParent ).Name ) != null ) ||
+				m_CanAddChildren =	( m_Type.GetInterface( typeof( IComposite ).Name ) != null ) ||
 									( m_Type.GetInterface( typeof( IList ).Name ) != null );
 			}
 		}
@@ -333,7 +334,7 @@ namespace Rb.Core.Components
 
 		#region Private Members
 
-		private readonly List< ObjectTemplate > m_ChildTemplates = new List< ObjectTemplate >( );
+		private readonly List<ObjectTemplate> m_ChildTemplates = new List<ObjectTemplate>( );
 		private string m_Name;
 		private Type m_Type;
 		private bool m_CanAddChildren;
@@ -346,7 +347,7 @@ namespace Rb.Core.Components
 		{
 			foreach ( ObjectTemplate childObj in children )
 			{
-				AddChild( childObj.Clone( ) );
+				Add( childObj.Clone( ) );
 			}
 		}
 
@@ -382,12 +383,12 @@ namespace Rb.Core.Components
 				return result;
 			}
 
-			if ( result is IParent )
+			if ( result is IComposite )
 			{
-				IParent resultParent = ( IParent )result;
+				IComposite resultParent = ( IComposite )result;
 				foreach ( ObjectTemplate childBuilder in m_ChildTemplates )
 				{
-					resultParent.AddChild( childBuilder.CreateInstance( builder ) );
+					resultParent.Add( childBuilder.CreateInstance( builder ) );
 				}
 			}
 			else if ( result is IList )
@@ -404,49 +405,49 @@ namespace Rb.Core.Components
 
 		#endregion
 
-		#region IParent Members
+		#region IComposite Members
 
 		/// <summary>
 		/// Returns the child templates
 		/// </summary>
-		public ICollection Children
+		public ICollection Components
 		{
-			get { return m_ChildTemplates; }
+			get { return m_ChildTemplates.AsReadOnly( ); }
 		}
 
 		/// <summary>
-		/// Adds a child template
+		/// Adds a child component
 		/// </summary>
-		public void AddChild( object obj )
+		public void Add( object obj )
 		{
 			AddChildTemplate( ( ObjectTemplate )obj );
-			if ( OnChildAdded != null )
+			if ( ComponentAdded != null )
 			{
-				OnChildAdded( this, obj );
+				ComponentAdded( this, obj );
 			}
 		}
 
 		/// <summary>
-		/// Removes a child template
+		/// Removes a child component
 		/// </summary>
-		public void RemoveChild( object obj )
+		public void Remove( object obj )
 		{
 			m_ChildTemplates.Remove( ( ObjectTemplate )obj );
-			if ( OnChildRemoved != null )
+			if ( ComponentRemoved != null )
 			{
-				OnChildRemoved( this, obj );
+				ComponentRemoved( this, obj );
 			}
 		}
 
 		/// <summary>
 		/// Event, invoked after a child template is added to this template
 		/// </summary>
-		public event OnChildAddedDelegate OnChildAdded;
+		public event OnComponentAddedDelegate ComponentAdded;
 
 		/// <summary>
 		/// Event, invoked after a child template is removed from this template
 		/// </summary>
-		public event OnChildRemovedDelegate OnChildRemoved;
+		public event OnComponentRemovedDelegate ComponentRemoved;
 
 		#endregion
 	}

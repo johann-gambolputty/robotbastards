@@ -8,7 +8,7 @@ namespace Rb.Network.Runt
 	/// Listens for messages of a given type being sent to the object's parent (or another target). Buffers them and sends them
 	/// to an update target
 	/// </summary>
-	public class ChildUpdateProvider : IChild, IUnique, IUpdateProvider
+	public class ChildUpdateProvider : IComponent, IUnique, IUpdateProvider
 	{
 		#region Construction
 

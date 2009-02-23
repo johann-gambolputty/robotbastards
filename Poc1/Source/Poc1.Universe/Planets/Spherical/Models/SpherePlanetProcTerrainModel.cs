@@ -8,10 +8,8 @@ using Poc1.Universe.Interfaces.Planets.Renderers.Patches;
 using Poc1.Universe.Interfaces.Planets.Spherical.Models;
 using Poc1.Universe.Interfaces.Rendering;
 using Poc1.Universe.Planets.Models;
-using Rb.Assets;
 using Rb.Core.Maths;
 using Rb.Rendering.Interfaces.Objects;
-using Rb.Rendering.Textures;
 using ITerrainPatch=Poc1.Universe.Interfaces.Planets.Renderers.Patches.ITerrainPatch;
 using IPlanet = Poc1.Universe.Interfaces.Planets.IPlanet;
 using Poc1.Universe.Interfaces.Planets.Spherical;
@@ -22,13 +20,14 @@ namespace Poc1.Universe.Planets.Spherical.Models
 	/// <summary>
 	/// Terrain model implementation for spherical planets
 	/// </summary>
-	public class SpherePlanetProcTerrainModel : ISpherePlanetTerrainModel, IPlanetProcTerrainModel, ITerrainPatchGenerator
+	public class SpherePlanetProcTerrainModel : ISpherePlanetTerrainModel, IPlanetProcTerrainModel, ITerrainPatchGenerator, IPlanetTerrainPackTextureModel
 	{
 		/// <summary>
 		/// Default constructor. Loads default terrain textures
 		/// </summary>
 		public SpherePlanetProcTerrainModel( )
 		{
+			//	NOTE: AP: Temporarily removed code - data files were lost, need to be regenerated
 			//	Load in default textures
 		//	TextureLoadParameters loadParameters = new TextureLoadParameters( true );
 		//	m_TerrainPackTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/defaultSet0 Pack.jpg", loadParameters );
