@@ -13,6 +13,8 @@ using Poc1.Tools.Waves;
 using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Models.Templates;
+using Rb.Common.Controls.Components;
+using Rb.Core.Components;
 
 namespace Poc1.Bob.Core.Interfaces
 {
@@ -25,6 +27,11 @@ namespace Poc1.Bob.Core.Interfaces
 		/// Shows a create template instance view as a modal dialog
 		/// </summary>
 		void ShowCreateProjectView( IWorkspace workspace, ProjectContext context, ProjectGroupContainer rootGroup );
+
+		/// <summary>
+		/// Shows a composite object editor as a model dialog
+		/// </summary>
+		void ShowEditCompositeView( IComposite composite, ComponentTypeCategory[] categories, ComponentType[] componentTypes );
 
 		/// <summary>
 		/// Creates a view used to edit an homogenous procedural terrain model

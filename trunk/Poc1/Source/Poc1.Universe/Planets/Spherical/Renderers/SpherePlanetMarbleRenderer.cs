@@ -1,4 +1,5 @@
 using System;
+using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Renderers;
 using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Spherical;
@@ -90,10 +91,9 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 				{
 					m_Technique.Effect.Parameters[ "MarbleTexture" ].Set( m_MarbleTexture );
 				}
-				ITexture2d packTexture = m_Planet.PlanetModel.TerrainModel.TerrainPackTexture;
-				ITexture2d typesTexture = m_Planet.PlanetModel.TerrainModel.TerrainTypesTexture;
-				m_Technique.Effect.Parameters[ "TerrainPackTexture" ].Set( packTexture );
-				m_Technique.Effect.Parameters[ "TerrainTypeTexture" ].Set( typesTexture );
+				IPlanetTerrainPackTextureModel textureModel = ( IPlanetTerrainPackTextureModel )m_Planet.PlanetModel.TerrainModel;
+				m_Technique.Effect.Parameters[ "TerrainPackTexture" ].Set( textureModel.TerrainPackTexture );
+				m_Technique.Effect.Parameters[ "TerrainTypeTexture" ].Set( textureModel.TerrainTypesTexture );
 				m_Technique.Apply( context, m_Geometry );
 			}
 		}

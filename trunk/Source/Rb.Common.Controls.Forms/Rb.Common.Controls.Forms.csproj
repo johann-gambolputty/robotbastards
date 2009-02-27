@@ -41,16 +41,12 @@
     <Compile Include="Categories\CategoryControl.Designer.cs">
       <DependentUpon>CategoryControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Categories\CategoryItem.cs" />
-    <Compile Include="Categories\Category.cs" />
     <Compile Include="Components\AvailableComponentTypesViewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Components\AvailableComponentTypesViewControl.Designer.cs">
       <DependentUpon>AvailableComponentTypesViewControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Components\ComponentCompositionEditorController.cs" />
-    <Compile Include="Components\ComponentTypeCategory.cs" />
     <Compile Include="Components\CompositeEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -63,8 +59,6 @@
     <Compile Include="Components\CompositeViewControl.Designer.cs">
       <DependentUpon>CompositeViewControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Components\IComponentCompositionEditorView.cs" />
-    <Compile Include="Components\ICompositeViewControl.cs" />
     <Compile Include="DbPanel.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Models.Templates;
+using Rb.Core.Components.Generic;
 using Rb.Core.Utils;
 
 namespace Poc1.Universe.Planets.Models.Templates
@@ -10,7 +11,7 @@ namespace Poc1.Universe.Planets.Models.Templates
 	/// <summary>
 	/// Base class implementation of <see cref="IPlanetModelTemplateBase"/>
 	/// </summary>
-	public abstract class PlanetModelTemplate : IPlanetModelTemplate
+	public abstract class PlanetModelTemplate : Composite<IPlanetEnvironmentModelTemplate>, IPlanetModelTemplate
 	{
 		#region IPlanetModelTemplate Members
 

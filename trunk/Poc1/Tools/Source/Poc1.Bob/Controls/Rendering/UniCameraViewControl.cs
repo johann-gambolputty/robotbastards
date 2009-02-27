@@ -75,10 +75,11 @@ namespace Poc1.Bob.Controls.Rendering
 		private static IUniCamera CreateCamera( )
 		{
 			//	FlightCamera camera = new FlightCamera( );
-			UniCamera camera = new FirstPersonCamera( );
+			FirstPersonCamera camera = new FirstPersonCamera( );
 			camera.PerspectiveZNear = 1.0f;
 			camera.PerspectiveZFar = 15000.0f;
-			camera.AddChild( new FirstPersonCameraController( CommandUser.Default ) );
+
+			new FirstPersonCameraController( CommandUser.Default, camera );
 			//camera.AddChild( new HeadCameraController( context, user ) );
 			return camera;
 		}

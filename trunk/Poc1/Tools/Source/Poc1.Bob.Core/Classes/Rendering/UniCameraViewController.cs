@@ -23,14 +23,14 @@ namespace Poc1.Bob.Core.Classes.Rendering
 			m_View = view;
 
 			//	Create a camera to add to the view
-			UniCamera camera = new FirstPersonCamera( );
+			FirstPersonCamera camera = new FirstPersonCamera( );
 			camera.PerspectiveZNear = 1.0f;
 			camera.PerspectiveZFar = 15000.0f;
 			view.Camera = camera;
 
 			//	Bind camera commands to a camera controller
 			ICommandUser user = CommandUser.Default;
-			camera.AddChild( new FirstPersonCameraController( user ) );
+			new FirstPersonCameraController( user, camera );
 			view.InputSource.AddBindings( user, m_CameraControlBindings );
 			view.InputSource.Start( );
 		}

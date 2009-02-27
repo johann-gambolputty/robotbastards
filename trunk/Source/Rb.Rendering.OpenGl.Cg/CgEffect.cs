@@ -134,7 +134,7 @@ namespace Rb.Rendering.OpenGl.Cg
 				GraphicsLog.Verbose( "Validating technique \"{0}\"", techniqueName );
 
 				//	Create a Technique wrapper around the current technique
-				Technique newTechnique = new Technique( techniqueName );
+				MultiPassTechnique newTechnique = new MultiPassTechnique( techniqueName );
 
 				//	Run through all the CG passes in the current technique
 				for ( IntPtr curPass = TaoCg.cgGetFirstPass( curTechnique ); curPass != IntPtr.Zero; curPass = TaoCg.cgGetNextPass( curPass ) )

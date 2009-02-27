@@ -49,7 +49,7 @@ namespace Poc1.ParticleSystemBuilder
 		private static ICamera CreateCamera( CommandUser user )
 		{
 			SphereCamera camera = new SphereCamera( Constants.HalfPi, Constants.Pi / 4, 10 );
-			camera.AddChild( new SphereCameraController( user ) );
+			new SphereCameraController( user, camera );
 			return camera;
 		}
 

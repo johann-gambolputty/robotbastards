@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Rb.Common.Controls.Categories;
 using Rb.Core.Utils;
 
 namespace Rb.Common.Controls.Forms.Categories

@@ -31,6 +31,9 @@ using Poc1.Universe.Interfaces.Planets.Models.Templates;
 using Poc1.Universe.Interfaces.Planets.Spherical;
 using Poc1.Universe.Interfaces.Planets.Spherical.Models;
 using Poc1.Universe.Interfaces.Planets.Spherical.Models.Templates;
+using Rb.Common.Controls.Components;
+using Rb.Common.Controls.Forms.Components;
+using Rb.Core.Components;
 using Rb.Core.Utils;
 
 namespace Poc1.Bob.Controls
@@ -60,6 +63,18 @@ namespace Poc1.Bob.Controls
 		{
 			ICreateProjectView view = new CreateProjectForm( );
 			new CreateProjectController( workspace, context, view, rootGroup ).Show( );
+		}
+
+		/// <summary>
+		/// Shows a composite object editor as a model dialog
+		/// </summary>
+		public void ShowEditCompositeView( IComposite composite, ComponentTypeCategory[] categories, ComponentType[] componentTypes )
+		{
+			CompositeEditorForm form = new CompositeEditorForm( );
+			form.CompositeView.Composite = composite;
+			form.Categories = categories;
+			new ComponentCompositionEditorController( form, categories, componentTypes, composite );
+			form.ShowDialog( );
 		}
 
 		/// <summary>

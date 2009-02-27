@@ -4,12 +4,9 @@ using System.Collections.Generic;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets;
-using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Renderers;
 using Poc1.Universe.Interfaces.Planets.Renderers.Patches;
 using Poc1.Universe.Planets.Spherical.Renderers.Patches;
-using Rb.Assets;
-using Rb.Assets.Interfaces;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
 using Rb.Rendering;
@@ -30,6 +27,7 @@ namespace Poc1.Universe.Planets.Renderers
 		{
 			Arguments.CheckNotNull( technique, "technique" );
 			m_Technique = technique;
+			m_PatchRenderer = new PatchRenderer( RenderPatches );
 		}
 
 		#region IPlanetTerrainRenderer Members
@@ -54,7 +52,11 @@ namespace Poc1.Universe.Planets.Renderers
 		public virtual IPlanet Planet
 		{
 			get { return m_Planet; }
-			set { m_Planet = value; }
+			set
+			{
+				m_Planet = value;
+				m_PatchRenderer.Planet = value;
+			}
 		}
 
 		#endregion
@@ -69,26 +71,15 @@ namespace Poc1.Universe.Planets.Renderers
 		{
 			if ( m_Planet == null )
 			{
-				return;
-			}
-
-			if ( DebugInfo.ShowPendingTerrainBuildItemCount )
-			{
-				DebugText.Write( "Pending terrain build items: " + TerrainPatchBuilder.PendingBuildItems );
+				throw new InvalidOperationException( "Can't render terrain patches without first setting planet object" );
 			}
 
 			GameProfiles.Game.Rendering.PlanetRendering.TerrainRendering.Begin( );
 
 			UpdatePatches( UniCamera.Current );
 
-			IPlanetAtmosphereRenderer atmosphereRenderer = Planet.PlanetRenderer.AtmosphereRenderer;
-			if ( atmosphereRenderer != null )
-			{
-				atmosphereRenderer.SetupAtmosphereEffectParameters( m_Technique.Effect, true, false );
-			}
-
 			m_Vertices.VertexBuffer.Begin( );
-			context.ApplyTechnique( m_Technique, RenderPatches );
+			context.ApplyTechnique( m_Technique, m_PatchRenderer );
 			m_Vertices.VertexBuffer.End( );
 
 			GameProfiles.Game.Rendering.PlanetRendering.TerrainRendering.End( );
@@ -97,6 +88,11 @@ namespace Poc1.Universe.Planets.Renderers
 			//{
 			//    m_Patches[ 0 ].DebugRender( );
 			//}
+
+			if ( DebugInfo.ShowPendingTerrainBuildItemCount )
+			{
+				DebugText.Write( "Pending terrain build items: " + TerrainPatchBuilder.PendingBuildItems );
+			}
 
 			if ( DebugInfo.ShowTerrainLeafNodeCount )
 			{
@@ -138,6 +134,38 @@ namespace Poc1.Universe.Planets.Renderers
 		private readonly TerrainPatchVertices	m_Vertices = new TerrainPatchVertices( );
 		private IPlanet							m_Planet;
 		private readonly List<TerrainPatch>		m_RootPatches = new List<TerrainPatch>( );
+		private readonly PatchRenderer			m_PatchRenderer;
+		
+		#region PatchRenderer class
+
+		private class PatchRenderer : DelegateRenderable, IPlanetEnvironmentRenderer
+		{
+			/// <summary>
+			/// Patch renderer setup constructor
+			/// </summary>
+			/// <param name="render">Delegate used to render all patches</param>
+			public PatchRenderer( RenderDelegate render ) : base( render )
+			{
+			}
+
+			#region IPlanetEnvironmentRenderer Members
+
+			/// <summary>
+			/// Gets/sets the planet associated with this renderer
+			/// </summary>
+			public IPlanet Planet
+			{
+				get { return m_Planet; }
+				set { m_Planet = value; }
+			}
+
+			#endregion
+
+			private IPlanet m_Planet;
+		}
+
+
+		#endregion
 
 		/// <summary>
 		/// Updates patches prior to rendering

@@ -35,6 +35,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Categories\Category.cs" />
+    <Compile Include="Categories\CategoryItem.cs" />
+    <Compile Include="Components\ComponentCompositionEditorController.cs" />
+    <Compile Include="Components\ComponentTypeCategory.cs" />
+    <Compile Include="Components\IComponentCompositionEditorView.cs" />
+    <Compile Include="Components\ICompositeViewControl.cs" />
     <Compile Include="Graphs\Classes\Controllers\Graph2dControllerBase.cs" />
     <Compile Include="Graphs\Classes\Controllers\Graph2dUniformValueController.cs" />
     <Compile Include="Graphs\Classes\Controllers\GraphX2dControlPointController.cs" />
