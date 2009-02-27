@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Rb.Common.Controls.Components;
 using Rb.Core.Components;
 
 namespace Rb.Common.Controls.Forms.Components

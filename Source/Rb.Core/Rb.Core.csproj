@@ -58,6 +58,7 @@
     <Compile Include="CommandLine\CommandLineParser.cs" />
     <Compile Include="Components\AbstractComposite.cs" />
     <Compile Include="Components\Builder.cs" />
+    <Compile Include="Components\Component.cs" />
     <Compile Include="Components\ComponentType.cs" />
     <Compile Include="Components\ComponentTypeBuilder.cs" />
     <Compile Include="Components\ComponentTypeDependsOn.cs" />

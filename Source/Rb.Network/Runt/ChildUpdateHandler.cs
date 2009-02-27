@@ -10,7 +10,7 @@ namespace Rb.Network.Runt
 	/// The parent object that this handler is added to must support the Components.IUnique 
 	/// and Components.IMessageHandler interfaces
 	/// </remarks>
-	public class ChildUpdateHandler : IComponent, IUpdateHandler
+	public class ChildUpdateHandler : Component, IUpdateHandler
 	{
 		#region Public properties
 
@@ -55,31 +55,18 @@ namespace Rb.Network.Runt
 
 		#endregion
 
-		#region IChild Members
-
 		/// <summary>
-		/// Called when this object is added to a parent object
+		/// Gets/sets the owner of this component
 		/// </summary>
-		public void AddedToParent( Object parentObject )
+		public override IComposite Owner
 		{
-			if ( ( m_Target == null ) && ( parentObject is IMessageHandler ) )
+			get { return base.Owner; }
+			set
 			{
-				Target = ( IMessageHandler )parentObject;
+				base.Owner = value;
+				Target = ( value is IMessageHandler ) ? ( IMessageHandler )value : null;
 			}
 		}
-
-		/// <summary>
-		/// Called when this object is removed from a parent object
-		/// </summary>
-		/// <param name="parent">Parent object</param>
-		public void RemovedFromParent( object parent )
-		{
-			if ( Target == parent )
-			{
-				Target = null;
-			}
-		}
-		#endregion
 
 		#region IUpdateHandler Members
 

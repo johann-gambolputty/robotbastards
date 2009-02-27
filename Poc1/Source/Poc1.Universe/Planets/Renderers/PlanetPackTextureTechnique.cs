@@ -1,5 +1,7 @@
+using System;
 using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Models;
+using Poc1.Universe.Interfaces.Planets.Renderers;
 using Rb.Assets;
 using Rb.Assets.Interfaces;
 using Rb.Rendering;
@@ -15,30 +17,35 @@ namespace Poc1.Universe.Planets.Renderers
 		/// <summary>
 		/// Default constructor
 		/// </summary>
-		public PlanetPackTextureTechnique( )
+		/// <param name="effectPath">Path to the terrain effect</param>
+		public PlanetPackTextureTechnique( string effectPath )
 		{
 			m_NoiseTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/TiledNoise.noise.jpg" );
 
-			m_Effect = new EffectAssetHandle( "Effects/Planets/terrestrialPlanetTerrain.cgfx", true );
+			m_Effect = new EffectAssetHandle( effectPath, true );
 			m_Effect.OnReload += Effect_OnReload;
 			m_Technique = new TechniqueSelector( m_Effect, "DefaultTechnique" );
 		}
 
-		#region IPlanetTechnique Members
-
 		/// <summary>
-		/// Applies this technique for rendering an object
+		/// Renders the specified object
 		/// </summary>
 		/// <param name="context">Rendering context</param>
-		/// <param name="planet">Planet (data source for any technique parameters)</param>
 		/// <param name="renderable">Object to render</param>
-		public void Apply( IRenderContext context, IPlanet planet, IRenderable renderable )
+		public override void Apply( IRenderContext context, IRenderable renderable )
 		{
+			IPlanet planet = ( ( IPlanetEnvironmentRenderer )renderable ).Planet;
 			SetupTerrainEffect( m_Effect, planet );
 			renderable.Render( context );
 		}
 
-		#endregion
+		/// <summary>
+		/// Throws a NotSupportedException (can only render IPlanetEnvironmentRenderer objects)
+		/// </summary>
+		public override void Apply( IRenderContext context, RenderDelegate render )
+		{
+			throw new NotSupportedException( "Can only render IPlanetEnvironmentRenderer objects" );
+		}
 
 		#region Private Members
 
@@ -59,6 +66,12 @@ namespace Poc1.Universe.Planets.Renderers
 			effect.Parameters[ "TerrainPackTexture" ].Set( packTexture );
 			effect.Parameters[ "TerrainTypeTexture" ].Set( typesTexture );
 			effect.Parameters[ "NoiseTexture" ].Set( m_NoiseTexture );
+
+			IPlanetAtmosphereRenderer atmosphereRenderer = planet.PlanetRenderer.AtmosphereRenderer;
+			if ( atmosphereRenderer != null )
+			{
+				atmosphereRenderer.SetupAtmosphereEffectParameters( effect, true, false );
+			}
 		}
 
 		/// <summary>

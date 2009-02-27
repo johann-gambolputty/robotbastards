@@ -49,10 +49,12 @@
     <Compile Include="Classes\Commands\ProjectCommandListener.cs" />
     <Compile Include="Classes\Commands\ProjectCommands.cs" />
     <Compile Include="Classes\Planets\Clouds\CloudModelTemplateViewController.cs" />
+    <Compile Include="Classes\Planets\EditablePlanetTemplateViewController.cs" />
     <Compile Include="Classes\Planets\PlanetTemplateViewController.cs" />
     <Compile Include="Classes\Planets\SpherePlanetTemplateViewController.cs" />
     <Compile Include="Classes\Projects\Planets\PlanetProject.cs" />
     <Compile Include="Classes\Projects\Planets\Spherical\SpherePlanetProject.cs" />
+    <Compile Include="Classes\Components\EditableCompositeViewController.cs" />
     <Compile Include="Classes\Rendering\PlanetViewController.cs" />
     <Compile Include="Classes\Rendering\SpherePlanetViewController.cs" />
     <Compile Include="Classes\WorkspaceEx.cs" />
@@ -81,6 +83,7 @@
     <Compile Include="Interfaces\Planets\Clouds\ICloudModelTemplateView.cs" />
     <Compile Include="Interfaces\Planets\Clouds\IFlatCloudModelTemplateView.cs" />
     <Compile Include="Interfaces\Planets\IPlanetModelTemplateView.cs" />
+    <Compile Include="Interfaces\Components\IEditableCompositeView.cs" />
     <Compile Include="Interfaces\Planets\ISpherePlanetModelTemplateView.cs" />
     <Compile Include="Interfaces\Planets\Terrain\IHomogenousProcTerrainView.cs" />
     <Compile Include="Interfaces\Projects\ICreateProjectView.cs" />
@@ -99,6 +102,10 @@
     <ProjectReference Include="..\..\..\..\Bob\Source\Bob.Core\Bob.Core.csproj">
       <Project>{B199F27E-5406-4DAC-B8BE-E814DA5C0964}</Project>
       <Name>Bob.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Common.Controls\Rb.Common.Controls.csproj">
+      <Project>{14AE905B-90DB-4CE3-84C3-F12835236797}</Project>
+      <Name>Rb.Common.Controls</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Source\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>

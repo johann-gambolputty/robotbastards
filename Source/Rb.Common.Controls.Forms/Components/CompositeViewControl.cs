@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Rb.Common.Controls.Components;
 using Rb.Core.Components;
 
 namespace Rb.Common.Controls.Forms.Components
@@ -101,7 +102,7 @@ namespace Rb.Common.Controls.Forms.Components
 		/// </summary>
 		private static TreeNode CreateNodeFromComponent( object component )
 		{
-			TreeNode node = new TreeNode( component.ToString( ) );
+			TreeNode node = new TreeNode( component.GetType( ).Name );
 			node.Tag = component;
 			node.ImageKey = node.SelectedImageKey = ComponentImageKey;
 			return node;

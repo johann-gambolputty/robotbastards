@@ -3,7 +3,6 @@ using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
 using Poc1.Universe.Planets.Renderers;
 using Poc1.Universe.Planets.Spherical.Renderers.Patches;
 using Rb.Core.Maths;
-using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Planets.Spherical.Renderers
 {
@@ -16,7 +15,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// Default constructor
 		/// </summary>
 		public SpherePlanetTerrainPatchRenderer( ) :
-			base( "Effects/Planets/terrestrialPlanetTerrain.cgfx" )
+			base( new SpherePlanetPackTextureTechnique( ) )
 		{
 		}
 
@@ -48,16 +47,6 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			CreateCubePatches( 20, 1, uvRes );
 		}
 
-		#endregion
-
-		#region Protected Members
-
-		protected override void SetupTerrainEffect( IEffect effect )
-		{
-			base.SetupTerrainEffect( effect );
-			effect.Parameters[ "PlanetRadius" ].Set( SpherePlanet.PlanetModel.Radius.ToRenderUnits );
-		}
-		
 		#endregion
 
 		#region Private Members

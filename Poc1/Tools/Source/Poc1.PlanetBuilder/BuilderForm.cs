@@ -10,7 +10,6 @@ using Rb.Interaction.Windows;
 using Rb.Log;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects.Cameras;
-using Rb.Rendering.Windows;
 
 namespace Poc1.PlanetBuilder
 {
@@ -28,7 +27,7 @@ namespace Poc1.PlanetBuilder
 		/// </summary>
 		private ICamera CreateCamera( ICommandUser user )
 		{
-			UniCamera camera = new FirstPersonCamera( );
+			FirstPersonCamera camera = new FirstPersonCamera( );
 			camera.PerspectiveZNear = 1.0f;
 			camera.PerspectiveZFar = 15000.0f;
 
@@ -43,8 +42,7 @@ namespace Poc1.PlanetBuilder
 			}
 
 			camera.Position = new UniPoint3( cameraPos.ToUniUnits, 0, 0 );
-			camera.AddChild( new FirstPersonCameraController( user ) );
-
+			new FirstPersonCameraController( user, camera );
 
 			testDisplay.OnBeginRender += delegate { InteractionUpdateTimer.Instance.OnUpdate( ); };
 

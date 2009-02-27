@@ -2,8 +2,10 @@ using System.Windows.Forms;
 using Bob.Core.Ui.Interfaces.Views;
 using Bob.Core.Windows.Forms.Ui.Docking;
 using Bob.Core.Workspaces.Interfaces;
+using Poc1.Bob.Controls.Components;
 using Poc1.Bob.Core.Classes;
 using Poc1.Bob.Core.Classes.Biomes.Models;
+using Poc1.Bob.Core.Classes.Planets;
 using Poc1.Bob.Core.Classes.Projects.Planets.Spherical;
 using Poc1.Bob.Core.Interfaces;
 using Poc1.Universe.Interfaces.Planets.Models;
@@ -31,6 +33,7 @@ namespace Poc1.Bob.Projects
 			m_ViewFactory = viewFactory;
 			m_Views = new DockingViewInfo[]
 				{
+					new DockingViewInfo( "Planet Template Composition View", CreatePlanetTemplateCompositionView ), 
 					new DockingViewInfo( "Biome Distribution View", CreateBiomeDistributionView ), 
 					new DockingViewInfo( "Biome List View", CreateBiomeListView ), 
 					new DockingViewInfo( "Biome Terrain Texture View", CreateBiomeTerrainTextureView ),
@@ -81,6 +84,18 @@ namespace Poc1.Bob.Projects
 				currentProject.PlanetModel.TerrainModel = model;
 			}
 			return ( Control )m_ViewFactory.CreateHomogenousProcTerrainTemplateView( template, model );
+		}
+
+		/// <summary>
+		/// Creates a planet template composition view
+		/// </summary>
+		private Control CreatePlanetTemplateCompositionView( IWorkspace workspace )
+		{
+			SpherePlanetProject currentProject = CurrentProject( workspace );
+			EditableCompositeControl control = new EditableCompositeControl( );
+			new EditablePlanetTemplateViewController( m_ViewFactory, control, currentProject.PlanetTemplate );
+			control.PlanetTemplate = currentProject.PlanetTemplate;
+			return control;
 		}
 
 		/// <summary>

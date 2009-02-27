@@ -1,119 +1,55 @@
-using System;
-using System.ComponentModel;
 
 namespace Rb.Core.Components
 {
 	/// <summary>
-	/// Component is a handy implementation of a bunch of component interfaces
+	/// Simple implementation of <see cref="IComponent"/>
 	/// </summary>
-	[Serializable]
-	public class Component : Node, IUnique, IMessageHandler, IMessageHub, ISupportsDynamicProperties
+	public class Component : IComponent
 	{
-		#region IUnique Members
-
 		/// <summary>
-		/// Unique component identifier
+		/// Changes the owner of any IComponent
 		/// </summary>
-		[ReadOnly(true)]
-		public Guid Id
+		public static void ChangeOwner( IComponent component, ref IComposite currentOwner, IComposite newOwner )
 		{
-			get { return m_Id;  }
-			set { m_Id = value;  }
-		}
-
-		#endregion
-
-		#region IMessageHandler Members
-
-		/// <summary>
-		/// Handles a message
-		/// </summary>
-		/// <param name="msg">Message to handle</param>
-		public object HandleMessage( Message msg )
-		{
-            DeliverMessageToRecipients( msg );
-			if ( m_MessageMap == null )
+			if ( currentOwner == newOwner )
 			{
-				m_MessageMap = Rb.Core.Utils.DispatchMap.SafeGet( GetType( ) );
+				return;
 			}
-			return m_MessageMap.Dispatch( this, msg );
-		}
-
-		#endregion
-
-		#region IMessageHub Members
-
-		/// <summary>
-		/// Adds a recipient for messages of, or derived from, a given type
-		/// </summary>
-		/// <param name="messageType">Message type</param>
-		/// <param name="recipient">Delegate to call when a message of the designated type arrives</param>
-		/// <param name="order">Recipient order <see cref="MessageRecipientOrder"/></param>
-		public void AddRecipient( Type messageType, MessageRecipientDelegate recipient, int order )
-		{
-			if ( m_MessageHub == null )
+			IComposite oldOwner = currentOwner;
+			currentOwner = null;
+			if ( oldOwner != null )
 			{
-				m_MessageHub = new MessageHub( );
+				oldOwner.Remove( component );
 			}
-			m_MessageHub.AddRecipient( messageType, recipient, order );
-		}
-
-		/// <summary>
-		///	Removes a recipient from the message hub
-		/// </summary>
-		/// <param name="messageType">Type of message</param>
-		/// <param name="obj">Object to remove</param>
-		public void RemoveRecipient( Type messageType, object obj )
-		{
-			if ( m_MessageHub == null )
+			if ( newOwner != null )
 			{
-				m_MessageHub = new MessageHub( );
+				currentOwner = newOwner;
+				newOwner.Add( component );
 			}
-			m_MessageHub.RemoveRecipient( messageType, obj );
 		}
-		
+
+		#region IComponent Members
+
 		/// <summary>
-		/// Sends a message to all recipients of that message type
+		/// Gets/sets the owner of this component
 		/// </summary>
-		public void DeliverMessageToRecipients( Message msg )
+		/// <remarks>
+		/// If the owner is set, the component is added to the component
+		/// list of the specified composite, and removed from the component list
+		/// of the previous owner.
+		/// </remarks>
+		public virtual IComposite Owner
 		{
-			if ( m_MessageHub != null )
-			{
-			    m_MessageHub.DeliverMessageToRecipients( msg );
-            }
+			get { return m_Owner; }
+			set { ChangeOwner( this, ref m_Owner, value ); }
 		}
 
 		#endregion
 
-        #region ISupportsDynamicProperties Members
+		#region Private Members
 
-        /// <summary>
-        /// Gets dynamic properties associated with this object
-        /// </summary>
-        public IDynamicProperties Properties
-        {
-            get
-            {
-                if ( m_DynProperties == null )
-                {
-                    m_DynProperties = new DynamicProperties( );
-                }
-                return m_DynProperties;
-            }
-        }
-
-        #endregion
-        
-		#region Private stuff
-
-		private Guid			    m_Id = Guid.Empty;
-		private MessageHub		    m_MessageHub;
-        private IDynamicProperties  m_DynProperties;
-
-		[NonSerialized]
-		private Utils.DispatchMap	m_MessageMap;
+		private IComposite m_Owner;
 
 		#endregion
-
-    }
+	}
 }

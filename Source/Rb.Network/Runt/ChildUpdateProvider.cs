@@ -8,7 +8,7 @@ namespace Rb.Network.Runt
 	/// Listens for messages of a given type being sent to the object's parent (or another target). Buffers them and sends them
 	/// to an update target
 	/// </summary>
-	public class ChildUpdateProvider : IComponent, IUnique, IUpdateProvider
+	public class ChildUpdateProvider : Component, IUnique, IUpdateProvider
 	{
 		#region Construction
 
@@ -103,32 +103,18 @@ namespace Rb.Network.Runt
 
 		#endregion
 
-		#region IChild Members
-
 		/// <summary>
-		/// Called when this object is added to a parent object. If the Target hasn't already been set, the parent becomes the target
+		/// Gets/sets the owner of this component
 		/// </summary>
-		public void AddedToParent( object parentObject )
+		public override IComposite Owner
 		{
-			if ( ( m_Source == null ) && ( parentObject is IMessageHub ) )
+			get { return base.Owner; }
+			set
 			{
-				Source = ( IMessageHub )parentObject;
+				base.Owner = value;
+				Source = ( value is IMessageHub ) ? ( IMessageHub )value : null;
 			}
 		}
-
-		/// <summary>
-		/// Called when this object is removed from a parent object
-		/// </summary>
-		/// <param name="parent">Parent object</param>
-		public void RemovedFromParent( object parent )
-		{
-			if ( Source == parent )
-			{
-				Source = null;
-			}
-		}
-
-		#endregion
 
 		#region	IUnique Members
 

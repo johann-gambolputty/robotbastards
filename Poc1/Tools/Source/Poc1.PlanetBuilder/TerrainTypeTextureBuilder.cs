@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using Poc1.Tools.TerrainTextures.Core;
+using Poc1.Universe.Interfaces.Planets.Models;
 using Rb.Rendering.Interfaces.Objects;
 using RbGraphics=Rb.Rendering.Graphics;
 
@@ -148,12 +149,13 @@ namespace Poc1.PlanetBuilder
 		/// </summary>
 		private void RequestComplete( object sender, RunWorkerCompletedEventArgs args )
 		{
+			IPlanetTerrainPackTextureModel textureModel = ( IPlanetTerrainPackTextureModel )BuilderState.Instance.Planet.PlanetModel.TerrainModel;
 			if ( m_LookupTextureRebuildRequests > 0 )
 			{
 				m_LookupTexture.Create( m_LookupBitmap, false );
 				m_LookupBitmap.Dispose( );
 
-				BuilderState.Instance.Planet.PlanetModel.TerrainModel.TerrainTypesTexture = m_LookupTexture;
+				textureModel.TerrainTypesTexture = m_LookupTexture;
 
 				m_LookupBitmap = null;
 				--m_LookupTextureRebuildRequests;
@@ -167,7 +169,7 @@ namespace Poc1.PlanetBuilder
 
 				m_PackTexture.Create( m_PackBitmaps );
 
-				BuilderState.Instance.Planet.PlanetModel.TerrainModel.TerrainPackTexture = m_PackTexture;
+				textureModel.TerrainPackTexture = m_PackTexture;
 
 				foreach ( Bitmap packBitmapMipMap in m_PackBitmaps )
 				{

@@ -11,7 +11,7 @@ namespace Poc1.Universe.Planets.Flat.Renderers
 		/// Default constructor
 		/// </summary>
 		public FlatPlanetTerrainPatchRenderer( ) :
-			base( "" )
+			base( new PlanetPackTextureTechnique( "..." ) )
 		{
 		}
 	}

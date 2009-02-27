@@ -102,6 +102,7 @@
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetMarbleRenderer.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetMarbleTextureBuilder.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetOceanRenderer.cs" />
+    <Compile Include="Planets\Spherical\Renderers\SpherePlanetPackTextureTechnique.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetRenderer.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetRingRenderer.cs" />
     <Compile Include="Planets\Spherical\Renderers\SpherePlanetTerrainPatchRenderer.cs" />

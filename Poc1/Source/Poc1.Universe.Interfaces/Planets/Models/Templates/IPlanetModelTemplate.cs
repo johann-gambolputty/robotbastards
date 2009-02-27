@@ -1,12 +1,12 @@
-
 using System.Collections.Generic;
+using Rb.Core.Components.Generic;
 
 namespace Poc1.Universe.Interfaces.Planets.Models.Templates
 {
 	/// <summary>
 	/// Main planetary model template
 	/// </summary>
-	public interface IPlanetModelTemplate : IPlanetModelTemplateBase
+	public interface IPlanetModelTemplate : IPlanetModelTemplateBase, IComposite<IPlanetEnvironmentModelTemplate>
 	{
 		/// <summary>
 		/// Gets/sets the list of environment model templates
