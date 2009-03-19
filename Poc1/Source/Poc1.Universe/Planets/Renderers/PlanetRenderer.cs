@@ -32,10 +32,6 @@ namespace Poc1.Universe.Planets.Renderers
 				{
 					m_Planet.PlanetRenderer = this;
 				}
-				foreach ( IPlanetEnvironmentRenderer renderer in m_Renderers )
-				{
-					renderer.Planet = m_Planet;
-				}
 			}
 		}
 
@@ -290,7 +286,7 @@ namespace Poc1.Universe.Planets.Renderers
 		{
 			if ( renderer != null )
 			{
-				renderer.Planet = Planet;
+				renderer.PlanetRenderer = this;
 				m_Renderers.Add( renderer );
 			}
 		}

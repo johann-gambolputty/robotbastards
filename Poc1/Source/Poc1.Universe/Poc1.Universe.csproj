@@ -94,6 +94,7 @@
     <Compile Include="Planets\Models\Templates\PlanetCloudModelTemplate.cs" />
     <Compile Include="Planets\Spherical\Models\Templates\SpherePlanetCloudModelTemplate.cs" />
     <Compile Include="Planets\Spherical\Models\Templates\SpherePlanetModelTemplate.cs" />
+    <Compile Include="Planets\Spherical\Models\Templates\SpherePlanetOceanModelTemplate.cs" />
     <Compile Include="Planets\Spherical\Models\Templates\SpherePlanetRingModelTemplate.cs" />
     <Compile Include="Planets\Spherical\Renderers\AbstractSpherePlanetEnvironmentRenderer.cs" />
     <Compile Include="Planets\Spherical\Renderers\Patches\TerrainPatch.cs" />

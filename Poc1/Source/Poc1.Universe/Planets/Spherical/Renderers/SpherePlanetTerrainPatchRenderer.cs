@@ -1,8 +1,12 @@
+using Poc1.Universe.Interfaces.Planets;
+using Poc1.Universe.Interfaces.Planets.Renderers;
 using Poc1.Universe.Interfaces.Planets.Spherical;
 using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
 using Poc1.Universe.Planets.Renderers;
 using Poc1.Universe.Planets.Spherical.Renderers.Patches;
 using Rb.Core.Maths;
+using Rb.Core.Utils;
+using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Planets.Spherical.Renderers
 {
@@ -11,13 +15,6 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 	/// </summary>
 	public class SpherePlanetTerrainPatchRenderer : PlanetTerrainPatchRenderer, ISpherePlanetTerrainRenderer
 	{
-		/// <summary>
-		/// Default constructor
-		/// </summary>
-		public SpherePlanetTerrainPatchRenderer( ) :
-			base( new SpherePlanetPackTextureTechnique( ) )
-		{
-		}
 
 		#region Public Members
 
@@ -45,6 +42,19 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			}
 			float uvRes = ( float )( SpherePlanet.PlanetModel.Radius.ToMetres / 5000.0 );
 			CreateCubePatches( 20, 1, uvRes );
+		}
+
+		#endregion
+
+		#region Protected Members
+
+		/// <summary>
+		/// Creates a technique that is applied to render terrain patches
+		/// </summary>
+		protected override ITechnique CreatePatchTechnique( IPlanet planet )
+		{
+			Arguments.CheckNotNull( planet, "planet" );
+			return new SpherePlanetPackTextureTechnique( ( ISpherePlanet )planet );
 		}
 
 		#endregion

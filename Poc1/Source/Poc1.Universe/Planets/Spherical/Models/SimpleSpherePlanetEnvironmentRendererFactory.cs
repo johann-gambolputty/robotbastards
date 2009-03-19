@@ -43,18 +43,24 @@ namespace Poc1.Universe.Planets.Spherical.Models
 			}
 
 			/// <summary>
-			/// Visits an atmosphere model
+			/// Creates a renderer for an ocean model
 			/// </summary>
-			/// <param name="model">Model to visit</param>
+			public IPlanetEnvironmentRenderer Visit( IPlanetOceanModel model )
+			{
+				return new SpherePlanetOceanRenderer( );
+			}
+
+			/// <summary>
+			/// Creates a renderer for an atmosphere model
+			/// </summary>
 			public IPlanetEnvironmentRenderer Visit( IPlanetAtmosphereModel model )
 			{
 				return new SpherePlanetAtmosphereRenderer( );
 			}
 
 			/// <summary>
-			/// Visits a cloud model
+			/// Creates a renderer for a cloud model
 			/// </summary>
-			/// <param name="model">Model to visit</param>
 			public IPlanetEnvironmentRenderer Visit( IPlanetCloudModel model )
 			{
 				return new SpherePlanetCloudRenderer( );

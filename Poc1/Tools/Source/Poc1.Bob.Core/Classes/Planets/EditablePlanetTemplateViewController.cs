@@ -20,7 +20,7 @@ namespace Poc1.Bob.Core.Classes.Planets
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		public EditablePlanetTemplateViewController( IViewFactory viewFactory, IEditableCompositeView view, IPlanetModelTemplate template, IPlanetEnvironmentModelTemplateVisitor<object> actionVisitor ) :
+		public EditablePlanetTemplateViewController( IViewFactory viewFactory, IEditableCompositeView view, IPlanetModelTemplate template, IPlanetEnvironmentModelTemplateVisitor<bool> actionVisitor ) :
 			base( viewFactory, view, template )
 		{
 			Arguments.CheckNotNull( actionVisitor, "actionVisitor" );
@@ -41,7 +41,8 @@ namespace Poc1.Bob.Core.Classes.Planets
 					return new ComponentType[]
 						{
 							new ComponentType( typeof( SpherePlanetCloudModelTemplate ) ), 
-							new ComponentType( typeof( PlanetAtmosphereModelTemplate ) ), 
+							new ComponentType( typeof( PlanetAtmosphereModelTemplate ) ),
+							new ComponentType( typeof( SpherePlanetOceanModelTemplate ) ), 
 							new ComponentType( typeof( BiomeListModel ) ),
 							new ComponentType( typeof( BiomeListLatitudeDistributionModel ) )
 						};
@@ -52,7 +53,7 @@ namespace Poc1.Bob.Core.Classes.Planets
 
 		#region Private Members
 
-		private readonly IPlanetEnvironmentModelTemplateVisitor<object> m_ActionVisitor;
+		private readonly IPlanetEnvironmentModelTemplateVisitor<bool> m_ActionVisitor;
 
 		/// <summary>
 		/// Opens up a view on the specified component
@@ -65,7 +66,7 @@ namespace Poc1.Bob.Core.Classes.Planets
 				return;
 			}
 			modelTemplate.InvokeVisit( m_ActionVisitor );
-		} 
+		}
 
 		#endregion
 	}

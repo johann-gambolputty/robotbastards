@@ -1,12 +1,9 @@
-using System.Collections.Generic;
 using System.Windows.Forms;
 using Bob.Core.Ui.Interfaces.Views;
 using Bob.Core.Windows.Forms.Ui.Docking;
 using Bob.Core.Workspaces.Interfaces;
-using Poc1.Bob.Controls.Components;
 using Poc1.Bob.Core.Classes;
 using Poc1.Bob.Core.Classes.Biomes.Models;
-using Poc1.Bob.Core.Classes.Planets;
 using Poc1.Bob.Core.Classes.Projects.Planets;
 using Poc1.Bob.Core.Classes.Projects.Planets.Spherical;
 using Poc1.Bob.Core.Interfaces;
@@ -141,7 +138,7 @@ namespace Poc1.Bob.Projects
 			IPlanetCloudModel cloudModel = currentProject.PlanetModel.CloudModel;
 			if ( cloudModel == null )
 			{
-				cloudModelTemplate.SetupInstance( currentProject.PlanetModel, currentProject.InstanceContext );
+				cloudModelTemplate.SetupInstance( cloudModel, currentProject.InstanceContext );
 				currentProject.Planet.PlanetRenderer.CloudRenderer = new SpherePlanetCloudRenderer( );
 			}
 

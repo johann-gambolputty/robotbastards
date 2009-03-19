@@ -10,7 +10,7 @@ using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Textures;
 using Graphics=Rb.Rendering.Graphics;
 
-namespace Poc1.Universe.Classes.Rendering
+namespace Poc1.Universe.Planets.Spherical.Renderers
 {
 	/// <summary>
 	/// Renders the sea for a sphere planet
@@ -34,7 +34,7 @@ namespace Poc1.Universe.Classes.Rendering
 
 			//	Generate cached sphere for rendering the planet
 			Graphics.Draw.StartCache( );
-			Graphics.Draw.Sphere( null, Point3.Origin, 10.0f, 40, 40 );
+			Graphics.Draw.Sphere( null, Point3.Origin, 10.0f, 80, 80 );
 			m_OceanGeometry = Graphics.Draw.StopCache( );
 		}
 

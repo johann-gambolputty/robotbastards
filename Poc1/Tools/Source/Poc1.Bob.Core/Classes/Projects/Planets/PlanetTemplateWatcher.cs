@@ -59,7 +59,8 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets
 			{
 				return;
 			}
-			renderer.AddToPlanet( m_Planet.PlanetRenderer );
+			
+			renderer.PlanetRenderer = m_Planet.PlanetRenderer;
 			m_RendererMap.Add( model, renderer );
 		}
 
@@ -73,13 +74,13 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets
 			{
 				return;
 			}
-			model.RemoveFromPlanet( m_Planet.PlanetModel );
+			model.PlanetModel = null;
 			IPlanetEnvironmentRenderer renderer;
 			if ( !m_RendererMap.TryGetValue( model, out renderer ) )
 			{
 				return;
 			}
-			renderer.RemoveFromPlanet( m_Planet.PlanetRenderer );
+			renderer.PlanetRenderer = null;
 		}
 		
 		#endregion

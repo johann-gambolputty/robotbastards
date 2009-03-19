@@ -267,5 +267,27 @@ namespace Poc1.PlanetBuilder
 		}
 
 		#endregion
+
+		#region IPlanetEnvironmentModel Members
+
+
+		public IPlanetModel PlanetModel
+		{
+			get
+			{
+				throw new Exception( "The method or operation is not implemented." );
+			}
+			set
+			{
+				throw new Exception( "The method or operation is not implemented." );
+			}
+		}
+
+		T IPlanetEnvironmentModel.InvokeVisit<T>( IPlanetEnvironmentModelVisitor<T> visitor )
+		{
+			throw new Exception( "The method or operation is not implemented." );
+		}
+
+		#endregion
 	}
 }

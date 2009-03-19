@@ -101,7 +101,7 @@ namespace Poc1.Bob.Projects
 		{
 			SpherePlanetProject currentProject = CurrentProject( workspace );
 			EditableCompositeControl control = new EditableCompositeControl( );
-			IPlanetEnvironmentModelTemplateVisitor visitor = new PlanetEnvironmentModelTemplateViewVisitor( workspace, m_ViewManager, this );
+			PlanetEnvironmentModelTemplateViewVisitor visitor = new PlanetEnvironmentModelTemplateViewVisitor( workspace, m_ViewManager, this );
 			new EditablePlanetTemplateViewController( m_ViewFactory, control, currentProject.PlanetTemplate, visitor );
 			control.PlanetTemplate = currentProject.PlanetTemplate;
 			return control;

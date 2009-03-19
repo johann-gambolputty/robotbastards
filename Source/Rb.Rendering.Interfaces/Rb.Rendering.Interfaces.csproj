@@ -61,6 +61,7 @@
     <Compile Include="Objects\IPass.cs" />
     <Compile Include="Objects\IRenderable.cs" />
     <Compile Include="Objects\IRenderContext.cs" />
+    <Compile Include="Objects\IRenderOrderSorter.cs" />
     <Compile Include="Objects\IRenderState.cs" />
     <Compile Include="Objects\IRenderTarget.cs" />
     <Compile Include="Objects\ITechnique.cs" />

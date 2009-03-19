@@ -10,7 +10,11 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 	/// </summary>
 	public class SpherePlanetPackTextureTechnique : PlanetPackTextureTechnique
 	{
-		public SpherePlanetPackTextureTechnique( ) : base( "Effects/Planets/terrestrialPlanetTerrain.cgfx" )
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		public SpherePlanetPackTextureTechnique( ISpherePlanet planet ) :
+			base( planet, "Effects/Planets/terrestrialPlanetTerrain.cgfx" )
 		{
 		}
 

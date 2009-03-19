@@ -9,7 +9,7 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets
 	/// <summary>
 	/// Creates docking views for planet environment templates
 	/// </summary>
-	public class PlanetEnvironmentModelTemplateViewVisitor : AbstractPlanetEnvironmentModelTemplateVisitor
+	public class PlanetEnvironmentModelTemplateViewVisitor : AbstractPlanetEnvironmentModelTemplateVisitor<bool>
 	{
 		/// <summary>
 		/// Setup constructor
@@ -28,18 +28,20 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets
 		/// Visits a model template that has no explicitly-typed support in this visitor
 		/// </summary>
 		/// <param name="modelTemplate">Model template to visit</param>
-		public override void Visit( IPlanetEnvironmentModelTemplate modelTemplate )
+		public override bool Visit( IPlanetEnvironmentModelTemplate modelTemplate )
 		{
 			//	Does nothing (no view available for this type)
+			return false;
 		}
 
 		/// <summary>
 		/// Visits a cloud model template
 		/// </summary>
 		/// <param name="cloudModelTemplate">Model template to visit</param>
-		public override void Visit( IPlanetCloudModelTemplate cloudModelTemplate )
+		public override bool Visit( IPlanetCloudModelTemplate cloudModelTemplate )
 		{
 			m_ViewManager.Show( m_Workspace, m_Views.CloudView );
+			return true;
 		}
 
 		#region Private Members

@@ -1,0 +1,113 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{864E3713-F680-4491-A032-E3F8C6B63C14}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Poc1.Core</RootNamespace>
+    <AssemblyName>Poc1.Core</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Classes\Astronomical\Planets\AbstractPlanet.cs" />
+    <Compile Include="Classes\Astronomical\Planets\AbstractPlanetModel.cs" />
+    <Compile Include="Classes\Astronomical\Planets\AbstractPlanetRenderer.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Generic\GenericPlanet.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Generic\Models\GenericPlanetEnvironmentModel.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Generic\Models\GenericPlanetRingModel.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Generic\Renderers\GenericPlanetEnvironmentRenderer.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Models\AbstractPlanetEnvironmentModel.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Models\AbstractSimplePlanetCloudModel.cs" />
+    <Compile Include="Classes\Astronomical\Planets\PlanetModelFactory.cs" />
+    <Compile Include="Classes\Astronomical\Planets\PlanetRendererFactory.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Renderers\AbstractPlanetEnvironmentRenderer.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Spherical\Models\SpherePlanetRingModel.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Spherical\RadiusChangedEventArgs.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Spherical\Renderers\SpherePlanetAtmosphereScatteringRenderer.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Spherical\Renderers\SpherePlanetEnvironmentRenderer.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Spherical\Renderers\SpherePlanetOceanRenderer.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Spherical\Renderers\SpherePlanetRingRenderer.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Spherical\Renderers\SpherePlanetSimpleCloudShellRenderer.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Spherical\SpherePlanetModel.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Spherical\SpherePlanetRenderer.cs" />
+    <Compile Include="Classes\Profiling\GameProfiles.cs" />
+    <Compile Include="Classes\Rendering\UniRenderer.cs" />
+    <Compile Include="Interfaces\Astronomical\IAstronomicalBody.cs" />
+    <Compile Include="Interfaces\Astronomical\IEpicyclicOrbit.cs" />
+    <Compile Include="Interfaces\Astronomical\IOrbit.cs" />
+    <Compile Include="Interfaces\Astronomical\ISolarSystem.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Generic\Models\IGenericPlanetEnviromentModel.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\IPlanet.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\IPlanetModel.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\IPlanetModelFactory.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\IPlanetRenderer.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\IPlanetRendererFactory.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\ModelChangedEventArgs.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\IPlanetAtmosphereScatteringModel.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\IPlanetEnvironmentModels.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\IPlanetRingModel.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\ISimplePlanetCloudModel.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Renderers\IPlanetEnvironmentRenderer.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Spherical\ISpherePlanet.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Spherical\ISpherePlanetModel.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Spherical\ISpherePlanetRenderer.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Spherical\Models\ISpherePlanetEnvironmentModel.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Spherical\Models\ISpherePlanetRingModel.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Spherical\SpherePlanet.cs" />
+    <Compile Include="Interfaces\IUniCamera.cs" />
+    <Compile Include="Interfaces\IUniObject.cs" />
+    <Compile Include="Interfaces\Rendering\IUniRenderContext.cs" />
+    <Compile Include="Interfaces\Rendering\UniRenderPass.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Interfaces\UniPoint3.cs" />
+    <Compile Include="Interfaces\UniRay3.cs" />
+    <Compile Include="Interfaces\UniTransform.cs" />
+    <Compile Include="Interfaces\Units.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.csproj">
+      <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>
+      <Name>Rb.Rendering.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Rendering\Rb.Rendering.csproj">
+      <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
+      <Name>Rb.Rendering</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

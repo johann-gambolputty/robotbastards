@@ -1,8 +1,8 @@
 using System;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
+using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Renderers;
-using Poc1.Universe.Interfaces.Planets.Spherical;
 using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
 using Rb.Core.Maths;
 using Rb.Rendering;
@@ -48,7 +48,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// <param name="deepRender">If true, distances are passed to the effect in astro render units. Otherwise, render units are used.</param>
 		public void SetupAtmosphereEffectParameters( IEffect effect, bool objectRendering, bool deepRender )
 		{
-			if ( m_Planet == null || m_Planet.PlanetModel.AtmosphereModel == null )
+			if ( Planet == null || Planet.PlanetModel.AtmosphereModel == null )
 			{
 				return;
 			}
@@ -64,10 +64,11 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			}
 
 			//	Set up parameters shared between astro and close atmosphere rendering
-			effect.Parameters[ "AtmHgCoeff" ].Set( m_Planet.PlanetModel.AtmosphereModel.PhaseCoefficient );
-			effect.Parameters[ "AtmPhaseWeight" ].Set( m_Planet.PlanetModel.AtmosphereModel.PhaseWeight );
+			IPlanetAtmosphereModel model = Planet.PlanetModel.AtmosphereModel;
+			effect.Parameters[ "AtmHgCoeff" ].Set( model.PhaseCoefficient );
+			effect.Parameters[ "AtmPhaseWeight" ].Set( model.PhaseWeight );
 			effect.Parameters[ "ScatteringTexture" ].Set( m_ScatteringTexture );
-			effect.Parameters[ "AtmMiePhaseWeight" ].Set( m_Planet.PlanetModel.AtmosphereModel.MiePhaseWeight );
+			effect.Parameters[ "AtmMiePhaseWeight" ].Set( model.MiePhaseWeight );
 			if ( objectRendering )
 			{
 				effect.Parameters[ "OpticalDepthTexture" ].Set( m_OpticalDepthTexture );
@@ -98,7 +99,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// <param name="context">Rendering context</param>
 		public void DeepRender( IRenderContext context )
 		{
-			if ( m_Planet == null || m_Planet.PlanetModel.AtmosphereModel == null )
+			if ( Planet == null || Planet.PlanetModel.AtmosphereModel == null )
 			{
 				return;
 			}
@@ -138,7 +139,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			{
 				if ( m_AtmosphereGeometry == null )
 				{
-					float renderRadius = ( float )( m_Planet.PlanetModel.Radius.ToAstroRenderUnits + m_Planet.PlanetModel.AtmosphereModel.AtmosphereThickness.ToAstroRenderUnits );
+					float renderRadius = ( float )( SpherePlanet.PlanetModel.Radius.ToAstroRenderUnits + SpherePlanet.PlanetModel.AtmosphereModel.AtmosphereThickness.ToAstroRenderUnits );
 					Graphics.Draw.StartCache( );
 					Graphics.Draw.Sphere( null, Point3.Origin, renderRadius, 60, 60 );
 					m_AtmosphereGeometry = Graphics.Draw.StopCache( );
@@ -157,9 +158,9 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 
 		private void SetupRenderUnitAtmosphereEffectParameters( IUniCamera camera, IEffect effect )
 		{
-			Point3 localPos = Units.RenderUnits.MakeRelativePoint( m_Planet.Transform.Position, camera.Position );
-			float planetRadius = m_Planet.PlanetModel.Radius.ToRenderUnits;
-			float atmosphereRadius = m_Planet.PlanetModel.AtmosphereModel.AtmosphereThickness.ToRenderUnits;
+			Point3 localPos = Units.RenderUnits.MakeRelativePoint( Planet.Transform.Position, camera.Position );
+			float planetRadius = SpherePlanet.PlanetModel.Radius.ToRenderUnits;
+			float atmosphereRadius = SpherePlanet.PlanetModel.AtmosphereModel.AtmosphereThickness.ToRenderUnits;
 			float height = localPos.DistanceTo( Point3.Origin ) - planetRadius;
 			float clampedHeight = Utils.Clamp( height, 0, atmosphereRadius );
 			float normHeight = clampedHeight / atmosphereRadius;
@@ -180,9 +181,9 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 
 		private void SetupAstroRenderUnitAtmosphereEffectParameters( IUniCamera camera, IEffect effect )
 		{
-			Point3 localPos = Units.AstroRenderUnits.MakeRelativePoint( m_Planet.Transform.Position, camera.Position );
-			float planetRadius = ( float )m_Planet.PlanetModel.Radius.ToAstroRenderUnits;
-			float atmosphereRadius = ( float )m_Planet.PlanetModel.AtmosphereModel.AtmosphereThickness.ToAstroRenderUnits;
+			Point3 localPos = Units.AstroRenderUnits.MakeRelativePoint( Planet.Transform.Position, camera.Position );
+			float planetRadius = ( float )SpherePlanet.PlanetModel.Radius.ToAstroRenderUnits;
+			float atmosphereRadius = ( float )Planet.PlanetModel.AtmosphereModel.AtmosphereThickness.ToAstroRenderUnits;
 			float height = localPos.DistanceTo( Point3.Origin ) - planetRadius;
 			float clampedHeight = Utils.Clamp( height, 0, atmosphereRadius );
 			float normHeight = clampedHeight / atmosphereRadius;
