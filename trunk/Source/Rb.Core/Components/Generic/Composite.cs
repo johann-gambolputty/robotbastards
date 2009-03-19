@@ -53,6 +53,7 @@ namespace Rb.Core.Components.Generic
 			{
 				ComponentAdded( this, component );
 			}
+			OnComponentAdded( component );
 		}
 
 		/// <summary>
@@ -71,6 +72,7 @@ namespace Rb.Core.Components.Generic
 			{
 				ComponentRemoved( this, component );
 			}
+			OnComponentRemoved( component );
 		}
 
 		#endregion
@@ -102,9 +104,17 @@ namespace Rb.Core.Components.Generic
 		/// <summary>
 		/// Gets the component collection. Required to solve hidden property problems in <see cref="Generic.Composite{T}"/>
 		/// </summary>
-		protected override ICollection GetComponents( )
+		protected override IList GetComponents( )
 		{
 			return m_Components;
+		}
+
+		/// <summary>
+		/// Gets the read-only component collection. Required to solve hidden property problems in <see cref="Generic.Composite{T}"/>
+		/// </summary>
+		protected override IList GetReadOnlyComponents( )
+		{
+			return m_Components.AsReadOnly( );
 		}
 
 		#endregion

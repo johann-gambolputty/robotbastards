@@ -7,8 +7,13 @@ namespace Poc1.Universe.Interfaces.Planets.Models.Templates
 	public interface IPlanetEnvironmentModelTemplate : IPlanetModelTemplateBase
 	{
 		/// <summary>
-		/// Creates and sets up an instance of the template
+		/// Sets up an instance of the template
 		/// </summary>
-		void CreateInstance( IPlanetModel planetModel, ModelTemplateInstanceContext context );
+		void SetupInstance( IPlanetEnvironmentModel model, ModelTemplateInstanceContext context );
+
+		/// <summary>
+		/// Calls a visitor object
+		/// </summary>
+		T InvokeVisit<T>( IPlanetEnvironmentModelTemplateVisitor<T> visitor );
 	}
 }

@@ -1,7 +1,6 @@
 using Poc1.Tools.Waves;
-using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Renderers;
-using Poc1.Universe.Interfaces.Planets.Spherical;
+using Poc1.Universe.Planets.Spherical.Renderers;
 using Rb.Assets;
 using Rb.Assets.Interfaces;
 using Rb.Core.Maths;
@@ -16,7 +15,7 @@ namespace Poc1.Universe.Classes.Rendering
 	/// <summary>
 	/// Renders the sea for a sphere planet
 	/// </summary>
-	public class SpherePlanetOceanRenderer : IPlanetOceanRenderer
+	public class SpherePlanetOceanRenderer : AbstractSpherePlanetEnvironmentRenderer, IPlanetOceanRenderer
 	{
 		/// <summary>
 		/// Default constructor
@@ -40,28 +39,19 @@ namespace Poc1.Universe.Classes.Rendering
 		}
 
 		/// <summary>
-		/// Gets/sets the planet this renderer belongs to
-		/// </summary>
-		public IPlanet Planet
-		{
-			get { return m_Planet; }
-			set { m_Planet = ( ISpherePlanet )value; }
-		}
-
-		/// <summary>
 		/// Renders the ocean
 		/// </summary>
 		/// <param name="context">Rendering context</param>
-		public void Render( IRenderContext context )
+		public override void Render( IRenderContext context )
 		{
-			if ( m_Planet == null || m_Planet.PlanetModel.OceanModel == null )
+			if ( Planet == null || Planet.PlanetModel.OceanModel == null )
 			{
 				return;
 			}
 
 			GameProfiles.Game.Rendering.PlanetRendering.OceanRendering.Begin( );
 
-			float seaLevel = ( m_Planet.PlanetModel.Radius + m_Planet.PlanetModel.OceanModel.SeaLevel ).ToRenderUnits;
+			float seaLevel = ( SpherePlanet.PlanetModel.Radius + Planet.PlanetModel.OceanModel.SeaLevel ).ToRenderUnits;
 			seaLevel /= 10.0f;
 			Graphics.Renderer.PushTransform( TransformType.LocalToWorld );
 			Graphics.Renderer.Scale( TransformType.LocalToWorld, seaLevel, seaLevel, seaLevel );
@@ -78,9 +68,20 @@ namespace Poc1.Universe.Classes.Rendering
 			GameProfiles.Game.Rendering.PlanetRendering.OceanRendering.End( );
 		}
 
+		#region Protected Members
+
+		/// <summary>
+		/// Assigns/unassigns this renderer to/from a planet
+		/// </summary>
+		protected override void AssignToPlanet( IPlanetRenderer renderer, bool remove )
+		{
+			renderer.OceanRenderer = remove ? null : this;
+		}
+
+		#endregion
+
 		#region Private Members
 
-		private ISpherePlanet m_Planet;
 		private readonly EffectAssetHandle m_Effect;
 		private TechniqueSelector m_Technique;
 		private readonly IRenderable m_OceanGeometry;

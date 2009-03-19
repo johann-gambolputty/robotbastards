@@ -12,11 +12,17 @@ namespace Poc1.Universe.Interfaces.Planets.Models
 		event System.EventHandler ModelChanged;
 
 		/// <summary>
-		/// Gets/sets the planet associated with this model
+		/// Gets/sets the planet model composite that contains this model
 		/// </summary>
-		IPlanet Planet
+		IPlanetModel PlanetModel
 		{
 			get; set;
 		}
+
+		/// <summary>
+		/// Visits this model
+		/// </summary>
+		/// <param name="visitor">Visitor to call back to</param>
+		T InvokeVisit<T>( IPlanetEnvironmentModelVisitor<T> visitor );
 	}
 }

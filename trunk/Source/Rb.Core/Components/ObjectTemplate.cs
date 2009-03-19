@@ -410,7 +410,7 @@ namespace Rb.Core.Components
 		/// <summary>
 		/// Returns the child templates
 		/// </summary>
-		public ICollection Components
+		public IList Components
 		{
 			get { return m_ChildTemplates.AsReadOnly( ); }
 		}
@@ -436,6 +436,17 @@ namespace Rb.Core.Components
 			if ( ComponentRemoved != null )
 			{
 				ComponentRemoved( this, obj );
+			}
+		}
+
+		/// <summary>
+		/// Removes all child components
+		/// </summary>
+		public void Clear( )
+		{
+			while ( m_ChildTemplates.Count > 0 )
+			{
+				Remove( m_ChildTemplates[ 0 ] );
 			}
 		}
 

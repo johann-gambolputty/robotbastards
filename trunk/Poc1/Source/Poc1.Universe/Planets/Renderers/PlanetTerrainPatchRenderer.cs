@@ -1,9 +1,7 @@
-
 using System;
 using System.Collections.Generic;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
-using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Renderers;
 using Poc1.Universe.Interfaces.Planets.Renderers.Patches;
 using Poc1.Universe.Planets.Spherical.Renderers.Patches;
@@ -17,7 +15,7 @@ namespace Poc1.Universe.Planets.Renderers
 	/// <summary>
 	/// Abstract base class for rendering planetary terrain
 	/// </summary>
-	public class PlanetTerrainPatchRenderer : IPlanetTerrainRenderer
+	public class PlanetTerrainPatchRenderer : AbstractPlanetEnvironmentRenderer, IPlanetTerrainRenderer
 	{
 		/// <summary>
 		/// Setup constructor
@@ -27,7 +25,7 @@ namespace Poc1.Universe.Planets.Renderers
 		{
 			Arguments.CheckNotNull( technique, "technique" );
 			m_Technique = technique;
-			m_PatchRenderer = new PatchRenderer( RenderPatches );
+			m_PatchRenderer = new DelegateRenderable( RenderPatches );
 		}
 
 		#region IPlanetTerrainRenderer Members
@@ -44,32 +42,15 @@ namespace Poc1.Universe.Planets.Renderers
 
 		#endregion
 
-		#region IPlanetEnvironmentRenderer Members
-
-		/// <summary>
-		/// Gets/sets the associated planet
-		/// </summary>
-		public virtual IPlanet Planet
-		{
-			get { return m_Planet; }
-			set
-			{
-				m_Planet = value;
-				m_PatchRenderer.Planet = value;
-			}
-		}
-
-		#endregion
-
 		#region IRenderable Members
 
 		/// <summary>
 		/// Renders the terrain
 		/// </summary>
 		/// <param name="context">Terrain rendering context</param>
-		public void Render( IRenderContext context )
+		public override void Render( IRenderContext context )
 		{
-			if ( m_Planet == null )
+			if ( Planet == null )
 			{
 				throw new InvalidOperationException( "Can't render terrain patches without first setting planet object" );
 			}
@@ -126,46 +107,22 @@ namespace Poc1.Universe.Planets.Renderers
 			get { return m_RootPatches; }
 		}
 
+		/// <summary>
+		/// Assigns this to a planet
+		/// </summary>
+		protected override void AssignToPlanet( IPlanetRenderer renderer, bool remove )
+		{
+			renderer.TerrainRenderer = remove ? null : this;
+		}
+
 		#endregion
 
 		#region Private Members
 
 		private readonly ITechnique				m_Technique;
 		private readonly TerrainPatchVertices	m_Vertices = new TerrainPatchVertices( );
-		private IPlanet							m_Planet;
 		private readonly List<TerrainPatch>		m_RootPatches = new List<TerrainPatch>( );
-		private readonly PatchRenderer			m_PatchRenderer;
-		
-		#region PatchRenderer class
-
-		private class PatchRenderer : DelegateRenderable, IPlanetEnvironmentRenderer
-		{
-			/// <summary>
-			/// Patch renderer setup constructor
-			/// </summary>
-			/// <param name="render">Delegate used to render all patches</param>
-			public PatchRenderer( RenderDelegate render ) : base( render )
-			{
-			}
-
-			#region IPlanetEnvironmentRenderer Members
-
-			/// <summary>
-			/// Gets/sets the planet associated with this renderer
-			/// </summary>
-			public IPlanet Planet
-			{
-				get { return m_Planet; }
-				set { m_Planet = value; }
-			}
-
-			#endregion
-
-			private IPlanet m_Planet;
-		}
-
-
-		#endregion
+		private readonly IRenderable			m_PatchRenderer;
 
 		/// <summary>
 		/// Updates patches prior to rendering
@@ -173,9 +130,9 @@ namespace Poc1.Universe.Planets.Renderers
 		/// <param name="camera">Camera that LOD is calculated relative to</param>
 		private void UpdatePatches( IUniCamera camera )
 		{
-			Point3 localPos = Units.RenderUnits.MakeRelativePoint( m_Planet.Transform.Position, camera.Position );
+			Point3 localPos = Units.RenderUnits.MakeRelativePoint( Planet.Transform.Position, camera.Position );
 
-			ITerrainPatchGenerator generator = ( ITerrainPatchGenerator )m_Planet.PlanetModel.TerrainModel;
+			ITerrainPatchGenerator generator = ( ITerrainPatchGenerator )Planet.PlanetModel.TerrainModel;
 			foreach ( TerrainPatch patch in m_RootPatches )
 			{
 				patch.UpdateLod( localPos, generator, camera );

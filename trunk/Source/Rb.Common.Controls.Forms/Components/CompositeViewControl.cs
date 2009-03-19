@@ -115,7 +115,7 @@ namespace Rb.Common.Controls.Forms.Components
 			TreeNode node = compositeView.GetNodeAt( e.Location );
 			if ( ( node != null ) && ( ComponentAction != null ) )
 			{
-				ComponentAction( ( IComponent )node.Tag );
+				ComponentAction( node.Tag );
 			}
 		}
 

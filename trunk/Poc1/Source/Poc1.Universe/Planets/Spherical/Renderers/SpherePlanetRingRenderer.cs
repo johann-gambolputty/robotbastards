@@ -1,19 +1,18 @@
-using System;
 using System.Collections.Generic;
-using Poc1.Universe.Interfaces.Planets;
+using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets.Renderers;
-using Poc1.Universe.Interfaces.Planets.Spherical;
 using Rb.Assets;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
+using Poc1.Universe.Interfaces.Planets.Spherical.Models;
 
 namespace Poc1.Universe.Planets.Spherical.Renderers
 {
 	/// <summary>
 	/// Renders rings around a planet
 	/// </summary>
-	public class SpherePlanetRingRenderer : IPlanetRingRenderer
+	public class SpherePlanetRingRenderer : AbstractSpherePlanetEnvironmentRenderer, IPlanetRingRenderer
 	{
 		/// <summary>
 		/// Default constructor. Loads rendering resources
@@ -28,36 +27,19 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			m_State.Enable2dTextures = true;
 		}
 
-		#region IPlanetEnvironmentRenderer Members
-
-		/// <summary>
-		/// Gets/sets the planet that the rings are centered on
-		/// </summary>
-		public IPlanet Planet
-		{
-			get { return m_Planet; }
-			set
-			{
-				m_Planet = ( ISpherePlanet )value;
-				if ( m_Planet.PlanetModel.RingModel == null )
-				{
-					throw new InvalidOperationException( "Ring renderer requires that a valid ring model" );
-				}
-				m_Planet.PlanetModel.RingModel.ModelChanged += OnRingModelChanged;
-			}
-		}
-
-		#endregion
-
 		#region IRenderable Members
 
 		/// <summary>
 		/// Close in rendering of the planet's rings. Does not render anything.
 		/// </summary>
 		/// <param name="context">Rendering context</param>
-		public void Render( IRenderContext context )
+		public override void Render( IRenderContext context )
 		{
-			if ( m_Vertices == null )
+			if ( SpherePlanet.PlanetModel.RingModel == null )
+			{
+				return;
+			}
+			if ( m_Vertices == null || HasRingModelChanged( ) )
 			{
 				RebuildRingGeometry( );
 			}
@@ -70,12 +52,38 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 
 		#endregion
 
+		#region Protected Members
+
+		/// <summary>
+		/// Assigns/unassigns this renderer to/from a planet
+		/// </summary>
+		protected override void AssignToPlanet( IPlanetRenderer renderer, bool remove )
+		{
+			DestroyVertices( );
+			renderer.RingRenderer = remove ? null : this;
+		}
+
+		#endregion
+
 		#region Private Members
+
+		/// <summary>
+		/// Destroys current vertex buffer
+		/// </summary>
+		private void DestroyVertices( )
+		{
+			if ( m_Vertices != null )
+			{
+				m_Vertices.Dispose( );
+				m_Vertices = null;
+			}
+		}
 
 		private IRenderState m_State;
 		private ITexture2dSampler m_Texture;
-		private ISpherePlanet m_Planet;
 		private IVertexBuffer m_Vertices;
+		private Units.Metres m_BuildInnerRadius = new Units.Metres( 0 );
+		private Units.Metres m_BuildWidth = new Units.Metres( 0 );
 
 		/// <summary>
 		/// Ring vertex structure
@@ -94,18 +102,36 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 				TexCoord = new Point2( u, v );
 			}
 		}
+		
+		/// <summary>
+		/// Returns true if the model parameters used to create the ring renderable geometry have changed
+		/// </summary>
+		private bool HasRingModelChanged( )
+		{
+			ISpherePlanetRingModel model = SpherePlanet.PlanetModel.SphereRingModel;
+			if ( model == null )
+			{
+				return false;
+			}
+			return ( m_BuildInnerRadius != model.InnerRadius ) || ( m_BuildWidth != model.Width );
+		}
 
 		/// <summary>
 		/// Rebuilds the ring goemetry
 		/// </summary>
 		private void RebuildRingGeometry( )
 		{
+			DestroyVertices( );
 			int subdivisionCount = 256;
 
 			List<RingVertex> vertices = new List<RingVertex>( );
+			ISpherePlanetRingModel model = SpherePlanet.PlanetModel.SphereRingModel;
 
-			float innerRadius = ( float )m_Planet.PlanetModel.SphereRingModel.InnerRadius.ToAstroRenderUnits;
-			float outerRadius = ( float )( m_Planet.PlanetModel.SphereRingModel.InnerRadius + m_Planet.PlanetModel.RingModel.Width ).ToAstroRenderUnits;
+			m_BuildInnerRadius = model.InnerRadius;
+			m_BuildWidth = model.Width;
+
+			float innerRadius = ( float )model.InnerRadius.ToAstroRenderUnits;
+			float outerRadius = ( float )( model.InnerRadius + model.Width ).ToAstroRenderUnits;
 			float angle = 0;
 			float angleInc = Constants.TwoPi / ( subdivisionCount - 1 );
 			bool toggle = false;
@@ -126,19 +152,6 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			m_Vertices.Create( vertices.ToArray( ) );
 		}
 
-		/// <summary>
-		/// Handles the ring model ModelChanged event
-		/// </summary>
-		private void OnRingModelChanged( object sender, EventArgs args )
-		{
-			if ( m_Vertices != null )
-			{
-				m_Vertices.Dispose( );
-				m_Vertices = null;
-			}
-		}
-
 		#endregion
-
 	}
 }

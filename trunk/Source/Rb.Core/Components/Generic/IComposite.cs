@@ -6,12 +6,12 @@ namespace Rb.Core.Components.Generic
 	/// <summary>
 	/// Component added delegate
 	/// </summary>
-	public delegate void OnComponentAddedDelegate<T>( IComposite parent, T child );
+	public delegate void OnComponentAddedDelegate<T>( IComposite<T> parent, T child );
 
 	/// <summary>
 	/// Component removed delegate
 	/// </summary>
-	public delegate void OnComponentRemovedDelegate<T>( IComposite parent, T child );
+	public delegate void OnComponentRemovedDelegate<T>( IComposite<T> parent, T child );
 
 	/// <summary>
 	/// Generic version of IComposite. Can only hold components of type T

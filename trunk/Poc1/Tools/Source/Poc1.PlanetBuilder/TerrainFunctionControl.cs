@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 using Poc1.Fast.Terrain;
-using Poc1.Universe.Interfaces.Planets.Models;
+using Poc1.Universe.Interfaces.Planets.Models.Templates;
 
 namespace Poc1.PlanetBuilder
 {

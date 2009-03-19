@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Rb.Core.Components.Generic;
 
 namespace Poc1.Universe.Interfaces.Planets.Models.Templates
@@ -9,14 +8,6 @@ namespace Poc1.Universe.Interfaces.Planets.Models.Templates
 	public interface IPlanetModelTemplate : IPlanetModelTemplateBase, IComposite<IPlanetEnvironmentModelTemplate>
 	{
 		/// <summary>
-		/// Gets/sets the list of environment model templates
-		/// </summary>
-		List<IPlanetEnvironmentModelTemplate> EnvironmentModelTemplates
-		{
-			get; set;
-		}
-
-		/// <summary>
 		/// Gets a model template of the specified type
 		/// </summary>
 		/// <typeparam name="T">Model template type to retrieve</typeparam>
@@ -26,6 +17,6 @@ namespace Poc1.Universe.Interfaces.Planets.Models.Templates
 		/// <summary>
 		/// Creates an instance of this template
 		/// </summary>
-		void CreateModelInstance( IPlanetModel planetModel, ModelTemplateInstanceContext context );
+		void CreateModelInstance( IPlanetModel planetModel, IPlanetEnvironmentModelFactory modelFactory, ModelTemplateInstanceContext context );
 	}
 }

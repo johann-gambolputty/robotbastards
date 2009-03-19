@@ -1,13 +1,12 @@
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets.Models;
-using IPlanet = Poc1.Universe.Interfaces.Planets.IPlanet;
 
 namespace Poc1.Universe.Planets.Models
 {
 	/// <summary>
 	/// Planet ocean model implementation
 	/// </summary>
-	public class PlanetOceanModel : IPlanetOceanModel
+	public class PlanetOceanModel : PlanetEnvironmentModel, IPlanetOceanModel
 	{
 		#region IPlanetOceanModel Members
 
@@ -19,37 +18,30 @@ namespace Poc1.Universe.Planets.Models
 			get { return m_SeaLevel; }
 			set
 			{
-				m_SeaLevel = value;
-				if ( ModelChanged != null )
+				if ( m_SeaLevel != value )
 				{
-					ModelChanged( this, null );
+					m_SeaLevel = value;
+					OnModelChanged( );
 				}
 			}
 		}
 
 		#endregion
 
-		#region IPlanetEnvironmentModel Members
+		#region Protected Members
 
 		/// <summary>
-		/// Event, invoked when the model changes
+		/// Assigns this model to a planet model
 		/// </summary>
-		public event System.EventHandler ModelChanged;
-
-		/// <summary>
-		/// Gets/sets the associated planet
-		/// </summary>
-		public IPlanet Planet
+		protected override void AssignToModel( IPlanetModel planetModel, bool remove )
 		{
-			get { return m_Planet; }
-			set { m_Planet = value; }
+			planetModel.OceanModel = remove ? null : this;
 		}
 
 		#endregion
 
 		#region Private Members
 
-		private IPlanet m_Planet;
 		private Units.Metres m_SeaLevel = new Units.Metres( 0 );
 
 		#endregion

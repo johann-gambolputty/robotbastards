@@ -13,5 +13,13 @@ namespace Bob.Core.Ui.Interfaces.Views
 		{
 			get;
 		}
+
+		/// <summary>
+		/// Returns true if this view can be created from a command
+		/// </summary>
+		bool AvailableAsCommand
+		{
+			get;
+		}
 	}
 }

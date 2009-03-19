@@ -1,12 +1,13 @@
 
 using System;
+using Rb.Core.Components.Generic;
 
 namespace Poc1.Universe.Interfaces.Planets.Models
 {
 	/// <summary>
 	/// Planetary model
 	/// </summary>
-	public interface IPlanetModel : IDisposable
+	public interface IPlanetModel : IComposite<IPlanetEnvironmentModel>, IDisposable
 	{
 		/// <summary>
 		/// Raised when the planet model is changed

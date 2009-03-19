@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Bob.Core.Ui.Interfaces.Views;
 using Poc1.Bob.Core.Interfaces.Projects;
 using Rb.Core.Utils;
 
@@ -13,9 +14,12 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets.Spherical
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		public SpherePlanetProjectType( ) :
+		/// <param name="views">Planet view provider</param>
+		public SpherePlanetProjectType( IPlanetViews views ) :
 			base( "Sphere Planet", "Sphere Planet Template" )
 		{
+			Arguments.CheckNotNull( views, "views" );
+			m_Views = views;
 		}
 
 		/// <summary>
@@ -24,6 +28,14 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets.Spherical
 		public override string SupportedExtension
 		{
 			get { return "sphere.planet.xml"; }
+		}
+
+		/// <summary>
+		/// Gets views associated with this project type
+		/// </summary>
+		public override IViewInfo[] Views
+		{
+			get { return m_Views.Views; }
 		}
 
 		/// <summary>
@@ -47,5 +59,11 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets.Spherical
 		{
 			return new SpherePlanetProject( this, name );
 		}
+
+		#region Private Members
+
+		private readonly IPlanetViews m_Views;
+
+		#endregion
 	}
 }

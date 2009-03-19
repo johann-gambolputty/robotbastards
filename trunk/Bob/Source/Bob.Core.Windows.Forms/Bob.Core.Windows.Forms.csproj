@@ -55,6 +55,7 @@
     <Compile Include="Ui\Docking\DockingViewInfo.cs" />
     <Compile Include="Ui\Docking\DockingViewManager.cs">
     </Compile>
+    <Compile Include="Ui\Docking\DockPanelHost.cs" />
     <Compile Include="Ui\MenuCommandUiManager.cs" />
     <Compile Include="Ui\MessageUiProvider.cs" />
   </ItemGroup>

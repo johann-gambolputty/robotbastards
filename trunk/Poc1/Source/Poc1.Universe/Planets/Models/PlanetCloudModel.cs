@@ -1,5 +1,4 @@
 using Poc1.Universe.Interfaces;
-using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Models;
 using Rb.Core.Maths;
 
@@ -8,22 +7,24 @@ namespace Poc1.Universe.Planets.Models
 	/// <summary>
 	/// Base class for planetary cloud models
 	/// </summary>
-	public class PlanetCloudModel : IPlanetCloudModel
+	public class PlanetCloudModel : PlanetEnvironmentModel, IPlanetCloudModel
 	{
-		#region IPlanetEnvironmentModel Members
+		#region IPlanetCloudModel Members
 
 		/// <summary>
-		/// Event, invoked when the model changes
+		/// Gets/sets the cloud coverage range
 		/// </summary>
-		public event System.EventHandler ModelChanged;
-
-		/// <summary>
-		/// Gets/sets the associated planet
-		/// </summary>
-		public IPlanet Planet
+		public Range<float> CoverageRange
 		{
-			get { return m_Planet; }
-			set { m_Planet = value; }
+			get { return m_CoverageRange; }
+			set
+			{
+				if ( m_CoverageRange != value )
+				{
+					m_CoverageRange = value;
+					OnModelChanged( );
+				}
+			}
 		}
 
 		/// <summary>
@@ -44,46 +45,23 @@ namespace Poc1.Universe.Planets.Models
 
 		#endregion
 
-		#region IPlanetCloudModel Members
-
-		/// <summary>
-		/// Gets/sets the cloud coverage range
-		/// </summary>
-		public Range<float> CoverageRange
-		{
-			get { return m_CoverageRange; }
-			set
-			{
-				if ( m_CoverageRange != value )
-				{
-					m_CoverageRange = value;
-					OnModelChanged( );
-				}
-			}
-		}
-
-		#endregion
-
 		#region Protected Members
 
 		/// <summary>
-		/// Raises the <see cref="ModelChanged"/> event
+		/// Assigns this model to a planet model
 		/// </summary>
-		protected void OnModelChanged( )
+		protected override void AssignToModel( IPlanetModel planetModel, bool remove )
 		{
-			if ( ModelChanged != null )
-			{
-				ModelChanged( this, null );
-			}
+			planetModel.CloudModel = remove ? null : this;
 		}
 
 		#endregion
+
 
 		#region Private Members
 
 		private Range<float> m_CoverageRange = new Range<float>( 0, 1 );
 		private Units.Metres m_CloudLayerMinHeight = new Units.Metres( 7000 );
-		private IPlanet m_Planet;
 
 		#endregion
 

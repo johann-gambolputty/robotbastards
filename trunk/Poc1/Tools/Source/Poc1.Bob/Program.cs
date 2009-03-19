@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Windows.Forms;
 using Poc1.Bob.Controls;
 using Rb.Assets;
@@ -14,12 +15,19 @@ namespace Poc1.Bob
 			return effect;
 		}
 
+		public class TestGetMethod
+		{
+			public void DoStuff( object o ) { }
+		}
+
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>
 		[STAThread]
 		static void Main( )
 		{
+			TestGetMethod test = new TestGetMethod();
+			MethodInfo method = test.GetType( ).GetMethod( "DoStuff", new Type[] { test.GetType( ) } );
 			if ( !Environment.CommandLine.Contains( "/noDataBuild" ) )
 			{
 				try

@@ -8,9 +8,9 @@ namespace Poc1.Universe.Interfaces.Planets.Renderers
 	public interface IPlanetEnvironmentRenderer : IRenderable
 	{
 		/// <summary>
-		/// Gets/sets the planet associated with this renderer
+		/// Gets/sets the planet renderer composite that contains this renderer
 		/// </summary>
-		IPlanet Planet
+		IPlanetRenderer PlanetRenderer
 		{
 			get; set;
 		}

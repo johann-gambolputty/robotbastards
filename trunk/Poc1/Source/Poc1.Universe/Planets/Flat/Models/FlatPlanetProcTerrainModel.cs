@@ -1,11 +1,11 @@
 using System;
 using Poc1.Fast.Terrain;
 using Poc1.Universe.Interfaces;
-using Poc1.Universe.Interfaces.Planets;
-using Poc1.Universe.Interfaces.Planets.Flat;
 using Poc1.Universe.Interfaces.Planets.Models;
+using Poc1.Universe.Interfaces.Planets.Models.Templates;
 using Poc1.Universe.Interfaces.Planets.Renderers.Patches;
 using Poc1.Universe.Interfaces.Rendering;
+using Poc1.Universe.Planets.Models;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Planets.Flat.Models
@@ -13,7 +13,7 @@ namespace Poc1.Universe.Planets.Flat.Models
 	/// <summary>
 	/// Procedural terrain model for flat planets
 	/// </summary>
-	public class FlatPlanetProcTerrainModel : IPlanetProcTerrainModel, ITerrainPatchGenerator
+	public class FlatPlanetProcTerrainModel : PlanetEnvironmentModel, IPlanetProcTerrainModel, ITerrainPatchGenerator
 	{
 		#region IPlanetProcTerrainModel Members
 
@@ -24,7 +24,7 @@ namespace Poc1.Universe.Planets.Flat.Models
 		/// <param name="groundFunction">The terrain ground offset function</param>
 		public void SetupTerrain( TerrainFunction heightFunction, TerrainFunction groundFunction )
 		{
-			if ( Planet == null )
+			if ( PlanetModel == null )
 			{
 				throw new InvalidOperationException( "Terrain model does not have an associated planet. Cannot setup terrain" );
 			}
@@ -106,24 +106,6 @@ namespace Poc1.Universe.Planets.Flat.Models
 
 		#endregion
 
-		#region IPlanetEnvironmentModel Members
-
-		/// <summary>
-		/// Event raised when the model changes
-		/// </summary>
-		public event EventHandler ModelChanged;
-
-		/// <summary>
-		/// Gets/sets the associated planet
-		/// </summary>
-		public IPlanet Planet
-		{
-			get { return m_Planet; }
-			set { m_Planet = ( IFlatPlanet )value; }
-		}
-
-		#endregion
-
 		#region ITerrainPatchGenerator Members
 
 		/// <summary>
@@ -151,24 +133,24 @@ namespace Poc1.Universe.Planets.Flat.Models
 
 		#endregion
 
+		#region Protected Members
+
+		/// <summary>
+		/// Assigns this model to a planet model
+		/// </summary>
+		protected override void AssignToModel( IPlanetModel planetModel, bool remove )
+		{
+			planetModel.TerrainModel = remove ? null : this;
+		}
+
+		#endregion
+
 		#region Private Members
 
-		private IFlatPlanet m_Planet;
 		private TerrainGenerator m_Gen;
 		private Units.Metres m_MaximumHeight;
 		private ITexture2d m_TerrainTypesTexture;
 		private ITexture2d m_TerrainPackTexture;
-
-		/// <summary>
-		/// Raises the ModelChanged event
-		/// </summary>
-		private void OnModelChanged( )
-		{
-			if ( ModelChanged != null )
-			{
-				ModelChanged( this, EventArgs.Empty );
-			}
-		}
 
 		#endregion
 

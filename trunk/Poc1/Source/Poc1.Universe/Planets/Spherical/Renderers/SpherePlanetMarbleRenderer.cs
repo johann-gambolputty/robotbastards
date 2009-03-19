@@ -1,8 +1,6 @@
 using System;
 using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Renderers;
-using Poc1.Universe.Interfaces.Planets;
-using Poc1.Universe.Interfaces.Planets.Spherical;
 using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
 using Poc1.Universe.Planets.Models;
 using Rb.Assets;
@@ -17,7 +15,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 	/// <summary>
 	/// Spherical planet marble renderer
 	/// </summary>
-	public class SpherePlanetMarbleRenderer : IPlanetMarbleRenderer
+	public class SpherePlanetMarbleRenderer : AbstractSpherePlanetEnvironmentRenderer, IPlanetMarbleRenderer
 	{
 		/// <summary>
 		/// Setup constructor
@@ -29,37 +27,6 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			m_Technique = new TechniqueSelector( effect, "DefaultTechnique" );
 		}
 
-		#region IPlanetEnvironmentRenderer Members
-
-		/// <summary>
-		/// Gets/sets the associated planet
-		/// </summary>
-		public IPlanet Planet
-		{
-			get { return m_Planet; }
-			set
-			{
-				if ( m_Planet != null )
-				{
-					m_Planet.PlanetChanged -= OnPlanetChanged;
-				}
-				m_Planet = ( ISpherePlanet )value;
-
-				m_MarbleTexture = null;
-				m_MarbleTextureDirty = true;
-				m_MarbleTextureBuilding = false;
-				m_Geometry = null;
-				if ( m_Planet != null )
-				{
-					m_Planet.PlanetChanged += OnPlanetChanged;
-					m_Planet.PlanetModel.TerrainModel.ModelChanged += OnTerrainModelChanged;
-				}
-			}
-		}
-
-
-		#endregion
-
 		#region IRenderable Members
 		
 		/// <summary>
@@ -70,7 +37,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// Expects that the planet's entity transform has been applied, using astro-render units, and that
 		/// the scene is being rendered using the astro-render camera.
 		/// </remarks>
-		public void Render( IRenderContext context )
+		public override void Render( IRenderContext context )
 		{
 			if ( Planet == null )
 			{
@@ -91,7 +58,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 				{
 					m_Technique.Effect.Parameters[ "MarbleTexture" ].Set( m_MarbleTexture );
 				}
-				IPlanetTerrainPackTextureModel textureModel = ( IPlanetTerrainPackTextureModel )m_Planet.PlanetModel.TerrainModel;
+				IPlanetTerrainPackTextureModel textureModel = ( IPlanetTerrainPackTextureModel )SpherePlanet.PlanetModel.TerrainModel;
 				m_Technique.Effect.Parameters[ "TerrainPackTexture" ].Set( textureModel.TerrainPackTexture );
 				m_Technique.Effect.Parameters[ "TerrainTypeTexture" ].Set( textureModel.TerrainTypesTexture );
 				m_Technique.Apply( context, m_Geometry );
@@ -100,12 +67,31 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 
 		#endregion
 
+		#region Protected Members
+
+		/// <summary>
+		/// Assigns/unassigns this renderer to/from a planet
+		/// </summary>
+		protected override void AssignToPlanet( IPlanetRenderer renderer, bool remove )
+		{
+			renderer.MarbleRenderer = remove ? null : this;
+
+			m_MarbleTexture = null;
+			m_MarbleTextureDirty = true;
+			m_MarbleTextureBuilding = false;
+			m_Geometry = null;
+
+			if ( !remove )
+			{
+			}
+		}
+
+		#endregion
 		#region Private Members
 
 		private ITexture					m_MarbleTexture;
 		private bool						m_MarbleTextureDirty;
 		private bool						m_MarbleTextureBuilding;
-		private ISpherePlanet				m_Planet;
 		private IRenderable					m_Geometry;
 		private readonly TechniqueSelector	m_Technique;
 		private readonly ISpherePlanetMarbleTextureBuilder m_TextureBuilder;
@@ -144,7 +130,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		private void BuildGeometry( )
 		{
 			Graphics.Draw.StartCache( );
-			Graphics.Draw.Sphere( null, Point3.Origin, ( float )m_Planet.PlanetModel.Radius.ToAstroRenderUnits, 40, 40 );
+			Graphics.Draw.Sphere( null, Point3.Origin, ( float )SpherePlanet.PlanetModel.Radius.ToAstroRenderUnits, 40, 40 );
 			m_Geometry = Graphics.Draw.StopCache( );
 		}
 
@@ -164,11 +150,11 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		{
 			if ( ( ( m_MarbleTexture == null ) || m_MarbleTextureDirty ) && !m_MarbleTextureBuilding )
 			{
-				if ( m_Planet.PlanetModel.SphereTerrainModel.ReadyToUse )
+				if ( SpherePlanet.PlanetModel.SphereTerrainModel.ReadyToUse )
 				{
 					m_MarbleTextureDirty = false;
 					m_MarbleTextureBuilding = true;
-					m_TextureBuilder.QueueBuild( ExtendedThreadPool.Instance, m_Planet, OnMarbleTextureBuilt );
+					m_TextureBuilder.QueueBuild( ExtendedThreadPool.Instance, SpherePlanet, OnMarbleTextureBuilt );
 				}
 			}
 		}

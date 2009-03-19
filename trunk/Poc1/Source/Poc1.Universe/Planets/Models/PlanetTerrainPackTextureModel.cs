@@ -44,6 +44,25 @@ namespace Poc1.Universe.Planets.Models
 
 		#endregion
 
+		#region Protected Members
+
+		/// <summary>
+		/// Assigns this model to a planet model
+		/// </summary>
+		protected override void AssignToModel( IPlanetModel planetModel, bool remove )
+		{
+			if ( remove )
+			{
+				planetModel.Remove( this );	
+			}
+			else
+			{
+				planetModel.Add( this );
+			}
+		}
+
+		#endregion
+
 		#region Private Members
 
 		private ITexture2d m_TerrainTypesTexture;

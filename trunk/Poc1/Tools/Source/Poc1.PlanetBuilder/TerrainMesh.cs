@@ -2,6 +2,7 @@ using System;
 using Poc1.Fast.Terrain;
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets;
+using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Renderers.Patches;
 using Poc1.Universe.Interfaces.Rendering;
 using Poc1.Universe.Planets.Spherical.Renderers.Patches;
@@ -107,6 +108,14 @@ namespace Poc1.PlanetBuilder
 			gen.Setup( m_PatchScale, 0, maxHeight );
 
 			m_Gen = gen;
+		}
+
+		/// <summary>
+		/// Calls into a visitor interface
+		/// </summary>
+		public T InvokeVisit<T>( IPlanetEnvironmentModelVisitor<T> visitor )
+		{
+			return visitor.Visit( this );
 		}
 
 		/// <summary>

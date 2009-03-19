@@ -79,6 +79,10 @@ namespace Poc1.Bob.Core.Classes.Projects
 			List<Command> viewCommands = new List<Command>( );
 			foreach ( IViewInfo view in views )
 			{
+				if ( !view.AvailableAsCommand )
+				{
+					continue;
+				}
 				Command command;
 				if ( !m_DisplayCommands.TryGetValue( view, out command ) )
 				{

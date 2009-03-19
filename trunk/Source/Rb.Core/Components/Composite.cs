@@ -24,7 +24,7 @@ namespace Rb.Core.Components
 		/// <summary>
 		/// Gets all components in this composite
 		/// </summary>
-		public ICollection Components
+		public IList Components
 		{
 			get { return m_Components.AsReadOnly( ); }
 		}
@@ -69,6 +69,17 @@ namespace Rb.Core.Components
 			}
 		}
 
+		/// <summary>
+		/// Removes all components from this composite
+		/// </summary>
+		public virtual void Clear( )
+		{
+			while ( m_Components.Count > 0 )
+			{
+				Remove( m_Components[ 0 ] );
+			}
+		}
+
 		#endregion
 
 		#region Protected Members
@@ -98,7 +109,6 @@ namespace Rb.Core.Components
 
 		#region Private Members
 
-		private IComposite m_Owner;
 		private readonly List<object> m_Components = new List<object>( );
 
 		#endregion

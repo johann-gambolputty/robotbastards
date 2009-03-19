@@ -1,19 +1,19 @@
 using System;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
+using Poc1.Universe.Interfaces.Planets.Renderers;
 using Poc1.Universe.Interfaces.Planets.Spherical;
 using Poc1.Universe.Interfaces.Planets.Spherical.Renderers;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
-using IPlanet=Poc1.Universe.Interfaces.Planets.IPlanet;
 
 namespace Poc1.Universe.Planets.Spherical.Renderers
 {
 	/// <summary>
 	/// Atmosphere renderer for spherical planets
 	/// </summary>
-	public class SpherePlanetAtmosphereRenderer : ISpherePlanetAtmosphereRenderer
+	public class SpherePlanetAtmosphereRenderer : AbstractSpherePlanetEnvironmentRenderer, ISpherePlanetAtmosphereRenderer
 	{
 		/// <summary>
 		/// Default constructor
@@ -27,19 +27,6 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		}
 
 		#region ISpherePlanetAtmosphereRenderer Members
-
-		/// <summary>
-		/// Gets/sets the planet this renderer belongs to
-		/// </summary>
-		public IPlanet Planet
-		{
-			get { return m_Planet; }
-			set
-			{
-				m_Planet = ( ISpherePlanet )value;
-				m_AtmosphereGeometry = null;
-			}
-		}
 
 		/// <summary>
 		/// Sets the lookup textures required by the atmosphere renderer
@@ -95,7 +82,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// Renders the atmosphere
 		/// </summary>
 		/// <param name="context">Rendering context</param>
-		public void Render( IRenderContext context )
+		public override void Render( IRenderContext context )
 		{
 			//	Atmosphere has no close rendering component
 			throw new NotSupportedException( "Atmosphere only renders using DeepRender() method" );
@@ -122,9 +109,20 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 
 		#endregion
 
+		#region Protected Members
+		
+		/// <summary>
+		/// Assigns/unassigns this renderer to/from a planet
+		/// </summary>
+		protected override void AssignToPlanet( IPlanetRenderer renderer, bool remove )
+		{
+			renderer.AtmosphereRenderer = remove ? null : this;
+		}
+
+		#endregion
+
 		#region Private Members
 
-		private ISpherePlanet		m_Planet;
 		private IRenderable			m_AtmosphereGeometry;
 		private TechniqueSelector	m_Techniques;
 		private ITexture3d			m_ScatteringTexture;

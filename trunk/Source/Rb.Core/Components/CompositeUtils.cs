@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Rb.Core.Utils;
 using System.Collections;
+using Rb.Core.Components.Generic;
 
 namespace Rb.Core.Components
 {
@@ -10,6 +11,39 @@ namespace Rb.Core.Components
 	/// </summary>
 	public static class CompositeUtils
 	{
+		/// <summary>
+		/// Untyped component visitor delegate
+		/// </summary>
+		public delegate void VisitorDelegate( object component );
+		
+		/// <summary>
+		/// Typed component visitor delegate
+		/// </summary>
+		public delegate void VisitorDelegate<T>( T component );
+
+		/// <summary>
+		/// Visits all components in a composite
+		/// </summary>
+		public static void Visit( IComposite composite, VisitorDelegate visitor )
+		{
+			foreach ( object component in composite.Components )
+			{
+				visitor( component );
+			}
+		}
+
+		/// <summary>
+		/// Visits a typed composite, and all components
+		/// </summary>
+		public static void Visit<T>( IComposite<T> composite, VisitorDelegate<T> visitor )
+		{
+			foreach ( T component in composite.Components )
+			{
+				visitor( component );
+			}
+		}
+
+
 		/// <summary>
 		/// Gets all components from a composite by type
 		/// </summary>
@@ -35,7 +69,7 @@ namespace Rb.Core.Components
 		/// <returns>Returns an enumerable object containing all components of type T in the composite</returns>
 		public static IEnumerable GetComponents( IComposite composite, Type componentType )
 		{
-			foreach ( IComponent component in composite.Components )
+			foreach ( object component in composite.Components )
 			{
 				if ( componentType.IsInstanceOfType( component ) )
 				{
@@ -64,7 +98,7 @@ namespace Rb.Core.Components
 		public static object GetComponent( IComposite composite, Type componentType )
 		{
 			Arguments.CheckNotNull( componentType, "componentType" );
-			foreach ( IComponent component in composite.Components )
+			foreach ( object component in composite.Components )
 			{
 				if ( componentType.IsInstanceOfType( component ) )
 				{

@@ -26,6 +26,7 @@ namespace Poc1.Bob.Core.Classes.Components
 			Arguments.CheckNotNull( composite, "composite" );
 			view.EditComposition += OnEditComposition;
 			view.Composite = composite;
+			m_View = view;
 			m_Composite = composite;
 			m_ViewFactory = viewFactory;
 		}
@@ -65,6 +66,7 @@ namespace Poc1.Bob.Core.Classes.Components
 
 		private readonly IViewFactory m_ViewFactory;
 		private readonly IComposite m_Composite;
+		private readonly IEditableCompositeView m_View;
 
 		/// <summary>
 		/// Handles the EditComposition event on the view
@@ -72,6 +74,7 @@ namespace Poc1.Bob.Core.Classes.Components
 		private void OnEditComposition( object sender, EventArgs e )
 		{
 			m_ViewFactory.ShowEditCompositeView( Composite, ComponentTypeCategories, ComponentTypes );
+			m_View.RefreshView( );
 		}
 
 		#endregion

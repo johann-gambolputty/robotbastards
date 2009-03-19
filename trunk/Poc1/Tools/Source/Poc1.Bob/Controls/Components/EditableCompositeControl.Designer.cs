@@ -31,21 +31,21 @@ namespace Poc1.Bob.Controls.Components
 		/// </summary>
 		private void InitializeComponent( )
 		{
-			this.addTemplateButton = new System.Windows.Forms.Button( );
+			this.editTemplateButton = new System.Windows.Forms.Button( );
 			this.compositeView = new Rb.Common.Controls.Forms.Components.CompositeViewControl( );
 			this.SuspendLayout( );
 			// 
-			// addTemplateButton
+			// editTemplateButton
 			// 
-			this.addTemplateButton.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) );
-			this.addTemplateButton.Location = new System.Drawing.Point( 3, 189 );
-			this.addTemplateButton.Name = "addTemplateButton";
-			this.addTemplateButton.Size = new System.Drawing.Size( 75, 23 );
-			this.addTemplateButton.TabIndex = 1;
-			this.addTemplateButton.Text = "Add...";
-			this.addTemplateButton.UseVisualStyleBackColor = true;
-			this.addTemplateButton.Enabled = false;
-			this.addTemplateButton.Click += new System.EventHandler( this.addTemplateButton_Click );
+			this.editTemplateButton.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) );
+			this.editTemplateButton.Enabled = false;
+			this.editTemplateButton.Location = new System.Drawing.Point( 3, 189 );
+			this.editTemplateButton.Name = "editTemplateButton";
+			this.editTemplateButton.Size = new System.Drawing.Size( 75, 23 );
+			this.editTemplateButton.TabIndex = 1;
+			this.editTemplateButton.Text = "Edit...";
+			this.editTemplateButton.UseVisualStyleBackColor = true;
+			this.editTemplateButton.Click += new System.EventHandler( this.editTemplateButton_Click );
 			// 
 			// compositeView
 			// 
@@ -58,13 +58,13 @@ namespace Poc1.Bob.Controls.Components
 			this.compositeView.Size = new System.Drawing.Size( 217, 183 );
 			this.compositeView.TabIndex = 2;
 			// 
-			// PlanetTemplateCompositionControl
+			// EditableCompositeControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add( this.addTemplateButton );
+			this.Controls.Add( this.editTemplateButton );
 			this.Controls.Add( this.compositeView );
-			this.Name = "PlanetTemplateCompositionControl";
+			this.Name = "EditableCompositeControl";
 			this.Size = new System.Drawing.Size( 220, 215 );
 			this.ResumeLayout( false );
 
@@ -73,6 +73,6 @@ namespace Poc1.Bob.Controls.Components
 		#endregion
 
 		private CompositeViewControl compositeView;
-		private System.Windows.Forms.Button addTemplateButton;
+		private System.Windows.Forms.Button editTemplateButton;
 	}
 }

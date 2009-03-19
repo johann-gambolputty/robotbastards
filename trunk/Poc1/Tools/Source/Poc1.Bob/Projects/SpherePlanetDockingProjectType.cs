@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Windows.Forms;
 using Bob.Core.Ui.Interfaces.Views;
 using Bob.Core.Windows.Forms.Ui.Docking;
@@ -6,6 +7,7 @@ using Poc1.Bob.Controls.Components;
 using Poc1.Bob.Core.Classes;
 using Poc1.Bob.Core.Classes.Biomes.Models;
 using Poc1.Bob.Core.Classes.Planets;
+using Poc1.Bob.Core.Classes.Projects.Planets;
 using Poc1.Bob.Core.Classes.Projects.Planets.Spherical;
 using Poc1.Bob.Core.Interfaces;
 using Poc1.Universe.Interfaces.Planets.Models;
@@ -26,22 +28,24 @@ namespace Poc1.Bob.Projects
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		/// <param name="viewFactory">View factory</param>
-		public SpherePlanetDockingProjectType( IViewFactory viewFactory )
+		public SpherePlanetDockingProjectType( DockingViewManager viewManager, IViewFactory viewFactory, IPlanetViews views ) :
+			base( views )
 		{
+			Arguments.CheckNotNull( viewManager, "viewManager" );
 			Arguments.CheckNotNull( viewFactory, "viewFactory" );
 			m_ViewFactory = viewFactory;
-			m_Views = new DockingViewInfo[]
+			m_Views = 
+				new DockingViewInfo[]
 				{
-					new DockingViewInfo( "Planet Template Composition View", CreatePlanetTemplateCompositionView ), 
-					new DockingViewInfo( "Biome Distribution View", CreateBiomeDistributionView ), 
-					new DockingViewInfo( "Biome List View", CreateBiomeListView ), 
-					new DockingViewInfo( "Biome Terrain Texture View", CreateBiomeTerrainTextureView ),
-					new DockingViewInfo( "Ocean Template View", CreateOceanTemplateView ),
-					new DockingViewInfo( "Cloud Template View", CreateCloudTemplateView, DockState.Float ),
-					new DockingViewInfo( "Procedural Terrain View", CreateProceduralTerrainView ), 
-					new DockingViewInfo( "Planet Template View", CreatePlanetTemplateView, DockState.Float ),
-					new DockingViewInfo( "Planet Display", CreatePlanetDisplay, DockState.Document )
+					new DockingViewInfo( "Planet Template Composition View", CreatePlanetTemplateCompositionView, true ), 
+					new DockingViewInfo( "Biome Distribution View", CreateBiomeDistributionView, true ), 
+					new DockingViewInfo( "Biome List View", CreateBiomeListView, true ), 
+					new DockingViewInfo( "Biome Terrain Texture View", CreateBiomeTerrainTextureView, true ),
+					new DockingViewInfo( "Ocean Template View", CreateOceanTemplateView, true ),
+					new DockingViewInfo( "Cloud Template View", CreateCloudTemplateView, true, DockState.Float ),
+					new DockingViewInfo( "Procedural Terrain View", CreateProceduralTerrainView, true ), 
+					new DockingViewInfo( "Planet Template View", CreatePlanetTemplateView, true, DockState.Float ),
+					new DockingViewInfo( "Planet Display", CreatePlanetDisplay, true, DockState.Document )
 				};
 		}
 
@@ -89,13 +93,15 @@ namespace Poc1.Bob.Projects
 		/// <summary>
 		/// Creates a planet template composition view
 		/// </summary>
-		private Control CreatePlanetTemplateCompositionView( IWorkspace workspace )
+		private Control CreatePlanetTemplateCompositionView( IWorkspace workspace)
 		{
-			SpherePlanetProject currentProject = CurrentProject( workspace );
-			EditableCompositeControl control = new EditableCompositeControl( );
-			new EditablePlanetTemplateViewController( m_ViewFactory, control, currentProject.PlanetTemplate );
-			control.PlanetTemplate = currentProject.PlanetTemplate;
-			return control;
+			//SpherePlanetProject currentProject = CurrentProject( workspace );
+			//EditableCompositeControl control = new EditableCompositeControl( );
+			//IPlanetEnvironmentModelVisitor visitor = new PlanetEnvironmentModelTemplateViewVisitor( workspace, m_ViewManager, m_Views );
+			//new EditablePlanetTemplateViewController( m_ViewFactory, control, currentProject.PlanetTemplate, m_ViewVisitor );
+			//control.PlanetTemplate = currentProject.PlanetTemplate;
+			//return control;
+			return null;
 		}
 
 		/// <summary>
@@ -129,13 +135,13 @@ namespace Poc1.Bob.Projects
 			if ( cloudModelTemplate == null )
 			{
 				cloudModelTemplate = new SpherePlanetCloudModelTemplate( );
-				currentProject.PlanetTemplate.EnvironmentModelTemplates.Add( cloudModelTemplate );
+				currentProject.PlanetTemplate.Add( cloudModelTemplate );
 			}
 
 			IPlanetCloudModel cloudModel = currentProject.PlanetModel.CloudModel;
 			if ( cloudModel == null )
 			{
-				cloudModelTemplate.CreateInstance( currentProject.PlanetModel, currentProject.InstanceContext );
+				cloudModelTemplate.SetupInstance( currentProject.PlanetModel, currentProject.InstanceContext );
 				currentProject.Planet.PlanetRenderer.CloudRenderer = new SpherePlanetCloudRenderer( );
 			}
 
@@ -181,6 +187,7 @@ namespace Poc1.Bob.Projects
 			SpherePlanetProject currentProject = CurrentProject( workspace );
 			return ( Control )m_ViewFactory.CreatePlanetTemplateView( currentProject.PlanetTemplate, currentProject.PlanetModel );
 		}
+
 		/// <summary>
 		/// Creates a planet view control
 		/// </summary>

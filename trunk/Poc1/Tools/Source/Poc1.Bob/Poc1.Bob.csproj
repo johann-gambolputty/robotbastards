@@ -195,6 +195,7 @@
     <Compile Include="Controls\WorkspaceWindowInfo.cs">
     </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="Projects\SpherePlanetDockingViews.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Controls\AboutBox.resx">
       <SubType>Designer</SubType>

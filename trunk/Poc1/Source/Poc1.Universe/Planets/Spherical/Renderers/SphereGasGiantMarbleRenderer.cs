@@ -1,7 +1,4 @@
-
-using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Renderers;
-using Poc1.Universe.Interfaces.Planets.Spherical;
 using Rb.Assets;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
@@ -14,7 +11,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 	/// <summary>
 	/// Renders a spherical gas giant
 	/// </summary>
-	public class SphereGasGiantMarbleRenderer : IPlanetMarbleRenderer
+	public class SphereGasGiantMarbleRenderer : AbstractSpherePlanetEnvironmentRenderer, IPlanetMarbleRenderer
 	{
 		/// <summary>
 		/// Default constructor. Loads the gas giant marble effect
@@ -28,35 +25,17 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			m_Texture = ( ITexture )AssetManager.Instance.Load( "Planets/Gas Giants/GasGiant0.jpg", loadParams );
 		}
 
-		#region IPlanetEnvironmentRenderer Members
-
-		/// <summary>
-		/// Gets/sets the planet being rendered
-		/// </summary>
-		public IPlanet Planet
-		{
-			get { return m_Planet; }
-			set
-			{
-				m_Planet = ( ISpherePlanet )value;
-				DisposableHelper.Dispose( m_Geometry );
-				m_Geometry = null;
-			}
-		}
-
-		#endregion
-
 		#region IRenderable Members
 
 		/// <summary>
 		/// Renders the planet
 		/// </summary>
 		/// <param name="context">Rendering context</param>
-		public void Render( IRenderContext context )
+		public override void Render( IRenderContext context )
 		{
 			if ( m_Geometry == null )
 			{
-				float radius = ( float )m_Planet.PlanetModel.Radius.ToAstroRenderUnits;
+				float radius = ( float )SpherePlanet.PlanetModel.Radius.ToAstroRenderUnits;
 				Graphics.Draw.StartCache( );
 				Graphics.Draw.Sphere( null, Point3.Origin, radius, 50, 50 );
 				m_Geometry = Graphics.Draw.StopCache( );
@@ -68,9 +47,22 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 
 		#endregion
 
+		#region Protected Members
+
+		/// <summary>
+		/// Assigns/unassigns this renderer to/from a planet
+		/// </summary>
+		protected override void AssignToPlanet( IPlanetRenderer renderer, bool remove )
+		{
+			renderer.MarbleRenderer = remove ? null : this;
+			DisposableHelper.Dispose( m_Geometry );
+			m_Geometry = null;
+		}
+
+		#endregion
+
 		#region Private Members
 
-		private ISpherePlanet m_Planet;
 		private IRenderable m_Geometry;
 		private readonly ITexture m_Texture;
 		private readonly TechniqueSelector m_Technique;
