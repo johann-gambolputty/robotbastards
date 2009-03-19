@@ -36,10 +36,6 @@ namespace Poc1.Universe.Planets.Models
 				{
 					m_Planet.PlanetModel = this;
 				}
-				foreach ( IPlanetEnvironmentModel model in Components )
-				{
-					model.Planet = m_Planet;
-				}
 			}
 		}
 
@@ -198,7 +194,7 @@ namespace Poc1.Universe.Planets.Models
 			if ( model != null )
 			{
 				Add( model );
-				model.Planet = m_Planet;
+				model.PlanetModel = this;
 			}
 		}
 

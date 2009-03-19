@@ -1,9 +1,9 @@
-using System;
 using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Renderers;
 using Rb.Assets;
 using Rb.Assets.Interfaces;
+using Rb.Core.Utils;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 
@@ -17,11 +17,14 @@ namespace Poc1.Universe.Planets.Renderers
 		/// <summary>
 		/// Default constructor
 		/// </summary>
+		/// <param name="planet">Planet to render</param>
 		/// <param name="effectPath">Path to the terrain effect</param>
-		public PlanetPackTextureTechnique( string effectPath )
+		public PlanetPackTextureTechnique( IPlanet planet, string effectPath )
 		{
+			Arguments.CheckNotNull( planet, "planet" );
+			Arguments.CheckNotNullOrEmpty( effectPath, "effectPath" );
+			m_Planet = planet;
 			m_NoiseTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain/TiledNoise.noise.jpg" );
-
 			m_Effect = new EffectAssetHandle( effectPath, true );
 			m_Effect.OnReload += Effect_OnReload;
 			m_Technique = new TechniqueSelector( m_Effect, "DefaultTechnique" );
@@ -34,8 +37,7 @@ namespace Poc1.Universe.Planets.Renderers
 		/// <param name="renderable">Object to render</param>
 		public override void Apply( IRenderContext context, IRenderable renderable )
 		{
-			IPlanet planet = ( ( IPlanetEnvironmentRenderer )renderable ).Planet;
-			SetupTerrainEffect( m_Effect, planet );
+			SetupTerrainEffect( m_Effect, m_Planet );
 			renderable.Render( context );
 		}
 
@@ -44,11 +46,13 @@ namespace Poc1.Universe.Planets.Renderers
 		/// </summary>
 		public override void Apply( IRenderContext context, RenderDelegate render )
 		{
-			throw new NotSupportedException( "Can only render IPlanetEnvironmentRenderer objects" );
+			SetupTerrainEffect( m_Effect, m_Planet );
+			render( context );
 		}
 
 		#region Private Members
 
+		private readonly IPlanet m_Planet;
 		private readonly EffectAssetHandle m_Effect;
 		private readonly ITexture m_NoiseTexture;
 		private TechniqueSelector m_Technique;

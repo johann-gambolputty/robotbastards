@@ -1,4 +1,7 @@
+using System;
+using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Planets.Renderers;
+using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Universe.Planets.Flat.Renderers
 {
@@ -7,12 +10,16 @@ namespace Poc1.Universe.Planets.Flat.Renderers
 	/// </summary>
 	public class FlatPlanetTerrainPatchRenderer : PlanetTerrainPatchRenderer
 	{
+		#region Protected Members
+
 		/// <summary>
-		/// Default constructor
+		/// Creates a technique that is applied to render terrain patches
 		/// </summary>
-		public FlatPlanetTerrainPatchRenderer( ) :
-			base( new PlanetPackTextureTechnique( "..." ) )
+		protected override ITechnique CreatePatchTechnique( IPlanet planet )
 		{
+			throw new NotImplementedException( );
 		}
+
+		#endregion
 	}
 }

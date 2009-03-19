@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using Poc1.Universe.Classes.Cameras;
 using Poc1.Universe.Interfaces;
+using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Renderers;
 using Poc1.Universe.Interfaces.Planets.Renderers.Patches;
 using Poc1.Universe.Planets.Spherical.Renderers.Patches;
 using Rb.Core.Maths;
-using Rb.Core.Utils;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 
@@ -15,16 +15,13 @@ namespace Poc1.Universe.Planets.Renderers
 	/// <summary>
 	/// Abstract base class for rendering planetary terrain
 	/// </summary>
-	public class PlanetTerrainPatchRenderer : AbstractPlanetEnvironmentRenderer, IPlanetTerrainRenderer
+	public abstract class PlanetTerrainPatchRenderer : AbstractPlanetEnvironmentRenderer, IPlanetTerrainRenderer
 	{
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		/// <param name="technique">Technique used for rendering patches</param>
-		public PlanetTerrainPatchRenderer( ITechnique technique )
+		public PlanetTerrainPatchRenderer( )
 		{
-			Arguments.CheckNotNull( technique, "technique" );
-			m_Technique = technique;
 			m_PatchRenderer = new DelegateRenderable( RenderPatches );
 		}
 
@@ -113,16 +110,22 @@ namespace Poc1.Universe.Planets.Renderers
 		protected override void AssignToPlanet( IPlanetRenderer renderer, bool remove )
 		{
 			renderer.TerrainRenderer = remove ? null : this;
+			m_Technique = remove || ( renderer.Planet == null ) ? null : CreatePatchTechnique( renderer.Planet );
 		}
+
+		/// <summary>
+		/// Creates a technique that is applied to render terrain patches
+		/// </summary>
+		protected abstract ITechnique CreatePatchTechnique( IPlanet planet );
 
 		#endregion
 
 		#region Private Members
 
-		private readonly ITechnique				m_Technique;
 		private readonly TerrainPatchVertices	m_Vertices = new TerrainPatchVertices( );
 		private readonly List<TerrainPatch>		m_RootPatches = new List<TerrainPatch>( );
 		private readonly IRenderable			m_PatchRenderer;
+		private ITechnique						m_Technique;
 
 		/// <summary>
 		/// Updates patches prior to rendering

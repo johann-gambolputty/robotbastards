@@ -78,25 +78,14 @@ namespace Poc1.Universe.Planets.Models.Templates
 		/// <summary>
 		/// Creates an instance of this template
 		/// </summary>
-		/// <param name="planetModel">Planet model to create</param>
+		/// <param name="model">Planet model to create</param>
 		/// <param name="context">Instancing context</param>
 		public override void SetupInstance( IPlanetEnvironmentModel model, ModelTemplateInstanceContext context )
 		{
-			Arguments.CheckNotNull( planetModel, "planetModel" );
+			Arguments.CheckNotNull( model, "planetModel" );
 			Arguments.CheckNotNull( context, "context" );
 
-			IPlanetCloudModel model = CreateCloudModel( );
-			SetupCloudModel( model, context );
-
-			planetModel.CloudModel = model;
-		}
-
-		/// <summary>
-		/// Calls a visitor object
-		/// </summary>
-		public override T InvokeVisit<T>( IPlanetEnvironmentModelTemplateVisitor<T> visitor )
-		{
-			return visitor.Visit( this );
+			SetupCloudModel( ( IPlanetCloudModel )model, context );
 		}
 
 		#endregion

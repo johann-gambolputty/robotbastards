@@ -10,7 +10,7 @@ namespace Poc1.Universe.Planets.Models
 	/// Very simple implementation of the planet environment model factory (hard-coded relationship
 	/// between template types and model types)
 	/// </summary>
-	class SimpleSpherePlanetEnvironmentModelFactory : IPlanetEnvironmentModelFactory
+	public class SimpleSpherePlanetEnvironmentModelFactory : IPlanetEnvironmentModelFactory
 	{
 		#region IPlanetEnvironmentModelFactory Members
 

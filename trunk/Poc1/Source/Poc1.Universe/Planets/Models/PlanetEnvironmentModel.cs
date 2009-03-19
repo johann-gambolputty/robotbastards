@@ -47,12 +47,7 @@ namespace Poc1.Universe.Planets.Models
 		/// <param name="visitor">Visitor to call back to</param>
 		public T InvokeVisit<T>( IPlanetEnvironmentModelVisitor<T> visitor )
 		{
-			MethodInfo method = visitor.GetType( ).GetMethod( "Visit", new Type[] { GetType( ) } );
-			if ( method == null )
-			{
-				throw new NotSupportedException( string.Format( "Unsupported Visit({0}) method", GetType( ) ) );
-			}
-			return ( T ) method.Invoke( visitor, new object[] { this } );
+			return ( T )visitor.GetType( ).InvokeMember( "Visit", BindingFlags.InvokeMethod, null, visitor, new object[] { this } );
 		}
 
 		#endregion

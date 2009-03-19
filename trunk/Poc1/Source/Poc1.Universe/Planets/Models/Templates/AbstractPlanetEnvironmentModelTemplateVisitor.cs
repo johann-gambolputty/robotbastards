@@ -22,7 +22,7 @@ namespace Poc1.Universe.Planets.Models.Templates
 		/// <param name="cloudModelTemplate">Model template to visit</param>
 		public virtual T Visit( IPlanetCloudModelTemplate cloudModelTemplate )
 		{
-			Visit( ( IPlanetEnvironmentModelTemplate )cloudModelTemplate );
+			return Visit( ( IPlanetEnvironmentModelTemplate )cloudModelTemplate );
 		}
 
 		/// <summary>
@@ -31,7 +31,7 @@ namespace Poc1.Universe.Planets.Models.Templates
 		/// <param name="terrainModelTemplate">Model template to visit</param>
 		public virtual T Visit( IPlanetProcTerrainModel terrainModelTemplate )
 		{
-			Visit( ( IPlanetEnvironmentModelTemplate )terrainModelTemplate );
+			return Visit( ( IPlanetEnvironmentModelTemplate )terrainModelTemplate );
 		}
 
 		/// <summary>
@@ -40,7 +40,7 @@ namespace Poc1.Universe.Planets.Models.Templates
 		/// <param name="ringModelTemplate">Model template to visit</param>
 		public virtual T Visit( IPlanetRingModelTemplate ringModelTemplate )
 		{
-			Visit( ( IPlanetEnvironmentModelTemplate )ringModelTemplate );
+			return Visit( ( IPlanetEnvironmentModelTemplate )ringModelTemplate );
 		}
 
 		/// <summary>
@@ -49,7 +49,7 @@ namespace Poc1.Universe.Planets.Models.Templates
 		/// <param name="oceanModelTemplate">Model template to visit</param>
 		public virtual T Visit( IPlanetOceanModelTemplate oceanModelTemplate )
 		{
-			Visit( ( IPlanetEnvironmentModelTemplate )oceanModelTemplate );
+			return Visit( ( IPlanetEnvironmentModelTemplate )oceanModelTemplate );
 		}
 
 		/// <summary>
@@ -58,7 +58,7 @@ namespace Poc1.Universe.Planets.Models.Templates
 		/// <param name="atmosphereModelTemplate">Model template to visit</param>
 		public virtual T Visit( IPlanetAtmosphereModelTemplate atmosphereModelTemplate )
 		{
-			Visit( ( IPlanetEnvironmentModelTemplate )atmosphereModelTemplate );
+			return Visit( ( IPlanetEnvironmentModelTemplate )atmosphereModelTemplate );
 		}
 	}
 }

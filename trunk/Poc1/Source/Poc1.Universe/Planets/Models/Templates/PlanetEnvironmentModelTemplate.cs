@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Poc1.Universe.Interfaces.Planets.Models;
 using Poc1.Universe.Interfaces.Planets.Models.Templates;
 
@@ -28,9 +29,10 @@ namespace Poc1.Universe.Planets.Models.Templates
 		/// <summary>
 		/// Calls a visitor object
 		/// </summary>
-		public virtual T InvokeVisit<T>( IPlanetEnvironmentModelTemplateVisitor<T> visitor )
+		public T InvokeVisit<T>( IPlanetEnvironmentModelTemplateVisitor<T> visitor )
 		{
-			return visitor.Visit( this );
+			return ( T )visitor.GetType( ).InvokeMember( "Visit", BindingFlags.InvokeMethod, null, visitor, new object[] { this } );
+		//	return visitor.Visit( this );
 		}
 
 		#endregion

@@ -13,6 +13,12 @@ namespace Poc1.Universe.Interfaces.Planets.Models
 		ReturnType Visit( IPlanetEnvironmentModel model );
 
 		/// <summary>
+		/// Visits an ocean model
+		/// </summary>
+		/// <param name="model">Model to visit</param>
+		ReturnType Visit( IPlanetOceanModel model );
+
+		/// <summary>
 		/// Visits an atmosphere model
 		/// </summary>
 		/// <param name="model">Model to visit</param>

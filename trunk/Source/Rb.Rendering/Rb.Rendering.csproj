@@ -90,6 +90,8 @@
     <Compile Include="Textures\TextureLoadParameters.cs" />
     <Compile Include="Textures\TexturePacker.cs" />
     <Compile Include="Textures\Texture2dUtils.cs" />
+    <Compile Include="TypeOrderedRenderOrderSorter.cs" />
+    <Compile Include="UnorderedRenderOrderSorter.cs" />
     <Compile Include="Viewer.cs" />
     <Compile Include="Graphics.cs" />
     <Compile Include="GraphicsLog.cs" />
