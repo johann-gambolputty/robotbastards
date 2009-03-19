@@ -30,7 +30,7 @@ namespace Poc1.Bob.Controls.Components
 			{
 				m_Template = value;
 				compositeView.Composite = value;
-				addTemplateButton.Enabled = ( value != null );
+				editTemplateButton.Enabled = ( value != null );
 			}
 		}
 
@@ -56,7 +56,7 @@ namespace Poc1.Bob.Controls.Components
 			set
 			{
 				compositeView.Composite = value;
-				addTemplateButton.Enabled = ( value != null );
+				editTemplateButton.Enabled = ( value != null );
 			}
 		}
 
@@ -76,7 +76,7 @@ namespace Poc1.Bob.Controls.Components
 
 		#region Event Handlers
 
-		private void addTemplateButton_Click( object sender, EventArgs e )
+		private void editTemplateButton_Click( object sender, EventArgs e )
 		{
 			if ( EditComposition != null )
 			{

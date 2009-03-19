@@ -1,6 +1,6 @@
 using Poc1.Fast.Terrain;
 
-namespace Poc1.Universe.Interfaces.Planets.Models
+namespace Poc1.Universe.Interfaces.Planets.Models.Templates
 {
 	/// <summary>
 	/// Procedural terrain model

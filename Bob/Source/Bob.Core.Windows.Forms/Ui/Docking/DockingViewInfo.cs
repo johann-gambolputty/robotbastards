@@ -20,19 +20,20 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		public DockingViewInfo( string name, CreateViewDelegate createView ) :
-			this( name, createView, DockState.Float )
+		public DockingViewInfo( string name, CreateViewDelegate createView, bool availableAsCommand ) :
+			this( name, createView, availableAsCommand, DockState.Float )
 		{
 		}
 		
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		public DockingViewInfo( string name, CreateViewDelegate createView, DockState defaultDockState )
+		public DockingViewInfo( string name, CreateViewDelegate createView, bool availableAsCommand, DockState defaultDockState )
 		{
 			Arguments.CheckNotNull( createView, "createView" );
 			m_Name = name;
 			m_CreateView = createView;
+			m_AvailableAsCommand = availableAsCommand;
 			m_DefaultDockState = defaultDockState;
 		}
 
@@ -61,16 +62,6 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 			set { m_DockPersistenceInfo = value; }
 		}
 
-
-		#region Private Members
-
-		private string m_DockPersistenceInfo;
-		private readonly string m_Name;
-		private CreateViewDelegate m_CreateView;
-		private DockState m_DefaultDockState;
-
-		#endregion
-
 		#region IViewInfo Members
 
 		/// <summary>
@@ -81,6 +72,26 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 			get { return m_Name; }
 		}
 
+
+		/// <summary>
+		/// Gets/sets the flag that determines if this view can be created from a command
+		/// </summary>
+		public bool AvailableAsCommand
+		{
+			get { return m_AvailableAsCommand; }
+		}
+
 		#endregion
+
+		#region Private Members
+
+		private string m_DockPersistenceInfo;
+		private readonly string m_Name;
+		private readonly bool m_AvailableAsCommand;
+		private CreateViewDelegate m_CreateView;
+		private DockState m_DefaultDockState;
+
+		#endregion
+
 	}
 }

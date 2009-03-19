@@ -25,6 +25,37 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 			m_MainDockPanel = mainDockPanel;
 		}
 
+		/// <summary>
+		/// Shows a docking view
+		/// </summary>
+		public void Show( IWorkspace workspace, DockingViewInfo dockView )
+		{
+			Arguments.CheckNotNull( workspace, "workspace" );
+			Arguments.CheckNotNull( dockView, "dockView" );
+
+			if ( !m_Views.Contains( dockView ) )
+			{
+				Arguments.ThrowArgumentException( "view", "View \"{0}\" did not appear in registered view list (use RegisterViews())", dockView.Name );
+			}
+
+			DockContent content;
+			if ( !m_ViewDocks.TryGetValue( dockView, out content ) )
+			{
+				content = CreateViewDockContent( workspace, dockView );
+				content.Show( m_MainDockPanel, dockView.DefaultDockState );
+			}
+			else if ( content.DockPanel != null )
+			{
+				content.Show( );	//	Content is just hidden
+			}
+			else
+			{
+				m_ViewDocks.Remove( dockView );
+				content = CreateViewDockContent( workspace, dockView );
+				content.Show( m_MainDockPanel, dockView.DefaultDockState );
+			}
+		}
+
 		#region IViewManager Members
 
 		/// <summary>
@@ -48,22 +79,7 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 		{
 			Arguments.CheckNotNull( workspace, "workspace" );
 			DockingViewInfo dockView = Arguments.CheckedNonNullCast<DockingViewInfo>( view, "view" );
-			
-			if ( !m_Views.Contains( dockView ) )
-			{
-				Arguments.ThrowArgumentException( "view", "View \"{0}\" did not appear in registered view list (use RegisterViews())", view.Name );
-			}
-
-			DockContent content;
-			if ( !m_ViewDocks.TryGetValue( dockView, out content ) )
-			{
-				content = CreateViewDockContent( workspace, dockView );
-				content.Show( m_MainDockPanel, dockView.DefaultDockState );
-			}
-			else
-			{
-				content.Show( );
-			}
+			Show( workspace, dockView );
 		}
 
 		/// <summary>
@@ -186,6 +202,10 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 		private DockContent CreateViewDockContent( IWorkspace workspace, DockingViewInfo dockView )
 		{
 			Control control = dockView.CreateControl( workspace );
+			if ( control == null )
+			{
+				return null;
+			}
 
 			DockContent content = new WindowDockContent( dockView.Name );
 

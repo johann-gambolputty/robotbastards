@@ -36,6 +36,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\AbstractCompositeTest.cs" />
     <Compile Include="Graphs\TestGraphNodeWalker.cs" />
     <Compile Include="Graphs\TestIGraphDataSources.cs" />
     <Compile Include="TestIObjectSet.cs" />

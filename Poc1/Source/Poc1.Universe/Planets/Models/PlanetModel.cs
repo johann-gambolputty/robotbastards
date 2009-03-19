@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Poc1.Universe.Interfaces.Planets;
 using Poc1.Universe.Interfaces.Planets.Models;
+using Rb.Core.Components.Generic;
 using Rb.Core.Utils;
 
 namespace Poc1.Universe.Planets.Models
@@ -9,7 +10,7 @@ namespace Poc1.Universe.Planets.Models
 	/// <summary>
 	/// Planet model base class
 	/// </summary>
-	public class PlanetModel : IPlanetModel
+	public class PlanetModel : Composite<IPlanetEnvironmentModel>, IPlanetModel
 	{
 		#region IPlanetModel Members
 
@@ -35,7 +36,7 @@ namespace Poc1.Universe.Planets.Models
 				{
 					m_Planet.PlanetModel = this;
 				}
-				foreach ( IPlanetEnvironmentModel model in m_Models )
+				foreach ( IPlanetEnvironmentModel model in Components )
 				{
 					model.Planet = m_Planet;
 				}
@@ -136,11 +137,12 @@ namespace Poc1.Universe.Planets.Models
 		/// </summary>
 		public virtual void Dispose( )
 		{
-			foreach ( IPlanetEnvironmentModel model in m_Models )
+			foreach ( IPlanetEnvironmentModel model in Components )
 			{
 				DisposableHelper.Dispose( model );
 			}
-			m_Models.Clear( );
+
+			Clear( );
 		}
 
 		#endregion
@@ -176,7 +178,6 @@ namespace Poc1.Universe.Planets.Models
 		private IPlanetCloudModel		m_Clouds;
 		private IPlanetOceanModel		m_Ocean;
 		private IPlanetTerrainModel		m_Terrain;
-		private readonly List<IPlanetEnvironmentModel> m_Models = new List<IPlanetEnvironmentModel>( );
 
 		/// <summary>
 		/// Unlinks a model
@@ -185,7 +186,7 @@ namespace Poc1.Universe.Planets.Models
 		{
 			if ( model != null )
 			{
-				m_Models.Remove( model );
+				Remove( model );
 			}
 		}
 
@@ -196,7 +197,7 @@ namespace Poc1.Universe.Planets.Models
 		{
 			if ( model != null )
 			{
-				m_Models.Add( model );
+				Add( model );
 				model.Planet = m_Planet;
 			}
 		}

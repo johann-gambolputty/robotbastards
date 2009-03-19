@@ -14,7 +14,7 @@ namespace Poc1.Universe.Planets.Models.Templates
 	/// The low and high ranges in this template determine minimum and maximum
 	/// cloud coverage in a model instanced by this template.
 	/// </remarks>
-	public class PlanetCloudModelTemplate : IPlanetCloudModelTemplate
+	public class PlanetCloudModelTemplate : PlanetEnvironmentModelTemplate, IPlanetCloudModelTemplate
 	{
 		#region IPlanetCloudModelTemplate Members
 
@@ -80,7 +80,7 @@ namespace Poc1.Universe.Planets.Models.Templates
 		/// </summary>
 		/// <param name="planetModel">Planet model to create</param>
 		/// <param name="context">Instancing context</param>
-		public void CreateInstance( IPlanetModel planetModel, ModelTemplateInstanceContext context )
+		public override void SetupInstance( IPlanetEnvironmentModel model, ModelTemplateInstanceContext context )
 		{
 			Arguments.CheckNotNull( planetModel, "planetModel" );
 			Arguments.CheckNotNull( context, "context" );
@@ -91,29 +91,17 @@ namespace Poc1.Universe.Planets.Models.Templates
 			planetModel.CloudModel = model;
 		}
 
-		#endregion
-
-		#region IPlanetModelTemplateBase Members
-
 		/// <summary>
-		/// Event raised if template changes
+		/// Calls a visitor object
 		/// </summary>
-		public event EventHandler TemplateChanged;
+		public override T InvokeVisit<T>( IPlanetEnvironmentModelTemplateVisitor<T> visitor )
+		{
+			return visitor.Visit( this );
+		}
 
 		#endregion
 
 		#region Protected Members
-
-		/// <summary>
-		/// Raises the <see cref="TemplateChanged"/> event
-		/// </summary>
-		protected void OnTemplateChanged( EventArgs args )
-		{
-			if ( TemplateChanged != null )
-			{
-				TemplateChanged( this, args );
-			}
-		}
 
 		/// <summary>
 		/// Creates a planet cloud model from this template
@@ -133,7 +121,6 @@ namespace Poc1.Universe.Planets.Models.Templates
 			float min = Range.Mid( LowCoverageRange, ( float )context.Random.NextDouble( ) );
 			float max = Range.Mid( HighCoverageRange, ( float )context.Random.NextDouble( ) );
 			model.CoverageRange = new Range<float>( Utils.Min( min, max ), Utils.Max( min, max ) );
-	
 		}
 
 		#endregion

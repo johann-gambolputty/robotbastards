@@ -42,12 +42,13 @@ namespace Poc1.Bob.Controls
 								//new Template( "Clouds", "Spherical Planet Cloud Template" ),
 								//new Template( "Oceans", "Spherical Planet Ocean Template" )
 							),
-							new SpherePlanetDockingProjectType( m_ViewFactory )
+						//	new SpherePlanetDockingProjectType( m_ViewManager, m_ViewFactory )
+							new SpherePlanetProjectType( new SpherePlanetDockingViews( m_ViewManager, m_ViewFactory ) )
 						)
 					)
 				);
-
 			m_Workspace = new WorkspaceEx( this, m_Projects );
+
 			m_CommandUi = new MenuCommandUiManager( mainMenu, new WorkspaceCommandTriggerDataFactory( m_Workspace ) );
 			m_CommandUi.AddCommands( DefaultCommands.HelpCommands.Commands );
 			m_CommandUi.AddCommands( DefaultCommands.FileCommands.Commands );

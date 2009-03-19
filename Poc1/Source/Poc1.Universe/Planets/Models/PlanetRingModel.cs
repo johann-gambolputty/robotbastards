@@ -7,7 +7,7 @@ namespace Poc1.Universe.Planets.Models
 	/// <summary>
 	/// Base class for planetary ring models
 	/// </summary>
-	public class PlanetRingModel : IPlanetRingModel
+	public class PlanetRingModel : PlanetEnvironmentModel, IPlanetRingModel
 	{
 		#region IPlanetRingModel Members
 
@@ -30,42 +30,20 @@ namespace Poc1.Universe.Planets.Models
 
 		#endregion
 
-		#region IPlanetEnvironmentModel Members
-
-		/// <summary>
-		/// Event, raised when the model changes
-		/// </summary>
-		public event System.EventHandler ModelChanged;
-
-		/// <summary>
-		/// Gets/sets the planet that these rings are associated with
-		/// </summary>
-		public IPlanet Planet
-		{
-			get { return m_Planet; }
-			set { m_Planet = value; }
-		}
-
-		#endregion
-
 		#region Protected Members
 
 		/// <summary>
-		/// Raises the ModelChanged event
+		/// Assigns this model to a planet model
 		/// </summary>
-		protected void OnModelChanged( )
+		protected override void AssignToModel( IPlanetModel planetModel, bool remove )
 		{
-			if ( ModelChanged != null )
-			{
-				ModelChanged( this, null );
-			}
+			planetModel.RingModel = remove ? null : this;
 		}
 
 		#endregion
 
 		#region Private Members
 
-		private IPlanet m_Planet;
 		private Units.Metres m_RingWidth = new Units.Metres( 8000 );
 
 		#endregion

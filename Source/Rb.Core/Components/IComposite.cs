@@ -33,7 +33,7 @@ namespace Rb.Core.Components
 		/// <remarks>
 		/// Read only collection
 		/// </remarks>
-		ICollection Components
+		IList Components
 		{
 			get;
 		}
@@ -49,5 +49,10 @@ namespace Rb.Core.Components
 		/// </summary>
 		/// <param name="component">Composite to remove</param>
 		void Remove( object component );
+
+		/// <summary>
+		/// Removes all components from this composite
+		/// </summary>
+		void Clear( );
     }
 }

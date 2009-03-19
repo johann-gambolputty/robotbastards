@@ -27,9 +27,9 @@ namespace Rb.Core.Components
 		/// <summary>
 		/// Gets the components in this composite
 		/// </summary>
-		public ICollection Components
+		public IList Components
 		{
-			get { return GetComponents( ); }
+			get { return GetReadOnlyComponents( ); }
 		}
 
 		/// <summary>
@@ -44,6 +44,18 @@ namespace Rb.Core.Components
 		/// <param name="component">Component to remove</param>
 		public abstract void Remove( object component );
 
+		/// <summary>
+		/// Removes all components from this composite
+		/// </summary>
+		public virtual void Clear( )
+		{
+			IList components = GetComponents( );
+			while ( components.Count > 0 )
+			{
+				Remove( components[ 0 ] );
+			}
+		}
+
 		#endregion
 
 		#region Protected Members
@@ -51,7 +63,12 @@ namespace Rb.Core.Components
 		/// <summary>
 		/// Gets the component collection. Required to solve hidden property problems in <see cref="Generic.Composite{T}"/>
 		/// </summary>
-		protected abstract ICollection GetComponents( );
+		protected abstract IList GetComponents( );
+
+		/// <summary>
+		/// Gets the read-only component collection. Required to solve hidden property problems in <see cref="Generic.Composite{T}"/>
+		/// </summary>
+		protected abstract IList GetReadOnlyComponents( );
 
 		/// <summary>
 		/// Calls the <see cref="ComponentAdded"/> event

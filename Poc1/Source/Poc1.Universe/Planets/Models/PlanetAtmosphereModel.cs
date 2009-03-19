@@ -1,32 +1,13 @@
 using Poc1.Universe.Interfaces;
 using Poc1.Universe.Interfaces.Planets.Models;
-using IPlanet=Poc1.Universe.Interfaces.Planets.IPlanet;
 
 namespace Poc1.Universe.Planets.Models
 {
 	/// <summary>
 	/// Implementation of <see cref="IPlanetAtmosphereModel"/>
 	/// </summary>
-	public class PlanetAtmosphereModel : IPlanetAtmosphereModel
+	public class PlanetAtmosphereModel : PlanetEnvironmentModel, IPlanetAtmosphereModel
 	{
-		#region IPlanetEnvironmentModel Members
-
-		/// <summary>
-		/// Event, invoked when the atmosphere model changes
-		/// </summary>
-		public event System.EventHandler ModelChanged;
-
-		/// <summary>
-		/// Gets/sets the planet associated with this model
-		/// </summary>
-		public IPlanet Planet
-		{
-			get { return m_Planet; }
-			set { m_Planet = value; }
-		}
-
-		#endregion
-
 		#region IPlanetAtmosphereModel Members
 
 		/// <summary>
@@ -86,24 +67,24 @@ namespace Poc1.Universe.Planets.Models
 
 		#endregion
 
+		#region Protected Members
+
+		/// <summary>
+		/// Assigns this model to a planet model
+		/// </summary>
+		protected override void AssignToModel( IPlanetModel planetModel, bool remove )
+		{
+			planetModel.AtmosphereModel = remove ? null : this;
+		}
+
+		#endregion
+
 		#region Private Members
 
 		private Units.Metres m_AtmosphereThickness = new Units.Metres( 10000 );
 		private float m_PhaseWeight = 1.0f;
 		private float m_PhaseCoefficient = -0.9999f;
 		private float m_MiePhaseWeight = 1.0f;
-		private IPlanet m_Planet;
-
-		/// <summary>
-		/// Called when the model is changed
-		/// </summary>
-		private void OnModelChanged( )
-		{
-			if ( ModelChanged != null )
-			{
-				ModelChanged( this, null );
-			}
-		}
 
 		#endregion
 	}

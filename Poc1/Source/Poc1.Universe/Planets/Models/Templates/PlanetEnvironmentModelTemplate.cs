@@ -23,7 +23,15 @@ namespace Poc1.Universe.Planets.Models.Templates
 		/// <summary>
 		/// Creates an instance of this template
 		/// </summary>
-		public abstract void CreateInstance( IPlanetModel planetModel, ModelTemplateInstanceContext context );
+		public abstract void SetupInstance( IPlanetEnvironmentModel model, ModelTemplateInstanceContext context );
+
+		/// <summary>
+		/// Calls a visitor object
+		/// </summary>
+		public virtual T InvokeVisit<T>( IPlanetEnvironmentModelTemplateVisitor<T> visitor )
+		{
+			return visitor.Visit( this );
+		}
 
 		#endregion
 

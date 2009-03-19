@@ -52,7 +52,10 @@
     <Compile Include="Classes\Planets\EditablePlanetTemplateViewController.cs" />
     <Compile Include="Classes\Planets\PlanetTemplateViewController.cs" />
     <Compile Include="Classes\Planets\SpherePlanetTemplateViewController.cs" />
+    <Compile Include="Classes\Projects\Planets\IPlanetViews.cs" />
+    <Compile Include="Classes\Projects\Planets\PlanetEnvironmentModelTemplateViewVisitor.cs" />
     <Compile Include="Classes\Projects\Planets\PlanetProject.cs" />
+    <Compile Include="Classes\Projects\Planets\PlanetTemplateWatcher.cs" />
     <Compile Include="Classes\Projects\Planets\Spherical\SpherePlanetProject.cs" />
     <Compile Include="Classes\Components\EditableCompositeViewController.cs" />
     <Compile Include="Classes\Rendering\PlanetViewController.cs" />
