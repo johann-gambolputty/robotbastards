@@ -29,6 +29,11 @@ namespace Rb.Common.Controls.Forms.Components
 		#region ICompositeViewControl Members
 
 		/// <summary>
+		/// User selected a component in the view
+		/// </summary>
+		public event Action<object> ComponentSelected;
+
+		/// <summary>
 		/// Event raised when a template is double-clicked
 		/// </summary>
 		public event Action<object> ComponentAction;
@@ -116,6 +121,14 @@ namespace Rb.Common.Controls.Forms.Components
 			if ( ( node != null ) && ( ComponentAction != null ) )
 			{
 				ComponentAction( node.Tag );
+			}
+		}
+
+		private void compositeView_AfterSelect( object sender, TreeViewEventArgs e )
+		{
+			if ( ( compositeView.SelectedNode != null ) && ( ComponentSelected != null ) )
+			{
+				ComponentSelected( compositeView.SelectedNode.Tag );
 			}
 		}
 

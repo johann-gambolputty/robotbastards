@@ -18,6 +18,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -26,13 +27,17 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\AbstractUniObject.cs" />
+    <Compile Include="Classes\Astronomical\AbstractAstronomicalBody.cs" />
     <Compile Include="Classes\Astronomical\Planets\AbstractPlanet.cs" />
     <Compile Include="Classes\Astronomical\Planets\AbstractPlanetModel.cs" />
     <Compile Include="Classes\Astronomical\Planets\AbstractPlanetRenderer.cs" />
@@ -41,12 +46,28 @@
     <Compile Include="Classes\Astronomical\Planets\Generic\Models\GenericPlanetRingModel.cs" />
     <Compile Include="Classes\Astronomical\Planets\Generic\Renderers\GenericPlanetEnvironmentRenderer.cs" />
     <Compile Include="Classes\Astronomical\Planets\Models\AbstractPlanetEnvironmentModel.cs" />
-    <Compile Include="Classes\Astronomical\Planets\Models\AbstractSimplePlanetCloudModel.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Models\PlanetAtmosphereScatteringModel.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Models\PlanetOceanModel.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Models\PlanetProcTerrainModel.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Models\PlanetSimpleCloudModel.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Models\PlanetTerrainModel.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Models\Templates\AbstractPlanetEnvironmentModelTemplateVisitor.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetAtmosphereScatteringTemplate.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetSimpleCloudTemplate.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetEnvironmentModelTemplate.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetModelTemplate.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetRingTemplate.cs" />
     <Compile Include="Classes\Astronomical\Planets\PlanetModelFactory.cs" />
     <Compile Include="Classes\Astronomical\Planets\PlanetRendererFactory.cs" />
     <Compile Include="Classes\Astronomical\Planets\Renderers\AbstractPlanetEnvironmentRenderer.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Spherical\Models\SimpleSpherePlanetEnvironmentModelFactory.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Spherical\Models\SimpleSpherePlanetEnvironmentRendererFactory.cs" />
     <Compile Include="Classes\Astronomical\Planets\Spherical\Models\SpherePlanetRingModel.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Spherical\Models\Templates\SpherePlanetModelTemplate.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Spherical\Models\Templates\SpherePlanetOceanTemplate.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Spherical\Models\Templates\SpherePlanetRingTemplate.cs" />
     <Compile Include="Classes\Astronomical\Planets\Spherical\RadiusChangedEventArgs.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Spherical\Renderers\CloudCubeMapTextureBuilder.cs" />
     <Compile Include="Classes\Astronomical\Planets\Spherical\Renderers\SpherePlanetAtmosphereScatteringRenderer.cs" />
     <Compile Include="Classes\Astronomical\Planets\Spherical\Renderers\SpherePlanetEnvironmentRenderer.cs" />
     <Compile Include="Classes\Astronomical\Planets\Spherical\Renderers\SpherePlanetOceanRenderer.cs" />
@@ -54,7 +75,19 @@
     <Compile Include="Classes\Astronomical\Planets\Spherical\Renderers\SpherePlanetSimpleCloudShellRenderer.cs" />
     <Compile Include="Classes\Astronomical\Planets\Spherical\SpherePlanetModel.cs" />
     <Compile Include="Classes\Astronomical\Planets\Spherical\SpherePlanetRenderer.cs" />
+    <Compile Include="Classes\Astronomical\SolarSystem.cs" />
+    <Compile Include="Classes\Astronomical\Stars\StarBox.cs" />
     <Compile Include="Classes\Profiling\GameProfiles.cs" />
+    <Compile Include="Classes\Rendering\BaseSolarSystemRenderer.cs" />
+    <Compile Include="Classes\Rendering\Cameras\EntityTrackingCamera.cs" />
+    <Compile Include="Classes\Rendering\Cameras\FirstPersonCamera.cs" />
+    <Compile Include="Classes\Rendering\Cameras\FirstPersonCameraCommands.cs" />
+    <Compile Include="Classes\Rendering\Cameras\FirstPersonCameraController.cs" />
+    <Compile Include="Classes\Rendering\Cameras\PointTrackingCamera.cs" />
+    <Compile Include="Classes\Rendering\Cameras\TrackingCameraCommands.cs" />
+    <Compile Include="Classes\Rendering\Cameras\TrackingCameraController.cs" />
+    <Compile Include="Classes\Rendering\Cameras\UniCamera.cs" />
+    <Compile Include="Classes\Rendering\SolarSystemRenderer.cs" />
     <Compile Include="Classes\Rendering\UniRenderer.cs" />
     <Compile Include="Interfaces\Astronomical\IAstronomicalBody.cs" />
     <Compile Include="Interfaces\Astronomical\IEpicyclicOrbit.cs" />
@@ -68,18 +101,35 @@
     <Compile Include="Interfaces\Astronomical\Planets\IPlanetRendererFactory.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\ModelChangedEventArgs.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Models\IPlanetAtmosphereScatteringModel.cs" />
-    <Compile Include="Interfaces\Astronomical\Planets\Models\IPlanetEnvironmentModels.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\IPlanetOceanModel.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\IPlanetProcTerrainModel.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\IPlanetTerrainModel.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\Templates\IPlanetAtmosphereTemplate.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\Templates\IPlanetSimpleCloudTemplate.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\Templates\IPlanetEnvironmentModelFactory.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\IPlanetEnvironmentModel.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\IPlanetEnvironmentModelVisitor.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Models\IPlanetRingModel.cs" />
-    <Compile Include="Interfaces\Astronomical\Planets\Models\ISimplePlanetCloudModel.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\IPlanetSimpleCloudModel.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\Templates\IPlanetEnvironmentModelTemplate.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\Templates\IPlanetEnvironmentModelTemplateVisitor.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\Templates\IPlanetModelTemplate.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\Templates\IPlanetOceanTemplate.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\Templates\IPlanetProcTerrainTemplate.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\Templates\IPlanetRingTemplate.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\Templates\ModelTemplateInstanceContext.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Renderers\IPlanetEnvironmentRenderer.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Renderers\IPlanetEnvironmentRendererFactory.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Spherical\ISpherePlanet.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Spherical\ISpherePlanetModel.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Spherical\ISpherePlanetRenderer.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Spherical\Models\ISpherePlanetEnvironmentModel.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Spherical\Models\ISpherePlanetRingModel.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Spherical\Models\Templates\ISpherePlanetModelTemplate.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Spherical\SpherePlanet.cs" />
-    <Compile Include="Interfaces\IUniCamera.cs" />
+    <Compile Include="Interfaces\Rendering\Cameras\IUniCamera.cs" />
     <Compile Include="Interfaces\IUniObject.cs" />
+    <Compile Include="Interfaces\Rendering\ISolarSystemRenderer.cs" />
     <Compile Include="Interfaces\Rendering\IUniRenderContext.cs" />
     <Compile Include="Interfaces\Rendering\UniRenderPass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -89,9 +139,17 @@
     <Compile Include="Interfaces\Units.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\Rb.Assets\Rb.Assets.csproj">
+      <Project>{22440804-2D3F-4FEF-AD01-812923F6E04C}</Project>
+      <Name>Rb.Assets</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Interaction\Rb.Interaction.csproj">
+      <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
+      <Name>Rb.Interaction</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.csproj">
       <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>
@@ -100,6 +158,18 @@
     <ProjectReference Include="..\..\..\Source\Rb.Rendering\Rb.Rendering.csproj">
       <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
       <Name>Rb.Rendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Tools\Source\Poc1.Tools.Waves\Poc1.Tools.Waves.csproj">
+      <Project>{C8DC8F1E-E722-42E0-A433-122BFF0BBD2D}</Project>
+      <Name>Poc1.Tools.Waves</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc1.Fast.Terrain\Poc1.Fast.Terrain.vcproj">
+      <Project>{22C72F9C-B313-4366-BBE2-84A649775E75}</Project>
+      <Name>Poc1.Fast.Terrain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Poc1.Fast\Poc1.Fast.vcproj">
+      <Project>{2EA4865D-CDBB-4EC3-83A3-4703FE7B7A28}</Project>
+      <Name>Poc1.Fast</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

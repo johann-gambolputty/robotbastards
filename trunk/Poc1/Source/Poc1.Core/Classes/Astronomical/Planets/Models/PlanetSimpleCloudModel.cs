@@ -7,7 +7,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models
 	/// <summary>
 	/// Planet cloud model
 	/// </summary>
-	public class AbstractSimplePlanetCloudModel : AbstractPlanetEnvironmentModel, ISimplePlanetCloudModel
+	public class PlanetSimpleCloudModel : AbstractPlanetEnvironmentModel, IPlanetSimpleCloudModel
 	{
 		/// <summary>
 		/// Gets/sets the height of the cloud layer  over sea level in metres
@@ -44,7 +44,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models
 		#region Private Members
 
 		private Range<float> m_CloudCoverRange;
-		private Units.Metres m_CloudLayerHeight;
+		private Units.Metres m_CloudLayerHeight = new Units.Metres( 7000 );
 
 		#endregion
 	}

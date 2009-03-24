@@ -1,5 +1,4 @@
-
-using Poc1.Universe.Interfaces;
+using Poc1.Core.Interfaces.Rendering.Cameras;
 
 namespace Poc1.Bob.Core.Interfaces.Rendering
 {

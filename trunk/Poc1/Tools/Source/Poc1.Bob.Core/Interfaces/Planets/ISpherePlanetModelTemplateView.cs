@@ -1,5 +1,5 @@
 using System;
-using Poc1.Universe.Interfaces;
+using Poc1.Core.Interfaces;
 
 namespace Poc1.Bob.Core.Interfaces.Planets
 {

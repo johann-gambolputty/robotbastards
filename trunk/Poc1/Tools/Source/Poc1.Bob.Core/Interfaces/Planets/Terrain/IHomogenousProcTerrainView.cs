@@ -1,5 +1,5 @@
 
-using Poc1.Universe.Interfaces.Planets.Models.Templates;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
 
 namespace Poc1.Bob.Core.Interfaces.Planets.Terrain
 {

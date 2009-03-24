@@ -28,36 +28,39 @@ namespace Rb.Common.Controls.Forms.Components
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			this.compositeView = new System.Windows.Forms.TreeView();
-			this.imageList = new System.Windows.Forms.ImageList(this.components);
-			this.SuspendLayout();
+			this.components = new System.ComponentModel.Container( );
+			this.compositeView = new System.Windows.Forms.TreeView( );
+			this.imageList = new System.Windows.Forms.ImageList( this.components );
+			this.SuspendLayout( );
 			// 
 			// compositeView
 			// 
 			this.compositeView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.compositeView.HideSelection = false;
-			this.compositeView.Location = new System.Drawing.Point(0, 0);
+			this.compositeView.ImageIndex = 0;
+			this.compositeView.ImageList = this.imageList;
+			this.compositeView.Location = new System.Drawing.Point( 0, 0 );
 			this.compositeView.Name = "compositeView";
-			this.compositeView.Size = new System.Drawing.Size(243, 200);
+			this.compositeView.SelectedImageIndex = 0;
+			this.compositeView.Size = new System.Drawing.Size( 243, 200 );
 			this.compositeView.TabIndex = 1;
-			this.compositeView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.compositeView_MouseDoubleClick);
-			this.compositeView.ImageList = imageList;
+			this.compositeView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( this.compositeView_MouseDoubleClick );
+			this.compositeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler( this.compositeView_AfterSelect );
 			// 
 			// imageList
 			// 
 			this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth24Bit;
-			this.imageList.ImageSize = new System.Drawing.Size(16, 16);
+			this.imageList.ImageSize = new System.Drawing.Size( 16, 16 );
 			this.imageList.TransparentColor = System.Drawing.Color.Transparent;
 			// 
 			// CompositeViewControl
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.compositeView);
+			this.Controls.Add( this.compositeView );
 			this.Name = "CompositeViewControl";
-			this.Size = new System.Drawing.Size(243, 200);
-			this.ResumeLayout(false);
+			this.Size = new System.Drawing.Size( 243, 200 );
+			this.ResumeLayout( false );
 
 		}
 

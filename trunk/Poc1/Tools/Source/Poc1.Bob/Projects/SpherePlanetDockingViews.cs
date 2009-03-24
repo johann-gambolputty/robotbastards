@@ -11,7 +11,7 @@ using Poc1.Bob.Core.Classes.Planets.Clouds;
 using Poc1.Bob.Core.Classes.Projects.Planets;
 using Poc1.Bob.Core.Classes.Projects.Planets.Spherical;
 using Poc1.Bob.Core.Interfaces;
-using Poc1.Universe.Interfaces.Planets.Models.Templates;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
 using Rb.Core.Utils;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -33,7 +33,7 @@ namespace Poc1.Bob.Projects
 			m_ViewFactory = viewFactory;
 
 			//	Environment model template views
-			m_CloudView = NewDockingView( "Clouds", CreateCloudView, false );
+			m_CloudView = NewHostedView( "Clouds", CreateCloudView, false );
 
 			//	Other views
 			NewDockingView( "Planet Composition", CreatePlanetTemplateCompositionView, true );
@@ -63,6 +63,16 @@ namespace Poc1.Bob.Projects
 		private readonly List<IViewInfo> m_Views = new List<IViewInfo>( );
 
 		private readonly IViewInfo m_CloudView;
+
+		/// <summary>
+		/// Creates a new docking view, and adds it to the m_Views list
+		/// </summary>
+		private HostedViewInfo NewHostedView( string name, DockingViewInfo.CreateViewDelegate createView, bool availableAsCommand )
+		{
+			HostedViewInfo view = new HostedViewInfo( name, createView, availableAsCommand );
+			m_Views.Add( view );
+			return view;
+		}
 
 		/// <summary>
 		/// Creates a new docking view, and adds it to the m_Views list
@@ -112,7 +122,7 @@ namespace Poc1.Bob.Projects
 		/// </summary>
 		private static Control CreateCloudView( IWorkspace workspace )
 		{
-			IPlanetCloudModelTemplate cloudModelTemplate = CurrentProject( workspace ).PlanetTemplate.GetModelTemplate<IPlanetCloudModelTemplate>( );
+			IPlanetSimpleCloudTemplate cloudModelTemplate = CurrentProject( workspace ).PlanetTemplate.GetModelTemplate<IPlanetSimpleCloudTemplate>( );
 			if ( cloudModelTemplate == null )
 			{
 				//	Show empty view

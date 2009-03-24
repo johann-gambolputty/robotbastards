@@ -73,6 +73,6 @@ namespace Poc1.Bob.Controls.Components
 		#endregion
 
 		private CompositeViewControl compositeView;
-		private System.Windows.Forms.Button editTemplateButton;
+		private Button editTemplateButton;
 	}
 }

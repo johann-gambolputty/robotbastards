@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Poc1.Core.Classes.Astronomical.Planets.Generic;
+using Poc1.Core.Classes.Astronomical.Planets.Spherical;
 
 namespace Poc1.Core.Interfaces.Astronomical.Planets.Spherical
 {

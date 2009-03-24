@@ -7,6 +7,14 @@ namespace Poc1.Core.Interfaces.Astronomical.Planets.Models
 	public interface IPlanetAtmosphereScatteringModel : IPlanetEnvironmentModel
 	{
 		/// <summary>
+		/// Gets/sets the thickness of the atmosphere
+		/// </summary>
+		Units.Metres Thickness
+		{
+			get; set;
+		}
+
+		/// <summary>
 		/// Gets/sets the atmosphere phase coefficient
 		/// </summary>
 		/// <remarks>

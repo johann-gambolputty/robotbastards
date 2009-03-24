@@ -1,7 +1,7 @@
 using Poc1.Bob.Core.Interfaces.Planets;
-using Poc1.Universe.Interfaces;
-using Poc1.Universe.Interfaces.Planets.Spherical.Models;
-using Poc1.Universe.Interfaces.Planets.Spherical.Models.Templates;
+using Poc1.Core.Interfaces;
+using Poc1.Core.Interfaces.Astronomical.Planets.Spherical;
+using Poc1.Core.Interfaces.Astronomical.Planets.Spherical.Models;
 using Rb.Core.Utils;
 
 namespace Poc1.Bob.Core.Classes.Planets

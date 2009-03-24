@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Poc1.Core.Interfaces.Astronomical.Planets;
 using Poc1.Core.Interfaces.Astronomical.Planets.Models;
 
@@ -52,6 +53,17 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models
 					OnAddedToPlanetModel( m_PlanetModel );
 				}
 			}
+		}
+
+		/// <summary>
+		/// Invokes the correct Visit() call on the specified visitor object
+		/// </summary>
+		/// <typeparam name="TReturn">Visitor return type</typeparam>
+		/// <param name="visitor">Visitor interface to invoke</param>
+		/// <returns>Returns the result of the visit call</returns>
+		public TReturn InvokeVisit<TReturn>( IPlanetEnvironmentModelVisitor<TReturn> visitor )
+		{
+			return ( TReturn )visitor.GetType( ).InvokeMember( "Visit", BindingFlags.InvokeMethod, null, visitor, new object[] { this } );
 		}
 
 		#endregion

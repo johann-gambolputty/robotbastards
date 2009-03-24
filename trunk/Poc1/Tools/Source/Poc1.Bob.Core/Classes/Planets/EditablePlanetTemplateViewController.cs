@@ -3,10 +3,10 @@ using Poc1.Bob.Core.Classes.Biomes.Models;
 using Poc1.Bob.Core.Classes.Components;
 using Poc1.Bob.Core.Interfaces;
 using Poc1.Bob.Core.Interfaces.Components;
-using Poc1.Universe.Interfaces.Planets.Models.Templates;
-using Poc1.Universe.Interfaces.Planets.Spherical.Models.Templates;
-using Poc1.Universe.Planets.Models.Templates;
-using Poc1.Universe.Planets.Spherical.Models.Templates;
+using Poc1.Core.Classes.Astronomical.Planets.Models.Templates;
+using Poc1.Core.Classes.Astronomical.Planets.Spherical.Models.Templates;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
+using Poc1.Core.Interfaces.Astronomical.Planets.Spherical.Models;
 using Rb.Core.Components;
 using Rb.Core.Utils;
 
@@ -24,7 +24,7 @@ namespace Poc1.Bob.Core.Classes.Planets
 			base( viewFactory, view, template )
 		{
 			Arguments.CheckNotNull( actionVisitor, "actionVisitor" );
-			view.ComponentAction += OnComponentAction;
+			view.ComponentSelected += OnComponentSelected;
 			m_ActionVisitor = actionVisitor;
 		}
 
@@ -40,9 +40,9 @@ namespace Poc1.Bob.Core.Classes.Planets
 				{
 					return new ComponentType[]
 						{
-							new ComponentType( typeof( SpherePlanetCloudModelTemplate ) ), 
-							new ComponentType( typeof( PlanetAtmosphereModelTemplate ) ),
-							new ComponentType( typeof( SpherePlanetOceanModelTemplate ) ), 
+							new ComponentType( typeof( PlanetSimpleCloudTemplate ) ), 
+							new ComponentType( typeof( PlanetAtmosphereScatteringTemplate ) ),
+							new ComponentType( typeof( SpherePlanetOceanTemplate ) ), 
 							new ComponentType( typeof( BiomeListModel ) ),
 							new ComponentType( typeof( BiomeListLatitudeDistributionModel ) )
 						};
@@ -58,7 +58,7 @@ namespace Poc1.Bob.Core.Classes.Planets
 		/// <summary>
 		/// Opens up a view on the specified component
 		/// </summary>
-		private void OnComponentAction( object component )
+		private void OnComponentSelected( object component )
 		{
 			IPlanetEnvironmentModelTemplate modelTemplate = component as IPlanetEnvironmentModelTemplate;
 			if ( modelTemplate == null )

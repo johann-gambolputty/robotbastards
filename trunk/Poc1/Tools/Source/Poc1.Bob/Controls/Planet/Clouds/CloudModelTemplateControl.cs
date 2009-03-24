@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 using Poc1.Bob.Core.Interfaces.Planets.Clouds;
-using Poc1.Universe.Interfaces;
+using Poc1.Core.Interfaces;
 using Rb.Core.Maths;
 
 namespace Poc1.Bob.Controls.Planet.Clouds

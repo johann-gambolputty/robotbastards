@@ -1,9 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using Poc1.Core.Classes.Rendering.Cameras;
 using Poc1.Core.Interfaces.Astronomical.Planets;
+using Poc1.Core.Interfaces.Astronomical.Planets.Renderers;
 using Poc1.Core.Interfaces.Astronomical.Planets.Spherical;
+using Poc1.Core.Interfaces.Rendering;
 using Rb.Core.Components.Generic;
 using Rb.Core.Utils;
+using Rb.Rendering;
+using Rb.Rendering.Interfaces;
+using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Core.Classes.Astronomical.Planets
 {
@@ -106,6 +113,27 @@ namespace Poc1.Core.Classes.Astronomical.Planets
 			{
 				m_OrderedFarRenderables = m_FarSorter.Sort( GetRenderables( ) );
 			}
+
+			//	Push transform
+			UniCamera.PushRenderTransform( TransformType.LocalToWorld, Planet.Transform );
+
+			if ( context.RenderFarObjects )
+			{
+				foreach ( IRenderable renderable in m_OrderedFarRenderables )
+				{
+					renderable.Render( context );
+				}
+			}
+			else
+			{
+				foreach ( IRenderable renderable in m_OrderedNearRenderables )
+				{
+					renderable.Render( context );
+				}
+			}
+
+			//	Pop transform
+			Graphics.Renderer.PopTransform( TransformType.LocalToWorld );
 		}
 
 		#endregion

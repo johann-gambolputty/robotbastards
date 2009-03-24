@@ -9,10 +9,10 @@ using Poc1.Bob.Core.Interfaces.Planets.Terrain;
 using Poc1.Bob.Core.Interfaces.Projects;
 using Poc1.Bob.Core.Interfaces.Rendering;
 using Poc1.Bob.Core.Interfaces.Waves;
+using Poc1.Core.Interfaces.Astronomical.Planets;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
 using Poc1.Tools.Waves;
-using Poc1.Universe.Interfaces.Planets;
-using Poc1.Universe.Interfaces.Planets.Models;
-using Poc1.Universe.Interfaces.Planets.Models.Templates;
 using Rb.Common.Controls.Components;
 using Rb.Core.Components;
 
@@ -41,7 +41,7 @@ namespace Poc1.Bob.Core.Interfaces
 		/// <summary>
 		/// Creates a view used to edit flat cloud model templates
 		/// </summary>
-		IFlatCloudModelTemplateView CreateCloudTemplateView( IPlanetCloudModelTemplate template, IPlanetCloudModel model );
+		IFlatCloudModelTemplateView CreateCloudTemplateView( IPlanetSimpleCloudTemplate template, IPlanetSimpleCloudModel model );
 
 		/// <summary>
 		/// Creates a view used to edit the parameters of a planet template

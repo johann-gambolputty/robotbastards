@@ -22,7 +22,8 @@ namespace Poc1.Bob.Controls
 		{
 			InitializeComponent( );
 
-			m_ViewManager = new DockingViewManager( mainDockPanel );
+		//	m_ViewManager = new DockingViewManager( mainDockPanel );
+			m_ViewManager = new DockedHostPaneViewManager( mainDockPanel, "Properties" );
 			m_MessageUi = new MessageUiProvider( this );
 			m_ViewFactory = new ViewFactory( m_MessageUi );
 			m_Projects = new ProjectGroupContainer
@@ -110,7 +111,7 @@ namespace Poc1.Bob.Controls
 		#region Private Members
 
 		private readonly MessageUiProvider m_MessageUi;
-		private readonly DockingViewManager m_ViewManager;
+		private readonly IViewManager m_ViewManager;
 		private readonly MenuCommandUiManager m_CommandUi;
 		private readonly ProjectGroupContainer m_Projects;
 		private readonly IWorkspace m_Workspace;

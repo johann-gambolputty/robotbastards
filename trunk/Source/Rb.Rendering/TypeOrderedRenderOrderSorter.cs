@@ -94,7 +94,7 @@ namespace Rb.Rendering
 		/// <returns>Returns the same array, sorted in render order</returns>
 		public IRenderable[] Sort( IRenderable[] renderables )
 		{
-			if ( renderables == null || renderables.Length <= 1 )
+			if ( renderables == null )
 			{
 				return renderables;
 			}

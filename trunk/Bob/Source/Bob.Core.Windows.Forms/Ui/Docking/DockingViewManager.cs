@@ -28,7 +28,7 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 		/// <summary>
 		/// Shows a docking view
 		/// </summary>
-		public void Show( IWorkspace workspace, DockingViewInfo dockView )
+		public DockContent Show( IWorkspace workspace, DockingViewInfo dockView )
 		{
 			Arguments.CheckNotNull( workspace, "workspace" );
 			Arguments.CheckNotNull( dockView, "dockView" );
@@ -54,6 +54,7 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 				content = CreateViewDockContent( workspace, dockView );
 				content.Show( m_MainDockPanel, dockView.DefaultDockState );
 			}
+			return content;
 		}
 
 		#region IViewManager Members
