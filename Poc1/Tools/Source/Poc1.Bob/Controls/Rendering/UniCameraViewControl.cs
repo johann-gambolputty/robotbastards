@@ -1,10 +1,12 @@
 using System;
 using System.Windows.Forms;
 using Poc1.Bob.Core.Interfaces.Rendering;
-using Poc1.Universe.Classes.Cameras;
-using Poc1.Universe.Interfaces;
-using Poc1.Universe.Interfaces.Planets;
-using Poc1.Universe.Interfaces.Planets.Spherical;
+using Poc1.Core.Classes.Rendering.Cameras;
+using Poc1.Core.Interfaces;
+using Poc1.Core.Interfaces.Astronomical.Planets;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models;
+using Poc1.Core.Interfaces.Astronomical.Planets.Spherical;
+using Poc1.Core.Interfaces.Rendering.Cameras;
 using Rb.Core.Utils;
 using Rb.Interaction;
 using Rb.Interaction.Classes;
@@ -57,11 +59,12 @@ namespace Poc1.Bob.Controls.Rendering
 						ISpherePlanet spherePlanet = m_Renderable as ISpherePlanet;
 						if ( spherePlanet != null )
 						{
-							height += spherePlanet.PlanetModel.Radius.ToUniUnits;
+							height += spherePlanet.Model.Radius.ToUniUnits;
 						}
-						if ( planet.PlanetModel.TerrainModel != null )
+						IPlanetTerrainModel terrain = planet.Model.GetModel<IPlanetTerrainModel>( );
+						if ( terrain != null )
 						{
-							height += planet.PlanetModel.TerrainModel.MaximumHeight.ToUniUnits;
+							height += terrain.MaximumHeight.ToUniUnits;
 						}
 						( ( UniCamera )viewer.Camera ).Position = new UniPoint3( 0, height, 0 );
 					}

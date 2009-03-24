@@ -7,11 +7,8 @@ using Poc1.Bob.Core.Classes.Biomes.Models;
 using Poc1.Bob.Core.Classes.Projects.Planets;
 using Poc1.Bob.Core.Classes.Projects.Planets.Spherical;
 using Poc1.Bob.Core.Interfaces;
-using Poc1.Universe.Interfaces.Planets.Models;
-using Poc1.Universe.Interfaces.Planets.Models.Templates;
-using Poc1.Universe.Planets.Spherical.Models;
-using Poc1.Universe.Planets.Spherical.Models.Templates;
-using Poc1.Universe.Planets.Spherical.Renderers;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
 using Rb.Core.Utils;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -72,19 +69,20 @@ namespace Poc1.Bob.Projects
 		/// </summary>
 		private Control CreateProceduralTerrainView( IWorkspace workspace )
 		{
-			SpherePlanetProject currentProject = CurrentProject( workspace );
-			IPlanetProcTerrainTemplate template = currentProject.PlanetTemplate.GetModelTemplate<IPlanetProcTerrainTemplate>( );
-			if ( template == null )
-			{
-				//currentProject.PlanetTemplate.EnvironmentModelTemplates.Add( null );
-			}
-			IPlanetProcTerrainModel model = currentProject.PlanetModel.TerrainModel as IPlanetProcTerrainModel;
-			if ( model == null )
-			{
-				model = new SpherePlanetProcTerrainModel( );
-				currentProject.PlanetModel.TerrainModel = model;
-			}
-			return ( Control )m_ViewFactory.CreateHomogenousProcTerrainTemplateView( template, model );
+			//SpherePlanetProject currentProject = CurrentProject( workspace );
+			//IPlanetProcTerrainTemplate template = currentProject.PlanetTemplate.GetModelTemplate<IPlanetProcTerrainTemplate>( );
+			//if ( template == null )
+			//{
+			//    //currentProject.PlanetTemplate.EnvironmentModelTemplates.Add( null );
+			//}
+			//IPlanetProcTerrainModel model = currentProject.PlanetModel.TerrainModel as IPlanetProcTerrainModel;
+			//if ( model == null )
+			//{
+			//    model = new SpherePlanetProcTerrainModel( );
+			//    currentProject.PlanetModel.TerrainModel = model;
+			//}
+			//return ( Control )m_ViewFactory.CreateHomogenousProcTerrainTemplateView( template, model );
+			return null;
 		}
 
 		/// <summary>
@@ -125,24 +123,25 @@ namespace Poc1.Bob.Projects
 		/// </summary>
 		private Control CreateCloudTemplateView( IWorkspace workspace )
 		{
-			SpherePlanetProject currentProject = CurrentProject( workspace );
+			//SpherePlanetProject currentProject = CurrentProject( workspace );
 
-			//	TODO: AP: REMOVEME
-			IPlanetCloudModelTemplate cloudModelTemplate = currentProject.PlanetTemplate.GetModelTemplate<IPlanetCloudModelTemplate>( );
-			if ( cloudModelTemplate == null )
-			{
-				cloudModelTemplate = new SpherePlanetCloudModelTemplate( );
-				currentProject.PlanetTemplate.Add( cloudModelTemplate );
-			}
+			////	TODO: AP: REMOVEME
+			//IPlanetCloudModelTemplate cloudModelTemplate = currentProject.PlanetTemplate.GetModelTemplate<IPlanetCloudModelTemplate>( );
+			//if ( cloudModelTemplate == null )
+			//{
+			//    cloudModelTemplate = new SpherePlanetCloudModelTemplate( );
+			//    currentProject.PlanetTemplate.Add( cloudModelTemplate );
+			//}
 
-			IPlanetCloudModel cloudModel = currentProject.PlanetModel.CloudModel;
-			if ( cloudModel == null )
-			{
-				cloudModelTemplate.SetupInstance( cloudModel, currentProject.InstanceContext );
-				currentProject.Planet.PlanetRenderer.CloudRenderer = new SpherePlanetCloudRenderer( );
-			}
+			//IPlanetCloudModel cloudModel = currentProject.PlanetModel.CloudModel;
+			//if ( cloudModel == null )
+			//{
+			//    cloudModelTemplate.SetupInstance( cloudModel, currentProject.InstanceContext );
+			//    currentProject.Planet.PlanetRenderer.CloudRenderer = new SpherePlanetCloudRenderer( );
+			//}
 
-			return ( Control )m_ViewFactory.CreateCloudTemplateView( cloudModelTemplate, currentProject.PlanetModel.CloudModel );
+			//return ( Control )m_ViewFactory.CreateCloudTemplateView( cloudModelTemplate, currentProject.PlanetModel.CloudModel );
+			return null;
 		}
 
 		/// <summary>

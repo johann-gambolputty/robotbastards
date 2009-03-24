@@ -17,10 +17,9 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Renderers
 		/// </summary>
 		/// <typeparam name="TModel">Planet environment model to get</typeparam>
 		/// <returns>Returns the first planet environment model of the specified type, or null if no such model exists.</returns>
-		public TModel GetModel<TModel>( )
-			where TModel : class, IPlanetEnvironmentModel
+		public TModel GetModel<TModel>( ) where TModel : IPlanetEnvironmentModel
 		{
-			return Planet == null ? null : Planet.Model.Get<TModel>( );
+			return Planet == null ? default( TModel ) : Planet.Model.GetModel<TModel>( );
 		}
 
 		#region IPlanetEnvironmentRenderer Members

@@ -1,117 +1,48 @@
-using Poc1.Core.Interfaces;
 using Poc1.Core.Interfaces.Astronomical;
 using Poc1.Core.Interfaces.Rendering;
+using Poc1.Core.Interfaces.Rendering.Cameras;
 using Rb.Core.Utils;
-using Rb.Rendering;
+using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Core.Classes.Rendering
 {
-	public class UniRenderer
+	/// <summary>
+	/// Universe renderer
+	/// </summary>
+	public class UniRenderer : IRenderable
 	{
 		/// <summary>
-		/// Gets/sets the resolution factor used by the reflection texture
+		/// Setup constructor
 		/// </summary>
-		public float ReflectionResolution
+		public UniRenderer( ISolarSystem scene, IUniCamera camera, ISolarSystemRenderer sceneRenderer )
 		{
-			get { return m_ReflectionResolution; }
-			set { m_ReflectionResolution = value; }
+			Arguments.CheckNotNull( scene, "scene" );
+			Arguments.CheckNotNull( camera, "camera" );
+			Arguments.CheckNotNull( sceneRenderer, "sceneRenderer" );
+
+			m_Scene = scene;
+			m_Camera = camera;
+			m_Renderer = sceneRenderer;
 		}
+
+		#region IRenderable Members
 
 		/// <summary>
-		/// Gets/sets the reflection flag
+		/// Renders this object
 		/// </summary>
-		public bool EnableReflections
+		/// <param name="context">Rendering context (ignored and replaced by a IUniRenderContext)</param>
+		public void Render( IRenderContext context )
 		{
-			get { return m_EnableReflections; }
-			set { m_EnableReflections = value; }
+			m_Renderer.Render( m_Scene, m_Camera, context );
 		}
 
-		/// <summary>
-		/// Renders the scene
-		/// </summary>
-		/// <param name="solarSystem">The scene</param>
-		public void Render( ISolarSystem solarSystem )
-		{
-			Arguments.CheckNotNull( solarSystem, "solarSystem" );
-
-			//	TODO: Get correct dimensions of fullscreen window
-			int fsWidth = 1024;
-			int fsHeight = 720;
-
-			UniRenderContext context = new UniRenderContext( );
-
-			//	TODO: Render close geometry into stencil buffer or Z buffer to early-out far object rendering)
-			//	(careful with alpha blending)
-			//	Useful only really for very expensive atmosphere rendering - we only want to calculate
-			//	scattering equations for visible pixels.
-			//	Have separate far/close methods for rendering atmospheres?
-
-			//	Render far away objects into the back buffer
-			context.CurrentPass = UniRenderPass.FarObjects;
-			solarSystem.Render( context );
-
-			//	TODO: Clear the z buffer
-
-			//	Render close object reflection geometry into a render target
-			if ( EnableReflections )
-			{
-				//	TODO: Invert camera around reflection plane
-				UseRenderTarget( ( int )( fsWidth * ReflectionResolution ), ( int )( fsHeight * ReflectionResolution ), 24 );
-				context.CurrentPass = UniRenderPass.CloseReflectedObjects;
-				solarSystem.Render( context );
-				//	TODO: 
-			}
-
-			//	Render close object shadow geometry into a render target
-			//	TODO: ...
-
-			//	Render close objects
-			UseBackBuffer( );
-			context.CurrentPass = UniRenderPass.CloseObjects;
-			solarSystem.Render( context );
-
-			//	TODO: Render fullscreen quad over back buffer, for post-process effects
-		}
+		#endregion
 
 		#region Private Members
 
-		/// <summary>
-		/// Implementation of <see cref="IUniRenderContext"/>, with setters as well as getters
-		/// </summary>
-		private class UniRenderContext : RenderContext, IUniRenderContext
-		{
-			/// <summary>
-			/// Gets the current camera
-			/// </summary>
-			public IUniCamera Camera
-			{
-				get { return m_Camera; }
-				set { m_Camera = value; }
-			}
-
-			/// <summary>
-			/// Gets/sets the current render pass type
-			/// </summary>
-			public UniRenderPass CurrentPass
-			{
-				get { return m_CurrentPass; }
-				set { m_CurrentPass = value; }
-			}
-
-			private UniRenderPass m_CurrentPass;
-			private IUniCamera m_Camera;
-		}
-
-		private float m_ReflectionResolution;
-		private bool m_EnableReflections;
-
-		private void UseBackBuffer( )
-		{
-		}
-
-		private void UseRenderTarget( int width, int height, int bpp )
-		{
-		}
+		private ISolarSystem m_Scene;
+		private IUniCamera m_Camera;
+		private ISolarSystemRenderer m_Renderer;
 
 		#endregion
 	}

@@ -1,0 +1,41 @@
+using Poc1.Core.Interfaces;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
+using Rb.Core.Maths;
+
+namespace Poc1.Core.Classes.Astronomical.Planets.Models.Templates
+{
+	/// <summary>
+	/// Template for planetary atmosphere model instances
+	/// </summary>
+	public abstract class PlanetAtmosphereScatteringTemplate : PlanetEnvironmentModelTemplate, IPlanetAtmosphereTemplate
+	{
+		/// <summary>
+		/// Gets/sets the atmospheric thickness range
+		/// </summary>
+		/// <remarks>
+		/// Thickness is the height above the planet surface that the atmosphere terminates
+		/// </remarks>
+		public Range<Units.Metres> Thickness
+		{
+			get { return m_Thickness; }
+			set { m_Thickness = value; }
+		}
+
+		/// <summary>
+		/// Atmosphere model creation
+		/// </summary>
+		public override void SetupInstance( IPlanetEnvironmentModel model, ModelTemplateInstanceContext context )
+		{
+			IPlanetAtmosphereScatteringModel atmosphereModel = ( IPlanetAtmosphereScatteringModel )model;
+			atmosphereModel.Thickness = Range.Mid( m_Thickness, ( float )context.Random.NextDouble( ) );
+		//	IPlanetAtmosphereModel atmosphereModel = ( IPlanetAtmosphereModel )model;
+		}
+
+		#region Private Members
+
+		private Range<Units.Metres> m_Thickness;
+
+		#endregion
+	}
+}

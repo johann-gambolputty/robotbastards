@@ -1,7 +1,7 @@
 using Rb.Core.Maths;
 using Rb.Rendering.Interfaces.Objects.Cameras;
 
-namespace Poc1.Core.Interfaces
+namespace Poc1.Core.Interfaces.Rendering.Cameras
 {
 	/// <summary>
 	/// Universe camera

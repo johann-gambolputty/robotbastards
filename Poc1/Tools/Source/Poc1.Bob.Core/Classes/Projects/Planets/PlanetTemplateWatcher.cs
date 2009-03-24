@@ -1,9 +1,9 @@
 
 using System.Collections.Generic;
-using Poc1.Universe.Interfaces.Planets;
-using Poc1.Universe.Interfaces.Planets.Models;
-using Poc1.Universe.Interfaces.Planets.Models.Templates;
-using Poc1.Universe.Interfaces.Planets.Renderers;
+using Poc1.Core.Interfaces.Astronomical.Planets;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
+using Poc1.Core.Interfaces.Astronomical.Planets.Renderers;
 using Rb.Core.Components.Generic;
 using Rb.Core.Utils;
 
@@ -51,7 +51,7 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets
 				return;
 			}
 			component.SetupInstance( model, m_Context );
-			model.PlanetModel = m_Planet.PlanetModel;
+			model.PlanetModel = m_Planet.Model;
 			m_ModelMap.Add( component, model );
 
 			IPlanetEnvironmentRenderer renderer = m_RendererFactory.CreateModelRenderer( model );
@@ -60,7 +60,7 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets
 				return;
 			}
 			
-			renderer.PlanetRenderer = m_Planet.PlanetRenderer;
+			renderer.PlanetRenderer = m_Planet.Renderer;
 			m_RendererMap.Add( model, renderer );
 		}
 

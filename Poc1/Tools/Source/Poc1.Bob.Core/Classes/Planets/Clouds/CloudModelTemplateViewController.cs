@@ -1,9 +1,9 @@
 using System.Diagnostics;
 using Poc1.Bob.Core.Interfaces.Planets.Clouds;
-using Poc1.Universe.Interfaces;
-using Poc1.Universe.Interfaces.Planets.Models.Templates;
+using Poc1.Core.Interfaces;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
 using Rb.Core.Utils;
-using Poc1.Universe.Interfaces.Planets.Models;
 using Rb.Core.Maths;
 
 namespace Poc1.Bob.Core.Classes.Planets.Clouds
@@ -20,7 +20,7 @@ namespace Poc1.Bob.Core.Classes.Planets.Clouds
 		/// <param name="template">Template to control</param>
 		/// <param name="model">Model to control</param>
 		/// <exception cref="System.ArgumentNullException">Thrown if any argument is null</exception>
-		public CloudModelTemplateViewController( ICloudModelTemplateView view, IPlanetCloudModelTemplate template, IPlanetCloudModel model )
+		public CloudModelTemplateViewController( ICloudModelTemplateView view, IPlanetSimpleCloudTemplate template, IPlanetSimpleCloudModel model )
 		{
 			Arguments.CheckNotNull( view, "view" );
 			Arguments.CheckNotNull( template, "template" );
@@ -40,27 +40,27 @@ namespace Poc1.Bob.Core.Classes.Planets.Clouds
 
 		#region Private Members
 		
-		private readonly IPlanetCloudModel m_Model;
-		private readonly IPlanetCloudModelTemplate m_Template;
+		private readonly IPlanetSimpleCloudModel m_Model;
+		private readonly IPlanetSimpleCloudTemplate m_Template;
 
 		private void OnModelHighCoverageChanged( float coverage )
 		{
 			Debug.Assert( m_Model == null, "Expected model to be non-null, if model UI value is changing" );
-			Range<float> range = new Range<float>( m_Model.CoverageRange.Minimum, coverage );
-			m_Model.CoverageRange = range;
+			Range<float> range = new Range<float>( m_Model.CloudCoverRange.Minimum, coverage );
+			m_Model.CloudCoverRange = range;
 		}
 
 		private void OnModelLowCoverageChanged( float coverage )
 		{
 			Debug.Assert( m_Model == null, "Expected model to be non-null, if model UI value is changing" );
-			Range<float> range = new Range<float>( coverage, m_Model.CoverageRange.Maximum );
-			m_Model.CoverageRange = range;
+			Range<float> range = new Range<float>( coverage, m_Model.CloudCoverRange.Maximum );
+			m_Model.CloudCoverRange = range;
 		}
 
 		private void OnModelCloudLayerHeightChanged( Units.Metres height )
 		{
 			Debug.Assert( m_Model == null, "Expected model to be non-null, if model UI value is changing" );
-			m_Model.CloudLayerMinHeight = height;
+			m_Model.CloudLayerHeight = height;
 		}
 
 		private void OnTemplateHighCoverageChanged( Range<float> highCoverageRange )
@@ -78,7 +78,7 @@ namespace Poc1.Bob.Core.Classes.Planets.Clouds
 		private void OnTemplateCloudLayerHeightChanged( Range<Units.Metres> heightRange )
 		{
 			m_Template.CloudLayerHeightRange = heightRange;
-			m_Model.CloudLayerMinHeight = heightRange.Clamp( m_Model.CloudLayerMinHeight );
+			m_Model.CloudLayerHeight = heightRange.Clamp( m_Model.CloudLayerHeight );
 		}
 
 		/// <summary>
@@ -86,10 +86,10 @@ namespace Poc1.Bob.Core.Classes.Planets.Clouds
 		/// </summary>
 		private void UpdateModelCoverageRange( )
 		{
-			float min = m_Template.LowCoverageRange.Clamp( m_Model.CoverageRange.Minimum );
-			float max = m_Template.HighCoverageRange.Clamp( m_Model.CoverageRange.Maximum );
+			float min = m_Template.LowCoverageRange.Clamp( m_Model.CloudCoverRange.Minimum );
+			float max = m_Template.HighCoverageRange.Clamp( m_Model.CloudCoverRange.Maximum );
 
-			m_Model.CoverageRange = new Range<float>( min, max );
+			m_Model.CloudCoverRange = new Range<float>( min, max );
 		}
 
 		#endregion

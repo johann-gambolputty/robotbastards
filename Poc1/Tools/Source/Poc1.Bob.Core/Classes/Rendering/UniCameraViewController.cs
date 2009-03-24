@@ -1,5 +1,5 @@
 using Poc1.Bob.Core.Interfaces.Rendering;
-using Poc1.Universe.Classes.Cameras;
+using Poc1.Core.Classes.Rendering.Cameras;
 using Rb.Core.Utils;
 using Rb.Interaction.Classes;
 using Rb.Interaction.Interfaces;

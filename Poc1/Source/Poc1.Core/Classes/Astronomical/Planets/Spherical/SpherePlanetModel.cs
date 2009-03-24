@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Poc1.Core.Interfaces;
 using Poc1.Core.Interfaces.Astronomical.Planets.Spherical;
 
@@ -15,8 +12,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical
 		/// Setup constructor
 		/// </summary>
 		/// <param name="spherePlanet">Spherical planet</param>
-		public SpherePlanetModel( ISpherePlanet spherePlanet )
-			:
+		public SpherePlanetModel( ISpherePlanet spherePlanet ) :
 			base( spherePlanet )
 		{
 		}

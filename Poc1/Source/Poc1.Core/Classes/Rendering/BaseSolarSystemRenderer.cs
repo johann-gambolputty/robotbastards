@@ -1,0 +1,95 @@
+using Poc1.Core.Interfaces.Astronomical;
+using Poc1.Core.Interfaces.Rendering;
+using Poc1.Core.Interfaces.Rendering.Cameras;
+using Rb.Core.Utils;
+using Rb.Rendering;
+using Rb.Rendering.Interfaces.Objects;
+
+namespace Poc1.Core.Classes.Rendering
+{
+
+	/// <summary>
+	/// Solar system rendering implementation
+	/// </summary>
+	/// <remarks>
+	/// Renders solar systems without any extra passes or effect
+	/// </remarks>
+	public class BaseSolarSystemRenderer : ISolarSystemRenderer
+	{
+		#region ISolarSystemRenderer Members
+
+		/// <summary>
+		/// Renders a solar system
+		/// </summary>
+		/// <param name="solarSystem">The scene</param>
+		/// <param name="camera">Scene camera</param>
+		/// <param name="context">Rendering context</param>
+		public virtual void Render( ISolarSystem solarSystem, IUniCamera camera, IRenderContext context )
+		{
+			Arguments.CheckNotNull( solarSystem, "solarSystem" );
+			Arguments.CheckNotNull( camera, "camera" );
+
+			UniRenderContext uniContext = new UniRenderContext( camera, context );
+			uniContext.Camera = camera;
+
+			//	Render far objects
+			uniContext.CurrentPass = UniRenderPass.FarObjects;
+			solarSystem.Render( uniContext );
+
+			//	Render close objects
+			uniContext.CurrentPass = UniRenderPass.CloseObjects;
+			solarSystem.Render( uniContext );
+		}
+
+		#endregion
+
+		#region Protected Members
+
+		/// <summary>
+		/// Implementation of <see cref="IUniRenderContext"/>, with setters as well as getters
+		/// </summary>
+		protected class UniRenderContext : RenderContext, IUniRenderContext
+		{
+			/// <summary>
+			/// Setup constructor
+			/// </summary>
+			public UniRenderContext( IUniCamera camera, IRenderContext originalContext )
+			{
+				m_Camera = camera;
+				RenderTime = originalContext.RenderTime;
+			}
+
+			/// <summary>
+			/// Gets the current camera
+			/// </summary>
+			public IUniCamera Camera
+			{
+				get { return m_Camera; }
+				set { m_Camera = value; }
+			}
+
+			/// <summary>
+			/// Returns true if far objects are being rendered according to the current pass
+			/// </summary>
+			public bool RenderFarObjects
+			{
+				get { return m_CurrentPass == UniRenderPass.FarObjects; }
+			}
+
+			/// <summary>
+			/// Gets/sets the current render pass type
+			/// </summary>
+			public UniRenderPass CurrentPass
+			{
+				get { return m_CurrentPass; }
+				set { m_CurrentPass = value; }
+			}
+
+			private UniRenderPass m_CurrentPass;
+			private IUniCamera m_Camera;
+		}
+
+
+		#endregion
+	}
+}

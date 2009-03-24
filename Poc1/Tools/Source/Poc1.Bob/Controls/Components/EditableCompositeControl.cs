@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 using Poc1.Bob.Core.Interfaces.Components;
-using Poc1.Universe.Interfaces.Planets.Models.Templates;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
 using Rb.Core.Components;
 
 namespace Poc1.Bob.Controls.Components
@@ -45,6 +45,15 @@ namespace Poc1.Bob.Controls.Components
 		{
 			add { compositeView.ComponentAction += value; }
 			remove { compositeView.ComponentAction -= value; }
+		}
+
+		/// <summary>
+		/// User selected a component in the view
+		/// </summary>
+		public event Action<object> ComponentSelected
+		{
+			add { compositeView.ComponentSelected += value; }
+			remove { compositeView.ComponentSelected -= value; }
 		}
 
 		/// <summary>

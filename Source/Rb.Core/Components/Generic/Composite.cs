@@ -37,7 +37,7 @@ namespace Rb.Core.Components.Generic
 		/// Adds a component to this composite
 		/// </summary>
 		/// <param name="component">Component to add</param>
-		public void Add( T component )
+		public virtual void Add( T component )
 		{
 			Arguments.CheckNotNull( component, "component" );
 			if ( m_Components.Contains( component ) )
@@ -60,7 +60,7 @@ namespace Rb.Core.Components.Generic
 		/// Removes a component to this composite
 		/// </summary>
 		/// <param name="component">Component to remove</param>
-		public void Remove( T component )
+		public virtual void Remove( T component )
 		{
 			Arguments.CheckNotNull( component, "component" );
 			m_Components.Remove( component );

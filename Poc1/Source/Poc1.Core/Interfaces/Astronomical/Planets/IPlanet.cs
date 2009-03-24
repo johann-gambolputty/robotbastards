@@ -1,13 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+
+using Poc1.Core.Interfaces.Rendering;
+using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Core.Interfaces.Astronomical.Planets
 {
 	/// <summary>
 	/// Planet interface
 	/// </summary>
-	public interface IPlanet : IAstronomicalBody
+	public interface IPlanet : IAstronomicalBody, IRenderable<IUniRenderContext>
 	{
 		/// <summary>
 		/// Gets the planet model

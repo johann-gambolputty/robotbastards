@@ -24,13 +24,12 @@ using Poc1.Bob.Core.Interfaces.Planets.Terrain;
 using Poc1.Bob.Core.Interfaces.Projects;
 using Poc1.Bob.Core.Interfaces.Rendering;
 using Poc1.Bob.Core.Interfaces.Waves;
+using Poc1.Core.Interfaces.Astronomical.Planets;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
+using Poc1.Core.Interfaces.Astronomical.Planets.Spherical;
+using Poc1.Core.Interfaces.Astronomical.Planets.Spherical.Models;
 using Poc1.Tools.Waves;
-using Poc1.Universe.Interfaces.Planets;
-using Poc1.Universe.Interfaces.Planets.Models;
-using Poc1.Universe.Interfaces.Planets.Models.Templates;
-using Poc1.Universe.Interfaces.Planets.Spherical;
-using Poc1.Universe.Interfaces.Planets.Spherical.Models;
-using Poc1.Universe.Interfaces.Planets.Spherical.Models.Templates;
 using Rb.Common.Controls.Components;
 using Rb.Common.Controls.Forms.Components;
 using Rb.Core.Components;
@@ -91,7 +90,7 @@ namespace Poc1.Bob.Controls
 		/// <summary>
 		/// Creates a view used to edit flat cloud model templates
 		/// </summary>
-		public IFlatCloudModelTemplateView CreateCloudTemplateView( IPlanetCloudModelTemplate template, IPlanetCloudModel model )
+		public IFlatCloudModelTemplateView CreateCloudTemplateView( IPlanetSimpleCloudTemplate template, IPlanetSimpleCloudModel model )
 		{
 			FlatCloudModelTemplateControl view = new FlatCloudModelTemplateControl( );
 			new CloudModelTemplateViewController( view, template, model );

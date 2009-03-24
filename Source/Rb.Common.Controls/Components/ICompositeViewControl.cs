@@ -9,6 +9,11 @@ namespace Rb.Common.Controls.Components
 	public interface ICompositeViewControl
 	{
 		/// <summary>
+		/// User selected a component in the view
+		/// </summary>
+		event Action<object> ComponentSelected;
+
+		/// <summary>
 		/// User double-clicked on a component in the view
 		/// </summary>
 		event Action<object> ComponentAction;

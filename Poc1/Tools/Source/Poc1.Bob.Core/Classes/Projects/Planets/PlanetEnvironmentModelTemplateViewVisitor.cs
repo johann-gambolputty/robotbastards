@@ -1,7 +1,7 @@
 using Bob.Core.Ui.Interfaces.Views;
 using Bob.Core.Workspaces.Interfaces;
-using Poc1.Universe.Interfaces.Planets.Models.Templates;
-using Poc1.Universe.Planets.Models.Templates;
+using Poc1.Core.Classes.Astronomical.Planets.Models.Templates;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
 using Rb.Core.Utils;
 
 namespace Poc1.Bob.Core.Classes.Projects.Planets
@@ -38,7 +38,7 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets
 		/// Visits a cloud model template
 		/// </summary>
 		/// <param name="cloudModelTemplate">Model template to visit</param>
-		public override bool Visit( IPlanetCloudModelTemplate cloudModelTemplate )
+		public override bool Visit( IPlanetSimpleCloudTemplate cloudModelTemplate )
 		{
 			m_ViewManager.Show( m_Workspace, m_Views.CloudView );
 			return true;

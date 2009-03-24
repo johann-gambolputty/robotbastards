@@ -1,10 +1,14 @@
 using Poc1.Bob.Core.Interfaces.Rendering;
-using Poc1.Universe.Interfaces;
-using Poc1.Universe.Interfaces.Planets.Spherical;
-using Poc1.Universe.Planets.Spherical.Models;
+using Poc1.Core.Interfaces;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models;
+using Poc1.Core.Interfaces.Astronomical.Planets.Spherical;
+using Poc1.Core.Interfaces.Rendering.Cameras;
 
 namespace Poc1.Bob.Core.Classes.Rendering
 {
+	/// <summary>
+	/// View controller for a spherical planet
+	/// </summary>
 	public class SpherePlanetViewController : PlanetViewController
 	{
 		/// <summary>
@@ -29,15 +33,16 @@ namespace Poc1.Bob.Core.Classes.Rendering
 		{
 			//	Move the camera up to the surface of the planet
 			Units.Metres cameraHeight;
-			if ( Planet.PlanetModel.TerrainModel != null )
+			IPlanetTerrainModel terrain = Planet.Model.GetModel<IPlanetTerrainModel>( );
+			if ( terrain != null )
 			{
-				cameraHeight = Planet.PlanetModel.TerrainModel.MaximumHeight;
+				cameraHeight = terrain.MaximumHeight;
 			}
 			else
 			{
 				cameraHeight = new Units.Metres( 1000 );
 			}
-			cameraHeight += m_Planet.PlanetModel.Radius;
+			cameraHeight += m_Planet.Model.Radius;
 			camera.Position.Set( 0, cameraHeight.ToUniUnits, 0 );
 		}
 

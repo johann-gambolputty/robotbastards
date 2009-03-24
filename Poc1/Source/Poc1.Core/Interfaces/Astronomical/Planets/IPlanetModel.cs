@@ -15,6 +15,13 @@ namespace Poc1.Core.Interfaces.Astronomical.Planets
 		event EventHandler<ModelChangedEventArgs> ModelChanged;
 
 		/// <summary>
+		/// Gets a typed model from this composite
+		/// </summary>
+		/// <typeparam name="TModel">Model type to retrieve</typeparam>
+		/// <returns>Returns the first instance of type TModel in this composite, or null if none exist.</returns>
+		TModel GetModel<TModel>( ) where TModel : IPlanetEnvironmentModel;
+
+		/// <summary>
 		/// Gets the planet that this model is attached to
 		/// </summary>
 		IPlanet Planet

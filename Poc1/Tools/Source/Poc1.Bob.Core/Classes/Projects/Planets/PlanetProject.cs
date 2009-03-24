@@ -1,10 +1,8 @@
-using System;
 using Poc1.Bob.Core.Interfaces.Projects;
+using Poc1.Core.Interfaces.Astronomical.Planets;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
+using Poc1.Core.Interfaces.Astronomical.Planets.Renderers;
 using Poc1.Tools.Waves;
-using Poc1.Universe.Interfaces.Planets;
-using Poc1.Universe.Interfaces.Planets.Models;
-using Poc1.Universe.Interfaces.Planets.Models.Templates;
-using Poc1.Universe.Interfaces.Planets.Renderers;
 using Rb.Core.Utils;
 
 namespace Poc1.Bob.Core.Classes.Projects.Planets
@@ -49,13 +47,9 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets
 			Arguments.CheckNotNull( renderFactory, "renderFactory" );
 			Arguments.CheckNotNull( planet, "planet" );
 
-			if ( planet.PlanetModel == null )
-			{
-				throw new ArgumentNullException( "planet", "Planet needs valid model" );
-			}
 			m_Planet = planet;
 			m_PlanetTemplate = template;
-			template.CreateModelInstance( planet.PlanetModel, modelFactory, InstanceContext );
+			template.CreateModelInstance( planet.Model, modelFactory, InstanceContext );
 
 			new PlanetTemplateWatcher( template, planet, modelFactory, renderFactory );
 		}
@@ -65,7 +59,7 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets
 		/// </summary>
 		public IPlanetModel PlanetModel
 		{
-			get { return m_Planet.PlanetModel; }
+			get { return m_Planet.Model; }
 		}
 
 		/// <summary>

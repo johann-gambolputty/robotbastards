@@ -368,13 +368,9 @@
       <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
       <Name>Rb.Rendering</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Source\Poc1.Universe.Interfaces\Poc1.Universe.Interfaces.csproj">
-      <Project>{7C18549B-2D70-4985-852B-6A285BF4F00A}</Project>
-      <Name>Poc1.Universe.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Source\Poc1.Universe\Poc1.Universe.csproj">
-      <Project>{5CC992B9-1B66-4ECC-8657-624DA59B3D2D}</Project>
-      <Name>Poc1.Universe</Name>
+    <ProjectReference Include="..\..\..\Source\Poc1.Core\Poc1.Core.csproj">
+      <Project>{864E3713-F680-4491-A032-E3F8C6B63C14}</Project>
+      <Name>Poc1.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Poc1.Bob.Core\Poc1.Bob.Core.csproj">
       <Project>{81D7369B-7D0F-4967-9326-AF894DD5AA3B}</Project>

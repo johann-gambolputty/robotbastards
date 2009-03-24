@@ -1,9 +1,12 @@
 using System;
 using Poc1.Bob.Core.Interfaces.Rendering;
-using Poc1.Universe.Interfaces;
-using Poc1.Universe.Interfaces.Planets;
+using Poc1.Core.Classes.Astronomical;
+using Poc1.Core.Classes.Rendering;
+using Poc1.Core.Interfaces;
+using Poc1.Core.Interfaces.Astronomical.Planets;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models;
+using Poc1.Core.Interfaces.Rendering.Cameras;
 using Rb.Core.Utils;
-using Rb.Rendering;
 
 namespace Poc1.Bob.Core.Classes.Rendering
 {
@@ -27,14 +30,15 @@ namespace Poc1.Bob.Core.Classes.Rendering
 			view.InitializeRendering +=
 				delegate
 				{
-					//StarBox stars = new StarBox( );
-					view.Renderable = new RenderableList( planet );
+					SolarSystem scene = new SolarSystem( null );
+					scene.Add( planet );
+					view.Renderable = new UniRenderer( scene, view.UniCamera, new BaseSolarSystemRenderer( ) );
 					SetDefaultCameraPosition( view.UniCamera );
 				};
 
 			m_Planet = planet;
 
-			planet.PlanetModel.ModelChanged += OnModelChanged;
+			planet.Model.ModelChanged += OnModelChanged;
 		}
 
 		/// <summary>
@@ -53,9 +57,10 @@ namespace Poc1.Bob.Core.Classes.Rendering
 		{
 			//	Move the camera up to the surface of the planet
 			Units.Metres cameraHeight;
-			if ( Planet.PlanetModel.TerrainModel != null )
+			IPlanetTerrainModel terrain = Planet.Model.GetModel<IPlanetTerrainModel>( );
+			if ( terrain != null )
 			{
-				cameraHeight = Planet.PlanetModel.TerrainModel.MaximumHeight;
+				cameraHeight = terrain.MaximumHeight;
 			}
 			else
 			{

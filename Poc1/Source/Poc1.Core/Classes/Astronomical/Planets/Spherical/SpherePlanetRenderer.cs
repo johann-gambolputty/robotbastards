@@ -1,4 +1,9 @@
 
+using Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers;
+using Poc1.Core.Interfaces.Astronomical.Planets.Spherical;
+using Rb.Rendering;
+using Rb.Rendering.Interfaces.Objects;
+
 namespace Poc1.Core.Classes.Astronomical.Planets.Spherical
 {
 	/// <summary>
@@ -10,8 +15,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical
 		/// Setup constructor
 		/// </summary>
 		/// <param name="planet">Spherical planet that this renderer is attached to</param>
-		public SpherePlanetRenderer( ISpherePlanet planet )
-			:
+		public SpherePlanetRenderer( ISpherePlanet planet ) :
 			base( planet )
 		{
 		}
@@ -22,8 +26,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical
 		/// <param name="planet">Spherical planet that this renderer is attached to</param>
 		/// <param name="nearSorter">Render order sorter used to determine the order that near objects are rendered in</param>
 		/// <param name="farSorter">Render order sorter used to determine the order that far objects are rendered in</param>
-		public SpherePlanetRenderer( ISpherePlanet planet, IRenderOrderSorter nearSorter, IRenderOrderSorter farSorter )
-			:
+		public SpherePlanetRenderer( ISpherePlanet planet, IRenderOrderSorter nearSorter, IRenderOrderSorter farSorter ) :
 			base( planet, nearSorter, farSorter )
 		{
 		}
@@ -36,7 +39,8 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical
 		protected override IRenderOrderSorter DefaultNearSorter( )
 		{
 			TypeOrderedRenderOrderSorter sorter = new TypeOrderedRenderOrderSorter( true );
-			sorter.AddFirstTypes( typeof( SpherePlanetRingRenderer ), typeof( SpherePlanetAtmosphereScatteringRenderer ) );
+			sorter.AddFirstType<SpherePlanetOceanRenderer>( );
+			sorter.AddFirstType<SpherePlanetSimpleCloudShellRenderer>( );
 
 			return sorter;
 		}
@@ -47,7 +51,8 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical
 		protected override IRenderOrderSorter DefaultFarSorter( )
 		{
 			TypeOrderedRenderOrderSorter sorter = new TypeOrderedRenderOrderSorter( true );
-			sorter.AddFirstTypes( typeof( SpherePlanetOceanRenderer ) );
+			sorter.AddFirstType<SpherePlanetRingRenderer>( );
+			sorter.AddFirstType<SpherePlanetAtmosphereScatteringRenderer>( );
 			return sorter;
 		}
 

@@ -16,11 +16,11 @@ namespace Poc1.Core.Interfaces.Astronomical.Planets.Spherical
 		}
 
 		/// <summary>
-		/// Gets the radius, in metres, of the planet
+		/// Gets/sets the radius, in metres, of the planet
 		/// </summary>
 		Units.Metres Radius
 		{
-			get;
+			get; set;
 		}
 	}
 }
