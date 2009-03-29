@@ -6,7 +6,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models
 	/// <summary>
 	/// Planet procedural terrain model interface
 	/// </summary>
-	public class PlanetProcTerrainModel : PlanetTerrainModel, IPlanetProcTerrainModel
+	public class PlanetHomogenousProceduralTerrainModel : PlanetTerrainModel, IPlanetHomogenousProceduralTerrainModel
 	{
 		#region IPlanetProcTerrainModel Members
 
@@ -29,7 +29,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models
 		/// <summary>
 		/// Gets/sets the ground function
 		/// </summary>
-		public TerrainFunction GroundFunction
+		public TerrainFunction GroundOffsetFunction
 		{
 			get { return m_GroundFunction; }
 			set

@@ -30,5 +30,17 @@ namespace Poc1.Core.Interfaces.Astronomical.Planets.Models
 		/// <param name="model">Model to visit</param>
 		TReturn Visit( IPlanetSimpleCloudModel model );
 
+		/// <summary>
+		/// Visits a ring model
+		/// </summary>
+		/// <param name="model">Model to visit</param>
+		TReturn Visit( IPlanetRingModel model );
+
+		/// <summary>
+		/// Visits an homogenous procedural terrain model
+		/// </summary>
+		/// <param name="model">Model to visit</param>
+		TReturn Visit( IPlanetHomogenousProceduralTerrainModel model );
+
 	}
 }

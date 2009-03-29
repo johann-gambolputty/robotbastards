@@ -30,7 +30,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models.Templates
 		/// Visits a terrain model template
 		/// </summary>
 		/// <param name="terrainModelTemplate">Model template to visit</param>
-		public virtual TReturn Visit( IPlanetProcTerrainTemplate terrainModelTemplate )
+		public virtual TReturn Visit( IPlanetHomogenousProceduralTerrainTemplate terrainModelTemplate )
 		{
 			return Visit( ( IPlanetEnvironmentModelTemplate )terrainModelTemplate );
 		}

@@ -2,7 +2,7 @@ using Poc1.Bob.Core.Classes.Biomes.Models;
 using Poc1.Core.Classes.Astronomical.Planets.Spherical.Models;
 using Poc1.Core.Classes.Astronomical.Planets.Spherical.Models.Templates;
 using Poc1.Core.Interfaces.Astronomical.Planets.Spherical;
-using Poc1.Universe.Planets.Spherical.Models;
+using Poc1.Universe.Planets.Spherical.Renderers;
 
 namespace Poc1.Bob.Core.Classes.Projects.Planets.Spherical
 {

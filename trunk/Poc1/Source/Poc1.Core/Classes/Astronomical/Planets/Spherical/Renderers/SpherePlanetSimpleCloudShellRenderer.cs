@@ -1,7 +1,6 @@
 using System;
 using Poc1.Core.Interfaces;
 using Poc1.Core.Interfaces.Astronomical.Planets.Models;
-using Poc1.Core.Interfaces.Astronomical.Planets.Spherical;
 using Poc1.Core.Interfaces.Rendering;
 using Rb.Core.Maths;
 using Rb.Rendering;

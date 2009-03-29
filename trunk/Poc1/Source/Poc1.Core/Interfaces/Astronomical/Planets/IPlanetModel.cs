@@ -19,7 +19,7 @@ namespace Poc1.Core.Interfaces.Astronomical.Planets
 		/// </summary>
 		/// <typeparam name="TModel">Model type to retrieve</typeparam>
 		/// <returns>Returns the first instance of type TModel in this composite, or null if none exist.</returns>
-		TModel GetModel<TModel>( ) where TModel : IPlanetEnvironmentModel;
+		TModel GetModel<TModel>( );
 
 		/// <summary>
 		/// Gets the planet that this model is attached to

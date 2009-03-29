@@ -1,3 +1,4 @@
+using Poc1.Core.Interfaces.Astronomical.Planets.Renderers;
 using Poc1.Core.Interfaces.Rendering.Cameras;
 using Rb.Rendering.Interfaces.Objects;
 
@@ -28,6 +29,18 @@ namespace Poc1.Core.Interfaces.Rendering
 		/// Gets the current pass type
 		/// </summary>
 		UniRenderPass CurrentPass
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Gets the current planetary atmosphere renderer that the camera is inside. Returns null if the camera
+		/// not inside any planetary atmospheres
+		/// </summary>
+		/// <remarks>
+		/// Used to set up rendering effects for objects seen through atmospheres.
+		/// </remarks>
+		IPlanetAtmosphereRenderer InAtmosphereRenderer
 		{
 			get;
 		}

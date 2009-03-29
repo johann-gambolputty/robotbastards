@@ -11,7 +11,7 @@ namespace Poc1.Bob.Core.Interfaces.Planets.Terrain
 		/// <summary>
 		/// Gets/sets the model displayed by this view
 		/// </summary>
-		IPlanetProcTerrainTemplate Template
+		IPlanetHomogenousProceduralTerrainTemplate Template
 		{
 			get; set;
 		}

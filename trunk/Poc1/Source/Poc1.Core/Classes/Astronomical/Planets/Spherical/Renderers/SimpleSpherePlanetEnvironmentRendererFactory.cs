@@ -1,9 +1,8 @@
-
 using Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers;
 using Poc1.Core.Interfaces.Astronomical.Planets.Models;
 using Poc1.Core.Interfaces.Astronomical.Planets.Renderers;
 
-namespace Poc1.Universe.Planets.Spherical.Models
+namespace Poc1.Universe.Planets.Spherical.Renderers
 {
 	/// <summary>
 	/// Very dumb renderer factory implementation for planet environment models
@@ -66,6 +65,22 @@ namespace Poc1.Universe.Planets.Spherical.Models
 				return new SpherePlanetSimpleCloudShellRenderer( );
 			}
 
+			/// <summary>
+			/// Creates a renderer for a ring model
+			/// </summary>
+			public IPlanetEnvironmentRenderer Visit( IPlanetRingModel model )
+			{
+				return new SpherePlanetRingRenderer( );
+			}
+
+			/// <summary>
+			/// Visits an homogenous procedural terrain model
+			/// </summary>
+			/// <param name="model">Model to visit</param>
+			public IPlanetEnvironmentRenderer Visit( IPlanetHomogenousProceduralTerrainModel model )
+			{
+				return new SpherePlanet;
+			}
 		}
 
 		#endregion

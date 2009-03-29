@@ -37,7 +37,7 @@ namespace Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates
 		/// Visits a terrain model template
 		/// </summary>
 		/// <param name="terrainModelTemplate">Model template to visit</param>
-		TReturn Visit( IPlanetProcTerrainTemplate terrainModelTemplate );
+		TReturn Visit( IPlanetHomogenousProceduralTerrainTemplate terrainModelTemplate );
 
 		/// <summary>
 		/// Visits a ring model template

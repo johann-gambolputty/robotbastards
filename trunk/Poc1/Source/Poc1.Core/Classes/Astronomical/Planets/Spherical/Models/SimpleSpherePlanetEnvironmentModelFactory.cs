@@ -57,9 +57,9 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Models
 			/// Visits a terrain model template
 			/// </summary>
 			/// <param name="terrainModelTemplate">Model template to visit</param>
-			public IPlanetEnvironmentModel Visit( IPlanetProcTerrainTemplate terrainModelTemplate )
+			public IPlanetEnvironmentModel Visit( IPlanetHomogenousProceduralTerrainTemplate terrainModelTemplate )
 			{
-				return new PlanetProcTerrainModel( );
+				return new PlanetHomogenousProceduralTerrainModel( );
 			}
 
 			/// <summary>

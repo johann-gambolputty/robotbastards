@@ -1,6 +1,5 @@
 using System;
 using Poc1.Core.Interfaces.Astronomical.Planets;
-using Poc1.Core.Interfaces.Astronomical.Planets.Models;
 using Poc1.Core.Interfaces.Astronomical.Planets.Renderers;
 using Poc1.Core.Interfaces.Rendering;
 using Rb.Rendering.Interfaces.Objects;
@@ -17,7 +16,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Renderers
 		/// </summary>
 		/// <typeparam name="TModel">Planet environment model to get</typeparam>
 		/// <returns>Returns the first planet environment model of the specified type, or null if no such model exists.</returns>
-		public TModel GetModel<TModel>( ) where TModel : IPlanetEnvironmentModel
+		public TModel GetModel<TModel>( )
 		{
 			return Planet == null ? default( TModel ) : Planet.Model.GetModel<TModel>( );
 		}

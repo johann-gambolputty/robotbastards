@@ -372,6 +372,10 @@
       <Project>{864E3713-F680-4491-A032-E3F8C6B63C14}</Project>
       <Name>Poc1.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Poc1.Fast.Terrain\Poc1.Fast.Terrain.vcproj">
+      <Project>{22C72F9C-B313-4366-BBE2-84A649775E75}</Project>
+      <Name>Poc1.Fast.Terrain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Poc1.Bob.Core\Poc1.Bob.Core.csproj">
       <Project>{81D7369B-7D0F-4967-9326-AF894DD5AA3B}</Project>
       <Name>Poc1.Bob.Core</Name>

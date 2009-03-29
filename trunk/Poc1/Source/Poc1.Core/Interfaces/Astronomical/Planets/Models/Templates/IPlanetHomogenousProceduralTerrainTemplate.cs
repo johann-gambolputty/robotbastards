@@ -6,7 +6,7 @@ namespace Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates
 	/// <summary>
 	/// Interface for homogenous procedural terrain templates
 	/// </summary>
-	public interface IPlanetProcTerrainTemplate : IPlanetEnvironmentModelTemplate
+	public interface IPlanetHomogenousProceduralTerrainTemplate : IPlanetEnvironmentModelTemplate
 	{
 		/// <summary>
 		/// Gets/sets the terrain height function
