@@ -292,6 +292,22 @@ namespace Poc1.Core.Interfaces
 			#endregion
 
 			/// <summary>
+			/// Addition of two astro render unit values
+			/// </summary>
+			public static AstroRenderUnits operator + ( AstroRenderUnits lhs, AstroRenderUnits rhs )
+			{
+				return new AstroRenderUnits( lhs.Value + rhs.Value );
+			}
+
+			/// <summary>
+			/// Subtraction of two astro render unit values
+			/// </summary>
+			public static AstroRenderUnits operator - ( AstroRenderUnits lhs, AstroRenderUnits rhs )
+			{
+				return new AstroRenderUnits( lhs.Value - rhs.Value );
+			}
+
+			/// <summary>
 			/// Gets the render unit value 
 			/// </summary>
 			public double Value

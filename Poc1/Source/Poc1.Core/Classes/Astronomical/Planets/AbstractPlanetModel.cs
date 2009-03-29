@@ -34,7 +34,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets
 		/// </summary>
 		/// <typeparam name="TModel">Model type to retrieve</typeparam>
 		/// <returns>Returns the first instance of type TModel in this composite, or null if none exist.</returns>
-		public TModel GetModel<TModel>( ) where TModel : IPlanetEnvironmentModel
+		public TModel GetModel<TModel>( )
 		{
 			return CompositeUtils.GetComponent<TModel>( this );
 		}

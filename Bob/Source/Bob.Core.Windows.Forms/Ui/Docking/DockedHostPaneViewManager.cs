@@ -49,6 +49,12 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 			{
 				//	Make sure the host window is visible
 				DockContent dockContent = m_UnhostedViewManager.Show( workspace, m_HostViewInfo );
+				Panel hostPanel = ( Panel )dockContent.Controls[ 0 ];
+				hostPanel.Controls.Clear( );
+
+				Control hostedControl = ( ( HostedViewInfo )view ).CreateControl( workspace );
+				hostedControl.Dock = DockStyle.Fill;
+				hostPanel.Controls.Add( hostedControl );
 
 				return;
 			}
@@ -87,12 +93,6 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 		private static Control CreateHostControl( IWorkspace workspace )
 		{
 			Panel panel = new Panel( );
-
-			Label label = new Label( );
-			label.Text = "Properties...";
-
-			panel.Controls.Add( label );
-
 			return panel;
 		}
 

@@ -5,7 +5,7 @@ namespace Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates
 	/// <summary>
 	/// Planet ring model template
 	/// </summary>
-	public interface IPlanetRingTemplate
+	public interface IPlanetRingTemplate : IPlanetEnvironmentModelTemplate
 	{
 		/// <summary>
 		/// Gets/sets the range of width values that the planetary rings can take

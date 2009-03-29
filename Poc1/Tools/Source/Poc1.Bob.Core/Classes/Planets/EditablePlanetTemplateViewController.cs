@@ -1,4 +1,5 @@
 using System;
+using Bob.Core.Workspaces.Interfaces;
 using Poc1.Bob.Core.Classes.Biomes.Models;
 using Poc1.Bob.Core.Classes.Components;
 using Poc1.Bob.Core.Interfaces;
@@ -18,14 +19,21 @@ namespace Poc1.Bob.Core.Classes.Planets
 	public class EditablePlanetTemplateViewController : EditableCompositeViewController
 	{
 		/// <summary>
+		/// Action handler delegate
+		/// </summary>
+		public delegate void TemplateActionDelegate( IWorkspace workspace, object templateComponent );
+
+		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		public EditablePlanetTemplateViewController( IViewFactory viewFactory, IEditableCompositeView view, IPlanetModelTemplate template, IPlanetEnvironmentModelTemplateVisitor<bool> actionVisitor ) :
+		public EditablePlanetTemplateViewController( IWorkspace workspace, IViewFactory viewFactory, IEditableCompositeView view, IPlanetModelTemplate template, TemplateActionDelegate onAction ) :
 			base( viewFactory, view, template )
 		{
-			Arguments.CheckNotNull( actionVisitor, "actionVisitor" );
+			Arguments.CheckNotNull( workspace, "workspace" );
+			Arguments.CheckNotNull( onAction, "onAction" );
 			view.ComponentSelected += OnComponentSelected;
-			m_ActionVisitor = actionVisitor;
+			m_Workspace = workspace;
+			m_ActionHandler = onAction;
 		}
 
 		/// <summary>
@@ -40,6 +48,7 @@ namespace Poc1.Bob.Core.Classes.Planets
 				{
 					return new ComponentType[]
 						{
+							new ComponentType( typeof( PlanetHomogenousProceduralTerrainTemplate ) ), 
 							new ComponentType( typeof( PlanetSimpleCloudTemplate ) ), 
 							new ComponentType( typeof( PlanetAtmosphereScatteringTemplate ) ),
 							new ComponentType( typeof( SpherePlanetOceanTemplate ) ), 
@@ -53,19 +62,15 @@ namespace Poc1.Bob.Core.Classes.Planets
 
 		#region Private Members
 
-		private readonly IPlanetEnvironmentModelTemplateVisitor<bool> m_ActionVisitor;
+		private readonly IWorkspace m_Workspace;
+		private readonly TemplateActionDelegate m_ActionHandler;
 
 		/// <summary>
 		/// Opens up a view on the specified component
 		/// </summary>
 		private void OnComponentSelected( object component )
 		{
-			IPlanetEnvironmentModelTemplate modelTemplate = component as IPlanetEnvironmentModelTemplate;
-			if ( modelTemplate == null )
-			{
-				return;
-			}
-			modelTemplate.InvokeVisit( m_ActionVisitor );
+			m_ActionHandler( m_Workspace, component );
 		}
 
 		#endregion
