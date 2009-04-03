@@ -79,7 +79,7 @@ namespace Poc1.Bob.Controls
 		/// <summary>
 		/// Creates a view used to edit an homogenous procedural terrain model
 		/// </summary>
-		public IHomogenousProcTerrainView CreateHomogenousProcTerrainTemplateView( IPlanetHomogenousProceduralTerrainTemplate template, IPlanetHomogenousProceduralTerrainModel model )
+		public IHomogenousProceduralTerrainView CreateHomogenousProcTerrainTemplateView( IPlanetHomogenousProceduralTerrainTemplate template, IPlanetHomogenousProceduralTerrainModel model )
 		{
 			Arguments.CheckNotNull( model, "model" );
 			HomogenousProcTerrainTemplateControl control = new HomogenousProcTerrainTemplateControl( );

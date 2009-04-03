@@ -79,7 +79,7 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			/// <param name="model">Model to visit</param>
 			public IPlanetEnvironmentRenderer Visit( IPlanetHomogenousProceduralTerrainModel model )
 			{
-				return new SpherePlanet;
+				return new SpherePlanetHomogenousProceduralTerrainRenderer( );
 			}
 		}
 

@@ -52,11 +52,13 @@
     <Compile Include="Classes\Planets\EditablePlanetTemplateViewController.cs" />
     <Compile Include="Classes\Planets\PlanetTemplateViewController.cs" />
     <Compile Include="Classes\Planets\SpherePlanetTemplateViewController.cs" />
+    <Compile Include="Classes\Planets\Terrain\HomogenousProceduralTerrainViewController.cs" />
     <Compile Include="Classes\Projects\Planets\IPlanetViews.cs" />
     <Compile Include="Classes\Projects\Planets\PlanetProject.cs" />
     <Compile Include="Classes\Projects\Planets\PlanetTemplateWatcher.cs" />
     <Compile Include="Classes\Projects\Planets\Spherical\SpherePlanetProject.cs" />
     <Compile Include="Classes\Components\EditableCompositeViewController.cs" />
+    <Compile Include="Classes\Projects\Planets\Spherical\TerrestrialSpherePlanetProjectType.cs" />
     <Compile Include="Classes\Rendering\PlanetViewController.cs" />
     <Compile Include="Classes\Rendering\SpherePlanetViewController.cs" />
     <Compile Include="Classes\WorkspaceEx.cs" />
@@ -87,7 +89,7 @@
     <Compile Include="Interfaces\Planets\IPlanetModelTemplateView.cs" />
     <Compile Include="Interfaces\Components\IEditableCompositeView.cs" />
     <Compile Include="Interfaces\Planets\ISpherePlanetModelTemplateView.cs" />
-    <Compile Include="Interfaces\Planets\Terrain\IHomogenousProcTerrainView.cs" />
+    <Compile Include="Interfaces\Planets\Terrain\IHomogenousProceduralTerrainView.cs" />
     <Compile Include="Interfaces\Projects\ICreateProjectView.cs" />
     <Compile Include="Interfaces\Rendering\ICameraView.cs" />
     <Compile Include="Interfaces\Rendering\IUniCameraView.cs" />
@@ -145,9 +147,6 @@
       <Project>{C8DC8F1E-E722-42E0-A433-122BFF0BBD2D}</Project>
       <Name>Poc1.Tools.Waves</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Classes\Planets\Terrain\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

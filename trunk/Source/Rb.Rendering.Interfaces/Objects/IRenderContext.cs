@@ -9,11 +9,19 @@ namespace Rb.Rendering.Interfaces.Objects
 		#region Public properties
 
 		/// <summary>
+		/// Gets the number of frames rendered so far
+		/// </summary>
+		ulong RenderFrameCounter
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Time that the render occurred in TinyTime clock ticks
 		/// </summary>
 		long RenderTime
 		{
-			get; set;
+			get;
 		}
 
 		#endregion

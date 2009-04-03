@@ -47,11 +47,11 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets
 			Arguments.CheckNotNull( renderFactory, "renderFactory" );
 			Arguments.CheckNotNull( planet, "planet" );
 
+			new PlanetTemplateWatcher( template, planet, modelFactory, renderFactory );
+
 			m_Planet = planet;
 			m_PlanetTemplate = template;
 			template.CreateModelInstance( planet.Model, modelFactory, InstanceContext );
-
-			new PlanetTemplateWatcher( template, planet, modelFactory, renderFactory );
 		}
 
 		/// <summary>

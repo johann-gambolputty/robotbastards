@@ -15,7 +15,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers.PackTexture
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		public SpherePlanetPackTextureTechnique( IPackTextureProvider provider ) :
+		public SpherePlanetPackTextureTechnique( ITerrainPackTextureProvider provider ) :
 			base( provider, "Effects/Planets/terrestrialPlanetTerrain.cgfx" )
 		{
 		}
@@ -23,7 +23,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers.PackTexture
 		/// <summary>
 		/// Sets up the terrain rendering effect
 		/// </summary>
-		protected override void SetupTerrainEffect( IUniCamera camera, IEffect effect, IPlanet planet, IPackTextureProvider textureProvider )
+		protected override void SetupTerrainEffect( IUniCamera camera, IEffect effect, IPlanet planet, ITerrainPackTextureProvider textureProvider )
 		{
 			base.SetupTerrainEffect( camera, effect, planet, textureProvider );
 			ISpherePlanet spherePlanet = ( ISpherePlanet )planet;

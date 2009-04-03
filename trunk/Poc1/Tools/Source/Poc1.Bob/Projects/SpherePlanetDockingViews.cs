@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using Bob.Core.Ui.Interfaces.Views;
 using Bob.Core.Windows.Forms.Ui.Docking;
 using Bob.Core.Workspaces.Interfaces;
+using Poc1.Bob.Controls.Atmosphere;
 using Poc1.Bob.Controls.Components;
 using Poc1.Bob.Controls.Planet;
 using Poc1.Bob.Controls.Planet.Clouds;
@@ -11,6 +12,7 @@ using Poc1.Bob.Controls.Planet.Terrain;
 using Poc1.Bob.Core.Classes;
 using Poc1.Bob.Core.Classes.Planets;
 using Poc1.Bob.Core.Classes.Planets.Clouds;
+using Poc1.Bob.Core.Classes.Planets.Terrain;
 using Poc1.Bob.Core.Classes.Projects.Planets;
 using Poc1.Bob.Core.Classes.Projects.Planets.Spherical;
 using Poc1.Bob.Core.Interfaces;
@@ -42,7 +44,7 @@ namespace Poc1.Bob.Projects
 			AsTemplateView<IPlanetSimpleCloudTemplate>( NewHostedView( "Cloud Propertes", CreateCloudView, false ) );
 			AsTemplateView<IPlanetHomogenousProceduralTerrainTemplate>( NewHostedView( "Homogenous Procedural Terrain Properties", CreateHomogenousProceduralTerrainView, false ) );
 			AsTemplateView<IPlanetRingTemplate>( NewHostedView( "Ring Properties", CreateRingView, false ) );
-			AsTemplateView<IPlanetAtmosphereTemplate>( NewHostedView( "Atmosphere Properties", CreateAtmosphereView, false ) );
+			AsTemplateView<IPlanetAtmosphereTemplate>( NewHostedView( "Atmosphere Properties", CreateAtmosphereScatteringView, false ) );
 
 			m_PlanetModelView = NewHostedView( "Sphere Planet Properties", CreatePlanetModelView, true );
 
@@ -222,8 +224,11 @@ namespace Poc1.Bob.Projects
 			{
 				return null;
 			}
+			IPlanetHomogenousProceduralTerrainModel model = project.PlanetModel.GetModel<IPlanetHomogenousProceduralTerrainModel>( );
+
 			HomogenousProcTerrainTemplateControl control = new HomogenousProcTerrainTemplateControl( );
-			control.Template = template;
+			new HomogenousProceduralTerrainViewController( control, template, model );
+
 			return control;
 		}
 
@@ -280,17 +285,19 @@ namespace Poc1.Bob.Projects
 		/// <summary>
 		/// Creates an atmosphere template model control
 		/// </summary>
-		private static Control CreateAtmosphereView( IWorkspace workspace )
+		private static Control CreateAtmosphereScatteringView( IWorkspace workspace )
 		{
 			SpherePlanetProject project = CurrentProject( workspace );
-			IPlanetAtmosphereTemplate template = project.PlanetTemplate.GetModelTemplate<IPlanetAtmosphereTemplate>( );
+			IPlanetAtmosphereScatteringTemplate template = project.PlanetTemplate.GetModelTemplate<IPlanetAtmosphereScatteringTemplate>( );
 			if ( template == null )
 			{
 				//	Show empty view
 				return null;
 			}
-			IPlanetAtmosphereScatteringModel model = project.PlanetModel.GetModel<IPlanetAtmosphereScatteringModel>( );
-			throw new NotImplementedException( );
+		//	IPlanetAtmosphereScatteringModel model = project.PlanetModel.GetModel<IPlanetAtmosphereScatteringModel>( );
+			ScatteringAtmosphereBuildControl control = new ScatteringAtmosphereBuildControl( );
+			control.Template = template;
+			return control;
 		}
 
 		/// <summary>

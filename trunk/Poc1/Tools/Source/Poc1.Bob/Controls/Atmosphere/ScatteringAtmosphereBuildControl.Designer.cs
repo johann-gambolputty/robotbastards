@@ -1,6 +1,6 @@
 namespace Poc1.Bob.Controls.Atmosphere
 {
-	partial class AtmosphereBuildControl
+	partial class ScatteringAtmosphereBuildControl
 	{
 		/// <summary> 
 		/// Required designer variable.
@@ -29,19 +29,19 @@ namespace Poc1.Bob.Controls.Atmosphere
 		private void InitializeComponent( )
 		{
 			this.buildSettingsGroupBox = new System.Windows.Forms.GroupBox( );
-			this.scatteringResolutionComboBox = new System.Windows.Forms.ComboBox( );
-			this.opticalDepthResolutionComboBox = new System.Windows.Forms.ComboBox( );
-			this.label1 = new System.Windows.Forms.Label( );
-			this.label2 = new System.Windows.Forms.Label( );
+			this.attenuationUpDown = new System.Windows.Forms.NumericUpDown( );
 			this.label3 = new System.Windows.Forms.Label( );
+			this.label2 = new System.Windows.Forms.Label( );
+			this.label1 = new System.Windows.Forms.Label( );
+			this.opticalDepthResolutionComboBox = new System.Windows.Forms.ComboBox( );
+			this.scatteringResolutionComboBox = new System.Windows.Forms.ComboBox( );
 			this.atmosphereParametersGroupBox = new System.Windows.Forms.GroupBox( );
 			this.atmosphereParametersPropertyGrid = new System.Windows.Forms.PropertyGrid( );
-			this.attenuationUpDown = new System.Windows.Forms.NumericUpDown( );
 			this.buildButton = new System.Windows.Forms.Button( );
 			this.buildProgressBar = new System.Windows.Forms.ProgressBar( );
 			this.buildSettingsGroupBox.SuspendLayout( );
-			this.atmosphereParametersGroupBox.SuspendLayout( );
 			( ( System.ComponentModel.ISupportInitialize )( this.attenuationUpDown ) ).BeginInit( );
+			this.atmosphereParametersGroupBox.SuspendLayout( );
 			this.SuspendLayout( );
 			// 
 			// buildSettingsGroupBox
@@ -60,31 +60,31 @@ namespace Poc1.Bob.Controls.Atmosphere
 			this.buildSettingsGroupBox.TabStop = false;
 			this.buildSettingsGroupBox.Text = "Build Settings";
 			// 
-			// scatteringResolutionComboBox
+			// attenuationUpDown
 			// 
-			this.scatteringResolutionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.scatteringResolutionComboBox.FormattingEnabled = true;
-			this.scatteringResolutionComboBox.Location = new System.Drawing.Point( 130, 19 );
-			this.scatteringResolutionComboBox.Name = "scatteringResolutionComboBox";
-			this.scatteringResolutionComboBox.Size = new System.Drawing.Size( 54, 21 );
-			this.scatteringResolutionComboBox.TabIndex = 0;
+			this.attenuationUpDown.Location = new System.Drawing.Point( 130, 81 );
+			this.attenuationUpDown.Minimum = new decimal( new int[] {
+            2,
+            0,
+            0,
+            0} );
+			this.attenuationUpDown.Name = "attenuationUpDown";
+			this.attenuationUpDown.Size = new System.Drawing.Size( 54, 20 );
+			this.attenuationUpDown.TabIndex = 9;
+			this.attenuationUpDown.Value = new decimal( new int[] {
+            5,
+            0,
+            0,
+            0} );
 			// 
-			// opticalDepthResolutionComboBox
+			// label3
 			// 
-			this.opticalDepthResolutionComboBox.FormattingEnabled = true;
-			this.opticalDepthResolutionComboBox.Location = new System.Drawing.Point( 130, 53 );
-			this.opticalDepthResolutionComboBox.Name = "opticalDepthResolutionComboBox";
-			this.opticalDepthResolutionComboBox.Size = new System.Drawing.Size( 54, 21 );
-			this.opticalDepthResolutionComboBox.TabIndex = 1;
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point( 21, 22 );
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size( 103, 13 );
-			this.label1.TabIndex = 2;
-			this.label1.Text = "Scattering resolution";
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point( 21, 83 );
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size( 102, 13 );
+			this.label3.TabIndex = 4;
+			this.label3.Text = "Attenuation samples";
 			// 
 			// label2
 			// 
@@ -95,14 +95,31 @@ namespace Poc1.Bob.Controls.Atmosphere
 			this.label2.TabIndex = 3;
 			this.label2.Text = "Optical depth resolution";
 			// 
-			// label3
+			// label1
 			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point( 21, 83 );
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size( 102, 13 );
-			this.label3.TabIndex = 4;
-			this.label3.Text = "Attenuation samples";
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point( 21, 24 );
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size( 103, 13 );
+			this.label1.TabIndex = 2;
+			this.label1.Text = "Scattering resolution";
+			// 
+			// opticalDepthResolutionComboBox
+			// 
+			this.opticalDepthResolutionComboBox.FormattingEnabled = true;
+			this.opticalDepthResolutionComboBox.Location = new System.Drawing.Point( 130, 53 );
+			this.opticalDepthResolutionComboBox.Name = "opticalDepthResolutionComboBox";
+			this.opticalDepthResolutionComboBox.Size = new System.Drawing.Size( 54, 21 );
+			this.opticalDepthResolutionComboBox.TabIndex = 1;
+			// 
+			// scatteringResolutionComboBox
+			// 
+			this.scatteringResolutionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.scatteringResolutionComboBox.FormattingEnabled = true;
+			this.scatteringResolutionComboBox.Location = new System.Drawing.Point( 130, 21 );
+			this.scatteringResolutionComboBox.Name = "scatteringResolutionComboBox";
+			this.scatteringResolutionComboBox.Size = new System.Drawing.Size( 54, 21 );
+			this.scatteringResolutionComboBox.TabIndex = 0;
 			// 
 			// atmosphereParametersGroupBox
 			// 
@@ -125,23 +142,6 @@ namespace Poc1.Bob.Controls.Atmosphere
 			this.atmosphereParametersPropertyGrid.TabIndex = 0;
 			this.atmosphereParametersPropertyGrid.ToolbarVisible = false;
 			// 
-			// attenuationUpDown
-			// 
-			this.attenuationUpDown.Location = new System.Drawing.Point( 130, 81 );
-			this.attenuationUpDown.Minimum = new decimal( new int[] {
-            2,
-            0,
-            0,
-            0} );
-			this.attenuationUpDown.Name = "attenuationUpDown";
-			this.attenuationUpDown.Size = new System.Drawing.Size( 54, 20 );
-			this.attenuationUpDown.TabIndex = 9;
-			this.attenuationUpDown.Value = new decimal( new int[] {
-            5,
-            0,
-            0,
-            0} );
-			// 
 			// buildButton
 			// 
 			this.buildButton.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -151,6 +151,7 @@ namespace Poc1.Bob.Controls.Atmosphere
 			this.buildButton.TabIndex = 2;
 			this.buildButton.Text = "Build";
 			this.buildButton.UseVisualStyleBackColor = true;
+			this.buildButton.Click += new System.EventHandler( this.buildButton_Click );
 			// 
 			// buildProgressBar
 			// 
@@ -160,7 +161,7 @@ namespace Poc1.Bob.Controls.Atmosphere
 			this.buildProgressBar.Size = new System.Drawing.Size( 194, 23 );
 			this.buildProgressBar.TabIndex = 3;
 			// 
-			// AtmosphereControl
+			// ScatteringAtmosphereBuildControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -168,12 +169,12 @@ namespace Poc1.Bob.Controls.Atmosphere
 			this.Controls.Add( this.buildProgressBar );
 			this.Controls.Add( this.buildButton );
 			this.Controls.Add( this.buildSettingsGroupBox );
-			this.Name = "AtmosphereControl";
+			this.Name = "ScatteringAtmosphereBuildControl";
 			this.Size = new System.Drawing.Size( 194, 363 );
 			this.buildSettingsGroupBox.ResumeLayout( false );
 			this.buildSettingsGroupBox.PerformLayout( );
-			this.atmosphereParametersGroupBox.ResumeLayout( false );
 			( ( System.ComponentModel.ISupportInitialize )( this.attenuationUpDown ) ).EndInit( );
+			this.atmosphereParametersGroupBox.ResumeLayout( false );
 			this.ResumeLayout( false );
 
 		}

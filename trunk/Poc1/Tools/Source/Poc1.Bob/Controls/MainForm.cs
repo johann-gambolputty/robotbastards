@@ -9,6 +9,7 @@ using Bob.Core.Windows.Forms.Ui.Docking;
 using Bob.Core.Workspaces.Interfaces;
 using Poc1.Bob.Core.Classes;
 using Poc1.Bob.Core.Classes.Commands;
+using Poc1.Bob.Core.Classes.Projects.Planets;
 using Poc1.Bob.Core.Classes.Projects.Planets.Spherical;
 using Poc1.Bob.Core.Interfaces.Projects;
 using Poc1.Bob.Projects;
@@ -26,6 +27,7 @@ namespace Poc1.Bob.Controls
 			m_ViewManager = new DockedHostPaneViewManager( mainDockPanel, "Properties" );
 			m_MessageUi = new MessageUiProvider( this );
 			m_ViewFactory = new ViewFactory( m_MessageUi );
+			IPlanetViews planetViews = new SpherePlanetDockingViews( m_ViewManager, m_ViewFactory );
 			m_Projects = new ProjectGroupContainer
 				(
 					"All Project Types", "All Project Types",
@@ -35,16 +37,13 @@ namespace Poc1.Bob.Controls
 						new ProjectGroup
 						(
 							"Spherical Planets", "Spherical Planet Project Types",
-							new ProjectGroup
-							(
-								"Spherical Planet Environments", "Spherical Planet Environment Project Types",
-								new SpherePlanetAtmosphereProjectType( )
-								//new Template( "Distributions", "Spherical Planet Distribution Template" ),
-								//new Template( "Clouds", "Spherical Planet Cloud Template" ),
-								//new Template( "Oceans", "Spherical Planet Ocean Template" )
-							),
-						//	new SpherePlanetDockingProjectType( m_ViewManager, m_ViewFactory )
-							new SpherePlanetProjectType( new SpherePlanetDockingViews( m_ViewManager, m_ViewFactory ) )
+							//new ProjectGroup
+							//(
+							//    "Spherical Planet Environments", "Spherical Planet Environment Project Types",
+							//    new SpherePlanetAtmosphereProjectType( )
+							//),
+							new TerrestrialSpherePlanetProjectType( planetViews ),
+							new SpherePlanetProjectType( planetViews )
 						)
 					)
 				);

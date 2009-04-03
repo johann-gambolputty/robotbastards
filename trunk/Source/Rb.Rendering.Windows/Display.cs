@@ -236,6 +236,7 @@ namespace Rb.Rendering.Windows
 		protected virtual void Draw( )
 		{
 			m_DefaultRenderContext.RenderTime = TinyTime.CurrentTime;
+			++m_DefaultRenderContext.RenderFrameCounter;
 			if ( m_Viewers.Count == 0 )
 			{
 				Graphics.Renderer.ClearDepth( 1.0f );
@@ -245,7 +246,7 @@ namespace Rb.Rendering.Windows
 			{
 				foreach ( Viewer viewer in m_Viewers )
 				{
-					viewer.Render( );
+					viewer.Render( m_DefaultRenderContext );
 				}
 			}
 

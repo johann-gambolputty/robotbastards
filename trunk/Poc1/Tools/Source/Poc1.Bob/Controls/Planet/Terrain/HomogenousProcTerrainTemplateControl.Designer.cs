@@ -81,6 +81,7 @@ namespace Poc1.Bob.Controls.Planet.Terrain
 			this.heightFunctionTypeComboBox.Name = "heightFunctionTypeComboBox";
 			this.heightFunctionTypeComboBox.Size = new System.Drawing.Size( 195, 21 );
 			this.heightFunctionTypeComboBox.TabIndex = 0;
+			this.heightFunctionTypeComboBox.SelectedIndexChanged += new System.EventHandler( this.heightFunctionTypeComboBox_SelectedIndexChanged );
 			// 
 			// groundFunctionTabPage
 			// 
@@ -111,6 +112,7 @@ namespace Poc1.Bob.Controls.Planet.Terrain
 			this.groundFunctionTypeComboBox.Name = "groundFunctionTypeComboBox";
 			this.groundFunctionTypeComboBox.Size = new System.Drawing.Size( 195, 21 );
 			this.groundFunctionTypeComboBox.TabIndex = 0;
+			this.groundFunctionTypeComboBox.SelectedIndexChanged += new System.EventHandler( this.groundFunctionTypeComboBox_SelectedIndexChanged );
 			// 
 			// rebuildModelsButton
 			// 
