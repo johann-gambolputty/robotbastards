@@ -1,4 +1,3 @@
-using Poc1.Core.Interfaces;
 using Poc1.Core.Interfaces.Astronomical.Planets.Models;
 
 namespace Poc1.Core.Classes.Astronomical.Planets.Models
@@ -6,25 +5,9 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models
 	/// <summary>
 	/// Planet atmosphere scattering model
 	/// </summary>
-	public class PlanetAtmosphereScatteringModel : AbstractPlanetEnvironmentModel, IPlanetAtmosphereScatteringModel
+	public class PlanetAtmosphereScatteringModel : PlanetAtmosphereModel, IPlanetAtmosphereScatteringModel
 	{
 		#region IPlanetAtmosphereScatteringModel Members
-
-		/// <summary>
-		/// Gets/sets the thickness of the atmosphere
-		/// </summary>
-		public Units.Metres Thickness
-		{
-			get { return m_Thickness; }
-			set
-			{
-				if ( m_Thickness != value )
-				{
-					OnModelChanged( );
-					m_Thickness = value;
-				}
-			}
-		}
 
 		/// <summary>
 		/// Gets/sets the atmosphere phase coefficient
@@ -85,7 +68,6 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models
 
 		#region Private Members
 
-		private Units.Metres m_Thickness	= new Units.Metres( 10000 );
 		private float m_PhaseCoefficient	= -0.9999f;
 		private float m_PhaseWeight			= 1.0f;
 		private float m_MiePhaseWeight		= 1.0f;

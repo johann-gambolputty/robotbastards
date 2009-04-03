@@ -19,6 +19,15 @@ namespace Rb.Rendering
 			set { m_RenderTime = value;  }
 		}
 
+		/// <summary>
+		/// Gets the number of frames rendered so far
+		/// </summary>
+		public ulong RenderFrameCounter
+		{
+			get { return m_FrameCount; }
+			set { m_FrameCount = value; }
+		}
+
         /// <summary>
         /// Sets or gets the global technique
         /// </summary>
@@ -145,6 +154,7 @@ namespace Rb.Rendering
 
 		#region Private stuff
 
+		private ulong m_FrameCount;
 		private long m_RenderTime = 1;
         private readonly List< ITechnique > m_GlobalTechniques = new List< ITechnique >( );
 

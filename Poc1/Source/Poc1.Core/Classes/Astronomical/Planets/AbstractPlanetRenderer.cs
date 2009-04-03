@@ -6,6 +6,7 @@ using Poc1.Core.Interfaces.Astronomical.Planets;
 using Poc1.Core.Interfaces.Astronomical.Planets.Renderers;
 using Poc1.Core.Interfaces.Astronomical.Planets.Spherical;
 using Poc1.Core.Interfaces.Rendering;
+using Rb.Core.Components;
 using Rb.Core.Components.Generic;
 using Rb.Core.Utils;
 using Rb.Rendering;
@@ -65,6 +66,16 @@ namespace Poc1.Core.Classes.Astronomical.Planets
 		}
 
 		#region IPlanetRenderer Members
+
+		/// <summary>
+		/// Gets the first renderer in this composite that is an instance of type TRenderer
+		/// </summary>
+		/// <typeparam name="TRenderer">Renderer type</typeparam>
+		/// <returns>Returns the first renderer that is an instance of type TRenderer, or null</returns>
+		public TRenderer GetRenderer<TRenderer>( )
+		{
+			return CompositeUtils.GetComponent<TRenderer>( this );
+		}
 
 		/// <summary>
 		/// Gets the planet that this renderer is attached to

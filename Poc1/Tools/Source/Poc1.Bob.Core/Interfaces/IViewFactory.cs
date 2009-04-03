@@ -36,7 +36,7 @@ namespace Poc1.Bob.Core.Interfaces
 		/// <summary>
 		/// Creates a view used to edit an homogenous procedural terrain model
 		/// </summary>
-		IHomogenousProcTerrainView CreateHomogenousProcTerrainTemplateView( IPlanetHomogenousProceduralTerrainTemplate template, IPlanetHomogenousProceduralTerrainModel model );
+		IHomogenousProceduralTerrainView CreateHomogenousProcTerrainTemplateView( IPlanetHomogenousProceduralTerrainTemplate template, IPlanetHomogenousProceduralTerrainModel model );
 
 		/// <summary>
 		/// Creates a view used to edit flat cloud model templates

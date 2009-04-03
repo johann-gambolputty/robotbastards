@@ -7,15 +7,16 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models.Templates
 	/// <summary>
 	/// Template for homogenous procedural terrain models
 	/// </summary>
-	public class PlanetHomogenousProceduralTerrainTemplate : PlanetEnvironmentModelTemplate, IPlanetHomogenousProceduralTerrainTemplate
+	public class PlanetHomogenousProceduralTerrainTemplate : PlanetTerrainTemplate, IPlanetHomogenousProceduralTerrainTemplate
 	{
 		/// <summary>
 		/// Default constructor
 		/// </summary>
 		public PlanetHomogenousProceduralTerrainTemplate( )
 		{
-			TerrainFunction heightFunction = new TerrainFunction( TerrainFunctionType.RidgedFractal );
+		//	TerrainFunction heightFunction = new TerrainFunction( TerrainFunctionType.RidgedFractal );
 		//	FractalTerrainParameters parameters = ( FractalTerrainParameters )heightFunction.Parameters;
+			TerrainFunction heightFunction = new TerrainFunction( TerrainFunctionType.Flat );
 			m_HeightFunction = heightFunction;
 		}
 
@@ -24,6 +25,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models.Templates
 		/// </summary>
 		public override void SetupInstance( IPlanetEnvironmentModel model, ModelTemplateInstanceContext context )
 		{
+			base.SetupInstance( model, context );
 			IPlanetHomogenousProceduralTerrainModel terrainModel = ( IPlanetHomogenousProceduralTerrainModel )model;
 			terrainModel.HeightFunction = HeightFunction;
 			terrainModel.GroundOffsetFunction = GroundOffsetFunction;

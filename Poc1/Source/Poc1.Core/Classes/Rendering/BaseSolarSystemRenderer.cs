@@ -1,4 +1,5 @@
 using Poc1.Core.Interfaces.Astronomical;
+using Poc1.Core.Interfaces.Astronomical.Planets.Renderers;
 using Poc1.Core.Interfaces.Rendering;
 using Poc1.Core.Interfaces.Rendering.Cameras;
 using Rb.Core.Utils;
@@ -57,6 +58,7 @@ namespace Poc1.Core.Classes.Rendering
 			{
 				m_Camera = camera;
 				RenderTime = originalContext.RenderTime;
+				RenderFrameCounter = originalContext.RenderFrameCounter;
 			}
 
 			/// <summary>
@@ -85,8 +87,22 @@ namespace Poc1.Core.Classes.Rendering
 				set { m_CurrentPass = value; }
 			}
 
+			/// <summary>
+			/// Gets the current planetary atmosphere renderer that the camera is inside. Returns null if the camera
+			/// not inside any planetary atmospheres
+			/// </summary>
+			/// <remarks>
+			/// Used to set up rendering effects for objects seen through atmospheres.
+			/// </remarks>
+			public IPlanetAtmosphereRenderer InAtmosphereRenderer
+			{
+				get { return m_InAtmosphereRenderer; }
+				set { m_InAtmosphereRenderer = value; }
+			}
+
 			private UniRenderPass m_CurrentPass;
 			private IUniCamera m_Camera;
+			private IPlanetAtmosphereRenderer m_InAtmosphereRenderer;
 		}
 
 

@@ -47,11 +47,11 @@
     <Compile Include="Controls\AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Atmosphere\AtmosphereBuildControl.cs">
+    <Compile Include="Controls\Atmosphere\ScatteringAtmosphereBuildControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Atmosphere\AtmosphereBuildControl.Designer.cs">
-      <DependentUpon>AtmosphereBuildControl.cs</DependentUpon>
+    <Compile Include="Controls\Atmosphere\ScatteringAtmosphereBuildControl.Designer.cs">
+      <DependentUpon>ScatteringAtmosphereBuildControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Biomes\BiomeLatitudeDistributionDisplay.cs">
       <SubType>UserControl</SubType>
@@ -185,6 +185,12 @@
     <Compile Include="Controls\Rendering\UniCameraViewControl.Designer.cs">
       <DependentUpon>UniCameraViewControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Rings\SpherePlanetRingTemplateControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Rings\SpherePlanetRingTemplateControl.Designer.cs">
+      <DependentUpon>SpherePlanetRingTemplateControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Waves\WaveAnimatorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -201,9 +207,9 @@
       <SubType>Designer</SubType>
       <DependentUpon>AboutBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Atmosphere\AtmosphereBuildControl.resx">
+    <EmbeddedResource Include="Controls\Atmosphere\ScatteringAtmosphereBuildControl.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>AtmosphereBuildControl.cs</DependentUpon>
+      <DependentUpon>ScatteringAtmosphereBuildControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Biomes\BiomeLatitudeDistributionDisplay.resx">
       <SubType>Designer</SubType>
@@ -280,6 +286,10 @@
     <EmbeddedResource Include="Controls\Rendering\UniCameraViewControl.resx">
       <DependentUpon>UniCameraViewControl.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Rings\SpherePlanetRingTemplateControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SpherePlanetRingTemplateControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Waves\WaveAnimatorControl.resx">
       <SubType>Designer</SubType>

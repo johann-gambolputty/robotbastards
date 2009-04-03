@@ -16,7 +16,30 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models.Templates
 		public Range<Units.Metres> RingWidth
 		{
 			get { return m_RingWidth; }
-			set { m_RingWidth = value; }
+			set
+			{
+				if ( m_RingWidth != value )
+				{
+					m_RingWidth = value;
+					OnTemplateChanged( );
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets/sets the probability that this template will create a ring model for the planet
+		/// </summary>
+		public float ProbabilityOfRings
+		{
+			get { return m_Probability; }
+			set
+			{
+				if ( m_Probability != value )
+				{
+					m_Probability = value;
+					OnTemplateChanged( );
+				}
+			}
 		}
 		
 		/// <summary>
@@ -31,7 +54,8 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models.Templates
 
 		#region Private Members
 
-		private Range<Units.Metres> m_RingWidth;
+		private float m_Probability = 1.0f;
+		private Range<Units.Metres> m_RingWidth = new Range<Units.Metres>( new Units.Metres( 500 ), new Units.Metres( 5000 ) );
 
 		#endregion
 	}

@@ -46,6 +46,7 @@
     <Compile Include="Classes\Astronomical\Planets\Generic\Models\GenericPlanetRingModel.cs" />
     <Compile Include="Classes\Astronomical\Planets\Generic\Renderers\GenericPlanetEnvironmentRenderer.cs" />
     <Compile Include="Classes\Astronomical\Planets\Models\AbstractPlanetEnvironmentModel.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Models\PlanetAtmosphereModel.cs" />
     <Compile Include="Classes\Astronomical\Planets\Models\PlanetAtmosphereScatteringModel.cs" />
     <Compile Include="Classes\Astronomical\Planets\Models\PlanetOceanModel.cs" />
     <Compile Include="Classes\Astronomical\Planets\Models\PlanetHomogenousProceduralTerrainModel.cs" />
@@ -53,11 +54,13 @@
     <Compile Include="Classes\Astronomical\Planets\Models\PlanetTerrainModel.cs" />
     <Compile Include="Classes\Astronomical\Planets\Models\Templates\AbstractPlanetEnvironmentModelTemplateVisitor.cs" />
     <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetAtmosphereScatteringTemplate.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetAtmosphereTemplate.cs" />
     <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetHomogenousProceduralTerrainTemplate.cs" />
     <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetSimpleCloudTemplate.cs" />
     <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetEnvironmentModelTemplate.cs" />
     <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetModelTemplate.cs" />
     <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetRingTemplate.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetTerrainTemplate.cs" />
     <Compile Include="Classes\Astronomical\Planets\PlanetModelFactory.cs" />
     <Compile Include="Classes\Astronomical\Planets\PlanetRendererFactory.cs" />
     <Compile Include="Classes\Astronomical\Planets\Renderers\AbstractPlanetEnvironmentRenderer.cs" />
@@ -65,7 +68,11 @@
     <Compile Include="Classes\Astronomical\Planets\Renderers\Patches\TerrainPatch.cs" />
     <Compile Include="Classes\Astronomical\Planets\Renderers\Patches\TerrainPatchBuilder.cs" />
     <Compile Include="Classes\Astronomical\Planets\Renderers\Patches\TerrainPatchBuildItem.cs" />
-    <Compile Include="Classes\Astronomical\Planets\Renderers\Patches\TerrainPatchBuildParameters.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\IPlanetAtmosphereModel.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\Templates\IPlanetAtmosphereScatteringTemplate.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Models\Templates\IPlanetTerrainTemplate.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Renderers\IPlanetHomogenousProceduralTerrainRenderer.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Renderers\Patches\TerrainPatchBuildParameters.cs" />
     <Compile Include="Classes\Astronomical\Planets\Renderers\Patches\TerrainPatchConstants.cs" />
     <Compile Include="Classes\Astronomical\Planets\Renderers\Patches\TerrainPatchVertices.cs" />
     <Compile Include="Classes\Astronomical\Planets\Renderers\PackTextures\PlanetPackTextureTechnique.cs" />
@@ -133,7 +140,7 @@
     <Compile Include="Interfaces\Astronomical\Planets\Renderers\IPlanetAtmosphereRenderer.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Renderers\IPlanetEnvironmentRenderer.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Renderers\IPlanetEnvironmentRendererFactory.cs" />
-    <Compile Include="Interfaces\Astronomical\Planets\Renderers\PackTextures\IPackTextureProvider.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Renderers\PackTextures\ITerrainPackTextureProvider.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Renderers\Patches\ITerrainPatch.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Renderers\Patches\ITerrainPatchGenerator.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Renderers\Patches\TerrainPatchVertex.cs" />
@@ -167,6 +174,10 @@
     <ProjectReference Include="..\..\..\Source\Rb.Interaction\Rb.Interaction.csproj">
       <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
       <Name>Rb.Interaction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Log\Rb.Log.csproj">
+      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
+      <Name>Rb.Log</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.csproj">
       <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>

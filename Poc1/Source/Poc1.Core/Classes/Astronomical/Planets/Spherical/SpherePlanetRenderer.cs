@@ -40,8 +40,8 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical
 		{
 			TypeOrderedRenderOrderSorter sorter = new TypeOrderedRenderOrderSorter( true );
 			sorter.AddFirstType<SpherePlanetOceanRenderer>( );
+			sorter.AddFirstType<SpherePlanetHomogenousProceduralTerrainRenderer>( );
 			sorter.AddFirstType<SpherePlanetSimpleCloudShellRenderer>( );
-
 			return sorter;
 		}
 

@@ -95,9 +95,11 @@ float4 FragmentShader( FragmentShaderInput input ) : COLOR
 	float2 se = input.m_SlopeElevation;
 	float height = length( input.m_WorldPos );
 	float shade = saturate( -dot( input.m_Normal.xyz, SunDir ) );
-	float4 diffuse = GetFragmentTerrainColour( input, se ) * shade;
+	
+	return float4( shade.xxx, 1 );
+	//float4 diffuse = GetFragmentTerrainColour( input, se ) * shade;
 
-	return float4( GetScatteredObjectColour( input.m_WorldPos, diffuse.rgb ), alpha );
+	//return float4( GetScatteredObjectColour( input.m_WorldPos, diffuse.rgb ), alpha );
 }
 
 float4 DbgSlopeFragmentShader( FragmentShaderInput input ) : COLOR

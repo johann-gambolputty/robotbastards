@@ -49,7 +49,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical
 
 		#region Private Members
 
-		private Units.Metres m_Radius;
+		private Units.Metres m_Radius = new Units.Metres( 10000 );
 
 		#endregion
 	}

@@ -48,6 +48,7 @@ namespace Poc1.Bob.Core.Classes.Planets
 				{
 					return new ComponentType[]
 						{
+							new ComponentType( typeof( SpherePlanetRingTemplate ) ),
 							new ComponentType( typeof( PlanetHomogenousProceduralTerrainTemplate ) ), 
 							new ComponentType( typeof( PlanetSimpleCloudTemplate ) ), 
 							new ComponentType( typeof( PlanetAtmosphereScatteringTemplate ) ),

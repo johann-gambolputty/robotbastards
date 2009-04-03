@@ -32,13 +32,13 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Models.Templates
 			base.SetupInstance( model, context );
 
 			ISpherePlanetRingModel ringModel = ( ISpherePlanetRingModel )model;
-			double radius = Range.Mid( InnerRadiusMultiple, ( float )context.Random.NextDouble( ) );
-			ringModel.InnerRadius = new Units.Metres( radius );
+			double radiusMultiplier = Range.Mid( InnerRadiusMultiple, ( float )context.Random.NextDouble( ) );
+			ringModel.InnerRadius = new Units.Metres( ringModel.PlanetModel.Radius * radiusMultiplier );
 		}
 
 		#region Private Members
 
-		private Range<float> m_InnerRadiusMultiple;
+		private Range<float> m_InnerRadiusMultiple = new Range<float>( 1.5f, 3.0f );
 
 		#endregion
 	}

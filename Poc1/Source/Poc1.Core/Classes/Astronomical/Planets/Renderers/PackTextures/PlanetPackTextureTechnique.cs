@@ -23,7 +23,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Renderers.PackTextures
 		/// </summary>
 		/// <param name="textureProvider">Planet texture provider</param>
 		/// <param name="effectPath">Path to the terrain effect</param>
-		public PlanetPackTextureTechnique( IPackTextureProvider textureProvider, string effectPath )
+		public PlanetPackTextureTechnique( ITerrainPackTextureProvider textureProvider, string effectPath )
 		{
 			Arguments.CheckNotNull( textureProvider, "textureProvider" );
 			Arguments.CheckNotNullOrEmpty( effectPath, "effectPath" );
@@ -82,7 +82,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Renderers.PackTextures
 
 		#region Private Members
 
-		private readonly IPackTextureProvider m_TextureProvider;
+		private readonly ITerrainPackTextureProvider m_TextureProvider;
 		private readonly EffectAssetHandle m_Effect;
 		private readonly ITexture m_NoiseTexture;
 		private TechniqueSelector m_Technique;
@@ -91,7 +91,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Renderers.PackTextures
 		/// <summary>
 		/// Sets up the terrain rendering effect
 		/// </summary>
-		protected virtual void SetupTerrainEffect( IUniCamera camera, IEffect effect, IPlanet planet, IPackTextureProvider textureProvider )
+		protected virtual void SetupTerrainEffect( IUniCamera camera, IEffect effect, IPlanet planet, ITerrainPackTextureProvider textureProvider )
 		{
 			ITexture packTexture = textureProvider.PackTexture;
 			ITexture typesTexture = textureProvider.LookupTexture;

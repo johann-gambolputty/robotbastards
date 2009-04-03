@@ -1,6 +1,5 @@
 using System;
 using System.Drawing;
-using Rb.Core.Utils;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Interfaces.Objects.Cameras;
@@ -25,15 +24,6 @@ namespace Rb.Rendering
 			get { return m_Control; }
 			set { m_Control = value; }
     	}
-
-		/// <summary>
-		/// The rendering context for the viewer
-		/// </summary>
-        public IRenderContext Context
-        {
-            get { return m_Context; }
-            set { m_Context = value; }
-        }
 
         /// <summary>
         /// The technique used to display the renderable object (can be null)
@@ -122,11 +112,11 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Renders the view
 		/// </summary>
-        public void Render( )
+        public void Render( IRenderContext context )
         {
 			if ( PreRender != null )
 			{
-				PreRender( m_Context );
+				PreRender( context );
 			}
 			IRenderer renderer = Graphics.Renderer;
 			Rectangle oldRect = renderer.Viewport;
@@ -141,13 +131,11 @@ namespace Rb.Rendering
 		//	renderer.ClearColourToVerticalGradient( Color.DarkSeaGreen, Color.LightSeaGreen );
 			renderer.ClearColour( Color.DarkSeaGreen );
 
-            m_Context.RenderTime = TinyTime.CurrentTime;
-
 			if ( m_Camera != null )
 			{
 				m_Camera.Begin( );
 			}
-            m_Context.ApplyTechnique( m_Technique, m_Renderable );
+            context.ApplyTechnique( m_Technique, m_Renderable );
 
 			if ( m_Camera != null )
 			{
@@ -156,7 +144,7 @@ namespace Rb.Rendering
 
 			if ( m_ShowFps )
 			{
-				m_FpsDisplay.Render( m_Context );
+				m_FpsDisplay.Render( context );
 			}
 
 			Graphics.Renderer.SetViewport( oldRect.Left, oldRect.Top, oldRect.Width, oldRect.Height );
@@ -171,14 +159,12 @@ namespace Rb.Rendering
 		{
 			Dispose( m_FpsDisplay );
 			Dispose( m_Camera );
-			Dispose( m_Context );
 			Dispose( m_Renderable );
 			Dispose( m_Technique );
 
 			m_Control		= null;
 			m_FpsDisplay	= null;
 			m_Camera		= null;
-			m_Context		= null;
 			m_Renderable	= null;
 			m_Technique		= null;
 		}
@@ -199,7 +185,6 @@ namespace Rb.Rendering
 		private object				m_Control;
 		private FpsDisplay			m_FpsDisplay = new FpsDisplay( );
         private ICamera				m_Camera;
-        private IRenderContext      m_Context = new RenderContext( );
         private IRenderable         m_Renderable;
         private ITechnique          m_Technique;
 		private RectangleF			m_ViewRect = new RectangleF( 0, 0, 1, 1 );

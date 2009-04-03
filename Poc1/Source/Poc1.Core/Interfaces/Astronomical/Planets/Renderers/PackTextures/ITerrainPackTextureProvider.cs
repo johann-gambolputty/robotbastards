@@ -6,7 +6,7 @@ namespace Poc1.Core.Interfaces.Astronomical.Planets.Renderers.PackTextures
 	/// <summary>
 	/// Terrain pack texture provider
 	/// </summary>
-	public interface IPackTextureProvider
+	public interface ITerrainPackTextureProvider
 	{
 		/// <summary>
 		/// Gets the terrain pack texture

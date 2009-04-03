@@ -1,5 +1,8 @@
 using Poc1.Core.Classes.Astronomical.Planets.Renderers.Patches;
+using Poc1.Core.Interfaces;
+using Poc1.Core.Interfaces.Astronomical.Planets;
 using Poc1.Core.Interfaces.Astronomical.Planets.Renderers.Patches;
+using Poc1.Core.Interfaces.Astronomical.Planets.Spherical;
 using Rb.Core.Maths;
 
 namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers.Patches
@@ -21,10 +24,11 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers.Patches
 		/// <summary>
 		/// Refreshes the renderer (empties terrain patch quad trees)
 		/// </summary>
-		public override void Refresh( )
+		public override void Refresh( IPlanet planet )
 		{
-			base.Refresh( );
-		//	float uvRes = ( float )( SpherePlanet.PlanetModel.Radius.ToMetres / 5000.0 );
+			base.Refresh( planet );
+			Units.Metres radius = ( ( ISpherePlanet )planet ).Model.Radius.ToMetres;
+			float uvRes = ( float )( radius / 5000.0 );
 			CreateCubePatches( 20, 1, uvRes );
 		}
 
