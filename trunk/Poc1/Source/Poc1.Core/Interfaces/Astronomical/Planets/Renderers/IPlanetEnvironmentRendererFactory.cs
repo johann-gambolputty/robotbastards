@@ -11,7 +11,7 @@ namespace Poc1.Core.Interfaces.Astronomical.Planets.Renderers
 		/// Creates a renderer for a model
 		/// </summary>
 		/// <param name="model">Source model</param>
-		/// <returns>Returns a renderer for a model. Returns null if no renderer is associated with the model</returns>
-		IPlanetEnvironmentRenderer CreateModelRenderer( IPlanetEnvironmentModel model );
+		/// <returns>Returns a set of renderers for a model. Returns null if no renderer is associated with the model</returns>
+		IPlanetEnvironmentRenderer[] CreateModelRenderer( IPlanetEnvironmentModel model );
 	}
 }

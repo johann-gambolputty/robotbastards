@@ -15,8 +15,8 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// Creates a renderer for a model
 		/// </summary>
 		/// <param name="model">Source model</param>
-		/// <returns>Returns a renderer for a model. Returns null if no renderer is associated with the model</returns>
-		public IPlanetEnvironmentRenderer CreateModelRenderer( IPlanetEnvironmentModel model )
+		/// <returns>Returns a set of renderers for a model. Returns null if no renderer is associated with the model</returns>
+		public IPlanetEnvironmentRenderer[] CreateModelRenderer( IPlanetEnvironmentModel model )
 		{
 			return model.InvokeVisit( m_Visitor );
 		}
@@ -30,13 +30,13 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 		/// <summary>
 		/// Render factory visitor
 		/// </summary>
-		private class RendererFactoryVisitor : IPlanetEnvironmentModelVisitor<IPlanetEnvironmentRenderer>
+		private class RendererFactoryVisitor : IPlanetEnvironmentModelVisitor<IPlanetEnvironmentRenderer[]>
 		{
 			/// <summary>
 			/// Visits a model that is not recognized by the compiler
 			/// </summary>
 			/// <param name="model">Model to visit</param>
-			public IPlanetEnvironmentRenderer Visit( IPlanetEnvironmentModel model )
+			public IPlanetEnvironmentRenderer[] Visit( IPlanetEnvironmentModel model )
 			{
 				return null;
 			}
@@ -44,42 +44,46 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			/// <summary>
 			/// Creates a renderer for an ocean model
 			/// </summary>
-			public IPlanetEnvironmentRenderer Visit( IPlanetOceanModel model )
+			public IPlanetEnvironmentRenderer[] Visit( IPlanetOceanModel model )
 			{
-				return new SpherePlanetOceanRenderer( );
+				return new IPlanetEnvironmentRenderer[] { new SpherePlanetOceanRenderer( ) };
 			}
 
 			/// <summary>
 			/// Creates a renderer for an atmosphere model
 			/// </summary>
-			public IPlanetEnvironmentRenderer Visit( IPlanetAtmosphereScatteringModel model )
+			public IPlanetEnvironmentRenderer[] Visit( IPlanetAtmosphereScatteringModel model )
 			{
-				return new SpherePlanetAtmosphereScatteringRenderer( );
+				return new IPlanetEnvironmentRenderer[] { new SpherePlanetAtmosphereScatteringRenderer( ) };
 			}
 
 			/// <summary>
 			/// Creates a renderer for a cloud model
 			/// </summary>
-			public IPlanetEnvironmentRenderer Visit( IPlanetSimpleCloudModel model )
+			public IPlanetEnvironmentRenderer[] Visit( IPlanetSimpleCloudModel model )
 			{
-				return new SpherePlanetSimpleCloudShellRenderer( );
+				return new IPlanetEnvironmentRenderer[] { new SpherePlanetSimpleCloudShellRenderer( ) };
 			}
 
 			/// <summary>
 			/// Creates a renderer for a ring model
 			/// </summary>
-			public IPlanetEnvironmentRenderer Visit( IPlanetRingModel model )
+			public IPlanetEnvironmentRenderer[] Visit( IPlanetRingModel model )
 			{
-				return new SpherePlanetRingRenderer( );
+				return new IPlanetEnvironmentRenderer[] { new SpherePlanetRingRenderer( ) };
 			}
 
 			/// <summary>
 			/// Visits an homogenous procedural terrain model
 			/// </summary>
 			/// <param name="model">Model to visit</param>
-			public IPlanetEnvironmentRenderer Visit( IPlanetHomogenousProceduralTerrainModel model )
+			public IPlanetEnvironmentRenderer[] Visit( IPlanetHomogenousProceduralTerrainModel model )
 			{
-				return new SpherePlanetHomogenousProceduralTerrainRenderer( );
+				return new IPlanetEnvironmentRenderer[]
+					{
+						new SpherePlanetHomogenousProceduralTerrainRenderer( ),
+						new SpherePlanetHomogenousProceduralMarbleRenderer( )
+					};
 			}
 		}
 

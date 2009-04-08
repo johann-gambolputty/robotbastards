@@ -99,7 +99,6 @@ namespace Poc1.Core.Classes.Astronomical.Planets
 
 		#endregion
 
-
 		#region IRenderable<IUniRenderContext> Members
 
 		/// <summary>
@@ -125,11 +124,11 @@ namespace Poc1.Core.Classes.Astronomical.Planets
 				m_OrderedFarRenderables = m_FarSorter.Sort( GetRenderables( ) );
 			}
 
-			//	Push transform
-			UniCamera.PushRenderTransform( TransformType.LocalToWorld, Planet.Transform );
-
 			if ( context.RenderFarObjects )
 			{
+				//	Push transform
+				UniCamera.PushAstroRenderTransform( TransformType.LocalToWorld, Planet.Transform );
+
 				foreach ( IRenderable renderable in m_OrderedFarRenderables )
 				{
 					renderable.Render( context );
@@ -137,6 +136,9 @@ namespace Poc1.Core.Classes.Astronomical.Planets
 			}
 			else
 			{
+				//	Push transform
+				UniCamera.PushRenderTransform( TransformType.LocalToWorld, Planet.Transform );
+
 				foreach ( IRenderable renderable in m_OrderedNearRenderables )
 				{
 					renderable.Render( context );

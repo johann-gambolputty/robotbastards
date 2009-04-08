@@ -41,28 +41,40 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets
 		private readonly IPlanetEnvironmentModelFactory m_ModelFactory;
 		private readonly IPlanetEnvironmentRendererFactory m_RendererFactory;
 		private readonly Dictionary<IPlanetEnvironmentModelTemplate, IPlanetEnvironmentModel> m_ModelMap = new Dictionary<IPlanetEnvironmentModelTemplate, IPlanetEnvironmentModel>( );
-		private readonly Dictionary<IPlanetEnvironmentModel, IPlanetEnvironmentRenderer> m_RendererMap = new Dictionary<IPlanetEnvironmentModel, IPlanetEnvironmentRenderer>( );
+		private readonly Dictionary<IPlanetEnvironmentModel, IPlanetEnvironmentRenderer[]> m_RendererMap = new Dictionary<IPlanetEnvironmentModel, IPlanetEnvironmentRenderer[]>( );
 
+		/// <summary>
+		/// Called when a model is added to a model composite
+		/// </summary>
 		private void OnModelAdded( IComposite<IPlanetEnvironmentModel> composite, IPlanetEnvironmentModel component )
 		{
-			IPlanetEnvironmentRenderer renderer = m_RendererFactory.CreateModelRenderer( component );
-			if ( renderer == null )
+			IPlanetEnvironmentRenderer[] renderers = m_RendererFactory.CreateModelRenderer( component );
+			if ( renderers == null )
 			{
 				return;
 			}
-
-			renderer.PlanetRenderer = m_Planet.Renderer;
-			m_RendererMap.Add( component, renderer );
+			foreach ( IPlanetEnvironmentRenderer renderer in renderers )
+			{
+				renderer.PlanetRenderer = m_Planet.Renderer;
+			}
+			m_RendererMap.Add( component, renderers );
 		}
 
+		/// <summary>
+		/// Called when a model is removed from a model composite
+		/// </summary>
 		private void OnModelRemoved( IComposite<IPlanetEnvironmentModel> composite, IPlanetEnvironmentModel component )
 		{
-			IPlanetEnvironmentRenderer renderer;
-			if ( !m_RendererMap.TryGetValue( component, out renderer ) )
+			IPlanetEnvironmentRenderer[] renderers;
+			if ( !m_RendererMap.TryGetValue( component, out renderers ) )
 			{
 				return;
 			}
-			renderer.PlanetRenderer = null;
+			foreach ( IPlanetEnvironmentRenderer renderer in renderers )
+			{
+				renderer.PlanetRenderer = null;
+			}
+			m_RendererMap.Remove( component );
 		}
 
 		/// <summary>

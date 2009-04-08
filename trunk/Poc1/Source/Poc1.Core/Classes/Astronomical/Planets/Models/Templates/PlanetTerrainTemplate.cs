@@ -41,7 +41,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models.Templates
 
 		#region Private Members
 
-		private Range<Units.Metres> m_MaximumHeightRange = new Range<Units.Metres>( new Units.Metres( 1000 ), new Units.Metres( 50000 ) );
+		private Range<Units.Metres> m_MaximumHeightRange = new Range<Units.Metres>( new Units.Metres( 5000 ), new Units.Metres( 5000 ) );
 
 		#endregion
 	}

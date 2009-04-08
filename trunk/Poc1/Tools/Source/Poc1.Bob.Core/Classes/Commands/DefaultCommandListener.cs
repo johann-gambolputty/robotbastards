@@ -1,5 +1,6 @@
 using Bob.Core.Commands;
-using Poc1.Bob.Core.Interfaces;
+using Poc1.Bob.Core.Interfaces.Commands;
+using Rb.Core.Utils;
 
 namespace Poc1.Bob.Core.Classes.Commands
 {
@@ -8,10 +9,10 @@ namespace Poc1.Bob.Core.Classes.Commands
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		/// <param name="viewFactory"></param>
-		public DefaultCommandListener( IViewFactory viewFactory )
+		public DefaultCommandListener( ICommandViewFactory commandViews )
 		{
-			m_ViewFactory = viewFactory;
+			Arguments.CheckNotNull( commandViews, "commandViews" );
+			m_CommandViews = commandViews;
 		}
 
 		/// <summary>
@@ -21,6 +22,7 @@ namespace Poc1.Bob.Core.Classes.Commands
 		{
 			DefaultCommands.FileExit.CommandTriggered += OnFileExit;
 			DefaultCommands.ViewOutput.CommandTriggered += OnViewOutput;
+			DefaultCommands.ViewRenderingRenderTargets.CommandTriggered += OnViewRenderingRenderTargets;
 		}
 
 		/// <summary>
@@ -30,11 +32,12 @@ namespace Poc1.Bob.Core.Classes.Commands
 		{
 			DefaultCommands.FileExit.CommandTriggered -= OnFileExit;
 			DefaultCommands.ViewOutput.CommandTriggered -= OnViewOutput;
+			DefaultCommands.ViewRenderingRenderTargets.CommandTriggered -= OnViewRenderingRenderTargets;
 		}
 
 		#region Private Members
 
-		private readonly IViewFactory m_ViewFactory;
+		private readonly ICommandViewFactory m_CommandViews;
 
 		/// <summary>
 		/// Handles the FileExist command trigger
@@ -49,6 +52,15 @@ namespace Poc1.Bob.Core.Classes.Commands
 		/// </summary>
 		private static void OnViewOutput( WorkspaceCommandTriggerData triggerData )
 		{
+		}
+
+		/// <summary>
+		/// Handles the ViewRenderingRenderTargets command trigger
+		/// </summary>
+		private void OnViewRenderingRenderTargets( WorkspaceCommandTriggerData triggerData )
+		{
+			m_CommandViews.ShowRenderTargetViews( triggerData.Workspace );
+		//	triggerData.Workspace.MainDisplay.Views.Show( triggerData.Workspace, );
 		}
 
 

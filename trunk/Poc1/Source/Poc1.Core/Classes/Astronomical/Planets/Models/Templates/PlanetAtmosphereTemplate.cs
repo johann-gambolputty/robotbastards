@@ -34,7 +34,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models.Templates
 
 		#region Private Members
 
-		private Range<Units.Metres> m_Thickness;
+		private Range<Units.Metres> m_Thickness = new Range<Units.Metres>( new Units.Metres( 20000 ), new Units.Metres( 20000 ) );
 
 		#endregion
 	}

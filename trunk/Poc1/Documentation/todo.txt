@@ -1,5 +1,6 @@
 
 - PRIORITY
+	- Add solar system project
 	- Add planet template composition window, and planet model/renderer composition window
 		- Composition window for model/renderer should be an object graph
 	- Design how rendering classes fit in with a planet-wide rendering graph
@@ -91,6 +92,7 @@
 			- L: Ring-worlds
 			- L: Hollow spheres
 	- Atmosphere
+		- H: Change atmosphere rendering to a post-process step
 		- H: Rendering of objects outside the atmosphere (generalize terrain model)
 		- H: Fix outside atmosphere shading
 		- H: Fix orientation of atmosphere shading for objects

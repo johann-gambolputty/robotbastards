@@ -58,27 +58,39 @@ namespace Poc1.Bob.Core.Classes.Commands
 			get { return s_HelpAbout; }
 		}
 
+		/// <summary>
+		/// Gets the view-rendering-render targets command
+		/// </summary>
+		public static WorkspaceCommand ViewRenderingRenderTargets
+		{
+			get { return s_ViewRenderingRenderTargets; }
+		}
+
 		#endregion
 
 		#region Private Members
 
 		private readonly static CommandGroup s_FileCommands;
 		private readonly static CommandGroup s_ViewCommands;
+		private readonly static CommandGroup s_ViewRenderingCommands;
 		private readonly static CommandGroup s_HelpCommands;
 
 		private readonly static WorkspaceCommand s_FileExit;
 		private readonly static WorkspaceCommand s_ViewOutput;
+		private readonly static WorkspaceCommand s_ViewRenderingRenderTargets;
 		private readonly static WorkspaceCommand s_HelpAbout;
 
 		static DefaultCommands( )
 		{
 			s_FileCommands = new WorkspaceCommandGroup( 0, "file", "&File", CommandRegistry.Instance );
 			s_ViewCommands = new WorkspaceCommandGroup( "view", "&View", CommandRegistry.Instance );
+			s_ViewRenderingCommands = new CommandGroup( s_ViewCommands, "rendering", "&Rendering" );
 			s_HelpCommands = new WorkspaceCommandGroup( "help", "&Help", CommandRegistry.Instance );
 
 			s_FileExit = WorkspaceCommand.NewCommand( s_FileCommands, "exit", "E&xit", "Exits this application" );
 			s_ViewOutput = WorkspaceCommand.NewCommand( s_ViewCommands, "output", "&Output", "Output view" );
 			s_HelpAbout = WorkspaceCommand.NewCommand( s_HelpCommands, "about", "&About", "Information about this application" );
+			s_ViewRenderingRenderTargets = WorkspaceCommand.NewCommand( s_ViewRenderingCommands, "renderTargets", "&Render Targets", "Shows render targets" );
 		}
 
 		#endregion

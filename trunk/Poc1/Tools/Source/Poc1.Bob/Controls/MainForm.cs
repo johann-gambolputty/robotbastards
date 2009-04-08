@@ -7,10 +7,12 @@ using Bob.Core.Windows.Forms;
 using Bob.Core.Windows.Forms.Ui;
 using Bob.Core.Windows.Forms.Ui.Docking;
 using Bob.Core.Workspaces.Interfaces;
+using Poc1.Bob.Commands;
 using Poc1.Bob.Core.Classes;
 using Poc1.Bob.Core.Classes.Commands;
 using Poc1.Bob.Core.Classes.Projects.Planets;
 using Poc1.Bob.Core.Classes.Projects.Planets.Spherical;
+using Poc1.Bob.Core.Interfaces.Commands;
 using Poc1.Bob.Core.Interfaces.Projects;
 using Poc1.Bob.Projects;
 using Rb.Interaction.Classes;
@@ -27,6 +29,7 @@ namespace Poc1.Bob.Controls
 			m_ViewManager = new DockedHostPaneViewManager( mainDockPanel, "Properties" );
 			m_MessageUi = new MessageUiProvider( this );
 			m_ViewFactory = new ViewFactory( m_MessageUi );
+			m_CommandViewFactory = new CommandDockingViewFactory( m_ViewManager );
 			IPlanetViews planetViews = new SpherePlanetDockingViews( m_ViewManager, m_ViewFactory );
 			m_Projects = new ProjectGroupContainer
 				(
@@ -55,7 +58,7 @@ namespace Poc1.Bob.Controls
 
 			m_CommandUi.AddCommands( new Command[] { ProjectCommands.NewProject } );
 
-			DefaultCommandListener defaultListener = new DefaultCommandListener( m_ViewFactory );
+			DefaultCommandListener defaultListener = new DefaultCommandListener( m_CommandViewFactory );
 			defaultListener.StartListening( );
 
 			ProjectCommandListener listener = new ProjectCommandListener( m_ViewFactory );
@@ -115,6 +118,7 @@ namespace Poc1.Bob.Controls
 		private readonly ProjectGroupContainer m_Projects;
 		private readonly IWorkspace m_Workspace;
 		private readonly ViewFactory m_ViewFactory;
+		private readonly ICommandViewFactory m_CommandViewFactory;
 
 		#region Event Handlers
 
