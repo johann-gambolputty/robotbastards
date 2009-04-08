@@ -37,6 +37,8 @@ namespace Poc1.Core.Classes.Rendering
 			uniContext.CurrentPass = UniRenderPass.FarObjects;
 			solarSystem.Render( uniContext );
 
+			Graphics.Renderer.ClearDepth( 1.0f );
+
 			//	Render close objects
 			uniContext.CurrentPass = UniRenderPass.CloseObjects;
 			solarSystem.Render( uniContext );

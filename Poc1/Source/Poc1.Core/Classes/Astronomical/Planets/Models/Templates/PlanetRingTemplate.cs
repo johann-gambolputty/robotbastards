@@ -55,7 +55,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models.Templates
 		#region Private Members
 
 		private float m_Probability = 1.0f;
-		private Range<Units.Metres> m_RingWidth = new Range<Units.Metres>( new Units.Metres( 500 ), new Units.Metres( 5000 ) );
+		private Range<Units.Metres> m_RingWidth = new Range<Units.Metres>( new Units.Metres( 5000 ), new Units.Metres( 6000 ) );
 
 		#endregion
 	}

@@ -29,9 +29,9 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Models.Templates
 		/// </summary>
 		protected override void BuildPlanetModel( IPlanetModel planetModel, IPlanetEnvironmentModelFactory modelFactory, ModelTemplateInstanceContext context )
 		{
-			base.BuildPlanetModel( planetModel, modelFactory, context );
 			Units.Metres radius = Range.Mid( m_Radius, context.Random.NextDouble( ) );
 			( ( ISpherePlanetModel )planetModel ).Radius = radius;
+			base.BuildPlanetModel( planetModel, modelFactory, context );
 		}
 
 		#endregion

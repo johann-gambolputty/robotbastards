@@ -224,6 +224,7 @@ namespace Poc1.Bob.Projects
 			{
 				return null;
 			}
+
 			IPlanetHomogenousProceduralTerrainModel model = project.PlanetModel.GetModel<IPlanetHomogenousProceduralTerrainModel>( );
 
 			HomogenousProcTerrainTemplateControl control = new HomogenousProcTerrainTemplateControl( );
@@ -294,9 +295,10 @@ namespace Poc1.Bob.Projects
 				//	Show empty view
 				return null;
 			}
-		//	IPlanetAtmosphereScatteringModel model = project.PlanetModel.GetModel<IPlanetAtmosphereScatteringModel>( );
+			IPlanetAtmosphereScatteringModel model = project.PlanetModel.GetModel<IPlanetAtmosphereScatteringModel>( );
 			ScatteringAtmosphereBuildControl control = new ScatteringAtmosphereBuildControl( );
 			control.Template = template;
+			control.Model = model;
 			return control;
 		}
 

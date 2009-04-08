@@ -1,4 +1,6 @@
 
+using Rb.Rendering.Interfaces.Objects;
+
 namespace Poc1.Core.Interfaces.Astronomical.Planets.Models
 {
 	/// <summary>
@@ -33,6 +35,25 @@ namespace Poc1.Core.Interfaces.Astronomical.Planets.Models
 		/// Gets/sets the weighting applied to the mie phase function.
 		/// </summary>
 		float MiePhaseWeight
+		{
+			get; set;
+		}
+
+		//	TODO: AP: These should go in a derived interface specific to scattering models based
+		//	on 3d precomputed texture lookups (and also probably specific for spherical planets)
+
+		/// <summary>
+		/// Gets/sets the scattering lookup texture data
+		/// </summary>
+		ITexture3d ScatteringTexture
+		{
+			get; set;
+		}
+
+		/// <summary>
+		/// Gets/sets the optical depth lookup texture data
+		/// </summary>
+		ITexture2d OpticalDepthTexture
 		{
 			get; set;
 		}

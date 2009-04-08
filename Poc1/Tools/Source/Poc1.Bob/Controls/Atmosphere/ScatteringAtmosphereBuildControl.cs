@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Windows.Forms;
+using Poc1.Core.Interfaces.Astronomical.Planets.Models;
 using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
 using Poc1.Tools.Atmosphere;
 using Rb.Rendering;
@@ -31,7 +32,7 @@ namespace Poc1.Bob.Controls.Atmosphere
 			m_Worker.RunWorkerCompleted += WorkItemComplete;
 			m_Worker.ProgressChanged += BuildProgressChanged;
 
-			atmosphereParametersPropertyGrid.SelectedObject = m_AtmosphereBuildParameters;
+			atmosphereParametersPropertyGrid.SelectedObject = m_AtmosphereModel;
 		}
 
 		/// <summary>
@@ -46,9 +47,19 @@ namespace Poc1.Bob.Controls.Atmosphere
 			}
 		}
 
+		/// <summary>
+		/// Gets/sets the current atmosphere scattering model
+		/// </summary>
+		public IPlanetAtmosphereScatteringModel Model
+		{
+			get { return m_Model; }
+			set { m_Model = value; }
+		}
+
 		#region Private Members
 
 		private IPlanetAtmosphereScatteringTemplate m_Template;
+		private IPlanetAtmosphereScatteringModel m_Model;
 		private AtmosphereBuilder m_AtmosphereBuilder;
 		private readonly AtmosphereBuildModel m_AtmosphereModel = new AtmosphereBuildModel( );
 		private readonly AtmosphereBuildParameters m_AtmosphereBuildParameters = new AtmosphereBuildParameters( );
@@ -103,11 +114,13 @@ namespace Poc1.Bob.Controls.Atmosphere
 
 			ITexture2d opticalDepthTexture = Graphics.Factory.CreateTexture2d( );
 			opticalDepthTexture.Create( buildOutputs.OpticalDepthTexture, false );
-			opticalDepthTexture.ToBitmap( false )[ 0 ].Save( "OpticalDepthTexture.png" );
+		//	opticalDepthTexture.ToBitmap( false )[ 0 ].Save( "OpticalDepthTexture.png" );
 
-			Template.OpticalDepthTexture = opticalDepthTexture;
-			Template.ScatteringTexture = scatteringTexture;
-
+			if ( m_Model != null )
+			{
+				m_Model.OpticalDepthTexture = opticalDepthTexture;
+				m_Model.ScatteringTexture = scatteringTexture;
+			}
 		//	ISpherePlanetAtmosphereRenderer atmoRenderer = BuilderState.Instance.SpherePlanet.PlanetRenderer.SphereAtmosphereRenderer;
 		//	atmoRenderer.SetLookupTextures( scatteringTexture, opticalDepthTexture );
 		}

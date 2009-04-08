@@ -13,6 +13,14 @@ namespace Rb.Rendering.Interfaces.Objects
 	public interface IRenderTarget : IPass, IDisposable
 	{
 		/// <summary>
+		/// Gets the name of this render target (set by Create())
+		/// </summary>
+		string Name
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Gets the underlying texture. This is null if the render target has not been created, or was created without a colour buffer
 		/// </summary>
 		ITexture2d Texture
@@ -48,13 +56,14 @@ namespace Rb.Rendering.Interfaces.Objects
 		/// Creates the render target, with optional colour, depth and stencil buffers, and optionally storing
 		/// the depth buffer in a separate texture
 		/// </summary>
+		/// <param name="name">Name of this render target</param>
 		/// <param name="width">Width of the render target</param>
 		/// <param name="height">Height of the render target</param>
 		/// <param name="colourFormat">Format of the render target colour buffer. If this is Undefined, then no colour buffer is created</param>
 		/// <param name="depthBits">Number of bits per element in the depth buffer (0 for no depth buffer)</param>
 		/// <param name="stencilBits">Number of bits per element in the stencil buffer (0 for no stencil buffer)</param>
 		/// <param name="depthBufferAsTexture">If true, then depth buffer storage is created in a texture</param>
-		void Create( int width, int height, TextureFormat colourFormat, int depthBits, int stencilBits, bool depthBufferAsTexture );
+		void Create( string name, int width, int height, TextureFormat colourFormat, int depthBits, int stencilBits, bool depthBufferAsTexture );
 
 		/// <summary>
 		/// Diagnostic function for saving the depth buffer to a file

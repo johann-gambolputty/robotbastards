@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppUtils.cs" />
+    <Compile Include="Commands\CommandDockingViewFactory.cs" />
     <Compile Include="Controls\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -179,6 +180,12 @@
     <Compile Include="Controls\RangeSlider.Designer.cs">
       <DependentUpon>RangeSlider.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Rendering\RenderTargetViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Rendering\RenderTargetViewControl.Designer.cs">
+      <DependentUpon>RenderTargetViewControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Rendering\UniCameraViewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -282,6 +289,10 @@
     <EmbeddedResource Include="Controls\RangeSlider.resx">
       <SubType>Designer</SubType>
       <DependentUpon>RangeSlider.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Rendering\RenderTargetViewControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>RenderTargetViewControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Rendering\UniCameraViewControl.resx">
       <DependentUpon>UniCameraViewControl.cs</DependentUpon>

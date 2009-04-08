@@ -38,7 +38,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Models.Templates
 
 		#region Private Members
 
-		private Range<float> m_InnerRadiusMultiple = new Range<float>( 1.5f, 3.0f );
+		private Range<float> m_InnerRadiusMultiple = new Range<float>( 1.5f, 2.0f );
 
 		#endregion
 	}

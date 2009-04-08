@@ -63,7 +63,14 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models
 		/// <returns>Returns the result of the visit call</returns>
 		public TReturn InvokeVisit<TReturn>( IPlanetEnvironmentModelVisitor<TReturn> visitor )
 		{
-			return ( TReturn )visitor.GetType( ).InvokeMember( "Visit", BindingFlags.InvokeMethod, null, visitor, new object[] { this } );
+			try
+			{
+				return ( TReturn )visitor.GetType( ).InvokeMember( "Visit", BindingFlags.InvokeMethod, null, visitor, new object[] { this } );
+			}
+			catch ( TargetInvocationException ex )
+			{
+				throw ex.InnerException;
+			}
 		}
 
 		#endregion

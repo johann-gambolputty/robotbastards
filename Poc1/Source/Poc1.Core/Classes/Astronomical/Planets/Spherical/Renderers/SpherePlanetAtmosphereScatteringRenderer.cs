@@ -28,20 +28,6 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 			m_Techniques = new TechniqueSelector( m_Effect, "DefaultTechnique" );
 		}
 
-		#region ISpherePlanetAtmosphereRenderer Members
-
-		/// <summary>
-		/// Sets the lookup textures required by the atmosphere renderer
-		/// </summary>
-		/// <param name="scatteringTexture">Lookup table for in- and out-scattering coefficients</param>
-		/// <param name="opticalDepthTexture">Lookup table for optical depth</param>
-		public void SetLookupTextures( ITexture3d scatteringTexture, ITexture2d opticalDepthTexture )
-		{
-			m_ScatteringTexture = scatteringTexture;
-			m_OpticalDepthTexture = opticalDepthTexture;
-		}
-
-		#endregion
 
 		/// <summary>
 		/// Renders the atmosphere
@@ -79,8 +65,6 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 
 		private IRenderable m_AtmosphereGeometry;
 		private TechniqueSelector m_Techniques;
-		private ITexture3d m_ScatteringTexture;
-		private ITexture2d m_OpticalDepthTexture;
 		private EffectAssetHandle m_Effect;
 		private Units.AstroRenderUnits m_AtmosphereGeometryRadius;
 
@@ -91,18 +75,21 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 		{
 			get
 			{
-				if ( m_AtmosphereGeometry == null )
+				IPlanetAtmosphereScatteringModel model = GetModel<IPlanetAtmosphereScatteringModel>( );
+				if ( model == null )
 				{
-					IPlanetAtmosphereScatteringModel model = GetModel<IPlanetAtmosphereScatteringModel>( );
-					if ( model == null )
-					{
-						throw new InvalidOperationException( "Can't generate atmosphere geometry without an associated atmospheric scattering model" );
-					}
-					m_AtmosphereGeometryRadius = Planet.Model.Radius.ToAstroRenderUnits + model.Thickness.ToAstroRenderUnits;
-					float renderRadius = ( float )m_AtmosphereGeometryRadius;
+					throw new InvalidOperationException( "Can't generate atmosphere geometry without an associated atmospheric scattering model" );
+				}
+
+				Units.AstroRenderUnits expectedRadius = Planet.Model.Radius.ToAstroRenderUnits + model.Thickness.ToAstroRenderUnits;
+
+				if ( ( m_AtmosphereGeometry == null ) || ( m_AtmosphereGeometryRadius != expectedRadius ) )
+				{
+					float renderRadius = ( float )expectedRadius;
 					Graphics.Draw.StartCache( );
 					Graphics.Draw.Sphere( null, Point3.Origin, renderRadius, 60, 60 );
 					m_AtmosphereGeometry = Graphics.Draw.StopCache( );
+					m_AtmosphereGeometryRadius = expectedRadius;
 				}
 				return m_AtmosphereGeometry;
 			}
@@ -142,11 +129,11 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 			//	Set up parameters shared between astro and close atmosphere rendering
 			effect.Parameters[ "AtmHgCoeff" ].Set( model.PhaseCoefficient );
 			effect.Parameters[ "AtmPhaseWeight" ].Set( model.PhaseWeight );
-			effect.Parameters[ "ScatteringTexture" ].Set( m_ScatteringTexture );
+			effect.Parameters[ "ScatteringTexture" ].Set( model.ScatteringTexture );
 			effect.Parameters[ "AtmMiePhaseWeight" ].Set( model.MiePhaseWeight );
 			if ( objectRendering )
 			{
-				effect.Parameters[ "OpticalDepthTexture" ].Set( m_OpticalDepthTexture );
+				effect.Parameters[ "OpticalDepthTexture" ].Set( model.OpticalDepthTexture );
 			}
 		}
 

@@ -52,6 +52,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical
 		{
 			TypeOrderedRenderOrderSorter sorter = new TypeOrderedRenderOrderSorter( true );
 			sorter.AddFirstType<SpherePlanetRingRenderer>( );
+			sorter.AddFirstType<SpherePlanetHomogenousProceduralMarbleRenderer>( );
 			sorter.AddFirstType<SpherePlanetAtmosphereScatteringRenderer>( );
 			return sorter;
 		}

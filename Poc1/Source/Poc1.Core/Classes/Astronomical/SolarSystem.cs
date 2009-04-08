@@ -71,7 +71,6 @@ namespace Poc1.Core.Classes.Astronomical
 
 		#endregion
 
-
 		#region Private Members
 
 		private IRenderable m_Backdrop;

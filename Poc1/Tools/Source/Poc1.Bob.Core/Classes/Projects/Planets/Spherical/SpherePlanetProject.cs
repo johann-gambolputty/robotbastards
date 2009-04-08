@@ -28,6 +28,8 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets.Spherical
 		{
 			ISpherePlanetModelTemplate template = new SpherePlanetModelTemplate( );
 			template.Add( new PlanetHomogenousProceduralTerrainTemplate( ) );
+			template.Add( new SpherePlanetRingTemplate( ) );
+			template.Add( new PlanetAtmosphereScatteringTemplate( ) );
 
 			ISpherePlanet planet = new SpherePlanet( );
 

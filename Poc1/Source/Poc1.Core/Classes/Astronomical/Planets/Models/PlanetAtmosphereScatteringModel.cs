@@ -1,4 +1,5 @@
 using Poc1.Core.Interfaces.Astronomical.Planets.Models;
+using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Core.Classes.Astronomical.Planets.Models
 {
@@ -64,6 +65,38 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models
 			}
 		}
 
+		/// <summary>
+		/// Gets/sets the scattering lookup texture data
+		/// </summary>
+		public ITexture3d ScatteringTexture
+		{
+			get { return m_ScatteringTexture; }
+			set
+			{
+				if ( m_ScatteringTexture != value )
+				{
+					m_ScatteringTexture = value;
+					OnModelChanged( );
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets/sets the optical depth lookup texture data
+		/// </summary>
+		public ITexture2d OpticalDepthTexture
+		{
+			get { return m_OpticalDepthTexture; }
+			set
+			{
+				if ( m_OpticalDepthTexture != value )
+				{
+					m_OpticalDepthTexture = value;
+					OnModelChanged( );
+				}
+			}
+		}
+
 		#endregion
 
 		#region Private Members
@@ -71,6 +104,8 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models
 		private float m_PhaseCoefficient	= -0.9999f;
 		private float m_PhaseWeight			= 1.0f;
 		private float m_MiePhaseWeight		= 1.0f;
+		private ITexture3d m_ScatteringTexture;
+		private ITexture2d m_OpticalDepthTexture;
 
 		#endregion
 	}

@@ -16,6 +16,14 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
+		/// Gets the name of this render target
+		/// </summary>
+		public string Name
+		{
+			get { return m_Name; }
+		}
+
+		/// <summary>
 		/// Gets the underlying texture. This is null if the render target has not been created, or was created without a colour buffer
 		/// </summary>
 		public ITexture2d Texture
@@ -50,13 +58,14 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Creates the render target
 		/// </summary>
+		/// <param name="name">Render target name</param>
 		/// <param name="width">Width of the render target</param>
 		/// <param name="height">Height of the render target</param>
 		/// <param name="colourFormat">Format of the render target colour buffer. If this is Undefined, then no colour buffer is created</param>
 		/// <param name="depthBits">Number of bits per element in the depth buffer (0 for no depth buffer)</param>
 		/// <param name="stencilBits">Number of bits per element in the stencil buffer (0 for no stencil buffer)</param>
 		/// <param name="depthBufferAsTexture">If true, then depth buffer storage is created in a texture</param>
-		public unsafe void Create( int width, int height, TextureFormat colourFormat, int depthBits, int stencilBits, bool depthBufferAsTexture )
+		public unsafe void Create( string name, int width, int height, TextureFormat colourFormat, int depthBits, int stencilBits, bool depthBufferAsTexture )
 		{
 			//	Requires the frame buffer extension
 			if ( !ms_ExtensionPresent )
@@ -182,10 +191,13 @@ namespace Rb.Rendering.OpenGl
 				GraphicsLog.Info( "Created render target ({0}x{1} at {2}, {3} depth bits, {4} stencil bits)", width, height, colourFormat, depthBits, stencilBits );
 			}
 
+			m_Name		= name;
 			m_Width		= width;
 			m_Height	= height;
 
 			Gl.glBindFramebufferEXT( Gl.GL_FRAMEBUFFER_EXT, 0 );
+
+			RenderTargets.AddCreatedRenderTarget( this );
 		}
 
 		/// <summary>
@@ -262,6 +274,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public unsafe void Dispose( )
 		{
+			RenderTargets.RemoveCreatedRenderTarget( this );
 			if ( m_Texture != null )
 			{
 				m_Texture.Dispose( );
@@ -311,6 +324,7 @@ namespace Rb.Rendering.OpenGl
 		private ITexture2d m_DepthTexture;
 		private int m_Width;
 		private int m_Height;
+		private string m_Name;
 		
 		private static readonly bool ms_ExtensionPresent;
 

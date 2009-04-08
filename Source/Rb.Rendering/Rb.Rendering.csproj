@@ -81,6 +81,7 @@
     <Compile Include="RenderContext.cs" />
     <Compile Include="RendererBase.cs" />
     <Compile Include="MultiPassTechnique.cs" />
+    <Compile Include="RenderTargets.cs" />
     <Compile Include="TechniqueSelector.cs" />
     <Compile Include="Textures\AnimatedTexture2d.cs" />
     <Compile Include="Textures\Texture2dAssetHandle.cs" />

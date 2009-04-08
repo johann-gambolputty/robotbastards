@@ -1,24 +1,30 @@
 
 using System;
-using Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers.PackTextures;
-using Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers.Patches;
+using System.Drawing;
+using System.Drawing.Imaging;
+using Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers.Terrain.PackTextures;
+using Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers.Terrain.Patches;
 using Poc1.Core.Interfaces.Astronomical.Planets;
 using Poc1.Core.Interfaces.Astronomical.Planets.Models;
 using Poc1.Core.Interfaces.Astronomical.Planets.Renderers;
-using Poc1.Core.Interfaces.Astronomical.Planets.Renderers.PackTextures;
-using Poc1.Core.Interfaces.Astronomical.Planets.Renderers.Patches;
+using Poc1.Core.Interfaces.Astronomical.Planets.Renderers.Terrain.PackTextures;
+using Poc1.Core.Interfaces.Astronomical.Planets.Renderers.Terrain.Patches;
 using Poc1.Core.Interfaces.Astronomical.Planets.Spherical;
+using Poc1.Core.Interfaces.Astronomical.Planets.Spherical.Renderers;
 using Poc1.Core.Interfaces.Rendering;
 using Poc1.Fast.Terrain;
+using Rb.Assets;
 using Rb.Core.Maths;
 using Rb.Rendering.Interfaces.Objects;
+using Rb.Rendering.Textures;
+using RbGraphics = Rb.Rendering.Graphics;
 
 namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 {
 	/// <summary>
 	/// Renders homogenous procedural terrain for spherical planets
 	/// </summary>
-	public class SpherePlanetHomogenousProceduralTerrainRenderer : SpherePlanetEnvironmentRenderer, IPlanetHomogenousProceduralTerrainRenderer, ITerrainPatchGenerator, ITerrainPackTextureProvider
+	public class SpherePlanetHomogenousProceduralTerrainRenderer : SpherePlanetEnvironmentRenderer, IPlanetHomogenousProceduralTerrainRenderer, ITerrainPatchGenerator, ITerrainPackTextureProvider, ISpherePlanetTerrainRenderer
 	{
 		/// <summary>
 		/// Default construcor
@@ -27,6 +33,11 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 		{
 			m_Renderer = new SpherePlanetTerrainPatchRenderer( this );
 			m_Technique = new SpherePlanetPackTextureTechnique( this );
+
+			m_PackTexture = ( ITexture2d )AssetManager.Instance.Load( "Terrain\\dirt0.jpg", new TextureLoadParameters( true ) );
+			m_LookupTexture = RbGraphics.Factory.CreateTexture2d( );
+			Texture2dData lookupData = new Texture2dData( 1, 1, TextureFormat.R8G8B8 );
+			m_LookupTexture.Create( lookupData, true );
 		}
 
 		/// <summary>
@@ -47,6 +58,23 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 			}
 			m_Renderer.Render( context, context.Camera, m_Technique );
 		}
+
+		#region ISpherePlanetTerrainRenderer Members
+
+		/// <summary>
+		/// Creates a face for the marble texture cube map
+		/// </summary>
+		public unsafe Bitmap CreateMarbleTextureFace( CubeMapFace face, int width, int height )
+		{
+			Bitmap bmp = new Bitmap( width, height, PixelFormat.Format24bppRgb );
+			BitmapData bmpData = bmp.LockBits( new System.Drawing.Rectangle( 0, 0, width, height ), ImageLockMode.WriteOnly, bmp.PixelFormat );
+			byte* pixels = ( byte* )bmpData.Scan0;
+			SafeTerrainGenerator.GenerateTerrainPropertyCubeMapFace( face, width, height, bmpData.Stride, pixels );
+			bmp.UnlockBits( bmpData );
+			return bmp;
+		}
+
+		#endregion
 
 		#region IPlanetHomogenousProceduralTerrainRenderer Members
 
@@ -103,7 +131,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 		/// <summary>
 		/// Gets the terrain pack texture
 		/// </summary>
-		public ITexture PackTexture
+		public ITexture2d PackTexture
 		{
 			get { return m_PackTexture; }
 			set { m_PackTexture = value; }
@@ -112,7 +140,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 		/// <summary>
 		/// Gets the pack lookup texture
 		/// </summary>
-		public ITexture LookupTexture
+		public ITexture2d LookupTexture
 		{
 			get { return m_LookupTexture; }
 			set { m_LookupTexture = value; }
@@ -146,8 +174,8 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 		private readonly SpherePlanetPackTextureTechnique m_Technique;
 		private readonly SpherePlanetTerrainPatchRenderer m_Renderer;
 		private TerrainGenerator m_TerrainGenerator;
-		private ITexture m_PackTexture;
-		private ITexture m_LookupTexture;
+		private ITexture2d m_PackTexture;
+		private ITexture2d m_LookupTexture;
 		private ulong m_FrameCountAtLastUpdate = unchecked( ( ulong )-1 );
 
 		/// <summary>

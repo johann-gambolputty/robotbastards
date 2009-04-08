@@ -1,5 +1,4 @@
 using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
-using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Core.Classes.Astronomical.Planets.Models.Templates
 {
@@ -11,52 +10,20 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models.Templates
 		#region IPlanetAtmosphereScatteringTemplate Members
 
 		/// <summary>
-		/// Gets/sets the name of the atmosphere
+		/// Gets/sets the names of the atmospheres used by this template
 		/// </summary>
 		/// <remarks>
 		/// The atmosphere name maps to the texture files used for in-game rendering, and the 
 		/// data files used for editor build tasks.
 		/// </remarks>
-		public string AtmosphereName
+		public string[] AtmosphereNames
 		{
-			get { return m_AtmosphereName; }
+			get { return m_AtmosphereNames; }
 			set
 			{
-				if ( m_AtmosphereName != value )
+				if ( m_AtmosphereNames != value )
 				{
-					m_AtmosphereName = value;
-					OnTemplateChanged( );
-				}
-			}
-		}
-
-		/// <summary>
-		/// Gets the scattering lookup texture data
-		/// </summary>
-		public ITexture3d ScatteringTexture
-		{
-			get { return m_ScatteringTexture; }
-			set
-			{
-				if ( m_ScatteringTexture != value )
-				{
-					m_ScatteringTexture = value;
-					OnTemplateChanged( );
-				}
-			}
-		}
-
-		/// <summary>
-		/// Gets the optical depth lookup texture data
-		/// </summary>
-		public ITexture2d OpticalDepthTexture
-		{
-			get { return m_OpticalDepthTexture; }
-			set
-			{
-				if ( m_OpticalDepthTexture != value )
-				{
-					m_OpticalDepthTexture = value;
+					m_AtmosphereNames = value;
 					OnTemplateChanged( );
 				}
 			}
@@ -66,10 +33,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models.Templates
 
 		#region Private Members
 
-		private ITexture3d m_ScatteringTexture;
-		private ITexture2d m_OpticalDepthTexture;
-		private string m_AtmosphereName;
-
+		private string[] m_AtmosphereNames;
 
 		#endregion
 	}

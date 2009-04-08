@@ -2,6 +2,7 @@ using Poc1.Core.Interfaces.Astronomical;
 using Poc1.Core.Interfaces.Rendering;
 using Poc1.Core.Interfaces.Rendering.Cameras;
 using Rb.Core.Utils;
+using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Core.Classes.Rendering
@@ -60,7 +61,8 @@ namespace Poc1.Core.Classes.Rendering
 			uniContext.CurrentPass = UniRenderPass.FarObjects;
 			solarSystem.Render( uniContext );
 
-			//	TODO: Clear the z buffer
+			//	Clear the depth buffer before rendering close objects
+			Graphics.Renderer.ClearDepth( 1.0f );
 
 			//	Render close object reflection geometry into a render target
 			if ( EnableReflections )
