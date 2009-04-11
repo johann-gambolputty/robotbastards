@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using Bob.Core.Ui.Interfaces;
 using Bob.Core.Ui.Interfaces.Views;
 using Bob.Core.Workspaces.Interfaces;
 using Rb.Core.Utils;
+using Rb.Interaction.Classes;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Bob.Core.Windows.Forms.Ui.Docking
@@ -18,11 +20,14 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
+		/// <param name="commandUi">Command UI manager. Any show command attached to views get added to this object</param>
 		/// <param name="mainDockPanel">Main docking panel to dock views to</param>
-		public DockingViewManager( DockPanel mainDockPanel )
+		public DockingViewManager( ICommandUiManager commandUi, DockPanel mainDockPanel )
 		{
+			Arguments.CheckNotNull( commandUi, "commandUi" );
 			Arguments.CheckNotNull( mainDockPanel, "mainDockPanel" );
 			m_MainDockPanel = mainDockPanel;
+			m_CommandUi = commandUi;
 		}
 
 		/// <summary>
@@ -109,6 +114,8 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 		private readonly List<DockingViewInfo> m_Views = new List<DockingViewInfo>( );
 		private readonly Dictionary<DockingViewInfo, DockContent> m_ViewDocks = new Dictionary<DockingViewInfo, DockContent>( );
 		private readonly DockPanel m_MainDockPanel;
+		private readonly ICommandUiManager m_CommandUi;
+		private readonly Dictionary<IViewInfo, OnCommandTriggeredDelegate> m_ViewCommandTriggerMap = new Dictionary<IViewInfo, OnCommandTriggeredDelegate>( );
 
 		/// <summary>
 		/// Saves then closes the current layout before loading a new one
@@ -121,7 +128,58 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 			CloseAllViews( );
 			m_LayoutName = layoutName;
 			RegisterViews( views );
-			LoadLayout( workspace );	
+			LoadLayout( workspace );
+			SetupViewShowCommands( workspace, views );
+		}
+
+		/// <summary>
+		/// Sets up all the show commands in the set of views
+		/// </summary>
+		private void SetupViewShowCommands( IWorkspace workspace, IEnumerable<IViewInfo> views )
+		{
+			List<Command> showCommands = new List<Command>( );
+			foreach ( IViewInfo view in views )
+			{
+				if ( view.ShowCommand == null )
+				{
+					continue;
+				}
+				if ( m_ViewCommandTriggerMap.ContainsKey( view ) )
+				{
+					view.ShowCommand.CommandTriggered -= m_ViewCommandTriggerMap[ view ];
+				}
+
+				IViewInfo commandView = view;
+				OnCommandTriggeredDelegate commandTriggered = delegate { Show( workspace, commandView ); };
+
+				view.ShowCommand.CommandTriggered += commandTriggered;
+				m_ViewCommandTriggerMap[ view ] = commandTriggered;
+
+				showCommands.Add( view.ShowCommand );
+			}
+			m_CommandUi.AddCommands( showCommands );
+		}
+
+		/// <summary>
+		/// Removes all show command triggers from the set of views
+		/// </summary>
+		private void TeardownViewShowCommands( IEnumerable<DockingViewInfo> views )
+		{
+			List<Command> showCommands = new List<Command>( );
+			foreach ( DockingViewInfo view in views )
+			{
+				if ( view.ShowCommand == null )
+				{
+					continue;
+				}
+				if ( m_ViewCommandTriggerMap.ContainsKey( view ) )
+				{
+					view.ShowCommand.CommandTriggered -= m_ViewCommandTriggerMap[ view ];
+				}
+				m_ViewCommandTriggerMap.Remove( view );
+				showCommands.Add( view.ShowCommand );
+			}
+			m_CommandUi.RemoveCommands( showCommands );
 		}
 
 		/// <summary>
@@ -190,6 +248,7 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 		/// </summary>
 		private void CloseAllViews( )
 		{
+			TeardownViewShowCommands( m_Views );
 			m_Views.Clear( );
 			while ( m_MainDockPanel.Contents.Count > 0 )
 			{

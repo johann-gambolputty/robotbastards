@@ -34,7 +34,7 @@ namespace Rb.Interaction.Tests
 		public void TestKeyBinding( )
 		{
 			bool fired = false;
-			Action<CommandTriggerData> handler =
+			OnCommandTriggeredDelegate handler =
 				delegate
 				{
 					fired = true;

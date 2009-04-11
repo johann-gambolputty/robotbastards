@@ -1,4 +1,6 @@
 
+using Rb.Interaction.Classes;
+
 namespace Bob.Core.Ui.Interfaces.Views
 {
 	/// <summary>
@@ -15,9 +17,9 @@ namespace Bob.Core.Ui.Interfaces.Views
 		}
 
 		/// <summary>
-		/// Returns true if this view can be created from a command
+		/// Gets the command used to show this view
 		/// </summary>
-		bool AvailableAsCommand
+		Command ShowCommand
 		{
 			get;
 		}

@@ -5,7 +5,7 @@ namespace Poc1.Bob.Core.Interfaces.Commands
 	/// <summary>
 	/// View factory interface
 	/// </summary>
-	public interface ICommandViewFactory
+	public interface IDefaultCommandViews : IViewProvider
 	{
 		/// <summary>
 		/// Shows the render targets view

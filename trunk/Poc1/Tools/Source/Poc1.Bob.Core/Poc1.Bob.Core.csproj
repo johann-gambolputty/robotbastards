@@ -83,7 +83,7 @@
     <Compile Include="Interfaces\Biomes\Views\ITerrainTypeTextureView.cs" />
     <Compile Include="Interfaces\Biomes\Views\ITerrainTypeView.cs" />
     <Compile Include="Interfaces\Commands\ICommandProvider.cs" />
-    <Compile Include="Interfaces\Commands\ICommandViewFactory.cs" />
+    <Compile Include="Interfaces\Commands\IDefaultCommandViews.cs" />
     <Compile Include="Interfaces\IViewFactory.cs" />
     <Compile Include="Interfaces\Planets\Clouds\ICloudModelTemplateView.cs" />
     <Compile Include="Interfaces\Planets\Clouds\IFlatCloudModelTemplateView.cs" />

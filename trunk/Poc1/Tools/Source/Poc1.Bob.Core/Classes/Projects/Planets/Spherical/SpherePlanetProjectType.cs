@@ -16,7 +16,7 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets.Spherical
 		/// </summary>
 		/// <param name="views">Planet view provider</param>
 		public SpherePlanetProjectType( IPlanetViews views ) :
-			this( views, "Sphere Planet", "Sphere Planet Template" )
+			this( views, "Sphere Planet", "Sphere Planet ProjectType" )
 		{
 		}
 

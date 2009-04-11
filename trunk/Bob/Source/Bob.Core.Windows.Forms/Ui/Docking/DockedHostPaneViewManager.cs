@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Bob.Core.Ui.Interfaces;
 using Bob.Core.Ui.Interfaces.Views;
 using Bob.Core.Workspaces.Interfaces;
 using Rb.Core.Utils;
@@ -16,13 +17,15 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
+		/// <param name="commandUi">Command UI manager. Any show command attached to views get added to this object</param>
 		/// <param name="mainPanel">Main docking panel</param>
 		/// <param name="hostPaneName">Name of the host pane</param>
-		public DockedHostPaneViewManager( DockPanel mainPanel, string hostPaneName )
+		public DockedHostPaneViewManager( ICommandUiManager commandUi, DockPanel mainPanel, string hostPaneName )
 		{
+			Arguments.CheckNotNull( commandUi, "commandUi" );
 			Arguments.CheckNotNull( mainPanel, "mainPanel" );
-			m_UnhostedViewManager = new DockingViewManager( mainPanel );
-			m_HostViewInfo = new DockingViewInfo( hostPaneName, CreateHostControl, true, DockState.DockLeft );
+			m_UnhostedViewManager = new DockingViewManager( commandUi, mainPanel );
+			m_HostViewInfo = new DockingViewInfo( hostPaneName, CreateHostControl, DockState.DockLeft );
 		}
 
 		/// <summary>

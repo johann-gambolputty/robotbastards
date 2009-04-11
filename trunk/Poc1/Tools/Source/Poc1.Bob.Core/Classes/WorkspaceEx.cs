@@ -15,15 +15,26 @@ namespace Poc1.Bob.Core.Classes
 		/// Setup constructor
 		/// </summary>
 		/// <param name="mainDisplay">Main application display</param>
-		/// <param name="rootGroup">Root template group</param>
-		/// <exception cref="System.ArgumentNullException">Thrown if mainDisplay or rootGroup are null</exception>
-		public WorkspaceEx( IMainApplicationDisplay mainDisplay, ProjectGroupContainer rootGroup ) :
+		/// <exception cref="System.ArgumentNullException">Thrown if mainDisplay is null</exception>
+		public WorkspaceEx( IMainApplicationDisplay mainDisplay ) :
 			base( mainDisplay )
 		{
-			Arguments.CheckNotNull( rootGroup, "rootGroup" );
 			m_ProjectContext = new ProjectContext( );
 			m_SelectedBiomeContext = new SelectedBiomeContext( );
-			m_TemplateRootGroup = rootGroup;
+			m_ProjectGroups = new ProjectGroupContainer( );
+		}
+
+		/// <summary>
+		/// Gets/sets the project groups
+		/// </summary>
+		public ProjectGroupContainer ProjectGroups
+		{
+			get { return m_ProjectGroups; }
+			set
+			{
+				Arguments.CheckNotNull( value, "value" );
+				m_ProjectGroups = value;
+			}
 		}
 
 		/// <summary>
@@ -42,19 +53,11 @@ namespace Poc1.Bob.Core.Classes
 			get { return m_SelectedBiomeContext; }
 		}
 
-		/// <summary>
-		/// Gets the template root group container
-		/// </summary>
-		public ProjectGroupContainer TemplateRootGroup
-		{
-			get { return m_TemplateRootGroup; }
-		}
-
 		#region Private Members
 
+		private ProjectGroupContainer m_ProjectGroups;
 		private readonly ProjectContext m_ProjectContext;
 		private readonly SelectedBiomeContext m_SelectedBiomeContext;
-		private readonly ProjectGroupContainer m_TemplateRootGroup;
 
 		#endregion
 

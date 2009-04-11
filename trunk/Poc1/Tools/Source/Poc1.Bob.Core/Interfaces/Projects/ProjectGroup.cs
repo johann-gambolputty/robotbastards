@@ -68,7 +68,7 @@ namespace Poc1.Bob.Core.Interfaces.Projects
 		/// <summary>
 		/// Adds a new template to the group
 		/// </summary>
-		/// <param name="template">Template to add</param>
+		/// <param name="template">ProjectType to add</param>
 		/// <exception cref="ArgumentNullException">Thrown if template is null</exception>
 		public void AddTemplate( ProjectType template )
 		{
@@ -79,7 +79,7 @@ namespace Poc1.Bob.Core.Interfaces.Projects
 		/// <summary>
 		/// Removes the specified project type
 		/// </summary>
-		/// <param name="template">Template to remove</param>
+		/// <param name="template">ProjectType to remove</param>
 		public void RemoveTemplate( ProjectType template )
 		{
 			Arguments.CheckNotNull( template, "template" );

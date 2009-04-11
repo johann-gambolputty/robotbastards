@@ -9,7 +9,7 @@ namespace Poc1.Bob.Core.Interfaces.Planets.Clouds
 	/// </summary>
 	public interface ICloudModelTemplateView
 	{
-		#region Template Events
+		#region ProjectType Events
 
 		/// <summary>
 		/// Event invoked when the low coverage range is changed

@@ -3,7 +3,7 @@ using System;
 namespace Poc1.Bob.Core.Interfaces.Projects
 {
 	/// <summary>
-	/// Template selection viewer
+	/// ProjectType selection viewer
 	/// </summary>
 	public interface IProjectTypeSelectorView
 	{

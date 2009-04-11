@@ -4,12 +4,14 @@ using System.Windows.Forms;
 using Bob.Core.Ui.Interfaces.Views;
 using Bob.Core.Windows.Forms.Ui.Docking;
 using Bob.Core.Workspaces.Interfaces;
+using Poc1.Bob.Commands;
 using Poc1.Bob.Controls.Atmosphere;
 using Poc1.Bob.Controls.Components;
 using Poc1.Bob.Controls.Planet;
 using Poc1.Bob.Controls.Planet.Clouds;
 using Poc1.Bob.Controls.Planet.Terrain;
 using Poc1.Bob.Core.Classes;
+using Poc1.Bob.Core.Classes.Commands;
 using Poc1.Bob.Core.Classes.Planets;
 using Poc1.Bob.Core.Classes.Planets.Clouds;
 using Poc1.Bob.Core.Classes.Planets.Terrain;
@@ -21,6 +23,7 @@ using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
 using Poc1.Core.Interfaces.Astronomical.Planets.Spherical;
 using Poc1.Core.Interfaces.Astronomical.Planets.Spherical.Models;
 using Rb.Core.Utils;
+using Rb.Interaction.Classes;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Poc1.Bob.Projects
@@ -28,12 +31,13 @@ namespace Poc1.Bob.Projects
 	/// <summary>
 	/// Stores docking views for spherical planet compononents
 	/// </summary>
-	public class SpherePlanetDockingViews : IPlanetViews
+	public class SpherePlanetDockingViews : DefaultCommandDockingViews, IPlanetViews
 	{
 		/// <summary>
 		/// Sets up the views supported by this class
 		/// </summary>
-		public SpherePlanetDockingViews( IViewManager viewManager, IViewFactory viewFactory )
+		public SpherePlanetDockingViews( IViewManager viewManager, IViewFactory viewFactory ) :
+			base( viewManager )
 		{
 			Arguments.CheckNotNull( viewManager, "viewManager" );
 			Arguments.CheckNotNull( viewFactory, "viewFactory" );
@@ -41,27 +45,32 @@ namespace Poc1.Bob.Projects
 			m_ViewFactory = viewFactory;
 
 			//	Environment model template views
-			AsTemplateView<IPlanetSimpleCloudTemplate>( NewHostedView( "Cloud Propertes", CreateCloudView, false ) );
-			AsTemplateView<IPlanetHomogenousProceduralTerrainTemplate>( NewHostedView( "Homogenous Procedural Terrain Properties", CreateHomogenousProceduralTerrainView, false ) );
-			AsTemplateView<IPlanetRingTemplate>( NewHostedView( "Ring Properties", CreateRingView, false ) );
-			AsTemplateView<IPlanetAtmosphereTemplate>( NewHostedView( "Atmosphere Properties", CreateAtmosphereScatteringView, false ) );
+			AsTemplateView<IPlanetSimpleCloudTemplate>( NewHostedView( "Cloud Properties", CreateCloudView, null ) );
+			AsTemplateView<IPlanetHomogenousProceduralTerrainTemplate>( NewHostedView( "Homogenous Procedural Terrain Properties", CreateHomogenousProceduralTerrainView, null ) );
+			AsTemplateView<IPlanetRingTemplate>( NewHostedView( "Ring Properties", CreateRingView, null ) );
+			AsTemplateView<IPlanetAtmosphereTemplate>( NewHostedView( "Atmosphere Properties", CreateAtmosphereScatteringView, null ) );
 
-			m_PlanetModelView = NewHostedView( "Sphere Planet Properties", CreatePlanetModelView, true );
+			m_PlanetModelView = NewHostedView( "Sphere Planet Properties", CreatePlanetModelView, DefaultCommands.ViewCommands );
 
 
 			//	Other views
-			NewDockingView( "Planet Composition", CreatePlanetTemplateCompositionView, true );
-			NewDockingView( "Planet Display", CreatePlanetDisplay, true, DockState.Document );
+			NewDockingView( "Planet Composition", CreatePlanetTemplateCompositionView, DefaultCommands.ViewCommands );
+			NewDockingView( "Planet Display", CreatePlanetDisplay, DefaultCommands.ViewCommands, DockState.Document );
 
-			m_DefaultView = NewHostedView( "Empty", CreateEmptyView, false );
+			m_DefaultView = NewHostedView( "Empty", CreateEmptyView, null );
 		}
 
 		/// <summary>
 		/// Gets all views
 		/// </summary>
-		public IViewInfo[] Views
+		public override IViewInfo[] Views
 		{
-			get { return m_Views.ToArray( ); }
+			get
+			{
+				List<IViewInfo> views = new List<IViewInfo>( base.Views );
+				views.AddRange( m_Views );
+				return views.ToArray( );
+			}
 		}
 
 		/// <summary>
@@ -117,9 +126,9 @@ namespace Poc1.Bob.Projects
 		/// <summary>
 		/// Creates a new docking view, and adds it to the m_Views list
 		/// </summary>
-		private HostedViewInfo NewHostedView( string name, DockingViewInfo.CreateViewDelegate createView, bool availableAsCommand )
+		private HostedViewInfo NewHostedView( string name, DockingViewInfo.CreateViewDelegate createView, CommandGroup showCommandGroup )
 		{
-			HostedViewInfo view = new HostedViewInfo( name, createView, availableAsCommand );
+			HostedViewInfo view = new HostedViewInfo( name, createView, showCommandGroup );
 			m_Views.Add( view );
 			return view;
 		}
@@ -127,9 +136,9 @@ namespace Poc1.Bob.Projects
 		/// <summary>
 		/// Creates a new docking view, and adds it to the m_Views list
 		/// </summary>
-		private DockingViewInfo NewDockingView( string name, ControlViewInfo.CreateViewDelegate createView, bool availableAsCommand )
+		private DockingViewInfo NewDockingView( string name, ControlViewInfo.CreateViewDelegate createView, CommandGroup showCommandGroup )
 		{
-			DockingViewInfo view = new DockingViewInfo( name, createView, availableAsCommand );
+			DockingViewInfo view = new DockingViewInfo( name, createView, showCommandGroup );
 			m_Views.Add( view );
 			return view;
 		}
@@ -137,9 +146,9 @@ namespace Poc1.Bob.Projects
 		/// <summary>
 		/// Creates a new docking view, and adds it to the m_Views list
 		/// </summary>
-		private DockingViewInfo NewDockingView( string name, ControlViewInfo.CreateViewDelegate createView, bool availableAsCommand, DockState initialDockState )
+		private DockingViewInfo NewDockingView( string name, ControlViewInfo.CreateViewDelegate createView, CommandGroup showCommandGroup, DockState initialDockState )
 		{
-			DockingViewInfo view = new DockingViewInfo( name, createView, availableAsCommand, initialDockState );
+			DockingViewInfo view = new DockingViewInfo( name, createView, showCommandGroup, initialDockState );
 			m_Views.Add( view );
 			return view;
 		}
