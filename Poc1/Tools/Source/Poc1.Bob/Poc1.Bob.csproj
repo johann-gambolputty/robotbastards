@@ -41,7 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppUtils.cs" />
-    <Compile Include="Commands\CommandDockingViewFactory.cs" />
+    <Compile Include="Commands\DefaultCommandDockingViews.cs" />
     <Compile Include="Controls\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -326,7 +326,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Projects\SpherePlanetDockingProjectType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Bob\Source\Bob.Core.Windows.Forms\Bob.Core.Windows.Forms.csproj">

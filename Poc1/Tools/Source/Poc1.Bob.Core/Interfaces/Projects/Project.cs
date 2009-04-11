@@ -2,7 +2,7 @@
 namespace Poc1.Bob.Core.Interfaces.Projects
 {
 	/// <summary>
-	/// Template instance
+	/// ProjectType instance
 	/// </summary>
 	public class Project
 	{
@@ -24,7 +24,7 @@ namespace Poc1.Bob.Core.Interfaces.Projects
 		/// <summary>
 		/// Gets the template that created this instance
 		/// </summary>
-		public ProjectType Template
+		public ProjectType ProjectType
 		{
 			get { return m_Template; }
 		}

@@ -46,6 +46,7 @@
     <Compile Include="Ui\Interfaces\Views\IViewInfo.cs" />
     <Compile Include="Ui\Interfaces\Views\IViewManager.cs" />
     <Compile Include="Workspaces\Classes\Workspace.cs" />
+    <Compile Include="Workspaces\Interfaces\IViewProvider.cs" />
     <Compile Include="Workspaces\Interfaces\IWorkspace.cs" />
   </ItemGroup>
   <ItemGroup>

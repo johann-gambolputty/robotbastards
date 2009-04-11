@@ -6,7 +6,6 @@ using Bob.Core.Ui.Interfaces.Views;
 using Bob.Core.Windows.Forms;
 using Bob.Core.Windows.Forms.Ui;
 using Bob.Core.Windows.Forms.Ui.Docking;
-using Bob.Core.Workspaces.Interfaces;
 using Poc1.Bob.Commands;
 using Poc1.Bob.Core.Classes;
 using Poc1.Bob.Core.Classes.Commands;
@@ -25,13 +24,21 @@ namespace Poc1.Bob.Controls
 		{
 			InitializeComponent( );
 
-		//	m_ViewManager = new DockingViewManager( mainDockPanel );
-			m_ViewManager = new DockedHostPaneViewManager( mainDockPanel, "Properties" );
+			m_Workspace = new WorkspaceEx( this );
+			m_CommandUi = new MenuCommandUiManager( mainMenu, new WorkspaceCommandTriggerDataFactory( m_Workspace ) );
+			m_CommandUi.AddCommands( DefaultCommands.HelpCommands );
+			m_CommandUi.AddCommands( DefaultCommands.ViewCommands );
+			m_CommandUi.AddCommands( DefaultCommands.FileCommands );
+
+			m_CommandUi.AddCommands( new Command[] { ProjectCommands.NewProject } );
+
+			m_ViewManager = new DockedHostPaneViewManager( m_CommandUi, mainDockPanel, "Properties" );
 			m_MessageUi = new MessageUiProvider( this );
 			m_ViewFactory = new ViewFactory( m_MessageUi );
-			m_CommandViewFactory = new CommandDockingViewFactory( m_ViewManager );
+			m_CommandViewFactory = new DefaultCommandDockingViews( m_ViewManager );
 			IPlanetViews planetViews = new SpherePlanetDockingViews( m_ViewManager, m_ViewFactory );
-			m_Projects = new ProjectGroupContainer
+
+			m_Workspace.ProjectGroups = new ProjectGroupContainer
 				(
 					"All Project Types", "All Project Types",
 					new ProjectGroupContainer
@@ -40,23 +47,18 @@ namespace Poc1.Bob.Controls
 						new ProjectGroup
 						(
 							"Spherical Planets", "Spherical Planet Project Types",
-							//new ProjectGroup
-							//(
-							//    "Spherical Planet Environments", "Spherical Planet Environment Project Types",
-							//    new SpherePlanetAtmosphereProjectType( )
-							//),
+				//new ProjectGroup
+				//(
+				//    "Spherical Planet Environments", "Spherical Planet Environment Project Types",
+				//    new SpherePlanetAtmosphereProjectType( )
+				//),
 							new TerrestrialSpherePlanetProjectType( planetViews ),
 							new SpherePlanetProjectType( planetViews )
 						)
 					)
 				);
-			m_Workspace = new WorkspaceEx( this, m_Projects );
 
-			m_CommandUi = new MenuCommandUiManager( mainMenu, new WorkspaceCommandTriggerDataFactory( m_Workspace ) );
-			m_CommandUi.AddCommands( DefaultCommands.HelpCommands.Commands );
-			m_CommandUi.AddCommands( DefaultCommands.FileCommands.Commands );
-
-			m_CommandUi.AddCommands( new Command[] { ProjectCommands.NewProject } );
+			m_ViewManager.BeginLayout( m_Workspace, "Default", m_CommandViewFactory.Views );
 
 			DefaultCommandListener defaultListener = new DefaultCommandListener( m_CommandViewFactory );
 			defaultListener.StartListening( );
@@ -115,10 +117,9 @@ namespace Poc1.Bob.Controls
 		private readonly MessageUiProvider m_MessageUi;
 		private readonly IViewManager m_ViewManager;
 		private readonly MenuCommandUiManager m_CommandUi;
-		private readonly ProjectGroupContainer m_Projects;
-		private readonly IWorkspace m_Workspace;
+		private readonly WorkspaceEx m_Workspace;
 		private readonly ViewFactory m_ViewFactory;
-		private readonly ICommandViewFactory m_CommandViewFactory;
+		private readonly IDefaultCommandViews m_CommandViewFactory;
 
 		#region Event Handlers
 

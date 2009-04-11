@@ -4,6 +4,13 @@ using Rb.Core.Utils;
 namespace Rb.Interaction.Classes
 {
 	/// <summary>
+	/// Command triggered delegate
+	/// </summary>
+	/// <param name="triggerData">Trigger data</param>
+	/// <see cref="Command.CommandTriggered"/>
+	public delegate void OnCommandTriggeredDelegate( CommandTriggerData triggerData );
+
+	/// <summary>
 	/// Command class
 	/// </summary>
 	public class Command
@@ -11,7 +18,7 @@ namespace Rb.Interaction.Classes
 		/// <summary>
 		/// Event raised when the command is triggered by a specified user
 		/// </summary>
-		public event Action<CommandTriggerData> CommandTriggered;
+		public event OnCommandTriggeredDelegate CommandTriggered;
 
 		/// <summary>
 		/// Sets up the command

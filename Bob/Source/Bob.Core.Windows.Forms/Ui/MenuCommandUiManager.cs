@@ -31,6 +31,20 @@ namespace Bob.Core.Windows.Forms
 		#region ICommandUiManager Members
 
 		/// <summary>
+		/// Adds a group of commands to the UI
+		/// </summary>
+		/// <param name="group">Group of commands to add</param>
+		public void AddCommands( CommandGroup group )
+		{
+			Arguments.CheckNotNull( group, "group" );
+			foreach ( CommandGroup subGroup in group.SubGroups )
+			{
+				AddCommands( subGroup );
+			}
+			AddCommands( group.Commands );
+		}
+
+		/// <summary>
 		/// Adds a set of commands to the UI
 		/// </summary>
 		/// <param name="commands">Commands to add</param>
@@ -44,6 +58,19 @@ namespace Bob.Core.Windows.Forms
 				}
 				AddCommand( GetParentCommandGroups( command ), command );
 			}
+		}
+
+		/// <summary>
+		/// Removes a group of commands from the UI
+		/// </summary>
+		/// <param name="group">Group of commands to remove</param>
+		public void RemoveCommands( CommandGroup group )
+		{
+			foreach ( CommandGroup subGroup in group.SubGroups )
+			{
+				RemoveCommands( subGroup );
+			}
+			RemoveCommands( group.Commands );
 		}
 
 		/// <summary>
@@ -89,8 +116,6 @@ namespace Bob.Core.Windows.Forms
 				}
 				if ( subMenu == null )
 				{
-
-
 					subMenu = new ToolStripMenuItem( groups[ groupIndex ].NameUi );
 					subMenu.Tag = groups[ groupIndex ];
 					menuItems.Insert( GetCommandGroupInsertPosition( groups[ groupIndex ], menuItems ), subMenu );
@@ -146,8 +171,27 @@ namespace Bob.Core.Windows.Forms
 			{
 				return;
 			}
-			item.Owner.Items.Remove( item );
+			RemoveToolStripItem( item );
 			m_CommandMenuMap.Remove( command );
+		}
+
+		/// <summary>
+		/// Removes 
+		/// </summary>
+		/// <param name="item"></param>
+		private void RemoveToolStripItem( ToolStripItem item )
+		{
+			if ( item.Owner == null )
+			{
+				return;
+			}
+			ToolStrip owner = item.Owner;
+			ToolStripItem ownerItem = item.OwnerItem;
+			item.Owner.Items.Remove( item );
+			if ( ( ownerItem != null ) && ( owner.Items.Count == 0 ) )
+			{
+				RemoveToolStripItem( ownerItem );
+			}
 		}
 
 		/// <summary>

@@ -2,6 +2,7 @@ using System.Windows.Forms;
 using Bob.Core.Ui.Interfaces.Views;
 using Bob.Core.Workspaces.Interfaces;
 using Rb.Core.Utils;
+using Rb.Interaction.Classes;
 
 namespace Bob.Core.Windows.Forms.Ui.Docking
 {
@@ -15,16 +16,41 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 		/// </summary>
 		/// <param name="workspace">Workspace to create the view in</param>
 		public delegate Control CreateViewDelegate( IWorkspace workspace );
-		
+
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		public ControlViewInfo( string name, CreateViewDelegate createView, bool availableAsCommand )
+		public ControlViewInfo( string name, CreateViewDelegate createView )
 		{
 			Arguments.CheckNotNull( createView, "createView" );
 			m_Name = name;
 			m_CreateView = createView;
-			m_AvailableAsCommand = availableAsCommand;
+		}
+
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		public ControlViewInfo( string name, CreateViewDelegate createView, CommandGroup showCommandGroup )
+		{
+			Arguments.CheckNotNull( createView, "createView" );
+			m_Name = name;
+			m_CreateView = createView;
+
+			if ( showCommandGroup != null )
+			{
+				m_ShowCommand = showCommandGroup.NewCommand( name, name, name );
+			}
+		}
+
+		/// <summary>
+		/// Setup constructor with explicit show command (show command can be null)
+		/// </summary>
+		public ControlViewInfo( string name, CreateViewDelegate createView, Command showCommand )
+		{
+			Arguments.CheckNotNull( createView, "createView" );
+			m_Name = name;
+			m_CreateView = createView;
+			m_ShowCommand = showCommand;
 		}
 
 		/// <summary>
@@ -45,21 +71,20 @@ namespace Bob.Core.Windows.Forms.Ui.Docking
 			get { return m_Name; }
 		}
 
-
 		/// <summary>
-		/// Gets/sets the flag that determines if this view can be created from a command
+		/// Gets the command used to show this view
 		/// </summary>
-		public bool AvailableAsCommand
+		public Command ShowCommand
 		{
-			get { return m_AvailableAsCommand; }
+			get { return m_ShowCommand; }
 		}
 
 		#endregion
 
 		#region Private Members
 
+		private readonly Command m_ShowCommand;
 		private readonly string m_Name;
-		private readonly bool m_AvailableAsCommand;
 		private CreateViewDelegate m_CreateView;
 
 		#endregion

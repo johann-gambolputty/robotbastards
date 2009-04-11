@@ -5,7 +5,7 @@ using Rb.Core.Utils;
 namespace Poc1.Bob.Core.Classes.Projects
 {
 	/// <summary>
-	/// Template selection view controller
+	/// ProjectType selection view controller
 	/// </summary>
 	public class ProjectTypeSelectorController
 	{

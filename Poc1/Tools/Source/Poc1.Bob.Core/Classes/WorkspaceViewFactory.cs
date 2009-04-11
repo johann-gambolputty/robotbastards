@@ -18,7 +18,7 @@ namespace Poc1.Bob.Core.Classes
 		/// </summary>
 		public static void ShowCreateProjectView( WorkspaceEx workspace, IViewFactory viewFactory )
 		{
-			ShowCreateProjectView( workspace, viewFactory, workspace.TemplateRootGroup );
+			ShowCreateProjectView( workspace, viewFactory, workspace.ProjectGroups );
 		}
 
 		/// <summary>

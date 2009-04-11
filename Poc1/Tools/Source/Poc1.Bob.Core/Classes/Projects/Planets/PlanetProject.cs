@@ -37,7 +37,7 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets
 		/// <param name="name">Project name</param>
 		/// <param name="modelFactory">Factory used for creating environment models from templates</param>
 		/// <param name="renderFactory">Factory used for creating environment renderers from models</param>
-		/// <param name="template">Template to use</param>
+		/// <param name="template">ProjectType to use</param>
 		/// <param name="planet">Planet to use</param>
 		protected PlanetProject( ProjectType projectType, string name, IPlanetEnvironmentModelFactory modelFactory, IPlanetEnvironmentRendererFactory renderFactory, IPlanetModelTemplate template, IPlanet planet ) :
 			base( projectType, name, null, null )

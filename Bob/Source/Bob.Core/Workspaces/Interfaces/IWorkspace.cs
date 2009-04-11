@@ -23,5 +23,6 @@ namespace Bob.Core.Workspaces.Interfaces
 		{
 			get;
 		}
+
 	}
 }
