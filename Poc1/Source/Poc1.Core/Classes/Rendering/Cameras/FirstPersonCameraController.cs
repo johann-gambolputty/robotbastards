@@ -98,7 +98,7 @@ namespace Poc1.Core.Classes.Rendering.Cameras
 
 			float secondsSinceLastUpdate = m_SecondsSinceLastUpdate;
 
-			Matrix44 movementFrame = m_Camera.InverseFrame;
+			InvariantMatrix44 movementFrame = m_Camera.InverseFrame;
 			if ( triggerData.Command == FirstPersonCameraCommands.Forwards )
 			{
 				m_Camera.Position.Add( movementFrame.ZAxis * -MaxForwardSpeed * secondsSinceLastUpdate );

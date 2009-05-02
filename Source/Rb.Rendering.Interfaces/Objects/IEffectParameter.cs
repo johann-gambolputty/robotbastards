@@ -98,6 +98,16 @@ namespace Rb.Rendering.Interfaces.Objects
 		void Set( float[] val );
 
 		/// <summary>
+		/// Sets the value of this parameter to a point
+		/// </summary>
+		void Set( Point3 val );
+
+		/// <summary>
+		/// Sets the value of this parameter to a vector
+		/// </summary>
+		void Set( Vector3 val );
+
+		/// <summary>
 		/// Sets the value of this parameter to a matrix
 		/// </summary>
 		void Set( Matrix44 val );

@@ -84,8 +84,19 @@ namespace Poc1.Tools.Waves
 			set { m_WaveModifier = value; }
 		}
 
+		/// <summary>
+		/// Gets/sets the store-heights flag. If true, the output animation is grayscale. If false, the output
+		/// animation stored normals in R,G,B channels.
+		/// </summary>
+		public bool StoreHeights
+		{
+			get { return m_StoreHeights; }
+			set { m_StoreHeights = value; }
+		}
+
 		#region Private Members
 
+		private bool	m_StoreHeights;
 		private int		m_Width = 512;
 		private int		m_Height = 512;
 		private int		m_Frames = 32;

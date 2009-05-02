@@ -35,7 +35,7 @@ namespace Rb.Rendering.Cameras
 		{
 			Graphics.Renderer.PushTransform( TransformType.WorldToView );
 			Graphics.Renderer.SetLookAtTransform( m_LookAt, Frame.Translation, Frame.YAxis );
-			m_ViewMatrix = Graphics.Renderer.GetTransform( TransformType.WorldToView );
+			ViewMatrix = Graphics.Renderer.GetTransform( TransformType.WorldToView );
 			//	TODO: AP: View matrix should be calculated by SetFrame()
 			base.Begin( );
 		}

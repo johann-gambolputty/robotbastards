@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using Poc1.Core.Interfaces.Astronomical.Planets.Models;
 using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
 using Poc1.Tools.Atmosphere;
+using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 
@@ -64,6 +65,8 @@ namespace Poc1.Bob.Controls.Atmosphere
 		private readonly AtmosphereBuildModel m_AtmosphereModel = new AtmosphereBuildModel( );
 		private readonly AtmosphereBuildParameters m_AtmosphereBuildParameters = new AtmosphereBuildParameters( );
 		private readonly BackgroundWorker m_Worker;
+		private ScatteringAtmosphereAnalysisForm m_AnalysisForm;
+		private AtmosphereBuildOutputs m_LastBuildOutput;
 
 		/// <summary>
 		/// Callback from the background worker. Updates the progress bar
@@ -121,6 +124,7 @@ namespace Poc1.Bob.Controls.Atmosphere
 				m_Model.OpticalDepthTexture = opticalDepthTexture;
 				m_Model.ScatteringTexture = scatteringTexture;
 			}
+			m_LastBuildOutput = buildOutputs;
 		//	ISpherePlanetAtmosphereRenderer atmoRenderer = BuilderState.Instance.SpherePlanet.PlanetRenderer.SphereAtmosphereRenderer;
 		//	atmoRenderer.SetLookupTextures( scatteringTexture, opticalDepthTexture );
 		}
@@ -138,8 +142,71 @@ namespace Poc1.Bob.Controls.Atmosphere
 				}
 				return;
 			}
+
+			m_AtmosphereBuildParameters.HeightSamples = ( int )scatteringResolutionComboBox.SelectedItem;
+			m_AtmosphereBuildParameters.ViewAngleSamples = ( int )scatteringResolutionComboBox.SelectedItem;
+			m_AtmosphereBuildParameters.SunAngleSamples = ( int )scatteringResolutionComboBox.SelectedItem;
+			m_AtmosphereBuildParameters.OpticalDepthResolution = ( int )opticalDepthResolutionComboBox.SelectedItem;
+			m_AtmosphereBuildParameters.AttenuationSamples = ( int )attenuationUpDown.Value;
+
 			buildButton.Text = "Cancel";
-			m_Worker.RunWorkerAsync( m_AtmosphereBuildParameters );
+			m_Worker.RunWorkerAsync( );
+		}
+
+		private float GetIntensity( float height, float viewDirection, float sunDirection, int offsetToElement )
+		{
+			if ( m_LastBuildOutput == null )
+			{
+				return 0;
+			}
+			Texture3dData tex = m_LastBuildOutput.ScatteringTexture;
+			byte[] data = tex.Bytes;
+			int x = ( int )Utils.Clamp( viewDirection * tex.Width, 0, tex.Width - 1 );
+			int y = ( int )Utils.Clamp( sunDirection * tex.Height, 0, tex.Height - 1 );
+			int z = ( int )Utils.Clamp( height * tex.Depth, 0, tex.Depth - 1 );
+
+			int offset = offsetToElement;
+			offset += z * 4;
+			offset += y * 4 * tex.Depth;
+			offset += x * 4 * tex.Depth * tex.Height;
+
+			byte value = data[ offset ];
+			return value / 255.0f;
+		}
+
+		private float GetRedIntensity( float height, float viewDirection, float sunDirection )
+		{
+			return GetIntensity( height, viewDirection, sunDirection, 3 );
+		}
+
+		private float GetGreenIntensity( float height, float viewDirection, float sunDirection )
+		{
+			return GetIntensity( height, viewDirection, sunDirection, 2 );
+		}
+
+		private float GetBlueIntensity( float height, float viewDirection, float sunDirection )
+		{
+			return GetIntensity( height, viewDirection, sunDirection, 1 );
+		}
+
+		private float GetMieIntensity( float height, float viewDirection, float sunDirection )
+		{
+			return GetIntensity( height, viewDirection, sunDirection, 0 );
+		}
+
+		private void analyzeButton_Click( object sender, System.EventArgs e )
+		{
+			if ( ( m_AnalysisForm != null ) && ( m_AnalysisForm.IsHandleCreated ) )
+			{
+				return;
+			}
+
+			m_AnalysisForm = new ScatteringAtmosphereAnalysisForm( );
+			m_AnalysisForm.RedIntensityCalculator = GetRedIntensity;
+			m_AnalysisForm.GreenIntensityCalculator = GetGreenIntensity;
+			m_AnalysisForm.BlueIntensityCalculator = GetBlueIntensity;
+			m_AnalysisForm.MieIntensityCalculator = GetMieIntensity;
+			m_AnalysisForm.Show( ParentForm );
 		}
 
 		#endregion

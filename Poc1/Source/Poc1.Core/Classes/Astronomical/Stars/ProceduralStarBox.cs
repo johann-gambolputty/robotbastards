@@ -1,10 +1,8 @@
+
 using System;
 using System.Drawing;
-using System.IO;
 using Poc1.Core.Classes.Profiling;
 using Poc1.Core.Interfaces.Rendering;
-using Rb.Assets;
-using Rb.Assets.Interfaces;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
 using Rb.Rendering;
@@ -15,17 +13,17 @@ using Graphics=Rb.Rendering.Graphics;
 namespace Poc1.Core.Classes.Astronomical.Stars
 {
 	/// <summary>
-	/// Sky box rendering
+	/// Renders stars using a shader
 	/// </summary>
-	public class StarBox : IRenderable<IUniRenderContext>
+	public class ProceduralStarBox : IRenderable<IUniRenderContext>
 	{
 		#region Construction
 
 		/// <summary>
 		/// Builds the star box (dome, sphere, thing)
 		/// </summary>
-		public StarBox( ) :
-			this( "Effects/Planets/stars.cgfx", "Star Fields/Default/" )
+		public ProceduralStarBox( ) :
+			this( "Effects/Planets/procStars.cgfx", "Star Fields/Default/" )
 		{
 		}
 
@@ -34,10 +32,10 @@ namespace Poc1.Core.Classes.Astronomical.Stars
 		/// </summary>
 		/// <param name="starEffectPath">Path to the star effect</param>
 		/// <param name="starTexturePath">Path to the star textures</param>
-		public StarBox( string starEffectPath, string starTexturePath )
+		public unsafe ProceduralStarBox( string starEffectPath, string starTexturePath )
 		{
 			Arguments.CheckNotNullOrEmpty( starEffectPath, "starEffectPath" );
-			Arguments.CheckNotNullOrEmpty( starTexturePath, "starEffectPath" );
+			Arguments.CheckNotNullOrEmpty( starTexturePath, "starTexturePath" );
 			EffectAssetHandle effect = new EffectAssetHandle( starEffectPath, false );
 			m_Technique = new TechniqueSelector( effect, "DefaultTechnique" );
 
@@ -47,11 +45,43 @@ namespace Poc1.Core.Classes.Astronomical.Stars
 			surface.FaceBrush.State.DepthTest = false;
 
 			Graphics.Draw.StartCache( );
-			Graphics.Draw.Sphere( surface, Point3.Origin, 100, 10, 10 );
+			Graphics.Draw.Sphere( surface, Point3.Origin, 20, 20, 20 );
 			m_Box = Graphics.Draw.StopCache( );
 
-			m_Texture = Graphics.Factory.CreateCubeMapTexture( );
-			LoadStarBoxTextures( m_Texture, "Star Fields/Default/" );
+			Texture3dData randomTexture = new Texture3dData( 32, 32, 32, TextureFormat.R8G8B8 );
+			fixed ( byte* texels = randomTexture.Bytes )
+			{
+				Random rnd = new Random( );
+				byte* curTexel = texels;
+				int maxTexIndex = randomTexture.Width * randomTexture.Height * randomTexture.Depth;
+				for ( int texIndex = 0; texIndex < maxTexIndex; ++texIndex )
+				{
+					*( curTexel++ ) = ( byte )( rnd.Next( ) & 0xff );
+					*( curTexel++ ) = ( byte )( rnd.Next( ) & 0xff );
+					*( curTexel++ ) = ( byte )( rnd.Next( ) & 0xff );
+				}
+
+				float fMul = 255.0f / ( float )( randomTexture.Width - 1 );
+				curTexel = texels;
+				for ( int x = 0; x < randomTexture.Width; ++x )
+				{
+					byte bX = ( byte )Utils.Clamp( x * fMul, 0, 255.0f );
+					for ( int y = 0; y < randomTexture.Height; ++y )
+					{
+						byte bY = ( byte )Utils.Clamp( y * fMul, 0, 255.0f );
+						for ( int z = 0; z < randomTexture.Depth; ++z )
+						{
+							byte bZ = ( byte )Utils.Clamp( z * fMul, 0, 255.0f );
+							*( curTexel++ ) = bX;
+							*( curTexel++ ) = bY;
+							*( curTexel++ ) = bZ;
+						}
+					}
+				}
+			}
+
+			m_RandomTexture = Graphics.Factory.CreateTexture3d( );
+			m_RandomTexture.Create( randomTexture );
 		}
 
 		#endregion
@@ -65,10 +95,8 @@ namespace Poc1.Core.Classes.Astronomical.Stars
 		{
 			GameProfiles.Game.Rendering.StarSphereRendering.Begin( );
 			Graphics.Renderer.PushTransform( TransformType.Texture0, context.Camera.InverseFrame );
-		//	m_Sampler.Begin( );
-			m_Technique.Effect.Parameters[ "StarsTexture" ].Set( m_Texture );
+			m_Technique.Effect.Parameters[ "RandomTexture" ].Set( m_RandomTexture );
 			m_Technique.Apply( context, m_Box );
-		//	m_Sampler.End( );
 			Graphics.Renderer.PopTransform( TransformType.Texture0 );
 			GameProfiles.Game.Rendering.StarSphereRendering.End( );
 		}
@@ -92,41 +120,8 @@ namespace Poc1.Core.Classes.Astronomical.Stars
 		#region Private Members
 
 		private readonly ITechnique m_Technique;
-		private readonly ICubeMapTexture m_Texture;
 		private readonly IRenderable m_Box;
-
-		/// <summary>
-		/// Loads star box textures from a given folder into a cube map texture
-		/// </summary>
-		private static void LoadStarBoxTextures( ICubeMapTexture texture, string path )
-		{
-			texture.Build
-				(
-					LoadCubeMapFace( path + "starBox_rt.jpg" ),
-					LoadCubeMapFace( path + "starBox_lf.jpg" ),
-					LoadCubeMapFace( path + "starBox_up.jpg" ),
-					LoadCubeMapFace( path + "starBox_dn.jpg" ),
-					LoadCubeMapFace( path + "starBox_fr.jpg" ),
-					LoadCubeMapFace( path + "starBox_bk.jpg" ),
-					true
-				);
-		}
-
-		/// <summary>
-		/// Loads a bitmap cube map face
-		/// </summary>
-		private static Bitmap LoadCubeMapFace( string path )
-		{
-			ILocation location = Locations.NewLocation( path );
-			if ( location == null )
-			{
-				throw new ArgumentException( string.Format( "Failed to find asset location \"{0}\"", path ) );
-			}
-			using ( Stream stream = ( ( IStreamSource )location ).Open( ) )
-			{
-				return ( Bitmap )Image.FromStream( stream );
-			}
-		}
+		private readonly ITexture3d m_RandomTexture;
 
 		#endregion
 	}

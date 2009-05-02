@@ -59,7 +59,7 @@ namespace Poc1.Universe.Classes.Cameras
 		}
 
 		/// <summary>
-		/// Sets the rendering transform (<see cref="IRenderer.SetTransform(TransformType,Matrix44)"/>)
+		/// Sets the rendering transform (<see cref="IRenderer.SetTransform(TransformType,InvariantMatrix44)"/>)
 		/// </summary>
 		public static void SetRenderTransform( TransformType transformType, UniTransform transform )
 		{
@@ -118,15 +118,16 @@ namespace Poc1.Universe.Classes.Cameras
 		/// <summary>
 		/// Gets this camera's transform
 		/// </summary>
-		public virtual Matrix44 Frame
+		public virtual InvariantMatrix44 Frame
 		{
 			get { return m_LocalView; }
+			set { throw new NotSupportedException( ); }
 		}
 
 		/// <summary>
 		/// Gets this camera's transform
 		/// </summary>
-		public virtual Matrix44 InverseFrame
+		public virtual InvariantMatrix44 InverseFrame
 		{
 			get { return m_InvLocalView; }
 		}
@@ -194,7 +195,7 @@ namespace Poc1.Universe.Classes.Cameras
 		/// </summary>
 		protected void SetViewFrame( Quaternion orientation )
 		{
-			orientation.ToMatrix( m_InvLocalView );
+			Matrix44.MakeQuaternionMatrix( m_InvLocalView, orientation );
 			m_LocalView.Copy( m_InvLocalView );
 			m_LocalView.Transpose( );
 		}

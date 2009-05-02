@@ -195,6 +195,22 @@ namespace Rb.Rendering.OpenGl.Cg
 		}
 
 		/// <summary>
+		/// Sets the value of this parameter to a point
+		/// </summary>
+		public void Set( Point3 val )
+		{
+			Set( val.X, val.Y, val.Z );
+		}
+
+		/// <summary>
+		/// Sets the value of this parameter to a vector
+		/// </summary>
+		public void Set( Vector3 val )
+		{
+			Set( val.X, val.Y, val.Z );
+		}
+
+		/// <summary>
 		/// Sets the value of this parameter to a matrix
 		/// </summary>
 		public void Set( Matrix44 val )

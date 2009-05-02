@@ -26,6 +26,7 @@ using Rb.Core.Utils;
 using Rb.Interaction.Classes;
 using WeifenLuo.WinFormsUI.Docking;
 
+
 namespace Poc1.Bob.Projects
 {
 	/// <summary>
@@ -44,14 +45,16 @@ namespace Poc1.Bob.Projects
 			m_ViewManager = viewManager;
 			m_ViewFactory = viewFactory;
 
-			//	Environment model template views
-			AsTemplateView<IPlanetSimpleCloudTemplate>( NewHostedView( "Cloud Properties", CreateCloudView, null ) );
-			AsTemplateView<IPlanetHomogenousProceduralTerrainTemplate>( NewHostedView( "Homogenous Procedural Terrain Properties", CreateHomogenousProceduralTerrainView, null ) );
-			AsTemplateView<IPlanetRingTemplate>( NewHostedView( "Ring Properties", CreateRingView, null ) );
-			AsTemplateView<IPlanetAtmosphereTemplate>( NewHostedView( "Atmosphere Properties", CreateAtmosphereScatteringView, null ) );
+			//	Environment model templates with special views
+			AsTemplateView<IPlanetSimpleCloudTemplate>( NewHostedView( "Simple Cloud Template Properties", CreateCloudView, null ) );
+			AsTemplateView<IPlanetHomogenousProceduralTerrainTemplate>( NewHostedView( "Homogenous Procedural Terrain Template Properties", CreateHomogenousProceduralTerrainView, null ) );
+			AsTemplateView<IPlanetAtmosphereTemplate>( NewHostedView( "Atmosphere Template Properties", CreateAtmosphereScatteringView, null ) );
+
+			//	Environment model templates with generic views
+			CreateGenericTemplateView<IPlanetRingTemplate>( "Ring Template Properties" );
+			CreateGenericTemplateView<IPlanetOceanTemplate>( "Ocean Template Properties" );
 
 			m_PlanetModelView = NewHostedView( "Sphere Planet Properties", CreatePlanetModelView, DefaultCommands.ViewCommands );
-
 
 			//	Other views
 			NewDockingView( "Planet Composition", CreatePlanetTemplateCompositionView, DefaultCommands.ViewCommands );
@@ -119,6 +122,17 @@ namespace Poc1.Bob.Projects
 		/// </summary>
 		private IViewInfo AsTemplateView<TTemplate>( IViewInfo view )
 		{
+			m_TemplateViews.Add( typeof( TTemplate ), view );
+			return view;
+		}
+
+		/// <summary>
+		/// Creates a generic template view (property grid only), and assigns it to the specified template type
+		/// </summary>
+		private IViewInfo CreateGenericTemplateView<TTemplate>( string title )
+			where TTemplate : class, IPlanetEnvironmentModelTemplate
+		{
+			IViewInfo view = NewHostedView( title, CreateGenericTemplatePropertiesView<TTemplate>, null );
 			m_TemplateViews.Add( typeof( TTemplate ), view );
 			return view;
 		}
@@ -243,22 +257,6 @@ namespace Poc1.Bob.Projects
 		}
 
 		/// <summary>
-		/// Creates a view for the current planet's ocean template and model
-		/// </summary>
-		private static Control CreateOceanView( IWorkspace workspace )
-		{
-			SpherePlanetProject project = CurrentProject( workspace );
-			IPlanetOceanTemplate oceanTemplate = project.PlanetTemplate.GetModelTemplate<IPlanetOceanTemplate>( );
-			if ( oceanTemplate == null )
-			{
-				//	Show empty view
-				return null;
-			}
-			IPlanetOceanModel oceanModel = project.PlanetModel.GetModel<IPlanetOceanModel>( );
-			return null;
-		}
-
-		/// <summary>
 		/// Creates a cloud template model control
 		/// </summary>
 		private static Control CreateCloudView( IWorkspace workspace )
@@ -288,8 +286,27 @@ namespace Poc1.Bob.Projects
 				//	Show empty view
 				return null;
 			}
-			IPlanetRingModel model = project.PlanetModel.GetModel<IPlanetRingModel>( );
-			throw new NotImplementedException( );
+			PropertyGrid control = new PropertyGrid( );
+			control.SelectedObject = template;
+			return control;
+		}
+
+		/// <summary>
+		/// Creates a property grid for a given template type
+		/// </summary>
+		private static Control CreateGenericTemplatePropertiesView<TTemplate>( IWorkspace workspace )
+			where TTemplate : class, IPlanetEnvironmentModelTemplate
+		{
+			SpherePlanetProject project = CurrentProject( workspace );
+			TTemplate template = project.PlanetTemplate.GetModelTemplate<TTemplate>( );
+			if ( template == null )
+			{
+				//	Show empty view
+				return null;
+			}
+			PropertyGrid control = new PropertyGrid( );
+			control.SelectedObject = template;
+			return control;
 		}
 
 		/// <summary>

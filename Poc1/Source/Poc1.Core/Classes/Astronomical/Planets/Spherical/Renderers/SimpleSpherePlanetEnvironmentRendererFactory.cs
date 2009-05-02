@@ -46,7 +46,8 @@ namespace Poc1.Universe.Planets.Spherical.Renderers
 			/// </summary>
 			public IPlanetEnvironmentRenderer[] Visit( IPlanetOceanModel model )
 			{
-				return new IPlanetEnvironmentRenderer[] { new SpherePlanetOceanRenderer( ) };
+			//	return new IPlanetEnvironmentRenderer[] { new SpherePlanetOceanRenderer( ) };
+				return new IPlanetEnvironmentRenderer[] { new SpherePlanetReflectiveOceanRenderer( ) };
 			}
 
 			/// <summary>

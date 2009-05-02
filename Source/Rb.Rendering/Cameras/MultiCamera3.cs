@@ -22,9 +22,15 @@ namespace Rb.Rendering.Cameras
 			return ActiveCamera3.PickRay( x, y );
 		}
 
-		public Matrix44 Frame
+		public InvariantMatrix44 Frame
 		{
 			get { return ActiveCamera3.Frame; }
+			set { ActiveCamera3.Frame = value; }
+		}
+
+		public InvariantMatrix44 InverseFrame
+		{
+			get { return ActiveCamera3.InverseFrame; }
 		}
 
 		public Vector3 XAxis

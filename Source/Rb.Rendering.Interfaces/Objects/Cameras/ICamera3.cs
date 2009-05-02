@@ -33,7 +33,15 @@ namespace Rb.Rendering.Interfaces.Objects.Cameras
 		/// <summary>
 		/// Camera frame
 		/// </summary>
-		Matrix44 Frame
+		InvariantMatrix44 Frame
+		{
+			get; set;
+		}
+
+		/// <summary>
+		/// Inverse camera frame
+		/// </summary>
+		InvariantMatrix44 InverseFrame
 		{
 			get;
 		}

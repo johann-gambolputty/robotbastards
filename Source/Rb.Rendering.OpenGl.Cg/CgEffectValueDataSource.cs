@@ -113,7 +113,7 @@ namespace Rb.Rendering.OpenGl.Cg
 						for ( int i = 0; i < values.Length; ++i )
 						{
 							IntPtr elementParam = TaoCg.cgGetArrayParameter( param, i );
-							Matrix44 matrix = values[ i ] ?? Matrix44.Identity;
+							Matrix44 matrix = values[ i ] ?? new Matrix44( );
 							CgEffectParameter.cgSetMatrixParameterfc( elementParam, matrix.Elements );
 						}
 					};

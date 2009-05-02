@@ -13,8 +13,6 @@ namespace Rb.Core.Maths
 	[Serializable]
 	public struct Quaternion
 	{
-		//	TODO: AP: ...
-
 		#region Builders
 
 		/// <summary>
@@ -155,46 +153,6 @@ namespace Rb.Core.Maths
 		{
 			float invLength = 1.0f / Functions.Sqrt( m_X * m_X + m_Y * m_Y + m_Z * m_Z + m_W * m_W );
 			return new Quaternion( m_X * invLength, m_Y * invLength, m_Z * invLength, m_W * invLength );
-		}
-
-		/// <summary>
-		/// Converts this quaternion to a matrix
-		/// </summary>
-		/// <param name="matrix">Destination matrix. The translation part is not written to</param>
-		public void ToMatrix( Matrix44 matrix )
-		{
-			float fTx = 2.0f * m_X;
-			float fTy = 2.0f * m_Y;
-			float fTz = 2.0f * m_Z;
-			float fTwx = fTx * m_W;
-			float fTwy = fTy * m_W;
-			float fTwz = fTz * m_W;
-			float fTxx = fTx * m_X;
-			float fTxy = fTy * m_X;
-			float fTxz = fTz * m_X;
-			float fTyy = fTy * m_Y;
-			float fTyz = fTz * m_Y;
-			float fTzz = fTz * m_Z;
-
-			matrix[ 0, 0 ] = 1.0f - ( fTyy + fTzz );
-			matrix[ 0, 1 ] = fTxy - fTwz;
-			matrix[ 0, 2 ] = fTxz + fTwy;
-			matrix[ 1, 0 ] = fTxy + fTwz;
-			matrix[ 1, 1 ] = 1.0f - ( fTxx + fTzz );
-			matrix[ 1, 2 ] = fTyz - fTwx;
-			matrix[ 2, 0 ] = fTxz - fTwy;
-			matrix[ 2, 1 ] = fTyz + fTwx;
-			matrix[ 2, 2 ] = 1.0f - ( fTxx + fTyy );
-		}
-
-		/// <summary>
-		/// Converts this quaternion to a matrix
-		/// </summary>
-		public Matrix44 ToMatrix( )
-		{
-			Matrix44 matrix = new Matrix44( );
-			ToMatrix( matrix );
-			return matrix;
 		}
 
 		#endregion

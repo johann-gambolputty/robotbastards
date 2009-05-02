@@ -23,7 +23,7 @@ namespace Rb.Rendering.Cameras
 			Graphics.Renderer.PushTransform( TransformType.ViewToScreen );
 			Graphics.Renderer.SetPerspectiveProjectionTransform( m_PerspectiveFov, aspectRatio, m_PerspectiveZNear, m_PerspectiveZFar );
 
-			m_ProjectionMatrix = Graphics.Renderer.GetTransform( TransformType.ViewToScreen );
+			ProjectionMatrix = Graphics.Renderer.GetTransform( TransformType.ViewToScreen );
 			//	TODO: AP: Projection matrix should be updated by projection property sets
 
 			base.Begin( );

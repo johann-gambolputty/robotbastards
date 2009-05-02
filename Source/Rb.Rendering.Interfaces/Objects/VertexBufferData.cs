@@ -327,7 +327,11 @@ namespace Rb.Rendering.Interfaces.Objects
 				return ( T[] )array.Values;
 			}
 
-			VertexBufferFormat.FieldDescriptor desc = Format.Add< T >( field, numElements );
+			VertexBufferFormat.FieldDescriptor desc = Format.GetDescriptor( field );
+			if ( desc  == null )
+			{
+				desc = Format.Add<T>( field, numElements );
+			}
 
 			T[] values = new T[ NumVertices * numElements ];
 			array = new FieldValues( desc, values );

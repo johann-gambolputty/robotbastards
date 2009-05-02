@@ -17,6 +17,7 @@ sampler2D OpticalDepthTexture = sampler_state
 
 float3 SunIntensity = float3( 1, 1, 1 );
 float3 SunDir = float3( -1, 0, 0 );
+float3 AtmViewVec;
 float3 AtmViewPos;
 float AtmViewPosLength = 0;
 float3 AtmViewDir;
@@ -58,15 +59,15 @@ float HeyneyGreensteinPhaseFunction( float cosSunAngle, float g )
 float3 GetScatteredObjectColour( float3 pt, float3 objColour )
 {
 	float3 viewVec = normalize( pt - AtmViewPos );
-	float posToSunAngle = dot( AtmViewPos, SunDir ) / AtmViewPosLength;
+	float posToSunAngle = dot( AtmViewVec, SunDir );
 	float viewToSunAngle = dot( viewVec, SunDir );
 
 	//	Get scattering coefficients for the object (view position to intersection with ground plane)
 	//	h = 0-1
 	//	th = 1 when looking straight up, 0 when straight down
 	float h = AtmViewHeight;
-	float si = ( posToSunAngle + 1.0f ) / 2.0f;
-	float th = ( ( dot( AtmViewPos, viewVec ) / AtmViewPosLength ) + 1.0f ) / 2.0f;
+	float si = ( posToSunAngle + 1.0f ) * 0.5f;
+	float th = ( dot( AtmViewVec, viewVec ) + 1.0f ) * 0.5f;
 
 	float4 scatterCoeffs = tex3D( ScatteringTexture, float3( h, si, th ) );
 	float rayPhase = RayleighPhase( viewToSunAngle );
@@ -75,8 +76,8 @@ float3 GetScatteredObjectColour( float3 pt, float3 objColour )
 	//	Get scattering coefficients for the object (object position to intersection with ground plane)
 	float gH = length( pt );
 	float gH0 = ( gH - AtmInnerRadius ) / AtmThickness;
-	float gSi = ( ( dot( pt, SunDir ) / gH ) + 1.0f ) / 2.0f;
-	float gTh = ( ( dot( pt, viewVec ) / gH ) + 1.0f ) / 2.0f;
+	float gSi = ( ( dot( pt, SunDir ) / gH ) + 1.0f ) * 0.5f;
+	float gTh = ( ( dot( pt, viewVec ) / gH ) + 1.0f ) * 0.5f;
 
 	//	Correct scattering coefficients
 	scatterCoeffs -= tex3D( ScatteringTexture, float3( gH0, gSi, gTh ) );
@@ -142,12 +143,12 @@ float3 GetExternalScatteredSkyColour( float3 pt )
 float3 GetScatteredSkyColour( float3 pt )
 {
 	float3 viewVec = normalize( pt - AtmViewPos );
-	float posToSunAngle = dot( AtmViewPos, SunDir ) / AtmViewPosLength;
+	float posToSunAngle = dot( AtmViewVec, SunDir );
 	float viewToSunAngle = dot( viewVec, SunDir );
 
 	float h = AtmViewHeight;
-	float th = ( ( dot( AtmViewPos, viewVec ) / AtmViewPosLength ) + 1.0f ) / 2.0f;
-	float si = ( posToSunAngle + 1.0f ) / 2.0f;
+	float th = ( dot( AtmViewVec, viewVec ) + 1.0f ) * 0.5f;
+	float si = ( posToSunAngle + 1.0f ) * 0.5f;
 
 	float4 scatterCoeffs = tex3D( ScatteringTexture, float3( h, si, th ) );
 	float rayPhase = RayleighPhase( viewToSunAngle );

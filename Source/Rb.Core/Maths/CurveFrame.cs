@@ -1,4 +1,3 @@
-using System;
 
 namespace Rb.Core.Maths
 {
@@ -104,7 +103,7 @@ namespace Rb.Core.Maths
 		/// <param name="normal"> Frame normal </param>
 		/// <param name="speed"> Frame speed (velocity length) </param>
 		public CurveFrame( Point3 position, Vector3 tangent, Vector3 binormal, Vector3 normal, float speed ) :
-			base( position, tangent, binormal, normal )
+			base( tangent, binormal, normal, position )
 		{
 			m_Speed	= speed;
 		}

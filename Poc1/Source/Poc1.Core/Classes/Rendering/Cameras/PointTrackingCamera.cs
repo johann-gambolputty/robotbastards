@@ -87,7 +87,7 @@ namespace Poc1.Core.Classes.Rendering.Cameras
 		/// <summary>
 		/// Gets the current camera transform
 		/// </summary>
-		public override Matrix44 Frame
+		public override InvariantMatrix44 Frame
 		{
 			get
 			{

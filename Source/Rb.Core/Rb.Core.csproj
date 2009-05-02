@@ -117,6 +117,7 @@
     <Compile Include="Maths\Integral.cs" />
     <Compile Include="Maths\Intersections2.cs" />
     <Compile Include="Maths\Intersections3.cs" />
+    <Compile Include="Maths\InvariantMatrix44.cs" />
     <Compile Include="Maths\IRay3Intersector.cs" />
     <Compile Include="Maths\INumeric.cs" />
     <Compile Include="Maths\IShape2.cs">

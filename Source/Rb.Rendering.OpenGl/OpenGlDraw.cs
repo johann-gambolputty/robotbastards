@@ -769,7 +769,7 @@ namespace Rb.Rendering.OpenGl
 				return;
 			}
 
-			Matrix44 frame = camera.Frame;
+			InvariantMatrix44 frame = camera.Frame;
 
 			Vector3 xVec = frame.XAxis * width / 2;
 			Vector3 yVec = frame.ZAxis * height / 2;

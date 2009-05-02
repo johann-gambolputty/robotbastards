@@ -187,6 +187,7 @@ namespace Rb.Common.Controls.Forms.Graphs
 		private readonly GraphTransform			m_Transform			= new GraphTransform( new Rectangle( ),new RectangleF( 0, 0, 2, 2 )  );
 		private bool							m_Invalidated;
 		private Font							m_InfoFont			= new Font( "Courier New", 8 );
+		private bool							m_DrawInfoBox;
 		
 		private static Pen 						ControlDarkPen		= new Pen( GraphUtils.ScaleColour( SystemColors.Control, 0.95f ) );
 		private static Pen 						ControlLightPen		= new Pen( GraphUtils.ScaleColour( SystemColors.Control, 1.05f ) );
@@ -239,6 +240,10 @@ namespace Rb.Common.Controls.Forms.Graphs
 
 		private void DrawInfoBox( Graphics graphics, Font font, Point cursorPos, bool showAll )
 		{
+			if ( !m_DrawInfoBox )
+			{
+				return;
+			}
 			//	Measure the box
 			const int maximumTitleWidth = 80;
 			const int maximumValueWidth = 60;
@@ -280,7 +285,7 @@ namespace Rb.Common.Controls.Forms.Graphs
 			format.Trimming = StringTrimming.EllipsisCharacter;
 			float dataTolerance = m_Transform.ScreenToDataYScale * 4;
 
-			graphics.DrawString( string.Format( "{0}: {1}, {2}: {3}", m_XAxis.Title, m_XAxis.AxisValueToString( dataCursorPos.X ), m_YAxis.Title, m_YAxis.AxisValueToString( dataCursorPos.Y ) ), font, Brushes.Black, titleLayoutRect.X, titleLayoutRect.Y );
+			graphics.DrawString( string.Format( "{0}: {1}, {2}: {3}", XAxis.Title, XAxis.AxisValueToString( dataCursorPos.X ), m_YAxis.Title, m_YAxis.AxisValueToString( dataCursorPos.Y ) ), font, Brushes.Black, titleLayoutRect.X, titleLayoutRect.Y );
 			titleLayoutRect.Y += font.Height;
 			valueLayoutRect.Y += font.Height;
 			using ( Font boldFont = new Font( font, FontStyle.Bold ) )
@@ -517,6 +522,18 @@ namespace Rb.Common.Controls.Forms.Graphs
 			dataBounds.Width += ( currentDisplayArea.Width - oldDisplayArea.Width ) * m_Transform.ScreenToDataXScale;
 			dataBounds.Height += ( currentDisplayArea.Height - oldDisplayArea.Height ) * m_Transform.ScreenToDataYScale;
 			m_Transform.DataBounds = dataBounds;
+			Invalidate( );
+		}
+
+		private void GraphControl_MouseEnter( object sender, EventArgs e )
+		{
+			m_DrawInfoBox = true;
+			Invalidate( );
+		}
+
+		private void GraphControl_MouseLeave( object sender, EventArgs e )
+		{
+			m_DrawInfoBox = false;
 			Invalidate( );
 		}
 

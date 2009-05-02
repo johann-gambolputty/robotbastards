@@ -16,7 +16,7 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets.Spherical
 		/// </summary>
 		/// <param name="views">Planet view provider</param>
 		public SpherePlanetProjectType( IPlanetViews views ) :
-			this( views, "Sphere Planet", "Sphere Planet ProjectType" )
+			this( views, "Sphere Planet", "Sphere Planet Project Type" )
 		{
 		}
 
@@ -60,8 +60,7 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets.Spherical
 
 		#region Protected Members
 
-		protected SpherePlanetProjectType( IPlanetViews views, string name, string description )
-			:
+		protected SpherePlanetProjectType( IPlanetViews views, string name, string description ) :
 			base( name, description )
 		{
 			Arguments.CheckNotNull( views, "views" );

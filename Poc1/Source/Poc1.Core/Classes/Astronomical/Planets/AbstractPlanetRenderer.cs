@@ -127,7 +127,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets
 			if ( context.RenderFarObjects )
 			{
 				//	Push transform
-				UniCamera.PushAstroRenderTransform( TransformType.LocalToWorld, Planet.Transform );
+				UniCamera.PushAstroRenderTransform( context.Camera, TransformType.LocalToWorld, Planet.Transform );
 
 				foreach ( IRenderable renderable in m_OrderedFarRenderables )
 				{
@@ -137,7 +137,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets
 			else
 			{
 				//	Push transform
-				UniCamera.PushRenderTransform( TransformType.LocalToWorld, Planet.Transform );
+				UniCamera.PushRenderTransform( context.Camera, TransformType.LocalToWorld, Planet.Transform );
 
 				foreach ( IRenderable renderable in m_OrderedNearRenderables )
 				{

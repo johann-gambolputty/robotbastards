@@ -15,14 +15,5 @@ namespace Poc1.Universe.Interfaces
 		{
 			get;
 		}
-
-		/// <summary>
-		/// Gets the view frame of the camera (orientation matrix without translation)
-		/// </summary>
-		Matrix44 InverseFrame
-		{
-			get;
-		}
-
 	}
 }

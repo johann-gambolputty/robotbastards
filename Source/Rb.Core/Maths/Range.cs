@@ -1,4 +1,6 @@
 using System;
+using Rb.Core.Utils;
+using System.ComponentModel;
 
 namespace Rb.Core.Maths
 {
@@ -36,6 +38,7 @@ namespace Rb.Core.Maths
 	/// Stores a pair of values defining a range
 	/// </summary>
 	/// <typeparam name="T">Range type</typeparam>
+	[TypeConverter( typeof( ExpandableStructConverter ) )]
 	public struct Range<T> where T : IComparable<T>
 	{
 		/// <summary>
