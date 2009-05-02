@@ -204,15 +204,25 @@ namespace Poc1.Tools.Atmosphere
 
 		private bool GetRayAtmosphereIntersection( Point3 origin, Vector3 dir, out Point3 intPt )
 		{
-			Ray3 ray = new Ray3( origin, dir );
-			Line3Intersection outerIntersection = Intersections3.GetRayIntersection( ray, m_OuterSphere );
-			if ( outerIntersection == null )
+			intPt = origin;
+			float factor = 0.0001f;
+			float fRadius = m_OuterSphere.Radius * factor;
+			float fSqrRadius = fRadius * fRadius;
+
+			Vector3 originToCentre = new Vector3( origin.X * factor, origin.Y * factor, origin.Z * factor );
+			float a0 = originToCentre.SqrLength - fSqrRadius;
+
+			if ( a0 > 0 )
 			{
-				intPt = origin;
 				return false;
 			}
-			intPt = outerIntersection.IntersectionPosition;
-			return true;	
+			//	1 intersection: The origin of the ray is inside the sphere
+			float a1 = dir.Dot( originToCentre );
+			float discriminant = ( a1 * a1 ) - a0;
+			float t = -a1 + Functions.Sqrt( discriminant );
+
+			intPt = origin + dir * ( t / factor );
+			return true;
 		}
 
 		private bool GetRayPlanetAndAtmosphereIntersection( Point3 origin, Vector3 dir, out Point3 intPt )
@@ -312,8 +322,8 @@ namespace Poc1.Tools.Atmosphere
 				float pMCoeff = Functions.Exp( sampleHeight * m_InvMH0 ) * mul;
 
 				//	Calculate (wavelength-dependent) out-scatter terms
-				Vector3 viewStep = ( viewPos - samplePos ) / m_AttenuationSamples;
-				Vector3 sunStep = ( sunPt - samplePos ) / m_AttenuationSamples;
+				Vector3 viewStep = ( viewPos - samplePos ) / ( m_AttenuationSamples - 1 );
+				Vector3 sunStep = ( sunPt - samplePos ) / ( m_AttenuationSamples - 1 );
 				for ( int component = 0; component < 3; ++component )
 				{
 					float bR = m_RayleighCoefficients[ component ];
@@ -452,10 +462,10 @@ namespace Poc1.Tools.Atmosphere
 
 			m_InnerRadius = model.InnerRadiusMetres;
 			m_OuterRadius = model.InnerRadiusMetres + model.AtmosphereThicknessMetres;
-			m_InnerSphere = new Sphere3( Point3.Origin, m_InnerRadius * 0.01f );	//	NOTE: AP: See remarks
+			m_InnerSphere = new Sphere3( Point3.Origin, m_InnerRadius * model.GroundRadiusMultiplier );	//	NOTE: AP: See remarks
 			m_OuterSphere = new Sphere3( Point3.Origin, m_OuterRadius );
 			m_AttenuationSamples = parameters.AttenuationSamples;
-			float heightRange = ( m_OuterRadius - 3 );
+			float heightRange = ( m_OuterRadius - m_InnerRadius );
 			m_InvRH0 = -1.0f / ( heightRange * model.RayleighDensityScaleHeightFraction );
 			m_InvMH0 = -1.0f / ( heightRange * model.MieDensityScaleHeightFraction );
 			m_InscatterDistanceFudgeFactor = model.InscatterDistanceFudgeFactor;

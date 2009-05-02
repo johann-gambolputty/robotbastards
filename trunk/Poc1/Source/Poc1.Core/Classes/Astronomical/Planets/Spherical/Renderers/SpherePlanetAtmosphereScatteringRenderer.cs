@@ -1,5 +1,4 @@
 using System;
-using Poc1.Core.Classes.Rendering.Cameras;
 using Poc1.Core.Interfaces;
 using Poc1.Core.Interfaces.Astronomical.Planets.Models;
 using Poc1.Core.Interfaces.Astronomical.Planets.Renderers;
@@ -150,10 +149,11 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 			Vector3 groundVec = localPos.ToVector3( ).MakeLength( clampedLength );
 			Point3 atmPos = Point3.Origin + groundVec;
 
-			Vector3 viewDir = UniCamera.Current.Frame.ZAxis;
+			Vector3 viewDir = camera.Frame.ZAxis;
 			effect.Parameters[ "AtmViewPosLength" ].Set( atmPos.DistanceTo( Point3.Origin ) );
-			effect.Parameters[ "AtmViewPos" ].Set( atmPos.X, atmPos.Y, atmPos.Z );
-			effect.Parameters[ "AtmViewDir" ].Set( viewDir.X, viewDir.Y, viewDir.Z );
+			effect.Parameters[ "AtmViewVec" ].Set( atmPos.ToVector3( ).MakeNormal( ) );
+			effect.Parameters[ "AtmViewPos" ].Set( atmPos );
+			effect.Parameters[ "AtmViewDir" ].Set( viewDir );
 			effect.Parameters[ "AtmViewHeight" ].Set( normHeight );
 			effect.Parameters[ "AtmInnerRadius" ].Set( planetRadius );
 			effect.Parameters[ "AtmThickness" ].Set( atmosphereRadius );
@@ -173,10 +173,11 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 			//	Vector3 groundVec = localPos.ToVector3( ).MakeLength( clampedLength );
 			Point3 atmPos = localPos; // Point3.Origin + groundVec;
 
-			Vector3 viewDir = UniCamera.Current.Frame.ZAxis;
+			Vector3 viewDir = camera.Frame.ZAxis;
 			effect.Parameters[ "AtmViewPosLength" ].Set( atmPos.DistanceTo( Point3.Origin ) );
-			effect.Parameters[ "AtmViewPos" ].Set( atmPos.X, atmPos.Y, atmPos.Z );
-			effect.Parameters[ "AtmViewDir" ].Set( viewDir.X, viewDir.Y, viewDir.Z );
+			effect.Parameters[ "AtmViewPos" ].Set( atmPos );
+			effect.Parameters[ "AtmViewVec" ].Set( atmPos.ToVector3( ).MakeNormal( ) );
+			effect.Parameters[ "AtmViewDir" ].Set( viewDir );
 			effect.Parameters[ "AtmViewHeight" ].Set( normHeight );
 			effect.Parameters[ "AtmInnerRadius" ].Set( planetRadius );
 			effect.Parameters[ "AtmThickness" ].Set( atmosphereRadius );

@@ -37,8 +37,9 @@ namespace Poc1.Bob.Controls.Atmosphere
 			this.scatteringResolutionComboBox = new System.Windows.Forms.ComboBox( );
 			this.atmosphereParametersGroupBox = new System.Windows.Forms.GroupBox( );
 			this.atmosphereParametersPropertyGrid = new System.Windows.Forms.PropertyGrid( );
-			this.buildButton = new System.Windows.Forms.Button( );
 			this.buildProgressBar = new System.Windows.Forms.ProgressBar( );
+			this.analyzeButton = new System.Windows.Forms.Button( );
+			this.buildButton = new System.Windows.Forms.Button( );
 			this.buildSettingsGroupBox.SuspendLayout( );
 			( ( System.ComponentModel.ISupportInitialize )( this.attenuationUpDown ) ).BeginInit( );
 			this.atmosphereParametersGroupBox.SuspendLayout( );
@@ -55,7 +56,7 @@ namespace Poc1.Bob.Controls.Atmosphere
 			this.buildSettingsGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
 			this.buildSettingsGroupBox.Location = new System.Drawing.Point( 0, 0 );
 			this.buildSettingsGroupBox.Name = "buildSettingsGroupBox";
-			this.buildSettingsGroupBox.Size = new System.Drawing.Size( 194, 115 );
+			this.buildSettingsGroupBox.Size = new System.Drawing.Size( 207, 115 );
 			this.buildSettingsGroupBox.TabIndex = 0;
 			this.buildSettingsGroupBox.TabStop = false;
 			this.buildSettingsGroupBox.Text = "Build Settings";
@@ -123,43 +124,58 @@ namespace Poc1.Bob.Controls.Atmosphere
 			// 
 			// atmosphereParametersGroupBox
 			// 
+			this.atmosphereParametersGroupBox.Controls.Add( this.buildButton );
+			this.atmosphereParametersGroupBox.Controls.Add( this.analyzeButton );
 			this.atmosphereParametersGroupBox.Controls.Add( this.atmosphereParametersPropertyGrid );
 			this.atmosphereParametersGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.atmosphereParametersGroupBox.Location = new System.Drawing.Point( 0, 115 );
 			this.atmosphereParametersGroupBox.Name = "atmosphereParametersGroupBox";
-			this.atmosphereParametersGroupBox.Size = new System.Drawing.Size( 194, 202 );
+			this.atmosphereParametersGroupBox.Size = new System.Drawing.Size( 207, 150 );
 			this.atmosphereParametersGroupBox.TabIndex = 1;
 			this.atmosphereParametersGroupBox.TabStop = false;
 			this.atmosphereParametersGroupBox.Text = "Atmosphere Parameters";
 			// 
 			// atmosphereParametersPropertyGrid
 			// 
-			this.atmosphereParametersPropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.atmosphereParametersPropertyGrid.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom )
+						| System.Windows.Forms.AnchorStyles.Left )
+						| System.Windows.Forms.AnchorStyles.Right ) ) );
 			this.atmosphereParametersPropertyGrid.HelpVisible = false;
 			this.atmosphereParametersPropertyGrid.Location = new System.Drawing.Point( 3, 16 );
 			this.atmosphereParametersPropertyGrid.Name = "atmosphereParametersPropertyGrid";
-			this.atmosphereParametersPropertyGrid.Size = new System.Drawing.Size( 188, 183 );
+			this.atmosphereParametersPropertyGrid.Size = new System.Drawing.Size( 201, 98 );
 			this.atmosphereParametersPropertyGrid.TabIndex = 0;
 			this.atmosphereParametersPropertyGrid.ToolbarVisible = false;
-			// 
-			// buildButton
-			// 
-			this.buildButton.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.buildButton.Location = new System.Drawing.Point( 0, 340 );
-			this.buildButton.Name = "buildButton";
-			this.buildButton.Size = new System.Drawing.Size( 194, 23 );
-			this.buildButton.TabIndex = 2;
-			this.buildButton.Text = "Build";
-			this.buildButton.UseVisualStyleBackColor = true;
-			this.buildButton.Click += new System.EventHandler( this.buildButton_Click );
 			// 
 			// buildProgressBar
 			// 
 			this.buildProgressBar.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.buildProgressBar.Location = new System.Drawing.Point( 0, 317 );
+			this.buildProgressBar.Location = new System.Drawing.Point( 0, 265 );
 			this.buildProgressBar.Name = "buildProgressBar";
-			this.buildProgressBar.Size = new System.Drawing.Size( 194, 23 );
+			this.buildProgressBar.Size = new System.Drawing.Size( 207, 23 );
 			this.buildProgressBar.TabIndex = 3;
+			// 
+			// analyzeButton
+			// 
+			this.analyzeButton.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) );
+			this.analyzeButton.Location = new System.Drawing.Point( 3, 120 );
+			this.analyzeButton.Name = "analyzeButton";
+			this.analyzeButton.Size = new System.Drawing.Size( 75, 23 );
+			this.analyzeButton.TabIndex = 1;
+			this.analyzeButton.Text = "Analyze...";
+			this.analyzeButton.UseVisualStyleBackColor = true;
+			this.analyzeButton.Click += new System.EventHandler( this.analyzeButton_Click );
+			// 
+			// buildButton
+			// 
+			this.buildButton.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right ) ) );
+			this.buildButton.Location = new System.Drawing.Point( 119, 120 );
+			this.buildButton.Name = "buildButton";
+			this.buildButton.Size = new System.Drawing.Size( 85, 23 );
+			this.buildButton.TabIndex = 3;
+			this.buildButton.Text = "Build";
+			this.buildButton.UseVisualStyleBackColor = true;
+			this.buildButton.Click += new System.EventHandler( this.buildButton_Click );
 			// 
 			// ScatteringAtmosphereBuildControl
 			// 
@@ -167,10 +183,9 @@ namespace Poc1.Bob.Controls.Atmosphere
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add( this.atmosphereParametersGroupBox );
 			this.Controls.Add( this.buildProgressBar );
-			this.Controls.Add( this.buildButton );
 			this.Controls.Add( this.buildSettingsGroupBox );
 			this.Name = "ScatteringAtmosphereBuildControl";
-			this.Size = new System.Drawing.Size( 194, 363 );
+			this.Size = new System.Drawing.Size( 207, 288 );
 			this.buildSettingsGroupBox.ResumeLayout( false );
 			this.buildSettingsGroupBox.PerformLayout( );
 			( ( System.ComponentModel.ISupportInitialize )( this.attenuationUpDown ) ).EndInit( );
@@ -190,7 +205,8 @@ namespace Poc1.Bob.Controls.Atmosphere
 		private System.Windows.Forms.GroupBox atmosphereParametersGroupBox;
 		private System.Windows.Forms.PropertyGrid atmosphereParametersPropertyGrid;
 		private System.Windows.Forms.NumericUpDown attenuationUpDown;
-		private System.Windows.Forms.Button buildButton;
 		private System.Windows.Forms.ProgressBar buildProgressBar;
+		private System.Windows.Forms.Button analyzeButton;
+		private System.Windows.Forms.Button buildButton;
 	}
 }

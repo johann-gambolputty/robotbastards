@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using Exocortex.DSP;
 using Rb.Core.Maths;
 using Rb.Core.Threading;
+using Rb.Core.Utils;
 
 namespace Poc1.Tools.Waves
 {
@@ -13,14 +14,24 @@ namespace Poc1.Tools.Waves
 	public class WaveAnimationGenerator
 	{
 		/// <summary>
+		/// Generates an animation sequence of wave heightmaps or normalmaps
+		/// </summary>
+		public WaveAnimation GenerateSequence( WaveAnimationParameters parameters, IProgressMonitor progress )
+		{
+			Arguments.CheckNotNull( parameters, "parameters" );
+			if ( parameters.StoreHeights )
+			{
+				return GenerateHeightmapSequence( parameters, progress );
+			}
+			return GenerateNormalMapSequence( parameters, progress );
+		}
+
+		/// <summary>
 		/// Generates an animation sequence of wave heightmaps
 		/// </summary>
 		public WaveAnimation GenerateHeightmapSequence( WaveAnimationParameters parameters, IProgressMonitor progress )
 		{
-			if ( parameters == null )
-			{
-				throw new ArgumentNullException( "parameters" );
-			}
+			Arguments.CheckNotNull( parameters, "parameters" );
 			progress = progress ?? ProgressMonitor.Null;
 			float progressPerFrame = 1.0f / parameters.Frames;
 
@@ -37,18 +48,17 @@ namespace Poc1.Tools.Waves
 		/// <summary>
 		/// Generates an animation sequence of wave normal maps
 		/// </summary>
-		public WaveAnimation GenerateNormalMapSequence( WaveAnimationParameters parameters )
+		public WaveAnimation GenerateNormalMapSequence( WaveAnimationParameters parameters, IProgressMonitor progress )
 		{
-			if ( parameters == null )
-			{
-				throw new ArgumentNullException( "parameters" );
-			}
+			Arguments.CheckNotNull( parameters, "parameters" );
+			progress = progress ?? ProgressMonitor.Null;
+			float progressPerFrame = 1.0f / parameters.Frames;
 			m_Map = null;
 			m_InvMap = null;
 			Bitmap[] results = new Bitmap[ parameters.Frames ];
 			for ( int i = 0; i < parameters.Frames; ++i )
 			{
-				results[ i ] = GenerateNormalMap( parameters, parameters.Time * ( ( float )i / ( parameters.Frames - 1 ) ), parameters.Time );
+				results[ i ] = GenerateNormalMap( parameters, parameters.Time * ( ( float )i / ( parameters.Frames - 1 ) ), parameters.Time, progress, i * progressPerFrame, progressPerFrame );
 			}
 			return new WaveAnimation( results );
 		}
@@ -115,8 +125,8 @@ namespace Poc1.Tools.Waves
 
 			return m_Map;
 		}
-		
-		private Bitmap GenerateNormalMap( WaveAnimationParameters parameters, float t, float maxT )
+
+		private Bitmap GenerateNormalMap( WaveAnimationParameters parameters, float t, float maxT, IProgressMonitor progress, float curProgress, float progressPerFrame )
 		{
 			int width = parameters.Width;
 			int height = parameters.Height;
@@ -135,6 +145,7 @@ namespace Poc1.Tools.Waves
 					byte nY = ( byte )( Math.Max( 0, Math.Min( 256, 128 + resMap[ x + y * width ].Im * 8 ) ) );
 					bmp.SetPixel( x, y, Color.FromArgb( nX, 0, nY ) );
 				}
+				progress.UpdateProgress( curProgress + progressPerFrame * ( y / ( float )( height - 1 ) ) );
 			}
 
 			return bmp;

@@ -44,5 +44,19 @@ namespace Poc1.Core.Interfaces.Rendering
 		{
 			get;
 		}
+
+		/// <summary>
+		/// Gets a specified render target
+		/// </summary>
+		/// <param name="target">Target to retrieve</param>
+		/// <returns>Returns the specified render target. If it's not supported, null is returned.</returns>
+		IRenderTarget GetRenderTarget( UniRenderTargets target );
+
+		/// <summary>
+		/// Sets a render target
+		/// </summary>
+		/// <param name="targetType">Render target type</param>
+		/// <param name="target">Render target. Can be null</param>
+		void SetRenderTarget( UniRenderTargets targetType, IRenderTarget target );
 	}
 }

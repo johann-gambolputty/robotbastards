@@ -275,9 +275,9 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Helper to convert a Matrix44 to a GL-friendly float array
 		/// </summary>
-		private static float[] GetGlMatrix( Matrix44 matrix )
+		private static float[] GetGlMatrix( InvariantMatrix44 matrix )
 		{
-			return matrix.Elements;
+			return matrix is Matrix44 ? ( ( Matrix44 )matrix ).Elements : matrix.ToFloatArray( );
 		}
 
 		/// <summary>
@@ -504,7 +504,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Applies the specified transform, multiplied by the current topmost transform, and adds it to the specified transform stack
 		/// </summary>
-		public override void PushTransform( TransformType type, Matrix44 matrix )
+		public override void PushTransform( TransformType type, InvariantMatrix44 matrix )
 		{
 			switch ( type )
 			{
@@ -614,7 +614,7 @@ namespace Rb.Rendering.OpenGl
 					{
 						//	TODO: AP: Too many allocations to get this working
 						SetSupportedMatrixMode( type );
-						Gl.glLoadMatrixf( GetGlMatrix( new Matrix44( translation, xAxis, yAxis, zAxis ) ) );
+						Gl.glLoadMatrixf( GetGlMatrix( new Matrix44( xAxis, yAxis, zAxis, translation ) ) );
 						break;
 					}
 			}
@@ -623,7 +623,7 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Applies the specified transform, adds it to the specified transform stack
 		/// </summary>
-		public override void SetTransform( TransformType type, Matrix44 matrix )
+		public override void SetTransform( TransformType type, InvariantMatrix44 matrix )
 		{
 			switch ( type )
 			{

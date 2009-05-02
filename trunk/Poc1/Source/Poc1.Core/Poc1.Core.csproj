@@ -72,10 +72,13 @@
     <Compile Include="Classes\Astronomical\Planets\Spherical\Renderers\AbstractSpherePlanetMarbleRenderer.cs" />
     <Compile Include="Classes\Astronomical\Planets\Spherical\Renderers\Marble\SpherePlanetMarbleTextureBuilder.cs" />
     <Compile Include="Classes\Astronomical\Planets\Spherical\Renderers\SpherePlanetHomogenousProceduralMarbleRenderer.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Spherical\Renderers\SpherePlanetReflectiveOceanRenderer.cs" />
+    <Compile Include="Classes\Astronomical\Stars\ProceduralStarBox.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Models\IPlanetAtmosphereModel.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Models\Templates\IPlanetAtmosphereScatteringTemplate.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Models\Templates\IPlanetTerrainTemplate.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Renderers\IPlanetHomogenousProceduralTerrainRenderer.cs" />
+    <Compile Include="Interfaces\Astronomical\Planets\Renderers\IPlanetReflectiveOceanRenderer.cs" />
     <Compile Include="Interfaces\Astronomical\Planets\Renderers\Terrain\Patches\TerrainPatchBuildParameters.cs" />
     <Compile Include="Classes\Astronomical\Planets\Renderers\Terrain\Patches\TerrainPatchConstants.cs" />
     <Compile Include="Classes\Astronomical\Planets\Renderers\Terrain\Patches\TerrainPatchVertices.cs" />
@@ -99,7 +102,7 @@
     <Compile Include="Classes\Astronomical\Planets\Spherical\SpherePlanetModel.cs" />
     <Compile Include="Classes\Astronomical\Planets\Spherical\SpherePlanetRenderer.cs" />
     <Compile Include="Classes\Astronomical\SolarSystem.cs" />
-    <Compile Include="Classes\Astronomical\Stars\StarBox.cs" />
+    <Compile Include="Classes\Astronomical\Stars\TexturedStarBox.cs" />
     <Compile Include="Classes\Profiling\GameProfiles.cs" />
     <Compile Include="Classes\Rendering\BaseSolarSystemRenderer.cs" />
     <Compile Include="Classes\Rendering\Cameras\EntityTrackingCamera.cs" />
@@ -163,6 +166,7 @@
     <Compile Include="Interfaces\Rendering\ISolarSystemRenderer.cs" />
     <Compile Include="Interfaces\Rendering\IUniRenderContext.cs" />
     <Compile Include="Interfaces\Rendering\UniRenderPass.cs" />
+    <Compile Include="Interfaces\Rendering\UniRenderTargets.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interfaces\UniPoint3.cs" />
     <Compile Include="Interfaces\UniRay3.cs" />

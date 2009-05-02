@@ -28,36 +28,38 @@ namespace Rb.Common.Controls.Forms.Graphs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.actualSizeButton = new System.Windows.Forms.Button();
-			this.SuspendLayout();
+			this.actualSizeButton = new System.Windows.Forms.Button( );
+			this.SuspendLayout( );
 			// 
 			// actualSizeButton
 			// 
-			this.actualSizeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.actualSizeButton.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) );
 			this.actualSizeButton.BackColor = System.Drawing.SystemColors.ControlLightLight;
 			this.actualSizeButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			this.actualSizeButton.Image = global::Rb.Common.Controls.Forms.Properties.Resources.ActualSize;
-			this.actualSizeButton.Location = new System.Drawing.Point(3, 153);
+			this.actualSizeButton.Location = new System.Drawing.Point( 3, 153 );
 			this.actualSizeButton.Name = "actualSizeButton";
-			this.actualSizeButton.Size = new System.Drawing.Size(20, 20);
+			this.actualSizeButton.Size = new System.Drawing.Size( 20, 20 );
 			this.actualSizeButton.TabIndex = 0;
 			this.actualSizeButton.UseVisualStyleBackColor = false;
-			this.actualSizeButton.Click += new System.EventHandler(this.actualSizeButton_Click);
+			this.actualSizeButton.Click += new System.EventHandler( this.actualSizeButton_Click );
 			// 
 			// GraphControl
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.actualSizeButton);
+			this.Controls.Add( this.actualSizeButton );
 			this.Name = "GraphControl";
-			this.Size = new System.Drawing.Size(241, 177);
-			this.Load += new System.EventHandler(this.GraphControl_Load);
-			this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GraphControl_MouseDown);
-			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GraphControl_MouseMove);
-			this.Resize += new System.EventHandler(this.GraphControl_Resize);
-			this.Paint += new System.Windows.Forms.PaintEventHandler(this.GraphControl_Paint);
-			this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.GraphControl_MouseUp);
-			this.ResumeLayout(false);
+			this.Size = new System.Drawing.Size( 241, 177 );
+			this.Load += new System.EventHandler( this.GraphControl_Load );
+			this.MouseLeave += new System.EventHandler( this.GraphControl_MouseLeave );
+			this.Paint += new System.Windows.Forms.PaintEventHandler( this.GraphControl_Paint );
+			this.MouseMove += new System.Windows.Forms.MouseEventHandler( this.GraphControl_MouseMove );
+			this.MouseDown += new System.Windows.Forms.MouseEventHandler( this.GraphControl_MouseDown );
+			this.Resize += new System.EventHandler( this.GraphControl_Resize );
+			this.MouseUp += new System.Windows.Forms.MouseEventHandler( this.GraphControl_MouseUp );
+			this.MouseEnter += new System.EventHandler( this.GraphControl_MouseEnter );
+			this.ResumeLayout( false );
 
 		}
 

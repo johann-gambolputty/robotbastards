@@ -164,7 +164,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Applies the specified transform, multiplied by the current topmost transform, and adds it to the specified transform stack
 		/// </summary>
-		public abstract void PushTransform( TransformType type, Matrix44 matrix );
+		public abstract void PushTransform( TransformType type, InvariantMatrix44 matrix );
 
 		/// <summary>
 		/// Pushes a copy of the transform currently at the top of the specified transform stack
@@ -184,7 +184,7 @@ namespace Rb.Rendering
 		/// <summary>
 		/// Applies the specified transform, adds it to the specified transform stack
 		/// </summary>
-		public abstract void SetTransform( TransformType type, Matrix44 matrix );
+		public abstract void SetTransform( TransformType type, InvariantMatrix44 matrix );
 
 		/// <summary>
 		/// Applies the specified transform, adds it to the specified transform stack

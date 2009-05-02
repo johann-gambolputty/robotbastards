@@ -134,7 +134,7 @@ namespace Rb.Rendering.Interfaces
 		/// <summary>
 		/// Applies the specified transform, multiplied by the current topmost transform, and adds it to the specified transform stack
 		/// </summary>
-		void PushTransform( TransformType type, Matrix44 matrix );
+		void PushTransform( TransformType type, InvariantMatrix44 matrix );
 
 		/// <summary>
 		/// Pushes a copy of the transform currently at the top of the specified transform stack
@@ -154,7 +154,7 @@ namespace Rb.Rendering.Interfaces
 		/// <summary>
 		/// Applies the specified transform, adds it to the specified transform stack
 		/// </summary>
-		void SetTransform( TransformType type, Matrix44 matrix );
+		void SetTransform( TransformType type, InvariantMatrix44 matrix );
 		
 		/// <summary>
 		/// Applies the specified transform, adds it to the specified transform stack

@@ -33,22 +33,14 @@ namespace Rb.Rendering.Cameras
 		}
 
 		/// <summary>
-		/// Gets the inverse frame of this camera
-		/// </summary>
-		public Matrix44 InverseFrame
-		{
-			get { return m_InverseCameraFrame; }
-		}
-
-		/// <summary>
 		/// Applies the camera transform
 		/// </summary>
 		public override void Begin( )
 		{
-			m_Orientation.ToMatrix( Frame );
-			Frame.Translation = -m_Position;	//	TODO: AP: This is bobbins
-			m_InverseCameraFrame.StoreInverse( Frame );
-			Graphics.Renderer.PushTransform( TransformType.WorldToView, m_InverseCameraFrame );
+			Matrix44 matrix = Matrix44.MakeQuaternionMatrix( m_Orientation );
+			matrix.Translation = -m_Position;	//	TODO: AP: This is bobbins
+			Frame = matrix;
+			Graphics.Renderer.PushTransform( TransformType.WorldToView, InverseFrame );
 			base.Begin( );
 		}
 
@@ -74,7 +66,6 @@ namespace Rb.Rendering.Cameras
 
 		private Point3 m_Position = Point3.Origin;
 		private Quaternion m_Orientation = new Quaternion( 0, 0, 0, 1 );
-		private Matrix44 m_InverseCameraFrame = new Matrix44( );
 
 		#endregion
 	}

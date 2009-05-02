@@ -1,4 +1,3 @@
-using Rb.Core.Maths;
 using Rb.Rendering.Interfaces.Objects.Cameras;
 
 namespace Poc1.Core.Interfaces.Rendering.Cameras
@@ -15,14 +14,5 @@ namespace Poc1.Core.Interfaces.Rendering.Cameras
 		{
 			get;
 		}
-
-		/// <summary>
-		/// Gets the view frame of the camera (orientation matrix without translation)
-		/// </summary>
-		Matrix44 InverseFrame
-		{
-			get;
-		}
-
 	}
 }

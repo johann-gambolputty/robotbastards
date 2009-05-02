@@ -30,7 +30,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models
 
 		#region Private Members
 
-		private Units.Metres m_SeaLevel;
+		private Units.Metres m_SeaLevel = new Units.Metres( 1000 );
 
 		#endregion
 	}

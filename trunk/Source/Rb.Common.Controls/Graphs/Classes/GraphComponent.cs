@@ -25,6 +25,18 @@ namespace Rb.Common.Controls.Graphs.Classes
 			this( name, data, data.CreateRenderer( ), data.CreateController( ) )
 		{
 		}
+		
+		/// <summary>
+		/// Setup constructor. Controller and renderer are created from <see cref="IGraph2dSource.CreateController()"/>
+		/// and <see cref="IGraph2dSource.CreateRenderer()"/>.
+		/// </summary>
+		/// <param name="name">Graph component name</param>
+		/// <param name="renderer">Graph renderer</param>
+		/// <param name="data">Graph data</param>
+		public GraphComponent( string name, IGraph2dSource data, IGraph2dRenderer renderer ) :
+			this( name, data, renderer, data.CreateController( ) )
+		{
+		}
 
 		/// <summary>
 		/// Setup constructor

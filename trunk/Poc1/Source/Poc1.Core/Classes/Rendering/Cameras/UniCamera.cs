@@ -15,37 +15,24 @@ namespace Poc1.Core.Classes.Rendering.Cameras
 	public class UniCamera : Part, IUniCamera
 	{
 		#region Current camera helper operations
-
-		/// <summary>
-		/// Gets the current <see cref="IUniCamera"/> applied to the rendering pipeline
-		/// </summary>
-		public static IUniCamera Current
-		{
-			get
-			{
-				return ( IUniCamera )Graphics.Renderer.Camera;
-			}
-		}
-
 		
 		/// <summary>
 		/// Pushes a rendering transform suitable for astronomical distances
 		/// </summary>
-		public static void PushAstroRenderTransform( TransformType transformType, UniTransform transform )
+		public static void PushAstroRenderTransform( IUniCamera camera, TransformType transformType, UniTransform transform )
 		{
 			Graphics.Renderer.PushTransform( transformType );
-			SetAstroRenderTransform( transformType, transform );
+			SetAstroRenderTransform( camera, transformType, transform );
 		}
 
 		/// <summary>
 		/// Sets up a rendering transform suitable for astronomical distances
 		/// </summary>
-		public static void SetAstroRenderTransform( TransformType transformType, UniTransform transform )
+		public static void SetAstroRenderTransform( IUniCamera camera, TransformType transformType, UniTransform transform )
 		{
-			IUniCamera curCam = Current;
-			float x = ( float )Units.Convert.UniToAstroRender( transform.Position.X - curCam.Position.X );
-			float y = ( float )Units.Convert.UniToAstroRender( transform.Position.Y - curCam.Position.Y );
-			float z = ( float )Units.Convert.UniToAstroRender( transform.Position.Z - curCam.Position.Z );
+			float x = ( float )Units.Convert.UniToAstroRender( transform.Position.X - camera.Position.X );
+			float y = ( float )Units.Convert.UniToAstroRender( transform.Position.Y - camera.Position.Y );
+			float z = ( float )Units.Convert.UniToAstroRender( transform.Position.Z - camera.Position.Z );
 
 			Graphics.Renderer.SetTransform( transformType, new Point3( x, y, z ), transform.XAxis, transform.YAxis, transform.ZAxis );
 		}
@@ -53,21 +40,20 @@ namespace Poc1.Core.Classes.Rendering.Cameras
 		/// <summary>
 		/// Pushes a rendering transform
 		/// </summary>
-		public static void PushRenderTransform( TransformType transformType, UniTransform transform )
+		public static void PushRenderTransform( IUniCamera camera, TransformType transformType, UniTransform transform )
 		{
 			Graphics.Renderer.PushTransform( transformType );
-			SetRenderTransform( transformType, transform );
+			SetRenderTransform( camera, transformType, transform );
 		}
 
 		/// <summary>
-		/// Sets the rendering transform (<see cref="IRenderer.SetTransform(TransformType,Matrix44)"/>)
+		/// Sets the rendering transform (<see cref="IRenderer.SetTransform(TransformType,InvariantMatrix44)"/>)
 		/// </summary>
-		public static void SetRenderTransform( TransformType transformType, UniTransform transform )
+		public static void SetRenderTransform( IUniCamera camera, TransformType transformType, UniTransform transform )
 		{
-			IUniCamera curCam = Current;
-			float x = ( float )Units.Convert.UniToRender( transform.Position.X - curCam.Position.X );
-			float y = ( float )Units.Convert.UniToRender( transform.Position.Y - curCam.Position.Y );
-			float z = ( float )Units.Convert.UniToRender( transform.Position.Z - curCam.Position.Z );
+			float x = ( float )Units.Convert.UniToRender( transform.Position.X - camera.Position.X );
+			float y = ( float )Units.Convert.UniToRender( transform.Position.Y - camera.Position.Y );
+			float z = ( float )Units.Convert.UniToRender( transform.Position.Z - camera.Position.Z );
 
 			Graphics.Renderer.SetTransform( transformType, new Point3( x, y, z ), transform.XAxis, transform.YAxis, transform.ZAxis );
 		}
@@ -119,15 +105,20 @@ namespace Poc1.Core.Classes.Rendering.Cameras
 		/// <summary>
 		/// Gets this camera's transform
 		/// </summary>
-		public virtual Matrix44 Frame
+		public virtual InvariantMatrix44 Frame
 		{
 			get { return m_LocalView; }
+			set
+			{
+				 m_LocalView.Copy( value );
+				 m_InvLocalView = m_LocalView.Invert( );
+			}
 		}
 
 		/// <summary>
 		/// Gets this camera's transform
 		/// </summary>
-		public virtual Matrix44 InverseFrame
+		public virtual InvariantMatrix44 InverseFrame
 		{
 			get { return m_InvLocalView; }
 		}
@@ -195,9 +186,10 @@ namespace Poc1.Core.Classes.Rendering.Cameras
 		/// </summary>
 		protected void SetViewFrame( Quaternion orientation )
 		{
-			orientation.ToMatrix( m_InvLocalView );
-			m_LocalView.Copy( m_InvLocalView );
-			m_LocalView.Transpose( );
+		//	Matrix44.MakeQuaternionMatrix( m_InvLocalView, orientation );
+		//	m_LocalView = m_InvLocalView.Transpose( );
+			Matrix44.MakeQuaternionMatrix( m_LocalView, orientation );
+			m_InvLocalView.StoreInverse( m_LocalView );
 		}
 
 		#endregion
@@ -205,8 +197,8 @@ namespace Poc1.Core.Classes.Rendering.Cameras
 		#region Private Members
 
 		private UniPoint3 m_Position = new UniPoint3( );
-		private readonly Matrix44 m_LocalView = new Matrix44( );
-		private readonly Matrix44 m_InvLocalView = new Matrix44( );
+		private Matrix44 m_LocalView = new Matrix44( );
+		private Matrix44 m_InvLocalView = new Matrix44( );
 		private float m_PerspectiveFov = 45.0f;
 		private float m_PerspectiveZNear = 5.0f;
 		private float m_PerspectiveZFar = 1000.0f;

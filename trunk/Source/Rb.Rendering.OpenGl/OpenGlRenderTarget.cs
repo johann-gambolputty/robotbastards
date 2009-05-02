@@ -1,4 +1,5 @@
 using System;
+using System.Drawing.Imaging;
 using Rb.Core.Maths;
 using Rb.Rendering.Interfaces.Objects;
 using Tao.OpenGl;
@@ -201,6 +202,23 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
+		/// Diagnostic function for saving the current texture to a file
+		/// </summary>
+		/// <param name="path">Output path</param>
+		/// <remarks>
+		/// Equivalent to Texture.ToBitmaps( false )[ 0 ].Save( path );
+		/// </remarks>
+		public void Save( string path )
+		{
+			if ( Texture == null )
+			{
+				throw new InvalidOperationException( "Can't save render target colour buffer, as it has not been initialized" );
+			}
+			ImageFormat format = GetImageFormatFromPath( path );
+			Texture.ToBitmap( false )[ 0 ].Save( path, format );
+		}
+
+		/// <summary>
 		/// Saves the depth buffer to a file. Render target must be bound for this to work (i.e. between Begin() and End() calls)
 		/// </summary>
 		public unsafe void	SaveDepthBuffer( string path )
@@ -223,8 +241,8 @@ namespace Rb.Rendering.OpenGl
 			fixed ( byte* bufferMemPtr = bufferMem )
 			{
 				System.Drawing.Bitmap bmp;
-				bmp = new System.Drawing.Bitmap( Width, Height, Width * 3, System.Drawing.Imaging.PixelFormat.Format24bppRgb, ( IntPtr )bufferMemPtr );
-				bmp.Save( path, System.Drawing.Imaging.ImageFormat.Png );
+				bmp = new System.Drawing.Bitmap( Width, Height, Width * 3, PixelFormat.Format24bppRgb, ( IntPtr )bufferMemPtr );
+				bmp.Save( path, GetImageFormatFromPath( path ) );
 			}
 		}
 
@@ -327,6 +345,26 @@ namespace Rb.Rendering.OpenGl
 		private string m_Name;
 		
 		private static readonly bool ms_ExtensionPresent;
+
+		/// <summary>
+		/// Gets the image format implied by the extension on a path
+		/// </summary>
+		private static ImageFormat GetImageFormatFromPath( string path )
+		{
+			if ( path.EndsWith( "jpg" ) || path.EndsWith( "jpeg" ) )
+			{
+				return ImageFormat.Jpeg;
+			}
+			if ( path.EndsWith( "bmp" ) )
+			{
+				return ImageFormat.Bmp;
+			}
+			if ( path.EndsWith( "png" ) )
+			{
+				return ImageFormat.Png;
+			}
+			throw new ArgumentException( string.Format( "Path \"{0}\" does not end with a recognized image file extension", path ), "path" );
+		}
 
 		/// <summary>
 		/// Checks for framebuffer extension

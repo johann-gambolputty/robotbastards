@@ -30,9 +30,11 @@ namespace Poc1.Bob.Core.Classes.Rendering
 			view.InitializeRendering +=
 				delegate
 				{
-					SolarSystem scene = new SolarSystem( null );
+				//	SolarSystem scene = new SolarSystem( null );	//	Initializes without stars
+					SolarSystem scene = new SolarSystem( );			//	Initializes with stars
 					scene.Add( planet );
-					view.Renderable = new UniRenderer( scene, view.UniCamera, new BaseSolarSystemRenderer( ) );
+				//	view.Renderable = new UniRenderer( scene, view.UniCamera, new BaseSolarSystemRenderer( ) );
+					view.Renderable = new UniRenderer( scene, view.UniCamera, new SolarSystemRenderer( true ) );
 					SetDefaultCameraPosition( view.UniCamera );
 				};
 

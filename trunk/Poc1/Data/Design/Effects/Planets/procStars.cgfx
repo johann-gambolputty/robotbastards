@@ -1,0 +1,83 @@
+
+sampler3D RandomTexture = sampler_state
+{
+	MinFilter = Linear;
+	MagFilter = Linear;
+	WrapS = Repeat;
+	WrapT = Repeat;
+	WrapR = Repeat;
+};
+
+
+struct VertexShaderInput
+{
+	float4 m_Position : POSITION;
+	float4 m_Normal : NORMAL;
+};
+
+struct FragmentShaderInput
+{
+	float4 m_Position : POSITION;
+	float3 m_Uv : TEXCOORD0;
+};
+
+
+float4x4 ModelViewProjectionMatrix;
+float4x4 InverseTransposeModelMatrix;
+
+
+FragmentShaderInput VertexShader( VertexShaderInput input )
+{
+	FragmentShaderInput output;
+
+	output.m_Position = mul( ModelViewProjectionMatrix, input.m_Position );
+//	output.m_Normal = normalize( mul( InverseTransposeModelMatrix, input.m_Normal ) ).xyz;
+	output.m_Uv = input.m_Position;
+	output.m_Uv /= 40.0f;
+	output.m_Uv += float3( 0.5f, 0.5f, 0.5f );
+
+	return output;
+}
+
+float4 FragmentShader( FragmentShaderInput input ) : COLOR
+{
+//	int x = ( int )( 255.0f * tex2D( RandomTexture, float2( input.m_Normal.x * 10, 0 ) ).r );
+//	int y = ( int )( 255.0f * tex2D( RandomTexture, float2( input.m_Normal.y * 10, 0 ) ).g );
+//	int z = ( int )( 255.0f * tex2D( RandomTexture, float2( input.m_Normal.z * 10, 0 ) ).b );
+//
+//	int res = 17;
+//	res = res * 37 + x;
+//	res = res * 37 + y;
+//	res = res * 37 + z;
+//
+//	res = ( res % 0xffff );
+//	float val = res / ( float )0xffff;
+//
+////	float4 starColour = texCUBE( StarsTexture, input.m_Normal.xyz );
+////	return starColour;
+//	return val < 0.5f ? float4( 0, 0, 0, 1 ) : float4( 1, 1, 1, 1 );
+
+	float4 v = tex3D( RandomTexture, input.m_Uv );
+	float r = ( v.r * v.g * v.b );
+	r = r * r;
+//	r = r * r;
+	return float4( r, r, r, 1 );
+}
+
+technique DefaultTechnique
+{
+	pass
+	{
+		LightingEnable			= false;
+		DepthMask				= false;
+		ShadeModel				= Smooth;
+		FrontFace				= CW;
+		DepthTestEnable			= false;
+		DepthFunc				= Less;
+		CullFaceEnable			= true;
+		BlendEnable				= false;
+		PolygonMode				= int2( Front, Fill );
+		VertexProgram			= compile arbvp1 VertexShader( );
+		FragmentProgram			= compile arbfp1 FragmentShader( );
+	}
+}

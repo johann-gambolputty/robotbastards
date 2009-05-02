@@ -10,6 +10,33 @@ namespace Rb.Common.Controls.Graphs.Classes.Renderers
 	public class GraphX2dLineRenderer : IGraph2dRenderer, IDisposable
 	{
 		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public GraphX2dLineRenderer( ) :
+			this( Color.Red )
+		{
+		}
+
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		/// <param name="colour">Line colour</param>
+		public GraphX2dLineRenderer( Color colour ) :
+			this( colour, 2.0f )
+		{
+		}
+
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		/// <param name="colour">Line colour</param>
+		/// <param name="lineWidth">Line width in pixels</param>
+		public GraphX2dLineRenderer( Color colour, float lineWidth )
+		{
+			m_Pen = new Pen( colour, lineWidth );
+		}
+
+		/// <summary>
 		/// Gets/sets the pen used to render the graph
 		/// </summary>
 		public Pen Pen

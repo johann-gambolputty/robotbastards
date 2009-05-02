@@ -39,6 +39,7 @@
     <Compile Include="Components\AbstractCompositeTest.cs" />
     <Compile Include="Graphs\TestGraphNodeWalker.cs" />
     <Compile Include="Graphs\TestIGraphDataSources.cs" />
+    <Compile Include="Maths\InvariantMatrix44Test.cs" />
     <Compile Include="TestIObjectSet.cs" />
     <Compile Include="TestIObjectSetServiceMap.cs" />
     <Compile Include="TestObjectSet.cs" />

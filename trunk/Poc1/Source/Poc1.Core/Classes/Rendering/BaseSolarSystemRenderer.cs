@@ -1,3 +1,4 @@
+using System;
 using Poc1.Core.Interfaces.Astronomical;
 using Poc1.Core.Interfaces.Astronomical.Planets.Renderers;
 using Poc1.Core.Interfaces.Rendering;
@@ -102,9 +103,35 @@ namespace Poc1.Core.Classes.Rendering
 				set { m_InAtmosphereRenderer = value; }
 			}
 
+			/// <summary>
+			/// Sets a render target
+			/// </summary>
+			/// <param name="targetType">Render target type</param>
+			/// <param name="target">Render target. Can be null</param>
+			public void SetRenderTarget( UniRenderTargets targetType, IRenderTarget target )
+			{
+				m_Targets[ ( int )targetType ] = target;
+			}
+
+
+			/// <summary>
+			/// Gets a specified render target
+			/// </summary>
+			/// <param name="targetType">Target to retrieve</param>
+			/// <returns>Returns the specified render target. If it's not supported, null is returned.</returns>
+			public IRenderTarget GetRenderTarget( UniRenderTargets targetType )
+			{
+				return m_Targets[ ( int )targetType ];
+			}
+
+			#region Private Members
+
 			private UniRenderPass m_CurrentPass;
 			private IUniCamera m_Camera;
 			private IPlanetAtmosphereRenderer m_InAtmosphereRenderer;
+			private readonly IRenderTarget[] m_Targets = new IRenderTarget[ Enum.GetValues( typeof( UniRenderTargets ) ).Length ]; 
+
+			#endregion
 		}
 
 

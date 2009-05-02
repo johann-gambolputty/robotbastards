@@ -1,0 +1,122 @@
+
+sampler2D OceanTexture0 = sampler_state
+{
+	WrapS = Repeat;
+	WrapT = Repeat;
+	MinFilter = LinearMipMapLinear;
+	MagFilter = LinearMipMapLinear;
+};
+
+sampler2D OceanTexture1 = sampler_state
+{
+	WrapS = Repeat;
+	WrapT = Repeat;
+	MinFilter = LinearMipMapLinear;
+	MagFilter = LinearMipMapLinear;
+};
+
+float OceanTextureT = 0;
+
+
+struct VertexShaderInput
+{
+	float4 m_Position : POSITION;
+	float4 m_Normal : NORMAL;
+	float2 m_Uv : TEXCOORD0;
+};
+
+struct FragmentShaderInput
+{
+	float4 m_Position : POSITION;
+	float3 m_Normal : TEXCOORD0;
+	float2 m_Uv : TEXCOORD1;
+	float m_Z : TEXCOORD2;
+};
+
+//	Pipeline effect parameters
+float4x4 ModelViewProjectionMatrix;
+float4x4 InverseTransposeModelMatrix;
+float4x4 ViewMatrix;
+float3 EyePosition;
+float3 EyeZAxis;
+float NearZ;
+float FarZ;
+
+//	Custom parameters
+float3 SunDirInTangentSpace;
+float3 EyePosInTangentSpace;
+float3 SunDir = float3( 1, 0, 0 );
+float3 WaterColour = float3( 0, 1, 0 );
+
+FragmentShaderInput VertexShader( VertexShaderInput input )
+{
+	FragmentShaderInput output;
+
+	output.m_Position	= mul( ModelViewProjectionMatrix, input.m_Position );
+		output.m_Normal = normalize( mul( InverseTransposeModelMatrix, input.m_Normal ).xyz );
+	output.m_Uv = input.m_Uv;
+	output.m_Z = output.m_Position.z;
+
+	return output;
+}
+
+//	Get the colour of the ocean for a given UV coordinate
+float3 GetOceanColour( float2 uv )
+{
+	float3 oceanColour = tex2D( OceanTexture0, uv ).rgb;
+	oceanColour = oceanColour + ( tex2D( OceanTexture1, uv ).rgb - oceanColour ) * OceanTextureT;
+	return oceanColour;
+}
+
+//	Gets ocean lighting
+float4 GetOceanLighting( float3 normal )
+{
+	float3	zAxis		= float3( ViewMatrix[ 2 ] );
+	float3	halfVec		= normalize( SunDir + zAxis );
+	float	diffuse		= dot( normal, SunDir );
+	float	specular	= dot( normal, halfVec );
+
+	float4	lighting	= lit( diffuse, specular, 4 );
+
+	return lighting;
+}
+
+float4 FragmentShader( FragmentShaderInput input ) : COLOR
+{
+	float3 normal = normalize( input.m_Normal );
+	float2 uv = input.m_Uv;
+
+	float4 lighting = GetOceanLighting( normal );
+
+	float3 farOceanColour = GetOceanColour( uv );
+	float3 nearOceanColour = GetOceanColour( uv * 40 );
+	nearOceanColour.g = nearOceanColour.b = 0;
+
+	float alpha = ( FarZ - input.m_Z ) / ( FarZ - NearZ );
+	alpha = saturate( alpha * alpha );
+
+	float3 oceanColour = farOceanColour * ( 1 - alpha ) + nearOceanColour * alpha;
+
+	float4	colour = float4( ( lighting.y * oceanColour ) + ( lighting.z * oceanColour ), 1 );
+	return colour;
+}
+
+technique DefaultTechnique
+{
+	pass
+	{
+		LightingEnable			= false;
+		DepthFunc				= Less;
+		DepthMask				= true;
+		ShadeModel				= Smooth;
+		FrontFace				= CW;
+		DepthTestEnable			= true;
+		CullFaceEnable			= false;
+		BlendEnable				= false;
+		VertexProgram			= compile arbvp1 VertexShader( );
+		FragmentProgram			= compile arbfp1 FragmentShader( );
+	//	PolygonMode				= int2( FrontAndBack, Line );
+	}
+}
+
+

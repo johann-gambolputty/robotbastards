@@ -1,5 +1,7 @@
 using System;
+using System.ComponentModel;
 using Rb.Core.Maths;
+using Rb.Core.Utils;
 
 namespace Poc1.Core.Interfaces
 {
@@ -71,6 +73,7 @@ namespace Poc1.Core.Interfaces
 		/// <summary>
 		/// Universe units. Measures distances within solar systems using fixed point. 1 uni unit is 1 centimetre
 		/// </summary>
+		[TypeConverter( typeof( ExpandableStructConverter ) )]
 		public struct UniUnits
 		{
 			//	1 uni unit = 1cm
@@ -162,6 +165,7 @@ namespace Poc1.Core.Interfaces
 		/// <summary>
 		/// Rendering units. Measures distances relative to the viewer, using single precision floating point
 		/// </summary>
+		[TypeConverter( typeof( ExpandableStructConverter ) )]
 		public struct RenderUnits
 		{
 			/// <summary>
@@ -245,6 +249,7 @@ namespace Poc1.Core.Interfaces
 		/// <summary>
 		/// Astro render units.
 		/// </summary>
+		[TypeConverter( typeof( ExpandableStructConverter ) )]
 		public struct AstroRenderUnits
 		{
 			/// <summary>
@@ -344,6 +349,7 @@ namespace Poc1.Core.Interfaces
 		/// <summary>
 		/// Metres. Measures distances within solar systems using double precision floating point
 		/// </summary>
+		[TypeConverter( typeof( ExpandableStructConverter ) )]
 		public struct Metres : IComparable<Metres>, INumeric<Metres>
 		{
 			/// <summary>
@@ -359,6 +365,7 @@ namespace Poc1.Core.Interfaces
 			/// <summary>
 			/// Get the value of this unit measure in uni units
 			/// </summary>
+			[Browsable(false)]
 			public UniUnits ToUniUnits
 			{
 				get { return new UniUnits( ( long )( m_Value * Convert.MulMetresToUni ) ); }
@@ -367,6 +374,7 @@ namespace Poc1.Core.Interfaces
 			/// <summary>
 			/// Gets the value of this unit measure to astro render units
 			/// </summary>
+			[Browsable( false )]
 			public AstroRenderUnits ToAstroRenderUnits
 			{
 				get { return new AstroRenderUnits( m_Value * Convert.MulMetresToAstroRender ); }
@@ -375,6 +383,7 @@ namespace Poc1.Core.Interfaces
 			/// <summary>
 			/// Gets the value of this unit measure to render units
 			/// </summary>
+			[Browsable( false )]
 			public RenderUnits ToRenderUnits
 			{
 				get { return new RenderUnits( ( float )( m_Value * Convert.MulMetresToRender ) ); }
@@ -383,6 +392,7 @@ namespace Poc1.Core.Interfaces
 			/// <summary>
 			/// Gets the value of this unit measure to metres
 			/// </summary>
+			[Browsable( false )]
 			public Metres ToMetres
 			{
 				get { return this; }

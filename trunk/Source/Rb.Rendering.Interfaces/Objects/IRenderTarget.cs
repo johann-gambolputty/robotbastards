@@ -66,8 +66,19 @@ namespace Rb.Rendering.Interfaces.Objects
 		void Create( string name, int width, int height, TextureFormat colourFormat, int depthBits, int stencilBits, bool depthBufferAsTexture );
 
 		/// <summary>
+		/// Diagnostic function for saving the current texture to a file
+		/// </summary>
+		/// <param name="path">Output path</param>
+		/// <remarks>
+		/// Equivalent to Texture.ToBitmaps( false )[ 0 ].Save( path, format ); (where format is divined
+		/// from the path extension).
+		/// </remarks>
+		void Save( string path );
+
+		/// <summary>
 		/// Diagnostic function for saving the depth buffer to a file
 		/// </summary>
+		/// <param name="path">Output path</param>
 		void SaveDepthBuffer( string path );
 	}
 }

@@ -161,7 +161,21 @@ namespace Poc1.Core.Interfaces
 			return new Vector3( ( float )( vecX * invLength ), ( float )( vecY * invLength ), ( float )( vecZ * invLength ) );
 		}
 
+		public Point3 ToMetres( )
+		{
+			double x = Units.Convert.MulUniToMetres * X;
+			double y = Units.Convert.MulUniToMetres * Y;
+			double z = Units.Convert.MulUniToMetres * Z;
+			return new Point3( ( float )x, ( float )y, ( float )z );
+		}
+
 		#region Operators
+
+		public static UniPoint3 operator - ( UniPoint3 lhs, UniPoint3 rhs )
+		{
+			return new UniPoint3( lhs.X - rhs.X, lhs.Y - rhs.Y, lhs.Z - rhs.Z );
+		}
+
 
 		public static UniPoint3 operator + ( UniPoint3 pt, Vector3 vec )
 		{

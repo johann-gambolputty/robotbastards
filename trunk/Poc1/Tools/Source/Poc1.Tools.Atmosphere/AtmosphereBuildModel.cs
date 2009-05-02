@@ -96,6 +96,15 @@ namespace Poc1.Tools.Atmosphere
 			set { m_OutscatterFudgeFactor = value; }
 		}
 
+		/// <summary>
+		/// Gets/sets the ground radius multiplier
+		/// </summary>
+		public float GroundRadiusMultiplier
+		{
+			get { return m_GroundRadiusMultiplier; }
+			set { m_GroundRadiusMultiplier = value; }
+		}
+
 		#region Private Members
 
 		private float m_OutscatterFudgeFactor = 1.0f;
@@ -108,6 +117,7 @@ namespace Poc1.Tools.Atmosphere
 		private readonly float[] m_SunIntensity = new float[ 3 ] { 1, 1, 1 };
 		private float m_InnerRadius = 6000000;
 		private float m_Thickness = 20000;
+		private float m_GroundRadiusMultiplier = 0.01f;
 
 		#endregion
 

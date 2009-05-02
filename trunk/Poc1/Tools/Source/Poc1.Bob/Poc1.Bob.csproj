@@ -48,6 +48,12 @@
     <Compile Include="Controls\AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Atmosphere\ScatteringAtmosphereAnalysisForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\Atmosphere\ScatteringAtmosphereAnalysisForm.Designer.cs">
+      <DependentUpon>ScatteringAtmosphereAnalysisForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Atmosphere\ScatteringAtmosphereBuildControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -186,6 +192,12 @@
     <Compile Include="Controls\Rendering\RenderTargetViewControl.Designer.cs">
       <DependentUpon>RenderTargetViewControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Rendering\RenderTargetViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\Rendering\RenderTargetViewForm.Designer.cs">
+      <DependentUpon>RenderTargetViewForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Rendering\UniCameraViewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -213,6 +225,10 @@
     <EmbeddedResource Include="Controls\AboutBox.resx">
       <SubType>Designer</SubType>
       <DependentUpon>AboutBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Atmosphere\ScatteringAtmosphereAnalysisForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ScatteringAtmosphereAnalysisForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Atmosphere\ScatteringAtmosphereBuildControl.resx">
       <SubType>Designer</SubType>
@@ -293,6 +309,10 @@
     <EmbeddedResource Include="Controls\Rendering\RenderTargetViewControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>RenderTargetViewControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Rendering\RenderTargetViewForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>RenderTargetViewForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Rendering\UniCameraViewControl.resx">
       <DependentUpon>UniCameraViewControl.cs</DependentUpon>
@@ -440,4 +460,9 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>pushd "$(ProjectDir)..\..\..\.."
+call BuildRenderAssemblies.bat "$(ConfigurationName)" "$(TargetDir)"
+popd</PostBuildEvent>
+  </PropertyGroup>
 </Project>

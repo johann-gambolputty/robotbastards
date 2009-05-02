@@ -38,8 +38,9 @@ float4 FragmentShader( FragmentShaderInput input ) : COLOR
 		colour.rgb = GetScatteredSkyColour( input.m_WorldPos.xyz );
 	}
 
-	colour.a = min( ( colour.r + colour.g + colour.b ) * 1.7f, 1 );
-//	colour.a = 1;
+	colour.a = 1;
+//	colour.a = min( ( colour.r + colour.g + colour.b ) * 1.7f, 1 );
+
 	return colour;
 }
 

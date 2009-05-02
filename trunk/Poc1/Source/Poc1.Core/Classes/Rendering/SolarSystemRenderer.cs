@@ -1,9 +1,15 @@
+using Poc1.Core.Classes.Rendering.Cameras;
+using Poc1.Core.Interfaces;
 using Poc1.Core.Interfaces.Astronomical;
+using Poc1.Core.Interfaces.Astronomical.Planets;
+using Poc1.Core.Interfaces.Astronomical.Planets.Renderers;
 using Poc1.Core.Interfaces.Rendering;
 using Poc1.Core.Interfaces.Rendering.Cameras;
+using Rb.Core.Maths;
 using Rb.Core.Utils;
-using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
+using System.Drawing;
+using RbGraphics=Rb.Rendering.Graphics;
 
 namespace Poc1.Core.Classes.Rendering
 {
@@ -16,9 +22,17 @@ namespace Poc1.Core.Classes.Rendering
 	public class SolarSystemRenderer : BaseSolarSystemRenderer, ISolarSystemRenderer
 	{
 		/// <summary>
-		/// Gets/sets the resolution factor used by the reflection texture
+		/// Setup constructor
 		/// </summary>
-		public float ReflectionResolution
+		public SolarSystemRenderer( bool enableReflections )
+		{
+			EnableReflections = enableReflections;
+		}
+
+		/// <summary>
+		/// Gets/sets the resolution used by the reflection texture
+		/// </summary>
+		public int ReflectionResolution
 		{
 			get { return m_ReflectionResolution; }
 			set { m_ReflectionResolution = value; }
@@ -33,6 +47,7 @@ namespace Poc1.Core.Classes.Rendering
 			set { m_EnableReflections = value; }
 		}
 
+
 		/// <summary>
 		/// Renders the scene
 		/// </summary>
@@ -44,11 +59,10 @@ namespace Poc1.Core.Classes.Rendering
 			Arguments.CheckNotNull( solarSystem, "solarSystem" );
 			Arguments.CheckNotNull( camera, "camera" );
 
-			//	TODO: Get correct dimensions of fullscreen window
-			int fsWidth = 1024;
-			int fsHeight = 720;
+			PreRender( );
 
 			UniRenderContext uniContext = new UniRenderContext( camera, context );
+			uniContext.SetRenderTarget( UniRenderTargets.OceanReflections, m_OceanReflections );
 			uniContext.Camera = camera;
 
 			//	TODO: Render close geometry into stencil buffer or Z buffer to early-out far object rendering)
@@ -62,23 +76,18 @@ namespace Poc1.Core.Classes.Rendering
 			solarSystem.Render( uniContext );
 
 			//	Clear the depth buffer before rendering close objects
-			Graphics.Renderer.ClearDepth( 1.0f );
+			RbGraphics.Renderer.ClearDepth( 1.0f );
 
 			//	Render close object reflection geometry into a render target
 			if ( EnableReflections )
 			{
-				//	TODO: Invert camera around reflection plane
-				UseRenderTarget( ( int )( fsWidth * ReflectionResolution ), ( int )( fsHeight * ReflectionResolution ), 24 );
-				uniContext.CurrentPass = UniRenderPass.CloseReflectedObjects;
-				solarSystem.Render( uniContext );
-				//	TODO: 
+				RenderReflections( uniContext, solarSystem );
 			}
 
 			//	Render close object shadow geometry into a render target
 			//	TODO: ...
 
 			//	Render close objects
-			UseBackBuffer( );
 			uniContext.CurrentPass = UniRenderPass.CloseObjects;
 			solarSystem.Render( uniContext );
 
@@ -87,15 +96,106 @@ namespace Poc1.Core.Classes.Rendering
 
 		#region Private Members
 
-		private float m_ReflectionResolution;
+		private int m_ReflectionResolution = 512;
 		private bool m_EnableReflections;
+		private IRenderTarget m_OceanReflections;
 
-		private void UseBackBuffer( )
+		/// <summary>
+		/// Finds the closest planet in the solar system
+		/// </summary>
+		private static IPlanet FindClosestPlanet( IUniCamera camera, ISolarSystem solarSystem, double maxDistance )
 		{
+			IPlanet closestPlanet = null;
+			double closestDistance = maxDistance;
+			foreach ( IUniObject uniObject in solarSystem.Components )
+			{
+				IPlanet planet = uniObject as IPlanet;
+				if ( planet != null )
+				{
+					double distanceToCamera = planet.Transform.Position.DistanceTo( camera.Position );
+					if ( distanceToCamera < closestDistance )
+					{
+						closestPlanet = planet;
+						closestDistance = distanceToCamera;
+					}
+				}
+			}
+			return closestPlanet;
 		}
 
-		private void UseRenderTarget( int width, int height, int bpp )
+		/// <summary>
+		/// Renders reflections
+		/// </summary>
+		private void RenderReflections( UniRenderContext uniContext, ISolarSystem solarSystem )
 		{
+			IPlanet planet = FindClosestPlanet( uniContext.Camera, solarSystem, double.MaxValue );
+			if ( planet == null )
+			{
+				//	No close planets == no reflections to render
+				return;
+			}
+			IPlanetReflectiveOceanRenderer reflectionRenderer = planet.Renderer.GetRenderer<IPlanetReflectiveOceanRenderer>( );
+			if ( reflectionRenderer == null )
+			{
+				//	Planet doesn't have a reflective ocean
+				return;
+			}
+
+			Point3 pointOnPlane;
+			Plane3 plane = reflectionRenderer.GetTangentPlaneUnderPoint( uniContext.Camera.Position, out pointOnPlane );
+
+			InvariantMatrix44 reflectionMatrix = Matrix44.MakeReflectionMatrix( pointOnPlane, plane.Normal );
+
+			IUniCamera currentCamera = uniContext.Camera;
+			UniCamera reflectedCamera = new UniCamera( );
+			reflectedCamera.Frame = reflectionMatrix * currentCamera.Frame;
+			reflectedCamera.Position = currentCamera.Position;
+
+			uniContext.Camera = reflectedCamera;
+			//	Get the tangent space
+			//Matrix44 tangentSpaceMatrix = new Matrix44( );
+			//reflectionRenderer.Setup( tangentSpaceMatrix );
+
+			//	TODO: Invert camera around reflection plane
+			m_OceanReflections.Begin( );
+
+			RbGraphics.Renderer.ClearDepth( 1.0f );
+			RbGraphics.Renderer.ClearColour( Color.Black );
+
+			uniContext.CurrentPass = UniRenderPass.CloseReflectedObjects;
+			solarSystem.Render( uniContext );
+			m_OceanReflections.End( );
+
+			uniContext.Camera = currentCamera;
+		}
+
+		/// <summary>
+		/// Pre-render setup
+		/// </summary>
+		private void PreRender( )
+		{
+			//	Create render targets
+			if ( EnableReflections )
+			{
+				if ( m_OceanReflections != null )
+				{
+					if ( m_OceanReflections.Width != ReflectionResolution )
+					{
+						m_OceanReflections.Dispose( );
+						m_OceanReflections = null;
+					}
+				}
+				if ( m_OceanReflections == null )
+				{
+					m_OceanReflections = RbGraphics.Factory.CreateRenderTarget( );
+					m_OceanReflections.Create( "Ocean Reflections", ReflectionResolution, ReflectionResolution, TextureFormat.R8G8B8A8, 24, 0, false );
+				}
+			}
+			else if ( m_OceanReflections != null )
+			{
+				m_OceanReflections.Dispose( );
+				m_OceanReflections = null;
+			}
 		}
 
 		#endregion

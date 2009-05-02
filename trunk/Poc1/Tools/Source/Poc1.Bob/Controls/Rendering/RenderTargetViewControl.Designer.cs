@@ -33,55 +33,35 @@ namespace Poc1.Bob.Controls.Rendering
 		private void InitializeComponent( )
 		{
 			this.renderTargetListView = new System.Windows.Forms.ListView( );
-			this.splitter1 = new System.Windows.Forms.Splitter( );
-			this.renderTargetDisplay = new Rb.Rendering.Windows.Display( );
 			this.nameColumn = new System.Windows.Forms.ColumnHeader( );
 			this.widthColumn = new System.Windows.Forms.ColumnHeader( );
 			this.heightColumn = new System.Windows.Forms.ColumnHeader( );
 			this.formatColumn = new System.Windows.Forms.ColumnHeader( );
+			this.renderTargetDisplay = new Rb.Rendering.Windows.Display( );
+			this.continuousRefreshCheckbox = new System.Windows.Forms.CheckBox( );
+			this.refreshViewButton = new System.Windows.Forms.Button( );
 			this.SuspendLayout( );
 			// 
 			// renderTargetListView
 			// 
+			this.renderTargetListView.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left )
+						| System.Windows.Forms.AnchorStyles.Right ) ) );
 			this.renderTargetListView.Columns.AddRange( new System.Windows.Forms.ColumnHeader[] {
             this.nameColumn,
             this.widthColumn,
             this.heightColumn,
             this.formatColumn} );
-			this.renderTargetListView.Dock = System.Windows.Forms.DockStyle.Left;
 			this.renderTargetListView.Location = new System.Drawing.Point( 0, 0 );
 			this.renderTargetListView.Name = "renderTargetListView";
-			this.renderTargetListView.Size = new System.Drawing.Size( 245, 168 );
+			this.renderTargetListView.Size = new System.Drawing.Size( 346, 108 );
 			this.renderTargetListView.TabIndex = 0;
 			this.renderTargetListView.UseCompatibleStateImageBehavior = false;
 			this.renderTargetListView.View = System.Windows.Forms.View.Details;
 			// 
-			// splitter1
-			// 
-			this.splitter1.Location = new System.Drawing.Point( 245, 0 );
-			this.splitter1.Name = "splitter1";
-			this.splitter1.Size = new System.Drawing.Size( 10, 168 );
-			this.splitter1.TabIndex = 1;
-			this.splitter1.TabStop = false;
-			// 
-			// renderTargetDisplay
-			// 
-			this.renderTargetDisplay.AllowArrowKeyInputs = false;
-			this.renderTargetDisplay.ColourBits = ( ( byte )( 32 ) );
-			this.renderTargetDisplay.ContinuousRendering = false;
-			this.renderTargetDisplay.DepthBits = ( ( byte )( 24 ) );
-			this.renderTargetDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.renderTargetDisplay.FocusOnMouseOver = false;
-			this.renderTargetDisplay.Location = new System.Drawing.Point( 255, 0 );
-			this.renderTargetDisplay.Name = "renderTargetDisplay";
-			this.renderTargetDisplay.RenderInterval = 1;
-			this.renderTargetDisplay.Size = new System.Drawing.Size( 212, 168 );
-			this.renderTargetDisplay.StencilBits = ( ( byte )( 0 ) );
-			this.renderTargetDisplay.TabIndex = 2;
-			// 
 			// nameColumn
 			// 
 			this.nameColumn.Text = "Name";
+			this.nameColumn.Width = 158;
 			// 
 			// widthColumn
 			// 
@@ -95,28 +75,72 @@ namespace Poc1.Bob.Controls.Rendering
 			// 
 			this.formatColumn.Text = "Format";
 			// 
+			// renderTargetDisplay
+			// 
+			this.renderTargetDisplay.AllowArrowKeyInputs = false;
+			this.renderTargetDisplay.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom )
+						| System.Windows.Forms.AnchorStyles.Left )
+						| System.Windows.Forms.AnchorStyles.Right ) ) );
+			this.renderTargetDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.renderTargetDisplay.ColourBits = ( ( byte )( 32 ) );
+			this.renderTargetDisplay.ContinuousRendering = false;
+			this.renderTargetDisplay.DepthBits = ( ( byte )( 24 ) );
+			this.renderTargetDisplay.FocusOnMouseOver = false;
+			this.renderTargetDisplay.Location = new System.Drawing.Point( 3, 114 );
+			this.renderTargetDisplay.Name = "renderTargetDisplay";
+			this.renderTargetDisplay.RenderInterval = 1;
+			this.renderTargetDisplay.Size = new System.Drawing.Size( 343, 243 );
+			this.renderTargetDisplay.StencilBits = ( ( byte )( 0 ) );
+			this.renderTargetDisplay.TabIndex = 2;
+			this.renderTargetDisplay.OnRender += new Rb.Rendering.Interfaces.Objects.RenderDelegate( this.renderTargetDisplay_OnRender );
+			// 
+			// continuousRefreshCheckbox
+			// 
+			this.continuousRefreshCheckbox.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) );
+			this.continuousRefreshCheckbox.AutoSize = true;
+			this.continuousRefreshCheckbox.Location = new System.Drawing.Point( 8, 366 );
+			this.continuousRefreshCheckbox.Name = "continuousRefreshCheckbox";
+			this.continuousRefreshCheckbox.Size = new System.Drawing.Size( 119, 17 );
+			this.continuousRefreshCheckbox.TabIndex = 4;
+			this.continuousRefreshCheckbox.Text = "Continuous Refresh";
+			this.continuousRefreshCheckbox.UseVisualStyleBackColor = true;
+			this.continuousRefreshCheckbox.CheckedChanged += new System.EventHandler( this.continuousRefreshCheckbox_CheckedChanged );
+			// 
+			// refreshViewButton
+			// 
+			this.refreshViewButton.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right ) ) );
+			this.refreshViewButton.Location = new System.Drawing.Point( 265, 360 );
+			this.refreshViewButton.Name = "refreshViewButton";
+			this.refreshViewButton.Size = new System.Drawing.Size( 81, 23 );
+			this.refreshViewButton.TabIndex = 3;
+			this.refreshViewButton.Text = "Refresh View";
+			this.refreshViewButton.UseVisualStyleBackColor = true;
+			// 
 			// RenderTargetViewControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add( this.continuousRefreshCheckbox );
+			this.Controls.Add( this.refreshViewButton );
 			this.Controls.Add( this.renderTargetDisplay );
-			this.Controls.Add( this.splitter1 );
 			this.Controls.Add( this.renderTargetListView );
 			this.Name = "RenderTargetViewControl";
-			this.Size = new System.Drawing.Size( 467, 168 );
+			this.Size = new System.Drawing.Size( 349, 386 );
 			this.Load += new System.EventHandler( this.RenderTargetViewControl_Load );
 			this.ResumeLayout( false );
+			this.PerformLayout( );
 
 		}
 
 		#endregion
 
 		private System.Windows.Forms.ListView renderTargetListView;
-		private System.Windows.Forms.Splitter splitter1;
 		private Rb.Rendering.Windows.Display renderTargetDisplay;
 		private System.Windows.Forms.ColumnHeader nameColumn;
 		private System.Windows.Forms.ColumnHeader widthColumn;
 		private System.Windows.Forms.ColumnHeader heightColumn;
 		private System.Windows.Forms.ColumnHeader formatColumn;
+		private System.Windows.Forms.CheckBox continuousRefreshCheckbox;
+		private System.Windows.Forms.Button refreshViewButton;
 	}
 }
