@@ -53,7 +53,8 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 		/// <param name="context">Rendering context</param>
 		public override void Render( IUniRenderContext context )
 		{
-			if ( context.CurrentPass != UniRenderPass.CloseObjects )
+		//	if ( context.CurrentPass != UniRenderPass.CloseObjects )
+			if ( context.RenderFarObjects )
 			{
 				return;
 			}
@@ -204,9 +205,9 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 		public Plane3 GetTangentPlaneUnderPoint( UniPoint3 pos, out Point3 pointOnPlane )
 		{
 			Vector3 normal = Planet.Transform.Position.VectorTo( pos ).MakeNormal( );
-			Vector3 vec = normal *( float )Planet.Model.Radius.Value;
+			Vector3 vec = normal * ( Planet.Model.Radius + m_GeometryRadius ).ToRenderUnits;
 			pointOnPlane = vec.ToPoint3( );
-			return new Plane3( Point3.Origin, normal );
+			return new Plane3( pointOnPlane, normal );
 		}
 
 		/// <summary>

@@ -1,3 +1,4 @@
+#include "../Shared/tiled3dNoise.cg"
 
 sampler3D RandomTexture = sampler_state
 {
@@ -33,8 +34,8 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 	output.m_Position = mul( ModelViewProjectionMatrix, input.m_Position );
 //	output.m_Normal = normalize( mul( InverseTransposeModelMatrix, input.m_Normal ) ).xyz;
 	output.m_Uv = input.m_Position;
-	output.m_Uv /= 40.0f;
-	output.m_Uv += float3( 0.5f, 0.5f, 0.5f );
+//	output.m_Uv /= 20.0f;
+//	output.m_Uv += float3( 0.5f, 0.5f, 0.5f );
 
 	return output;
 }
@@ -59,7 +60,9 @@ float4 FragmentShader( FragmentShaderInput input ) : COLOR
 
 	float4 v = tex3D( RandomTexture, input.m_Uv );
 	float r = ( v.r * v.g * v.b );
-	r = r * r;
+//	r = Get3dNoise( input.m_Uv );
+	r = Get3dNoiseRidgedFractal8( input.m_Uv, 1.3f );
+//	r = Get3dNoise( input.m_Uv );
 //	r = r * r;
 	return float4( r, r, r, 1 );
 }

@@ -545,20 +545,23 @@ namespace Rb.Core.Maths
 			float[] elements = matrix.Elements;
 			float np2 = 2.0f * planeNormal.Dot( pointOnPlane );
 			elements[ 0 ] = 1.0f - 2.0f * planeNormal.X * planeNormal.X;
-			elements[ 1 ] = -2.0f * planeNormal.X * planeNormal.Y;
-			elements[ 2 ] = -2.0f * planeNormal.X * planeNormal.Z;
-			elements[ 3 ] = np2 * planeNormal.X;
-			elements[ 4 ] = -2.0f * planeNormal.Y * planeNormal.X;
+			elements[ 4 ] = -2.0f * planeNormal.X * planeNormal.Y;
+			elements[ 8 ] = -2.0f * planeNormal.X * planeNormal.Z;
+			elements[ 12 ] = np2 * planeNormal.X;
+
+			elements[ 1 ] = -2.0f * planeNormal.Y * planeNormal.X;
 			elements[ 5 ] = 1.0f - 2.0f * planeNormal.Y * planeNormal.Y;
-			elements[ 6 ] = -2.0f * planeNormal.Y * planeNormal.Z;
-			elements[ 7 ] = np2 * planeNormal.Y;
-			elements[ 8 ] = -2.0f * planeNormal.Z * planeNormal.X;
-			elements[ 9 ] = -2.0f * planeNormal.Z * planeNormal.Y;
+			elements[ 9 ] = -2.0f * planeNormal.Y * planeNormal.Z;
+			elements[ 13 ] = np2 * planeNormal.Y;
+
+			elements[ 2 ] = -2.0f * planeNormal.Z * planeNormal.X;
+			elements[ 6 ] = -2.0f * planeNormal.Z * planeNormal.Y;
 			elements[ 10 ] = 1.0f - 2.0f * planeNormal.Z * planeNormal.Z;
-			elements[ 11 ] = np2 * planeNormal.Z;
-			elements[ 12 ] = 0.0f;
-			elements[ 13 ] = 0.0f;
-			elements[ 14 ] = 0.0f;
+			elements[ 14 ] = np2 * planeNormal.Z;
+
+			elements[ 3 ] = 0.0f;
+			elements[ 7 ] = 0.0f;
+			elements[ 11 ] = 0.0f;
 			elements[ 15 ] = 1.0f;
 		}
 

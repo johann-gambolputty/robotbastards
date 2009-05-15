@@ -10,6 +10,7 @@
   <UsingTask TaskName="Poc1.Tools.BuildTasks.CopyToGame" AssemblyFile="$(ToolsDir)Poc1.Tools.BuildTasks.dll"/>
   <UsingTask TaskName="Poc1.Tools.BuildTasks.BuildTerrainTypes" AssemblyFile="$(ToolsDir)Poc1.Tools.BuildTasks.dll"/>
   <UsingTask TaskName="Poc1.Tools.BuildTasks.CreateNoiseBitmap" AssemblyFile="$(ToolsDir)Poc1.Tools.BuildTasks.dll"/>
+  <UsingTask TaskName="Poc1.Tools.BuildTasks.CreateNoise3dTexture" AssemblyFile="$(ToolsDir)Poc1.Tools.BuildTasks.dll"/>
   <UsingTask TaskName="Poc1.Tools.BuildTasks.CreateWaveAnimation" AssemblyFile="$(ToolsDir)Poc1.Tools.BuildTasks.dll"/>
   <UsingTask TaskName="Poc1.Tools.BuildTasks.CreateGasGiantTexture" AssemblyFile="$(ToolsDir)Poc1.Tools.BuildTasks.dll"/>
 
@@ -34,6 +35,14 @@
 
   <ItemGroup>
     <BuildNoiseOutputs Include="@(BuildNoiseInputs->'Game\Terrain\%(Filename).jpg')"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Build3dNoiseInputs Include="$(DesignFolder)\Terrain\*.noise3d.xml"/>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Build3dNoiseOutputs Include="@(Build3dNoiseInputs->'Game\Terrain\%(Filename).texture')"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -129,6 +138,15 @@
     <Message Text="...Complete"/>
   </Target>
 
+  <Target Name="Rebuild3dNoise">
+    <Message Text="Building 3D noise..."/>
+    <Poc1.Tools.BuildTasks.CreateNoise3dTexture SourceFile="%(Build3dNoiseInputs.Identity)">
+      <Output TaskParameter="OutputFile" ItemName="Build3dNoiseOutputs"/>
+    </Poc1.Tools.BuildTasks.CreateNoise3dTexture>
+    <Message Text="%(Build3dNoiseInputs.Identity)"/>
+    <Message Text="...Complete"/>
+  </Target>
+
   <Target Name="RebuildWaveAnimation" DependsOnTargets="CreateWaveAnimationOutputs">
     <Message Text="Building wave animations..."/>
     <Poc1.Tools.BuildTasks.CreateWaveAnimation SourceFile="%(WaveAnimationOutputs.Source)" OutputFile="%(WaveAnimationOutputs.Identity)"/>
@@ -181,6 +199,15 @@
     <Message Text="...Complete"/>
   </Target>
 
+  <Target Name="Build3dNoise" Inputs="@(Build3dNoiseInputs)" Outputs="@(Build3dNoiseOutputs)">
+    <Message Text="Building 3D noise..."/>
+    <Poc1.Tools.BuildTasks.CreateNoise3dTexture SourceFile="%(Build3dNoiseInputs.Identity)" OutputFile="@(Build3dNoiseOutputs)">
+      <Output TaskParameter="OutputFile" ItemName="Build3dNoiseOutput"/>
+    </Poc1.Tools.BuildTasks.CreateNoise3dTexture>
+    <Message Text="%(Build3dNoiseInputs.Identity)"/>
+    <Message Text="...Complete"/>
+  </Target>
+
   <Target Name="BuildWaveAnimation" DependsOnTargets="CreateWaveAnimationOutputs" Inputs="@(WaveAnimationInputs)" Outputs="@(WaveAnimationOutputs)">
     <Message Text="Building wave animations..."/>
     <Message Text="%(WaveAnimationOutputs.Source)=>%(WaveAnimationOutputs.Identity)"/>
@@ -212,10 +239,10 @@
   <Target Name="Clean" DependsOnTargets="DeleteEffects;DeleteCopiedFiles;DeleteTerrainTypes">
   </Target>
 
-  <Target Name="Build" DependsOnTargets="BuildGasGiant;BuildWaveAnimation;BuildNoise;CopyToGame;BuildTerrainTypes;PreprocessEffects">
+  <Target Name="Build" DependsOnTargets="BuildGasGiant;BuildWaveAnimation;BuildNoise;Build3dNoise;CopyToGame;BuildTerrainTypes;PreprocessEffects">
   </Target>
 
-  <Target Name="ReBuild" DependsOnTargets="RebuildGasGiant;RebuildWaveAnimation;RebuildNoise;ForceCopyToGame;RebuildTerrainTypes;ForcePreprocessEffects">
+  <Target Name="ReBuild" DependsOnTargets="RebuildGasGiant;RebuildWaveAnimation;RebuildNoise;Rebuild3dNoise;ForceCopyToGame;RebuildTerrainTypes;ForcePreprocessEffects">
   </Target>
   
 </Project>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<NoiseBitmapBuilderParameters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <BitmapWidth>512</BitmapWidth>
+  <BitmapHeight>512</BitmapHeight>
+  <NoiseX>10.22</NoiseX>
+  <NoiseY>10.22</NoiseY>
+  <NoiseWidth>18</NoiseWidth>
+  <NoiseHeight>18</NoiseHeight>
+  <GenerationType>Grayscale</GenerationType>
+  <!--
+  <TestFilePath>Game/Terrain/Test TiledNoise.noise.png</TestFilePath>
+  -->
+
+</NoiseBitmapBuilderParameters>

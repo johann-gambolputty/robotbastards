@@ -37,9 +37,9 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public override void Begin( )
 		{
-			Matrix44 matrix = Matrix44.MakeQuaternionMatrix( m_Orientation );
-			matrix.Translation = -m_Position;	//	TODO: AP: This is bobbins
-			Frame = matrix;
+			Matrix44 orientationMatrix = Matrix44.MakeQuaternionMatrix( m_Orientation );
+			Matrix44 translationMatrix = Matrix44.MakeTranslationMatrix( m_Position );
+			Frame = translationMatrix * orientationMatrix;
 			Graphics.Renderer.PushTransform( TransformType.WorldToView, InverseFrame );
 			base.Begin( );
 		}

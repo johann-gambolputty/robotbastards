@@ -400,6 +400,10 @@
       <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>
       <Name>Rb.Rendering.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Rendering.Platform.DependencyBuilder\Rb.Rendering.Platform.DependencyBuilder.csproj">
+      <Project>{5DCBFCF2-E434-4151-8B59-A5431E3C22FC}</Project>
+      <Name>Rb.Rendering.Platform.DependencyBuilder</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Source\Rb.Rendering.Windows\Rb.Rendering.Windows.csproj">
       <Project>{39A57BC2-BE73-41A7-BBC2-A9D0C28D5A06}</Project>
       <Name>Rb.Rendering.Windows</Name>
@@ -461,8 +465,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>pushd "$(ProjectDir)..\..\..\.."
-call BuildRenderAssemblies.bat "$(ConfigurationName)" "$(TargetDir)"
-popd</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

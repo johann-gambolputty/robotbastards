@@ -1,8 +1,8 @@
 using System;
 using Poc1.Universe.Interfaces;
-using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Rendering;
+using Rb.Rendering.Cameras;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects.Cameras;
 
@@ -11,7 +11,7 @@ namespace Poc1.Universe.Classes.Cameras
 	/// <summary>
 	/// Base class implementation of <see cref="IUniCamera"/> interface
 	/// </summary>
-	public class UniCamera : Part, IUniCamera
+	public class UniCamera : CameraBase, IUniCamera
 	{
 		#region Current camera helper operations
 
@@ -150,9 +150,9 @@ namespace Poc1.Universe.Classes.Cameras
 		/// <summary>
 		/// Begins the pass
 		/// </summary>
-		public virtual void Begin( )
+		public override void Begin( )
 		{
-			Graphics.Renderer.Camera = this;
+			base.Begin( );
 			IRenderer renderer = Graphics.Renderer;
 			int width = renderer.ViewportWidth;
 			int height = renderer.ViewportHeight;
@@ -169,11 +169,11 @@ namespace Poc1.Universe.Classes.Cameras
 		/// <summary>
 		/// Ends the pass
 		/// </summary>
-		public virtual void End( )
+		public override void End( )
 		{
-			Graphics.Renderer.Camera = null;
 			Graphics.Renderer.PopTransform( TransformType.WorldToView );
 			Graphics.Renderer.PopTransform( TransformType.ViewToScreen );
+			base.End( );
 		}
 
 		#endregion

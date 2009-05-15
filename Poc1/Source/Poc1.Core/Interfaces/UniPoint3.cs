@@ -161,6 +161,14 @@ namespace Poc1.Core.Interfaces
 			return new Vector3( ( float )( vecX * invLength ), ( float )( vecY * invLength ), ( float )( vecZ * invLength ) );
 		}
 
+		public Point3 ToRenderUnits( )
+		{
+			double x = Units.Convert.MulUniToRender * X;
+			double y = Units.Convert.MulUniToRender * Y;
+			double z = Units.Convert.MulUniToRender * Z;
+			return new Point3( ( float )x, ( float )y, ( float )z );
+		}
+
 		public Point3 ToMetres( )
 		{
 			double x = Units.Convert.MulUniToMetres * X;

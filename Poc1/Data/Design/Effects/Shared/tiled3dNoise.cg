@@ -1,0 +1,107 @@
+
+sampler3D NoiseTile = sampler_state
+{
+	WrapS = Repeat;
+	WrapT = Repeat;
+	WrapR = Repeat;
+	MinFilter = Linear;
+	MagFilter = Linear;
+};
+
+float Tiled3dNoiseCoarseScale	= 1.0f / 5.0f;
+float Tiled3dNoiseFineScale		= 1.0f / 16.0f;
+
+float Get3dNoise( float3 uvw )
+{
+//	float4 coarse =  tex3D( NoiseTile, uvw * Tiled3dNoiseCoarseScale );
+	float4 fine = tex3D( NoiseTile, uvw * Tiled3dNoiseFineScale );
+	return fine.r; // * coarse.b - fine.g * coarse.a;
+}
+
+float Get3dNoise( float3 uvw, float invCoarseScale, float invFineScale )
+{
+	float4 coarse =  tex3D( NoiseTile, uvw * invCoarseScale );
+	float4 fine = tex3D( NoiseTile, uvw * invFineScale );
+	return fine.r * coarse.b - fine.g * coarse.a;
+}
+
+float Get3dNoiseRidgedFractal8( float3 uvw, float freq )
+{
+	float offset = 1.0f;
+	float signal = Get3dNoise( uvw );
+	float result = 0;
+	float gain = 1.8f;
+	float exp = 1;
+	float max = 1;
+	float weight = signal * gain;
+	
+	signal = offset - signal;	//	invert and translate (note that "offset" should be ~= 1.0)
+	signal *= signal;			//	square the signal, to increase "sharpness" of ridges
+	result = signal;
+
+	uvw *= freq;
+	signal = offset - Get3dNoise( uvw );
+	signal *= signal;
+	signal *= weight;
+	max += 1.0f / exp;
+	result += signal / exp;
+	exp *= freq;
+	
+	uvw *= freq;
+	signal = offset - Get3dNoise( uvw );
+	signal *= signal;
+	signal *= weight;
+	max += 1.0f / exp;
+	result += signal / exp;
+	exp *= freq;
+	
+	uvw *= freq;
+	signal = offset - Get3dNoise( uvw );
+	signal *= signal;
+	signal *= weight;
+	max += 1.0f / exp;
+	result += signal / exp;
+	exp *= freq;
+	
+	uvw *= freq;
+	signal = offset - Get3dNoise( uvw );
+	signal *= signal;
+	signal *= weight;
+	max += 1.0f / exp;
+	result += signal / exp;
+	exp *= freq;
+	
+	uvw *= freq;
+	signal = offset - Get3dNoise( uvw );
+	signal *= signal;
+	signal *= weight;
+	max += 1.0f / exp;
+	result += signal / exp;
+	exp *= freq;
+	
+	uvw *= freq;
+	signal = offset - Get3dNoise( uvw );
+	signal *= signal;
+	signal *= weight;
+	max += 1.0f / exp;
+	result += signal / exp;
+	exp *= freq;
+
+	return ( result / max );
+}
+
+float Get3dNoiseFractal8( float3 uvw, float amp, float freq, float lac )
+{
+	float2 n = Get3dNoise( uvw );
+
+	uvw *= freq; amp *= lac;
+	n += Get3dNoise( uvw ) * amp;
+
+	uvw *= freq; amp *= lac;
+	n += Get3dNoise( uvw ) * amp;
+
+	uvw *= freq; amp *= lac;
+	n += Get3dNoise( uvw ) * amp;
+
+	return n / 1.9f;
+}

@@ -9,14 +9,36 @@ namespace Rb.Core.Utils
 	public static class Arguments
 	{
 		/// <summary>
-		/// Checks if an argument is not null. If it is, an <see cref="ArgumentNullException"/> is thrown
+		/// Checks that an argument is not null
 		/// </summary>
+		/// <exception cref="ArgumentNullException">Thrown if argument is null</exception>
 		public static void CheckNotNull( object arg, string argName )
 		{
 			if ( arg == null )
 			{
 				throw new ArgumentNullException( argName );
 			}
+		}
+
+		/// <summary>
+		/// Checks if an argument is not null, and contains no nulls
+		/// </summary>
+		/// <exception cref="ArgumentNullException">Thrown if argument is null</exception>
+		/// <exception cref="ArgumentException">Thrown if argument contains null</exception>
+		public static void CheckNotNullAndContainsNoNulls( IEnumerable arg, string argName )
+		{
+			if ( arg == null )
+			{
+				throw new ArgumentNullException( argName );
+			}
+			foreach ( object element in arg )
+			{
+				if ( element == null )
+				{
+					throw new ArgumentException( "Collection cannot contain null elements", argName );
+				}
+			}
+			
 		}
 
 		/// <summary>
@@ -59,7 +81,7 @@ namespace Rb.Core.Utils
 			}
 			if ( arg.Count == 0 )
 			{
-				throw new ArgumentException( "Argument cannot be an empty string", argName );
+				throw new ArgumentException( "Argument cannot be an empty collection", argName );
 			}
 		}
 

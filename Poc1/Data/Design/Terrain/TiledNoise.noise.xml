@@ -6,6 +6,7 @@
   <NoiseY>10.22</NoiseY>
   <NoiseWidth>8</NoiseWidth>
   <NoiseHeight>8</NoiseHeight>
+  <GenerationType>MultiChannel</GenerationType>
   <!--
   <TestFilePath>Game/Terrain/Test TiledNoise.noise.png</TestFilePath>
   -->

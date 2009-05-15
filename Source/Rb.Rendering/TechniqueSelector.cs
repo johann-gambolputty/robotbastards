@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Rb.Assets;
+using Rb.Assets.Base;
 using Rb.Assets.Interfaces;
+using Rb.Core.Utils;
 using Rb.Rendering.Interfaces.Objects;
 
 namespace Rb.Rendering
@@ -24,6 +26,26 @@ namespace Rb.Rendering
         public TechniqueSelector( )
         {
         }
+
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		/// <param name="effectPath">Effect path</param>
+		/// <param name="techniqueNames">Technique names</param>
+		/// <param name="trackChangesInEffect">If true, then the effect path is checked for updates</param>
+		public TechniqueSelector( string effectPath, bool trackChangesInEffect, params string[] techniqueNames )
+		{
+			Arguments.CheckNotNullOrEmpty( effectPath, "effectPath " );
+			Arguments.CheckNotNullAndContainsNoNulls( techniqueNames, "techniqueNames" );
+
+			EffectAssetHandle handle = new EffectAssetHandle( effectPath, trackChangesInEffect );
+			handle.OnReload +=
+				delegate
+				{
+					RefreshEffectFromAsset( handle, techniqueNames );
+				};
+			RefreshEffectFromAsset( handle, techniqueNames );
+		}
 
 		/// <summary>
 		/// Sets the effect, and selects the first stored technique
@@ -209,11 +231,35 @@ namespace Rb.Rendering
 		#endregion
 
 		#region Private members
+
 		private IEffect m_Effect;
 		private ITechnique m_Technique;
 
 		private const string EffectName = "effect";
 		private const string TechniqueName = "tname";
+
+		/// <summary>
+		/// Refreshes the current effect and selected technique
+		/// </summary>
+		private void RefreshEffectFromAsset( EffectAssetHandle handle, string[] techniqueNames )
+		{
+			try
+			{
+				Effect = handle.Asset;
+				foreach ( string techniqueName in techniqueNames )
+				{
+					if ( Effect.Techniques.ContainsKey( techniqueName ) )
+					{
+						GraphicsLog.Info( "Selected technique \"{0}\" from effect \"{1}\"", techniqueName, handle.Source );
+						Select( techniqueName );
+					}
+				}
+			}
+			catch ( Exception ex )
+			{
+				GraphicsLog.Exception( ex, "Error occurred refreshing effect asset \"{0}\"", handle.Source );
+			}
+		}
 
 		#endregion
 

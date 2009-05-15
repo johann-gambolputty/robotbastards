@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<Noise3dTextureBuilderParameters>
+  <Width>64</Width>
+  <Height>64</Height>
+  <Depth>64</Depth>
+  <Format>R8G8B8A8</Format>
+  <NoiseX>26.1259</NoiseX>
+  <NoiseY>26.1259</NoiseY>
+  <NoiseZ>26.1259</NoiseZ>
+  <NoiseWidth>11.1235</NoiseWidth>
+  <NoiseHeight>11.1235</NoiseHeight>
+  <NoiseDepth>11.1235</NoiseDepth>
+  <GenerationType>BigNoise</GenerationType>
+  <!--
+  <TestFilePath>Game/Terrain/Test TiledNoise.noise.png</TestFilePath>
+  -->
+
+</Noise3dTextureBuilderParameters>

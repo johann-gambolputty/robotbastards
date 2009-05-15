@@ -9,6 +9,7 @@ using Rb.Rendering;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
 using Graphics=Rb.Rendering.Graphics;
+using Rb.Assets;
 
 namespace Poc1.Core.Classes.Astronomical.Stars
 {
@@ -48,6 +49,8 @@ namespace Poc1.Core.Classes.Astronomical.Stars
 			Graphics.Draw.Sphere( surface, Point3.Origin, 20, 20, 20 );
 			m_Box = Graphics.Draw.StopCache( );
 
+			m_NoiseTexture = ( ITexture3d )AssetManager.Instance.Load( "Terrain/Tiled3dNoise.noise3d.texture" );
+
 			Texture3dData randomTexture = new Texture3dData( 32, 32, 32, TextureFormat.R8G8B8 );
 			fixed ( byte* texels = randomTexture.Bytes )
 			{
@@ -61,23 +64,23 @@ namespace Poc1.Core.Classes.Astronomical.Stars
 					*( curTexel++ ) = ( byte )( rnd.Next( ) & 0xff );
 				}
 
-				float fMul = 255.0f / ( float )( randomTexture.Width - 1 );
-				curTexel = texels;
-				for ( int x = 0; x < randomTexture.Width; ++x )
-				{
-					byte bX = ( byte )Utils.Clamp( x * fMul, 0, 255.0f );
-					for ( int y = 0; y < randomTexture.Height; ++y )
-					{
-						byte bY = ( byte )Utils.Clamp( y * fMul, 0, 255.0f );
-						for ( int z = 0; z < randomTexture.Depth; ++z )
-						{
-							byte bZ = ( byte )Utils.Clamp( z * fMul, 0, 255.0f );
-							*( curTexel++ ) = bX;
-							*( curTexel++ ) = bY;
-							*( curTexel++ ) = bZ;
-						}
-					}
-				}
+				//float fMul = 255.0f / ( float )( randomTexture.Width - 1 );
+				//curTexel = texels;
+				//for ( int x = 0; x < randomTexture.Width; ++x )
+				//{
+				//    byte bX = ( byte )Utils.Clamp( x * fMul, 0, 255.0f );
+				//    for ( int y = 0; y < randomTexture.Height; ++y )
+				//    {
+				//        byte bY = ( byte )Utils.Clamp( y * fMul, 0, 255.0f );
+				//        for ( int z = 0; z < randomTexture.Depth; ++z )
+				//        {
+				//            byte bZ = ( byte )Utils.Clamp( z * fMul, 0, 255.0f );
+				//            *( curTexel++ ) = bX;
+				//            *( curTexel++ ) = bY;
+				//            *( curTexel++ ) = bZ;
+				//        }
+				//    }
+				//}
 			}
 
 			m_RandomTexture = Graphics.Factory.CreateTexture3d( );
@@ -95,6 +98,7 @@ namespace Poc1.Core.Classes.Astronomical.Stars
 		{
 			GameProfiles.Game.Rendering.StarSphereRendering.Begin( );
 			Graphics.Renderer.PushTransform( TransformType.Texture0, context.Camera.InverseFrame );
+			m_Technique.Effect.Parameters[ "NoiseTile" ].Set( m_NoiseTexture );
 			m_Technique.Effect.Parameters[ "RandomTexture" ].Set( m_RandomTexture );
 			m_Technique.Apply( context, m_Box );
 			Graphics.Renderer.PopTransform( TransformType.Texture0 );
@@ -122,6 +126,7 @@ namespace Poc1.Core.Classes.Astronomical.Stars
 		private readonly ITechnique m_Technique;
 		private readonly IRenderable m_Box;
 		private readonly ITexture3d m_RandomTexture;
+		private readonly ITexture3d m_NoiseTexture;
 
 		#endregion
 	}

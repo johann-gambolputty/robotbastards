@@ -73,14 +73,39 @@ namespace Rb.Rendering
 
 		#endregion
 
-		private ICamera m_Camera;
+		#region Cameras
 
-		//	TODO: AP: REMOVEME (required for now for cg effect render state bindings
-		public virtual ICamera Camera
+		/// <summary>
+		/// Pushes the specified camera, calls <see cref="ICamera.Begin"/>
+		/// </summary>
+		/// <param name="camera">Camera to push</param>
+		public void PushCamera( ICamera camera )
 		{
-			get { return m_Camera; }
-			set { m_Camera = value; }
+			Arguments.CheckNotNull( camera, "camera" );
+			m_Cameras.Push( camera );
 		}
+
+		/// <summary>
+		/// Gets the current camera. Returns null if no camera has been pushed
+		/// </summary>
+		public ICamera Camera
+		{
+			get { return m_Cameras.Count == 0 ? null : m_Cameras.Peek( ); }
+		}
+
+		/// <summary>
+		/// Pops the camera stack, and calls Apply() on the new topmost camera
+		/// </summary>
+		public void PopCamera( )
+		{
+			if ( m_Cameras.Count == 0 )
+			{
+				throw new InvalidOperationException( "Camera stack was empty - cannot pop" );
+			}
+			m_Cameras.Pop( );
+		}
+
+		#endregion
 
 		#region Clears
 
@@ -195,6 +220,20 @@ namespace Rb.Rendering
 		/// Pops a matrix from the specified transform stack, applies the new topmost matrix
 		/// </summary>
 		public abstract void PopTransform( TransformType type );
+
+		/// <summary>
+		/// Pushes a modifier that is applied to any matrix pushed onto the stack
+		/// </summary>
+		/// <remarks>
+		/// Modifiers are only applied to the topmost matrix. For example, pushing a modifier matrix M,
+		/// then pushing world matrices T0, T1 and T2, will result in T0.T1.T2.M being used for rendering.
+		/// </remarks>
+		public abstract void PushTransformPostModifier( TransformType type, InvariantMatrix44 matrix );
+
+		/// <summary>
+		/// Pops the current transform modifier
+		/// </summary>
+		public abstract void PopTransformPostModifier( TransformType type );
 
 		#endregion
 
@@ -492,6 +531,7 @@ namespace Rb.Rendering
 
 		#region	Private stuff
 
+		private readonly Stack<ICamera>		m_Cameras = new Stack<ICamera>( );
 		private readonly List<IRenderState>	m_RenderStates = new List<IRenderState>( );
 		private ILight[]					m_Lights;
 		private int							m_NumLights;

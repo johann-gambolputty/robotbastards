@@ -150,6 +150,7 @@
 			- Add sample rate up/down spinner
 		- M: Command.Trigger and CommandUser.OnCommandTriggered should be linked (calling one calls the other)
 		- L: Ship HUD
+
 	- Ships
 		- H: Basic ship graphics
 		- H: Get basic ship dynamics working
@@ -161,6 +162,7 @@
 	- Networking
 		- H: Extend RUNT
 		- H: Add WCF service for meta-server (updates, player storage, ...)
+
 	- Tools
 		- Planet Builder
 			- H: Add terrain visualisation shader
@@ -174,6 +176,7 @@
 			- L: Add support for loading/saving terrain function setup
 			- L: Add legend to graph control (should appear on hover over graph line)
 			- L: Graph control should display 2 decimal places of precision always
+
 		- Particle Builder
 			- H: Add PS load/save code.
 			- H: Set up particle system component setup window from input particle sytem
@@ -187,6 +190,8 @@
 			- L: Add shadow rendering
 			- L: Add FPS display
 	- Graphics Misc.
+		- H: Add render context decorator base class
+		- M: Display should show the current exception/error screen if rendering threw something
 		- H: Add shader custom build step
 		- H: Parallel split map shadows
 		- H: Technique selector should take an asset path (transparently reset technique when effect is reloaded)

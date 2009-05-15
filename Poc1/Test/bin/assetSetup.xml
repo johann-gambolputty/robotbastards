@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assetManager>
+  <locationManagers>
+    <locationManager type="Rb.Assets.Files.FileSystem" assembly="Rb.Assets">
+      <baseDir value="../../Data/Runtime"/>
+    </locationManager>
+  </locationManagers>
+  <loaders>
+    <loader type="Rb.Rendering.OpenGl.Cg.CgEffectLoader" assembly="Rb.Rendering.OpenGl.Cg"/>
+    <loader type="Poc1.Tools.Waves.WaveAnimationLoader" assembly="Poc1.Tools.Waves"/>
+    <loader type="Rb.TextureAssets.Loader" assembly="Rb.TextureAssets"/>
+  </loaders>
+</assetManager>
+
