@@ -5,6 +5,8 @@ namespace Poc1.Tools.TerrainTextures.Core
 	[XmlRoot]
 	public class NoiseBitmapBuilderParameters
 	{
+		//	TODO: AP: Add NoiseGenerationType property
+
 		/// <summary>
 		/// Width of the generated bitmap
 		/// </summary>
@@ -69,16 +71,25 @@ namespace Poc1.Tools.TerrainTextures.Core
 
 		}
 
+		/// <summary>
+		/// Gets/sets the noise generation type
+		/// </summary>
+		public NoiseGenerationType GenerationType
+		{
+			get { return m_GenerationType; }
+			set { m_GenerationType = value; }
+		}
 
 		#region Private Members
 
-		private int		m_BitmapWidth;
-		private int		m_BitmapHeight;
-		private float 	m_NoiseX;
-		private float 	m_NoiseY;
-		private float 	m_NoiseWidth;
-		private float 	m_NoiseHeight;
-		private string	m_TestFilePath;
+		private int					m_BitmapWidth;
+		private int					m_BitmapHeight;
+		private float 				m_NoiseX;
+		private float 				m_NoiseY;
+		private float 				m_NoiseWidth;
+		private float 				m_NoiseHeight;
+		private string				m_TestFilePath;
+		private NoiseGenerationType m_GenerationType;
 		
 		#endregion
 

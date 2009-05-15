@@ -43,7 +43,7 @@ namespace Poc1.Bob.Core.Classes.Rendering
 				cameraHeight = new Units.Metres( 1000 );
 			}
 			cameraHeight += m_Planet.Model.Radius;
-			camera.Position.Set( 0, cameraHeight.ToUniUnits, 0 );
+			camera.Position.Set( cameraHeight.ToUniUnits, 0, 0 );
 		}
 
 		#endregion

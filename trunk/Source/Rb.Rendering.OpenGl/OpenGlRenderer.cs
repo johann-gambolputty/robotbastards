@@ -16,6 +16,16 @@ namespace Rb.Rendering.OpenGl
 	/// </summary>
 	public class OpenGlRenderer : RendererBase
 	{
+		public static Matrix44 CurrentModelViewMatrix
+		{
+			get
+			{
+				Matrix44 matrix = new Matrix44( );
+				Gl.glGetFloatv( Gl.GL_MODELVIEW_MATRIX, matrix.Elements );
+				return matrix;
+			}
+		}
+
 		#region	Construction and Setup
 
 		/// <summary>
@@ -27,12 +37,20 @@ namespace Rb.Rendering.OpenGl
 		public OpenGlRenderer( int renderingThreadId )
 		{
 			m_RenderingThreadId = renderingThreadId;
-			int stackIndex = 0;
-			for ( ; stackIndex < m_LocalToWorldStack.Length; ++stackIndex )
+
+			for ( int stackIndex = 0; stackIndex < m_LocalToWorldModifierStack.Length; ++stackIndex )
+			{
+				m_LocalToWorldModifierStack[ stackIndex ] = InvariantMatrix44.Identity;
+			}
+			for ( int stackIndex = 0; stackIndex < m_WorldToViewModifierStack.Length; ++stackIndex )
+			{
+				m_WorldToViewModifierStack[ stackIndex ] = InvariantMatrix44.Identity;
+			}
+			for ( int stackIndex = 0; stackIndex < m_LocalToWorldStack.Length; ++stackIndex )
 			{
 				m_LocalToWorldStack[ stackIndex ] = new Matrix44( );
 			}
-			for ( stackIndex = 0; stackIndex < m_WorldToViewStack.Length; ++stackIndex )
+			for ( int stackIndex = 0; stackIndex < m_WorldToViewStack.Length; ++stackIndex )
 			{
 				m_WorldToViewStack[ stackIndex ] = new Matrix44( );
 			}
@@ -681,6 +699,59 @@ namespace Rb.Rendering.OpenGl
 		}
 
 		/// <summary>
+		/// Pushes a modifier that is applied to any matrix pushed onto the stack
+		/// </summary>
+		/// <remarks>
+		/// Modifiers are only applied to the topmost matrix. For example, pushing a modifier matrix M,
+		/// then pushing world matrices T0, T1 and T2, will result in T0.T1.T2.M being used for rendering.
+		/// </remarks>
+		public override void PushTransformPostModifier( TransformType type, InvariantMatrix44 matrix )
+		{
+			switch ( type )
+			{
+				case TransformType.LocalToWorld :
+					{
+						m_LocalToWorldModifierStack[ ++m_TopOfLocalToWorldModifierStack ] = matrix;
+						break;
+					}
+				case TransformType.WorldToView :
+					{
+						m_WorldToViewModifierStack[ ++m_TopOfWorldToViewModifierStack ] = matrix;
+						break;
+					}
+				default :
+					throw new NotSupportedException( string.Format( "Transform type \"{0}\" does not support a modifier matrix", type ) );
+			}
+
+		}
+
+		/// <summary>
+		/// Pops the current transform modifier
+		/// </summary>
+		public override void PopTransformPostModifier( TransformType type )
+		{
+			switch ( type )
+			{
+				case TransformType.LocalToWorld:
+					{
+						m_LocalToWorldModifierStack[ m_TopOfLocalToWorldModifierStack ] = InvariantMatrix44.Identity;
+						--m_TopOfLocalToWorldModifierStack;
+						UpdateModelView( );
+						break;
+					}
+				case TransformType.WorldToView:
+					{
+						m_WorldToViewModifierStack[ m_TopOfWorldToViewModifierStack ] = InvariantMatrix44.Identity;
+						--m_TopOfWorldToViewModifierStack;
+						UpdateModelView( );
+						break;
+					}
+				default:
+					throw new NotSupportedException( string.Format( "Transform type \"{0}\" does not support a modifier matrix", type ) );
+			}
+		}
+
+		/// <summary>
 		/// Sets the viewport (in pixels)
 		/// </summary>
 		public override void SetViewport( int x, int y, int width, int height )
@@ -861,6 +932,17 @@ namespace Rb.Rendering.OpenGl
 		#region	Local to world transforms
 
 		/// <summary>
+		/// Gets the current local-to-world modifier
+		/// </summary>
+		private InvariantMatrix44 CurrentLocalToWorldModifier
+		{
+			get
+			{
+				return m_LocalToWorldModifierStack[ m_TopOfLocalToWorldStack ];
+			}
+		}
+
+		/// <summary>
 		/// Gets the current local to world transform
 		/// </summary>
 		private Matrix44 CurrentLocalToWorld
@@ -870,14 +952,26 @@ namespace Rb.Rendering.OpenGl
 				return m_LocalToWorldStack[ m_TopOfLocalToWorldStack ];
 			}
 		}
-		
 
+		private readonly InvariantMatrix44[] m_LocalToWorldModifierStack = new InvariantMatrix44[ 8 ];
+		private int m_TopOfLocalToWorldModifierStack = 0;
 		private readonly Matrix44[] m_LocalToWorldStack = new Matrix44[ 8 ];
 		private int m_TopOfLocalToWorldStack = 0;
 
 		#endregion
 
 		#region	World to view transforms
+
+		/// <summary>
+		/// Gets the current local-to-world modifier
+		/// </summary>
+		private InvariantMatrix44 CurrentWorldToViewModifier
+		{
+			get
+			{
+				return m_WorldToViewModifierStack[ m_TopOfWorldToViewStack ];
+			}
+		}
 
 		/// <summary>
 		/// Gets the current world to view transform
@@ -890,6 +984,8 @@ namespace Rb.Rendering.OpenGl
 			}
 		}
 
+		private readonly InvariantMatrix44[] m_WorldToViewModifierStack = new InvariantMatrix44[ 8 ];
+		private int m_TopOfWorldToViewModifierStack = 0;
 		private readonly Matrix44[] m_WorldToViewStack = new Matrix44[ 4 ];
 		private int m_TopOfWorldToViewStack = 0;
 
@@ -924,8 +1020,8 @@ namespace Rb.Rendering.OpenGl
 		private void UpdateModelView( )
 		{
 			Gl.glMatrixMode( Gl.GL_MODELVIEW );
-			Gl.glLoadMatrixf( GetGlMatrix( CurrentWorldToView ) );
-			Gl.glMultMatrixf( GetGlMatrix( CurrentLocalToWorld ) );
+			Gl.glLoadMatrixf( GetGlMatrix( CurrentWorldToView * CurrentWorldToViewModifier ) );
+			Gl.glMultMatrixf( GetGlMatrix( CurrentLocalToWorld * CurrentLocalToWorldModifier ) );
 		}
 
 		#endregion

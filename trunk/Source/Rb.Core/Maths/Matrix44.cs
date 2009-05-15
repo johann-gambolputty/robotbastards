@@ -32,6 +32,17 @@ namespace Rb.Core.Maths
 		/// <summary>
 		/// Makes a matrix from a quaternion
 		/// </summary>
+		public static new Matrix44 MakeTranslationMatrix( Point3 pt )
+		{
+			Matrix44 result = new Matrix44( );
+			MakeTranslationMatrix( result, pt.X, pt.Y, pt.Z );
+			return result;
+		}
+
+
+		/// <summary>
+		/// Makes a matrix from a quaternion
+		/// </summary>
 		public static new Matrix44 MakeQuaternionMatrix( Quaternion quaternion )
 		{
 			Matrix44 result = new Matrix44( );

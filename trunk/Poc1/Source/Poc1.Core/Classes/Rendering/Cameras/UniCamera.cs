@@ -1,9 +1,9 @@
 using System;
 using Poc1.Core.Interfaces;
 using Poc1.Core.Interfaces.Rendering.Cameras;
-using Rb.Core.Components;
 using Rb.Core.Maths;
 using Rb.Rendering;
+using Rb.Rendering.Cameras;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects.Cameras;
 
@@ -12,7 +12,7 @@ namespace Poc1.Core.Classes.Rendering.Cameras
 	/// <summary>
 	/// Base class implementation of <see cref="IUniCamera"/> interface
 	/// </summary>
-	public class UniCamera : Part, IUniCamera
+	public class UniCamera : CameraBase, IUniCamera
 	{
 		#region Current camera helper operations
 		
@@ -141,16 +141,18 @@ namespace Poc1.Core.Classes.Rendering.Cameras
 		/// <summary>
 		/// Begins the pass
 		/// </summary>
-		public virtual void Begin( )
+		public override void Begin( )
 		{
-			Graphics.Renderer.Camera = this;
+			base.Begin( );
 			IRenderer renderer = Graphics.Renderer;
 			int width = renderer.ViewportWidth;
 			int height = renderer.ViewportHeight;
 
 			float aspectRatio = ( height == 0 ) ? 1.0f : width / ( float )height;
 
-			Graphics.Renderer.PushTransform( TransformType.WorldToView, m_LocalView );
+			Graphics.Renderer.PushTransform( TransformType.WorldToView );
+			Graphics.Renderer.SetTransform( TransformType.WorldToView, m_LocalView );
+
 			Graphics.Renderer.PushTransform( TransformType.ViewToScreen );
 			Graphics.Renderer.SetPerspectiveProjectionTransform( m_PerspectiveFov, aspectRatio, m_PerspectiveZNear, m_PerspectiveZFar );
 
@@ -160,11 +162,11 @@ namespace Poc1.Core.Classes.Rendering.Cameras
 		/// <summary>
 		/// Ends the pass
 		/// </summary>
-		public virtual void End( )
+		public override void End( )
 		{
-			Graphics.Renderer.Camera = null;
 			Graphics.Renderer.PopTransform( TransformType.WorldToView );
 			Graphics.Renderer.PopTransform( TransformType.ViewToScreen );
+			base.End( );
 		}
 
 		#endregion

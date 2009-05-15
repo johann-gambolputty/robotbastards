@@ -28,9 +28,23 @@ namespace Poc1.Tools.TerrainTextures.Core
 			BitmapData bmpData = bmp.LockBits( new Rectangle( 0, 0, bmp.Width, bmp.Height ), ImageLockMode.WriteOnly, bmp.PixelFormat );
 
 			byte* pixels = ( byte* )bmpData.Scan0;
-			noise.GenerateTiledBitmap( bmp.Width, bmp.Height, 3, pixels, parameters.NoiseX, parameters.NoiseY, parameters.NoiseWidth, parameters.NoiseHeight );
-			noise.GenerateTiledBitmap( bmp.Width, bmp.Height, 3, pixels + 1, parameters.NoiseX + parameters.NoiseWidth, parameters.NoiseY, parameters.NoiseWidth, parameters.NoiseHeight );
-			noise.GenerateTiledBitmap( bmp.Width, bmp.Height, 3, pixels + 2, parameters.NoiseX + parameters.NoiseWidth * 2, parameters.NoiseY, parameters.NoiseWidth, parameters.NoiseHeight );
+
+			if ( parameters.GenerationType == NoiseGenerationType.Grayscale )
+			{
+				noise.GenerateTiledBitmap( bmp.Width, bmp.Height, 3, pixels, parameters.NoiseX, parameters.NoiseY, parameters.NoiseWidth, parameters.NoiseHeight );
+				noise.GenerateTiledBitmap( bmp.Width, bmp.Height, 3, pixels + 1, parameters.NoiseX, parameters.NoiseY, parameters.NoiseWidth, parameters.NoiseHeight );
+				noise.GenerateTiledBitmap( bmp.Width, bmp.Height, 3, pixels + 2, parameters.NoiseX, parameters.NoiseY, parameters.NoiseWidth, parameters.NoiseHeight );
+			}
+			else if ( parameters.GenerationType == NoiseGenerationType.MultiChannel )
+			{
+				noise.GenerateTiledBitmap( bmp.Width, bmp.Height, 3, pixels, parameters.NoiseX, parameters.NoiseY, parameters.NoiseWidth, parameters.NoiseHeight );
+				noise.GenerateTiledBitmap( bmp.Width, bmp.Height, 3, pixels + 1, parameters.NoiseX + parameters.NoiseWidth, parameters.NoiseY, parameters.NoiseWidth, parameters.NoiseHeight );
+				noise.GenerateTiledBitmap( bmp.Width, bmp.Height, 3, pixels + 2, parameters.NoiseX + parameters.NoiseWidth * 2, parameters.NoiseY, parameters.NoiseWidth, parameters.NoiseHeight );	
+			}
+			else
+			{
+				throw new NotImplementedException( "Unsupported generation type " + parameters.GenerationType );
+			}
 
 			bmp.UnlockBits( bmpData );
 			return bmp;

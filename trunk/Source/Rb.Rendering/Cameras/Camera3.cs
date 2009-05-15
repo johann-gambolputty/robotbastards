@@ -13,9 +13,9 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public override void Begin( )
 		{
+			base.Begin( );
 			m_InvProjView.StoreMultiply( m_ProjectionMatrix, m_ViewMatrix );
 			m_InvProjView.Invert( );
-			base.Begin( );
 		}
 
 		/// <summary>

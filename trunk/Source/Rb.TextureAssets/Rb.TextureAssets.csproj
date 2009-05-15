@@ -36,7 +36,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Generator.cs" />
+    <Compile Include="TextureReader.cs" />
+    <Compile Include="TextureWriter.cs" />
     <Compile Include="GroupIdentifier.cs" />
     <Compile Include="TextureFileFormatVersion1.cs" />
     <Compile Include="Loader.cs" />

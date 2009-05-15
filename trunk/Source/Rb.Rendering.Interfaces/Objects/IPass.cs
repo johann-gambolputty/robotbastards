@@ -1,8 +1,7 @@
 namespace Rb.Rendering.Interfaces.Objects
 {
 	/// <summary>
-	/// Passes modify the rendering of objects in parallel (unlike ITechnique, which modifies
-	/// serially)
+	/// Passes modify the rendering of objects in parallel (unlike ITechnique, which modifies serially)
 	/// </summary>
 	public interface IPass
 	{

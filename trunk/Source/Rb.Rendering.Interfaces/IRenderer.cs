@@ -75,11 +75,28 @@ namespace Rb.Rendering.Interfaces
 
 		#endregion
 
-		//	TODO: AP: REMOVEME (required for now for cg effect render state bindings
+		#region Cameras
+
+		/// <summary>
+		/// Pushes the specified camera
+		/// </summary>
+		/// <param name="camera">Camera to push</param>
+		void PushCamera( ICamera camera );
+
+		/// <summary>
+		/// Gets the current camera. Returns null if no camera has been pushed
+		/// </summary>
 		ICamera Camera
 		{
-			get; set;
+			get;
 		}
+
+		/// <summary>
+		/// Pops the camera stack
+		/// </summary>
+		void PopCamera( );
+
+		#endregion
 
 		#region	Transform pipeline
 
@@ -165,6 +182,20 @@ namespace Rb.Rendering.Interfaces
 		/// Pops a matrix from the specified transform stack, applies the new topmost matrix
 		/// </summary>
 		void PopTransform( TransformType type );
+
+		/// <summary>
+		/// Pushes a modifier that is applied to any matrix pushed onto the stack
+		/// </summary>
+		/// <remarks>
+		/// Modifiers are only applied to the topmost matrix. For example, pushing a modifier matrix M,
+		/// then pushing world matrices T0, T1 and T2, will result in T0.T1.T2.M being used for rendering.
+		/// </remarks>
+		void PushTransformPostModifier( TransformType type, InvariantMatrix44 matrix );
+
+		/// <summary>
+		/// Pops the current transform modifier
+		/// </summary>
+		void PopTransformPostModifier( TransformType type );
 
 		#endregion
 

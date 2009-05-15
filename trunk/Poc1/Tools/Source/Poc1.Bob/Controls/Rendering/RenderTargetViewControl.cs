@@ -86,17 +86,17 @@ namespace Poc1.Bob.Controls.Rendering
 
 			Graphics.Renderer.Push2d( );
 			Graphics.Draw.BeginPrimitiveList( PrimitiveType.QuadList );
-			Graphics.Draw.AddVertexData( VertexFieldSemantic.Position, 0, 0 );
-			Graphics.Draw.AddVertexData( VertexFieldSemantic.Texture0, 0, 0 );
-
-			Graphics.Draw.AddVertexData( VertexFieldSemantic.Position, w, 0 );
-			Graphics.Draw.AddVertexData( VertexFieldSemantic.Texture0, 1, 0 );
-
-			Graphics.Draw.AddVertexData( VertexFieldSemantic.Position, w, h );
-			Graphics.Draw.AddVertexData( VertexFieldSemantic.Texture0, 1, 1 );
-
-			Graphics.Draw.AddVertexData( VertexFieldSemantic.Position, 0, h );
 			Graphics.Draw.AddVertexData( VertexFieldSemantic.Texture0, 0, 1 );
+			Graphics.Draw.AddVertexData( VertexFieldSemantic.Position, 0, 0 );
+
+			Graphics.Draw.AddVertexData( VertexFieldSemantic.Texture0, 1, 1 );
+			Graphics.Draw.AddVertexData( VertexFieldSemantic.Position, w, 0 );
+
+			Graphics.Draw.AddVertexData( VertexFieldSemantic.Texture0, 1, 0 );
+			Graphics.Draw.AddVertexData( VertexFieldSemantic.Position, w, h );
+
+			Graphics.Draw.AddVertexData( VertexFieldSemantic.Texture0, 0, 0 );
+			Graphics.Draw.AddVertexData( VertexFieldSemantic.Position, 0, h );
 
 			Graphics.Draw.EndPrimitiveList( );
 			Graphics.Renderer.Pop2d( );

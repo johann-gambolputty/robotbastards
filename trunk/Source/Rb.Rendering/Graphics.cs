@@ -135,13 +135,17 @@ namespace Rb.Rendering
 		/// </summary>
 		public static void Initialize( GraphicsInitialization init )
 		{
+			AppDomain.CurrentDomain.AssemblyResolve +=
+				delegate( object sender, ResolveEventArgs args )
+				{
+					string renderingDir = Path.GetDirectoryName( init.RenderingAssembly );
+					return Assembly.LoadFrom( Path.Combine( renderingDir, args.Name + ".dll" ) );
+				};
+
+
 			Assembly assembly;
 			if ( File.Exists( init.RenderingAssembly ) )
 			{
-#pragma warning disable 0618
-				//	TODO: AP: Find alternative...
-				AppDomain.CurrentDomain.AppendPrivatePath( Path.GetDirectoryName( init.RenderingAssembly ) );
-#pragma warning restore 0618
 				assembly = Assembly.LoadFrom( init.RenderingAssembly );
 			}
 			else

@@ -1,3 +1,4 @@
+using System;
 using Rb.Core.Components;
 using Rb.Rendering.Interfaces.Objects.Cameras;
 
@@ -14,7 +15,7 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public virtual void Begin( )
 		{
-			Graphics.Renderer.Camera = this;
+			Graphics.Renderer.PushCamera( this );
 		}
 
 		/// <summary>
@@ -22,7 +23,11 @@ namespace Rb.Rendering.Cameras
 		/// </summary>
 		public virtual void End( )
 		{
-			Graphics.Renderer.Camera = null;
+			if ( Graphics.Renderer.Camera != this )
+			{
+				throw new InvalidOperationException( string.Format( "Unexpected current camera in renderer (was \"{0}\", expected \"{1}\"", Graphics.Renderer.Camera, this ) );
+			}
+			Graphics.Renderer.PopCamera( );
 		}
 	}
 }

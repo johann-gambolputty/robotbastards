@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers.Terrain.PackTextures;
 using Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers.Terrain.Patches;
+using Poc1.Core.Classes.Profiling;
 using Poc1.Core.Interfaces.Astronomical.Planets;
 using Poc1.Core.Interfaces.Astronomical.Planets.Models;
 using Poc1.Core.Interfaces.Astronomical.Planets.Renderers;
@@ -50,13 +51,21 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 			{
 				return;
 			}
+			GameProfiles.Game.Rendering.PlanetRendering.TerrainRendering.Begin( );
+
+			//	Reflected objects require flipped face windings
+			bool flipWinding = ( context.CurrentPass == UniRenderPass.CloseReflectedObjects );
+
 			m_Technique.Planet = Planet;
 			if ( m_FrameCountAtLastUpdate != context.RenderFrameCounter )
 			{
 				m_Renderer.Update( context.Camera, Planet.Transform );
 				m_FrameCountAtLastUpdate = context.RenderFrameCounter;
 			}
-			m_Renderer.Render( context, context.Camera, m_Technique );
+			m_Renderer.Render( context, context.Camera, m_Technique, flipWinding );
+
+			GameProfiles.Game.Rendering.PlanetRendering.TerrainRendering.End( );
+
 		}
 
 		#region ISpherePlanetTerrainRenderer Members

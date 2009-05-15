@@ -1,10 +1,8 @@
-using System;
 using System.IO;
 using Rb.Assets;
 using Rb.Assets.Base;
 using Rb.Assets.Interfaces;
 using Rb.Core.Components;
-using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Textures;
 
@@ -63,106 +61,8 @@ namespace Rb.TextureAssets
 			bool returnTextureData = DynamicProperties.GetProperty( parameters.Properties, TextureLoadParameters.ReturnTextureDataOnlyName, false );
 			using ( Stream stream = ( ( IStreamSource )source ).Open( ) )
 			{
-				using ( BinaryReader reader = new BinaryReader( stream ) )
-				{
-					int fileId = reader.ReadInt32( );
-					if ( fileId != TextureFileFormatVersion1.TextureFileIdentifier )
-					{
-						throw new FileLoadException( "Texture file did not begin with texture file identifer" );
-					}
-					TextureFileFormatVersion1.Group headerGroup = TextureFileFormatVersion1.Group.Read( reader );
-					if ( headerGroup.GroupId != GroupIdentifier.TextureHeaderGroup )
-					{
-						throw new FileLoadException( string.Format( "Texture file did not begin with a header group (started with group ID {0})", headerGroup.GroupId ) );
-					}
-					TextureFileFormatVersion1.Header header = TextureFileFormatVersion1.Header.Read( reader );
-					if ( header.Dimensions == 2 )
-					{
-						return Load2dTexture( source, reader, header, returnTextureData, generateMipMaps );
-					}
-					if ( header.Dimensions == 3 )
-					{
-						return Load3dTexture( source, reader, header, returnTextureData, generateMipMaps );
-					}
-					throw new FileLoadException( string.Format( "Invalid texture dimensions specified ({0})", header.Dimensions ) );
-				}
-
+				return TextureReader.ReadTextureFromStream( source.ToString( ), stream, returnTextureData, generateMipMaps );
 			}
 		}
-
-		#region 2D texture loading
-
-		/// <summary>
-		/// Loads 2d texture data
-		/// </summary>
-		private static object Load2dTexture( ISource source, BinaryReader reader, TextureFileFormatVersion1.Header header, bool returnTextureData, bool generateMipMaps )
-		{
-			Texture2dData[] data = Load2dTextureData( reader, header );
-			if ( returnTextureData )
-			{
-				return data;
-			}
-			ITexture2d texture = Graphics.Factory.CreateTexture2d( );
-			if ( generateMipMaps )
-			{
-				if ( data.Length > 1 )
-				{
-					AssetsLog.Warning( "Source \"{0}\" contained mip-maps that are being discarded in favour of generated ones", source );
-				}
-				texture.Create( data[ 0 ], true );
-				return texture;
-			}
-
-			texture.Create( data );
-			return texture;
-		}
-
-		/// <summary>
-		/// Loads 2d texture data from the specified stream
-		/// </summary>
-		private static Texture2dData[] Load2dTextureData( BinaryReader reader, TextureFileFormatVersion1.Header header )
-		{
-			Texture2dData[] textureDataArray = new Texture2dData[ header.TextureDataEntries ];
-			for ( int textureDataCount = 0; textureDataCount < header.TextureDataEntries; ++textureDataCount )
-			{
-				TextureFileFormatVersion1.Group textureGroup = TextureFileFormatVersion1.Group.Read( reader );
-				if ( textureGroup.GroupId != GroupIdentifier.Texture2dDataGroup )
-				{
-					throw new FileLoadException( "Expected texture group" );
-				}
-
-				int width = reader.ReadInt32( );
-				int height = reader.ReadInt32( );
-
-				Texture2dData texData = new Texture2dData( );
-				texData.Create( width, height, header.Format );
-
-				reader.Read( texData.Bytes, 0, texData.Bytes.Length );
-
-				textureDataArray[ textureDataCount ] = texData;
-			}
-
-			return textureDataArray;
-		}
-
-		#endregion
-
-		#region CubeMap texture loading
-
-
-		
-		#endregion
-
-		#region 3D texture loading
-
-		/// <summary>
-		/// Loads a 3d texture from the specified stream
-		/// </summary>
-		private static object Load3dTexture( ISource source, BinaryReader reader, TextureFileFormatVersion1.Header header, bool returnTextureData, bool generateMipMaps )
-		{
-			throw new NotImplementedException( );
-		}
-
-		#endregion
 	}
 }

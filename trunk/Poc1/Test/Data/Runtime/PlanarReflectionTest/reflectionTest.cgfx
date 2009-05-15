@@ -1,0 +1,83 @@
+
+sampler2D OceanTexture0 = sampler_state
+{
+	WrapS = Repeat;
+	WrapT = Repeat;
+	MinFilter = LinearMipMapLinear;
+	MagFilter = LinearMipMapLinear;
+};
+
+sampler2D OceanTexture1 = sampler_state
+{
+	WrapS = Repeat;
+	WrapT = Repeat;
+	MinFilter = LinearMipMapLinear;
+	MagFilter = LinearMipMapLinear;
+};
+
+sampler2D ReflectionsTexture = sampler_state
+{
+	WrapS = Repeat;
+	WrapT = Repeat;
+	MinFilter = Linear;
+	MagFilter = Linear;
+};
+
+float OceanTextureT = 0;
+
+struct VertexShaderInput
+{
+	float4 m_Position : POSITION;
+	float2 m_Uv : TEXCOORD0;
+};
+
+struct FragmentShaderInput
+{
+	float4 m_Position : POSITION;
+	float2 m_Uv : TEXCOORD0;
+};
+
+//	Pipeline effect parameters
+float4x4 ModelViewProjectionMatrix;
+float4x4 InverseTransposeModelMatrix;
+float NearZ;
+float FarZ;
+
+FragmentShaderInput VertexShader( VertexShaderInput input )
+{
+	FragmentShaderInput output;
+
+	output.m_Position	= mul( ModelViewProjectionMatrix, input.m_Position );
+	output.m_Uv			= input.m_Uv;
+
+	return output;
+}
+
+float4 FragmentShader( FragmentShaderInput input ) : COLOR
+{
+	float2 uv = input.m_Uv;
+	float3 oceanColour = tex2D( OceanTexture0, uv ).rgb;
+	oceanColour = oceanColour + ( tex2D( OceanTexture1, uv ).rgb - oceanColour ) * OceanTextureT;
+
+	return float4( oceanColour.r, oceanColour.g, oceanColour.b, 1 );
+}
+
+
+technique DefaultTechnique
+{
+	pass
+	{
+		LightingEnable			= false;
+		DepthMask				= true;
+		ShadeModel				= Smooth;
+		FrontFace				= CW;
+		DepthTestEnable			= true;
+		DepthFunc				= Less;
+		CullFaceEnable			= true;
+		BlendEnable				= true;
+		BlendFunc				= int2( SrcAlpha, OneMinusSrcAlpha );
+		PolygonMode				= int2( Front, Fill );
+		VertexProgram			= compile arbvp1 VertexShader( );
+		FragmentProgram			= compile arbfp1 FragmentShader( );
+	}
+}

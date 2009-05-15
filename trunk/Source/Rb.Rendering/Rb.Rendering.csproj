@@ -78,7 +78,10 @@
     <Compile Include="ManagedVertexBuffer.cs" />
     <Compile Include="MaterialBase.cs" />
     <Compile Include="PassList.cs" />
+    <Compile Include="Primitives\Quad3.cs" />
+    <Compile Include="AbstractRenderable.cs" />
     <Compile Include="RenderContext.cs" />
+    <Compile Include="RenderContextDecorator.cs" />
     <Compile Include="RendererBase.cs" />
     <Compile Include="MultiPassTechnique.cs" />
     <Compile Include="RenderTargets.cs" />

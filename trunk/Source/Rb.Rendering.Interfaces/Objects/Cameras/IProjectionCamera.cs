@@ -4,7 +4,7 @@ namespace Rb.Rendering.Interfaces.Objects.Cameras
 	/// <summary>
 	/// Projection camera interface
 	/// </summary>
-	public interface IProjectionCamera
+	public interface IProjectionCamera : ICamera3
 	{
 		/// <summary>
 		/// Gets or sets the field of view

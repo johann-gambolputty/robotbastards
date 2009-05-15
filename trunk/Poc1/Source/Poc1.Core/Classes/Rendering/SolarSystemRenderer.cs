@@ -7,6 +7,7 @@ using Poc1.Core.Interfaces.Rendering;
 using Poc1.Core.Interfaces.Rendering.Cameras;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
+using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
 using System.Drawing;
 using RbGraphics=Rb.Rendering.Graphics;
@@ -87,9 +88,11 @@ namespace Poc1.Core.Classes.Rendering
 			//	Render close object shadow geometry into a render target
 			//	TODO: ...
 
+			uniContext.Camera.Begin( );
 			//	Render close objects
 			uniContext.CurrentPass = UniRenderPass.CloseObjects;
 			solarSystem.Render( uniContext );
+			uniContext.Camera.End( );
 
 			//	TODO: Render fullscreen quad over back buffer, for post-process effects
 		}
@@ -141,17 +144,28 @@ namespace Poc1.Core.Classes.Rendering
 				return;
 			}
 
+			IUniCamera currentCamera = uniContext.Camera;
+
 			Point3 pointOnPlane;
 			Plane3 plane = reflectionRenderer.GetTangentPlaneUnderPoint( uniContext.Camera.Position, out pointOnPlane );
 
-			InvariantMatrix44 reflectionMatrix = Matrix44.MakeReflectionMatrix( pointOnPlane, plane.Normal );
+			Point3 localCameraPosition = ( uniContext.Camera.Position - planet.Transform.Position ).ToRenderUnits( );
+			Point3 rCamPos = pointOnPlane + plane.Normal * ( pointOnPlane.DistanceTo( localCameraPosition ) );
 
-			IUniCamera currentCamera = uniContext.Camera;
+			InvariantMatrix44 reflectionMatrix = Matrix44.MakeReflectionMatrix( Point3.Origin, plane.Normal );
+
+			long x = planet.Transform.Position.X + ( long )( rCamPos.X * Units.Convert.MulRenderToUni );
+			long y = planet.Transform.Position.Y + ( long )( rCamPos.Y * Units.Convert.MulRenderToUni );
+			long z = planet.Transform.Position.Z + ( long )( rCamPos.Z * Units.Convert.MulRenderToUni );
+
 			UniCamera reflectedCamera = new UniCamera( );
 			reflectedCamera.Frame = reflectionMatrix * currentCamera.Frame;
-			reflectedCamera.Position = currentCamera.Position;
+			reflectedCamera.Position = new UniPoint3( x, y, z );
+			reflectedCamera.PerspectiveZNear = currentCamera.PerspectiveZNear;
+			reflectedCamera.PerspectiveZFar = currentCamera.PerspectiveZFar;
 
 			uniContext.Camera = reflectedCamera;
+
 			//	Get the tangent space
 			//Matrix44 tangentSpaceMatrix = new Matrix44( );
 			//reflectionRenderer.Setup( tangentSpaceMatrix );
@@ -162,9 +176,15 @@ namespace Poc1.Core.Classes.Rendering
 			RbGraphics.Renderer.ClearDepth( 1.0f );
 			RbGraphics.Renderer.ClearColour( Color.Black );
 
+			reflectedCamera.Begin( );
+		//	RbGraphics.Renderer.PushTransformPostModifier( TransformType.LocalToWorld, reflectionMatrix );
+
 			uniContext.CurrentPass = UniRenderPass.CloseReflectedObjects;
 			solarSystem.Render( uniContext );
 			m_OceanReflections.End( );
+
+		//	RbGraphics.Renderer.PopTransformPostModifier( TransformType.LocalToWorld );
+			reflectedCamera.End( );
 
 			uniContext.Camera = currentCamera;
 		}

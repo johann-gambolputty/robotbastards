@@ -35,7 +35,7 @@ namespace Poc1.Universe.Planets.Spherical.Models.Templates
 
 		#region Private Members
 
-		private Range<Units.Metres> m_SeaLevel = new Range<Units.Metres>( new Units.Metres( 0 ), new Units.Metres( 10000 ) );
+		private Range<Units.Metres> m_SeaLevel = new Range<Units.Metres>( new Units.Metres( 1000 ), new Units.Metres( 1000 ) );
 
 		#endregion
 	}

@@ -40,6 +40,7 @@ namespace Poc1.Tools.TerrainTextures.Core
 		/// </summary>
 		private unsafe static void GenerateNoise( Texture3dData data, Noise3dTextureBuilderParameters parameters, byte* voxels )
 		{
+			SimpleNoise3d sNoise = new SimpleNoise3d();
 			Noise noise = new Noise( );
 			float nW	= parameters.NoiseWidth;
 			float nH	= parameters.NoiseHeight;
@@ -61,6 +62,8 @@ namespace Poc1.Tools.TerrainTextures.Core
 			//	Check hacked channel expectations...
 			bool hasAlpha = TextureFormatInfo.HasAlphaChannel( parameters.Format );
 			float nZ = nZ0;
+		//	float maxNoise = float.MinValue;
+		//	float minNoise = float.MaxValue;
 			for ( int z = 0; z < parameters.Depth; ++z, nZ += nZInc )
 			{
 				float nY = nY0;
@@ -73,7 +76,8 @@ namespace Poc1.Tools.TerrainTextures.Core
 						{
 							case NoiseGenerationType.Grayscale :
 								{
-									float n = noise.GetNoise( nX, nY, nZ );
+									float n = ( 1.0f + sNoise.GetTilingNoise( nX, nY, nZ, nW, nH, nD ) ) / 2;
+								//	float n = 0.5f + noise.GetNoise( nX, nY, nZ );
 									voxel[ 0 ] = NoiseToByte( n );
 									voxel[ 1 ] = voxel[ 0 ];
 									voxel[ 2 ] = voxel[ 0 ];
@@ -125,10 +129,23 @@ namespace Poc1.Tools.TerrainTextures.Core
 									}
 									break;
 							    }
-							//case NoiseGenerationType.BigNoise :
-							//    {
-							//        break;
-							//    }
+							case NoiseGenerationType.BigNoise :
+							    {
+									float real = 0.5f + GetTiledNoise( noise, nX, nY, nZ, nX0, nY0, nZ0, nW, nH, nD );
+									float imag = 0.5f + GetTiledNoise( noise, nX + nW, nY + nH, nZ + nD, nX0, nY0, nZ0, nW, nH, nD );
+
+								//	maxNoise = Math.Max( maxNoise, real );
+								//	minNoise = Math.Min( minNoise, real );
+
+									double a = Math.PI + Math.PI * real;
+
+									voxel[ 0 ] = NoiseToByte( real );
+									voxel[ 1 ] = NoiseToByte( imag );
+									voxel[ 2 ] = ( byte )Utils.Clamp( ( Math.Sin( a ) + 1 ) * 127.5, 0, 255 );
+									voxel[ 3 ] = ( byte )Utils.Clamp( ( Math.Cos( a ) + 1 ) * 127.5, 0, 255 );
+
+							        break;
+							    }
 							default :
 								throw new NotSupportedException( string.Format( "Noise generation type \"{0}\" is not supported yet", parameters.GenerationType ) );
 						}
@@ -150,17 +167,26 @@ namespace Poc1.Tools.TerrainTextures.Core
 			float tilX = x - w;
 			float tilY = y - h;
 			float tilZ = z - d;
+			float invX = w - orgX;
+			float invY = h - orgY;
+			float invZ = d - orgZ;
 
-			float n0 = noise.GetNoise( x, y, z );
-			float n1 = noise.GetNoise( x, y, z );
-			float n2 = noise.GetNoise( x, y, z );
-			float n3 = noise.GetNoise( x, y, z );
-			float n4 = noise.GetNoise( x, y, z );
-			float n5 = noise.GetNoise( x, y, z );
-			float n6 = noise.GetNoise( x, y, z );
-			float n7 = noise.GetNoise( x, y, z );
+			float nX0Y0Z0	= GetNoise( noise, w, h, d, x, y, z ) * invX * invY * invZ;
+			float nX0Y1Z0	= GetNoise( noise, w, h, d, x, tilY, z ) * invX * orgY * invZ;
+			float nX0Y0Z1	= GetNoise( noise, w, h, d, x, y, tilZ ) * invX * invY * orgZ;
+			float nX0Y1Z1	= GetNoise( noise, w, h, d, x, tilY, tilZ ) * invX * orgY * orgZ;
 
-			return ( n0 + n1 + n2 + n3 + n4 + n5 + n6 + n7 ) / ( w * h * d );
+			float nX1Y0Z0 = GetNoise( noise, w, h, d, tilX, y, z ) * orgX * invY * invZ;
+			float nX1Y1Z0 = GetNoise( noise, w, h, d, tilX, tilY, z ) * orgX * orgY * invZ;
+			float nX1Y0Z1 = GetNoise( noise, w, h, d, tilX, y, tilZ ) * orgX * invY * orgZ;
+			float nX1Y1Z1 = GetNoise( noise, w, h, d, tilX, tilY, tilZ ) * orgX * orgY * orgZ;
+
+			return ( nX0Y0Z0 + nX0Y1Z0 + nX0Y0Z1 + nX0Y1Z1 + nX1Y0Z0 + nX1Y1Z0 + nX1Y0Z1 + nX1Y1Z1 ) / ( w * h * d );
+		}
+
+		private static float GetNoise( Noise noise, float w, float h, float d, float x, float y, float z )
+		{
+			return noise.GetNoise( x % w, y % h, z % d );
 		}
 
 		/// <summary>
@@ -168,7 +194,7 @@ namespace Poc1.Tools.TerrainTextures.Core
 		/// </summary>
 		private static byte NoiseToByte( float n )
 		{
-			return ( byte )( n * 255 );
+			return ( byte )( Utils.Clamp( n, 0, 1 ) * 255 );
 		}
 
 		#endregion
