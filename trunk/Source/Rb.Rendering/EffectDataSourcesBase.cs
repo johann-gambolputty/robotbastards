@@ -55,6 +55,7 @@ namespace Rb.Rendering
 			{
 				source = CreateValueDataSource<T>( );
 				m_ParameterNameDataSources.Add( parameterName, source );
+				OnDataSourceAdded( source );
 			}
 
 			IEffectValueDataSource<T> valueSource = source as IEffectValueDataSource<T>;
@@ -78,6 +79,7 @@ namespace Rb.Rendering
 			{
 				source = CreateValueDataSource<T>( );
 				m_SemanticNameDataSources.Add( semantic, source );
+				OnDataSourceAdded( source );
 			}
 			IEffectValueDataSource<T> valueSource = source as IEffectValueDataSource<T>;
 			if ( valueSource == null )

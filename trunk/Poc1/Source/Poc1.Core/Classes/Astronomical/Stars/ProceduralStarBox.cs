@@ -91,6 +91,12 @@ namespace Poc1.Core.Classes.Astronomical.Stars
 
 		#region IRenderable Members
 
+		private float m_Gain = 3.0f;
+		private float m_Offset = 1.0f;
+		private float m_Freq = 3.0f;
+		private float m_UvMul = 0.5f;
+		private float m_Threshold = 0.9f;
+
 		/// <summary>
 		/// Renders the star box
 		/// </summary>
@@ -98,8 +104,15 @@ namespace Poc1.Core.Classes.Astronomical.Stars
 		{
 			GameProfiles.Game.Rendering.StarSphereRendering.Begin( );
 			Graphics.Renderer.PushTransform( TransformType.Texture0, context.Camera.InverseFrame );
-			m_Technique.Effect.Parameters[ "NoiseTile" ].Set( m_NoiseTexture );
 			m_Technique.Effect.Parameters[ "RandomTexture" ].Set( m_RandomTexture );
+
+			m_Technique.Effect.Parameters[ "NoiseTile" ].Set( m_NoiseTexture );
+			m_Technique.Effect.Parameters[ "Gain" ].Set( m_Gain );
+			m_Technique.Effect.Parameters[ "Offset" ].Set( m_Offset );
+			m_Technique.Effect.Parameters[ "Freq" ].Set( m_Freq );
+			m_Technique.Effect.Parameters[ "UvMul" ].Set( m_UvMul );
+			m_Technique.Effect.Parameters[ "Threshold" ].Set( m_Threshold );
+
 			m_Technique.Apply( context, m_Box );
 			Graphics.Renderer.PopTransform( TransformType.Texture0 );
 			GameProfiles.Game.Rendering.StarSphereRendering.End( );

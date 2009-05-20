@@ -58,6 +58,24 @@ namespace Rb.Core.Maths
 			MakeQuaternionMatrix( ( InvariantMatrix44 )matrix, quaternion );
 		}
 
+		/// <summary>
+		/// Stores the reflection of src in result
+		/// </summary>
+		public static new Matrix44 MakeReflectionMatrix( Point3 pointOnPlane, Vector3 planeNormal )
+		{
+			Matrix44 result = new Matrix44( );
+			MakeReflectionMatrix( ( InvariantMatrix44 )result, pointOnPlane, planeNormal );
+			return result;
+		}
+
+		/// <summary>
+		/// Stores the reflection of src in result
+		/// </summary>
+		public static void MakeReflectionMatrix( Matrix44 result, Point3 pointOnPlane, Vector3 planeNormal )
+		{
+			MakeReflectionMatrix( result, pointOnPlane, planeNormal );
+		}
+
 		#endregion
 
 		#region	Public properties

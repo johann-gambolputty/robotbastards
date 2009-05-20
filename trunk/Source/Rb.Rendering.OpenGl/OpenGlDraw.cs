@@ -24,8 +24,17 @@ namespace Rb.Rendering.OpenGl
 			/// </summary>
 			public GlDrawState( )
 			{
+				m_State = new OpenGlRenderState( );
 				m_State.DepthTest = false;
 				m_State.DepthWrite = false;
+			}
+
+			/// <summary>
+			/// Copy constructor
+			/// </summary>
+			public GlDrawState( GlDrawState src )
+			{
+				m_State = new OpenGlRenderState( src.m_State );
 			}
 
 			/// <summary>
@@ -61,7 +70,7 @@ namespace Rb.Rendering.OpenGl
 				set { m_State.Colour = value; }
 			}
 
-			private readonly OpenGlRenderState m_State = new OpenGlRenderState( );
+			private readonly OpenGlRenderState m_State;
 		}
 
 		#endregion
@@ -73,6 +82,19 @@ namespace Rb.Rendering.OpenGl
 			public GlPen( )
 			{
 				State.FaceRenderMode = PolygonRenderMode.Lines;
+			}
+
+			public GlPen( GlPen src ) :
+				base( src )
+			{
+			}
+
+			/// <summary>
+			/// Clones this pen
+			/// </summary>
+			public IPen Clone( )
+			{
+				return new GlPen( this );
 			}
 
 			/// <summary>
@@ -108,7 +130,24 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		private class GlBrush : GlDrawState, IBrush
 		{
-		
+			public GlBrush( )
+			{
+			}
+
+			public GlBrush( GlBrush src ) :
+				base( src )
+			{
+				m_OutlinePen = src.OutlinePen == null ? null : src.OutlinePen.Clone( );
+			}
+
+			/// <summary>
+			/// Clones this brush
+			/// </summary>
+			public IBrush Clone( )
+			{
+				return new GlBrush( this );
+			}
+
 			/// <summary>
 			/// Outline pen. If not null, then an outline is drawn around the rendered shape
 			/// </summary>
@@ -156,13 +195,41 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		private class GlSurface : ISurface
 		{
+			public GlSurface( )
+			{
+			}
+
+			public GlSurface( GlSurface src )
+			{
+				FaceBrush = src.FaceBrush == null ? null : src.FaceBrush.Clone( );
+				EdgePen = src.EdgePen == null ? null : src.EdgePen.Clone( );
+			}
+
+			/// <summary>
+			/// Clones this surface
+			/// </summary>
+			public ISurface Clone( )
+			{
+				return new GlSurface( this );
+			}
+
 			/// <summary>
 			/// Gets/sets the brush used to fill the surface faces. If null, faces aren't rendered
 			/// </summary>
 			public IBrush FaceBrush
 			{
 				get { return m_Brush; }
-				set { m_Brush = value; }
+				set
+				{
+					if ( value == null )
+					{
+						m_Brush = null;
+						return;
+					}
+					m_Brush = value.Clone( );
+					m_Brush.State.DepthTest = true;
+					m_Brush.State.DepthWrite = true;
+				}
 			}
 
 			/// <summary>
@@ -171,11 +238,18 @@ namespace Rb.Rendering.OpenGl
 			public IPen EdgePen
 			{
 				get { return m_Pen; }
-				set { m_Pen = value; }
+				set
+				{
+					if ( value == null )
+					{
+						m_Pen = null;
+						return;
+					}
+					m_Pen = value.Clone( );
+					m_Pen.State.DepthTest = true;
+					m_Pen.State.DepthWrite = true;
+				}
 			}
-
-			private IBrush m_Brush;
-			private IPen m_Pen;
 
 			#region IState Members
 
@@ -197,6 +271,14 @@ namespace Rb.Rendering.OpenGl
 			{
 				m_Brush.End( );
 			}
+
+			#endregion
+
+			#region Private Members
+
+			private IBrush m_Brush;
+			private IPen m_Pen;
+
 
 			#endregion
 		}

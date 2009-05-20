@@ -11,6 +11,11 @@ namespace Rb.Rendering.Interfaces.Objects
 	/// </remarks>
 	public interface IRenderState : IPass
 	{
+		/// <summary>
+		/// Creates a clone of this render state
+		/// </summary>
+		IRenderState Clone( );
+
 		#region Lighting
 
 		/// <summary>

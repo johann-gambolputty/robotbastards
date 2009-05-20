@@ -30,9 +30,11 @@ namespace Poc1.PlanarReflectionTest
 			if ( context.RenderingReflections )
 			{
 				return;
-			}	
+			}
+
 			m_WaveAnimation.UpdateAnimation( context.RenderTime );
 
+			m_Technique.Effect.Parameters[ "ReflectionsTexture" ].Set( context.ReflectionsRenderTarget.Texture );
 			m_Technique.Effect.Parameters[ "OceanTexture0" ].Set( m_WaveAnimation.SourceTexture );
 			m_Technique.Effect.Parameters[ "OceanTexture1" ].Set( m_WaveAnimation.DestinationTexture );
 			m_Technique.Effect.Parameters[ "OceanTextureT" ].Set( m_WaveAnimation.LocalT ); 

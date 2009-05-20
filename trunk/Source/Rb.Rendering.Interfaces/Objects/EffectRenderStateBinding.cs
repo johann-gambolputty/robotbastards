@@ -63,6 +63,16 @@ namespace Rb.Rendering.Interfaces.Objects
 		ModelViewProjectionMatrix,
 
 		/// <summary>
+		/// Width of the viewport
+		/// </summary>
+		ViewportWidth,
+
+		/// <summary>
+		/// Height of the viewport
+		/// </summary>
+		ViewportHeight,
+
+		/// <summary>
 		/// Parameter bound to current eye position (world space)
 		/// </summary>
 		EyePosition,

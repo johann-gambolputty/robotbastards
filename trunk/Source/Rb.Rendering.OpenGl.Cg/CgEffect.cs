@@ -162,17 +162,17 @@ namespace Rb.Rendering.OpenGl.Cg
 			return true;
 		}
 
-		/// <summary>
-		/// Determines if the new data source can be applied to any of this effect's parameters
-		/// </summary>
-		private void OnDataSourceAdded( IEffectDataSource dataSource )
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose( )
 		{
-			foreach ( CgEffectParameter curParam in m_Parameters )
+			Graphics.EffectDataSources.DataSourceAdded -= OnDataSourceAdded;
+			if ( m_EffectHandle != IntPtr.Zero )
 			{
-				if ( curParam.DataSource == null )
-				{
-					Graphics.EffectDataSources.BindParameter( curParam );
-				}
+				TaoCg.cgDestroyEffect( m_EffectHandle );
+				m_EffectHandle = IntPtr.Zero;
 			}
 		}
 
@@ -184,16 +184,17 @@ namespace Rb.Rendering.OpenGl.Cg
 		private IntPtr				m_EffectHandle;
 		private readonly ArrayList	m_Parameters = new ArrayList( );
 
-		#endregion
-
-		#region IDisposable Members
-
-		public void Dispose( )
+		/// <summary>
+		/// Determines if the new data source can be applied to any of this effect's parameters
+		/// </summary>
+		private void OnDataSourceAdded( IEffectDataSource dataSource )
 		{
-			if ( m_EffectHandle != IntPtr.Zero )
+			foreach ( CgEffectParameter curParam in m_Parameters )
 			{
-				TaoCg.cgDestroyEffect( m_EffectHandle );
-				m_EffectHandle = IntPtr.Zero;
+				if ( curParam.DataSource == null )
+				{
+					Graphics.EffectDataSources.BindParameter( curParam );
+				}
 			}
 		}
 

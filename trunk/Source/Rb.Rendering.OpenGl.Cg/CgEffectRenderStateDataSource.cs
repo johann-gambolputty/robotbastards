@@ -119,6 +119,16 @@ namespace Rb.Rendering.OpenGl.Cg
 						break;
 					}
 
+				case EffectRenderStateBinding.ViewportWidth:
+					{
+						throw new NotImplementedException( );
+					}
+
+				case EffectRenderStateBinding.ViewportHeight:
+					{
+						throw new NotImplementedException( );
+					}
+
 				case EffectRenderStateBinding.EyePosition:
 					{
 						ICamera3 curCam = ( ( ICamera3 )Graphics.Renderer.Camera );
