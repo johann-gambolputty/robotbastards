@@ -8,24 +8,6 @@ namespace Rb.Rendering.Cameras
 	/// </summary>
 	public abstract class Camera3 : CameraBase, ICamera3
 	{
-		/// <summary>
-		/// Calculates the inverse of the project.view matrix, for unprojection operations
-		/// </summary>
-		public override void Begin( )
-		{
-			base.Begin( );
-			m_InvProjView.StoreMultiply( m_ProjectionMatrix, m_ViewMatrix );
-			m_InvProjView.Invert( );
-		}
-
-		/// <summary>
-		/// Returns the inverse of the camera's view.projection matrices
-		/// </summary>
-		public InvariantMatrix44 InverseCameraMatrix
-		{
-			get { return m_InvProjView; }
-		}
-
 		#region	Unprojection
 
 		/// <summary>
@@ -114,15 +96,6 @@ namespace Rb.Rendering.Cameras
 		}
 
 		/// <summary>
-		/// Gets/sets the projection matrix
-		/// </summary>
-		protected Matrix44 ProjectionMatrix
-		{
-			get { return m_ProjectionMatrix; }
-			set { m_ProjectionMatrix = value; }
-		}
-
-		/// <summary>
 		/// Gets/sets the view matrix
 		/// </summary>
 		protected Matrix44 ViewMatrix
@@ -138,7 +111,6 @@ namespace Rb.Rendering.Cameras
 		private Matrix44 m_CameraMatrix		= new Matrix44( );
 		private Matrix44 m_InvCameraMatrix	= new Matrix44( );
 		private Matrix44 m_ViewMatrix		= new Matrix44( );
-		private Matrix44 m_ProjectionMatrix	= new Matrix44( );
 		private Matrix44 m_InvProjView		= new Matrix44( );
 		
 		#endregion

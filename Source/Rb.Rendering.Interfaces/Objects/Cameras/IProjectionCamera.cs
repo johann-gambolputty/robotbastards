@@ -7,6 +7,14 @@ namespace Rb.Rendering.Interfaces.Objects.Cameras
 	public interface IProjectionCamera : ICamera3
 	{
 		/// <summary>
+		/// Gets the current projection matrix
+		/// </summary>
+		//InvariantMatrix44 ProjectionMatrix
+		//{
+		//    get;
+		//}
+
+		/// <summary>
 		/// Gets or sets the field of view
 		/// </summary>
 		float PerspectiveFovDegrees { get; set; }

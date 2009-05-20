@@ -10,7 +10,7 @@
   <NoiseWidth>11.1235</NoiseWidth>
   <NoiseHeight>11.1235</NoiseHeight>
   <NoiseDepth>11.1235</NoiseDepth>
-  <GenerationType>BigNoise</GenerationType>
+  <GenerationType>Grayscale</GenerationType>
   <!--
   <TestFilePath>Game/Terrain/Test TiledNoise.noise.png</TestFilePath>
   -->

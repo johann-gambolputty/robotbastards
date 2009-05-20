@@ -7,7 +7,6 @@ using Poc1.Core.Interfaces.Rendering;
 using Poc1.Core.Interfaces.Rendering.Cameras;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
-using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
 using System.Drawing;
 using RbGraphics=Rb.Rendering.Graphics;

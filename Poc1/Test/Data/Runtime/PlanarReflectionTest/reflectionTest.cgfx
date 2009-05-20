@@ -23,6 +23,8 @@ sampler2D ReflectionsTexture = sampler_state
 	MagFilter = Linear;
 };
 
+
+//	User variables
 float OceanTextureT = 0;
 
 struct VertexShaderInput
@@ -35,6 +37,7 @@ struct FragmentShaderInput
 {
 	float4 m_Position : POSITION;
 	float2 m_Uv : TEXCOORD0;
+	float2 m_ReflectedPos : TEXCOORD1;
 };
 
 //	Pipeline effect parameters
@@ -43,25 +46,37 @@ float4x4 InverseTransposeModelMatrix;
 float NearZ;
 float FarZ;
 
+//	Custom effect parameters
+float4x4 ReflectionProjectionMatrix;
+
+float hWidth = 64;
+float hHeight = 64;
+float xOffset = 0.5f;
+float yOffset = 0.5f;
+
 FragmentShaderInput VertexShader( VertexShaderInput input )
 {
 	FragmentShaderInput output;
 
-	output.m_Position	= mul( ModelViewProjectionMatrix, input.m_Position );
-	output.m_Uv			= input.m_Uv;
+	output.m_Position		= mul( ModelViewProjectionMatrix, input.m_Position );
+
+	float4 reflectedPos		= mul( ReflectionProjectionMatrix, input.m_Position );
+	output.m_ReflectedPos	= ( reflectedPos.xy / float2( hWidth, hHeight ) ) + float2( xOffset, yOffset );
+	output.m_Uv				= input.m_Uv;
 
 	return output;
 }
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
-	float2 uv = input.m_Uv;
-	float3 oceanColour = tex2D( OceanTexture0, uv ).rgb;
-	oceanColour = oceanColour + ( tex2D( OceanTexture1, uv ).rgb - oceanColour ) * OceanTextureT;
+	float2 uv = input.m_Uv / 1.5f;
+	float3 perturb = tex2D( OceanTexture0, uv ).rgb;
+	perturb = normalize( perturb + ( tex2D( OceanTexture1, uv ).rgb - perturb ) * OceanTextureT ) / 10.0f;
 
-	return float4( oceanColour.r, oceanColour.g, oceanColour.b, 1 );
+	float4 reflectedColour = tex2D( ReflectionsTexture, input.m_ReflectedPos + perturb );
+	return reflectedColour;
+//	return float4( input.m_ReflectedPos.x, input.m_ReflectedPos.y, 0, 1 );
 }
-
 
 technique DefaultTechnique
 {
@@ -73,7 +88,7 @@ technique DefaultTechnique
 		FrontFace				= CW;
 		DepthTestEnable			= true;
 		DepthFunc				= Less;
-		CullFaceEnable			= true;
+		CullFaceEnable			= false;
 		BlendEnable				= true;
 		BlendFunc				= int2( SrcAlpha, OneMinusSrcAlpha );
 		PolygonMode				= int2( Front, Fill );

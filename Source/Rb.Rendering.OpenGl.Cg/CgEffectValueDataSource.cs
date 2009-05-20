@@ -105,6 +105,20 @@ namespace Rb.Rendering.OpenGl.Cg
 						CgEffectParameter.cgSetParameterValuefc( param, ( float[] )m_Value );
 					};
 			}
+			else if ( typeof( T ) == typeof( Matrix44 ) )
+			{
+				apply = delegate( IntPtr param )
+					{
+						CgEffectParameter.cgSetMatrixParameterfc( param, ( ( Matrix44 )m_Value ).Elements );
+					};
+			}
+			else if ( typeof( T ) == typeof( InvariantMatrix44 ) )
+			{
+				apply = delegate( IntPtr param )
+					{
+						CgEffectParameter.cgSetMatrixParameterfc( param, ( ( InvariantMatrix44 )m_Value ).ToFloatArray( ) );
+					};
+			}
 			else if ( typeof( T ) == typeof( Matrix44[] ) )
 			{
 				apply = delegate( IntPtr param )

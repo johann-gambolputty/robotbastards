@@ -1,0 +1,53 @@
+struct VertexShaderInput
+{
+	float4 m_Position : POSITION;
+	float4 m_Normal : NORMAL;
+	float3 m_Diffuse : COLOR0;
+};
+
+struct FragmentShaderInput
+{
+	float4 m_Position : POSITION;
+	float4 m_Diffuse : COLOR0;
+};
+
+//	Pipeline effect parameters
+float4x4 ModelViewProjectionMatrix;
+float4x4 InverseTransposeModelMatrix;
+float NearZ;
+float FarZ;
+
+
+FragmentShaderInput VertexShader( VertexShaderInput input )
+{
+	FragmentShaderInput output;
+
+	output.m_Position		= mul( ModelViewProjectionMatrix, input.m_Position );
+	output.m_Diffuse		= float4( dot( float3( 0, 0, 1 ), mul( InverseTransposeModelMatrix, input.m_Normal ).xyz ) * input.m_Diffuse, 1 );
+
+	return output;
+}
+
+float4 FragmentShader( FragmentShaderInput input ) : COLOR
+{
+	return input.m_Diffuse;
+//	return float4( input.m_ReflectedPos.x, input.m_ReflectedPos.y, 0, 1 );
+}
+
+technique DefaultTechnique
+{
+	pass
+	{
+		LightingEnable			= false;
+		DepthMask				= true;
+		ShadeModel				= Smooth;
+		FrontFace				= CW;
+		DepthTestEnable			= true;
+		DepthFunc				= Less;
+		CullFaceEnable			= true;
+		BlendEnable				= false;
+		PolygonMode				= int2( Front, Fill );
+		VertexProgram			= compile arbvp1 VertexShader( );
+		FragmentProgram			= compile arbfp1 FragmentShader( );
+	}
+}

@@ -62,8 +62,8 @@ namespace Poc1.Tools.TerrainTextures.Core
 			//	Check hacked channel expectations...
 			bool hasAlpha = TextureFormatInfo.HasAlphaChannel( parameters.Format );
 			float nZ = nZ0;
-		//	float maxNoise = float.MinValue;
-		//	float minNoise = float.MaxValue;
+			float maxNoise = float.MinValue;
+			float minNoise = float.MaxValue;
 			for ( int z = 0; z < parameters.Depth; ++z, nZ += nZInc )
 			{
 				float nY = nY0;
@@ -77,6 +77,10 @@ namespace Poc1.Tools.TerrainTextures.Core
 							case NoiseGenerationType.Grayscale :
 								{
 									float n = ( 1.0f + sNoise.GetTilingNoise( nX, nY, nZ, nW, nH, nD ) ) / 2;
+
+									maxNoise = Math.Max( maxNoise, n );
+									minNoise = Math.Min( minNoise, n );
+
 								//	float n = 0.5f + noise.GetNoise( nX, nY, nZ );
 									voxel[ 0 ] = NoiseToByte( n );
 									voxel[ 1 ] = voxel[ 0 ];

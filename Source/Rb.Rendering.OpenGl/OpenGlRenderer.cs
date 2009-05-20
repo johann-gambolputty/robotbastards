@@ -541,6 +541,8 @@ namespace Rb.Rendering.OpenGl
 					++m_TopOfWorldToViewStack;
 					CurrentWorldToView.StoreMultiply( lastWorldToView, matrix );
 					UpdateModelView( );
+				//	Matrix44 tmp = new Matrix44( );
+				//	Gl.glGetFloatv( Gl.GL_MODELVIEW_MATRIX, tmp.Elements );
 					break;
 				}
 
@@ -595,6 +597,9 @@ namespace Rb.Rendering.OpenGl
 		{
 			CurrentWorldToView.SetLookAt( camPos, lookAt, camYAxis );
 			UpdateModelView( );
+
+			Gl.glLoadIdentity( );
+			Glu.gluLookAt( camPos.X, camPos.Y, camPos.Z, lookAt.X, lookAt.Y, lookAt.Z, camYAxis.X, camYAxis.Y, camYAxis.Z );
 		}
 
 		/// <summary>
@@ -1020,8 +1025,13 @@ namespace Rb.Rendering.OpenGl
 		private void UpdateModelView( )
 		{
 			Gl.glMatrixMode( Gl.GL_MODELVIEW );
+
 			Gl.glLoadMatrixf( GetGlMatrix( CurrentWorldToView * CurrentWorldToViewModifier ) );
 			Gl.glMultMatrixf( GetGlMatrix( CurrentLocalToWorld * CurrentLocalToWorldModifier ) );
+			//Matrix44 tmp = new Matrix44( );
+			//Gl.glLoadIdentity();
+			//Glu.gluLookAt( 0, 0, -10, 0, 0, 0, 0, 1, 0 );
+			//Gl.glGetFloatv( Gl.GL_MODELVIEW_MATRIX, tmp.Elements ); 
 		}
 
 		#endregion

@@ -116,7 +116,7 @@ namespace Rb.Tools.Cameras
 		private long m_LastUpdate;
 		private FlightCamera m_Camera;
 		private float m_MaxSlipSpeed = 4;
-		private float m_MaxForwardSpeed = 4;
+		private float m_MaxForwardSpeed = -4;
 		private float m_MaxTurnSpeed = 0.8f;
 
 		/// <summary>
@@ -187,7 +187,7 @@ namespace Rb.Tools.Cameras
 				Vector2 delta = pointState.Delta * 0.01f * secondsSinceLastUpdate;
 
 				m_Camera.ChangeYaw( -delta.X );
-				m_Camera.ChangePitch( -delta.Y );
+				m_Camera.ChangePitch( delta.Y );
 			}
         }
 

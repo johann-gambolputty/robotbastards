@@ -11,6 +11,10 @@ sampler3D NoiseTile = sampler_state
 float Tiled3dNoiseCoarseScale	= 1.0f / 5.0f;
 float Tiled3dNoiseFineScale		= 1.0f / 16.0f;
 
+float Gain = 1.8f;
+float Offset = 1.0f;
+float Freq = 1.5f;
+
 float Get3dNoise( float3 uvw )
 {
 //	float4 coarse =  tex3D( NoiseTile, uvw * Tiled3dNoiseCoarseScale );
@@ -25,12 +29,13 @@ float Get3dNoise( float3 uvw, float invCoarseScale, float invFineScale )
 	return fine.r * coarse.b - fine.g * coarse.a;
 }
 
-float Get3dNoiseRidgedFractal8( float3 uvw, float freq )
+float Get3dNoiseRidgedFractal8( float3 uvw )
 {
-	float offset = 1.0f;
+	float freq = Freq;
+	float offset = Offset;
 	float signal = Get3dNoise( uvw );
 	float result = 0;
-	float gain = 1.8f;
+	float gain = Gain;
 	float exp = 1;
 	float max = 1;
 	float weight = signal * gain;
@@ -39,6 +44,30 @@ float Get3dNoiseRidgedFractal8( float3 uvw, float freq )
 	signal *= signal;			//	square the signal, to increase "sharpness" of ridges
 	result = signal;
 
+	uvw *= freq;
+	signal = offset - Get3dNoise( uvw );
+	signal *= signal;
+	signal *= weight;
+	max += 1.0f / exp;
+	result += signal / exp;
+	exp *= freq;
+	
+	uvw *= freq;
+	signal = offset - Get3dNoise( uvw );
+	signal *= signal;
+	signal *= weight;
+	max += 1.0f / exp;
+	result += signal / exp;
+	exp *= freq;
+	
+	uvw *= freq;
+	signal = offset - Get3dNoise( uvw );
+	signal *= signal;
+	signal *= weight;
+	max += 1.0f / exp;
+	result += signal / exp;
+	exp *= freq;
+	
 	uvw *= freq;
 	signal = offset - Get3dNoise( uvw );
 	signal *= signal;

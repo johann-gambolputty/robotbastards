@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using Rb.Core.Utils;
 using Rb.Rendering.Interfaces.Objects;
 using Tao.OpenGl;
 
@@ -11,6 +12,50 @@ namespace Rb.Rendering.OpenGl
 	[Serializable]
 	public class OpenGlRenderState : IRenderState
 	{
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public OpenGlRenderState( )
+		{
+		}
+
+		/// <summary>
+		/// Copy constructor
+		/// </summary>
+		/// <param name="src">Source render state to copy</param>
+		public OpenGlRenderState( OpenGlRenderState src )
+		{
+			Arguments.CheckNotNull( src, "src" );
+			m_Lighting				= src.m_Lighting;
+			m_DepthOffset			= src.m_DepthOffset;
+			m_DepthBias				= src.m_DepthBias;
+			m_PassDepthTest			= src.m_PassDepthTest;
+			m_DepthTest				= src.m_DepthTest;
+			m_DepthWrite			= src.m_DepthWrite;
+			m_CullBackFaces			= src.m_CullBackFaces;
+			m_CullFrontFaces		= src.m_CullFrontFaces;
+			m_FaceWinding			= src.m_FaceWinding;
+			m_FrontFaceRenderMode	= src.m_FrontFaceRenderMode;
+			m_BackFaceRenderMode	= src.m_BackFaceRenderMode;
+			m_Colour				= src.m_Colour;
+			m_ShadeMode				= src.m_ShadeMode;
+			m_Enable2dTextures		= src.m_Enable2dTextures;
+			m_Blend					= src.m_Blend;
+			m_SourceBlend			= src.m_SourceBlend;
+			m_DestinationBlend		= src.m_DestinationBlend;
+			m_PointSize				= src.m_PointSize;
+			m_LineWidth				= src.m_LineWidth;
+			m_TextureUnits			= src.m_TextureUnits;
+		}
+
+		/// <summary>
+		/// Creates a clone of this render state
+		/// </summary>
+		public IRenderState Clone( )
+		{
+			return new OpenGlRenderState( this );
+		}
+
 		/// <summary>
 		/// Applies this render state
 		/// </summary>

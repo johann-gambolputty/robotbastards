@@ -45,7 +45,7 @@ namespace Rb.Core.Maths
 				}
 			}
 
-			return sum;
+			return sum / 0.5f;
 		}
 
 		#region Private Members

@@ -31,6 +31,11 @@ namespace Rb.Rendering.Interfaces
 		public interface IPen : IState
 		{
 			/// <summary>
+			/// Clones this pen
+			/// </summary>
+			IPen Clone( );
+
+			/// <summary>
 			/// The pen colour
 			/// </summary>
 			Color Colour
@@ -53,6 +58,11 @@ namespace Rb.Rendering.Interfaces
 		public interface IBrush : IState
 		{
 			/// <summary>
+			/// Clones this brush
+			/// </summary>
+			IBrush Clone( );
+
+			/// <summary>
 			/// The brush colour
 			/// </summary>
 			Color Colour
@@ -74,6 +84,11 @@ namespace Rb.Rendering.Interfaces
 		/// </summary>
 		public interface ISurface : IState
 		{
+			/// <summary>
+			/// Clones this surface
+			/// </summary>
+			ISurface Clone( );
+
 			/// <summary>
 			/// Gets/sets the brush used to fill the surface faces. If null, faces aren't rendered
 			/// </summary>
