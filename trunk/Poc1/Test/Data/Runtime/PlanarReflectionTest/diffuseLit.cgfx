@@ -31,7 +31,6 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
 	return input.m_Diffuse;
-//	return float4( input.m_ReflectedPos.x, input.m_ReflectedPos.y, 0, 1 );
 }
 
 technique DefaultTechnique

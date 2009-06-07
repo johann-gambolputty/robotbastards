@@ -1,5 +1,4 @@
 using Bob.Core.Ui.Interfaces.Views;
-using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
 
 namespace Poc1.Bob.Core.Classes.Projects.Planets
 {
@@ -25,8 +24,8 @@ namespace Poc1.Bob.Core.Classes.Projects.Planets
 		}
 
 		/// <summary>
-		/// Gets a view for a specified environment model template
+		/// Gets a view on the properties of the  specified object
 		/// </summary>
-		IViewInfo GetTemplateView( IPlanetEnvironmentModelTemplate template );
+		IViewInfo GetPropertiesView( object obj );
 	}
 }

@@ -1,3 +1,5 @@
+using System.Windows.Forms;
+
 namespace Poc1.Bob.Controls.Atmosphere
 {
 	partial class ScatteringAtmosphereAnalysisForm
@@ -29,8 +31,8 @@ namespace Poc1.Bob.Controls.Atmosphere
 		private void InitializeComponent( )
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager( typeof( ScatteringAtmosphereAnalysisForm ) );
-			Rb.Common.Controls.Graphs.Classes.GraphAxisDisplay graphAxisDisplay1 = new Rb.Common.Controls.Graphs.Classes.GraphAxisDisplay( );
-			Rb.Common.Controls.Graphs.Classes.GraphAxisDisplay graphAxisDisplay2 = new Rb.Common.Controls.Graphs.Classes.GraphAxisDisplay( );
+			Rb.Common.Controls.Graphs.Classes.GraphAxisDisplay graphAxisDisplay3 = new Rb.Common.Controls.Graphs.Classes.GraphAxisDisplay( );
+			Rb.Common.Controls.Graphs.Classes.GraphAxisDisplay graphAxisDisplay4 = new Rb.Common.Controls.Graphs.Classes.GraphAxisDisplay( );
 			this.atmosphereGraph = new Rb.Common.Controls.Forms.Graphs.GraphControl( );
 			this.xAxisSourceComboBox = new System.Windows.Forms.ComboBox( );
 			this.label1 = new System.Windows.Forms.Label( );
@@ -41,6 +43,7 @@ namespace Poc1.Bob.Controls.Atmosphere
 			this.viewDirectionTrackBar = new System.Windows.Forms.TrackBar( );
 			this.label4 = new System.Windows.Forms.Label( );
 			this.sunDirectionTrackBar = new System.Windows.Forms.TrackBar( );
+			this.gradientPanel = new System.Windows.Forms.Panel( );
 			( ( System.ComponentModel.ISupportInitialize )( this.heightTrackBar ) ).BeginInit( );
 			( ( System.ComponentModel.ISupportInitialize )( this.viewDirectionTrackBar ) ).BeginInit( );
 			( ( System.ComponentModel.ISupportInitialize )( this.sunDirectionTrackBar ) ).BeginInit( );
@@ -56,31 +59,31 @@ namespace Poc1.Bob.Controls.Atmosphere
 			this.atmosphereGraph.Location = new System.Drawing.Point( 29, 12 );
 			this.atmosphereGraph.Name = "atmosphereGraph";
 			this.atmosphereGraph.RelateControlSizeToDataArea = false;
-			this.atmosphereGraph.Size = new System.Drawing.Size( 251, 180 );
+			this.atmosphereGraph.Size = new System.Drawing.Size( 350, 181 );
 			this.atmosphereGraph.TabIndex = 0;
-			graphAxisDisplay1.DisplayTitle = false;
-			graphAxisDisplay1.LineStep = 1F;
-			graphAxisDisplay1.TickFont = new System.Drawing.Font( "Arial", 6F );
-			graphAxisDisplay1.Title = "X";
-			graphAxisDisplay1.TitleFont = new System.Drawing.Font( "Arial", 6F );
-			graphAxisDisplay1.ValueToString = null;
-			graphAxisDisplay1.VerticalTitleText = false;
-			this.atmosphereGraph.XAxis = graphAxisDisplay1;
-			graphAxisDisplay2.DisplayTitle = false;
-			graphAxisDisplay2.LineStep = 1F;
-			graphAxisDisplay2.TickFont = new System.Drawing.Font( "Arial", 6F );
-			graphAxisDisplay2.Title = "Intensity";
-			graphAxisDisplay2.TitleFont = new System.Drawing.Font( "Arial", 6F );
-			graphAxisDisplay2.ValueToString = null;
-			graphAxisDisplay2.VerticalTitleText = false;
-			this.atmosphereGraph.YAxis = graphAxisDisplay2;
+			graphAxisDisplay3.DisplayTitle = false;
+			graphAxisDisplay3.LineStep = 1F;
+			graphAxisDisplay3.TickFont = new System.Drawing.Font( "Arial", 6F );
+			graphAxisDisplay3.Title = "X";
+			graphAxisDisplay3.TitleFont = new System.Drawing.Font( "Arial", 6F );
+			graphAxisDisplay3.ValueToString = null;
+			graphAxisDisplay3.VerticalTitleText = false;
+			this.atmosphereGraph.XAxis = graphAxisDisplay3;
+			graphAxisDisplay4.DisplayTitle = false;
+			graphAxisDisplay4.LineStep = 1F;
+			graphAxisDisplay4.TickFont = new System.Drawing.Font( "Arial", 6F );
+			graphAxisDisplay4.Title = "Intensity";
+			graphAxisDisplay4.TitleFont = new System.Drawing.Font( "Arial", 6F );
+			graphAxisDisplay4.ValueToString = null;
+			graphAxisDisplay4.VerticalTitleText = false;
+			this.atmosphereGraph.YAxis = graphAxisDisplay4;
 			// 
 			// xAxisSourceComboBox
 			// 
 			this.xAxisSourceComboBox.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) );
 			this.xAxisSourceComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.xAxisSourceComboBox.FormattingEnabled = true;
-			this.xAxisSourceComboBox.Location = new System.Drawing.Point( 82, 198 );
+			this.xAxisSourceComboBox.Location = new System.Drawing.Point( 82, 230 );
 			this.xAxisSourceComboBox.Name = "xAxisSourceComboBox";
 			this.xAxisSourceComboBox.Size = new System.Drawing.Size( 121, 21 );
 			this.xAxisSourceComboBox.TabIndex = 1;
@@ -90,7 +93,7 @@ namespace Poc1.Bob.Controls.Atmosphere
 			// 
 			this.label1.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) );
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point( 32, 201 );
+			this.label1.Location = new System.Drawing.Point( 32, 233 );
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size( 44, 13 );
 			this.label1.TabIndex = 2;
@@ -109,31 +112,31 @@ namespace Poc1.Bob.Controls.Atmosphere
 			this.heightTrackBar.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left )
 						| System.Windows.Forms.AnchorStyles.Right ) ) );
 			this.heightTrackBar.LargeChange = 20;
-			this.heightTrackBar.Location = new System.Drawing.Point( 62, 225 );
+			this.heightTrackBar.Location = new System.Drawing.Point( 102, 258 );
 			this.heightTrackBar.Maximum = 100;
 			this.heightTrackBar.Name = "heightTrackBar";
-			this.heightTrackBar.Size = new System.Drawing.Size( 218, 45 );
+			this.heightTrackBar.Size = new System.Drawing.Size( 277, 45 );
 			this.heightTrackBar.TabIndex = 4;
 			this.heightTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
-			this.heightTrackBar.Scroll += new System.EventHandler( heightTrackBar_Scroll );
+			this.heightTrackBar.Scroll += new System.EventHandler( this.heightTrackBar_Scroll );
 			// 
 			// label2
 			// 
+			this.label2.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) );
 			this.label2.AutoSize = true;
-			this.label2.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) ) );
-			this.label2.Location = new System.Drawing.Point( 21, 232 );
+			this.label2.Location = new System.Drawing.Point( 21, 264 );
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size( 35, 13 );
+			this.label2.Size = new System.Drawing.Size( 38, 13 );
 			this.label2.TabIndex = 5;
 			this.label2.Text = "Height";
 			// 
 			// label3
 			// 
+			this.label3.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) );
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point( 21, 261 );
-			this.label3.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) ) );
+			this.label3.Location = new System.Drawing.Point( 21, 293 );
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size( 35, 13 );
+			this.label3.Size = new System.Drawing.Size( 75, 13 );
 			this.label3.TabIndex = 7;
 			this.label3.Text = "View Direction";
 			// 
@@ -142,21 +145,21 @@ namespace Poc1.Bob.Controls.Atmosphere
 			this.viewDirectionTrackBar.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left )
 						| System.Windows.Forms.AnchorStyles.Right ) ) );
 			this.viewDirectionTrackBar.LargeChange = 20;
-			this.viewDirectionTrackBar.Location = new System.Drawing.Point( 62, 254 );
+			this.viewDirectionTrackBar.Location = new System.Drawing.Point( 102, 286 );
 			this.viewDirectionTrackBar.Maximum = 100;
 			this.viewDirectionTrackBar.Name = "viewDirectionTrackBar";
-			this.viewDirectionTrackBar.Size = new System.Drawing.Size( 218, 45 );
+			this.viewDirectionTrackBar.Size = new System.Drawing.Size( 277, 45 );
 			this.viewDirectionTrackBar.TabIndex = 6;
 			this.viewDirectionTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
-			this.viewDirectionTrackBar.Scroll += new System.EventHandler( viewDirectionTrackBar_Scroll );
+			this.viewDirectionTrackBar.Scroll += new System.EventHandler( this.viewDirectionTrackBar_Scroll );
 			// 
 			// label4
 			// 
+			this.label4.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) );
 			this.label4.AutoSize = true;
-			this.label4.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left ) ) ) );
-			this.label4.Location = new System.Drawing.Point( 21, 284 );
+			this.label4.Location = new System.Drawing.Point( 21, 316 );
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size( 35, 13 );
+			this.label4.Size = new System.Drawing.Size( 71, 13 );
 			this.label4.TabIndex = 9;
 			this.label4.Text = "Sun Direction";
 			// 
@@ -165,19 +168,31 @@ namespace Poc1.Bob.Controls.Atmosphere
 			this.sunDirectionTrackBar.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left )
 						| System.Windows.Forms.AnchorStyles.Right ) ) );
 			this.sunDirectionTrackBar.LargeChange = 20;
-			this.sunDirectionTrackBar.Location = new System.Drawing.Point( 62, 277 );
+			this.sunDirectionTrackBar.Location = new System.Drawing.Point( 102, 309 );
 			this.sunDirectionTrackBar.Maximum = 100;
 			this.sunDirectionTrackBar.Name = "sunDirectionTrackBar";
-			this.sunDirectionTrackBar.Size = new System.Drawing.Size( 218, 45 );
+			this.sunDirectionTrackBar.Size = new System.Drawing.Size( 277, 45 );
 			this.sunDirectionTrackBar.TabIndex = 8;
 			this.sunDirectionTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
-			this.sunDirectionTrackBar.Scroll += new System.EventHandler( sunDirectionTrackBar_Scroll );
+			this.sunDirectionTrackBar.Scroll += new System.EventHandler( this.sunDirectionTrackBar_Scroll );
+			// 
+			// gradientPanel
+			// 
+			this.gradientPanel.Anchor = ( ( System.Windows.Forms.AnchorStyles )( ( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left )
+						| System.Windows.Forms.AnchorStyles.Right ) ) );
+			this.gradientPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.gradientPanel.Location = new System.Drawing.Point( 29, 199 );
+			this.gradientPanel.Name = "gradientPanel";
+			this.gradientPanel.Size = new System.Drawing.Size( 350, 25 );
+			this.gradientPanel.TabIndex = 10;
+			this.gradientPanel.BackgroundImageLayout = ImageLayout.Stretch;
 			// 
 			// ScatteringAtmosphereAnalysisForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size( 362, 311 );
+			this.ClientSize = new System.Drawing.Size( 391, 343 );
+			this.Controls.Add( this.gradientPanel );
 			this.Controls.Add( this.label4 );
 			this.Controls.Add( this.sunDirectionTrackBar );
 			this.Controls.Add( this.label3 );
@@ -213,5 +228,6 @@ namespace Poc1.Bob.Controls.Atmosphere
 		private System.Windows.Forms.TrackBar viewDirectionTrackBar;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.TrackBar sunDirectionTrackBar;
+		private System.Windows.Forms.Panel gradientPanel;
 	}
 }

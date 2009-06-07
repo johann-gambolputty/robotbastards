@@ -189,6 +189,25 @@ namespace Poc1.Core.Classes.Rendering
 		}
 
 		/// <summary>
+		/// Returns originalTarget if its properties match the expected values passed to this function,
+		/// otherwise, returns a new render target based on the expected values.
+		/// </summary>
+		private static IRenderTarget RefreshRenderTarget( IRenderTarget originalTarget, string name, int expectedWidth, int expectedHeight, TextureFormat format, int depthBits, int stencilBits, bool depthBufferAsTexture )
+		{
+			if ( ( originalTarget != null ) && ( expectedWidth == originalTarget.Width ) && ( expectedHeight == originalTarget.Height ) )
+			{
+				return originalTarget;
+			}
+			if ( originalTarget != null )
+			{
+				originalTarget.Dispose( );
+			}
+			IRenderTarget newTarget = RbGraphics.Factory.CreateRenderTarget( );
+			newTarget.Create( name, expectedWidth, expectedHeight, format, depthBits, stencilBits, depthBufferAsTexture );
+			return newTarget;
+		}
+
+		/// <summary>
 		/// Pre-render setup
 		/// </summary>
 		private void PreRender( )
@@ -196,19 +215,7 @@ namespace Poc1.Core.Classes.Rendering
 			//	Create render targets
 			if ( EnableReflections )
 			{
-				if ( m_OceanReflections != null )
-				{
-					if ( m_OceanReflections.Width != ReflectionResolution )
-					{
-						m_OceanReflections.Dispose( );
-						m_OceanReflections = null;
-					}
-				}
-				if ( m_OceanReflections == null )
-				{
-					m_OceanReflections = RbGraphics.Factory.CreateRenderTarget( );
-					m_OceanReflections.Create( "Ocean Reflections", ReflectionResolution, ReflectionResolution, TextureFormat.R8G8B8A8, 24, 0, false );
-				}
+				m_OceanReflections = RefreshRenderTarget( m_OceanReflections, "Ocean Reflections", ReflectionResolution, ReflectionResolution, TextureFormat.R8G8B8A8, 24, 0, false );
 			}
 			else if ( m_OceanReflections != null )
 			{

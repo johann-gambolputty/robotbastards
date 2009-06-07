@@ -39,6 +39,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\CurrentObjectPropertyGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CurrentObjectPropertyGrid.Designer.cs">
+      <DependentUpon>CurrentObjectPropertyGrid.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SmallWorkItemProgressControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -63,6 +69,10 @@
     <Compile Include="Ui\MessageUiProvider.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\CurrentObjectPropertyGrid.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>CurrentObjectPropertyGrid.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\SmallWorkItemProgressControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SmallWorkItemProgressControl.cs</DependentUpon>

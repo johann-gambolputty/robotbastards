@@ -554,7 +554,19 @@ namespace Rb.Rendering.Interfaces
 		/// Adds vertex data to the current primitive list. If semantic is <see cref="VertexFieldSemantic.Position"/>,
 		/// then a new vertex is started.
 		/// </summary>
+		void AddVertexData( VertexFieldSemantic semantic, Point2 pt );
+
+		/// <summary>
+		/// Adds vertex data to the current primitive list. If semantic is <see cref="VertexFieldSemantic.Position"/>,
+		/// then a new vertex is started.
+		/// </summary>
 		void AddVertexData( VertexFieldSemantic semantic, float x, float y, float z );
+
+		/// <summary>
+		/// Adds vertex data to the current primitive list. If semantic is <see cref="VertexFieldSemantic.Position"/>,
+		/// then a new vertex is started.
+		/// </summary>
+		void AddVertexData( VertexFieldSemantic semantic, Point3 pt );
 
 		/// <summary>
 		/// Ends the current primitive list, drawing it, or storing it in the current cache

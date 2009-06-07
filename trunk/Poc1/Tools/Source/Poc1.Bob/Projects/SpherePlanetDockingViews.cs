@@ -44,6 +44,7 @@ namespace Poc1.Bob.Projects
 			Arguments.CheckNotNull( viewFactory, "viewFactory" );
 			m_ViewManager = viewManager;
 			m_ViewFactory = viewFactory;
+			m_SharedPropertyGrid = new PropertyGrid( );
 
 			//	Environment model templates with special views
 			AsTemplateView<IPlanetSimpleCloudTemplate>( NewHostedView( "Simple Cloud Template Properties", CreateCloudView, null ) );
@@ -51,14 +52,16 @@ namespace Poc1.Bob.Projects
 			AsTemplateView<IPlanetAtmosphereTemplate>( NewHostedView( "Atmosphere Template Properties", CreateAtmosphereScatteringView, null ) );
 
 			//	Environment model templates with generic views
-			CreateGenericTemplateView<IPlanetRingTemplate>( "Ring Template Properties" );
-			CreateGenericTemplateView<IPlanetOceanTemplate>( "Ocean Template Properties" );
+		//	CreateGenericTemplateView<IPlanetRingTemplate>( "Ring Template Properties" );
+		//	CreateGenericTemplateView<IPlanetOceanTemplate>( "Ocean Template Properties" );
 
+			m_DefaultPropertiesView = NewHostedView( "Properties", CreatePropertiesView, null );
 			m_PlanetModelView = NewHostedView( "Sphere Planet Properties", CreatePlanetModelView, DefaultCommands.ViewCommands );
 
 			//	Other views
-			NewDockingView( "Planet Composition", CreatePlanetTemplateCompositionView, DefaultCommands.ViewCommands );
-			NewDockingView( "Planet Display", CreatePlanetDisplay, DefaultCommands.ViewCommands, DockState.Document );
+			NewDockingView( "Planet Template Composition", CreatePlanetTemplateCompositionView, DefaultCommands.ViewCommands );
+			NewDockingView( "Planet Model Composition", CreatePlanetModelCompositionView, DefaultCommands.ViewCommands );
+			NewDockingView( "Universe Display", CreateUniverseDisplay, DefaultCommands.ViewCommands, DockState.Document );
 
 			m_DefaultView = NewHostedView( "Empty", CreateEmptyView, null );
 		}
@@ -93,18 +96,19 @@ namespace Poc1.Bob.Projects
 		}
 
 		/// <summary>
-		/// Gets a view for a specified environment model template
+		/// Gets a view on the properties of the specified object
 		/// </summary>
-		public IViewInfo GetTemplateView( IPlanetEnvironmentModelTemplate template )
+		public IViewInfo GetPropertiesView( object obj )
 		{
-			foreach ( KeyValuePair<Type, IViewInfo> templateView in m_TemplateViews )
+			foreach ( KeyValuePair<Type, IViewInfo> view in m_TypedPropertyViews )
 			{
-				if ( templateView.Key.IsInstanceOfType( template ) )
+				if ( view.Key.IsInstanceOfType( obj ) )
 				{
-					return templateView.Value;
+					return view.Value;
 				}
 			}
-			return null;
+			m_SharedPropertyGrid.SelectedObject = obj;
+			return m_DefaultPropertiesView;
 		}
 
 		#region Private Members
@@ -112,8 +116,9 @@ namespace Poc1.Bob.Projects
 		private readonly IViewManager m_ViewManager;
 		private readonly IViewFactory m_ViewFactory;
 		private readonly List<IViewInfo> m_Views = new List<IViewInfo>( );
-		private readonly Dictionary<Type, IViewInfo> m_TemplateViews = new Dictionary<Type, IViewInfo>( );
-
+		private readonly Dictionary<Type, IViewInfo> m_TypedPropertyViews = new Dictionary<Type, IViewInfo>( );
+		private readonly HostedViewInfo m_DefaultPropertiesView;
+		private readonly PropertyGrid m_SharedPropertyGrid;
 		private readonly IViewInfo m_DefaultView;
 		private readonly IViewInfo m_PlanetModelView;
 
@@ -122,7 +127,7 @@ namespace Poc1.Bob.Projects
 		/// </summary>
 		private IViewInfo AsTemplateView<TTemplate>( IViewInfo view )
 		{
-			m_TemplateViews.Add( typeof( TTemplate ), view );
+			m_TypedPropertyViews.Add( typeof( TTemplate ), view );
 			return view;
 		}
 
@@ -133,7 +138,7 @@ namespace Poc1.Bob.Projects
 			where TTemplate : class, IPlanetEnvironmentModelTemplate
 		{
 			IViewInfo view = NewHostedView( title, CreateGenericTemplatePropertiesView<TTemplate>, null );
-			m_TemplateViews.Add( typeof( TTemplate ), view );
+			m_TypedPropertyViews.Add( typeof( TTemplate ), view );
 			return view;
 		}
 
@@ -176,6 +181,18 @@ namespace Poc1.Bob.Projects
 		{
 			return ( SpherePlanetProject )( ( WorkspaceEx )workspace ).ProjectContext.CurrentProject;
 		}
+		
+		/// <summary>
+		/// Creates a planet template composition view
+		/// </summary>
+		private Control CreatePlanetModelCompositionView( IWorkspace workspace )
+		{
+			SpherePlanetProject currentProject = CurrentProject( workspace );
+			EditableCompositeControl control = new EditableCompositeControl( );
+			EditablePlanetViewController controller = new EditablePlanetViewController( workspace, m_ViewFactory, control, currentProject.Planet.Model );
+			controller.ComponentSelected += OnComponentSelected;
+			return control;
+		}
 
 		/// <summary>
 		/// Creates a planet template composition view
@@ -184,24 +201,23 @@ namespace Poc1.Bob.Projects
 		{
 			SpherePlanetProject currentProject = CurrentProject( workspace );
 			EditableCompositeControl control = new EditableCompositeControl( );
-			new EditablePlanetTemplateViewController( workspace, m_ViewFactory, control, currentProject.PlanetTemplate, TemplateCompositionViewActionHandler );
-			control.PlanetTemplate = currentProject.PlanetTemplate;
+			EditablePlanetTemplateViewController controller = new EditablePlanetTemplateViewController( workspace, m_ViewFactory, control, currentProject.PlanetTemplate );
+			controller.ComponentSelected += OnComponentSelected;
 			return control;
 		}
 
 		/// <summary>
-		/// Action handler for a template composition view. Shows a view for the selected template
+		/// Action handler for a component composition view. Shows a view for the selected component
 		/// </summary>
-		private void TemplateCompositionViewActionHandler( IWorkspace workspace, object templateComponent )
+		private void OnComponentSelected( IWorkspace workspace, object component )
 		{
 			//	TODO: AP: Can go to base class
-			if ( templateComponent is IPlanetModelTemplate )
+			if ( component is IPlanetModelTemplate )
 			{
 				m_ViewManager.Show( workspace, m_PlanetModelView );
 				return;
 			}
-			IPlanetEnvironmentModelTemplate template = templateComponent as IPlanetEnvironmentModelTemplate;
-			IViewInfo view = GetTemplateView( template );
+			IViewInfo view = GetPropertiesView( component );
 			if ( view != null )
 			{
 				m_ViewManager.Show( workspace, view );
@@ -292,6 +308,24 @@ namespace Poc1.Bob.Projects
 		}
 
 		/// <summary>
+		/// Creates a generic property view
+		/// </summary>
+		private Control CreatePropertiesView( IWorkspace workspace )
+		{
+			return m_SharedPropertyGrid;
+		}
+
+		/// <summary>
+		/// Creates a generic properties view
+		/// </summary>
+		private static Control CreateGenericPropertiesView( IWorkspace workspace )
+		{
+			PropertyGrid control = new PropertyGrid( );
+			control.SelectedObject = null;
+			return control;
+		}
+
+		/// <summary>
 		/// Creates a property grid for a given template type
 		/// </summary>
 		private static Control CreateGenericTemplatePropertiesView<TTemplate>( IWorkspace workspace )
@@ -331,7 +365,7 @@ namespace Poc1.Bob.Projects
 		/// <summary>
 		/// Creates a planet view control
 		/// </summary>
-		private Control CreatePlanetDisplay( IWorkspace workspace )
+		private Control CreateUniverseDisplay( IWorkspace workspace )
 		{
 			SpherePlanetProject currentProject = CurrentProject( workspace );
 			return ( Control )m_ViewFactory.CreatePlanetView( currentProject.Planet );

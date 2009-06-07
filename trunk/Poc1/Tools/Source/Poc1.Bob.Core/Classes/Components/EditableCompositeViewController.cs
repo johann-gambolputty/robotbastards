@@ -1,4 +1,5 @@
 using System;
+using Bob.Core.Workspaces.Interfaces;
 using Poc1.Bob.Core.Interfaces;
 using Poc1.Bob.Core.Interfaces.Components;
 using Rb.Common.Controls.Components;
@@ -13,19 +14,33 @@ namespace Poc1.Bob.Core.Classes.Components
 	public class EditableCompositeViewController
 	{
 		/// <summary>
+		/// Action handler delegate
+		/// </summary>
+		public delegate void ComponentSelectedDelegate( IWorkspace workspace, object component );
+
+		/// <summary>
+		/// Event, raised when a component in the view is selected
+		/// </summary>
+		public event ComponentSelectedDelegate ComponentSelected;
+
+		/// <summary>
 		/// Setup constructor
 		/// </summary>
+		/// <param name="workspace">Current workspace</param>
 		/// <param name="viewFactory">View factory used by the controller to create dependent views</param>
 		/// <param name="view">View to control</param>
 		/// <param name="composite">Composite object to show</param>
 		/// <exception cref="ArgumentNullException">Thrown if view or template is null</exception>
-		public EditableCompositeViewController( IViewFactory viewFactory, IEditableCompositeView view, IComposite composite )
+		public EditableCompositeViewController( IWorkspace workspace, IViewFactory viewFactory, IEditableCompositeView view, IComposite composite )
 		{
+			Arguments.CheckNotNull( workspace, "workspace" );
 			Arguments.CheckNotNull( viewFactory, "viewFactory" );
 			Arguments.CheckNotNull( view, "view" );
 			Arguments.CheckNotNull( composite, "composite" );
 			view.EditComposition += OnEditComposition;
+			view.ComponentSelected += OnComponentSelected;
 			view.Composite = composite;
+			m_Workspace = workspace;
 			m_View = view;
 			m_Composite = composite;
 			m_ViewFactory = viewFactory;
@@ -64,6 +79,7 @@ namespace Poc1.Bob.Core.Classes.Components
 
 		#region Private Members
 
+		private readonly IWorkspace m_Workspace;
 		private readonly IViewFactory m_ViewFactory;
 		private readonly IComposite m_Composite;
 		private readonly IEditableCompositeView m_View;
@@ -75,6 +91,17 @@ namespace Poc1.Bob.Core.Classes.Components
 		{
 			m_ViewFactory.ShowEditCompositeView( Composite, ComponentTypeCategories, ComponentTypes );
 			m_View.RefreshView( );
+		}
+
+		/// <summary>
+		/// Opens up a view on the specified component
+		/// </summary>
+		private void OnComponentSelected( object component )
+		{
+			if ( ComponentSelected != null )
+			{
+				ComponentSelected( m_Workspace, component );
+			}
 		}
 
 		#endregion
