@@ -50,6 +50,7 @@
     <Compile Include="Classes\Commands\ProjectCommands.cs" />
     <Compile Include="Classes\Planets\Clouds\CloudModelTemplateViewController.cs" />
     <Compile Include="Classes\Planets\EditablePlanetTemplateViewController.cs" />
+    <Compile Include="Classes\Planets\EditablePlanetViewController.cs" />
     <Compile Include="Classes\Planets\PlanetTemplateViewController.cs" />
     <Compile Include="Classes\Planets\SpherePlanetTemplateViewController.cs" />
     <Compile Include="Classes\Planets\Terrain\HomogenousProceduralTerrainViewController.cs" />

@@ -1,8 +1,12 @@
+using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.Threading;
 using System.Windows.Forms;
 using Rb.Common.Controls.Graphs.Classes;
 using Rb.Common.Controls.Graphs.Classes.Renderers;
 using Rb.Common.Controls.Graphs.Classes.Sources;
+using Rb.Core.Maths;
 
 namespace Poc1.Bob.Controls.Atmosphere
 {
@@ -14,11 +18,81 @@ namespace Poc1.Bob.Controls.Atmosphere
 		public delegate float CalculateIntensityDelegate( float height, float viewDirection, float sunDirection );
 
 		/// <summary>
+		/// Calculates atmosphere colours
+		/// </summary>
+		public delegate Color CalculateColourDelegate( float height, float viewDirection, float sunDirection );
+
+		/// <summary>
 		/// Default constructor
 		/// </summary>
 		public ScatteringAtmosphereAnalysisForm( )
 		{
 			InitializeComponent( );
+
+			m_GradientBuilder = new BackgroundWorker( );
+			m_GradientBuilder.DoWork += BuildGradientBitmap;
+			m_GradientBuilder.WorkerSupportsCancellation = true;
+			m_GradientBuilder.RunWorkerCompleted += OnGradientBuildComplete;
+		}
+
+		private void OnGradientBuildComplete( object sender, RunWorkerCompletedEventArgs args )
+		{
+			if (args.Cancelled)
+			{
+				return;
+			}
+			Bitmap result = args.Result as Bitmap;
+			if ( result == null )
+			{
+				return;
+			}
+			gradientPanel.BackgroundImage = result;
+		}
+
+		private float m_StartY = 0.9f;
+		private int m_NumSamples = 10;
+
+		private void BuildGradientBitmap( object sender, DoWorkEventArgs args )
+		{
+			CalculateColourDelegate calculator = ColourCalculator;
+			if ( calculator == null )
+			{
+				return;
+			}
+			GradientBuildParameters parameters = ( GradientBuildParameters )args.Argument;
+			float x = 0;
+			int xWidth = 128;
+			float xInc = 1.0f / xWidth;
+			float h = parameters.Height;
+			float v = parameters.ViewDirection;
+			float s = parameters.SunDirection;
+			Bitmap bitmap = new Bitmap( xWidth, 1, PixelFormat.Format24bppRgb );
+			for ( int i = 0; i < xWidth; ++i, x += xInc )
+			{
+				if ( m_GradientBuilder.CancellationPending )
+				{
+					args.Cancel = true;
+					return;
+				}
+				Color colour = Color.Magenta;
+				switch ( parameters.Source )
+				{
+					case XAxisSource.Height			: colour = calculator( x, v, s ); break;
+					case XAxisSource.ViewDirection	: colour = calculator( h, x, s ); break;
+					case XAxisSource.SunDirection	: colour = calculator( h, v, x ); break;
+				}
+				bitmap.SetPixel( i, 0, colour );
+			}
+			args.Result = bitmap;
+		}
+
+		/// <summary>
+		/// Gets/sets the colour calculator
+		/// </summary>
+		public CalculateColourDelegate ColourCalculator
+		{
+			get { return m_ColourCalculator; }
+			set { m_ColourCalculator = value; }
 		}
 
 		/// <summary>
@@ -59,10 +133,20 @@ namespace Poc1.Bob.Controls.Atmosphere
 
 		#region Private Members
 
+		private BackgroundWorker m_GradientBuilder;
+		private CalculateColourDelegate m_ColourCalculator;
 		private CalculateIntensityDelegate m_RedIntensityCalculator;
 		private CalculateIntensityDelegate m_GreenIntensityCalculator;
 		private CalculateIntensityDelegate m_BlueIntensityCalculator;
 		private CalculateIntensityDelegate m_MieIntensityCalculator;
+
+		private struct GradientBuildParameters
+		{
+			public XAxisSource Source;
+			public float Height;
+			public float SunDirection;
+			public float ViewDirection;
+		}
 
 		/// <summary>
 		/// X axis data sources
@@ -146,6 +230,25 @@ namespace Poc1.Bob.Controls.Atmosphere
 			return MieIntensityCalculator == null ? 0 : MieIntensityCalculator( GroundHeight( x ), ViewDirection( x ), SunDirection( x ) );
 		}
 
+		/// <summary>
+		/// Rebuilds the gradient bitmap
+		/// </summary>
+		private void RebuildGradient( )
+		{
+			m_GradientBuilder.CancelAsync( );
+			while ( m_GradientBuilder.IsBusy )
+			{
+				Thread.Sleep( 1 );
+				Application.DoEvents( );
+			}
+			GradientBuildParameters parameters = new GradientBuildParameters( );
+			parameters.Source = CurrentXAxisSource;
+			parameters.Height = GroundHeight( 0 );
+			parameters.SunDirection = SunDirection( 0 );
+			parameters.ViewDirection = ViewDirection( 0 );
+			m_GradientBuilder.RunWorkerAsync( parameters );
+		}
+
 		#region Event Handlers
 
 		private void yAxisLegendPanel_Paint( object sender, PaintEventArgs e )
@@ -160,32 +263,36 @@ namespace Poc1.Bob.Controls.Atmosphere
 			xAxisSourceComboBox.Items.Add( XAxisSource.ViewDirection );
 			xAxisSourceComboBox.Items.Add( XAxisSource.SunDirection );
 
-			xAxisSourceComboBox.SelectedItem = XAxisSource.Height;
-
 			atmosphereGraph.AddGraphComponent( new GraphComponent( "R", new GraphX2dSourceFunction( 0, 0, 1, 1, RedIntensity ), new GraphX2dLineRenderer( Color.Red ) ) );
 			atmosphereGraph.AddGraphComponent( new GraphComponent( "G", new GraphX2dSourceFunction( 0, 0, 1, 1, GreenIntensity ), new GraphX2dLineRenderer( Color.Green ) ) );
 			atmosphereGraph.AddGraphComponent( new GraphComponent( "B", new GraphX2dSourceFunction( 0, 0, 1, 1, BlueIntensity ), new GraphX2dLineRenderer( Color.Blue ) ) );
-			atmosphereGraph.AddGraphComponent( new GraphComponent( "B", new GraphX2dSourceFunction( 0, 0, 1, 1, MieIntensity ), new GraphX2dLineRenderer( Color.Gray ) ) );
+			atmosphereGraph.AddGraphComponent( new GraphComponent( "M", new GraphX2dSourceFunction( 0, 0, 1, 1, MieIntensity ), new GraphX2dLineRenderer( Color.Gray ) ) );
+
+			xAxisSourceComboBox.SelectedItem = XAxisSource.Height;	//	Triggers gradient rebuild
 		}
 
 		private void xAxisSourceComboBox_SelectedIndexChanged( object sender, System.EventArgs e )
 		{
 			atmosphereGraph.XAxis.Title = xAxisSourceComboBox.SelectedText;
+			RebuildGradient( );
 		}
 
 		private void viewDirectionTrackBar_Scroll( object sender, System.EventArgs e )
 		{
 			atmosphereGraph.Invalidate( );
+			RebuildGradient( );
 		}
 
 		private void sunDirectionTrackBar_Scroll( object sender, System.EventArgs e )
 		{
 			atmosphereGraph.Invalidate( );
+			RebuildGradient( );
 		}
 
 		private void heightTrackBar_Scroll( object sender, System.EventArgs e )
 		{
 			atmosphereGraph.Invalidate( );
+			RebuildGradient( );
 		}
 
 		#endregion

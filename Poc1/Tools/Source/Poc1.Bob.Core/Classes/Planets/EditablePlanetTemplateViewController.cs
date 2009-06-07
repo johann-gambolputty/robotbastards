@@ -9,7 +9,7 @@ using Poc1.Core.Classes.Astronomical.Planets.Spherical.Models.Templates;
 using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
 using Poc1.Core.Interfaces.Astronomical.Planets.Spherical.Models;
 using Rb.Core.Components;
-using Rb.Core.Utils;
+
 
 namespace Poc1.Bob.Core.Classes.Planets
 {
@@ -19,21 +19,11 @@ namespace Poc1.Bob.Core.Classes.Planets
 	public class EditablePlanetTemplateViewController : EditableCompositeViewController
 	{
 		/// <summary>
-		/// Action handler delegate
-		/// </summary>
-		public delegate void TemplateActionDelegate( IWorkspace workspace, object templateComponent );
-
-		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		public EditablePlanetTemplateViewController( IWorkspace workspace, IViewFactory viewFactory, IEditableCompositeView view, IPlanetModelTemplate template, TemplateActionDelegate onAction ) :
-			base( viewFactory, view, template )
+		public EditablePlanetTemplateViewController( IWorkspace workspace, IViewFactory viewFactory, IEditableCompositeView view, IPlanetModelTemplate template ) :
+			base( workspace, viewFactory, view, template )
 		{
-			Arguments.CheckNotNull( workspace, "workspace" );
-			Arguments.CheckNotNull( onAction, "onAction" );
-			view.ComponentSelected += OnComponentSelected;
-			m_Workspace = workspace;
-			m_ActionHandler = onAction;
 		}
 
 		/// <summary>
@@ -60,21 +50,6 @@ namespace Poc1.Bob.Core.Classes.Planets
 				throw new NotSupportedException( string.Format( "Planet model template type {0} is not supported", Composite.GetType( ) ) );
 			}
 		}
-
-		#region Private Members
-
-		private readonly IWorkspace m_Workspace;
-		private readonly TemplateActionDelegate m_ActionHandler;
-
-		/// <summary>
-		/// Opens up a view on the specified component
-		/// </summary>
-		private void OnComponentSelected( object component )
-		{
-			m_ActionHandler( m_Workspace, component );
-		}
-
-		#endregion
 	}
 
 }

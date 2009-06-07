@@ -13,26 +13,12 @@ namespace Poc1.Bob.Controls.Components
 			InitializeComponent( );
 		}
 
-		#region IPlanetTemplateCompositionView Members
+		#region IEditableCompositeView Members
 
 		/// <summary>
 		/// Event raised when the user requests to edit the current planet template's composition
 		/// </summary>
 		public event EventHandler EditComposition;
-
-		/// <summary>
-		/// Gets/sets the planet model template to display
-		/// </summary>
-		public IPlanetModelTemplate PlanetTemplate
-		{
-			get { return m_Template; }
-			set
-			{
-				m_Template = value;
-				compositeView.Composite = value;
-				editTemplateButton.Enabled = ( value != null );
-			}
-		}
 
 		#endregion
 
@@ -80,8 +66,6 @@ namespace Poc1.Bob.Controls.Components
 		#endregion
 
 		#region Private Members
-
-		private IPlanetModelTemplate m_Template;
 
 		#region Event Handlers
 

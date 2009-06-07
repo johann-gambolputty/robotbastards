@@ -21,7 +21,8 @@ namespace Poc1.Universe.Planets.Spherical.Models.Templates
 
 		#region Private Members
 
-		private Range<Units.Metres> m_Radius = new Range<Units.Metres>( new Units.Metres( 5000 ), new Units.Metres( 10000000 ) );
+	//	private Range<Units.Metres> m_Radius = new Range<Units.Metres>( new Units.Metres( 5000 ), new Units.Metres( 10000000 ) );
+		private Range<Units.Metres> m_Radius = new Range<Units.Metres>( new Units.Metres( 50000 ), new Units.Metres( 50000 ) );
 
 		#endregion
 	}

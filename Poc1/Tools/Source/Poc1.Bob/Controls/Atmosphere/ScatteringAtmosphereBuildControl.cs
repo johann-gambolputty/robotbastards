@@ -1,11 +1,12 @@
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 using Poc1.Core.Interfaces.Astronomical.Planets.Models;
 using Poc1.Core.Interfaces.Astronomical.Planets.Models.Templates;
 using Poc1.Tools.Atmosphere;
 using Rb.Core.Maths;
-using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
+using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc1.Bob.Controls.Atmosphere
 {
@@ -194,6 +195,25 @@ namespace Poc1.Bob.Controls.Atmosphere
 			return GetIntensity( height, viewDirection, sunDirection, 0 );
 		}
 
+		private Color GetColour( float h, float v, float s )
+		{
+			Texture3dData tex = m_LastBuildOutput.ScatteringTexture;
+			byte[] data = tex.Bytes;
+			int x = ( int )Utils.Clamp( v * tex.Width, 0, tex.Width - 1 );
+			int y = ( int )Utils.Clamp( s * tex.Height, 0, tex.Height - 1 );
+			int z = ( int )Utils.Clamp( h * tex.Depth, 0, tex.Depth - 1 );
+
+			int offset = z * 4;
+			offset += y * 4 * tex.Depth;
+			offset += x * 4 * tex.Depth * tex.Height;
+
+			byte r = data[ offset + 3 ];
+			byte g = data[ offset + 2 ];
+			byte b = data[ offset + 1 ];
+		//	byte a = data[ offset ];
+			return Color.FromArgb( r, g, b );
+		}
+
 		private void analyzeButton_Click( object sender, System.EventArgs e )
 		{
 			if ( ( m_AnalysisForm != null ) && ( m_AnalysisForm.IsHandleCreated ) )
@@ -206,7 +226,9 @@ namespace Poc1.Bob.Controls.Atmosphere
 			m_AnalysisForm.GreenIntensityCalculator = GetGreenIntensity;
 			m_AnalysisForm.BlueIntensityCalculator = GetBlueIntensity;
 			m_AnalysisForm.MieIntensityCalculator = GetMieIntensity;
+			m_AnalysisForm.ColourCalculator = GetColour;
 			m_AnalysisForm.Show( ParentForm );
+			m_AnalysisForm.BringToFront( );
 		}
 
 		#endregion

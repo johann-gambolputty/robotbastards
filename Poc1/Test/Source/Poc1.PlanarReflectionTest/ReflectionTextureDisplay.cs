@@ -21,7 +21,7 @@ namespace Poc1.PlanarReflectionTest
 		/// <param name="context">Rendering context</param>
 		public override void Render( ReflectionsRenderContext context )
 		{
-			if ( context.RenderingReflections )
+			if ( context.RenderingReflections || !m_Show )
 			{
 				return;
 			}

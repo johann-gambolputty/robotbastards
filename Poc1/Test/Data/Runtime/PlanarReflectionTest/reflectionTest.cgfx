@@ -17,15 +17,11 @@ sampler2D OceanTexture1 = sampler_state
 
 sampler2D ReflectionsTexture = sampler_state
 {
-	WrapS = Repeat;
-	WrapT = Repeat;
+	WrapS = Clamp;
+	WrapT = Clamp;
 	MinFilter = Linear;
 	MagFilter = Linear;
 };
-
-
-//	User variables
-float OceanTextureT = 0;
 
 struct VertexShaderInput
 {
@@ -38,6 +34,7 @@ struct FragmentShaderInput
 	float4 m_Position : POSITION;
 	float2 m_Uv : TEXCOORD0;
 	float2 m_ReflectedPos : TEXCOORD1;
+	float4 m_WorldPos : TEXCOORD2;
 };
 
 //	Pipeline effect parameters
@@ -45,12 +42,17 @@ float4x4 ModelViewProjectionMatrix;
 float4x4 InverseTransposeModelMatrix;
 float NearZ;
 float FarZ;
+float3 EyePosition;
+float3 EyeZAxis;
 
 //	Custom effect parameters
-float4x4 ReflectionProjectionMatrix;
 
-float hWidth = 64;
-float hHeight = 64;
+float4x4 ReflectionProjectionMatrix;
+float OceanTextureT = 0;
+float ReflectivityOffset = -0.1f;
+
+float hWidth = 2;
+float hHeight = 2;
 float xOffset = 0.5f;
 float yOffset = 0.5f;
 
@@ -63,19 +65,42 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 	float4 reflectedPos		= mul( ReflectionProjectionMatrix, input.m_Position );
 	output.m_ReflectedPos	= ( reflectedPos.xy / float2( hWidth, hHeight ) ) + float2( xOffset, yOffset );
 	output.m_Uv				= input.m_Uv;
+	output.m_WorldPos		= input.m_Position;
 
 	return output;
 }
 
+float4 ApplyLighting( float3 pos, float3 normal, float3 lightPos, float3 materialColour )
+{
+	float3	lightVec	= normalize( lightPos - pos );
+	float3	halfVec		= normalize( lightVec + EyeZAxis );
+	float	diffuse		= dot( normal, lightVec );
+	float	specular	= dot( normal, halfVec );
+
+	float4	lighting		= lit( diffuse, specular, 16 );
+	float3	lightingColour	= float3( 1, 1, 1 ) * lighting.y + float3( 1, 1, 1 ) * lighting.z;
+	return float4( materialColour * lightingColour, 1 );
+}
+
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
-	float2 uv = input.m_Uv / 1.5f;
+	float2 uv = input.m_Uv * 2;
 	float3 perturb = tex2D( OceanTexture0, uv ).rgb;
-	perturb = normalize( perturb + ( tex2D( OceanTexture1, uv ).rgb - perturb ) * OceanTextureT ) / 10.0f;
+	perturb = normalize( perturb + ( tex2D( OceanTexture1, uv ).rgb - perturb ) * OceanTextureT );
+	
+	float4 reflectedWPos = mul( ReflectionProjectionMatrix, input.m_WorldPos + float4( perturb, 0 ) );
+	float2 reflectedPos = (reflectedWPos.xy / reflectedWPos.w);
+	reflectedPos = ( reflectedPos / 2 ) + 0.5f;
 
-	float4 reflectedColour = tex2D( ReflectionsTexture, input.m_ReflectedPos + perturb );
-	return reflectedColour;
-//	return float4( input.m_ReflectedPos.x, input.m_ReflectedPos.y, 0, 1 );
+	float3 eyeVec = normalize( input.m_WorldPos.xyz - EyePosition );
+	float waterColourT = ( dot( eyeVec, perturb ) - 1 ) * -0.5f;
+	waterColourT = clamp( waterColourT + ReflectivityOffset, 0, 1 );
+//	waterColourT *= waterColourT;
+	float4 invWaterColourT = 1 - waterColourT;
+	float4 waterColour = ApplyLighting( input.m_WorldPos.xyz, perturb, float3( 0, 10, 20 ), float3( 0, 1, 0.25f ) );
+
+	float4 reflectedColour = tex2D( ReflectionsTexture, reflectedPos );
+	return reflectedColour * invWaterColourT + waterColour * waterColourT;
 }
 
 technique DefaultTechnique
