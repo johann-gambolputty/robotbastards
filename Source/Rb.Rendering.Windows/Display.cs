@@ -283,7 +283,7 @@ namespace Rb.Rendering.Windows
 		private bool							m_AlreadyInvalidated	= false;
 		private readonly List< Viewer > 		m_Viewers				= new List< Viewer >( );
 		private readonly Timer					m_RenderingTimer;
-		private bool							m_AllowArrowKeyInputs;
+		private bool							m_AllowArrowKeyInputs	= true;
 		private bool							m_FocusOnMouseOver;
 
 		/// <summary>

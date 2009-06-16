@@ -42,7 +42,7 @@ namespace Poc1.PlanarReflectionTest
 			this.display1.Location = new System.Drawing.Point( 0, 0 );
 			this.display1.Name = "display1";
 			this.display1.RenderInterval = 1;
-			this.display1.Size = new System.Drawing.Size( 292, 266 );
+			this.display1.Size = new System.Drawing.Size( 512, 512 );
 			this.display1.StencilBits = ( ( byte )( 0 ) );
 			this.display1.TabIndex = 0;
 			// 
@@ -50,7 +50,7 @@ namespace Poc1.PlanarReflectionTest
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size( 292, 266 );
+			this.ClientSize = new System.Drawing.Size( 512, 512 );
 			this.Controls.Add( this.display1 );
 			this.Name = "Form1";
 			this.Text = "Form1";

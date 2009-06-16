@@ -60,7 +60,7 @@ namespace Poc1.PlanarReflectionTest
 		private readonly AnimatedTexture2d m_WaveAnimation;
 		private readonly TechniqueSelector m_Technique;
 		private float m_Size = 80;
-		private float m_ZRotation = 90 * Constants.DegreesToRadians;
+		private float m_ZRotation = 0 * Constants.DegreesToRadians;
 		private float m_YOffset = -10;
 		private Vector3 m_YAxis = Vector3.YAxis;
 		private Point3 m_Centre = Point3.Origin;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using Rb.Core.Maths;
 using Rb.Core.Utils;
 
@@ -23,6 +24,16 @@ namespace Rb.Rendering.Interfaces.Objects
 			{
 				m_Streams.Add( field.Field, new List<float>( ) );
 			}
+		}
+
+		public void Add( VertexFieldSemantic field, Color c )
+		{
+			CheckAdd( field, 4 );
+			List<float> stream = m_Streams[ field ];
+			stream.Add( c.R / 255.0f );
+			stream.Add( c.G / 255.0f );
+			stream.Add( c.B / 255.0f );
+			stream.Add( c.A / 255.0f );
 		}
 
 		public void Add( VertexFieldSemantic field, float x )
@@ -111,7 +122,6 @@ namespace Rb.Rendering.Interfaces.Objects
 			}
 			if ( field.NumElements != numElements )
 			{
-
 				throw new InvalidOperationException( string.Format( "Expected field \"{0}\" in format \"{1}\" to contain {2} elements, not {3}", field, m_Format, field.NumElements, numElements ) );
 			}
 		}

@@ -1,6 +1,8 @@
 using System;
 using System.Drawing;
+using System.Threading;
 using Rb.Core.Maths;
+using Rb.Core.Threading;
 using Rb.Core.Utils;
 using Rb.Rendering.Interfaces.Objects;
 using Rb.Rendering.Interfaces.Objects.Cameras;
@@ -19,6 +21,22 @@ namespace Rb.Rendering.Interfaces
 		/// Dumps information about the renderer to the graphics log
 		/// </summary>
 		void DumpInfo( );
+
+		/// <summary>
+		/// Gets the main rendering thread
+		/// </summary>
+		Thread MainRenderingThread
+		{
+			get;
+		}
+
+		/// <summary>
+		/// Gets a delegate marshalling context for the main rendering thread (i.e. main UI thread)
+		/// </summary>
+		DelegateMarshaller MainRenderingThreadMarshaller
+		{
+			get;
+		}
 
 		#endregion
 

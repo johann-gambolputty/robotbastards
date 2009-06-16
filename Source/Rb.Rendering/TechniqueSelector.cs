@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Rb.Assets;
-using Rb.Assets.Base;
 using Rb.Assets.Interfaces;
 using Rb.Core.Utils;
 using Rb.Rendering.Interfaces.Objects;
@@ -42,7 +41,7 @@ namespace Rb.Rendering
 			handle.OnReload +=
 				delegate
 				{
-					RefreshEffectFromAsset( handle, techniqueNames );
+					Graphics.Renderer.MainRenderingThreadMarshaller.PostAction( RefreshEffectFromAsset, handle, techniqueNames );
 				};
 			RefreshEffectFromAsset( handle, techniqueNames );
 		}
