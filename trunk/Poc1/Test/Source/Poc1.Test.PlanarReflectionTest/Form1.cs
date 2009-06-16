@@ -21,6 +21,7 @@ namespace Poc1.PlanarReflectionTest
 		private ICamera m_Camera;
 		private IRenderable m_Scene;
 		private TechniqueSelector m_Technique;
+
 		/// <summary>
 		/// Creates a camera for the main display
 		/// </summary>
@@ -44,7 +45,7 @@ namespace Poc1.PlanarReflectionTest
 				context,
 				delegate
 				{
-					Graphics.Draw.Sphere( null, new Point3( 0, 10, 0 ), 4, 40, 40 );
+					Graphics.Draw.Sphere( Graphics.Surfaces.Blue, new Point3( 0, 10, 0 ), 4, 40, 40 );
 					Graphics.Draw.Sphere( Graphics.Surfaces.White, new Point3( 0, 3, 0 ), 1, 40, 40 );
 					Graphics.Draw.Sphere( Graphics.Surfaces.Red, new Point3( 3, 3, 0 ), 1, 40, 40 );
 					Graphics.Draw.Sphere( Graphics.Surfaces.Red, new Point3( 6, 3, 0 ), 1, 40, 40 );
@@ -56,7 +57,7 @@ namespace Poc1.PlanarReflectionTest
 
 		private void Form1_Load( object sender, System.EventArgs e )
 		{
-			m_Technique = new TechniqueSelector( "PlanarReflectionTest/diffuseLit.cgfx", true, "DefaultTechnique" );
+			m_Technique = new TechniqueSelector( "Shared/diffuseLit.cgfx", true, "DefaultTechnique" );
 
 			m_Camera = CreateCamera( CommandUser.Default );
 			m_Scene = new ReflectionScene

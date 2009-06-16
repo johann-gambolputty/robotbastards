@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Rb.Core.Threading;
 using Rb.Core.Utils;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
@@ -138,7 +139,7 @@ namespace Rb.Rendering.OpenGl
 		/// </summary>
 		public IRenderer CreateRenderer( )
 		{
-			OpenGlRenderer renderer = new OpenGlRenderer( Thread.CurrentThread.ManagedThreadId );
+			OpenGlRenderer renderer = new OpenGlRenderer( Thread.CurrentThread, new DelegateMarshaller( ) );
 			renderer.Setup( );
 			return renderer;
 		}

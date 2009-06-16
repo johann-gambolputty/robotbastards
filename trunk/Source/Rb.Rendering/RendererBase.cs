@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
 using Rb.Core.Maths;
+using Rb.Core.Threading;
 using Rb.Core.Utils;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects;
@@ -16,6 +18,21 @@ namespace Rb.Rendering
 	/// </summary>
 	public abstract class RendererBase : IRenderer
 	{
+		/// <summary>
+		/// Setup constructor
+		/// </summary>
+		/// <param name="mainRenderingThread">Main rendering thread</param>
+		/// <param name="mainRenderingThreadMarshaller">Marshaller for the main rendering thread</param>
+		public RendererBase( Thread mainRenderingThread, DelegateMarshaller mainRenderingThreadMarshaller )
+		{
+			Arguments.CheckNotNull( mainRenderingThread, "mainRenderingThread" );
+			Arguments.CheckNotNull( mainRenderingThreadMarshaller, "mainRenderingThreadMarshaller" );
+
+			m_MainRenderingThread = mainRenderingThread;
+			m_MainRenderingThreadMarshaller = mainRenderingThreadMarshaller;
+		}
+
+
 		#region Setup
 
 		/// <summary>
@@ -32,6 +49,22 @@ namespace Rb.Rendering
 		{
 			m_Textures = new ITexture[ MaxTextureUnits ];
 			m_Lights = new ILight[ MaxActiveLights ];
+		}
+
+		/// <summary>
+		/// Gets the main rendering thread
+		/// </summary>
+		public Thread MainRenderingThread
+		{
+			get { return m_MainRenderingThread; }
+		}
+
+		/// <summary>
+		/// Gets a delegate marshalling context for the main rendering thread (i.e. main UI thread)
+		/// </summary>
+		public DelegateMarshaller MainRenderingThreadMarshaller
+		{
+			get { return m_MainRenderingThreadMarshaller; }
 		}
 
 		#endregion
@@ -537,6 +570,8 @@ namespace Rb.Rendering
 		private int							m_NumLights;
 		private ITexture[]					m_Textures;
 		private readonly List<ITexture[]>	m_TextureStack = new List<ITexture[]>( );
+		private readonly Thread				m_MainRenderingThread;
+		private readonly DelegateMarshaller	m_MainRenderingThreadMarshaller;
 
 		#endregion
 

@@ -29,6 +29,15 @@ namespace Rb.Core.Utils
 		}
 
 		/// <summary>
+		/// Returns the number of elapsed seconds between the current time and the specified start time
+		/// </summary>
+		/// <param name="startTime">Starting time</param>
+		public static double ElapsedSeconds( long startTime )
+		{
+			return ToSeconds( startTime, CurrentTime );
+		}
+
+		/// <summary>
 		/// Converts the specified time period, measured in ticks, into seconds
 		/// </summary>
 		/// <returns>Returns the time period in seconds</returns>

@@ -116,7 +116,7 @@ namespace Rb.Tools.Cameras
 		private long m_LastUpdate;
 		private FlightCamera m_Camera;
 		private float m_MaxSlipSpeed = 4;
-		private float m_MaxForwardSpeed = -4;
+		private float m_MaxForwardSpeed = 4;
 		private float m_MaxTurnSpeed = 0.8f;
 
 		/// <summary>
@@ -143,11 +143,11 @@ namespace Rb.Tools.Cameras
 			InvariantMatrix44 movementFrame = m_Camera.Frame;
 			if ( triggerData.Command == Forwards )
 			{
-				m_Camera.Position += ( movementFrame.ZAxis * MaxForwardSpeed * secondsSinceLastUpdate );
+				m_Camera.Position -= ( movementFrame.ZAxis * MaxForwardSpeed * secondsSinceLastUpdate );
 			}
 			else if ( triggerData.Command == Backwards )
 			{
-				m_Camera.Position += ( movementFrame.ZAxis * -MaxForwardSpeed * secondsSinceLastUpdate );
+				m_Camera.Position += ( movementFrame.ZAxis * MaxForwardSpeed * secondsSinceLastUpdate );
 			}
 			else if ( triggerData.Command == PitchUp )
 			{

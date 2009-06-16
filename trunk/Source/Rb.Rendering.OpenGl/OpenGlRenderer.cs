@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
 using Rb.Core.Maths;
+using Rb.Core.Threading;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces;
 using Rb.Rendering.Interfaces.Objects.Lights;
@@ -31,13 +32,15 @@ namespace Rb.Rendering.OpenGl
 		/// <summary>
 		/// Sets up the renderer
 		/// </summary>
-		/// <param name="renderingThreadId">
-		/// OpenGL works within a single thread, and any resources (textures, display lists,...) 
-		///  </param>
-		public OpenGlRenderer( int renderingThreadId )
+		/// <param name="mainRenderingThread">Main rendering thread</param>
+		/// <param name="mainRenderingThreadMarshaller">Marshaller for the main rendering thread</param>
+		/// <remarks>
+		/// OpenGL works within a single thread, and any resources (textures, display lists,...) must
+		/// be created and destroyed on the same thread.
+		///  </remarks>
+		public OpenGlRenderer( Thread mainRenderingThread, DelegateMarshaller mainRenderingThreadMarshaller ) :
+			base( mainRenderingThread, mainRenderingThreadMarshaller)
 		{
-			m_RenderingThreadId = renderingThreadId;
-
 			for ( int stackIndex = 0; stackIndex < m_LocalToWorldModifierStack.Length; ++stackIndex )
 			{
 				m_LocalToWorldModifierStack[ stackIndex ] = InvariantMatrix44.Identity;
@@ -54,7 +57,6 @@ namespace Rb.Rendering.OpenGl
 			{
 				m_WorldToViewStack[ stackIndex ] = new Matrix44( );
 			}
-
 		}
 
 		/// <summary>
@@ -93,7 +95,7 @@ namespace Rb.Rendering.OpenGl
 		/// </remarks>
 		public void CleanUpRenderingResources( )
 		{
-			if ( Thread.CurrentThread.ManagedThreadId == m_RenderingThreadId )
+			if ( Thread.CurrentThread.ManagedThreadId == MainRenderingThread.ManagedThreadId )
 			{
 				lock ( m_Disposables )
 				{
@@ -123,7 +125,7 @@ namespace Rb.Rendering.OpenGl
 			{
 				return;
 			}
-			if ( Thread.CurrentThread.ManagedThreadId != m_RenderingThreadId )
+			if ( Thread.CurrentThread.ManagedThreadId != MainRenderingThread.ManagedThreadId )
 			{
 				lock ( m_Disposables )
 				{
@@ -1050,7 +1052,6 @@ namespace Rb.Rendering.OpenGl
 
 		#region Private Members
 
-		private readonly int m_RenderingThreadId;
 		private readonly List<IDisposable> m_Disposables = new List<IDisposable>( );
 
 

@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using Rb.Assets;
 using Rb.Rendering;
 
-namespace Poc1.PlanarReflectionTest
+namespace Poc1.AtmosphereTest
 {
 	static class Program
 	{
@@ -37,7 +37,7 @@ namespace Poc1.PlanarReflectionTest
 				}
 			}
 
-			Application.Run( new Form1( ) );
+			Application.Run( new AtmosphereTestForm( ) );
 		}
 	}
 }

@@ -92,9 +92,10 @@ float4 FragmentShader( FragmentShaderInput input ) : COLOR
 	float2 reflectedPos = (reflectedWPos.xy / reflectedWPos.w);
 	reflectedPos = ( reflectedPos / 2 ) + 0.5f;
 
-	float3 eyeVec = normalize( input.m_WorldPos.xyz - EyePosition );
-	float waterColourT = ( dot( eyeVec, perturb ) - 1 ) * -0.5f;
-	waterColourT = clamp( waterColourT + ReflectivityOffset, 0, 1 );
+	float3 eyeVec = normalize( EyePosition - input.m_WorldPos.xyz );
+	float waterColourT = ( dot( eyeVec, perturb ) + 1 ) * 0.5f;
+	waterColourT = abs( waterColourT );
+//	waterColourT = clamp( waterColourT + ReflectivityOffset, 0, 1 );
 //	waterColourT *= waterColourT;
 	float4 invWaterColourT = 1 - waterColourT;
 	float4 waterColour = ApplyLighting( input.m_WorldPos.xyz, perturb, float3( 0, 10, 20 ), float3( 0, 1, 0.25f ) );
