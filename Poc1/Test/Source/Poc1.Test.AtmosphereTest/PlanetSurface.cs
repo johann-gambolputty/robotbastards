@@ -1,6 +1,8 @@
+using System.Drawing;
 using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Interfaces.Objects;
+using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc1.AtmosphereTest
 {
@@ -15,7 +17,7 @@ namespace Poc1.AtmosphereTest
 		public PlanetSurface( float radius )
 		{
 			Graphics.Draw.StartCache( );
-			Graphics.Draw.Sphere( Graphics.Surfaces.Blue, Point3.Origin, radius, 40, 40 );
+			Graphics.Draw.Sphere( Graphics.Draw.NewSurface( Color.OliveDrab ), Point3.Origin, radius, 100, 100 );
 			m_Geometry = Graphics.Draw.StopCache( );
 
 			m_Technique = new TechniqueSelector( "Shared/diffuseLit.cgfx", true, "DefaultTechnique" );

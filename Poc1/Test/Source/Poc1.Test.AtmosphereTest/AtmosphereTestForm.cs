@@ -1,4 +1,5 @@
 using System.Windows.Forms;
+using Poc1.Test.AtmosphereTest;
 using Rb.Core.Maths;
 using Rb.Interaction;
 using Rb.Interaction.Classes;
@@ -28,7 +29,7 @@ namespace Poc1.AtmosphereTest
 			FlightCamera camera = new FlightCamera( );
 			camera.PerspectiveZNear = 2.0f;
 			camera.PerspectiveZFar = 2000.0f;
-			camera.Position = new Point3( 0, 0, 120  );
+			camera.Position = new Point3( 0, 0, 1001 );
 			FlightCameraController controller = new FlightCameraController( user, camera );
 			controller.MaxForwardSpeed = 20;
 			controller.MaxSlipSpeed = 20;
@@ -43,10 +44,17 @@ namespace Poc1.AtmosphereTest
 
 		private void AtmosphereTestForm_Load( object sender, System.EventArgs e )
 		{
-			float planetRadius = 100.0f;
+			float planetRadius = 1000.0f;
 			float atmosphereThickness = 10.0f;
 
-			IRenderable scene = new RenderableList( new PlanetSurface( planetRadius ), new AtmosphereSurface( planetRadius + atmosphereThickness ) );
+			AtmosphereCalculatorModel model = new AtmosphereCalculatorModel( );
+			model.PlanetRenderRadius = planetRadius;
+			model.AtmosphereRenderRadius = planetRadius + atmosphereThickness;
+			model.Samples = 10;
+
+			propertyGrid1.SelectedObject = model;
+
+			IRenderable scene = new RenderableList( new PlanetSurface( planetRadius ), new AtmosphereSurface( model ) );
 
 			display.AddViewer( new Viewer( this, CreateCamera( CommandUser.Default ), scene ) );
 

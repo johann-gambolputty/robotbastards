@@ -64,6 +64,7 @@ namespace Poc1.Test.AtmosphereTest
 		public AtmosphereCalculatorModel Model
 		{
 			get { return m_Model; }
+			set { m_Model = value; }
 		}
 
 		/// <summary>
@@ -100,7 +101,7 @@ namespace Poc1.Test.AtmosphereTest
 		private Point3 m_CameraPos;
 		private Vector3 m_CameraDir;
 		private Vector3 m_SunDir;
-		private readonly AtmosphereCalculatorModel m_Model = new AtmosphereCalculatorModel( );
+		private AtmosphereCalculatorModel m_Model = new AtmosphereCalculatorModel( );
 		private readonly BackgroundWorker m_WorkerThread;
 		private readonly AutoResetEvent m_CanRun = new AutoResetEvent( true );
 		private float m_DurationOfLastBatch = 0;
@@ -111,7 +112,7 @@ namespace Poc1.Test.AtmosphereTest
 		private void CalculateVertexColours( object sender, DoWorkEventArgs args )
 		{
 			long startTime = TinyTime.CurrentTime;
-			AtmosphereCalculator calculator = new AtmosphereCalculator( CameraPosition, CameraDirection, Model.Clone( ) );
+			AtmosphereCalculator calculator = new AtmosphereCalculator( CameraPosition, Model.Clone( ) );
 			try
 			{
 				for ( int i = 0; i < m_Vertices.Length; ++i )
