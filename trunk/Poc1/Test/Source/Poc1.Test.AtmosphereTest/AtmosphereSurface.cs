@@ -6,7 +6,6 @@ using Rb.Core.Maths;
 using Rb.Rendering;
 using Rb.Rendering.Cameras;
 using Rb.Rendering.Interfaces.Objects;
-using Rb.Rendering.Interfaces.Objects.Cameras;
 using Graphics=Rb.Rendering.Graphics;
 
 namespace Poc1.AtmosphereTest
@@ -31,11 +30,11 @@ namespace Poc1.AtmosphereTest
 		/// <summary>
 		/// Setup constructor
 		/// </summary>
-		/// <param name="radius">Initial atmosphere radius</param>
-		public AtmosphereSurface( float radius )
+		public AtmosphereSurface( AtmosphereCalculatorModel model )
 		{
-			m_Radius = radius;
-			m_Technique = new TechniqueSelector( "Shared/diffuseLit.cgfx", true, "DefaultTechnique" );
+			m_Model = model;
+			m_Technique = new TechniqueSelector( "AtmosphereTest/atmosphere.cgfx", true, "DefaultTechnique" );
+			m_CalculatorWorker.Model = model;
 			m_CalculatorWorker.VertexBatchComplete += OnVertexBatchComplete;
 		}
 
@@ -65,7 +64,7 @@ namespace Poc1.AtmosphereTest
 		private readonly TechniqueSelector m_Technique;
 		private IIndexBuffer m_Indices;
 		private IVertexBuffer m_Vertices;
-		private float m_Radius;
+		private readonly AtmosphereCalculatorModel m_Model;
 		private readonly AtmosphereCalculatorWorker m_CalculatorWorker = new AtmosphereCalculatorWorker( );
 
 		/// <summary>
@@ -81,7 +80,6 @@ namespace Poc1.AtmosphereTest
 			VertexBufferData vbData = VertexBufferData.FromVertexCollection( vertices );
 			m_Vertices = Graphics.Factory.CreateVertexBuffer( );
 			m_Vertices.Create( vbData );
-
 			m_CalculatorWorker.Start( vertices );
 		}
 
@@ -112,7 +110,8 @@ namespace Poc1.AtmosphereTest
 			m_CalculatorWorker.Stop( );
 
 			List<int> indices = new List<int>( );
-			Vertex[] vertexArray = BuildVertices( m_Radius, 100, 100, indices );
+			Vertex[] vertexArray = BuildVertices( m_Model.AtmosphereRenderRadius, 100, 100, indices );
+		//	Vertex[] vertexArray = BuildVertices( m_Model.AtmosphereRenderRadius, 70, 70, indices );
 
 			m_Indices = Graphics.Factory.CreateIndexBuffer( );
 			m_Indices.Create( indices.ToArray( ), true );

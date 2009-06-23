@@ -59,6 +59,14 @@ namespace Rb.Core.Maths
 			m_Radius = srcRadius;
 		}
 
+		/// <summary>
+		/// Returns true if the specified point is inside this sphere
+		/// </summary>
+		public bool IsInside( Point3 pt )
+		{
+			return pt.SqrDistanceTo( m_Centre ) < m_Radius * m_Radius;
+		}
+
 		private Point3	m_Centre;
 		private float	m_Radius;
 	}

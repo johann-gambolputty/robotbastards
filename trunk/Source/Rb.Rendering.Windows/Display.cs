@@ -109,7 +109,7 @@ namespace Rb.Rendering.Windows
 		public event EventHandler OnEndRender;
 
 		/// <summary>
-		/// Display construciton
+		/// Display constructor
 		/// </summary>
 		public Display( )
 		{

@@ -2,7 +2,6 @@ struct VertexShaderInput
 {
 	float4 m_Position : POSITION;
 	float3 m_Diffuse : COLOR0;
-	float3 m_Normal : NORMAL;
 };
 
 struct FragmentShaderInput
@@ -17,15 +16,12 @@ float4x4 InverseTransposeModelMatrix;
 float NearZ;
 float FarZ;
 
-float3 SunDirection = float3( 0, 0, 1 );
-
-
 FragmentShaderInput VertexShader( VertexShaderInput input )
 {
 	FragmentShaderInput output;
 
 	output.m_Position		= mul( ModelViewProjectionMatrix, input.m_Position );
-	output.m_Diffuse		= float4( dot( input.m_Normal, SunDirection ) * input.m_Diffuse, 1 );
+	output.m_Diffuse		= float4( input.m_Diffuse, 1 );
 
 	return output;
 }
@@ -33,6 +29,11 @@ FragmentShaderInput VertexShader( VertexShaderInput input )
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
 	return input.m_Diffuse;
+}
+
+float4 LineShader( ) : COLOR
+{
+	return float4( 0, 0, 0, 1 );
 }
 
 technique DefaultTechnique
@@ -46,9 +47,18 @@ technique DefaultTechnique
 		DepthFunc				= Less;
 		CullFaceEnable			= true;
 		BlendEnable				= false;
-		PolygonMode				= int2( Front, Fill );
+		PolygonMode				= int2( Back, Fill );
 		//PolygonMode				= int2( FrontAndBack, Line );
 		VertexProgram			= compile arbvp1 VertexShader( );
 		FragmentProgram			= compile arbfp1 FragmentShader( );
+	}
+	pass
+	{
+		DepthMask				= true;
+		DepthTestEnable			= true;
+		PolygonOffset			= float2( -0.5f, -0.5f );
+		PolygonOffsetLineEnable	= true;
+		PolygonMode				= int2( FrontAndBack, Line );
+		FragmentProgram			= compile arbfp1 LineShader( );
 	}
 }
