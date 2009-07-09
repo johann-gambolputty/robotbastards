@@ -73,7 +73,7 @@ namespace Poc1.Bob.Controls.Atmosphere
 			this.attenuationUpDown.Size = new System.Drawing.Size( 54, 20 );
 			this.attenuationUpDown.TabIndex = 9;
 			this.attenuationUpDown.Value = new decimal( new int[] {
-            5,
+            10,
             0,
             0,
             0} );

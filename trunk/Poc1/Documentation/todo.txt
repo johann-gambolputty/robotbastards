@@ -10,7 +10,7 @@
 	
 - LOWER PRIORITY
 	- Rework planet template/model/renderer windows to contain fixed or dynamic content
-	
+	- Rename atmosphere build, template, model and rendering code to incorporate scattering model/rendering type (e.g. SingleScatterLookup)
 
 - TODO
 	- Bob

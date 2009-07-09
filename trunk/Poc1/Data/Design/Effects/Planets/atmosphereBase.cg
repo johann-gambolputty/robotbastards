@@ -15,11 +15,12 @@ sampler2D OpticalDepthTexture = sampler_state
 	MagFilter = Linear;
 };
 
+uniform float PI = 3.14159265359f;
+
 float3 SunIntensity = float3( 1, 1, 1 );
 float3 SunDir = float3( -1, 0, 0 );
 float3 AtmViewVec;
 float3 AtmViewPos;
-float AtmViewPosLength = 0;
 float3 AtmViewDir;
 float AtmViewHeight;
 float AtmHgCoeff = -0.90f;
@@ -29,10 +30,13 @@ float AtmOuterRadius = 0;
 float AtmThickness = 1;
 float AtmMiePhaseWeight = 1;
 
+//float rPhaseMul = 0.019894368f;
+float rPhaseMul = 0.75f;
+
 //	Rayleigh phase function
 float RayleighPhase( float cosAngle )
 {
-	return 0.75f * ( 1 + cosAngle * cosAngle );
+	return rPhaseMul * ( 1 + cosAngle * cosAngle );
 }
 
 //	Mie phase function - Modified HG from O'Neil
@@ -52,9 +56,15 @@ float HeyneyGreensteinPhaseFunction( float cosSunAngle, float g )
 	g = clamp( g, -1, 1 );
 	float g2 = g * g;
 
-	return ( 1.0f - g2 ) / pow( ( 1.0f + g2 ) - ( 2.0f * g * cosSunAngle ), 1.5f );
+	return ( 1.0f - g2 ) / ( 4 * PI * pow( ( 1.0f + g2 ) - ( 2.0f * g * cosSunAngle ), 1.5f ) );
 }
 
+int AtmObjectColourOutput = 0;
+const int AtmObjectColourOutput_FullColour = 0;
+const int AtmObjectColourOutput_ColourOnly = 1;
+const int AtmObjectColourOutput_ScatteredColour = 2;
+const int AtmObjectColourOutput_OpticalDepthOnly = 3;
+const int AtmObjectColourOutput_ColourOpticalDepth = 4;
 
 float3 GetScatteredObjectColour( float3 pt, float3 objColour )
 {
@@ -71,9 +81,9 @@ float3 GetScatteredObjectColour( float3 pt, float3 objColour )
 
 	float4 scatterCoeffs = tex3D( ScatteringTexture, float3( h, si, th ) );
 	float rayPhase = RayleighPhase( viewToSunAngle );
-	float miePhase = HeyneyGreensteinPhaseFunction( viewToSunAngle, AtmHgCoeff ) * AtmMiePhaseWeight;
+	float miePhase = 1; //HeyneyGreensteinPhaseFunction( viewToSunAngle, AtmHgCoeff ) * AtmMiePhaseWeight;
 
-	//	Get scattering coefficients for the object (object position to intersection with ground plane)
+	//	Get scattering coefficients for the object (object position to intersection with ground plane/outer atmosphere)
 	float gH = length( pt );
 	float gH0 = ( gH - AtmInnerRadius ) / AtmThickness;
 	float gSi = ( ( dot( pt, SunDir ) / gH ) + 1.0f ) * 0.5f;
@@ -83,9 +93,10 @@ float3 GetScatteredObjectColour( float3 pt, float3 objColour )
 	scatterCoeffs -= tex3D( ScatteringTexture, float3( gH0, gSi, gTh ) );
 
 	//	Calculate optical depth for object
-	float3 sunOpticalDepth = tex2D( OpticalDepthTexture, float2( gH0, gSi ) ).rgb;
-	float3 viewOpticalDepth = tex2D( OpticalDepthTexture, float2( gH0, gTh ) ).rgb;
-	float3 opticalDepth = exp( -sunOpticalDepth - viewOpticalDepth );
+//	float3 sunOpticalDepth = tex2D( OpticalDepthTexture, float2( gH0, gSi ) ).rgb;
+//	float3 viewOpticalDepth = tex2D( OpticalDepthTexture, float2( gH0, gTh ) ).rgb;
+//	float3 opticalDepth = exp( -sunOpticalDepth - viewOpticalDepth );
+	float3 opticalDepth = tex2D( OpticalDepthTexture, float2( gH0, gTh ) ).rgb;
 	
 	//	TODO: AP: Remove Mie scattering from object shading?
 	//	Calculate final colour (modified scattering coefficients * optical depth)
@@ -93,7 +104,39 @@ float3 GetScatteredObjectColour( float3 pt, float3 objColour )
 	float mieScatter = lerp( scatterCoeffs.a, scatterCoeffs.a * miePhase, AtmPhaseWeight );
 	float3 scatter = saturate( rayScatter + mieScatter );
 
-	return saturate( ( opticalDepth * objColour ) + scatter );
+//	return saturate( ( opticalDepth * objColour ) + scatter );
+//	return scatter.rgb;
+//	return objColour + scatter;
+	//	0 for full colour, 1 for colour only, 2 for colour + scatter, 3 for optical depth only, 4 for colour + optical depth
+	
+//const int AtmObjectColourOutput_FullColour = 0;
+//const int AtmObjectColourOutput_ColourOnly = 1;
+//const int AtmObjectColourOutput_ScatteredColour = 2;
+//const int AtmObjectColourOutput_OpticalDepthOnly = 3;
+//const int AtmObjectColourOutput_ColourOpticalDepth = 4;
+	float3 result;
+	if ( AtmObjectColourOutput == AtmObjectColourOutput_FullColour )
+	{
+		result = saturate( ( opticalDepth * objColour ) + scatter );
+	}
+	else if ( AtmObjectColourOutput == AtmObjectColourOutput_ColourOnly )
+	{
+		result = objColour;
+	}
+	else if ( AtmObjectColourOutput == AtmObjectColourOutput_ScatteredColour )
+	{
+		result = objColour + scatter;
+	}
+	else if ( AtmObjectColourOutput == AtmObjectColourOutput_OpticalDepthOnly )
+	{
+		result = opticalDepth;
+	}
+	else
+	{
+		result = opticalDepth * objColour;
+	}
+
+	return result;
 }
 
 // Simplified ray-sphere intersection.
@@ -106,9 +149,27 @@ float3 GetRaySphereIntersection( float3 pt, float3 vec, float sphereRadius )
 	float root = sqrt( d );
 	float t0 = -a1 - root;
 	float t1 = -a1 + root;
-	float closestT = ( t0 < t1 ) ? t0 : t1;
+	float closestT = min( t0, t1 );
 
 	return pt + vec * closestT;
+}
+
+float3 GetScatteredSkyColour( float3 pt, float h, float3 viewNormal, float3 viewVec )
+{
+	float posToSunAngle = dot( viewNormal, SunDir );
+	float viewToSunAngle = dot( viewVec, SunDir );
+
+	float th = ( dot( viewNormal, viewVec ) + 1.0f ) * 0.5f;
+	float si = ( posToSunAngle + 1.0f ) * 0.5f;
+
+	float4 scatterCoeffs = tex3D( ScatteringTexture, float3( h, si, th ) );
+	float rayPhase = RayleighPhase( viewToSunAngle );
+	float miePhase = HeyneyGreensteinPhaseFunction( viewToSunAngle, AtmHgCoeff ) * AtmMiePhaseWeight;
+
+	float3 rayScatter = lerp( scatterCoeffs.rgb, scatterCoeffs.rgb * rayPhase, AtmPhaseWeight );
+	float mieScatter = lerp( scatterCoeffs.a, scatterCoeffs.a * miePhase, AtmPhaseWeight );
+
+	return SunIntensity * float3( rayScatter.r + mieScatter, rayScatter.g + mieScatter, rayScatter.b + mieScatter );
 }
 
 // Gets the colour of a given point on the sky geometry, seen from a camera position outside the atmosphere
@@ -116,26 +177,25 @@ float3 GetExternalScatteredSkyColour( float3 pt )
 {
 	float3 viewVec = normalize( pt - AtmViewPos );
 	float3 viewPos = GetRaySphereIntersection( AtmViewPos, viewVec, AtmOuterRadius );
-	float viewHeight = AtmOuterRadius;
+	return GetScatteredSkyColour( pt, 1.0f, normalize( viewPos ), viewVec );
+//	return viewVec;
+	//float viewHeight = AtmOuterRadius;
 
-	float posToSunAngle = dot( viewPos, SunDir ) / viewHeight;
-	float viewToSunAngle = dot( viewVec, SunDir );
+	//float posToSunAngle = dot( viewPos, SunDir ) / viewHeight;
+	//float viewToSunAngle = dot( viewVec, SunDir );
 
-	//	TODO: AP: Intersect view segment with outer sphere. If segment intersects sphere, set
-	//	the view position to be the intersection point.
+	//float h = 0.5f;
+	//float th = ( ( dot( viewPos, viewVec ) / viewHeight ) + 1.0f ) / 2.0f;
+	//float si = ( posToSunAngle + 1.0f ) / 2.0f;
 
-	float h = 1.0f;
-	float th = ( ( dot( viewPos, viewVec ) / viewHeight ) + 1.0f ) / 2.0f;
-	float si = ( posToSunAngle + 1.0f ) / 2.0f;
+	//float4 scatterCoeffs = tex3D( ScatteringTexture, float3( h, si, th ) );
+	//float rayPhase = RayleighPhase( viewToSunAngle );
+	//float miePhase = HeyneyGreensteinPhaseFunction( viewToSunAngle, AtmHgCoeff );
 
-	float4 scatterCoeffs = tex3D( ScatteringTexture, float3( h, si, th ) );
-	float rayPhase = RayleighPhase( viewToSunAngle );
-	float miePhase = HeyneyGreensteinPhaseFunction( viewToSunAngle, AtmHgCoeff );
+	//float3 rayScatter = lerp( scatterCoeffs.rgb, scatterCoeffs.rgb * rayPhase, AtmPhaseWeight );
+	//float mieScatter = lerp( scatterCoeffs.a, scatterCoeffs.a * miePhase, AtmPhaseWeight );
 
-	float3 rayScatter = lerp( scatterCoeffs.rgb, scatterCoeffs.rgb * rayPhase, AtmPhaseWeight );
-	float mieScatter = lerp( scatterCoeffs.a, scatterCoeffs.a * miePhase, AtmPhaseWeight );
-
-	return SunIntensity * float3( rayScatter.r + mieScatter, rayScatter.g + mieScatter, rayScatter.b + mieScatter );
+	//return SunIntensity * float3( rayScatter.r + mieScatter, rayScatter.g + mieScatter, rayScatter.b + mieScatter );
 
 }
 
@@ -143,19 +203,6 @@ float3 GetExternalScatteredSkyColour( float3 pt )
 float3 GetScatteredSkyColour( float3 pt )
 {
 	float3 viewVec = normalize( pt - AtmViewPos );
-	float posToSunAngle = dot( AtmViewVec, SunDir );
-	float viewToSunAngle = dot( viewVec, SunDir );
-
-	float h = AtmViewHeight;
-	float th = ( dot( AtmViewVec, viewVec ) + 1.0f ) * 0.5f;
-	float si = ( posToSunAngle + 1.0f ) * 0.5f;
-
-	float4 scatterCoeffs = tex3D( ScatteringTexture, float3( h, si, th ) );
-	float rayPhase = RayleighPhase( viewToSunAngle );
-	float miePhase = HeyneyGreensteinPhaseFunction( viewToSunAngle, AtmHgCoeff );
-
-	float3 rayScatter = lerp( scatterCoeffs.rgb, scatterCoeffs.rgb * rayPhase, AtmPhaseWeight );
-	float mieScatter = lerp( scatterCoeffs.a, scatterCoeffs.a * miePhase, AtmPhaseWeight );
-
-	return SunIntensity * float3( rayScatter.r + mieScatter, rayScatter.g + mieScatter, rayScatter.b + mieScatter );
+	return GetScatteredSkyColour( pt, AtmViewHeight, AtmViewVec, viewVec );
+//	return RayleighPhase( dot( viewVec, SunDir ) ).rrr;
 }

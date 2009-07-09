@@ -29,7 +29,7 @@ float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
 	float4 colour;
 	colour.rgb = GetExternalScatteredSkyColour( input.m_WorldPos.xyz );
-	if ( AtmViewPosLength > AtmOuterRadius )
+	if ( AtmViewHeight == 1 )
 	{
 		colour.rgb = GetExternalScatteredSkyColour( input.m_WorldPos.xyz );
 	}
@@ -48,18 +48,18 @@ technique DefaultTechnique
 {
 	pass
 	{
-		BlendEnable				= true;
-		BlendFunc				= int2( One, OneMinusSrcAlpha );
-		LightingEnable			= false;
-		DepthMask				= false;
-		ShadeModel				= Smooth;
-		FrontFace				= CCW;
-		DepthTestEnable			= true;
-		DepthFunc				= Less;
-		CullFaceEnable			= true;
-		PolygonMode				= int2( Back, Fill );
-		VertexProgram			= compile arbvp1 VertexShader( );
-		FragmentProgram			= compile arbfp1 FragmentShader( );
+		BlendEnable		= true;
+		BlendFunc		= int2( One, OneMinusSrcAlpha );
+		LightingEnable	= false;
+		DepthMask		= false;
+		ShadeModel		= Smooth;
+		FrontFace		= CCW;
+		DepthTestEnable	= true;
+		DepthFunc		= Less;
+		CullFaceEnable	= true;
+		PolygonMode		= int2( Back, Fill );
+		VertexProgram	= compile arbvp1 VertexShader( );
+		FragmentProgram	= compile arbfp1 FragmentShader( );
 	}
 }
 

@@ -59,7 +59,7 @@
     <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetHomogenousProceduralTerrainTemplate.cs" />
     <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetSimpleCloudTemplate.cs" />
     <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetEnvironmentModelTemplate.cs" />
-    <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetModelTemplate.cs" />
+    <Compile Include="Classes\Astronomical\Planets\Models\Templates\AbstractPlanetModelTemplate.cs" />
     <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetRingTemplate.cs" />
     <Compile Include="Classes\Astronomical\Planets\Models\Templates\PlanetTerrainTemplate.cs" />
     <Compile Include="Classes\Astronomical\Planets\PlanetModelFactory.cs" />
@@ -197,6 +197,10 @@
     <ProjectReference Include="..\..\..\Source\Rb.Rendering\Rb.Rendering.csproj">
       <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
       <Name>Rb.Rendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Tools\Source\Poc1.Tools.Atmosphere\Poc1.Tools.Atmosphere.csproj">
+      <Project>{69F536AC-32E9-4930-8B6A-A14223298222}</Project>
+      <Name>Poc1.Tools.Atmosphere</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Tools\Source\Poc1.Tools.Waves\Poc1.Tools.Waves.csproj">
       <Project>{C8DC8F1E-E722-42E0-A433-122BFF0BBD2D}</Project>

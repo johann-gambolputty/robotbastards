@@ -80,6 +80,15 @@ namespace Rb.Rendering
     	}
 
 		/// <summary>
+		/// Gets/sets the colour that the frame buffer is cleared to
+		/// </summary>
+    	public Color ClearColour
+    	{
+    		get { return m_ClearColour; }
+    		set { m_ClearColour = value; }
+    	}
+
+    	/// <summary>
 		/// Default constructor
 		/// </summary>
         public Viewer( )
@@ -129,7 +138,7 @@ namespace Rb.Rendering
 
 			renderer.ClearDepth( 1.0f );
 		//	renderer.ClearColourToVerticalGradient( Color.DarkSeaGreen, Color.LightSeaGreen );
-			renderer.ClearColour( Color.DarkSeaGreen );
+			renderer.ClearColour( ClearColour );
 
 			if ( m_Camera != null )
 			{
@@ -182,6 +191,7 @@ namespace Rb.Rendering
 
 		#region Private Members
 
+		private Color				m_ClearColour = Color.DarkSeaGreen;
 		private object				m_Control;
 		private FpsDisplay			m_FpsDisplay = new FpsDisplay( );
         private ICamera				m_Camera;

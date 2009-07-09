@@ -31,6 +31,19 @@ namespace Poc1.Test.AtmosphereTest
 			return tmp.ToPoint3( );
 		}
 
+		private static Point3 GetAtmosphereIntersection( Vector3 pt, Vector3 vec, float radius )
+		{
+			float a0 = pt.Dot( pt ) - ( radius * radius );
+			float a1 = vec.Dot( pt );
+			float d = ( a1 * a1 ) - a0;
+			float root = ( float )Math.Sqrt( d );
+			float t0 = -a1 - root;
+			float t1 = -a1 + root;
+			float closestT = ( t0 < t1 ) ? t0 : t1;
+
+			return ( pt + vec * closestT ).ToPoint3( );
+		}
+
 		public Color CalculateColour( Point3 pt )
 		{
 			pt = RenderPointToWorldPoint( pt );
@@ -40,8 +53,9 @@ namespace Poc1.Test.AtmosphereTest
 				Line3Intersection intersection = Intersections3.GetRayIntersection( new Ray3( startPt, ( pt - startPt ).MakeNormal( ) ), m_Outer );
 				if ( intersection == null )
 				{
-					return Color.Black;
+				    return Color.Black;
 				}
+			//	startPt = GetAtmosphereIntersection( pt.ToVector3( ), ( pt - startPt ).MakeNormal( ), m_Outer.Radius );
 				startPt = intersection.IntersectionPosition;
 			}
 
@@ -91,17 +105,23 @@ namespace Poc1.Test.AtmosphereTest
 				}
 			}
 
-			float cosSunAngle = vecToPt.MakeNormal( ).Dot( m_Model.SunDirection );
-			float rPhase = RayleighPhase( cosSunAngle );
-			float mPhase = HeyneyGreensteinPhaseFunction( cosSunAngle, 0.99f ) * mieMul;
-			float tR = rPhase * rAccum[ 0 ] * m_Model.RayleighCoefficients[ 0 ] + mPhase * mAccum[ 0 ] * m_Model.MieCoefficients[ 0 ];
-			float tG = rPhase * rAccum[ 1 ] * m_Model.RayleighCoefficients[ 1 ] + mPhase * mAccum[ 1 ] * m_Model.MieCoefficients[ 1 ];
-			float tB = rPhase * rAccum[ 2 ] * m_Model.RayleighCoefficients[ 2 ] + mPhase * mAccum[ 2 ] * m_Model.MieCoefficients[ 2 ];
+		//	float cosSunAngle = vecToPt.MakeNormal( ).Dot( m_Model.SunDirection );
+		//	float rPhase = RayleighPhase( cosSunAngle );
+		//	float mPhase = HeyneyGreensteinPhaseFunction( cosSunAngle, 0.99f ) * mieMul;
+		//	float tR = rPhase * rAccum[ 0 ] * m_Model.RayleighCoefficients[ 0 ] + mPhase * mAccum[ 0 ] * m_Model.MieCoefficients[ 0 ];
+		//	float tG = rPhase * rAccum[ 1 ] * m_Model.RayleighCoefficients[ 1 ] + mPhase * mAccum[ 1 ] * m_Model.MieCoefficients[ 1 ];
+		//	float tB = rPhase * rAccum[ 2 ] * m_Model.RayleighCoefficients[ 2 ] + mPhase * mAccum[ 2 ] * m_Model.MieCoefficients[ 2 ];
+
+			float tR = rAccum[ 0 ] * m_Model.RayleighCoefficients[ 0 ];
+			float tG = rAccum[ 1 ] * m_Model.RayleighCoefficients[ 1 ];
+			float tB = rAccum[ 2 ] * m_Model.RayleighCoefficients[ 2 ];
+			float tA = ( mAccum[ 0 ]  * m_Model.MieCoefficients[ 0 ] + mAccum[ 1 ]  * m_Model.MieCoefficients[ 1 ] + mAccum[ 2 ] * m_Model.MieCoefficients[ 2 ] ) / 3;
 			float n = f * 255.0f;
 			int r = ( int )Utils.Clamp( tR * n, 0, 255 );
 			int g = ( int )Utils.Clamp( tG * n, 0, 255 );
 			int b = ( int )Utils.Clamp( tB * n, 0, 255 );
-			return Color.FromArgb( r, g, b );
+			int a = ( int )Utils.Clamp( tA * n, 0, 255 );
+			return Color.FromArgb( a, r, g, b );
 		}
 
 		private readonly static float mieMul = 1;
@@ -131,8 +151,6 @@ namespace Poc1.Test.AtmosphereTest
 			float mAccum = 0;
 			for ( int sample = 0; sample < m_Model.Samples; ++sample )
 			{
-			//	float samplePtHeight = samplePt.DistanceTo( Point3.Origin ) - m_Inner.Radius;
-			//	samplePtHeight = Utils.Max( samplePtHeight, 0 );
 				float samplePtHeight = Height( samplePt );
 				float samplePtRCoeff = Functions.Exp( samplePtHeight * m_InvRH0 );
 				float samplePtMCoeff = Functions.Exp( samplePtHeight * m_InvMH0 );

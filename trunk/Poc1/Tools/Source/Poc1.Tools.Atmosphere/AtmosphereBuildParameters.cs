@@ -52,10 +52,10 @@ namespace Poc1.Tools.Atmosphere
 
 		#region Private Members
 
-		private int m_AttenuationSamples		= 8;
-		private int m_HeightSamples				= 16;
-		private int m_SunAngleSamples			= 16;
-		private int m_ViewAngleSamples			= 16;
+		private int m_AttenuationSamples		= 10;
+		private int m_HeightSamples				= 32;
+		private int m_SunAngleSamples			= 32;
+		private int m_ViewAngleSamples			= 32;
 		private int m_OpticalDepthResolution	= 128;
 
 		#endregion

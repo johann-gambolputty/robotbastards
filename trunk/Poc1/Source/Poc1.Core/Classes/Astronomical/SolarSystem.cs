@@ -16,9 +16,9 @@ namespace Poc1.Core.Classes.Astronomical
 		/// <summary>
 		/// Default constructor (star backdrop)
 		/// </summary>
-		public SolarSystem( ) :
-			//this( new TexturedStarBox( ) )
-			this( new ProceduralStarBox( ) )
+		public SolarSystem( )
+			//: this( new TexturedStarBox( ) )
+			: this( new ProceduralStarBox( ) )
 		{
 		}
 
