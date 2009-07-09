@@ -206,14 +206,6 @@
       <Project>{22C72F9C-B313-4366-BBE2-84A649775E75}</Project>
       <Name>Poc1.Fast.Terrain</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Source\Poc1.Universe.Interfaces\Poc1.Universe.Interfaces.csproj">
-      <Project>{7C18549B-2D70-4985-852B-6A285BF4F00A}</Project>
-      <Name>Poc1.Universe.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Source\Poc1.Universe\Poc1.Universe.csproj">
-      <Project>{5CC992B9-1B66-4ECC-8657-624DA59B3D2D}</Project>
-      <Name>Poc1.Universe</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Poc1.Tools.Atmosphere\Poc1.Tools.Atmosphere.csproj">
       <Project>{69F536AC-32E9-4930-8B6A-A14223298222}</Project>
       <Name>Poc1.Tools.Atmosphere</Name>

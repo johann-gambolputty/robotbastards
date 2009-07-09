@@ -106,6 +106,8 @@ namespace Poc1.Tools.Atmosphere
 			float heightRange = ( m_OuterRadius - m_InnerRadius );
 			float heightInc = ( heightRange * 0.9999f ) / ( heightSamples - 1 );	//	Push height range in slightly to allow simplification of sphere intersections
 
+			float* rAccum = stackalloc float[ 3 ];
+			float* mAccum = stackalloc float[ 3 ];
 			float height = m_InnerRadius;
 			for ( int heightSample = 0; heightSample < heightSamples; ++heightSample, height += heightInc )
 			{
@@ -131,13 +133,18 @@ namespace Poc1.Tools.Atmosphere
 					}
 
 					Vector3 step = ( atmInt - pos ) / m_AttenuationSamples;
-					float oR = CalculateCombinedOutScatter( pos, step, m_RayleighCoefficients[ 0 ], m_MieCoefficients[ 0 ] );
-					float oG = CalculateCombinedOutScatter( pos, step, m_RayleighCoefficients[ 1 ], m_MieCoefficients[ 1 ] );
-					float oB = CalculateCombinedOutScatter( pos, step, m_RayleighCoefficients[ 2 ], m_MieCoefficients[ 2 ] );
 
-					float attR = Functions.Exp( -oR );
-					float attG = Functions.Exp( -oG );
-					float attB = Functions.Exp( -oB );
+					rAccum[ 0 ] = rAccum[ 1 ] = rAccum[ 2 ] = 0;
+					mAccum[ 0 ] = mAccum[ 1 ] = mAccum[ 2 ] = 0;
+					CalculateOutScatter( pos, step, rAccum, mAccum );
+
+				//	float oR = CalculateCombinedOutScatter( pos, step, m_RayleighCoefficients[ 0 ], m_MieCoefficients[ 0 ] );
+				//	float oG = CalculateCombinedOutScatter( pos, step, m_RayleighCoefficients[ 1 ], m_MieCoefficients[ 1 ] );
+				//	float oB = CalculateCombinedOutScatter( pos, step, m_RayleighCoefficients[ 2 ], m_MieCoefficients[ 2 ] );
+
+					float attR = ExtinctionCoefficient( rAccum[ 0 ], mAccum[ 0 ] );
+					float attG = ExtinctionCoefficient( rAccum[ 1 ], mAccum[ 1 ] );
+					float attB = ExtinctionCoefficient( rAccum[ 2 ], mAccum[ 2 ] );
 
 					pixels[ 2 ] = ( byte )( Utils.Clamp( attR, 0, 1 ) * 255.0f );
 					pixels[ 1 ] = ( byte )( Utils.Clamp( attG, 0, 1 ) * 255.0f );
@@ -155,6 +162,11 @@ namespace Poc1.Tools.Atmosphere
 				}
 			}
 			return true;
+		}
+
+		private static float ExtinctionCoefficient( float ray, float mie )
+		{
+			return Functions.Exp( -( ray + mie ) );
 		}
 
 		/// <summary>
@@ -293,160 +305,148 @@ namespace Poc1.Tools.Atmosphere
 			Point3 viewPos = new Point3( 0, height, 0 );
 
 			Point3 viewEnd;
-		//	GetRayPlanetAndAtmosphereIntersection( viewPos, viewDir, out viewEnd );
-			GetRayAtmosphereIntersection( viewPos, viewDir, out viewEnd );
+			GetRayPlanetAndAtmosphereIntersection( viewPos, viewDir, out viewEnd );
+		//	GetRayAtmosphereIntersection( viewPos, viewDir, out viewEnd );
 
 			//	The summation of attenuation is a Reimann sum approximation of the integral
 			//	of atmospheric density .
-		//	float viewRayLength = ( viewEnd - viewPos ).Length;
-		//	Vector3 viewVec = ( viewEnd - viewPos ).MakeNormal( );
-			Vector3 sampleStep = ( viewEnd - viewPos ) / m_AttenuationSamples;
-		//	float mul = ( InscatterDistanceFudgeFactor * viewRayLength ) / m_OuterRadiusMetres;
-			float mul = ( m_InscatterDistanceFudgeFactor * sampleStep.Length );
-			Point3 samplePos = viewPos + sampleStep;
-			float[] mAccum = new float[ 3 ];
-			float[] rAccum = new float[ 3 ];
-			for ( int sampleCount = 1; sampleCount < m_AttenuationSamples; ++sampleCount )
+			Vector3 vecToPt = viewEnd - viewPos;
+			Vector3 sampleStep = vecToPt / m_AttenuationSamples;
+			float mul = sampleStep.Length * m_InscatterDistanceFudgeFactor;
+			if ( mul < 0.00001f )
 			{
-				//	Cast a ray to the sun. Don't intersect the planet. This is a cheap way of providing dark nights
+				voxel[ 0 ] = voxel[ 1 ] = voxel[ 2 ] = voxel[ 3 ] = 0;
+				return;
+			}
+			float* rAccum = stackalloc float[ 3 ];
+			float* mAccum = stackalloc float[ 3 ];
+			float* rViewOutScatter = stackalloc float[ 3 ];
+			float* mViewOutScatter = stackalloc float[ 3 ];
+			float* rSunOutScatter = stackalloc float[ 3 ];
+			float* mSunOutScatter = stackalloc float[ 3 ];
+
+			Point3 samplePos = viewPos + sampleStep;
+
+			for ( int sampleCount = 1; sampleCount < m_AttenuationSamples; ++sampleCount, samplePos += sampleStep )
+			{
+				//	Cast a ray to the sun
 				Point3 sunPt;
-				if ( !GetRayAtmosphereIntersection( samplePos, sunDir, out sunPt ) )
-			//	if ( !GetRayPlanetAndAtmosphereIntersection( samplePos, sunDir, out sunPt ) )
+				if ( !GetRayPlanetAndAtmosphereIntersection( samplePos, sunDir, out sunPt ) )
+			//	if ( !GetRayAtmosphereIntersection( samplePos, sunDir, out sunPt ) )
 				{
-					break;
+					continue;
 				}
 
-				float sampleHeight = samplePos.DistanceTo( Point3.Origin ) - m_InnerRadius;
-				sampleHeight = Utils.Max( sampleHeight, 0 );
+				float sampleHeight = Height( samplePos );
 				float pRCoeff = Functions.Exp( sampleHeight * m_InvRH0 ) * mul;
 				float pMCoeff = Functions.Exp( sampleHeight * m_InvMH0 ) * mul;
 
 				//	Calculate (wavelength-dependent) out-scatter terms
-				Vector3 viewStep = ( viewPos - samplePos ) / ( m_AttenuationSamples - 1 );
-				Vector3 sunStep = ( sunPt - samplePos ) / ( m_AttenuationSamples - 1 );
-				for ( int component = 0; component < 3; ++component )
+				Vector3 viewStep = ( viewPos - samplePos ) / m_AttenuationSamples;
+				Vector3 sunStep = ( sunPt - samplePos ) / m_AttenuationSamples;
+
+				CalculateOutScatter( samplePos, sunStep, rSunOutScatter, mSunOutScatter );
+				CalculateOutScatter( samplePos, viewStep, rViewOutScatter, mViewOutScatter );
+
+				for ( int i = 0; i < 3; ++i )
 				{
-					float bR = m_RayleighCoefficients[ component ];
-					float bM = m_MieCoefficients[ component ];
-
-					float sunOutScatterR, sunOutScatterM;
-					float viewOutScatterR, viewOutScatterM;
-
-					CalculateOutScatter( samplePos, sunStep, bR, bM, out sunOutScatterR, out sunOutScatterM );
-					CalculateOutScatter( samplePos, viewStep, bR, bM, out viewOutScatterR, out viewOutScatterM );
-					float outScatterR = Functions.Exp( ( -sunOutScatterR - viewOutScatterR ) * m_OutscatterFudge );
-					float outScatterM = Functions.Exp( ( -sunOutScatterM - viewOutScatterM ) * m_OutscatterFudge );
-					mAccum[ component ] += pMCoeff * outScatterM;
-					rAccum[ component ] += pRCoeff * outScatterR;
+					float outScatterR = Functions.Exp( ( -rViewOutScatter[ i ] - rSunOutScatter[ i ] ) );
+					float outScatterM = Functions.Exp( ( -mViewOutScatter[ i ] - mSunOutScatter[ i ] ) );
+					mAccum[ i ] += pMCoeff * outScatterM;
+					rAccum[ i ] += pRCoeff * outScatterR;
 				}
-
-				samplePos += sampleStep;
 			}
 
-			float[] accum = new float[ 3 ];
-			float avgMie = 0;
-			for ( int component = 0; component < 3; ++component )
-			{
-				float rComponent = rAccum[ component ] * m_RayleighCoefficients[ component ] * m_RayleighFudge;
-				float mComponent = mAccum[ component ] * m_MieCoefficients[ component ] * m_MieFudge;
-
-				avgMie += mComponent;
-				accum[ component ] = rComponent;
-			}
+			float tR = ( float )Math.Sqrt( rAccum[ 0 ] * m_RayleighCoefficients[ 0 ] );
+			float tG = ( float )Math.Sqrt( rAccum[ 1 ] * m_RayleighCoefficients[ 1 ] );
+			float tB = ( float )Math.Sqrt( rAccum[ 2 ] * m_RayleighCoefficients[ 2 ] );
+			float tA = ( float )Math.Sqrt( ( ( mAccum[ 0 ] * m_MieCoefficients[ 0 ] ) + ( mAccum[ 1 ] * m_MieCoefficients[ 1 ] )  + ( mAccum[ 2 ] * m_MieCoefficients[ 2 ] ) ) / 3 );
 
 			//	TODO: AP: Fix stupid backwards textures :( 
-			voxel[ 3 ] = ( byte )Utils.Clamp( accum[ 0 ] * 255.0f, 0, 255 );
-			voxel[ 2 ] = ( byte )Utils.Clamp( accum[ 1 ] * 255.0f, 0, 255 );
-			voxel[ 1 ] = ( byte )Utils.Clamp( accum[ 2 ] * 255.0f, 0, 255 );
-			voxel[ 0 ] = ( byte )Utils.Clamp( avgMie * 255.0f / 3.0f, 0, 255 );
+			voxel[ 3 ] = ( byte )Utils.Clamp( tR * 255, 0, 255 );
+			voxel[ 2 ] = ( byte )Utils.Clamp( tG * 255, 0, 255 );
+			voxel[ 1 ] = ( byte )Utils.Clamp( tB * 255, 0, 255 );
+			voxel[ 0 ] = ( byte )Utils.Clamp( tA * 255, 0, 255 );
 		}
 
-		/// <summary>
-		/// Calculates the average atmospheric density along a ray
-		/// </summary>
-		private float CalculateCombinedOutScatter( Point3 pt, Vector3 step, float bR, float bM )
+		private float Height( Point3 pt )
 		{
-			float outScatterR, outScatterM;
-			CalculateOutScatter( pt, step, bR, bM, out outScatterR, out outScatterM );
-			return outScatterR + outScatterM;
+			return Utils.Clamp( pt.DistanceTo( Point3.Origin ) - m_InnerRadius, 0, m_OuterRadius - m_InnerRadius );
 		}
+
+		private unsafe void CalculateOutScatter( Point3 startPt, Vector3 step, float* rOutScatter, float* mOutScatter )
+		{
+			float mul = step.Length * m_OutscatterDistanceFudgeFactor;
+			Point3 samplePt = startPt;
+			float rAccum = 0;
+			float mAccum = 0;
+			for ( int sample = 0; sample < m_AttenuationSamples; ++sample )
+			{
+				//	float samplePtHeight = samplePt.DistanceTo( Point3.Origin ) - m_Inner.Radius;
+				//	samplePtHeight = Utils.Max( samplePtHeight, 0 );
+				float samplePtHeight = Height( samplePt );
+				float samplePtRCoeff = Functions.Exp( samplePtHeight * m_InvRH0 );
+				float samplePtMCoeff = Functions.Exp( samplePtHeight * m_InvMH0 );
+
+				rAccum += samplePtRCoeff * mul;
+				mAccum += samplePtMCoeff * mul;
+
+				samplePt += step;
+			}
+			for ( int i = 0; i < 3; ++i )
+			{
+				rOutScatter[ i ] = m_RayleighCoefficients[ i ] * rAccum;
+				mOutScatter[ i ] = m_MieCoefficients[ i ] * mAccum;
+			}
+		}
+
+		///// <summary>
+		///// Calculates the average atmospheric density along a ray
+		///// </summary>
+		//private float CalculateCombinedOutScatter( Point3 pt, Vector3 step, float bR, float bM )
+		//{
+		//    float outScatterR, outScatterM;
+		//    CalculateOutScatter( pt, step, bR, bM, out outScatterR, out outScatterM );
+		//    return outScatterR + outScatterM;
+		//}
 		
 		/// <summary>
-		/// Calculates the average atmospheric density along a ray
+		/// Calculates the integrated atmospheric density along a ray
 		/// </summary>
-		private void CalculateOutScatter( Point3 pt, Vector3 step, float bR, float bM, out float outScatterR, out float outScatterM )
-		{
-			float pmAccum = 0;
-			float prAccum = 0;
-			float mul = m_OutscatterDistanceFudgeFactor * step.Length;
-			for ( int sampleCount = 0; sampleCount < m_AttenuationSamples; ++sampleCount )
-			{
-				float ptHeight = pt.DistanceTo( Point3.Origin ) - m_InnerRadius;
-				ptHeight = Utils.Max( ptHeight, 0 );
-				float pmCoeff = Functions.Exp( ptHeight * m_InvMH0 );
-				float prCoeff = Functions.Exp( ptHeight * m_InvRH0 );
-				pmAccum += pmCoeff * mul;
-				prAccum += prCoeff * mul;
-				pt += step;
-			}
+		//private void CalculateOutScatter( Point3 pt, Vector3 step, float bR, float bM, out float outScatterR, out float outScatterM )
+		//{
+		//    float pmAccum = 0;
+		//    float prAccum = 0;
+		//    float mul = m_OutscatterDistanceFudgeFactor * step.Length;
+		//    for ( int sampleCount = 0; sampleCount < m_AttenuationSamples; ++sampleCount )
+		//    {
+		//        float ptHeight = pt.DistanceTo( Point3.Origin ) - m_InnerRadius;
+		//        ptHeight = Utils.Max( ptHeight, 0 );
+		//        float pmCoeff = Functions.Exp( ptHeight * m_InvMH0 );
+		//        float prCoeff = Functions.Exp( ptHeight * m_InvRH0 );
+		//        pmAccum += pmCoeff * mul;
+		//        prAccum += prCoeff * mul;
+		//        pt += step;
+		//    }
 
-			outScatterR = bR * prAccum;
-			outScatterM = bM * pmAccum;
-		}
+		//    outScatterR = bR * prAccum;
+		//    outScatterM = bM * pmAccum;
+		//}
 
-		private readonly static double[] m_Wavelengths = new double[ 3 ] { 650e-9, 610e-9, 475e-9 };
-
-		private const double AirIndexOfRefraction = 1.0003;
-		private static readonly double AirNumberDensity = 2.504e25;
 		private float m_InnerRadius;
 		private float m_OuterRadius;
 		private Sphere3 m_InnerSphere;
 		private Sphere3 m_OuterSphere;
 		private float m_InvMH0;
 		private float m_InvRH0;
-		private readonly float[] m_RayleighCoefficients = new float[ 3 ];
-		private readonly float[] m_MieCoefficients = new float[ 3 ];
+		private float[] m_RayleighCoefficients;
+		private float[] m_MieCoefficients;
 		private float m_InscatterDistanceFudgeFactor;
 		private float m_OutscatterDistanceFudgeFactor;
 		private float m_MieFudge;
 		private float m_RayleighFudge;
 		private float m_OutscatterFudge;
 		private int m_AttenuationSamples = 10;
-
-		private void SetComponentScales( )
-		{
-			//
-			//	BetaM = 0.434 * c * PI * ( 4 * PI * PI ) * K / ( Lambda * Lambda )
-			//	with
-			//	c = ( 0.6544 * T - 0.6510 ) * 10e-16
-			//	and T is the turbidity factor
-			//	and K is almost equal to 0.67
-			//
-			double turbidity = 1;
-			double c = ( 0.6544 * turbidity - 0.6510 ) * 10e-16;
-			double k = 0.67;
-			double iR2 = ( AirIndexOfRefraction * AirIndexOfRefraction ) - 1;
-			double mieNum = c  * 4 * Math.PI * Math.PI * Math.PI * k;
-			double rayleighNum = ( 8 * Math.PI * Math.PI * Math.PI * iR2 * iR2 ) / ( 3 * AirNumberDensity );
-
-			for ( int component = 0; component < 3; ++component )
-			{
-				double wv = m_Wavelengths[ component ];
-				double wv2 = wv * wv;
-				double wv4 = wv2 * wv2;
-
-				m_RayleighCoefficients[ component ] = ( float )( rayleighNum / wv4 );
-				m_MieCoefficients[ component ] = ( float )( mieNum / wv2 );
-			}
-
-			//	Values taken from http://patarnott.com/atms749/pdf/RayleighScatteringForAtmos.pdf
-		//	m_RayleighCoefficients[ 0 ] = 0.03539f;
-		//	m_RayleighCoefficients[ 1 ] = 0.06613f;
-		//	m_RayleighCoefficients[ 2 ] = 0.23522f;
-		//	m_RayleighCoefficients[ 0 ] = 0.0000004f;
-		//	m_RayleighCoefficients[ 1 ] = 0.0000006f;
-		//	m_RayleighCoefficients[ 2 ] = 0.00000243f;
-		}
 
 		/// <summary>
 		/// Sets up stored and derived parameters from an atmosphere model
@@ -458,8 +458,8 @@ namespace Poc1.Tools.Atmosphere
 		/// </remarks>
 		private void SetupModelAndParameters( AtmosphereBuildParameters parameters, AtmosphereBuildModel model )
 		{
-			SetComponentScales( );
-
+			m_RayleighCoefficients = ( float[] )model.RayleighCoefficients.Clone( );
+			m_MieCoefficients = ( float[] )model.MieCoefficients.Clone( );
 			m_InnerRadius = model.InnerRadiusMetres;
 			m_OuterRadius = model.InnerRadiusMetres + model.AtmosphereThicknessMetres;
 			m_InnerSphere = new Sphere3( Point3.Origin, m_InnerRadius * model.GroundRadiusMultiplier );	//	NOTE: AP: See remarks

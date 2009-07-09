@@ -3,11 +3,29 @@ using Rb.Rendering.Interfaces.Objects;
 
 namespace Poc1.Core.Interfaces.Astronomical.Planets.Models
 {
+	public enum ScatteringAtmosphereObjectColourOutput
+	{		
+		//	Must match constants in atmosphereBase.cg
+		FullColour = 0,
+		ColourOnly = 1,
+		ScatteredColour = 2,
+		OpticalDepthOnly = 3,
+		ColourOpticalDepth = 4
+	}
+
 	/// <summary>
 	/// Scattering-based atmosphere model
 	/// </summary>
 	public interface IPlanetAtmosphereScatteringModel : IPlanetAtmosphereModel
 	{
+		/// <summary>
+		/// Gets/sets object colour output
+		/// </summary>
+		ScatteringAtmosphereObjectColourOutput ObjectColourOutput
+		{
+			get; set;
+		}
+
 		/// <summary>
 		/// Gets/sets the atmosphere phase coefficient
 		/// </summary>

@@ -4,52 +4,30 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{3D2BEF03-E412-4E94-91EA-B6074F4AEB10}</ProjectGuid>
+    <ProjectGuid>{AF796A99-9AE1-4545-8378-BAD19965FBF7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Poc1.Test.AtmosphereTest</RootNamespace>
-    <AssemblyName>Poc1.Test.AtmosphereTest</AssemblyName>
+    <RootNamespace>Poc1.Test.LocalTexturePatch</RootNamespace>
+    <AssemblyName>Poc1.Test.LocalTexturePatch</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\Release\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Rb.Assets, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Source\Rb.Assets\bin\Debug\Rb.Assets.dll</HintPath>
-    </Reference>
-    <Reference Include="Rb.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\Debug\Rb.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Rb.Log, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\Debug\Rb.Log.dll</HintPath>
-    </Reference>
-    <Reference Include="Rb.Rendering, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\Debug\Rb.Rendering.dll</HintPath>
-    </Reference>
-    <Reference Include="Rb.Rendering.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\Debug\Rb.Rendering.Interfaces.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -58,22 +36,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AtmosphereCalculator.cs" />
-    <Compile Include="AtmosphereCalculatorModel.cs" />
-    <Compile Include="AtmosphereCalculatorWorker.cs" />
-    <Compile Include="AtmosphereSurface.cs" />
-    <Compile Include="AtmosphereTestForm.cs">
+    <Compile Include="ILocalTexturePatchUnderlyingGeometry.cs" />
+    <Compile Include="LocalTexturePatch.cs" />
+    <Compile Include="LocalTexturePatchTestForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AtmosphereTestForm.Designer.cs">
-      <DependentUpon>AtmosphereTestForm.cs</DependentUpon>
+    <Compile Include="LocalTexturePatchTestForm.Designer.cs">
+      <DependentUpon>LocalTexturePatchTestForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlanetSurface.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="AtmosphereTestForm.resx">
+    <EmbeddedResource Include="LocalTexturePatchTestForm.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>AtmosphereTestForm.cs</DependentUpon>
+      <DependentUpon>LocalTexturePatchTestForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -83,12 +58,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="..\..\Data\Runtime\AtmosphereTest\atmosphere.cgfx">
-      <Link>atmosphere.cgfx</Link>
-    </None>
-    <None Include="App.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -100,6 +70,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Common.Cameras\Rb.Common.Cameras.csproj">
+      <Project>{E791C116-CF8E-4D13-BDAC-7D1D218C70B1}</Project>
+      <Name>Rb.Common.Cameras</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Core\Rb.Core.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Source\Rb.Interaction.Windows\Rb.Interaction.Windows.csproj">
       <Project>{4ECD7CBC-1D3E-4C87-852E-77488B549711}</Project>
       <Name>Rb.Interaction.Windows</Name>
@@ -107,6 +85,14 @@
     <ProjectReference Include="..\..\..\..\Source\Rb.Interaction\Rb.Interaction.csproj">
       <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
       <Name>Rb.Interaction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Log\Rb.Log.csproj">
+      <Project>{55C5FE75-D492-41DE-B355-4D2681ADA1A0}</Project>
+      <Name>Rb.Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Rendering.Interfaces\Rb.Rendering.Interfaces.csproj">
+      <Project>{8B059AC0-B98F-4D23-9F42-F8273DCB4034}</Project>
+      <Name>Rb.Rendering.Interfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Source\Rb.Rendering.Platform.DependencyBuilder\Rb.Rendering.Platform.DependencyBuilder.csproj">
       <Project>{5DCBFCF2-E434-4151-8B59-A5431E3C22FC}</Project>
@@ -116,9 +102,9 @@
       <Project>{39A57BC2-BE73-41A7-BBC2-A9D0C28D5A06}</Project>
       <Name>Rb.Rendering.Windows</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Tools\Source\Rb.Tools.Cameras\Rb.Tools.Cameras.csproj">
-      <Project>{E5646C43-AAD3-4EFD-835C-93DB9290E5C7}</Project>
-      <Name>Rb.Tools.Cameras</Name>
+    <ProjectReference Include="..\..\..\..\Source\Rb.Rendering\Rb.Rendering.csproj">
+      <Project>{EC130734-6F0F-402B-8215-9F133F0ADEE4}</Project>
+      <Name>Rb.Rendering</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

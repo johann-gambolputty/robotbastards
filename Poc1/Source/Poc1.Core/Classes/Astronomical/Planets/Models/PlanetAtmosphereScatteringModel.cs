@@ -11,6 +11,17 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models
 		#region IPlanetAtmosphereScatteringModel Members
 
 		/// <summary>
+		/// Gets/sets object colour output
+		/// </summary>
+		public ScatteringAtmosphereObjectColourOutput ObjectColourOutput
+		{
+			get { return m_ObjectColourOutput; }
+			set { m_ObjectColourOutput = value; }
+		}
+
+		private ScatteringAtmosphereObjectColourOutput m_ObjectColourOutput;
+
+		/// <summary>
 		/// Gets/sets the atmosphere phase coefficient
 		/// </summary>
 		/// <remarks>
@@ -59,7 +70,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models
 			{
 				if ( m_MiePhaseWeight != value )
 				{
-					MiePhaseWeight = value;
+					m_MiePhaseWeight = value;
 					OnModelChanged( );
 				}
 			}
@@ -101,7 +112,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models
 
 		#region Private Members
 
-		private float m_PhaseCoefficient	= -0.9999f;
+		private float m_PhaseCoefficient	= -0.75f;
 		private float m_PhaseWeight			= 1.0f;
 		private float m_MiePhaseWeight		= 1.0f;
 		private ITexture3d m_ScatteringTexture;

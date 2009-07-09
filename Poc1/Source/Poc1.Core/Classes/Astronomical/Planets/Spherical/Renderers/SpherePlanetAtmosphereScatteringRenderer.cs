@@ -22,9 +22,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 		public SpherePlanetAtmosphereScatteringRenderer( )
 		{
 			//	Load in atmosphere effect
-			m_Effect = new EffectAssetHandle( "Effects/Planets/atmosphereShell.cgfx", true );
-			m_Effect.OnReload += Effect_OnReload;
-			m_Techniques = new TechniqueSelector( m_Effect, "DefaultTechnique" );
+			m_Techniques = new TechniqueSelector( "Effects/Planets/atmosphereShell.cgfx", true, "DefaultTechnique" );
 		}
 
 
@@ -64,7 +62,6 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 
 		private IRenderable m_AtmosphereGeometry;
 		private TechniqueSelector m_Techniques;
-		private EffectAssetHandle m_Effect;
 		private Units.AstroRenderUnits m_AtmosphereGeometryRadius;
 
 		/// <summary>
@@ -95,14 +92,6 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 		}
 
 		/// <summary>
-		/// Called when the atmosphere effect is reloaded
-		/// </summary>
-		private void Effect_OnReload( Rb.Assets.Interfaces.ISource obj )
-		{
-			m_Techniques = new TechniqueSelector( m_Effect.Asset, m_Techniques.Name );
-		}
-
-		/// <summary>
 		/// Sets up parameters for effects that use atmospheric rendering
 		/// </summary>
 		/// <param name="camera">Current camera</param>
@@ -126,6 +115,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 			}
 
 			//	Set up parameters shared between astro and close atmosphere rendering
+			effect.Parameters[ "AtmObjectColourOutput" ].Set( ( int )model.ObjectColourOutput );
 			effect.Parameters[ "AtmHgCoeff" ].Set( model.PhaseCoefficient );
 			effect.Parameters[ "AtmPhaseWeight" ].Set( model.PhaseWeight );
 			effect.Parameters[ "ScatteringTexture" ].Set( model.ScatteringTexture );
@@ -142,17 +132,12 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 			float planetRadius = Planet.Model.Radius.ToRenderUnits;
 			float atmosphereRadius = model.Thickness.ToRenderUnits;
 			float height = localPos.DistanceTo( Point3.Origin ) - planetRadius;
-			float clampedHeight = Utils.Clamp( height, 0, atmosphereRadius );
-			float normHeight = clampedHeight / atmosphereRadius;
-
-			float clampedLength = planetRadius + clampedHeight;
-			Vector3 groundVec = localPos.ToVector3( ).MakeLength( clampedLength );
-			Point3 atmPos = Point3.Origin + groundVec;
+			float normHeight = height > atmosphereRadius ? 1 : ( height / atmosphereRadius );
 
 			Vector3 viewDir = camera.Frame.ZAxis;
-			effect.Parameters[ "AtmViewPosLength" ].Set( atmPos.DistanceTo( Point3.Origin ) );
-			effect.Parameters[ "AtmViewVec" ].Set( atmPos.ToVector3( ).MakeNormal( ) );
-			effect.Parameters[ "AtmViewPos" ].Set( atmPos );
+			effect.Parameters[ "AtmViewVec" ].Set( localPos.ToVector3( ).MakeNormal( ) );
+		//	effect.Parameters[ "AtmViewPos" ].Set( atmPos );
+			effect.Parameters[ "AtmViewPos" ].Set( localPos );
 			effect.Parameters[ "AtmViewDir" ].Set( viewDir );
 			effect.Parameters[ "AtmViewHeight" ].Set( normHeight );
 			effect.Parameters[ "AtmInnerRadius" ].Set( planetRadius );
@@ -166,15 +151,13 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Renderers
 			float planetRadius = ( float )Planet.Model.Radius.ToAstroRenderUnits;
 			float atmosphereRadius = ( float )model.Thickness.ToAstroRenderUnits;
 			float height = localPos.DistanceTo( Point3.Origin ) - planetRadius;
-			float clampedHeight = Utils.Clamp( height, 0, atmosphereRadius );
-			float normHeight = clampedHeight / atmosphereRadius;
+			float normHeight = height > atmosphereRadius ? 1 : ( height / atmosphereRadius );
 
 			//	float clampedLength = planetRadius + clampedHeight;
 			//	Vector3 groundVec = localPos.ToVector3( ).MakeLength( clampedLength );
 			Point3 atmPos = localPos; // Point3.Origin + groundVec;
 
 			Vector3 viewDir = camera.Frame.ZAxis;
-			effect.Parameters[ "AtmViewPosLength" ].Set( atmPos.DistanceTo( Point3.Origin ) );
 			effect.Parameters[ "AtmViewPos" ].Set( atmPos );
 			effect.Parameters[ "AtmViewVec" ].Set( atmPos.ToVector3( ).MakeNormal( ) );
 			effect.Parameters[ "AtmViewDir" ].Set( viewDir );

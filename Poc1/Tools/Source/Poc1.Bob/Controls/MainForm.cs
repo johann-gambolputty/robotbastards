@@ -52,6 +52,7 @@ namespace Poc1.Bob.Controls
 				//    "Spherical Planet Environments", "Spherical Planet Environment Project Types",
 				//    new SpherePlanetAtmosphereProjectType( )
 				//),
+							new SpherePlanetAtmosphereTestProjectType( planetViews ),
 							new TerrestrialSpherePlanetProjectType( planetViews ),
 							new SpherePlanetProjectType( planetViews )
 						)

@@ -23,6 +23,12 @@ namespace Poc1.Test.AtmosphereTest
 			clone.m_RayleighDensityScaleHeightFraction = m_RayleighDensityScaleHeightFraction;
 			clone.m_MieDensityScaleHeightFraction = m_MieDensityScaleHeightFraction;
 			clone.m_SunDirection = m_SunDirection;
+			clone.m_RayleighCoefficients[ 0 ] = m_RayleighCoefficients[ 0 ];
+			clone.m_RayleighCoefficients[ 1 ] = m_RayleighCoefficients[ 1 ];
+			clone.m_RayleighCoefficients[ 2 ] = m_RayleighCoefficients[ 2 ];
+			clone.m_MieCoefficients[ 0 ] = m_MieCoefficients[ 0 ];
+			clone.m_MieCoefficients[ 1 ] = m_MieCoefficients[ 1 ];
+			clone.m_MieCoefficients[ 2 ] = m_MieCoefficients[ 2 ];
 			return clone;
 		}
 

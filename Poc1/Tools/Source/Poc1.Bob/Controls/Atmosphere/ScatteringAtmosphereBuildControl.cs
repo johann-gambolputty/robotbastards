@@ -22,7 +22,7 @@ namespace Poc1.Bob.Controls.Atmosphere
 				opticalDepthResolutionComboBox.Items.Add( i );
 				scatteringResolutionComboBox.Items.Add( i );
 			}
-			scatteringResolutionComboBox.SelectedItem = 16;
+			scatteringResolutionComboBox.SelectedItem = 32;
 			opticalDepthResolutionComboBox.SelectedItem = 256;
 
 			m_AtmosphereBuilder = new AtmosphereBuilder( );

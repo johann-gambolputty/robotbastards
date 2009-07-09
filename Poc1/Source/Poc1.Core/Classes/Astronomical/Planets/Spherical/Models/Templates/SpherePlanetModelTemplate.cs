@@ -11,7 +11,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Models.Templates
 	/// <summary>
 	/// Template for spherical planets
 	/// </summary>
-	public class SpherePlanetModelTemplate : PlanetModelTemplate, ISpherePlanetModelTemplate
+	public class SpherePlanetModelTemplate : AbstractPlanetModelTemplate, ISpherePlanetModelTemplate
 	{
 		/// <summary>
 		/// Get/sets the range of valid radii for a spherical planet instance
@@ -38,8 +38,11 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Spherical.Models.Templates
 
 		#region Private Members
 
+		//0.0094339622641509433962264150943396
 	//	private Range<Units.Metres> m_Radius = new Range<Units.Metres>( new Units.Metres( 5000 ), new Units.Metres( 10000000 ) );
 		private Range<Units.Metres> m_Radius = new Range<Units.Metres>( new Units.Metres( 400000 ), new Units.Metres( 400000 ) );
+	//	private Range<Units.Metres> m_Radius = new Range<Units.Metres>( new Units.Metres( 2120000 ), new Units.Metres( 2120000 ) );
+	//	private Range<Units.Metres> m_Radius = new Range<Units.Metres>( new Units.Metres( 6360000 ), new Units.Metres( 6360000 ) );
 
 		#endregion
 	}

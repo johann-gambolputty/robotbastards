@@ -10,7 +10,7 @@ namespace Poc1.Core.Classes.Astronomical.Planets.Models.Templates
 	/// <summary>
 	/// Base class implementation of <see cref="IPlanetModelTemplate"/>
 	/// </summary>
-	public abstract class PlanetModelTemplate : Composite<IPlanetEnvironmentModelTemplate>, IPlanetModelTemplate
+	public abstract class AbstractPlanetModelTemplate : Composite<IPlanetEnvironmentModelTemplate>, IPlanetModelTemplate
 	{
 		#region IPlanetModelTemplate Members
 

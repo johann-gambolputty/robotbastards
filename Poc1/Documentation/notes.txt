@@ -1,3 +1,11 @@
+- New template design in GUI
+	- Principles:
+		- 2 views: Scene components, Select component template
+			- Selection from either view brings up properties for the selected object
+			- Editing template properties affects all models in the scene
+				- Trivial edits to templates are immediately observed in models
+				- Complex edits requiring extra calculation require a model refresh
+
 - Biome system
 	- Design different biome types (e.g "Shoreline", "Arctic", "Desert", etc.)
 		- A point can only be influenced by the two most prominent biomes.

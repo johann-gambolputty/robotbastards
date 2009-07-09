@@ -110,7 +110,7 @@ namespace Poc1.AtmosphereTest
 			m_CalculatorWorker.Stop( );
 
 			List<int> indices = new List<int>( );
-			Vertex[] vertexArray = BuildVertices( m_Model.AtmosphereRenderRadius, 100, 100, indices );
+			Vertex[] vertexArray = BuildVertices( m_Model.AtmosphereRenderRadius, 150, 150, indices );
 		//	Vertex[] vertexArray = BuildVertices( m_Model.AtmosphereRenderRadius, 70, 70, indices );
 
 			m_Indices = Graphics.Factory.CreateIndexBuffer( );

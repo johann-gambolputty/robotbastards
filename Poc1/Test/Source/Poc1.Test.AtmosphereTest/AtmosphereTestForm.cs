@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Windows.Forms;
 using Poc1.Test.AtmosphereTest;
 using Rb.Core.Maths;
@@ -56,7 +57,9 @@ namespace Poc1.AtmosphereTest
 
 			IRenderable scene = new RenderableList( new PlanetSurface( planetRadius ), new AtmosphereSurface( model ) );
 
-			display.AddViewer( new Viewer( this, CreateCamera( CommandUser.Default ), scene ) );
+			Viewer viewer = new Viewer( this, CreateCamera( CommandUser.Default ), scene );
+			viewer.ClearColour = Color.Black;
+			display.AddViewer( viewer );
 
 			//	TODO: AP: Horrible bodge to work around InteractionUpdateTimer not working properly without manual intervention
 			display.OnBeginRender += delegate { InteractionUpdateTimer.Instance.OnUpdate( ); };

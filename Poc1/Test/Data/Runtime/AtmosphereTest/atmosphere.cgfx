@@ -7,6 +7,7 @@ struct VertexShaderInput
 struct FragmentShaderInput
 {
 	float4 m_Position : POSITION;
+	float3 m_WorldPosition : TEXCOORD0;
 	float4 m_Diffuse : COLOR0;
 };
 
@@ -15,20 +16,43 @@ float4x4 ModelViewProjectionMatrix;
 float4x4 InverseTransposeModelMatrix;
 float NearZ;
 float FarZ;
+float3 EyePos;
+
+
+//	Rayleigh phase function
+float RayleighPhase( float cosAngle )
+{
+	return 0.75f * ( 1 + cosAngle * cosAngle );
+}
+
+//	Standard Mie phase function
+float HeyneyGreensteinPhaseFunction( float cosSunAngle, float g )
+{
+	g = clamp( g, -1, 1 );
+	float g2 = g * g;
+
+	return ( 1.0f - g2 ) / pow( ( 1.0f + g2 ) - ( 2.0f * g * cosSunAngle ), 1.5f );
+}
+
 
 FragmentShaderInput VertexShader( VertexShaderInput input )
 {
 	FragmentShaderInput output;
 
-	output.m_Position		= mul( ModelViewProjectionMatrix, input.m_Position );
-	output.m_Diffuse		= float4( input.m_Diffuse, 1 );
+	output.m_Position = mul( ModelViewProjectionMatrix, input.m_Position );
+	output.m_WorldPosition = input.m_Position;
+	output.m_Diffuse = float4( input.m_Diffuse, length( input.m_Diffuse ) );
 
 	return output;
 }
 
 float4 FragmentShader( FragmentShaderInput input ) : COLOR
 {
-	return input.m_Diffuse;
+	float cosSunAngle = dot( float3( 1, 0, 0 ), normalize( input.m_WorldPosition - EyePos ) );
+	float rPhase = RayleighPhase( cosSunAngle );
+	float mPhase = HeyneyGreensteinPhaseFunction( cosSunAngle, -0.999f );
+	float3 rgb = input.m_Diffuse.rgb * rPhase + input.m_Diffuse.aaa * mPhase;
+	return float4( rgb, 1 );
 }
 
 float4 LineShader( ) : COLOR
@@ -40,25 +64,27 @@ technique DefaultTechnique
 {
 	pass
 	{
-		DepthMask				= true;
+	//	BlendEnable				= true;
+	//	BlendFunc				= int2( One, OneMinusSrcAlpha );
+	//	BlendFunc				= int2( OneMinusDstAlpha, One );
 		ShadeModel				= Smooth;
-		FrontFace				= CCW;
+		DepthMask				= true;
 		DepthTestEnable			= true;
+		FrontFace				= CCW;
 		DepthFunc				= Less;
 		CullFaceEnable			= true;
-		BlendEnable				= false;
 		PolygonMode				= int2( Back, Fill );
-		//PolygonMode				= int2( FrontAndBack, Line );
+		//PolygonMode			= int2( FrontAndBack, Line );
 		VertexProgram			= compile arbvp1 VertexShader( );
 		FragmentProgram			= compile arbfp1 FragmentShader( );
 	}
-	pass
-	{
-		DepthMask				= true;
-		DepthTestEnable			= true;
-		PolygonOffset			= float2( -0.5f, -0.5f );
-		PolygonOffsetLineEnable	= true;
-		PolygonMode				= int2( FrontAndBack, Line );
-		FragmentProgram			= compile arbfp1 LineShader( );
-	}
+	//pass
+	//{
+	//	DepthMask				= true;
+	//	DepthTestEnable			= true;
+	//	PolygonOffset			= float2( -0.5f, -0.5f );
+	//	PolygonOffsetLineEnable	= true;
+	//	PolygonMode				= int2( FrontAndBack, Line );
+	//	FragmentProgram			= compile arbfp1 LineShader( );
+	//}
 }

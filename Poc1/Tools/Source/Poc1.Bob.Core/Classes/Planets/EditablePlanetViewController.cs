@@ -42,7 +42,7 @@ namespace Poc1.Bob.Core.Classes.Planets
 							new ComponentType( typeof( SpherePlanetRingModel ) )
 						};
 				}
-				throw new NotSupportedException( string.Format( "Planet model type {0} is not supported", Composite.GetType( ) ) );
+				return new ComponentType[0];
 			}
 		}
 	}
