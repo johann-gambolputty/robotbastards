@@ -1,0 +1,84 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{965C1428-254B-4DE1-A38B-0A440B959FBF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Goo.Common.Ui.WinForms</RootNamespace>
+    <AssemblyName>Goo.Common.Ui.WinForms</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\CompositeEditor\CompositeEditorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controllers\CompositeEditor\CompositeEditorView.Designer.cs">
+      <DependentUpon>CompositeEditorView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\PropertyEditor\PropertyEditorView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\PropertyEditor\PropertyEditorView.Designer.cs">
+      <DependentUpon>PropertyEditorView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controllers\CompositeEditor\CompositeEditorView.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>CompositeEditorView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controllers\PropertyEditor\PropertyEditorView.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>PropertyEditorView.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Goo.Common.Ui\Goo.Common.Ui.csproj">
+      <Project>{91142DD7-3D42-4F44-996A-C1643E140314}</Project>
+      <Name>Goo.Common.Ui</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Goo.Core\Goo.Core.csproj">
+      <Project>{0949E3E8-E2F5-4FE2-9B89-2E907E4A9DDE}</Project>
+      <Name>Goo.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
