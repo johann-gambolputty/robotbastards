@@ -1,0 +1,120 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FFCD0AFA-2E3E-4E20-AB24-48DB3788BBF5}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Goo.Test</RootNamespace>
+    <AssemblyName>Goo.Test</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.2.2864.18696, Culture=neutral, PublicKeyToken=d481317c817cec47, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\bin\ThirdParty\WFLDocking\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ITestView.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestView.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TestView.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="TestController.cs" />
+    <Compile Include="TestHost.cs" />
+    <Compile Include="TestUnit.cs" />
+    <Compile Include="TestView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TestView.Designer.cs">
+      <DependentUpon>TestView.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Interaction\Rb.Interaction.csproj">
+      <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
+      <Name>Rb.Interaction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Goo.Common.Ui.WinForms\Goo.Common.Ui.WinForms.csproj">
+      <Project>{965C1428-254B-4DE1-A38B-0A440B959FBF}</Project>
+      <Name>Goo.Common.Ui.WinForms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Goo.Common.Ui\Goo.Common.Ui.csproj">
+      <Project>{91142DD7-3D42-4F44-996A-C1643E140314}</Project>
+      <Name>Goo.Common.Ui</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Goo.Core.Ui.WinForms.WFDocking\Goo.Core.Ui.WinForms.WFDocking.csproj">
+      <Project>{11AF852B-910C-447E-943F-6431860C8605}</Project>
+      <Name>Goo.Core.Ui.WinForms.WFDocking</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Goo.Core.Ui.WinForms\Goo.Core.Ui.WinForms.csproj">
+      <Project>{4E837A5B-A95F-479B-BB1A-E4BA9F3C0D0B}</Project>
+      <Name>Goo.Core.Ui.WinForms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Goo.Core.Ui\Goo.Core.Ui.csproj">
+      <Project>{237AC7A5-04D1-4DE8-A1D7-6E8060C9642D}</Project>
+      <Name>Goo.Core.Ui</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Goo.Core\Goo.Core.csproj">
+      <Project>{0949E3E8-E2F5-4FE2-9B89-2E907E4A9DDE}</Project>
+      <Name>Goo.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

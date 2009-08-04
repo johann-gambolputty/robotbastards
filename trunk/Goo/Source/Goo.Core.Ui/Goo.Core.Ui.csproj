@@ -1,0 +1,112 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{237AC7A5-04D1-4DE8-A1D7-6E8060C9642D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Goo.Core.Ui</RootNamespace>
+    <AssemblyName>Goo.Core.Ui</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\bin\ThirdParty\log4net\1.2.10\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commands\DefaultCommands.cs" />
+    <Compile Include="Commands\Menus\DefaultCommandMenus.cs" />
+    <Compile Include="Commands\Menus\IMenuService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Commands\Menus\IMenuGroup.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Commands\Menus\IMenuItem.cs" />
+    <Compile Include="Commands\Menus\IMenuNode.cs" />
+    <Compile Include="Commands\Menus\IMenuSeparator.cs" />
+    <Compile Include="Commands\Menus\MenuGroupInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Commands\Menus\MenuItemInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Commands\Menus\MenuNodeInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Commands\Menus\MenuSeparatorInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Layouts\Dialogs\DefaultDialogFrameType.cs" />
+    <Compile Include="Layouts\Dialogs\IDialogFrame.cs" />
+    <Compile Include="Layouts\Dialogs\IDialogFrameFactory.cs" />
+    <Compile Include="Layouts\Dialogs\IDialogFrameTemplate.cs" />
+    <Compile Include="Layouts\Dialogs\IDialogService.cs" />
+    <Compile Include="Layouts\Dialogs\ResultOfDialog.cs" />
+    <Compile Include="Layouts\Docking\DockLocation.cs" />
+    <Compile Include="Layouts\Docking\IDockingFrame.cs" />
+    <Compile Include="Layouts\Docking\IDockingService.cs" />
+    <Compile Include="Layouts\ILayoutManagerService.cs" />
+    <Compile Include="Layouts\ILayoutSerializerService.cs" />
+    <Compile Include="Layouts\LayoutManagerService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.csproj">
+      <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
+      <Name>Rb.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Rb.Interaction\Rb.Interaction.csproj">
+      <Project>{2C6A42E3-125C-4885-8D00-EBA1D271A6BA}</Project>
+      <Name>Rb.Interaction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Goo.Core\Goo.Core.csproj">
+      <Project>{0949E3E8-E2F5-4FE2-9B89-2E907E4A9DDE}</Project>
+      <Name>Goo.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
