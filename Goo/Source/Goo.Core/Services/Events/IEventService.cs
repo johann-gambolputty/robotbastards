@@ -25,7 +25,11 @@ namespace Goo.Core.Services.Events
 		/// </summary>
 		/// <typeparam name="TEvent">Event type</typeparam>
 		/// <param name="subscriber">Subscriber object</param>
-		void Subscribe<TEvent>( IEventSubscriber<TEvent> subscriber );
+		/// <param name="weakReference">
+		/// If true, the event service only keeps a weak reference to the subscriber, allowing it to be
+		/// garbage collected without having to unsubscribe.
+		/// </param>
+		void Subscribe<TEvent>( IEventSubscriber<TEvent> subscriber, bool weakReference );
 
 		/// <summary>
 		/// Unsubscribes an object from a given event type

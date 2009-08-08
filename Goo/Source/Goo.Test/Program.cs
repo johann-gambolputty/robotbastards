@@ -1,4 +1,5 @@
 using System;
+using Rb.Rendering;
 
 namespace Goo.Test
 {
@@ -10,7 +11,17 @@ namespace Goo.Test
 		[STAThread]
 		static void Main( )
 		{
-			new TestHost( ).Run( new TestUnit( ) );
+			TestHost host = new TestHost( );
+			try
+			{
+				Graphics.Initialize( GraphicsInitialization.FromAppConfig( ) );
+			}
+			catch ( Exception ex )
+			{
+			//	MessageBox.Show( "Error initializing graphics engine - exiting:\n" + ex, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				return;
+			}
+			host.Run( new TestUnit( ) );
 		}
 	}
 }

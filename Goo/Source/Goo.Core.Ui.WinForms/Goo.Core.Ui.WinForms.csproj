@@ -57,9 +57,19 @@
     </Compile>
     <Compile Include="Layouts\Dialogs\DialogService.cs" />
     <Compile Include="Layouts\WinFormsLayoutHelpers.cs" />
+    <Compile Include="Mvc\ViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Mvc\ViewControl.Designer.cs">
+      <DependentUpon>ViewControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\Rb.Core.WinForms\Rb.Core.WinForms.csproj">
+      <Project>{92683676-2FF9-421B-A434-90187CFDED55}</Project>
+      <Name>Rb.Core.WinForms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Source\Rb.Core\Rb.Core.csproj">
       <Project>{35CE14A7-E205-4B2B-ABF7-F1303673E8BA}</Project>
       <Name>Rb.Core</Name>

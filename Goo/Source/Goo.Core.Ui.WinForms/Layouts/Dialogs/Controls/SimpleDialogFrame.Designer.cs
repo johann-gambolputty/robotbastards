@@ -62,6 +62,7 @@ namespace Goo.Common.WinForms.Layouts.Dialogs.Controls
 			this.KeyPreview = true;
 			this.Name = "SimpleDialogFrame";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler( this.SimpleDialogFrame_FormClosed );
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.SimpleDialogFrame_FormClosing );
 			this.ResumeLayout( false );
 
 		}

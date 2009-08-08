@@ -97,13 +97,27 @@ namespace Goo.Common.WinForms.Layouts.Dialogs.Controls
 		#region Private Members
 
 		private readonly Form m_ParentForm;
+		private IView m_View;
 		private ResultOfDialog m_Result;
 		
 		private void AddView( IView view )
 		{
+			if ( m_View != null )
+			{
+				m_View.OnFrameClosing( );
+			}
 			Control viewControl = WinFormsLayoutHelpers.GetViewAsControl( view );
 			viewControl.Dock = DockStyle.Fill;
 			hostPanel.Controls.Add( viewControl );
+			m_View = view;
+		}
+
+		private void SimpleDialogFrame_FormClosing( object sender, FormClosingEventArgs e )
+		{
+			if ( m_View != null )
+			{
+				m_View.OnFrameClosing( );
+			}
 		}
 
 		private void SimpleDialogFrame_FormClosed( object sender, FormClosedEventArgs e )

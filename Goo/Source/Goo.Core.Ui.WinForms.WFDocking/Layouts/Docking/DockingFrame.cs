@@ -23,6 +23,7 @@ namespace Goo.Core.Ui.WinForms.MagicDocking.Layouts.Docking
 			m_Panel = panel;
 			m_Content = new DockContent( );
 			m_Content.AutoScroll = true;
+			m_Content.Closing += OnContentClosing;
 		}
 
 		/// <summary>
@@ -55,6 +56,10 @@ namespace Goo.Core.Ui.WinForms.MagicDocking.Layouts.Docking
 				if ( m_View == value )
 				{
 					return;
+				}
+				if ( m_View != null )
+				{
+					m_View.OnFrameClosing( );
 				}
 				m_Content.Controls.Clear( );
 				if ( value == null )
@@ -114,6 +119,14 @@ namespace Goo.Core.Ui.WinForms.MagicDocking.Layouts.Docking
 		private IView m_View;
 		private readonly DockPanel m_Panel;
 		private DockContent m_Content;
+
+		private void OnContentClosing( object sender, EventArgs args )
+		{
+			if ( m_View != null )
+			{
+				m_View.OnFrameClosing( );
+			}
+		}
 
 		#endregion
 	}

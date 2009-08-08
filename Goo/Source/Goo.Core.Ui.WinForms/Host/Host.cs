@@ -4,6 +4,7 @@ using Goo.Core.Services.Events;
 using Goo.Core.Services.Workspaces;
 using Goo.Core.Ui.Layouts;
 using Goo.Core.Units;
+using Rb.Core.WinForms.Application;
 
 namespace Goo.Common.WinForms.Host
 {
@@ -19,6 +20,8 @@ namespace Goo.Common.WinForms.Host
 		public Host( string name )
 		{
 			m_Name = name;
+			Application.EnableVisualStyles( );
+			Application.SetCompatibleTextRenderingDefault( false );
 		}
 
 		/// <summary>
@@ -34,8 +37,6 @@ namespace Goo.Common.WinForms.Host
 		/// </summary>
 		public override void Run( params IUnit[] startupUnits )
 		{
-			Application.EnableVisualStyles( );
-			Application.SetCompatibleTextRenderingDefault( false );
 			m_Form = CreateMainForm( );
 
 			AddStartupServices( );
@@ -55,7 +56,8 @@ namespace Goo.Common.WinForms.Host
 				LoadUnit( unit );
 			}
 
-			Application.Run( Form );
+		//	Application.Run( Form );
+			RealTimeApplication.Run( Form );
 		}
 
 		#region Protected Members

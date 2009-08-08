@@ -26,9 +26,9 @@ namespace Goo.Core.Test.Services.Events
 			using ( m_Mocks.Playback( ) )
 			{
 				IEventService service = CreateEventService( );
-				service.Subscribe( objectSubscriber );
-				service.Subscribe( eventArgsSubscriber );
-				service.Subscribe( cancelEventArgsSubscriber );
+				service.Subscribe( objectSubscriber, false );
+				service.Subscribe( eventArgsSubscriber, false );
+				service.Subscribe( cancelEventArgsSubscriber, false );
 				service.Raise( this, evt );
 			}
 			m_Mocks.VerifyAll( );
@@ -38,7 +38,7 @@ namespace Goo.Core.Test.Services.Events
 		public void TestSubscriptionDoesntExtendObjectLifetime( )
 		{
 			IEventSubscriber<object> subscriber = new NullEventSubscriber<object>( );
-			CreateEventService( ).Subscribe( subscriber );
+			CreateEventService( ).Subscribe( subscriber, true );
 			WeakReference subscriberRef = new WeakReference( subscriber );
 			subscriber = null;
 			GC.Collect( );
