@@ -35,26 +35,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\CompositeEditor\CompositeEditorView.cs">
+    <Compile Include="Mvc\CompositeEditor\CompositeEditorView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controllers\CompositeEditor\CompositeEditorView.Designer.cs">
+    <Compile Include="Mvc\CompositeEditor\CompositeEditorView.Designer.cs">
       <DependentUpon>CompositeEditorView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controllers\PropertyEditor\PropertyEditorView.cs">
+    <Compile Include="Mvc\PropertyEditor\PropertyEditorView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controllers\PropertyEditor\PropertyEditorView.Designer.cs">
+    <Compile Include="Mvc\PropertyEditor\PropertyEditorView.Designer.cs">
       <DependentUpon>PropertyEditorView.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Controllers\CompositeEditor\CompositeEditorView.resx">
+    <EmbeddedResource Include="Mvc\CompositeEditor\CompositeEditorView.resx">
       <SubType>Designer</SubType>
       <DependentUpon>CompositeEditorView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controllers\PropertyEditor\PropertyEditorView.resx">
+    <EmbeddedResource Include="Mvc\PropertyEditor\PropertyEditorView.resx">
       <SubType>Designer</SubType>
       <DependentUpon>PropertyEditorView.cs</DependentUpon>
     </EmbeddedResource>
@@ -67,6 +67,10 @@
     <ProjectReference Include="..\Goo.Common.Ui\Goo.Common.Ui.csproj">
       <Project>{91142DD7-3D42-4F44-996A-C1643E140314}</Project>
       <Name>Goo.Common.Ui</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Goo.Core.Ui.WinForms\Goo.Core.Ui.WinForms.csproj">
+      <Project>{4E837A5B-A95F-479B-BB1A-E4BA9F3C0D0B}</Project>
+      <Name>Goo.Core.Ui.WinForms</Name>
     </ProjectReference>
     <ProjectReference Include="..\Goo.Core\Goo.Core.csproj">
       <Project>{0949E3E8-E2F5-4FE2-9B89-2E907E4A9DDE}</Project>

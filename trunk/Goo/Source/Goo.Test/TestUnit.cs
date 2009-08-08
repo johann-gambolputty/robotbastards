@@ -1,8 +1,8 @@
 using Goo.Common.Layouts.Dialogs;
-using Goo.Common.Ui.Controllers.CompositeEditor;
-using Goo.Common.Ui.Controllers.PropertyEditor;
-using Goo.Common.Ui.WinForms.Controllers.CompositeEditor;
-using Goo.Common.Ui.WinForms.Controllers.PropertyEditor;
+using Goo.Common.Ui.Mvc.CompositeEditor;
+using Goo.Common.Ui.Mvc.PropertyEditor;
+using Goo.Common.Ui.WinForms.Mvc.CompositeEditor;
+using Goo.Common.Ui.WinForms.Mvc.PropertyEditor;
 using Goo.Core.Commands;
 using Goo.Core.Environment;
 using Goo.Core.Mvc;
@@ -87,7 +87,7 @@ namespace Goo.Test
 			get { return new ICommandExecutor[] { this }; }
 		}
 
-		private IController CreateComponentEditorController( ControllerInitializationContext initContext )
+		private static IController CreateComponentEditorController( ControllerInitializationContext initContext )
 		{
 			Composite t0 = new Composite( );
 				Composite t00 = new Composite( );

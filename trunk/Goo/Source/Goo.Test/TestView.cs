@@ -1,9 +1,9 @@
-using System.Windows.Forms;
+using Goo.Core.Ui.WinForms.Mvc;
 using Rb.Core.Utils;
 
 namespace Goo.Test
 {
-	public partial class TestView : UserControl, ITestView
+	public partial class TestView : ViewControl, ITestView
 	{
 		public TestView( )
 		{

@@ -34,19 +34,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\CompositeEditor\ComponentTypeUiElement.cs" />
-    <Compile Include="Controllers\CompositeEditor\CompositeAggregator.cs" />
-    <Compile Include="Controllers\CompositeEditor\AbstractComponentAggregator.cs" />
-    <Compile Include="Controllers\ComponentSelectedEvent.cs" />
-    <Compile Include="Controllers\CompositeEditor\ComponentUiElement.cs" />
-    <Compile Include="Controllers\CompositeEditor\CompositeEditorController.cs" />
-    <Compile Include="Controllers\CompositeEditor\DefaultComponentUiElementFactory.cs" />
-    <Compile Include="Controllers\CompositeEditor\IComponentAggregator.cs" />
-    <Compile Include="Controllers\CompositeEditor\IComponentUiElementFactory.cs" />
-    <Compile Include="Controllers\CompositeEditor\ICompositeEditorView.cs" />
-    <Compile Include="Controllers\CompositeEditor\IComponentFactory.cs" />
-    <Compile Include="Controllers\PropertyEditor\IPropertyEditorView.cs" />
-    <Compile Include="Controllers\PropertyEditor\PropertyEditorController.cs" />
+    <Compile Include="Mvc\CompositeEditor\ComponentTypeUiElement.cs" />
+    <Compile Include="Mvc\CompositeEditor\CompositeAggregator.cs" />
+    <Compile Include="Mvc\CompositeEditor\AbstractComponentAggregator.cs" />
+    <Compile Include="Mvc\ComponentSelectedEvent.cs" />
+    <Compile Include="Mvc\CompositeEditor\ComponentUiElement.cs" />
+    <Compile Include="Mvc\CompositeEditor\CompositeEditorController.cs" />
+    <Compile Include="Mvc\CompositeEditor\DefaultComponentUiElementFactory.cs" />
+    <Compile Include="Mvc\CompositeEditor\IComponentAggregator.cs" />
+    <Compile Include="Mvc\CompositeEditor\IComponentUiElementFactory.cs" />
+    <Compile Include="Mvc\CompositeEditor\ICompositeEditorView.cs" />
+    <Compile Include="Mvc\CompositeEditor\IComponentFactory.cs" />
+    <Compile Include="Mvc\CompositeEditor\MasterComponentAggregator.cs" />
+    <Compile Include="Mvc\ConfigurationEditor\ConfigurationEditorController.cs" />
+    <Compile Include="Mvc\ConfigurationEditor\IConfigurationEditorView.cs" />
+    <Compile Include="Mvc\PropertyEditor\IPropertyEditorView.cs" />
+    <Compile Include="Mvc\PropertyEditor\PropertyEditorController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

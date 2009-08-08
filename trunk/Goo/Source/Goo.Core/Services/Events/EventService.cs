@@ -61,7 +61,11 @@ namespace Goo.Core.Services.Events
 		/// </summary>
 		/// <typeparam name="TEvent">Event type</typeparam>
 		/// <param name="subscriber">Subscriber object</param>
-		public void Subscribe<TEvent>( IEventSubscriber<TEvent> subscriber )
+		/// <param name="weakReference">
+		/// If true, the event service only keeps a weak reference to the subscriber, allowing it to be
+		/// garbage collected without having to unsubscribe.
+		/// </param>
+		public void Subscribe<TEvent>( IEventSubscriber<TEvent> subscriber, bool weakReference )
 		{
 			m_Log.InfoFormat( "Subscribing {0} to event type {1}", subscriber, typeof( TEvent ) );
 			using ( m_Lock.WaitToWrite( ) )
@@ -72,7 +76,7 @@ namespace Goo.Core.Services.Events
 					subscribers = new SubscriberList<TEvent>( );
 					m_Subscribers.Add( typeof( TEvent ), subscribers );
 				}
-				subscribers.Add( subscriber );
+				subscribers.Add( subscriber, weakReference );
 			}
 		}
 
@@ -104,7 +108,7 @@ namespace Goo.Core.Services.Events
 			/// <summary>
 			/// Adds a subscriber to the list
 			/// </summary>
-			void Add<TActualEvent>( IEventSubscriber<TActualEvent> subscriber );
+			void Add<TActualEvent>( IEventSubscriber<TActualEvent> subscriber, bool weakReference );
 
 			/// <summary>
 			/// Removes a subscriber from the list
@@ -131,10 +135,17 @@ namespace Goo.Core.Services.Events
 			/// <summary>
 			/// Adds a subscriber to the list
 			/// </summary>
-			public void Add<TActualEvent>( IEventSubscriber<TActualEvent> subscriber )
+			public void Add<TActualEvent>( IEventSubscriber<TActualEvent> subscriber, bool weakReference )
 			{
 				Clean( );
-				m_Subscribers.Add( new WeakReference( subscriber ) );
+				if ( weakReference )
+				{
+					m_WeakSubscribers.Add( new WeakReference( subscriber ) );
+				}
+				else
+				{
+					m_Subscribers.Add( subscriber );
+				}
 			}
 
 			/// <summary>
@@ -143,11 +154,12 @@ namespace Goo.Core.Services.Events
 			public void Remove<TActualEvent>( IEventSubscriber<TActualEvent> subscriber )
 			{
 				Clean( );
-				for ( int subIndex = 0; subIndex < m_Subscribers.Count; )
+				m_Subscribers.Remove( subscriber );
+				for ( int subIndex = 0; subIndex < m_WeakSubscribers.Count; ++subIndex )
 				{
-					if ( m_Subscribers[ subIndex ].Target == subscriber )
+					if ( m_WeakSubscribers[ subIndex ].Target == subscriber )
 					{
-						m_Subscribers.RemoveAt( subIndex );
+						m_WeakSubscribers.RemoveAt( subIndex );
 						return;
 					}
 				}
@@ -158,11 +170,11 @@ namespace Goo.Core.Services.Events
 			/// </summary>
 			public void Clean( )
 			{
-				for ( int subIndex = 0; subIndex < m_Subscribers.Count; )
+				for ( int subIndex = 0; subIndex < m_WeakSubscribers.Count; )
 				{
-					if ( !m_Subscribers[ subIndex ].IsAlive )
+					if ( !m_WeakSubscribers[ subIndex ].IsAlive )
 					{
-						m_Subscribers.RemoveAt( subIndex );
+						m_WeakSubscribers.RemoveAt( subIndex );
 						continue;
 					}
 					++subIndex;
@@ -176,7 +188,11 @@ namespace Goo.Core.Services.Events
 			{
 				TEvent castEvent = ( TEvent )( object )actualEvent;
 				bool needsClean = false;
-				foreach ( WeakReference subscriberRef in m_Subscribers )
+				foreach ( IEventSubscriber<TEvent> subscriber in m_Subscribers )
+				{
+					subscriber.OnEvent( sender, castEvent );
+				}
+				foreach ( WeakReference subscriberRef in m_WeakSubscribers )
 				{
 					IEventSubscriber<TEvent> subscriber = ( IEventSubscriber<TEvent> )subscriberRef.Target;
 					if ( subscriber != null )
@@ -193,7 +209,8 @@ namespace Goo.Core.Services.Events
 
 			#region Private Members
 
-			private readonly List<WeakReference> m_Subscribers = new List<WeakReference>( );
+			private readonly List<WeakReference> m_WeakSubscribers = new List<WeakReference>( );
+			private readonly List<object> m_Subscribers = new List<object>( );
 
 			#endregion
 		}
